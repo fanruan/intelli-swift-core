@@ -472,7 +472,8 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         self.bottom.populate(ungroup2Other, ungroup2OtherName);
         BI.Utils.getNoGroupedDataByDimensionID(did, function (unGroupedFields) {
             self.fieldPane.loaded();
-            if (BI.size(unGroupedFields) > 1000) {
+            // if (BI.size(unGroupedFields) > 1000) {
+            if (false) {
                 if (!BI.Maskers.has(self.getName())) {
                     self._tooManyFieldsPane = BI.createWidget({
                         type: "bi.center_adapt",

@@ -15,7 +15,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -26,6 +26,9 @@ import com.fr.json.JSONObject;
 public class StringINUserFilterValue extends StringRangeFilterValue {
     @BICoreField
     protected String fieldId;
+
+    @BICoreField
+    private String CLASS_TYPE = "StringINUserFilterValue";
 
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
@@ -57,7 +60,7 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
 
     @Override
     public boolean isMatchValue(String v) {
-        return !valueSet.contains(v);
+        return valueSet.contains(v);
     }
 
     @Override
@@ -83,14 +86,14 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
                     }
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         if (ComparatorUtils.equals(fieldId, DBConstant.SYSTEM_USER_NAME)) {
             try {
                 valueSet.getValues().add(UserControl.getInstance().getUser(user.getUserId()).getUsername());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }

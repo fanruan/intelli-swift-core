@@ -6,6 +6,7 @@ import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.exception.*;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -44,10 +45,12 @@ public interface BITableRelationConfigurationProvider {
 
     /**
      * 获得所有生成过cube的关联
+     *
      * @param userId
      * @return
      */
     Set<BITableRelation> getAnalysisAllTableRelation(long userId);
+
     /**
      * 获得一个表与关联集合的MAP，并且该表是集合中关联的主键
      *
@@ -123,7 +126,14 @@ public interface BITableRelationConfigurationProvider {
 
     Set<BITableRelationPath> getAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException;
 
+    boolean isRelationReduced(long userId);
+
+    boolean isRelationIncreased(long userId);
+
+    boolean isRelationNoChange(long userId);
+
     Set<BITableRelationPath> getAnalysisAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException;
+
     /**
      * 获得第一条路径
      *
@@ -241,9 +251,9 @@ public interface BITableRelationConfigurationProvider {
     /**
      * 结束生成CUBE
      *
-     * @param userId      用户ID
+     * @param userId 用户ID
      */
-    void finishGenerateCubes(long userId);
+    void finishGenerateCubes(long userId, Set<BITableSourceRelation> absentRelation);
 
     /**
      * 清除用户的全部数据

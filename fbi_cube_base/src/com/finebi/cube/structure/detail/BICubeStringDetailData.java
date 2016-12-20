@@ -5,7 +5,7 @@ import com.finebi.cube.data.input.ICubeStringReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 /**
  * This class created on 2016/3/29.
@@ -23,14 +23,17 @@ public class BICubeStringDetailData extends BICubeDetailData<String> {
         try {
             return ((ICubeStringReader)getCubeReader()).getSpecificValue(rowNumber);
         } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
 
     @Override
-    protected ICubeResourceLocation setDetailType() {
-        return currentLocation.setStringType();
+    protected ICubeResourceLocation setDetailType(boolean isIncrease) {
+        if(!isIncrease) {
+            return currentLocation.setStringType();
+        }
+        return currentLocation.setStringIncreaseType();
     }
 
     @Override

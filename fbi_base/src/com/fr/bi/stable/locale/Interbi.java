@@ -4,7 +4,7 @@ package com.fr.bi.stable.locale;
  * Created by sheldon on 14-9-29.
  */
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.*;
 import com.fr.stable.EnvChangedListener;
 import com.fr.stable.StringUtils;
@@ -62,7 +62,7 @@ public class Interbi implements LocaleProvider {
             ResourceBundle rb = ResourceBundle.getBundle("com/fr/bi/stable/locale/fbi", locale, Inter.class.getClassLoader());
             predefinedMap.put(locale, rb);
         } catch (Throwable e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

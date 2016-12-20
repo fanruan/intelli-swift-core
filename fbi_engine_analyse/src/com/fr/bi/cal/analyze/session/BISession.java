@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.session;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -25,10 +26,8 @@ import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.data.TableDataSource;
 import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
@@ -36,6 +35,7 @@ import com.fr.fs.control.CompanyRoleControl;
 import com.fr.fs.control.CustomRoleControl;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.FRLogManager;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -44,8 +44,8 @@ import com.fr.main.TemplateWorkBook;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
+import com.fr.script.Calculator;
 import com.fr.stable.bridge.StableFactory;
-import com.fr.stable.fun.IOFileAttrMark;
 import com.fr.stable.script.CalculatorProvider;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.SessionIDInfor;
@@ -76,8 +76,8 @@ public class BISession extends BIAbstractSession {
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> partpageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
 
     //young 当前用户（普通）的角色信息
-    private List<Long> customRoles = new ArrayList<Long>();
-    private List<Long> companyRoles = new ArrayList<Long>();
+    private List<CustomRole> customRoles = new ArrayList<CustomRole>();
+    private List<CompanyRole> companyRoles = new ArrayList<CompanyRole>();
 
     public BISession(String remoteAddress, BIWeblet let, long userId) {
         super(remoteAddress, let, userId);
@@ -123,6 +123,8 @@ public class BISession extends BIAbstractSession {
         this.isEdit = true;
     }
 
+
+    private static final long TIME_OUT = 45000;
     /**
      * 半推半就
      *
@@ -145,7 +147,7 @@ public class BISession extends BIAbstractSession {
                     if (ss instanceof BISession) {
                         long t = ((BISession) ss).lastTime;
                         //45- 30 超过15-45秒还没反應可能是没有心跳
-                        if (System.currentTimeMillis() - t < 45000) {
+                        if (System.currentTimeMillis() - t < TIME_OUT) {
                             doForce = false;
                             break;
                         }
@@ -180,15 +182,15 @@ public class BISession extends BIAbstractSession {
             if (this.getUserId() != UserControl.getInstance().getSuperManagerID()) {
                 Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(this.getUserId());
                 for (CustomRole role : cusRoles) {
-                    customRoles.add(role.getId());
+                    customRoles.add(role);
                 }
                 Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(this.getUserId());
                 for (CompanyRole role : comRoles) {
-                    companyRoles.add(role.getId());
+                    companyRoles.add(role);
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -286,7 +288,7 @@ public class BISession extends BIAbstractSession {
             connections.put("connectionSet", connectionJA);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         JSONObject jo = new JSONObject();
@@ -414,24 +416,25 @@ public class BISession extends BIAbstractSession {
     }
 
     @Override
-    public List<Long> getCustomRoles() {
+    public List<CustomRole> getCustomRoles() {
         return customRoles;
     }
 
     @Override
-    public List<Long> getCompanyRoles() {
+    public List<CompanyRole> getCompanyRoles() {
         return companyRoles;
     }
 
     @Override
     public void release() {
-        synchronized (detailIndexMap) {
-            detailIndexMap.clear();
-        }
-        synchronized (detailValueMap) {
-            detailValueMap.clear();
-        }
+        super.release();
+        detailIndexMap.clear();
+        detailValueMap.clear();
+        partpageGroup.clear();
+        pageGroup.clear();
         releaseLock();
+        FRLogManager.setSession(null);
+        Calculator.putThreadSavedNameSpace(null);
     }
 
     @Override
@@ -455,14 +458,6 @@ public class BISession extends BIAbstractSession {
             CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getTempTableId(), getUserId()));
             loader.updateTime();
         }
-    }
-
-    public void setWidgetDateMap(String widgetName, String name, String s, Object data) {
-
-    }
-
-    public boolean hasPackageAccessiblePrivilege(BusinessTable key) {
-        return true;
     }
 
     public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetName) {
@@ -496,10 +491,6 @@ public class BISession extends BIAbstractSession {
             map = pmap.get(widgetName);
         }
         map.put(i, pg);
-    }
-
-    public BIDay getWidgetDatekey(String widgetName, String dimName, String v) {
-        return null;
     }
 
     public GroupValueIndex createFilterGvi(BusinessTable key) {

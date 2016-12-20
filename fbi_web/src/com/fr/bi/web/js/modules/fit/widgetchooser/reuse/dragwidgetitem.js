@@ -138,7 +138,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 o.drag.apply(self, [widget.bounds, ui.position, result]);
             },
             stop: function (e, ui) {
-                var dimensionsAndView = self._createDimensionsAndView(widget);
+                var dimensionsAndView = self._createDimensionsAndView(BI.deepClone(widget));
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
                 //组件表头上指标的排序和过滤
@@ -287,6 +287,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 });
                 break;
         }
+        dimension.dId = newId;
         self.dimTarIdMap[idx] = newId;
         return {id: newId, dimension: dimension};
     },

@@ -1,5 +1,6 @@
 package com.finebi.cube.conf.pack.imp;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.IPackagesManagerService;
@@ -13,8 +14,8 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONException;
@@ -67,6 +68,10 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
         getUserGroupConfigManager(userId).finishGenerateCubes();
     }
 
+    @Override
+    public void finishGenerateCubes(long userId, Set<CubeTableSource> absentTables) {
+        getUserGroupConfigManager(userId).finishGenerateCubes(absentTables);
+    }
 
     @Override
     public Set<IBusinessPackageGetterService> getAllPackages(long userId) {
@@ -175,6 +180,11 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     }
 
     @Override
+    public void endBuildingCube(long userId, Set<CubeTableSource> absentTable) {
+        getUserGroupConfigManager(userId).getPackageConfigManager().setEndBuildCube(absentTable);
+    }
+
+    @Override
     public JSONObject createGroupJSON(long userId) throws JSONException {
         return getUserGroupConfigManager(userId).getPackageConfigManager().createGroupJSON();
     }
@@ -230,6 +240,20 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAllTables();
     }
 
+    public boolean isTableReduced(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().isTableReduced();
+    }
+
+    public boolean isTableIncreased(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().isTableIncreased();
+
+    }
+
+    @Override
+    public boolean isTableNoChange(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().isTableNoChange();
+    }
+
     @Override
     public Set<BusinessTable> getAnalysisAllTables(long userId) {
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisAllTables();
@@ -247,7 +271,7 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
                 try {
                     packageSet.add((BIBusinessPackage) biBusinessPackage.clone());
                 } catch (CloneNotSupportedException e) {
-                    BILogger.getLogger().error(e.getMessage());
+                    BILoggerFactory.getLogger().error(e.getMessage());
                 }
             }
         }

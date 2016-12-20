@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.reader;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.input.ICubeByteArrayReader;
 import com.finebi.cube.data.input.primitive.ICubeByteReader;
 import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
@@ -7,10 +8,13 @@ import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.constant.CubeConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.gvi.BIByteDataInput;
+import com.fr.bi.stable.utils.program.BIStringUtils;
+
+import java.util.UUID;
 
 public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
-
+    private final String handlerKey = UUID.randomUUID().toString();
     private ICubeLongReader positionReader;
 
     private ICubeIntegerReader lengthReader;
@@ -21,13 +25,28 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         this.positionReader = positionReader;
         this.lengthReader = lengthReader;
         this.contentReader = contentReader;
+        this.positionReader.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
+        this.lengthReader.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
+        this.contentReader.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
     }
 
 
     @Override
     public byte[] getSpecificValue(final int row) throws BIResourceInvalidException {
-        long start = positionReader.getSpecificValue(row);
-        int size = lengthReader.getSpecificValue(row);
+        long start = 0;
+        int size = 0;
+        try {
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(BIStringUtils.append(
+                    e.getMessage(),
+                    "\n" + "retry again!"
+            ));
+            releaseBuffers();
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        }
         if (size == 0) {
             return new byte[]{};
         }
@@ -36,6 +55,29 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             b[i] = contentReader.getSpecificValue(start + i);
         }
         return isNull(b) ? null : b;
+    }
+
+    public BIByteDataInput getByteStream(int row) throws BIResourceInvalidException{
+        long start;
+        int size;
+        try {
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(BIStringUtils.append(
+                    e.getMessage(),
+                    "\n" + "retry again!"
+            ));
+            releaseBuffers();
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        }
+        return new ByteStreamDataInput(contentReader, start, size);
+    }
+
+    private void releaseBuffers() {
+        positionReader.releaseBuffer();
+        lengthReader.releaseBuffer();
     }
 
     private boolean isNull(byte[] result) {
@@ -60,22 +102,21 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         try {
             start = positionReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         try {
             size = lengthReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
-
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return start + size;
     }
 
     @Override
     public void clear() {
-        positionReader.releaseHandler();
-        lengthReader.releaseHandler();
-        contentReader.releaseHandler();
+        positionReader.releaseHandler(handlerKey);
+        lengthReader.releaseHandler(handlerKey);
+        contentReader.releaseHandler(handlerKey);
     }
 
     @Override

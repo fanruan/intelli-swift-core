@@ -10,7 +10,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -96,7 +96,7 @@ public class ResourceHelper {
                     buffer.append(TemplateUtils.renderTemplate(file, map));
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             }
             return buffer.toString();
         }
@@ -257,7 +257,7 @@ public class ResourceHelper {
             connections.put("connectionSet", connectionJA);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         Map<String, JSONObject> map = new HashMap<String, JSONObject>();
@@ -276,7 +276,7 @@ public class ResourceHelper {
                 buffer.append(TemplateUtils.renderTemplate(file, map));
             }
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return buffer.toString();
     }
@@ -293,7 +293,7 @@ public class ResourceHelper {
                 array.put(name.toLowerCase());
                 array.put(name.toUpperCase());
             } catch (JSONException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
 
@@ -305,7 +305,7 @@ public class ResourceHelper {
                 buffer.append(TemplateUtils.renderTemplate(file, map));
             }
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return buffer.toString();
     }
@@ -372,10 +372,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
 
 
-                "com/fr/bi/web/js/modules4show/config.js",
                 "com/fr/bi/web/js/modules4show/constant.js",
-                "com/fr/bi/web/js/modules4show/broadcast.js",
                 "com/fr/bi/web/js/modules4show/cache.js",
+                "com/fr/bi/web/js/modules4show/broadcast.js",
+                "com/fr/bi/web/js/modules4show/config.js",
                 "com/fr/bi/web/js/modules4show/utils.js",
 
 
@@ -918,6 +918,7 @@ public class ResourceHelper {
                 //图表钻取
                 "com/fr/bi/web/css/modules/chartdrill/widget.chartdrill.css",
                 "com/fr/bi/web/css/modules/chartdrill/cell.chartdrill.css",
+                "com/fr/bi/web/css/modules/chartdrill/button.pushdrill.css",
 
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
@@ -954,12 +955,12 @@ public class ResourceHelper {
 
     public static String[] getCommonJs() {
         return new String[]{
-                "com/fr/bi/web/js/modules/utils.js",
-                "com/fr/bi/web/js/modules/utils4conf.js",
-                "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/constant.js",
                 "com/fr/bi/web/js/modules/cache.js",
                 "com/fr/bi/web/js/modules/broadcast.js",
+                "com/fr/bi/web/js/modules/config.js",
+                "com/fr/bi/web/js/modules/utils.js",
+                "com/fr/bi/web/js/modules/utils4conf.js",
 
                 //下面是各个功能模块
                 "com/fr/bi/web/js/fragments/cube/button.hoursetting.js",
@@ -1075,6 +1076,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/widget.selectdatapane.detail.js",
+                "com/fr/bi/web/js/modules/selectdata4detail/treeitem/item.match.search.js",
 
                 //树控件选字段
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/abstract.node.level.js",
@@ -1246,7 +1248,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selecttable/sourcetable/widget.databasetables.pane.js",
                 "com/fr/bi/web/js/modules/selecttable/sourcetable/widget.databasetables.pager.js",
                 "com/fr/bi/web/js/modules/selecttable/sourcetable/widget.databasetables.searchresult.pane.js",
+                "com/fr/bi/web/js/modules/selecttable/packagetable/widget.packagetables.mainpane.js",
                 "com/fr/bi/web/js/modules/selecttable/packagetable/widget.packagetables.pane.js",
+                "com/fr/bi/web/js/modules/selecttable/packagetable/widget.packagetables.searchresult.pane.js",
                 "com/fr/bi/web/js/modules/selecttable/etltable/widget.etltables.pane.js",
                 "com/fr/bi/web/js/modules/selecttable/etltable/widget.etlflowchart.button.js",
 
@@ -1545,7 +1549,7 @@ public class ResourceHelper {
                 //one package
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.js",
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.model.js",
-                "com/fr/bi/web/js/modules/onepackage/widget.refreshtablefields.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/refreshfields/widget.refreshtablefields.js",
 
                 //数据连接
                 "com/fr/bi/web/js/modules/datalink/widget.testlink.loading.js",
@@ -1699,9 +1703,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4realtime/selectnumber/widget.selectnumber.js",
                 //实时报表日期选择字段
                 "com/fr/bi/web/js/modules4realtime/selectdate/widget.selectdate.js",
+                //实时报表日期选择明细表
+                "com/fr/bi/web/js/modules4realtime/selectdata4detail/widget.selectdata.js",
 
-                "com/fr/bi/web/js/modules4realtime/config.js",
                 "com/fr/bi/web/js/modules4realtime/constant.js",
+                "com/fr/bi/web/js/modules4realtime/config.js",
                 "com/fr/bi/web/js/modules4realtime/broadcast.js",
                 "com/fr/bi/web/js/modules4realtime/cache.js",
                 "com/fr/bi/web/js/modules4realtime/utils.js",
@@ -1764,6 +1770,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/combination/expander/condition.expander.css",
                 "com/fr/bi/web/css/base/colorpicker/button.colorpicker.css",
                 "com/fr/bi/web/css/base/colorpicker/colorpicker.css",
+                "com/fr/bi/web/css/base/chart/chart.combine.css",
                 "com/fr/bi/web/css/base/colorpicker/editor.colorpicker.css",
                 "com/fr/bi/web/css/base/pager/pager.css",
                 "com/fr/bi/web/css/base/pager/pager.number.css",

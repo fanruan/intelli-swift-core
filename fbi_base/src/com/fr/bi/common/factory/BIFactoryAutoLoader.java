@@ -2,7 +2,7 @@ package com.fr.bi.common.factory;
 
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.stable.utils.code.BILogDelegate;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -71,7 +71,7 @@ class BIFactoryAutoLoader {
         try {
             BIModuleFactoryManager.getInstance().registerModuleTag(key, module);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

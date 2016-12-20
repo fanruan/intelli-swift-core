@@ -5,7 +5,7 @@ import com.finebi.cube.data.input.ICubeStringReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.Comparator;
 
@@ -32,9 +32,9 @@ public class BICubeStringGroupData extends BICubeGroupData<String> {
 
     public String getGroupValueByPosition(int position) {
         try {
-            return ((ICubeStringReader)getGroupReader()).getSpecificValue(position);
+            return ((ICubeStringReader) getGroupReader()).getSpecificValue(position);
         } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return null;
         }
     }

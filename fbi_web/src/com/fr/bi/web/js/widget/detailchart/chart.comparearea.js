@@ -13,7 +13,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.CompareAreaChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "category",
             title: {
@@ -26,22 +26,27 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.CompareAreaChart.EVENT_CHANGE, obj);
         });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
+        });
     },
 
     _formatConfig: function (config, items) {
         var self = this;
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatChartLineStyle();
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.connectNulls = this.config.null_continue;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.enabled = this.config.show_zoom;
@@ -97,8 +102,11 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
+
+        config.chartType = "area";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
         this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
@@ -195,17 +203,23 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
         function formatChartLineStyle() {
             switch (self.config.chart_line_type) {
                 case BICst.CHART_SHAPE.RIGHT_ANGLE:
-                    config.plotOptions.curve = false;
-                    config.plotOptions.step = true;
+                    config.plotOptions.area = {
+                        curve: false,
+                        step: true
+                    };
                     break;
                 case BICst.CHART_SHAPE.CURVE:
-                    config.plotOptions.curve = true;
-                    config.plotOptions.step = false;
+                    config.plotOptions.area = {
+                        curve: true,
+                        step: false
+                    };
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
-                    config.plotOptions.curve = false;
-                    config.plotOptions.step = false;
+                    config.plotOptions.area = {
+                        curve: false,
+                        step: false
+                    };
                     break;
             }
         }
@@ -311,7 +325,8 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            null_continue: options.null_continue || false
         };
         this.options.items = items;
 

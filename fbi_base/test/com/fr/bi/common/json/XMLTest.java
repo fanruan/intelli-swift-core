@@ -1,5 +1,6 @@
 package com.fr.bi.common.json;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.persistent.xml.reader.BIBeanXMLReaderWrapper;
 import com.fr.bi.common.persistent.xml.reader.XMLPersistentReader;
 import com.fr.bi.common.persistent.xml.writer.BIBeanXMLWriterWrapper;
@@ -7,7 +8,6 @@ import com.fr.bi.common.persistent.xml.writer.XMLPersistentWriter;
 import com.fr.bi.common.world.Book;
 import com.fr.bi.common.world.people.Person;
 import com.fr.bi.common.world.people.Student;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.stable.StableUtils;
 import com.fr.stable.xml.XMLTools;
 import junit.framework.TestCase;
@@ -37,7 +37,7 @@ public class XMLTest extends TestCase {
 
             XMLTools.writeOutputStreamXML(object, new FileOutputStream(var3));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
     }
@@ -55,7 +55,7 @@ public class XMLTest extends TestCase {
             Student result = (Student) object.getBeanWrapper().getBean();
 //            System.out.println("");
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
     }

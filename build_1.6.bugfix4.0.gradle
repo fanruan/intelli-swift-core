@@ -2,7 +2,14 @@ apply plugin:'java'
 tasks.withType(JavaCompile){
 	options.encoding = 'UTF-8'
 }
-ant.delete(dir:'build')
+
+//每次构建前先删掉build目录和reports目录
+ant.delete(dir:"build")
+ant.delete(dir:"reports")
+
+repositories {
+    mavenCentral()
+}
 sourceCompatibility=1.6
 //BI工程的根目录
 def BI_HOME='../../'
@@ -23,6 +30,7 @@ def list=[
 		"fbi_base/src",
 		"fbi_engine_finereport/src",
 		"fbi_conf/src", 
+		"fbi_h5/src",
 		"fbi_engine_base/src",
 		"fbi_engine_generate/src",
 		"fbi_engine_analyse/src",
@@ -42,6 +50,7 @@ def list=[
 //指定源码所在位置：
 sourceSets{
 	main.java.srcDirs=list
+
 	instrumentTest.java.srcDirs=[
 		//"fbi/test",
 		"fbi_base/test",
@@ -62,9 +71,8 @@ sourceSets{
 		"fbi_cube_conf/test",
 		"fbi_cube_generate/test"
 	]
-
-
 }
+
 //声明外部依赖
 dependencies{
 	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
@@ -82,7 +90,8 @@ def dataContent ={def dir ->
 				'**/*.g',
 				'**/package.html',
 				'**/*.less',
-				'**/cross/demo/**'
+				'**/cross/demo/**',
+				'**/test/**'
 			}
 		}
 }
@@ -161,5 +170,4 @@ task obfuse(dependsOn:'build')<<{
 		}
 	}
 	ant.delete(file:'yguardlog.xml')
-	ant.delete(dir:"build")
 }

@@ -1,7 +1,7 @@
 package com.finebi.cube.conf;
 
 
-import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 
@@ -33,14 +33,14 @@ public interface BICubeManagerProvider {
     void generateCubes();
 
     /**
-     * 增加人物
+     * 增加任务
      *
      * @param task 任务
      * @return 是否增加
      */
     boolean addTask(CubeTask task, long userId);
 
-    CubeBuildStaff getGeneratingObject(long userId);
+    CubeBuildStuffComplete getGeneratingObject(long userId);
 
     void removeTask(String id, long userId);
 
@@ -51,6 +51,12 @@ public interface BICubeManagerProvider {
     boolean hasTask(CubeTask task, long userId);
 
     boolean hasTask(long useId);
+
+    /**
+     * 获取所有用户是否有cube生成任务
+     * @return
+     */
+    boolean hasTask();
 
     boolean hasWaitingCheckTask(long useId);
 
@@ -63,6 +69,8 @@ public interface BICubeManagerProvider {
     boolean checkCubeStatus(long userId);
 
     Status getStatus(long userId);
+
+    void setStatus(long userId, Status status);
 
     boolean isReplacing(long userId);
 

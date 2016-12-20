@@ -6,12 +6,6 @@ Data.Req = BIReq = {
         });
     },
 
-    reqPreviewTableData4DeziByTableId: function (tableId, callback) {
-        BI.requestAsync("fr_bi_dezi", "get_preview_table_data", {table_id: tableId}, function (res) {
-            callback(res);
-        })
-    },
-
     reqTablesByPackId: function (packId, callback, complete) {
         BI.requestAsync("fr_bi_configure", "get_brief_tables_of_one_package", {id: packId}, function (res) {
             callback(res);
@@ -53,21 +47,10 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqPackage: function (callback) {
-        BI.requestAsync("fr_bi_configure", "get_accessable_packages", "", function (res) {
+    reqTablesDetailInfoByTables4Refresh: function (tables, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "refresh_table_fields", {tables: tables}, function (res) {
             callback(res);
-        });
-    },
-
-    reqPakageAndGroup: function (callback) {
-        return BI.requestAsync("fr_bi_configure", "get_business_package_group", {}, callback);
-    },
-    reqPakageAndGroupSync: function () {
-        return BI.requestSync("fr_bi_configure", "get_business_package_group", {});
-    },
-
-    reqAllTablesByConnection: function (data, callback) {
-        BI.requestAsync("fr_bi_configure", "get_all_translated_tables_by_connection", data, callback);
+        }, complete);
     },
 
     reqWidgetSettingByData: function (data, callback, complete) {
@@ -112,10 +95,16 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqCubeStatusByTable: function (table, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "check_generate_cube", {table: table}, function (res) {
+    reqCubeStatusCheck: function (table, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "check_cube_table_status", {table:table}, function (res) {
             callback(res);
         }, complete)
+    },
+
+    reqIsTableExist: function (table, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "check_table_exist", {table: table}, function (res) {
+            callback(res);
+        }, complete);
     },
 
     reqPreviewDataByTableAndFields: function (table, fields, callback, complete) {
@@ -321,9 +310,9 @@ Data.Req = BIReq = {
     reqGetChartPreStyle: function () {
         return BI.requestSync('fr_bi_base', 'get_config_setting', null);
     },
-    
-    reqCheckTableInUse: function(data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "remove_table_in_use_check", data, function(res) {
+
+    reqCheckTableInUse: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "remove_table_in_use_check", data, function (res) {
             callback(res);
         }, complete);
     }

@@ -8,7 +8,7 @@ import com.fr.bi.cluster.zookeeper.operation.BIWorkerBasicIndexOperation;
 import com.fr.bi.cluster.zookeeper.operation.BIWorkerDBOperation;
 import com.fr.bi.cluster.zookeeper.operation.BIWorkerFirstIndexOperation;
 import com.fr.bi.cluster.zookeeper.operation.BIWorkerOperation;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.FRLogger;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
@@ -53,7 +53,7 @@ public class BIWorker extends BIWatcher {
                     nodeValue = operate(nodeValue);
                     zk.setData(getFocusedEventPath(), nodeValue.toByte(), -1);
                 } catch (Exception ex) {
-                     BILogger.getLogger().error(ex.getMessage(), ex);
+                     BILoggerFactory.getLogger().error(ex.getMessage(), ex);
                 }
             }
         }
@@ -93,7 +93,7 @@ public class BIWorker extends BIWatcher {
             task.init(content);
         } catch (Exception ex) {
 //            LOG.error("Worker:" + getPrefix() + "");
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
         return task;
     }
@@ -111,7 +111,7 @@ public class BIWorker extends BIWatcher {
             try {
                 zk.create(PARENT_PATH, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             } catch (Exception ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
 //                LOG.error("Zookeeper已经存在" + PARENT_PATH + "路径，报错信息：" + ex.toString());
             }
         }

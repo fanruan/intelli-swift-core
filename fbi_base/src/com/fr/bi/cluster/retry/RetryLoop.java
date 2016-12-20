@@ -1,7 +1,7 @@
 package com.fr.bi.cluster.retry;
 
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import org.apache.zookeeper.KeeperException;
 
 import java.util.concurrent.Callable;
@@ -31,14 +31,33 @@ public class RetryLoop {
                 result = proc.call();
                 retryLoop.markComplete();
             } catch (Exception ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
                 retryLoop.takeException(ex);
             }
         }
         return result;
 
     }
+    public static <T> T retry(Callable<T> proc, RetryLoop retryLoop) throws Exception {
+        T result = null;
+        retryLoop.reset();
+        while (retryLoop.shouldRetry()) {
+            BILoggerFactory.getLogger(RetryLoop.class).debug("retry times: "+retryLoop.retryCount);
+            try {
+                result = proc.call();
+                retryLoop.markComplete();
+            } catch (Exception ex) {
+                BILoggerFactory.getLogger(RetryLoop.class).error(ex.getMessage(), ex);
+                retryLoop.takeException(ex);
+            }
+        }
+        return result;
 
+    }
+    public void initial(RetryPolicy policy) {
+        this.retryPolicy = policy;
+
+    }
     public void initial(RetryPolicy policy, ZooKeeperWrapper wrapper) {
         this.retryPolicy = policy;
         this.wrapper = wrapper;

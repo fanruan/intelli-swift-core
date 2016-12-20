@@ -1,14 +1,17 @@
 package com.fr.bi.conf.data.source;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.data.db.ServerLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DecryptBi;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.data.impl.Connection;
+import com.fr.file.DatasourceManager;
 import com.fr.json.JSONObject;
 
 /**
@@ -44,7 +47,7 @@ public class SQLTableSource extends ServerTableSource {
         JSONObject jo = super.createJSON();
         //为了兼容
         String sqlStr = enSQL;
-        if(enSQL == null) {
+        if (enSQL == null) {
             sqlStr = DecryptBi.encrypt(sql, "sh");
         }
         jo.put("sql", sqlStr);
@@ -55,6 +58,7 @@ public class SQLTableSource extends ServerTableSource {
     }
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+        super.parseJSON(jo, userId);
         if (jo.has("sql")) {
             enSQL = jo.getString("sql");
             sql = DecryptBi.decrypt(enSQL, "sh");
@@ -71,7 +75,17 @@ public class SQLTableSource extends ServerTableSource {
     @Override
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
-            dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
+            try {
+                BILoggerFactory.getLogger(SQLTableSource.class).info("The table:" + this.getTableName() + "extract data from db");
+                dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(SQLTableSource.class).error(e.getMessage(), e);
+                /**
+                 * 内部出现异常，但是仍然给了一个空table。
+                 * 这里table再也不会被初始化了。导致字段就丢失了
+                 */
+                dbTable = null;
+            }
         }
         return dbTable;
     }
@@ -82,7 +96,7 @@ public class SQLTableSource extends ServerTableSource {
             ServerLinkInformation serverLinkInformation = new ServerLinkInformation(getSqlConnection(), getQuery());
             return serverLinkInformation.createDBTableData();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -96,4 +110,22 @@ public class SQLTableSource extends ServerTableSource {
     public String getTableName() {
         return this.sqlName;
     }
+
+    @Override
+    public Connection getConnection() {
+        return DatasourceManager.getInstance().getConnection(sqlConnection);
+    }
+
+    @Override
+    public boolean canExecute() throws Exception {
+        try {
+            getConnection().testConnection();
+        } catch (Exception e) {
+            return false;
+        }
+        SQLStatement sqlStatement = new SQLStatement(getConnection());
+        sqlStatement.setFrom("(\n" + sql + "\n) " + "t");
+        return testSQL(getConnection(), sqlStatement.toString());
+    }
+
 }

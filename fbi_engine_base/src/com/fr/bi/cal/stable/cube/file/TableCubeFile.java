@@ -1,6 +1,7 @@
 package com.fr.bi.cal.stable.cube.file;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.ValueConverter;
 import com.fr.bi.base.key.BIKey;
@@ -20,20 +21,20 @@ import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.file.IndexFile;
+import com.fr.bi.stable.gvi.ByteArrayDataInput;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.GroupValueIndexCreator;
 import com.fr.bi.stable.gvi.array.GroupValueIndexArrayReader;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.structure.array.ArrayKey;
-import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.io.File;
 import java.util.*;
@@ -166,7 +167,7 @@ public class TableCubeFile extends AbstractCubeFile {
                 field.parseJSON(jo);
                 fields[i] = field;
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return fields;
@@ -251,7 +252,7 @@ public class TableCubeFile extends AbstractCubeFile {
 
     @Override
     public GroupValueIndex getNullGroupValueIndex(BIKey key, SingleUserNIOReadManager manager) {
-        return GroupValueIndexCreator.createGroupValueIndex(getColumnFile(key).createNullIndexReader(key, manager).get(0));
+        return GVIFactory.createGroupValueIndexByDataInput(new ByteArrayDataInput(getColumnFile(key).createNullIndexReader(key, manager).get(0)));
     }
 
     @Override
@@ -388,10 +389,10 @@ public class TableCubeFile extends AbstractCubeFile {
     }
 
     @Override
-    public IntList getRemoveList(SingleUserNIOReadManager manager) {
+    public IntArray getRemoveList(SingleUserNIOReadManager manager) {
         Long length = Long.parseLong(getRemoveFile().createLengthFile().read());
         NIOReader<Integer> reader = getRemoveFile().createDetailReader(manager);
-        IntList result = new IntList();
+        IntArray result = new IntArray();
         for (long i = 0; i < length; i++) {
             result.add(reader.get(i));
         }

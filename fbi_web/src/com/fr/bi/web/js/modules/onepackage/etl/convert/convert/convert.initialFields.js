@@ -7,7 +7,9 @@ BI.ConvertInitialFieldsPane = BI.inherit(BI.Widget, {
 
     constants: {
         COMBO_HEIGHT: 25,
-        itemHeight: 25
+        itemHeight: 25,
+        newValuePos: 1,
+        initialValuePos: 0
     },
 
     _defaultConfig: function(){
@@ -43,10 +45,15 @@ BI.ConvertInitialFieldsPane = BI.inherit(BI.Widget, {
         });
     },
 
-    _rebuildItems: function(items){
-        items = BI.map(items, function(idx,item){
+    _rebuildItems: function(items, values, isSelect){
+        var self = this;
+        items = BI.map(items, function(idx, item){
+            var v = BI.find(values, function(idx, arr){
+                return arr[self.constants.initialValuePos] === item["field_name"];
+            });
             return {
-                value: item["field_name"]
+                value: [item["field_name"], BI.isNotNull(v) ? v[self.constants.newValuePos] : item["field_name"]],
+                selected: isSelect ?  BI.isNotNull(v) : BI.isNull(v)
             }
         });
         return BI.createItems(items, {
@@ -86,7 +93,12 @@ BI.ConvertInitialFieldsPane = BI.inherit(BI.Widget, {
     },
 
     populate: function(items){
-        this.button_tree.populate(this._rebuildItems(items));
+        if(BI.has(items, "selectedValues")){
+            this.button_tree.populate(this._rebuildItems(items.fields, items.selectedValues, true));
+        }
+        if (BI.has(items, "notSelectedValues")) {
+            this.button_tree.populate(this._rebuildItems(items.fields, items.notSelectedValues, false));
+        }
     }
 });
 

@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.cubetask;
 
 import com.fr.bi.CubeReaderCacheUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -24,9 +24,9 @@ public class BIUserMapCacheClearAction extends AbstractBIConfigureAction {
     }
 
     private String clearCache() {
-        BILogger.getLogger().info("start clear userMap");
+        BILoggerFactory.getLogger().info("start clear userMap");
         String readingCubeReader = CubeReaderCacheUtils.clearUserMapCache();
-        BILogger.getLogger().info("userMap clear finished");
+        BILoggerFactory.getLogger().info("userMap clear finished");
         return readingCubeReader;
     }
 }

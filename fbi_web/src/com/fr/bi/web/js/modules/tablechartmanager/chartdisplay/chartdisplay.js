@@ -56,27 +56,20 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var self = this, o = this.options;
         var linkageInfo = this.model.getLinkageInfo(obj);
         var dId = linkageInfo.dId, clicked = linkageInfo.clicked;
+
         BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
-            if (BI.contains(dId, link.from)) {
+            if (BI.contains(dId, link.from) && BI.isEmpty(link.cids)) {
                 BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
                 self._send2AllChildLinkWidget(link.to, link.from, clicked);
             }
         });
-        this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, obj);
+
+        BI.Broadcasts.send(BICst.BROADCAST.CHART_CLICK_PREFIX + o.wId, obj);
     },
 
     _onClickDrill: function (dId, value, drillId) {
         var wId = this.options.wId;
         var drillMap = BI.Utils.getDrillByID(wId);
-        var drilledIds = [];
-        BI.each(drillMap, function (drId, ds) {
-            BI.each(ds, function (i, drs) {
-                drilledIds.push(drs.dId);
-            });
-        });
-        if (BI.contains(drilledIds, dId)) {
-            return;
-        }
         if (BI.isNull(dId)) {
             this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), {})});
             return;
@@ -94,13 +87,16 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         //上钻
         if (BI.isNull(drillId)) {
             if (drillOperators.length !== 0) {
-                var val = drillOperators[drillOperators.length - 1].values[0].value[0];
-                while (val !== value) {
+                var val = drillOperators[drillOperators.length - 1].values[0].dId;
+                while (val !== dId) {
                     if (drillOperators.length === 0) {
                         break;
                     }
                     var obj = drillOperators.pop();
-                    val = obj.values[0].value[0];
+                    val = obj.values[0].dId;
+                }
+                if (val === dId && drillOperators.length !== 0) {
+                    drillOperators.pop();
                 }
             }
         } else {
@@ -126,172 +122,86 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
     },
 
     _createTabs: function (v) {
-        var self = this;
-        switch (v) {
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.COMBINE_CHART:
-                var chart = BI.createWidget({type: "bi.axis_chart"});
-                chart.on(BI.AxisChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                var chart = BI.createWidget({type: "bi.multi_axis_chart"});
-                chart.on(BI.MultiAxisChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.ACCUMULATE_AXIS:
-                var chart = BI.createWidget({type: "bi.accumulate_axis_chart"});
-                chart.on(BI.AccumulateAxisChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.LINE:
-                var chart = BI.createWidget({type: "bi.line_chart"});
-                chart.on(BI.LineChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.AREA:
-                var chart = BI.createWidget({type: "bi.area_chart"});
-                chart.on(BI.AreaChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.ACCUMULATE_AREA:
-                var chart = BI.createWidget({type: "bi.accumulate_area_chart"});
-                chart.on(BI.AccumulateAreaChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-                var chart = BI.createWidget({type: "bi.percent_accumulate_axis_chart"});
-                chart.on(BI.PercentAccumulateAxisChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.ACCUMULATE_BAR:
-                var chart = BI.createWidget({type: "bi.accumulate_bar_chart"});
-                chart.on(BI.AccumulateBarChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.DONUT:
-                var chart = BI.createWidget({type: "bi.donut_chart"});
-                chart.on(BI.DonutChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.RADAR:
-                var chart = BI.createWidget({type: "bi.radar_chart"});
-                chart.on(BI.RadarChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.ACCUMULATE_RADAR:
-                var chart = BI.createWidget({type: "bi.accumulate_radar_chart"});
-                chart.on(BI.AccumulateRadarChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.PIE:
-                var chart = BI.createWidget({type: "bi.pie_chart"});
-                chart.on(BI.PieChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.DASHBOARD:
-                var chart = BI.createWidget({type: "bi.dashboard_chart"});
-                chart.on(BI.DashboardChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.BAR:
-                var chart = BI.createWidget({type: "bi.bar_chart"});
-                chart.on(BI.BarChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-                var chart = BI.createWidget({type: "bi.percent_accumulate_area_chart"});
-                chart.on(BI.PercentAccumulateAreaChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.COMPARE_BAR:
-                var chart = BI.createWidget({type: "bi.compare_bar_chart"});
-                chart.on(BI.CompareBarChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.COMPARE_AXIS:
-                var chart = BI.createWidget({type: "bi.compare_axis_chart"});
-                chart.on(BI.CompareAxisChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.COMPARE_AREA:
-                var chart = BI.createWidget({type: "bi.compare_area_chart"});
-                chart.on(BI.CompareAreaChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.RANGE_AREA:
-                var chart = BI.createWidget({type: "bi.range_area_chart"});
-                chart.on(BI.RangeAreaChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.FALL_AXIS:
-                var chart = BI.createWidget({type: "bi.fall_axis_chart"});
-                chart.on(BI.FallAxisChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.BUBBLE:
-                var chart = BI.createWidget({type: "bi.bubble_chart"});
-                chart.on(BI.BubbleChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.FORCE_BUBBLE:
-                var chart = BI.createWidget({type: "bi.force_bubble_chart"});
-                chart.on(BI.ForceBubbleChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.SCATTER:
-                var chart = BI.createWidget({type: "bi.scatter_chart"});
-                chart.on(BI.ScatterChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
-            case BICst.WIDGET.MAP:
-                var chart = BI.createWidget({type: "bi.map_chart"});
+        var self = this, o = this.options;
+        var popupItemsGetter = function (obj) {
+            var linkages = [];
+            var linkInfo = self.model.getLinkageInfo(obj);
+            BI.each(linkInfo.dId, function (idx, dId) {
+                if (BI.Utils.isCalculateTargetByDimensionID(dId)) {
+                    BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
+                        if (link.cids && dId === link.cids[0]) {
+                            var name = BI.i18nText("BI-An");
+                            BI.each(link.cids, function (idx, cId) {
+                                name += BI.Utils.getDimensionNameByID(cId) + "-";
+                            });
+                            name += BI.Utils.getDimensionNameByID(link.from) + BI.i18nText("BI-Link");
+                            var temp = {
+                                text: name,
+                                title: name,
+                                to: link.to,
+                                from: link.from,
+                                cids: link.cids
+                            };
+                            var containsItem = containsLinkage(linkages, temp);
+                            if (BI.isEmptyObject(containsItem)) {
+                                linkages.push(temp);
+                            } else {
+                                BI.isArray(containsItem.to) ? containsItem.to.push(temp.to) : containsItem.to = [containsItem.to, temp.to];
+                            }
+                        }
+                    });
+                }
+            });
+            return linkages;
+        };
+
+        function containsLinkage(list, item) {
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
+                    return list[i];
+                }
+            }
+            return {};
+        }
+
+        var chart;
+        if (BI.has(BICst.INIT_CHART_MAP, v)) {
+            chart = BI.createWidget({type: BICst.INIT_CHART_MAP[v].type, popupItemsGetter: popupItemsGetter});
+            if (v === BICst.WIDGET.MAP) {
                 chart.on(BI.MapChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
-                    self._onClickDrill(obj.dId, obj.x, obj.drillDid);
+                    BI.isNotNull(obj.drillDid) && self._onClickDrill(obj.dId, obj.x, obj.drillDid);
                 });
                 chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function (obj) {
                     self._onClickDrill(obj.dId, obj.x);
                 });
-                return chart;
-            case BICst.WIDGET.GIS_MAP:
-                var chart = BI.createWidget({type: "bi.gis_map_chart"});
-                chart.on(BI.GISMapChart.EVENT_CHANGE, function (obj) {
-                    self._doChartItemClick(obj);
-                });
-                return chart;
+            } else {
+                BI.each(BICst.INIT_CHART_MAP[v].events, function (idx, v) {
+                    chart.on(v, function (obj) {
+                        self._doChartItemClick(obj);
+                    })
+                })
+            }
+            chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                self._sendLinkWidget(obj);
+            });
         }
+        return chart;
     },
+
+    _sendLinkWidget: function (obj) {
+        var self = this, linkageInfo = this.model.getLinkageInfo(obj);
+        BI.each(BI.isArray(obj.to) ? obj.to : [obj.to], function (idx, to) {
+            BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + to, obj.from, linkageInfo.clicked);
+            self._send2AllChildLinkWidget(to, obj.from, linkageInfo.clicked);
+        });
+    },
+
 
     populate: function () {
         var self = this, o = this.options;
         var type = BI.Utils.getWidgetTypeByID(o.wId);
         this.errorPane.setVisible(false);
-        this.tab.setSelect(type);
-        var selectedTab = this.tab.getSelectedTab();
         this.loading();
         this.model.getWidgetData(type, function (types, data, options) {
             self.loaded();
@@ -313,6 +223,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         left_y_axis_reversed: BI.Utils.getWSLeftYAxisReversedByID(o.wId),
                         right_y_axis_reversed: BI.Utils.getWSRightYAxisReversedByID(o.wId),
                         chart_font: BI.Utils.getGSChartFont(o.wId),
+                        null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
                         show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
                         enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
@@ -384,6 +295,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         right_num_separators: BI.Utils.getWSRightNumberSeparatorsByID(o.wId),
                         right2_num_separators: BI.Utils.getWSRight2NumberSeparatorsByID(o.wId),
                         chart_font: BI.Utils.getGSChartFont(o.wId),
+                        null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {
                         cordon: self.model.getCordon(),
@@ -391,6 +303,8 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
                     });
                 }
+                self.tab.setSelect(type);
+                var selectedTab = self.tab.getSelectedTab();
                 selectedTab.populate(data, op, types);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);

@@ -4,7 +4,7 @@ import com.finebi.cube.conf.pack.XMLConfigureGenerator;
 import com.fr.base.FRContext;
 import com.fr.bi.common.container.BIStableMapContainer;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 /**
  * This class created on 2016/5/23.
@@ -32,7 +32,7 @@ public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<
             XMLConfigureGenerator generator = new XMLConfigureGenerator(persistUserDataName(key) + ".xml", manager, managerTag());
             generator.readXMLFile();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -49,9 +49,11 @@ public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<
     public void persistUserData(long key) {
         try {
             XMLConfigureGenerator generator = new XMLConfigureGenerator(persistUserDataName(key) + ".xml", getValue(key), managerTag());
-            FRContext.getCurrentEnv().writeResource(generator);
+            synchronized (generator) {
+                FRContext.getCurrentEnv().writeResource(generator);
+            }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 }

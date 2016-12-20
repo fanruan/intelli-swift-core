@@ -2,7 +2,7 @@ package com.fr.bi.cal;
 
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.base.provider.AllUserTravel;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
@@ -48,7 +48,7 @@ public class BICubeManager implements BICubeManagerProvider {
 
 
     @Override
-    public CubeBuildStaff getGeneratingObject(long userId) {
+    public CubeBuildStuffComplete getGeneratingObject(long userId) {
         return getCubeManager(userId).getGeneratingObject();
     }
 
@@ -70,6 +70,11 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public Status getStatus(long userId) {
         return getCubeManager(userId).getStatus();
+    }
+
+    @Override
+    public void setStatus(long userId, Status status) {
+        getCubeManager(userId).setStatus(status);
     }
 
     /**
@@ -102,7 +107,14 @@ public class BICubeManager implements BICubeManagerProvider {
     public boolean hasTask(long userId) {
         return getCubeManager(userId).hasTask();
     }
-
+    @Override
+    public boolean hasTask(){
+        boolean result = false;
+        for(long userId: userMap.keySet()){
+            result = (result || getCubeManager(userId).hasTask());
+        }
+        return result;
+    }
 
     @Override
     public boolean hasWaitingCheckTask(long userId) {

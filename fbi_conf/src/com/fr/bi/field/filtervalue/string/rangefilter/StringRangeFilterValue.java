@@ -16,10 +16,11 @@ import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -127,7 +128,7 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
                 JSONObject jo = new JSONObject(reader.getAttrAsString("value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -142,7 +143,7 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
         try {
             writer.attr("value", createJSON().toString());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         writer.end();
     }
@@ -169,13 +170,12 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
         }
         String[] value = valueSet.getValues().toArray(new String[valueSet.getValues().size()]);
         boolean hasNull = valueSet.getValues().contains(StringUtils.EMPTY);
-        GroupValueIndex sgvi = GVIFactory.createAllEmptyIndexGVI();
-        Object[] indexs = sgm.getGroupIndex(value);
+        GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
         boolean hasValue = value.length > 0;
-        for (int i = 0, len = indexs.length; i < len; i++) {
-            GroupValueIndex gvi = (GroupValueIndex) indexs[i];
+        for (int i = 0, len = value.length; i < len; i++) {
+            GroupValueIndex gvi = sgm.getIndex(value[i]);
             if (gvi != null) {
-                sgvi.or(gvi);
+                helper.add(gvi);
             }
         }
         if (hasNull) {
@@ -183,10 +183,9 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
             if (nullres == null) {
                 nullres = GVIFactory.createAllEmptyIndexGVI();
             }
-            if (sgvi != null) {
-                sgvi.or(nullres);
-            }
+            helper.add(nullres);
         }
+        GroupValueIndex sgvi = helper.compute();
         return hasValue ? (valueSet.isContains() ? sgvi : sgvi.NOT(eti.getRowCount())) : null;
     }
 

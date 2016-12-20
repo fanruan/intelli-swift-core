@@ -2,7 +2,7 @@ package com.fr.bi.stable.utils.file;
 
 import com.fr.base.FRContext;
 import com.fr.bi.stable.io.io.GroupReader;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.mem.BIMemoryUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -48,7 +48,7 @@ public class BIFileUtils {
                 return t;
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -94,7 +94,7 @@ public class BIFileUtils {
             createDirs(f.getParentFile());
             f.createNewFile();
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -167,14 +167,14 @@ public class BIFileUtils {
                     }
                     currentSize += size;
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
                     BIMemoryUtils.un_map(writer);
                     BIMemoryUtils.un_map(reader);
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
             if (in != null) {
                 in.close();
@@ -280,7 +280,7 @@ public class BIFileUtils {
             try {
                 copyFile(tmp, new File(new_f, tmp.getName()));
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             k++;
             tmp = new File(old_f, fileName + "_" + k);
@@ -343,22 +343,11 @@ public class BIFileUtils {
             for (String file : files) {
                 File srcFile = new File(src, file);
                 File destFile = new File(dest, file);
-                // 递归复制  
+                // 递归复制
                 copyFolder(srcFile, destFile);
             }
         } else {
-//            InputStream in = new FileInputStream(src);
-//            OutputStream out = new FileOutputStream(dest);
-//
-//            byte[] buffer = new byte[1024];
-//
-//            int length;
-//
-//            while ((length = in.read(buffer)) > 0) {
-//                out.write(buffer, 0, length);
-//            }
-//            in.close();
-//            out.close();
+
             copyFile(src, dest);
         }
     }

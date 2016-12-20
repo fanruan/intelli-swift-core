@@ -56,16 +56,19 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
             self.fieldInGroupMap[group_id] = {};
             BI.each(item.content, function (i_in, item_in) {
                 var field_id;
-                var id = BI.findKey(self.fieldMap, function (key, value) {
-                    return value === item_in.value
-                });
+                /**
+                 * 分组值不会有重复，不需要查重给相同id
+                 */
+                // var id = BI.findKey(self.fieldMap, function (key, value) {
+                //     return value === item_in.value
+                // });
 
                 if (!BI.isNotNull(item_in.id)) {
-                    if (!BI.isNotNull(id)) {
-                        field_id = self._createGroupFieldID(group_id, BI.UUID());
-                    } else {
-                        field_id = self._createGroupFieldID(group_id, self._getFieldID(id))
-                    }
+                    // if (!BI.isNotNull(id)) {
+                    field_id = self._createGroupFieldID(group_id, BI.UUID());
+                    // } else {
+                    // field_id = self._createGroupFieldID(group_id, self._getFieldID(id))
+                    // }
                     item_in.id = field_id;
                 } else {
                     field_id = item_in.id;
@@ -151,9 +154,9 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
                 groupItem.content.push(fieldItem);
                 groupItem.id = groupID;
 
-            })
+            });
             expanderItems.push(groupItem);
-        })
+        });
         return expanderItems;
     },
 

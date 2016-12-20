@@ -378,9 +378,9 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     });
                     var r = self._createDimensionsAndTargets(find, dimTarIdMap, dimensions);
                     if (BI.has(expression, "formula_value")) {
-                        expression.formula_value = expression.formula_value.replaceAll(tId, r[0].dId);
+                        expression.formula_value = expression.formula_value.replaceAll(tId, r[r.length - 1].dId);
                     }
-                    expression.ids[id] = r[0].dId;
+                    expression.ids[id] = r[r.length - 1].dId;
                     result = BI.concat(result, r);
                 });
                 break;
@@ -472,7 +472,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         if (BI.isNotNull(sort) && sort.type === BICst.SORT.CUSTOM) {
                             dimension.sort = sort;
                         }
-                        var groupArray = [BICst.GROUP.CUSTOM_GROUP, BICst.SUMMARY_TYPE.SUM, BICst.SUMMARY_TYPE.MAX
+                        var groupArray = [BICst.GROUP.CUSTOM_GROUP, BICst.GROUP.CUSTOM_NUMBER_GROUP, BICst.SUMMARY_TYPE.SUM, BICst.SUMMARY_TYPE.MAX
                             , BICst.SUMMARY_TYPE.MIN, BICst.SUMMARY_TYPE.AVG, BICst.GROUP.Y, BICst.GROUP.S, BICst.GROUP.M,
                             BICst.GROUP.W, BICst.GROUP.YMD
                         ];

@@ -20,7 +20,7 @@ import com.fr.bi.stable.data.db.SqlSettedStatement;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
@@ -51,7 +51,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
     protected long writeSimpleIndex() {
         int oldCount = loadOldValue();
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
-        for (int i = 0; i < oldTi.getRemovedList().size(); i++) {
+        for (int i = 0; i < oldTi.getRemovedList().size; i++) {
             sortRemovedList.add(oldTi.getRemovedList().get(i));
         }
         oldCount = writeData(sortRemovedList, oldCount);
@@ -99,7 +99,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             String modifySql = "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + mSql + ")";
             sqlStatement.setSql(modifySql);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return rowCount;
         }
         int index = -1;
@@ -111,7 +111,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             }
         }
         if (index == -1) {
-            BILogger.getLogger().error("can not find field " + columnName);
+            BILoggerFactory.getLogger().error("can not find field " + columnName);
             return rowCount;
         }
         BIKey key = new IndexKey(columnName);
@@ -153,7 +153,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             }
         }
         if (f == null) {
-            BILogger.getLogger().error("can not find field " + columnName);
+            BILoggerFactory.getLogger().error("can not find field " + columnName);
             return;
         }
         BIKey key = new IndexKey(columnName);
@@ -181,15 +181,15 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             ColumnInformation column = DBUtils.checkInColumnInformation(conn, dialect, sql)[0];
             return column.getColumnName();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return StringUtils.EMPTY;
     }
 
     protected int loadOldValue() {
-        BILogger.getLogger().info("now loading：" + dataSource.fetchObjectCore() + " old cube");
+        BILoggerFactory.getLogger().info("now loading：" + dataSource.fetchObjectCore() + " old cube");
         new TableCubeFile(BIPathUtils.createTableTempPath(dataSource.fetchObjectCore().getID().getIdentityValue(), loader.getUserId())).copyDetailValue(cube, loader.getNIOReaderManager(), oldTi.getRowCount());
-        BILogger.getLogger().info("loading：" + dataSource.fetchObjectCore() + " old cube finished");
+        BILoggerFactory.getLogger().info("loading：" + dataSource.fetchObjectCore() + " old cube finished");
         return oldTi.getRowCount();
     }
 }

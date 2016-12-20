@@ -1,20 +1,24 @@
 package com.fr.bi.web.base.utils;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.fr.base.ChartPreStyleServerManager;
 import com.fr.base.ConfigManager;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.base.CubeIndexManager;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BISessionUtils;
 import com.fr.bi.conf.VT4FBI;
+import com.fr.bi.conf.fs.BIUserAuthorAttr;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.conf.BISystemEnvUtils;
 import com.fr.bi.web.base.operation.BIOperationRecord;
+import com.fr.chart.base.ChartPreStyle;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
@@ -34,10 +38,10 @@ import com.fr.web.utils.WebUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.awt.*;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 
 
@@ -202,6 +206,7 @@ public class BIWebUtils {
         String edit = WebUtils.getHTTPRequestParameter(req, "edit");
         String show = WebUtils.getHTTPRequestParameter(req, "show");
         String hideTop = WebUtils.getHTTPRequestParameter(req, "hideTop");
+        JSONObject plateConfig = getPlateConfig();
         map.put("userId", userId);
         map.put("edit", edit == null ? "null" : edit);
         map.put("show", show == null ? "null" : show);
@@ -210,18 +215,37 @@ public class BIWebUtils {
         map.put("reportName", reportName);
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
-        map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + "" + userId);
+        map.put("plateConfig", plateConfig);
+        //cube版本号、权限版本号、多路径版本号
+        map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + ""
+                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + ""
+                + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
+        //jar包版本
+        map.put("__v__", GeneralUtils.readBuildNO());
         boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         boolean isEdit = sessionIDInfo.setEdit(biEdit);
-        if(biEdit && !isEdit) {
+        if (biEdit && !isEdit) {
             map.put("lockedBy", BISessionUtils.getCurrentEditingUserByReport(node.getId(), node.getUserId()));
         }
-        if (!hasPrivilege(isEdit, userId, map) && !ComparatorUtils.equals(node.getDescription(), "fine_excel")) {
-            String ma = Inter.getLocText(isEdit ? "BI-User_Has_No_Edit_Privilege" : "BI-User_Has_No_View_Privilege", locale);
-            map.put("message", ma);
+
+        //无任何权限
+        if (ComparatorUtils.equals(getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.NONE)) {
+            String message = Inter.getLocText(biEdit ? "BI-User_Has_No_Edit_Privilege" : "BI-User_Has_No_View_Privilege", locale);
+            map.put("message", message);
             writeData(req, res, "/com/fr/bi/web/html/bi_no_privilege.html", map);
             return;
         }
+
+        //仅有可查看权限
+        if (biEdit && ComparatorUtils.equals(getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.VIEW)) {
+            String message = Inter.getLocText("BI-User_Has_No_Edit_Privilege", locale);
+            map.put("message", message);
+            writeData(req, res, "/com/fr/bi/web/html/bi_no_privilege.html", map);
+            return;
+        }
+
+        map.put("onlyViewAuth", ComparatorUtils.equals(getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.VIEW));
+
         /**
          * Connery:用于预览用户于模板的操作
          * */
@@ -251,7 +275,7 @@ public class BIWebUtils {
                 FRLogManager.setSession(sessionIDInfo);
 
                 FRContext.getLogger().getRecordManager().recordAccessNoExecuteInfo(reportName,
-                        DeclareRecordType.WEB_WRITE_TYPE_VIEW, new ExecuteInfo("",""));
+                        DeclareRecordType.WEB_WRITE_TYPE_VIEW, new ExecuteInfo("", ""));
             } catch (Throwable e) {
                 FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
                 FRContext.getLogger().log(Level.WARNING, "RecordManager error. Record is close.");
@@ -284,7 +308,7 @@ public class BIWebUtils {
             }
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return true;
     }
@@ -319,5 +343,91 @@ public class BIWebUtils {
         } else {
             WebUtils.writeOutTemplate(templatePath, res, messageMap);
         }
+    }
+
+    private static JSONObject getPlateConfig() throws JSONException {
+        JSONObject jo = new JSONObject();
+
+        jo.put("chartStyle", FBIConfig.getInstance().getChartStyleAttr().getChartStyle());
+//        jo.put("defaultStyle", FBIConfig.getInstance().getChartStyleAttr().getDefaultStyle());
+        String defaultColor = ChartPreStyleServerManager.getInstance().getCurrentStyle();
+        jo.put("defaultColor", defaultColor);
+
+        JSONArray ja = new JSONArray();
+        Iterator<String> it = ChartPreStyleServerManager.getInstance().names();
+        while (it.hasNext()) {
+            String name = it.next();
+            ChartPreStyle style = (ChartPreStyle) ChartPreStyleServerManager.getInstance().getPreStyle(name);
+            java.util.List colorList = style.getAttrFillStyle().getColorList();
+
+            Iterator itColor = colorList.iterator();
+            List colorArray = new ArrayList();
+            while (itColor.hasNext()) {
+                Color color = (Color) itColor.next();
+                colorArray.add(toHexEncoding(color));
+            }
+            JSONObject nameJo = new JSONObject();
+            nameJo.put("text", name).put("value", name).put("colors", colorArray);
+            ja.put(nameJo);
+        }
+        jo.put("styleList", ja);
+        return jo;
+    }
+
+    //Color转换为16进制显示
+    private static String toHexEncoding(Color color) {
+        String R, G, B;
+        StringBuffer sb = new StringBuffer();
+
+        R = Integer.toHexString(color.getRed());
+        G = Integer.toHexString(color.getGreen());
+        B = Integer.toHexString(color.getBlue());
+
+        R = R.length() == 1 ? "0" + R : R;
+        G = G.length() == 1 ? "0" + G : G;
+        B = B.length() == 1 ? "0" + B : B;
+
+        sb.append("#");
+        sb.append(R);
+        sb.append(G);
+        sb.append(B);
+
+        return sb.toString();
+    }
+
+    /**
+     * 当前用户是否具有 编辑/查看 权限
+     * 一般逻辑：具有编辑权限，一定具有查看权限
+     * 返回：edit: true / view: true /
+     *
+     * @param userId
+     * @return
+     */
+    public static int getUserEditViewAuth(long userId) throws Exception {
+
+        //管理员
+        if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
+            return BIReportConstant.REPORT_AUTH.EDIT;
+        }
+
+        //编辑
+        JSONArray editUsers = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.EDIT, StringUtils.EMPTY);
+        for (int i = 0; i < editUsers.length(); i++) {
+            JSONObject jo = editUsers.getJSONObject(i);
+            if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {
+                return BIReportConstant.REPORT_AUTH.EDIT;
+            }
+        }
+
+        //查看
+        JSONArray viewUsers = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.VIEW, StringUtils.EMPTY);
+        for (int i = 0; i < viewUsers.length(); i++) {
+            JSONObject jo = viewUsers.getJSONObject(i);
+            if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {
+                return BIReportConstant.REPORT_AUTH.VIEW;
+            }
+        }
+
+        return BIReportConstant.REPORT_AUTH.NONE;
     }
 }

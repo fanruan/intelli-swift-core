@@ -5,7 +5,7 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.BIExcelDataModel;
 import com.fr.bi.stable.data.db.BIExcelTableData;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 
@@ -17,7 +17,7 @@ public class BIExcelUtils {
     public static long runExcel(BIExcelTableData excel, ICubeFieldSource[] columns, Traversal<BIDataValue> back) {
         BIExcelDataModel dataModel = null;
         long res = 0;
-        BILogger.getLogger().info("start extracting data from the excel file");
+        BILoggerFactory.getLogger().info("start extracting data from the excel file");
         long start = System.currentTimeMillis();
 
         try {
@@ -38,17 +38,17 @@ public class BIExcelUtils {
                     }
                 }
             }
-            BILogger.getLogger().info("Finish extracting data from the excel file.Time usage is：" + DateUtils.timeCostFrom(start));
+            BILoggerFactory.getLogger().info("Finish extracting data from the excel file.Time usage is：" + DateUtils.timeCostFrom(start));
             res = dataModel.getRowCount();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
             try {
                 if (dataModel != null) {
                     dataModel.release();
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
 
             }
         }

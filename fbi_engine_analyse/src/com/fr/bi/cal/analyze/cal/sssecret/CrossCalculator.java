@@ -5,7 +5,7 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.thread.EvaluateSummaryValuePool;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.report.key.SummaryCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
@@ -42,7 +42,7 @@ public class CrossCalculator {
         try {
             t.join();
         } catch (InterruptedException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

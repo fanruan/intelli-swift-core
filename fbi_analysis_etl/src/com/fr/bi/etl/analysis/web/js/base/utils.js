@@ -200,12 +200,6 @@ BI.extend(BI.Utils, {
         var header = [];
         var table = {};
         table[ETLCst.ITEMS] = [model];
-        var mask = BI.createWidget({
-                type: "bi.etl_loading_mask",
-                masker: widget.element,
-                text: BI.i18nText("BI-Loading")
-            });
-
         BI.ETLReq.reqPreviewTable(table, function (data) {
             BI.each(model[ETLCst.FIELDS], function(idx, item){
                 var head = {
@@ -217,94 +211,107 @@ BI.extend(BI.Utils, {
                 head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
                 header.push(head);
             });
-            if(mask != null) {
-                mask.destroy()
-            }
             callback([data.value, header])
         });
 
     },
 
-    triggerPreview : function () {
-        return BI.throttle(function () {
-            if(BI.isNull(this.runner)){
-                this.runner = new BI.RUN({
-                    args : arguments
-                })
-                var self = this;
-                var run = function (widget, previewModel, operatorType, type) {
-                    switch (type) {
-                        case ETLCst.PREVIEW.SELECT :
-                        {
-                            BI.Utils.buildData(previewModel.update4Preview(), widget.previewTable, function (data) {
-                                self.runner = self.runner.getNext();
-                                if (self.runner != null) {
-                                    self.runner.submit(run)
-                                } else {
-                                    widget.setPreviewOperator(operatorType);
-                                    widget.populatePreview.apply(widget, data)
-                                }
-                            }, widget.controller.getFilterValue)
-                            return
-                        }
-                        case  ETLCst.PREVIEW.MERGE :
-                        {
-                            BI.concat(BI.Utils.buildData(previewModel, widget, function (data) {
-                                self.runner = self.runner.getNext();
-                                if (self.runner != null) {
-                                    self.runner.submit(run)
-                                } else {
-                                    widget.populate.apply(widget, data);
-                                }
-                            }), operatorType);
-                            return;
-                        }
-                        default :
-                        {
-                            BI.Utils.buildData(previewModel.update(), widget.previewTable, function (data) {
-                                self.runner = self.runner.getNext();
-                                if (self.runner != null) {
-                                    self.runner.submit(run)
-                                } else {
-                                    widget.setPreviewOperator(operatorType);
-                                    widget.populatePreview.apply(widget, data)
-                                }
-                            }, widget.controller.getFilterValue);
-                            return
-                        }
-
-                    }
-                }
-                self.runner.submit(run)
-            } else {
-                this.runner.setNext({
-                    args : arguments
-                })
+    triggerPreview : function() {
+        return function (widget, previewModel, operatorType, type) {
+            if (this.innerTrigger == null) {
+                this.innerTrigger = new BI.Utils.ThreadRunTrigger();
             }
-        }, 300)
+            var callBack = function (data) {
+                widget.setPreviewOperator(operatorType);
+                widget.populatePreview.apply(widget, data)
+            };
+            var ajaxObject =  {
+                work : function (callBack) {
+                    BI.Utils.buildData(previewModel.update(), widget.previewTable, callBack, widget.controller.getFilterValue);
+                }
+            };
+            var maskElement = widget.previewTable;
+            switch (type) {
+                case ETLCst.PREVIEW.SELECT : {
+                    ajaxObject = {
+                        work: function (callBack) {
+                            BI.Utils.buildData(previewModel.update4Preview(), widget.previewTable, callBack, widget.controller.getFilterValue)
+                        }
+                    }
+
+                    break;
+                }
+                case  ETLCst.PREVIEW.MERGE : {
+                    ajaxObject = {
+                        work: function (callBack) {
+                            BI.concat(BI.Utils.buildData(previewModel, widget, callBack), operatorType);
+                        }
+                    }
+                    callBack = function (data) {
+                        widget.populate.apply(widget, data);
+                    };
+                    maskElement = widget;
+                    break;
+                }
+                default : {
+                    break;
+                }
+
+            }
+            this.innerTrigger(ajaxObject, callBack, function () {
+                return BI.createWidget({
+                    type: "bi.etl_loading_mask",
+                    masker: maskElement.element,
+                    text: BI.i18nText("BI-Loading")
+                });
+            });
+        }
     }
 
 })
 
-BI.RUN = BI.inherit(FR.OB, {
+BI.ThreadRun = BI.inherit(FR.OB, {
     _init : function () {
-        BI.RUN.superclass._init.apply(this, arguments);
+        BI.ThreadRun.superclass._init.apply(this, arguments);
+        this.triggerIndex = this.options.triggerIndex;
     },
 
-    setNext : function (next) {
-        this.next = new BI.RUN(next);
-    },
-
-    hasNext : function () {
-        return BI.isNotNull(this.next);
+    getTriggerIndex: function(){
+        return this.triggerIndex;
     },
 
     submit : function (runner) {
         runner.apply(runner, this.options.args)
     },
 
-    getNext : function () {
-        return this.next
-    }
 })
 
+
+BI.Utils.ThreadRunTrigger = function () {
+    return BI.throttle(function (ajaxObject, callback, mask) {
+        if(this.triggerIndex == null){
+            this.triggerIndex = 0;
+        }
+        this.triggerIndex++;
+        var runner = new BI.ThreadRun({
+            args:arguments,
+            triggerIndex:this.triggerIndex
+        })
+        var self = this;
+        if(self.currentMask == null && mask != null) {
+            self.currentMask = mask();
+        }
+        runner.submit(function () {
+            ajaxObject.work(function () {
+                if(runner.getTriggerIndex() == self.triggerIndex){
+                    if(self.currentMask != null) {
+                        self.currentMask.destroy()
+                        self.currentMask = null;
+                    }
+                    callback.apply(this, arguments);
+                }
+
+            })
+        })
+    },300)
+}

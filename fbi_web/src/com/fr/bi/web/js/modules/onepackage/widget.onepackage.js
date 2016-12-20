@@ -482,116 +482,56 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     _onClickOneTable: function (id) {
         var self = this;
         BI.Layers.remove(this._constant.ETL_LAYER);
+
         var type = "bi.etl";
-
-        var mask = BI.createWidget({
-            type: "bi.refresh_table_loading_mask",
-            masker: self.element,
-            tableId: id
+        var tableData = this.model.getTablesData()[id];
+        var connName = tableData.connection_name;
+        if (connName === BICst.CONNECTION.EXCEL_CONNECTION) {
+            type = "bi.etl_excel"
+        } else if (connName === BICst.CONNECTION.SQL_CONNECTION) {
+            type = "bi.etl_sql";
+        }
+        var etl = BI.createWidget({
+            type: type,
+            element: BI.Layers.create(this._constant.ETL_LAYER),
+            id: id,
+            table_data: this.model.getTablesData()[id],
+            relations: this.model.getRelations(),
+            translations: this.model.getTranslations(),
+            all_fields: this.model.getAllFields(),
+            excel_view: this.model.getExcelViews()[id],
+            update_settings: this.model.getUpdateSettings()
         });
-        mask.on(BI.RefreshTableLoadingMask.EVENT_REFRESH_SUCCESS, function (data) {
-            var tableData = data;
-            if (tableData.none_table != true) {
-                var connName = tableData.connection_name;
-                if (connName === BICst.CONNECTION.EXCEL_CONNECTION) {
-                    type = "bi.etl_excel"
-                } else if (connName === BICst.CONNECTION.SQL_CONNECTION) {
-                    type = "bi.etl_sql";
-                }
-                var etl = BI.createWidget({
-                    type: type,
-                    element: BI.Layers.create(self._constant.ETL_LAYER),
-                    id: id,
-                    table_data: tableData.table_data,
-                    relations: self.model.getRelations(),
-                    translations: self.model.getTranslations(),
-                    all_fields: self.model.getAllFields(),
-                    excel_view: self.model.getExcelViews()[id],
-                    update_settings: self.model.getUpdateSettings()
-                });
-                BI.Layers.show(self._constant.ETL_LAYER);
-                etl.on(BI.ETL.EVENT_CUBE_SAVE, function (info, table) {
-                    self.model.changeTableInfo(id, table);
-                    self._refreshTablesInPackage();
-                    var data = self.model.getValue();
-                    //update sharing pool
-                    Data.SharingPool.put("translations", data.translations);
-                    Data.SharingPool.put("relations", data.relations);
-                    Data.SharingPool.put("fields", self.model.getAllFields());
-                    Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
-                    BI.Utils.updateTablesOfOnePackage(data, function () {
-                        BI.Utils.generateCubeByTable(info.tableInfo, function () {
+        BI.Layers.show(this._constant.ETL_LAYER);
+        etl.on(BI.ETL.EVENT_CUBE_SAVE, function (info, table) {
+            self.model.changeTableInfo(id, table);
+            self._refreshTablesInPackage();
+            var data = self.model.getValue();
+            //update sharing pool
+            Data.SharingPool.put("translations", data.translations);
+            Data.SharingPool.put("relations", data.relations);
+            Data.SharingPool.put("fields", self.model.getAllFields());
+            Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
+            BI.Utils.updateTablesOfOnePackage(data, function () {
+                BI.Utils.generateCubeByTable(info.tableInfo, function () {
 
-                        });
-                    });
                 });
-                etl.on(BI.ETL.EVENT_SAVE, function (data) {
-                    self.model.changeTableInfo(id, data);
-                    self._refreshTablesInPackage();
-                    BI.Layers.remove(self._constant.ETL_LAYER);
-                });
-                etl.on(BI.ETL.EVENT_REMOVE, function () {
-                    self.model.removeTable(id);
-                    self._refreshTablesInPackage();
-                    BI.Layers.remove(self._constant.ETL_LAYER);
-                });
-                etl.on(BI.ETL.EVENT_CANCEL, function () {
-                    BI.Layers.remove(self._constant.ETL_LAYER);
-                });
-            }
+                self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
+            });
         });
-
-        // BI.Utils.refreshFieldsOfOneTable(id, function (data) {
-        //     var tableData = data;
-        //     if (tableData.none_table != true) {
-        //         var connName = tableData.connection_name;
-        //         if (connName === BICst.CONNECTION.EXCEL_CONNECTION) {
-        //             type = "bi.etl_excel"
-        //         } else if (connName === BICst.CONNECTION.SQL_CONNECTION) {
-        //             type = "bi.etl_sql";
-        //         }
-        //         var etl = BI.createWidget({
-        //             type: type,
-        //             element: BI.Layers.create(self._constant.ETL_LAYER),
-        //             id: id,
-        //             table_data: self.model.getTablesData()[id],
-        //             relations: self.model.getRelations(),
-        //             translations: self.model.getTranslations(),
-        //             all_fields: self.model.getAllFields(),
-        //             excel_view: self.model.getExcelViews()[id],
-        //             update_settings: self.model.getUpdateSettings()
-        //         });
-        //         BI.Layers.show(self._constant.ETL_LAYER);
-        //         etl.on(BI.ETL.EVENT_CUBE_SAVE, function (info, table) {
-        //             self.model.changeTableInfo(id, table);
-        //             self._refreshTablesInPackage();
-        //             var data = self.model.getValue();
-        //             //update sharing pool
-        //             Data.SharingPool.put("translations", data.translations);
-        //             Data.SharingPool.put("relations", data.relations);
-        //             Data.SharingPool.put("fields", self.model.getAllFields());
-        //             Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
-        //             BI.Utils.updateTablesOfOnePackage(data, function () {
-        //                 BI.Utils.generateCubeByTable(info.tableInfo, function () {
-        //
-        //                 });
-        //             });
-        //         });
-        //         etl.on(BI.ETL.EVENT_SAVE, function (data) {
-        //             self.model.changeTableInfo(id, data);
-        //             self._refreshTablesInPackage();
-        //             BI.Layers.remove(self._constant.ETL_LAYER);
-        //         });
-        //         etl.on(BI.ETL.EVENT_REMOVE, function () {
-        //             self.model.removeTable(id);
-        //             self._refreshTablesInPackage();
-        //             BI.Layers.remove(self._constant.ETL_LAYER);
-        //         });
-        //         etl.on(BI.ETL.EVENT_CANCEL, function () {
-        //             BI.Layers.remove(self._constant.ETL_LAYER);
-        //         });
-        //     }
-        // });
+        etl.on(BI.ETL.EVENT_SAVE, function (data) {
+            self.model.changeTableInfo(id, data);
+            self._refreshTablesInPackage();
+            BI.Layers.remove(self._constant.ETL_LAYER);
+        });
+        etl.on(BI.ETL.EVENT_REMOVE, function () {
+            self.model.removeTable(id);
+            self._refreshTablesInPackage();
+            BI.Layers.remove(self._constant.ETL_LAYER);
+        });
+        etl.on(BI.ETL.EVENT_CANCEL, function () {
+            BI.Layers.remove(self._constant.ETL_LAYER);
+        });
     },
 
     populate: function () {

@@ -1,8 +1,9 @@
 package com.fr.bi.common.persistent.xml.reader;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.common.persistent.xml.BIXMLTag;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.xml.XMLableReader;
@@ -28,8 +29,13 @@ public class XMLNormalValueReader extends XMLValueReader {
             String uuid = xmLableReader.getAttrAsString(BIXMLTag.APPEND_INFO, "null");
             BIBeanXMLReaderWrapper wrapper;
 
-            Object fieldValue = beanWrapper.getOriginalValue(fieldName);
-
+            Object fieldValue;
+            try {
+                fieldValue = beanWrapper.getOriginalValue(fieldName);
+            } catch (IllegalArgumentException e) {
+                throw BINonValueUtils.beyondControl(e.getMessage() + " \ncurrent class:" + beanWrapper.getBeanClass() + ",and the field:" + fieldName + " is absent", e);
+//                BILoggerFactory.getLogger().debug(e.getMessage() + " \ncurrent class:" + beanWrapper.getBeanClass() + ",and the field:" + fieldName + " is absent", e);
+            }
             if (useFieldDefaultValue(fieldValue)) {
                 /**
                  * 由于使用了对象的强制构造，那么
@@ -53,7 +59,7 @@ public class XMLNormalValueReader extends XMLValueReader {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
     }

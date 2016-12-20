@@ -1,11 +1,11 @@
 package com.fr.bi.stable.gvi.array;
 
+import com.fr.bi.common.inter.ValueCreator;
+import com.fr.bi.stable.gvi.ByteArrayDataInput;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.GroupValueIndexCreator;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.structure.collection.map.lru.LRUWithKHashMap;
-import com.fr.bi.common.inter.ValueCreator;
 
 public class GroupValueIndexArrayReader implements NIOReader<GroupValueIndex>, ICubeTableIndexReader {
     private static final int MAX_CACHE_SIZE = 1024;
@@ -26,7 +26,7 @@ public class GroupValueIndexArrayReader implements NIOReader<GroupValueIndex>, I
             @Override
             public GroupValueIndex createNewObject() {
                 byte[] b = byteList.get(row);
-                GroupValueIndex result = GroupValueIndexCreator.createGroupValueIndex(b);
+                GroupValueIndex result = GVIFactory.createGroupValueIndexByDataInput(new ByteArrayDataInput(b));
                 return result;
             }
         });

@@ -60,6 +60,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             }],
             [{
                 text: BI.i18nText("BI-Filter_Number_Summary"),
+                title: BI.i18nText("BI-Target_Summary_Filter_Title"),
                 value: BICst.TARGET_COMBO.FILTER,
                 cls: "filter-h-font"
             }],

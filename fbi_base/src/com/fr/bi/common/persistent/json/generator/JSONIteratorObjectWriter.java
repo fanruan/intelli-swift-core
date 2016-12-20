@@ -1,6 +1,6 @@
 package com.fr.bi.common.persistent.json.generator;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 
@@ -26,7 +26,7 @@ public class JSONIteratorObjectWriter extends JSONObjectWriter {
                 Object value = iterator.next();
                 jsonArray.put(new BIBeanJSONWriterWrapper(value, "", false).generateJSON(disposedBeans));
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return jsonArray;

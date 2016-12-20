@@ -1,7 +1,7 @@
 package com.fr.bi.common.persistent.xml.reader;
 
 import com.fr.bi.common.persistent.xml.BIXMLTag;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 import com.fr.general.ComparatorUtils;
@@ -10,6 +10,7 @@ import com.fr.stable.xml.XMLableReader;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -118,9 +119,12 @@ public abstract class XMLValueReader {
 
     protected Class loadClass(String className) throws ClassNotFoundException {
         try {
+            if  (className.equals("java.util.Collections$UnmodifiableRandomAccessList")){
+                return ArrayList.class;
+            }
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -182,7 +186,7 @@ public abstract class XMLValueReader {
                             }
 
                         } catch (Exception e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                         }
 
                     }
@@ -190,7 +194,7 @@ public abstract class XMLValueReader {
             });
 //            }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

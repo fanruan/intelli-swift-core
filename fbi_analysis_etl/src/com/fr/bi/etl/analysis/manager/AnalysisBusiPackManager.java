@@ -14,6 +14,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -97,6 +98,16 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
+    public void finishGenerateCubes(long userId, Set<CubeTableSource> absentTables) {
+
+    }
+
+    @Override
+    public void endBuildingCube(long userId, Set<CubeTableSource> absentTable) {
+
+    }
+
+    @Override
     public Boolean containPackage(long userId, BIBusinessPackage biPackage) {
         return null;
     }
@@ -119,6 +130,16 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     @Override
     public void removeGroup(long userId, BIGroupTagName groupTagName) throws BIGroupAbsentException {
 
+    }
+
+    @Override
+    public boolean isTableIncreased(long userId) {
+        return false;
+    }
+
+    @Override
+    public boolean isTableNoChange(long userId) {
+        return false;
     }
 
     @Override
@@ -211,10 +232,10 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     private void setEdit(JSONObject jo) throws Exception {
-        if (jo.has(Constants.PACK_ID)){
+        if (jo.has(Constants.PACK_ID)) {
             JSONObject pack = jo.getJSONObject(Constants.PACK_ID);
             JSONArray tables = pack.getJSONArray("tables");
-            for (int i = 0; i < tables.length(); i++){
+            for (int i = 0; i < tables.length(); i++) {
                 tables.getJSONObject(i).put("inedible", true);
             }
         }
@@ -235,6 +256,10 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     }
 
+    @Override
+    public boolean isTableReduced(long userId) {
+        return false;
+    }
 
     public SingleTableUpdateManager getSingleTableUpdateManager(long userId) {
         return null;
@@ -265,6 +290,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     /**
      * 先到管理员那找下，再找自己的吧
+     *
      * @param tableId
      * @param userId
      * @return
@@ -275,7 +301,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 //        try{
 //            return getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getTable(tableId);
 //        } catch (BITableAbsentException e){
-            return getUserAnalysisBusiPackManager(userId).getTable(tableId);
+        return getUserAnalysisBusiPackManager(userId).getTable(tableId);
 //        }
     }
 

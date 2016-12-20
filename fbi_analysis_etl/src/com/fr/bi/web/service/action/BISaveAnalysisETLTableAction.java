@@ -1,6 +1,9 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
@@ -9,7 +12,6 @@ import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -50,21 +52,29 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
             table.setSource(source);
             table.setDescribe(oldTable.getDescribe());
         }
+        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
+        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("The added table is: " + logTable(table));
+        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
         BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
-        Set<BusinessTable> businessTables =  BIAnalysisETLManagerCenter.getBusiPackManager().getAllTables(userId);
-        if (businessTables != null){
-            for (BusinessTable t : businessTables){
+        Set<BusinessTable> businessTables = BIAnalysisETLManagerCenter.getBusiPackManager().getAllTables(userId);
+        if (businessTables != null) {
+            for (BusinessTable t : businessTables) {
                 AnalysisCubeTableSource s = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(t);
-                s.refreshWidget();
-                t.setSource(s);
+                try {
+                    s.refreshWidget();
+                    t.setSource(s);
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).error("Refresh AnalysisETLTableSource Widget failed" + "\n" + "The Failed table is: " + logTable(table));
+                }
+
             }
         }
         BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
-        try{
+        try {
             BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
-        } catch (Exception e){
-            BILogger.getLogger().error("etl update failed");
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error("etl update failed");
         }
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         JSONObject result = new JSONObject();
@@ -81,8 +91,8 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         result.put("tables", tables);
         result.put("fields", fields);
         WebUtils.printAsJSON(res, result);
-        new Thread (){
-            public void  run () {
+        new Thread() {
+            public void run() {
                 BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
                 BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
                 BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
@@ -93,5 +103,17 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
     @Override
     public String getCMD() {
         return "save_table";
+    }
+
+    private String logTable(BusinessTable table) {
+        try {
+            return BILogHelper.logAnalysisETLTable(table) +
+                    "\n" + "*********Fields of AnalysisETL table*******" +
+                    BILogHelper.logAnalysisETLTableField(table, "") +
+                    "\n" + "*********Fields of AnalysisETL table*******";
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BIBusinessPackage.class).error(e.getMessage(), e);
+            return "";
+        }
     }
 }

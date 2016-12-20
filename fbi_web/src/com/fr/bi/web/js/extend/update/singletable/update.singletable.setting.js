@@ -17,7 +17,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.UpdateSingleTableSetting.superclass._init.apply(this, arguments);
-        this.taskAdding = false;
         var self = this, o = this.options;
         this.model = new BI.UpdateSingleTableSettingModel({
             update_setting: o.update_setting,
@@ -105,18 +104,16 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             self.immediateCombo.hideView();
         });
         this.immediateCombo.on(BI.Combo.EVENT_CHANGE, function (v) {
-            self.immediateButton.setEnable(false);
-            self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+            self._immediateButtonDisable();
             var tableInfo = {
                 updateType: v,
                 baseTable: self.model.table,
                 isETL: false
             };
-            if (self.model.options.currentTable.connection_name == "__FR_BI_ETL__") {
+            if (self.model.options.currentTable.connection_name == BICst.CONNECTION.ETL_CONNECTION) {
                 tableInfo.isETL = true;
                 tableInfo.ETLTable = self.model.currentTable;
             }
-            self.taskAdding = true;
             self._createCheckInterval();
             self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, tableInfo);
         });
@@ -149,6 +146,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             hgap: 10,
             vgap: 10
         })
+        self._initImmediateButtonStatus();
     },
 
     _createPartUpdateTab: function () {
@@ -204,6 +202,30 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             }
         });
 
+        //当前更新时间参数
+        var currParam = BI.i18nText("BI-Current_Update_Time");
+        var currentUpdateParam = BI.createWidget({
+            type: "bi.text_button",
+            text: currParam,
+            cls: "param-button",
+            height: 25
+        });
+        currentUpdateParam.on(BI.TextButton.EVENT_CHANGE, function () {
+            var v = self.tab.getSelect();
+            switch (v) {
+                case self._constants.PART_ADD:
+                    self.partAddSql.insertParam(currParam);
+                    break;
+                case self._constants.PART_DELETE:
+                    self.partDeleteSql.insertParam(currParam);
+                    break;
+                case self._constants.PART_MODIFY:
+                    self.partModifySql.insertParam(currParam);
+                    break;
+            }
+        });
+
+
         //预览按钮
         var previewButton = BI.createWidget({
             type: "bi.text_button",
@@ -239,7 +261,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                             text: BI.i18nText("BI-Parameter"),
                             height: 35,
                             cls: "param-comment"
-                        }, lastUpdateParam],
+                        }, lastUpdateParam, currentUpdateParam],
                         right: [previewButton]
                     },
                     height: 35,
@@ -281,13 +303,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         var sql = "", type = this.tab.getSelect();
         switch (type) {
             case this._constants.PART_ADD:
-                sql = this.partAddSql.getValue();
+                sql = this.model.getAddSql();
                 break;
             case this._constants.PART_DELETE:
-                sql = this.partDeleteSql.getValue();
+                sql = this.model.getDeleteSql();
                 break;
             case this._constants.PART_MODIFY:
-                sql = this.partModifySql.getValue();
+                sql = this.model.getModifySql();
                 break;
         }
         previewPane.populate(sql, type);
@@ -303,9 +325,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.code_editor",
                     cls: "sql-container"
                 });
-                this.partAddSql.setValue(this.model.getAddSql());
+                this.partAddSql.setValue(this.model.getAddSql()
+                    .replaceAll(BICst.LAST_UPDATE_TIME, BI.i18nText("BI-Last_Updated"))
+                    .replaceAll(BICst.CURRENT_UPDATE_TIME, BI.i18nText("BI-Current_Update_Time")));
                 this.partAddSql.on(BI.CodeEditor.EVENT_BLUR, function () {
-                    self.model.setAddSql(self.partAddSql.getValue());
+                    self.model.setAddSql(self.partAddSql.getValue()
+                        .replaceAll(BI.i18nText("BI-Last_Updated"), BICst.LAST_UPDATE_TIME)
+                        .replaceAll(BI.i18nText("BI-Current_Update_Time"), BICst.CURRENT_UPDATE_TIME));
                 });
                 return BI.createWidget({
                     type: "bi.absolute",
@@ -322,9 +348,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.code_editor",
                     cls: "sql-container"
                 });
-                this.partDeleteSql.setValue(this.model.getDeleteSql());
+                this.partDeleteSql.setValue(this.model.getDeleteSql()
+                    .replaceAll(BICst.LAST_UPDATE_TIME, BI.i18nText("BI-Last_Updated"))
+                    .replaceAll(BICst.CURRENT_UPDATE_TIME, BI.i18nText("BI-Current_Update_Time")));
                 this.partDeleteSql.on(BI.CodeEditor.EVENT_BLUR, function () {
-                    self.model.setDeleteSql(self.partDeleteSql.getValue());
+                    self.model.setDeleteSql(self.partDeleteSql.getValue()
+                        .replaceAll(BI.i18nText("BI-Last_Updated"), BICst.LAST_UPDATE_TIME)
+                        .replaceAll(BI.i18nText("BI-Current_Update_Time"), BICst.CURRENT_UPDATE_TIME));
                 });
                 return BI.createWidget({
                     type: "bi.absolute",
@@ -341,9 +371,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.code_editor",
                     cls: "sql-container"
                 });
-                this.partModifySql.setValue(this.model.getModifySql());
+                this.partModifySql.setValue(this.model.getModifySql()
+                    .replaceAll(BICst.LAST_UPDATE_TIME, BI.i18nText("BI-Last_Updated"))
+                    .replaceAll(BICst.CURRENT_UPDATE_TIME, BI.i18nText("BI-Current_Update_Time")));
                 this.partModifySql.on(BI.CodeEditor.EVENT_BLUR, function () {
-                    self.model.setModifySql(self.partModifySql.getValue());
+                    self.model.setModifySql(self.partModifySql.getValue()
+                        .replaceAll(BI.i18nText("BI-Last_Updated"), BICst.LAST_UPDATE_TIME)
+                        .replaceAll(BI.i18nText("BI-Current_Update_Time"), BICst.CURRENT_UPDATE_TIME));
                 });
                 return BI.createWidget({
                     type: "bi.absolute",
@@ -449,20 +483,73 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
     _createCheckInterval: function () {
         var self = this;
+        if (undefined != self.cubeInterval) {
+            self._clearCheckInterval();
+        }
         self.cubeInterval = setInterval(function () {
-            BI.Utils.checkCubeStatusByTable(self.model.table, function (data) {
-                    if (data.isGenerated == true && self.taskAdding == true) {
-                        self.immediateButton.setEnable(true);
-                        self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
-                        self.taskAdding = false;
-                        clearInterval(self.cubeInterval);
-                    }
+            self._getTaskStatus()
+        }, 5000)
+
+    },
+
+    _initImmediateButtonStatus: function () {
+        var self = this;
+        var tableInfo =this._getTableInfo();
+        BI.Utils.reqCubeStatusCheck(tableInfo, function (data) {
+                if (!data.hasTask) {
+                    self._immediateButtonAvailable();
+                } else {
+                    self._immediateButtonDisable();
+                    self._createCheckInterval();
                 }
-            )
+            }
+        )
+    },
 
-        }, 2000)
+    _immediateButtonAvailable: function () {
+        var self = this;
+        self.immediateButton.setEnable(true);
+        self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
+    },
+
+    _immediateButtonDisable: function () {
+        var self = this;
+        self.immediateButton.setEnable(false);
+        self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+    },
+
+    _getTableInfo: function () {
+        var tableInfo = {
+            baseTable: this.model.table,
+            isETL: false
+        };
+        if (this.model.options.currentTable.connection_name == BICst.CONNECTION.ETL_CONNECTION) {
+            tableInfo.isETL = true;
+            tableInfo.ETLTable = this.model.currentTable;
+        }
+        return tableInfo;
+    },
+
+    _getTaskStatus: function () {
+        var tableInfo = this._getTableInfo();
+        var self = this;
+        BI.Utils.reqCubeStatusCheck(tableInfo, function (data) {
+                if (!data.hasTask) {
+                    self._immediateButtonAvailable();
+                    self._clearCheckInterval();
+                } else {
+                    self._immediateButtonDisable()
+                }
+            }
+        )
+    },
+
+    _clearCheckInterval: function () {
+        var self = this;
+        if (undefined != self.cubeInterval) {
+            clearInterval(self.cubeInterval);
+        }
     }
-
 
 });
 BI.UpdateSingleTableSetting.EVENT_CHANGE = "EVENT_CHANGE";

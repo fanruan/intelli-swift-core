@@ -13,7 +13,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.AccumulateAreaChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         this.xAxis = [{
             type: "category",
@@ -27,11 +27,15 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.AccumulateAreaChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -39,11 +43,12 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         var self = this;
 
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle(this.config.chart_style);
+        config.plotOptions.style = formatChartStyle(this.config.chart_style);
         formatChartLineStyle(this.config.chart_line_type);
         formatCordon(this.config.cordon);
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.connectNulls = this.config.null_continue;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.enabled = this.config.show_zoom;
@@ -96,8 +101,11 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
+
+        config.chartType = "area";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
         this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
@@ -224,7 +232,8 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            null_continue: options.null_continue || false
         };
         this.options.items = items;
         this.yAxis = [];

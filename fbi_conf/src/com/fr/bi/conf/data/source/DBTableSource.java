@@ -1,6 +1,7 @@
 package com.fr.bi.conf.data.source;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
@@ -25,14 +26,13 @@ import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.SQLRegUtils;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
-import com.fr.data.core.db.dialect.SybaseDialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
+import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -82,19 +82,6 @@ public class DBTableSource extends AbstractTableSource {
         return tableName;
     }
 
-    @Override
-    public IPersistentTable reGetBiTable() {
-        return super.reGetBiTable();
-    }
-
-    public void setUpdateSettingSource(UpdateSettingSource updateSettingSource) {
-        this.updateSettingSource = updateSettingSource;
-    }
-
-    public static void main(String[] args) {
-
-    }
-
 
     /**
      * @return
@@ -107,6 +94,7 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
+            BILoggerFactory.getLogger(DBTableSource.class).info("The table:" + this.getTableName() + "extract data from db");
             dbTable = BIDBUtils.getDBTable(dbName, tableName);
         }
         return dbTable;
@@ -144,7 +132,7 @@ public class DBTableSource extends AbstractTableSource {
         return BIBaseConstant.TABLETYPE.DB;
     }
 
-    void dealWithOneData(Traversal<BIDataValue> travel,ICubeFieldSource[] fields, BIDataValue v) {
+    void dealWithOneData(Traversal<BIDataValue> travel, ICubeFieldSource[] fields, BIDataValue v) {
         if (!VT4FBI.supportBigData() && v.getRow() >= CubeConstant.LICMAXROW) {
             throw new RuntimeException(Inter.getLocText("BI-Not_Support_10w_data"));
         }
@@ -169,7 +157,7 @@ public class DBTableSource extends AbstractTableSource {
                     try {
                         dealWithOneData(travel, fields, v);
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             });
@@ -177,7 +165,7 @@ public class DBTableSource extends AbstractTableSource {
                 biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, UserControl.getInstance().getSuperManagerID());
             }
         } catch (Throwable e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
         }
@@ -196,7 +184,7 @@ public class DBTableSource extends AbstractTableSource {
         try {
             SQLRegUtils regUtils = new SQLRegUtils(SQL);
             if (!regUtils.isSql()) {
-                BILogger.getLogger().error("SQL syntax error");
+                BILoggerFactory.getLogger().error("SQL syntax error");
                 return 0;
             }
             SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
@@ -207,7 +195,7 @@ public class DBTableSource extends AbstractTableSource {
                     try {
                         dealWithOneData(traversal, fields, v);
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }, (int) rowCount);
@@ -215,7 +203,7 @@ public class DBTableSource extends AbstractTableSource {
                 biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, UserControl.getInstance().getSuperManagerID());
             }
         } catch (Throwable e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
         }
@@ -235,10 +223,15 @@ public class DBTableSource extends AbstractTableSource {
         if (field == null) {
             return set;
         }
+        final boolean isStringType = field.getFieldType() == DBConstant.COLUMN.STRING;
         DBQueryExecutor.getInstance().runSQL(BIDBUtils.getDistinctSQLStatement(dbName, tableName, fieldName), new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
-                set.add(data.getValue());
+                if (isStringType && data.getValue() == null) {
+                    set.add("");
+                } else {
+                    set.add(data.getValue());
+                }
             }
         });
         return set;
@@ -249,34 +242,54 @@ public class DBTableSource extends AbstractTableSource {
         java.sql.Connection conn = connection.createConnection();
         Dialect dialect = DialectFactory.generateDialect(conn);
         Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
-        String query = dialect instanceof SybaseDialect ? "SELECT *  FROM " + dialect.table2SQL(table) : dialect.getTopNRowSql(BIBaseConstant.PREVIEW_COUNT, table);
+        String query = "SELECT *  FROM " + dialect.table2SQL(table);
         return new DBTableData(connection, query);
     }
 
     @Override
     public JSONObject createPreviewJSON(ArrayList<String> fields, ICubeDataLoader loader, long userId) throws Exception {
-        EmbeddedTableData emTableData = EmbeddedTableData.embedify(createPreviewTableData(), null, BIBaseConstant.PREVIEW_COUNT);
-        DataModel dm = emTableData.createDataModel(null);
         JSONObject jo = new JSONObject();
-        JSONArray fieldNames = new JSONArray();
-        JSONArray values = new JSONArray();
-        jo.put(BIJSONConstant.JSON_KEYS.FIELDS, fieldNames);
-        jo.put(BIJSONConstant.JSON_KEYS.VALUE, values);
-        int colLen = dm.getColumnCount();
-        int rolLen = Math.min(dm.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
+        EmbeddedTableData emTableData = null;
+        DataModel dm = null;
+        try {
+            emTableData = EmbeddedTableData.embedify(createPreviewTableData(), null, BIBaseConstant.PREVIEW_COUNT);
+            dm = emTableData.createDataModel(null);
+            JSONArray fieldNames = new JSONArray();
+            JSONArray values = new JSONArray();
+            jo.put(BIJSONConstant.JSON_KEYS.FIELDS, fieldNames);
+            jo.put(BIJSONConstant.JSON_KEYS.VALUE, values);
+            int colLen = dm.getColumnCount();
+            int rolLen = Math.min(dm.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
 
-        for (int col = 0; col < colLen; col++) {
-            String name = dm.getColumnName(col);
-            if (!fields.isEmpty() && !fields.contains(name)) {
-                continue;
+            for (int col = 0; col < colLen; col++) {
+                String name = dm.getColumnName(col);
+                if (!fields.isEmpty() && !fields.contains(name)) {
+                    continue;
+                }
+                fieldNames.put(name);
+                JSONArray value = new JSONArray();
+                values.put(value);
+                for (int row = 0; row < rolLen; row++) {
+                    boolean isString = false;
+                    if (getFields().containsKey(name) && getFields().get(name).getFieldType() == DBConstant.COLUMN.STRING) {
+                        isString = true;
+                    }
+                    Object val = dm.getValueAt(row, col);
+                    value.put((isString && val == null) ? "" : val);
+                }
             }
-            fieldNames.put(name);
-            JSONArray value = new JSONArray();
-            values.put(value);
-            for (int row = 0; row < rolLen; row++) {
-                value.put(dm.getValueAt(row, col));
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), "table preview failed!");
+            return jo;
+        } finally {
+            if (null != dm) {
+                dm.release();
+            }
+            if (null != emTableData) {
+                emTableData.clear();
             }
         }
+
         return jo;
     }
 
@@ -327,6 +340,7 @@ public class DBTableSource extends AbstractTableSource {
         if (jo.has("table_name")) {
             tableName = jo.getString("table_name");
         }
+
     }
 
     @Override
@@ -349,12 +363,41 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     public Connection getConnection() {
-        return connection;
+        return DatasourceManager.getInstance().getConnection(dbName);
     }
 
-    public void setConnection(Connection connection) {
-        this.connection = connection;
+    // TODO: 2016/11/9 判断表的字段和数据库中的能否对得上
+    @Override
+    public boolean canExecute() throws Exception {
+        try {
+            getConnection().testConnection();
+        } catch (Exception e) {
+            return false;
+        }
+//        List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>(getFacetFields(null));
+//        return testSQL(getConnection(), getSqlString(fields));
+        return true;
     }
 
+    protected String getSqlString(List<ICubeFieldSource> fields) throws Exception {
+        Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        java.sql.Connection conn = connection.createConnection();
+        Dialect dialect = DialectFactory.generateDialect(conn);
+        Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < fields.size(); i++) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(dialect.column2SQL(fields.get(i).getFieldName()));
+        }
+        String query = "SELECT " + (fields == null || fields.isEmpty() ? "*" : sb.toString()) + " FROM " + dialect.table2SQL(table);
+        return query;
+    }
 
+    protected boolean testSQL(com.fr.data.impl.Connection connection, String SQL) throws Exception {
+        SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
+        sqlStatement.setSql(SQL);
+        return DBQueryExecutor.getInstance().testSQL(sqlStatement);
+    }
 }

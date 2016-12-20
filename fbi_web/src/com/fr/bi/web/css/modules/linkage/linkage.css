@@ -3,7 +3,11 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-linkage .linkage-tool-bar {
   z-index: 100000000;
+}
+.bi-linkage .linkage-tool-bar .linkage-tool-bar-mask {
   background: #ffffff;
+  opacity: 0.85;
+  filter: alpha(opacity=85);
 }
 .bi-linkage .linkage-tool-bar .linkage-toolbar-title {
   font-size: 14px;
@@ -12,6 +16,7 @@
 }
 .bi-linkage .linkage-tool-bar .single-target-container {
   border: 1px solid #d4dadd;
+  background-color: #ffffff;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
@@ -27,9 +32,48 @@
 .bi-linkage .linkage-tool-bar .single-target-container .linkage-toolbar-target .linkage-toolbar-target-linkto {
   color: #808080;
 }
-.bi-linkage .linkage-widget {
-  background: #d8f3fe;
+.bi-linkage .linkage-tool-bar .single-target-container .linkage-toolbar-target-cal {
+  border: 1px solid #d4dadd;
+  background: #ffffff;
 }
 .bi-linkage .linkage-widget .linkage-widget-title {
   font-size: 16px;
+}
+.bi-linkage .linkage-widget-mask {
+  background: #d8f3fe;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.bi-linkage .linkage-widget-disabled {
+  font: 13px;
+}
+.bi-linkage .linkage-widget-disabled .linkage-widget-disabled-item {
+  background: #eaeaea;
+  border: 1px solid #c4c6c6;
+  border-radius: 2px;
+}
+.bi-linkage .linkage-widget-disabled .linkage-widget-disabled-item.active {
+  color: #009de3;
+}
+.bi-linkage .linkage-widget-disabled-mask {
+  background: #c4c6c6;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
+.bi-linkage .linkage-widget-self {
+  background: #ffffff;
+  border: 2px solid #009de3;
+}
+.bi-linkage .linkage-widget-control {
+  background: #f4f4f4;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
+.bi-linkage .linkage-drop-helper {
+  border: 1px solid #0c6d23;
+  color: #0c6d23;
+}
+.bi-linkage .bi-message-mask {
+  opacity: 0;
+  filter: alpha(opacity=0);
 }

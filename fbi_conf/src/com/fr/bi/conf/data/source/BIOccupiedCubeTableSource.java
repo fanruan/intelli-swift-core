@@ -162,6 +162,11 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     }
 
     @Override
+    public boolean canExecute() {
+        return true;
+    }
+
+    @Override
     public BICore fetchObjectCore() {
         return BIBasicCore.generateValueCore(this.hostTableSource.getSourceID());
     }
@@ -201,4 +206,27 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
         return new HashSet<ICubeFieldSource>();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BIOccupiedCubeTableSource)) return false;
+
+        BIOccupiedCubeTableSource that = (BIOccupiedCubeTableSource) o;
+
+        return !(hostTableSource != null ? !hostTableSource.equals(that.hostTableSource) : that.hostTableSource != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return hostTableSource != null ? hostTableSource.hashCode() : 0;
+    }
+
+    public Set<CubeTableSource> getParents() {
+        Set<CubeTableSource> sources = null;
+        if(hostTableSource instanceof ETLTableSource) {
+            sources = ((ETLTableSource) hostTableSource).createSourceSet();
+        }
+        return sources;
+    }
 }

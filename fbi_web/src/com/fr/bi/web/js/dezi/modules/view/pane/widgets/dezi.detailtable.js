@@ -24,23 +24,31 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
-            var clicked = self.model.get("clicked") || {};
-            var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-            //这条链上所有的其他clicked都应当被清掉
-            BI.each(clicked, function (cid, click) {
-                if (allFromIds.contains(cid)) {
-                    delete clicked[cid];
-                }
-            });
-            if (BI.isNull(v)) {
-                delete clicked[dId];
-            } else {
+            // var clicked = self.model.get("clicked") || {};
+            // var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            // //这条链上所有的其他clicked都应当被清掉
+            // BI.each(clicked, function (cid, click) {
+            //     if (allFromIds.contains(cid)) {
+            //         delete clicked[cid];
+            //     }
+            // });
+            // if (BI.isNull(v)) {
+            //     delete clicked[dId];
+            // } else {
+            //     clicked[dId] = v;
+            // }
+
+            // 2016.12.1 young 都清除掉，每次都是往上找到所有的联动条件
+            var clicked = BI.Utils.getLinkageValuesByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            if (BI.isNotNull(v)) {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
+            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
+            self._refreshTableAndFilter();
         });
 
         //全局样式的修改
@@ -132,7 +140,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     top: 10
                 }]
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
+            this.title.on(BI.ShelterEditor.EVENT_CONFIRM, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
@@ -197,8 +205,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(self.model.get("name")));
+                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                        + window.encodeURIComponent(self.model.get("name"));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY :
                     self.model.copy();
@@ -231,6 +239,9 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             });
             this.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
                 self.model.set(widget);
+                if (BI.isNotNull(widget.clicked)) {
+                    self._refreshTableAndFilter();
+                }
             });
             BI.createWidget({
                 type: "bi.absolute",
@@ -303,7 +314,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         if (BI.has(changed, "bounds")) {
             this.tableResize();
         }
-        if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
         if (BI.has(changed, "dimensions") ||

@@ -2,7 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.CubeBuild;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
@@ -17,7 +17,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
 
@@ -31,7 +31,7 @@ import java.util.concurrent.Future;
  */
 public class StopCubeTask implements CubeTask {
 
-    private CubeBuild cubeBuildManager;
+    private CubeBuildStuff cubeBuildManager;
     private BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
@@ -46,7 +46,7 @@ public class StopCubeTask implements CubeTask {
     }
 
     @Override
-    public String getUUID() {
+    public String getTaskId() {
         return "BUILD_CUBE";
     }
 
@@ -64,7 +64,7 @@ public class StopCubeTask implements CubeTask {
     public void end() {
         Future<String> result = finishObserver.getOperationResult();
         try {
-            BILogger.getLogger().info(result.get());
+            BILoggerFactory.getLogger().info(result.get());
 //            BIFileUtils.moveFile(BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId())).getRootURI().getPath(),
 //                    BICubeConfiguration.getConf(Long.toString(biUser.getUserId())).getRootURI().getPath());
         } catch (Exception e) {
@@ -92,6 +92,8 @@ public class StopCubeTask implements CubeTask {
     public long getUserId() {
         return -999;
     }
+
+
 
     @Override
     public JSONObject createJSON() throws Exception {

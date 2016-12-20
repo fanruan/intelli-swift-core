@@ -26,10 +26,10 @@ import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,6 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BICubeTableAdapter implements ICubeTableService {
     private Cube cube;
+    private BITableKey tableKey;
     private CubeTableEntityGetterService primaryTable;
     private Map<BIKey, ICubeFieldSource> columnSet = null;
     private Map<BIKey, CubeColumnReaderService> columnReaderServiceMap = new ConcurrentHashMap<BIKey, CubeColumnReaderService>();
@@ -51,7 +52,8 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     public BICubeTableAdapter(Cube cube, CubeTableSource tableSource) {
         this.cube = cube;
-        primaryTable = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
+        tableKey = new BITableKey(tableSource.getSourceID());
+        primaryTable = cube.getCubeTable(tableKey);
         Iterator<Set<CubeTableSource>> it = tableSource.createGenerateTablesMap().values().iterator();
         while (it.hasNext()) {
             Iterator<CubeTableSource> tableSourceIterator = it.next().iterator();
@@ -63,7 +65,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     private void initData() {
-        rowCount =  primaryTable.getRowCount();
+        rowCount = primaryTable.getRowCount();
     }
 
     private void initial(CubeTableSource tableSource) {
@@ -134,18 +136,18 @@ public class BICubeTableAdapter implements ICubeTableService {
 //                columnSet.put(getColumnIndex(field.getFieldName()), field);
 //            }
 //        }
-            synchronized (this) {
-                if (!isColumnInitial()) {
-                    Map<BIKey, ICubeFieldSource> columnSetTemp = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
-                    List<ICubeFieldSource> list = primaryTable.getFieldInfo();
-                    Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
-                    while (tableFieldIt.hasNext()) {
-                        ICubeFieldSource field = tableFieldIt.next();
-                        columnSetTemp.put(getColumnIndex(field.getFieldName()), field);
-                    }
-                    columnSet = columnSetTemp;
+        synchronized (this) {
+            if (!isColumnInitial()) {
+                Map<BIKey, ICubeFieldSource> columnSetTemp = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
+                List<ICubeFieldSource> list = primaryTable.getFieldInfo();
+                Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
+                while (tableFieldIt.hasNext()) {
+                    ICubeFieldSource field = tableFieldIt.next();
+                    columnSetTemp.put(getColumnIndex(field.getFieldName()), field);
                 }
+                columnSet = columnSetTemp;
             }
+        }
         return columnSet;
     }
 
@@ -199,18 +201,18 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public Date getLastTime() {
-        return primaryTable.getCubeLastTime();
+        return primaryTable.getLastExecuteTime();
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         return primaryTable.getRemovedList();
     }
 
 
     @Override
     public GroupValueIndex getAllShowIndex() {
-        if (null != getRemovedList() && getRemovedList().size() != 0) {
+        if (null != getRemovedList() && getRemovedList().size != 0) {
             return GVIFactory.createGroupValueIndexBySimpleIndex(getRemovedList()).NOT(getRowCount());
         } else {
             return GVIFactory.createAllShowIndexGVI(getRowCount());
@@ -256,7 +258,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     @Override
     public ICubeColumnIndexReader loadGroup(BIKey columnIndex, List<BITableSourceRelation> relationList) {
         CubeColumnReaderService columnReaderService = getColumnReader(columnIndex);
-        checkFieldPathIndex(columnIndex, relationList, columnReaderService);
+        checkFieldPathIndex(columnIndex, relationList, getColumnKey(columnIndex));
         return new BIColumnIndexReader(columnReaderService, relationList);
     }
 
@@ -272,13 +274,13 @@ public class BICubeTableAdapter implements ICubeTableService {
         }
     }
 
-    private void checkFieldPathIndex(BIKey columnIndex, List<BITableSourceRelation> relationList, CubeColumnReaderService columnReaderService) {
+    private void checkFieldPathIndex(BIKey columnIndex, List<BITableSourceRelation> relationList, BIColumnKey columnKey) {
         if (relationList != null) {
             try {
                 BICubeTablePath path = BICubePathUtils.convert(relationList);
-                if (path.size() > 0 && !columnReaderService.existRelationPath(path)) {
+                if (path.size() > 0 && !isFieldRelationExist(columnKey, path)) {
                     synchronized (getLock(path.getSourceID())) {
-                        if (path.size() > 0 && !columnReaderService.existRelationPath(path)) {
+                        if (path.size() > 0 && !isFieldRelationExist(columnKey, path)) {
                             BIFieldPathIndexBuilder indexBuilder;
                             if (columnIndex instanceof IndexTypeKey) {
                                 indexBuilder = new BIFieldPathIndexBuilder(cube, getDBField(columnIndex), path, getColumnSubType(columnIndex));
@@ -293,6 +295,10 @@ public class BICubeTableAdapter implements ICubeTableService {
                 throw BINonValueUtils.beyondControl(e);
             }
         }
+    }
+
+    private boolean isFieldRelationExist(BIColumnKey columnKey, BICubeTablePath path) {
+        return this.cube.exist(this.tableKey, columnKey, path);
     }
 
     private String getColumnSubType(BIKey biKey) {
@@ -330,19 +336,26 @@ public class BICubeTableAdapter implements ICubeTableService {
     private CubeColumnReaderService buildColumnReader(BIKey biKey) {
         CubeColumnReaderService columnReaderService;
         try {
-            BIColumnKey columnKey;
-            ICubeFieldSource field = getDBField(biKey);
-            if (biKey instanceof IndexTypeKey) {
-                columnKey = BIColumnKeyAdapter.covert(field, ((IndexTypeKey) biKey).getType());
-            } else {
-                columnKey = BIColumnKey.covertColumnKey(field);
-            }
+            BIColumnKey columnKey = getColumnKey(biKey);
             columnReaderService = primaryTable.getColumnDataGetter(columnKey);
-
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
         return columnReaderService;
+    }
+
+    private BIColumnKey getColumnKey(BIKey biKey) {
+
+        try {
+            ICubeFieldSource field = getDBField(biKey);
+            if (biKey instanceof IndexTypeKey) {
+                return BIColumnKeyAdapter.covert(field, ((IndexTypeKey) biKey).getType());
+            } else {
+                return BIColumnKey.covertColumnKey(field);
+            }
+        } catch (BIKeyAbsentException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 
     private CubeColumnReaderService getColumnReader(BIKey biKey) {
@@ -397,7 +410,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     @Override
     public ICubeValueEntryGetter getValueEntryGetter(BIKey key, List<BITableSourceRelation> relationList) {
         CubeColumnReaderService columnReaderService = getColumnReader(key);
-        checkFieldPathIndex(key, relationList, columnReaderService);
+        checkFieldPathIndex(key, relationList, getColumnKey(key));
         CubeRelationEntityGetterService getterService = null;
         if (relationList != null && relationList.size() > 0) {
             BITableSourceRelation startRelation = relationList.get(0);
@@ -413,6 +426,13 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public void clear() {
+        for (ICubeColumnDetailGetter detailGetter : columnDetailReaderServiceMap.values()) {
+            detailGetter.clear();
+        }
+        for (CubeColumnReaderService readerService : columnReaderServiceMap.values()) {
+            readerService.clear();
+        }
+        primaryTable.clear();
     }
 
     @Override

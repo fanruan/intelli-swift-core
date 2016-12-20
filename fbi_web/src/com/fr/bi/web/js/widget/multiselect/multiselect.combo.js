@@ -86,7 +86,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             if (this.getSearcher().hasMatched()) {
                 var keyword = this.getSearcher().getKeyword();
                 self._join({
-                    type: self.storeValue.type,
+                    type: BI.Selection.Multi,
                     value: [keyword]
                 }, function () {
                     self.combo.setValue(self.storeValue);
@@ -97,6 +97,23 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
                 })
             }
         });
+        this.trigger.on(BI.MultiSelectTrigger.EVENT_SEARCHING, function (keywords) {
+            var last = BI.last(keywords);
+            keywords = BI.initial(keywords || []);
+            if (keywords.length > 0) {
+                self._joinKeywords(keywords, function () {
+                    if (BI.isEndWithBlank(last)) {
+                        self.combo.setValue(self.storeValue);
+                        assertShowValue();
+                        self.combo.populate();
+                        self._setStartValue("");
+                    } else {
+                        self.combo.setValue(self.storeValue);
+                        assertShowValue();
+                    }
+                });
+            }
+        });
 
         this.trigger.on(BI.MultiSelectTrigger.EVENT_CHANGE, function (value, obj) {
             if (obj instanceof BI.MultiSelectBar) {
@@ -104,7 +121,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
                     assertShowValue();
                 });
             } else {
-                self._join(this.getValue(), function () {
+                self._join(this.getValue(), function () {//安徽省 北京
                     assertShowValue();
                 });
             }
@@ -185,6 +202,31 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
         return BI.makeObject(values || []);
     },
 
+    _joinKeywords: function (keywords, callback) {
+        var self = this, o = this.options;
+        this._assertValue(this.storeValue);
+        if (!this._allData) {
+            o.itemsCreator({
+                type: BI.MultiSelectCombo.REQ_GET_ALL_DATA
+            }, function (ob) {
+                self._allData = BI.pluck(ob.items, "value");
+                digest(self._allData);
+            })
+        } else {
+            digest(this._allData)
+        }
+
+        function digest(items) {
+            var selectedMap = self._makeMap(items);
+            BI.each(keywords, function (i, val) {
+                if (BI.isNotNull(selectedMap[val])) {
+                    self.storeValue.value[self.storeValue.type === BI.Selection.Multi ? "pushDistinct" : "remove"](val);
+                }
+            });
+            self._adjust(callback);
+        }
+    },
+
     _joinAll: function (res, callback) {
         var self = this, o = this.options;
         this._assertValue(res);
@@ -208,15 +250,16 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             }
             var selectedMap = self._makeMap(self.storeValue.value);
             var notSelectedMap = self._makeMap(res.value);
+            var newItems = [];
             BI.each(items, function (i, item) {
                 if (BI.isNotNull(selectedMap[items[i]])) {
                     delete selectedMap[items[i]];
                 }
-                if (BI.isNotNull(notSelectedMap[items[i]])) {
-                    items.splice(i--, 1);
+                if (BI.isNull(notSelectedMap[items[i]])) {
+                    newItems.push(item);
                 }
             });
-            self.storeValue.value = items.concat(BI.values(selectedMap));
+            self.storeValue.value = newItems.concat(BI.values(selectedMap));
             self._adjust(callback);
         })
     },
@@ -293,6 +336,8 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
     },
 
     populate: function () {
+        this._count = null;
+        this._allData = null;
         this.combo.populate.apply(this.combo, arguments);
     }
 });

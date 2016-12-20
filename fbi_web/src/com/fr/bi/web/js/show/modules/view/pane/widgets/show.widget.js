@@ -22,17 +22,23 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         BIShow.WidgetView.superclass._init.apply(this, arguments);
         var self = this, wId = this.model.get("id");
         BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
-            var clicked = self.model.get("clicked") || {};
-            var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-            //这条链上所有的其他clicked都应当被清掉
-            BI.each(clicked, function (cid, click) {
-                if (allFromIds.contains(cid)) {
-                    delete clicked[cid];
-                }
-            });
-            if (BI.isNull(v)) {
-                delete clicked[dId];
-            } else {
+            // var clicked = self.model.get("clicked") || {};
+            // var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            // //这条链上所有的其他clicked都应当被清掉
+            // BI.each(clicked, function (cid, click) {
+            //     if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
+            //         delete clicked[cid];
+            //     }
+            // });
+            // if (BI.isNull(v)) {
+            //     delete clicked[dId];
+            // } else {
+            //     clicked[dId] = v;
+            // }
+
+            // 2016.12.1 young 都清除掉，每次都是往上找到所有的联动条件
+            var clicked = BI.Utils.getLinkageValuesByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            if (BI.isNotNull(v)) {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
@@ -60,7 +66,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
-        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
+        this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (obj) {
             self._onClickChart(obj);
         });
 
@@ -154,7 +160,12 @@ BIShow.WidgetView = BI.inherit(BI.View, {
     },
 
     _onClickChart: function (obj) {
-        this.chartDrill.populate(obj);
+        //TODO 先与dezi.widget.js统一一下,等bugfix4.0s整理完成后合并
+        if (BI.has(obj, "clicked")) {
+            this.model.set(obj);
+        } else {
+            this.chartDrill.populate(obj);
+        }
     },
 
     _createTools: function () {
@@ -221,8 +232,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             height: this._constants.TOOL_ICON_HEIGHT
         });
         excel.on(BI.IconButton.EVENT_CHANGE, function () {
-            window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                + window.encodeURIComponent(self.model.get("name")));
+            window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                + window.encodeURIComponent(self.model.get("name"));
         });
 
         this.tools = BI.createWidget({

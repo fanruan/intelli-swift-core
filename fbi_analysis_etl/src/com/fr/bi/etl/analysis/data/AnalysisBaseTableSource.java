@@ -42,6 +42,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     protected List<AnalysisETLSourceField> fieldList;
     protected String name;
     protected String widgetTableId;
+
     public BIWidget getWidget() {
         return widget;
     }
@@ -60,9 +61,9 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
             dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
-            for (int i = 0; i < fieldList.size(); i++){
+            for (int i = 0; i < fieldList.size(); i++) {
                 AnalysisETLSourceField c = fieldList.get(i);
-                int sqlType = i < widget.getViewDimensions().length? getSqlType(i) : BIDBUtils.biTypeToSql(c.getFieldType());
+                int sqlType = i < widget.getViewDimensions().length ? getSqlType(i) : BIDBUtils.biTypeToSql(c.getFieldType());
                 dbTable.addColumn(new PersistentField(c.getFieldName(), sqlType));
             }
 
@@ -71,7 +72,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     private int getSqlType(int index) {
-        if (widget.getType() != BIReportConstant.WIDGET.DETAIL){
+        if (widget.getType() != BIReportConstant.WIDGET.DETAIL) {
             return getTableWidgetSqlType(index);
         } else {
             return getDetailWidgetSqlType(index);
@@ -81,27 +82,33 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     private int getDetailWidgetSqlType(int index) {
         BIAbstractDetailTarget target = (BIAbstractDetailTarget) widget.getDimensions()[index];
         if (target.isCalculateTarget()) {
-           return Types.DOUBLE;
-        }  else if(target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
-            return BIDBUtils.classTypeToSql(target.getStatisticElement().getClassType()) ;
-        }else {
+            return Types.DOUBLE;
+        } else if (target.getStatisticElement() == null) {
+            return Types.VARCHAR;
+        } else if (target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
+            return BIDBUtils.classTypeToSql(target.getStatisticElement().getClassType());
+        } else {
             return getTypeByGroup(target.getGroup());
         }
     }
 
-    private int getTableWidgetSqlType(int index){
+    private int getTableWidgetSqlType(int index) {
         BIDimension dim = (BIDimension) widget.getDimensions()[index];
-        if (dim.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER){
+        if (dim.getStatisticElement() == null) {
+            return Types.VARCHAR;
+        } else if (dim.getStatisticElement() == null) {
+            return Types.VARCHAR;
+        } else if (dim.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
             return (dim.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP
                     || dim.getGroup().getType() == BIReportConstant.GROUP.ID_GROUP) ?
-                    BIDBUtils.classTypeToSql(dim.getStatisticElement().getClassType())  : Types.VARCHAR;
+                    BIDBUtils.classTypeToSql(dim.getStatisticElement().getClassType()) : Types.VARCHAR;
         } else {
             return getTypeByGroup(dim.getGroup());
         }
     }
 
     private int getTypeByGroup(IGroup group) {
-        switch (group.getType()){
+        switch (group.getType()) {
             case BIReportConstant.GROUP.Y:
             case BIReportConstant.GROUP.M:
             case BIReportConstant.GROUP.S:
@@ -115,7 +122,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
                 return Types.VARCHAR;
         }
     }
-
 
 
     public Set<BusinessTable> createTableKeys() {
@@ -137,10 +143,10 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     @Override
     public UserCubeTableSource createUserTableSource(long userId) {
         UserCubeTableSource source = userBaseTableMap.get(userId);
-        if (source == null){
-            synchronized (userBaseTableMap){
+        if (source == null) {
+            synchronized (userBaseTableMap) {
                 UserCubeTableSource tmp = userBaseTableMap.get(userId);
-                if (tmp == null){
+                if (tmp == null) {
                     source = new UserBaseTableSource(this, userId);
                     userBaseTableMap.put(userId, source);
                 } else {
@@ -158,22 +164,22 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     @Override
     public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
-        if(set.contains(this)){
+        if (set.contains(this)) {
             return;
         }
-        for (BITargetAndDimension dim : widget.getViewDimensions()){
-            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
+        for (BITargetAndDimension dim : widget.getViewDimensions()) {
+            if (dim.getStatisticElement() != null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 CubeTableSource source = dim.createTableKey().getTableSource();
-                if (source.getType() ==  Constants.TABLE_TYPE.BASE || source.getType() ==  Constants.TABLE_TYPE.ETL){
-                    ((AnalysisCubeTableSource)source).getSourceUsedAnalysisETLSource(set);
+                if (source.getType() == Constants.TABLE_TYPE.BASE || source.getType() == Constants.TABLE_TYPE.ETL) {
+                    ((AnalysisCubeTableSource) source).getSourceUsedAnalysisETLSource(set);
                 }
             }
         }
-        for (BITargetAndDimension target : widget.getViewTargets()){
-            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
+        for (BITargetAndDimension target : widget.getViewTargets()) {
+            if (target.getStatisticElement() != null && target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
                 CubeTableSource source = target.createTableKey().getTableSource();
-                if (source.getType() ==  Constants.TABLE_TYPE.BASE || source.getType() ==  Constants.TABLE_TYPE.ETL){
-                    ((AnalysisCubeTableSource)source).getSourceUsedAnalysisETLSource(set);
+                if (source.getType() == Constants.TABLE_TYPE.BASE || source.getType() == Constants.TABLE_TYPE.ETL) {
+                    ((AnalysisCubeTableSource) source).getSourceUsedAnalysisETLSource(set);
                 }
             }
         }
@@ -187,14 +193,14 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     @Override
     public JSONObject createJSON() throws Exception {
-        JSONObject jo =  super.createJSON();
+        JSONObject jo = super.createJSON();
         JSONObject widget = new JSONObject();
-        if (etlType == Constants.ETL_TYPE.SELECT_NONE_DATA){
+        if (etlType == Constants.ETL_TYPE.SELECT_NONE_DATA) {
             widget.put("widgetTableId", widgetTableId);
         }
-        if (fieldList != null && !fieldList.isEmpty()){
+        if (fieldList != null && !fieldList.isEmpty()) {
             JSONArray ja = new JSONArray();
-            for (AnalysisETLSourceField f : fieldList){
+            for (AnalysisETLSourceField f : fieldList) {
                 ja.put(f.createJSON());
             }
             jo.put(Constants.FIELDS, ja);
@@ -210,20 +216,25 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
      */
     @Override
     public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
-        if(helper.contains(this)){
+        if (helper.contains(this)) {
             return set;
         }
         helper.add(this);
-        for (BITargetAndDimension dim : widget.getViewDimensions()){
-            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
+        for (BITargetAndDimension dim : widget.getViewDimensions()) {
+            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 dim.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
-        for (BITargetAndDimension target : widget.getViewTargets()){
-            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
+        for (BITargetAndDimension target : widget.getViewTargets()) {
+            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
                 target.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
         return set;
+    }
+
+    public void clearUserBaseTableMap() {
+        userBaseTableMap.clear();
+        widget.refreshColumns();
     }
 }

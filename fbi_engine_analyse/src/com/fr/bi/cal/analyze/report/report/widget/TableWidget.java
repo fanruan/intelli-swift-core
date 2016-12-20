@@ -12,17 +12,22 @@ import com.fr.bi.cal.analyze.executor.table.*;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -52,6 +57,8 @@ public class TableWidget extends BISummaryWidget {
     private transient BIDimension[] usedDimension;
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
+
+    private DetailChartSetting settings = new DetailChartSetting();
 
     @Override
     public BIDimension[] getViewDimensions() {
@@ -130,12 +137,11 @@ public class TableWidget extends BISummaryWidget {
     public BIEngineExecutor getExecutor(BISession session) {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
+        boolean hasTarget = calculateTarget || getViewTargets().length > 0;
         if (this.table_type == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
-            boolean hasTarget = calculateTarget || getViewTargets().length > 0;
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
-
-            return createNormalExecutor(session, calculateTarget, getViewDimensions(), getViewTopDimensions(), expander);
+            return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
         }
     }
 
@@ -183,7 +189,7 @@ public class TableWidget extends BISummaryWidget {
         boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
         boolean b3 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen == 0;
         if (b0) {
-            executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
+            executor = new HorGroupExecutor(this, usedColumn, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b1) {
             executor = new HorGroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b2) {
@@ -238,6 +244,13 @@ public class TableWidget extends BISummaryWidget {
         if (jo.has(BIJSONConstant.JSON_KEYS.EXPANDER)) {
             parsExpander(jo);
         }
+        if (jo.has("settings")) {
+            settings = new DetailChartSetting();
+            settings.parseJSON(jo);
+        }
+        changeCalculateTargetStartGroup();
+
+
     }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
@@ -256,6 +269,10 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
+    public DetailChartSetting getChartSetting() {
+        return settings;
+    }
+
     @Override
     public int getType() {
         return BIReportConstant.WIDGET.TABLE;
@@ -263,5 +280,45 @@ public class TableWidget extends BISummaryWidget {
 
     public void setOperator(int operator) {
         this.operator = operator;
+    }
+
+    public boolean hasVerticalPrePage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_PRE] > 0;
+    }
+
+    public boolean hasVerticalNextPage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_NEXT] > 0;
+    }
+
+    public boolean hasHorizonPrePage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_PRE] > 0;
+    }
+
+    public boolean hasHorizonNextPage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_NEXT] > 0;
+    }
+
+    private void changeCalculateTargetStartGroup() {
+        boolean changed = false;
+        BISummaryTarget[] targets = getTargets();
+        if (this.getViewDimensions().length <= 1) {
+            for (int i = 0; i < targets.length; i++) {
+                BISummaryTarget target = targets[i];
+                if (target instanceof BIConfiguredCalculateTarget) {
+                    BIConfiguredCalculateTarget configuredCalculateTarget = (BIConfiguredCalculateTarget) target;
+                    if ((configuredCalculateTarget.getStart_group() == 1)) {
+                        configuredCalculateTarget.setStart_group(0);
+                        changed = true;
+                    }
+                }
+            }
+            if (changed) {
+                Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
+                for (int i = 0; i < targets.length; i++) {
+                    targets[i].setTargetMap(targetMap);
+                    targetMap.put(targets[i].getValue(), targets[i].createSummaryCalculator().createTargetGettingKey());
+                }
+            }
+        }
     }
 }

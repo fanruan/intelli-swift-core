@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.location.BICubeLocation;
@@ -9,10 +10,11 @@ import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.conf.data.source.BIOccupiedCubeTableSource;
+import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -37,7 +39,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
     protected Set<CubeTableSource> allSources;
     protected CubeTableEntityService tableEntityService;
     protected Cube cube;
-    protected List<ITableKey> parents = new ArrayList<ITableKey>();
+    protected List<ITableKey> parents = null;
     protected long version = 0;
 
     public BISourceDataTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
@@ -46,18 +48,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
         this.cube = cube;
         tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
         this.version = version;
-        initialParents(parentTableSource);
     }
-
-
-    private void initialParents(Set<CubeTableSource> parentTableSource) {
-        if (parentTableSource != null) {
-            for (CubeTableSource tableSource : parentTableSource) {
-                parents.add(new BITableKey(tableSource));
-            }
-        }
-    }
-
 
     @Override
     public void release() {
@@ -77,25 +68,45 @@ public abstract class BISourceDataTransport extends BIProcessor {
         }
         tableEntityService.recordTableStructure(columnList);
         if (!tableSource.isIndependent()) {
-            tableEntityService.recordParentsTable(parents);
+            tableEntityService.recordParentsTable(getParents(this.tableSource));
             tableEntityService.recordFieldNamesFromParent(getParentFieldNames());
         }
     }
 
+    private List<ITableKey> getParents(CubeTableSource tableSource) {
+        if (parents == null) {
+            parents = new ArrayList<ITableKey>();
+            if (!tableSource.isIndependent()) {
+                if (tableSource instanceof ETLTableSource) {
+                    ETLTableSource etlTableSource = (ETLTableSource) tableSource;
+                    for (CubeTableSource parent : etlTableSource.getParents()) {
+                        parents.add(new BITableKey(parent));
+                    }
+                } else if (tableSource instanceof BIOccupiedCubeTableSource) {
+                    BIOccupiedCubeTableSource ocTableSource = (BIOccupiedCubeTableSource) tableSource;
+                    for (CubeTableSource parent : ocTableSource.getParents()) {
+                        parents.add(new BITableKey(parent));
+                    }
+                }
+            }
+        }
+        return parents;
+    }
+
     protected void copyFromOldCubes() {
-        long t=System.currentTimeMillis();
+        long t = System.currentTimeMillis();
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         try {
             BICubeLocation from = new BICubeLocation(advancedConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
-            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+                BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         } catch (URISyntaxException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
-BILogger.getLogger().info("table name: "+ tableSource.getTableName() +" update copy files cost time:" + DateUtils.timeCostFrom(t));
+        BILoggerFactory.getLogger().info("table name: " + tableSource.getTableName() + " update copy files cost time:" + DateUtils.timeCostFrom(t));
     }
 
     private Set<String> getParentFieldNames() {

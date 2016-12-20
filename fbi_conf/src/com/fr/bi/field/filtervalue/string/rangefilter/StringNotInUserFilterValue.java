@@ -2,25 +2,30 @@ package com.fr.bi.field.filtervalue.string.rangefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
 /**
  * Created by Young's on 2016/5/20.
  */
 public class StringNotInUserFilterValue extends StringRangeFilterValue {
-    protected BusinessField column = null;
+    @BICoreField
+    protected String fieldId;
+
+    @BICoreField
+    private String CLASS_TYPE = "StringNotInUserFilterValue";
 
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
@@ -33,26 +38,7 @@ public class StringNotInUserFilterValue extends StringRangeFilterValue {
 
     @Override
     public boolean isMatchValue(String v) {
-        return valueSet.contains(v);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        StringNotInUserFilterValue that = (StringNotInUserFilterValue) o;
-
-        return column != null ? column.equals(that.column) : that.column == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (column != null ? column.hashCode() : 0);
-        return result;
+        return !valueSet.contains(v);
     }
 
     @Override
@@ -65,17 +51,39 @@ public class StringNotInUserFilterValue extends StringRangeFilterValue {
         return isMatchValue(value);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        StringNotInUserFilterValue that = (StringNotInUserFilterValue) o;
+
+        return fieldId != null ? fieldId.equals(that.fieldId) : that.fieldId == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (fieldId != null ? fieldId.hashCode() : 0);
+        return result;
+    }
+
     protected void addLogUserInfo() {
-        if (this.column != null && BIConfigureManagerCenter.getCubeConfManager().getLoginField() != null) {
+        BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId));
+        if (field != null && BIConfigureManagerCenter.getCubeConfManager().getLoginField() != null) {
             try {
-                Object[] values = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(column, user.getUserId());
+                Object[] values = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(field, user.getUserId());
                 if (values != null) {
-                    for(int i = 0; i < values.length; i++) {
-                        valueSet.getValues().add(values[i].toString());
+                    for (int i = 0; i < values.length; i++) {
+                        if (values[i] != null) {
+                            valueSet.getValues().add(values[i].toString());
+                        }
                     }
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -83,16 +91,9 @@ public class StringNotInUserFilterValue extends StringRangeFilterValue {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        if (jo.has("filter_value")) {
-            JSONObject filterValue = jo.getJSONObject("filter_value");
-            JSONObject value = filterValue.getJSONObject("value");
-            if (value.has("login_user")) {
-                valueSet.getValues().add(UserControl.getInstance().getUser(userId).getUsername());
-            } else {
-                BusinessField dataColumn = new BIBusinessField();
-                dataColumn.parseJSON(value);
-                this.column = dataColumn;
-            }
+        if(jo.has("filter_value")) {
+            this.fieldId = jo.getString("filter_value");
+            this.valueSet.setType(StringValueSet.CONTAINS);
         }
     }
 }

@@ -16,7 +16,8 @@ import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.common.factory.annotation.BISingletonObject;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.manager.PerformancePlugManager;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 
 /**
@@ -31,7 +32,7 @@ import com.fr.bi.stable.utils.code.BILogger;
 public class BIRouter implements IRouter {
     private ITopicRouterService topicRouterService;
     private BIMessageDispatcher messageDispatcher;
-    private boolean verbose = true;
+    private boolean verbose = PerformancePlugManager.getInstance().verboseLog();
     private Thread dispatcherThread;
 
     public BIRouter() {
@@ -82,8 +83,7 @@ public class BIRouter implements IRouter {
     @Override
     public void deliverMessage(IMessage message) throws BIDeliverFailureException {
         if (verbose) {
-            BILogger.getLogger().info("Message Router Receive:" + message.toString());
-            System.out.println("Message Router Receive:" + message.toString());
+            BILoggerFactory.getLogger().info("Message Router Receive:" + message.toString());
         }
         messageDispatcher.addMessage(message);
     }

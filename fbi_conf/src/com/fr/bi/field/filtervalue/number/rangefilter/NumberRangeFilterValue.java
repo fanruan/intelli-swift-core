@@ -9,11 +9,12 @@ import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.operation.group.data.number.NumberGroupInfo;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -120,7 +121,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
                 JSONObject jo = new JSONObject(reader.getAttrAsString("value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -135,7 +136,7 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
         try {
             writer.attr("value", createJSON().toString());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         writer.end();
     }
@@ -156,23 +157,16 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
             return ti.getAllShowIndex();
         }
         Iterator it = dimension.createNoneSortNoneGroupValueMapGetter(target, loader).iterator();
-        GroupValueIndex gvi = null;
+        GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Number v = (Number) entry.getKey();
             GroupValueIndex g = (GroupValueIndex) entry.getValue();
             if (v != null && gi.contains(v.doubleValue())) {
-                if (gvi == null) {
-                    gvi = g;
-                } else {
-                    gvi = gvi.OR(g);
-                }
+                helper.add(g);
             }
         }
-        if (gvi == null) {
-            return GVIFactory.createAllEmptyIndexGVI();
-        }
-        return gvi;
+        return helper.compute();
     }
 
 

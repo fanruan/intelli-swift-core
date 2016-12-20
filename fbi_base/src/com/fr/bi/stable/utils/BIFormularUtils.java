@@ -2,9 +2,10 @@ package com.fr.bi.stable.utils;
 
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.script.Calculator;
 import com.fr.stable.Primitive;
 import com.fr.stable.UtilEvalError;
@@ -43,6 +44,8 @@ public class BIFormularUtils {
             Object ob = c.eval(formula);
             return ob == Primitive.NULL ? null : ob;
         } catch (UtilEvalError e) {
+            BILoggerFactory.getLogger(BIFormularUtils.class).error("incorrect formula");
+            BILoggerFactory.getLogger(BIFormularUtils.class).error(BIStringUtils.append("The formula:", formula));
             return null;
         }
     }
@@ -61,13 +64,13 @@ public class BIFormularUtils {
 
                 BIKey columnIndex = ti.getColumnIndex(columnName);
                 if (columnIndex == null) {
-                    BILogger.getLogger().error(columnName + ": not found");
+                    BILoggerFactory.getLogger().error(columnName + ": not found");
                 } else {
                     columnIndexMap.put(toParameterFormat(String.valueOf(j)), columnIndex);
                 }
             }
         } catch (ANTLRException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return columnIndexMap;
     }
@@ -97,7 +100,7 @@ public class BIFormularUtils {
                 columnIndexMap.put(toParameterFormat(String.valueOf(j)), columnName);
             }
         } catch (ANTLRException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return columnIndexMap;
     }

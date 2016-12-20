@@ -11,14 +11,14 @@ public class GVIUtils {
     public static GroupValueIndex getTableLinkedOrGVI(GroupValueIndex currentIndex, final ICubeTableIndexReader reader) {
         if (currentIndex != null) {
 
-            final GroupValueIndex sgvi = new RoaringGroupValueIndex();
+            final GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
             currentIndex.Traversal(new SingleRowTraversalAction() {
                 @Override
                 public void actionPerformed(int rowIndices) {
-                    sgvi.or(reader.get(rowIndices));
+                    helper.add(reader.get(rowIndices));
                 }
             });
-            return sgvi;
+            return helper.compute();
         }
         return null;
     }
@@ -41,5 +41,17 @@ public class GVIUtils {
             return a;
         }
         return a.OR(b);
+    }
+
+    public static boolean isAllShowRoaringGroupValueIndex(GroupValueIndex valueIndex) {
+        return ((AbstractGroupValueIndex)valueIndex).getType() == GroupValueIndexCreator.ROARING_INDEX_All_SHOW.getType();
+    }
+
+    public static boolean isAllEmptyRoaringGroupValueIndex(GroupValueIndex valueIndex) {
+        return valueIndex.getRowsCountWithData() == 0;
+    }
+
+    public static boolean isIDGroupValueIndex(GroupValueIndex valueIndex) {
+        return ((AbstractGroupValueIndex)valueIndex).getType() == GroupValueIndexCreator.ROARING_INDEX_ID.getType();
     }
 }

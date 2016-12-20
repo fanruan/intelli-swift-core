@@ -35,7 +35,7 @@ BI.HyperLinkInsert = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Use_HyperLink")
         });
 
-        this.used.on(BI.Controller.EVENT_CHANGE, function(){
+        this.used.on(BI.Controller.EVENT_CHANGE, function () {
             var b = self.used.isSelected();
             self.selectField.setEnable(!!b);
             self.textArea.setEnable(!!b);
@@ -77,13 +77,15 @@ BI.HyperLinkInsert = BI.inherit(BI.Widget, {
     _assertValue: function (v) {
         v = v || {};
         v.expression = v.expression || "";
-        v.used = v.used || true;
+        if (BI.isNull(v.used)) {
+            v.used = true;
+        }
         return v;
     },
 
     setValue: function (v) {
         v = this._assertValue(v);
-        this.used.setSelected(!!v.used) ;
+        this.used.setSelected(!!v.used);
         this.textArea.setValue(v.expression);
     },
 

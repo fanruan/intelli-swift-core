@@ -15,6 +15,13 @@ public interface ICubeValueEntryGetter {
     GroupValueIndex getIndexByRow(int row);
 
     /**
+     * 根据分组序号号获取该行对应的索引
+     * @param groupRow
+     * @return
+     */
+    GroupValueIndex getIndexByGroupRow(int groupRow);
+
+    /**
      * 根据行号获取该行对应的CubeValueEntry
      * @param row
      * @return
@@ -22,11 +29,11 @@ public interface ICubeValueEntryGetter {
     CubeValueEntry getEntryByRow(int row);
 
     /**
-     * 根据分组号获取该行对应的CubeValueEntry
+     * 根据分组号获取该行对应的分组值
      * @param groupRow 分组序号
      * @return
      */
-    CubeValueEntry getEntryByGroupRow(int groupRow);
+    Object getGroupValue(int groupRow);
 
     /**
      * 根据行号获取在分组中的位置
@@ -34,6 +41,13 @@ public interface ICubeValueEntryGetter {
      * @return
      */
     int getPositionOfGroupByRow(int row);
+
+    /**
+     * 根据值获取在分组中的位置
+     * @param value
+     * @return
+     */
+    int getPositionOfGroupByValue(Object value);
 
     int getGroupSize();
 }

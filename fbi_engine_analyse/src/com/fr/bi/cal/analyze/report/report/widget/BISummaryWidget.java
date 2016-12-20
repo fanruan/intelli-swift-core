@@ -1,14 +1,17 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -25,9 +28,9 @@ import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
@@ -35,6 +38,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BISummaryWidget extends BIAbstractWidget {
     @BICoreField
@@ -55,7 +59,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
     protected ComplexExpander complexExpander = new ComplexExpander();
     private int maxCol = 7;     //单页最大列数
-    private int maxRow = 20;    //单页最大行数
+    private int maxRow = PagingFactory.PAGE_PER_GROUP_20;    //单页最大行数
     private int dimensionRelationIndex = 1;
     private int targetRelationIndex = 0;
 
@@ -75,12 +79,16 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
-            result.add(dimensions[i].getStatisticElement().getTableBelongTo());
+            if (dimensions[i].getStatisticElement() != null) {
+                result.add(dimensions[i].getStatisticElement().getTableBelongTo());
+            }
         }
         BISummaryTarget[] targets = getTargets();
         for (int i = 0; i < targets.length; i++) {
             BISummaryTarget st = targets[i];
-            result.add(st.getStatisticElement().getTableBelongTo());
+            if (st.getStatisticElement() != null) {
+                result.add(st.getStatisticElement().getTableBelongTo());
+            }
         }
         return result;
     }
@@ -132,7 +140,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                     throw new RuntimeException("relation illegal, incorrect foreignTable");
                 }
                 if (!BICubeConfigureCenter.getTableRelationManager().containTableRelationship(getUserId(), r)) {
-                    throw new RuntimeException("relation not exist");
+                    throw BINonValueUtils.beyondControl(BIStringUtils.append("relation not exist \n",
+                            "the relation: ", logRelation(r)));
                 }
             }
         } else {
@@ -143,6 +152,30 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 if (!ComparatorUtils.equals(target.getStatisticElement().getTableBelongTo().getTableSource(), dimField.getTableBelongTo().getTableSource())) {
                     throw new RuntimeException("relation empty, but source different");
                 }
+            }
+        }
+    }
+
+    private String logRelation(BITableRelation relation) {
+        try {
+            return BIStringUtils.append(
+                    " Primary Table:" + BusinessTableHelper.getBusinessTable(relation.getPrimaryTable().getID()).getTableSource().getTableName(),
+                    ",primary field :" + relation.getPrimaryField().getFieldName(),
+                    ",foreign table:" + BusinessTableHelper.getBusinessTable(relation.getForeignTable().getID()).getTableSource().getTableName(),
+                    ",foreign filed:" + relation.getForeignField().getFieldName());
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BITableRelation.class).error(e.getMessage(), e);
+            try {
+                return BIStringUtils.append("relation not exist,",
+                        "the relation:Primary Table:" + relation.getPrimaryTable().getTableName(),
+                        ",primary field :" + relation.getPrimaryField().getFieldName(),
+                        ",foreign table:" + relation.getForeignTable().getTableName(),
+                        ",foreign filed:" + relation.getForeignField().getFieldName());
+            } catch (Exception innerException) {
+                BILoggerFactory.getLogger(BITableRelation.class).error(innerException.getMessage(), innerException);
+
+                return "";
+
             }
         }
     }
@@ -226,7 +259,9 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         }
         this.dimensions = dims.toArray(new BIDimension[dims.size()]);
         List<BISummaryTarget> tars = new ArrayList<BISummaryTarget>();
-        Map<String, TargetGettingKey> targetMap = new ConcurrentCacheHashMap<String, TargetGettingKey>();
+
+        // young BI-2332 指标数超过65后，计算指标值不对
+        Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
         for (int j = 0; j < targetIds.length(); j++) {
             JSONObject tarJo = dimAndTar.getJSONObject(targetIds.getString(j));
             tarJo.put("did", targetIds.getString(j));
@@ -254,7 +289,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         gvi = GVIUtils.AND(gvi, n.NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
                     }
                 } catch (Exception e) {
-                    BILogger.getLogger().error("relation " + r.getRelationList().toString() + " nullindex missed " + "direct relation is " + r.getDirectToDimensionRelationList(), e);
+                    BILoggerFactory.getLogger().error("relation " + r.getRelationList().toString() + " nullindex missed " + "direct relation is " + r.getDirectToDimensionRelationList(), e);
                 }
             }
         }
@@ -379,7 +414,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                             dimensionRelationMap.put(targetId, dimensionRelationList);
                         }
                     } else {
-                        BILogger.getLogger().error("error missing field:" + targetRelationJo.toString() + this.getClass().getName());
+                        BILoggerFactory.getLogger().error("error missing field:" + targetRelationJo.toString() + this.getClass().getName());
                     }
                 }
             }
@@ -424,5 +459,30 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                     ", ob=" + getObject() +
                     '}';
         }
+    }
+
+    /**
+     * 螺旋分析在更新完cube以后需要把dimensionsMap中的tableSource刷新来保证缓存的正常使用(etl会改变field的tableSource)
+     */
+    @Override
+    public void refreshColumns() {
+        super.refreshColumns();
+
+        Iterator<Map.Entry<String, Map<String, BusinessField>>> it = dimensionsMap.entrySet().iterator();
+        LinkedHashMap<String, Map<String, BusinessField>> refreshedDimensionsMap = new LinkedHashMap<String, Map<String, BusinessField>>();
+        while (it.hasNext()) {
+            Map.Entry<String, Map<String, BusinessField>> dimensionsMapEntry = it.next();
+            Map<String, BusinessField> dimensionFieldOfTargetsMap = dimensionsMapEntry.getValue();
+            Map<String, BusinessField> refreshedDimensionFieldOfTargetsMap = new LinkedHashMap<String, BusinessField>();
+            Iterator<Map.Entry<String, BusinessField>> dimensionFieldOfTargetIterator = dimensionFieldOfTargetsMap.entrySet().iterator();
+            while (dimensionFieldOfTargetIterator.hasNext()) {
+                Map.Entry<String, BusinessField> entry = dimensionFieldOfTargetIterator.next();
+                BusinessField dimensionFieldOfTarget = entry.getValue();
+                refreshedDimensionFieldOfTargetsMap.put(entry.getKey(), BIModuleUtils.getBusinessFieldById(dimensionFieldOfTarget.getFieldID()));
+            }
+            refreshedDimensionsMap.put(dimensionsMapEntry.getKey(), refreshedDimensionFieldOfTargetsMap);
+        }
+        dimensionsMap.clear();
+        dimensionsMap = refreshedDimensionsMap;
     }
 }

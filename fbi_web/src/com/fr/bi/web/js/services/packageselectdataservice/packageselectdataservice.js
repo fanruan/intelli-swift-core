@@ -112,10 +112,11 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             var packages = [packageId];
         }
         //选择了表
+        var isRelation = packages.length === 1;
         if (type & BI.SelectDataSearchSegment.SECTION_TABLE) {
             var result = [];
             BI.each(packages, function (i, pid) {
-                var items = self._getTablesStructureByPackId(pid);
+                var items = self._getTablesStructureByPackId(pid, {isRelation: isRelation, isSearching: true});
                 result.push(BI.Func.getSearchResult(items, keyword));
             });
             BI.each(result, function (i, sch) {
@@ -125,10 +126,13 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         } else {
             var result = [], map = {}, tables = [], field2TableMap = {};
             BI.each(packages, function (i, pid) {
-                tables = self._getTablesStructureByPackId(pid);
+                tables = self._getTablesStructureByPackId(pid, {isRelation: isRelation, isSearching: true});
                 var items = [];
                 BI.each(tables, function (i, table) {
-                    var fields = self._getFieldsStructureByTableId(table.id || table.value);
+                    var fields = self._getFieldsStructureByTableId(table.id || table.value, {
+                        keyword: keyword,
+                        isSearching: true
+                    });
                     BI.each(fields, function (i, filed) {
                         field2TableMap[filed.id || filed.value] = table;
                     });
@@ -184,13 +188,15 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     /**
      * 业务包中，所有表
      * @param packageId
+     * @param opt
      * @returns {Array}
      * @private
      */
-    _getTablesStructureByPackId: function (packageId) {
+    _getTablesStructureByPackId: function (packageId, opt) {
+        opt || (opt = {});
         var o = this.options;
         var tablesStructure = [];
-        var currentTables = o.tablesCreator(packageId);
+        var currentTables = o.tablesCreator(packageId, opt);
         BI.each(currentTables, function (i, table) {
             tablesStructure.push(BI.extend({
                 id: table.id,
@@ -213,12 +219,13 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
      * @returns {Array}
      * @private
      */
-    _getFieldsStructureByTableId: function (tableId) {
+    _getFieldsStructureByTableId: function (tableId, opt) {
+        opt = opt || {};
         var self = this, o = this.options;
-        var fieldStructure = this._getFieldStructureOfOneTable(tableId);
+        var fieldStructure = this._getFieldStructureOfOneTable(tableId, opt);
         if (o.showRelativeTables === true) {
             //这里加上相关表
-            var relationTables = o.tablesCreator(tableId, true);
+            var relationTables = o.tablesCreator(tableId, {isRelation: true});
             BI.remove(relationTables, function (i, t) {
                 return t.id === tableId;
             });
@@ -242,7 +249,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         }),
                         popup: {
                             type: "bi.select_data_loader",
-                            items: self._getFieldStructureOfOneTable(table.id, true)
+                            items: self._getFieldStructureOfOneTable(table.id, BI.extend(opt, {isRelation: true}))
                         }
                     });
                 });
@@ -271,7 +278,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     _getFieldsStructureByTableIdAndKeyword: function (tableId, keyword) {
         var fieldStructure = [];
         var self = this, o = this.options;
-        var fields = o.fieldsCreator(tableId);
+        var fields = o.fieldsCreator(tableId, {keyword: keyword, isSearching: true});
         var fieldMap = {}, map = {};
         var newFields = BI.PackageSelectDataService.getAllRelativeFields(tableId, fields, map);
 
@@ -356,7 +363,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         return fieldStructure;
     },
 
-    _getSelfCircleFieldsByFieldId: function (fieldId, foregion, isRelation) {
+    _getSelfCircleFieldsByFieldId: function (fieldId, foregion, opt) {
+        opt = opt || {};
         var self = this, o = this.options;
         foregion || (foregion = []);
         var tableId = BI.Utils.getTableIdByFieldID(fieldId);
@@ -370,8 +378,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 id: fid,
                 pId: tableId,
                 wId: o.wId,
-                type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-                layer: isRelation ? 3 : 2,
+                type: opt.isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+                layer: opt.isRelation ? 3 : 2,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
                 title: title,
@@ -386,11 +394,12 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     /**
      * 区别上面的无相关表
      * @param tableId
-     * @param isRelation
+     * @param opt
      * @returns {Array}
      * @private
      */
-    _getFieldStructureOfOneTable: function (tableId, isRelation) {
+    _getFieldStructureOfOneTable: function (tableId, opt) {
+        opt = opt || {};
         var fieldStructure = [];
         var self = this, o = this.options;
 
@@ -424,7 +433,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             }
         }
 
-        var fields = o.fieldsCreator(tableId, isRelation);
+        var fields = o.fieldsCreator(tableId, opt);
         var map = {};
         var newFields = BI.PackageSelectDataService.getAllRelativeFields(tableId, fields, map);
 
@@ -437,8 +446,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
-                var _type = isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item";
-                if (isRelation === true) {
+                var _type = opt.isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item";
+                if (opt.isRelation === true) {
                     fieldStructure.push({
                         id: fid,
                         pId: tableId,
@@ -456,7 +465,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         },
                         popup: {
                             type: "bi.select_data_loader",
-                            items: self._buildDateChildren(tableId, field, isRelation)
+                            items: self._buildDateChildren(tableId, field, opt.isRelation)
                         }
                     })
                 } else {
@@ -480,8 +489,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     id: fid,
                     pId: tableId,
                     wId: o.wId,
-                    type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
-                    layer: isRelation ? 2 : 1,
+                    type: opt.isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
+                    layer: opt.isRelation ? 2 : 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: title,
@@ -509,14 +518,14 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             fieldType: BI.Utils.getFieldTypeByID(id),
                             value: id
                         }, field, {
-                            type: isRelation ? "bi.select_data_level2_date_node" : "bi.select_data_level1_date_node",
-                            layer: isRelation ? 2 : 1,
+                            type: opt.isRelation ? "bi.select_data_level2_date_node" : "bi.select_data_level1_date_node",
+                            layer: opt.isRelation ? 2 : 1,
                             isParent: true,
                             open: false
                         }),
                         popup: {
                             type: "bi.select_data_loader",
-                            items: self._getSelfCircleFieldsByFieldId(id, map[id] || [], isRelation)
+                            items: self._getSelfCircleFieldsByFieldId(id, map[id] || [], opt)
                         }
                     });
                 }
@@ -768,11 +777,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
 BI.PackageSelectDataService.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
 BI.extend(BI.PackageSelectDataService, {
     RELATION_TABLE: "__relation_table__",
-
-    //TODO 判断咨询环列关联
-    _hasSelfRelation: function (fields) {
-
-    },
 
     getAllRelativeFields: function (tableId, fields, map) {
         map = map || {};

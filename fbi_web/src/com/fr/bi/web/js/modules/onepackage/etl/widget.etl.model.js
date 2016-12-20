@@ -51,19 +51,15 @@ BI.ETLModel = BI.inherit(FR.OB, {
         BI.each(fields, function (i, fs) {
             BI.each(fs, function (j, field) {
                 field.id = self._getCurrentFieldIdByFieldInfo(field);
-                //field.isCircle = _getIsCircle(field);
+                field.is_usable = BI.isNotNull(self.allFields[field.id]) ?
+                    (BI.isNotNull(self.allFields[field.id].is_usable) ?
+                        self.allFields[field.id].is_usable : true) : true;
                 field.table_id = self.id;
                 self.allFields[field.id] = field;
             })
         });
         removeRelationsOfNotExistFields();
         this.fields = fields;
-
-        function _getIsCircle(field) {
-            var etl_value = self.allTables[0][0].etl_value;
-            return BI.has(etl_value, "showfields") && BI.contains(etl_value.showfields, field.field_name);
-        }
-
 
         function removeRelationsOfNotExistFields() {
             var preFieldIds = BI.pluck(BI.flatten(self.fields), "id");
@@ -104,8 +100,8 @@ BI.ETLModel = BI.inherit(FR.OB, {
     constructFieldNameAndTranslationFieldNameRelation: function () {
         var fieldsIdName = [];
         var translations = this.getTranslations();
-        BI.each(this.getFields(), function(idx, arr){
-            BI.each(arr, function(id, field){
+        BI.each(this.getFields(), function (idx, arr) {
+            BI.each(arr, function (id, field) {
                 fieldsIdName[field.field_name] = translations[field.id];
             });
         });
@@ -119,9 +115,9 @@ BI.ETLModel = BI.inherit(FR.OB, {
     constructFieldNamesWhichHasRelation: function () {
         var fieldsName = [];
         var primKeyMap = this.relations.primKeyMap, foreignKeyMap = this.relations.foreignKeyMap;
-        BI.each(this.getFields(), function(idx, arr){
-            BI.each(arr, function(id, field){
-                if(BI.has(primKeyMap, field.id) || BI.has(foreignKeyMap, field.id)){
+        BI.each(this.getFields(), function (idx, arr) {
+            BI.each(arr, function (id, field) {
+                if (BI.has(primKeyMap, field.id) || BI.has(foreignKeyMap, field.id)) {
                     fieldsName.push(field.field_name);
                 }
             });
@@ -135,6 +131,9 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var id = BI.UUID();
         //暂时从allFields里面获取原始的fieldId,allFields里面的数据不会删除,这个是个坑
         var oldFields = this.allFields;
+        if (BI.isNotNull(oldFields[fieldInfo.id])) {
+            return fieldInfo.id;
+        }
         BI.some(oldFields, function (index, fieldObj) {
             if (fieldObj.field_name === fieldInfo.field_name && fieldObj.table_id === self.id) {
                 id = fieldObj.id;
@@ -169,70 +168,9 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.relations = relations;
     },
 
-    //根据etlValue为会改变关联的etl操作设置关联
-    setRelationsByETLValue: function (etl) {
-        var self = this;
-        var etlValue = etl.etl_value;
-        var relations = this.getRelations();
-        var primKeyMap = relations["primKeyMap"], foreignKeyMap = relations["foreignKeyMap"];
-        var connectionSet = relations["connectionSet"];
-        //if (etl.etl_type === "circle") {
-        //    //设置1:N的关联
-        //    BI.each(etlValue.floors, function (idx, floor) {
-        //        var primaryId = getFieldIdByFieldName(etlValue.id_field_name);
-        //        var foreignId = getFieldIdByFieldName(floor.name);
-        //        connectionSet.push({
-        //            primaryKey: {
-        //                field_id: primaryId
-        //            },
-        //            foreignKey: {
-        //                field_id: foreignId
-        //            }
-        //        });
-        //        if (!primKeyMap[primaryId]) {
-        //            primKeyMap[primaryId] = [];
-        //        }
-        //        primKeyMap[primaryId].push({
-        //            primaryKey: {
-        //                field_id: primaryId
-        //            },
-        //            foreignKey: {
-        //                field_id: foreignId
-        //            }
-        //        });
-        //        if (!foreignKeyMap[foreignId]) {
-        //            foreignKeyMap[foreignId] = [];
-        //        }
-        //        foreignKeyMap[foreignId].push({
-        //            primaryKey: {
-        //                field_id: primaryId
-        //            },
-        //            foreignKey: {
-        //                field_id: foreignId
-        //            }
-        //        });
-        //    });
-        //}
-        this.setRelations(relations);
-
-        function getFieldIdByFieldName(field_name) {
-            var id = null;
-            BI.find(self.fields, function (idx, fieldArray) {
-                return BI.find(fieldArray, function (i, field) {
-                    if (field.field_name === field_name) {
-                        id = field.id;
-                        return true;
-                    }
-                    return false;
-                });
-            });
-            return id;
-        }
-    },
-
     setTranslationsByETLValue: function (etl) {
         var self = this;
-        if(BI.has(etl, "etl_type") && BI.isEqual(etl.etl_type, "convert")){
+        if (BI.has(etl, "etl_type") && BI.isEqual(etl.etl_type, "convert")) {
             var etlValue = etl.etl_value;
             var translations = this.getTranslations();
             var transText = [], text = [];
@@ -313,13 +251,13 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return fieldNames;
     },
 
-    modifyExcelData: function(tId, fullFileName){
+    modifyExcelData: function (tId, fullFileName) {
         var table = this.getTableById(tId);
         table.full_file_name = fullFileName;
         this.saveTableById(tId, table);
     },
 
-    modifySQLData: function(tId, sql, linkName) {
+    modifySQLData: function (tId, sql, linkName) {
         var table = this.getTableById(tId);
         table.sql = sql;
         table.linkName = linkName;
@@ -339,9 +277,16 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return isValid;
     },
 
+    /**
+     * 添加新表 考虑业务包表 可以把相关的关联和转义全部放进来
+     * @param tables
+     */
     addNewTables: function (tables) {
         var self = this;
         BI.each(tables, function (i, table) {
+            if (BI.isNotNull(table.id)) {
+                self._addPackageTable(table);
+            }
             var newIdsMap = {};
             self._addUUID2Tables([table], newIdsMap);
             BI.extend(self.tablesMap, newIdsMap);
@@ -426,6 +371,151 @@ BI.ETLModel = BI.inherit(FR.OB, {
         });
     },
 
+    refresh4Fields: function (data) {
+        var self = this;
+        var fields = data.fields, oFields = this.fields;
+
+        function getFieldId(name, fields) {
+            var fieldId = BI.UUID();
+            BI.some(fields, function (i, fs) {
+                return BI.some(fs, function (j, field) {
+                    if (field.field_name === name) {
+                        fieldId = field.id;
+                        return true;
+                    }
+                });
+            });
+            return fieldId;
+        }
+
+        BI.each(fields, function (i, fs) {
+            BI.each(fs, function (j, field) {
+                field.id = getFieldId(field.field_name, oFields);
+                self.allFields[field.id] = field;
+            });
+        });
+    },
+
+    //添加业务包表
+    _addPackageTable: function(table) {
+        var self = this;
+        var id = BI.UUID(), tableId = table.id;
+        table.id = id;
+        var fieldIds = [], oFields = BI.deepClone(table.fields);
+        BI.each(table.fields, function (j, fs) {
+            BI.each(fs, function (k, field) {
+                var fId = BI.UUID();
+                fieldIds.push(fId);
+                //字段的转义
+                if (BI.isNotNull(field.id) && BI.isNotNull(self.translations[field.id])) {
+                    self.translations[fId] = self.translations[field.id];
+                }
+
+                field.id = fId;
+                field.table_id = id;
+                self.allFields[fId] = field;
+            });
+        });
+
+        var connectionSet = this.relations.connectionSet,
+            primaryKeyMap = this.relations.primKeyMap,
+            foreignKeyMap = this.relations.foreignKeyMap;
+        var addedConns = [], addedPriMap = {}, addedForMap = {};
+        BI.each(connectionSet, function (k, keys) {
+            var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
+            if (BI.isNotEmptyObject(copyRelation)) {
+                addedConns.push(copyRelation);
+            }
+        });
+        this.relations.connectionSet = connectionSet.concat(addedConns);
+        BI.each(primaryKeyMap, function (pfId, maps) {
+            var addedPris = [], nPKId = null;
+            BI.each(maps, function (k, keys) {
+                var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
+                if (BI.isNotEmptyObject(copyRelation)) {
+                    nPKId = copyRelation.primaryKey.field_id;
+                    addedPris.push(copyRelation);
+                }
+            });
+            if(addedPris.length > 0 && BI.isNotNull(nPKId)) {
+                addedPriMap[nPKId] = addedPris;
+            }
+        });
+        BI.each(addedPriMap, function(pkId, ms) {
+            var pkMaps = self.relations.primKeyMap[pkId];
+            if(BI.isNotNull(pkMaps)) {
+                self.relations.primKeyMap[pkId] = pkMaps.concat(ms);
+            } else {
+                self.relations.primKeyMap[pkId] = ms;
+            }
+        });
+        BI.each(foreignKeyMap, function (ffId, maps) {
+            var addedFors = [], nFKId = null;
+            BI.each(maps, function (k, keys) {
+                var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
+                if (BI.isNotEmptyObject(copyRelation)) {
+                    nFKId = copyRelation.foreignKey.field_id;
+                    addedFors.push(copyRelation);
+                }
+            });
+            if(addedFors.length > 0 && BI.isNotNull(nFKId)) {
+                addedForMap[nFKId] = addedFors;
+            }
+        });
+        BI.each(addedForMap, function(fkId, ms) {
+            var fkMaps = self.relations.foreignKeyMap[fkId];
+            if(BI.isNotNull(fkMaps)) {
+                self.relations.foreignKeyMap[fkId] = fkMaps.concat(ms);
+            } else {
+                self.relations.foreignKeyMap[fkId] = ms;
+            }
+        });
+    },
+
+    //copy一份relation
+    _getCopyOfRelation: function (keys, oFields, fieldIds, oTableId, nTableId) {
+        var self = this;
+        var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
+        var relation = {};
+        BI.each(oFields, function(i, ofs) {
+            BI.each(ofs, function(j, oField) {
+                if(oField.id === primKey.field_id) {
+                    var nPK = {}, nFK = BI.deepClone(foreignKey);
+                    BI.each(fieldIds, function(k, fid) {
+                        if(self.allFields[fid] && self.allFields[primKey.field_id] &&
+                            self.allFields[fid].field_name === self.allFields[primKey.field_id].field_name) {
+                            nPK = {
+                                field_id: fid,
+                                table_id: nTableId
+                            }
+                        }
+                    });
+                    relation = {
+                        primaryKey: nPK,
+                        foreignKey: nFK
+                    }
+                }
+                if(oField.id === foreignKey.field_id) {
+                    var nPK = BI.deepClone(primKey), nFK = {};
+                    BI.each(fieldIds, function(k, fid) {
+                        if(self.allFields[fid] && self.allFields[foreignKey.field_id] &&
+                            self.allFields[fid].field_name === self.allFields[foreignKey.field_id].field_name) {
+                            nFK = {
+                                field_id: fid,
+                                table_id: nTableId
+                            }
+                        }
+                    });
+                    relation = {
+                        primaryKey: nPK,
+                        foreignKey: nFK
+                    }
+                }
+            });
+        });
+        return relation;
+    },
+
     _getDistinctTableName: function (name) {
         var self = this;
         var allTableNameTrans = [];
@@ -440,19 +530,23 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     //自己有id的table使用原来的
-    _addId2Tables: function (tables, ids) {
+    _addId2Tables: function (tables, ids, isTemp) {
         var self = this;
         BI.each(tables, function (i, table) {
             var id = table.id || BI.UUID();
             if (BI.isNotNull(table.tables)) {
-                self._addId2Tables(tables[i].tables, ids);
+                self._addId2Tables(tables[i].tables, ids, true);
                 tables[i] = BI.extend(table, {
                     id: id,
-                    tables: tables[i].tables
+                    tables: tables[i].tables,
+                    temp_name: table.temp_name || (table.tables[0].temp_name + "_" + table.etl_type)
                 });
             } else {
                 tables[i] = BI.extend(table, {
-                    id: id
+                    id: id,
+                    temp_name: isTemp ?
+                        (table.temp_name || self.translations[id] || table.table_name) :
+                        (self.translations[id] || table.table_name)
                 });
             }
             ids[id] = tables[i];

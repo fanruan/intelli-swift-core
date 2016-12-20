@@ -125,6 +125,14 @@ public class DBConstant {
         public static final String SINGLETABLE_UPDATE = "__singleTable_update__";
     }
 
+    public static final class GLOBAL_UPDATE_TYPE {
+        public static final String PART_UPDATE = "_part_update_";
+        public static final String COMPLETE_UPDATE = "_complete_update_";
+        public static final String META_UPDATE = "_meta_update_";
+    }
 
     public static final String SYSTEM_USER_NAME = "__system_user_name__";
+
+    public static final String LAST_UPDATE_TIME = "__last_update_time__";
+    public static final String CURRENT_UPDATE_TIME = "__current_update_time__";
 }

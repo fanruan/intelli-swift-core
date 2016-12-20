@@ -1059,11 +1059,11 @@ BICst.CHART_VALUE_AXIS_STYLE = [{
 //表格（分组表、交叉表和复杂表）类型
 BICst.TABLE_FORM_GROUP = [{
     cls: "table-open-row-style-font",
-    title: BI.i18nText("BI-TABLE_TYPE_TREE_SHOW"),
+    title: BI.i18nText("BI-TABLE_TYPE_MULTI_COLUMN_SHOW"),
     value: BICst.TABLE_FORM.OPEN_ROW
 }, {
     cls: "table-open-col-style-font",
-    title: BI.i18nText("BI-TABLE_TYPE_MULTI_COLUMN_SHOW"),
+    title: BI.i18nText("BI-TABLE_TYPE_TREE_SHOW"),
     value: BICst.TABLE_FORM.OPEN_COL
 }];
 
@@ -1114,13 +1114,16 @@ BICst.AREA_CHART_STYLE_GROUP = [{
 //饼图类型
 BICst.PIE_CHART_STYLE_GROUP = [{
     cls: "pie-chart-style-normal-icon",
-    value: BICst.CHART_SHAPE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL,
+    title: BI.i18nText("BI-Pie_Chart")
 }, {
     cls: "pie-chart-style-equal-arc-rose-icon",
-    value: BICst.CHART_SHAPE.EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.EQUAL_ARC_ROSE,
+    title: BI.i18nText("BI-Isometric_Rose_Chart")
 }, {
     cls: "pie-chart-style-not-equal-arc-rose-icon",
-    value: BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE,
+    title: BI.i18nText("BI-Unequal_Rose_Chart")
 }];
 
 //雷达图类性
@@ -1184,158 +1187,6 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
     text: BI.i18nText("BI-Bubble_With_Shadow"),
     cls: "bubble-with-projector",
     value: BICst.CHART_SHAPE.PROJECTOR
-}];
-
-//表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
-BICst.DEFAULT_CHART_SETTING = {
-    table_form: BICst.TABLE_FORM.OPEN_ROW,
-    theme_color: "#65bce7",
-    table_style: BICst.TABLE_STYLE.STYLE1,
-    show_number: false,
-    show_row_total: true,
-    show_col_total: true,
-    open_row_node: false,
-    open_col_node: false,
-    max_row: BICst.TABLE_MAX_ROW,
-    max_col: BICst.TABLE_MAX_COL,
-    freeze_dim: true,
-    freeze_first_column: false,
-    transfer_filter: true,
-    show_name: true,
-    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
-
-    //图
-    chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
-    chart_style: BICst.CHART_STYLE.STYLE_NORMAL,
-    chart_line_type: BICst.CHART_SHAPE.NORMAL,
-    chart_pie_type: BICst.CHART_SHAPE.NORMAL,
-    chart_radar_type: BICst.CHART_SHAPE.POLYGON,
-    chart_dashboard_type: BICst.CHART_SHAPE.NORMAL,
-    chart_inner_radius: 0,
-    chart_total_angle: BICst.PIE_ANGLES.TOTAL,
-    left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    x_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    number_of_pointer: BICst.POINTER.ONE,
-    dashboard_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    right_y_axis_second_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    left_y_axis_unit: "",
-    dashboard_unit: "",
-    x_axis_unit: "",
-    right_y_axis_unit: "",
-    right_y_axis_second_unit: "",
-    show_left_y_axis_title: false,
-    show_right_y_axis_title: false,
-    show_right_y_axis_second_title: false,
-    left_y_axis_title: "",
-    right_y_axis_title: "",
-    right_y_axis_second_title: "",
-    left_y_axis_reversed: false,
-    right_y_axis_reversed: false,
-    right_y_axis_second_reversed: false,
-    show_x_axis_title: false,
-    x_axis_title: "",
-    text_direction: "0",
-    chart_legend: BICst.CHART_LEGENDS.BOTTOM,
-    mini_chart_legend: BICst.CHART_LEGENDS.NOT_SHOW,
-    show_data_label: false,
-    mini_show_data_label: true,
-    show_data_table: false,
-    show_grid_line: true,
-    num_separators: false,
-    right_num_separators: false,
-    mini_show_grid_line: false,
-    minimalist_model: false,
-    line_width: BICst.LINE_WIDTH.ONE,
-    mini_line_width: BICst.LINE_WIDTH.ZERO,
-    show_label: true,
-    mini_show_label: false,
-    enable_tick: true,
-    mini_enable_tick: false,
-    enable_minor_tick: true,
-    mini_enable_minor_tick: false,
-    show_custom_scale: false,
-    show_zoom: false,
-    null_continue: true,
-    min_scale: "",
-    max_scale: "",
-    percentage_not_show: BICst.PERCENTAGE.NOT_SHOW,
-    bubble_display: BICst.DISPLAY_RULES.DIMENSION,
-    bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
-    show_background_layer: true,
-    background_layer_info: BI.i18nText("BI-GAO_DE_MAP")
-};
-
-BICst.DASHBOARD_STYLE_CONDITIONS = [{
-    range: {
-        min: 0,
-        max: 100,
-        closemin: true,
-        closemax: false
-    },
-    color: "#65B3EE"
-}, {
-    range: {
-        min: 100,
-        max: 200,
-        closemin: true,
-        closemax: false
-    },
-    color: "#95E1AA"
-}, {
-    range: {
-        min: 200,
-        max: 300,
-        closemin: true,
-        closemax: true
-    },
-    color: "#F8D08E"
-}];
-
-BICst.MAP_STYLE_CONDITIONS = [{
-    range: {
-        min: 0,
-        max: 100,
-        closemin: true,
-        closemax: false
-    },
-    color: "#65B3EE"
-}, {
-    range: {
-        min: 100,
-        max: 200,
-        closemin: true,
-        closemax: false
-    },
-    color: "#95E1AA"
-}, {
-    range: {
-        min: 200,
-        max: 300,
-        closemin: false,
-        closemax: true
-    },
-    color: "#F8D08E"
-}, {
-    range: {
-        min: 300,
-        max: 400,
-        closemin: false,
-        closemax: true
-    },
-    color: "#e697c8"
-}, {
-    range: {
-        min: 400,
-        max: 500,
-        closemin: true,
-        closemax: true
-    },
-    color: "#a484b9"
 }];
 
 BICst.CAL_TARGET_TYPE = [{
@@ -1623,3 +1474,31 @@ BICst.PERCENTAGE_SHOW = [{
     text: BI.i18nText("BI-Hidden"),
     value: BICst.PERCENTAGE.NOT_SHOW
 }];
+
+BICst.INIT_CHART_MAP = {};
+BICst.INIT_CHART_MAP[BICst.WIDGET.AXIS] = {type: "bi.axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.COMBINE_CHART] = {type: "bi.multi_axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = {type: "bi.multi_axis_chart", events: [BI.MultiAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_AXIS] = {type: "bi.accumulate_axis_chart", events: [BI.AccumulateAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.LINE] = {type: "bi.line_chart", events: [BI.LineChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.AREA] = {type: "bi.area_chart", events: [BI.AreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_AREA] = {type: "bi.accumulate_area_chart", events: [BI.AccumulateAreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_AXIS] = {type: "bi.percent_accumulate_axis_chart", events: [BI.PercentAccumulateAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_BAR] = {type: "bi.accumulate_bar_chart", events: [BI.AccumulateBarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.DONUT] = {type: "bi.donut_chart", events: [BI.DonutChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.RADAR] = {type: "bi.radar_chart", events: [BI.RadarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_RADAR] = {type: "bi.accumulate_radar_chart", events: [BI.AccumulateRadarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.PIE] = {type: "bi.pie_chart", events: [BI.PieChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.DASHBOARD] = {type: "bi.dashboard_chart", events: [BI.DashboardChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.BAR] = {type: "bi.bar_chart", events: [BI.BarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_AREA] = {type: "bi.percent_accumulate_area_chart", events: [BI.PercentAccumulateAreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.COMPARE_BAR] = {type: "bi.compare_bar_chart", events: [BI.CompareBarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.COMPARE_AXIS] = {type: "bi.compare_axis_chart", events: [BI.CompareAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.RANGE_AREA] = {type: "bi.range_area_chart", events: [BI.RangeAreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.COMPARE_AREA] = {type: "bi.compare_area_chart", events: [BI.CompareAreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.FALL_AXIS] = {type: "bi.fall_axis_chart", events: [BI.FallAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.BUBBLE] = {type: "bi.bubble_chart", events: [BI.BubbleChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.FORCE_BUBBLE] = {type: "bi.force_bubble_chart", events: [BI.ForceBubbleChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.SCATTER] = {type: "bi.scatter_chart", events: [BI.ScatterChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};

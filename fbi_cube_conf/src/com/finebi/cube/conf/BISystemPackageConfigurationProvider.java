@@ -11,6 +11,7 @@ import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -33,6 +34,14 @@ public interface BISystemPackageConfigurationProvider {
      * @param userId 用户id
      */
     void finishGenerateCubes(long userId);
+
+    /**
+     * 完成生成cube
+     *
+     * @param userId用户id
+     * @param absentTables 本次生成后仍然缺少的表
+     */
+    void finishGenerateCubes(long userId, Set<CubeTableSource> absentTables);
 
     /**
      * 获取当前最新版本的业务包用于数据更新
@@ -218,6 +227,13 @@ public interface BISystemPackageConfigurationProvider {
     void endBuildingCube(long userId);
 
     /**
+     * 标志Cube构建结束,同时当前还有哪些表是没有构建的
+     *
+     * @param userId 用户ID
+     */
+    void endBuildingCube(long userId, Set<CubeTableSource> absentTable);
+
+    /**
      * 当前是否没有业务包
      *
      * @param userId 用户ID
@@ -264,6 +280,7 @@ public interface BISystemPackageConfigurationProvider {
 
     /**
      * 根据locale创建分析用的生成过cube的业务包Json数据
+     *
      * @param userId
      * @param locale
      * @return
@@ -300,10 +317,45 @@ public interface BISystemPackageConfigurationProvider {
      */
     Boolean isPackageTaggedSpecificGroup(long userId, BIPackageID packageID, BIGroupTagName groupTagName) throws BIGroupAbsentException;
 
+    /**
+     * 获得全部配置部分的表
+     *
+     * @param userId 用户ID
+     * @return 返回当前配置部分全部的表
+     */
     Set<BusinessTable> getAllTables(long userId);
 
+    /**
+     * 获得全部在分析部分的表
+     *
+     * @param userId 用户ID
+     * @return 返回当前分析部分的表
+     */
     Set<BusinessTable> getAnalysisAllTables(long userId);
 
     Set<BIBusinessPackage> getPackages4CubeGenerate(long userId);
 
+    /**
+     * 当前的配置的表是否比分析部分的表，只少，没新增。
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    boolean isTableReduced(long userId);
+
+    /**
+     * 当前的配置的表是否比分析部分的表，只新增，没减少。
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    boolean isTableIncreased(long userId);
+
+    /**
+     * 当前的配置的表和分析部分的表相比，是否改变了？
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    boolean isTableNoChange(long userId);
 }

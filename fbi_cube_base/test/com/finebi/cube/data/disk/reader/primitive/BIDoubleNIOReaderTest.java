@@ -1,7 +1,8 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.disk.writer.primitive.BIDoubleNIOWriter;
-import com.fr.bi.stable.utils.code.BILogger;
+
 import com.fr.general.ComparatorUtils;
 import junit.framework.TestCase;
 
@@ -29,7 +30,7 @@ public class BIDoubleNIOReaderTest extends TestCase {
             System.out.println("time:" + (System.currentTimeMillis() - start));
             assertEquals(sum, count);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -47,7 +48,7 @@ public class BIDoubleNIOReaderTest extends TestCase {
             System.out.println(writer.hashCode());
             System.out.println(writer_two.hashCode());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -65,7 +66,7 @@ public class BIDoubleNIOReaderTest extends TestCase {
             assertEquals(reader.getSpecificValue(3l), Double.valueOf(1));
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -83,7 +84,7 @@ public class BIDoubleNIOReaderTest extends TestCase {
             assertEquals(reader.getSpecificValue(2000000000), Double.valueOf(1));
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }

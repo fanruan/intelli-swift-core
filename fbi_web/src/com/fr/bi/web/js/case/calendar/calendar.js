@@ -166,6 +166,23 @@ BI.extend(BI.Calendar, {
         var page = (json.year - year) * 12;
         page += json.month - month;
         return page;
+    },
+    getDateJSONByPage: function(v){
+        var months = new Date().getMonth();
+        var page = v;
+
+        //对当前page做偏移,使到当前年初
+        page = page + months;
+
+        var year = BI.parseInt(page / 12);
+        if(page < 0 && page % 12 !== 0){
+            year--;
+        }
+        var month = page >= 0 ? (page % 12) : ((12 + page % 12) % 12);
+        return {
+            year: new Date().getFullYear() + year,
+            month: month
+        }
     }
 });
 

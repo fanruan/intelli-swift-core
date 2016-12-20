@@ -11,7 +11,7 @@ import com.fr.bi.cal.analyze.cal.result.operator.Operator;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.report.result.TargetCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.List;
@@ -59,7 +59,6 @@ public class GroupUtils {
                                 deep++;
                             }
                             if (n.getShowValue() != BIBaseConstant.EMPTY_NODE_DATA || deep != 0) {
-                                ((RootDimensionGroup) roots[i]).setWidgetDateMap(deep, data);
                                 node.addChild(n);
                                 addSummaryValue(n, gcvsChild, calculators);
                             }
@@ -90,7 +89,6 @@ public class GroupUtils {
             deep++;
         }
         String dataString = data.toString();
-        ((RootDimensionGroup) root).setWidgetDateMap(deep, dataString);
         n.setShowValue(dataString);
         node.getChilds().clear();
         node.addChild(n);
@@ -122,7 +120,7 @@ public class GroupUtils {
         try {
             gc = getNextGC(iters);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         if (gc == null) {
             return new NodeAndPageInfo(node, false, false, 0);
@@ -150,7 +148,7 @@ public class GroupUtils {
         try {
             PageEnd(iters);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         NodeUtils.setSiblingBetweenFirstAndLastChild(node);
@@ -274,7 +272,12 @@ public class GroupUtils {
                     break;
                 }
                 if (MultiThreadManagerImpl.isMultiCall()) {
-                    MultiThreadManagerImpl.getInstance().getExecutorService().submit(new SummaryCall(node, groups[i], calculators.get(i)));
+                    TargetCalculator[] cs = calculators.get(i);
+                    if (cs != null){
+                        for (TargetCalculator c : cs){
+                            MultiThreadManagerImpl.getInstance().getExecutorService().add(new SummaryCall(node, groups[i],c));
+                        }
+                    }
                 } else {
                     for (TargetCalculator calculator : calculators.get(i)){
                         Number v = groups[i].getSummaryValue(calculator);

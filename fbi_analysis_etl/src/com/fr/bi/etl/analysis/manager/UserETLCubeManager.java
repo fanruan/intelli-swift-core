@@ -11,7 +11,7 @@ import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserETLTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.file.XMLFileManager;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
@@ -146,7 +146,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 			try {
 				FRContext.getCurrentEnv().writeResource(this);
 			} catch (Exception e) {
-				BILogger.getLogger().error(e.getMessage(), e);
+				BILoggerFactory.getLogger().error(e.getMessage(), e);
 			}
 		}
 	}

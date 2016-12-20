@@ -7,7 +7,7 @@ import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.net.URISyntaxException;
@@ -37,7 +37,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
             nullIndexLocation = currentLocation.buildChildLocation("fbi_null");
         } catch (URISyntaxException e) {
             BINonValueUtils.beyondControl(e);
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -98,6 +98,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         return indexReader != null;
     }
 
+
     public ICubeGroupValueIndexReader getIndexReader() {
         initIndexReader();
         return indexReader;
@@ -126,10 +127,11 @@ public class BICubeIndexData implements ICubeIndexDataService {
     }
 
     public void buildStructure() {
-        initNullReader();
+//        initNullReader();
         initNullWriter();
         initIndexWriter();
-        initIndexReader();
+        forceReleaseWriter();
+//        initIndexReader();
     }
 
     private void initNullReader() {
@@ -203,16 +205,16 @@ public class BICubeIndexData implements ICubeIndexDataService {
     protected void resetNullWriter() {
         if (isNullWriterAvailable()) {
             nullWriter.clear();
-            nullReader = null;
+            nullWriter = null;
         }
     }
 
     @Override
     public void clear() {
         resetIndexReader();
-        resetIndexWriter();
+//        resetIndexWriter();
         resetNullReader();
-        resetNullWriter();
+//        resetNullWriter();
     }
 
     @Override
@@ -223,7 +225,17 @@ public class BICubeIndexData implements ICubeIndexDataService {
         }
         if (isNullWriterAvailable()) {
             nullWriter.forceRelease();
-            nullReader = null;
+            nullWriter = null;
+        }
+    }
+
+    @Override
+    public void forceReleaseReader() {
+        if (isIndexReaderAvailable()) {
+            indexReader.forceRelease();
+        }
+        if (isNullReaderAvailable()) {
+            nullReader.forceRelease();
         }
     }
 

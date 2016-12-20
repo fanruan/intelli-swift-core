@@ -35,4 +35,6 @@ public interface BIModule {
     void loadResources(Locale[] locale);
 
     Collection<BIPackageID> getAvailablePackID(long userId);
+
+    void clearAnalysisETLCache(long userId);
 }

@@ -6,10 +6,7 @@ import com.fr.bi.web.conf.services.*;
 import com.fr.bi.web.conf.services.cubeconf.*;
 import com.fr.bi.web.conf.services.cubetask.*;
 import com.fr.bi.web.conf.services.datalink.*;
-import com.fr.bi.web.conf.services.dbconnection.BIGetAllTranslatedTablesByConnectionAction;
-import com.fr.bi.web.conf.services.dbconnection.BIGetConnectionNamesAction;
-import com.fr.bi.web.conf.services.dbconnection.BIGetFieldInfo4NewTableAction;
-import com.fr.bi.web.conf.services.dbconnection.BIGetTableFieldsByTableInfoAction;
+import com.fr.bi.web.conf.services.dbconnection.*;
 import com.fr.bi.web.conf.services.packs.*;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
@@ -52,7 +49,7 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetCubePathAction(),
             new BISetCubePathAction(),
             new BICheckCubePathAction(),
-            new BICheckCubeStatusAction(),
+//            new BICheckCubeStatusAction(),
             new BIGetCubeLogAction(),
 
             new BIGetFieldValueAction(),
@@ -78,11 +75,13 @@ public class Service4BIConfigure extends NoSessionIDService {
 
             new BISaveFileGetExcelDataAction(),
 
-            new BICheckGenerateCubeAction(),
+            new BICheckCubeTableStatusAction(),
+            new BICheckCubeTableAction(),
 
             new BIGetConnectionNamesAction(),
             new BIGetTableFieldsByTableInfoAction(),
             new BIGetFieldInfo4NewTableAction(),
+            new BIRefreshTableFieldsAction(),
 
             new BICreateFieldsUnionAction(),
 
@@ -107,66 +106,73 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetAllTableNamesOfAllPackageAction(),
             new BIGetFieldValueByFieldIdAction(),
             new BISaveLoginFieldAction(),
-            new BIPersistTableInfoAction(),
             new BICacheClearAction(),
             new BIUserMapCacheClearAction(),
             new BIChildMapClearAction(),
-            new BIRemoveTableInUseCheckAction()
+            new BIRemoveTableInUseCheckAction(),
+            new BITurnOffDeployModeAction(),
+            new BITurnOnDeployModeAction(),
+            new BISetDeployModeLimitValueAction(),
+            new BIDisplayDeployModeLimitValueAction(),
+            new BIDownloadFineindexLogAction(),
+            new BIGetThreadPoolSizeAction(),
+            new BISetThreadPoolSizeAction(),
+            new BISimpleAPIDemoAction(),
+            new BIGetCubeTaskLogsSDKAction()
+    };
 
-};
+    /**
+     * 返回
+     *
+     * @return 名称
+     */
+    @Override
+    public String actionOP() {
+        return "fr_bi_configure";
+    }
 
-/**
- * 返回
- *
- * @return 名称
- */
-@Override
-public String actionOP(){
-        return"fr_bi_configure";
-        }
-
-/**
- * 处理HTTP请求
- *
- * @param req HTTP请求
- * @param res HTTP响应
- * @param op  op参数值
- * @throws Exception
- */
-@Override
-public void process(HttpServletRequest req,HttpServletResponse res,
-        String op)throws Exception{
+    /**
+     * 处理HTTP请求
+     *
+     * @param req HTTP请求
+     * @param res HTTP响应
+     * @param op  op参数值
+     * @throws Exception
+     */
+    @Override
+    public void process(HttpServletRequest req, HttpServletResponse res,
+                        String op) throws Exception {
         FSContext.initData();
-        res.setHeader("Pragma","No-cache");
-        res.setHeader("Cache-Control","no-cache, no-store");
-        res.setDateHeader("Expires",-10);
+        res.setHeader("Pragma", "No-cache");
+        res.setHeader("Cache-Control", "no-cache, no-store");
+        res.setDateHeader("Expires", -10);
         dealServletPriviousUrl(req);
-        PrivilegeVote vote=getFSVote(req,res);
-        FSAuthentication authentication=FSAuthenticationManager.exAuth4FineServer(req);
-        if(!vote.isPermitted()&&(authentication==null||!authentication.isRoot())){
-        vote.action(req,res);
-        return;
+        PrivilegeVote vote = getFSVote(req, res);
+        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
+        if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
+            vote.action(req, res);
+            return;
         }
-        long userId=ServiceUtils.getCurrentUserID(req);
-        if(UserControl.getInstance().hasModulePrivilege(userId,FSConstants.MODULEID.BI)){
-        WebActionsDispatcher.dealForActionNoSessionIDCMD(req,res,actions);
+        long userId = ServiceUtils.getCurrentUserID(req);
+        if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.BI)) {
+            WebActionsDispatcher.dealForActionNoSessionIDCMD(req, res, actions);
         }
-        }
+    }
 
-private void dealServletPriviousUrl(HttpServletRequest req){
-        String cmd=WebUtils.getHTTPRequestParameter(req,"cmd");
-        if(ComparatorUtils.equals(cmd,BIInitConfigurePaneAction.CMD)){
-        BIServiceUtil.setPreviousUrl(req);
+    private void dealServletPriviousUrl(HttpServletRequest req) {
+        String cmd = WebUtils.getHTTPRequestParameter(req, "cmd");
+        if (ComparatorUtils.equals(cmd, BIInitConfigurePaneAction.CMD)) {
+            BIServiceUtil.setPreviousUrl(req);
         }
-        }
+    }
 
-private PrivilegeVote getFSVote(HttpServletRequest req,HttpServletResponse res)throws Exception{
-        FSAuthentication authen=FSAuthenticationManager.exAuth4FineServer(req);
-        if(authen==null){
-        //b:to improve
-        AbstractFSAuthService.dealCookie(req,res);
-        authen=FSAuthenticationManager.exAuth4FineServer(req);
+    private PrivilegeVote getFSVote(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        FSAuthentication authen = FSAuthenticationManager.exAuth4FineServer(req);
+        if (authen == null) {
+            //b:to improve
+            AbstractFSAuthService.dealCookie(req, res);
+            authen = FSAuthenticationManager.exAuth4FineServer(req);
         }
         return FSManager.getFSKeeper().access(authen);
-        }
-        }
+    }
+}

@@ -10,7 +10,6 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
-import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
@@ -22,7 +21,7 @@ import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
@@ -99,6 +98,16 @@ public abstract class BIAbstractWidget implements BIWidget {
     }
 
     @Override
+    public boolean showRowToTal() {
+        return true;
+    }
+
+    @Override
+    public boolean showColumnTotal() {
+        return true;
+    }
+
+    @Override
     public void refreshColumns() {
         for (BITargetAndDimension td : getTargets()){
             td.refreshColumn();
@@ -170,7 +179,7 @@ public abstract class BIAbstractWidget implements BIWidget {
         try {
             return super.clone();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -199,10 +208,19 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     private List<TargetFilter> getAuthFilter(long userId) {
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
-
-        List<BIPackageID> authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(sessionId);
+        List<BIPackageID> authPacks;
+        if (sessionId != null) {
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(sessionId);
+        } else {
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+        }
         for (int i = 0; i < authPacks.size(); i++) {
-            List<BIPackageAuthority> packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), sessionId);
+            List<BIPackageAuthority> packAuths;
+            if (sessionId != null) {
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), sessionId);
+            } else {
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
+            }
             for (int j = 0; j < packAuths.size(); j++) {
                 BIPackageAuthority auth = packAuths.get(j);
                 if (auth.getFilter() != null) {
@@ -210,7 +228,7 @@ public abstract class BIAbstractWidget implements BIWidget {
                         TargetFilter filter = TargetFilterFactory.parseFilter(auth.getFilter(), userId);
                         filters.add(filter);
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }

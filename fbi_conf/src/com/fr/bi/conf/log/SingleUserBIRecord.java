@@ -3,6 +3,7 @@ package com.fr.bi.conf.log;
 
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -91,7 +92,9 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordToErrorTable(IPersistentTable table, String text) {
-        tableLogMap.put(table, new BITableErrorLog(table, text, userId));
+        if (null != table && !tableLogMap.containsKey(table)) {
+            tableLogMap.put(table, new BITableErrorLog(table, text, userId));
+        }
     }
 
     /**
@@ -103,7 +106,9 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordToInfoTable(IPersistentTable table, long seconds, int percent) {
-        tableLogMap.put(table, new BITableRunningLog(table, seconds, percent, userId));
+        if (null != table) {
+            tableLogMap.put(table, new BITableRunningLog(table, seconds, percent, userId));
+        }
     }
 
     /**
@@ -210,7 +215,7 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void errorRelation(RelationColumnKey ck, String text) {
-        if (null != ck) {
+        if (null != ck && !connectionLogMap.containsKey(ck)) {
             connectionLogMap.put(ck, new BIConnectionErrorLog(ck, text, userId));
         }
     }
@@ -265,7 +270,7 @@ public class SingleUserBIRecord implements BIRecord {
      * @param biTableSourceRelationSet
      */
     @Override
-    public void reLationSet(Set<BITableSourceRelationPath> biTableSourceRelationSet) {
+    public void relationSet(Set<BITableSourceRelationPath> biTableSourceRelationSet) {
         this.biTableSourceRelationPathSet = biTableSourceRelationSet;
     }
 
@@ -279,19 +284,56 @@ public class SingleUserBIRecord implements BIRecord {
         cubeTableSourceSet = cubeTableSources;
     }
 
+    @Override
+    public Set<CubeTableSource> getAllSingleSources() {
+        return cubeTableSourceSet;
+    }
+
+    @Override
+    public Set<BITableErrorLog> getErrorTables() {
+        Set<BITableErrorLog> errorLogs = new HashSet<BITableErrorLog>();
+        for (BITableLog biTableLog : tableLogMap.values()) {
+            if (biTableLog.getLogType() == BILogConstant.TABLE_LOG_TYPE.ERROR) {
+                errorLogs.add((BITableErrorLog) biTableLog);
+            }
+        }
+        return errorLogs;
+    }
+
+    @Override
+    public Set<BITableSourceRelationPath> getAllPaths() {
+        return this.biTableSourceRelationPathSet;
+    }
+
+    @Override
+    public Set<BIConnectionErrorLog> getErrorPaths() {
+        Set<BIConnectionErrorLog> pathLog = new HashSet<BIConnectionErrorLog>();
+        for (BIConnectionLog log : connectionLogMap.values()) {
+            if (log.getType() == BILogConstant.PATH_LOG_TYPE.ERROR) {
+                pathLog.add((BIConnectionErrorLog)log);
+            }
+        }
+        return pathLog;
+    }
+
+    @Override
+    public Date getCubeStart() {
+        return cube_start;
+    }
+
     private void BITableLogSort(List<BITableLog> log) {
         Collections.sort(log, new Comparator<BITableLog>() {
             @Override
             public int compare(BITableLog o1, BITableLog o2) {
                 if (o1.isRunning()) {
                     if (o2.isRunning()) {
-                        return Long.compare(o1.getTotalTime(), o2.getTotalTime());
+                        return (o1.getTotalTime() < o2.getTotalTime()) ? -1 : ((o1.getTotalTime() == o2.getTotalTime()) ? 0 : 1);
                     }
                     return -1;
                 } else if (o2.isRunning()) {
                     return 1;
                 } else {
-                    return Long.compare(o1.getTotalTime(), o2.getTotalTime());
+                    return (o1.getTotalTime() < o2.getTotalTime()) ? -1 : ((o1.getTotalTime() == o2.getTotalTime()) ? 0 : 1);
                 }
             }
         });
@@ -303,13 +345,13 @@ public class SingleUserBIRecord implements BIRecord {
             public int compare(BIConnectionLog o1, BIConnectionLog o2) {
                 if (o1.isRunning()) {
                     if (o2.isRunning()) {
-                        return Long.compare(o1.getTime(), o2.getTime());
+                        return (o1.getTime() < o2.getTime()) ? -1 : ((o1.getTime() == o2.getTime()) ? 0 : 1);
                     }
                     return -1;
                 } else if (o2.isRunning()) {
                     return 1;
                 } else {
-                    return Long.compare(o1.getTime(), o2.getTime());
+                    return (o1.getTime() < o2.getTime()) ? -1 : ((o1.getTime() == o2.getTime()) ? 0 : 1);
                 }
             }
         });

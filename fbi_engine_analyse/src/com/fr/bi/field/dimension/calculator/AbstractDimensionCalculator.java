@@ -2,6 +2,7 @@ package com.fr.bi.field.dimension.calculator;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
@@ -17,10 +18,8 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -82,7 +81,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
             return new BIDimensionCore().fetchObjectCore();
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return BIBasicCore.EMPTY_CORE;
     }
@@ -97,11 +96,6 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     @Override
     public ICubeColumnIndexReader createNoneSortGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader) {
         return dimension.getGroup().createGroupedMap(createNoneSortNoneGroupValueMapGetter(target, loader));
-    }
-
-    @Override
-    public boolean hasSelfGroup() {
-        return dimension.getGroup().isNullGroup();
     }
 
     @Override
@@ -162,6 +156,18 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
             usedColumnKey = new IndexKey(primaryField.getFieldName());
         }
         ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
+//        GroupValueIndex nullGroupValueIndex = loader.getTableIndex(usedTableSource).getNullGroupValueIndex(usedColumnKey);
+//        CubeLinkedHashMap newGetter = new CubeLinkedHashMap();
+//        newGetter.put("", nullGroupValueIndex);
+//        Iterator iter = getter.iterator();
+//        while (iter.hasNext()) {
+//            Map.Entry entry = (Map.Entry) iter.next();
+//            Object key = entry.getKey();
+//            if (key == null) {
+//                continue;
+//            }
+//            newGetter.put(key, entry.getValue());
+//        }
         getter = dimension.getGroup().createGroupedMap(getter);
         if (useRealData && isNoGroup() && getSortType() != BIReportConstant.SORT.CUSTOM) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
@@ -169,23 +175,12 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getSort().createGroupedMap(getter).iterator();
     }
 
-    private boolean isNoGroup() {
+    protected boolean isNoGroup() {
         return getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP;
     }
 
-    private CubeTableSource getTableSourceFromField() {
+    protected CubeTableSource getTableSourceFromField() {
         return field.getTableBelongTo().getTableSource();
-    }
-
-    @Override
-    public int getBaseTableValueCount(Object value, ICubeDataLoader loader) {
-        GroupValueIndex[] gvis = loader.getTableIndex(getTableSourceFromField()).getIndexes(dimension.createKey(field), new Object[]{value});
-        if (gvis != null) {
-            if (gvis[0] != null) {
-                return (int) gvis[0].getRowsCountWithData();
-            }
-        }
-        return 0;
     }
 
     @Override
@@ -240,5 +235,8 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getSelfToSelfRelationPath();
     }
 
-
+    @Override
+    public void setRelationList(List<BITableSourceRelation> list) {
+        relations = list;
+    }
 }

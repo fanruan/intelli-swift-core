@@ -16,11 +16,15 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.MapChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -28,10 +32,11 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this, c = this.constants;
         formatRangeLegend();
         delete config.legend;
+        delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];
-        BI.backEach(items, function (idx, item) {
+        BI.each(items, function (idx, item) {
             if (BI.has(item, "settings")) {
                 formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
                     item.settings.unit || "", item.settings.num_separators || c.NUM_SEPARATORS));
@@ -71,7 +76,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.dTools.enabled = true;
         config.dTools.click = function (point) {
             point = point || {};
-            var pointOption = point.pointOption || {};
+            var pointOption = point.options || {};
             self.fireEvent(BI.MapChart.EVENT_CLICK_DTOOL, pointOption);
         };
         config.chartType = "areaMap";
@@ -163,15 +168,12 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
         function getRangeStyle(styles, change, defaultColor) {
             var range = [], color = null, defaultStyle = {};
-            var conditionMax = null, conditionMin = null, max = null, min = null;
+            var conditionMax = null, conditionMin = null, min = null;
 
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, it) {
                     if (BI.isNull(min) || BI.parseFloat(min) > BI.parseFloat(it.y)) {
                         min = it.y
-                    }
-                    if (BI.isNull(max) || BI.parseFloat(max) < BI.parseFloat(it.y)) {
-                        max = it.y
                     }
                 })
             });
@@ -201,7 +203,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                             });
                         }
 
-                        var maxScale = _calculateValueNiceDomain(0, max)[1];
+                        var maxScale = _calculateValueNiceDomain(0, this.max)[1];
 
                         if (conditionMax < maxScale) {
                             range.push({
@@ -247,6 +249,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
     _formatDrillItems: function (items) {
         var self = this;
         BI.each(items.series, function (idx, da) {
+            var hasArea = false;
             BI.each(da.data, function (idx, data) {
                 data.y = self.formatXYDataWithMagnify(data.y, 1);
                 if (BI.has(da, "settings")) {
@@ -259,10 +262,19 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     data.name = data.x;
                     data.value = data.y;
                 }
+                if(BI.has(da, "type") && da.type === "areaMap"){
+                    hasArea = true;
+                }
                 if (BI.has(data, "drilldown")) {
                     self._formatDrillItems(data.drilldown);
                 }
-            })
+            });
+            if(hasArea === false){
+                items.series.push({
+                    type: "areaMap",
+                    data: []
+                });
+            }
         });
     },
 
@@ -294,7 +306,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     if (BI.has(da, "drilldown")) {
                         self._formatDrillItems(da.drilldown);
                     }
-                })
+                });
             })
         });
         return items;

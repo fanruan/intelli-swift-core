@@ -68,7 +68,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }, {
+                }/*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names",
@@ -79,7 +79,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.chartStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }], {
+                }*/], {
                     height: constant.SINGLE_LINE_HEIGHT
                 })
             }]
@@ -215,6 +215,17 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
+        //空值连续
+        this.nullContinuity = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Null_Continue"),
+            width: 90
+        });
+
+        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function() {
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
+        });
+
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -233,6 +244,9 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.gridLine]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.nullContinuity]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -435,6 +449,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
         this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -461,7 +476,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
-            num_separators: this.separators.isSelected()
+            num_separators: this.separators.isSelected(),
+            null_continue: this.nullContinuity.isSelected()
         }
     },
 

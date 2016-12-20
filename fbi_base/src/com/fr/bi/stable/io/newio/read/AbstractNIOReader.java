@@ -3,7 +3,7 @@ package com.fr.bi.stable.io.newio.read;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.newio.NIOReadWriter;
 import com.fr.bi.stable.io.newio.NIOReader;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.mem.BIReleaseUtils;
 
 import java.io.File;
@@ -57,7 +57,7 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
                 //但愿10ms能 执行完get方法否则可能导致jvm崩溃
                 this.wait(10);
             } catch (InterruptedException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             clearBuffer();
         }
@@ -105,7 +105,7 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
                     }
                 }
             } catch (IOException e) {
-            	BILogger.getLogger().error(e.getMessage(), e);
+            	BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -123,7 +123,7 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
         try {
             return new RandomAccessFile(cacheFile, "r").getChannel();
         } catch (FileNotFoundException e) {
-        	BILogger.getLogger().error(e.getMessage(), e);
+        	BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }

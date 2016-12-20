@@ -5,7 +5,9 @@
  */
 BI.LoadingMask = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.LoadingMask.superclass._defaultConfig.apply(this, arguments), {})
+        return BI.extend(BI.LoadingMask.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: ""
+        });
     },
 
     _init: function () {
@@ -13,25 +15,43 @@ BI.LoadingMask = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var mask = BI.Maskers.create(this.getName(), o.masker, {offset: o.offset, container: o.container});
         BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.absolute",
             element: mask,
-            cls: "bi-loading-mask",
             items: [{
-                type: "bi.vertical",
-                items: [{
+                el: {
+                    type: "bi.layout",
+                    cls: "bi-loading-main-background"
+                },
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            }, {
+                el: {
                     type: "bi.center_adapt",
-                    cls: "loading-bar-icon",
+                    cls: "bi-loading-mask-content",
                     items: [{
-                        type: "bi.icon",
-                        width: 208,
-                        height: 30
+                        type: "bi.vertical",
+                        items: [{
+                            type: "bi.center_adapt",
+                            cls: "loading-bar-icon",
+                            items: [{
+                                type: "bi.icon",
+                                width: 208,
+                                height: 30
+                            }]
+                        }, {
+                            type: "bi.label",
+                            cls: "loading-bar-label",
+                            text: o.text,
+                            height: 30
+                        }]
                     }]
-                }, {
-                    type: "bi.label",
-                    cls: "loading-bar-label",
-                    text: o.text,
-                    height: 30
-                }]
+                },
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
             }]
         });
         BI.Maskers.show(this.getName());

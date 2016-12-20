@@ -10,7 +10,7 @@ public class BINonValueUtils {
     public static void checkNull(Object... args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i] == null) {
-                throw new IllegalArgumentException("the parameter :" + args.toString() + " can't be null");
+                throw new IllegalArgumentException("the parameter can't be null");
             }
         }
     }
@@ -30,7 +30,12 @@ public class BINonValueUtils {
     public static BIRuntimeException beyondControl(Throwable throwable) {
         if (throwable instanceof BIRuntimeException) {
             Throwable cause = throwable.getCause();
-            return beyondControl(cause.getMessage(), cause);
+            if(null != cause)
+            {
+                return beyondControl(cause.getMessage(), cause);
+            }else {
+                return beyondControl(throwable.getMessage(),throwable);
+            }
         }
         return beyondControl(throwable.getMessage(), throwable);
     }

@@ -34,6 +34,11 @@ public class NoneDimensionCalculator implements DimensionCalculator {
     }
 
     @Override
+    public void setRelationList(List<BITableSourceRelation> relationList) {
+        relations = relationList;
+    }
+
+    @Override
     public BusinessField getField() {
         return field;
     }
@@ -96,16 +101,6 @@ public class NoneDimensionCalculator implements DimensionCalculator {
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit) {
         return null;
-    }
-
-    @Override
-    public int getBaseTableValueCount(Object value, ICubeDataLoader loader) {
-        return 0;
-    }
-
-    @Override
-    public boolean hasSelfGroup() {
-        return false;
     }
 
     @Override

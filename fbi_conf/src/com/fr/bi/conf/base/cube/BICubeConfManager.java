@@ -17,7 +17,7 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -33,6 +33,8 @@ public class BICubeConfManager {
     private String loginField;
 
     private long packageLastModify;
+
+    private long multiPathVersion;
 
     private BIReportConstant.MULTI_PATH_STATUS multiPathCubeStatus;
 
@@ -58,6 +60,14 @@ public class BICubeConfManager {
 
     public void setPackageLastModify(long packageLastModify) {
         this.packageLastModify = packageLastModify;
+    }
+
+    public long getMultiPathVersion() {
+        return multiPathVersion;
+    }
+
+    public void setMultiPathVersion(long multiPathVersion) {
+        this.multiPathVersion = multiPathVersion;
     }
 
     public BIReportConstant.MULTI_PATH_STATUS getMultiPathCubeStatus() {
@@ -86,7 +96,7 @@ public class BICubeConfManager {
             BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(loginField));
             BITableRelationPath firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userId, ck.getTableBelongTo(), field.getTableBelongTo());
             List<BITableRelation> relations = new ArrayList<BITableRelation>();
-            if(firstPath != null) {
+            if (firstPath != null) {
                 relations = firstPath.getAllRelations();
             }
             BIKey userNameIndex = new IndexKey(field.getFieldName());
@@ -100,18 +110,18 @@ public class BICubeConfManager {
                     gvi.Traversal(new TraversalAction() {
                         @Override
                         public void actionPerformed(int[] rowIndices) {
-                            for (int i = 0; i < rowIndices.length; i ++){
+                            for (int i = 0; i < rowIndices.length; i++) {
                                 o.add(getter.getConnectedRow(rowIndices[i]));
                             }
                         }
                     });
-                    if(!o.isEmpty()){
+                    if (!o.isEmpty()) {
 
                         int[] rows = new int[o.size()];
-                        Object [] values = new Object[rows.length];
+                        Object[] values = new Object[rows.length];
                         ICubeTableService cubeTableService = loader.getTableIndex(ck.getTableBelongTo().getTableSource());
                         ICubeColumnDetailGetter detailGetter = cubeTableService.getColumnDetailReader(cubeTableService.getColumnIndex(ck.getFieldName()));
-                        for (int i = 0; i < rows.length; i ++){
+                        for (int i = 0; i < rows.length; i++) {
                             rows[i] = o.get(i);
                             values[i] = detailGetter.getValue(o.get(i));
                         }
@@ -120,7 +130,7 @@ public class BICubeConfManager {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }

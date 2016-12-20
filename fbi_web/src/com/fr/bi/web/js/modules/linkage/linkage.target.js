@@ -13,14 +13,19 @@ BI.LinkageTarget = BI.inherit(BI.Widget, {
             baseCls: "bi-linkage-target",
             height: 30,
             from: "",
-            to: ""
+            to: "",
+            cids: []
         });
     },
 
     _init: function () {
         BI.LinkageTarget.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var name = BI.Utils.getDimensionNameByID(o.from);
+        var name = "";
+        BI.each(o.cids, function (idx, cid) {
+            name += BI.Utils.getDimensionNameByID(cid) + BI.i18nText("BI-Colon") + " ";
+        });
+        name += BI.Utils.getDimensionNameByID(o.from);
         var nameLabel = BI.createWidget({
             type: "bi.label",
             textAlign: "left",
@@ -54,7 +59,8 @@ BI.LinkageTarget = BI.inherit(BI.Widget, {
     getValue: function () {
         return {
             from: this.options.from,
-            to: this.options.to
+            to: this.options.to,
+            cids: this.options.cids
         }
     }
 });

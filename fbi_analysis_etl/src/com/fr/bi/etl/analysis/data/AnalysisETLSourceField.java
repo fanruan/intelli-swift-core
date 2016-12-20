@@ -1,6 +1,6 @@
 package com.fr.bi.etl.analysis.data;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 import com.fr.stable.StringUtils;
@@ -40,7 +40,7 @@ public class AnalysisETLSourceField implements JSONTransform{
             try{
                 this.group = jo.getInt("group");
             } catch (Exception e){
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         if (jo.has("id")){

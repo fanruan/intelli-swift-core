@@ -9,6 +9,8 @@ import com.fr.bi.cal.stable.cube.memory.MemoryCubeFile;
 import com.fr.bi.cal.stable.tableindex.index.BITableIndex;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.data.AnalysisETLTableSource;
+import com.fr.bi.etl.analysis.data.UserBaseTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserETLTableSource;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -18,6 +20,7 @@ import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,7 +32,7 @@ public class PartCubeDataLoader implements ICubeDataLoader {
 
     private long userId;
 
-    private static Map<Long, PartCubeDataLoader> userMap = new ConcurrentHashMap<Long, PartCubeDataLoader>();
+    private static final Map<Long, PartCubeDataLoader> userMap = new ConcurrentHashMap<Long, PartCubeDataLoader>();
 
 
     private transient Map<BICore, CubeTableSource> sourceMap = new ConcurrentHashMap<BICore, CubeTableSource>();
@@ -43,6 +46,7 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         loader.registSource(source);
         return loader;
     }
+
 
     private void registSource(CubeTableSource source) {
         BICore core = source.fetchObjectCore();
@@ -127,6 +131,29 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         synchronized (this) {
             if (userMap != null) {
                 userMap.clear();
+            }
+            if (sourceMap != null) {
+                Iterator<Map.Entry<BICore, CubeTableSource>> it = sourceMap.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<BICore, CubeTableSource> entry = it.next();
+                    if (entry.getValue().getType() == Constants.TABLE_TYPE.USER_ETL) {
+                        ((AnalysisETLTableSource) entry.getValue()).clearUserBaseTableMap();
+                    } else {
+                        ((UserBaseTableSource) entry.getValue()).clearUserBaseTableMap();
+                    }
+                }
+                sourceMap.clear();
+            }
+
+        }
+    }
+
+    public static void clearAll() {
+        synchronized (userMap) {
+            Iterator<Map.Entry<Long, PartCubeDataLoader>> it = userMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Long, PartCubeDataLoader> entry = it.next();
+                entry.getValue().clear();
             }
         }
     }

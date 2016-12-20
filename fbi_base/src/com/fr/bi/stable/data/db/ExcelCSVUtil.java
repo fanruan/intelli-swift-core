@@ -2,7 +2,7 @@ package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.excel.CSVTokenizer;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
@@ -73,7 +73,7 @@ public class ExcelCSVUtil {
                             String val = it.nextToken();
                             currentRowData.add(val);
                         } catch (Exception e) {
-                            BILogger.getLogger().error(e.getMessage());
+                            BILoggerFactory.getLogger().error(e.getMessage());
                         }
                     }
                     tempRowDataList.add(currentRowData.toArray());
@@ -81,7 +81,7 @@ public class ExcelCSVUtil {
                     row++;
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             } finally {
                 if (r != null) {
                     r.close();
@@ -129,7 +129,7 @@ public class ExcelCSVUtil {
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
                     if (oneRow.length > j) {
-                        v = oneRow[j].toString();
+                        v = oneRow[j].toString().trim();
                     }
                     currentRowData.add(v);
                     boolean dateType = false;
@@ -154,7 +154,7 @@ public class ExcelCSVUtil {
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
                     if (oneRow.length > j) {
-                        v = oneRow[j].toString();
+                        v = oneRow[j].toString().trim();
                     }
                     currentRowData.add(v);
                 }

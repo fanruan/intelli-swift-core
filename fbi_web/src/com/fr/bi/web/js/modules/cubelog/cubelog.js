@@ -75,7 +75,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         this._refreshLog4Init();
     },
 
-    _refreshLog4Init: function() {
+    _refreshLog4Init: function () {
         var self = this;
         BI.Utils.getCubeLog(function (data) {
             if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
@@ -94,12 +94,15 @@ BI.CubeLog = BI.inherit(BI.Widget, {
     refreshLog: function (isStart) {
         var self = this;
         if (isStart) {
-            this.processBar.setValue(10);
+            this.processBar.setValue(1);
+            BI.delay(function () {
+                self.processBar.setValue(10);
+            }, 1000);
         }
         if (BI.isNull(this.interval)) {
             this.interval = setInterval(function () {
                 self.refreshLog();
-            }, 5000);
+            }, 5000)
             return;
         }
         BI.Utils.getCubeLog(function (data) {
@@ -113,27 +116,33 @@ BI.CubeLog = BI.inherit(BI.Widget, {
     },
 
     _refreshProcess: function (data) {
-        if (BI.isNotNull(data.allRelationInfo)) {
-            var allFields = 0, generated = 0;
+        if (BI.isNull(data.allTableInfo) && BI.isNull(data.allRelationInfo)) {
+            return;
+        }
+        var allFields = 0, generated = 0;
+        if (BI.isNotNull(data.allTableInfo)) {
             BI.each(data.allTableInfo, function (tName, size) {
                 allFields += size;
             });
-            generated += data.connections.length;
-            BI.each(data.tables, function (i, table) {
-                generated += table.column.length;
-            });
-            var process = 1;
-            if (BI.isNull(data.cube_end)) {
-                if (allFields === 0) {
-                    return;
-                }
-                process = generated / allFields;
-                process = process > 0.9 ? 0.9 : process;
-            }
-            process = Math.ceil(process * 100);
-            process = process < 10 ? 10 : process;
-            this.processBar.setValue(process);
         }
+        if (BI.isNotNull(data.allRelationInfo)) {
+            allFields += data.allRelationInfo.length;
+        }
+        generated += data.connections.length;
+        BI.each(data.tables, function (i, table) {
+            generated += table.column.length;
+        });
+        var process = 1;
+        if (BI.isNull(data.cube_end)) {
+            if (allFields === 0) {
+                return;
+            }
+            process = generated / allFields;
+            process = process > 0.9 ? 0.9 : process;
+        }
+        process = Math.ceil(process * 100);
+        process = process < 10 ? 10 : process;
+        this.processBar.setValue(process);
     },
 
     _formatSecond: function (time) {
@@ -177,8 +186,16 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         var errors = data.errors;
         var children = [];
         BI.each(errors, function (i, er) {
+            var errorInfo = er.error_text;
+            if (undefined != er.tableName && '' != er.tableName) {
+                errorInfo = BI.i18nText("BI-Table_Name") + '-' + er.tableName + ':' + er.error_text;
+            } else if (undefined != er.relation) {
+                errorInfo = BI.i18nText("BI-Relations") + "-" +
+                    er.relation.primaryTableName + "." + er.relation.primaryFieldName + "->"
+                    + er.relation.foreignTableName + "." + er.relation.foreignFieldName + ':' + er.error_text;
+            }
             children.push({
-                value: er.error_text
+                value: BI.i18nText("BI-Error_Infor") + errorInfo
             })
         });
         items.push({

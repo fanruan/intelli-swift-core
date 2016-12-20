@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.data.source.operator.add.express.ExpressionValueOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -12,7 +13,8 @@ import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DateUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -83,7 +85,9 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
-                BILogger.getLogger().error("incorrect formular");
+                BILoggerFactory.getLogger(ValueConverOperator.class).error("incorrect formular");
+                BILoggerFactory.getLogger(ValueConverOperator.class).error(BIStringUtils.append("The value:", value.toString()));
+                BILoggerFactory.getLogger(ValueConverOperator.class).error(e.getMessage(), e);
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }

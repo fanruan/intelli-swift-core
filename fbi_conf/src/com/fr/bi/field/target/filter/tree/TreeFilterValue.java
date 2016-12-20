@@ -14,6 +14,7 @@ import com.fr.bi.common.BICoreService;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
@@ -128,17 +129,14 @@ public class TreeFilterValue implements JSONParser, BICoreService {
         BusinessField ck = controlCKS[controlLayerIndex];
         GroupValueIndex gvi = createFilterValue().createFilterIndex(new NoneDimensionCalculator(ck, BIConfUtils.convert2TableSourceRelation(Arrays.asList(relations[controlLayerIndex]))), tableKey, loader, userId);
         if (childs != null) {
-            GroupValueIndex resgvi = null;
+            GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
             for (int i = 0; i < childs.length; i++) {
                 if (childs[i] != null && controlCKS.length > controlLayerIndex + 1) {
                     GroupValueIndex tgvi = childs[i].createFilterIndex(calculator, controlCKS, controlLayerIndex + 1, tableKey, relations, loader, userId);
-                    if (resgvi == null) {
-                        resgvi = tgvi;
-                    } else {
-                        resgvi = resgvi.OR(tgvi);
-                    }
+                    helper.add(tgvi);
                 }
             }
+            GroupValueIndex resgvi = helper.compute();
             if (gvi == null) {
                 gvi = resgvi;
             } else {

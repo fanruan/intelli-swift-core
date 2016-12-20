@@ -47,6 +47,7 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
         return jo;
     }
 
+
 //    @Override
 //    public boolean equals(Object o) {
 //        if (!(o instanceof BITableRelation)) {
@@ -65,4 +66,6 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
 //        }
 //        return 0;
 //    }
+
+
 }

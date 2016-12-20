@@ -19,7 +19,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 /**
  * 发布消息
@@ -66,7 +66,7 @@ public class BIPublish implements IPublish {
             try {
                 router.registerTopic(topicTag);
             } catch (BITopicDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
 
         }
@@ -83,7 +83,7 @@ public class BIPublish implements IPublish {
             try {
                 router.registerFragment(fragmentTag.getSuperTopicTag(), fragmentTag);
             } catch (BIFragmentDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             } catch (BITopicAbsentException e) {
                 checkTopicTagRegister(fragmentTag.getSuperTopicTag());
                 checkFragmentRegister(fragmentTag);

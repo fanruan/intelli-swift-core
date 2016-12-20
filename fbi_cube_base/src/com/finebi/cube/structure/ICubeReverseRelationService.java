@@ -6,7 +6,7 @@ import com.fr.bi.common.inter.Release;
 /**
  * Created by 小灰灰 on 2016/6/29.
  */
-public interface ICubeReverseRelationService extends Release {
+public interface ICubeReverseRelationService extends Release,ICubeResourceForceRelease {
     /**
      * 添加子表行号对应的主表行号
      *
@@ -24,5 +24,4 @@ public interface ICubeReverseRelationService extends Release {
      */
     int getReverseRow(int row) throws BIResourceInvalidException;
 
-    void forceReleaseWriter();
 }

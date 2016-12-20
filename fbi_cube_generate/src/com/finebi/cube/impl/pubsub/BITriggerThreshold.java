@@ -267,7 +267,7 @@ public class BITriggerThreshold extends BIMapContainer<Integer, BITriggerThresho
                     statusTagThreshold.handleMessage(message);
                 }
             } catch (BIThresholdIsOffException e) {
-//                BILogger.getLogger().info(e.getMessage());
+//                BILoggerFactory.getLogger().info(e.getMessage());
                 return;
             }
         }

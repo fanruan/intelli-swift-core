@@ -1,7 +1,7 @@
 package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -118,9 +118,9 @@ public class Excel2007Util {
                     int mergedColCount = e.getColumn() - s.getColumn();
                     for (int i = 0; i < mergedColCount; i++) {
                         Object[] tempArray = tempRowDataList.get(e.getRow());
-                        if(tempArray.length < e.getColumn() - 1) {
-                            Object [] tArray = new Object[e.getColumn() - 1];
-                            for(int k = 0; k < tempArray.length; k++) {
+                        if (tempArray.length < e.getColumn() - 1) {
+                            Object[] tArray = new Object[e.getColumn() - 1];
+                            for (int k = 0; k < tempArray.length; k++) {
                                 tArray[k] = tempArray[k];
                             }
                             tArray[e.getColumn() - i] = tempRowDataList.get(e.getRow())[s.getColumn()];
@@ -134,9 +134,9 @@ public class Excel2007Util {
                     int mergedRowCount = e.getRow() - s.getRow();
                     for (int j = 0; j < mergedRowCount; j++) {
                         Object[] tempArray = tempRowDataList.get(e.getRow() - j);
-                        if(tempArray.length < e.getColumn() + 1) {
-                            Object [] tArray = new Object[e.getColumn() + 1];
-                            for(int k = 0; k < tempArray.length; k++) {
+                        if (tempArray.length < e.getColumn() + 1) {
+                            Object[] tArray = new Object[e.getColumn() + 1];
+                            for (int k = 0; k < tempArray.length; k++) {
                                 tArray[k] = tempArray[k];
                             }
                             tArray[e.getColumn()] = tempRowDataList.get(s.getRow())[e.getColumn()];
@@ -149,7 +149,7 @@ public class Excel2007Util {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
 
     }
@@ -192,7 +192,7 @@ public class Excel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
                     if (oneRow.length > j) {
-                        v = oneRow[j].toString();
+                        v = oneRow[j].toString().trim();
                     }
                     currentRowData.add(v);
                     boolean dateType = false;
@@ -217,7 +217,7 @@ public class Excel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
                     if (oneRow.length > j) {
-                        v = oneRow[j].toString();
+                        v = oneRow[j].toString().trim();
                     }
                     currentRowData.add(v);
                 }
@@ -315,6 +315,7 @@ public class Excel2007Util {
         private String cellValue;
         private int thisColumn = -1;
         private int lastColumnNumber = -1;
+        private static final int PERCENT = 100;
 
         public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings, DataFormatter dataFormatter) {
             this.value = new StringBuffer();
@@ -494,7 +495,7 @@ public class Excel2007Util {
                 XSSFRichTextString rtss = new XSSFRichTextString(sharedStringsTable.getEntryAt(idx));
                 cellValue = rtss.toString();
             } catch (NumberFormatException ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
 
@@ -510,7 +511,7 @@ public class Excel2007Util {
                     cellValue = n;
                 }
             } else {
-                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "##.##");
+                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
             }
         }
 

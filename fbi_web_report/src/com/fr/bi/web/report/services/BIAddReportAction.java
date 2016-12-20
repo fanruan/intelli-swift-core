@@ -3,6 +3,7 @@ package com.fr.bi.web.report.services;
 import com.fr.bi.fs.BIDesignReport;
 import com.fr.bi.fs.BIDesignSetting;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.web.report.utils.BIFSReportUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -40,9 +41,10 @@ public class BIAddReportAction extends ActionNoSessionCMD {
         String popConfig = WebUtils.getHTTPRequestParameter(req, "popConfig");
         long userId = ServiceUtils.getCurrentUserID(req);
         //构造一个空的report
-        if(popConfig == null) {
+        if (popConfig == null) {
             JSONObject reportJO = new JSONObject();
             reportJO.put("widgets", new JSONObject());
+            reportJO.put("version", BIReportConstant.VERSION);
             popConfig = reportJO.toString();
         }
         BIDesignReport report = new BIDesignReport(new BIDesignSetting(popConfig));

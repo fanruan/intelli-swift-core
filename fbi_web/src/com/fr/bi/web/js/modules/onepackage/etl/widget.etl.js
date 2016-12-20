@@ -249,7 +249,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 BI.Utils.checkTableInUse({
                     id: self.model.getId()
                 }, function (res) {
-                    if (BI.isNotNull(res) && res.is_use === true) {
+                    if (BI.isNotNull(res) && res["inUse"] === true) {
                         BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Table_In_Use_Tip"), function (flag) {
                             if (flag === true) {
                                 self.fireEvent(BI.ETL.EVENT_REMOVE);
@@ -262,7 +262,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                             }
                         });
                     }
-                }, function() {
+                }, function () {
                     mask.destroy();
                 });
             }
@@ -347,7 +347,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {
             BI.Layers.remove(BICst.SELECT_TABLES_LAYER);
             self.model.addNewTables(tables);
-            self._populateAfterETLOperator();
+            self._populateAfterAddTables();
         });
         selectTablePane.on(BI.SelectTablePane.EVENT_CANCEL, function () {
             BI.Layers.remove(BICst.SELECT_TABLES_LAYER);
@@ -360,24 +360,38 @@ BI.ETL = BI.inherit(BI.Widget, {
         this._changeButtonsStatus();
     },
 
+    _populateAfterAddTables: function () {
+        var self = this;
+        var allTables = this.model.getAllTables();
+        if (allTables.length === 1) {
+            var finalTable = allTables[0][0];
+            self.model.setFields(finalTable.fields, true);
+        }
+        self._populate();
+    },
+
     _populateAfterETLOperator: function () {
         var self = this;
         var allTables = this.model.getAllTables();
         if (allTables.length === 1) {
-            var mask = BI.createWidget({
-                type: "bi.loading_mask",
-                masker: BICst.BODY_ELEMENT,
-                text: BI.i18nText("BI-Loading")
-            });
-            BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
-                self.model.setFields(data[0].fields);
-                self.model.setRelationsByETLValue(data[0]);
-                self.model.setTranslationsByETLValue(data[0]);
-                self._populate();
-            }, function () {
-                mask.destroy();
-            });
-            return
+            var finalTable = allTables[0][0];
+            self.model.setFields(finalTable.fields);
+            self.model.setTranslationsByETLValue(finalTable);
+            // self._populate();
+            // var mask = BI.createWidget({
+            //     type: "bi.loading_mask",
+            //     masker: BICst.BODY_ELEMENT,
+            //     text: BI.i18nText("BI-Loading")
+            // });
+            // BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
+            //     self.model.setFields(data[0].fields);
+            //     self.model.setRelationsByETLValue(data[0]);
+            //     self.model.setTranslationsByETLValue(data[0]);
+            //     self._populate();
+            // }, function () {
+            //     mask.destroy();
+            // });
+            // return;
         }
         self._populate();
     },
@@ -387,7 +401,7 @@ BI.ETL = BI.inherit(BI.Widget, {
      * @private
      */
     _buildDataSetPane: function () {
-        var self = this;
+        var self = this, o = this.options;
         var allTables = this.model.getAllTables();
         if (allTables.length === 0) {
             this.dataSetTab.setSelect(BICst.CONF_ETL_DATA_SET_EMPTY_TIP);
@@ -414,6 +428,37 @@ BI.ETL = BI.inherit(BI.Widget, {
         });
         tableName.setValue(this.model.getTranName());
 
+        this.refreshTable = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "refresh-table-font",
+            width: 30,
+            height: 30,
+            warningTitle: BI.i18nText("BI-Only_Database_Table_Can_Refresh"),
+            title: BI.i18nText("BI-Refresh_Database_Table")
+        });
+        this.refreshTable.on(BI.IconButton.EVENT_CHANGE, function () {
+            var mask = BI.createWidget({
+                type: "bi.refresh_table_loading_mask",
+                masker: self.element,
+                table: self.model.getAllTables()[0][0]
+            });
+            mask.on(BI.RefreshTableLoadingMask.EVENT_REFRESH_SUCCESS, function (data) {
+                //将原来的id根据名称放入到新的fields中
+                self.model.refresh4Fields(data);
+                self.model = new BI.ETLModel({
+                    id: o.id,
+                    table_data: data,
+                    relations: o.relations,
+                    translations: o.translations,
+                    all_fields: o.all_fields,
+                    used_fields: o.used_fields,
+                    excel_view: o.excel_view,
+                    update_settings: o.update_settings
+                });
+                self._populate();
+            });
+        });
+
         this.tableNameWrapper = BI.createWidget({
             type: "bi.absolute",
             items: [{
@@ -430,6 +475,10 @@ BI.ETL = BI.inherit(BI.Widget, {
                 el: tableName,
                 left: this.constants.ETL_TABLE_NAME_WIDTH,
                 top: 0
+            }, {
+                el: this.refreshTable,
+                top: 0,
+                right: 0
             }]
         });
         var tableInfo = BI.createWidget({
@@ -697,9 +746,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self.constants.ETL_OPERATOR_LAYER),
                 info: {
                     reopen: true,
-                    isGenerated: status.isGenerated,
-                    tableInfo: table,
-                    relationfieldNames: self.model.constructFieldNamesWhichHasRelation()
+                    isGenerated: status.exists,
+                    tableInfo: table
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -725,7 +773,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: self.model.getId(),
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table,
                     translations: self.model.getTranslations(),
                     fieldInfo: self.model.constructFieldNameAndTranslationFieldNameRelation()
@@ -753,7 +801,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self.constants.ETL_OPERATOR_LAYER),
                 info: {
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table,
                     relations: self.model.getRelations()
                 }
@@ -780,9 +828,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self.constants.ETL_OPERATOR_LAYER),
                 info: {
                     reopen: true,
-                    isGenerated: status.isGenerated,
-                    tableInfo: table,
-                    relationfieldNames: self.model.constructFieldNamesWhichHasRelation()
+                    isGenerated: status.exists,
+                    tableInfo: table
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -808,7 +855,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: tableId,
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     joinTables: table.tables,
                     tableInfo: table,
                     allETLTables: self.model.getAllTables()
@@ -840,7 +887,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: tableId,
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     unionTables: table.tables,
                     tableInfo: table,
                     allETLTables: self.model.getAllTables()
@@ -871,7 +918,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: self.model.getId(),
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table,
                     fields: self.model.getFields(),
                     relations: self.model.getRelations()
@@ -900,7 +947,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: tableId,
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table
                 }
             });
@@ -929,7 +976,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: tableId,
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table
                 }
             });
@@ -954,9 +1001,9 @@ BI.ETL = BI.inherit(BI.Widget, {
             masker: this.element,
             text: BI.i18nText("BI-Loading")
         });
-        BI.Utils.checkCubeStatusByTable(table, function (status) {
+        BI.Utils.checkTableExist(table, function (status) {
             callback(status);
-        }, function() {
+        }, function () {
             mask.destroy();
         });
     },
@@ -1237,11 +1284,12 @@ BI.ETL = BI.inherit(BI.Widget, {
         //表预览按钮
         var allTables = this.model.getAllTables();
         var isEnable = false, warningTitle = "";
+        BI.isNotNull(this.refreshTable) && this.refreshTable.setEnable(false);
         if (allTables.length === 1) {
             //如果不是etl表，也是可以预览的
             if (BI.isNotNull(allTables[0][0].etl_type)) {
-                BI.Utils.checkCubeStatusByTable(allTables[0][0], function (data) {
-                    if (data.isGenerated === true) {
+                BI.Utils.checkTableExist(allTables[0][0], function (data) {
+                    if (data.exists === true) {
                         self.tablePreview.setEnable(true);
                     } else {
                         self.tablePreview.setEnable(false);
@@ -1249,7 +1297,9 @@ BI.ETL = BI.inherit(BI.Widget, {
                     }
                 });
             } else {
-                self.tablePreview.setEnable(true);
+                this.tablePreview.setEnable(true);
+                //仅在原始表的情况下允许刷新
+                this.refreshTable.setEnable(true);
             }
             isEnable = true;
         } else {

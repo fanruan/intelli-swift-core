@@ -12,6 +12,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             xAxis: [{type: "category"}],
             yAxis: [{type: "value"}],
             types: [[], []],
+            popupItemsGetter: BI.emptyFn,
             formatConfig: function (config) {
                 return config;
             }
@@ -54,9 +55,76 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         });
         var config = BI.ChartCombineFormatItemFactory.combineConfig();
         config.plotOptions.click = function () {
-            self.fireEvent(BI.CombineChart.EVENT_CHANGE, this.options);
+            var data = BI.clone(this.options);
+            data.toolTipRect = this.getTooltipRect();
+            var items = o.popupItemsGetter(data);
+            if(items && items.length === 1) {
+                self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, BI.extend({}, items[0], data));
+            }
+            if (items && items.length > 1) {
+                self._createPopup(items, data.toolTipRect, data);
+            }
+            self.fireEvent(BI.CombineChart.EVENT_CHANGE, data);
         };
         return [result, config];
+    },
+
+    _createPopup: function (items, rect, opt) {
+        var self = this;
+        if(this.combo) {
+            this.combo.destroy();
+        }
+        this._doDestroy = true;
+        this.combo = BI.createWidget({
+            type: "bi.combo",
+            direction: "bottom",
+            isNeedAdjustWidth: false,
+            popup: {
+                el: BI.createWidget({
+                    type: "bi.vertical",
+                    cls: "bi-linkage-list",
+                    items: BI.map(items, function (i, item) {
+                        return {
+                            el: BI.extend({
+                                type: "bi.text_button",
+                                cls: "bi-linkage-list-item",
+                                height: 30,
+                                handler: function () {
+                                    self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, BI.extend({}, item, opt));
+                                    self.combo.destroy();
+                                },
+                                hgap: 10
+                            }, item)
+                        }
+                    })
+                })
+            },
+            width: 0
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.combo,
+                top: rect.y,
+                left: rect.x
+            }]
+        });
+        this.combo.element.hover(function () {
+            self._doDestroy = false;
+        }, function () {
+            self._doDestroy = true;
+            self._debounce2Destroy();
+        });
+        this._debounce2Destroy = BI.debounce(BI.bind(destroyCombo , this), 3000);
+        this.combo.showView();
+        this._debounce2Destroy();
+
+        function destroyCombo() {
+            if (this._doDestroy) {
+                this.combo.destroy();
+            }
+        }
     },
 
     setTypes: function (types) {
@@ -86,4 +154,5 @@ BI.CombineChart = BI.inherit(BI.Widget, {
     }
 });
 BI.CombineChart.EVENT_CHANGE = "EVENT_CHANGE";
+BI.CombineChart.EVENT_ITEM_CLICK = "EVENT_ITEM_CLICK";
 $.shortcut('bi.combine_chart', BI.CombineChart);

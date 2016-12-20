@@ -41,7 +41,7 @@ BI.SelectTablePane = BI.inherit(BI.LoadingPane, {
             currentId: o.currentId,
             translations: o.translations
         });
-        BI.Utils.getConnectionNames(function(linkNames){
+        BI.Utils.getConnectionNames(function (linkNames) {
             self.tab.populate(linkNames);
         });
         this.tab.on(BI.DataLinksTab.EVENT_CHANGE, function () {
@@ -71,11 +71,12 @@ BI.SelectTablePane = BI.inherit(BI.LoadingPane, {
                     self.loaded();
                     var tables = [];
                     //ETL 表继承一下自己的id
-                    BI.each(etlTables, function(i, eTable) {
+                    BI.each(etlTables, function (i, eTable) {
                         seTables[sourceTables.length + i].id = eTable.id;
+                        BI.isNotNull(eTable.temp_name) && (seTables[sourceTables.length + i].temp_name = eTable.temp_name);
                     });
                     tables = tables.concat(seTables);
-                    tables = tables.concat(allTables.pTables);
+                    tables = tables.concat(BI.deepClone(allTables.pTables));
                     self.fireEvent(BI.SelectTablePane.EVENT_NEXT_STEP, tables);
                 });
             }

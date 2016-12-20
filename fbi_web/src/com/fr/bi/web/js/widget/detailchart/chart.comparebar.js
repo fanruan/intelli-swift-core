@@ -13,7 +13,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.CompareBarChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "value",
             title: {
@@ -37,11 +37,15 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.CompareBarChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -50,18 +54,10 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         var yTitle = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
         var xTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.dataSheet.enabled = this.config.show_data_table;
-        config.xAxis[0].showLabel = !config.dataSheet.enabled;
-
-        config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if (this.config.show_zoom === true) {
-            delete config.dataSheet;
-            delete config.zoom.zoomType;
-        }
 
         config.yAxis = this.yAxis;
         config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
@@ -70,7 +66,8 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
-            labelRotation: this.config.text_direction
+            labelRotation: this.config.text_direction,
+            maxWidth: '40%'
         });
 
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);

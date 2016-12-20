@@ -35,7 +35,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 color = co.color;
             }
         });
-        text = this._parseFloatByDot(text, format, num_separators);
+        text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
         var textLabel = this._createTargetText(text);
         if (BI.isNotEmptyString(color)) {
             textLabel.element.css("color", color);
@@ -65,49 +65,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 items: [textLabel]
             })
         }
-    },
-
-    _parseFloatByDot: function (text, dot, separators) {
-        if (text === Infinity || text !== text) {
-            return text;
-        }
-        if (!BI.isNumeric(text)) {
-            return text;
-        }
-        var num = BI.parseFloat(text);
-        switch (dot) {
-            case BICst.TARGET_STYLE.FORMAT.NORMAL:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.##;-#,###.##')
-                } else {
-                    num = BI.contentFormat(num, '#.##;-#.##')
-                }
-                return num;
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###;-#,###')
-                } else {
-                    num = BI.parseInt(num)
-                }
-                return num;
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.0;-#,###.0')
-                } else {
-                    num = BI.contentFormat(num, '#.0;-#.0')
-                }
-                return num;
-            case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.00;-#,###.00')
-                } else {
-                    num = BI.contentFormat(num, '#.00;-#.00')
-                }
-                return num;
-        }
-        return text;
     },
 
     _getIconByStyleAndMark: function (text, style, mark) {
@@ -144,20 +101,22 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
             var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
             var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
         }
-        var linkedWidgets = [];
+        var linkedWidgets = [], linkedFrom = [];
         BI.each(linkage, function (i, link) {
-            if (link.from === dId) {
-                linkedWidgets.push(link.to);
+            if (link.from === dId && BI.isEmpty(link.cids)) {
+                linkedWidgets.push(link);
+            } else if (link.cids && link.cids[0] === dId) {
+                linkedFrom.push(link);
             }
         });
 
         if (text === Infinity) {
             text = "N/0";
-        } else if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNotNull(text)) {
+        } else if (BI.Utils.getDimensionSettingsByID(dId).numLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNumeric(text)) {
             text += "%";
         }
 
-        if (BI.isEmptyArray(linkedWidgets)) {
+        if (BI.isEmptyArray(linkedWidgets) && BI.isEmptyArray(linkedFrom)) {
             return BI.createWidget({
                 type: "bi.label",
                 text: text,
@@ -177,14 +136,89 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 cls: "target-linkage-label",
                 rgap: 5
             });
-            textButton.on(BI.TextButton.EVENT_CHANGE, function () {
-                //这个clicked应该放到子widget中保存起来
-                BI.each(linkedWidgets, function (i, linkWid) {
-                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkWid, dId, clicked);
-                    self._send2AllChildLinkWidget(linkWid);
+            //一般指标或只有一个指标联动的计算指标
+            if (!isContainsDiffLinkages(linkedFrom)) {
+                textButton.on(BI.TextButton.EVENT_CHANGE, function () {
+                    //这个clicked应该放到子widget中保存起来
+                    BI.each(linkedWidgets.concat(linkedFrom), function (i, linkWid) {
+                        BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkWid.to, linkWid.from, clicked);
+                        self._send2AllChildLinkWidget(linkWid.to);
+                    });
                 });
+                return textButton;
+            }
+            //计算指标
+            var linkages = [];
+            BI.each(linkedFrom, function (idx, linkage) {
+                var name = BI.i18nText("BI-An");
+                BI.each(linkage.cids, function (i, cid) {
+                    name += BI.Utils.getDimensionNameByID(cid) + "-";
+                });
+                name += BI.Utils.getDimensionNameByID(linkage.from);
+                var temp = {
+                    text: name,
+                    title: name,
+                    from: linkage.from,
+                    to: linkage.to,
+                    cids: linkage.cids
+                };
+                var containsItem = containsLinkage(linkages, temp);
+                if (BI.isEmptyObject(containsItem)) {
+                    linkages.push(temp);
+                } else {
+                    BI.isArray(containsItem.to) ? containsItem.to.push(temp.to) : containsItem.to = [containsItem.to, temp.to];
+                }
             });
-            return textButton;
+
+            var combo = BI.createWidget({
+                type: "bi.combo",
+                el: textButton,
+                direction: "right",
+                isNeedAdjustWidth: false,
+                popup: {
+                    el: BI.createWidget({
+                        type: "bi.vertical",
+                        cls: "bi-linkage-list",
+                        items: BI.createItems(linkages, {
+                            type: "bi.text_button",
+                            cls: "bi-linkage-list-item",
+                            height: 30,
+                            textAlign: "left",
+                            handler: function () {
+                                var link = this.options;
+                                BI.each(BI.isArray(link.to) ? link.to : [link.to], function (idx, to) {
+                                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + to, link.from, clicked);
+                                    self._send2AllChildLinkWidget(to, link.from, clicked);
+                                });
+                                combo.hideView();
+                            },
+                            lgap: 10
+                        }),
+                        width: 164
+                    })
+                }
+            });
+            return combo;
+
+            function containsLinkage(list, item) {
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
+                        return list[i];
+                    }
+                }
+                return {};
+            }
+
+            function isContainsDiffLinkages(linkages) {
+                for(var i = 0; i < linkages.length; i++) {
+                    for(var j = i + 1; j < linkages.length; j++) {
+                        if(!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
         }
     },
 
@@ -199,21 +233,63 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
 });
 $.shortcut("bi.target_body_normal_cell", BI.TargetBodyNormalCell);
 BI.extend(BI.TargetBodyNormalCell, {
+    parseFloatByDot: function (text, dot, separators) {
+        if (text === Infinity || text !== text) {
+            return text;
+        }
+        if (!BI.isNumeric(text)) {
+            return text;
+        }
+        var num = BI.parseFloat(text);
+        switch (dot) {
+            case BICst.TARGET_STYLE.FORMAT.NORMAL:
+                if (separators) {
+                    num = BI.contentFormat(num, '#,###.##;-#,###.##')
+                } else {
+                    num = BI.contentFormat(num, '#.##;-#.##')
+                }
+                return num;
+                break;
+            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
+                if (separators) {
+                    num = BI.contentFormat(num, '#,###;-#,###')
+                } else {
+                    num = BI.contentFormat(num, '#0;-#0')
+                }
+                return num;
+                break;
+            case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
+                if (separators) {
+                    num = BI.contentFormat(num, '#,###.0;-#,###.0')
+                } else {
+                    num = BI.contentFormat(num, '#.0;-#.0')
+                }
+                return num;
+            case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
+                if (separators) {
+                    num = BI.contentFormat(num, '#,###.00;-#,###.00')
+                } else {
+                    num = BI.contentFormat(num, '#.00;-#.00')
+                }
+                return num;
+        }
+        return BI.contentFormat(num, '#.##;-#.##');
+    },
     parseNumByLevel: function (text, numLevel) {
         if (text === Infinity || text !== text || !BI.isNumber(text)) {
             return text;
         }
         switch (numLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return BI.contentFormat(BI.parseFloat(text.div(10000).toFixed(2)), "#.##;-#.##");
+                return text.div(10000);
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return BI.contentFormat(BI.parseFloat(text.div(1000000).toFixed(2)), "#.##;-#.##");
+                return text.div(1000000);
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return BI.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##;-#.##");
+                return text.div(100000000);
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return BI.contentFormat(text * 100, "#.##;-#.##");
+                return text * 100;
             default:
-                return BI.parseFloat(BI.contentFormat(text.toFixed(2), "#.##;-#.##"));
+                return text;
         }
     }
 });

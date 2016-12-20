@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.pack.imp;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.pack.data.BIBasicBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -8,7 +8,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -54,11 +54,19 @@ public class BIUserPackageConfigurationManager {
      * 完成生成cube
      */
     public void finishGenerateCubes() {
+        finishGenerateCubes(null);
+    }
+
+    /**
+     * 完成生成cube
+     */
+    public void finishGenerateCubes(Set<CubeTableSource> absentTables) {
         synchronized (this) {
-            packageConfigManager.setEndBuildCube();
-            BICubeConfigureCenter.getTableRelationManager().persistData(user.getUserId());
-            BICubeConfigureCenter.getPackageManager().persistData(user.getUserId());
-            BICubeConfigureCenter.getDataSourceManager().persistData(user.getUserId());
+            if (absentTables == null || absentTables.isEmpty()) {
+                packageConfigManager.setEndBuildCube();
+            } else {
+                packageConfigManager.setEndBuildCube(absentTables);
+            }
         }
     }
 
@@ -80,7 +88,7 @@ public class BIUserPackageConfigurationManager {
             try {
                 clone.add((BIBasicBusinessPackage) pack.clone());
             } catch (CloneNotSupportedException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return clone;

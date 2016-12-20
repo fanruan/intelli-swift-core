@@ -2,17 +2,18 @@ package com.fr.bi.cal.analyze.report.report.widget.tree;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.tree.TreeExecutor;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -57,49 +58,34 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
         if (floors == parentValues.length) {
             BIDimension[] dimensions = widget.getViewDimensions();
             BIDimension dimension = dimensions[floors];
-            ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable().getTableSource());
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
             List<BITableSourceRelation> list = widget.getTableSourceRelationList(dimension, session.getUserId());
             ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), list);
-
+            ICubeValueEntryGetter getter = ti.getValueEntryGetter(new IndexKey(dimension.createColumnKey().getFieldName()), list);
             if (times == -1) {
-                Iterator<Map.Entry> it = dataReader.iterator();
+                Iterator<Map.Entry<Object, GroupValueIndex>> it = DimensionIteratorCreator.createValueMapIterator(getter, filterGvi, dimension.getSortType() != BIReportConstant.SORT.DESC);
                 while (it.hasNext()) {
-                    Map.Entry e = it.next();
-                    Object[] groupValue = new Object[1];
-                    groupValue[0] = e.getKey();
-                    if (!filterGvi.AND((GroupValueIndex) e.getValue()).isAllEmpty()) {
-                        String k = e.getKey().toString();
-                        dataList.add(k);
-                    }
-                }
-                if (dimension.getSortType() == BIReportConstant.SORT.DESC) {
-                    Collections.reverse(dataList);
+                    Map.Entry<Object, GroupValueIndex> e = it.next();
+                    String k = e.getKey().toString();
+                    dataList.add(k);
                 }
             }
             if (times > 0 && (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE < dataReader.sizeOfGroup()) {
                 int start = (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE;
                 int count = 0;
-                for (int i = 0; i < dataReader.sizeOfGroup(); i++) {
+                Iterator<Map.Entry<Object, GroupValueIndex>> it = DimensionIteratorCreator.createValueMapIterator(getter, filterGvi, dimension.getSortType() != BIReportConstant.SORT.DESC);
+                while (it.hasNext()){
                     if (count >= start + BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE) {
                         break;
                     }
-                    Object[] rowValue = new Object[1];
-                    rowValue[0] = dataReader.getGroupValue(i);
-                    if (!filterGvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
-                        count++;
-                        if (count > start) {
-                            String k = dataReader.getGroupValue(i).toString();
-                            dataList.add(k);
-                        }
+                    Map.Entry<Object, GroupValueIndex> e = it.next();
+                    count++;
+                    if (count > start) {
+                        dataList.add(e.getKey().toString());
                     }
-                }
-                if (dimension.getSortType() == BIReportConstant.SORT.DESC) {
-                    Collections.reverse(dataList);
                 }
             }
             ti.clear();
-            targetTi.clear();
         }
         if (floors < parentValues.length) {
             String[] groupValue = new String[1];

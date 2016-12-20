@@ -1,9 +1,9 @@
 package com.finebi.cube.aconfig;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.pack.imp.BIUserPackageConfigurationManager;
 import com.fr.bi.common.persistent.xml.reader.BIBeanXMLReaderWrapper;
 import com.fr.bi.common.persistent.xml.reader.XMLPersistentReader;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.stable.StableUtils;
 import com.fr.stable.xml.XMLTools;
 import junit.framework.TestCase;
@@ -23,9 +23,9 @@ public class ConfigureTest extends TestCase {
             StableUtils.makesureFileExist(var3);
             XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(manager));
             XMLTools.readInputStreamXML(reader, new FileInputStream(var3));
-            BILogger.getLogger().info("hello");
+            BILoggerFactory.getLogger().info("hello");
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 }
