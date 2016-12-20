@@ -30,9 +30,7 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
             items:[],
             allHistory: o.allHistory,
             layouts: [{
-                type: "bi.vertical",
-                lgap: -1,
-                scrolly: null
+                type: "bi.vertical"
             }]
         });
 
@@ -75,7 +73,12 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
                             },
                             height:10
                         },{
-                            el : this.tabButton
+                            el: {
+                                type: "bi.center",
+                                lgap: -1,
+                                scrolly: null,
+                                items: [this.tabButton]
+                            }
                         }]
                     }]
                 },
