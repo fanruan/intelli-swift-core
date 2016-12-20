@@ -107,8 +107,8 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 					origManager.releaseCurrentThread();
 					origManager.clear();
 				}
-				threadMap.put(md5Key, manager);
 			}
+			threadMap.put(md5Key, manager);
 		}
 	}
 
