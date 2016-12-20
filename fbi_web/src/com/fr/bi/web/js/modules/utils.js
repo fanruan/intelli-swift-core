@@ -1878,9 +1878,9 @@
 
         getSeriesAccumulationByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "seriesAccumulation") || [];
+                return Data.SharingPool.get("dimensions", did, "seriesAccumulation") || {};
             }
-            return [];
+            return {};
         },
 
         isDimensionByDimensionID: function (dId) {

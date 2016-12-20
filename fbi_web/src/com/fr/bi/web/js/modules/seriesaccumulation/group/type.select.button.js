@@ -111,7 +111,7 @@ BI.SelectAccumulateTypeButton = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        v = this.combo.getValue();
+        var v = this.combo.getValue();
         return v[0] ? v[0] : BICst.ACCUMULATE_TYPE.COLUMN;
     }
 });

@@ -394,6 +394,12 @@ BICst.BACKGROUND_TYPE = {
     IMAGE: 2
 };
 
+//两种系列堆积
+BICst.SERIES_ACCUMULATION = {
+    NONE: 1,
+    EXIST: 2
+};
+
 //临时解决方案
 BICst.GLOBAL_DEFAULT_CHART_COLOR = ["#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed"];
 BICst.GLOBAL_PREDICTION_STYLE = {
