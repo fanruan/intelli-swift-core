@@ -12,6 +12,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -21,9 +22,6 @@ import java.util.*;
  * Created by fay on 2016/10/14.
  */
 public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
-    private BIDimension[] rowDimension;
-    private DimensionCalculator[] row;
-    private GroupValueIndex gvi;
     private int searchFloor = 0;
     protected String selectedValuesString;
 
@@ -40,22 +38,19 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
     protected List<String> createData(String[] parentValues,int floor, int times) throws JSONException {
         List<String> dataList = new ArrayList<String>();
         searchFloor = floor;
+        BIDimension[] rowDimension = widget.getViewDimensions();
+        DimensionCalculator[] row = new DimensionCalculator[widget.getViewDimensions().length];
+        for (int i = 0; i < widget.getViewDimensions().length; i++) {
+            row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), widget.getTableSourceRelationList(rowDimension[i], session.getUserId()));
+        }
+        GroupValueIndex gvi = widget.createFilterGVI(row, widget.getTargetTable(), session.getLoader(), session.getUserId());
         createGroupValueWithParentValues(dataList, parentValues, gvi, 0, times);
         return dataList;
     }
 
-    protected void createCalculator() throws JSONException {
-        rowDimension = widget.getViewDimensions();
-        row = new DimensionCalculator[widget.getViewDimensions().length];
-        for (int i = 0; i < rowDimension.length; i++) {
-            row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), widget.getTableSourceRelationList(rowDimension[i], session.getUserId()));
-        }
-        gvi = widget.createFilterGVI(row, widget.getTargetTable(), session.getLoader(), session.getUserId());
-    }
-
     private void createGroupValueWithParentValues(final List<String> dataList, String[] parentValues, GroupValueIndex filterGvi, int floors, int times) {
         if (floors == parentValues.length) {
-            BIDimension[] dimensions = Arrays.copyOfRange(rowDimension, searchFloor, rowDimension.length);
+            BIDimension[] dimensions = Arrays.copyOfRange(widget.getViewDimensions(), searchFloor, widget.getViewDimensions().length);
             //BIDimension[] dimensions = widget.getViewDimensions();
             BIDimension dimension = dimensions[floors];
             ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable().getTableSource());
@@ -101,7 +96,7 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
         if (floors < parentValues.length) {
             String[] groupValue = new String[1];
             groupValue[0] = parentValues[floors];
-            BIDimension dimension = rowDimension[floors + searchFloor];
+            BIDimension dimension = widget.getViewDimensions()[floors + searchFloor];
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
             final ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
             GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(filterGvi);

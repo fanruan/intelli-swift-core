@@ -43,7 +43,6 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         ArrayList<JSONArray> vl = new ArrayList<JSONArray>();
         if (parentValues != null) {
             JSONArray pvalues = new JSONArray(parentValues);
-            createCalculator();
             for (int i = 0; i < pvalues.length(); i++) {
                 id = pvalues.getJSONObject(i).getString("id");
                 values = BIJsonUtils.jsonArray2StringArray(new JSONArray(pvalues.getJSONObject(i).getString("value")));
@@ -79,6 +78,8 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
                 }
                 if (values.length < widget.getViewDimensions().length - 1 - floors) {
                     getAllData(result, ArrayUtils.addAll(values, val), temp, floor + 1);
+                } else {
+                    break;
                 }
             }
         }
