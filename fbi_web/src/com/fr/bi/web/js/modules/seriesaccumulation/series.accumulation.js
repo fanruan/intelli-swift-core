@@ -53,7 +53,7 @@ BI.SeriesAccumulation = BI.inherit(BI.Widget, {
             type: "bi.flex_center",
             items: [{
                 type: "bi.label",
-                text: "数据量过大（超过500个分组），不适合做系列堆积"
+                text: BI.i18nText("BI-Unsupport_Too_Many_Groups")
             }],
             element: this.element
         })
