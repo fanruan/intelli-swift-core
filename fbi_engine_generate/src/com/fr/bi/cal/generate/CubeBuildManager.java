@@ -54,7 +54,7 @@ public class CubeBuildManager {
             }
             times++;
         }
-        if (times == 50) {
+        if (times == 100) {
             BILoggerFactory.getLogger(CubeBuildManager.class).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
             BILoggerFactory.getLogger(CubeBuildManager.class).info("the SingleTable SourceId is: " + baseTableSourceId);
         }
