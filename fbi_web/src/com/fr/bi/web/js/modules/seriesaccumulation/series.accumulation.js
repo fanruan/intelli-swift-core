@@ -48,16 +48,15 @@ BI.SeriesAccumulation = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var id = o.dId;
         var items = BI.Utils.getSeriesAccumulationByID(o.dId);
-        if (BI.isNotEmptyArray(items)) {
-            self.accumulationGroup.populate(items);
-        } else {
-            BI.Utils.getDataByDimensionID(id, function (allDate) {
-                self.accumulationGroup.populate([{
-                    index: 0,
-                    items: allDate
-                }]);
+
+        BI.Utils.getDataByDimensionID(id, function (allData) {
+            BI.each(items, function (idx, item) {
+                items[idx].items = BI.filter(item.items, function (id, value) {
+                    return BI.contains(allData, value);
+                })
             })
-        }
+            self.accumulationGroup.populate(items, allData);
+        })
     },
 
     getValue: function () {

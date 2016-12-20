@@ -14,10 +14,20 @@ BIDezi.CustomGroupView = BI.inherit(BI.BarFloatSection, {
 
     end: function () {
         var self = this;
+        var id = this.model.get("id");
         var value = self.customgroup.getValue();
+        var accumulations = BI.Utils.getSeriesAccumulationByID(id);
         value.type = BICst.GROUP.CUSTOM_GROUP;
-        this.model.set(value || {});
 
+        if(BI.isEmpty(accumulations)) {
+            self.model.set(value || {});
+        } else {
+            BI.Msg.confirm("", BI.i18nText("BI-Ensure_Custom_Group"), function (v) {
+                if (v === true) {
+                    self.model.set(value || {});
+                }
+            });
+        }
     },
 
 

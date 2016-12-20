@@ -1674,6 +1674,7 @@ BICst.PERCENTAGE_SHOW = [{
 }];
 
 BICst.INIT_CHART_MAP = {};
+<<<<<<< HEAD
 BICst.INIT_CHART_MAP[BICst.WIDGET.AXIS] = {type: "bi.axis_chart", events: [BI.AxisChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.COMBINE_CHART] = {type: "bi.multi_axis_chart", events: [BI.AxisChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = {
@@ -1684,6 +1685,12 @@ BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_AXIS] = {
     type: "bi.accumulate_axis_chart",
     events: [BI.AccumulateAxisChart.EVENT_CHANGE]
 };
+=======
+BICst.INIT_CHART_MAP[BICst.WIDGET.AXIS] = {type: "bi.axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.COMBINE_CHART] = {type: "bi.multi_axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = {type: "bi.multi_axis_combine_chart", events: [BI.MultiAxisCombineChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_AXIS] = {type: "bi.accumulate_axis_chart", events: [BI.AccumulateAxisChart.EVENT_CHANGE]};
+>>>>>>> e442cbac30bf16d57e80c8c19925e0d8e123b350
 BICst.INIT_CHART_MAP[BICst.WIDGET.LINE] = {type: "bi.line_chart", events: [BI.LineChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.AREA] = {type: "bi.area_chart", events: [BI.AreaChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_AREA] = {
