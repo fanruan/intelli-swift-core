@@ -27,6 +27,7 @@ BI.SeriesAccumulation = BI.inherit(BI.Widget, {
         });
         this.accumulationGroup = BI.createWidget({
             type: "bi.accumulation_group",
+            dId: o.dId
         });
         BI.createWidget({
             type: "bi.vtape",

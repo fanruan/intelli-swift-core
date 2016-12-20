@@ -7,23 +7,20 @@
 BI.SortableTable = BI.inherit(BI.Widget, {
 
     _const: {
-        perColumnSize: 100
+        perColumnSize: 100,
+        dragButtonWidth: 24,
+        dragButtonHeight: 24,
+        lineCount: 6,
+        lineWidth: 3
     },
 
     _defaultConfig: function () {
         return BI.extend(BI.SortableTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-sortable-table",
-            el: {
-                type: "bi.table_view"
-            },
-            isNeedResize: true,
 
-            columnSize: [],
             headerRowSize: 30,
             footerRowSize: 25,
             rowSize: 25,
-
-            regionColumnSize: false,
 
             header: [],
             items: [] //二维数组
@@ -34,103 +31,214 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         BI.SortableTable.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
-        BI.each(o.header, function(idx, header){
-            BI.each(header, function(id, obj){
-                obj.cls = (obj.cls || "") + " drag-header"
-            })
-        })
+        this.insertLine = [];
 
-        this.table = BI.createWidget(o.el, {
+        this.table = BI.createWidget({
             type: "bi.table_view",
-            element: this.element,
-            isNeedResize: o.isNeedResize,
-            isResizeAdapt: o.isResizeAdapt,
-
-            columnSize: o.columnSize,
+            isNeedResize: false,
+            isResizeAdapt: false,
+            columnSize: [],
             headerRowSize: o.headerRowSize,
             footerRowSize: o.footerRowSize,
             rowSize: o.rowSize,
-
-            regionColumnSize: o.regionColumnSize,
-
+            regionColumnSize: false,
             header: o.header,
             items: o.items
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-            self._adjustColumns();
+            self._initDrag();
+            self._createDashedLines();
+            self._createInsertLine();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-            self._adjustColumns();
+            self._createDashedLines();
+            self._createInsertLine();
             self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
         });
-        this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
+
+        this.table.element.mousemove(function(e){
+            BI.each(self.dragHelpers, function(idx, dragHelper){
+                var visible = (idx === self._getMouseInColumnIndex(e));
+                dragHelper.setVisible(visible);
+                BI.each(self.dragHelpersLines[idx], function(id, line){
+                    line.setVisible(visible);
+                })
+            })
+        })
+
+        this.table.element.hover(function(e){
+        }, function(e){
+            BI.each(self.dragHelpers, function(idx, dragHelper){
+                dragHelper.setVisible(false);
+                BI.each(self.dragHelpersLines[idx], function(id, line){
+                    line.setVisible(false);
+                })
+            })
         });
 
-        this.table.on(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
-        });
-
-        this._initDrag();
-
-        self.element.droppable({
+        this.element.droppable({
             accept: ".drag-header",
             drop: function (e, ui) {
-                //e.pageX鼠标距文档左边缘位置，包含滚动条
-                //ui.helper.offset().left元素距文档左边缘位置，不包括滚动条
-                //ui.position.left 距离drop元素左边缘距离
-                //self.table.getRightHorizontalScroll() 表格滚动条水平偏移
-                //getCalculateColumnSize获取每个column宽度
-                //getCalculateRegionColumnSize获取整个columns宽度
-                //getCalculateRegionRowSize获取整个rows高度
-
-                //var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll() + (e.pageX - ui.helper.offset().left);
-                var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll();
-                var columnSizes = self.table.getCalculateColumnSize()
-                var dropPosition = [];
-                BI.each(columnSizes, function(idx, columnSize){
-                    if(idx === 0){
-                        dropPosition.push(0)
-                    }else{
-                        dropPosition.push(dropPosition[idx - 1] + columnSizes[idx - 1])
-                    }
-                });
+                var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll() + (e.pageX - ui.helper.offset().left);
+                var dropPosition = self._getColumnsLeftBorderDistance();
                 var insertIndex = self._getNearIndexFromArray(dropPosition, absolutePosition)
                 //这个insertIndex是包含原元素的index
                 //调整item顺序，重新populate
                 var flag = self._exchangeItemsAndHeaderPosition(ui.helper.data("index"), insertIndex)
-                flag === true && self.populate(o.items, o.header);
+                if(flag === true){
+                    BI.nextTick(function(){
+                        self.populate(o.items, o.header);
+                    });
+                    self.fireEvent(BI.SortableTable.EVENT_CHANGE, ui.helper.data("index"), insertIndex);
+                }
             }
+        });
+
+        BI.createWidget({
+            type: "bi.vertical",
+            scrollx: false,
+            element: this.element,
+            items: [this.table]
         });
     },
 
-    _initDrag: function(){
+    /**
+     * 插入到对应列的辅助线
+     * @private
+     */
+    _createInsertLine: function(){
         var self = this;
+        var dropPosition = this._getColumnsLeftBorderDistance();
+        var height = this.table.getClientRegionRowSize()[0];
+        var lineObj = {
+            type: "bi.layout",
+            cls: "insert-help-line",
+            invisible: true
+        };
+        this.insertLine = [BI.createWidget(lineObj)];
+        var hearders = this.table.getColumns().header[0];
+        BI.each(hearders, function(idx, header){
+            var line = BI.createWidget(BI.extend(lineObj));
+            self.insertLine.push(line);
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.table.element,
+            items: BI.map(self.insertLine, function(idx, line){
+                if(idx === self.insertLine.length - 1){
+                    return {
+                        el: line,
+                        top: 0,
+                        height: height,
+                        right: 0
+                    }
+                }
+                return {
+                    el: line,
+                    top: 0,
+                    height: height,
+                    left: dropPosition[idx]
+                }
+            })
+        })
+    },
+
+    _createDashedLines: function(){
+        var self = this, c = this._const, o = this.options;
+        var RowsSize = this.table.getClientRegionRowSize();
+        var columnsSizes = this.table.getCalculateColumnSize();
+        var dropPosition = this._getColumnsLeftBorderDistance();
+        var len = this.table.getCalculateRegionColumnSize()[0];
+        this.dragHelpersLines = [];
         BI.each(this.table.getColumns().header[0], function(idx, header){
-            header.element.draggable({
+            self.dragHelpersLines.push([BI.createWidget({
+                type:"bi.horizontal_dash_line",      //上
+                width: columnsSizes[idx],
+                height: c.lineWidth,
+                invisible: true
+            }),BI.createWidget({
+                type:"bi.vertical_dash_line",        //右
+                width: c.lineWidth,
+                height: RowsSize[0],
+                invisible: true
+            }),BI.createWidget({
+                type:"bi.horizontal_dash_line",      //下
+                width: columnsSizes[idx],
+                height: c.lineWidth,
+                invisible: true
+            }),BI.createWidget({                //左
+                type:"bi.vertical_dash_line",
+                width: c.lineWidth,
+                height: RowsSize[0],
+                invisible: true
+            })]);
+        });
+        var length = this.dragHelpersLines.length;
+        BI.createWidget({
+            type: "bi.absolute",
+            element: self.table,
+            items: BI.flatten(BI.map(this.dragHelpersLines, function(idx, children){
+                return BI.map(children, function(id, child){
+                    var baseObj = {
+                        el: child,
+                        width: id % 2 === 0 ? columnsSizes[idx] : c.lineWidth,
+                        height: id % 2 === 0 ? c.lineWidth : RowsSize[0]
+                    }
+                    if(id === 0 || id === children.length - 1){     //上和左
+                        return BI.extend({
+                            top: 0,
+                            left: dropPosition[idx],
+                        }, baseObj)
+                    }else{
+                        return BI.extend({                                    //右和下
+                            bottom: 0,
+                            right:  idx === length - 1 ? 0 : len - dropPosition[idx + 1],
+                        }, baseObj)
+                    }
+                });
+            }))
+        })
+    },
+
+    _initDrag: function(){
+        var self = this, c = this._const, o = this.options;
+        this.dragHelpers = [];
+        BI.each(this.table.getColumns().header[0], function(idx, header){
+            var dragButton = BI.createWidget({
+                type: "bi.triangle_drag_button",
+                cls: "drag-header",
+                width: c.dragButtonWidth,
+                height: c.dragButtonHeight,
+                lineCount: c.lineCount,
+                invisible: true
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                element: header,
+                items: [{
+                    el: dragButton,
+                    top: 0,
+                    left: 0
+                }]
+            })
+
+            dragButton.element.draggable({
                 axis: "x",      //拖拽路径
                 revert: false,
                 cursor: BICst.cursorUrl,
                 cursorAt: {left: 5, top: 5},
                 containment: self.element,   //约束拖拽区域
+                drag: function(e, ui){
+                    self._showInsertHelpLine(e, ui);
+                },
+                stop: function(){
+                    BI.each(self.insertLine, function(idx, line){
+                        line.setVisible(false);
+                    })
+                },
                 helper: function () {
-                    var RowsSize = self.table.getCalculateRegionRowSize();
+                    var RowsSize = self.table.getClientRegionRowSize();
                     var columnsSizes = self.table.getCalculateColumnSize();
                     var clone = BI.createWidget({
                         type: "bi.layout",
@@ -143,11 +251,46 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                     return clone.element;
                 }
             })
+            self.dragHelpers.push(dragButton);
         });
     },
 
-    _adjustColumns: function () {
-        this.table.setRegionColumnSize(["fill"]);
+    _getMouseInColumnIndex: function(e){
+        var dropPosition = this._getColumnsLeftBorderDistance();
+        var columnsSizes = this.table.getCalculateColumnSize();
+        var tableHeight = this.table.getClientRegionRowSize()[0];
+        var tableOffsetLeft = e.pageX - this.table.element.offset().left;
+        var tableOffsetTop = this.table.element.offset().top;
+        return BI.find(BI.makeArray(dropPosition.length, null), function(idx){
+            return !(tableOffsetLeft < dropPosition[idx] || tableOffsetLeft > dropPosition[idx] + columnsSizes[idx]
+            || e.pageY < tableOffsetTop || e.pageY >= tableOffsetTop + tableHeight);
+        })
+    },
+
+    _getColumnsLeftBorderDistance: function(){
+        var dropPosition = [];
+        var columnSizes = this.table.getCalculateColumnSize();
+        BI.each(columnSizes, function(idx, columnSize){
+            if(idx === 0){
+                dropPosition.push(0)
+            }else{
+                //+ 1边框偏移值
+                dropPosition.push(dropPosition[idx - 1] + columnSizes[idx - 1] + 1)
+            }
+        });
+        return dropPosition;
+    },
+
+    _showInsertHelpLine: function(e, ui){
+        var absolutePosition =  ui.position.left + this.table.getRightHorizontalScroll() + (e.pageX - ui.helper.offset().left);
+        var dropPosition = this._getColumnsLeftBorderDistance();
+        var insertIndex = this._getNearIndexFromArray(dropPosition, absolutePosition);
+        BI.each(this.insertLine, function(idx, line){
+            line.setVisible(insertIndex === idx);
+        })
+        BI.each(this.dragHelpers, function(idx, helper){
+            helper.setVisible(false);
+        })
     },
 
     _exchangeItemsAndHeaderPosition: function (sourceIndex, targetIndex) {
@@ -170,10 +313,17 @@ BI.SortableTable = BI.inherit(BI.Widget, {
     },
 
     _getNearIndexFromArray: function (array, v) {
+        var self = this;
         var index = 0;
         BI.some(array, function (idx, item) {
             if (idx === array.length - 1) {
                 index = idx;
+                //如果是最后一列，且鼠标位置超出最后一列的中间位置，表示插入到最后
+                var len = self.table.getCalculateRegionColumnSize()[0];
+                var columnSizes = self.table.getCalculateColumnSize();
+                if(v > len - columnSizes[idx] / 2){
+                    index++;
+                }
             } else {
                 if (v < array[idx + 1]) {
                     var avg = (item + array[idx + 1]) / 2;
@@ -186,95 +336,15 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         return index;
     },
 
-    setColumnSize: function (columnSize) {
-        this.table.setColumnSize(columnSize);
-    },
-
-    getColumnSize: function () {
-        return this.table.getColumnSize();
-    },
-
-    getCalculateColumnSize: function () {
-        return this.table.getCalculateColumnSize();
-    },
-
-    setHeaderColumnSize: function (columnSize) {
-        this.table.setHeaderColumnSize(columnSize);
-    },
-
-    setRegionColumnSize: function (columnSize) {
-        this.table.setRegionColumnSize(columnSize);
-    },
-
-    getRegionColumnSize: function () {
-        return this.table.getRegionColumnSize();
-    },
-
-    getCalculateRegionColumnSize: function () {
-        return this.table.getCalculateRegionColumnSize();
-    },
-
-    getCalculateRegionRowSize: function () {
-        return this.table.getCalculateRegionRowSize();
-    },
-
-    getClientRegionColumnSize: function () {
-        return this.table.getClientRegionColumnSize();
-    },
-
-    getScrollRegionColumnSize: function () {
-        return this.table.getScrollRegionColumnSize();
-    },
-
-    getScrollRegionRowSize: function () {
-        return this.table.getScrollRegionRowSize();
-    },
-
-    hasVerticalScroll: function () {
-        return this.table.hasVerticalScroll();
-    },
-
-    setVerticalScroll: function (scrollTop) {
-        this.table.setVerticalScroll(scrollTop);
-    },
-
-    setLeftHorizontalScroll: function (scrollLeft) {
-        this.table.setLeftHorizontalScroll(scrollLeft);
-    },
-
-    setRightHorizontalScroll: function (scrollLeft) {
-        this.table.setRightHorizontalScroll(scrollLeft);
-    },
-
-    getVerticalScroll: function () {
-        return this.table.getVerticalScroll();
-    },
-
-    getLeftHorizontalScroll: function () {
-        return this.table.getLeftHorizontalScroll();
-    },
-
-    getRightHorizontalScroll: function () {
-        return this.table.getRightHorizontalScroll();
-    },
-
-    getColumns: function () {
+    getColumns: function(){
         return this.table.getColumns();
     },
 
     populate: function (items, headers) {
         var self = this, o = this.options;
-        BI.nextTick(function(){
-            o.header = headers;
-            o.items = items;
-            BI.each(o.header, function(idx, header){
-                BI.each(header, function(id, obj){
-                    obj.cls = (obj.cls || "") + " drag-header"
-                })
-            })
-            self.table.populate(o.items, o.header);
-            self._initDrag();
-        });
+        o.header = headers;
+        o.items = items;
+        self.table.populate(o.items, o.header);
     },
 
     destroy: function () {
@@ -282,4 +352,6 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         BI.SortableTable.superclass.destroy.apply(this, arguments);
     }
 });
+
+BI.SortableTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.sortable_table', BI.SortableTable);

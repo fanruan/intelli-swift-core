@@ -104,9 +104,9 @@ BI.MultiSelectSearcher = BI.inherit(BI.Widget, {
         if (ob.type === BI.Selection.All) {
             this.editor.setState(BI.size(ob.value) > 0 ? BI.Selection.Multi : BI.Selection.All);
         } else {
-            if(BI.size(ob.value) === 1){
-                this.editor.setState(ob.value[0] + " ");
-            }else{
+            if (BI.size(ob.value) === 1) {
+                this.editor.setState(ob.value[0] + "");
+            } else {
                 this.editor.setState(BI.size(ob.value) > 0 ? BI.Selection.Multi : BI.Selection.None);
             }
         }
@@ -125,7 +125,7 @@ BI.MultiSelectSearcher = BI.inherit(BI.Widget, {
         return this.searcher.getValue();
     },
 
-    setEnable: function(v){
+    setEnable: function (v) {
         this.editor.setEnable(v);
     },
 

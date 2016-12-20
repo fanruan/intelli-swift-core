@@ -195,8 +195,7 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
             type: "bi.tree_dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
-                var relationItem = op.relationItem;
-                if (BI.isNotNull(relationItem)) {
+                if (BI.isNotNull(op) && BI.isNotNull(op.relationItem)) {
                     self.model.set("setRelation", {
                         dId: dId,
                         relationItem: op.relationItem

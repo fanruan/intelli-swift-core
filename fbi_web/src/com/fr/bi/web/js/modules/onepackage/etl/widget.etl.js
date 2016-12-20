@@ -252,7 +252,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 BI.Utils.checkTableInUse({
                     id: self.model.getId()
                 }, function (res) {
-                    if (BI.isNotNull(res) && res.is_use === true) {
+                    if (BI.isNotNull(res) && res["inUse"] === true) {
                         BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Table_In_Use_Tip"), function (flag) {
                             if (flag === true) {
                                 self.fireEvent(BI.ETL.EVENT_REMOVE);
@@ -364,8 +364,8 @@ BI.ETL = BI.inherit(BI.Widget, {
         this._buildETLSetPane();
         this._changeButtonsStatus();
     },
-    
-    _populateAfterAddTables: function() {
+
+    _populateAfterAddTables: function () {
         var self = this;
         var allTables = this.model.getAllTables();
         if (allTables.length === 1) {

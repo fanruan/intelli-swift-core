@@ -8,7 +8,7 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
         "/pane": "BIDezi.PaneView",
         "/pane/:id/:type": "getWidget",
         "/pane/:id/:type/detail": "getDetail",
-        "/pane/:id/:type/detail/:region/:dId": "getDimensionOrTarget",
+        "/pane/:id/:type/detail/:scope/:dId": "getDimensionOrTarget",
 
 
         "/detailtablepopup": "BI.DetailTablePopupView",

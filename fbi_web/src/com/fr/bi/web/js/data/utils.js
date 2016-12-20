@@ -302,20 +302,31 @@ Data.Utils = {
                         var date = new Date(BI.parseInt(name));
                         name = date.print("%Y-%X-%d");
                     }
-                    var data = BI.map(left.c, function (idx, obj) {
-                        var value = obj.n, x = obj.n;
-                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                            var date = new Date(BI.parseInt(x));
-                            x = date.print("%Y-%X-%d");
-                        }
-                        return {
-                            "x": x,
-                            "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
-                            "initialX": value,
+                    var data = [];
+                    if(BI.has(left, "c")){
+                        data = BI.map(left.c, function (idx, obj) {
+                            var value = obj.n, x = obj.n;
+                            if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
+                                var date = new Date(BI.parseInt(x));
+                                x = date.print("%Y-%X-%d");
+                            }
+                            return {
+                                "x": x,
+                                "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
+                                "value": value,
+                                seriesName: seriesName,
+                                targetIds: [targetIds[0]]
+                            };
+                        });
+                    }else{
+                        data = [{
+                            "x": "",
+                            "y": (BI.isFinite(left.s.c[id].s[0]) ? left.s.c[id].s[0] : 0),
+                            "value": "",
                             seriesName: seriesName,
                             targetIds: [targetIds[0]]
-                        };
-                    });
+                        }]
+                    }
                     var obj = {};
                     obj.data = data;
                     obj.name = name;
@@ -1488,6 +1499,7 @@ Data.Utils = {
             formatRangeLegend();
             delete configs.legend;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.tooltip.shared = true;
             var formatterArray = [];
             BI.backEach(items, function (idx, item) {
@@ -1701,6 +1713,7 @@ Data.Utils = {
             delete configs.legend;
             delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.dataLabels.useHtml = true;
             configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ BI.contentFormat(this.value, '#.##;-#.##') +'</div>'; return a;}";
             configs.plotOptions.tooltip.shared = true;
@@ -1786,6 +1799,7 @@ Data.Utils = {
                     break;
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
 
             configs.yAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
@@ -1813,7 +1827,7 @@ Data.Utils = {
             if (configs.plotOptions.dataLabels.enabled === true) {
                 BI.each(items, function (idx, item) {
                     item.dataLabels = {
-                        "style": constants.FONT_STYLE,
+                        "style": config.chart_font,
                         "align": "outside",
                         enabled: true,
                         formatter: {
@@ -2003,6 +2017,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
             configs.plotOptions.shadow = config.bubble_style !== constants.NO_PROJECT;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
 
             configs.yAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
@@ -2523,6 +2538,7 @@ Data.Utils = {
                     break;
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.enabled = config.show_zoom;
@@ -4838,25 +4854,30 @@ Data.Utils = {
         }
 
         function formatConfigForAccumulateRadar(configs, items) {
+            var style = {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+            };
             var radiusAxis = [{
                 type: "value",
                 title: {
-                    style: {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                        "color": "#808080",
-                        "fontSize": "12px",
-                        "fontWeight": ""
-                    }
+                    style: style
                 },
-                labelStyle: {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-                },
+                labelStyle: style,
                 formatter: function () {
                     if (this > 0) return this; else return this * (-1);
                 },
                 gridLineWidth: 0,
                 position: "bottom"
             }];
+
+            var angleAxis = [{
+                type: "category",
+                title: {
+                    style: style
+                },
+                labelStyle: style
+            }];
+
             var title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
 
             configs.colors = config.chart_color;
@@ -4880,6 +4901,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
 
             configs.radiusAxis = radiusAxis;
+            configs.angleAxis = angleAxis;
             configs.radiusAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS, configs.radiusAxis[0].formatter);
             configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
@@ -4888,8 +4910,12 @@ Data.Utils = {
             configs.plotOptions.columnType = true;
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.radiusAxis[0].formatter, config.chart_font);
+            configs.radiusAxis[0].labelStyle = configs.radiusAxis[0].title.style = config.chart_font;
+            configs.angleAxis[0].labelStyle = configs.angleAxis[0].title.style = config.chart_font;
+            configs.legend.style = config.chart_font;
 
             return BI.extend(configs, {
                 series: items
@@ -4958,25 +4984,30 @@ Data.Utils = {
         }
 
         function formatConfigForRadar(configs, items) {
+            var style = {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+            };
             var radiusAxis = [{
                 type: "value",
                 title: {
-                    style: {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                        "color": "#808080",
-                        "fontSize": "12px",
-                        "fontWeight": ""
-                    }
+                    style: style
                 },
-                labelStyle: {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-                },
+                labelStyle: style,
                 formatter: function () {
                     if (this > 0) return this; else return this * (-1);
                 },
                 gridLineWidth: 0,
                 position: "bottom"
             }];
+
+            var angleAxis = [{
+                type: "category",
+                title: {
+                    style: style
+                },
+                labelStyle: style
+            }];
+
             var title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
 
             configs.colors = config.chart_color;
@@ -5000,6 +5031,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
 
             configs.radiusAxis = radiusAxis;
+            configs.angleAxis = angleAxis;
             configs.radiusAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS, configs.radiusAxis[0].formatter);
             configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
@@ -5007,8 +5039,12 @@ Data.Utils = {
             configs.chartType = "radar";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.radiusAxis[0].formatter, config.chart_font);
+            configs.radiusAxis[0].title.style = configs.radiusAxis[0].labelStyle = config.chart_font;
+            configs.angleAxis[0].title.style = configs.angleAxis[0].labelStyle = config.chart_font;
+            configs.legend.style = config.chart_font;
 
             return BI.extend(configs, {
                 series: items

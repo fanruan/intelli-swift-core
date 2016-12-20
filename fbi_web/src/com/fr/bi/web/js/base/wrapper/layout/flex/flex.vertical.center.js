@@ -26,7 +26,8 @@ BI.FlexVerticalCenter = BI.inherit(BI.Layout, {
     },
 
     _addElement: function (i, item) {
-        var o = this.options, w = BI.createWidget(item);
+        var o = this.options;
+        var w = BI.FlexVerticalCenter.superclass._addElement.apply(this, arguments);
         w.element.css({"position": "relative"}).appendTo(this.wrapper);
         if (o.hgap + o.lgap + (item.lgap || 0) > 0) {
             w.element.css({
@@ -52,7 +53,6 @@ BI.FlexVerticalCenter = BI.inherit(BI.Layout, {
     },
 
     addItem: function (item) {
-        BI.FlexVerticalCenter.superclass.addItem.apply(this, arguments);
         var w = this._addElement(this.options.items.length, item);
         this.options.items.push(item);
         w.element.appendTo(this.wrapper);
@@ -60,17 +60,11 @@ BI.FlexVerticalCenter = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("flex_vertical_center布局不需要resize");
+        // console.log("flex_vertical_center布局不需要resize");
     },
 
     populate: function (items) {
         BI.FlexVerticalCenter.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        });
     }
 });
 $.shortcut('bi.flex_vertical_center', BI.FlexVerticalCenter);

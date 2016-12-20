@@ -21,9 +21,9 @@ BI.DefaultLayout = BI.inherit(BI.Layout, {
         this.populate(this.options.items);
     },
 
-    _addElement: function (item) {
+    _addElement: function (i, item) {
         var o = this.options;
-        var w = BI.createWidget(item);
+        var w = BI.DefaultLayout.superclass._addElement.apply(this, arguments);
         if (o.vgap + o.tgap + (item.tgap || 0) !== 0) {
             w.element.css({
                 "margin-top": o.vgap + o.tgap + (item.tgap || 0) + "px"
@@ -44,29 +44,15 @@ BI.DefaultLayout = BI.inherit(BI.Layout, {
                 "margin-bottom": o.vgap + o.bgap + (item.bgap || 0) + "px"
             })
         }
-        this.addWidget(w);
         return w;
     },
 
     resize: function () {
-        console.log("default布局不需要resize")
-    },
-
-    addItem: function (item) {
-        BI.DefaultLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(item)
-        w.element.appendTo(this.element);
-        return w;
+        // console.log("default布局不需要resize")
     },
 
     populate: function (items) {
         BI.DefaultLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(item)
-            }
-        });
         this.render();
     }
 });

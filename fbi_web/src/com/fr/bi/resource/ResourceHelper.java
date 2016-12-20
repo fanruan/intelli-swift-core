@@ -492,6 +492,47 @@ public class ResourceHelper {
 
     public static String[] getDeziJs() {
         return new String[]{
+
+                //分组统计
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/customgroup/customgroup.statistic.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/abstract.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/date.group.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/date.statistic.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/number.group.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/number.statistic.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/string.statistic.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/string.group.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/numbercustomgroup/numbercustomgroup.statistic.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/widget.statistic.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/region/region.string.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/widget.statistic.model.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/group.select.fields.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/group.select.fields.item.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/group.select.fields.item.group.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.combo.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.group.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.item.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.other.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.panel.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.tab.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.group2other.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.combo.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.search.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.node.arrow.delete.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.expander.group.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.button.field.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.pane.group.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.pane.allfields.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.pane.searcher.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.view.searcher.customgroup.js",
+
+                //部分字段
+                "com/fr/bi/web/js/modules/onepackage/etl/partfield/partfield/widget.selectpartfieldlist.js",
+
+
+
                 "com/fr/bi/web/js/dezi/dezi.start.js",
                 "com/fr/bi/web/js/dezi/model.js",
                 "com/fr/bi/web/js/dezi/view.js",
@@ -1142,8 +1183,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.dimension.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.settings.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.settings.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/regionsmanager.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/dimensionsmanager.css",
 
@@ -1201,6 +1244,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/seriesaccumulation/container.accumulation.css",
                 "com/fr/bi/web/css/modules/seriesaccumulation/group.accumulation.css",
                 "com/fr/bi/web/css/modules/seriesaccumulation/series.accumulation.css",
+                "com/fr/bi/web/css/modules/seriesaccumulation/type.select.button.css",
 
 
                 //表格样式
@@ -1355,14 +1399,18 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.detail.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.tree.js",
 
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/scopes/scope.target.combine.chart.js",
+
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/abstract.region.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.dimension.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.settings.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/region.wrapper.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.settings.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.table.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.crosstable.js",
@@ -1511,6 +1559,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/seriesaccumulation/series.accumulation.popup.js",
                 "com/fr/bi/web/js/modules/seriesaccumulation/group/group.accumulation.js",
                 "com/fr/bi/web/js/modules/seriesaccumulation/group/container.accumulation.js",
+                "com/fr/bi/web/js/modules/seriesaccumulation/group/type.select.button.js",
 
                 "com/fr/bi/web/js/modules/date/interval.date.js",
                 "com/fr/bi/web/js/modules/date/interval.date.param.js",
@@ -3035,6 +3084,9 @@ public class ResourceHelper {
 
                 //列可拖拽排序表
                 "com/fr/bi/web/js/widget/sortabletable/sortabletable.js",
+                "com/fr/bi/web/js/widget/sortabletable/sortabletable.drag.button.js",
+                "com/fr/bi/web/js/widget/sortabletable/sortabletable.dashline.vertical.js",
+                "com/fr/bi/web/js/widget/sortabletable/sortabletable.dashline.horizontal.js",
 
                 //Excel表
                 "com/fr/bi/web/js/widget/exceltable/exceltable.cell.js",

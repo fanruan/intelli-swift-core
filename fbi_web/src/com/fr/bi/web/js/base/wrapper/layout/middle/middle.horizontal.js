@@ -21,7 +21,7 @@ BI.HorizontalCenterLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("horizontal_center布局不需要resize");
+        // console.log("horizontal_center布局不需要resize");
     },
 
     addItem: function (item) {
@@ -29,8 +29,7 @@ BI.HorizontalCenterLayout = BI.inherit(BI.Layout, {
         throw new Error("不能添加元素")
     },
 
-    populate: function (items) {
-        BI.HorizontalCenterLayout.superclass.populate.apply(this, arguments);
+    stroke: function (items) {
         var o = this.options;
         this.clear();
         var list = [];
@@ -65,6 +64,10 @@ BI.HorizontalCenterLayout = BI.inherit(BI.Layout, {
             rows: 1,
             items: list
         });
+    },
+
+    populate: function (items) {
+        BI.HorizontalCenterLayout.superclass.populate.apply(this, arguments);
     }
 });
 $.shortcut('bi.horizontal_center', BI.HorizontalCenterLayout);

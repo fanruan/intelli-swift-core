@@ -98,6 +98,13 @@ public abstract class BIAbstractWidget implements BIWidget {
     }
 
     @Override
+    public BIPolyWorkSheet createWorkSheet(BISessionProvider session) {
+        BIPolyWorkSheet ws = new BIPolyWorkSheet();
+        ws.addBlock(this.createTemplateBlock((BISession) session));
+        return ws;
+    }
+
+    @Override
     public boolean showRowToTal() {
         return true;
     }

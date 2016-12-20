@@ -24,6 +24,13 @@ BI.DimensionRegion = BI.inherit(BI.AbstractRegion, {
     _getSortableHelperClass: function () {
         return "dimension-sortable-helper";
     },
+
+    _dropDataFilter: function (data) {
+        var self = this, o = this.options;
+        data = BI.filter(data, function (i, dimension) {
+            return BI.Utils.isDimensionType(dimension.type);
+        });
+        return data;
+    }
 });
-BI.DimensionRegion.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.dimension_region", BI.DimensionRegion);

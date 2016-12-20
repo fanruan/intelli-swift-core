@@ -82,16 +82,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 BI.isNotNull(self.dropArea) && self.dropArea.destroy();
                 var helper = ui.helper;
                 var data = helper.data("data");
-                if (BI.Utils.isDimensionRegionByRegionType(o.viewType)) {
-                    data = BI.filter(data, function (i, dimension) {
-                        return BI.Utils.isDimensionType(dimension.type);
-                    });
-                }
-                if (BI.Utils.isTargetRegionByRegionType(o.viewType)) {
-                    data = BI.filter(data, function (i, dimension) {
-                        return BI.Utils.isTargetType(dimension.type);
-                    });
-                }
+                data = self._dropDataFilter(data);
                 BI.each(data, function (i, dimension) {
                     if (!BI.has(dimension, "used")) {
                         dimension.used = true;
@@ -136,9 +127,11 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_START, function (fields) {
-            self._fieldDragStart(fields);
+            self.dimensions = fields;
+            self._fieldDragStart();
         });
         BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_STOP, function () {
+            self.dimensions = null;
             self._fieldDragStop();
         });
     },
@@ -159,6 +152,23 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
     },
 
     _getSortableHelperClass: function () {
+    },
+
+    _dropDataFilter: function (data) {
+        return data;
+    },
+
+    _fieldDragStart: function () {
+        var onlyCounter = !BI.some(this.dimensions, function (i, dim) {
+            return BI.Utils.isDimensionType(dim.type);
+        });
+        if (onlyCounter) {
+            this._showForbiddenMask();
+        }
+    },
+
+    _fieldDragStop: function () {
+        this._hideForbiddenMask();
     },
 
     _dropHook: function () {
@@ -234,21 +244,6 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 hgap: 5
             });
         }
-    },
-
-    _fieldDragStart: function (dims) {
-        this.dimensions = dims;
-        var onlyCounter = !BI.some(dims, function (i, dim) {
-            return dim.type === BICst.TARGET_TYPE.NUMBER || dim.type === BICst.TARGET_TYPE.STRING || dim.type === BICst.TARGET_TYPE.DATE;
-        });
-        if (onlyCounter) {
-            this._showForbiddenMask();
-        }
-    },
-
-    _fieldDragStop: function () {
-        this.dimensions = null;
-        this._hideForbiddenMask();
     },
 
     _showForbiddenMask: function () {

@@ -71,8 +71,31 @@ BI.Layout = BI.inherit(BI.Widget, {
         }
     },
 
+    _addElement: function (i, item) {
+        var o = this.options;
+        var w;
+        if (!this.hasWidget(this.getName() + i)) {
+            w = BI.createWidget(item);
+            this.addWidget(this.getName() + i, w);
+        } else {
+            w = this.getWidgetByName(this.getName() + i);
+        }
+        return w;
+    },
+
+    stroke: function (items) {
+        var self = this;
+        BI.each(items, function (i, item) {
+            if (!!item) {
+                self._addElement(i, item);
+            }
+        });
+    },
+
     populate: function (items) {
+        var self = this;
         this.reset(items);
+        this.stroke(items);
     },
 
     reset: function (items) {
@@ -88,7 +111,10 @@ BI.Layout = BI.inherit(BI.Widget, {
      * @param {JSON/BI.Widget} item 子组件
      */
     addItem: function (item) {
-
+        var w = this._addElement(this.options.items.length, item);
+        this.options.items.push(item);
+        w.element.appendTo(this.element);
+        return w;
     },
 
     addItems: function (items) {

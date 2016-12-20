@@ -14,6 +14,7 @@ import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
+import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
@@ -358,6 +359,38 @@ public class BISession extends BIAbstractSession {
         }
         return null;
     }
+
+    public ResultWorkBook getExportBoolByWidgetNames (String[] widgetNames) throws CloneNotSupportedException {
+        if(widgetNames.length == 0) {
+            return null;
+        }
+        BIWorkBook wb = new BIWorkBook();
+        for (String widgetName : widgetNames) {
+            BIWidget widget = report.getWidgetByName(widgetName);
+            if(widget != null) {
+                widget = (BIWidget) widget.clone();
+                switch (widget.getType()) {
+                    case BIReportConstant.WIDGET.TABLE:
+                    case BIReportConstant.WIDGET.CROSS_TABLE:
+                    case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                        ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
+                        ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
+                        break;
+                    case BIReportConstant.WIDGET.DETAIL:
+                        ((BIDetailWidget) widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
+                        break;
+                }
+
+                widget.setWidgetName(widget.getWidgetName() + Math.random());
+                BIPolyWorkSheet ws = widget.createWorkSheet(this);
+                wb.addReport(widgetName, ws);
+            }
+        }
+
+        TemplateWorkBook workBook = wb;
+        return ((BIWorkBook) workBook).execute4BI((getParameterMap4Execute()));
+    }
+
 
 
     @Override

@@ -128,6 +128,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }
         var isRelation = packages.length === 1;
         //选择了表
+        var isRelation = packages.length === 1;
         if (type & BI.SelectDataSearchSegment.SECTION_TABLE) {
             var result = [];
             BI.each(packages, function (i, pid) {
@@ -216,7 +217,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         opt = opt || {};
         var self = this, o = this.options;
         var tablesStructure = [];
-        var currentTables = o.tablesCreator(packageId);
+        var currentTables = o.tablesCreator(packageId, opt);
         var currentTablesIds = BI.pluck(currentTables, "id");
         var relationAndCurrentTables = currentTables;
         if (opt.isRelation === true) {
@@ -411,7 +412,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 pId: tableId,
                 wId: o.wId,
                 type: opt.isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-                //isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
                 layer: opt.isRelation ? 3 : 2,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
@@ -551,7 +551,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     wId: o.wId,
                     type: opt.isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
                     layer: opt.isRelation ? 2 : 1,
-                    //isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: self._getTitleByFieldId(fid),

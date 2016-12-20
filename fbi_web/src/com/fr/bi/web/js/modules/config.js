@@ -1735,3 +1735,46 @@ BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapC
 BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_PIE] = {type: "bi.multi_pie_chart", events: [BI.MultiPieChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.RECT_TREE] = {type: "bi.rect_tree_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
+
+BICst.WIDGET_ICON_CLS_MAP = {};
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.TABLE] = "drag-group-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.CROSS_TABLE] = "drag-cross-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPLEX_TABLE] = "drag-complex-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DETAIL] = "drag-detail-icon";
+
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.AXIS] = "drag-axis-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_AXIS] = "drag-axis-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_AXIS] = "drag-axis-percent-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPARE_AXIS] = "drag-axis-compare-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FALL_AXIS] = "drag-axis-fall-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.BAR] = "drag-bar-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_BAR] = "drag-bar-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPARE_BAR] = "drag-bar-compare-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PIE] = "drag-pie-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MULTI_PIE] = "drag-multi-pie-icon";
+
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.RECT_TREE] = "drag-rect-tree-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MAP] = "drag-map-china-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.GIS_MAP] = "drag-map-gis-icon";
+
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DASHBOARD] = "drag-dashboard-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DONUT] = "drag-donut-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.BUBBLE] = "drag-bubble-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FORCE_BUBBLE] = "drag-bubble-force-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.SCATTER] = "drag-scatter-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.RADAR] = "drag-radar-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_RADAR] = "drag-radar-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.LINE] = "drag-line-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.AREA] = "drag-area-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_AREA] = "drag-area-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_AREA] = "drag-area-percent-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPARE_AREA] = "drag-area-compare-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.RANGE_AREA] = "drag-area-range-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMBINE_CHART] = "drag-combine-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = "drag-combine-mult-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FUNNEL] = "drag-funnel-icon";
+
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.IMAGE] = "drag-image-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.WEB] = "drag-web-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.CONTENT] = "drag-input-icon";
+
