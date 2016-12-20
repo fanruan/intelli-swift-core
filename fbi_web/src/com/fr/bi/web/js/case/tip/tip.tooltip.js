@@ -37,7 +37,7 @@ BI.Tooltip = BI.inherit(BI.Tip, {
             "mousemove": fn
         });
 
-        var texts = o.text.split("\n");
+        var texts = (o.text + "").split("\n");
         if (texts.length > 1) {
             BI.createWidget({
                 type: "bi.vertical",
@@ -49,7 +49,7 @@ BI.Tooltip = BI.inherit(BI.Tip, {
                         textAlign: "left",
                         whiteSpace: "normal",
                         text: text,
-                        textHeight: 16,
+                        textHeight: 16
                     }
                 })
             })
