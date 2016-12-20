@@ -6,16 +6,16 @@
  * rightYxis 右值轴属性
  * xAxis    分类轴属性
  */
-BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
+BI.MultiAxisCombineChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
-        return BI.extend(BI.MultiAxisChart.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.MultiAxisCombineChart.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-multi-axis-chart"
         })
     },
 
     _init: function () {
-        BI.MultiAxisChart.superclass._init.apply(this, arguments);
+        BI.MultiAxisCombineChart.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.xAxis = [{
             type: "category",
@@ -36,7 +36,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
-            self.fireEvent(BI.MultiAxisChart.EVENT_CHANGE, obj);
+            self.fireEvent(BI.MultiAxisCombineChart.EVENT_CHANGE, obj);
         });
         this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
             self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
@@ -175,64 +175,9 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         })
     },
 
-    formatSeriesAccumulation: function (items, accumulationObj) {
-        var accumulations = accumulationObj.items,
-            type = accumulationObj.type,
-            result = [];
-        if(BI.isEmpty(accumulationObj) || BI.isEmpty(items) || type !== BICst.SERIES_ACCUMULATION.EXIST) {
-            return items;
-        }
-        BI.each(accumulations, function (idx, accumulation) {
-            accumulation.stack = idx + BI.UUID();
-        });
-        BI.each(items[0], function (idx, item) {
-            BI.any(accumulations.slice(1), function (i, accumulation) {
-                if(BI.contains(accumulation.items, item.name)) {
-                    switch (accumulation.type) {
-                        case BICst.ACCUMULATE_TYPE.COLUMN:
-                            item.type = "column";
-                            break;
-                        case BICst.ACCUMULATE_TYPE.AREA_NORMAL:
-                            item.type = "area";
-                            break;
-                        case BICst.ACCUMULATE_TYPE.AREA_CURVE:
-                            item.type = "area";
-                            item.curve = true;
-                            break;
-                        case BICst.ACCUMULATE_TYPE.AREA_RIGHT_ANGLE:
-                            item.type = "area";
-                            item.step = true;
-                    };
-                    item.flag = true;
-                    item.stack = accumulation.stack;
-                }
-            });
-            if(!item.flag) {
-                switch (accumulations[0].type) {
-                    case BICst.ACCUMULATE_TYPE.COLUMN:
-                        item.type = "column";
-                        break;
-                    case BICst.ACCUMULATE_TYPE.AREA_NORMAL:
-                        item.type = "area";
-                        break;
-                    case BICst.ACCUMULATE_TYPE.AREA_CURVE:
-                        item.type = "area";
-                        item.curve = true;
-                        break;
-                    case BICst.ACCUMULATE_TYPE.AREA_RIGHT_ANGLE:
-                        item.type = "area";
-                        item.step = true;
-                }
-                item.stack = accumulations[0].stack;
-            }
-            result.push(item);
-        })
-        return [result];
-    },
-
     populate: function (items, options, types) {
         //按照系列分组堆积
-        items = this.formatSeriesAccumulation(items, options.seriesAccumulation);
+        //items = this.formatSeriesAccumulation(items, options.seriesAccumulation);
         var self = this, c = this.constants;
         this.config = self.getChartConfig(options);
         this.options.items = items;
@@ -268,5 +213,5 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.magnify();
     }
 });
-BI.MultiAxisChart.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut('bi.multi_axis_chart', BI.MultiAxisChart);
+BI.MultiAxisCombineChart.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut('bi.multi_axis_combine_chart', BI.MultiAxisCombineChart);

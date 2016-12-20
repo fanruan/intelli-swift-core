@@ -253,7 +253,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_STRING_COMBO.SERIES_ACCUMULATION_ATTRIBUTE:
                     if (s === BICst.DIMENSION_STRING_COMBO.NO_SERIES) {
-
+                        self._emptyAccumulation();
                     } else {
                         self._buildSeriesAccumulationPane();
                     }
@@ -315,6 +315,13 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                 case BICst.DIMENSION_NUMBER_COMBO.DELETE:
                     self._deleteDimension();
                     break;
+                case BICst.DIMENSION_NUMBER_COMBO.SERIES_ACCUMULATION_ATTRIBUTE:
+                    if (s === BICst.DIMENSION_NUMBER_COMBO.NO_SERIES) {
+                        self._emptyAccumulation();
+                    } else {
+                        self._buildSeriesAccumulationPane();
+                    }
+                    break;
                 case BICst.DIMENSION_NUMBER_COMBO.INFO:
                     break;
             }
@@ -374,6 +381,13 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_DATE_COMBO.DELETE:
                     self._deleteDimension();
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.SERIES_ACCUMULATION_ATTRIBUTE:
+                    if (s === BICst.DIMENSION_DATE_COMBO.NO_SERIES) {
+                        self._emptyAccumulation();
+                    } else {
+                        self._buildSeriesAccumulationPane();
+                    }
                     break;
                 case BICst.DIMENSION_DATE_COMBO.INFO:
                     break;
@@ -455,6 +469,13 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
 
     _deleteDimension: function () {
         this.model.destroy();
+    },
+
+    _emptyAccumulation: function () {
+        this.model.set("seriesAccumulation", {
+            type: BICst.SERIES_ACCUMULATION.NONE,
+            items: []
+        });
     },
 
     local: function () {

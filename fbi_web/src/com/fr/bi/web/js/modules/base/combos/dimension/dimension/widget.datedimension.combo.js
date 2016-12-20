@@ -97,6 +97,41 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
         ]
     },
 
+    _rebuildItems: function () {
+        var chartTypes = [
+            BICst.WIDGET.ACCUMULATE_AREA,
+            BICst.WIDGET.ACCUMULATE_AXIS,
+            BICst.WIDGET.ACCUMULATE_BAR,
+            BICst.WIDGET.ACCUMULATE_RADAR,
+            BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+            BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
+            BICst.WIDGET.COMBINE_CHART,
+            // BICst.WIDGET.MULTI_AXIS_COMBINE_CHART
+        ];
+        var items = BI.DimensionDateCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
+        var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        if(BI.Utils.isDimensionRegion2ByRegionType(rType) && BI.contains(chartTypes, wType)) {
+            items.splice(2, 0, [{
+                el: {
+                    text: BI.i18nText("BI-Series_Accumulation_Attribute"),
+                    cls: "",
+                    value: BICst.DIMENSION_DATE_COMBO.SERIES_ACCUMULATION_ATTRIBUTE
+                },
+                children:[{
+                    text: BI.i18nText("BI-No_Accumulation"),
+                    value: BICst.DIMENSION_DATE_COMBO.NO_SERIES,
+                    cls: "dot-e-font"
+                },{
+                    text: BI.i18nText("BI-Series_Accumulation"),
+                    value: BICst.DIMENSION_DATE_COMBO.SERIES_ACCUMULATION,
+                    cls: "dot-e-font"
+                }]
+            }]);
+        }
+        return items
+    },
+
     typeConfig: function () {
         return this.config;
     },

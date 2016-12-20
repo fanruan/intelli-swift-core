@@ -108,6 +108,41 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
             }
         }
 
+        if (BI.isNotNull(change.group)) {
+            var groupObject = self.get("group");
+            var accumulations = self.get("seriesAccumulation");
+            if(groupObject.type === BICst.GROUP.CUSTOM_GROUP && BI.isNotEmptyArray(accumulations)) {
+                groupsItems = groupObject.details;
+
+                var allItems = [];
+
+                //删除已被自定义分组的项
+                BI.each(groupsItems, function (idx, items) {
+                    BI.each(items.content, function (id, item) {
+                        BI.each(accumulations, function (i, accumulation) {
+                            var index = accumulation.items.indexOf(item.value);
+                            if(index !== -1) {
+                                accumulation.items.splice(index, 1);
+                            }
+                        })
+                    })
+                });
+
+                BI.each(accumulations, function (idx, accumulation) {
+                    allItems = BI.concat(allItems, accumulation.items);
+                })
+
+                //添加新增的自定义分组
+                BI.each(groupsItems, function (idx, items) {
+                    if(!BI.contains(allItems, items.value)) {
+                        accumulations[0].items = BI.concat(accumulations[0].items, items.value);
+                    }
+                })
+
+                self.set("seriesAccumulation", accumulations);
+            }
+        }
+
         function checkFilter(filter) {
             if(BI.isNull(filter)){
                 return;
