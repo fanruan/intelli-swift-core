@@ -293,6 +293,7 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
                 var fieldID = self._createGroupFieldID(groupID, self._getFieldID(widgetID));
                 if (!BI.isNotNull(self.groupOfFieldMap[self._getFieldID(widgetID)])) {
                     self.fieldMap[fieldID] = fieldName;
+                    self.fieldReserveMap[fieldName] = fieldID;
                     self.groupOfFieldMap[self._getFieldID(widgetID)] = {};
                 }
                 fieldItem.id = fieldID;
@@ -301,6 +302,7 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
                 self.fieldInGroupMap[groupID][fieldID] = fieldName;
                 self.groupOfFieldMap[self._getFieldID(fieldID)][groupID] = groupName;
                 self.fieldMap[fieldID] = fieldName;
+                self.fieldReserveMap[fieldName] = fieldID;
             }
             var groupWidget = self.groupWidgetMap[groupID];
             groupWidget.addFieldWidget(groupItem);
@@ -322,6 +324,8 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.CustomGroupFieldPane.EVENT_EMPTY_GROUP, fieldID, self.fieldMap[fieldID])
             }
 
+            var value = self.fieldMap[fieldID];
+            delete self.fieldReserveMap[value];
             delete self.fieldMap[fieldID];
         }
     },
