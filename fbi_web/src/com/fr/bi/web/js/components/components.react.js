@@ -48884,11 +48884,12 @@
 	                header = _props.header,
 	                items = _props.items,
 	                regionColumnSize = _props.regionColumnSize,
+	                onVerticalScroll = _props.onVerticalScroll,
 	                w = _props.width,
 	                h = _props.height,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
-	                props = _objectWithoutProperties(_props, ['headerRowHeight', 'rowHeight', 'columnSize', 'isNeedFreeze', 'freezeCols', 'header', 'items', 'regionColumnSize', 'width', 'height', 'headerCellRenderer', 'cellRenderer']);
+	                props = _objectWithoutProperties(_props, ['headerRowHeight', 'rowHeight', 'columnSize', 'isNeedFreeze', 'freezeCols', 'header', 'items', 'regionColumnSize', 'onVerticalScroll', 'width', 'height', 'headerCellRenderer', 'cellRenderer']);
 
 	            var width = w,
 	                height = h;
@@ -49232,6 +49233,9 @@
 	                borderRight: '1px solid #eaeaea',
 	                borderBottom: '1px solid #eaeaea'
 	            };
+	            if (columnIndex === 0) {
+	                style.borderLeft = '1px solid #eaeaea';
+	            }
 	            if (rowIndex === 0) {
 	                style.borderTop = '1px solid #eaeaea';
 	            }
@@ -49283,17 +49287,24 @@
 	            if (columnIndex === 0) {
 	                style.borderLeft = '1px solid #eaeaea';
 	            }
+	            if (rowIndex === 0) {
+	                style.borderTop = '1px solid #eaeaea';
+	            }
 	            return style;
 	        }
 	    }, {
 	        key: '_bottomLeftOnScroll',
 	        value: function _bottomLeftOnScroll(_ref15) {
+	            var _this5 = this;
+
 	            var scrollLeft = _ref15.scrollLeft,
 	                scrollTop = _ref15.scrollTop;
 
 	            this.setState({
 	                leftScrollLeft: scrollLeft,
 	                scrollTop: scrollTop
+	            }, function () {
+	                _this5.props.onVerticalScroll(_this5.state.scrollTop);
 	            });
 	        }
 	    }, {
@@ -49331,24 +49342,38 @@
 	                borderRight: '1px solid #eaeaea',
 	                borderBottom: '1px solid #eaeaea'
 	            };
+	            if (columnIndex === 0) {
+	                style.borderLeft = '1px solid #eaeaea';
+	            }
+	            if (rowIndex === 0) {
+	                style.borderTop = '1px solid #eaeaea';
+	            }
 	            return style;
 	        }
 	    }, {
 	        key: '_bottomRightOnScroll',
 	        value: function _bottomRightOnScroll(_ref20) {
+	            var _this6 = this;
+
 	            var scrollLeft = _ref20.scrollLeft,
 	                scrollTop = _ref20.scrollTop;
 
 	            this.setState({
 	                rightScrollLeft: scrollLeft,
 	                scrollTop: scrollTop
+	            }, function () {
+	                _this6.props.onVerticalScroll(_this6.state.scrollTop);
 	            });
 	        }
 	    }, {
 	        key: '_verticalOnScroll',
 	        value: function _verticalOnScroll(scrollTop) {
+	            var _this7 = this;
+
 	            this.setState({
 	                scrollTop: Math.floor(scrollTop)
+	            }, function () {
+	                _this7.props.onVerticalScroll(_this7.state.scrollTop);
 	            });
 	        }
 	    }, {
@@ -49380,7 +49405,8 @@
 	    items: [],
 	    regionColumnSize: [],
 	    headerCellRenderer: _core.emptyFunction,
-	    cellRenderer: _core.emptyFunction
+	    cellRenderer: _core.emptyFunction,
+	    onVerticalScroll: _core.emptyFunction
 	};
 
 	_reactMixin2.default.onClass(Table, _core.ReactComponentWithPureRenderMixin);
@@ -50102,6 +50128,7 @@
 	                regionColumnSize = _props.regionColumnSize,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
+	                onVerticalScroll = _props.onVerticalScroll,
 	                width = _props.width,
 	                height = _props.height;
 
@@ -50123,7 +50150,8 @@
 	                    items: items,
 	                    regionColumnSize: this.state.regionColumnSize,
 	                    headerCellRenderer: this._headerCellRenderer.bind(this),
-	                    cellRenderer: cellRenderer
+	                    cellRenderer: cellRenderer,
+	                    onVerticalScroll: onVerticalScroll
 	                }),
 	                _react2.default.createElement(_ColumnResizeHandle2.default, {
 	                    height: height,
@@ -50696,6 +50724,7 @@
 	                regionColumnSize = _props.regionColumnSize,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
+	                onVerticalScroll = _props.onVerticalScroll,
 	                width = _props.width,
 	                height = _props.height;
 
@@ -50714,7 +50743,8 @@
 	                headerCellRenderer: headerCellRenderer,
 	                cellRenderer: cellRenderer,
 	                onColumnResizeEnd: this._onColumnResizeEnd.bind(this),
-	                onRegionColumnResizeEnd: this._onRegionColumnResizeEnd.bind(this)
+	                onRegionColumnResizeEnd: this._onRegionColumnResizeEnd.bind(this),
+	                onVerticalScroll: onVerticalScroll
 	            });
 	        }
 	    }, {
@@ -51079,6 +51109,8 @@
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(9);
@@ -51113,6 +51145,10 @@
 
 	var _DetailTablePagerComponent2 = _interopRequireDefault(_DetailTablePagerComponent);
 
+	var _DetailTableSequenceComponent = __webpack_require__(591);
+
+	var _DetailTableSequenceComponent2 = _interopRequireDefault(_DetailTableSequenceComponent);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -51131,7 +51167,8 @@
 
 	        var _this = _possibleConstructorReturn(this, (DetailTable.__proto__ || Object.getPrototypeOf(DetailTable)).call(this, props, context));
 
-	        _this.state = _this._digest(props);
+	        _this._onVerticalScroll = _this._onVerticalScroll.bind(_this);
+	        _this.state = _extends({}, _this._digest(props), { scrollTop: 0 });
 	        return _this;
 	    }
 
@@ -51148,15 +51185,6 @@
 	                columnSize = minColumnSize;
 	            }
 
-	            if (props.showSequence === true) {
-	                freezeCols = freezeCols.concat([freezeCols.length]);
-	                columnSize = [10].concat(columnSize);
-	                minColumnSize = [80].concat(minColumnSize);
-	                header[0] = [{ text: '序号' }].concat(header[0]);
-	                (0, _core.each)(items, function (cols, i) {
-	                    items[i] = [{ text: (props.curr - 1) * 100 + i + 1 }].concat(items[i]);
-	                });
-	            }
 	            return {
 	                columnSize: columnSize,
 	                minColumnSize: minColumnSize,
@@ -51170,6 +51198,11 @@
 	        value: function componentWillReceiveProps(nextProps) {
 	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header || nextProps.freezeCols !== this.props.freezeCols || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.showSequence !== this.props.showSequence) {
 	                this.setState(this._digest(nextProps));
+	            }
+	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header || nextProps.isNeedFreeze !== this.props.isNeedFreeze) {
+	                this.setState({
+	                    scrollTop: 0
+	                });
 	            }
 	        }
 	    }, {
@@ -51185,6 +51218,9 @@
 	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
 	                height = _props.height,
+	                showSequence = _props.showSequence,
+	                styleType = _props.styleType,
+	                color = _props.color,
 	                curr = _props.curr,
 	                pages = _props.pages,
 	                label = _props.label,
@@ -51195,7 +51231,8 @@
 	                minColumnSize = _state.minColumnSize,
 	                header = _state.header,
 	                items = _state.items,
-	                freezeCols = _state.freezeCols;
+	                freezeCols = _state.freezeCols,
+	                scrollTop = _state.scrollTop;
 
 	            return _react2.default.createElement(
 	                _layout.Layout,
@@ -51203,24 +51240,43 @@
 	                        width: width,
 	                        height: height
 	                    } },
-	                _react2.default.createElement(_base.AdaptiveTable, {
-	                    width: width,
-	                    height: height - 30,
-	                    headerRowHeight: headerRowHeight,
-	                    rowHeight: rowHeight,
-	                    columnSize: columnSize,
-	                    minColumnSize: minColumnSize,
-	                    isNeedFreeze: isNeedFreeze,
-	                    isNeedResize: isNeedResize,
-	                    freezeCols: freezeCols,
-	                    header: header,
-	                    items: items,
-	                    regionColumnSize: regionColumnSize,
-	                    headerCellRenderer: this._headerCellRenderer.bind(this),
-	                    cellRenderer: this._cellRenderer.bind(this),
-	                    onColumnResizeEnd: this._onColumnResizeEnd.bind(this),
-	                    onRegionColumnResizeEnd: this._onRegionColumnResizeEnd.bind(this)
-	                }),
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    { style: {
+	                            width: width,
+	                            height: height - 30
+	                        }, box: showSequence === true ? 'first' : 'mean' },
+	                    showSequence === true ? _react2.default.createElement(_DetailTableSequenceComponent2.default, { isNeedFreeze: isNeedFreeze,
+	                        scrollTop: scrollTop,
+	                        height: height - 30,
+	                        headerRowHeight: headerRowHeight,
+	                        rowHeight: rowHeight,
+	                        styleType: styleType,
+	                        color: color,
+	                        curr: curr,
+	                        pages: pages,
+	                        header: header,
+	                        items: items }) : null,
+	                    _react2.default.createElement(_base.AdaptiveTable, {
+	                        width: width - (showSequence === true ? _DetailTableSequenceComponent2.default.WIDTH : 0),
+	                        height: height - 30,
+	                        headerRowHeight: headerRowHeight,
+	                        rowHeight: rowHeight,
+	                        columnSize: columnSize,
+	                        minColumnSize: minColumnSize,
+	                        isNeedFreeze: isNeedFreeze,
+	                        isNeedResize: isNeedResize,
+	                        freezeCols: freezeCols,
+	                        header: header,
+	                        items: items,
+	                        regionColumnSize: regionColumnSize,
+	                        headerCellRenderer: this._headerCellRenderer.bind(this),
+	                        cellRenderer: this._cellRenderer.bind(this),
+	                        onColumnResizeEnd: this._onColumnResizeEnd.bind(this),
+	                        onRegionColumnResizeEnd: this._onRegionColumnResizeEnd.bind(this),
+	                        onVerticalScroll: this._onVerticalScroll
+	                    })
+	                ),
 	                _react2.default.createElement(_DetailTablePagerComponent2.default, { style: { height: 30, paddingRight: 10 }, curr: curr, pages: pages, label: label, onPrev: onPrev,
 	                    onNext: onNext })
 	            );
@@ -51263,6 +51319,13 @@
 	            var _props3;
 
 	            (_props3 = this.props).onRegionColumnResizeEnd.apply(_props3, arguments);
+	        }
+	    }, {
+	        key: '_onVerticalScroll',
+	        value: function _onVerticalScroll(scrollTop) {
+	            this.setState({
+	                scrollTop: scrollTop
+	            });
 	        }
 	    }]);
 
@@ -51959,6 +52022,159 @@
 	_reactMixin2.default.onClass(DetailTablePagerComponent, _core.ReactComponentWithPureRenderMixin);
 
 	exports.default = DetailTablePagerComponent;
+
+/***/ },
+/* 591 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(544);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(195);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(533);
+
+	var _DetailTableHeaderCellComponent = __webpack_require__(588);
+
+	var _DetailTableHeaderCellComponent2 = _interopRequireDefault(_DetailTableHeaderCellComponent);
+
+	var _DetailTableCellComponent = __webpack_require__(587);
+
+	var _DetailTableCellComponent2 = _interopRequireDefault(_DetailTableCellComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/21.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var DetailTableSequenceComponent = function (_Component) {
+	    _inherits(DetailTableSequenceComponent, _Component);
+
+	    function DetailTableSequenceComponent(props, context) {
+	        _classCallCheck(this, DetailTableSequenceComponent);
+
+	        return _possibleConstructorReturn(this, (DetailTableSequenceComponent.__proto__ || Object.getPrototypeOf(DetailTableSequenceComponent)).call(this, props, context));
+	    }
+
+	    _createClass(DetailTableSequenceComponent, [{
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                isNeedFreeze = _props.isNeedFreeze,
+	                headerRowHeight = _props.headerRowHeight,
+	                rowHeight = _props.rowHeight,
+	                header = _props.header,
+	                items = _props.items,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                curr = _props.curr,
+	                pages = _props.pages,
+	                scrollTop = _props.scrollTop;
+
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                { dir: 'top', box: isNeedFreeze === true ? 'first' : 'mean',
+	                    style: {
+	                        width: DetailTableSequenceComponent.WIDTH,
+	                        borderRight: '1px solid #eaeaea',
+	                        borderBottom: '1px solid #eaeaea'
+	                    } },
+	                isNeedFreeze === true ? _react2.default.createElement(_DetailTableHeaderCellComponent2.default, {
+	                    styleType: styleType,
+	                    color: color,
+	                    style: {
+	                        border: '1px solid #eaeaea'
+	                    },
+	                    width: DetailTableSequenceComponent.WIDTH + 1,
+	                    height: header.length * headerRowHeight + 1,
+	                    item: { text: '序号' }
+	                }) : null,
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    null,
+	                    this._renderSequence()
+	                )
+	            );
+	        }
+	    }, {
+	        key: '_renderSequence',
+	        value: function _renderSequence() {
+	            var _props2 = this.props,
+	                scrollTop = _props2.scrollTop,
+	                styleType = _props2.styleType,
+	                color = _props2.color,
+	                rowHeight = _props2.rowHeight,
+	                height = _props2.height;
+
+	            var start = Math.floor(scrollTop / rowHeight);
+	            var end = start + Math.floor(height / rowHeight);
+	            var result = [];
+	            for (var i = start; i <= end; i++) {
+	                var style = {};
+	                (0, _core.translateDOMPositionXY)(style, 0, -scrollTop % rowHeight + (i - start) * rowHeight);
+	                result.push(_react2.default.createElement(_DetailTableCellComponent2.default, {
+	                    key: i,
+	                    styleType: styleType,
+	                    color: color,
+	                    style: (0, _core.sc)([_extends({}, style, {
+	                        position: 'absolute',
+	                        borderBottom: '1px solid #eaeaea',
+	                        borderLeft: '1px solid #eaeaea'
+	                    })], [{
+	                        borderTop: '1px solid #eaeaea'
+	                    }, i === 0]),
+	                    width: DetailTableSequenceComponent.WIDTH + 1,
+	                    height: rowHeight + 1,
+	                    item: { text: i + 1 },
+	                    rowIndex: i
+	                }));
+	            }
+	            return result;
+	        }
+	    }, {
+	        key: '_cellRenderer',
+	        value: function _cellRenderer() {}
+	    }]);
+
+	    return DetailTableSequenceComponent;
+	}(_react.Component);
+
+	DetailTableSequenceComponent.WIDTH = 60;
+	DetailTableSequenceComponent.defaultProps = {
+	    isNeedFreeze: false,
+	    items: [],
+	    styleType: null,
+	    color: null,
+	    curr: 1,
+	    pages: 1,
+	    scrollTop: 0
+	};
+
+	_reactMixin2.default.onClass(DetailTableSequenceComponent, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = DetailTableSequenceComponent;
 
 /***/ }
 /******/ ]);
