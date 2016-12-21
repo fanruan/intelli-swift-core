@@ -11,7 +11,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         FOLDER: 2,
         CREATE_BY_ME_ID: "-1",
         SHARED_TO_ME_ID: "-2",
-        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.SINGLE_SLIDER, BICst.WIDGET.INTERVAL_SLIDER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
+        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.STRING_LIST, BICst.WIDGET.NUMBER, BICst.WIDGET.SINGLE_SLIDER, BICst.WIDGET.INTERVAL_SLIDER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
             BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.LIST_LABEL, BICst.WIDGET.TREE_LABEL, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.GENERAL_QUERY,
             BICst.WIDGET.QUERY, BICst.WIDGET.RESET],
         CALCULATE_TARGET_TYPE: [BICst.TARGET_TYPE.FORMULA,
@@ -217,14 +217,15 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             nodeType: self.constants.FOLDER
         };
         BI.Utils.getAllTemplates(function (res) {
-            self.templateItems = []; self.sharedItems = [];
+            self.templateItems = [];
+            self.sharedItems = [];
             self.templateItems.push(createByMe);
             self.sharedItems.push(sharedToMe);
             var sharedReports = [];
-            BI.each(res, function(idx, item){
-                if(item.isMine === true || !BI.has(item, "buildUrl")){
+            BI.each(res, function (idx, item) {
+                if (item.isMine === true || !BI.has(item, "buildUrl")) {
                     self.templateItems.push(item);
-                }else{
+                } else {
                     self.sharedItems.push(item);
                     sharedReports.push({
                         id: item.id,
@@ -492,15 +493,15 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 var targetIdMap = {};
                 BI.each(dims, function (idx, dim) {
                     var copy = self._createDimensionsAndTargets(dim, targetIdMap, dimensions);
-                    BI.each(copy, function(id, dimension){
-                        if(copy.length > 1){
+                    BI.each(copy, function (id, dimension) {
+                        if (copy.length > 1) {
                             dimension.used = BI.contains(self.constants.CALCULATE_TARGET_TYPE, dimension.type);
-                        }else{
+                        } else {
                             dimension.used = true;
                         }
                         if (BI.has(result, dimension.dId) && result[dimension.dId].used === true) {
                             result[dimension.dId].used = true;
-                        }else{
+                        } else {
                             result[dimension.dId] = dimension;
                         }
                     })
