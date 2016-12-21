@@ -1880,11 +1880,22 @@
             return {};
         },
 
-        getSeriesAccumulationByID: function (did) {
+        getSeriesAccumulationByDimensionID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 return Data.SharingPool.get("dimensions", did, "seriesAccumulation") || {};
             }
             return {};
+        },
+
+        getSeriesAccumulationByWidgetID: function (wid) {
+            var dids = BI.Utils.getAllUsableDimDimensionIDs(wid);
+            var accumulation = {};
+            BI.any(dids, function (idx, did) {
+                if (BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(did))) {
+                    accumulation = BI.Utils.getSeriesAccumulationByDimensionID(did);
+                }
+            });
+            return accumulation;
         },
 
         isDimensionByDimensionID: function (dId) {

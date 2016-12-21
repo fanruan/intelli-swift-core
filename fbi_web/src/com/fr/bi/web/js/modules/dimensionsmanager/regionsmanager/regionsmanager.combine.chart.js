@@ -199,6 +199,7 @@ BI.CombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
 
     _createTargetScope: function (regionType) {
         var self = this, o = this.options;
+        var accumulation = BI.Utils.getSeriesAccumulationByWidgetID(o.wId);
         if (!this.scopes[regionType]) {
             this.scopes[regionType] = BI.createWidget({
                 type: "bi.combine_chart_target_scope",
@@ -209,6 +210,7 @@ BI.CombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
                 self.fireEvent(BI.RegionsManager.EVENT_CHANGE, arguments);
             });
         }
+        this.scopes[regionType].setEnable(accumulation.type !== BICst.SERIES_ACCUMULATION.EXIST);
         return this.scopes[regionType];
     },
 

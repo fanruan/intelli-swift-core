@@ -62,7 +62,7 @@ BI.SeriesAccumulation = BI.inherit(BI.Widget, {
     populate: function () {
         var self = this, o = this.options;
         var id = o.dId;
-        var accumulationObj = BI.Utils.getSeriesAccumulationByID(o.dId);
+        var accumulationObj = BI.Utils.getSeriesAccumulationByDimensionID(o.dId);
         var items = accumulationObj.items;
         BI.Utils.getDataByDimensionID(id, function (allData) {
             if(allData.length <= self._constant.MAX_LENGTH) {

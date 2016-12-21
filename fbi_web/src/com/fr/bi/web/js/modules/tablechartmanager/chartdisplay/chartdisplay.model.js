@@ -1153,8 +1153,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(views, function (idx, view) {
             if(BI.Utils.isDimensionRegion2ByRegionType(idx)) {
                 BI.any(view, function (id, did) {
-                    if(BI.Utils.isDimensionUsable(did) && BI.isNotEmptyObject(BI.Utils.getSeriesAccumulationByID(did))) {
-                        return accumulation = BI.Utils.getSeriesAccumulationByID(did);
+                    if(BI.Utils.isDimensionUsable(did) && BI.isNotEmptyObject(BI.Utils.getSeriesAccumulationByDimensionID(did))) {
+                        return accumulation = BI.Utils.getSeriesAccumulationByDimensionID(did);
                     }
                 })
             }

@@ -57,11 +57,38 @@ BI.CombineChartTargetScope = BI.inherit(BI.Widget, {
             self.fireEvent(BI.CombineChartTargetScope.EVENT_CHANGE, arguments);
         });
 
+        this._createMask();
+
         BI.createWidget({
             type: "bi.center_adapt",
             element: this.element,
             items: [this.combo]
         });
+    },
+
+    _createMask: function () {
+        this.mask = BI.createWidget({
+            type: "bi.layout",
+            cls: "bi-accumulate-selector-masker",
+            width: "100%",
+            height: "100%"
+        })
+        BI.createWidget({
+            type: "bi.absolute",
+            items: [{
+                el: this.mask,
+                top: 0,
+                left: 0,
+                bottom: 0
+            }],
+            element: this.element
+        });
+        this.mask.setVisible(false);
+    },
+
+    setEnable: function (v) {
+        this.mask.setVisible(!v);
+        this.combo.setEnable(v);
     },
 
     getValue: function () {
