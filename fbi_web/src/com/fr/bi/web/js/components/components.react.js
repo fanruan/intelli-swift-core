@@ -43991,8 +43991,8 @@
 	            if (disabled || invalid) {
 	                return _react2.default.createElement(
 	                    _layout.Layout,
-	                    _extends({ className: cls,
-	                        style: style }, props),
+	                    { className: cls,
+	                        style: style },
 	                    children
 	                );
 	            }
