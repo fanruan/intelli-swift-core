@@ -52126,9 +52126,7 @@
 	                _layout.Layout,
 	                { dir: 'top', box: isNeedFreeze === true ? 'first' : 'mean',
 	                    style: {
-	                        width: DetailTableSequenceComponent.WIDTH,
-	                        borderRight: '1px solid #eaeaea',
-	                        borderBottom: '1px solid #eaeaea'
+	                        width: DetailTableSequenceComponent.WIDTH
 	                    } },
 	                isNeedFreeze === true ? _react2.default.createElement(_DetailTableHeaderCellComponent2.default, {
 	                    styleType: styleType,
@@ -52171,6 +52169,7 @@
 	                    style: (0, _core.sc)([_extends({}, style, {
 	                        position: 'absolute',
 	                        borderBottom: '1px solid #eaeaea',
+	                        borderRight: '1px solid #eaeaea',
 	                        borderLeft: '1px solid #eaeaea'
 	                    })], [{
 	                        borderTop: '1px solid #eaeaea'
