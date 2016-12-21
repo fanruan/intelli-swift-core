@@ -288,12 +288,17 @@ BICst.DASHBOARD_WIDGETS = [[{
         text: BI.i18nText("BI-Text_Control"),
         title: BI.i18nText("BI-Text_Control"),
         value: BICst.WIDGET.STRING,
-        cls: "drag-string-icon",
+        cls: "drag-string-icon"
     }, {
         text: BI.i18nText("BI-List_Label_Con"),
         title: BI.i18nText("BI-List_Label_Con"),
         value: BICst.WIDGET.LIST_LABEL,
         cls: "drag-list-label-icon"
+    }, {
+        text: BI.i18nText("BI-String_List"),
+        title: BI.i18nText("BI-String_List"),
+        value: BICst.WIDGET.STRING_LIST,
+        cls: "drag-string-list-icon"
     }]
 }, {
     text: BI.i18nText("BI-Numeric_Control"),
@@ -327,7 +332,7 @@ BICst.DASHBOARD_WIDGETS = [[{
         text: BI.i18nText("BI-Tree_Control"),
         title: BI.i18nText("BI-Tree_Control"),
         value: BICst.WIDGET.TREE,
-        cls: "drag-tree-icon",
+        cls: "drag-tree-icon"
     }, {
         text: BI.i18nText("BI-Tree_Label_Con"),
         title: BI.i18nText("BI-Tree_Label_Con"),
@@ -1668,6 +1673,7 @@ BICst.PERCENTAGE_SHOW = [{
     value: BICst.PERCENTAGE.NOT_SHOW
 }];
 
+
 BICst.INIT_CHART_MAP = {};
 BICst.INIT_CHART_MAP[BICst.WIDGET.AXIS] = {type: "bi.axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.COMBINE_CHART] = {type: "bi.multi_axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
@@ -1739,4 +1745,3 @@ BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FUNNEL] = "drag-funnel-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.IMAGE] = "drag-image-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.WEB] = "drag-web-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.CONTENT] = "drag-input-icon";
-

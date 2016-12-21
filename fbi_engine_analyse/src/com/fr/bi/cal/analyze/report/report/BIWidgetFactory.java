@@ -66,6 +66,7 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.DETAIL:
                 return new BIDetailWidget();
             case BIReportConstant.WIDGET.STRING:
+            case BIReportConstant.WIDGET.STRING_LIST:
                 return new StringControlWidget();
             case BIReportConstant.WIDGET.LIST_LABEL:
                 return new ListLabelWidget();

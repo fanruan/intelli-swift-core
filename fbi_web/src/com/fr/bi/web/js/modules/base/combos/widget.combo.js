@@ -92,6 +92,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 return BICst.TIME_CONTROL_SETCOMBO_ITEMS;
 
             case BICst.WIDGET.STRING:
+            case BICst.WIDGET.STRING_LIST:
                 return this._createStringTreeComboItems();
             case BICst.WIDGET.TREE:
                 return this._createStringTreeComboItems();

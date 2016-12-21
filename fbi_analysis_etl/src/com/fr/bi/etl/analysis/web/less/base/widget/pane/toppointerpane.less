@@ -1,11 +1,19 @@
 @import "../../../bibase";
 @import "../../../animate";
 .bi-analysis-etl-top-pointer-pane {
-
+  background-color :@background-color-default;
+  border-left: 1px solid @border-color-line;
   .bi-analysis-etl-top-pointer-pane-item {
     top:-1px;
-    border:1px solid @border-color-line;
-    background :@background-color-default;
+    border-left: 1px solid @border-color-line;
+    border-right: 1px solid @border-color-line;
+    border-top: 1px solid @border-color-line;
+    border-bottom: 1px solid @border-color-line;
+    background-color :@background-color-default;
+  }
+
+  & .top-pointer{
+    background-color: @color-bi-background-default;
   }
 
   & .x-pointer-top {

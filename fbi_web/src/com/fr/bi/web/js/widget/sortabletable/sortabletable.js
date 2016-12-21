@@ -21,6 +21,7 @@ BI.SortableTable = BI.inherit(BI.Widget, {
             headerRowSize: 30,
             footerRowSize: 25,
             rowSize: 25,
+            sortable: true,
 
             header: [],
             items: [] //二维数组
@@ -46,14 +47,18 @@ BI.SortableTable = BI.inherit(BI.Widget, {
             items: o.items
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-            self._initDrag();
-            self._createDashedLines();
-            self._createInsertLine();
+            if(o.sortable === true){
+                self._initDrag();
+                self._createDashedLines();
+                self._createInsertLine();
+            }
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-            self._createDashedLines();
-            self._createInsertLine();
+            if(o.sortable === true){
+                self._createDashedLines();
+                self._createInsertLine();
+            }
             self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
         });
 
@@ -338,6 +343,10 @@ BI.SortableTable = BI.inherit(BI.Widget, {
 
     getColumns: function(){
         return this.table.getColumns();
+    },
+
+    setSortable: function(sortable){
+        this.options.sortable = sortable;
     },
 
     populate: function (items, headers) {
