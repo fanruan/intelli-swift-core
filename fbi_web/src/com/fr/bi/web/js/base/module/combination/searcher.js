@@ -90,27 +90,26 @@ BI.Searcher = BI.inherit(BI.Widget, {
                 type: "bi.searcher_view",
                 chooseType: o.chooseType
             });
-            BI.Maskers.create(this.getName(), o.adapter, {
-                offset: o.masker.offset,
+            BI.Maskers.create(this.getName(), o.adapter, BI.extend({
                 container: this,
                 render: this.popupView
-            });
+            }, o.masker));
 
             this.popupView.on(BI.Controller.EVENT_CHANGE, function (type, value, obj) {
                 self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
                 if (type === BI.Events.CLICK) {
                     if (o.isAutoSync) {
-                        var values = o.adapter.getValue();
+                        var values = o.adapter && o.adapter.getValue();
                         if (!obj.isSelected()) {
-                            o.adapter.setValue(BI.deepWithout(values, obj.getValue()));
+                            o.adapter && o.adapter.setValue(BI.deepWithout(values, obj.getValue()));
                         } else {
                             switch (o.chooseType) {
                                 case BI.ButtonGroup.CHOOSE_TYPE_SINGLE:
-                                    o.adapter.setValue([obj.getValue()]);
+                                    o.adapter && o.adapter.setValue([obj.getValue()]);
                                     break;
                                 case BI.ButtonGroup.CHOOSE_TYPE_MULTI:
                                     values.push(obj.getValue());
-                                    o.adapter.setValue(values);
+                                    o.adapter && o.adapter.setValue(values);
                                     break;
                             }
                         }
@@ -183,7 +182,7 @@ BI.Searcher = BI.inherit(BI.Widget, {
         o.onSearch({
             times: 1,
             keyword: keyword,
-            selectedValues: o.adapter.getValue()
+            selectedValues: o.adapter && o.adapter.getValue()
         }, function (searchResult, matchResult) {
             if (!self._stop) {
                 var args = [].slice.call(arguments);
@@ -192,7 +191,7 @@ BI.Searcher = BI.inherit(BI.Widget, {
                 }
                 BI.Maskers.show(self.getName());
                 self.popupView.populate.apply(self.popupView, args);
-                o.isAutoSync && self.popupView.setValue(o.adapter.getValue());
+                o.isAutoSync && self.popupView.setValue(o.adapter && o.adapter.getValue());
                 self.popupView.loaded && self.popupView.loaded();
                 self.fireEvent(BI.Searcher.EVENT_SEARCHING);
             }

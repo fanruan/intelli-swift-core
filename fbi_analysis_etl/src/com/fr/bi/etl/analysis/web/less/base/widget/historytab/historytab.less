@@ -9,7 +9,7 @@
   }
 
   & .bi-history-tab-button-group {
-    background: @background-color-default;
+    background: @background-color-active;
     border : 1px solid @border-color-line;
 
     & .bi-history-tab-title {
@@ -25,7 +25,7 @@
       font-size: @font-size-13;
 
       &.active, &:active{
-        background: @background-color-default;
+        background: @background-color-active;
         color: @font-color-normal;
         
         & .delete-field-font {
@@ -33,10 +33,20 @@
         }
 
         & .select_tag {
-          background: @background-color-default;
+          background: @background-color-active;
         }
       }
     }
+  }
+
+  & .histroy-tab-east{
+    background-color: @color-bi-background-default;
+    border-top: 1px solid @background-color-light;
+    border-bottom: 1px solid @background-color-light;
+  }
+
+  & .histroy-tab-bottom{
+    background-color: @background-color-active;
   }
 
 }
