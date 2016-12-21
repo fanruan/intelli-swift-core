@@ -1351,6 +1351,10 @@ public class ResourceHelper {
                 //最大化
                 "com/fr/bi/web/css/modules/maximization/widget.maximization.chartpane.css",
                 "com/fr/bi/web/css/modules/maximization/widget.maximization.css",
+
+
+                //react控件
+                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
         };
     }
 
@@ -1981,6 +1985,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/aspects/config.js",
 
 
+                //react控件
+                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
+
                 //工程配置
                 "com/fr/bi/web/js/config.js"
         };
@@ -2364,7 +2371,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
 
                 //excelview
-                "com/fr/bi/web/css/components/excel/excelview/excelviewdisplaymanager.css"
+                "com/fr/bi/web/css/components/excel/excelview/excelviewdisplaymanager.css",
+
+
+                //react控件
+                "com/fr/bi/web/css/components/components.react.css",
         };
     }
 
@@ -3204,6 +3215,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/share/sharetome.js",
                 "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
 
+
+
+                //react控件
+                "com/fr/bi/web/js/components/components.react.js",
         };
     }
 
