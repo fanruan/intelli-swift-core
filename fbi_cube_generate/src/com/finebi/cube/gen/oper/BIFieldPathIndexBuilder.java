@@ -57,7 +57,11 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
             int primaryFieldRowCount = primaryColumnReader.sizeOfGroup();
             tablePathReader = buildTableRelationPathReader();
             targetPathEntity = buildTargetRelationPathWriter();
+
             GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
+            
+            final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
+
             GroupValueIndex allShowIndex = getAllShowIndex();
             for (int row = 0; row < primaryFieldRowCount; row++) {
                 GroupValueIndex frontGroupValueIndex = primaryColumnReader.getBitmapIndex(row);

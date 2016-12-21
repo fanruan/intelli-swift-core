@@ -73,7 +73,7 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
                 return uri;
             }
         }, userId);
-        TempCubeManager manager = TempCubeManager.getInstance(task);
+        TempCubeManager manager = TempCubeManager.getInstance(task, loader);
         if (manager.addLoader(cubeBuildStuff, new Release() {
             @Override
             public void clear() {

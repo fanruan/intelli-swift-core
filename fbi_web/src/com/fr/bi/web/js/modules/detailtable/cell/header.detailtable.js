@@ -14,7 +14,7 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
         var dId = o.dId;
         var name = o.text;
         var combo = BI.createWidget();
-        if(BI.Utils.getDimensionTypeByID(dId) < BICst.TARGET_TYPE.FORMULA) {
+        if (!BI.Utils.isCalculateTargetByDimensionID(dId)) {
             combo = BI.createWidget({
                 type: "bi.sort_filter_detail_combo",
                 dId: dId

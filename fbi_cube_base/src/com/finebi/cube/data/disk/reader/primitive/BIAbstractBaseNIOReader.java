@@ -66,9 +66,6 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
     public void destroySource() {
         try {
             readWriteLock.writeLock().lock();
-            if (!isValid) {
-                return;
-            }
             //先改变isValid状态再判断canClear
             isValid = false;
             setBufferInValid();

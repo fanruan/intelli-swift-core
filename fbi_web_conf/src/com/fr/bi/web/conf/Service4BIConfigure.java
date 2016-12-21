@@ -121,7 +121,9 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetThreadPoolSizeAction(),
             new BISetThreadPoolSizeAction(),
             new BISimpleAPIDemoAction(),
-            new BIGetCubeTaskLogsSDKAction()
+            new BIGetCubeTaskLogsSDKAction(),
+            new BISetTransportThreadPoolSizeAction(),
+            new BIGetTransportThreadPoolSizeAction()
     };
 
     /**

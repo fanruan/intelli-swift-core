@@ -1,12 +1,12 @@
 package com.fr.bi.cal;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffRealTime;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildInstantCubeTask;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
+import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.BIUserUtils;
@@ -31,15 +31,14 @@ public class TempCubeManager implements Release {
     private TempCubeTask task;
     private CubeThread cubeThread;
     private Release release;
+    private CubeTempModelReadingTableIndexLoader loader;
 
-    public TempCubeManager() {
 
-    }
-
-    public TempCubeManager(TempCubeTask task) {
+    public TempCubeManager(TempCubeTask task, CubeTempModelReadingTableIndexLoader loader) {
         this.task = task;
         this.cubeThread = new CubeThread();
         this.generater = new ConcurrentLinkedQueue<CubeBuildStuffRealTime>();
+        this.loader = loader;
         this.cubeThread.start();
     }
 
@@ -50,7 +49,19 @@ public class TempCubeManager implements Release {
         cubeMap.remove(task);
     }
 
-    public static TempCubeManager getInstance(TempCubeTask task) {
+    public void finishGenerateCube() {
+        if (release != null) {
+            release.clear();
+        }
+        if (loader != null) {
+            synchronized (loader) {
+                loader.notify();
+            }
+
+        }
+    }
+
+    public static TempCubeManager getInstance(TempCubeTask task, CubeTempModelReadingTableIndexLoader loader) {
         synchronized (TempCubeManager.class) {
             Long key = task.getUserId();
             boolean useAdministrtor = BIUserUtils.isAdministrator(task.getUserId());
@@ -60,7 +71,7 @@ public class TempCubeManager implements Release {
             task.setUserId(key);
             TempCubeManager manager = cubeMap.get(task);
             if (manager == null) {
-                manager = new TempCubeManager(task);
+                manager = new TempCubeManager(task, loader);
                 cubeMap.put(task, manager);
             }
             return manager;
@@ -127,19 +138,9 @@ public class TempCubeManager implements Release {
                 }
                 cubeBuildToolGenerating = generater.poll();
                 BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-                CubeTask cubeGenerateTask = new BuildInstantCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating);
+                CubeTask cubeGenerateTask = new BuildInstantCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating, TempCubeManager.this);
                 cubeManager.addTask(cubeGenerateTask, task.getUserId());
                 cubeBuildTool = cubeBuildToolGenerating;
-                while (cubeManager.hasTask(cubeGenerateTask, task.getUserId())) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        BILoggerFactory.getLogger().error(e.getMessage());
-                    }
-                }
-                if (release != null) {
-                    release.clear();
-                }
             }
         }
     }
