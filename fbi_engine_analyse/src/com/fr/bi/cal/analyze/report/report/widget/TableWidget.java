@@ -17,6 +17,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
+import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -304,7 +305,7 @@ public class TableWidget extends BISummaryWidget {
         if (this.getViewDimensions().length <= 1) {
             for (int i = 0; i < targets.length; i++) {
                 BISummaryTarget target = targets[i];
-                if (target instanceof BIConfiguredCalculateTarget) {
+                if (target instanceof BIConfiguredCalculateTarget && !(target instanceof BIPeriodConfiguredCalculateTarget)) {
                     BIConfiguredCalculateTarget configuredCalculateTarget = (BIConfiguredCalculateTarget) target;
                     if ((configuredCalculateTarget.getStart_group() == 1)) {
                         configuredCalculateTarget.setStart_group(0);
