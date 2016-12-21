@@ -4434,6 +4434,8 @@ Data.Utils = {
 
             _formatDataLabel(items, configs, config.chart_font);
 
+            configs.chartType = "line";
+
             return BI.extend(configs, {
                 series: items
             });

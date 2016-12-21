@@ -400,4 +400,18 @@ public class DBTableSource extends AbstractTableSource {
         sqlStatement.setSql(SQL);
         return DBQueryExecutor.getInstance().testSQL(sqlStatement);
     }
+
+    @Override
+    public boolean hasAbsentFields() {
+        Map<String, ICubeFieldSource> originalFields = getFields();
+        Map<String, ICubeFieldSource> persistFields = getFieldFromPersistentTable();
+        boolean isFieldAbsent=false;
+        for (String fieldName : originalFields.keySet()) {
+            if (!persistFields.containsKey(fieldName)||!persistFields.get(fieldName).equals(originalFields.get(fieldName))){
+                BILoggerFactory.getLogger(this.getClass()).error("The field the name is:" + fieldName + " is absent in table:" + getTableName() + " table ID:" + this.getSourceID());
+                isFieldAbsent=true;
+            }
+        }
+        return isFieldAbsent;
+    }
 }

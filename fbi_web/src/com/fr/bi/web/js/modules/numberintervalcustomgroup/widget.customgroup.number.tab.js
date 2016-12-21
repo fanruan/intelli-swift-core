@@ -135,9 +135,9 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
 
     _createItems:function(nodes){
         if(BI.isNull(nodes)){
-            var current = this.min;
+            var current = this.genMin;
             var items = [];
-            while(current + this.space < this.max){
+            while(current + this.space < this.genMax){
                 items.push({
                     type:"bi.number_custom_group_item",
                     id: BI.UUID(),
@@ -150,14 +150,14 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                 });
                 current += this.space;
             }
-            if(current <= this.max){
+            if(current <= this.genMax){
                 items.push({
                     type:"bi.number_custom_group_item",
                     id: BI.UUID(),
-                    group_name:current + "-" + this.max,
+                    group_name:current + "-" + this.genMax,
                     height:this.constants.intervalHeight,
                     min:current,
-                    max:this.max,
+                    max:this.genMax,
                     closemin:true,
                     closemax:true
                 });
@@ -245,9 +245,9 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         }
 
         //(max - min) / 5
-        var genMin = min.mul(magnify);
-        var genMax = max.mul(magnify);
-        return BI.parseFloat(genMax.sub(genMin)).div(5);
+        this.genMin = min.mul(magnify);
+        this.genMax = max.mul(magnify);
+        return BI.parseFloat(this.genMax.sub(this.genMin)).div(5);
 
         function cutSmall(val){
             return BI.parseFloat(val.substring(0, i));
@@ -297,8 +297,8 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
             return;
         }
         Data.BufferPool.getNumberFieldMinMaxValueById(BI.Utils.getFieldIDByDimensionID(o.dId), function(value){
-            self.max = BI.parseInt(value.max);
-            self.min = BI.parseInt(value.min);
+            self.max = self.genMax = BI.parseInt(value.max);
+            self.min = self.genMin = BI.parseInt(value.min);
             var config = configs.group_value;
             switch (configs.type) {
                 case BICst.NUMBER_INTERVAL_CUSTOM_GROUP_CUSTOM:

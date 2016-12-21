@@ -495,9 +495,17 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
                 unGroupedFieldItem.value = BI.i18nText("BI-Ungrouped_China");
                 unGroupedFieldItem.content = [];
                 var groupedFieldMap = {};
+                var allFieldMap = {};
+                BI.each(unGroupedFields, function(idx, fieldName){
+                    allFieldMap[fieldName] = fieldName;
+                })
                 BI.each(groupedItems, function (i, groupItem) {
-                    BI.each(groupItem.content, function (i, fieldItem) {
-                        groupedFieldMap[fieldItem.value] = fieldItem.value;
+                    BI.remove(groupItem.content, function (i, fieldItem) {
+                        if(!BI.has(allFieldMap, fieldItem.value)){
+                            return true;
+                        }else{
+                            groupedFieldMap[fieldItem.value] = fieldItem.value;
+                        }
                     })
                 });
 
