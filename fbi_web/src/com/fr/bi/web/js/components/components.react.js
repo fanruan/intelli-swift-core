@@ -51668,7 +51668,7 @@
 	                        triggerRenderer: this._triggerRenderer,
 	                        popupRenderer: this._popupRenderer,
 	                        trigger: {
-	                            className: 'table-no-sort-no-filter-font',
+	                            className: this._getTriggerIconClassName(),
 	                            flex: true
 	                        },
 	                        popup: {
@@ -51706,6 +51706,20 @@
 	                { flex: true },
 	                _react2.default.createElement(_base.Icon, null)
 	            );
+	        }
+	    }, {
+	        key: '_getTriggerIconClassName',
+	        value: function _getTriggerIconClassName() {
+	            var iconClass = "";
+	            (0, _core.some)(this.props.item.list, function (items) {
+	                return (0, _core.some)(items, function (item) {
+	                    if (item.active) {
+	                        iconClass = item.iconClass;
+	                        return true;
+	                    }
+	                });
+	            });
+	            return iconClass;
 	        }
 	    }, {
 	        key: '_popupRenderer',
