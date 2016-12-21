@@ -81,7 +81,6 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
 
     private long transport() {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
-
         ICubeFieldSource[] cubeFieldSources = new ICubeFieldSource[fieldList.size()];
         for (int i = 0; i < fieldList.size(); i++) {
             fieldList.get(i).setTableBelongTo(tableSource);
