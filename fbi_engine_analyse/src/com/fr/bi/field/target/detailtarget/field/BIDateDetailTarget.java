@@ -29,7 +29,7 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
                 if (ob == null) {
                     return ob;
                 }
-                return group.getType() == BIReportConstant.GROUP.M ? ((Number) ob).longValue() + 1 : ((Number) ob).longValue();
+                return ((Number) ob).longValue();
             }
         }
         return null;

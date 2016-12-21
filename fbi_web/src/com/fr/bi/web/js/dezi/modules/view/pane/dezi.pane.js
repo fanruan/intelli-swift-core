@@ -31,7 +31,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             text: BI.i18nText("BI-Export"),
             readonly: true,
             height: 30,
-            width: 80,
+            width: 80
         });
 
         var globalExport = BI.createWidget({
@@ -40,10 +40,10 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             textAlign: 'center',
             items: [{
                 text: BI.i18nText("BI-Excel_Export"),
-                value: BICst.EXPORT.EXCEL,
+                value: BICst.EXPORT.EXCEL
             }, {
                 text: BI.i18nText("BI-PDF_Export"),
-                value: BICst.EXPORT.PDF,
+                value: BICst.EXPORT.PDF
             }]
         });
 
@@ -58,9 +58,9 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             }
         });
 
-        var zclip = BI.createWidget({
-            type: "bi.copy_link_item"
-        });
+        // var zclip = BI.createWidget({
+        //     type: "bi.copy_link_item"
+        // });
         //undo
         this.undoButton = BI.createWidget({
             type: "bi.icon_text_item",
@@ -117,27 +117,23 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             items: [{
                 el: globalExport,
                 top: 0,
-                left: 110,
-            }, {
-                el: zclip,
-                top: 0,
-                left: 210
+                left: 110
             }, {
                 el: this.undoButton,
                 top: 0,
-                left: 310
+                left: 210
             }, {
                 el: this.redoButton,
                 top: 0,
-                left: 390
+                left: 290
             }, {
                 el: viewChange,
                 top: 0,
-                left: 470
+                left: 370
             }, {
                 el: this.globalStyle,
                 top: 0,
-                left: 570
+                left: 470
             }]
         })
     },

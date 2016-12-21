@@ -166,9 +166,6 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             height : 40
         }, this.operatorPaneItem,
             this.operatorEditPaneItem,{
-            type:"bi.layout",
-            height:10
-        },{
            el : {
                type:"bi.border",
                cls : "preview",

@@ -15,39 +15,59 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
         BI.ETLMultiValueChooserPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.storeValue = {type : BI.Selection.Multi};
-        this.pane = BI.createWidget({
-            type: 'bi.multi_select_loader',
-            el: {},
-            itemsCreator: BI.bind(this._itemsCreator, this),
-            height: self._constants.SELECTOR_HEIGHT
+        this.adapter = BI.createWidget({
+            type: "bi.select_list",
+            el: {
+                type: "bi.list_pane",
+                el: {
+                    type: "bi.button_group",
+                    chooseType: 1,
+                    layouts: [{
+                        type: "bi.vertical"
+                    }]
+                }
+            },
+            itemsCreator: BI.bind(this._itemsCreator, this)
         });
-        this.pane.on(BI.MultiSelectLoader.EVENT_CHANGE, function () {
-            self.setValue(self.pane.getValue());
-            self.fireEvent(BI.ETLMultiValueChooserPane.EVENT_CONFIRM);
-        })
+
         this.searcher = BI.createWidget({
-            type: "bi.search_editor",
-            height: self._constants.SEARCHER_HEIGHT
-        });
-        this.searcher.on(BI.SearchEditor.EVENT_CHANGE, function () {
-            self.pane.populate();
-        })
-        this.searcher.on(BI.SearchEditor.EVENT_REMOVE, function () {
-            self.pane.populate();
-        })
-        this.searcher.on(BI.SearchEditor.EVENT_EMPTY, function () {
-            self.pane.populate();
-        })
-        this.searcher.on(BI.SearchEditor.EVENT_CLEAR, function () {
-            self.pane.populate();
-        })
-        return BI.createWidget({
-            type: "bi.vertical",
-            scrolly: false,
+            type: "bi.searcher",
             element: this.element,
-            bgap: self._constants.GAP,
-            items: [self.searcher, self.pane]
-        })
+            isAutoSearch: false,
+            isAutoSync: false,
+            isDefaultInit: true,
+            onSearch: function (op, callback) {
+                var keyword = op.keyword;
+                var res = BI.Func.getSearchResult(self.items, keyword);
+                callback(res.finded, res.matched, keyword);
+            },
+            masker: {
+                offset:{
+                    top: 30
+                }
+            }
+        });
+
+        this.searcher.on(BI.Searcher.EVENT_CHANGE, function(value, obj){
+            var values = self.adapter.getValue().value;
+            if (!obj.isSelected()) {
+                self.adapter.setValue(BI.deepWithout(values, obj.getValue()));
+            } else {
+                values.push(obj.getValue());
+                self.adapter.setValue(values);
+            }
+        });
+
+        this.searcher.on(BI.Searcher.EVENT_SEARCHING, function(){
+            this.getView().setValue(self.adapter.getValue())
+        });
+
+        BI.createWidget({
+            type: "bi.vertical",
+            bgap: this._constants.GAP,
+            element: this.searcher,
+            items: [this.adapter]
+        });
     },
 
     _itemsCreator: function (opts, callback) {
@@ -56,6 +76,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
             o.fieldValuesCreator(function (items) {
                 self.items = BI.map(items.value, function (i, v) {
                     return {
+                        type: "bi.multi_select_item",
                         text: v,
                         value: v,
                         title: v
@@ -68,7 +89,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
         }
         function call() {
             var items = self.items;
-            var keyword = self.searcher.getValue();
+            var keyword = self.adapter.getValue();
             if (BI.isNotNull(keyword)) {
                 var search = BI.Func.getSearchResult(items, keyword);
                 items = search.matched.concat(search.finded);
@@ -80,14 +101,13 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
                     return !filter[ob.value];
                 });
             }
-            callback({
-                items: items
-            })
+            callback(items);
         }
     },
 
     populate: function () {
-        this.pane.populate();
+        this.adapter.populate();
+        this.searcher.getView() && this.searcher.getView().setValue(this.adapter.getValue());
     },
 
     getValue: function () {
@@ -123,7 +143,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
 
     setValue: function (value) {
         this._adjustValue(value);
-        this.pane.setValue(this.storeValue)
+        this.searcher.setValue(this.storeValue)
     }
 });
 
