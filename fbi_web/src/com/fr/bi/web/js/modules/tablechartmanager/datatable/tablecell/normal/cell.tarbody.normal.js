@@ -112,7 +112,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
 
         if (text === Infinity) {
             text = "N/0";
-        } else if (BI.Utils.getDimensionSettingsByID(dId).numLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNumeric(text)) {
+        } else if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNumeric(text)) {
             text += "%";
         }
 
