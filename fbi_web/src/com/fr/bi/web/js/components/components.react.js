@@ -48884,11 +48884,12 @@
 	                header = _props.header,
 	                items = _props.items,
 	                regionColumnSize = _props.regionColumnSize,
+	                onVerticalScroll = _props.onVerticalScroll,
 	                w = _props.width,
 	                h = _props.height,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
-	                props = _objectWithoutProperties(_props, ['headerRowHeight', 'rowHeight', 'columnSize', 'isNeedFreeze', 'freezeCols', 'header', 'items', 'regionColumnSize', 'width', 'height', 'headerCellRenderer', 'cellRenderer']);
+	                props = _objectWithoutProperties(_props, ['headerRowHeight', 'rowHeight', 'columnSize', 'isNeedFreeze', 'freezeCols', 'header', 'items', 'regionColumnSize', 'onVerticalScroll', 'width', 'height', 'headerCellRenderer', 'cellRenderer']);
 
 	            var width = w,
 	                height = h;
