@@ -8,7 +8,8 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         COMBO_WIDTH: 25,
         CONTAINER_HEIGHT: 25,
         ICON_BUTTON_WIDTH: 12,
-        ICON_BUTTON_POS: 2,
+        ICON_BUTTON_POS: 3,
+        CHART_TYPE_ICON_BUTTON_POS: 2,
         INVALID_NAME: "invalid_name"
     },
 
@@ -80,6 +81,17 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             self._buildFilterPane();
         });
 
+        this.chartTypeIcon = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "drag-axis-accu-icon",
+            iconWidth: this.constants.COMBO_WIDTH,
+            iconHeight: this.constants.DIMENSION_BUTTON_HEIGHT
+        })
+
+        this.chartTypeIcon.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._buildSeriesAccumulationPane();
+        });
+
         switch (this.model.get("type")) {
             case BICst.TARGET_TYPE.STRING:
                 this._createStringCombo();
@@ -103,14 +115,19 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                     items: [this.usedCheck, this.usedRadio]
                 },
                 width: this.constants.COMBO_WIDTH
-            }, this.editor, {el: this.iconButton, width: 0},
-                {
-                    el: {
-                        type: "bi.center_adapt",
-                        items: [this.combo]
-                    },
-                    width: this.constants.COMBO_WIDTH
-                }]
+            }, this.editor, {
+                el: this.chartTypeIcon,
+                width: 0
+            }, {
+                el: this.iconButton,
+                width: 0
+            }, {
+                el: {
+                    type: "bi.center_adapt",
+                    items: [this.combo]
+                },
+                width: this.constants.COMBO_WIDTH
+            }]
         });
 
         BI.createWidget({
@@ -122,7 +139,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
     },
 
-    _refreshCheckType: function(){
+    _refreshCheckType: function () {
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.model.get("id")));
         if (wType === BICst.WIDGET.TABLE ||
             wType === BICst.WIDGET.CROSS_TABLE ||
@@ -136,11 +153,11 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         this.usedRadio.setVisible(true);
     },
 
-    _checkDimensionValid: function(){
+    _checkDimensionValid: function () {
         var dId = this.model.get("id"), self = this;
-        if(BI.Utils.isDimensionValidByDimensionID(dId)){
+        if (BI.Utils.isDimensionValidByDimensionID(dId)) {
             this.editor.element.removeClass("dimension-invalid");
-        }else{
+        } else {
             this.editor.element.addClass("dimension-invalid");
         }
     },
@@ -173,7 +190,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             formatDisabledTitle(BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension"));
         }
 
-        function formatDisabledTitle(v){
+        function formatDisabledTitle(v) {
             self.usedCheck.setTitle(v);
             self.usedRadio.setTitle(v);
         }
@@ -435,7 +452,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         popup.populate();
     },
 
-    _buildCordonPane: function(){
+    _buildCordonPane: function () {
         var self = this, id = this.model.get("id");
         BI.Popovers.remove(id);
         var popup = BI.createWidget({
@@ -472,10 +489,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
     },
 
     _emptyAccumulation: function () {
-        this.model.set("seriesAccumulation", {
-            type: BICst.SERIES_ACCUMULATION.NONE,
-            items: []
-        });
+        this.model.set("seriesAccumulation", {});
     },
 
     local: function () {
@@ -496,8 +510,12 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         this.editor.setValue(this.model.get("name"));
         this.editor.setState(this.model.get("name"));
         var filterIconWidth = BI.isEmpty(this.model.get("filter_value")) ? 0 : this.constants.ICON_BUTTON_WIDTH;
+        var regionType = BI.Utils.getRegionTypeByDimensionID(this.model.get("id"));
+        var chartTypeIconWidth = (BI.isEmpty(this.model.get("seriesAccumulation")) || !BI.Utils.isDimensionRegion2ByRegionType(regionType))
+            ? 0 : this.constants.COMBO_WIDTH;
         var items = this.htape.attr("items");
         items[this.constants.ICON_BUTTON_POS].width = filterIconWidth;
+        items[this.constants.CHART_TYPE_ICON_BUTTON_POS].width = chartTypeIconWidth;
         this.htape.attr("items", items);
         this.htape.resize();
         this._refreshCheckType();
