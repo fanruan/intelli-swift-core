@@ -57,9 +57,9 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
     }
 
     private void getAllData(ArrayList<JSONArray> result, String[] values, String id, int floor) throws JSONException {
-//        if (floors < result.size() && result.get(floors).length() >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
-//            return;
-//        }
+        if (floors < result.size() && result.get(floors).length() >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
+            return;
+        }
         List<String> vl = createData(values, floors, 1);
         if (!vl.isEmpty()) {
             if (result.size() > floor) {
