@@ -436,6 +436,10 @@
             return Data.SharingPool.get("widgets", wid, "view") || {};
         },
 
+        getWidgetScopeByID: function (wid) {
+            return Data.SharingPool.get("widgets", wid, "scopes") || {};
+        },
+
         getWidgetViewClassificationByID: function (wid) {
             var views = this.getWidgetViewByID(wid);
             var result = {};

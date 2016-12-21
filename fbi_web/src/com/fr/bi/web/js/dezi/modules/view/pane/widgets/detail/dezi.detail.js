@@ -70,6 +70,9 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             this.dimensionsManager.populate();
             this._refreshDimensions();
         }
+        if (BI.has(changed, "scopes")) {
+            this.tableChartPopupulate();
+        }
     },
 
     _render: function (vessel) {

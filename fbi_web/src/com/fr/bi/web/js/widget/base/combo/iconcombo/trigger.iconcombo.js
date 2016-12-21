@@ -12,7 +12,8 @@ BI.IconComboTrigger = BI.inherit(BI.Trigger, {
             items: [],
             iconClass: "",
             width: 25,
-            height: 25
+            height: 25,
+            isShowDown: true
         });
     },
 
@@ -35,6 +36,7 @@ BI.IconComboTrigger = BI.inherit(BI.Trigger, {
             width: 12,
             height: 8
         });
+        this.down.setVisible(o.isShowDown);
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,

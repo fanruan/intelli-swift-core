@@ -14,49 +14,69 @@ BI.CombineChartTargetScope = BI.inherit(BI.Widget, {
     _init: function () {
         BI.CombineChartTargetScope.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var combo = BI.createWidget({
+        this.combo = BI.createWidget({
             type: "bi.icon_combo",
-            width: 18,
-            height: 18,
-            iconWidth: 18,
-            iconHeight: 18,
+            el: {
+                isShowDown: false,
+            },
+            iconWidth: 24,
+            iconHeight: 24,
             items: [{
-                value: "a",
+                text: BI.i18nText("BI-Stacked_Chart"),
+                title: BI.i18nText("BI-Stacked_Chart"),
+                value: BICst.ACCUMULATE_TYPE.COLUMN,
                 iconClass: "drag-axis-accu-icon",
                 iconWidth: 24,
                 iconHeight: 24,
-            },{
-                value: "b",
+            }, {
+                text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Polyline") + ")",
+                title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Polyline") + ")",
+                value: BICst.ACCUMULATE_TYPE.AREA_NORMAL,
                 iconClass: "area-chart-style-broken-icon",
                 iconWidth: 24,
                 iconHeight: 24,
             }, {
-                value: "c",
+                text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Curve") + ")",
+                title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Curve") + ")",
+                value: BICst.ACCUMULATE_TYPE.AREA_CURVE,
                 iconClass: "area-chart-style-curve-icon",
                 iconWidth: 24,
                 iconHeight: 24,
 
             }, {
-                value: "d",
+                text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Right_Angled_Polyline") + ")",
+                title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Right_Angled_Polyline") + ")",
+                value: BICst.ACCUMULATE_TYPE.AREA_RIGHT_ANGLE,
                 iconClass: "area-chart-style-vertical-icon",
                 iconWidth: 24,
                 iconHeight: 24,
             }]
         });
 
+        this.combo.on(BI.IconCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.CombineChartTargetScope.EVENT_CHANGE, arguments);
+        });
+
         BI.createWidget({
             type: "bi.center_adapt",
             element: this.element,
-            items: [combo]
+            items: [this.combo]
         });
     },
 
     getValue: function () {
-        return {};
+        var values = this.combo.getValue();
+        return {chartType: values[0] || BICst.ACCUMULATE_TYPE.COLUMN};
+    },
+
+    setValue: function (data) {
+        data = data || {};
+        this.combo.setValue(data.chartType || BICst.ACCUMULATE_TYPE.COLUMN);
     },
 
     populate: function () {
 
     }
 });
+BI.CombineChartTargetScope.EVENT_CHANGE = "CombineChartTargetScope.EVENT_CHANGE";
 $.shortcut("bi.combine_chart_target_scope", BI.CombineChartTargetScope);

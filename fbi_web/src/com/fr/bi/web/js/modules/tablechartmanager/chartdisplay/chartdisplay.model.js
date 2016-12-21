@@ -948,6 +948,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         this._refreshDimsInfo();
         var realData = true;
         var type = BI.Utils.getWidgetTypeByID(o.wId);
+
+        var scopes = BI.Utils.getWidgetScopeByID(o.wId);
+        var stacks = {};
+
         if (o.status === BICst.WIDGET_STATUS.DETAIL) {
             realData = BI.Utils.isShowWidgetRealDataByID(o.wId) || false;
         }
@@ -965,9 +969,33 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 BI.each(data, function (idx, da) {
                     var t = [];
                     BI.each(da, function (id, d) {
-                        if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
+                        if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) {
                             var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
                             t.push(chart.type || BICst.WIDGET.AXIS);
+                        } else if(type === BICst.WIDGET.COMBINE_CHART)  {
+                            var chart = scopes[BI.Utils.getRegionTypeByDimensionID(targetIds[count] || targetIds[0])] || {},
+                                chartType;
+                            stacks[BI.Utils.getRegionTypeByDimensionID(targetIds[count] || targetIds[0])] = BI.UUID();
+                            switch (chart.chartType) {
+                                case BICst.ACCUMULATE_TYPE.COLUMN:
+                                    d.type = "column";
+                                    chartType = BICst.WIDGET.ACCUMULATE_AXIS;
+                                    break;
+                                case BICst.ACCUMULATE_TYPE.AREA_NORMAL:
+                                    d.type = "area";
+                                    chartType = BICst.WIDGET.ACCUMULATE_AREA;
+                                    break;
+                                case BICst.ACCUMULATE_TYPE.AREA_CURVE:
+                                    d.type = "area";
+                                    d.curve = true;
+                                    chartType = BICst.WIDGET.ACCUMULATE_AREA;
+                                    break;
+                                case BICst.ACCUMULATE_TYPE.AREA_RIGHT_ANGLE:
+                                    d.type = "area";
+                                    d.step = true;
+                                    chartType = BICst.WIDGET.ACCUMULATE_AREA;
+                            }
+                            t.push(chartType)
                         } else {
                             t.push(type);
                         }
@@ -985,6 +1013,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
                     });
                 });
+                if(type === BICst.WIDGET.COMBINE_CHART) {
+                    BI.each(data, function (idx, item) {
+                        BI.each(item, function (id, it) {
+                            BI.extend(it, {stack: stacks[BI.Utils.getRegionTypeByDimensionID(targetIds[id] || targetIds[0])]});
+                        });
+                    });
+                }
                 if (type === BICst.WIDGET.MAP) {
                     var subType = BI.Utils.getWidgetSubTypeByID(o.wId);
                     if (BI.isNull(subType)) {
