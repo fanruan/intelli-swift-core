@@ -143,6 +143,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 }
             } catch (Exception e) {
                 try {
+                    BILoggerFactory.getLogger().error(BIStringUtils.append("error path:", columnKeyInfo.createJSON().toString()) + e.getMessage(), e);
                     biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
                 } catch (Exception e1) {
                     BILoggerFactory.getLogger().error(e1.getMessage());

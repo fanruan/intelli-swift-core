@@ -95,7 +95,7 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
-            BILoggerFactory.getLogger(DBTableSource.class).info("The table:"+this.getTableName()+"extract data from db");
+            BILoggerFactory.getLogger(DBTableSource.class).info("The table:" + this.getTableName() + "extract data from db");
             dbTable = BIDBUtils.getDBTable(dbName, tableName);
         }
         return dbTable;
@@ -395,5 +395,19 @@ public class DBTableSource extends AbstractTableSource {
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(SQL);
         return DBQueryExecutor.getInstance().testSQL(sqlStatement);
+    }
+
+    @Override
+    public boolean hasAbsentFields() {
+        Map<String, ICubeFieldSource> originalFields = getFields();
+        Map<String, ICubeFieldSource> persistFields = getFieldFromPersistentTable();
+        boolean isFieldAbsent=false;
+        for (String fieldName : originalFields.keySet()) {
+            if (!persistFields.containsKey(fieldName)||!persistFields.get(fieldName).equals(originalFields.get(fieldName))){
+                BILoggerFactory.getLogger(this.getClass()).error("The field the name is:" + fieldName + " is absent in table:" + getTableName() + " table ID:" + this.getSourceID());
+                isFieldAbsent=true;
+            }
+        }
+        return isFieldAbsent;
     }
 }
