@@ -158,6 +158,7 @@ BI.DetailTableReact = BI.inherit(BI.Pane, {
                     list: !BI.Utils.isCalculateTargetByDimensionID(dId) ? [[{
                         text: BI.i18nText("BI-Ascend"),
                         active: sortType === BICst.SORT.ASC,
+                        iconClass: "table-ascending-no-filter-font",
                         value: BICst.SORT.ASC,
                         onClick: function () {
                             self._onClickHeaderSort(dId, BICst.SORT.ASC);
@@ -165,6 +166,7 @@ BI.DetailTableReact = BI.inherit(BI.Pane, {
                     }, {
                         text: BI.i18nText("BI-Descend"),
                         active: sortType === BICst.SORT.DESC,
+                        iconClass: "table-descending-no-filter-font",
                         value: BICst.SORT.DESC,
                         onClick: function () {
                             self._onClickHeaderSort(dId, BICst.SORT.DESC);
@@ -172,6 +174,7 @@ BI.DetailTableReact = BI.inherit(BI.Pane, {
                     }, {
                         text: BI.i18nText("BI-Unsorted"),
                         active: sortType === BICst.SORT.NONE,
+                        iconClass: "table-no-sort-no-filter-font",
                         value: BICst.SORT.NONE,
                         onClick: function () {
                             self._onClickHeaderSort(dId, BICst.SORT.NONE);
