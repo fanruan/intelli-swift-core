@@ -52,6 +52,9 @@ import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
 import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.bridge.event.StableFactoryMessageTransponder;
+import com.fr.stable.bridge.event.StableFactoryProducer;
+import com.fr.stable.bridge.event.StableFactoryResourceType;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
@@ -351,27 +354,52 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registerResources() {
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, ResourceHelper.getThirdJs());
+
+        StableFactoryMessageTransponder.getInstance().addProducer(new StableFactoryProducer() {
+
+            @Override
+            public void reInject(StableFactoryResourceType resourceType) {
+
+                if (StableFactoryResourceType.TYPE_JS.equals(resourceType)) {
+                    registerJavaScriptFiles();
+                } else if (StableFactoryResourceType.TYPE_CSS.equals(resourceType)) {
+                    registerStyleFiles();
+                }
+            }
+        }, new StableFactoryResourceType[]{StableFactoryResourceType.TYPE_CSS, StableFactoryResourceType.TYPE_JS});
+
+        registerJavaScriptFiles();
+        registerStyleFiles();
+        registerJavaScriptAggregates();
+
+
+    }
+
+    private void registerJavaScriptAggregates() {
+
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MAP_JS, ResourceHelper.getMapJS(), ResourceHelper.MapTransmitter);
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getBaseJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, ResourceHelper.getDataJS(), ResourceHelper.DataTransmitter);
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, ResourceHelper.getFormulaCollectionJS(), ResourceHelper.FormulaTransmitter);
+
+    }
+
+    private void registerStyleFiles() {
+
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, ResourceHelper.getThirdCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, ResourceHelper.getBaseCss());
-
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, ResourceHelper.getDataJS(), ResourceHelper.DataTransmitter);
-
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_CONF_JS, ResourceHelper.getConfJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ResourceHelper.getConfCss());
-
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ResourceHelper.getDeziJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ResourceHelper.getDeziCss());
-
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ResourceHelper.getShowJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ResourceHelper.getShowCss());
-
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MODULE_JS, ResourceHelper.getCommonJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_MODULE_CSS, ResourceHelper.getCommonCss());
+    }
 
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, ResourceHelper.getFormulaCollectionJS(), ResourceHelper.FormulaTransmitter);
+    private void registerJavaScriptFiles() {
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, ResourceHelper.getThirdJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getBaseJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_CONF_JS, ResourceHelper.getConfJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ResourceHelper.getDeziJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ResourceHelper.getShowJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MODULE_JS, ResourceHelper.getCommonJs());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MOBILE_JS, ResourceHelper.getMobileJs());
     }
 
