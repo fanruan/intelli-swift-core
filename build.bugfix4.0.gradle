@@ -152,7 +152,7 @@ task compressJS(dependsOn:'copyFile'){
 			exclude (name:'**/js/third/*.js')
 			exclude (name:'**/cross/demo/**')
 			exclude (name:'**/test/**')
-			exclude (name:'**/web/js/components/components.react.js')
+			exclude (name:'js/components/components.react.js')
 		}
 	}
 }
