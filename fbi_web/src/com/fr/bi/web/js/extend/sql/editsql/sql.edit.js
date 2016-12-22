@@ -406,6 +406,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         if (BI.isEmptyString(this.model.getSQL())) {
             this.saveButton.setEnable(false);
         }
+        this.previewButton.setEnable(BI.isNotEmptyString(this.model.getSQL()));
     },
 
     getValue: function () {

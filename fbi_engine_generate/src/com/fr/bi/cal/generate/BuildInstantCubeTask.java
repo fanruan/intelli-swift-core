@@ -3,6 +3,7 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.cal.TempCubeManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -14,9 +15,13 @@ import java.util.concurrent.Future;
  * Created by roy on 16/10/10.
  */
 public class BuildInstantCubeTask extends BuildCubeTask {
-    public BuildInstantCubeTask(BIUser biUser, CubeBuildStuff cubeBuild) {
+    private TempCubeManager manager;
+
+    public BuildInstantCubeTask(BIUser biUser, CubeBuildStuff cubeBuild, TempCubeManager tempCubeManager) {
         super(biUser, cubeBuild);
+        manager = tempCubeManager;
     }
+
 
     @Override
     public void end() {
@@ -32,9 +37,8 @@ public class BuildInstantCubeTask extends BuildCubeTask {
             if (cubeBuildSucceed) {
                 cube.addVersion(System.currentTimeMillis());
                 long start = System.currentTimeMillis();
-//                BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
-//                BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
-                BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
+                manager.finishGenerateCube();
+                BILoggerFactory.getLogger().info("InstanceCube successful! Cost :" + DateUtils.timeCostFrom(start));
 
             } else {
                 message = "Cube build failed ,the Cube files will not be replaced ";

@@ -33,7 +33,7 @@ public class JobTask implements Job {
             new CubeBuildManager().CubeBuildStaff(userId);
         } else {
             if (isTableUsed(userId, tableKey)) {
-                new CubeBuildManager().CubeBuildSingleTable(userId, tableKey, updateType);
+                new CubeBuildManager().addSingleTableTask(userId, tableKey, updateType);
             } else {
                 BILoggerFactory.getLogger().warn("the table " + tableKey + " is not existed. Timer task canceled");
             }

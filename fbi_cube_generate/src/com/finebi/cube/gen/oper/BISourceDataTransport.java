@@ -4,6 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
@@ -16,6 +17,7 @@ import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.file.BIFileUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -48,6 +50,12 @@ public abstract class BISourceDataTransport extends BIProcessor {
         this.cube = cube;
         tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
         this.version = version;
+        initThreadPool();
+    }
+
+    @Override
+    protected void initThreadPool() {
+        this.executorService = BIProcessorThreadManager.getInstance().getTransportExecutorService();
     }
 
     @Override
@@ -61,6 +69,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
     }
 
     protected void recordTableInfo() {
+        fieldsCheck();
         ICubeFieldSource[] columns = getFieldsArray();
         List<ICubeFieldSource> columnList = new ArrayList<ICubeFieldSource>();
         for (ICubeFieldSource col : columns) {
@@ -71,6 +80,11 @@ public abstract class BISourceDataTransport extends BIProcessor {
             tableEntityService.recordParentsTable(getParents(this.tableSource));
             tableEntityService.recordFieldNamesFromParent(getParentFieldNames());
         }
+    }
+
+
+    protected boolean checkFields() {
+        return tableSource.hasAbsentFields();
     }
 
     private List<ITableKey> getParents(CubeTableSource tableSource) {
@@ -100,7 +114,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
         try {
             BICubeLocation from = new BICubeLocation(advancedConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
-                BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         } catch (URISyntaxException e) {
@@ -140,4 +154,11 @@ public abstract class BISourceDataTransport extends BIProcessor {
         return tableSource.getFieldsArray(allSources);
     }
 
+    private boolean fieldsCheck() {
+        boolean flag = tableSource.hasAbsentFields();
+        if (flag) {
+            BILoggerFactory.getLogger(this.getClass()).warn(BIStringUtils.append("the table: ", tableSource.getTableName(), "tableId: ", tableSource.getSourceID(), "may has some absent fields"));
+        }
+        return flag;
+    }
 }

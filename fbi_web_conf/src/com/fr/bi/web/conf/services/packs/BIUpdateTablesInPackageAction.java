@@ -201,7 +201,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
     private void updateExcelTables(long userId, List<CubeTableSource> excelSources) {
         for (CubeTableSource source : excelSources) {
-            new CubeBuildManager().CubeBuildSingleTable(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+            new CubeBuildManager().addSingleTableTask(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
         }
     }
 
