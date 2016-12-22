@@ -97,7 +97,7 @@ BI.SelectDataStringList = BI.inherit(BI.Widget, {
 
     populate: function () {
         var o = this.options;
-        this.list.setStoreValue(BI.Utils.getWidgetValueByID(o.wId));
+        this.list.setValue(BI.Utils.getWidgetValueByID(o.wId));
         this.list.populate();
     }
 });
