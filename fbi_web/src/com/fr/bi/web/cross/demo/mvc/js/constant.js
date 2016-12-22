@@ -238,6 +238,8 @@ var _JS = [
 
     "widget/mvc.sortabletable.js",
 
+    "widget/mvc.dynamicgrouptab.js",
+
     <!--布局类控件-->
 
     "layout/mvc.table.js",
@@ -565,6 +567,7 @@ var _Routes = {
     "/multifile": "MultifileView",
     "/zclip": "ZclipView",
     "/sortable_table": "SortableTableView",
+    "/dynamic_group_tab": "DynamicGroupTabView",
 
     //布局
     "/table": "TableView",
@@ -1221,6 +1224,9 @@ _Models.detail = [{
 }, {
     id: 36,
     text: "文本列表"
+}, {
+    id: 37,
+    text: "螺旋分析tab控件"
 },
 
 
@@ -1588,6 +1594,10 @@ _Models.detail = [{
         pId: 36,
         text: "文本列表",
         value: "string_list"
+    }, {
+        pId: 37,
+        text: "螺旋分析tab控件",
+        value: "dynamic_group_tab"
     }];
 _Models.component = [];
 _Models.module = [];
