@@ -178,7 +178,6 @@ BIShow.TreeListView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
-        // this.combo.setValue(this.model.get("value"));
         this._refreshTitlePosition();
         this.treeList.populate();
     }
