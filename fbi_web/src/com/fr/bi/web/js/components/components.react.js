@@ -51196,6 +51196,9 @@
 	                items = props.items;
 	            var freezeCols = props.freezeCols;
 	            var columnSize = props.columnSize.slice();
+	            if (freezeCols.length >= columnSize.length) {
+	                freezeCols = [];
+	            }
 	            if (!(0, _core.isNumber)(props.columnSize[0])) {
 	                columnSize = minColumnSize;
 	            }
