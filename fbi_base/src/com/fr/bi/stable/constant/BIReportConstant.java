@@ -35,7 +35,7 @@ public class BIReportConstant {
 
     public static final class GROUP {
 
-        public final static int NO_GROUP = 0x2;
+        public final static int NO_GROUP = 0x0;
 
         public final static int AUTO_GROUP = 0x3;
 

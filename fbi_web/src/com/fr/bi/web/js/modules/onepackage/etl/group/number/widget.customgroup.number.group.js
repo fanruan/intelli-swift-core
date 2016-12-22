@@ -45,19 +45,19 @@ BI.ConfNumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
     _setEventForButton: function (buttons) {
         var self = this;
         BI.each(buttons, function (idx, button) {
-            button.on(BI.ConfNumberIntervalCustomGroupItem.EVENT_VALID, function () {
-                if (self.isValid()) {
-                    self.fireEvent(BI.ConfNumberIntervalCustomItemGroup.EVENT_VALID);
-                }
-            });
-
-            button.on(BI.ConfNumberIntervalCustomGroupItem.EVENT_CHANGE, function () {
-                self._checkNextItemState(this.getValue());
-            });
-
-            button.on(BI.ConfNumberIntervalCustomGroupItem.EVENT_ERROR, function () {
-                self.fireEvent(BI.ConfNumberIntervalCustomItemGroup.EVENT_ERROR);
-            });
+            //button.on(BI.ConfNumberIntervalCustomGroupItem.EVENT_VALID, function () {
+            //    if (self.isValid()) {
+            //        self.fireEvent(BI.ConfNumberIntervalCustomItemGroup.EVENT_VALID);
+            //    }
+            //});
+            //
+            //button.on(BI.ConfNumberIntervalCustomGroupItem.EVENT_CHANGE, function () {
+            //    self._checkNextItemState(this.getValue());
+            //});
+            //
+            //button.on(BI.ConfNumberIntervalCustomGroupItem.EVENT_ERROR, function () {
+            //    self.fireEvent(BI.ConfNumberIntervalCustomItemGroup.EVENT_ERROR);
+            //});
 
             button.on(BI.ConfNumberIntervalCustomGroupItem.EVENT_DESTROY, function () {
                 if (self.buttons.length === 0) {
@@ -119,7 +119,6 @@ BI.ConfNumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
         this.buttongroup.populate(items);
         this.buttons = this.buttongroup.getAllButtons();
         this._setEventForButton(this.buttons);
-        this._checkButtonEnable();
     },
 
     addItem: function () {
@@ -131,30 +130,29 @@ BI.ConfNumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
         };
         if (this.buttons.length === 0) {
             BI.extend(item, {
+                id: BI.UUID(),
                 min: 0,
                 max: this.constants.initialMax,
-                closemin: 1,
-                closemax: 1
+                closemin: true,
+                closemax: true
             });
         } else {
             var beforeButton = this.buttons[this.buttons.length - 1];
             var beforeValue = beforeButton.getValue();
             beforeButton.setValue(BI.extend(beforeValue, {
-                closemax: 0
+                closemax: false
             }));
             BI.extend(item, {
+                id: BI.UUID(),
                 min: BI.parseInt(beforeValue.max),
                 max: BI.parseInt(beforeValue.max) + this.constants.initialMax,
-                closemin: !beforeValue.closemax ? 1 : 0,
-                closemax: 1
+                closemin: !beforeValue.closemax,
+                closemax: true
             });
         }
         this.buttongroup.addItems([item]);
         this.buttongroup.setTipVisible(false);
         this.buttons = this.buttongroup.getAllButtons();
-        if (this.buttons.length !== 1) {
-            this.buttons[this.buttons.length - 1].setSmallIntervalEnable(false);
-        }
         this._setEventForButton([this.buttons[this.buttons.length - 1]]);
         this.fireEvent(BI.ConfNumberIntervalCustomItemGroup.EVENT_VALID);
     },
