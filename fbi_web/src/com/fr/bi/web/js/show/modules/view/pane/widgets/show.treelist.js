@@ -1,28 +1,28 @@
 /**
- * Created by zcf on 2016/12/16.
+ * Created by zcf on 2016/12/21.
  */
-BIShow.StringListView = BI.inherit(BI.View, {
+BIShow.TreeListView = BI.inherit(BI.View, {
+
     _constants: {
         TOOL_ICON_WIDTH: 20,
         TOOL_ICON_HEIGHT: 20
     },
 
     _defaultConfig: function () {
-        return BI.extend(BIShow.StringListView.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BIShow.TreeListView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget bi-control-widget"
         })
     },
 
     _init: function () {
-        BIShow.StringListView.superclass._init.apply(this, arguments);
-
+        BIShow.TreeListView.superclass._init.apply(this, arguments);
         var self = this;
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
-            self.stringList.populate();
+            self.treeList.populate();
         });
     },
 
@@ -31,22 +31,14 @@ BIShow.StringListView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._createTools();
 
-
-        this.stringList = BI.createWidget({
-            type: "bi.select_data_string_list",
+        this.treeList = BI.createWidget({
+            type: "bi.select_tree_data_list",
             wId: this.model.get("id")
         });
-        this.stringList.on(BI.SelectDataStringList.EVENT_CHANGE, function () {
-            self.model.set("value", this.getValue());
+        this.treeList.on(BI.SelectTreeDataList.EVENT_CHANGE, function () {
+            self.model.set("value", self.treeList.getValue());
         });
-        // this.combo = BI.createWidget({
-        //     type: "bi.select_data_combo",
-        //     wId: this.model.get("id")
-        // });
-        //
-        // this.combo.on(BI.SelectDataCombo.EVENT_CONFIRM, function () {
-        //     self.model.set("value", this.getValue());
-        // });
+
 
         this.widget = BI.createWidget({
             type: "bi.absolute",
@@ -57,7 +49,7 @@ BIShow.StringListView = BI.inherit(BI.View, {
                 top: 0,
                 right: 0
             }, {
-                el: this.stringList,
+                el: this.treeList,
                 top: 10,
                 right: 10,
                 left: 10,
@@ -146,14 +138,14 @@ BIShow.StringListView = BI.inherit(BI.View, {
         if (height < 100) {
             this.widget.attr("items")[1].top = 10;
             if (width < minComboWidth + minNameWidth + 48) {
-                this.stringList.setVisible(false);
+                this.treeList.setVisible(false);
                 this.widget.attr("items")[0].right = 10;
             } else if (width < nameWidth + minComboWidth + 48) {
-                this.stringList.setVisible(true);
+                this.treeList.setVisible(true);
                 this.widget.attr("items")[0].right = minComboWidth + 25;
                 this.widget.attr("items")[1].left = width - 15 - minComboWidth;
             } else {
-                this.stringList.setVisible(true);
+                this.treeList.setVisible(true);
                 this.widget.attr("items")[0].right = width - 43 - nameWidth;
                 this.widget.attr("items")[1].left = 33 + nameWidth;
             }
@@ -166,16 +158,8 @@ BIShow.StringListView = BI.inherit(BI.View, {
     },
 
     _resetValue: function () {
-        this.model.set("value");
+        this.model.set("value", {});
         this.refresh();
-    },
-
-    splice: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
-    },
-
-    listenEnd: function () {
-
     },
 
     change: function (changed) {
@@ -196,6 +180,6 @@ BIShow.StringListView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         // this.combo.setValue(this.model.get("value"));
         this._refreshTitlePosition();
-        this.stringList.populate();
+        this.treeList.populate();
     }
 });

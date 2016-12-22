@@ -95,6 +95,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.STRING_LIST:
                 return this._createStringTreeComboItems();
             case BICst.WIDGET.TREE:
+            case BICst.WIDGET.TREE_LIST:
                 return this._createStringTreeComboItems();
             case BICst.WIDGET.LIST_LABEL:
             case BICst.WIDGET.TREE_LABEL:

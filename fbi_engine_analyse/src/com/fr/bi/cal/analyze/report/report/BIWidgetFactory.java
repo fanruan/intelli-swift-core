@@ -71,6 +71,7 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.LIST_LABEL:
                 return new ListLabelWidget();
             case BIReportConstant.WIDGET.TREE:
+            case BIReportConstant.WIDGET.TREE_LIST:
                 return new TreeWidget();
             case BIReportConstant.WIDGET.TREE_LABEL:
                 return new TreeLabelWidget();

@@ -1568,6 +1568,21 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree_label.png');
   _background: none;
 }
+.drag-tree-list-icon .x-icon,
+.drag-tree-list-icon:hover .x-icon,
+.drag-tree-list-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree_list.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree_list.png');
+  _background: none;
+}
+.drag-tree-list-icon.native .x-icon,
+.drag-tree-list-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree_list.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree_list.png');
+  _background: none;
+}
 .drag-date-icon .x-icon,
 .drag-date-icon:hover .x-icon,
 .drag-date-icon:active .x-icon {

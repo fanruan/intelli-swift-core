@@ -534,6 +534,7 @@
                 widgetType === BICst.WIDGET.MONTH ||
                 widgetType === BICst.WIDGET.QUARTER ||
                 widgetType === BICst.WIDGET.TREE ||
+                widgetType === BICst.WIDGET.TREE_LIST ||
                 widgetType === BICst.WIDGET.LIST_LABEL ||
                 widgetType === BICst.WIDGET.TREE_LABEL ||
                 widgetType === BICst.WIDGET.YEAR ||
@@ -549,6 +550,7 @@
         isInstantControlWidgetByWidgetType: function (widgetType) {
             return widgetType === BICst.WIDGET.LIST_LABEL ||
                 widgetType === BICst.WIDGET.TREE_LABEL ||
+                widgetType === BICst.WIDGET.TREE_LIST ||
                 widgetType === BICst.WIDGET.STRING_LIST ||
                 widgetType === BICst.WIDGET.SINGLE_SLIDER ||
                 widgetType === BICst.WIDGET.INTERVAL_SLIDER;
@@ -2710,7 +2712,7 @@
                     });
 
                     //树控件过滤条件设置,不能对每个纬度单独设置过滤条件
-                    if (self.getWidgetTypeByID(id) === BICst.WIDGET.TREE) {
+                    if (self.getWidgetTypeByID(id) === BICst.WIDGET.TREE || self.getWidgetTypeByID(id) === BICst.WIDGET.TREE_LIST) {
                         var viewDimensionIds = self.getWidgetViewByID(id)[BICst.REGION.DIMENSION1];
                         var treeValue = [];
                         createTreeFilterValue(treeValue, value, 0, viewDimensionIds);
@@ -3100,7 +3102,7 @@
                 var dimensionMap = self.getDimensionMapByDimensionID(dId);
                 var valid = true;
                 //树控件和明细表
-                if (widget.type === BICst.WIDGET.DETAIL || widget.type === BICst.WIDGET.TREE) {
+                if (widget.type === BICst.WIDGET.DETAIL || widget.type === BICst.WIDGET.TREE || widget.type === BICst.WIDGET.TREE_LIST) {
                     BI.each(dimensionMap, function (tableId, obj) {
                         var targetRelation = obj.target_relation;
                         var pId = self.getFirstRelationPrimaryIdFromRelations(targetRelation);

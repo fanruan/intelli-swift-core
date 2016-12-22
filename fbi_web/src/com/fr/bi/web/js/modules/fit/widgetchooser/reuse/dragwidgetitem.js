@@ -142,22 +142,22 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
                 //组件表头上指标的排序和过滤
-                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort)){
+                if (BI.has(widget, "sort") && BI.isNotNull(widget.sort)) {
                     result.sort = BI.extend({}, widget.sort, {
                         sort_target: self._createDimensionsAndTargets(widget.sort.sort_target).id
                     })
                 }
 
-                if(BI.has(widget, "sort_sequence") && BI.isNotNull(widget.sort_sequence)){
+                if (BI.has(widget, "sort_sequence") && BI.isNotNull(widget.sort_sequence)) {
                     result.sort_sequence = [];
-                    BI.each(widget.sort_sequence, function(idx, dId){
+                    BI.each(widget.sort_sequence, function (idx, dId) {
                         result.sort_sequence.push(self._createDimensionsAndTargets(dId).id);
                     })
                 }
 
-                if(BI.has(widget, "filter_value") && BI.isNotNull(widget.filter_value)){
+                if (BI.has(widget, "filter_value") && BI.isNotNull(widget.filter_value)) {
                     var filterValue = {};
-                    BI.each(widget.filter_value, function(target_id, filter_value){
+                    BI.each(widget.filter_value, function (target_id, filter_value) {
                         var newId = self._createDimensionsAndTargets(target_id).id;
                         filterValue[newId] = self._checkFilter(filter_value, target_id, newId);
                     });
@@ -181,9 +181,9 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
             var copy = self._createDimensionsAndTargets(idx);
             self.dimensions[copy.id] = copy.dimension;
         });
-        BI.each(widget.view, function(region, dimIds){
+        BI.each(widget.view, function (region, dimIds) {
             self.view[region] = [];
-            BI.each(dimIds, function(idx, dId){
+            BI.each(dimIds, function (idx, dId) {
                 self.view[region].push(self.dimTarIdMap[dId]);
             });
         });
@@ -193,7 +193,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
         }
     },
 
-    _checkFilter: function(oldFilter, dId, newId){
+    _checkFilter: function (oldFilter, dId, newId) {
         var self = this;
         var filter = {};
         var filterType = oldFilter.filter_type, filterValue = oldFilter.filter_value;
@@ -203,20 +203,20 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
             BI.each(filterValue, function (i, value) {
                 filter.filter_value.push(self._checkFilter(value, dId, newId));
             });
-        }else{
+        } else {
             BI.extend(filter, oldFilter);
-            if(BI.has(oldFilter, "target_id")){
-                if(oldFilter.target_id !== dId){
+            if (BI.has(oldFilter, "target_id")) {
+                if (oldFilter.target_id !== dId) {
                     var result = this._createDimensionsAndTargets(oldFilter.target_id);
                     filter.target_id = result.id;
-                }else{
+                } else {
                     filter.target_id = newId;
                 }
             }
             //维度公式过滤所用到的指标ID也要替换掉
-            if(BI.has(oldFilter, "formula_ids")){
+            if (BI.has(oldFilter, "formula_ids")) {
                 var ids = oldFilter.formula_ids || [];
-                if(BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))){
+                if (BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))) {
                     BI.each(ids, function (id, tId) {
                         var result = self._createDimensionsAndTargets(tId);
                         filter.filter_value = filter.filter_value.replaceAll(tId, result.id);
@@ -243,23 +243,23 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                     dimension.dimension_map = {};
                     BI.each(self.oldDimensions[idx].dimension_map, function (id, map) {
                         //明细表和树控件dimensionmap存的key是tableId，与汇总表区分
-                        if(self.widgetType === BICst.WIDGET.DETAIL || self.widgetType === BICst.WIDGET.TREE){
+                        if (self.widgetType === BICst.WIDGET.DETAIL || self.widgetType === BICst.WIDGET.TREE || self.widgetType === BICst.WIDGET.TREE_LIST) {
                             dimension.dimension_map[id] = map;
-                        }else{
+                        } else {
                             var result = self._createDimensionsAndTargets(id);
                             dimension.dimension_map[result.id] = map;
                         }
                     });
                 }
-                if(BI.has(self.oldDimensions[idx], "filter_value") && BI.isNotNull(self.oldDimensions[idx].filter_value)){
+                if (BI.has(self.oldDimensions[idx], "filter_value") && BI.isNotNull(self.oldDimensions[idx].filter_value)) {
                     dimension.filter_value = this._checkFilter(self.oldDimensions[idx].filter_value, self.dimTarIdMap[idx] || idx, newId);
                 }
-                if(BI.has(self.oldDimensions[idx], "sort")){
+                if (BI.has(self.oldDimensions[idx], "sort")) {
                     dimension.sort = BI.deepClone(self.oldDimensions[idx].sort);
-                    if(BI.has(dimension.sort, "sort_target")){
-                        if(dimension.sort.sort_target === idx){
+                    if (BI.has(dimension.sort, "sort_target")) {
+                        if (dimension.sort.sort_target === idx) {
                             dimension.sort.sort_target = newId;
-                        }else{
+                        } else {
                             var result = self._createDimensionsAndTargets(dimension.sort.sort_target);
                             dimension.sort.sort_target = result.id;
                         }

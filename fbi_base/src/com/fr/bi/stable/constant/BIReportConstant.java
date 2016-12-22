@@ -413,6 +413,7 @@ public class BIReportConstant {
         public static final int STRING_LIST = 0x3b;         //文本列表
         public static final int RECT_TREE = 0x27;       //矩形树
         public static final int MULTI_PIE = 0x28;       //多层饼
+        public static final int TREE_LIST = 0x3c;       //树列表
 
         //仅前台使用的部分类型
         public static final int DATE = 0x30;

@@ -21,9 +21,7 @@ BIDezi.StringListView = BI.inherit(BI.View, {
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
-            if (wId !== self.model.get("id")) {
-                self.stringList.populate();
-            }
+            self.stringList.populate();
         });
         //全局样式
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
@@ -60,8 +58,8 @@ BIDezi.StringListView = BI.inherit(BI.View, {
                 el: this.stringList,
                 top: 10,
                 right: 10,
-                left:10,
-                bottom:10
+                left: 10,
+                bottom: 10
             }]
         });
 
@@ -148,11 +146,11 @@ BIDezi.StringListView = BI.inherit(BI.View, {
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
             self._expandWidget();
         });
-        var stringList = BI.createWidget({
+        var combo = BI.createWidget({
             type: "bi.widget_combo",
             wId: this.model.get("id")
         });
-        stringList.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
+        combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
                     self._expandWidget();
@@ -184,7 +182,7 @@ BIDezi.StringListView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [expand, stringList],
+            items: [expand, combo],
             lgap: 10
         });
         this.tools.setVisible(false);

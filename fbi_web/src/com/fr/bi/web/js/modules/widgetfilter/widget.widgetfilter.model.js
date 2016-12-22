@@ -236,6 +236,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 }
                 return text;
             case BICst.WIDGET.TREE:
+            case BICst.WIDGET.TREE_LIST:
             function getChildrenNode(ob) {
                 var text = "";
                 var index = 0, size = BI.size(ob);
