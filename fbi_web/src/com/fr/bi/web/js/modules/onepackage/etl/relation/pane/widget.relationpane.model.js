@@ -5,10 +5,7 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
     _init: function () {
         BI.RelationPaneModel.superclass._init.apply(this, arguments);
         var o = this.options;
-        this.fieldId = o.field_id;
-        this.relations = o.relations;
-        this.translations = o.translations;
-        this.allFields = o.all_fields;
+        this.fieldId = o.field.id;
     },
 
     getFieldId: function () {

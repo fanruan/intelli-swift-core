@@ -143,6 +143,18 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return BI.deepClone(this.tablesMap[id]);
     },
 
+    getFieldById: function(id) {
+        var field;
+        BI.each(this.fields, function(i, fs) {
+            BI.each(fs, function(j, f) {
+                if (f.id === id) {
+                    field = f;
+                }
+            });
+        });
+        return field;
+    },
+
     getRelations: function () {
         return BI.deepClone(this.relations);
     },

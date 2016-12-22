@@ -45,6 +45,17 @@ BI.extend(BI.Utils, {
         }
     },
 
+    getFieldsByTableId4Conf: function(tableId) {
+        var allFields = Data.SharingPool.cat("fields");
+        var fields = [];
+        BI.each(allFields, function(id, field) {
+            if (field.table_id === tableId) {
+                fields.push(BI.deepClone(field));
+            }
+        });
+        return fields;
+    },
+
     getFieldTypeById4Conf: function (id) {
         var field = Data.SharingPool.cat("fields")[id];
         if (BI.isNotNull(field)) {
@@ -244,7 +255,7 @@ BI.extend(BI.Utils, {
         });
     },
 
-    removeRelationByFieldId4Conf: function(fieldId) {
+    removeRelationByFieldId4Conf: function (fieldId) {
         var relations = Data.SharingPool.cat("relations");
         var fields = Data.SharingPool.cat("fields");
         var connectionSet = relations.connectionSet,
@@ -336,13 +347,11 @@ BI.extend(BI.Utils, {
 
     /**
      * 获取所有业务包分组信息树结构
-     * 注意当前业务包可能为未保存
      * @returns {Array}
      */
     getAllGroupedPackagesTreeJSON4Conf: function () {
         var groups = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
         var packStructure = [], groupedPacks = [];
-        var currentPack = this.getCurrentPackage4Conf();
         BI.each(groups, function (id, group) {
             packStructure.push({
                 id: id,
@@ -350,15 +359,13 @@ BI.extend(BI.Utils, {
                 isParent: true
             });
             BI.each(group.children, function (i, item) {
-                if (item.id !== currentPack.id) {
-                    packStructure.push({
-                        id: item.id,
-                        text: packages[item.id].name,
-                        value: item.id,
-                        pId: id
-                    });
-                    groupedPacks.push(item.id);
-                }
+                packStructure.push({
+                    id: item.id,
+                    text: packages[item.id].name,
+                    value: item.id,
+                    pId: id
+                });
+                groupedPacks.push(item.id);
             })
         });
         BI.each(packages, function (id, pack) {
@@ -370,27 +377,13 @@ BI.extend(BI.Utils, {
                 }
             });
             //未分组
-            if (!isGrouped && currentPack.id !== pack.id) {
+            if (!isGrouped) {
                 packStructure.push({
                     text: pack.name,
                     value: pack.id
                 })
             }
         });
-        //添加当前业务包
-        if (BI.isNotEmptyString(currentPack.groupId)) {
-            packStructure.push({
-                id: currentPack.id,
-                text: currentPack.name,
-                value: currentPack.id,
-                pId: currentPack.groupId
-            });
-        } else {
-            packStructure.push({
-                text: currentPack.name,
-                value: currentPack.id
-            })
-        }
         return packStructure;
     },
 
@@ -711,7 +704,7 @@ BI.extend(BI.Utils, {
         }, complete);
     },
 
-    releaseTableLock4Conf: function(data) {
+    releaseTableLock4Conf: function (data) {
         BIReq.reqReleaseTableLock(data);
     },
 

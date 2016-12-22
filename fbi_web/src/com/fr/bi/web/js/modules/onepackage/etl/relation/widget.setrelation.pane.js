@@ -35,10 +35,7 @@ BI.RelationSetPane = BI.inherit(BI.BarPopoverSection, {
         this.relationPane = BI.createWidget({
             type: "bi.relation_pane",
             element: center,
-            field_id: o.field_id,
-            relations: o.relations,
-            translations: o.translations,
-            all_fields: o.all_fields
+            field: o.field
         });
         this.relationPane.on(BI.RelationPane.EVENT_VALID, function(){
             self.setConfirmButtonEnable(true);
@@ -50,8 +47,8 @@ BI.RelationSetPane = BI.inherit(BI.BarPopoverSection, {
 
     getFieldNameByFieldId: function(){
         var o = this.options;
-        var fieldId = o.fieldId;
-        return BI.Utils.getTransNameById4Conf(fieldId) || BI.Utils.getFieldNameById4Conf(fieldId);
+        var field = o.field;
+        return BI.Utils.getTransNameById4Conf(field.id) || field.field_name;
     }
 });
 BI.RelationSetPane.EVENT_CHANGE = "EVENT_CHANGE";

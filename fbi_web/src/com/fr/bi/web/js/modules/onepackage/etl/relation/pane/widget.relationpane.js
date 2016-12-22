@@ -14,7 +14,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         BI.RelationPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.RelationPaneModel({
-            field_id: o.field_id
+            field: o.field
         });
         this._createRelationTree();
         var addRelationTable = BI.createWidget({
@@ -85,8 +85,8 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         var selectDataMask = BI.createWidget({
             type: "bi.select_data_with_mask",
             element: mask,
-            model: this.model,
-            field_id: fieldId,
+            field: this.options.field,
+            fieldId: fieldId,
             maskId: maskId
         });
         selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function () {

@@ -501,7 +501,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             BI.Popovers.remove(fieldId);
             var relationPane = BI.createWidget({
                 type: "bi.relation_set_pane",
-                field_id: fieldId
+                field: self.model.getFieldById(fieldId)
             });
             relationPane.on(BI.RelationSetPane.EVENT_CHANGE, function (relations) {
                 self.model.setRelations(relations);
