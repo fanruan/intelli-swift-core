@@ -67,19 +67,19 @@ BI.DynamicGroupTabSheetButton = BI.inherit(BI.BasicButton, {
         this.combo.on(BI.Combo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case c.DELETE:{
-                    BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"),  BI.i18nText("BI-Confirm_Delete") +  this.text.getValue() + "?", function (v) {
+                    BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"),  BI.i18nText("BI-Confirm_Delete") +  self.text.getValue() + "?", function (v) {
                         if(v === true) {
-                            self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_DELETE, o.sheetId);
+                            self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_DELETE, o.value);
                         }
                     })
                     break;
                 }
                 case c.COPY:{
-                    self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_COPY, o.sheetId);
+                    self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_COPY, o.value);
                     break;
                 }
                 case c.RENAME:{
-                    self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_RENAME, o.sheetId);
+                    self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_RENAME, o.value);
                     break;
                 }
             }

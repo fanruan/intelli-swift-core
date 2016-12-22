@@ -26,7 +26,7 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
         });
 
         this.tabButton.on(BI.DynamicGroupTabButtonManager.ADD_SHEET, function(v){
-            self.tab.setSelect(v);
+            self.setSelect(v);
             self.fireEvent(BI.DynamicGroupTab.EVENT_ADD_SHEET);
         });
 
@@ -34,36 +34,35 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
             self.fireEvent(BI.DynamicGroupTab.EVENT_MERGE_SHEET);
         });
 
-        this.tabButton.on(BI.DynamicGroupTabButtonManager.EVENT_DELETE, function(type, value){
+        this.tabButton.on(BI.DynamicGroupTabButtonManager.EVENT_DELETE, function(value){
             var deletePos = -1;
             BI.any(self.tabs, function(idx, tab){
-                if(tab.getValue() === value){
+                if(tab.getValue()[0] === value){
                     deletePos = idx;
-                    tab.destroy();
                     return true;
                 }
             })
+            var tab  = self.tabs.splice(deletePos, 1)[0];
+            tab.destroy();
             var buttons = self.tabButton.getAllButtons();
             if(deletePos < 0 || buttons.length === 0) {
                 return;
             }
-            var selectIndex = Math.max(0, Math.min(buttonCount - 1, deletePos))
-            //self.setSelect();
-            //this._refreshButtonStatus(widget, model)
+            var selectIndex = Math.max(0, Math.min(buttons.length - 1, deletePos))
+            self.setSelect(self.tabs[selectIndex].getValue());
         });
 
-        this.tabButton.on(BI.DynamicGroupTabButtonManager.EVENT_COPY, function(v){
-            self.tab.setSelect(v);
+        this.tabButton.on(BI.DynamicGroupTabButtonManager.EVENT_COPY, function(oldId, newId){
+            self.setSelect(newId);
             self.fireEvent(BI.DynamicGroupTab.EVENT_ADD_SHEET);
         });
 
         this.tabButton.on(BI.DynamicGroupTabButtonManager.EVENT_RENAME, function(type, value){
-            self.tab.setSelect(value);
+
         });
 
         this.tab = BI.createWidget({
             type: "bi.tab",
-            cls: "tab-dynamic-center",
             defaultShowIndex:false,
             cardCreator: BI.bind(this._cardCreator, this)
         });
@@ -73,8 +72,7 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
             items: [{
                 el: {
                     type: "bi.center",
-                    items: [this.tab],
-                    hgap: 20
+                    items: [this.tab]
                 }
             }, {
                 el:this.tabButton,

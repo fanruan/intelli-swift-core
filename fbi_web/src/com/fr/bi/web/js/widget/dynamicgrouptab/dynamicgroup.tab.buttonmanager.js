@@ -42,21 +42,7 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
         })
         this.addSheetButton.on(BI.Button.EVENT_CHANGE, function(){
             var sId = BI.UUID();
-            var item = BI.createWidget(self._createItem(sId));
-            item.on(BI.DynamicGroupTabSheetButton.EVENT_COPY, function (sheetId) {
-                var newId = BI.UUID();
-                self.addItems(self._createItem(BI.UUID()));
-                self.fireEvent(BI.DynamicGroupTabButtonManager.EVENT_COPY, sheetId, newId);
-            });
-            item.on(BI.DynamicGroupTabSheetButton.EVENT_RENAME, function (sheetId) {
-                self.fireEvent(BI.DynamicGroupTabButtonManager.EVENT_RENAME, sheetId);
-            });
-            item.on(BI.DynamicGroupTabSheetButton.EVENT_DELETE, function (sheetId) {
-                self.tab.removeItems(sheetId);
-                self.resize();
-                self.fireEvent(BI.DynamicGroupTabButtonManager.EVENT_DELETE, sheetId);
-            });
-            self.addItems([item]);
+            self.addItems([self._getItemById(sId)]);
             self.tab.setValue(sId);
             self.fireEvent(BI.DynamicGroupTabButtonManager.ADD_SHEET, sId);
         })
@@ -130,6 +116,26 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
                 ]
             }]
         })
+    },
+
+    _getItemById: function(sId){
+        var self = this;
+        var item = BI.createWidget(self._createItem(sId)) ;
+        item.on(BI.DynamicGroupTabSheetButton.EVENT_COPY, function (sheetId) {
+            var newId = BI.UUID();
+            self.addItems([self._getItemById(newId)]);
+            self.fireEvent(BI.DynamicGroupTabButtonManager.EVENT_COPY, sheetId, newId);
+        });
+        item.on(BI.DynamicGroupTabSheetButton.EVENT_RENAME, function (sheetId) {
+            self.fireEvent(BI.DynamicGroupTabButtonManager.EVENT_RENAME, sheetId);
+        });
+        item.on(BI.DynamicGroupTabSheetButton.EVENT_DELETE, function (sheetId) {
+            self.tab.removeItems(sheetId);
+            self.mergeSheetButton.setEnable(self.getAllButtons().length > 1);
+            self.resize();
+            self.fireEvent(BI.DynamicGroupTabButtonManager.EVENT_DELETE, sheetId);
+        });
+        return item;
     },
 
     _createItem: function(id){
@@ -247,6 +253,14 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
         this.resize();
         this._scrollToEnd();
         this.mergeSheetButton.setEnable(this.getAllButtons().length > 1);
+    },
+
+    getValue: function(){
+        this.tab.getValue.apply(this.tab, arguments);
+    },
+
+    setValue: function(v){
+        this.tab.setValue.apply(this.tab, arguments);
     },
 
     populate: function(){
