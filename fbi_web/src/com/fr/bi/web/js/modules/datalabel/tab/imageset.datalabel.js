@@ -202,17 +202,17 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
 
     _createDefaultImgs: function () {
         var self = this, result = [];
-        BI.each(this._defaultImg, function (i, item) {
+        BI.each(this._defaultImg, function (i, src) {
             var img = {
                 type: "bi.image_button",
                 width: 49,
                 height: 50,
                 handler: function () {
-                    self._imageSelect = this.getSrc();
+                    self._imageSelect = src;
                     self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
                 }
             };
-            img.src = BI.Func.getCompleteImageUrl(item);
+            img.src = BI.Func.getCompleteImageUrl(src);
             result.push(img);
         });
         var imgs = BI.createWidget({
