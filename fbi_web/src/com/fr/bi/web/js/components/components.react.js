@@ -52127,7 +52127,7 @@
 
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                { dir: 'top', box: isNeedFreeze === true ? 'first' : 'mean',
+	                { dir: 'top', box: isNeedFreeze === true ? 'justify' : 'last',
 	                    style: {
 	                        width: DetailTableSequenceComponent.WIDTH
 	                    } },
@@ -52145,7 +52145,8 @@
 	                    _layout.Layout,
 	                    null,
 	                    this._renderSequence()
-	                )
+	                ),
+	                _react2.default.createElement(_layout.Layout, { style: { height: _base.Table.SCROLLBAR_WIDTH } })
 	            );
 	        }
 	    }, {
@@ -52160,7 +52161,7 @@
 	                height = _props2.height;
 
 	            var start = Math.floor(scrollTop / rowHeight);
-	            var end = start + Math.floor(height / rowHeight);
+	            var end = start + Math.floor((height - _base.Table.SCROLLBAR_WIDTH) / rowHeight);
 	            var result = [];
 	            for (var i = start; i <= end && i < items.length; i++) {
 	                var style = {};
