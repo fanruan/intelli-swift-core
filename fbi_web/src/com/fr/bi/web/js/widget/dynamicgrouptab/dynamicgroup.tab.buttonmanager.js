@@ -148,10 +148,9 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
 
     _getTotalWidth : function () {
         var totalWidth = this.element.outerWidth();
-        totalWidth -= this.addSheetButton.element.outerWidth();
-        totalWidth -= this.mergeSheetButton.element.outerWidth();
+        totalWidth -= 180;
         //两个小按钮和空隙固定90
-        totalWidth -= 50;
+        totalWidth -= 70;
         return totalWidth;
     },
 
