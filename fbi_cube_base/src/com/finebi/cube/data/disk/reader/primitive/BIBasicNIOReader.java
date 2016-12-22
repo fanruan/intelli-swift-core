@@ -45,7 +45,7 @@ public abstract class BIBasicNIOReader extends BIAbstractBaseNIOReader {
             initBuffer(index);
             return index;
         } else {
-            throw new BIResourceInvalidException();
+            throw new BIResourceInvalidException("resource invalid");
         }
     }
 

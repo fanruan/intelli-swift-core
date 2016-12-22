@@ -8,12 +8,14 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.FinalBoolean;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
+import com.fr.bi.stable.operation.sort.comp.CustomComparator;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 
@@ -165,6 +167,17 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                 treeMap.put(entry.getKey(), entry.getValue());
             }
             customMap = treeMap;
+        }
+    }
+
+    @Override
+    public Comparator getComparator() {
+        if (getSortType() == BIReportConstant.SORT.ASC || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NONE) {
+            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.COMPARABLE.ASC : BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
+        } else if (getSortType() == BIReportConstant.SORT.DESC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) {
+            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.COMPARABLE.DESC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC;
+        } else {
+            return new CustomComparator();
         }
     }
 
