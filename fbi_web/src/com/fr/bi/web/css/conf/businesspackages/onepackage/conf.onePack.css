@@ -18,12 +18,6 @@
 .bi-business-package-pane .one-package-north .package-search-editor {
   background: #ffffff;
 }
-.bi-business-package-pane .one-package-north .tables-view-group {
-  font-size: 16px;
-}
-.bi-business-package-pane .one-package-north .tables-view-group .tables-view.active {
-  background: #009de3;
-}
 .bi-business-package-pane .one-package-north .add-new-table-combo {
   color: #ffffff;
   font-size: 14px;
@@ -48,4 +42,10 @@
 .bi-business-package-pane .one-package-center .empty-tip {
   color: #d4dadd;
   font-size: 20px;
+}
+.bi-business-package-pane .one-package-center .tables-view-group {
+  font-size: 16px;
+}
+.bi-business-package-pane .one-package-center .tables-view-group .tables-view.active {
+  background: #009de3;
 }

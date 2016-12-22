@@ -1,5 +1,6 @@
 package com.fr.bi.fs;
 
+import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.data.core.db.tableObject.ColumnSize;
 import com.fr.data.dao.*;
 import com.fr.fs.base.entity.User;
@@ -24,6 +25,19 @@ public class BITableMapper {
                 new CommonFieldColumnMapper(REPORT_ID, Types.BIGINT, new ColumnSize(10), false),
                 new CommonFieldColumnMapper(SESSIONID, Types.VARCHAR, new ColumnSize(50), false),
         }, new String[][]{new String[]{FIELD_USERID, REPORT_ID, SESSIONID}});
+    }
+
+    public static class BI_CONF_TABLE_LOCK {
+        public static final String USER_ID = "userId";
+        public static final String TABLE_ID = "tableId";
+        public static final String SESSION_ID = "sessionId";
+
+        public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(BIConfTableLock.class, new FieldColumnMapper[]{
+                new PrimaryKeyFCMapper("id", Types.BIGINT, new ColumnSize(10)),
+                new CommonFieldColumnMapper(USER_ID, Types.BIGINT, new ColumnSize(10), false),
+                new CommonFieldColumnMapper(TABLE_ID, Types.VARCHAR, new ColumnSize(50), false),
+                new CommonFieldColumnMapper(SESSION_ID, Types.VARCHAR, new ColumnSize(50), false),
+        }, new String[][]{new String[]{USER_ID, TABLE_ID, SESSION_ID}});
     }
 
     /**

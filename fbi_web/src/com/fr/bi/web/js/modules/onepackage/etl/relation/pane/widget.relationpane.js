@@ -14,10 +14,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         BI.RelationPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.RelationPaneModel({
-            field_id: o.field_id,
-            relations: o.relations,
-            translations: o.translations,
-            all_fields: o.all_fields
+            field: o.field
         });
         this._createRelationTree();
         var addRelationTable = BI.createWidget({
@@ -88,8 +85,8 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         var selectDataMask = BI.createWidget({
             type: "bi.select_data_with_mask",
             element: mask,
-            model: this.model,
-            field_id: fieldId,
+            field: this.options.field,
+            fieldId: fieldId,
             maskId: maskId
         });
         selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function () {
@@ -107,8 +104,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             }
             treeValue.push({
                 fieldId: v.field_id,
-                relationType: self.model.getRelationType(fieldId),
-                translations: self.model.getTranslations()
+                relationType: self.model.getRelationType(fieldId)
             });
             self._refreshTree(treeValue);
         });
@@ -145,7 +141,6 @@ BI.RelationPane = BI.inherit(BI.Widget, {
                     break;
             }
         });
-        this.model.setOldRelationValue(this.relationTree.getValue());
     },
 
     _createBranchItems: function (relationChildren) {
@@ -174,7 +169,6 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             BI.each(relationChildren, function (i, v) {
                 BI.isNotNull(v.relationType) && (empty = false);
             });
-            //TODO 确定按钮状态
         }
         this.relationTree.populate(this._createBranchItems(relationChildren));
         this._drawSVGLine();

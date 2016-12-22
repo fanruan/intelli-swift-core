@@ -25,40 +25,13 @@ public class SingleUserBIExcelViewManager{
         this.views.put(tableId, source);
     }
 
+    public ExcelViewSource getExcelViewByTableId(String tableId) {
+        return this.views.get(tableId);
+    }
+
     public void clear() {
         synchronized (views) {
             views.clear();
         }
     }
-
-
-
-//    @Override
-//    public void readXML(XMLableReader reader) {
-//        if(reader.isChildNode()) {
-//            String tagName= reader.getTagName();
-//            if(ComparatorUtils.equals("excel_view", tagName)) {
-//                String tableId = reader.getAttrAsString("tableId", StringUtils.EMPTY);
-//                ExcelViewSource source = new ExcelViewSource();
-//                reader.readXMLObject(source);
-//                this.views.put(tableId, source);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void writeXML(XMLPrintWriter writer) {
-//        writer.startTAG(XML_TAG);
-//        writer.attr(BIBaseConstant.VERSIONTEXT, BIBaseConstant.VERSION);
-//        Iterator<Map.Entry<String, ExcelViewSource>> iterator = this.views.entrySet().iterator();
-//        while (iterator.hasNext()) {
-//            Map.Entry<String, ExcelViewSource> map = iterator.next();
-//            String tableId = map.getKey();
-//            ExcelViewSource source = map.getValue();
-//            writer.startTAG("excel_view");
-//            writer.attr("tableId", tableId);
-//            source.writeXML(writer);
-//            writer.end();
-//        }
-//    }
 }
