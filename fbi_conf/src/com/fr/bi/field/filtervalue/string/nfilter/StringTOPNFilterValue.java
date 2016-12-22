@@ -34,7 +34,7 @@ public class StringTOPNFilterValue extends StringNFilterValue implements NFilter
             return true;
         }
         Comparable nline;
-        if (N < count * 2){
+        if (N < count / 2){
             nline = parentNode.getChildTOPNValueLine(N);
         } else {
             nline = parentNode.getChildBottomNValueLine(count + 1 - N);

@@ -245,9 +245,9 @@ public class BuildCubeTask implements CubeTask {
     }
 
     private void logCubeTaskType() {
-            StringBuffer msg = new StringBuffer();
-            msg.append(" Cube update start. Update type: "+getTaskType().name());
-            logger.info(BIDateUtils.getCurrentDateTime() + msg);
+        StringBuffer msg = new StringBuffer();
+        msg.append(" Cube update start. Update type: " + getTaskType().name());
+        logger.info(BIDateUtils.getCurrentDateTime() + msg);
     }
 
     private void logBusinessTable() {

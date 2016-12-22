@@ -94,8 +94,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.loading();
         this.errorPane.setVisible(false);
         this.data = [];
-        var hyperLinkExpressions = [];
-        var isUseHyperLinkDimension = [];
         var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
         if (BI.isEmpty(dimensions)) {
             this.loaded();
@@ -125,9 +123,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     self.pager.setCount(row);
                     var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
                     BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
-                        var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId) || {};
-                        isUseHyperLinkDimension.push(hyperlink.used || false);
-                        hyperLinkExpressions.push(hyperlink.expression || "");
                         BI.isNotNull(dId) &&
                         BI.Utils.isDimensionUsable(dId) === true &&
                         header.push({

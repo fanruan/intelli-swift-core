@@ -4,7 +4,7 @@
 BI.MultiStringList = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.MultiStringList.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: '',
+            baseCls: 'bi-multi-string-list',
             itemsCreator: BI.emptyFn,
             valueFormatter: BI.emptyFn,
             height: 25
@@ -25,6 +25,7 @@ BI.MultiStringList = BI.inherit(BI.Widget, {
 
         this.popup = BI.createWidget({
             type: "bi.multi_select_loader",
+            cls: "popup-multi-string-list",
             itemsCreator: o.itemsCreator,
             valueFormatter: o.valueFormatter,
             onLoaded: o.onLoaded,
@@ -47,9 +48,9 @@ BI.MultiStringList = BI.inherit(BI.Widget, {
             masker: {
                 offset: {
                     left: 1,
-                    top: 1,
+                    top: 0,
                     right: 2,
-                    bottom: 33
+                    bottom: 1
                 }
             },
             valueFormatter: o.valueFormatter,
@@ -133,7 +134,7 @@ BI.MultiStringList = BI.inherit(BI.Widget, {
                 height: 25
             }, {
                 el: div,
-                height: 5
+                height: 2
             }, {
                 el: this.popup,
                 height: "fill"
@@ -278,12 +279,6 @@ BI.MultiStringList = BI.inherit(BI.Widget, {
 
     isAllSelected: function () {
         return this.popup.isAllSelected();
-    },
-
-    setStoreValue: function (v) {
-        this.storeValue = v || {};
-        this._assertValue(this.storeValue);
-        this.popup.setStoreValue(this.storeValue);
     },
 
     setEnable: function (v) {

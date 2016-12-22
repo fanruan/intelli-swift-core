@@ -285,7 +285,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return values.toArray(new ICubeFieldSource[values.size()]);
     }
 
-    private Map<String, ICubeFieldSource> getFieldFromPersistentTable() {
+    protected Map<String, ICubeFieldSource> getFieldFromPersistentTable() {
         Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
         IPersistentTable bt = getPersistentTable();
         if (bt == null) {
@@ -422,5 +422,10 @@ public abstract class AbstractTableSource implements CubeTableSource {
     @Override
     public boolean canExecute() throws Exception {
         return true;
+    }
+
+    @Override
+    public boolean hasAbsentFields() {
+        return false;
     }
 }

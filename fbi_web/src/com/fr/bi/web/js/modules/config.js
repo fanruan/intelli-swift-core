@@ -338,7 +338,11 @@ BICst.DASHBOARD_WIDGETS = [[{
         title: BI.i18nText("BI-Tree_Label_Con"),
         value: BICst.WIDGET.TREE_LABEL,
         cls: "drag-tree-label-icon"
-
+    },{
+        text: BI.i18nText("BI-Tree_List"),
+        title: BI.i18nText("BI-Tree_List"),
+        value: BICst.WIDGET.TREE_LIST,
+        cls: "drag-tree-list-icon"
     }]
 }, {
     text: BI.i18nText("BI-Date_Control"),
