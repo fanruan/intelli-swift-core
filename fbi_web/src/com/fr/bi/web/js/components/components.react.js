@@ -44259,17 +44259,19 @@
 	            if (this._isTitleUsable()) {
 	                setTimeout(function () {
 	                    if (_this2.state.open === true) {
-	                        var viewport = (0, _core.getViewportDimensions)();
-	                        var trigger = _reactDom2.default.findDOMNode(_this2);
-	                        var popup = _reactDom2.default.findDOMNode(_this2.title);
-	                        var triggerPos = (0, _core.getElementPosition)(trigger);
-	                        var popupPos = (0, _core.getElementPosition)(popup);
-	                        var x = _this2.state.pageX,
-	                            y = triggerPos.y + triggerPos.height;
-	                        x = (0, _core.clamp)(x, 0, viewport.width - popupPos.width);
-	                        y = (0, _core.clamp)(y, 0, viewport.height - popupPos.height);
-	                        popup.style.left = x + 'px';
-	                        popup.style.top = y + 'px';
+	                        try {
+	                            var viewport = (0, _core.getViewportDimensions)();
+	                            var trigger = _reactDom2.default.findDOMNode(_this2);
+	                            var popup = _reactDom2.default.findDOMNode(_this2.title);
+	                            var triggerPos = (0, _core.getElementPosition)(trigger);
+	                            var popupPos = (0, _core.getElementPosition)(popup);
+	                            var x = _this2.state.pageX,
+	                                y = triggerPos.y + triggerPos.height;
+	                            x = (0, _core.clamp)(x, 0, viewport.width - popupPos.width);
+	                            y = (0, _core.clamp)(y, 0, viewport.height - popupPos.height);
+	                            popup.style.left = x + 'px';
+	                            popup.style.top = y + 'px';
+	                        } catch (e) {}
 	                    }
 	                }, this.props.tipType === 'success' ? 500 : 200);
 	            }
