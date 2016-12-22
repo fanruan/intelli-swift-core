@@ -3,6 +3,10 @@
  */
 BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
 
+    _const: {
+        MERGE_ADD_WIDTH: 245
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.DynamicGroupTabButtonManager.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-dynamic-group-tab-button-manager",
@@ -148,9 +152,7 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
 
     _getTotalWidth : function () {
         var totalWidth = this.element.outerWidth();
-        totalWidth -= 180;
-        //两个小按钮和空隙固定90
-        totalWidth -= 70;
+        totalWidth -= this._const.MERGE_ADD_WIDTH;
         return totalWidth;
     },
 
@@ -197,6 +199,10 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
         }, 30);
     },
 
+    _scrollToEnd : function (){
+        this._scrollTo(this._calculateButtonsWith())
+    },
+
     resize : function (){
         //获取当前所有可使用的宽度，不包含添加和合并和导航按钮以及之间的空隙
         var totalWidth = this._getTotalWidth();
@@ -239,6 +245,7 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
     addItems: function(items){
         this.tab.addItems.apply(this.tab, arguments);
         this.resize();
+        this._scrollToEnd();
         this.mergeSheetButton.setEnable(this.getAllButtons().length > 1);
     },
 
