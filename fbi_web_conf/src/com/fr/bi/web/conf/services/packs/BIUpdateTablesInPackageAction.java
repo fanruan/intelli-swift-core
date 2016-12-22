@@ -124,7 +124,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                          * 因为如果数据库连接断掉，那么字段没有的。
                          */
                         if (ComparatorUtils.equals(storeTableSource.getSourceID(), tableSource.getSourceID())) {
-                            addTableSource(table, storeTableSource);
+                            addTableSource(table, tableSource);
                         } else {
                             /**
                              * 否则必须确保保存的TableSource是完整的。

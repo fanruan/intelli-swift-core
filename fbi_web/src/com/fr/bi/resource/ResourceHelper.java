@@ -533,7 +533,22 @@ public class ResourceHelper {
                 //部分字段
                 "com/fr/bi/web/js/modules/onepackage/etl/partfield/partfield/widget.selectpartfieldlist.js",
 
+                //join
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.jointype.group.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.jointype.button.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.joinresult.header.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.join.previewtable.headercell.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.join.previewtable.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/widget.join.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/widget.join.model.js",
 
+                //union
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.union.previewtable.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.union.previewtable.headercell.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.addunion.table.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.unionresult.header.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/widget.union.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/widget.union.model.js",
 
                 "com/fr/bi/web/js/dezi/dezi.start.js",
                 "com/fr/bi/web/js/dezi/model.js",

@@ -49,7 +49,7 @@ BI.Tooltip = BI.inherit(BI.Tip, {
                         textAlign: "left",
                         whiteSpace: "normal",
                         text: text,
-                        textHeight: 16,
+                        textHeight: 16
                     }
                 })
             })

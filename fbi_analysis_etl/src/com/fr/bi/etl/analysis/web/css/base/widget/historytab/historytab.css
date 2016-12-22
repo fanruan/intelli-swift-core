@@ -10,7 +10,7 @@
   background: #f4f4f4;
 }
 .bi-history-tab .bi-history-tab-button-group {
-  background: #ffffff;
+  background: #f4f4f4;
   border: 1px solid #eaeaea;
 }
 .bi-history-tab .bi-history-tab-button-group .bi-history-tab-title {
@@ -23,7 +23,7 @@
 }
 .bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button.active,
 .bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button:active {
-  background: #ffffff;
+  background: #f4f4f4;
   color: #1a1a1a;
 }
 .bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button.active .delete-field-font,
@@ -32,5 +32,13 @@
 }
 .bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button.active .select_tag,
 .bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button:active .select_tag {
-  background: #ffffff;
+  background: #f4f4f4;
+}
+.bi-history-tab .histroy-tab-east {
+  background-color: #ffffff;
+  border-top: 1px solid #eaeaea;
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-history-tab .histroy-tab-bottom {
+  background-color: #f4f4f4;
 }

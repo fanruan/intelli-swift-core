@@ -2662,7 +2662,7 @@
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {group: BICst.GROUP.M, values: month + 1};
+                                fValue = {group: BICst.GROUP.M, values: month};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,

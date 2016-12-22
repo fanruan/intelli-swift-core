@@ -40,6 +40,7 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
         var title = BI.createWidget({
             type:"bi.right",
             height:this._constant.titleHeight,
+            rgap: 20,
             items : [{
                 type:"bi.center_adapt",
                 cls:"bi-analysis-etl-main-save-button",
