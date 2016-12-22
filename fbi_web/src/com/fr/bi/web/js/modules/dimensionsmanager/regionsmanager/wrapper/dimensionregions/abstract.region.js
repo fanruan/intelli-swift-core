@@ -91,7 +91,10 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                     o.dimensionCreator(dId, dimension);
                 });
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
-
+                //滚到最下面
+                BI.nextTick(function () {
+                    self.center.element.scrollTop(self.center.element[0].scrollHeight);
+                });
                 self._dropHook();
             },
             over: function (event, ui) {

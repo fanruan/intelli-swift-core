@@ -129,6 +129,11 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
         val.value || (val.value = []);
     },
 
+    setStoreValue: function (v) {
+        this.storeValue = v || {};
+        this._assertValue(this.storeValue);
+    },
+
     setStartValue: function (v) {
         this._startValue = v;
     },

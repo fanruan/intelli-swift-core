@@ -29,4 +29,11 @@ $(function () {
             return ob;
         }
     });
+
+    BI.Plugin.registerWidget("bi.detail_table", function (ob) {
+        if (BI.isChrome() || BI.isSafari() || BI.isFireFox()) {
+            ob.type = "bi.detail_table_react";
+            return ob;
+        }
+    })
 });

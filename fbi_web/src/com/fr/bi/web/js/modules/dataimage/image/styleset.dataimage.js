@@ -21,23 +21,18 @@ BI.DataImageStyleSet = BI.inherit(BI.Widget, {
         this.triggerButton = BI.createWidget({
             type: "bi.text_button",
             text: BI.i18nText("BI-Pictures"),
-            height: this._constant.BUTTON_HEIGHT
+            height: this._constant.BUTTON_HEIGHT,
+            width: this._constant.TRIGGER_BUTTON_WIDTH
         });
         this.triggerIcon = BI.createWidget({
             type: "bi.trigger_icon_button",
-            cls: "trigger-icon"
+            cls: "trigger-icon",
+            width: this._constant.TRIGGER_ICON_WIDTH
         });
         this.styleTrigger = BI.createWidget({
-            type: "bi.htape",
+            type: "bi.horizontal",
             cls: "condition-trigger",
-            items: [{
-                el: this.triggerButton,
-                width: this._constant.TRIGGER_BUTTON_WIDTH
-            }, {
-                el: this.triggerIcon,
-                width: this._constant.TRIGGER_ICON_WIDTH
-            }],
-            width: this._constant.TRIGGER_WIDTH,
+            items: [this.triggerButton, this.triggerIcon],
             height: "100%"
         });
         this.stylePane = BI.createWidget({

@@ -1786,6 +1786,26 @@
   content: "\e622";
   color: #808080;
 }
+.chart-string-list-font .b-font:before {
+  content: "\e6d7";
+  color: #808080;
+}
+.chart-string-list-font:hover .b-font:before,
+.chart-string-list-font:focus .b-font:before,
+.chart-string-list-font.hover .b-font:before {
+  content: "\e6d7";
+  color: #808080;
+}
+.chart-string-list-font:active .b-font:before,
+.chart-string-list-font.active .b-font:before {
+  content: "\e6d7";
+  color: #009de3;
+}
+.chart-string-list-font.native .b-font:before,
+.chart-string-list-font.disabled .b-font:before {
+  content: "\e6d7";
+  color: #808080;
+}
 .chart-number-font .b-font:before {
   content: "\e61f";
   color: #808080;

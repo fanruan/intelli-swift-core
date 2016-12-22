@@ -18,16 +18,29 @@ BI.CombineChartTargetScope = BI.inherit(BI.Widget, {
             type: "bi.icon_combo",
             width: 18,
             height: 18,
-            iconClass: "detail-dimension-set-font",
+            iconWidth: 18,
+            iconHeight: 18,
             items: [{
-                value: "第一项",
-                iconClass: "delete-font"
+                value: "a",
+                iconClass: "drag-axis-accu-icon",
+                iconWidth: 24,
+                iconHeight: 24,
+            },{
+                value: "b",
+                iconClass: "area-chart-style-broken-icon",
+                iconWidth: 24,
+                iconHeight: 24,
             }, {
-                value: "第二项",
-                iconClass: "rename-font"
+                value: "c",
+                iconClass: "area-chart-style-curve-icon",
+                iconWidth: 24,
+                iconHeight: 24,
+
             }, {
-                value: "第三项",
-                iconClass: "move-font"
+                value: "d",
+                iconClass: "area-chart-style-vertical-icon",
+                iconWidth: 24,
+                iconHeight: 24,
             }]
         });
 

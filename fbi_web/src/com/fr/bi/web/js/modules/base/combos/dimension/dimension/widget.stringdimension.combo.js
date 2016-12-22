@@ -112,6 +112,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             BICst.WIDGET.ACCUMULATE_AREA,
             BICst.WIDGET.ACCUMULATE_AXIS,
             BICst.WIDGET.ACCUMULATE_BAR,
+            BICst.WIDGET.ACCUMULATE_RADAR,
             BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
             BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
             BICst.WIDGET.COMBINE_CHART,
@@ -121,7 +122,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
         var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         if(BI.Utils.isDimensionRegion2ByRegionType(rType) && BI.contains(chartTypes, wType)) {
-            items[1].push({
+            items.splice(2, 0, [{
                 el: {
                     text: BI.i18nText("BI-Series_Accumulation_Attribute"),
                     cls: "",
@@ -129,12 +130,14 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 },
                 children:[{
                     text: BI.i18nText("BI-No_Accumulation"),
-                    value: BICst.DIMENSION_STRING_COMBO.NO_SERIES
+                    value: BICst.DIMENSION_STRING_COMBO.NO_SERIES,
+                    cls: "dot-e-font"
                 },{
                     text: BI.i18nText("BI-Series_Accumulation"),
-                    value: BICst.DIMENSION_STRING_COMBO.SERIES_ACCUMULATION
+                    value: BICst.DIMENSION_STRING_COMBO.SERIES_ACCUMULATION,
+                    cls: "dot-e-font"
                 }]
-            });
+            }]);
         }
         return items
     },

@@ -96,7 +96,7 @@ BI.CalculateTargetPopupDetailModel = BI.inherit(FR.OB, {
         if (this._isNotNewTarget()) {
             expression = BI.Utils.getExpressionByDimensionID(this.targetId).formula_value;
         }
-        return expression;
+        return BI.isNull(expression) ? "" : expression + "";
     },
 
 

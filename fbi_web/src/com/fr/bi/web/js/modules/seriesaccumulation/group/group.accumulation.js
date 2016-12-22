@@ -65,11 +65,13 @@ BI.AccumulationGroup = BI.inherit(BI.Widget, {
         });
         this.group = BI.createWidget({
             type: "bi.button_group",
-            width: "50%",
-            height: "100%",
             layouts: [{
-                type: "bi.vertical"
-            }]
+                type: "bi.vertical",
+                bgap: 10
+            }],
+            items: [],
+            width: "100%",
+            height: "100%"
         });
         BI.createWidget({
             type: "bi.inline_vertical_adapt",
@@ -79,7 +81,12 @@ BI.AccumulationGroup = BI.inherit(BI.Widget, {
                 lgap: 10,
                 rgap: 20
             }, {
-                el: this.group,
+                el: BI.createWidget({
+                    type: "bi.default",
+                    width: "50%",
+                    height: "100%",
+                    items: [this.group]
+                }),
                 lgap: 10
             }]
         });
@@ -91,7 +98,8 @@ BI.AccumulationGroup = BI.inherit(BI.Widget, {
             type: "bi.accumulate_container",
             index: next,
             isShowBt: this.isShowTypeButton(),
-            title: BI.i18nText("BI-Accumulation_Group") + next
+            title: BI.i18nText("BI-Accumulation_Group") + next,
+            helperContainer: this.group
         })
         this.group.addItems([item]);
         return item;
@@ -105,18 +113,6 @@ BI.AccumulationGroup = BI.inherit(BI.Widget, {
             return true;
         }
         return false;
-    },
-    
-    populate: function (items) {
-        var self = this;
-        if(BI.isEmpty(items)) {
-            return;
-        }
-        self.defaultGroup.populate(items[0] && items[0].items);
-        BI.each(items.slice(1), function (idx, data) {
-            var container = self.createItem(data.index);
-            container.populate(data.items);
-        })
     },
 
     getAllContainers: function () {
@@ -144,12 +140,36 @@ BI.AccumulationGroup = BI.inherit(BI.Widget, {
                 result.push({
                     title: group.getTitle(),
                     index: group.getIndex(),
-                    items: group.getValue()
+                    items: group.getValue(),
+                    type: group.getAccumulateType()
                 });
             }
         });
 
         return result;
+    },
+
+    populate: function (items,allData) {
+        items = items || [];
+        var self = this;
+        var alreadyHas = [], others = [];
+        BI.each(items.slice(1), function (idx, data) {
+            if(data.items && BI.isEmpty(data.items)) {
+                return;
+            }
+            var container = self.createItem(data.index);
+            alreadyHas = BI.concat(alreadyHas, data.items);
+            container.populate(data);
+        })
+        BI.each(allData, function (idx, data) {
+            if(!BI.contains(alreadyHas, data)) {
+                others.push(data);
+            }
+        })
+        self.defaultGroup.populate({
+            type: items[0] ? items[0].type : BICst.ACCUMULATE_TYPE.COLUMN,
+            items: others
+        })
     }
 });
 

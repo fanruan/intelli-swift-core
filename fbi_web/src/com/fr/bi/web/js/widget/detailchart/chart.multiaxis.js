@@ -175,9 +175,64 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         })
     },
 
+    formatSeriesAccumulation: function (items, accumulationObj) {
+        var accumulations = accumulationObj.items,
+            type = accumulationObj.type,
+            result = [];
+        if(BI.isEmpty(accumulationObj) || BI.isEmpty(items) || type !== BICst.SERIES_ACCUMULATION.EXIST) {
+            return items;
+        }
+        BI.each(accumulations, function (idx, accumulation) {
+            accumulation.stack = idx + BI.UUID();
+        });
+        BI.each(items[0], function (idx, item) {
+            BI.any(accumulations.slice(1), function (i, accumulation) {
+                if(BI.contains(accumulation.items, item.name)) {
+                    switch (accumulation.type) {
+                        case BICst.ACCUMULATE_TYPE.COLUMN:
+                            item.type = "column";
+                            break;
+                        case BICst.ACCUMULATE_TYPE.AREA_NORMAL:
+                            item.type = "area";
+                            break;
+                        case BICst.ACCUMULATE_TYPE.AREA_CURVE:
+                            item.type = "area";
+                            item.curve = true;
+                            break;
+                        case BICst.ACCUMULATE_TYPE.AREA_RIGHT_ANGLE:
+                            item.type = "area";
+                            item.step = true;
+                    };
+                    item.flag = true;
+                    item.stack = accumulation.stack;
+                }
+            });
+            if(!item.flag) {
+                switch (accumulations[0].type) {
+                    case BICst.ACCUMULATE_TYPE.COLUMN:
+                        item.type = "column";
+                        break;
+                    case BICst.ACCUMULATE_TYPE.AREA_NORMAL:
+                        item.type = "area";
+                        break;
+                    case BICst.ACCUMULATE_TYPE.AREA_CURVE:
+                        item.type = "area";
+                        item.curve = true;
+                        break;
+                    case BICst.ACCUMULATE_TYPE.AREA_RIGHT_ANGLE:
+                        item.type = "area";
+                        item.step = true;
+                }
+                item.stack = accumulations[0].stack;
+            }
+            result.push(item);
+        })
+        return [result];
+    },
+
     populate: function (items, options, types) {
         //按照系列分组堆积
-        //items = this.formatSeriesAccumulation(items, options.seriesAccumulation);
+        items = this.formatSeriesAccumulation(items, options.seriesAccumulation);
         var self = this, c = this.constants;
         this.config = self.getChartConfig(options);
         this.options.items = items;

@@ -163,6 +163,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
         if (showTable === false) {
             return;
         }
+        self.table.setSortable(operator === ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA);
         self.table.populate(self._createCell(), self._createHeader())
         BI.each(self.table.getColumns().header[0], function (idx, item) {
             item.on(BI.AnalysisETLPreviewTable.DELETE_EVENT, function () {

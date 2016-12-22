@@ -124,4 +124,10 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
 
     boolean canExecute() throws Exception;
 
+    /**
+     * 字段是否发生变化
+     * @return
+     */
+    boolean hasAbsentFields();
+
 }

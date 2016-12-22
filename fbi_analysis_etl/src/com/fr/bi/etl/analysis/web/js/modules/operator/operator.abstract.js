@@ -62,32 +62,9 @@ BI.AnalysisETLOperatorAbstractPane = BI.inherit(BI.MVCWidget, {
         })
 
         BI.createWidget({
-            type : "bi.border",
+            type : "bi.center",
             element : this.element,
-            items :{
-                west :{
-                    el : {
-                        type:"bi.layout"
-                    },
-                    width:20
-                },
-
-                south : {
-                    el : {
-                        type:"bi.layout"
-                    },
-                    height:10
-                },
-                east : {
-                    el : {
-                        type:"bi.layout"
-                    },
-                    width:20
-                },
-                center: {
-                    el:this.center
-                }
-            }
+            items: [this.center]
         })
     }
  

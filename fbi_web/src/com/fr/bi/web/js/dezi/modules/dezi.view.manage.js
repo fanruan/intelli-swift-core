@@ -58,6 +58,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.STRING:
                 view = "BIDezi.StringDetailView";
                 break;
+            case BICst.WIDGET.STRING_LIST:
+                view = "BIDezi.StringListDetailView";
+                break;
             case BICst.WIDGET.DATE:
                 view = "BIDezi.DateRangeDetailView";
                 break;
@@ -150,6 +153,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
                 break;
             case BICst.WIDGET.STRING:
                 view = "BIDezi.StringWidgetView";
+                break;
+            case  BICst.WIDGET.STRING_LIST:
+                view = "BIDezi.StringListView";
                 break;
             case BICst.WIDGET.NUMBER:
                 view = "BIDezi.NumberWidgetView";
@@ -245,6 +251,7 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
                 view = "BIDezi.DetailDimensionView";
                 break;
             case BICst.WIDGET.STRING:
+            case BICst.WIDGET.STRING_LIST:
                 view = "BIDezi.StringDimensionView";
                 break;
             case BICst.WIDGET.NUMBER:

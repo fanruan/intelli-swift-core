@@ -78,6 +78,7 @@ BICst.WIDGET.Widths[BICst.WIDGET.IMAGE] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.WEB] = 6;
 
 BICst.WIDGET.Widths[BICst.WIDGET.STRING] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.STRING_LIST] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.NUMBER] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.SINGLE_SLIDER] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.INTERVAL_SLIDER] = 6;
@@ -131,6 +132,7 @@ BICst.WIDGET.Heights[BICst.WIDGET.IMAGE] = 4;
 BICst.WIDGET.Heights[BICst.WIDGET.WEB] = 4;
 
 BICst.WIDGET.Heights[BICst.WIDGET.STRING] = 1;
+BICst.WIDGET.Heights[BICst.WIDGET.STRING_LIST] = 6;
 BICst.WIDGET.Heights[BICst.WIDGET.NUMBER] = 1;
 BICst.WIDGET.Heights[BICst.WIDGET.SINGLE_SLIDER] = 3;
 BICst.WIDGET.Heights[BICst.WIDGET.INTERVAL_SLIDER] = 3;
@@ -145,7 +147,6 @@ BICst.WIDGET.Heights[BICst.WIDGET.TREE_LABEL] = 2;
 BICst.WIDGET.Heights[BICst.WIDGET.GENERAL_QUERY] = 2;
 BICst.WIDGET.Heights[BICst.WIDGET.QUERY] = 1;
 BICst.WIDGET.Heights[BICst.WIDGET.RESET] = 1;
-
 
 
 /*
@@ -394,6 +395,12 @@ BICst.BACKGROUND_TYPE = {
     IMAGE: 2
 };
 
+//两种系列堆积
+BICst.SERIES_ACCUMULATION = {
+    NONE: 1,
+    EXIST: 2
+};
+
 //临时解决方案
 BICst.GLOBAL_DEFAULT_CHART_COLOR = ["#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed"];
 BICst.GLOBAL_PREDICTION_STYLE = {
@@ -543,7 +550,7 @@ BICst.DEFAULT_CHART_SETTING = {
         showBlockName: true,
         showCategoryName: true,
         showSeriesName: true,
-        showSize:true,
+        showSize: true,
         showValue: true,
         showPercentage: false,
         showTractionLine: true,

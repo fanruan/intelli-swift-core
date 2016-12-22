@@ -414,6 +414,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.widget.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.detailtable.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.string.js",
+                "com/fr/bi/web/js/show/modules/model/pane/widgets/model.stringlist.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.query.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.reset.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.date.js",
@@ -446,6 +447,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.widget.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.detailtable.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.string.js",
+                "com/fr/bi/web/js/show/modules/view/pane/widgets/show.stringlist.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.tree.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.listlabel.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.treelabel.js",
@@ -529,7 +531,22 @@ public class ResourceHelper {
                 //部分字段
                 "com/fr/bi/web/js/modules/onepackage/etl/partfield/partfield/widget.selectpartfieldlist.js",
 
+                //join
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.jointype.group.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.jointype.button.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.joinresult.header.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.join.previewtable.headercell.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/join/widget.join.previewtable.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/widget.join.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/join/widget.join.model.js",
 
+                //union
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.union.previewtable.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.union.previewtable.headercell.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.addunion.table.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/union/widget.unionresult.header.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/widget.union.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/union/widget.union.model.js",
 
                 "com/fr/bi/web/js/dezi/dezi.start.js",
                 "com/fr/bi/web/js/dezi/model.js",
@@ -543,6 +560,7 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.detailtable.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.string.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.stringlist.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.query.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.reset.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.date.js",
@@ -558,6 +576,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.yearquarter.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.generalquery.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.string.detail.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.stringlist.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.tree.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.listlabel.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.treelabel.detail.js",
@@ -595,6 +614,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.widget.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.detailtable.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.string.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.stringlist.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.query.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.reset.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.date.js",
@@ -611,6 +631,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.generalquery.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.widgets.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.string.detail.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.stringlist.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.date.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.number.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.singleslider.detail.js",
@@ -1330,6 +1351,10 @@ public class ResourceHelper {
                 //最大化
                 "com/fr/bi/web/css/modules/maximization/widget.maximization.chartpane.css",
                 "com/fr/bi/web/css/modules/maximization/widget.maximization.css",
+
+
+                //react控件
+                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
         };
     }
 
@@ -1529,6 +1554,9 @@ public class ResourceHelper {
 
                 //文本控件
                 "com/fr/bi/web/js/modules/selectdatacombo/widget.selectdatacombo.js",
+
+                //文本列表
+                "com/fr/bi/web/js/modules/selectdatastringlist/widget.selectdatastringlist.js",
 
                 //树控件
                 "com/fr/bi/web/js/modules/selecttreedatacombo/selecttreedatacombo.js",
@@ -1957,6 +1985,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/aspects/config.js",
 
 
+                //react控件
+                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
+
                 //工程配置
                 "com/fr/bi/web/js/config.js"
         };
@@ -2340,7 +2371,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
 
                 //excelview
-                "com/fr/bi/web/css/components/excel/excelview/excelviewdisplaymanager.css"
+                "com/fr/bi/web/css/components/excel/excelview/excelviewdisplaymanager.css",
+
+
+                //react控件
+                "com/fr/bi/web/css/components/components.react.css",
         };
     }
 
@@ -2802,6 +2837,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.area.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.multiaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.multiaxiscombine.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",
@@ -2961,6 +2997,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/multiselect/search/multiselect.search.pane.js",
                 "com/fr/bi/web/js/widget/multiselect/multiselect.combo.js",
 
+                //文本列表
+                "com/fr/bi/web/js/widget/multistringlist/multistringlist.js",
 
                 //移动到分组
                 "com/fr/bi/web/js/widget/move2group/button.add.move2group.js",
@@ -3177,6 +3215,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/share/sharetome.js",
                 "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
 
+
+
+                //react控件
+                "com/fr/bi/web/js/components/components.react.js",
         };
     }
 

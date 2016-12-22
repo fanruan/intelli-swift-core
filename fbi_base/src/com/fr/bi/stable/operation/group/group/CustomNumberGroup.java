@@ -76,7 +76,7 @@ public class CustomNumberGroup extends AbstractGroup {
             }
         }
         for (int i = 0; i < groups.length; ++i) {
-            newMap.put(groups[i].getValue(), newMapArray[i].compute());
+            newMap.put(groups[i].getValue(), newMapArray[i].compute().or(newMap.getIndex(groups[i].getValue())));
         }
         Iterator it = ungroupMap.iterator();
         while (it.hasNext()) {

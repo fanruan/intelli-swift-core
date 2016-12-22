@@ -31,6 +31,8 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
         BILoggerFactory.getLogger().debug("Process:" + messagePublish + "\n" + "        Get message:" + lastReceiveMessage + "\n");
     }
 
+    protected abstract void initThreadPool();
+
     protected boolean disposeStopMessage() {
         return false;
     }

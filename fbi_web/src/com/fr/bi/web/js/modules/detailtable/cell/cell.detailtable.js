@@ -28,6 +28,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 textAlign: (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) ? "right" : "left",
                 height: o.height,
                 text: o.text,
+                title: o.text,
                 lgap: 5,
                 rgap: 5
             });
@@ -42,6 +43,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 whiteSpace: "nowrap",
                 height: this.options.height,
                 text: this.options.text,
+                title: this.options.text,
                 value: this.options.value,
                 lgap: 5,
                 rgap: 5
@@ -121,7 +123,30 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             text += "%";
         }
 
+        //日期的需要format
+        var dGroup = BI.Utils.getDimensionGroupByID(o.dId);
+        if (BI.isNotNull(dGroup) && BI.isNumeric(text)) {
+            if (dGroup.type === BICst.GROUP.YMD) {
+                var date = new Date(BI.parseInt(text));
+                text = date.print("%Y-%X-%d");
+            }
+            if (dGroup.type === BICst.GROUP.YMDHMS) {
+                var date = new Date(BI.parseInt(text));
+                text = date.print("%Y-%X-%d  %H:%M:%S");
+            }
+            if (dGroup.type === BICst.GROUP.S) {
+                text = BICst.FULL_QUARTER_NAMES[text - 1];
+            }
+            if (dGroup.type === BICst.GROUP.M) {
+                text = BICst.FULL_MONTH_NAMES[text];
+            }
+            if (dGroup.type === BICst.GROUP.W) {
+                text = BICst.FULL_WEEK_NAMES[text - 1];
+            }
+        }
+
         item.setText(text);
+        item.setTitle(text);
 
         if (BI.isNotEmptyString(color)) {
             item.element.css("color", color);

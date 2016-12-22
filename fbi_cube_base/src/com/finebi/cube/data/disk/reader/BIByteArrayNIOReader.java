@@ -39,11 +39,7 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().info(BIStringUtils.append(
-                    e.getMessage(),
-                    "\n" + "retry again!"
-            ));
-            releaseBuffers();
+            BILoggerFactory.getLogger(BIByteArrayNIOReader.class).info(e.getMessage(),e);
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         }

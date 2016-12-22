@@ -133,7 +133,9 @@ public class Service4BIConfigure implements Service {
             new BIGetThreadPoolSizeAction(),
             new BISetThreadPoolSizeAction(),
             new BISimpleAPIDemoAction(),
-            new BIGetCubeTaskLogsSDKAction()
+            new BIGetCubeTaskLogsSDKAction(),
+            new BISetTransportThreadPoolSizeAction(),
+            new BIGetTransportThreadPoolSizeAction()
     };
 
     /**

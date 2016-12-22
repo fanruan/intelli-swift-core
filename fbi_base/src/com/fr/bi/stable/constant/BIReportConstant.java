@@ -410,9 +410,9 @@ public class BIReportConstant {
         public static final int INTERVAL_SLIDER = 0x24;     //区间滑块
         public static final int LIST_LABEL = 0x25;        //文本标签
         public static final int TREE_LABEL = 0x26;        //树标签
+        public static final int STRING_LIST = 0x3b;         //文本列表
         public static final int RECT_TREE = 0x27;       //矩形树
         public static final int MULTI_PIE = 0x28;       //多层饼
-
 
         //仅前台使用的部分类型
         public static final int DATE = 0x30;

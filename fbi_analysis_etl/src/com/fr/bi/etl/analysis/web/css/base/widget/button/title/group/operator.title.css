@@ -7,5 +7,6 @@
   padding-left: 10px;
   padding-right: 10px;
   background: #ffffff;
-  border: 1px solid #eaeaea;
+  border-left: 1px solid #eaeaea;
+  border-top: 1px solid #eaeaea;
 }
