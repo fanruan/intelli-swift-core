@@ -12,26 +12,6 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
         return this.fieldId;
     },
 
-    getRelations: function () {
-        return BI.deepClone(this.relations);
-    },
-
-    setRelations: function (relations) {
-        this.relations = relations;
-    },
-
-    getTranslations: function () {
-        return this.translations;
-    },
-
-    getAllFields: function () {
-        return this.allFields;
-    },
-
-    setOldRelationValue: function (oldRelationValue) {
-        this.oldRelationValue = oldRelationValue;
-    },
-
     getTableIdByFieldId: function (fieldId) {
         return BI.Utils.getTableIdByFieldId4Conf(fieldId);
     },
@@ -48,42 +28,24 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
     },
 
     getFieldTypeByFieldId: function (fieldId) {
-       return BI.Utils.getFieldTypeById4Conf(fieldId);
+        return BI.Utils.getFieldTypeById4Conf(fieldId);
     },
 
     getRelationIds: function () {
         return BI.Utils.getRelationFieldsByFieldId4Conf(this.fieldId);
     },
 
-    getRelationType: function(fieldId) {
+    getRelationType: function (fieldId) {
         return BI.Utils.getRelationTypeById4Conf(this.fieldId, fieldId);
     },
 
     //找到所有的关联表，删掉所有原来的关联，添加上现在的
     getParsedRelation: function (currentValue) {
-        var self = this;
-        var relations = this.getRelations();
-        var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
-        var connectionSet = relations.connectionSet;
-
-        //删掉所有当前表的关联
-        BI.remove(connectionSet, function (i, c) {
-            return BI.isNotNull(c) && (c.primaryKey.field_id === self.fieldId || c.foreignKey.field_id === self.fieldId);
-        }, self);
-        delete primKeyMap[this.fieldId];
-        delete foreignKeyMap[this.fieldId];
-        BI.each(primKeyMap, function (id, mapArray) {
-            BI.remove(mapArray, function (i, map) {
-                return BI.isNotNull(map) && (map.primaryKey.field_id === self.fieldId || map.foreignKey.field_id === self.fieldId);
-            }, self);
-            mapArray.length === 0 && (delete primKeyMap[id]);
-        });
-        BI.each(foreignKeyMap, function (id, mapArray) {
-            BI.remove(mapArray, function (i, map) {
-                return BI.isNotNull(map) && (map.primaryKey.field_id === self.fieldId || map.foreignKey.field_id === self.fieldId);
-            }, self);
-            mapArray.length === 0 && (delete foreignKeyMap[id]);
-        });
+        var self = this,
+            relations = {},
+            primKeyMap = {},
+            foreignKeyMap = {},
+            connectionSet = [];
 
         //添加现在的关联
         BI.each(currentValue, function (i, r) {
@@ -189,6 +151,9 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
                     break;
             }
         });
+        relations.connectionSet = connectionSet;
+        relations.primKeyMap = primKeyMap;
+        relations.foreignKeyMap = foreignKeyMap;
         return relations;
     }
 });

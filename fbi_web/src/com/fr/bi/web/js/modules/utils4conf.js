@@ -45,10 +45,10 @@ BI.extend(BI.Utils, {
         }
     },
 
-    getFieldsByTableId4Conf: function(tableId) {
+    getFieldsByTableId4Conf: function (tableId) {
         var allFields = Data.SharingPool.cat("fields");
         var fields = [];
-        BI.each(allFields, function(id, field) {
+        BI.each(allFields, function (id, field) {
             if (field.table_id === tableId) {
                 fields.push(BI.deepClone(field));
             }
@@ -153,11 +153,14 @@ BI.extend(BI.Utils, {
     },
 
     //同步读取到的关联
-    saveReadRelation4Conf: function (newRelations) {
-        var relations = Data.SharingPool.cat("relations");
-        var connectionSet = relations.connectionSet;
-        var primKeyMap = relations.primKeyMap;
-        var foreignKeyMap = relations.foreignKeyMap;
+    saveReadRelation4Conf: function (newRelations, fieldId) {
+        if (BI.isNotNull(fieldId)) {
+            this.removeRelationByFieldId4Conf(fieldId);
+        }
+        var relations = Data.SharingPool.cat("relations"),
+            connectionSet = relations.connectionSet,
+            primKeyMap = relations.primKeyMap,
+            foreignKeyMap = relations.foreignKeyMap;
         BI.each(newRelations, function (i, read) {
             var pk = read.primaryKey, fk = read.foreignKey;
             var isExist = false;
@@ -176,6 +179,20 @@ BI.extend(BI.Utils, {
                 foreignKeyMap[fk.field_id].push(read);
             }
         });
+    },
+
+    // 保存关联
+    saveRelations4Conf: function (nreRelations) {
+        var relations = Data.SharingPool.cat("relations");
+        var nConn = nreRelations.connectionSet, nPKMap = nreRelations.primKeyMap, nFKMap = nreRelations.foreignKeyMap;
+        var connectionSet = relations.connectionSet,
+            primKeyMap = relations.primKeyMap,
+            foreignKeyMap = relations.foreignKeyMap;
+        BI.each(nConn, function (i, conn) {
+            connectionSet.push((conn));
+        });
+        BI.extend(primKeyMap, nPKMap);
+        BI.extend(foreignKeyMap, foreignKeyMap);
     },
 
     //获取关联字段
@@ -604,6 +621,12 @@ BI.extend(BI.Utils, {
 
     updateTablesOfOnePackage: function (data, callback, complete) {
         Data.Req.reqUpdateTablesOfOnePackage(data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    updateRelation4Conf: function(data, callback, complete) {
+        Data.Req.reqUpdateRelation(data, function (res) {
             callback(res);
         }, complete)
     },

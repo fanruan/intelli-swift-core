@@ -14,7 +14,6 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         BI.SelectDataWithMask.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.field = o.field;
-        var maskId = o.maskId;
 
         this.selectDataPane = BI.createWidget({
             type: "bi.package_select_data_service",
@@ -35,7 +34,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             self.fireEvent(BI.SelectDataWithMask.EVENT_CHANGE, arguments);
         });
 
-        var selectdataWrapper = BI.createWidget({
+        var selectDataWrapper = BI.createWidget({
             type: "bi.vtape",
             cls: "select-data-wrapper",
             items: [{
@@ -47,7 +46,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             }]
         })
 
-        selectdataWrapper.element.resizable({
+        selectDataWrapper.element.resizable({
             handles: "e",
             minWidth: 200,
             maxWidth: 400,
@@ -59,7 +58,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             },
             stop: function (e, ui) {
                 items[1].width = ui.size.width;
-                selectdataWrapper.resize();
+                selectDataWrapper.resize();
             }
         });
 
@@ -82,7 +81,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             bottom: 0,
             left: 0
         }, {
-            el: selectdataWrapper,
+            el: selectDataWrapper,
             top: 10,
             bottom: 10,
             width: 240,
@@ -95,21 +94,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             items: items
         });
 
-        BI.Maskers.hide(maskId);
-        var mask = BI.createWidget({
-            type: "bi.loading_mask",
-            masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
-        });
-        BI.Utils.getAllPackages(function (packs) {
-            BI.Maskers.show(maskId);
-            self.packs = packs;
-            //选中当前业务包
-            self.selectDataPane.setPackage(BI.Utils.getCurrentPackageId4Conf());
-        }, function () {
-            mask.destroy();
-        });
-
+        this.selectDataPane.setPackage(BI.Utils.getPackageIdByTableId4Conf(this.field.table_id));
     },
 
     _createSelectDataBottom: function () {
@@ -183,6 +168,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                 })
             }
         });
+        return fieldStructure;
     },
 
     destroy: function () {

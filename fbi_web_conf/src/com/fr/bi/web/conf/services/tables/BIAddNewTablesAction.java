@@ -1,10 +1,8 @@
 package com.fr.bi.web.conf.services.tables;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.BIPackageID;
-import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.utils.BIConfUtils;
@@ -51,7 +49,7 @@ public class BIAddNewTablesAction extends AbstractBIConfigureAction {
         Map<String, DBTableSource> newDBSourceMap = saveNewTable(userId, packageId, tablesJA);
 
         JSONArray relations = readRelation(newDBSourceMap, oldDBSourceMap, allFieldIdMap);
-        saveNewRelation(userId, relations);
+        BIReadRelationTranslationUtils.saveRelation(userId, relations, null);
 
         JSONObject translations = BIReadRelationTranslationUtils.readTranslation(newDBSourceMap, allFieldIdMap);
         saveNewTranslation(userId, translations, exTranslations);
@@ -148,29 +146,6 @@ public class BIAddNewTablesAction extends AbstractBIConfigureAction {
             }
         }
         return map;
-    }
-
-    private void saveNewRelation(long userId, JSONArray relationJA) {
-        Set<BITableRelation> relationsSet = new HashSet<BITableRelation>();
-        for (int i = 0; i < relationJA.length(); i++) {
-            try {
-                JSONObject r = relationJA.getJSONObject(i);
-                JSONObject pKeyJO = r.getJSONObject("primaryKey");
-                JSONObject fKeyJO = r.getJSONObject("foreignKey");
-                JSONObject reConstructedRelationJo = new JSONObject();
-                JSONObject reConstructedPrimaryKeyJo = new JSONObject();
-                JSONObject reConstructedForeignKeyJo = new JSONObject();
-                reConstructedPrimaryKeyJo.put("field_id", pKeyJO.getString("field_id"));
-                reConstructedForeignKeyJo.put("field_id", fKeyJO.getString("field_id"));
-                reConstructedRelationJo.put("primaryKey", reConstructedPrimaryKeyJo);
-                reConstructedRelationJo.put("foreignKey", reConstructedForeignKeyJo);
-                BITableRelation tableRelation = BITableRelationHelper.getRelation(reConstructedRelationJo);
-                relationsSet.add(tableRelation);
-            } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            }
-        }
-        BICubeConfigureCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);
     }
 
     private void saveNewTranslation(long userId, JSONObject translationJO, String exTranslations) throws Exception {

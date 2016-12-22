@@ -155,12 +155,14 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return field;
     },
 
-    getRelations: function () {
-        return BI.deepClone(this.relations);
-    },
-
-    setRelations: function (relations) {
-        this.relations = relations;
+    // relation不考虑取消的问题实时的保存
+    setRelations: function (fieldId, relations) {
+        BI.Utils.saveRelations4Conf(relations, fieldId);
+        //同步到后台
+        BI.Utils.updateRelation4Conf({
+            id: fieldId,
+            relations: relations
+        })
     },
 
     setTranslationsByETLValue: function (etl) {

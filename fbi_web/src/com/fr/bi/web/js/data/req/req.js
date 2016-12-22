@@ -184,6 +184,12 @@ Data.Req = BIReq = {
         }, complete)
     },
 
+    reqUpdateRelation: function(data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "update_relation", data, function() {
+            callback();
+        }, complete);
+    },
+
     reqUpdateTablesOfOnePackage: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "update_tables_in_package", data, function (res) {
             callback(res);

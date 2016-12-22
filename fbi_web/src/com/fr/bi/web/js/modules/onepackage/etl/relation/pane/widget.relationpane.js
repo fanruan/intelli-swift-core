@@ -141,7 +141,6 @@ BI.RelationPane = BI.inherit(BI.Widget, {
                     break;
             }
         });
-        this.model.setOldRelationValue(this.relationTree.getValue());
     },
 
     _createBranchItems: function (relationChildren) {
@@ -170,7 +169,6 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             BI.each(relationChildren, function (i, v) {
                 BI.isNotNull(v.relationType) && (empty = false);
             });
-            //TODO 确定按钮状态
         }
         this.relationTree.populate(this._createBranchItems(relationChildren));
         this._drawSVGLine();

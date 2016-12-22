@@ -1,7 +1,11 @@
 package com.fr.bi.web.conf.utils;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BIBusinessField;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.relation.BITableRelationHelper;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
@@ -14,6 +18,7 @@ import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.file.DatasourceManager;
 import com.fr.general.ComparatorUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
@@ -129,5 +134,48 @@ public class BIReadRelationTranslationUtils {
             }
         }
         return jo;
+    }
+
+
+    public static void saveRelation(long userId, JSONArray relationJA, String fieldId) throws Exception {
+        if (fieldId != null) {
+            //删掉原来这个字段上的关联
+            BusinessField field = BICubeConfigureCenter.getDataSourceManager().getBusinessField(new BIFieldID(fieldId));
+            BusinessTable table = field.getTableBelongTo();
+            Set<BITableRelation> primRelations = BICubeConfigureCenter.getTableRelationManager().getPrimaryRelation(userId, table).getContainer();
+            Set<BITableRelation> foreignRelations = BICubeConfigureCenter.getTableRelationManager().getForeignRelation(userId, table).getContainer();
+            for (BITableRelation relation : primRelations) {
+                if (ComparatorUtils.equals(relation.getPrimaryKey().getFieldID().getIdentityValue(), fieldId) ||
+                        ComparatorUtils.equals(relation.getForeignKey().getFieldID().getIdentityValue(), fieldId)) {
+                    BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, relation);
+                }
+            }
+            for (BITableRelation relation : foreignRelations) {
+                if (ComparatorUtils.equals(relation.getPrimaryKey().getFieldID().getIdentityValue(), fieldId) ||
+                        ComparatorUtils.equals(relation.getForeignKey().getFieldID().getIdentityValue(), fieldId)) {
+                    BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, relation);
+                }
+            }
+        }
+        Set<BITableRelation> relationsSet = new HashSet<BITableRelation>();
+        for (int i = 0; i < relationJA.length(); i++) {
+            try {
+                JSONObject r = relationJA.getJSONObject(i);
+                JSONObject pKeyJO = r.getJSONObject("primaryKey");
+                JSONObject fKeyJO = r.getJSONObject("foreignKey");
+                JSONObject reConstructedRelationJo = new JSONObject();
+                JSONObject reConstructedPrimaryKeyJo = new JSONObject();
+                JSONObject reConstructedForeignKeyJo = new JSONObject();
+                reConstructedPrimaryKeyJo.put("field_id", pKeyJO.getString("field_id"));
+                reConstructedForeignKeyJo.put("field_id", fKeyJO.getString("field_id"));
+                reConstructedRelationJo.put("primaryKey", reConstructedPrimaryKeyJo);
+                reConstructedRelationJo.put("foreignKey", reConstructedForeignKeyJo);
+                BITableRelation tableRelation = BITableRelationHelper.getRelation(reConstructedRelationJo);
+                relationsSet.add(tableRelation);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+        }
+        BICubeConfigureCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);
     }
 }

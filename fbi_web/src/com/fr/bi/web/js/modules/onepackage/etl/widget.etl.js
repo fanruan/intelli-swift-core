@@ -504,7 +504,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 field: self.model.getFieldById(fieldId)
             });
             relationPane.on(BI.RelationSetPane.EVENT_CHANGE, function (relations) {
-                self.model.setRelations(relations);
+                self.model.setRelations(fieldId, relations);
                 self._populate();
             });
             BI.Popovers.create(fieldId, relationPane).open(fieldId);
