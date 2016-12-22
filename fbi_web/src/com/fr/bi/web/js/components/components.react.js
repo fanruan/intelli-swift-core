@@ -49387,18 +49387,19 @@
 	                    { dir: 'top', box: topLeft ? 'first' : 'mean',
 	                        style: { width: regionSize } },
 	                    topLeft ? _react2.default.createElement(
-	                        _layout.VerticalLayout,
+	                        _layout.DefaultLayout,
 	                        {
+	                            scrollx: false,
+	                            scrolly: false,
 	                            style: {
 	                                height: header.length * headerRowHeight,
-	                                overflow: 'hidden',
 	                                borderBottom: '2px solid #eaeaea'
 	                            } },
 	                        topLeft
 	                    ) : null,
 	                    _react2.default.createElement(
-	                        _layout.VerticalLayout,
-	                        { style: { overflow: 'hidden' } },
+	                        _layout.DefaultLayout,
+	                        { scrollx: false, scrolly: false },
 	                        bottomLeft
 	                    )
 	                ) : null,
@@ -49406,25 +49407,25 @@
 	                    _layout.Layout,
 	                    { dir: 'top', box: topRight ? 'first' : 'mean' },
 	                    topRight ? _react2.default.createElement(
-	                        _layout.VerticalLayout,
+	                        _layout.DefaultLayout,
 	                        {
+	                            scrollx: false,
+	                            scrolly: false,
 	                            style: {
 	                                height: header.length * headerRowHeight,
-	                                overflow: 'hidden',
 	                                borderBottom: '2px solid #eaeaea'
 	                            } },
 	                        topRight
 	                    ) : null,
 	                    _react2.default.createElement(
-	                        _layout.VerticalLayout,
-	                        { style: { overflow: 'hidden' } },
+	                        _layout.DefaultLayout,
+	                        { scrollx: false, scrolly: false },
 	                        bottomRight
 	                    )
 	                ),
 	                _react2.default.createElement(
 	                    _layout.VerticalLayout,
-	                    { style: {
-	                            position: 'absolute',
+	                    { abs: true, style: {
 	                            top: 0,
 	                            bottom: 0,
 	                            right: -_Scrollbar2.default.SIZE,
