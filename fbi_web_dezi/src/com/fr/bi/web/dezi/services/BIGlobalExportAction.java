@@ -8,6 +8,7 @@ import com.fr.bi.cal.report.io.BIExcel2007Exporter;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
+import com.fr.bi.web.dezi.phantom.utils.ServerUtils;
 import com.fr.general.DateUtils;
 import com.fr.io.exporter.AppExporter;
 import com.fr.json.JSONObject;
@@ -47,6 +48,7 @@ public class BIGlobalExportAction extends AbstractBIDeziAction {
             return;
         }
 
+//        String response = ServerUtils.postMessage("127.0.0.1", 8089, "");
 //        String reportId = WebUtils.getHTTPRequestParameter(req, "reportId");
         BIReportNode node = sessionIDInfo.getReportNode();
         String reportName = node.getReportName() != null ? node.getReportName() : "";

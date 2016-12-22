@@ -1,7 +1,6 @@
 package com.fr.bi;
 
 
-import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
@@ -27,13 +26,13 @@ import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.web.dezi.phantom.Server;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.tableObject.Column;
 import com.fr.data.core.db.tableObject.ColumnSize;
 import com.fr.data.dao.*;
-import com.fr.dav.LocalEnv;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.UserControl;
@@ -92,6 +91,13 @@ public class BIPlate extends AbstractFSPlate {
         dropColumnBID();
         //兼容FR工程中可能存在PARENTID类型是整型的情况
         notifyColumnParentIdType();
+
+        //启动用于截图的phantom服务
+        try {
+            initPhantomServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadMemoryData() {
@@ -218,6 +224,11 @@ public class BIPlate extends AbstractFSPlate {
         } finally {
             DBUtils.closeConnection(cn);
         }
+    }
+
+    private static void initPhantomServer() throws IOException {
+        Server server = new Server();
+//        server.start();
     }
 
     private void initOOMKillerForLinux() {
