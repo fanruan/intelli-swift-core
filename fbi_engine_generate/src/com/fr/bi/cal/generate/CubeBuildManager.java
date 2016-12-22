@@ -35,13 +35,39 @@ public class CubeBuildManager {
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
+
+    public void addSingleTableTask(long userId, String baseTableSourceId, int updateType) {
+        BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);
+        int times = 0;
+        for (int i = 0; i < 100; i++) {
+            if (!cubeManager.hasTask()) {
+                CubeBuildSingleTable(userId, baseTableSourceId, updateType);
+                break;
+            }
+            long timeDelay = i * 5000;
+            BILoggerFactory.getLogger(CubeBuildManager.class).info("Cube is generating, wait to add SingleTable Cube Task until finished, retry times : " + i);
+            BILoggerFactory.getLogger(CubeBuildManager.class).info("the SingleTable SourceId is: " + baseTableSourceId);
+            try {
+                Thread.sleep(timeDelay);
+            } catch (InterruptedException e) {
+                BILoggerFactory.getLogger(CubeBuildManager.class).error(e.getMessage(), e);
+            }
+            times++;
+        }
+        if (times == 100) {
+            BILoggerFactory.getLogger(CubeBuildManager.class).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
+            BILoggerFactory.getLogger(CubeBuildManager.class).info("the SingleTable SourceId is: " + baseTableSourceId);
+        }
+    }
+
     public void CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);
         List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, baseTableSourceId, updateType);
         BILoggerFactory.getLogger().info("Update relevant table size:" + cubeBuildList.size());
         for (CubeBuildStuff cubeBuild : cubeBuildList) {
-                cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
+            cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         }
+
     }
 
     public List<CubeBuildStuff> buildSingleTable(long userId, String baseTableSourceId, int updateType) {

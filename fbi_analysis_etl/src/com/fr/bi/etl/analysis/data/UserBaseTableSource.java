@@ -91,12 +91,12 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
         helper.add(parent);
         set.add(parent);
         for (BITargetAndDimension dim : widget.getViewDimensions()) {
-            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
+            if (dim.getStatisticElement() != null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 dim.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
         for (BITargetAndDimension target : widget.getViewTargets()) {
-            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
+            if (target.getStatisticElement() != null && target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
                 target.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }

@@ -949,7 +949,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
 
                 //选择字段服务
-                "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css"
+                "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
+
+
+                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
         };
     }
 
@@ -1724,6 +1727,7 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/aspects/config.js",
 
+                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
 
                 //工程配置
                 "com/fr/bi/web/js/config.js"
@@ -2078,6 +2082,10 @@ public class ResourceHelper {
                 //分享给我的
                 "com/fr/bi/web/css/components/share/sharetome.css",
                 "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
+
+
+                //react控件
+                "com/fr/bi/web/css/components/components.react.css",
 
         };
     }
@@ -2846,6 +2854,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/share/sharetome.js",
                 "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
 
+
+                //react控件
+                "com/fr/bi/web/js/components/components.react.js",
         };
     }
 

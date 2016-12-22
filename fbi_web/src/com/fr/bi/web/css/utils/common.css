@@ -51,6 +51,14 @@
 .bi-list-item.disabled:active {
   background-color: #ffffff;
 }
+.bi-list-item-stress:active {
+  color: #009de3;
+}
+.bi-list-item-stress.disabled,
+.bi-list-item-stress.disabled:hover,
+.bi-list-item-stress.disabled:active {
+  color: #1a1a1a;
+}
 .bi-list-item-effect.active,
 .bi-list-item-effect:active {
   color: #009de3;
