@@ -1,5 +1,6 @@
 package com.fr.bi.conf.log;
 
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.json.JSONObject;
 
@@ -19,6 +20,9 @@ public class BITableErrorLog extends BITableLog implements ErrorLog {
         this.error_text = error_text;
     }
 
+    public String getError_text() {
+        return error_text;
+    }
 
     @Override
     public JSONObject createJSON() throws Exception {
@@ -36,4 +40,9 @@ public class BITableErrorLog extends BITableLog implements ErrorLog {
     public long getTotalTime() {
         return 0;
     }
+    @Override
+    public int getLogType() {
+        return BILogConstant.TABLE_LOG_TYPE.ERROR;
+    }
+
 }

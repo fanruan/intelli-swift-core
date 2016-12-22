@@ -235,5 +235,8 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getSelfToSelfRelationPath();
     }
 
-
+    @Override
+    public void setRelationList(List<BITableSourceRelation> list) {
+        relations = list;
+    }
 }

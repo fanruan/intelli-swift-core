@@ -269,7 +269,7 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public DetailChartSetting getChatSetting() {
+    public DetailChartSetting getChartSetting() {
         return settings;
     }
 

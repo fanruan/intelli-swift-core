@@ -32,17 +32,17 @@ public class BIGetCubeTaskListAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
         CubeTask generated =  CubeGenerationManager.getCubeManager().getGeneratedTask(userId);
         if (generated != null) {
-            jo.put("generated", generated.createJSON());
+            jo.put("generated", generated.getTaskId());
         }
         CubeTask generating =  CubeGenerationManager.getCubeManager().getGeneratingTask(userId);
         if (generating != null) {
-            jo.put("generating", generating.createJSON());
+            jo.put("generating", generating.getTaskId());
         }
         Iterator<CubeTask> iter =  CubeGenerationManager.getCubeManager().getWaitingTaskIterator(userId);
         JSONArray ja = new JSONArray();
         jo.put("waiting", ja);
         while (iter.hasNext()) {
-            ja.put(iter.next().createJSON());
+            ja.put(iter.next().getTaskId());
         }
         WebUtils.printAsJSON(res, new JSONObject().put("cubeTaskList", jo));
     }

@@ -40,16 +40,22 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
             items.put(source);
             table.put(Constants.ITEMS, items);
         }
+        jo.put("table",table);
 
+        // 被自己和其他的螺旋分析使用过
+        JSONArray usedTables = new JSONArray();
+        usedTables.put(tableId);
         for (BusinessTable businessTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()){
             AnalysisCubeTableSource ss = (AnalysisCubeTableSource) businessTable.getTableSource();
             Set<AnalysisCubeTableSource> sources = new HashSet<AnalysisCubeTableSource>();
             ss.getSourceUsedAnalysisETLSource(sources);
             if (!ComparatorUtils.equals(ss, busiTable.getTableSource()) && sources.contains(busiTable.getTableSource())){
                 jo.put("used", true);
+                usedTables.put(businessTable.getID().getIdentityValue());
             }
         }
-        jo.put("table",table);
+        jo.put("usedTables", usedTables);
+
         WebUtils.printAsJSON(res, jo);
     }
 

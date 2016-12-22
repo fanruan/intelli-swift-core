@@ -85,10 +85,6 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BusinessPackageManage.EVENT_PACKAGE_DELETE, packageID)
         });
 
-        this.groupPane.on(BI.BusinessUngroupAndGroupPane.EVENT_GROUP_NAME_CHANGE, function () {
-            self.fireEvent(BI.BusinessPackageManage.EVENT_GROUP_NAME_CHANGE)
-        });
-
         this.groupPane.on(BI.BusinessUngroupAndGroupPane.EVENT_GROUP_NAME_CONFIRM, function () {
             self.fireEvent(BI.BusinessPackageManage.EVENT_GROUP_NAME_CONFIRM)
         });
@@ -163,7 +159,6 @@ BI.BusinessPackageManage.EVENT_PACKAGE_DELETE = "EVENT_PACKAGE_DELETE";
 BI.BusinessPackageManage.EVENT_PACKAGE_ADD = "EVENT_PACKAGE_ADD";
 BI.BusinessPackageManage.EVENT_GROUP_ADD = "EVENT_GROUP_ADD";
 BI.BusinessPackageManage.EVENT_BATCH_GROUP = "EVENT_BATCH_GROUP";
-BI.BusinessPackageManage.EVENT_GROUP_NAME_CHANGE = "EVENT_GROUP_NAME_CHANGE";
 BI.BusinessPackageManage.EVENT_GROUP_NAME_CONFIRM = "EVENT_GROUP_NAME_CONFIRM";
 BI.BusinessPackageManage.EVENT_EDITOR_CONFIRM = "EVENT_EDITOR_CONFIRM";
 $.shortcut("bi.business_package_manage", BI.BusinessPackageManage);

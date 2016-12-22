@@ -656,7 +656,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         int rowLength = usedDimensions.length;
         int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
-        DetailChartSetting chartSetting = widget.getChatSetting();
+        DetailChartSetting chartSetting = widget.getChartSetting();
         TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
         for (int i = 0; i < summaryLength; i++) {
             keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
@@ -670,17 +670,17 @@ public class GroupExecutor extends AbstractNodeExecutor {
         if (tree.getChildLength() == 0) {
             cbcells = new CBCell[columnLen][rowLen + 1];
             rectangle = new Rectangle(rowLength, 1, columnLen - 1, rowLen);
-            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, 0, widget.getChatSetting());
+            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, 0, widget.getChartSetting());
         } else {
             cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
             rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
-            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, widget.isOrder(), widget.getChatSetting());
+            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, widget.isOrder(), widget.getChartSetting());
         }
 
         if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-            dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, keys, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChatSetting());
+            dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, keys, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChartSetting());
         } else {
-            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, keys, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChatSetting());
+            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, keys, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChartSetting());
         }
 
         if (widget.isOrder() == 1 && tree.getChildLength() != 0) {

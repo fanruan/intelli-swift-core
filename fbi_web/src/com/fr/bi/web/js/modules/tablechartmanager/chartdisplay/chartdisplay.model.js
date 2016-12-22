@@ -228,14 +228,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return [BI.map(data.c, function (idx, item) {
             var obj = {};
             var name = item.n, seriesName = item.n;
-            var drillcataDimId = slef._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
+            var drillcataDimId = self._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
             var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
             if (BI.isNotNull(drillcataDimId)) {
                 dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
             }
-            if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
-                var date = new Date(BI.parseInt(name));
-                name = date.print("%Y-%X-%d");
+            if (BI.isNotNull(dGroup)) {
+                name = self._getFormatDateText(dGroup.type, name);
             }
             obj.data = [{
                 x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
@@ -267,9 +266,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             if (BI.isNotNull(drillcataDimId)) {
                 dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
             }
-            if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
-                var date = new Date(BI.parseInt(name));
-                name = date.print("%Y-%X-%d");
+            if (BI.isNotNull(dGroup)) {
+                name = self._getFormatDateText(dGroup.type, name);
             }
             obj.name = name;
             obj.data = [{
@@ -280,6 +278,25 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             }];
             return obj;
         })];
+    },
+
+    _getFormatDateText: function(type, text){
+        switch (type) {
+            case BICst.GROUP.S:
+                text = BICst.FULL_QUARTER_NAMES[text - 1];
+                break;
+            case BICst.GROUP.M:
+                text = BICst.FULL_MONTH_NAMES[text];
+                break;
+            case BICst.GROUP.W:
+                text = BICst.FULL_WEEK_NAMES[text - 1];
+                break;
+            case BICst.GROUP.YMD:
+                var date = new Date(BI.parseInt(text));
+                text = date.print("%Y-%X-%d");
+                break;
+        }
+        return text;
     },
 
     _getDrillDimensionId: function (drill) {
@@ -312,18 +329,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     };
                 }
                 var name = tObj.n, seriesName = tObj.n;
-                if (BI.isNotNull(seriesGroup) && seriesGroup.type === BICst.GROUP.YMD) {
-                    var date = new Date(BI.parseInt(name));
-                    name = date.print("%Y-%X-%d");
+                if (BI.isNotNull(seriesGroup)) {
+                    name = self._getFormatDateText(seriesGroup.type, name);
                 }
                 var data = [];
                 if (BI.has(left, "c")) {
                     data = BI.map(left.c, function (idx, obj) {
                         var value = obj.n, x = obj.n;
                         var seriesValue = obj.s.c[id].s[0];
-                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                            var date = new Date(BI.parseInt(x));
-                            x = date.print("%Y-%X-%d");
+                        if (BI.isNotNull(cataGroup)) {
+                            x = self._getFormatDateText(cataGroup.type, x);
                         }
                         return {
                             "x": x,
@@ -356,9 +371,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var adjustData = BI.map(data.c, function (id, item) {
                     var value = item.n, x = item.n;
                     var seriesValue = item.s[idx];
-                    if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                        var date = new Date(BI.parseInt(x));
-                        x = date.print("%Y-%X-%d");
+                    if (BI.isNotNull(cataGroup)) {
+                        x = self._getFormatDateText(cataGroup.type, x);
                     }
                     return {
                         x: x,
@@ -385,50 +399,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     }]
                 };
             });
-        }
-        return [];
-    },
-
-    _formatDataForDashBoard: function (data) {
-        var self = this, o = this.options;
-        var targetIds = this._getShowTarget();
-        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
-        var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
-        if (BI.isNotNull(drillcataDimId)) {
-            cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
-        }
-        if (BI.has(data, "c")) {
-            var adjustData = BI.map(data.c, function (id, item) {
-                var seriesName = item.n;
-                if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                    var date = new Date(BI.parseInt(seriesName));
-                    seriesName = date.print("%Y-%X-%d");
-                }
-                var data = [{
-                    x: BI.Utils.getDimensionNameByID(targetIds[0]),
-                    y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
-                    seriesName: item.n,
-                    targetIds: [targetIds[0]]
-                }];
-                var obj = {};
-                obj.data = data;
-                obj.name = seriesName;
-                return obj;
-            });
-            return BI.isEmptyArray(adjustData) ? [] : [adjustData];
-        }
-        if (BI.has(data, "s")) {
-            var obj = {};
-            obj.name = "";
-            obj.data = BI.map(data.s, function (idx, value) {
-                return {
-                    x: BI.Utils.getDimensionNameByID(targetIds[idx]),
-                    y: (BI.isFinite(value) ? value : 0),
-                    seriesName: BI.Utils.getDimensionNameByID(targetIds[idx]),
-                    targetIds: [targetIds[idx]]
-                };
-            });
-            return BI.isEmptyArray(obj.data) ? [] : [[obj]];
         }
         return [];
     },
@@ -586,78 +556,80 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if (o.status === BICst.WIDGET_STATUS.DETAIL) {
             realData = BI.Utils.isShowWidgetRealDataByID(o.wId) || false;
         }
-        BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
-            if (BI.isNotNull(jsonData.error)) {
-                callback(jsonData);
-                return;
-            }
-            var data = self.parseChartData(jsonData.data);
-            var types = [];
-            var targetIds = self._getShowTarget();
-            var count = 0;
-            BI.each(data, function (idx, da) {
-                var t = [];
-                BI.each(da, function (id, d) {
-                    if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
-                        var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
-                        t.push(chart.type || BICst.WIDGET.AXIS);
-                    } else {
-                        t.push(type);
-                    }
-                    count++;
-                });
-                types.push(t);
-            });
-            if (BI.isEmptyArray(types)) {
-                types.push([type]);
-            }
-            BI.each(data, function (idx, item) {
-                var i = BI.UUID();
-                var type = types[idx];
-                BI.each(item, function (id, it) {
-                    (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
-                });
-            });
-            if (type === BICst.WIDGET.MAP) {
-                var subType = BI.Utils.getWidgetSubTypeByID(o.wId);
-                if (BI.isNull(subType)) {
-                    BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
-                        if (layer === 0) {
-                            subType = path;
-                            return true;
+        BI.Utils.getWidgetDataByID(o.wId, {
+            success: function (jsonData) {
+                if (BI.isNotNull(jsonData.error)) {
+                    callback(jsonData);
+                    return;
+                }
+                var data = self.parseChartData(jsonData.data);
+                var types = [];
+                var targetIds = self._getShowTarget();
+                var count = 0;
+                BI.each(data, function (idx, da) {
+                    var t = [];
+                    BI.each(da, function (id, d) {
+                        if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
+                            var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
+                            t.push(chart.type || BICst.WIDGET.AXIS);
+                        } else {
+                            t.push(type);
                         }
+                        count++;
                     });
-                }
-                var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
-                if (BI.isNull(name)) {
-                    name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
-                }
-                options.initDrillPath = [name];
-                var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
-                BI.each(drill, function (idx, dri) {
-                    options.initDrillPath.push(dri.values[0].value[0]);
+                    types.push(t);
                 });
-                options.geo = {
-                    data: MapConst.INNER_MAP_INFO.MAP_PATH[subType] || MapConst.CUSTOM_MAP_INFO.MAP_PATH[subType],
-                    name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
+                if (BI.isEmptyArray(types)) {
+                    types.push([type]);
                 }
+                BI.each(data, function (idx, item) {
+                    var i = BI.UUID();
+                    var type = types[idx];
+                    BI.each(item, function (id, it) {
+                        (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
+                    });
+                });
+                if (type === BICst.WIDGET.MAP) {
+                    var subType = BI.Utils.getWidgetSubTypeByID(o.wId);
+                    if (BI.isNull(subType)) {
+                        BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
+                            if (layer === 0) {
+                                subType = path;
+                                return true;
+                            }
+                        });
+                    }
+                    var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
+                    if (BI.isNull(name)) {
+                        name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
+                    }
+                    options.initDrillPath = [name];
+                    var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
+                    BI.each(drill, function (idx, dri) {
+                        options.initDrillPath.push(dri.values[0].value[0]);
+                    });
+                    options.geo = {
+                        data: MapConst.INNER_MAP_INFO.MAP_PATH[subType] || MapConst.CUSTOM_MAP_INFO.MAP_PATH[subType],
+                        name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
+                    }
+                }
+                if (type === BICst.WIDGET.GIS_MAP) {
+                    options.geo = {
+                        "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+                        "attribution": "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>"
+                    };
+                }
+                //var opts = Data.Utils.getWidgetData(jsonData.data, {
+                //    type: BI.Utils.getWidgetTypeByID(o.wId),
+                //    sub_type: BI.Utils.getWidgetSubTypeByID(o.wId),
+                //    view: BI.Utils.getWidgetViewByID(o.wId),
+                //    clicked: BI.Utils.getClickedByID(o.wId),
+                //    settings: BI.Utils.getWidgetSettingsByID(o.wId),
+                //    dimensions: BI.Utils.getWidgetDimensionsByID(o.wId)
+                //});
+                //callback(opts.types, opts.data, opts.options);
+                callback(types, data, options);
             }
-            if (type === BICst.WIDGET.GIS_MAP) {
-                options.geo = {
-                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
-                    "attribution": "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>"
-                };
-            }
-            //var opts = Data.Utils.getWidgetData(jsonData.data, {
-            //    type: BI.Utils.getWidgetTypeByID(o.wId),
-            //    sub_type: BI.Utils.getWidgetSubTypeByID(o.wId),
-            //    view: BI.Utils.getWidgetViewByID(o.wId),
-            //    clicked: BI.Utils.getClickedByID(o.wId),
-            //    settings: BI.Utils.getWidgetSettingsByID(o.wId),
-            //    dimensions: BI.Utils.getWidgetDimensionsByID(o.wId)
-            //});
-            //callback(opts.types, opts.data, opts.options);
-            callback(types, data, options);
         }, {
             expander: {
                 x: {

@@ -31,7 +31,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 lgap: 5,
                 rgap: 5
             });
-            item.on(BI.TextButton.EVENT_CHANGE, function() {
+            item.on(BI.TextButton.EVENT_CHANGE, function () {
                 window.open(expression.replaceAll("\\$\\{.*\\}", o.text));
             });
         } else {
@@ -93,10 +93,6 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
 
-        if (text === Infinity) {
-            text = "N/0";
-        }
-
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
         BI.some(conditions, function (i, co) {
@@ -119,7 +115,9 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
         }
 
-        if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+        if (text === Infinity) {
+            text = "N/0";
+        } else if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNumeric(text)) {
             text += "%";
         }
 

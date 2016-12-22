@@ -6,12 +6,6 @@ Data.Req = BIReq = {
         });
     },
 
-    reqPreviewTableData4DeziByTableId: function (tableId, callback) {
-        BI.requestAsync("fr_bi_dezi", "get_preview_table_data", {table_id: tableId}, function (res) {
-            callback(res);
-        })
-    },
-
     reqTablesByPackId: function (packId, callback, complete) {
         BI.requestAsync("fr_bi_configure", "get_brief_tables_of_one_package", {id: packId}, function (res) {
             callback(res);
@@ -59,23 +53,6 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqPackage: function (callback) {
-        BI.requestAsync("fr_bi_configure", "get_accessable_packages", "", function (res) {
-            callback(res);
-        });
-    },
-
-    reqPakageAndGroup: function (callback) {
-        return BI.requestAsync("fr_bi_configure", "get_business_package_group", {}, callback);
-    },
-    reqPakageAndGroupSync: function () {
-        return BI.requestSync("fr_bi_configure", "get_business_package_group", {});
-    },
-
-    reqAllTablesByConnection: function (data, callback) {
-        BI.requestAsync("fr_bi_configure", "get_all_translated_tables_by_connection", data, callback);
-    },
-
     reqWidgetSettingByData: function (data, callback, complete) {
         BI.requestAsync("fr_bi_dezi", "widget_setting", data, function (res) {
             callback(res);
@@ -118,8 +95,8 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqCubeStatusCheck: function (callback, complete) {
-        BI.requestAsync("fr_bi_configure", "get_cube_generate_status", {}, function (res) {
+    reqCubeStatusCheck: function (table, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "check_cube_table_status", {table:table}, function (res) {
             callback(res);
         }, complete)
     },
