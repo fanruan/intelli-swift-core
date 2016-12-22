@@ -998,7 +998,7 @@ public class ResourceHelper {
                 //one package
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.js",
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.model.js",
-                "com/fr/bi/web/js/modules/onepackage/widget.refreshtablefields.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/refreshfields/widget.refreshtablefields.js",
 
 
                 //FineBI Service

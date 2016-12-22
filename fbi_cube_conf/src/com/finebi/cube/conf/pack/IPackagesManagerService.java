@@ -5,6 +5,7 @@ import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.BIPackageName;
 import com.finebi.cube.conf.pack.imp.BIPackageContainer;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
@@ -43,4 +44,6 @@ public interface IPackagesManagerService extends IPackagesManagerGetterService {
     Boolean isPackageEmpty();
 
     void removeTable(BIPackageID packageID, BITableID tableID) throws BIPackageAbsentException, BITableAbsentException;
+
+    void addTable(BIPackageID packageID, BIBusinessTable biBusinessTable) throws BIPackageAbsentException;
 }

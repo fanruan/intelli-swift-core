@@ -14,11 +14,12 @@ BI.RelationTablesButton = BI.inherit(BI.BasicButton, {
     _init: function(){
         BI.RelationTablesButton.superclass._init.apply(this, arguments);
         var o = this.options;
-        var relationTables = o.relation_tables, items = [];
-        BI.each(relationTables, function(i, name) {
+        var fieldId = o.fieldId, items = [];
+        BI.each(BI.Utils.getRelationFieldsByFieldId4Conf(fieldId), function(i, id) {
+            var tableId = BI.Utils.getTableIdByFieldId4Conf(id);
             items.push({
-                text: name
-            })
+                text: BI.Utils.getTransNameById4Conf(tableId)
+            });
         });
         if(BI.isEmptyArray(items)) {
             items.push({text: " "});

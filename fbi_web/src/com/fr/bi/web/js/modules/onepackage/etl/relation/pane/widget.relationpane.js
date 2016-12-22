@@ -14,10 +14,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         BI.RelationPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.RelationPaneModel({
-            field_id: o.field_id,
-            relations: o.relations,
-            translations: o.translations,
-            all_fields: o.all_fields
+            field_id: o.field_id
         });
         this._createRelationTree();
         var addRelationTable = BI.createWidget({
@@ -107,8 +104,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             }
             treeValue.push({
                 fieldId: v.field_id,
-                relationType: self.model.getRelationType(fieldId),
-                translations: self.model.getTranslations()
+                relationType: self.model.getRelationType(fieldId)
             });
             self._refreshTree(treeValue);
         });

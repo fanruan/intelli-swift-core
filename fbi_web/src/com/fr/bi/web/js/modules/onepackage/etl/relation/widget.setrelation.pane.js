@@ -50,8 +50,8 @@ BI.RelationSetPane = BI.inherit(BI.BarPopoverSection, {
 
     getFieldNameByFieldId: function(){
         var o = this.options;
-        var allFields = o.all_fields, fieldId = o.field_id, translations = o.translations;
-        return translations[fieldId] || allFields[fieldId].field_name;
+        var fieldId = o.fieldId;
+        return BI.Utils.getTransNameById4Conf(fieldId) || BI.Utils.getFieldNameById4Conf(fieldId);
     }
 });
 BI.RelationSetPane.EVENT_CHANGE = "EVENT_CHANGE";

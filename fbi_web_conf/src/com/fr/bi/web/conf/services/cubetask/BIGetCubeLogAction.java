@@ -16,8 +16,7 @@ public class BIGetCubeLogAction extends AbstractBIConfigureAction {
     }
 
     @Override
-    protected void actionCMDPrivilegePassed(HttpServletRequest req,
-                                            HttpServletResponse res) throws Exception {
+    protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         WebUtils.printAsJSON(res, BIConfigureManagerCenter.getLogManager().createJSON(userId));
     }

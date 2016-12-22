@@ -20,6 +20,8 @@ public interface BIAliasManagerProvider {
 
     String getAliasName(String id, long userId);
 
+    void removeAliasName(String id, long userId);
+
     JSONObject getAliasJSON(long userID);
 
     void envChanged();
