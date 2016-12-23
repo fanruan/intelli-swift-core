@@ -20,6 +20,10 @@ BIShow.DatePaneView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
+
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
+            self.combo.setValue(self.model.get("value"));
+        });
     },
 
     _render: function (vessel) {
