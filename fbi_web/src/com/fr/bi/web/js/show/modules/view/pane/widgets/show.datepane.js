@@ -22,7 +22,7 @@ BIShow.DatePaneView = BI.inherit(BI.View, {
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
-            self.combo.setValue(self.model.get("value"));
+            self.datePane.setValue(self.model.get("value"));
         });
     },
 
@@ -31,10 +31,10 @@ BIShow.DatePaneView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._createTools();
 
-        this.combo = BI.createWidget({
+        this.datePane = BI.createWidget({
             type: "bi.custom_multi_date_pane"
         });
-        this.combo.on(BI.CustomMultiDatePane.EVENT_CHANGE, function () {
+        this.datePane.on(BI.CustomMultiDatePane.EVENT_CHANGE, function () {
             self.model.set("value", this.getValue());
         });
 
@@ -47,7 +47,7 @@ BIShow.DatePaneView = BI.inherit(BI.View, {
                 left: 0,
                 right: 0
             }, {
-                el: this.combo,
+                el: this.datePane,
                 top: 10,
                 right: 10
             }, {
@@ -134,14 +134,14 @@ BIShow.DatePaneView = BI.inherit(BI.View, {
         if (height < 100) {
             this.widget.attr("items")[1].top = 10;
             if (width < minComboWidth + minNameWidth + 48) {
-                this.combo.setVisible(false);
+                this.datePane.setVisible(false);
                 this.widget.attr("items")[0].right = 10;
             } else if (width < nameWidth + minComboWidth + 48) {
-                this.combo.setVisible(true);
+                this.datePane.setVisible(true);
                 this.widget.attr("items")[0].right = minComboWidth + 25;
                 this.widget.attr("items")[1].left = width - 15 - minComboWidth;
             } else {
-                this.combo.setVisible(true);
+                this.datePane.setVisible(true);
                 this.widget.attr("items")[0].right = width - 43 - nameWidth;
                 this.widget.attr("items")[1].left = 33 + nameWidth;
             }
@@ -192,7 +192,7 @@ BIShow.DatePaneView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
-        this.combo.setValue(this.model.get("value"));
+        this.datePane.setValue(this.model.get("value"));
         this._refreshTitlePosition();
     }
 });

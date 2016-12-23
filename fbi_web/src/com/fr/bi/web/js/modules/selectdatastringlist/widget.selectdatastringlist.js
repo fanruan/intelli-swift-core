@@ -82,6 +82,10 @@ BI.SelectDataStringList = BI.inherit(BI.Widget, {
         return v;
     },
 
+    resize: function () {
+        this.list.resize();
+    },
+
     getValue: function () {
         var val = this.list.getValue();
         return {

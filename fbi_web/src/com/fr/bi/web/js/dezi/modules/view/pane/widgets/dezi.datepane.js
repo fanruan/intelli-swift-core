@@ -22,7 +22,7 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
-            self.combo.setValue(self.model.get("value"));
+            self.dataPane.setValue(self.model.get("value"));
         });
         //全局样式
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
@@ -35,10 +35,10 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._createTools();
 
-        this.combo = BI.createWidget({
+        this.dataPane = BI.createWidget({
             type: "bi.custom_multi_date_pane"
         });
-        this.combo.on(BI.CustomMultiDatePane.EVENT_CHANGE, function () {
+        this.dataPane.on(BI.CustomMultiDatePane.EVENT_CHANGE, function () {
             self.model.set("value", this.getValue());
         });
 
@@ -55,7 +55,7 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
                 left: 0,
                 right: 0
             }, {
-                el: this.combo,
+                el: this.dataPane,
                 top: 10,
                 right: 10
             }]
@@ -181,21 +181,21 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
             // this.widget.attr("items")[0].right = "";
             this.widget.attr("items")[2].top = 10;
             if (width < minComboWidth + minNameWidth + 48) {
-                this.combo.setVisible(false);
+                this.dataPane.setVisible(false);
                 this.widget.attr("items")[1].right = 0;
             } else if (width < nameWidth + minComboWidth + 48) {
-                this.combo.setVisible(true);
+                this.dataPane.setVisible(true);
                 this.widget.attr("items")[1].right = minComboWidth + 15;
                 this.widget.attr("items")[2].left = width - 15 - minComboWidth;
             } else {
-                this.combo.setVisible(true);
+                this.dataPane.setVisible(true);
                 this.widget.attr("items")[1].right = width - 43 - nameWidth;
                 this.widget.attr("items")[2].left = 33 + nameWidth;
             }
         } else {
             // this.widget.attr("items")[0].left = "";
             // this.widget.attr("items")[0].right = 10;
-            this.combo.setVisible(true);
+            this.dataPane.setVisible(true);
             this.widget.attr("items")[1].right = 0;
             this.widget.attr("items")[2].top = 35;
             this.widget.attr("items")[2].left = 10;
@@ -254,6 +254,6 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._refreshTitlePosition();
         this._refreshGlobalStyle();
-        this.combo.setValue(this.model.get("value"));
+        this.dataPane.setValue(this.model.get("value"));
     }
 });

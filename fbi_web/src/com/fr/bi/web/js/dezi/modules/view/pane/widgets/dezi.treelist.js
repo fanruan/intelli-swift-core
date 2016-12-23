@@ -244,6 +244,7 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "bounds")) {
             this._refreshLayout();
+            this.treeList.resize();
         }
 
         if (BI.has(changed, "value")) {

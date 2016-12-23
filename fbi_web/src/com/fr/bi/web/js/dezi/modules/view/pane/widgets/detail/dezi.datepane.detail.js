@@ -127,7 +127,7 @@ BIDezi.DatePaneDetailView = BI.inherit(BI.View, {
     },
 
     _buildCenter: function () {
-        var combo = this._createCombo();
+        var datePane = this._createCombo();
 
         var top = BI.createWidget({
             type: "bi.vtape",
@@ -172,7 +172,7 @@ BIDezi.DatePaneDetailView = BI.inherit(BI.View, {
                             type: "bi.absolute",
                             cls: "widget-center-wrapper",
                             items: [{
-                                el: combo,
+                                el: datePane,
                                 left: 10,
                                 right: 10,
                                 top: 10
@@ -223,13 +223,13 @@ BIDezi.DatePaneDetailView = BI.inherit(BI.View, {
 
     _createCombo: function () {
         var self = this;
-        this.combo = BI.createWidget({
+        this.datePane = BI.createWidget({
             type: "bi.custom_multi_date_pane"
         });
-        this.combo.on(BI.CustomMultiDatePane.EVENT_CHANGE, function () {
+        this.datePane.on(BI.CustomMultiDatePane.EVENT_CHANGE, function () {
             self.model.set("value", this.getValue());
         });
-        return this.combo;
+        return this.datePane;
     },
 
     splice: function (old, key1, key2) {
@@ -255,6 +255,6 @@ BIDezi.DatePaneDetailView = BI.inherit(BI.View, {
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
-        this.combo.setValue(this.model.get("value"));
+        this.datePane.setValue(this.model.get("value"));
     }
 });

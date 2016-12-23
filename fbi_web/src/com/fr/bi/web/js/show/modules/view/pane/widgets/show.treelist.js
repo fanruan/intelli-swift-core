@@ -165,6 +165,7 @@ BIShow.TreeListView = BI.inherit(BI.View, {
     change: function (changed) {
         if (BI.has(changed, "bounds")) {
             this._refreshLayout();
+            this.treeList.resize();
         }
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();

@@ -145,6 +145,11 @@ BI.MultiTreeList = BI.inherit(BI.Widget, {
         this.trigger.stopEditing();
     },
 
+    resize: function () {
+        this.trigger.getCounter().adjustView();
+        this.trigger.getSearcher().adjustView();
+    },
+
     setEnable: function (v) {
         this.trigger.setEnable(v);
         this.popup.setEnable(v);

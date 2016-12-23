@@ -260,6 +260,7 @@ BIDezi.StringListView = BI.inherit(BI.View, {
     change: function (changed, prev, context, options) {
         if (BI.has(changed, "bounds")) {
             this._refreshLayout();
+            this.stringList.resize();
         }
         if (BI.has(changed, "value")) {
             BI.Utils.broadcastAllWidgets2Refresh();
