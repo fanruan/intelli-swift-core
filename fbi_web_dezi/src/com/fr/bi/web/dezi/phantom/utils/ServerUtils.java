@@ -1,11 +1,14 @@
 package com.fr.bi.web.dezi.phantom.utils;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.IOUtils;
+import com.fr.json.JSONException;
+import com.fr.json.JSONObject;
+import com.fr.stable.OperatingSystem;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -18,9 +21,47 @@ public class ServerUtils {
     private static final int PORT = 8089;
 
     public static final String CLOSE = "{\"status\": \"close\"}";
+    public static final String LIVE = "{\"status\": \"live\"}";
+
+    public static boolean checkServer(String ip, int port){
+        try {
+            String res = ServerUtils.postMessage(ip, port, LIVE);
+            return isServerReady(res);
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public static boolean isServerReady(String res){
+        try {
+            String status = getResParam(res, "status");
+            if (ComparatorUtils.equals(status, "OK")){
+                return true;
+            }
+        } catch (JSONException e) {
+            return false;
+        }
+        return false;
+    }
+
+    public static String getResParam(String res, String key) throws JSONException {
+        JSONObject json = new JSONObject(res);
+        return json.getString(key);
+    }
 
     /**
-     *
+     * @param ip
+     * @param port
+     */
+    public static void shutDownPhantomServer(String ip, int port) {
+        try {
+            String res = ServerUtils.postMessage(ip, port, CLOSE);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(e.getMessage());
+        }
+    }
+
+    /**
      * @param ip
      * @param port
      * @param message
@@ -48,11 +89,63 @@ public class ServerUtils {
         return response;
     }
 
-    public static void shutDownPhantomServer(String ip, String port) {
-        try {
-
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().info(e.getMessage());
+    public static String getExe(String path) {
+        String exe = path + "/phantomjs";
+        //if it is not windows, set authority
+        if (isLinux32() || isLinux64()){
+            ServerUtils.setAuthority(exe);
+        }else if (OperatingSystem.isMacOS()){
+            ServerUtils.setAuthority(exe);
+        }else if (isUnix32() || isUnix64()){
+            ServerUtils.setAuthority(exe);
         }
+        return exe;
+    }
+
+    public static String setAuthority(String exe) {
+        return "chmod +x " + exe;
+    }
+
+    public static boolean isLinux32(){
+        int bit = linuxBit();
+        if (bit == 32){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isUnix32(){
+        return isLinux32();
+    }
+
+    public static boolean isLinux64(){
+        int bit = linuxBit();
+        if (bit == 64){
+            return true;
+        }
+        return false;
+    }
+    public static boolean isUnix64(){
+        return isLinux64();
+    }
+
+    private static int linuxBit(){
+        String systemType = System.getProperty("os.name");
+        if (systemType.equalsIgnoreCase("linux")) {
+            try {
+                Process process = Runtime.getRuntime().exec("getconf LONG_BIT");
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String s = bufferedReader.readLine();
+                process.destroy();
+                if (s.contains("64")) {//64位
+                    return 64;
+                } else {//32位
+                    return 32;
+                }
+            } catch (IOException e) {
+               BILoggerFactory.getLogger().info(e.getMessage());
+            }
+        }
+        return -1;
     }
 }

@@ -93,11 +93,7 @@ public class BIPlate extends AbstractFSPlate {
         notifyColumnParentIdType();
 
         //启动用于截图的phantom服务
-        try {
-            initPhantomServer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        initPhantomServer();
     }
 
     public void loadMemoryData() {
@@ -171,12 +167,12 @@ public class BIPlate extends AbstractFSPlate {
         String tableName = "FR_T_" + DAOUtils.getClassNameWithOutPath(BISharedReportNode.class);
         try {
             cn = PlatformDB.getDB().createConnection();
-            try{
+            try {
                 cn.setAutoCommit(false);
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
-            Dialect dialect = DialectFactory.generateDialect(cn,PlatformDB.getDB().getDriver());
+            Dialect dialect = DialectFactory.generateDialect(cn, PlatformDB.getDB().getDriver());
             FSDAOManager.addTableColumn(cn, dialect,
                     new Column("createByName", Types.VARCHAR, new ColumnSize(50)), tableName);
             FSDAOManager.addTableColumn(cn, dialect,
@@ -226,9 +222,14 @@ public class BIPlate extends AbstractFSPlate {
         }
     }
 
-    private static void initPhantomServer() throws IOException {
-        Server server = new Server();
-//        server.start();
+    private static void initPhantomServer() {
+        try {
+            Server server = new Server();
+            server.start();
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
+
     }
 
     private void initOOMKillerForLinux() {

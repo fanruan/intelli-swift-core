@@ -48,7 +48,6 @@ public class BIGlobalExportAction extends AbstractBIDeziAction {
             return;
         }
 
-//        String response = ServerUtils.postMessage("127.0.0.1", 8089, "");
 //        String reportId = WebUtils.getHTTPRequestParameter(req, "reportId");
         BIReportNode node = sessionIDInfo.getReportNode();
         String reportName = node.getReportName() != null ? node.getReportName() : "";
