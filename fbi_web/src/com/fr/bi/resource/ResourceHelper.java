@@ -2327,6 +2327,7 @@ public class ResourceHelper {
                 //螺旋分析tab控件
                 "com/fr/bi/web/css/widget/dynamicgrouptab/dynamicgroup.tab.buttonmanager.css",
                 "com/fr/bi/web/css/widget/dynamicgrouptab/dynamicgroup.tab.sheetbutton.css",
+                "com/fr/bi/web/css/widget/dynamicgrouptab/dynamicgroup.tab.renamepopup.css",
 
                 //Excel表
                 "com/fr/bi/web/css/widget/exceltable/exceltable.cell.css",
@@ -3140,6 +3141,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.js",
                 "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.buttonmanager.js",
                 "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.sheetbutton.js",
+                "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.renamepopup.js",
 
                 //Excel表
                 "com/fr/bi/web/js/widget/exceltable/exceltable.cell.js",

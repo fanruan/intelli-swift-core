@@ -9,7 +9,7 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DynamicGroupTabButtonManager.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-dynamic-group-tab-button-manager",
+            cls: "bi-dynamic-group-tab-button-manager",
             items:[],
             height:30
         })
@@ -51,10 +51,9 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
             type:"bi.button",
             level: 'ignore',
             text: BI.i18nText("BI-merge_sheet"),
-            title: BI.i18nText("BI-merge_sheet")
+            title: BI.i18nText("BI-merge_sheet"),
+            warningTitle: BI.i18nText("BI-Need_Two_Tables_Or_Above_For_Merge")
         })
-
-        this.mergeSheetButton.setWarningTitle(BI.i18nText("BI-Need_Two_Tables_Or_Above_For_Merge"))
 
         this.mergeSheetButton.on(BI.Button.EVENT_CHANGE, function(v){
             self.fireEvent(BI.DynamicGroupTabButtonManager.MERGE_SHEET, v)
@@ -93,12 +92,12 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
                 cls:"bi-sheet-tab-dynamic-horizontal",
                 items:[this.tab,
                     {
-                        type:"bi.center_adapt",
+                        type:"bi.vertical_adapt",
                         items:[this.scrollLeft],
                         height: o.height
                     },
                     {
-                        type:"bi.center_adapt",
+                        type:"bi.vertical_adapt",
                         items:[this.scrollRight],
                         height: o.height
                     },
@@ -139,11 +138,17 @@ BI.DynamicGroupTabButtonManager = BI.inherit(BI.Widget, {
     },
 
     _createItem: function(id){
+        var self = this;
         return {
             type: "bi.dynamic_group_tab_sheet_button",
             height: 29,
             width: 90,
             value : id,
+            nameChecker: function(name){
+                return !BI.any(self.tab.getAllButtons(), function(idx, button){
+                    return button.getValue() !== id && name === button.getText();
+                });
+            },
             text : "Sheet" + this.tab.getAllButtons().length
         }
     },

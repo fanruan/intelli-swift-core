@@ -5,8 +5,7 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DynamicGroupTab.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-dynamic-group-tab",
-            items:[],
+            cls: "bi-dynamic-group-tab",
             cardCreator: function(v){
                 return BI.createWidget();
             },
@@ -105,8 +104,6 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
     },
 
     populate: function(){
-        this.tabs = [];
-        this.tabButton.populate();
         this.tab.populate();
     }
 })

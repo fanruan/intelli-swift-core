@@ -32,32 +32,9 @@ DynamicGroupTabView = BI.inherit(BI.View, {
             vgap: 50,
             items: [{
                 el: this.tab
-            }, {
-                el: {
-                    type: "bi.button",
-                    value: "populate",
-                    height: 30,
-                    wudth: 200,
-                    handler: function(){
-                        self.tab.populate([]);
-                    }
-                },
-                height: 30
             }]
         })
-    },
-
-    _addNewButton : function(value) {
-        var item = {
-            type:"bi.dynamic_group_tab_sheet_button",
-            height: 29,
-            width: 90,
-            value : value,
-            text : "Sheet" + this.tab.getAllButtons().length
-        }
-        var button = BI.createWidget(item);
-        this.tab.addItems([button]);
-    },
+    }
 });
 
 DynamicGroupTabModel = BI.inherit(BI.Model, {});

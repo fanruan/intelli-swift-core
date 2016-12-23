@@ -14,9 +14,8 @@ BI.DynamicGroupTabSheetButton = BI.inherit(BI.BasicButton, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DynamicGroupTabSheetButton.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-tab-sheet-button bi-list-item",
+            cls: "bi-tab-sheet-button bi-list-item",
             height: 28,
-            width:null,
             iconWidth: 13,
             iconHeight: 13,
             text : "sheet1",
@@ -45,7 +44,7 @@ BI.DynamicGroupTabSheetButton = BI.inherit(BI.BasicButton, {
             isNeedAdjustWidth: false,
             el: {
                 type: "bi.icon_trigger",
-                extraCls: "icon-analysis-table-set",
+                cls: "icon-analysis-table-set",
                 width: c.ICON_WIDTH,
                 height: c.ICON_HEIGHT
             },
@@ -66,22 +65,30 @@ BI.DynamicGroupTabSheetButton = BI.inherit(BI.BasicButton, {
         });
         this.combo.on(BI.Combo.EVENT_CHANGE, function (v) {
             switch (v) {
-                case c.DELETE:{
+                case c.DELETE:
                     BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"),  BI.i18nText("BI-Confirm_Delete") +  self.text.getValue() + "?", function (v) {
                         if(v === true) {
                             self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_DELETE, o.value);
                         }
-                    })
+                    });
                     break;
-                }
-                case c.COPY:{
+                case c.COPY:
                     self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_COPY, o.value);
                     break;
-                }
-                case c.RENAME:{
-                    self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_RENAME, o.value);
+                case c.RENAME:
+                    BI.Popovers.remove(o.value);
+                    var popup = BI.createWidget({
+                        type: "bi.dynamic_group_tab_rename_popover",
+                        nameChecker: o.nameChecker
+                    });
+                    popup.on(BI.DynamicGroupTabRenamePopup.EVENT_CHANGE, function (v) {
+                        o.text = v;
+                        self.text.setText(v);
+                        self.fireEvent(BI.DynamicGroupTabSheetButton.EVENT_RENAME, o.value);
+                    });
+                    BI.Popovers.create(o.value, popup, {width: 400, height: 320}).open(o.value);
+                    popup.populate(o.text);
                     break;
-                }
             }
 
             self.fireEvent(BI.WidgetCombo.EVENT_CHANGE, v);
@@ -134,6 +141,10 @@ BI.DynamicGroupTabSheetButton = BI.inherit(BI.BasicButton, {
         BI.DynamicGroupTabSheetButton.superclass.setText.apply(this, arguments);
         this.text.setText(text);
         this._refreshRedMark();
+    },
+
+    getText: function(){
+        return this.options.text;
     },
 
     getValue: function(){
