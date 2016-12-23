@@ -167,7 +167,10 @@ BIShow.TreeListView = BI.inherit(BI.View, {
             this._refreshLayout();
             this.treeList.resize();
         }
-        if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
+        if (BI.has(changed, "value")) {
+            BI.Utils.broadcastAllWidgets2Refresh(true, this.model.get("id"));
+        }
+        if (BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },
