@@ -26,13 +26,4 @@ public class PageIteratorGroup {
     public void setColumnRoot(IRootDimensionGroup columnRoot) {
         this.columnRoot = columnRoot;
     }
-
-    public void releaseIndex() {
-        if (rowRoot != null){
-            rowRoot.clearCache();
-        }
-        if (columnRoot != null){
-            columnRoot.clearCache();
-        }
-    }
 }

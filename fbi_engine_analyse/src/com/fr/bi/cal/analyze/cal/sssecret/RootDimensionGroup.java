@@ -163,11 +163,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         this.expander = expander;
     }
 
-    @Override
-    public NodeExpander getExpander() {
-        return expander;
-    }
-
     /**
      * TODO 这里可以改成可以前后移动的游标提高性能先这样
      */
@@ -197,11 +192,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     public TreeIterator moveToStart() {
         iter.reset();
         return iter;
-    }
-
-    @Override
-    public void clearCache() {
-        singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
     }
 
     private int[] getValueStartRow(Object[] value) {
