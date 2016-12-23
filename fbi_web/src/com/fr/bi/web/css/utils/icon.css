@@ -563,6 +563,36 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_style_3d.png');
   _background: none;
 }
+.multi-pie-gradient-lighter-icon .x-icon,
+.multi-pie-gradient-lighter-icon:hover .x-icon,
+.multi-pie-gradient-lighter-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_multi_pie_gradient_lighter.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_multi_pie_gradient_lighter.png');
+  _background: none;
+}
+.multi-pie-gradient-lighter-icon.native .x-icon,
+.multi-pie-gradient-lighter-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_multi_pie_gradient_lighter.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_multi_pie_gradient_lighter.png');
+  _background: none;
+}
+.multi-pie-gradient-darker-icon .x-icon,
+.multi-pie-gradient-darker-icon:hover .x-icon,
+.multi-pie-gradient-darker-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_multi_pie_gradient_darker.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_multi_pie_gradient_darker.png');
+  _background: none;
+}
+.multi-pie-gradient-darker-icon.native .x-icon,
+.multi-pie-gradient-darker-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_multi_pie_gradient_darker.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/icon_multi_pie_gradient_darker.png');
+  _background: none;
+}
 .line-chart-style-curve-icon .x-icon,
 .line-chart-style-curve-icon:hover .x-icon,
 .line-chart-style-curve-icon:active .x-icon {
