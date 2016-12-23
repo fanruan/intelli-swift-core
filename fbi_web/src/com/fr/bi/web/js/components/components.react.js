@@ -44147,7 +44147,6 @@
 	                    overflow: 'hidden',
 	                    textOverflow: 'ellipsis',
 	                    wordWrap: 'break-word',
-	                    display: '-webkit-box',
 	                    WebkitLineClamp: numberOfLines,
 	                    WebkitBoxOrient: 'vertical'
 	                }) }));
@@ -44728,11 +44727,18 @@
 	        value: function render() {
 	            var _props = this.props,
 	                children = _props.children,
-	                props = _objectWithoutProperties(_props, ['children']);
+	                style = _props.style,
+	                props = _objectWithoutProperties(_props, ['children', 'style']);
 
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                _extends({ cross: 'center' }, props),
+	                _extends({ cross: 'center' }, props, { style: _extends({}, style, {
+	                        overflow: 'hidden',
+	                        textOverflow: 'ellipsis',
+	                        wordWrap: 'break-word',
+	                        whiteSpace: 'nowrap',
+	                        wordBreak: 'break-all'
+	                    }) }),
 	                _react2.default.createElement(
 	                    _Text2.default,
 	                    { numberOfLines: 1 },
@@ -51060,6 +51066,9 @@
 	                    regionColumnSize[0] += columnSize[col];
 	                });
 	            }
+	            if (freezeCols.length === 0) {
+	                regionColumnSize[0] = 0;
+	            }
 	            if (isNeedFreeze === true && regionColumnSize[0] >= tableWidth) {
 	                regionColumnSize[0] = freezeCols.length > columnSize.length - freezeCols.length ? Math.floor(2 / 3 * tableWidth) : Math.floor(tableWidth / 3);
 	            }
@@ -51868,8 +51877,8 @@
 	                            paddingRight: 10
 	                        }) },
 	                    _react2.default.createElement(
-	                        _base.Text,
-	                        { numberOfLines: 1, style: {
+	                        _base.Label,
+	                        { style: {
 	                                cursor: item.onClick ? 'pointer' : 'default'
 	                            }, onClick: item.onClick },
 	                        item.text
