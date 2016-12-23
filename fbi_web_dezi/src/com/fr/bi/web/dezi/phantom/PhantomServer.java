@@ -2,6 +2,7 @@ package com.fr.bi.web.dezi.phantom;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.dezi.phantom.utils.ServerUtils;
 import com.fr.general.RunTimeErorException;
 
@@ -11,15 +12,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * phantom server
  * Created by AstronautOO7 on 2016/12/21.
  */
-public class Server {
+public class PhantomServer {
 
     private static final String IP = "127.0.0.1";
     private static final int PORT = 8089;
 
     private static Map<String, String> osMap = new HashMap<String, String>();
-    private static String PhantomEnv = FRContext.getCurrentEnv().getPath() + "/resources/phantom";
+    private static String PhantomEnv = BIBaseConstant.PHANTOM.PHANTOM_PATH;
     private static String PhantomLib = PhantomEnv + "/lib";
     private static String PhantomResources = FRContext.getCurrentEnv().getPath() + "/classes/com/fr/bi/web/js/third";
 
@@ -36,7 +38,6 @@ public class Server {
 
     //resources needed in the phantom server
     private static final String[][] SCRIPT_SOURCES = {
-//            new String[]{PhantomEnv + "/van-convert.js", "van-convert.js"},
             new String[]{PhantomResources + "/d3.js","d3.js"},
             new String[]{PhantomResources + "/vancharts-all.js","vancharts-all.js"},
             new String[]{PhantomResources + "/leaflet.js", "leaflet.js"}

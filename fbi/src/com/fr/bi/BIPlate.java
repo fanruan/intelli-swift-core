@@ -26,7 +26,7 @@ import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.bi.web.dezi.phantom.Server;
+import com.fr.bi.web.dezi.phantom.PhantomServer;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
@@ -224,7 +224,7 @@ public class BIPlate extends AbstractFSPlate {
 
     private static void initPhantomServer() {
         try {
-            Server server = new Server();
+            PhantomServer server = new PhantomServer();
             server.start();
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage());
