@@ -163,6 +163,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         this.expander = expander;
     }
 
+    @Override
+    public NodeExpander getExpander() {
+        return expander;
+    }
+
     /**
      * TODO 这里可以改成可以前后移动的游标提高性能先这样
      */
@@ -610,7 +615,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         private TreeIterator(int len) {
             this.index = new int[len];
             Arrays.fill(this.index, -1);
-            PageEnd();
+            pageEnd();
         }
 
         private void moveLast() {
@@ -699,7 +704,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
 
         @Override
-        public void PageEnd() {
+        public void pageEnd() {
             pageIndex.add(this.index.clone());
         }
 

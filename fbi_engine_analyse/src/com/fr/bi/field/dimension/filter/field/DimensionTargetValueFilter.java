@@ -4,7 +4,6 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
-import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.fr.bi.field.filtervalue.FilterValueFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -84,11 +83,6 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
     @Override
     public boolean canCreateDirectFilter() {
         return filterValue == null ? false : filterValue.canCreateFilterIndex();
-    }
-
-    @Override
-    public boolean needParentRelation() {
-        return filterValue instanceof NFilterValue;
     }
 
     @Override

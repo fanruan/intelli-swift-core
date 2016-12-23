@@ -11,11 +11,9 @@ import java.util.Map;
 
 public interface DimensionFilter extends FieldFilter {
 
-    public List<String> getUsedTargets();
+    List<String> getUsedTargets();
 
     boolean canCreateDirectFilter();
-
-    boolean needParentRelation();
 
     boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader);
 }

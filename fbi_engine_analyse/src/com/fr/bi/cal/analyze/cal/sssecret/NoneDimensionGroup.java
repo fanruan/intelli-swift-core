@@ -5,7 +5,7 @@ import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.Executor.ExecutorPartner;
 import com.fr.bi.cal.analyze.cal.result.MemNode;
-import com.fr.bi.cal.analyze.cal.result.NewRootNodeChild;
+import com.fr.bi.cal.analyze.cal.result.MergerNode;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -21,7 +21,7 @@ import com.fr.bi.stable.report.result.TargetCalculator;
  * @author Daniel
  *         分页机制，使用另外一个线程来判断计算当前已经计算了多少结果了 并取数
  */
-public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implements Release {
+public class NoneDimensionGroup extends ExecutorPartner<MergerNode> implements Release {
 
     public final static NoneDimensionGroup NULL = new NoneDimensionGroup();
     protected volatile Node node;

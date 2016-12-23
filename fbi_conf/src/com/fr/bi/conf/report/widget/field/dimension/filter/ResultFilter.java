@@ -10,17 +10,11 @@ import java.util.Map;
 
 public interface ResultFilter extends IDissolubleResultFilter, ParseJSONWithUID {
 
-    @Override
-    public boolean needParentRelation();
-
     /**
      * @param node
      * @param targetsMap
      * @return
      */
     @Override
-    public boolean showNode(LightNode node,
-                            Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader);
-
-
+    boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader);
 }

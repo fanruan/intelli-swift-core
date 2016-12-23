@@ -1,9 +1,8 @@
 package com.fr.bi.field.dimension.filter.general;
 
 
-import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.field.dimension.filter.field.DimensionTargetValueFilter;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -38,14 +37,6 @@ public class GeneralANDDimensionFilter extends GeneralDimensionFilter {
             }
         }
         return index;
-    }
-
-    public boolean isDimensionTargetValueFilter() {
-        return childs.length == 1 && childs[0] instanceof DimensionTargetValueFilter;
-    }
-
-    private DimensionTargetValueFilter getFilter() {
-        return (DimensionTargetValueFilter) childs[0];
     }
 
     @Override

@@ -47,11 +47,6 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
     }
 
     @Override
-    public boolean needParentRelation() {
-        return false;
-    }
-
-    @Override
     public boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
         Object res = calCalculateTarget(node, targetsMap);
         if (res instanceof Boolean) {

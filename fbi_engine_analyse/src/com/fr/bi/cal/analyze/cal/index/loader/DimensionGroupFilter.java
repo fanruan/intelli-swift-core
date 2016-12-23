@@ -65,7 +65,7 @@ public class DimensionGroupFilter {
         this.targetFilterMap = targetFilterMap;
         this.session = session;
         this.targetSort = targetSort;
-        calculatorTargets = LoaderUtils.getCalculatorTargets(usedTargets, session);
+        calculatorTargets = LoaderUtils.getCalculatorTargets(usedTargets);
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
         this.calAllPage = calAllPage;
@@ -293,7 +293,7 @@ public class DimensionGroupFilter {
         for (int i = 0; i < rowDimension.length; i++) {
             hasFilter[i] = !getDimensionTraverseResultFilters(i).isEmpty();
         }
-        while (!GroupUtils.isAllEmpty(roots)) {
+        while (!GroupUtilsBak.isAllEmpty(roots)) {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
             clearLastIndex(roots, lastRoots, firstChangeDeep);
@@ -441,7 +441,7 @@ public class DimensionGroupFilter {
     }
 
     private void moveNext(GroupConnectionValue[] roots) {
-        GroupUtils.moveNext(roots, iterators);
+        GroupUtilsBak.moveNext(roots, iterators);
     }
 
     private boolean shouldNotTraverse() {
@@ -754,12 +754,12 @@ public class DimensionGroupFilter {
     }
 
     private GroupConnectionValue[] getAllMinChildGroups(GroupConnectionValue[] roots) {
-        GroupConnectionValue[] parents = GroupUtils.getGroupConnectionValueChildren(roots);
-        GroupConnectionValue[] gcvs = GroupUtils.getMinChildGroups(parents);
-        while (!GroupUtils.isAllEmpty(gcvs)) {
+        GroupConnectionValue[] parents = GroupUtilsBak.getGroupConnectionValueChildren(roots);
+        GroupConnectionValue[] gcvs = GroupUtilsBak.getMinChildGroups(parents);
+        while (!GroupUtilsBak.isAllEmpty(gcvs)) {
             parents = gcvs;
-            gcvs = GroupUtils.getGroupConnectionValueChildren(gcvs);
-            gcvs = GroupUtils.getMinChildGroups(gcvs);
+            gcvs = GroupUtilsBak.getGroupConnectionValueChildren(gcvs);
+            gcvs = GroupUtilsBak.getMinChildGroups(gcvs);
         }
         GroupConnectionValue[] allMinChildGroups = new GroupConnectionValue[roots.length];
         for (int i = 0; i < roots.length; i++) {
@@ -780,11 +780,6 @@ public class DimensionGroupFilter {
             }
         }
 
-        for (DimensionFilter filter : getAllResultFilters()) {
-            if (filter.needParentRelation()) {
-                return true;
-            }
-        }
         return calAllPage;
     }
 

@@ -43,7 +43,7 @@ import java.util.Set;
 public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExecutorOperation<Entry, NewRootNodeChild>, ISingleDimensionGroup {
 
     protected TargetCalculator calculator;
-    protected volatile NewDiskBaseRootNode root;
+    protected volatile Node root;
 
     protected DimensionCalculator column;
     protected transient DimensionCalculator[] pcolumns;
@@ -109,9 +109,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     @Override
     protected void initRoot(GroupValueIndex gvi) {
-        root = new NewDiskBaseRootNode(column);
+        root = new Node(column, null);
         root.setGroupValueIndex(gvi);
-
     }
 
     public void turnOnExecutor() {
@@ -228,8 +227,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return showNode(parentIndex, childNode);
     }
 
-    protected void addNodeChild(NewRootNodeChild childNode) {
-        root.addChild((NewDiskBaseRootNodeChild) childNode);
+    protected void addNodeChild(Node childNode) {
+        root.addChild(childNode);
     }
 
     private boolean showNode(GroupValueIndex parentIndex, Node node) {
@@ -241,7 +240,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return (parentIndex == null || parentIndex.isAllEmpty()) && (node.getIndex4Cal() == null || node.getIndex4Cal().isAllEmpty());
     }
 
-    private void addRootChild(NewDiskBaseRootNodeChild child) {
+    private void addRootChild(Node child) {
         root.addChild(child);
         notifyMainThread();
     }

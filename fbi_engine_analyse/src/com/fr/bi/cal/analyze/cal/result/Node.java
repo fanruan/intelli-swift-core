@@ -5,7 +5,6 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.*;
@@ -23,10 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author zhou
  */
-public class Node extends BIField implements BINode {
+public class Node implements BINode {
 
-    public static final int PAGE_PER_GROUP = 20;
-    public static final int PAGE_TOP_PER_GROUP = 5;
     /**
      * 小于1表示不分页
      */
@@ -60,7 +57,6 @@ public class Node extends BIField implements BINode {
     private GroupValueIndex gvi;
     private String showValue;
     //只在复杂报表中调用
-    private int complexRegionIndex;
     private Comparator c = BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
     private transient Map<TargetGettingKey, Double> childAVG;
     private transient Map<TargetGettingKey, Double> allChildAVG;
@@ -68,33 +64,12 @@ public class Node extends BIField implements BINode {
     private transient Map<TopNKey, Double> topNLineMap;
 
     public Node(DimensionCalculator key, Object data) {
-
         this.key = key;
         if (key != null){
             this.c = key.getComparator();
         }
         this.setData(data);
         childs = new ChildsMap<Node>();
-    }
-
-    /**
-     * 释放
-     *
-     * @param node 被释放的node
-     */
-    public static void release(Node node) {
-        ChildsMap<Node> childs = node.childs;
-        if (childs.isEmpty()) {
-            node.getSummaryValue().clear();
-            node.data = null;
-            node.childs = null;
-            node = null;
-        } else {
-            for (int i = 0, len = childs.size(); i < len; i++) {
-                release(childs.get(i));
-            }
-            release(node);
-        }
     }
 
     @Override
@@ -110,18 +85,10 @@ public class Node extends BIField implements BINode {
     /**
      * todo
      *
-     * @param key
      * @param data
      */
-    public void initShowValue(DimensionCalculator key, Object data) {
-//		if(isTrue()) {
-//			throw new UnCompleteMethodException();
-//		}
+    private void initShowValue(Object data) {
         setShowValue(data == null ? null : data.toString());
-    }
-
-    protected boolean isTrue() {
-        return true;
     }
 
     @Override
@@ -157,7 +124,7 @@ public class Node extends BIField implements BINode {
     @Override
     public String getShowValue() {
         if (showValue == null) {
-            initShowValue(key, data);
+            initShowValue(data);
         }
         return showValue;
     }
@@ -169,14 +136,6 @@ public class Node extends BIField implements BINode {
 
     public GroupValueIndex getGroupValueIndex() {
         return gvi;
-    }
-
-    public int getComplexRegionIndex() {
-        return this.complexRegionIndex;
-    }
-
-    public void setComplexRegionIndex(int regionIndex) {
-        complexRegionIndex = regionIndex;
     }
 
     /**
@@ -197,16 +156,6 @@ public class Node extends BIField implements BINode {
 
     private Node castNode(LightNode lightNode) {
         return (Node) lightNode;
-    }
-
-    /**
-     * 子节点是否为空
-     *
-     * @return 是否为空
-     */
-    @Override
-    public boolean isEmptyChilds() {
-        return childs.isEmpty();
     }
 
     @Override
@@ -339,47 +288,6 @@ public class Node extends BIField implements BINode {
         this.gvi = gvi;
     }
 
-    /**
-     * 添加“汇总”节点
-     *
-     * @param key 指标
-     * @param len 层
-     * @return 新节点
-     */
-    public Node summary(TargetCalculator key, int len) {
-        return dealWithNodeUseSummary(key, 0, len);
-    }
-
-    private Node dealWithNodeUseSummary(TargetCalculator key, int k, int len) {
-        Node newnode = createNewNode();
-        if (k == len) {
-            Object value = this.getSummaryValue(key);
-            if (value != null) {
-                newnode.setSummaryValue(key, value);
-            }
-            return newnode;
-        }
-        ChildsMap<Node> childs = this.childs;
-        Node tempNode = null;
-        int childLen = childs.size();
-        for (int i = 0; i < childLen; i++) {
-            Node temp_node = childs.get(i);
-            Node child = temp_node.dealWithNodeUseSummary(key, k + 1, len);
-            if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
-            }
-            newnode.addChild(child);
-            tempNode = child;
-        }
-        ChildsMap sum_childs = newnode.childs;
-        if (sum_childs.size() > 0) {
-            Double value = key.calculateChildNodes(sum_childs.values());
-            if (value != null) {
-                newnode.setSummaryValue(key, value);
-            }
-        }
-        return newnode;
-    }
 
     public void setTargetIndex(TargetGettingKey key, GroupValueIndex gvi) {
         if (gvi != null) {
@@ -427,7 +335,7 @@ public class Node extends BIField implements BINode {
     }
 
     public GroupValueIndex getGroupValueIndex(TargetGettingKey key) {
-        return (GroupValueIndex) getGroupValueIndexMap().get(key);
+        return getGroupValueIndexMap().get(key);
     }
 
     @Override
@@ -436,16 +344,6 @@ public class Node extends BIField implements BINode {
             value = ((Number)value).doubleValue();
         }
         getSummaryValue().put(key, value);
-    }
-
-    @Override
-    public int getSummarySize() {
-        return getSummaryValue().size();
-    }
-
-    @Override
-    public Iterator getSummaryValueIterator() {
-        return getSummaryValue().entrySet().iterator();
     }
 
     @Override
@@ -469,6 +367,34 @@ public class Node extends BIField implements BINode {
         this.summaryValue = summaryValue;
     }
 
+    public int getIndexByValue(Object value) {
+        return getMinCompareValue(0, getChildLength() - 1, value);
+    }
+
+
+    /**
+     * 找出等于前值或者正好大一点的那个值
+     *
+     * @param start
+     * @param end
+     * @param value
+     * @return
+     */
+    private int getMinCompareValue(int start, int end, Object value) {
+        if (start > end) {
+            return start;
+        }
+        int index = (start + end) / 2;
+        Node c = childs.get(index);
+        int result = getComparator().compare(value, c.getData());
+        if (result > 0) {
+            return getMinCompareValue(index + 1, end, value);
+        } else if (result < 0) {
+            return getMinCompareValue(start, index - 1, value);
+        } else {
+            return index;
+        }
+    }
     /**
      * 创建新node
      *
@@ -505,126 +431,6 @@ public class Node extends BIField implements BINode {
     }
 
     /**
-     * 合并两个node  node与this
-     *
-     * @param node 被合并的node
-     * @param key  被合并的key
-     * @return 新节点
-     */
-    public Node OrMerge(Node node, TargetGettingKey key) {
-        if (node == null) {
-            return this;
-        }
-        Node n = createNewNode();
-        Iterator iter = this.getSummaryValueIterator();
-        while (iter.hasNext()) {
-            Entry entry = (Entry) iter.next();
-            n.setSummaryValue(entry.getKey(), entry.getValue());
-        }
-        if (key != null) {
-            Object value = node.getSummaryValue(key);
-            if (value != null) {
-                n.setSummaryValue(key, value);
-            }
-        }
-        int clen = childs.size(),
-                nlen = node.childs.size(),
-                i = 0,
-                j = 0;
-        merge(node, key, n, clen, nlen, i, j);
-        return n;
-    }
-
-    private void merge(Node node, TargetGettingKey key, Node n, int clen, int nlen, int i, int j) {
-        Node tempNode = null;
-        while (i < clen + 1 && j < nlen + 1) {
-            if (i == clen) {
-                for (; j < nlen; j++) {
-                    tempNode = addChildAndSetSibing(node, n, j, tempNode);
-                }
-                break;
-            }
-            if (j == nlen) {
-                for (; i < clen; i++) {
-                    tempNode = addChildAndSetSibing(n, i, tempNode);
-                }
-                break;
-            }
-            Node a = childs.get(i);
-            Node b = node.childs.get(j);
-            Comparator comp = a.getComparator();
-            int v = comp.compare(a.getData(), b.getData());
-            if (v < 0) {
-                Node t = a;
-                if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, t);
-                }
-                n.addChild(t);
-                tempNode = t;
-                i++;
-            } else if (v > 0) {
-                Node t = b;
-                if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, t);
-                }
-                n.addChild(t);
-                tempNode = t;
-                j++;
-            } else {
-                Node t = a.OrMerge(b, key);
-                if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, t);
-                }
-                n.addChild(t);
-                tempNode = t;
-                i++;
-                j++;
-            }
-        }
-    }
-
-    private Node addChildAndSetSibing(Node n, int i, Node tempNode) {
-        Node t = childs.get(i);
-        if (tempNode != null) {
-            CubeReadingUtils.setSibing(tempNode, t);
-        }
-        n.addChild(childs.get(i));
-        tempNode = t;
-        return tempNode;
-    }
-
-    private Node addChildAndSetSibing(Node node, Node n, int j, Node tempNode) {
-        Node t = node.childs.get(j);
-        if (tempNode != null) {
-            CubeReadingUtils.setSibing(tempNode, t);
-        }
-        n.addChild(t);
-        tempNode = t;
-        return tempNode;
-    }
-
-    /**
-     * 复制node出去 value就不需要了
-     *
-     * @return 注释
-     */
-    public Node createCloneNode() {
-        Node newnode = createNewNode();
-        ChildsMap<Node> childs = this.childs;
-        Node tempNode = null;
-        for (int i = 0; i < childs.size(); i++) {
-            Node temp_node = childs.get(i);
-            Node child = temp_node.createCloneNode();
-            if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
-            }
-            newnode.addChild(child);
-            tempNode = child;
-        }
-        return newnode;
-    }
-
-    /**
      * 转成字符串显示
      *
      * @return 注释
@@ -635,143 +441,6 @@ public class Node extends BIField implements BINode {
             return "BINode:[" + data.toString() + "]";
         }
         return null;
-    }
-
-
-    /**
-     * 是否有下一页
-     *
-     * @param currentPage 当前页码
-     * @return 是否有下一页
-     */
-    public boolean hasNextPage(int currentPage) {
-        int totalLen = this.getChildLength();
-        int total_page = (totalLen - 1) / PAGE_PER_GROUP + 1;
-        return currentPage < total_page;
-    }
-
-    /**
-     * 创建page页的node
-     *
-     * @param page 页码
-     * @return page页的node
-     */
-    public Node createPageNode(int page) {
-        if (page < NONE_PAGE_LEVER) {
-            return this;
-        }
-        int totalLen = this.getTotalLength();
-        int total_page = (totalLen - 1) / PAGE_PER_GROUP + 1;
-        if (page > total_page) {
-            return null;
-        }
-        page = Math.min(page, total_page);
-        int start = (page - 1) * PAGE_PER_GROUP;
-        int end = page == total_page ? totalLen : (start + PAGE_PER_GROUP);
-        Node newnode = createNewNode();
-        newnode.summaryValue = this.getSummaryValue();
-        ChildsMap<Node> childs = this.childs;
-        Node tempNode = null;
-        int position = 0;
-        for (int i = 0; i < childs.size(); i++) {
-            Node c = childs.get(i);
-            int clen = c.getTotalLength();
-            if (position + clen > start && position < end) {
-                int s = position > start ? 0 : start - position;
-                int e = position + clen < end ? clen : end - position;
-                Node child = c.createCloneNodeWithValue(s, e);
-                if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
-                }
-                newnode.addChild(child);
-                tempNode = child;
-            }
-            if (position >= end) {
-                break;
-            }
-            position += clen;
-        }
-        return newnode;
-    }
-
-    /**
-     * 创建page页的node
-     *
-     * @param page 页码
-     * @return page页的node
-     */
-    public Node createTopPageNode(int page) {
-        if (page < NONE_PAGE_LEVER) {
-            return this;
-        }
-        int totalLen = this.getTotalLength();
-        int total_page = (totalLen - 1) / PAGE_TOP_PER_GROUP + 1;
-        if (page > total_page) {
-            return null;
-        }
-        page = Math.min(page, total_page);
-        int start = (page - 1) * PAGE_TOP_PER_GROUP;
-        int end = page == total_page ? totalLen : (start + PAGE_TOP_PER_GROUP);
-        Node newnode = createNewNode();
-        newnode.summaryValue = this.getSummaryValue();
-        ChildsMap<Node> childs = this.childs;
-        Node tempNode = null;
-        int position = 0;
-        for (int i = 0; i < childs.size(); i++) {
-            Node c = childs.get(i);
-            int clen = c.getTotalLength();
-            if (position + clen > start && position < end) {
-                int s = position > start ? 0 : start - position;
-                int e = position + clen < end ? clen : end - position;
-                Node child = c.createCloneNodeWithValue(s, e);
-                if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
-                }
-                newnode.addChild(child);
-                tempNode = child;
-            }
-            if (position >= end) {
-                break;
-            }
-            position += clen;
-        }
-        return newnode;
-    }
-
-    /**
-     * 创建从第几页的第几个偏移量
-     *
-     * @param page  需要获取的页数
-     * @param shift 已经偏移量
-     * @return 一个node
-     */
-    public Node createPageNode(int page, int shift) {
-        if (page < NONE_PAGE_LEVER) {
-            return this;
-        }
-        int totalLen = this.getChildLength();
-        int total_page = (totalLen - 1) / PAGE_PER_GROUP + 1;
-        if (page > total_page) {
-            return null;
-        }
-        page = Math.min(page, total_page);
-        int start = (page - 1) * PAGE_PER_GROUP + shift;
-        int end = page == total_page ? totalLen : (start + PAGE_PER_GROUP);
-
-        Node newnode = createNewNode();
-        newnode.summaryValue = this.getSummaryValue();
-        ChildsMap<Node> childs = this.childs;
-        Node tempNode = null;
-        for (int i = start; i < end && i < childs.size(); i++) {
-            Node temp_node = childs.get(i);
-            Node child = temp_node.createCloneNodeWithValue();
-            if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
-            }
-            newnode.addChild(child);
-            tempNode = child;
-        }
-        return newnode;
     }
 
     /**
@@ -822,45 +491,6 @@ public class Node extends BIField implements BINode {
             newnode.addChild(child);
             tempNode = child;
         }
-        return newnode;
-    }
-
-    /**
-     * 获取当前node的后shift个，
-     *
-     * @param node1 另一个
-     * @param shift 偏移量
-     * @return 新的node  和node1属于同一个
-     */
-    public Node createShiftCountNode(Node node1, int shift) {
-
-        int start = shift;
-        int end = this.getChildLength();
-        Node newnode = createNewNode();
-        newnode.summaryValue = this.getSummaryValue();
-        ChildsMap<Node> childs = this.childs;
-        Node tempNode = null;
-        for (int i = start; i < end && i < childs.size(); i++) {
-            Node temp_node = childs.get(i);
-            Node child = temp_node.createCloneNodeWithValue();
-            if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
-            }
-            newnode.addChild(child);
-            tempNode = child;
-        }
-        start = 0;
-        end = Math.min(shift, node1.getChildLength());
-        for (int i = start; i < end; i++) {
-            Node temp_node = childs.get(i);
-            Node child = temp_node.createCloneNodeWithValue();
-            if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
-            }
-            newnode.addChild(child);
-            tempNode = child;
-        }
-
         return newnode;
     }
 
@@ -947,24 +577,6 @@ public class Node extends BIField implements BINode {
         return newnode;
     }
 
-    /**
-     * 克隆不带子值
-     *
-     * @return 注释
-     */
-    public Node createCloneNodeWithoutChild() {
-        Node newnode = new Node(key, data);
-        newnode.showValue = this.getShowValue();
-        newnode.gvi = this.gvi;
-        return newnode;
-    }
-
-    public double getAllChildAVGValue(TargetGettingKey key){
-        if(getAllChildAVG().get(key) == null){
-            getAllChildAVG().put(key, this.getSummaryValue(key) == null ? 0 : this.getSummaryValue(key).doubleValue() / getTotalLength());
-        }
-        return getAllChildAVG().get(key);
-    }
 
     /**
      * 获取指标key子节点的平均值

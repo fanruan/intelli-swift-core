@@ -26,9 +26,6 @@ public class GroupConnectionValue {
     public GroupConnectionValue(DimensionCalculator ck, Object data, Comparator c, NoneDimensionGroup currentValue) {
         this.ck = ck;
         this.data = data;
-        if (data instanceof ComparableLinkedHashSet) {
-            setSortKey(data.toString());
-        }
         this.c = c;
         this.currentValue = currentValue;
     }

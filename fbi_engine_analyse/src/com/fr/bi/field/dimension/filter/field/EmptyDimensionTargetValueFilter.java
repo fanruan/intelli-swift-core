@@ -20,11 +20,6 @@ public class EmptyDimensionTargetValueFilter extends AbstractDimensionFilter {
     }
 
     @Override
-    public boolean needParentRelation() {
-        return false;
-    }
-
-    @Override
     public boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
         return true;
     }
@@ -32,5 +27,10 @@ public class EmptyDimensionTargetValueFilter extends AbstractDimensionFilter {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
 
+    }
+
+    @Override
+    public boolean canCreateDirectFilter() {
+        return true;
     }
 }

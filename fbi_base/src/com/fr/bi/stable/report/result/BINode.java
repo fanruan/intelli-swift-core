@@ -2,7 +2,6 @@ package com.fr.bi.stable.report.result;
 
 import com.fr.bi.stable.report.key.TargetGettingKey;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,9 +17,4 @@ public interface BINode extends SummaryContainer, LightNode {
 
     public int getTotalLength();
 
-    public boolean isEmptyChilds();
-
-    public int getSummarySize();
-
-    public Iterator getSummaryValueIterator();
 }

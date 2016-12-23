@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * Created by 小灰灰 on 2016/8/8.
  */
 public class BIMultiThreadExecutor {
-    private static final int SIZE = 1 << 3;
+    private static final int SIZE = 1 << 4;
     private static final int MOD = SIZE - 1;
     private MergeSummaryCallList[] lists = new MergeSummaryCallList[SIZE];
     private int index = 0;
