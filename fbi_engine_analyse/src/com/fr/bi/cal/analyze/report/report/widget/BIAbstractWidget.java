@@ -246,4 +246,10 @@ public abstract class BIAbstractWidget implements BIWidget {
     public BICore fetchObjectCore() {
         return new BICoreGenerator(this).fetchObjectCore();
     }
+
+    @Override
+    public void refreshSources() {
+
+    }
+
 }

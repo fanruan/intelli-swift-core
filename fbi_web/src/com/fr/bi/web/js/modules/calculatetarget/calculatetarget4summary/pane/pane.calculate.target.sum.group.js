@@ -15,7 +15,7 @@ BI.CalculateTargetSumGroupPane = BI.inherit(BI.CalculateTargetAbstractGroupPane,
     _refreshLabel: function () {
         var self = this, o = this.options;
         this.logicPane.empty();
-        var dimDimensionIDs = o.model.getDimDimensionIDs();
+        var dimDimensionIDs = BI.concat(o.model.getSeriesDimensionIDs(), o.model.getCatagoryDimensionIDs());
         var lastDimensionId = dimDimensionIDs.pop();
         BI.each(dimDimensionIDs, function (i, dId) {
             var dimensionName = BI.Utils.getDimensionNameByID(dId);
