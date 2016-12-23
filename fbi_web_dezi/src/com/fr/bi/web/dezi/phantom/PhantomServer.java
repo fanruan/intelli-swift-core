@@ -44,7 +44,9 @@ public class PhantomServer {
     };
 
     public void start() throws IOException {
-        if (ServerUtils.checkServer(IP, PORT)) return;
+        if (ServerUtils.checkServer(IP, PORT)) {
+            return;
+        };
 
         getResources(PhantomLib, SCRIPT_SOURCES);
 

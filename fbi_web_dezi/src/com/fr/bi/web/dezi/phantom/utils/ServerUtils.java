@@ -1,6 +1,5 @@
 package com.fr.bi.web.dezi.phantom.utils;
 
-import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.IOUtils;
@@ -22,6 +21,9 @@ public class ServerUtils {
 
     public static final String CLOSE = "{\"status\": \"close\"}";
     public static final String LIVE = "{\"status\": \"live\"}";
+
+    private static final int LINUX32BIT = 32;
+    private static final int LINUX64BIT = 64;
 
     public static boolean checkServer(String ip, int port){
         try {
@@ -108,7 +110,7 @@ public class ServerUtils {
 
     public static boolean isLinux32(){
         int bit = linuxBit();
-        if (bit == 32){
+        if (bit == LINUX32BIT){
             return true;
         }
         return false;
@@ -120,7 +122,7 @@ public class ServerUtils {
 
     public static boolean isLinux64(){
         int bit = linuxBit();
-        if (bit == 64){
+        if (bit == LINUX64BIT){
             return true;
         }
         return false;
@@ -138,9 +140,9 @@ public class ServerUtils {
                 String s = bufferedReader.readLine();
                 process.destroy();
                 if (s.contains("64")) {//64位
-                    return 64;
+                    return LINUX32BIT;
                 } else {//32位
-                    return 32;
+                    return LINUX64BIT;
                 }
             } catch (IOException e) {
                BILoggerFactory.getLogger().info(e.getMessage());
