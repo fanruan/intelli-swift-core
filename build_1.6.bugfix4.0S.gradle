@@ -140,6 +140,7 @@ task compressJS(dependsOn:'copyFile'){
 			exclude (name:'**/test/**')
 			exclude (name:'js/widget/arrangement/arrangement.js')
 			exclude (name:'js/widget/detailchart/chart.bubble.js')
+			exclude (name:'js/components/components.react.js')
 		}
 	}
 }
