@@ -55,7 +55,7 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
             var primaryFieldId = rel.primaryKey.field_id;
             if (i === 0) {
                 widgetItem.type = "bi.multi_relation_table_field_item";
-                widgetItem.fieldName = BI.Utils.getFieldNameByFieldId4Conf(foreignFieldId);
+                widgetItem.fieldName = BI.Utils.getFieldNameById4Conf(foreignFieldId);
                 widgetItem.tableName = BI.Utils.getTableNameByFieldId4Conf(foreignFieldId);
                 items.push(BI.deepClone(widgetItem));
                 items.push({
@@ -65,13 +65,13 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
                     textAlign: "center"
                 });
                 widgetItem.type = "bi.multi_relation_table_field_item";
-                widgetItem.fieldName = BI.Utils.getFieldNameByFieldId4Conf(primaryFieldId);
+                widgetItem.fieldName = BI.Utils.getFieldNameById4Conf(primaryFieldId);
                 widgetItem.tableName = BI.Utils.getTableNameByFieldId4Conf(primaryFieldId);
                 items.push(BI.deepClone(widgetItem));
                 return
             }
             widgetItem.type = "bi.multi_relation_table_field_item";
-            widgetItem.fieldName = BI.Utils.getFieldNameByFieldId4Conf(foreignFieldId);
+            widgetItem.fieldName = BI.Utils.getFieldNameById4Conf(foreignFieldId);
             widgetItem.tableName = BI.Utils.getTableNameByFieldId4Conf(foreignFieldId);
             items.push(BI.deepClone(widgetItem));
             items.push({

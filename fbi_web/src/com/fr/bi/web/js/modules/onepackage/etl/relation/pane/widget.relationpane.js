@@ -172,7 +172,6 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         }
         this.relationTree.populate(this._createBranchItems(relationChildren));
         this._drawSVGLine();
-        this.model.setRelations(this.getValue());
         if (this._checkAllRelationIsMatchingValid(relationChildren)) {
             this.fireEvent(BI.RelationPane.EVENT_VALID);
         } else {

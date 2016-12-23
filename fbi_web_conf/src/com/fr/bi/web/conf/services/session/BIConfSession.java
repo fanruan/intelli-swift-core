@@ -101,14 +101,18 @@ public class BIConfSession extends SessionIDInfor {
                 List<BIConfTableLock> locks = lockDAO.getLock(userId, tableId);
                 boolean doForce = true;
                 for (BIConfTableLock l : locks) {
-                    SessionIDInfor ss = SessionDealWith.getSessionIDInfor(l.getSessionId());
-                    if (ss instanceof BIConfSession) {
-                        long t = ((BIConfSession) ss).lastTime;
+                    SessionIDInfor session = SessionDealWith.getSessionIDInfor(l.getSessionId());
+                    if (session instanceof BIConfSession) {
+                        long t = ((BIConfSession) session).lastTime;
                         //45- 30 超过15-45秒还没反應可能是没有心跳
                         if (System.currentTimeMillis() - t < TIME_OUT) {
                             doForce = false;
                             break;
                         }
+                    }
+                    //删除已经过期的session
+                    if (session == null) {
+                        releaseTableLock(l.getTableId());
                     }
                 }
                 if (doForce) {
@@ -128,7 +132,7 @@ public class BIConfSession extends SessionIDInfor {
         if(lockDAO == null){
             return;
         }
-        BIConfTableLock lock = lockDAO.getLock(this.sessionID, this.userId, tableId);
+        BIConfTableLock lock = lockDAO.getLock(tableId);
         if (lock != null) {
             lockDAO.release(lock);
         }
