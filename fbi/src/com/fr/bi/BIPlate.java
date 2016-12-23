@@ -403,6 +403,7 @@ public class BIPlate extends AbstractFSPlate {
                 BITableMapper.BI_SHARED_REPORT_NODE.TABLE_MAPPER,
                 BITableMapper.BI_CREATED_TEMPLATE_FOLDER.TABLE_MAPPER,
                 BITableMapper.BI_REPORT_NODE_LOCK.TABLE_MAPPER,
+                BITableMapper.BI_CONF_TABLE_LOCK.TABLE_MAPPER,
                 BIReportEntry.TABLE_MAPPER
         };
     }

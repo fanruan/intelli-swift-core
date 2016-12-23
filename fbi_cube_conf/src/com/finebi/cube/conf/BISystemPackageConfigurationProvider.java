@@ -5,6 +5,7 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
@@ -297,6 +298,8 @@ public interface BISystemPackageConfigurationProvider {
      * @throws BITableAbsentException   表不存在抛错
      */
     void removeTable(long userId, BIPackageID packageID, BITableID biTableID) throws BIPackageAbsentException, BITableAbsentException;
+
+    void addTable(long userId, BIPackageID packageID, BIBusinessTable biBusinessTable) throws BIPackageAbsentException;
 
     /**
      * 是否ID所对应的Package被打上分组标签

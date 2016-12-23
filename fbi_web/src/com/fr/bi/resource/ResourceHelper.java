@@ -1024,7 +1024,7 @@ public class ResourceHelper {
                 //one package
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.js",
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.model.js",
-                "com/fr/bi/web/js/modules/onepackage/widget.refreshtablefields.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/refreshfields/widget.refreshtablefields.js",
 
 
                 //FineBI Service
@@ -1204,6 +1204,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.settings.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/scopes/scope.target.combine.chart.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.settings.css",
@@ -2324,6 +2325,10 @@ public class ResourceHelper {
                 //列可拖拽排序表
                 "com/fr/bi/web/css/widget/sortabletable/sortabletable.css",
 
+                //螺旋分析tab控件
+                "com/fr/bi/web/css/widget/dynamicgrouptab/dynamicgroup.tab.buttonmanager.css",
+                "com/fr/bi/web/css/widget/dynamicgrouptab/dynamicgroup.tab.sheetbutton.css",
+
                 //Excel表
                 "com/fr/bi/web/css/widget/exceltable/exceltable.cell.css",
                 "com/fr/bi/web/css/widget/exceltable/exceltable.header.cell.css",
@@ -3131,6 +3136,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/sortabletable/sortabletable.drag.button.js",
                 "com/fr/bi/web/js/widget/sortabletable/sortabletable.dashline.vertical.js",
                 "com/fr/bi/web/js/widget/sortabletable/sortabletable.dashline.horizontal.js",
+
+                //螺旋分析tab控件
+                "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.js",
+                "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.buttonmanager.js",
+                "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.sheetbutton.js",
 
                 //Excel表
                 "com/fr/bi/web/js/widget/exceltable/exceltable.cell.js",

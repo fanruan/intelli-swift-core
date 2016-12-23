@@ -94,7 +94,6 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
     _sortFields: function (fields) {
         var self = this;
         var sortedFields = [], usedFields = [], noUsedFields = [];
-        var allTransKeys = BI.keys(this.translations);
         BI.each(fields, function (i, field) {
             if (self.usedFields.contains(field.id)) {
                 usedFields.push(field);
@@ -104,7 +103,8 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         });
         var usedNoTrans = [];
         BI.each(usedFields, function (i, field) {
-            if (allTransKeys.contains(field.id)) {
+            var tranName = BI.Utils.getTransNameById4Conf(field.id);
+            if (BI.isNotNull(tranName) && tranName !== "") {
                 sortedFields.push(field);
             } else {
                 usedNoTrans.push(field);
@@ -113,7 +113,8 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         sortedFields = sortedFields.concat(usedNoTrans);
         var noUsedNoTrans = [];
         BI.each(noUsedFields, function (i, field) {
-            if (allTransKeys.contains(field.id)) {
+            var tranName = BI.Utils.getTransNameById4Conf(field.id);
+            if (BI.isNotNull(tranName) && tranName !== "") {
                 sortedFields.push(field);
             } else {
                 noUsedNoTrans.push(field);
@@ -140,17 +141,35 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
                     break;
             }
             var item = [];
-            var fieldNameLabel = BI.createWidget({
-                type: "bi.label",
-                text: field.field_name,
-                title: field.field_name,
-                width: 125,
-                whiteSpace: "nowrap",
-                textAlign: "left",
-                lgap: 5
-            });
-            fieldNameLabel.doRedMark(self.keyword);
-            item.push(fieldNameLabel);
+            if (BI.Utils.isPrimaryKeyByFieldId4Conf(field.id)) {
+                item.push({
+                    type: "bi.left",
+                    cls: "primary-key-font",
+                    items: [{
+                        type: "bi.icon",
+                        width: 20,
+                        title: BI.i18nText("BI-Primary_Key")
+                    }, {
+                        type: "bi.label",
+                        text: field["field_name"],
+                        title: field["field_name"],
+                        width: 90,
+                        whiteSpace: "nowrap",
+                        textAlign: "left"
+                    }],
+                    lgap: 5
+                });
+            } else {
+                item.push({
+                    type: "bi.label",
+                    text: field["field_name"],
+                    title: field["field_name"],
+                    width: 125,
+                    whiteSpace: "nowrap",
+                    textAlign: "left",
+                    lgap: 5
+                });
+            }
             item.push({
                 type: "bi.icon_button",
                 cls: "field-type " + typeCls
@@ -174,31 +193,20 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
 
     _createRelationButton: function (fieldId) {
         var self = this;
-        var onRelationChange = this.options.onRelationsChange;
         var relationButton = BI.createWidget({
             type: "bi.relation_tables_button",
-            relation_tables: this._getRelationTables(fieldId)
+            fieldId: fieldId
         });
         relationButton.on(BI.RelationTablesButton.EVENT_CHANGE, function () {
-            onRelationChange(fieldId);
+            self.fireEvent(BI.TableFieldInfo.EVENT_RELATION_CHANGE, fieldId);
         });
         return relationButton;
     },
 
-    _checkTransName: function (id, fieldId) {
-        return BI.isEqual(id, fieldId);
-    },
-
-    _createTranName: function (fieldId, fieldName) {
+    _createTranName: function (fieldId) {
         var self = this;
-        var tranName = "";
+        var tranName = BI.Utils.getTransNameById4Conf(fieldId);
         var onTranslationsChange = this.options.onTranslationsChange;
-        BI.some(this.translations, function (id, name) {
-            if (self._checkTransName(id, fieldId) && !BI.isEqual(name, fieldName)) {
-                tranName = name;
-                return true;
-            }
-        });
         var transName = BI.createWidget({
             type: "bi.sign_editor",
             value: tranName,
@@ -207,16 +215,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
             errorText: BI.i18nText("BI-Trans_Name_Exist"),
             height: 25,
             validationChecker: function (v) {
-                var isValid = true;
-                var allFields = self.tableInfo.all_fields;
-                BI.each(self.translations, function (id, name) {
-                    if (BI.isNotNull(allFields[id])) {
-                        if (allFields[id].table_id === allFields[fieldId].table_id && fieldId != id && isValid === true) {
-                            v === name && (isValid = false);
-                        }
-                    }
-                });
-                return isValid;
+                return BI.Utils.checkTranNameById4Conf(fieldId, v);
             }
         });
         transName.on(BI.SignEditor.EVENT_CHANGE, function () {
@@ -224,34 +223,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
             self.translations[fieldId] = transName.getValue();
             onTranslationsChange(self.translations);
         });
-        return BI.createWidget({
-            type: "bi.center_adapt",
-            items: [transName]
-        });
-    },
-
-    _getRelationTables: function (fieldId) {
-        var relations = this.tableInfo.relations;
-        var translations = this.tableInfo.translations;
-        var allFields = this.tableInfo.all_fields;
-        var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
-        var currentPrimKey = primKeyMap[fieldId] || [], currentForKey = foreignKeyMap[fieldId];
-        var relationTables = [], relationIds = [];
-        BI.each(currentPrimKey, function (i, maps) {
-            var pk = maps.primaryKey, fk = maps.foreignKey;
-            if (pk.field_id === fieldId && fk.field_id !== fieldId && !relationIds.contains(fk.field_id)) {
-                relationIds.push(fk.field_id);
-                relationTables.push(translations[allFields[fk.field_id].table_id]);
-            }
-        });
-        BI.each(currentForKey, function (i, maps) {
-            var pk = maps.primaryKey, fk = maps.foreignKey;
-            if (fk.field_id === fieldId && pk.field_id !== fieldId && !relationIds.contains(pk.field_id)) {
-                relationIds.push(pk.field_id);
-                relationTables.push(translations[allFields[pk.field_id].table_id]);
-            }
-        });
-        return relationTables;
+        return transName;
     },
 
     _createIsUsable: function (field) {

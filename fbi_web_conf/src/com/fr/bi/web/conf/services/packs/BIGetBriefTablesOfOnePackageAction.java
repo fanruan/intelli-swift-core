@@ -17,6 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+/**
+ * 获取业务包中表的简要信息
+ * create by young
+ */
 public class BIGetBriefTablesOfOnePackageAction extends AbstractBIConfigureAction {
 
     @Override

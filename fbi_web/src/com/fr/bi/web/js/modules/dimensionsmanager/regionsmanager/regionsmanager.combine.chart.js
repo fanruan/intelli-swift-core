@@ -199,14 +199,18 @@ BI.CombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
 
     _createTargetScope: function (regionType) {
         var self = this, o = this.options;
+        var accumulation = BI.Utils.getSeriesAccumulationByWidgetID(o.wId);
         if (!this.scopes[regionType]) {
             this.scopes[regionType] = BI.createWidget({
                 type: "bi.combine_chart_target_scope",
                 regionType: regionType,
                 wId: o.wId
             });
+            this.scopes[regionType].on(BI.CombineChartTargetScope.EVENT_CHANGE, function () {
+                self.fireEvent(BI.RegionsManager.EVENT_CHANGE, arguments);
+            });
         }
-        this.scopes[regionType].populate();
+        this.scopes[regionType].setEnable(accumulation.type !== BICst.SERIES_ACCUMULATION.EXIST);
         return this.scopes[regionType];
     },
 
@@ -224,9 +228,11 @@ BI.CombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
         BI.CombineChartRegionsManager.superclass.populate.apply(this, arguments);
         var self = this, o = this.options;
         var view = BI.Utils.getWidgetViewByID(o.wId);
+        var scopes = BI.Utils.getWidgetScopeByID(o.wId);
         BI.each(view, function (regionType) {
             if (BI.Utils.isTargetRegionByRegionType(regionType)) {
-                self._createTargetScope(regionType);
+                var scope = self._createTargetScope(regionType);
+                scope.setValue(scopes[regionType]);
             }
         });
         BI.remove(this.scopes, function (regionType) {
