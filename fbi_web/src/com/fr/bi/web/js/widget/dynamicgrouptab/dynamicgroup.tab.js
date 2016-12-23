@@ -105,6 +105,7 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
     },
 
     populate: function(items){
+        this.tabs = [];
         this.tabButton.populate(items);
         this.tab.populate(items);
     }
