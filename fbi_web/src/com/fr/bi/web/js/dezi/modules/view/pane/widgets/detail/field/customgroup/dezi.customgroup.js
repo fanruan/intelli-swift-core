@@ -16,7 +16,7 @@ BIDezi.CustomGroupView = BI.inherit(BI.BarFloatSection, {
         var self = this;
         var id = this.model.get("id");
         var value = self.customgroup.getValue();
-        var accumulationObj = BI.Utils.getSeriesAccumulationByID(id);
+        var accumulationObj = BI.Utils.getSeriesAccumulationByDimensionID(id);
         value.type = BICst.GROUP.CUSTOM_GROUP;
 
         if(accumulationObj.type !== BICst.SERIES_ACCUMULATION.EXIST) {

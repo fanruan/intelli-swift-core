@@ -32,7 +32,7 @@ BI.TargetSettingsRegion = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.default",
             element: this.element,
-            rgap: 21,
+            rgap: 24,
             items: [this.region]
         });
         BI.createWidget({
@@ -43,7 +43,7 @@ BI.TargetSettingsRegion = BI.inherit(BI.Widget, {
                 right: 0,
                 top: 0,
                 bottom: 0,
-                width: 20
+                width: 24
             }]
         });
     },
