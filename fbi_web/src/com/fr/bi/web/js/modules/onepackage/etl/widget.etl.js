@@ -30,16 +30,10 @@ BI.ETL = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.ETL.superclass._init.apply(this, arguments);
-        var o = this.options;
+        var self = this, o = this.options;
         this.model = new BI.ETLModel({
             id: o.id,
-            table_data: o.table_data,
-            relations: o.relations,
-            translations: o.translations,
-            all_fields: o.all_fields,
-            used_fields: o.used_fields,
-            excel_view: o.excel_view,
-            update_settings: o.update_settings
+            table: o.table
         });
         BI.createWidget({
             type: "bi.border",
@@ -57,6 +51,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 }
             }
         });
+
         this._populate();
     },
 
@@ -234,10 +229,12 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Save"),
             title: BI.i18nText("BI-Save"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT,
-            warningTitle: BI.bind(this._getWarningTitle, this),
-            handler: function () {
-                self.fireEvent(BI.ETL.EVENT_SAVE, self.model.getValue());
-            }
+            warningTitle: BI.bind(this._getWarningTitle, this)
+        });
+        this.saveButton.on(BI.Button.EVENT_CHANGE, function () {
+            self.model.saveTable(function () {
+                self.fireEvent(BI.ETL.EVENT_SAVE);
+            });
         });
         var removeButton = BI.createWidget({
             type: "bi.text_button",
@@ -345,8 +342,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         var selectTablePane = BI.createWidget({
             type: "bi.select_table_pane",
             element: BI.Layers.create(BICst.SELECT_TABLES_LAYER, BICst.BODY_ELEMENT),
-            etl: this.model.getAllTables(),
-            translations: this.model.getTranslations()
+            etl: this.model.getAllTables()
         });
         BI.Layers.show(BICst.SELECT_TABLES_LAYER);
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {
@@ -382,21 +378,6 @@ BI.ETL = BI.inherit(BI.Widget, {
             var finalTable = allTables[0][0];
             self.model.setFields(finalTable.fields);
             self.model.setTranslationsByETLValue(finalTable);
-            // self._populate();
-            // var mask = BI.createWidget({
-            //     type: "bi.loading_mask",
-            //     masker: BICst.BODY_ELEMENT,
-            //     text: BI.i18nText("BI-Loading")
-            // });
-            // BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
-            //     self.model.setFields(data[0].fields);
-            //     self.model.setRelationsByETLValue(data[0]);
-            //     self.model.setTranslationsByETLValue(data[0]);
-            //     self._populate();
-            // }, function () {
-            //     mask.destroy();
-            // });
-            // return;
         }
         self._populate();
     },
@@ -423,7 +404,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             width: this.constants.ETL_TEXT_EDITOR_WIDTH,
             height: this.constants.ETL_TEXT_EDITOR_HEIGHT,
             allowBlank: false,
-            errorText: function(v) {
+            errorText: function (v) {
                 if (BI.isEmptyString(v)) {
                     return BI.i18nText("BI-Table_Name_Not_Null");
                 }
@@ -432,12 +413,12 @@ BI.ETL = BI.inherit(BI.Widget, {
             validationChecker: function (v) {
                 return self.model.isValidTableTranName(v);
             },
-            quitChecker: function(){
+            quitChecker: function () {
                 return false;
             }
         });
         tableName.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.model.setTranName(tableName.getValue());
+            self.model.setTableName(tableName.getValue());
         });
         tableName.on(BI.SignEditor.EVENT_ERROR, function () {
             self.saveButton.setEnable(false);
@@ -445,7 +426,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         tableName.on(BI.SignEditor.EVENT_VALID, function () {
             self.saveButton.setEnable(true);
         });
-        tableName.setValue(this.model.getTranName());
+        tableName.setValue(BI.Utils.getTransNameById4Conf(this.model.getId()));
 
         this.refreshTable = BI.createWidget({
             type: "bi.icon_button",
@@ -504,31 +485,26 @@ BI.ETL = BI.inherit(BI.Widget, {
             type: "bi.table_field_info_with_search_pane",
             tableInfo: {
                 id: this.model.getId(),
-                table_name: this.model.getTranName(),
+                table_name: BI.Utils.getTransNameById4Conf(this.model.getId()),
                 fields: this.model.getFields(),
-                relations: this.model.getRelations(),
-                translations: this.model.getTranslations(),
-                all_fields: this.model.getAllFields(),
-                isFinal: this.model.getAllTables().length === 1
+                isFinal: this.model.getAllTables().length === 1,
+                translations: this.model.getTranslations()
             }
         });
-        tableInfo.on(BI.TableFieldWithSearchPane.EVENT_VALID, function(){
+        tableInfo.on(BI.TableFieldWithSearchPane.EVENT_VALID, function () {
             self.saveButton.setEnable(tableName.isValid());
         });
-        tableInfo.on(BI.TableFieldWithSearchPane.EVENT_ERROR, function(){
-           self.saveButton.setEnable(false);
+        tableInfo.on(BI.TableFieldWithSearchPane.EVENT_ERROR, function () {
+            self.saveButton.setEnable(false);
         });
         tableInfo.on(BI.TableFieldWithSearchPane.EVENT_RELATION_CHANGE, function (fieldId) {
             BI.Popovers.remove(fieldId);
             var relationPane = BI.createWidget({
                 type: "bi.relation_set_pane",
-                field_id: fieldId,
-                relations: self.model.getRelations(),
-                translations: self.model.getTranslations(),
-                all_fields: self.model.getAllFields()
+                field: self.model.getFieldById(fieldId)
             });
             relationPane.on(BI.RelationSetPane.EVENT_CHANGE, function (relations) {
-                self.model.setRelations(relations);
+                self.model.setRelations(fieldId, relations);
                 self._populate();
             });
             BI.Popovers.create(fieldId, relationPane).open(fieldId);
@@ -800,7 +776,6 @@ BI.ETL = BI.inherit(BI.Widget, {
                     reopen: true,
                     isGenerated: status.exists,
                     tableInfo: table,
-                    translations: self.model.getTranslations(),
                     fieldInfo: self.model.constructFieldNameAndTranslationFieldNameRelation()
                 }
             });
@@ -884,8 +859,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                     joinTables: table.tables,
                     tableInfo: table,
                     allETLTables: self.model.getAllTables()
-                },
-                translations: self.model.getTranslations()
+                }
             });
             join.populate();
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -916,8 +890,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                     unionTables: table.tables,
                     tableInfo: table,
                     allETLTables: self.model.getAllTables()
-                },
-                translations: self.model.getTranslations()
+                }
             });
             union.populate();
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1098,8 +1071,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             type: "bi.select_one_table_pane",
             element: BI.Layers.create(BICst.SELECT_ONE_TABLE_LAYER, BICst.BODY_ELEMENT),
             etl: this.model.getAllTables(),
-            currentId: tId,
-            translations: this.model.getTranslations()
+            currentId: tId
         });
         BI.Layers.show(BICst.SELECT_ONE_TABLE_LAYER);
         selectTablePane.on(BI.SelectOneTablePane.EVENT_CHANGE, function (tables) {
@@ -1115,8 +1087,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                         joinTables: tables,
                         tableInfo: self.model.getTableById(tId),
                         allETLTables: self.model.getAllTables()
-                    },
-                    translations: self.model.getTranslations()
+                    }
                 });
                 join.populate();
                 BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1138,8 +1109,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             type: "bi.select_table_pane",
             element: BI.Layers.create(BICst.SELECT_TABLES_LAYER, BICst.BODY_ELEMENT),
             etl: this.model.getAllTables(),
-            currentId: tId,
-            translations: this.model.getTranslations()
+            currentId: tId
         });
         BI.Layers.show(BICst.SELECT_TABLES_LAYER);
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {
@@ -1156,8 +1126,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                         unionTables: tables,
                         tableInfo: self.model.getTableById(tId),
                         allETLTables: self.model.getAllTables()
-                    },
-                    translations: self.model.getTranslations()
+                    }
                 });
                 union.populate();
                 BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1260,7 +1229,6 @@ BI.ETL = BI.inherit(BI.Widget, {
                 reopen: false,
                 isGenerated: false,
                 tableInfo: self.model.getTableById(tId),
-                translations: self.model.getTranslations(),
                 fieldInfo: self.model.constructFieldNameAndTranslationFieldNameRelation()
             }
         });
@@ -1340,14 +1308,14 @@ BI.ETL = BI.inherit(BI.Widget, {
         this.excelViewButton.setWarningTitle(warningTitle);
     },
 
-    _getWarningTitle: function(){
+    _getWarningTitle: function () {
         var allTables = this.model.getAllTables();
-        if(allTables.length === 0){
+        if (allTables.length === 0) {
             return BI.i18nText("BI-Etl_Table_On_The_Right_Cannot_Be_Null")
-        }else{
-            if(allTables.length > 1){
+        } else {
+            if (allTables.length > 1) {
                 return BI.i18nText("BI-Final_Table_Only_Be_One")
-            }else{
+            } else {
                 return BI.i18nText("BI-Correct_The_Errors_Red")
             }
         }

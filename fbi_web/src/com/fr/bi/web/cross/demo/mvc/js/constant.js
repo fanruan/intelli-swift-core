@@ -472,7 +472,8 @@ var _JS = [
     "detail/mvc.treelabel.js",
     "detail/mvc.singleslider.js",
     "detail/mvc.intervalslider.js",
-    "detail/mvc.stringlist.js"
+    "detail/mvc.stringlist.js",
+    "detail/mvc.treelist.js"
 ];
 
 
@@ -697,7 +698,8 @@ var _Routes = {
     "/tree_label": "TreeLabelView",
     "/slider": "SliderView",
     "/interval_slider": "IntervalSliderView",
-    "/string_list": "StringListView"
+    "/string_list": "StringListView",
+    "/tree_list": "TreeListView"
 };
 
 var _Models = {};
@@ -1226,6 +1228,9 @@ _Models.detail = [{
     text: "文本列表"
 }, {
     id: 37,
+    text: "树列表"
+}, {
+    id: 38,
     text: "螺旋分析tab控件"
 },
 
@@ -1596,6 +1601,10 @@ _Models.detail = [{
         value: "string_list"
     }, {
         pId: 37,
+        text: "树列表",
+        value: "tree_list"
+    }, {
+        pId: 38,
         text: "螺旋分析tab控件",
         value: "dynamic_group_tab"
     }];

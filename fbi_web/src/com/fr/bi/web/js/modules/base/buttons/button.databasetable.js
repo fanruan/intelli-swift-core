@@ -6,8 +6,8 @@
 BI.DatabaseTable = BI.inherit(BI.BasicButton, {
 
     constants: {
-        ICON_WIDTH: 20,
-        ICON_HEIGHT: 20,
+        ICON_WIDTH: 16,
+        ICON_HEIGHT: 16,
         BUTTON_HEIGHT: 30
     },
 
@@ -26,8 +26,6 @@ BI.DatabaseTable = BI.inherit(BI.BasicButton, {
         this.iconButton = BI.createWidget({
             type: "bi.icon_button",
             cls: this._getIconCls(o.connName) + " table-font",
-            height: this.constants.ICON_HEIGHT,
-            width: this.constants.ICON_WIDTH,
             iconHeight: this.constants.ICON_HEIGHT,
             iconWidth: this.constants.ICON_WIDTH
         });
@@ -52,7 +50,7 @@ BI.DatabaseTable = BI.inherit(BI.BasicButton, {
             });
         } else {
             BI.createWidget({
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 element: this.element,
                 items: [this.iconButton, this.tableNameText],
                 height: this.constants.BUTTON_HEIGHT,

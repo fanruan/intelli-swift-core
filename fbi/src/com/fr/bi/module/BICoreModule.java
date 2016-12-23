@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
@@ -25,11 +26,12 @@ import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
 import com.fr.bi.conf.records.BICubeTaskRecordManager;
+import com.fr.bi.conf.tablelock.BIConfTableLock;
+import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
 import com.fr.bi.fs.*;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
@@ -69,7 +71,7 @@ public class BICoreModule extends AbstractModule {
         initDataSourcePool();
         registerClusterIfNeed();
         registerSystemManager();
-        registDAO();
+        registerDAO();
         registerResources();
         registerTableAddColumn();
     }
@@ -324,17 +326,18 @@ public class BICoreModule extends AbstractModule {
         }
     }
 
-    private void registDAO() {
-        dropBIReportNodeLockDAOTable();
+    private void registerDAO() {
+        dropLocksTable(ObjectTableMapper.PREFIX_NAME + BIReportNodeLock.class.getSimpleName());
+        dropLocksTable(ObjectTableMapper.PREFIX_NAME + BIConfTableLock.class.getSimpleName());
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(TableDataDAOControl.class.getName(), TableDataBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.getInstance());
+        StableFactory.registerMarkedObject(BIConfTableLockDAO.class.getName(), BIConfTableLockDAO.getInstance());
     }
 
-    private void dropBIReportNodeLockDAOTable() {
+    private void dropLocksTable(String tableName) {
         Connection cn = null;
         PreparedStatement ps = null;
-        String tableName = ObjectTableMapper.PREFIX_NAME + BIReportNodeLock.class.getSimpleName();
         try {
             cn = PlatformDB.getDB().createConnection();
             ps = cn.prepareStatement("DROP TABLE " + DialectFactory.generateDialect(cn).column2SQL(tableName));
@@ -373,7 +376,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, ResourceHelper.getFormulaCollectionJS(), ResourceHelper.FormulaTransmitter);
     }
 
-    public void loadResources (Locale[] locales) {
+    public void loadResources(Locale[] locales) {
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_THIRD_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);

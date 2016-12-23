@@ -135,6 +135,9 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.TREE:
                 view = "BIShow.TreeWidgetView";
                 break;
+            case BICst.WIDGET.TREE_LIST:
+                view = "BIShow.TreeListView";
+                break;
             case BICst.WIDGET.GENERAL_QUERY:
                 view = "BIShow.GeneralQueryView";
                 break;

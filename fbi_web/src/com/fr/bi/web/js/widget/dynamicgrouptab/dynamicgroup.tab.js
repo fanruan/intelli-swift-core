@@ -104,10 +104,10 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
         return this.tab.getSelectedTab();
     },
 
-    populate: function(items){
+    populate: function(){
         this.tabs = [];
-        this.tabButton.populate(items);
-        this.tab.populate(items);
+        this.tabButton.populate();
+        this.tab.populate();
     }
 })
 BI.DynamicGroupTab.EVENT_ADD_SHEET = "EVENT_ADD_SHEET";

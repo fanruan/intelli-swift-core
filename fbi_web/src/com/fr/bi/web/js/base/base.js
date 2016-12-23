@@ -1154,7 +1154,7 @@ if (!window.BI) {
             if (!BI.isKey(op)) {
                 op = 'fr_bi_dezi';
             }
-            if (op === "fr_bi_dezi") {
+            if (op === "fr_bi_dezi" || op === "fr_bi_configure") {
                 data.sessionID = Data.SharingPool.get("sessionID");
             }
             var url = FR.servletURL + '?op=' + op + '&cmd=' + cmd + "&_=" + Math.random();

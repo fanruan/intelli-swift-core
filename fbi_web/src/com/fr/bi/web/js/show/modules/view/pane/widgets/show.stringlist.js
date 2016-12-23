@@ -22,9 +22,7 @@ BIShow.StringListView = BI.inherit(BI.View, {
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
-            if (wId !== self.model.get("id")) {
-                self.stringList.populate();
-            }
+            self.stringList.populate();
         });
     },
 
@@ -62,8 +60,8 @@ BIShow.StringListView = BI.inherit(BI.View, {
                 el: this.stringList,
                 top: 10,
                 right: 10,
-                left:10,
-                bottom:10
+                left: 10,
+                bottom: 10
             }, {
                 el: this.tools,
                 top: 0,

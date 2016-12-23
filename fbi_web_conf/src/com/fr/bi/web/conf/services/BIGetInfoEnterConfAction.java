@@ -85,12 +85,11 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
             Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
-            String primaryId = null;
             Set<BITableRelation> relations = entry.getValue().getContainer();
             Map<String, JSONArray> tableRelationMap = new HashMap<String, JSONArray>();
             for (BITableRelation relation : relations) {
                 JSONArray ja = new JSONArray();
-                primaryId = relation.getPrimaryField().getFieldID().getIdentityValue();
+                String primaryId = relation.getPrimaryField().getFieldID().getIdentityValue();
                 if (tableRelationMap.containsKey(primaryId)) {
                     ja = tableRelationMap.get(primaryId);
                 }
@@ -109,12 +108,11 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
             Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
-            String foreignId = null;
             Set<BITableRelation> relations = entry.getValue().getContainer();
             Map<String, JSONArray> tableRelationMap = new HashMap<String, JSONArray>();
             for (BITableRelation relation : relations) {
                 JSONArray ja = new JSONArray();
-                foreignId = relation.getForeignField().getFieldID().getIdentity();
+                String foreignId = relation.getForeignField().getFieldID().getIdentity();
                 if (tableRelationMap.containsKey(foreignId)) {
                     ja = tableRelationMap.get(foreignId);
                 }

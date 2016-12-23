@@ -1,7 +1,6 @@
 package com.fr.bi;
 
 
-import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
@@ -33,7 +32,6 @@ import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.tableObject.Column;
 import com.fr.data.core.db.tableObject.ColumnSize;
 import com.fr.data.dao.*;
-import com.fr.dav.LocalEnv;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.UserControl;
@@ -391,6 +389,7 @@ public class BIPlate extends AbstractFSPlate {
                 BITableMapper.BI_SHARED_REPORT_NODE.TABLE_MAPPER,
                 BITableMapper.BI_CREATED_TEMPLATE_FOLDER.TABLE_MAPPER,
                 BITableMapper.BI_REPORT_NODE_LOCK.TABLE_MAPPER,
+                BITableMapper.BI_CONF_TABLE_LOCK.TABLE_MAPPER,
                 BIReportEntry.TABLE_MAPPER
         };
     }
