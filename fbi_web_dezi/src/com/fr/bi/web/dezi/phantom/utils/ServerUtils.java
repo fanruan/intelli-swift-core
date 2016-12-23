@@ -25,6 +25,9 @@ public class ServerUtils {
     private static final int LINUX32BIT = 32;
     private static final int LINUX64BIT = 64;
 
+    private static final int CONNECTTIME = 5000;
+    private static final int READTIME = 5000;
+
     public static boolean checkServer(String ip, int port){
         try {
             String res = ServerUtils.postMessage(ip, port, LIVE);
@@ -71,13 +74,11 @@ public class ServerUtils {
      * @throws IOException
      */
     public static String postMessage(String ip, int port, String message) throws IOException {
-        int connectTime = 5000;
-        int readTime = 5000;
         URL url = new URL("http://" + ip + ":" + port + "/");
         URLConnection connection = url.openConnection();
         connection.setDoOutput(true);
-        connection.setConnectTimeout(connectTime);
-        connection.setReadTimeout(readTime);
+        connection.setConnectTimeout(CONNECTTIME);
+        connection.setReadTimeout(READTIME);
 
         OutputStream out = connection.getOutputStream();
         out.write(message.getBytes("utf-8"));
