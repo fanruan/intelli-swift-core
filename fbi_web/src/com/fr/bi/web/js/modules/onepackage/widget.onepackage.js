@@ -19,7 +19,10 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         EMPTY_TIP_HEIGHT: 40,
         LAYOUT_H_GAP: 20,
         NORTH_HEIGHT: 50,
-        SOUTH_HEIGHT: 60
+        SOUTH_HEIGHT: 60,
+
+        SHOW_TIP: 1,
+        SHOW_TABLE: 2
     },
 
     _defaultConfig: function () {
@@ -36,6 +39,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             gid: o.gid,
             name: o.name
         });
+
         BI.createWidget({
             type: "bi.border",
             cls: "bi-business-package-pane",
@@ -80,31 +84,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             self.model.setName(packageName.getValue());
         });
 
-        this.viewType = BI.createWidget({
-            type: "bi.segment",
-            cls: "tables-view-group",
-            items: BI.createItems(self.model.getViewType(), {
-                type: "bi.icon_button",
-                extraCls: "tables-view",
-                width: this._constant.VIEW_WIDTH,
-                height: this._constant.VIEW_HEIGHT
-            }),
-            width: 60
-        });
-        this.viewType.setValue(BICst.TABLES_VIEW.TILE);
-        this.viewType.on(BI.Segment.EVENT_CHANGE, function () {
-            var cardName = this.getValue()[0];
-            self.showCardLayout.showCardByName(cardName);
-            if (cardName === BICst.TABLES_VIEW.RELATION) {
-                self.relationView.populate({
-                    tableIds: self.model.getTables(),
-                    translations: self.model.getTranslations(),
-                    relations: self.model.getRelations(),
-                    all_fields: self.model.getAllFields(),
-                    tableData: self.model.getTablesData()
-                });
-            }
-        });
+        var addNewTableCombo = this._createAddTableCombo();
 
         this.searcher = BI.createWidget({
             type: "bi.searcher",
@@ -116,10 +96,10 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             popup: {
                 type: "bi.package_searcher_result_pane",
                 onStartSearch: function () {
-                    self.addNewTableCombo.setEnable(false);
+                    addNewTableCombo.setEnable(false);
                 },
                 onStopSearch: function () {
-                    self.addNewTableCombo.setEnable(true);
+                    addNewTableCombo.setEnable(true);
                 }
             }
         });
@@ -127,7 +107,29 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             self._onClickOneTable(v);
         });
 
-        this.addNewTableCombo = BI.createWidget({
+        return BI.createWidget({
+            type: "bi.left_right_vertical_adapt",
+            items: {
+                left: [
+                    {
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Package_Name") + ":",
+                        cls: "package-name-label",
+                        height: this._constant.BUTTON_HEIGHT
+                    },
+                    packageName, addNewTableCombo
+                ],
+                right: [this.searcher]
+            },
+            lhgap: 10,
+            rrgap: 90,
+            cls: "one-package-north"
+        });
+    },
+
+    _createAddTableCombo: function () {
+        var self = this;
+        var addNewTableCombo = BI.createWidget({
             type: "bi.combo",
             cls: "add-new-table-combo",
             isNeedAdjustHeight: false,
@@ -149,7 +151,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                         textHgap: this._constant.BUTTON_GAP,
                         height: this._constant.BUTTON_HEIGHT,
                         handler: function () {
-                            self.addNewTableCombo.hideView();
+                            addNewTableCombo.hideView();
                         }
                     }),
                     layouts: [{
@@ -159,7 +161,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             },
             width: this._constant.COMBO_WIDTH
         });
-        this.addNewTableCombo.on(BI.Combo.EVENT_CHANGE, function (v) {
+        addNewTableCombo.on(BI.Combo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.ADD_NEW_TABLE.DATABASE_OR_PACKAGE:
                     self._onClickSelectTable();
@@ -175,127 +177,114 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                     break;
             }
         });
-        this.addNewTableCombo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
-            self.addNewTableCombo.setValue([]);
+        addNewTableCombo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
+            addNewTableCombo.setValue([]);
         });
+        return addNewTableCombo;
+    },
 
-        var buttonsWrapper = BI.createWidget({
-            type: "bi.left",
-            items: [this.addNewTableCombo],
-            hgap: this._constant.BUTTON_GAP
-        });
+    _viewTypeCreator: function (v) {
+        var self = this;
+        switch (v) {
+            case BICst.TABLES_VIEW.TILE:
+                this.tableList = BI.createWidget({
+                    type: "bi.package_tables_list_pane"
+                });
+                this.tableList.on(BI.PackageTablesListPane.EVENT_CLICK_TABLE, function (id) {
+                    self._onClickOneTable(id);
+                });
+                this.searcher.setAdapter(this.tableList);
+                return this.tableList;
+            case BICst.TABLES_VIEW.RELATION:
+                this.relationView = BI.createWidget({
+                    type: "bi.package_table_relations_pane"
+                });
+                this.relationView.on(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, function (id) {
+                    self._onClickOneTable(id);
+                });
+                return this.relationView;
+        }
+    },
 
-        return BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
-            items: {
-                left: [
-                    {
+    _tipAndTablesCreator: function (v) {
+        switch (v) {
+            case this._constant.SHOW_TIP:
+                return {
+                    type: "bi.center_adapt",
+                    cls: "empty-tip",
+                    items: [{
                         type: "bi.label",
-                        text: BI.i18nText("BI-Package_Name") + ":",
-                        cls: "package-name-label",
-                        height: this._constant.BUTTON_HEIGHT
-                    },
-                    packageName, buttonsWrapper
-                ],
-                right: [this.searcher, this.viewType]
-            },
-            lhgap: 8,
-            rhgap: 8,
-            cls: "one-package-north"
-        });
+                        text: BI.i18nText("BI-No_Data_In_Package"),
+                        height: this._constant.EMPTY_TIP_HEIGHT
+                    }]
+                };
+            case this._constant.SHOW_TABLE:
+                var tab = BI.createWidget({
+                    type: "bi.segment",
+                    cls: "tables-view-group",
+                    items: BI.createItems(this.model.getViewType(), {
+                        type: "bi.icon_button",
+                        extraCls: "tables-view",
+                        width: this._constant.VIEW_WIDTH,
+                        height: this._constant.VIEW_HEIGHT
+                    }),
+                    width: 60
+                });
+                this.viewType = BI.createWidget({
+                    type: "bi.tab",
+                    tab: tab,
+                    direction: "custom",
+                    defaultShowIndex: BICst.TABLES_VIEW.TILE,
+                    cardCreator: BI.bind(this._viewTypeCreator, this)
+                });
+
+                return BI.createWidget({
+                    type: "bi.absolute",
+                    element: this.viewType,
+                    items: [{
+                        el: tab,
+                        top: -40,
+                        right: 20
+                    }]
+                });
+        }
     },
 
     _createCenter: function () {
-        var self = this;
-        this.emptyTip = BI.createWidget({
-            type: "bi.center_adapt",
-            cls: "empty-tip",
-            items: [{
-                type: "bi.label",
-                text: BI.i18nText("BI-No_Data_In_Package"),
-                height: this._constant.EMPTY_TIP_HEIGHT
-            }]
+        // 中心区域tab，用于切换提示和表界面
+        this.centerTab = BI.createWidget({
+            type: "bi.tab",
+            cls: "one-package-center",
+            defaultShowIndex: false,
+            cardCreator: BI.bind(this._tipAndTablesCreator, this)
         });
-
-        this.tableList = BI.createWidget({
-            type: "bi.package_tables_list_pane"
-        });
-        this.tableList.on(BI.PackageTablesListPane.EVENT_CLICK_TABLE, function (id) {
-            self._onClickOneTable(id);
-        });
-
-
-        this.relationView = BI.createWidget({
-            type: "bi.package_table_relations_pane"
-        });
-        this.relationView.on(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, function (id) {
-            self._onClickOneTable(id);
-        });
-
-        this.showCardLayout = BI.createWidget({
-            type: "bi.card",
-            defaultShowName: BICst.TABLES_VIEW.TILE,
-            items: [{
-                cardName: BICst.TABLES_VIEW.TILE, el: this.tableList
-            }, {
-                cardName: BICst.TABLES_VIEW.RELATION, el: this.relationView
-            }]
-        });
-
-        var center = BI.createWidget({
-            type: "bi.default",
-            items: [this.emptyTip, this.showCardLayout],
-            cls: "one-package-center"
-        });
-        this.searcher.setAdapter(this.tableList);
-
         return BI.createWidget({
-            type: "bi.center",
-            items: [center],
-            hgap: this._constant.LAYOUT_H_GAP
+            type: "bi.absolute",
+            items: [{
+                el: this.centerTab,
+                top: 0,
+                right: 20,
+                bottom: 0,
+                left: 20
+            }]
         })
     },
 
     _createSouth: function () {
         var self = this;
-        var cancelButton = BI.createWidget({
-            type: "bi.button",
-            text: BI.i18nText("BI-Cancel"),
-            level: "ignore",
-            height: this._constant.BUTTON_HEIGHT,
-            handler: function () {
-                self.fireEvent(BI.OnePackage.EVENT_CANCEL);
-            }
-        });
         var finishButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-OK"),
             height: this._constant.BUTTON_HEIGHT,
-            level: "common",
-            handler: function () {
-                var mask = BI.createWidget({
-                    type: "bi.loading_mask",
-                    masker: self.element,
-                    text: BI.i18nText("BI-Loading")
-                });
-                var data = self.model.getValue();
-                //update sharing pool
-                Data.SharingPool.put("translations", data.translations);
-                Data.SharingPool.put("relations", data.relations);
-                Data.SharingPool.put("fields", self.model.getAllFields());
-                Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
-                BI.Utils.updateTablesOfOnePackage(data, function () {
-                    self.fireEvent(BI.OnePackage.EVENT_SAVE);
-                }, function () {
-                    mask.destroy();
-                });
-            }
+            level: "common"
+        });
+        finishButton.on(BI.Button.EVENT_CHANGE, function () {
+            self.fireEvent(BI.OnePackage.EVENT_SAVE);
         });
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             cls: "south",
             items: {
-                left: [cancelButton],
                 right: [finishButton]
             }
         });
@@ -303,42 +292,38 @@ BI.OnePackage = BI.inherit(BI.Widget, {
 
     _createItemsForTableList: function () {
         var self = this;
-        var tableIds = this.model.getTables();
-        var tablesData = this.model.getTablesData();
-        return BI.map(tableIds, function (i, table) {
-            var id = table.id;
+        var tables = this.model.getSortedTables();
+        return BI.map(tables, function (i, table) {
             return {
-                id: id,
-                text: self.model.getTableTranName(id),
-                connName: tablesData[id].connection_name
+                id: table.id,
+                text: self.model.getTableTranName(table),
+                value: table.id,
+                connName: table.connection_name
             };
         });
     },
 
     _refreshTablesInPackage: function () {
-        this.viewType.setValue(BICst.TABLES_VIEW.TILE);
-        this.showCardLayout.showCardByName(this.showCardLayout.getDefaultShowName());
-        this.tableList.populate(this._createItemsForTableList());
-        this._refreshEmptyTip();
+        this._refreshTabs();
         //避免出现停留在前面的搜索面板
         this.searcher.stopSearch();
     },
 
-    _refreshEmptyTip: function () {
+    _refreshTabs: function () {
         if (BI.isEmptyArray(this.model.getTables())) {
-            this.emptyTip.setVisible(true);
-            return;
+            this.centerTab.setSelect(this._constant.SHOW_TIP);
+        } else {
+            this.centerTab.setSelect(this._constant.SHOW_TABLE);
+            this.viewType.setSelect(BICst.TABLES_VIEW.TILE);
+            this.tableList.populate(this._createItemsForTableList());
         }
-        this.emptyTip.setVisible(false);
     },
 
     _onClickSelectTable: function () {
         var self = this;
         var selectTablePane = BI.createWidget({
             type: "bi.select_table_pane",
-            tables: this.model.getTablesData(),
-            element: BI.Layers.create(BICst.SELECT_TABLES_LAYER, BICst.BODY_ELEMENT),
-            translations: this.model.getTranslations()
+            element: BI.Layers.create(BICst.SELECT_TABLES_LAYER, BICst.BODY_ELEMENT)
         });
         BI.Layers.show(BICst.SELECT_TABLES_LAYER);
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {
@@ -368,7 +353,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_SAVE, function (data) {
-            self.model.changeTableInfo(tableId, data);
+            // self.model.changeTableInfo(tableId, data);
             self._refreshTablesInPackage();
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
@@ -400,7 +385,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 });
             });
             var translations = self.model.getTranslations();
-            var tableName = self.model.createDistinctTableTranName(BI.i18nText("BI-Sql_DataSet"));
+            var tableName = self.model.createDistinctTableTranName(tableId, BI.i18nText("BI-Sql_DataSet"));
             translations[tableId] = tableName;
             data.table_name = tableName;
             BI.Layers.remove(self._constant.ETL_LAYER);
@@ -449,7 +434,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                     allFields[field.id] = field;
                 });
             });
-            var tableName = self.model.createDistinctTableTranName(BI.i18nText("BI-Excel_Dataset"));
+            var tableName = self.model.createDistinctTableTranName(tableId, BI.i18nText("BI-Excel_Dataset"));
             var translations = self.model.getTranslations();
             translations[tableId] = tableName;
             data.table_name = tableName;
@@ -480,10 +465,27 @@ BI.OnePackage = BI.inherit(BI.Widget, {
 
     _onClickOneTable: function (id) {
         var self = this;
-        BI.Layers.remove(this._constant.ETL_LAYER);
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: BICst.BODY_ELEMENT,
+            text: BI.i18nText("BI-Loading")
+        });
+        BI.Utils.getTableInfoByTableId4Conf({id: id}, function (res) {
+            if (BI.isNotNull(res) && BI.isNotNull(res.lockedBy)) {
+                BI.Msg.toast(BI.i18nText("BI-Is_Editing_Or_Relation_The_Table", res.lockedBy), "warning");
+                return;
+            }
+            self._buildOneTablePane(id, res);
+        }, function () {
+            mask.destroy();
+        });
+    },
 
+    _buildOneTablePane: function (id, table) {
+        BI.Layers.remove(this._constant.ETL_LAYER);
+        var self = this;
         var type = "bi.etl";
-        var tableData = this.model.getTablesData()[id];
+        var tableData = this.model.getTableByTableId(id);
         var connName = tableData.connection_name;
         if (connName === BICst.CONNECTION.EXCEL_CONNECTION) {
             type = "bi.etl_excel"
@@ -494,12 +496,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             type: type,
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: id,
-            table_data: this.model.getTablesData()[id],
-            relations: this.model.getRelations(),
-            translations: this.model.getTranslations(),
-            all_fields: this.model.getAllFields(),
-            excel_view: this.model.getExcelViews()[id],
-            update_settings: this.model.getUpdateSettings()
+            table: table
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_CUBE_SAVE, function (info, table) {
@@ -519,17 +516,19 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             });
         });
         etl.on(BI.ETL.EVENT_SAVE, function (data) {
-            self.model.changeTableInfo(id, data);
+            // self.model.changeTableInfo(id, data);
             self._refreshTablesInPackage();
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
         etl.on(BI.ETL.EVENT_REMOVE, function () {
-            self.model.removeTable(id);
-            self._refreshTablesInPackage();
-            BI.Layers.remove(self._constant.ETL_LAYER);
+            self.model.removeTable(id, function () {
+                self._refreshTablesInPackage();
+                BI.Layers.remove(self._constant.ETL_LAYER);
+            });
         });
         etl.on(BI.ETL.EVENT_CANCEL, function () {
             BI.Layers.remove(self._constant.ETL_LAYER);
+            BI.Utils.releaseTableLock4Conf({id: id});
         });
     },
 
@@ -538,10 +537,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         this.model.initData(function () {
             self._refreshTablesInPackage();
         });
-    },
-
-    getValue: function () {
-        return this.model.getValue();
     }
 });
 BI.OnePackage.EVENT_CANCEL = "EVENT_CANCEL";

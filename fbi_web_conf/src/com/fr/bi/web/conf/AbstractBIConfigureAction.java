@@ -16,7 +16,7 @@ public abstract class AbstractBIConfigureAction extends ActionNoSessionCMD {
      * @param res 传出
      */
     @Override
-    public void actionCMD(HttpServletRequest req, HttpServletResponse res) {
+    public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) {
         try {
             actionCMDPrivilegePassed(req, res);
         } catch (Exception e) {
@@ -26,4 +26,5 @@ public abstract class AbstractBIConfigureAction extends ActionNoSessionCMD {
     }
 
     protected abstract void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception;
+
 }

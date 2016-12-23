@@ -14,6 +14,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class BIProcessorThreadManager {
     private ExecutorService executorService;
+    private ExecutorService transportExecutorService;
     private static BIProcessorThreadManager instance;
 
     public static BIProcessorThreadManager getInstance() {
@@ -30,13 +31,18 @@ public class BIProcessorThreadManager {
 
     private BIProcessorThreadManager() {
         executorService = Executors.newFixedThreadPool(PerformancePlugManager.getInstance().getBiThreadPoolSize());
+        transportExecutorService = Executors.newFixedThreadPool(PerformancePlugManager.getInstance().getBiTransportThreadPoolSize());
     }
 
     public ExecutorService getExecutorService() {
         return executorService;
     }
 
+    public ExecutorService getTransportExecutorService() {
+        return transportExecutorService;
+    }
+
     public boolean isLeisure() {
-        return ((ThreadPoolExecutor) executorService).getActiveCount() == 0;
+        return ((ThreadPoolExecutor) executorService).getActiveCount() == 0 && ((ThreadPoolExecutor) transportExecutorService).getActiveCount() == 0;
     }
 }

@@ -38,8 +38,7 @@ BI.SelectTablePane = BI.inherit(BI.LoadingPane, {
             type: "bi.data_links_tab",
             tables: o.tables,
             etl: o.etl,
-            currentId: o.currentId,
-            translations: o.translations
+            currentId: o.currentId
         });
         BI.Utils.getConnectionNames(function (linkNames) {
             self.tab.populate(linkNames);
