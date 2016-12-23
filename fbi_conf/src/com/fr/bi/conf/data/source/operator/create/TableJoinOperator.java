@@ -250,7 +250,11 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         ValuesAndGVI rValuesAndGVI = rValueIterator.next();
         Comparator[] comparators = new Comparator[left.size()];
         for (int i = 0; i < comparators.length; i++) {
-            comparators[i] = lti.getColumns().get(new IndexKey(left.get(i))).getFieldType() == DBConstant.COLUMN.STRING ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
+            if (lti.getColumns().get(new IndexKey(left.get(i))).getFieldType() == DBConstant.COLUMN.STRING) {
+                comparators[i] = BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
+            } else {
+                comparators[i] = generateComparatorByType(lti.getColumns().get(new IndexKey(left.get(i))).getClassType(), rti.getColumns().get(new IndexKey(right.get(i))).getClassType());
+            }
         }
         while (lValueIterator.hasNext()) {
             ValuesAndGVI lValuesAndGVI = lValueIterator.next();
