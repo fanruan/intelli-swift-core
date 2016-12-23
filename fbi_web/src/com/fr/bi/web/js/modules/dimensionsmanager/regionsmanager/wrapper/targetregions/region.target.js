@@ -30,7 +30,26 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         data = BI.filter(data, function (i, dimension) {
             return BI.Utils.isTargetType(dimension.type);
         });
+        BI.each(data, function(i, dimension){
+            if(!self._checkFilter(dimension.filter_value)){
+                delete dimension.filter_value;
+            }
+        })
         return data;
+    },
+
+    _checkFilter: function(filters){
+        var self = this;
+        var filter = filters || {};
+        var filterType = filter.filter_type, filterValue = filter.filter_value;
+        if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+            return BI.any(filterValue, function (i, value) {
+                return self._checkFilter(value);
+            });
+        } else {
+            return !(BI.contains(BI.values(BICst.DIMENSION_FILTER_NUMBER), filterType) || BI.contains(BI.values(BICst.DIMENSION_FILTER_STRING), filter) ||
+            BI.contains(BI.values(BICst.DIMENSION_FILTER_DATE), filterType));
+        }
     },
 
     _fieldDragStart: function () {
