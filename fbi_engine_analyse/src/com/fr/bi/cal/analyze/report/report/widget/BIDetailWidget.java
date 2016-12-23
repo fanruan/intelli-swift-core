@@ -1,5 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -24,7 +26,6 @@ import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -64,7 +65,7 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     @Override
     public BIDetailTarget[] getViewDimensions() {
-        if(usedDimensions != null) {
+        if (usedDimensions != null) {
             return usedDimensions;
         }
         BIDetailTarget[] dims = getDimensions();
@@ -73,7 +74,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
             for (int i = 0; i < array.length; i++) {
                 BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
-                    usedDimensions.add(dimension);
+                usedDimensions.add(dimension);
 
             }
             dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
@@ -225,6 +226,20 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
     @Override
+    public void refreshSources() {
+        if (target != null) {
+            for (BusinessTable table : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
+                if (table.getID().equals(target.getID())) {
+                    if (!table.getTableSource().getSourceID().equals(target.getTableSource().getSourceID())) {
+                        target.setSource(table.getTableSource());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public int getType() {
         return BIReportConstant.WIDGET.DETAIL;
     }
@@ -233,4 +248,5 @@ public class BIDetailWidget extends BIAbstractWidget {
     protected TemplateBlock createBIBlock(BISession session) {
         return new PolyCubeDetailECBlock(this, session, page);
     }
+
 }

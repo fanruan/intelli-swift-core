@@ -109,10 +109,10 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     @Override
     public void refreshColumns() {
-        for (BITargetAndDimension td : getTargets()){
+        for (BITargetAndDimension td : getTargets()) {
             td.refreshColumn();
         }
-        for (BITargetAndDimension td : getDimensions()){
+        for (BITargetAndDimension td : getDimensions()) {
             td.refreshColumn();
         }
     }
@@ -168,7 +168,7 @@ public abstract class BIAbstractWidget implements BIWidget {
         if (jo.has("real_data")) {
             realData = jo.optBoolean("real_data", true);
         }
-        if(jo.has("sessionID")) {
+        if (jo.has("sessionID")) {
             sessionId = jo.getString("sessionID");
         }
         this.userId = userId;
@@ -240,4 +240,10 @@ public abstract class BIAbstractWidget implements BIWidget {
     public BICore fetchObjectCore() {
         return new BICoreGenerator(this).fetchObjectCore();
     }
+
+    @Override
+    public void refreshSources() {
+
+    }
+
 }
