@@ -162,7 +162,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
         BI.Utils.updateRelation4Conf({
             id: fieldId,
             relations: relations
-        })
+        }, BI.emptyFn, BI.emptyFn);
     },
 
     setTranslationsByETLValue: function (etl) {

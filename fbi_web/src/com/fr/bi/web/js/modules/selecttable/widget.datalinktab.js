@@ -25,7 +25,7 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
 
     populate: function (linkNames) {
         var self = this, o = this.options;
-        var dataLinks = [], packages = [], etl = [];
+        var dataLinks = [], etl = [];
         //这边 value 拼了一下，不好
         BI.each(linkNames, function (i, name) {
             var text = name;
@@ -37,14 +37,6 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
                 value: BICst.DATA_LINK.DATA_SOURCE + name
             });
         });
-        if(BI.isNotNull(o.translations)) {
-            BI.each(Data.SharingPool.get("packages"), function (id, pack) {
-                packages.push({
-                    text: pack.name,
-                    value: BICst.DATA_LINK.PACKAGES + id
-                })
-            });
-        }
         if (BI.isNotEmptyArray(o.etl)) {
             etl.push({
                 text: BI.i18nText("BI-Etl_Stream"),
@@ -53,7 +45,6 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
         }
         var items = {
             dataLinks: dataLinks,
-            packages: packages,
             etl: etl
         };
         var dataLinkGroup = BI.createWidget({

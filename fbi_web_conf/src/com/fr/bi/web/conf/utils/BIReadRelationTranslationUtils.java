@@ -144,17 +144,21 @@ public class BIReadRelationTranslationUtils {
             BusinessTable table = field.getTableBelongTo();
             Set<BITableRelation> primRelations = BICubeConfigureCenter.getTableRelationManager().getPrimaryRelation(userId, table).getContainer();
             Set<BITableRelation> foreignRelations = BICubeConfigureCenter.getTableRelationManager().getForeignRelation(userId, table).getContainer();
+            List<BITableRelation> removed = new ArrayList<BITableRelation>();
             for (BITableRelation relation : primRelations) {
                 if (ComparatorUtils.equals(relation.getPrimaryKey().getFieldID().getIdentityValue(), fieldId) ||
                         ComparatorUtils.equals(relation.getForeignKey().getFieldID().getIdentityValue(), fieldId)) {
-                    BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, relation);
+                    removed.add(relation);
                 }
             }
             for (BITableRelation relation : foreignRelations) {
                 if (ComparatorUtils.equals(relation.getPrimaryKey().getFieldID().getIdentityValue(), fieldId) ||
                         ComparatorUtils.equals(relation.getForeignKey().getFieldID().getIdentityValue(), fieldId)) {
-                    BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, relation);
+                    removed.add(relation);
                 }
+            }
+            for (BITableRelation relation : removed) {
+                BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, relation);
             }
         }
         Set<BITableRelation> relationsSet = new HashSet<BITableRelation>();

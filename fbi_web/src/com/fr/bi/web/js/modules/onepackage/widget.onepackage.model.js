@@ -46,7 +46,11 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             text: BI.i18nText("BI-Loading")
         });
 
-        BI.Utils.getSimpleTablesByPackId(this.id, function (tables) {
+        BI.Utils.getSimpleTablesByPackId({
+            id: this.id,
+            groupName: BI.Utils.getGroupNameById4Conf(this.gid),
+            packageName: BI.Utils.getPackageNameByID4Conf(this.id)
+        }, function (tables) {
             if (BI.isNotNull(tables)) {
                 self.tables = tables;
             }
@@ -230,7 +234,9 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 exTranslations[id] = tName;
                 BI.Utils.updateTranName4Conf(id, tName);
 
-                var connectionSet = self.relations.connectionSet, primaryKeyMap = self.relations.primKeyMap, foreignKeyMap = self.relations.foreignKeyMap;
+                //这里直接使用的sharing pool cat出relation 一般不这么使用
+                var relations = Data.SharingPool.cat("relations");
+                var connectionSet = relations.connectionSet, primaryKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
                 var addedConn = [], addedPriMap = {}, addedForMap = {};
                 BI.each(connectionSet, function (k, keys) {
                     var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
@@ -238,7 +244,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                         addedConn.push(copyRelation);
                     }
                 });
-                self.relations.connectionSet = connectionSet.concat(addedConn);
+                relations.connectionSet = connectionSet.concat(addedConn);
+                exRelations = exRelations.concat(addedConn);
                 BI.each(primaryKeyMap, function (pfId, maps) {
                     var addedPris = [], nPKId = null;
                     BI.each(maps, function (k, keys) {
@@ -253,11 +260,11 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     }
                 });
                 BI.each(addedPriMap, function (pkId, ms) {
-                    var pkMaps = self.relations.primKeyMap[pkId];
+                    var pkMaps = relations.primKeyMap[pkId];
                     if (BI.isNotNull(pkMaps)) {
-                        self.relations.primKeyMap[pkId] = pkMaps.concat(ms);
+                        primaryKeyMap[pkId] = pkMaps.concat(ms);
                     } else {
-                        self.relations.primKeyMap[pkId] = ms;
+                        primaryKeyMap[pkId] = ms;
                     }
                 });
                 BI.each(foreignKeyMap, function (ffId, maps) {
@@ -274,11 +281,11 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                     }
                 });
                 BI.each(addedForMap, function (fkId, ms) {
-                    var fkMaps = self.relations.foreignKeyMap[fkId];
+                    var fkMaps = relations.foreignKeyMap[fkId];
                     if (BI.isNotNull(fkMaps)) {
-                        self.relations.foreignKeyMap[fkId] = fkMaps.concat(ms);
+                        foreignKeyMap[fkId] = fkMaps.concat(ms);
                     } else {
-                        self.relations.foreignKeyMap[fkId] = ms;
+                        foreignKeyMap[fkId] = ms;
                     }
                 });
             }
@@ -356,7 +363,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     },
 
     _getCopyOfRelation: function (keys, oFields, fieldIds, oTableId, nTableId) {
-        var self = this;
         var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
         var relation = {};
         BI.each(oFields, function (i, ofs) {
@@ -364,8 +370,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 if (oField.id === primKey.field_id) {
                     var nPK = {}, nFK = BI.deepClone(foreignKey);
                     BI.each(fieldIds, function (k, fid) {
-                        if (self.allFields[fid] && self.allFields[primKey.field_id] &&
-                            self.allFields[fid].field_name === self.allFields[primKey.field_id].field_name) {
+                        if (BI.Utils.getFieldNameById4Conf(fid) === BI.Utils.getFieldNameById4Conf(primKey.field_id)) {
                             nPK = {
                                 field_id: fid,
                                 table_id: nTableId
@@ -380,8 +385,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 if (oField.id === foreignKey.field_id) {
                     var nPK = BI.deepClone(primKey), nFK = {};
                     BI.each(fieldIds, function (k, fid) {
-                        if (self.allFields[fid] && self.allFields[foreignKey.field_id] &&
-                            self.allFields[fid].field_name === self.allFields[foreignKey.field_id].field_name) {
+                        if (BI.Utils.getFieldNameById4Conf(fid) === BI.Utils.getFieldNameById4Conf(foreignKey.field_id)) {
                             nFK = {
                                 field_id: fid,
                                 table_id: nTableId

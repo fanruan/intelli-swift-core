@@ -25,7 +25,14 @@ BI.DataLinkGroup = BI.inherit(BI.Widget, {
     _init: function () {
         BI.DataLinkGroup.superclass._init.apply(this, arguments);
         var self = this, items = this.options.items;
-        var dataLinks = items.dataLinks, packages = items.packages, etl = items.etl;
+        var dataLinks = items.dataLinks, etl = items.etl, packages = [];
+        var packIds = BI.Utils.getAllPackageIDs4Conf();
+        BI.each(packIds, function(i, pId) {
+            packages.push({
+                text: BI.Utils.getPackageNameByID4Conf(pId),
+                value: BICst.DATA_LINK.PACKAGES + pId
+            })
+        });
         var arr = dataLinks.concat(packages);
         arr = arr.concat(etl);
         this.group = BI.createWidget({
