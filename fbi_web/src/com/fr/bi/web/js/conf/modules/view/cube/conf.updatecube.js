@@ -12,8 +12,6 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
 
     _init: function () {
         BIConf.UpdateCubePaneView.superclass._init.apply(this, arguments);
-        /*监测cube状态走和生成cube走得是两个Action，会出现这么一个bug：在task还没add进入container的这个阶段，checkStatus返回是false，此时按钮会结束灰化，为了避免该bug，加入taskAdding来标识该阶段*/
-        this.taskAdding=false;
     },
 
     _render: function (vessel) {
@@ -39,16 +37,15 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             text: BI.i18nText("BI-Immediate_Update_DataBase"),
             height: 28,
             handler: function () {
-                self.immediateButton.setEnable(false);
-                self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                self._immediateButtonStatus(false);
+                self.cubeLog.refreshLog(true);
                 BI.Utils.generateCube(function (data) {
-                    self.taskAdding = false;
-                    self.cubeLog.refreshLog(true);
-                    self._createCheckInterval();
+                    if (data.result) {
+                        self._createCheckInterval();
+                    } else {
+                        self._immediateButtonStatus(true);
+                    }
                 });
-
-                // self.model.set("immediateUpdate", true);
-                self.taskAdding = true;
             }
         });
 
@@ -64,16 +61,12 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         this.update({
             noset: true,
             success: function (data) {
-                var isGenerating = data.isGenerating;
-                if (isGenerating === false && self.taskAdding ==false) {
-
-                    self.immediateButton.setEnable(true);
-                    self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
-                    //清掉interval了
-                    clearInterval(self.interval);
+                var hasTask = data.hasTask;
+                if (!hasTask) {
+                    self._immediateButtonStatus(true);
+                    self._clearCheckInterval();
                 } else {
-                    self.immediateButton.setEnable(false);
-                    self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                    self._immediateButtonStatus(false);
                 }
             }
         });
@@ -84,6 +77,13 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         this.interval = setInterval(function () {
             self._checkCubeStatus();
         }, 5000)
+    },
+
+    _clearCheckInterval: function () {
+        var self = this;
+        if (undefined != self.interval) {
+            clearInterval(self.interval);
+        }
     },
 
     _buildTimeSetting: function () {
@@ -97,6 +97,17 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             type: "bi.cube_log"
         })
 
+    },
+
+    _immediateButtonStatus: function (isAvailable) {
+        var self = this;
+        if (isAvailable) {
+            self.immediateButton.setEnable(true);
+            self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
+        } else {
+            self.immediateButton.setEnable(false);
+            self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+        }
     },
 
     refresh: function () {

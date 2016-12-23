@@ -386,5 +386,102 @@ public class BIPackageConfigManager implements Release {
         return result;
     }
 
+    /**
+     * 是不是表只是减少了。
+     *
+     * @return
+     */
+    public boolean isTableReduced() {
+        /**
+         * 如果存在当前配置的表，是否都在分析的表中。
+         */
+        for (BusinessTable table : getAllTables()) {
+            /**
+             * 如果存在当前表，在分析中不存在，说明表增加了。
+             */
+            if (!getAnalysisAllTables().contains(table)) {
+                return false;
+            }
+        }
+        /**
+         * 如果存在分析的表，是否比当前配置的表多。
+         */
+        for (BusinessTable table : getAnalysisAllTables()) {
+            /**
+             * 如果存在分析表，在当期配置表中不存在，说明表减少了。
+             */
+            if (!getAllTables().contains(table)) {
+                return true;
+            }
+        }
+        /**
+         * 说明表没有变动
+         */
+        return false;
+    }
 
+    /**
+     * 是不是表只是增加了。
+     *
+     * @return
+     */
+    public boolean isTableIncreased() {
+        /**
+         * 分析的中的表，是否比当前配置的表多。
+         */
+        for (BusinessTable table : getAnalysisAllTables()) {
+            /**
+             * 如果存在分析表，在当期配置表中不存在，说明表减少了。
+             */
+            if (!getAllTables().contains(table)) {
+                return false;
+            }
+        }
+        /**
+         * 当前配置的表，是否都在分析的表中。
+         */
+        for (BusinessTable table : getAllTables()) {
+            /**
+             * 如果存在当前表，在分析中不存在，说明表增加了。
+             */
+            if (!getAnalysisAllTables().contains(table)) {
+                return true;
+            }
+        }
+
+        /**
+         * 说明表没有变动
+         */
+        return false;
+    }
+
+    public boolean isTableNoChange() {
+/**
+ * 分析的中的表，是否比当前配置的表多。
+ */
+        for (BusinessTable table : getAnalysisAllTables()) {
+            /**
+             * 如果存在分析表，在当期配置表中不存在，说明表减少了。
+             */
+            if (!getAllTables().contains(table)) {
+                return false;
+            }
+        }
+        /**
+         * 当前配置的表，是否都在分析的表中。
+         */
+        for (BusinessTable table : getAllTables()) {
+            /**
+             * 如果存在当前表，在分析中不存在，说明表增加了。
+             */
+            if (!getAnalysisAllTables().contains(table)) {
+                return false;
+            }
+        }
+
+        /**
+         * 说明表没有变动
+         */
+        return true;
+    }
 }

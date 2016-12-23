@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.map.map2.ExternalIntArrayMapFactory;
 import com.finebi.cube.map.map2.IntArrayListExternalMap;
 import com.finebi.cube.message.IMessage;
@@ -66,6 +67,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         this.hostBICubeFieldSource = hostBICubeFieldSource;
         this.cube = cube;
         this.targetColumnKey = targetColumnKey;
+        initThreadPool();
     }
 
     private void initial() {
@@ -85,6 +87,11 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             logger.error(e.getMessage(), e);
         }
         return "";
+    }
+
+    @Override
+    protected void initThreadPool() {
+        executorService = BIProcessorThreadManager.getInstance().getExecutorService();
     }
 
     @Override

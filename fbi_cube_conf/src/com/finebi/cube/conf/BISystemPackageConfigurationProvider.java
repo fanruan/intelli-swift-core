@@ -317,10 +317,45 @@ public interface BISystemPackageConfigurationProvider {
      */
     Boolean isPackageTaggedSpecificGroup(long userId, BIPackageID packageID, BIGroupTagName groupTagName) throws BIGroupAbsentException;
 
+    /**
+     * 获得全部配置部分的表
+     *
+     * @param userId 用户ID
+     * @return 返回当前配置部分全部的表
+     */
     Set<BusinessTable> getAllTables(long userId);
 
+    /**
+     * 获得全部在分析部分的表
+     *
+     * @param userId 用户ID
+     * @return 返回当前分析部分的表
+     */
     Set<BusinessTable> getAnalysisAllTables(long userId);
 
     Set<BIBusinessPackage> getPackages4CubeGenerate(long userId);
 
+    /**
+     * 当前的配置的表是否比分析部分的表，只少，没新增。
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    boolean isTableReduced(long userId);
+
+    /**
+     * 当前的配置的表是否比分析部分的表，只新增，没减少。
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    boolean isTableIncreased(long userId);
+
+    /**
+     * 当前的配置的表和分析部分的表相比，是否改变了？
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    boolean isTableNoChange(long userId);
 }

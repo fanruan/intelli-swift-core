@@ -50,7 +50,7 @@ BI.AbstractDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
                     tIds.push(BI.Utils.getTableIDByDimensionID(dId));
                 });
                 tIds.push(tableId);
-                enable = BI.Utils.isTableInRelativeTables(tIds, tableId);
+                enable = BI.Utils.isTableInRelativeTables(tIds, o.value);
             }
             self.setEnable(enable);
         });

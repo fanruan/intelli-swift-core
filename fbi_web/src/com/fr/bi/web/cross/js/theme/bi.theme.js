@@ -10,7 +10,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
         right: 400
     });
     BI.requestAsync("fr_bi", "get_user_edit_auth", {mode: Consts.BIEDIT}, function(res) {
-        if (FS.isAdmin() || BI.isNotNull(res.result)) {
+        if (FS.isAdmin() || res.result === BICst.REPORT_AUTH.EDIT) {
             var $header = $('#fs-frame-header');
             var header = BI.createWidget({
                 type: "bi.absolute",

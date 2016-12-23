@@ -1,13 +1,8 @@
 package com.fr.bi.web.report.services.authuser;
 
-import com.fr.bi.conf.fs.BIUserAuthorAttr;
-import com.fr.bi.conf.fs.FBIConfig;
-import com.fr.fs.control.UserControl;
+import com.fr.bi.web.base.utils.BIWebUtils;
 import com.fr.fs.web.service.ServiceUtils;
-import com.fr.general.ComparatorUtils;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.utils.WebUtils;
 
@@ -26,19 +21,6 @@ public class BIGetUserEditAuthAction extends ActionNoSessionCMD {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        JSONObject result = new JSONObject();
-        if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID()) ||
-                ComparatorUtils.equals(FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(BIUserAuthorAttr.EDIT), BIUserAuthorAttr.NO_LIMIT)) {
-            result.put("result", true);
-        } else {
-            JSONArray ja = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.EDIT, StringUtils.EMPTY);
-            for (int i = 0; i < ja.length(); i++) {
-                JSONObject jo = ja.getJSONObject(i);
-                if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {
-                    result.put("result", true);
-                }
-            }
-        }
-        WebUtils.printAsJSON(res, result);
+        WebUtils.printAsJSON(res, JSONObject.create().put("result", BIWebUtils.getUserEditViewAuth(userId)));
     }
 }

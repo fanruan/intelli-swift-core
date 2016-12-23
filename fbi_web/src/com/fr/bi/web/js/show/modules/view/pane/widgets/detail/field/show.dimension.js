@@ -50,6 +50,9 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             type: "bi.sign_editor",
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
             cls: "bi-dimension-name",
+            title: function () {
+                return self.editor.getValue();
+            },
             validationChecker: function () {
                 return self._checkDimensionName(self.editor.getValue());
             }

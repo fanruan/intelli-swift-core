@@ -12,6 +12,7 @@ import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -153,6 +154,11 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
 
     public String getCubeTaskId() {
         return DBConstant.GLOBAL_UPDATE_TYPE.COMPLETE_UPDATE;
+    }
+
+    @Override
+    public CubeTaskType getTaskType() {
+        return CubeTaskType.ALL;
     }
 
     public void setAllSingleSources(Set<CubeTableSource> allSingleSources) {

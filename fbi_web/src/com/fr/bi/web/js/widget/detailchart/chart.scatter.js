@@ -13,7 +13,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.ScatterChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "value",
             title: {
@@ -35,17 +35,22 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.ScatterChart.EVENT_CHANGE, obj);
         });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
+        });
     },
 
 
     _formatConfig: function (config, items) {
         var self = this;
+        delete config.zoom;
         config.colors = this.config.chart_color;
         config.plotOptions.style = formatChartStyle();
         config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};

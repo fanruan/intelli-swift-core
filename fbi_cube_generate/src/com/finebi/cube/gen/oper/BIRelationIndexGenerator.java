@@ -7,6 +7,7 @@ import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
@@ -57,6 +58,12 @@ public class BIRelationIndexGenerator extends BIProcessor {
         this.cube = cube;
         this.cubeChooser = new CubeChooser(cube, integrityCube);
         this.relation = relation;
+        initThreadPool();
+    }
+
+    @Override
+    protected void initThreadPool() {
+        executorService = BIProcessorThreadManager.getInstance().getExecutorService();
     }
 
     @Override
@@ -361,8 +368,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
             try {
                 initReverseIndex(reverse, array.get(i), foreignGroupValueIndex);
             } catch (ArrayIndexOutOfBoundsException e) {
-                logger.error("GVI:" + foreignGroupValueIndex.toString());
-
                 foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
                     @Override
                     public void actionPerformed(int rowIndex) {
@@ -378,7 +383,12 @@ public class BIRelationIndexGenerator extends BIProcessor {
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndex) {
-                index[rowIndex] = row;
+                try {
+                    index[rowIndex] = row;
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    logger.error("Array size:" + index.length + " row index:" + rowIndex);
+                    throw e;
+                }
             }
         });
     }

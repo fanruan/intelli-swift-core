@@ -128,12 +128,12 @@ public class AllSingleDimensionGroupTest extends TestCase {
                 }
 
                 @Override
-                public CubeValueEntry getEntryByRow(int row) {
+                public GroupValueIndex getIndexByGroupRow(int groupRow) {
                     return null;
                 }
 
                 @Override
-                public CubeValueEntry getEntryByGroupRow(int row) {
+                public CubeValueEntry getEntryByRow(int row) {
                     return null;
                 }
 
@@ -144,6 +144,11 @@ public class AllSingleDimensionGroupTest extends TestCase {
 
                 @Override
                 public int getPositionOfGroupByRow(int row) {
+                    return 0;
+                }
+
+                @Override
+                public int getPositionOfGroupByValue(Object value) {
                     return 0;
                 }
 

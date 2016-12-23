@@ -89,7 +89,7 @@ public class BITableStyle {
         noneValueStyle = numberStyle.deriveHorizontalAlignment(Constants.CENTER);
         noneValueOddStyle = noneValueStyle.deriveBackground(ColorBackground.getInstance(oddLine));
         totalStyle = noneValueStyle;
-        DecimalFormat decimalFormat = new CoreDecimalFormat(new DecimalFormat("#,###.##"), "#,###.##");
+        DecimalFormat decimalFormat = new CoreDecimalFormat(new DecimalFormat("#,##0.00"), "#,##0.00");
         numberStyle = numberStyle.deriveFormat(decimalFormat);
         integerNumberStyle = numberStyle.deriveFormat(new CoreDecimalFormat(new DecimalFormat("#,###"), "#,###"));
         numberOddStyle = numberStyle.deriveBackground(ColorBackground.getInstance(oddLine));

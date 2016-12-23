@@ -2,7 +2,7 @@ package com.fr.bi.stable.engine;
 
 public enum CubeTaskType {
 
-    CHECK(0), ALL(1), SINGLE(2), BUILD(3), INSTANT(4);
+    CHECK(0), ALL(1), SINGLE(2), BUILD(3), INSTANT(4), EMPTY(5), PART(6);
 
     private int type;
 

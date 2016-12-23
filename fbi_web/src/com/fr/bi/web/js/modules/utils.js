@@ -597,6 +597,7 @@
                         });
                         break;
                 }
+                dimension.dId = newId;
                 dimTarIdMap[idx] = newId;
                 return {id: newId, dimension: dimension};
             }
@@ -1209,6 +1210,19 @@
                 }
             }
             return clicked;
+        },
+
+        //获取组件中所有维度的钻取链A->B->C
+        getDrillList: function (wid) {
+            var drillMap = BI.Utils.getDrillByID(wid);
+            var map = {};
+            BI.each(drillMap, function (drId, ds) {
+                map[drId] = [];
+                BI.each(ds, function (idx, obj) {
+                    map[drId].push(obj.dId)
+                });
+            });
+            return map;
         },
 
         getWidgetFilterValueByID: function (wid) {
@@ -2029,6 +2043,16 @@
             dimensions[dId] = dimension;
             var view = {};
             view[BICst.REGION.DIMENSION1] = [dId];
+
+            var targetIds = this.getAllTargetDimensionIDs(this.getWidgetIDByDimensionID(dId));
+            BI.each(targetIds, function(idx, targetId){
+                dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
+                if(!BI.has(view, BICst.REGION.TARGET1)){
+                    view[BICst.REGION.TARGET1] = [];
+                }
+                view[BICst.REGION.TARGET1].push(targetId);
+            });
+
             this.getWidgetDataByWidgetInfo(dimensions, view, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             }, {page: BICst.TABLE_PAGE_OPERATOR.ALL_PAGE});
@@ -2038,6 +2062,7 @@
         getDataByDimensionID: function (dId, callback) {
             var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
+            dimension.filter_value = {};
             dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
@@ -2046,6 +2071,16 @@
             widget.dimensions[dId] = dimension;
             widget.view = {};
             widget.view[BICst.REGION.DIMENSION1] = [dId];
+
+            var targetIds = this.getAllTargetDimensionIDs(this.getWidgetIDByDimensionID(dId));
+            BI.each(targetIds, function(idx, targetId){
+                widget.dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
+                if(!BI.has(widget.view, BICst.REGION.TARGET1)){
+                    widget.view[BICst.REGION.TARGET1] = [];
+                }
+                widget.view[BICst.REGION.TARGET1].push(targetId);
+            });
+
             Data.Req.reqWidgetSettingByData({widget: widget}, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             });
@@ -2227,7 +2262,7 @@
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {group: BICst.GROUP.M, values: month + 1};
+                                fValue = {group: BICst.GROUP.M, values: month};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -2575,8 +2610,12 @@
                 });
 
                 //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
+                //联动过来的组件的联动条件被删除，忽略钻取条件
                 var linkDrill = self.getDrillByID(lId);
-                if (BI.isNotNull(lLinkages) && BI.isNotEmptyObject(lLinkages) && BI.isNotNull(linkDrill)) {
+                var notIgnore = BI.some(linkages, function(ldid, link) {
+                     return lId === self.getWidgetIDByDimensionID(ldid);
+                });
+                if (notIgnore && BI.isNotNull(linkDrill) && BI.isNotEmptyObject(linkDrill)) {
                     BI.each(linkDrill, function (drId, drArray) {
                         if (drArray.length === 0) {
                             return;
@@ -2593,6 +2632,10 @@
                 }
             });
 
+            //联动过来的维度的过滤条件
+            BI.each(linkages, function(lTId, link) {
+                filterValues = filterValues.concat(self.getDimensionsFilterByTargetId(lTId));
+            });
 
             //日期类型的过滤条件
             var dimensions = widget.dimensions;
@@ -2672,11 +2715,26 @@
             return widget;
         },
 
-        getWidgetDataByID: function (wid, callback, options) {
-            Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
-                callback(data);
-            });
-        },
+        getWidgetDataByID: (function () {
+            var cache = {};
+            return function (wid, callbacks, options) {
+                options || (options = {});
+                var key = BI.UUID();
+                if (!BI.Utils.isControlWidgetByWidgetId(wid)) {
+                    key = wid;
+                }
+                cache[key] = callbacks;
+                Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
+                    if (cache[key] === callbacks) {
+                        callbacks.success(data);
+                        delete cache[key];
+                    } else {
+                        callbacks.error && callbacks.error(data);
+                    }
+                    callbacks.done && callbacks.done(data);
+                });
+            }
+        })(),
 
         //获得n个季度后的日期
         getAfterMulQuarter: function (n) {
@@ -2764,6 +2822,38 @@
                 tIds.push(self.getTableIDByDimensionID(dId));
             });
             return this.isTableInRelativeTables(tIds, tableId);
+        },
+
+        getDimensionsFilterByTargetId: function(tId) {
+            var self = this;
+            var dimensionIds = this.getAllDimDimensionIDs(this.getWidgetIDByDimensionID(tId));
+            var dFilters = [];
+            BI.each(dimensionIds, function(i, dId) {
+                var dimensionMap = self.getDimensionMapByDimensionID(dId);
+                if (BI.isNotNull(dimensionMap[tId])) {
+                    var dFilterValue = self.getDimensionFilterValueByID(dId);
+                    if (BI.isNotEmptyObject(dFilterValue)) {
+                        parseDimensionFilter4Linkage(dFilterValue, dimensionMap[tId]._src, dId);
+                        dFilters.push(dFilterValue);
+                    }
+                }
+            });
+            return dFilters;
+
+            function parseDimensionFilter4Linkage(dFilter, src, dId) {
+                if (dFilter.filter_type === BICst.FILTER_TYPE.AND ||
+                    dFilter.filter_type === BICst.FILTER_TYPE.OR) {
+                    BI.each(dFilter.filter_value, function(i, fValue) {
+                        parseDimensionFilter4Linkage(fValue, src, dId);
+                    });
+                } else {
+                    if (dFilter.target_id === dId) {
+                        dFilter._src = src;
+                    } else {
+                        dFilter.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
+                    }
+                }
+            }
         }
 
     });

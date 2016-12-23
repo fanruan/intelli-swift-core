@@ -76,6 +76,7 @@ public class SQLTableSource extends ServerTableSource {
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
             try {
+                BILoggerFactory.getLogger(SQLTableSource.class).info("The table:" + this.getTableName() + "extract data from db");
                 dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
             } catch (Exception e) {
                 BILoggerFactory.getLogger(SQLTableSource.class).error(e.getMessage(), e);

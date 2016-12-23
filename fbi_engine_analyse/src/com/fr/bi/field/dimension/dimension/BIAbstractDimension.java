@@ -22,6 +22,7 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
@@ -124,6 +125,9 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public String toString(Object v) {
+        if (v instanceof Double) {
+            return StableUtils.convertNumberStringToString(((Double) v).doubleValue());
+        }
         return v == null ? null : v.toString();
     }
 

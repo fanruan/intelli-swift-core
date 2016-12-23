@@ -2258,3 +2258,18 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/password.png');
   _background: none;
 }
+.down-arrow .x-icon,
+.down-arrow:hover .x-icon,
+.down-arrow:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/icon_down_arrow.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/icon_down_arrow.png');
+  _background: none;
+}
+.down-arrow.native .x-icon,
+.down-arrow.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/icon_down_arrow.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/icon_down_arrow.png');
+  _background: none;
+}

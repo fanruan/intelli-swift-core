@@ -107,18 +107,19 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
     },
 
     _groupNameChecker: function (v) {
-        var self = this;
-        var nameCount = 0;
-        BI.some(self.buttons, function (i, button) {
-            var val = button.getValue();
-            if (v === val.group_name) {
-                nameCount++;
-            }
-            if(nameCount > 1){
-                return true;
-            }
-        });
-        return nameCount === 1;
+        //var self = this;
+        //var nameCount = 0;
+        //BI.some(self.buttons, function (i, button) {
+        //    var val = button.getValue();
+        //    if (v === val.group_name) {
+        //        nameCount++;
+        //    }
+        //    if(nameCount > 1){
+        //        return true;
+        //    }
+        //});
+        //return nameCount === 1;
+        return true;
     },
 
     populate: function (items) {

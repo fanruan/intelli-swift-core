@@ -52,10 +52,11 @@ public class DimensionGroupFilter {
     NameObject targetSort;
     Comparator[] dimensionComparator;
     private boolean shouldRecalculateIndex = false;
+    private boolean calAllPage;
     private long startTime = System.currentTimeMillis();
 
 
-    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum) {
+    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum, boolean calAllPage) {
         this.mergerInfoList = mergerInfoList;
         this.rowDimension = rowDimension;
         this.dimensionComparator = new Comparator[rowDimension.length];
@@ -67,6 +68,7 @@ public class DimensionGroupFilter {
         calculatorTargets = LoaderUtils.getCalculatorTargets(usedTargets, session);
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
+        this.calAllPage = calAllPage;
         LoaderUtils.setAllExpander(mergerInfoList);
     }
 
@@ -783,8 +785,7 @@ public class DimensionGroupFilter {
                 return true;
             }
         }
-
-        return false;
+        return calAllPage;
     }
 
 

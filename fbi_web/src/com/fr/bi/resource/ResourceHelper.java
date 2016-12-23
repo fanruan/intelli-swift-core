@@ -918,6 +918,7 @@ public class ResourceHelper {
                 //图表钻取
                 "com/fr/bi/web/css/modules/chartdrill/widget.chartdrill.css",
                 "com/fr/bi/web/css/modules/chartdrill/cell.chartdrill.css",
+                "com/fr/bi/web/css/modules/chartdrill/button.pushdrill.css",
 
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
@@ -948,7 +949,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
 
                 //选择字段服务
-                "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css"
+                "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
+
+
+                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
         };
     }
 
@@ -1075,6 +1079,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/widget.selectdatapane.detail.js",
+                "com/fr/bi/web/js/modules/selectdata4detail/treeitem/item.match.search.js",
 
                 //树控件选字段
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/abstract.node.level.js",
@@ -1547,7 +1552,7 @@ public class ResourceHelper {
                 //one package
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.js",
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.model.js",
-                "com/fr/bi/web/js/modules/onepackage/widget.refreshtablefields.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/refreshfields/widget.refreshtablefields.js",
 
                 //数据连接
                 "com/fr/bi/web/js/modules/datalink/widget.testlink.loading.js",
@@ -1722,6 +1727,7 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/aspects/config.js",
 
+                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
 
                 //工程配置
                 "com/fr/bi/web/js/config.js"
@@ -1768,6 +1774,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/combination/expander/condition.expander.css",
                 "com/fr/bi/web/css/base/colorpicker/button.colorpicker.css",
                 "com/fr/bi/web/css/base/colorpicker/colorpicker.css",
+                "com/fr/bi/web/css/base/chart/chart.combine.css",
                 "com/fr/bi/web/css/base/colorpicker/editor.colorpicker.css",
                 "com/fr/bi/web/css/base/pager/pager.css",
                 "com/fr/bi/web/css/base/pager/pager.number.css",
@@ -2075,6 +2082,10 @@ public class ResourceHelper {
                 //分享给我的
                 "com/fr/bi/web/css/components/share/sharetome.css",
                 "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
+
+
+                //react控件
+                "com/fr/bi/web/css/components/components.react.css",
 
         };
     }
@@ -2843,6 +2854,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/components/share/sharetome.js",
                 "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
 
+
+                //react控件
+                "com/fr/bi/web/js/components/components.react.js",
         };
     }
 

@@ -1,6 +1,8 @@
 package com.fr.bi.stable.structure.collection;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.Iterator;
@@ -11,24 +13,26 @@ import java.util.NoSuchElementException;
  * Created by 小灰灰 on 2014/8/13.
  */
 public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
-    private ICubeColumnIndexReader getter;
+    private ICubeColumnIndexReader reader;
+    private ICubeValueEntryGetter getter;
     private GroupValueIndex nullIndex;
 
-    public CubeIndexGetterWithNullValue(ICubeColumnIndexReader getter, GroupValueIndex nullIndex) {
+    public CubeIndexGetterWithNullValue(ICubeColumnIndexReader reader, ICubeValueEntryGetter getter, GroupValueIndex nullIndex) {
+        this.reader = reader;
         this.getter = getter;
         this.nullIndex = nullIndex;
     }
 
     @Override
     public int sizeOfGroup() {
-        return getter.sizeOfGroup() + 1;
+        return reader.sizeOfGroup() + 1;
     }
 
     public GroupValueIndex getIndex (Object groupValues) {
         if(groupValues == null) {
             return nullIndex;
         } else {
-            return getter.getIndex(groupValues);
+            return reader.getIndex(groupValues);
         }
     }
 
@@ -52,7 +56,7 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
      */
     @Override
     public Object[] createKey(int length) {
-        return getter.createKey(length);
+        return reader.createKey(length);
     }
 
     @Override
@@ -62,17 +66,17 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 
     @Override
     public Object createValue(Object v) {
-        return getter.createValue(v);
+        return reader.createValue(v);
     }
 
 	@Override
-	public Iterator iterator() {
-		return new CIterator(getter.iterator());
+	public Iterator<Map.Entry<Object, GroupValueIndex>> iterator() {
+		return new CIterator(reader.iterator());
 	}
 
 	@Override
-	public Iterator previousIterator() {
-		return new CIterator(getter.previousIterator());
+	public Iterator<Map.Entry<Object, GroupValueIndex>> previousIterator() {
+		return new CIterator(reader.previousIterator());
 	}
 
     /**
@@ -82,15 +86,15 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
      * @return entry的set
      */
     @Override
-    public Iterator<Map.Entry> iterator(Object start) {
+    public Iterator<Map.Entry<Object, GroupValueIndex>> iterator(Object start) {
         if (start == null){
-            Iterator iter = getter.iterator(getter.firstKey());
+            Iterator iter = reader.iterator(reader.firstKey());
             if (iter.hasNext()){
                 iter.next();
             }
             return new CIterator(iter);
         } else {
-            return new CIterator(getter.iterator(start));
+            return new CIterator(reader.iterator(start));
         }
     }
 
@@ -101,15 +105,66 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
      * @return entry的set
      */
     @Override
-    public Iterator<Map.Entry> previousIterator(Object start) {
+    public Iterator<Map.Entry<Object, GroupValueIndex>> previousIterator(Object start) {
         if (start == null){
-            Iterator iter = getter.previousIterator(getter.lastKey());
+            Iterator iter = reader.previousIterator(reader.lastKey());
             if (iter.hasNext()){
                 iter.next();
             }
             return new CIterator(iter);
         } else {
-            return new CIterator(getter.previousIterator(start));
+            return new CIterator(reader.previousIterator(start));
+        }
+    }
+
+    public Iterator<Map.Entry<Object, GroupValueIndex>> iterator(GroupValueIndex filterGVI) {
+        if (filterGVI == null || getter == null){
+            Iterator iter = reader.iterator();
+            return new CIterator(iter);
+        } else {
+            return new CIterator(DimensionIteratorCreator.createValueMapIterator(getter, filterGVI, true));
+        }
+    }
+
+    public Iterator<Map.Entry<Object, GroupValueIndex>> previousIterator(GroupValueIndex filterGVI) {
+        if (filterGVI == null|| getter == null){
+            Iterator iter = reader.previousIterator();
+            return new CIterator(iter);
+        } else {
+            return new CIterator(DimensionIteratorCreator.createValueMapIterator(getter, filterGVI, false));
+        }
+    }
+
+
+    public Iterator<Map.Entry<Object, GroupValueIndex>> iterator(Object start, GroupValueIndex filterGVI) {
+        if (start == null){
+            Iterator iter = reader.iterator(reader.firstKey());
+            if (iter.hasNext()){
+                iter.next();
+            }
+            return new CIterator(iter);
+        } else {
+            if (getter == null){
+                return new CIterator(reader.iterator(start));
+            } else {
+                return new CIterator(DimensionIteratorCreator.createValueMapIterator(getter, filterGVI, start, true));
+            }
+        }
+    }
+
+    public Iterator<Map.Entry<Object, GroupValueIndex>> previousIterator(Object start, GroupValueIndex filterGVI) {
+        if (start == null){
+            Iterator iter = reader.previousIterator(reader.lastKey());
+            if (iter.hasNext()){
+                iter.next();
+            }
+            return new CIterator(iter);
+        } else {
+            if (getter == null){
+                return new CIterator(reader.previousIterator(start));
+            } else {
+                return new CIterator(DimensionIteratorCreator.createValueMapIterator(getter, filterGVI, start, false));
+            }
         }
     }
 
@@ -118,7 +173,7 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
         if (position == sizeOfGroup() - 1){
             return null;
         }
-        return getter.getGroupValue(position);
+        return reader.getGroupValue(position);
     }
 
     @Override
@@ -126,7 +181,7 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
         if (groupValuePosition == sizeOfGroup() - 1){
             return nullIndex;
         }
-        return getter.getGroupValueIndex(groupValuePosition);
+        return reader.getGroupValueIndex(groupValuePosition);
     }
 
     @Override
@@ -136,12 +191,12 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 
     @Override
 	public Object firstKey() {
-		return getter.firstKey();
+		return reader.firstKey();
 	}
 
 	@Override
 	public Object lastKey() {
-		return getter.lastKey();
+		return reader.lastKey();
 	}
 	
 	private class CIterator implements Iterator {
@@ -195,7 +250,7 @@ public class CubeIndexGetterWithNullValue implements ICubeColumnIndexReader {
 
 	@Override
 	public long nonPrecisionSize() {
-		return getter.nonPrecisionSize() + 1;
+		return reader.nonPrecisionSize() + 1;
 	}
 
 }

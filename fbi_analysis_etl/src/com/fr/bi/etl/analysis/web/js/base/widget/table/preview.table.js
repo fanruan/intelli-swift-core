@@ -49,7 +49,6 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
         this._initDrag();
         this.label = BI.createWidget({
             type: "bi.label",
-            width: 200,
             cls: o.baseCls + "-null-label",
             text: BI.i18nText("BI-Add_Fields_First")
         });

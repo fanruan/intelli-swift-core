@@ -11,14 +11,14 @@ public class GVIUtils {
     public static GroupValueIndex getTableLinkedOrGVI(GroupValueIndex currentIndex, final ICubeTableIndexReader reader) {
         if (currentIndex != null) {
 
-            final GroupValueIndex sgvi = new RoaringGroupValueIndex();
+            final GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
             currentIndex.Traversal(new SingleRowTraversalAction() {
                 @Override
                 public void actionPerformed(int rowIndices) {
-                    sgvi.or(reader.get(rowIndices));
+                    helper.add(reader.get(rowIndices));
                 }
             });
-            return sgvi;
+            return helper.compute();
         }
         return null;
     }

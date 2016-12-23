@@ -27,10 +27,12 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
             itemsCreator: BI.bind(this._itemsCreator, this),
             valueFormatter: function (v) {
                 var text = v;
-                var group = BI.Utils.getDimensionGroupByID(o.dId);
-                if (BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+                if (BI.isNotNull(v) && BI.Utils.getDimensionTypeByID(o.dId) === BICst.TARGET_TYPE.DATE && (v + "").length > 4) {
                     var date = new Date(BI.parseInt(v));
                     text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+                }
+                if(BI.Utils.getDimensionGroupByID(o.dId).type === BICst.GROUP.M){
+                    text = BI.parseInt(v) + 1;
                 }
                 return text;
             },
@@ -42,7 +44,8 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
             name: BI.Utils.getDimensionNameByID(o.dId),
             _src: BI.Utils.getDimensionSrcByID(o.dId),
             group: BI.Utils.getDimensionGroupByID(o.dId),
-            sort: BI.Utils.getDimensionSortByID(o.dId)
+            sort: BI.Utils.getDimensionSortByID(o.dId),
+            dimension_map: BI.Utils.getDimensionMapByDimensionID(o.dId)
         };
 
         switch (BI.Utils.getFieldTypeByDimensionID(o.dId)) {
@@ -65,11 +68,22 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
     _itemsCreator: function (options, callback) {
         var o = this.options, self = this;
 
-        BI.Utils.getWidgetDataByWidgetInfo({
-            "1234567": self.dimension
-        }, {
-            "10000": ["1234567"]
-        }, function (data) {
+        var dimensions = {};
+        var view = {};
+        dimensions[o.dId] = this.dimension;
+        view[BICst.REGION.DIMENSION1] = [o.dId];
+        var targetIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        BI.each(targetIds, function(idx, targetId){
+            dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
+            //去掉指标的过滤条件，因为指标对日期做过滤的话是需要做计算转化的，干脆不要了
+            delete dimensions[targetId].filter_value;
+            if(!BI.has(view, BICst.REGION.TARGET1)){
+                view[BICst.REGION.TARGET1] = [];
+            }
+            view[BICst.REGION.TARGET1].push(targetId);
+        });
+
+        BI.Utils.getWidgetDataByWidgetInfo(dimensions, view, function (data) {
             if (options.type == BI.MultiSelectCombo.REQ_GET_ALL_DATA) {
                 callback({
                     items: self._createItemsByData(data.value)
@@ -104,10 +118,11 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
                     title: text
                 })
             } else {
+                var text = (BI.isNotNull(group) && group.type === BICst.GROUP.M) ? BI.parseInt(value) + 1 : value;
                 result.push({
-                    text: value,
+                    text: text,
                     value: value,
-                    title: value
+                    title: text
                 })
             }
         });

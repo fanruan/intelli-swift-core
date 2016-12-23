@@ -192,7 +192,7 @@ public class Excel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
                     if (oneRow.length > j) {
-                        v = oneRow[j].toString();
+                        v = oneRow[j].toString().trim();
                     }
                     currentRowData.add(v);
                     boolean dateType = false;
@@ -217,7 +217,7 @@ public class Excel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
                     if (oneRow.length > j) {
-                        v = oneRow[j].toString();
+                        v = oneRow[j].toString().trim();
                     }
                     currentRowData.add(v);
                 }

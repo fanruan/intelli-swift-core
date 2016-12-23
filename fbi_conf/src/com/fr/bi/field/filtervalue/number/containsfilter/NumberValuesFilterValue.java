@@ -12,8 +12,8 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -69,16 +69,14 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
             return null;
         }
         Object[] value = copyValue(sgm);
-        GroupValueIndex sgvi = GVIFactory.createAllEmptyIndexGVI();
+        GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
         Object[] indexs = sgm.getGroupIndex(value);
         boolean hasValue = value.length > 0;
         for (int i = 0, len = indexs.length; i < len; i++) {
             GroupValueIndex gvi = (GroupValueIndex) indexs[i];
-            if (gvi != null) {
-                sgvi.or(gvi);
-            }
+            helper.add(gvi);
         }
-        return hasValue ? sgvi : null;
+        return hasValue ? helper.compute() : null;
     }
 
     //TODO 暂时没有更好的解决办法，先这样处理

@@ -32,7 +32,8 @@ BI.SelectString4RealTime = BI.inherit(BI.Widget, {
                     }
                 })
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId, opt) {
+                opt = opt || {};
                 var ids = BI.Utils.getStringFieldIDsOfTableID(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {

@@ -3,6 +3,7 @@ package com.fr.bi.conf.data.source.operator.create;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -42,7 +43,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
     private List<NameText> columns;
 
     private List<String> otherColumnNames;
-    
+
     private transient IPersistentTable basicTable;
 
     public TableColumnRowTransOperator(long userId) {
@@ -80,7 +81,6 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
     }
 
 
-
     @Override
     public IPersistentTable getBITable(IPersistentTable[] tables) {
         if (basicTable == null) {
@@ -88,25 +88,33 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
         }
         return basicTable;
     }
-    
-    private void initBaseTable(List<? extends CubeTableSource> parents){
-    	 if (basicTable == null) {
-             IPersistentTable[] base = new IPersistentTable[parents.size()];
-             for (int i = 0; i < base.length; i++) {
-                 base[i] = parents.get(0).getPersistentTable();
-             }
-             initLCFieldNames(base, user.getUserId());
-         }
+
+    private void initBaseTable(List<? extends CubeTableSource> parents) {
+        if (basicTable == null) {
+            IPersistentTable[] base = new IPersistentTable[parents.size()];
+            for (int i = 0; i < base.length; i++) {
+                base[i] = parents.get(0).getPersistentTable();
+            }
+            initLCFieldNames(base, user.getUserId());
+        }
     }
 
     @Override
     public int writeSimpleIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader) {
         initBaseTable(parents);
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents));
-        return write(travel, ti);
+        return write(travel, ti, parents);
     }
 
-    private int write(Traversal<BIDataValue> travel, final ICubeTableService ti) {
+    private IPersistentTable[] getPersisTables(List<? extends CubeTableSource> parents) {
+        List<IPersistentTable> tables = new ArrayList<IPersistentTable>();
+        for (CubeTableSource table : parents) {
+            tables.add(table.getPersistentTable());
+        }
+        return tables.toArray(new IPersistentTable[tables.size()]);
+    }
+
+    private int write(Traversal<BIDataValue> travel, final ICubeTableService ti, List<? extends CubeTableSource> parents) {
         final int startIndex = otherColumnNames.size() + 1;
         final int lcCount = lc_value.size();
         final Map<Object, Integer> lcNameMap = getDistinctLcNameIndexMap(ti);
@@ -114,6 +122,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
         int row = 0;
         try {
             final int index = -1;
+            IPersistentTable table = getBITable(getPersisTables(parents));
             Iterator<Entry<Object, GroupValueIndex>> iter = groupMap.iterator();
             while (iter.hasNext()) {
                 Entry<Object, GroupValueIndex> entry = iter.next();
@@ -141,7 +150,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
                     }
                 });
                 for (int k = 0; k < values.length; k++) {
-                    travel.actionPerformed(new BIDataValue(row, k, values[k]));
+                    travel.actionPerformed(new BIDataValue(row, k, (values[k] == null && table.getField(k).getBIType() == DBConstant.COLUMN.STRING) ? "" : values[k]));
                 }
                 row++;
             }
@@ -155,7 +164,7 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
     public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         initBaseTable(parents);
         ICubeTableService ti = loader.getTableIndex(getSingleParentMD5(parents), start, end);
-        return write(travel, ti);
+        return write(travel, ti, parents);
     }
 
 

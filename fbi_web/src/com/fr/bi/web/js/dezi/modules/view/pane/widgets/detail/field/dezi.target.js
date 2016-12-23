@@ -42,6 +42,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             height: this.constants.TARGET_BUTTON_HEIGHT,
             cls: "bi-target-name",
             allowBlank: false,
+            title: function () {
+                return self.editor.getValue();
+            },
             validationChecker: function () {
                 return self._checkDimensionName(self.editor.getValue());
             }

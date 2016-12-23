@@ -16,11 +16,15 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.MapChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -28,6 +32,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this, c = this.constants;
         formatRangeLegend();
         delete config.legend;
+        delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];

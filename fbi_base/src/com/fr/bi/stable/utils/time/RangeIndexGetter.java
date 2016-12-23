@@ -2,8 +2,8 @@ package com.fr.bi.stable.utils.time;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.data.key.date.BIDay;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.utils.DateUtils;
 import com.fr.general.GeneralUtils;
 
@@ -38,9 +38,14 @@ public class RangeIndexGetter {
         return DateUtils.getLastDayOfMonth(day.getYear(), day.getMonth()) == day.getDay();
     }
 
+    public GroupValueIndex createRangeIndex(BIDay start, BIDay end){
+        GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
+        createRangeIndex(helper, start, end);
+        return helper.compute();
+    }
+
     //算两个区间之间的index
-    public GroupValueIndex createRangeIndex(BIDay start, BIDay end) {
-        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
+    private void createRangeIndex(GroupValueIndexOrHelper helper, BIDay start, BIDay end) {
         if (start == null) {
             Integer firstYear = GeneralUtils.objectToNumber(yearMap.firstKey()).intValue();
             start = new BIDay(firstYear, 0, 0);
@@ -54,16 +59,16 @@ public class RangeIndexGetter {
                 boolean isStart = isStartYear(start);
                 boolean isEnd = isEndYear(end);
                 //年中
-                gvi = createRangeIndex(yearMap, start.getYear() + (isStart ? 0 : 1), end.getYear() - (isEnd ? 0 : 1));
+                createRangeIndex(yearMap, helper,  start.getYear() + (isStart ? 0 : 1), end.getYear() - (isEnd ? 0 : 1));
                 //年头
                 if (!isStart) {
                     BIDay newEnd = new BIDay(start.getYear(), BIDateUtils.MAX_MONTH, BIDateUtils.MAX_DAY);
-                    gvi.or(createRangeIndex(start, newEnd));
+                    createRangeIndex(helper, start, newEnd);
                 }
                 //年尾
                 if (!isEnd) {
                     BIDay newStart = new BIDay(end.getYear(), 0, 0);
-                    gvi.or(createRangeIndex(newStart, end));
+                    createRangeIndex(helper, newStart, end);
                 }
             } else if (start.getMonth() != end.getMonth()) {
                 GroupValueIndex year = yearMap.getGroupIndex(new Integer[]{start.getYear()})[0];
@@ -72,16 +77,18 @@ public class RangeIndexGetter {
                     boolean isEnd = isEndMonth(end);
 
                     //月中
-                    gvi.or(year.AND(createRangeIndex(monthMap, start.getMonth() + (isStart ? 0 : 1), end.getMonth() - (isEnd ? 0 : 1))));
+                    GroupValueIndexOrHelper momthHelper = new GroupValueIndexOrHelper();
+                    createRangeIndex(monthMap, momthHelper, start.getMonth() + (isStart ? 0 : 1), end.getMonth() - (isEnd ? 0 : 1));
+                    helper.add(year.AND(momthHelper.compute()));
                     //月头
                     if (!isStart) {
                         BIDay newEnd = new BIDay(start.getYear(), start.getMonth(), BIDateUtils.MAX_DAY);
-                        gvi.or(createRangeIndex(start, newEnd));
+                        createRangeIndex(helper, start, newEnd);
                     }
                     //月尾
                     if (!isEnd) {
                         BIDay newStart = new BIDay(end.getYear(), end.getMonth(), 0);
-                        gvi.or(createRangeIndex(newStart, end));
+                        createRangeIndex(helper, newStart, end);
                     }
                 }
             } else if (start.getDay() <= end.getDay()) {
@@ -91,24 +98,22 @@ public class RangeIndexGetter {
                     GroupValueIndex month = monthMap.getGroupIndex(new Integer[]{start.getMonth()})[0];
                     if (month != null) {
                         if (!isStartMonth(start) || !isEndMonth(end)) {
-                            gvi.or(year.AND(month).AND(createRangeIndex(dayMap, start.getDay(), end.getDay())));
+                            GroupValueIndexOrHelper dayHelper = new GroupValueIndexOrHelper();
+                            createRangeIndex(dayMap, dayHelper, start.getDay(), end.getDay());
+                            helper.add(year.AND(month).AND(dayHelper.compute()));
                         } else {
-                            gvi.or(year.AND(month));
+                            helper.add(year.AND(month));
                         }
                     }
                 }
             }
         }
-        return gvi;
     }
 
-    private GroupValueIndex createRangeIndex(ICubeColumnIndexReader map, Integer start, Integer end) {
-        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
+    private void createRangeIndex(ICubeColumnIndexReader map, GroupValueIndexOrHelper helper, Integer start, Integer end) {
         for (int i = start; i <= end; i++) {
             GroupValueIndex temp = map.getGroupIndex(new Integer[]{i})[0];
-            gvi = gvi.or(temp);
+            helper.add(temp);
         }
-        return gvi;
     }
-
 }

@@ -132,7 +132,9 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
     },
 
     getDimDimensionIDs: function () {
-        return BI.Utils.getAllDimDimensionIDs(this.wId);
+        return BI.filter(BI.Utils.getAllDimDimensionIDs(this.wId), function(idx, dId){
+            return BI.Utils.isDimensionUsable(dId);
+        });
     },
 
 

@@ -44,11 +44,11 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.Future;
@@ -62,7 +62,7 @@ import java.util.concurrent.Future;
  * edit by kary
  */
 public class BuildCubeTask implements CubeTask {
-    private static final Logger logger = LoggerFactory.getLogger(BuildCubeTask.class);
+    private static final Logger logger = BILoggerFactory.getLogger(BuildCubeTask.class);
     private CubeBuildStuff cubeBuildStuff;
     protected BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
@@ -91,16 +91,14 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public CubeTaskType getTaskType() {
-        if (cubeBuildStuff.isSingleTable()) {
-            return CubeTaskType.SINGLE;
-        }
-        return CubeTaskType.ALL;
+        return cubeBuildStuff.getTaskType();
     }
 
     @Override
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         PerformancePlugManager.getInstance().printSystemParameters();
+        logCubeTaskType();
         logBusinessTable();
         logTable(cubeBuildStuff.getSingleSourceLayers(), cubeBuildStuff.getUpdateSettingSources());
         logRelation(cubeBuildStuff.getTableSourceRelationSet());
@@ -154,8 +152,6 @@ public class BuildCubeTask implements CubeTask {
                     BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 }
             }
-
-
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
@@ -248,6 +244,12 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
+    private void logCubeTaskType() {
+        StringBuffer msg = new StringBuffer();
+        msg.append(" Cube update start. Update type: " + getTaskType().name());
+        logger.info(BIDateUtils.getCurrentDateTime() + msg);
+    }
+
     private void logBusinessTable() {
         Integer businessTableCount = 0;
         logger.info("***************Business Table*****************");
@@ -334,7 +336,7 @@ public class BuildCubeTask implements CubeTask {
                     BITableSourceRelationPath dependPath = it.next();
                     sb.append("\n").append("Path ").append(countDepend).append("\n").append(BuildLogHelper.pathLogContent(dependPath));
                 }
-                logger.info(sb.toString()+"\n");
+                logger.info(sb.toString() + "\n");
             }
         }
         logger.info("***************Path depend end*****************\n");
@@ -356,6 +358,7 @@ public class BuildCubeTask implements CubeTask {
                     sb.append("Layer " + layerCount + ", Cell " + cellCount);
                     sb.append(BuildLogHelper.tableLogContent("", oneCell));
                     sb.append("\n");
+                    cellCount++;
                 }
                 sb.append("-------------Layer " + layerCount).append(" end--------------\n\n");
             }
@@ -410,7 +413,7 @@ public class BuildCubeTask implements CubeTask {
         } else {
             cubeBuildStuff.copyFileFromOldCubes();
         }
-        BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
+        logger.info("copy files cost time: " + DateUtils.timeCostFrom(t));
     }
 
     public static IMessage generateMessageDataSourceStart() {
@@ -430,11 +433,4 @@ public class BuildCubeTask implements CubeTask {
     public JSONObject createJSON() throws Exception {
         return null;
     }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        return this.getTaskId().equals(((BuildCubeTask) obj).getTaskId());
-    }
-
 }

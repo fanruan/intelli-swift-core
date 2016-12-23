@@ -881,9 +881,9 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
         }
         if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-            dealWithNode(tree.getTop(), cbcells, 0, 1, colDimension, usedSumTarget, keys, colDimension.length - 1, new BIComplexExecutData(colDimension), widget.getChatSetting());
+            dealWithNode(tree.getTop(), cbcells, 0, 1, colDimension, usedSumTarget, keys, colDimension.length - 1, new BIComplexExecutData(colDimension), widget.getChartSetting());
         } else {
-            dealWithNode(tree.getTop(), expander.getXExpander(), cbcells, 0, 1, colDimension, usedSumTarget, keys, new ArrayList<String>(), colDimension.length - 1, false, new IntList(), false, null, widget, new BIComplexExecutData(colDimension), widget.getChatSetting());
+            dealWithNode(tree.getTop(), expander.getXExpander(), cbcells, 0, 1, colDimension, usedSumTarget, keys, new ArrayList<String>(), colDimension.length - 1, false, new IntList(), false, null, widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
         }
         return cbcells;
     }

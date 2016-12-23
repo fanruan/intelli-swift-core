@@ -41,7 +41,7 @@ BI.DimensionFilterItem = BI.inherit(BI.Widget, {
                 value = filter.filter_value;
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.BOTTOM_N:
-                relation = BI.i18nText("BI-Bottom_N");
+                relation = BI.i18nText("BI-Last_N");
                 value = filter.filter_value;
                 break;
             
@@ -85,7 +85,7 @@ BI.DimensionFilterItem = BI.inherit(BI.Widget, {
                 value = filter.filter_value;
                 break;
             case BICst.DIMENSION_FILTER_STRING.BOTTOM_N:
-                relation = BI.i18nText("BI-Bottom_N");
+                relation = BI.i18nText("BI-Last_N");
                 value = filter.filter_value;
                 break;
             case BICst.DIMENSION_FILTER_STRING.NOT_BEGIN_WITH:
@@ -97,40 +97,41 @@ BI.DimensionFilterItem = BI.inherit(BI.Widget, {
                 value = filter.filter_value;
                 break;
             //date
-            case BICst.FILTER_DATE.BELONG_DATE_RANGE:
+            case BICst.DIMENSION_FILTER_DATE.BELONG_VALUE:
                 relation = BI.i18nText("BI-In");
                 value = model.getDateRangeText(filter.filter_value);
                 break;
-            case BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE:
+            case BICst.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE:
                 relation = BI.i18nText("BI-Not_In");
                 value = model.getDateRangeText(filter.filter_value);
                 break;
-            case BICst.FILTER_DATE.BELONG_WIDGET_VALUE:
-                break;
-            case BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE:
-                break;
-            case BICst.FILTER_DATE.EQUAL_TO:
-                relation = BI.i18nText("BI-Equal");
-                value = filter.filter_value;
-                break;
-            case BICst.FILTER_DATE.NOT_EQUAL_TO:
-                relation = BI.i18nText("BI-Not_Equal_To");
-                value = filter.filter_value;
-                break;
-            case BICst.FILTER_DATE.IS_NULL:
+            case BICst.DIMENSION_FILTER_DATE.IS_NULL:
                 relation = BI.i18nText("BI-Is_Null");
                 break;
-            case BICst.FILTER_DATE.NOT_NULL:
+            case BICst.DIMENSION_FILTER_DATE.NOT_NULL:
                 relation = BI.i18nText("BI-Not_Null");
                 break;
-            case BICst.FILTER_DATE.EARLY_THAN:
-                relation = BI.i18nText("BI-Sooner_Than");
-                break;
-            case BICst.FILTER_DATE.LATER_THAN:
-                relation = BI.i18nText("BI-Later_Than");
-                break;
-            case BICst.FILTER_DATE.CONTAINS:
+            case BICst.DIMENSION_FILTER_DATE.CONTAIN:
                 relation = BI.i18nText("BI-Contain");
+                break;
+            case BICst.DIMENSION_FILTER_DATE.NOT_CONTAIN:
+                relation = BI.i18nText("BI-Not_Contain");
+                break;
+            case BICst.DIMENSION_FILTER_DATE.TOP_N:
+                relation = BI.i18nText("BI-Top_N");
+                value = filter.filter_value;
+                break;
+            case BICst.DIMENSION_FILTER_DATE.BOTTOM_N:
+                relation = BI.i18nText("BI-Last_N");
+                value = filter.filter_value;
+                break;
+            case BICst.DIMENSION_FILTER_DATE.BEGIN_WITH:
+                relation = BI.i18nText("BI-Begin_With");
+                value = filter.filter_value;
+                break;
+            case BICst.DIMENSION_FILTER_DATE.END_WITH:
+                relation = BI.i18nText("BI-End_With");
+                value = filter.filter_value;
                 break;
 
         }

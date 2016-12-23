@@ -64,12 +64,14 @@ BI.ETLReq = {
             if (mask != null) {
                 mask.destroy()
             }
+            // 当前编辑的螺旋分析被其他的螺旋分析正在使用 用于选字段禁用
+            Pool.current_edit_etl_used = res.usedTables;
             if (res['used']) {
                 BI.Msg.confirm(BI.i18nText("BI-Warning"), BI.i18nText("BI-ETL_Table_Edit_Warning"), function (v) {
                     if (v === true) {
                         callback(res);
                     }
-                })
+                });
             } else {
                 callback(res);
             }

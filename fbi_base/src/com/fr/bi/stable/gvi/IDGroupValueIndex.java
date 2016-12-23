@@ -1,5 +1,6 @@
 package com.fr.bi.stable.gvi;
 
+import com.fr.bi.stable.gvi.roaringbitmap.RoaringBitmap;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
@@ -180,6 +181,13 @@ public class IDGroupValueIndex extends AbstractGroupValueIndex {
     @Override
     public IDGroupValueIndex clone() {
         return new IDGroupValueIndex(id);
+    }
+
+    @Override
+    protected RoaringBitmap getBitMap() {
+        RoaringBitmap bitmap = new RoaringBitmap();
+        bitmap.add(id);
+        return bitmap;
     }
 
     @Override

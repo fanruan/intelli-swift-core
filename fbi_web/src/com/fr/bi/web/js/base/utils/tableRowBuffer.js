@@ -9,8 +9,8 @@
         }
         return value;
     };
-    var MIN_BUFFER_ROWS = 3;
-    var MAX_BUFFER_ROWS = 4;
+    var MIN_BUFFER_ROWS = 6;
+    var MAX_BUFFER_ROWS = 10;
 
     BI.TableRowBuffer = function (rowsCount,
                                   defaultRowHeight,

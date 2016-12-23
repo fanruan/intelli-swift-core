@@ -127,7 +127,11 @@ public class BIBeanUtils {
         if (ComparatorUtils.equals(clazz, limit)) {
             return result;
         } else {
-            return fetchAllAttributes(clazz.getSuperclass(), fetchAttributes(clazz, result), limit);
+            if (clazz.getSuperclass() == null) {
+                return result;
+            } else {
+                return fetchAllAttributes(clazz.getSuperclass(), fetchAttributes(clazz, result), limit);
+            }
         }
     }
 

@@ -60,7 +60,7 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
 
     @Override
     public boolean isMatchValue(String v) {
-        return !valueSet.contains(v);
+        return valueSet.contains(v);
     }
 
     @Override

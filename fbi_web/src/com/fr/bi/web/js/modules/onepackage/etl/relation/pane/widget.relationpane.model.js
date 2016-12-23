@@ -141,27 +141,21 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
         var connectionSet = relations.connectionSet;
 
         //删掉所有当前表的关联
-        BI.each(connectionSet, function(i, c) {
-            if(BI.isNotNull(c) && (c.primaryKey.field_id === self.fieldId || c.foreignKey.field_id === self.fieldId)) {
-                connectionSet.splice(i, 1);
-            }
-        });
+        BI.remove(connectionSet, function(i, c){
+            return BI.isNotNull(c) && (c.primaryKey.field_id === self.fieldId || c.foreignKey.field_id === self.fieldId);
+        }, self);
         delete primKeyMap[this.fieldId];
         delete foreignKeyMap[this.fieldId];
         BI.each(primKeyMap, function(id, mapArray) {
-            BI.each(mapArray, function(i, map){
-                if(BI.isNotNull(map) && (map.primaryKey.field_id === self.fieldId || map.foreignKey.field_id === self.fieldId)) {
-                    mapArray.splice(i, 1);
-                }
-            });
+            BI.remove(mapArray, function(i, map){
+                return BI.isNotNull(map) && (map.primaryKey.field_id === self.fieldId || map.foreignKey.field_id === self.fieldId);
+            }, self);
             mapArray.length === 0 && (delete primKeyMap[id]);
         });
         BI.each(foreignKeyMap, function(id, mapArray) {
-            BI.each(mapArray, function(i, map){
-                if(BI.isNotNull(map) && (map.primaryKey.field_id === self.fieldId || map.foreignKey.field_id === self.fieldId)) {
-                    mapArray.splice(i, 1);
-                }
-            });
+            BI.remove(mapArray, function(i, map){
+                return BI.isNotNull(map) && (map.primaryKey.field_id === self.fieldId || map.foreignKey.field_id === self.fieldId);
+            }, self);
             mapArray.length === 0 && (delete foreignKeyMap[id]);
         });
 

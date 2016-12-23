@@ -21,5 +21,7 @@ BICst.BROADCAST = {
     DETAIL_EDIT_PREFIX: "detail_edit_", //进入编辑界面 + wId
     
     FIELD_DRAG_START: "__filed_drag_start__",   //字段拖动开始，用于通知region状态改变
-    FIELD_DRAG_STOP: "__field_drag_stop__"     //字段拖动结束，用于通知region状态改变
+    FIELD_DRAG_STOP: "__field_drag_stop__",     //字段拖动结束，用于通知region状态改变
+
+    CHART_CLICK_PREFIX: "chart_click_" //图表钻取框事件
 };

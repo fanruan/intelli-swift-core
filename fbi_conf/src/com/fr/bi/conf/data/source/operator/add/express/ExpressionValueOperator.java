@@ -1,12 +1,13 @@
 package com.fr.bi.conf.data.source.operator.add.express;
 
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONObject;
 
 /**
@@ -34,8 +35,8 @@ public class ExpressionValueOperator extends AbstractAddColumnOperator {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
-        if(expression != null){
-        	jo.put("item", expression.createJSON());
+        if (expression != null) {
+            jo.put("item", expression.createJSON());
         }
         jo.put("add_column_type", BIJSONConstant.ETL_ADD_COLUMN_TYPE.GROUP);
         return jo;
@@ -50,7 +51,7 @@ public class ExpressionValueOperator extends AbstractAddColumnOperator {
     @Override
     public void parseJSON(JSONObject jsonObject) throws Exception {
         super.parseJSON(jsonObject);
-        if (jsonObject.has("item")){
+        if (jsonObject.has("item")) {
             JSONObject item = jsonObject.getJSONObject("item");
             expression = new GeneralExpression();
             expression.parseJSON(item);
@@ -58,16 +59,17 @@ public class ExpressionValueOperator extends AbstractAddColumnOperator {
     }
 
 
-
     @Override
     protected int write(Traversal<BIDataValue> travel, ICubeTableService ti, int startCol) {
         int rowCount = ti.getRowCount();
         for (int row = 0; row < rowCount; row++) {
             try {
-            	Object value = expression == null ? null : expression.get(ti, row, columnType);
+                Object value = expression == null ? null : expression.get(ti, row, columnType);
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error("incorrect formular");
+                BILoggerFactory.getLogger(ExpressionValueOperator.class).error("incorrect formular");
+                BILoggerFactory.getLogger(ExpressionValueOperator.class).error(BIStringUtils.append("The formula:", expression.toString()));
+                BILoggerFactory.getLogger(ExpressionValueOperator.class).error(e.getMessage(), e);
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }

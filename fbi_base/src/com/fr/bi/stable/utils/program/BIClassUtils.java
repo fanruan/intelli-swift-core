@@ -212,6 +212,11 @@ public class BIClassUtils {
         return classes;
     }
 
+    public static boolean checkClassPackage(Class clazz, String packagePrefix) {
+        BINonValueUtils.checkNull(clazz, packagePrefix);
+        return clazz.getName().startsWith(packagePrefix);
+    }
+
     private static void processClass(Set<Class<?>> classes, String packageName, String className) {
         try {
             classes.add(getAggregatedClassLoader(BIClassUtils.class.getClassLoader()).loadClass(packageName + '.' + className));

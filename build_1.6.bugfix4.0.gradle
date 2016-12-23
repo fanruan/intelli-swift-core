@@ -2,7 +2,14 @@ apply plugin:'java'
 tasks.withType(JavaCompile){
 	options.encoding = 'UTF-8'
 }
-ant.delete(dir:'build')
+
+//每次构建前先删掉build目录和reports目录
+ant.delete(dir:"build")
+ant.delete(dir:"reports")
+
+repositories {
+    mavenCentral()
+}
 sourceCompatibility=1.6
 //BI工程的根目录
 def BI_HOME='../../'
@@ -13,10 +20,7 @@ version='4.0'
 FileTree files =fileTree(dir:'./',include:'build.*.gradle')
 def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
 def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
-//删除test文件下的文件
-ant{
-	delete(dir:"**/test/")
-}
+
 jar{
 //指定生成jar包的名称
 	baseName='fr-bi-server'
@@ -46,6 +50,7 @@ def list=[
 //指定源码所在位置：
 sourceSets{
 	main.java.srcDirs=list
+
 	instrumentTest.java.srcDirs=[
 		//"fbi/test",
 		"fbi_base/test",
@@ -66,9 +71,8 @@ sourceSets{
 		"fbi_cube_conf/test",
 		"fbi_cube_generate/test"
 	]
-
-
 }
+
 //声明外部依赖
 dependencies{
 	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
@@ -94,14 +98,6 @@ def dataContent ={def dir ->
 
 //将非.java文件复制到classes文件夹下 参与打包
 task copyFile(type:Copy,dependsOn:compileJava){
-	//删除test文件夹
-	ant{
-		echo('--------------------------------delete test---------------------------')
-		delete(defaultexcludes:'false'){
-			fileset(dir:'.',includes:'**/test/')
-
-		}
-	}
 	list.each{ def srcDir->
 		copy{
 			with dataContent.call("${srcDir}") 
@@ -126,6 +122,7 @@ task compressJS(dependsOn:'copyFile'){
 			exclude (name:'**/js/third/*.js')
 			exclude (name:'**/cross/demo/**')
 			exclude (name:'**/test/**')
+			exclude (name:'js/components/components.react.js')
 		}
 	}
 }
@@ -174,5 +171,4 @@ task obfuse(dependsOn:'build')<<{
 		}
 	}
 	ant.delete(file:'yguardlog.xml')
-	ant.delete(dir:"build")
 }

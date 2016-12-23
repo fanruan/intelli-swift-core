@@ -4,7 +4,9 @@
 BI.ChartDrillCell = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ChartDrillCell.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-chart-drill-cell"
+            baseCls: "bi-chart-drill-cell",
+            width: 180,
+            height: 25
         })
     },
 
@@ -12,37 +14,41 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         BI.ChartDrillCell.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var dId = o.dId, text = o.value;
-        //日期需要format
-        if (BI.Utils.getFieldTypeByDimensionID(dId) === BICst.COLUMN.DATE &&
-            BI.Utils.getDimensionGroupByID(dId).type === BICst.GROUP.YMD) {
-            text = this._formatDate(text);
-        }
 
         this.upDrill = BI.createWidget({
             type: "bi.icon_text_item",
             cls: "chart-drill-up up-drill-button",
             text: BI.i18nText("BI-Drill_up"),
-            height: 25
+            height: 25,
+            warningTitle: BI.i18nText("BI-No_Up_Drill")
         });
         this.upDrill.on(BI.IconTextItem.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartDrillCell.EVENT_DRILL_UP);
+            self.fireEvent(BI.ChartDrillCell.EVENT_DRILL_UP, self._onClickDrill(o.dId, o.value));
         });
 
         this.downTrigger = BI.createWidget({
             type: "bi.icon_text_item",
             cls: "down-drill-button chart-drill-down",
             text: BI.i18nText("BI-Drill_down"),
-            height: 25
+            height: 25,
+            warningTitle: BI.i18nText("BI-No_Down_Drill")
         });
         this.downDrill = BI.createWidget({
             type: "bi.down_list_combo",
             el: this.downTrigger
         });
         this.downDrill.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
-            self.fireEvent(BI.ChartDrillCell.EVENT_DRILL_DOWN, v);
+            self.fireEvent(BI.ChartDrillCell.EVENT_DRILL_DOWN, self._onClickDrill(o.dId, o.value, v));
         });
-        this._initStatus();
 
+        this.label = BI.createWidget({
+            type: "bi.label",
+            text: text,
+            title: text,
+            cls: "dimension-name",
+            height: 23,
+            hgap: 2
+        });
 
         BI.createWidget({
             type: "bi.htape",
@@ -51,22 +57,42 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                 el: this.upDrill,
                 width: 60
             }, {
-                el: {
-                    type: "bi.label",
-                    text: text,
-                    title: text,
-                    cls: "dimension-name",
-                    height: 23,
-                    hgap: 2
-                },
+                el: this.label,
                 width: "fill"
             }, {
                 el: this.downDrill,
                 width: 60
-            }],
-            width: "100%",
-            height: 25
+            }]
         });
+    },
+
+    _onClickDrill: function (dId, value, drillId) {
+        var wId = BI.Utils.getWidgetIDByDimensionID(this.options.dId);
+        var drillMap = BI.Utils.getDrillByID(wId);
+        //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
+        //当前钻取的根节点
+        var rootId = dId;
+        BI.each(drillMap, function (drId, ds) {
+            if (dId === drId || (ds.length > 0 && ds[ds.length - 1].dId === dId)) {
+                rootId = drId;
+            }
+        });
+
+        var drillOperators = drillMap[rootId] || [];
+        //上钻
+        if (BI.isNull(drillId)) {
+            drillOperators.pop();
+        } else {
+            drillOperators.push({
+                dId: drillId,
+                values: [{
+                    dId: dId,
+                    value: [BI.Utils.getClickedValue4Group(value, dId)]
+                }]
+            });
+        }
+        drillMap[rootId] = drillOperators;
+        return {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)};
     },
 
     _formatDate: function (d) {
@@ -77,7 +103,58 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         return date.print("%Y-%X-%d")
     },
 
-    _initStatus: function () {
+    _getShowValue: function(v){
+        var o = this.options;
+        if(BI.isKey(v)){
+            return v;
+        }
+        v = v || {};
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        var value = v.x;
+        switch (wType) {
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+                value = v.seriesName;
+                break;
+            default:
+                var drillMap = BI.Utils.getDrillByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+                var drillDid = o.dId;
+                BI.any(drillMap, function (drId, ds) {
+                    if (ds.length > 0 && (o.dId === drId || ds[ds.length - 1].dId === o.dId)) {
+                        drillDid = drId;
+                        return true;
+                    }
+                });
+                var regionType = BI.Utils.getRegionTypeByDimensionID(drillDid);
+                value = ((regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) ? (v.value || v.x) : v.seriesName);
+                break;
+        }
+        return value;
+    },
+
+    _formatValue: function(v){
+        var o = this.options;
+        if (BI.Utils.getFieldTypeByDimensionID(o.dId) === BICst.COLUMN.DATE &&
+            BI.Utils.getDimensionGroupByID(o.dId).type === BICst.GROUP.YMD) {
+            return this._formatDate(v);
+        }
+        return v;
+    },
+
+    setDrillDownEnabled: function(b){
+        this.downDrill.setEnable(!!b);
+        this.downTrigger.setEnable(!!b);
+    },
+
+    setValue: function(value){
+        var o = this.options;
+        o.value = this._getShowValue(value);
+        var v = this._formatValue(o.value);
+        this.label.setValue(v);
+        this.label.setTitle(v);
+    },
+
+    populate: function(){
         var dId = this.options.dId;
         var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
         var drillMap = BI.Utils.getDrillByID(widgetId);
@@ -115,6 +192,8 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             this.downDrill.setEnable(false);
             this.downTrigger.setEnable(false);
         } else {
+            this.downDrill.setEnable(true);
+            this.downTrigger.setEnable(true);
             this.downDrill.populate([downChildren]);
         }
     }

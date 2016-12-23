@@ -28,7 +28,6 @@ import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -39,6 +38,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BISummaryWidget extends BIAbstractWidget {
     @BICoreField
@@ -259,7 +259,9 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         }
         this.dimensions = dims.toArray(new BIDimension[dims.size()]);
         List<BISummaryTarget> tars = new ArrayList<BISummaryTarget>();
-        Map<String, TargetGettingKey> targetMap = new ConcurrentCacheHashMap<String, TargetGettingKey>();
+
+        // young BI-2332 指标数超过65后，计算指标值不对
+        Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
         for (int j = 0; j < targetIds.length(); j++) {
             JSONObject tarJo = dimAndTar.getJSONObject(targetIds.getString(j));
             tarJo.put("did", targetIds.getString(j));

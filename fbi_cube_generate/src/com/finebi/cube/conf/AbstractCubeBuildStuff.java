@@ -106,11 +106,6 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return result;
     }
 
-    @Override
-    public boolean isSingleTable() {
-        return false;
-    }
-
     /**
      * rename advanced to temp
      * rename tCube to advanced
@@ -160,18 +155,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             return false;
         }
-
-
-//        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
-//        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
-//        try {
-//            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
-//        } catch (Exception e) {
-//            BILoggerFactory.getLogger().error(e.getMessage());
-//        }
-//        return true;
     }
-
 
     protected UpdateSettingSource setUpdateTypes(CubeTableSource source) {
         switch (source.getType()) {
