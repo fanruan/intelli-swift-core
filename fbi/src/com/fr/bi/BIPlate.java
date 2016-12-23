@@ -26,6 +26,7 @@ import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.web.dezi.phantom.PhantomServer;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
@@ -90,6 +91,9 @@ public class BIPlate extends AbstractFSPlate {
         dropColumnBID();
         //兼容FR工程中可能存在PARENTID类型是整型的情况
         notifyColumnParentIdType();
+
+        //启动用于截图的phantom服务
+        initPhantomServer();
     }
 
     public void loadMemoryData() {
@@ -163,12 +167,12 @@ public class BIPlate extends AbstractFSPlate {
         String tableName = "FR_T_" + DAOUtils.getClassNameWithOutPath(BISharedReportNode.class);
         try {
             cn = PlatformDB.getDB().createConnection();
-            try{
+            try {
                 cn.setAutoCommit(false);
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
-            Dialect dialect = DialectFactory.generateDialect(cn,PlatformDB.getDB().getDriver());
+            Dialect dialect = DialectFactory.generateDialect(cn, PlatformDB.getDB().getDriver());
             FSDAOManager.addTableColumn(cn, dialect,
                     new Column("createByName", Types.VARCHAR, new ColumnSize(50)), tableName);
             FSDAOManager.addTableColumn(cn, dialect,
@@ -216,6 +220,16 @@ public class BIPlate extends AbstractFSPlate {
         } finally {
             DBUtils.closeConnection(cn);
         }
+    }
+
+    private static void initPhantomServer() {
+        try {
+            PhantomServer server = new PhantomServer();
+            server.start();
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
+
     }
 
     private void initOOMKillerForLinux() {
