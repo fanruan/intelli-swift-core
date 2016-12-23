@@ -42,6 +42,7 @@ public class BIDetailWidget extends BIAbstractWidget {
     private transient BIDetailTarget[] usedDimensions;
     @BICoreField
     private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
+
     @BICoreField
     private BusinessTable target;//目标表
     private List<String> parent_widget = new ArrayList<String>();

@@ -24,7 +24,7 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.etl.analysis.data.AnalysisBaseTableSource;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.exception.BIRuntimeException;
@@ -126,12 +126,12 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
     private void updateAnalysisTables() {
         try {
-                for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
-                    CubeTableSource oriSource = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(table);
-                    BusinessTable businessTable = getAnyTableWithSource(oriSource);
-                    AnalysisBaseTableSource baseSource = (AnalysisBaseTableSource) businessTable.getTableSource();
-                    baseSource.refreshWidget();
-                }
+            for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
+                CubeTableSource oriSource = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(table);
+                BusinessTable businessTable = getAnyTableWithSource(oriSource);
+                AnalysisCubeTableSource baseSource = (AnalysisCubeTableSource) businessTable.getTableSource();
+                baseSource.refreshWidget();
+            }
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
