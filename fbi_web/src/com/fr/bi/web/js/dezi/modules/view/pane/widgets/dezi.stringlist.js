@@ -263,7 +263,6 @@ BIDezi.StringListView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "value")) {
             BI.Utils.broadcastAllWidgets2Refresh();
-            this.stringList.setValue(this.model.get("value"));
         }
         if (BI.has(changed, "dimensions")) {
             this._checkDataBind();

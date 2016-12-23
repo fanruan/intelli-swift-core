@@ -28,7 +28,7 @@ BI.MultiTreeList = BI.inherit(BI.Widget, {
         var want2showCounter = false;
 
         this.popup = BI.createWidget({
-            type: "bi.multi_string_list_popup",
+            type: "bi.multi_tree_list_popup",
             itemsCreator: o.itemsCreator
         });
 
@@ -69,7 +69,7 @@ BI.MultiTreeList = BI.inherit(BI.Widget, {
         };
 
         this.trigger.on(BI.MultiSelectTrigger.EVENT_START, function () {
-            self.storeValue = {value: self.combo.getValue()};
+            self.storeValue = {value: self.popup.getValue()};
             this.setValue(self.storeValue);
         });
         this.trigger.on(BI.MultiSelectTrigger.EVENT_STOP, function () {

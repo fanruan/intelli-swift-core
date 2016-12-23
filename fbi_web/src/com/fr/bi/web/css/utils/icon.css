@@ -1598,6 +1598,21 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_date.png');
   _background: none;
 }
+.drag-date-range-icon .x-icon,
+.drag-date-range-icon:hover .x-icon,
+.drag-date-range-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_date_range.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_date_range.png');
+  _background: none;
+}
+.drag-date-range-icon.native .x-icon,
+.drag-date-range-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_date_range.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_date_range.png');
+  _background: none;
+}
 .drag-year-icon .x-icon,
 .drag-year-icon:hover .x-icon,
 .drag-year-icon:active .x-icon {

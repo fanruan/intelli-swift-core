@@ -539,6 +539,7 @@
                 widgetType === BICst.WIDGET.TREE_LABEL ||
                 widgetType === BICst.WIDGET.YEAR ||
                 widgetType === BICst.WIDGET.YMD ||
+                widgetType === BICst.WIDGET.DATE_PANE ||
                 widgetType === BICst.WIDGET.GENERAL_QUERY;
         },
 
@@ -553,6 +554,7 @@
                 widgetType === BICst.WIDGET.TREE_LIST ||
                 widgetType === BICst.WIDGET.STRING_LIST ||
                 widgetType === BICst.WIDGET.SINGLE_SLIDER ||
+                widgetType === BICst.WIDGET.DATE_PANE ||
                 widgetType === BICst.WIDGET.INTERVAL_SLIDER;
         },
 
@@ -2699,6 +2701,7 @@
                                 };
                                 break;
                             case BICst.WIDGET.YMD:
+                            case BICst.WIDGET.DATE_PANE:
                                 fType = BICst.FILTER_DATE.EQUAL_TO;
                                 fValue = {group: BICst.GROUP.YMD, values: parseComplexDate(fValue)};
                                 filter = {
@@ -3538,6 +3541,7 @@
                     }
                     break;
                 case BICst.WIDGET.YMD:
+                case BICst.WIDGET.DATE_PANE:
                     if (BI.isNotNull(wValue)) {
                         var v = parseComplexDate(wValue);
                         if (BI.isNotNull(v)) {

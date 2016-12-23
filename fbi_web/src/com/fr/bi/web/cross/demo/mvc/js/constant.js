@@ -471,7 +471,8 @@ var _JS = [
     "detail/mvc.singleslider.js",
     "detail/mvc.intervalslider.js",
     "detail/mvc.stringlist.js",
-    "detail/mvc.treelist.js"
+    "detail/mvc.treelist.js",
+    "detail/mvc.datapane.js"
 ];
 
 
@@ -696,7 +697,8 @@ var _Routes = {
     "/slider": "SliderView",
     "/interval_slider": "IntervalSliderView",
     "/string_list": "StringListView",
-    "/tree_list": "TreeListView"
+    "/tree_list": "TreeListView",
+    "/data_pane": "DataPaneView"
 };
 
 var _Models = {};
@@ -1226,6 +1228,9 @@ _Models.detail = [{
 }, {
     id: 37,
     text: "树列表"
+}, {
+    id: 38,
+    text: "日期面板"
 },
 
 
@@ -1597,6 +1602,10 @@ _Models.detail = [{
         pId: 37,
         text: "树列表",
         value: "tree_list"
+    }, {
+        pId: 38,
+        text: "日期面板",
+        value: "data_pane"
     }];
 _Models.component = [];
 _Models.module = [];

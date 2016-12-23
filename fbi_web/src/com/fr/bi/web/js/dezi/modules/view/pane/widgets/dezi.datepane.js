@@ -1,7 +1,7 @@
 /**
- * Created by zcf on 2016/12/21.
+ * Created by zcf on 12/22/2016.
  */
-BIDezi.TreeListView = BI.inherit(BI.View, {
+BIDezi.DatePaneView = BI.inherit(BI.View, {
 
     _constants: {
         TOOL_ICON_WIDTH: 20,
@@ -9,24 +9,17 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BIDezi.TreeListView.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BIDezi.DatePaneView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget bi-control-widget"
         })
     },
 
     _init: function () {
-        BIDezi.TreeListView.superclass._init.apply(this, arguments);
-
+        BIDezi.DatePaneView.superclass._init.apply(this, arguments);
         var self = this;
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
-
-        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function () {
-            // self.treeList.setValue(self.model.get("value"));
-            self.treeList.populate();
-        });
-
         //全局样式
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
             self._refreshGlobalStyle(globalStyle);
@@ -38,12 +31,11 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._createTools();
 
-        this.treeList = BI.createWidget({
-            type: "bi.select_tree_data_list",
-            wId: this.model.get("id")
+        this.combo = BI.createWidget({
+            type: "bi.custom_multi_date_pane"
         });
-        this.treeList.on(BI.SelectTreeDataList.EVENT_CHANGE, function () {
-            self.model.set("value", self.treeList.getValue());
+        this.combo.on(BI.CustomMultiDatePane.EVENT_CHANGE, function () {
+            self.model.set("value", this.getValue());
         });
 
         this.widget = BI.createWidget({
@@ -59,11 +51,9 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
                 left: 0,
                 right: 0
             }, {
-                el: this.treeList,
+                el: this.combo,
                 top: 10,
-                right: 10,
-                left: 10,
-                bottom: 10
+                right: 10
             }]
         });
         this.widget.element.hover(function () {
@@ -89,7 +79,7 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
                 cls: "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 30,
+                height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
                 validationChecker: function (v) {
@@ -115,19 +105,24 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         }
     },
 
+    _refreshGlobalStyle: function () {
+        this._refreshTitlePosition();
+    },
+
+    _refreshTitlePosition: function () {
+        var pos = BI.Utils.getGSNamePos();
+        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
+            "dashboard-title-center" : "dashboard-title-left";
+        this.title.element.removeClass("dashboard-title-left")
+            .removeClass("dashboard-title-center").addClass(cls);
+    },
     _createTools: function () {
         var self = this;
         var expand = BI.createWidget({
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT,
-            title: function () {
-                if (BI.size(self.model.get("dimensions")) > 0) {
-                    return BI.i18nText("BI-Detailed_Setting");
-                } else {
-                    return BI.i18nText("BI-Please_Do_Detail_Setting");
-                }
-            },
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -141,12 +136,6 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
                     self._expandWidget();
-                    return;
-                case BICst.DASHBOARD_CONTROL_RANG_ASC:
-                    self.model.set("changeSort", {type: BICst.SORT.ASC});
-                    break;
-                case BICst.DASHBOARD_CONTROL_RANG_DESC:
-                    self.model.set("changeSort", {type: BICst.SORT.DESC});
                     break;
                 case BICst.DASHBOARD_CONTROL_CLEAR:
                     self._resetValue();
@@ -175,18 +164,6 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         this.tools.setVisible(false);
     },
 
-
-    _refreshGlobalStyle: function () {
-        this._refreshTitlePosition();
-    },
-
-    _refreshTitlePosition: function () {
-        var pos = BI.Utils.getGSNamePos();
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-            "dashboard-title-center" : "dashboard-title-left";
-        this.title.element.removeClass("dashboard-title-left")
-            .removeClass("dashboard-title-center").addClass(cls);
-    },
     _refreshLayout: function () {
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
@@ -200,21 +177,21 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
             // this.widget.attr("items")[0].right = "";
             this.widget.attr("items")[2].top = 10;
             if (width < minComboWidth + minNameWidth + 48) {
-                this.treeList.setVisible(false);
+                this.combo.setVisible(false);
                 this.widget.attr("items")[1].right = 0;
             } else if (width < nameWidth + minComboWidth + 48) {
-                this.treeList.setVisible(true);
+                this.combo.setVisible(true);
                 this.widget.attr("items")[1].right = minComboWidth + 15;
                 this.widget.attr("items")[2].left = width - 15 - minComboWidth;
             } else {
-                this.treeList.setVisible(true);
+                this.combo.setVisible(true);
                 this.widget.attr("items")[1].right = width - 43 - nameWidth;
                 this.widget.attr("items")[2].left = 33 + nameWidth;
             }
         } else {
             // this.widget.attr("items")[0].left = "";
             // this.widget.attr("items")[0].right = 10;
-            this.treeList.setVisible(true);
+            this.combo.setVisible(true);
             this.widget.attr("items")[1].right = 0;
             this.widget.attr("items")[2].top = 35;
             this.widget.attr("items")[2].left = 10;
@@ -229,38 +206,13 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
             isLayer: true
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
-        });
+        })
         BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
     _resetValue: function () {
-        this.model.set("value", {});
+        this.model.set("value");
         this.refresh();
-    },
-
-    change: function (changed, prev, context, options) {
-        if (BI.has(changed, "dimensions")) {
-            this.treeList.populate();
-        }
-        if (BI.has(changed, "bounds")) {
-            this._refreshLayout();
-        }
-
-        if (BI.has(changed, "value")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
-        }
-        if (BI.has(changed, "dimensions")) {
-            this._checkDataBind();
-            BI.Utils.broadcastAllWidgets2Refresh();
-        }
-    },
-
-    _checkDataBind: function () {
-        if (BI.size(this.model.get("dimensions")) > 0) {
-            this.treeList.setEnable(true);
-        } else {
-            this.treeList.setEnable(false);
-        }
     },
 
     duplicate: function () {
@@ -269,6 +221,19 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
 
     splice: function () {
         BI.Utils.broadcastAllWidgets2Refresh();
+    },
+
+    listenEnd: function () {
+
+    },
+
+    change: function (changed, prev, context, options) {
+        if (BI.has(changed, "bounds")) {
+            this._refreshLayout();
+        }
+        if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
+            BI.Utils.broadcastAllWidgets2Refresh();
+        }
     },
 
     local: function () {
@@ -285,7 +250,6 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._refreshTitlePosition();
         this._refreshGlobalStyle();
-        this._checkDataBind();
-        this.treeList.populate();
+        this.combo.setValue(this.model.get("value"));
     }
 });
