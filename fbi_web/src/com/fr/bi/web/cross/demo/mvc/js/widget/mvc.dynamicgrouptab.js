@@ -12,7 +12,17 @@ DynamicGroupTabView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var self = this;
         this.tab = BI.createWidget({
-            type: "bi.dynamic_group_tab"
+            type: "bi.dynamic_group_tab",
+            cardCreator: function(v){
+                return BI.createWidget({
+                    type: "bi.center",
+                    items: [{
+                        type: "bi.label",
+                        text: v,
+                        value: v
+                    }]
+                });
+            }
         });
 
         BI.createWidget({
