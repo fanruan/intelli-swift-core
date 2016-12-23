@@ -7,7 +7,9 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
         return BI.extend(BI.DynamicGroupTab.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-dynamic-group-tab",
             items:[],
-            cardCreator: BI.emptyFn,
+            cardCreator: function(v){
+                return BI.createWidget();
+            },
             height:30
         })
     },
@@ -64,7 +66,11 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
         this.tab = BI.createWidget({
             type: "bi.tab",
             defaultShowIndex:false,
-            cardCreator: BI.bind(this._cardCreator, this)
+            cardCreator: function(v) {
+                var tab = o.cardCreator(v);
+                self.tabs.push(tab);
+                return tab;
+            }
         });
         BI.createWidget({
             type:"bi.vtape",
@@ -79,19 +85,6 @@ BI.DynamicGroupTab = BI.inherit(BI.Widget, {
                 height: o.height
             }]
         })
-    },
-
-    _cardCreator: function(v){
-        var tab = BI.createWidget({
-            type: "bi.center",
-            items: [{
-                type: "bi.label",
-                text: v,
-                value: v
-            }]
-        });
-        this.tabs.push(tab);
-        return tab;
     },
 
     setSelect: function(v){
