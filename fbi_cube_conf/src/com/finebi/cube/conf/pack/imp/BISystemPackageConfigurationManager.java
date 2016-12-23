@@ -1,9 +1,7 @@
 package com.finebi.cube.conf.pack.imp;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
-import com.finebi.cube.conf.pack.IPackagesManagerService;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -21,7 +19,6 @@ import com.fr.fs.control.UserControl;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -257,25 +254,6 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     @Override
     public Set<BusinessTable> getAnalysisAllTables(long userId) {
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisAllTables();
-    }
-
-    @Override
-    public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId) {
-        IPackagesManagerService analysisPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisPackageManager();
-        IPackagesManagerService currentPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getCurrentPackageManager();
-        Set<BIBusinessPackage> analysisPackages = analysisPackageManager.getAllPackages();
-        Set<BIBusinessPackage> currentPackages = currentPackageManager.getAllPackages();
-        Set<BIBusinessPackage> packageSet = new HashSet<BIBusinessPackage>();
-        for (BIBusinessPackage biBusinessPackage : currentPackages) {
-            if (!analysisPackages.contains(biBusinessPackage)) {
-                try {
-                    packageSet.add((BIBusinessPackage) biBusinessPackage.clone());
-                } catch (CloneNotSupportedException e) {
-                    BILoggerFactory.getLogger().error(e.getMessage());
-                }
-            }
-        }
-        return packageSet;
     }
 
 }
