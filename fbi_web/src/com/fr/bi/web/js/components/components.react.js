@@ -66,8 +66,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var el = $("<div>");
+	//页面加载完成后加载Portal
 	$(document).ready(function () {
+	    var el = $("<div>");
 	    $("body").append(el);
 	    _reactDom2.default.render(_react2.default.createElement(_base.Portal, null), el[0]);
 	});
@@ -52992,7 +52993,7 @@
 
 	var _SummaryTableComponent3 = _interopRequireDefault(_SummaryTableComponent2);
 
-	var _LevelTableComponent2 = __webpack_require__(611);
+	var _LevelTableComponent2 = __webpack_require__(612);
 
 	var _LevelTableComponent3 = _interopRequireDefault(_LevelTableComponent2);
 
@@ -53080,8 +53081,6 @@
 	        value: function _digest(props) {
 	            var helper = new _DetailTableComponentWidthHelper2.default(props);
 	            var minColumnSize = helper.getWidth();
-	            var header = props.header,
-	                items = props.items;
 	            var freezeCols = props.freezeCols;
 	            var columnSize = props.columnSize.slice();
 	            if (freezeCols.length >= columnSize.length) {
@@ -53094,8 +53093,6 @@
 	            return {
 	                columnSize: columnSize,
 	                minColumnSize: minColumnSize,
-	                header: header,
-	                items: items,
 	                freezeCols: freezeCols
 	            };
 	        }
@@ -53124,6 +53121,8 @@
 	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
 	                height = _props.height,
+	                header = _props.header,
+	                items = _props.items,
 	                showSequence = _props.showSequence,
 	                styleType = _props.styleType,
 	                color = _props.color,
@@ -53135,8 +53134,6 @@
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
 	                minColumnSize = _state.minColumnSize,
-	                header = _state.header,
-	                items = _state.items,
 	                freezeCols = _state.freezeCols,
 	                scrollTop = _state.scrollTop;
 
@@ -53183,7 +53180,7 @@
 	                        onVerticalScroll: this._onVerticalScroll
 	                    })
 	                ),
-	                _react2.default.createElement(_DetailTablePagerComponent2.default, { style: { height: 30, paddingRight: 10 }, curr: curr, pages: pages, label: label, onPrev: onPrev,
+	                _react2.default.createElement(_DetailTablePagerComponent2.default, { curr: curr, pages: pages, label: label, onPrev: onPrev,
 	                    onNext: onNext })
 	            );
 	        }
@@ -53834,8 +53831,6 @@
 	    value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(9);
@@ -53853,8 +53848,6 @@
 	var _base = __webpack_require__(537);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -53890,12 +53883,9 @@
 	        value: function render() {
 	            var _props = this.props,
 	                label = _props.label,
-	                c = _props.curr,
 	                pages = _props.pages,
 	                onPrev = _props.onPrev,
-	                onNext = _props.onNext,
-	                props = _objectWithoutProperties(_props, ['label', 'curr', 'pages', 'onPrev', 'onNext']);
-
+	                onNext = _props.onNext;
 	            var curr = this.state.curr;
 
 	            var labelText = _react2.default.createElement(
@@ -53926,7 +53916,7 @@
 	            );
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                _extends({ box: 'last', cross: 'center' }, props),
+	                { box: 'last', cross: 'center', style: { height: 30, paddingRight: 10 } },
 	                labelText,
 	                _react2.default.createElement(
 	                    _layout.Layout,
@@ -54197,7 +54187,7 @@
 	        var _this = _possibleConstructorReturn(this, (SummaryTableComponent.__proto__ || Object.getPrototypeOf(SummaryTableComponent)).call(this, props, context));
 
 	        _this._onVerticalScroll = _this._onVerticalScroll.bind(_this);
-	        _this.state = _extends({}, _this._digest(props), { scrollTop: 0 });
+	        _this.state = _extends({}, _this._digest(props), { scrollTop: 0, startSequence: 1 });
 	        return _this;
 	    }
 
@@ -54259,11 +54249,14 @@
 	                showSequence = _props.showSequence,
 	                styleType = _props.styleType,
 	                color = _props.color,
-	                curr = _props.curr,
-	                pages = _props.pages,
-	                label = _props.label,
-	                onPrev = _props.onPrev,
-	                onNext = _props.onNext;
+	                vCurr = _props.vCurr,
+	                hCurr = _props.hCurr,
+	                hasVNext = _props.hasVNext,
+	                hasHNext = _props.hasHNext,
+	                onVPrev = _props.onVPrev,
+	                onVNext = _props.onVNext,
+	                onHPrev = _props.onHPrev,
+	                onHNext = _props.onHNext;
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
 	                minColumnSize = _state.minColumnSize,
@@ -54291,10 +54284,12 @@
 	                        rowHeight: rowHeight,
 	                        styleType: styleType,
 	                        color: color,
-	                        curr: curr,
-	                        pages: pages,
-	                        header: header,
-	                        items: items }) : null,
+	                        vCurr: vCurr,
+	                        hCurr: hCurr,
+	                        header: this.props.header,
+	                        items: this.props.items,
+	                        crossHeader: this.props.crossHeader,
+	                        crossItems: this.props.crossItems }) : null,
 	                    _react2.default.createElement(_base.AdaptiveTable, {
 	                        width: width - (showSequence === true ? _SummaryTableSequenceComponent2.default.WIDTH : 0),
 	                        height: height - 30,
@@ -54318,8 +54313,15 @@
 	                        Component: _base.SummaryTable
 	                    })
 	                ),
-	                _react2.default.createElement(_SummaryTablePagerComponent2.default, { style: { height: 30, paddingRight: 10 }, curr: curr, pages: pages, label: label, onPrev: onPrev,
-	                    onNext: onNext })
+	                _react2.default.createElement(_SummaryTablePagerComponent2.default, { style: { height: 30, paddingRight: 10 },
+	                    vCurr: vCurr,
+	                    hCurr: hCurr,
+	                    hasVNext: hasVNext,
+	                    hasHNext: hasHNext,
+	                    onVPrev: onVPrev,
+	                    onVNext: onVNext,
+	                    onHPrev: onHPrev,
+	                    onHNext: onHNext })
 	            );
 	        }
 	    }, {
@@ -54391,11 +54393,15 @@
 	    onRegionColumnResizeEnd: _core.emptyFunction,
 
 	    showSequence: false,
-	    curr: 1,
-	    pages: 1,
+	    vCurr: 1,
+	    hCurr: 1,
+	    hasVNext: _core.emptyFunction,
+	    hasHNext: _core.emptyFunction,
 	    label: '',
-	    onPrev: _core.emptyFunction,
-	    onNext: _core.emptyFunction
+	    onVPrev: _core.emptyFunction,
+	    onVNext: _core.emptyFunction,
+	    onHPrev: _core.emptyFunction,
+	    onHNext: _core.emptyFunction
 	};
 
 	_reactMixin2.default.onClass(SummaryTableComponent, _core.ReactComponentWithPureRenderMixin);
@@ -55276,8 +55282,6 @@
 	    value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(9);
@@ -55296,8 +55300,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -55315,7 +55317,8 @@
 	        var _this = _possibleConstructorReturn(this, (SummaryTablePagerComponent.__proto__ || Object.getPrototypeOf(SummaryTablePagerComponent)).call(this, props, context));
 
 	        _this.state = {
-	            curr: props.curr
+	            vCurr: props.vCurr,
+	            hCurr: props.hCurr
 	        };
 	        return _this;
 	    }
@@ -55324,81 +55327,130 @@
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
 	            this.setState({
-	                curr: nextProps.curr
+	                vCurr: nextProps.vCurr,
+	                hCurr: nextProps.hCurr
 	            });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _props = this.props,
-	                label = _props.label,
-	                c = _props.curr,
-	                pages = _props.pages,
-	                onPrev = _props.onPrev,
-	                onNext = _props.onNext,
-	                props = _objectWithoutProperties(_props, ['label', 'curr', 'pages', 'onPrev', 'onNext']);
+	                hasVNext = _props.hasVNext,
+	                hasHNext = _props.hasHNext,
+	                onVPrev = _props.onVPrev,
+	                onVNext = _props.onVNext,
+	                onHPrev = _props.onHPrev,
+	                onHNext = _props.onHNext;
+	            var _state = this.state,
+	                vCurr = _state.vCurr,
+	                hCurr = _state.hCurr;
 
-	            var curr = this.state.curr;
-
-	            var labelText = _react2.default.createElement(
-	                _base.Label,
-	                null,
-	                label
-	            );
-	            var leftPage = _react2.default.createElement(
+	            var vNext = hasVNext(vCurr);
+	            var hNext = hasVNext(hCurr);
+	            var leftVPage = _react2.default.createElement(
 	                _base.Button,
-	                { disabled: curr <= 1, main: 'center', cross: 'center',
+	                { disabled: vCurr <= 1, main: 'center', cross: 'center',
 	                    className: 'column-pre-page-h-font',
 	                    style: { width: 16, height: 16, fontSize: 16 },
-	                    onClick: this._leftPageOnClick.bind(this) },
+	                    onClick: this._leftVPageOnClick.bind(this) },
 	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
 	            );
-	            var curPage = _react2.default.createElement(
+	            var curVPage = _react2.default.createElement(
 	                _base.Label,
 	                { style: { paddingLeft: 5, paddingRight: 5 } },
-	                curr
+	                vCurr
 	            );
-	            var rightPage = _react2.default.createElement(
+	            var rightVPage = _react2.default.createElement(
 	                _base.Button,
-	                { disabled: curr >= pages, main: 'center', cross: 'center',
+	                { disabled: !vNext, main: 'center', cross: 'center',
 	                    className: 'column-next-page-h-font',
 	                    style: { width: 16, height: 16, fontSize: 16 },
-	                    onClick: this._rightPageOnClick.bind(this) },
+	                    onClick: this._rightVPageOnClick.bind(this) },
+	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	            );
+
+	            var leftHPage = _react2.default.createElement(
+	                _base.Button,
+	                { disabled: hCurr <= 1, main: 'center', cross: 'center',
+	                    className: 'row-pre-page-h-font',
+	                    style: { width: 16, height: 16, fontSize: 16 },
+	                    onClick: this._leftHPageOnClick.bind(this) },
+	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	            );
+	            var curHPage = _react2.default.createElement(
+	                _base.Label,
+	                { style: { paddingLeft: 5, paddingRight: 5 } },
+	                hCurr
+	            );
+	            var rightHPage = _react2.default.createElement(
+	                _base.Button,
+	                { disabled: !hNext, main: 'center', cross: 'center',
+	                    className: 'row-next-page-h-font',
+	                    style: { width: 16, height: 16, fontSize: 16 },
+	                    onClick: this._rightHPageOnClick.bind(this) },
 	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
 	            );
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                _extends({ box: 'last', cross: 'center' }, props),
-	                labelText,
+	                { main: 'right', cross: 'center', style: { height: 30, paddingRight: 10 } },
 	                _react2.default.createElement(
 	                    _layout.Layout,
 	                    { main: 'justify' },
-	                    leftPage,
-	                    curPage,
-	                    rightPage
+	                    leftVPage,
+	                    curVPage,
+	                    rightVPage
+	                ),
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    { main: 'justify' },
+	                    leftHPage,
+	                    curHPage,
+	                    rightHPage
 	                )
 	            );
 	        }
 	    }, {
-	        key: '_leftPageOnClick',
-	        value: function _leftPageOnClick() {
+	        key: '_leftVPageOnClick',
+	        value: function _leftVPageOnClick() {
 	            var _this2 = this;
 
 	            this.setState({
-	                curr: (0, _core.clamp)(this.state.curr - 1, 1, this.props.pages)
+	                vCurr: this.state.vCurr - 1
 	            }, function () {
-	                _this2.props.onPrev(_this2.state.curr);
+	                _this2.props.onVPrev(_this2.state.vCurr);
 	            });
 	        }
 	    }, {
-	        key: '_rightPageOnClick',
-	        value: function _rightPageOnClick() {
+	        key: '_rightVPageOnClick',
+	        value: function _rightVPageOnClick() {
 	            var _this3 = this;
 
 	            this.setState({
-	                curr: (0, _core.clamp)(this.state.curr + 1, 1, this.props.pages)
+	                vCurr: this.state.vCurr + 1
 	            }, function () {
-	                _this3.props.onNext(_this3.state.curr);
+	                _this3.props.onVNext(_this3.state.vCurr);
+	            });
+	        }
+	    }, {
+	        key: '_leftHPageOnClick',
+	        value: function _leftHPageOnClick() {
+	            var _this4 = this;
+
+	            this.setState({
+	                hCurr: this.state.hCurr - 1
+	            }, function () {
+	                _this4.props.onHPrev(_this4.state.hCurr);
+	            });
+	        }
+	    }, {
+	        key: '_rightHPageOnClick',
+	        value: function _rightHPageOnClick() {
+	            var _this5 = this;
+
+	            this.setState({
+	                hCurr: this.state.hCurr + 1
+	            }, function () {
+	                _this5.props.onHNext(_this5.state.hCurr);
 	            });
 	        }
 	    }]);
@@ -55407,11 +55459,14 @@
 	}(_react.Component);
 
 	SummaryTablePagerComponent.defaultProps = {
-	    curr: 1,
-	    pages: 1,
-	    label: '',
-	    onPrev: _core.emptyFunction,
-	    onNext: _core.emptyFunction
+	    vCurr: 1,
+	    hCurr: 1,
+	    hasVNext: _core.emptyFunction,
+	    hasHNext: _core.emptyFunction,
+	    onVPrev: _core.emptyFunction,
+	    onVNext: _core.emptyFunction,
+	    onHPrev: _core.emptyFunction,
+	    onHNext: _core.emptyFunction
 	};
 
 	_reactMixin2.default.onClass(SummaryTablePagerComponent, _core.ReactComponentWithPureRenderMixin);
@@ -55452,6 +55507,10 @@
 
 	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
 
+	var _SummaryTableSequenceComponentHelper = __webpack_require__(611);
+
+	var _SummaryTableSequenceComponentHelper2 = _interopRequireDefault(_SummaryTableSequenceComponentHelper);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -55468,10 +55527,18 @@
 	    function SummaryTableSequenceComponent(props, context) {
 	        _classCallCheck(this, SummaryTableSequenceComponent);
 
-	        return _possibleConstructorReturn(this, (SummaryTableSequenceComponent.__proto__ || Object.getPrototypeOf(SummaryTableSequenceComponent)).call(this, props, context));
+	        var _this = _possibleConstructorReturn(this, (SummaryTableSequenceComponent.__proto__ || Object.getPrototypeOf(SummaryTableSequenceComponent)).call(this, props, context));
+
+	        _this._helper = new _SummaryTableSequenceComponentHelper2.default(props);
+	        return _this;
 	    }
 
 	    _createClass(SummaryTableSequenceComponent, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            this._helper.update(nextProps);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _props = this.props,
@@ -55480,10 +55547,11 @@
 	                rowHeight = _props.rowHeight,
 	                header = _props.header,
 	                items = _props.items,
+	                crossHeader = _props.crossHeader,
+	                crossItems = _props.crossItems,
 	                styleType = _props.styleType,
 	                color = _props.color,
 	                curr = _props.curr,
-	                pages = _props.pages,
 	                scrollTop = _props.scrollTop;
 
 	            return _react2.default.createElement(
@@ -55496,7 +55564,7 @@
 	                    styleType: styleType,
 	                    color: color,
 	                    width: SummaryTableSequenceComponent.WIDTH,
-	                    height: header.length * headerRowHeight,
+	                    height: headerRowHeight * ((header.length > 0 ? 1 : 0) + crossHeader.length),
 	                    item: { text: '序号' },
 	                    colIndex: 0,
 	                    rowIndex: 0
@@ -55520,25 +55588,24 @@
 	                rowHeight = _props2.rowHeight,
 	                height = _props2.height;
 
-	            var start = Math.floor(scrollTop / rowHeight);
-	            var end = start + Math.floor((height - _base.Table.SCROLLBAR_WIDTH) / rowHeight);
+	            var numbers = this._helper.getNumbersByScrollTop(scrollTop);
 	            var result = [];
-	            for (var i = start; i <= end && i < items.length; i++) {
+	            (0, _core.each)(numbers, function (number) {
 	                var style = {};
-	                (0, _core.translateDOMPositionXY)(style, 0, -scrollTop % rowHeight + (i - start) * rowHeight);
+	                (0, _core.translateDOMPositionXY)(style, 0, number.offsetTop);
 	                result.push(_react2.default.createElement(_SummaryTableCellComponent2.default, {
-	                    key: i,
+	                    abs: true,
+	                    key: number.key,
 	                    styleType: styleType,
 	                    color: color,
-	                    abs: true,
 	                    style: style,
 	                    width: SummaryTableSequenceComponent.WIDTH,
-	                    height: rowHeight,
-	                    item: { text: i + 1 },
-	                    rowIndex: i,
+	                    height: number.height,
+	                    item: { text: number.text },
+	                    rowIndex: number.rowIndex,
 	                    colIndex: 0
 	                }));
-	            }
+	            });
 	            return result;
 	        }
 	    }]);
@@ -55553,7 +55620,6 @@
 	    styleType: null,
 	    color: null,
 	    curr: 1,
-	    pages: 1,
 	    scrollTop: 0
 	};
 
@@ -55563,6 +55629,219 @@
 
 /***/ },
 /* 611 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Created by Wang on 2016/12/24.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+
+
+	var _core = __webpack_require__(194);
+
+	var _base = __webpack_require__(537);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var SummaryTableSequenceComponentHelper = function () {
+	    function SummaryTableSequenceComponentHelper(props) {
+	        _classCallCheck(this, SummaryTableSequenceComponentHelper);
+
+	        this.rowHeight = props.rowHeight;
+	        this.items = props.items;
+	        this.height = props.height - _base.Table.SCROLLBAR_WIDTH;
+	        this._clear();
+	    }
+
+	    _createClass(SummaryTableSequenceComponentHelper, [{
+	        key: '_clear',
+	        value: function _clear() {
+	            this.vCurr = 1;
+	            this.start = 1;
+	            this.cache = {};
+	            this._next();
+	        }
+	    }, {
+	        key: '_next',
+	        value: function _next() {
+	            this.numbers = this._nextNumbers();
+	            this.intervalTree = this._nextIntervalTree(this.numbers);
+	        }
+	    }, {
+	        key: '_prev',
+	        value: function _prev() {
+	            var firstChild = void 0;
+	            (0, _core.some)(this.items, function (node) {
+	                if ((0, _core.isNotEmptyArray)(node.childs)) {
+	                    (0, _core.some)(node.childs, function (child) {
+	                        firstChild = child;
+	                        return true;
+	                    });
+	                }
+	            });
+	            if (firstChild) {
+	                this.start = this.cache[firstChild.text || firstChild.value];
+	            } else {
+	                this.start = 1;
+	            }
+	            this._next();
+	        }
+	    }, {
+	        key: '_getStartSequence',
+	        value: function _getStartSequence(nodes) {
+	            var _this = this;
+
+	            var start = this.start;
+	            var cnt = this.start;
+
+	            var track = function track(node) {
+	                _this.cache[node.text || node.value] = cnt++;
+	            };
+
+	            (0, _core.each)(nodes, function (node) {
+	                if ((0, _core.isNotEmptyArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child, index) {
+	                        if (index === 0) {
+	                            if (_this.cache[child.text || child.value]) {
+	                                start = cnt = _this.cache[child.text || child.value];
+	                            }
+	                        }
+	                        track(child);
+	                    });
+	                }
+	            });
+	            this.start = cnt;
+	            return start;
+	        }
+	    }, {
+	        key: '_nextNumbers',
+	        value: function _nextNumbers() {
+	            var _this2 = this;
+
+	            var result = [];
+	            var count = this._getStartSequence(this.items);
+
+	            function getLeafCount(node) {
+	                var cnt = 0;
+	                if ((0, _core.isNotEmptyArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child) {
+	                        cnt += getLeafCount(child);
+	                    });
+	                    if (node.childs.length > 1 && (0, _core.isNotEmptyArray)(node.values)) {
+	                        cnt++;
+	                    }
+	                } else {
+	                    cnt++;
+	                }
+	                return cnt;
+	            }
+
+	            var start = 0;
+	            (0, _core.each)(this.items, function (node) {
+	                if ((0, _core.isArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child) {
+	                        var cnt = getLeafCount(child);
+	                        result.push({
+	                            text: count++,
+	                            rowIndex: start,
+	                            key: start,
+	                            height: cnt * _this2.rowHeight
+	                        });
+	                        start += cnt;
+	                    });
+	                    if ((0, _core.isNotEmptyArray)(node.values)) {
+	                        result.push({
+	                            text: '汇总',
+	                            key: start,
+	                            rowIndex: start,
+	                            height: _this2.rowHeight
+	                        });
+	                        start++;
+	                    }
+	                }
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: '_nextIntervalTree',
+	        value: function _nextIntervalTree(numbers) {
+	            var intervalTree = _core.PrefixIntervalTree.uniform(numbers.length, 0);
+	            (0, _core.each)(numbers, function (number, i) {
+	                intervalTree.set(i, number.height);
+	            });
+	            return intervalTree;
+	        }
+	    }, {
+	        key: 'getNumbersByScrollTop',
+	        value: function getNumbersByScrollTop(scrollTop) {
+	            var result = [];
+	            var index = this.intervalTree.greatestLowerBound(scrollTop);
+	            var offsetTop = scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0);
+	            var height = 0;
+	            while (height < this.height && index < this.numbers.length) {
+	                result.push({
+	                    key: this.numbers[index].key,
+	                    text: this.numbers[index].text,
+	                    rowIndex: this.numbers[index].rowIndex,
+	                    height: this.numbers[index].height,
+	                    offsetTop: offsetTop
+	                });
+	                offsetTop += this.numbers[index].height;
+	                height += this.numbers[index].height;
+	                index++;
+	            }
+	            return result;
+	        }
+	    }, {
+	        key: 'update',
+	        value: function update(props) {
+	            if (props.height - _base.Table.SCROLLBAR_WIDTH !== this.height) {
+	                this.height = props.height - _base.Table.SCROLLBAR_WIDTH;
+	            }
+	            if (props.vCurr === 1 && (props.items !== this.items || props.rowHeight !== this.rowHeight)) {
+	                this.items = props.items;
+	                this.rowHeight = props.rowHeight;
+	                this.vCurr = props.vCurr;
+	                this._clear();
+	                return;
+	            }
+	            if (props.vCurr === this.vCurr) {
+	                if (props.items !== this.items || props.rowHeight !== this.rowHeight) {
+	                    this.items = props.items;
+	                    this.rowHeight = props.rowHeight;
+	                    this._prev();
+	                }
+	                return;
+	            }
+	            if (props.vCurr === this.vCurr + 1) {
+	                this.items = props.items;
+	                this.rowHeight = props.rowHeight;
+	                this.vCurr = props.vCurr;
+	                this._next();
+	                return;
+	            }
+	            if (props.vCurr === this.vCurr - 1) {
+	                this.items = props.items;
+	                this.rowHeight = props.rowHeight;
+	                this.vCurr = props.vCurr;
+	                this._prev();
+	                return;
+	            }
+	        }
+	    }]);
+
+	    return SummaryTableSequenceComponentHelper;
+	}();
+
+	exports.default = SummaryTableSequenceComponentHelper;
+
+/***/ },
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55589,9 +55868,9 @@
 
 	var _base = __webpack_require__(537);
 
-	__webpack_require__(612);
+	__webpack_require__(613);
 
-	var _LevelTableCellComponent = __webpack_require__(614);
+	var _LevelTableCellComponent = __webpack_require__(615);
 
 	var _LevelTableCellComponent2 = _interopRequireDefault(_LevelTableCellComponent);
 
@@ -55599,11 +55878,11 @@
 
 	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
 
-	var _LevelTableComponentWidthHelper = __webpack_require__(615);
+	var _LevelTableComponentWidthHelper = __webpack_require__(616);
 
 	var _LevelTableComponentWidthHelper2 = _interopRequireDefault(_LevelTableComponentWidthHelper);
 
-	var _LevelTableComponentItemsHelper = __webpack_require__(616);
+	var _LevelTableComponentItemsHelper = __webpack_require__(617);
 
 	var _LevelTableComponentItemsHelper2 = _interopRequireDefault(_LevelTableComponentItemsHelper);
 
@@ -55611,7 +55890,7 @@
 
 	var _SummaryTablePagerComponent2 = _interopRequireDefault(_SummaryTablePagerComponent);
 
-	var _LevelTableSequenceComponent = __webpack_require__(617);
+	var _LevelTableSequenceComponent = __webpack_require__(618);
 
 	var _LevelTableSequenceComponent2 = _interopRequireDefault(_LevelTableSequenceComponent);
 
@@ -55705,11 +55984,14 @@
 	                showSequence = _props.showSequence,
 	                styleType = _props.styleType,
 	                color = _props.color,
-	                curr = _props.curr,
-	                pages = _props.pages,
-	                label = _props.label,
-	                onPrev = _props.onPrev,
-	                onNext = _props.onNext;
+	                vCurr = _props.vCurr,
+	                hCurr = _props.hCurr,
+	                hasVNext = _props.hasVNext,
+	                hasHNext = _props.hasHNext,
+	                onVPrev = _props.onVPrev,
+	                onVNext = _props.onVNext,
+	                onHPrev = _props.onHPrev,
+	                onHNext = _props.onHNext;
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
 	                minColumnSize = _state.minColumnSize,
@@ -55737,10 +56019,12 @@
 	                        rowHeight: rowHeight,
 	                        styleType: styleType,
 	                        color: color,
-	                        curr: curr,
-	                        pages: pages,
-	                        header: header,
-	                        items: items }) : null,
+	                        vCurr: vCurr,
+	                        hCurr: hCurr,
+	                        header: this.props.header,
+	                        items: this.props.items,
+	                        crossHeader: this.props.crossHeader,
+	                        crossItems: this.props.crossItems }) : null,
 	                    _react2.default.createElement(_base.AdaptiveTable, {
 	                        width: width - (showSequence === true ? _LevelTableSequenceComponent2.default.WIDTH : 0),
 	                        height: height - 30,
@@ -55764,8 +56048,15 @@
 	                        Component: _base.LevelTable
 	                    })
 	                ),
-	                _react2.default.createElement(_SummaryTablePagerComponent2.default, { style: { height: 30, paddingRight: 10 }, curr: curr, pages: pages, label: label, onPrev: onPrev,
-	                    onNext: onNext })
+	                _react2.default.createElement(_SummaryTablePagerComponent2.default, { style: { height: 30, paddingRight: 10 },
+	                    vCurr: vCurr,
+	                    hCurr: hCurr,
+	                    hasVNext: hasVNext,
+	                    hasHNext: hasHNext,
+	                    onVPrev: onVPrev,
+	                    onVNext: onVNext,
+	                    onHPrev: onHPrev,
+	                    onHNext: onHNext })
 	            );
 	        }
 	    }, {
@@ -55837,11 +56128,15 @@
 	    onRegionColumnResizeEnd: _core.emptyFunction,
 
 	    showSequence: false,
-	    curr: 1,
-	    pages: 1,
+	    vCurr: 1,
+	    hCurr: 1,
+	    hasVNext: _core.emptyFunction,
+	    hasHNext: _core.emptyFunction,
 	    label: '',
-	    onPrev: _core.emptyFunction,
-	    onNext: _core.emptyFunction
+	    onVPrev: _core.emptyFunction,
+	    onVNext: _core.emptyFunction,
+	    onHPrev: _core.emptyFunction,
+	    onHNext: _core.emptyFunction
 	};
 
 	_reactMixin2.default.onClass(LevelTableComponent, _core.ReactComponentWithPureRenderMixin);
@@ -55849,13 +56144,13 @@
 	exports.default = LevelTableComponent;
 
 /***/ },
-/* 612 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(613);
+	var content = __webpack_require__(614);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -55875,7 +56170,7 @@
 	}
 
 /***/ },
-/* 613 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -55889,7 +56184,7 @@
 
 
 /***/ },
-/* 614 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56044,7 +56339,7 @@
 	exports.default = LevelTableCell;
 
 /***/ },
-/* 615 */
+/* 616 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56151,7 +56446,7 @@
 	exports.default = LevelTableComponentWidthHelper;
 
 /***/ },
-/* 616 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56302,7 +56597,7 @@
 	exports.default = LevelTableComponentItemsHelper;
 
 /***/ },
-/* 617 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56331,9 +56626,13 @@
 
 	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
 
-	var _SummaryTableCellComponent = __webpack_require__(605);
+	var _LevelTableCellComponent = __webpack_require__(615);
 
-	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
+	var _LevelTableCellComponent2 = _interopRequireDefault(_LevelTableCellComponent);
+
+	var _LevelTableSequenceComponentHelper = __webpack_require__(619);
+
+	var _LevelTableSequenceComponentHelper2 = _interopRequireDefault(_LevelTableSequenceComponentHelper);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -56351,10 +56650,18 @@
 	    function LevelTableSequenceComponent(props, context) {
 	        _classCallCheck(this, LevelTableSequenceComponent);
 
-	        return _possibleConstructorReturn(this, (LevelTableSequenceComponent.__proto__ || Object.getPrototypeOf(LevelTableSequenceComponent)).call(this, props, context));
+	        var _this = _possibleConstructorReturn(this, (LevelTableSequenceComponent.__proto__ || Object.getPrototypeOf(LevelTableSequenceComponent)).call(this, props, context));
+
+	        _this._helper = new _LevelTableSequenceComponentHelper2.default(props);
+	        return _this;
 	    }
 
 	    _createClass(LevelTableSequenceComponent, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            this._helper.update(nextProps);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _props = this.props,
@@ -56363,10 +56670,11 @@
 	                rowHeight = _props.rowHeight,
 	                header = _props.header,
 	                items = _props.items,
+	                crossHeader = _props.crossHeader,
+	                crossItems = _props.crossItems,
 	                styleType = _props.styleType,
 	                color = _props.color,
 	                curr = _props.curr,
-	                pages = _props.pages,
 	                scrollTop = _props.scrollTop;
 
 	            return _react2.default.createElement(
@@ -56379,7 +56687,7 @@
 	                    styleType: styleType,
 	                    color: color,
 	                    width: LevelTableSequenceComponent.WIDTH,
-	                    height: header.length * headerRowHeight,
+	                    height: headerRowHeight * ((header.length > 0 ? 1 : 0) + crossHeader.length),
 	                    item: { text: '序号' },
 	                    colIndex: 0,
 	                    rowIndex: 0
@@ -56403,25 +56711,24 @@
 	                rowHeight = _props2.rowHeight,
 	                height = _props2.height;
 
-	            var start = Math.floor(scrollTop / rowHeight);
-	            var end = start + Math.floor((height - _base.Table.SCROLLBAR_WIDTH) / rowHeight);
+	            var numbers = this._helper.getNumbersByScrollTop(scrollTop);
 	            var result = [];
-	            for (var i = start; i <= end && i < items.length; i++) {
+	            (0, _core.each)(numbers, function (number) {
 	                var style = {};
-	                (0, _core.translateDOMPositionXY)(style, 0, -scrollTop % rowHeight + (i - start) * rowHeight);
-	                result.push(_react2.default.createElement(_SummaryTableCellComponent2.default, {
-	                    key: i,
+	                (0, _core.translateDOMPositionXY)(style, 0, number.offsetTop);
+	                result.push(_react2.default.createElement(_LevelTableCellComponent2.default, {
+	                    abs: true,
+	                    key: number.key,
 	                    styleType: styleType,
 	                    color: color,
-	                    abs: true,
 	                    style: style,
 	                    width: LevelTableSequenceComponent.WIDTH,
-	                    height: rowHeight,
-	                    item: { text: i + 1 },
-	                    rowIndex: i,
+	                    height: number.height,
+	                    item: { text: number.text },
+	                    rowIndex: number.rowIndex,
 	                    colIndex: 0
 	                }));
-	            }
+	            });
 	            return result;
 	        }
 	    }]);
@@ -56436,13 +56743,108 @@
 	    styleType: null,
 	    color: null,
 	    curr: 1,
-	    pages: 1,
 	    scrollTop: 0
 	};
 
 	_reactMixin2.default.onClass(LevelTableSequenceComponent, _core.ReactComponentWithPureRenderMixin);
 
 	exports.default = LevelTableSequenceComponent;
+
+/***/ },
+/* 619 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(194);
+
+	var _base = __webpack_require__(537);
+
+	var _SummaryTableSequenceComponentHelper = __webpack_require__(611);
+
+	var _SummaryTableSequenceComponentHelper2 = _interopRequireDefault(_SummaryTableSequenceComponentHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/24.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+	var LevelTableSequenceComponentHelper = function (_SummaryTableSequence) {
+	    _inherits(LevelTableSequenceComponentHelper, _SummaryTableSequence);
+
+	    function LevelTableSequenceComponentHelper(props) {
+	        _classCallCheck(this, LevelTableSequenceComponentHelper);
+
+	        return _possibleConstructorReturn(this, (LevelTableSequenceComponentHelper.__proto__ || Object.getPrototypeOf(LevelTableSequenceComponentHelper)).call(this, props));
+	    }
+
+	    _createClass(LevelTableSequenceComponentHelper, [{
+	        key: '_nextNumbers',
+	        value: function _nextNumbers() {
+	            var _this2 = this;
+
+	            var result = [];
+	            var count = this._getStartSequence(this.items);
+
+	            function getLeafCount(node) {
+	                var cnt = 0;
+	                if ((0, _core.isNotEmptyArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child) {
+	                        cnt += getLeafCount(child);
+	                    });
+	                    if ( /**node.childs.length > 1 && **/(0, _core.isNotEmptyArray)(node.values)) {
+	                        cnt++;
+	                    }
+	                } else {
+	                    cnt++;
+	                }
+	                return cnt;
+	            }
+
+	            var start = 0;
+	            (0, _core.each)(this.items, function (node) {
+	                if ((0, _core.isArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child) {
+	                        var cnt = getLeafCount(child);
+	                        result.push({
+	                            text: count++,
+	                            rowIndex: start,
+	                            key: start,
+	                            height: cnt * _this2.rowHeight
+	                        });
+	                        start += cnt;
+	                    });
+	                    if ((0, _core.isNotEmptyArray)(node.values)) {
+	                        result.push({
+	                            text: '汇总',
+	                            key: start,
+	                            rowIndex: start,
+	                            height: _this2.rowHeight
+	                        });
+	                        start++;
+	                    }
+	                }
+	            });
+	            return result;
+	        }
+	    }]);
+
+	    return LevelTableSequenceComponentHelper;
+	}(_SummaryTableSequenceComponentHelper2.default);
+
+	exports.default = LevelTableSequenceComponentHelper;
 
 /***/ }
 /******/ ]);
