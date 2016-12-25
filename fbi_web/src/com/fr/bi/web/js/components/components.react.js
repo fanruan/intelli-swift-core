@@ -44002,9 +44002,11 @@
 	                    return _react2.default.createElement(
 	                        'div',
 	                        { key: key, style: {
-	                                position: 'relative',
-	                                width: '100%',
-	                                height: '100%',
+	                                position: 'absolute',
+	                                left: 0,
+	                                right: 0,
+	                                top: 0,
+	                                bottom: 0,
 	                                display: (0, _core.isNil)(defaultShowKey) || key === defaultShowKey ? 'flex' : 'none'
 	                            } },
 	                        child
@@ -55936,6 +55938,9 @@
 
 	            var freezeCols = props.freezeCols;
 	            var columnSize = props.columnSize.slice();
+	            if (columnSize.length > minColumnSize.length) {
+	                columnSize = columnSize.splice(columnSize.length - minColumnSize.length);
+	            }
 	            if (freezeCols.length >= columnSize.length) {
 	                freezeCols = [];
 	            }
@@ -55944,7 +55949,6 @@
 	            }
 	            if (freezeCols.length > 1) {
 	                freezeCols = [0];
-	                _LevelTableComponentItemsHelper2.default.formatColumns(columnSize, itemsHelper._getHDeep());
 	            }
 
 	            return {
@@ -55958,7 +55962,7 @@
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header || nextProps.freezeCols !== this.props.freezeCols || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.showSequence !== this.props.showSequence) {
+	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header || nextProps.columnSize !== this.props.columnSize || nextProps.freezeCols !== this.props.freezeCols || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.showSequence !== this.props.showSequence) {
 	                this.setState(this._digest(nextProps));
 	            }
 	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header || nextProps.isNeedFreeze !== this.props.isNeedFreeze) {
