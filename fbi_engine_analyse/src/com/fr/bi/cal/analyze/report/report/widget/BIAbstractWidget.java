@@ -109,10 +109,10 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     @Override
     public void refreshColumns() {
-        for (BITargetAndDimension td : getTargets()){
+        for (BITargetAndDimension td : getTargets()) {
             td.refreshColumn();
         }
-        for (BITargetAndDimension td : getDimensions()){
+        for (BITargetAndDimension td : getDimensions()) {
             td.refreshColumn();
         }
     }
@@ -168,7 +168,7 @@ public abstract class BIAbstractWidget implements BIWidget {
         if (jo.has("real_data")) {
             realData = jo.optBoolean("real_data", true);
         }
-        if(jo.has("sessionID")) {
+        if (jo.has("sessionID")) {
             sessionId = jo.getString("sessionID");
         }
         this.userId = userId;
@@ -189,15 +189,21 @@ public abstract class BIAbstractWidget implements BIWidget {
             row = new DimensionCalculator[]{new NoneDimensionCalculator(targetKey.getFields().get(0), new ArrayList<BITableSourceRelation>())};
         }
         GroupValueIndex gvi = loader.getTableIndex(targetKey.getTableSource()).getAllShowIndex();
+        GroupValueIndex authGVI = null;
         //非管理员用户需要考虑到对于权限的过滤条件
         if (userId != UserControl.getInstance().getSuperManagerID()) {
             List<TargetFilter> filters = getAuthFilter(userId);
             for (int i = 0; i < filters.size(); i++) {
                 for (int j = 0; j < row.length; j++) {
-                    gvi = GVIUtils.AND(gvi, filters.get(i).createFilterIndex(row[j], targetKey, loader, userId));
+                    if (authGVI == null) {
+                        authGVI = filters.get(i).createFilterIndex(row[j], targetKey, loader, userId);
+                    } else {
+                        authGVI = GVIUtils.OR(authGVI, filters.get(i).createFilterIndex(row[j], targetKey, loader, userId));
+                    }
                 }
             }
         }
+        gvi = GVIUtils.AND(gvi, authGVI);
         if (filter != null) {
             for (int i = 0; i < row.length; i++) {
                 gvi = GVIUtils.AND(gvi, filter.createFilterIndex(row[i], targetKey, loader, userId));
@@ -240,4 +246,10 @@ public abstract class BIAbstractWidget implements BIWidget {
     public BICore fetchObjectCore() {
         return new BICoreGenerator(this).fetchObjectCore();
     }
+
+    @Override
+    public void refreshSources() {
+
+    }
+
 }

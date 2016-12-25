@@ -24,7 +24,14 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             type: "bi.progress_bar",
             width: "100%"
         });
-        this.processBar.setValue(100);
+        this.processBar.setValue(1);
+
+        this.finishLable = BI.createWidget({
+            type: "bi.label",
+            text: BI.i18nText("BI-Completed"),
+            cls: "finish-label"
+        });
+        this._showFinish();
 
         BI.createWidget({
             type: "bi.vertical",
@@ -66,7 +73,19 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                     },
                     width: 90
                 }, {
-                    el: this.processBar
+                    el: {
+                        type: "bi.absolute",
+                        items: [{
+                            el: this.processBar,
+                            left: 0,
+                            right: 0,
+                            top: 0
+                        }, {
+                            el: this.finishLable,
+                            left: 0,
+                            top: 2
+                        }]
+                    }
                 }],
                 height: 30
             }, this.cubeTree],
@@ -84,25 +103,38 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             } else {
                 self.interval = setInterval(function () {
                     self.refreshLog();
-                }, 5000);
+                }, 2000);
             }
             self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
         });
     },
 
+    _showBar: function() {
+        this.processBar.setVisible(true);
+        this.finishLable.setVisible(false);
+    },
+
+    _showFinish: function() {
+        this.processBar.setVisible(false);
+        this.processBar.setValue(1);
+        this.finishLable.setVisible(true);
+    },
+
     refreshLog: function (isStart) {
         var self = this;
         if (isStart) {
+            this._showBar();
             this.processBar.setValue(1);
-            BI.delay(function () {
+            BI.delay(function() {
+                self._showBar();
                 self.processBar.setValue(10);
             }, 1000);
         }
         if (BI.isNull(this.interval)) {
             this.interval = setInterval(function () {
                 self.refreshLog();
-            }, 5000)
+            }, 2000);
             return;
         }
         BI.Utils.getCubeLog(function (data) {
@@ -116,33 +148,35 @@ BI.CubeLog = BI.inherit(BI.Widget, {
     },
 
     _refreshProcess: function (data) {
-        if (BI.isNull(data.allTableInfo) && BI.isNull(data.allRelationInfo)) {
-            return;
-        }
-        var allFields = 0, generated = 0;
-        if (BI.isNotNull(data.allTableInfo)) {
+        var self = this;
+        if (BI.isNotNull(data.allRelationInfo)) {
+            var allFields = 0, generated = 0;
             BI.each(data.allTableInfo, function (tName, size) {
                 allFields += size;
             });
-        }
-        if (BI.isNotNull(data.allRelationInfo)) {
-            allFields += data.allRelationInfo.length;
-        }
-        generated += data.connections.length;
-        BI.each(data.tables, function (i, table) {
-            generated += table.column.length;
-        });
-        var process = 1;
-        if (BI.isNull(data.cube_end)) {
-            if (allFields === 0) {
-                return;
+            generated += data.connections.length;
+            BI.each(data.tables, function (i, table) {
+                generated += table.column.length;
+            });
+            var process = 1;
+            if (BI.isNull(data.cube_end)) {
+                if (allFields === 0) {
+                    return;
+                }
+                process = generated / allFields;
+                process = process > 0.9 ? 0.9 : process;
             }
-            process = generated / allFields;
-            process = process > 0.9 ? 0.9 : process;
+            process = Math.ceil(process * 100);
+            process = process < 10 ? 10 : process;
+            this.processBar.setValue(process);
+            if (process < 100) {
+                this._showBar();
+            } else {
+                BI.delay(function() {
+                    self._showFinish();
+                }, 1000);
+            }
         }
-        process = Math.ceil(process * 100);
-        process = process < 10 ? 10 : process;
-        this.processBar.setValue(process);
     },
 
     _formatSecond: function (time) {

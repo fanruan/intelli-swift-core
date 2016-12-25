@@ -4,6 +4,7 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.common.inter.Traversal;
@@ -12,7 +13,6 @@ import com.fr.bi.etl.analysis.tableobj.ETLTableObject;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.stable.StringUtils;
