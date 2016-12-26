@@ -30,16 +30,18 @@ public class NodeIteratorCreator {
     private List<MetricGroupInfo> metricGroupInfoList = new ArrayList<MetricGroupInfo>();
     private BIDimension[] rowDimension;
     private BISummaryTarget[] usedTargets;
+    private Map<String, DimensionFilter> targetFilterMap;
     private NodeExpander expander;
     private boolean isRealData;
     private NameObject targetSort;
     private final boolean showSum;
     private final boolean calAllPage;
 
-    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, NodeExpander expander, boolean isRealData, BISession session, NameObject targetSort, boolean showSum, boolean setIndex, boolean calAllPage) {
+    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, DimensionFilter> targetFilterMap, NodeExpander expander, boolean isRealData, BISession session, NameObject targetSort, boolean showSum, boolean setIndex, boolean calAllPage) {
         this.metricGroupInfoList = metricGroupInfoList;
         this.rowDimension = rowDimension;
         this.usedTargets = usedTargets;
+        this.targetFilterMap = targetFilterMap;
         this.expander = expander;
         this.isRealData = isRealData;
         this.session = session;

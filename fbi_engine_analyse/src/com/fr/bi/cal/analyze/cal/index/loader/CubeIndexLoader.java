@@ -13,9 +13,7 @@ import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.VT4FBI;
-import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.calculator.cal.configure.AbstractConfigureCalulator;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
@@ -877,7 +875,7 @@ public class CubeIndexLoader {
                 }
             }
         }
-        return getRootDimensionGroup(widget, usedTargets, sumTarget, rowDimension, session, mergerInfoList, isCross, isHor, page);
+        return getRootDimensionGroup(widget, expander, usedTargets, sumTarget, rowDimension, session, mergerInfoList, isCross, isHor, page);
     }
 
     private IRootDimensionGroup createPageGroupNodeWithNoSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets, BISummaryTarget[] sumTarget, BIDimension[] rowDimension, boolean useRealData, NodeExpander expander, boolean isCross, boolean isHor, BISession session, int rowLength, int page) {
@@ -898,20 +896,11 @@ public class CubeIndexLoader {
     private IRootDimensionGroup getRootDimensionGroup(BISummaryWidget widget, NodeExpander expander, BISummaryTarget[] usedTargets, BISummaryTarget[] sumTarget, BIDimension[] rowDimension, BISession session, List<MetricGroupInfo> metricGroupInfoList, boolean shouldSetIndex, boolean isHor, int page) {
         boolean calAllPage = page == -1;
         Map<String, TargetCalculator> stringTargetGettingKeyMap = CommonUtils.getStringTargetGettingKeyMap(sumTarget, session);
-        Map<String, DimensionFilter> targetFilterMap = getResultFilterMap(widget);
         NameObject targetSort = widget.getTargetSort();
-        NodeIteratorCreator iteratorCreator = new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, expander, widget.isRealData(),  session, targetSort, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, calAllPage);
+        NodeIteratorCreator iteratorCreator = new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargetFilterMap(), expander, widget.isRealData(), session, targetSort, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, calAllPage);
         return iteratorCreator.createRoot();
     }
 
-
-    private Map<String, DimensionFilter> getResultFilterMap(BIWidget widget) {
-        Map<String, DimensionFilter> targetFilterMap = new HashMap<String, DimensionFilter>();
-        if (widget instanceof BISummaryWidget) {
-            targetFilterMap = ((BISummaryWidget) widget).getTargetFilterMap();
-        }
-        return targetFilterMap;
-    }
 
     /**
      * 释放
