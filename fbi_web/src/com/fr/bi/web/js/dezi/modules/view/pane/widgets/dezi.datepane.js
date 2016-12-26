@@ -1,7 +1,7 @@
 /**
- * Created by zcf on 2016/12/16.
+ * Created by zcf on 12/22/2016.
  */
-BIDezi.StringListView = BI.inherit(BI.View, {
+BIDezi.DatePaneView = BI.inherit(BI.View, {
 
     _constants: {
         TOOL_ICON_WIDTH: 20,
@@ -9,36 +9,36 @@ BIDezi.StringListView = BI.inherit(BI.View, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BIDezi.StringListView.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BIDezi.DatePaneView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget bi-control-widget"
         })
     },
+
     _init: function () {
-        BIDezi.StringListView.superclass._init.apply(this, arguments);
+        BIDezi.DatePaneView.superclass._init.apply(this, arguments);
         var self = this;
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
-            self.stringList.populate();
+            self.dataPane.setValue(self.model.get("value"));
         });
         //全局样式
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
             self._refreshGlobalStyle(globalStyle);
         });
     },
+
     _render: function (vessel) {
         var self = this;
         this._buildWidgetTitle();
         this._createTools();
 
-        this.stringList = BI.createWidget({
-            type: "bi.select_data_string_list",
-            wId: this.model.get("id")
+        this.dataPane = BI.createWidget({
+            type: "bi.custom_multi_date_pane"
         });
-
-        this.stringList.on(BI.SelectDataStringList.EVENT_CHANGE, function () {
+        this.dataPane.on(BI.CustomMultiDatePane.EVENT_CHANGE, function () {
             self.model.set("value", this.getValue());
         });
 
@@ -55,14 +55,11 @@ BIDezi.StringListView = BI.inherit(BI.View, {
                 left: 0,
                 right: 0
             }, {
-                el: this.stringList,
+                el: this.dataPane,
                 top: 10,
-                right: 10,
-                left: 10,
-                bottom: 10
+                right: 10
             }]
         });
-
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
@@ -76,14 +73,14 @@ BIDezi.StringListView = BI.inherit(BI.View, {
             }
         });
     },
+
     _buildWidgetTitle: function () {
         var self = this;
         var id = this.model.get("id");
         if (!this.title) {
             this.title = BI.createWidget({
                 type: "bi.shelter_editor",
-                cls: BI.Utils.getGSNamePos() === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
-                    "dashboard-title-left" : "dashboard-title-center",
+                cls: "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
                 height: 25,
@@ -112,12 +109,8 @@ BIDezi.StringListView = BI.inherit(BI.View, {
         }
     },
 
-    _refreshGlobalStyle: function (globalStyle) {
-        var titleFont = BI.isNotNull(globalStyle) ?
-            globalStyle.titleFont : BI.Utils.getGSTitleFont();
-        if (BI.isNotNull(titleFont)) {
-            this._refreshTitlePosition();
-        }
+    _refreshGlobalStyle: function () {
+        this._refreshTitlePosition();
     },
 
     _refreshTitlePosition: function () {
@@ -127,20 +120,13 @@ BIDezi.StringListView = BI.inherit(BI.View, {
         this.title.element.removeClass("dashboard-title-left")
             .removeClass("dashboard-title-center").addClass(cls);
     },
-
     _createTools: function () {
         var self = this;
         var expand = BI.createWidget({
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT,
-            title: function () {
-                if (BI.size(self.model.get("dimensions")) > 0) {
-                    return BI.i18nText("BI-Detailed_Setting");
-                } else {
-                    return BI.i18nText("BI-Please_Do_Detail_Setting");
-                }
-            },
+            title: BI.i18nText("BI-Detailed_Setting"),
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -154,12 +140,6 @@ BIDezi.StringListView = BI.inherit(BI.View, {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
                     self._expandWidget();
-                    break;
-                case BICst.DASHBOARD_CONTROL_RANG_ASC:
-                    self.model.set("changeSort", {type: BICst.SORT.ASC});
-                    break;
-                case BICst.DASHBOARD_CONTROL_RANG_DESC:
-                    self.model.set("changeSort", {type: BICst.SORT.DESC});
                     break;
                 case BICst.DASHBOARD_CONTROL_CLEAR:
                     self._resetValue();
@@ -201,19 +181,21 @@ BIDezi.StringListView = BI.inherit(BI.View, {
             // this.widget.attr("items")[0].right = "";
             this.widget.attr("items")[2].top = 10;
             if (width < minComboWidth + minNameWidth + 48) {
-                this.stringList.setVisible(false);
+                this.dataPane.setVisible(false);
                 this.widget.attr("items")[1].right = 0;
             } else if (width < nameWidth + minComboWidth + 48) {
-                this.stringList.setVisible(true);
+                this.dataPane.setVisible(true);
                 this.widget.attr("items")[1].right = minComboWidth + 15;
                 this.widget.attr("items")[2].left = width - 15 - minComboWidth;
             } else {
-                this.stringList.setVisible(true);
+                this.dataPane.setVisible(true);
                 this.widget.attr("items")[1].right = width - 43 - nameWidth;
                 this.widget.attr("items")[2].left = 33 + nameWidth;
             }
         } else {
-            this.stringList.setVisible(true);
+            // this.widget.attr("items")[0].left = "";
+            // this.widget.attr("items")[0].right = 10;
+            this.dataPane.setVisible(true);
             this.widget.attr("items")[1].right = 0;
             this.widget.attr("items")[2].top = 35;
             this.widget.attr("items")[2].left = 10;
@@ -228,21 +210,13 @@ BIDezi.StringListView = BI.inherit(BI.View, {
             isLayer: true
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
-        });
+        })
         BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
     _resetValue: function () {
         this.model.set("value");
         this.refresh();
-    },
-
-    _checkDataBind: function () {
-        if (BI.size(this.model.get("dimensions")) > 0) {
-            this.stringList.setEnable(true);
-        } else {
-            this.stringList.setEnable(false);
-        }
     },
 
     duplicate: function () {
@@ -260,15 +234,9 @@ BIDezi.StringListView = BI.inherit(BI.View, {
     change: function (changed, prev, context, options) {
         if (BI.has(changed, "bounds")) {
             this._refreshLayout();
-            this.stringList.resize();
         }
-        if (BI.has(changed, "value")) {
+        if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
-        }
-        if (BI.has(changed, "dimensions")) {
-            this._checkDataBind();
-            BI.Utils.broadcastAllWidgets2Refresh();
-            this.stringList.populate();
         }
     },
 
@@ -286,7 +254,6 @@ BIDezi.StringListView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._refreshTitlePosition();
         this._refreshGlobalStyle();
-        this._checkDataBind();
-        this.stringList.populate();
+        this.dataPane.setValue(this.model.get("value"));
     }
 });

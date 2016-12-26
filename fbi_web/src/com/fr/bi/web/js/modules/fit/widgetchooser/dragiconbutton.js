@@ -53,6 +53,8 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
                 return BI.i18nText("BI-Year_Month_Con");
             case BICst.WIDGET.YMD:
                 return BI.i18nText("BI-Date_Control");
+            case BICst.WIDGET.DATE_PANE:
+                return BI.i18nText("BI-Date_Pane_Control");
             case BICst.WIDGET.TREE:
                 return BI.i18nText("BI-Tree_Control");
             case BICst.WIDGET.TREE_LIST:

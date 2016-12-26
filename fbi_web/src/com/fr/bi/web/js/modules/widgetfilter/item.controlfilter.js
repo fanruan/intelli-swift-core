@@ -45,6 +45,9 @@ BI.ControlFilterItem = BI.inherit(BI.Widget, {
             case BICst.WIDGET.YMD:
                 widgetIcon = "chart-ymd-font";
                 break;
+            case BICst.WIDGET.DATE_PANE:
+                widgetIcon = "chart-date-pane-font";
+                break;
             case BICst.WIDGET.TREE:
                 widgetIcon = "chart-tree-font";
                 break;

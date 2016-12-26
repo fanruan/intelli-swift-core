@@ -2046,6 +2046,26 @@
   content: "\e61c";
   color: #808080;
 }
+.chart-date-pane-font .b-font:before {
+  content: "\e61b";
+  color: #808080;
+}
+.chart-date-pane-font:hover .b-font:before,
+.chart-date-pane-font:focus .b-font:before,
+.chart-date-pane-font.hover .b-font:before {
+  content: "\e61b";
+  color: #808080;
+}
+.chart-date-pane-font:active .b-font:before,
+.chart-date-pane-font.active .b-font:before {
+  content: "\e61b";
+  color: #009de3;
+}
+.chart-date-pane-font.native .b-font:before,
+.chart-date-pane-font.disabled .b-font:before {
+  content: "\e61b";
+  color: #808080;
+}
 .chart-date-range-font .b-font:before {
   content: "\e616";
   color: #808080;

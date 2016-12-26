@@ -86,6 +86,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.YMD:
                 view = "BIDezi.DateDetailView";
                 break;
+            case BICst.WIDGET.DATE_PANE:
+                view = "BIDezi.DatePaneDetailView";
+                break;
             case BICst.WIDGET.TREE:
                 view = "BIDezi.TreeDetailView";
                 break;
@@ -184,6 +187,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.YMD:
                 view = "BIDezi.DateWidgetView";
                 break;
+            case BICst.WIDGET.DATE_PANE:
+                view = "BIDezi.DatePaneView";
+                break;
             case BICst.WIDGET.TREE:
                 view = "BIDezi.TreeWidgetView";
                 break;
@@ -272,6 +278,7 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.QUARTER:
             case BICst.WIDGET.MONTH:
             case BICst.WIDGET.YMD:
+            case BICst.WIDGET.DATE_PANE:
                 view = "BIDezi.DateDimensionView";
                 break;
             case BICst.WIDGET.TREE:

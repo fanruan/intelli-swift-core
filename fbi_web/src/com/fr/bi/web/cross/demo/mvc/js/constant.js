@@ -473,7 +473,8 @@ var _JS = [
     "detail/mvc.singleslider.js",
     "detail/mvc.intervalslider.js",
     "detail/mvc.stringlist.js",
-    "detail/mvc.treelist.js"
+    "detail/mvc.treelist.js",
+    "detail/mvc.datapane.js"
 ];
 
 
@@ -699,7 +700,8 @@ var _Routes = {
     "/slider": "SliderView",
     "/interval_slider": "IntervalSliderView",
     "/string_list": "StringListView",
-    "/tree_list": "TreeListView"
+    "/tree_list": "TreeListView",
+    "/data_pane": "DataPaneView"
 };
 
 var _Models = {};
@@ -1231,6 +1233,9 @@ _Models.detail = [{
     text: "树列表"
 }, {
     id: 38,
+    text: "日期面板"
+}, {
+    id: 39,
     text: "螺旋分析tab控件"
 },
 
@@ -1605,6 +1610,10 @@ _Models.detail = [{
         value: "tree_list"
     }, {
         pId: 38,
+        text: "日期面板",
+        value: "data_pane"
+    }, {
+        pId: 39,
         text: "螺旋分析tab控件",
         value: "dynamic_group_tab"
     }];

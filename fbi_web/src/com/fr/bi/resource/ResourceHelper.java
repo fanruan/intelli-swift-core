@@ -418,6 +418,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.query.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.reset.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.date.js",
+                "com/fr/bi/web/js/show/modules/model/pane/widgets/model.datepane.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.daterange.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.number.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.singleslider.js",
@@ -454,6 +455,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.listlabel.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.treelabel.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.date.js",
+                "com/fr/bi/web/js/show/modules/view/pane/widgets/show.datepane.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.year.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.yearmonth.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.yearquarter.js",
@@ -566,6 +568,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.query.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.reset.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.date.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.datepane.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.daterange.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.number.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.singleslider.js",
@@ -591,6 +594,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.singleslider.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.intervalslider.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.date.detail.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.datepane.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.detailtable.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.daterange.detail.js",
@@ -621,6 +625,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.query.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.reset.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.date.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.datepane.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.year.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.yearmonth.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.yearquarter.js",
@@ -637,6 +642,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.string.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.stringlist.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.date.detail.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.datepane.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.number.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.singleslider.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.intervalslider.detail.js",
@@ -1358,6 +1364,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/maximization/widget.maximization.chartpane.css",
                 "com/fr/bi/web/css/modules/maximization/widget.maximization.css",
 
+                //日期面板
+                "com/fr/bi/web/css/modules/datepane/datepane.css",
 
                 //react控件
                 "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
@@ -1593,6 +1601,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/date/interval.date.js",
                 "com/fr/bi/web/js/modules/date/interval.date.param.js",
                 "com/fr/bi/web/js/modules/date/multi.date.js",
+                "com/fr/bi/web/js/modules/datepane/datepane.js",
 
                 "com/fr/bi/web/js/modules/tablefield/widget.tablefield.js",
                 "com/fr/bi/web/js/modules/tablefield/widget.tablefield.searchresult.pane.js",

@@ -1,7 +1,7 @@
 /**
- * Created by zcf on 2016/12/21.
+ * Created by zcf on 12/22/2016.
  */
-BIShow.TreeListView = BI.inherit(BI.View, {
+BIShow.DatePaneView = BI.inherit(BI.View, {
 
     _constants: {
         TOOL_ICON_WIDTH: 20,
@@ -9,20 +9,20 @@ BIShow.TreeListView = BI.inherit(BI.View, {
     },
 
     _defaultConfig: function () {
-        return BI.extend(BIShow.TreeListView.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BIShow.DatePaneView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget bi-control-widget"
         })
     },
 
     _init: function () {
-        BIShow.TreeListView.superclass._init.apply(this, arguments);
+        BIShow.DatePaneView.superclass._init.apply(this, arguments);
         var self = this;
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
-            self.treeList.populate();
+            self.datePane.setValue(self.model.get("value"));
         });
     },
 
@@ -31,29 +31,25 @@ BIShow.TreeListView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._createTools();
 
-        this.treeList = BI.createWidget({
-            type: "bi.select_tree_data_list",
-            wId: this.model.get("id")
+        this.datePane = BI.createWidget({
+            type: "bi.custom_multi_date_pane"
         });
-        this.treeList.on(BI.SelectTreeDataList.EVENT_CHANGE, function () {
-            self.model.set("value", self.treeList.getValue());
+        this.datePane.on(BI.CustomMultiDatePane.EVENT_CHANGE, function () {
+            self.model.set("value", this.getValue());
         });
-
 
         this.widget = BI.createWidget({
             type: "bi.absolute",
             element: vessel,
             items: [{
                 el: this.titleWrapper,
-                left: 0,
                 top: 0,
+                left: 0,
                 right: 0
             }, {
-                el: this.treeList,
+                el: this.datePane,
                 top: 10,
-                right: 10,
-                left: 10,
-                bottom: 10
+                right: 10
             }, {
                 el: this.tools,
                 top: 0,
@@ -138,14 +134,14 @@ BIShow.TreeListView = BI.inherit(BI.View, {
         if (height < 100) {
             this.widget.attr("items")[1].top = 10;
             if (width < minComboWidth + minNameWidth + 48) {
-                this.treeList.setVisible(false);
+                this.datePane.setVisible(false);
                 this.widget.attr("items")[0].right = 10;
             } else if (width < nameWidth + minComboWidth + 48) {
-                this.treeList.setVisible(true);
+                this.datePane.setVisible(true);
                 this.widget.attr("items")[0].right = minComboWidth + 25;
                 this.widget.attr("items")[1].left = width - 15 - minComboWidth;
             } else {
-                this.treeList.setVisible(true);
+                this.datePane.setVisible(true);
                 this.widget.attr("items")[0].right = width - 43 - nameWidth;
                 this.widget.attr("items")[1].left = 33 + nameWidth;
             }
@@ -157,20 +153,34 @@ BIShow.TreeListView = BI.inherit(BI.View, {
         this.widget.resize();
     },
 
+    _expandWidget: function () {
+        var wId = this.model.get("id");
+        var type = this.model.get("type");
+        this.addSubVessel("detail", "body", {
+            isLayer: true
+        }).skipTo("detail", "detail", "detail", {}, {
+            id: wId
+        })
+    },
+
     _resetValue: function () {
-        this.model.set("value", {});
+        this.model.set("value");
         this.refresh();
+    },
+
+    splice: function () {
+        BI.Utils.broadcastAllWidgets2Refresh();
+    },
+
+    listenEnd: function () {
+
     },
 
     change: function (changed) {
         if (BI.has(changed, "bounds")) {
             this._refreshLayout();
-            this.treeList.resize();
         }
-        if (BI.has(changed, "value")) {
-            BI.Utils.broadcastAllWidgets2Refresh(true, this.model.get("id"));
-        }
-        if (BI.has(changed, "dimensions")) {
+        if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },
@@ -182,7 +192,7 @@ BIShow.TreeListView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
+        this.datePane.setValue(this.model.get("value"));
         this._refreshTitlePosition();
-        this.treeList.populate();
     }
 });

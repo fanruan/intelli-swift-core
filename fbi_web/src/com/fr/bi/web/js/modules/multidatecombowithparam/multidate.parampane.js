@@ -67,7 +67,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
     },
 
     _getDateWidgetStructure: function(){
-        var targetWidgetType = [BICst.WIDGET.DATE, BICst.WIDGET.YMD];
+        var targetWidgetType = [BICst.WIDGET.DATE, BICst.WIDGET.YMD, BICst.WIDGET.DATE_PANE];
         var targetWidgetIds = BI.filter(BI.Utils.getAllWidgetIDs(), function(i, id){
             return BI.contains(targetWidgetType, BI.Utils.getWidgetTypeByID(id));
         });

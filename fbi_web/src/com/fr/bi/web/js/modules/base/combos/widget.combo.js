@@ -89,6 +89,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.QUARTER :
             case BICst.WIDGET.MONTH:
             case BICst.WIDGET.YMD :
+            case BICst.WIDGET.DATE_PANE:
                 return BICst.TIME_CONTROL_SETCOMBO_ITEMS;
 
             case BICst.WIDGET.STRING:

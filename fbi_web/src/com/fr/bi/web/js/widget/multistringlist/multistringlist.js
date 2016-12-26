@@ -277,8 +277,13 @@ BI.MultiStringList = BI.inherit(BI.Widget, {
         this.popup.setStartValue(value);
     },
 
-    isAllSelected: function () {
-        return this.popup.isAllSelected();
+    // isAllSelected: function () {
+    //     return this.popup.isAllSelected();
+    // },
+
+    resize: function () {
+        this.trigger.getCounter().adjustView();
+        this.trigger.getSearcher().adjustView();
     },
 
     setEnable: function (v) {

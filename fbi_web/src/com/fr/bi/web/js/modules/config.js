@@ -364,7 +364,7 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Date_Control"),
     title: BI.i18nText("BI-Date_Control"),
     value: BICst.WIDGET.DATE,
-    cls: "drag-date-icon",
+    cls: "drag-date-range-icon",
     children: [
         {
             text: BI.i18nText("BI-Year_Control"),
@@ -387,10 +387,15 @@ BICst.DASHBOARD_WIDGETS = [[{
             value: BICst.WIDGET.YMD,
             cls: "drag-ymd-icon"
         }, {
+            text: BI.i18nText("BI-Date_Pane_Control"),
+            title: BI.i18nText("BI-Date_Pane_Control"),
+            value: BICst.WIDGET.DATE_PANE,
+            cls: "drag-date-icon"
+        },{
             text: BI.i18nText("BI-Date_Range_Control"),
             title: BI.i18nText("BI-Date_Range_Control"),
             value: BICst.WIDGET.DATE,
-            cls: "drag-date-icon"
+            cls: "drag-date-range-icon"
         }]
 }, {
     text: BI.i18nText("BI-General_Query"),
