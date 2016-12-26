@@ -26,7 +26,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Iterator;
 
 /**
  * Created by 小灰灰 on 2016/1/14.
@@ -121,14 +120,11 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     @Override
     public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
         T value = detail.get(row);
-        Iterator it = ((CubeTreeMap) getter).keySet().iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            Object o = it.next();
-            if (o.equals(value)) {
+        for (int i = 0; i < getter.sizeOfGroup(); i++) {
+            GroupValueIndex groupValueIndex = getter.getGroupValueIndex(i);
+            if (groupValueIndex.hasSameValue(getter.getIndex(value))) {
                 return i;
             }
-            i++;
         }
         return 0;
     }
