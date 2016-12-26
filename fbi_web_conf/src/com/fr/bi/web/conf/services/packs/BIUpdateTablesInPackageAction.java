@@ -24,6 +24,8 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
+import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.exception.BIRuntimeException;
 import com.fr.bi.stable.constant.DBConstant;
@@ -67,6 +69,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             BICubeConfigureCenter.getAliasManager().persistData(userId);
             BICubeConfigureCenter.getDataSourceManager().persistData(userId);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+            BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
@@ -103,6 +106,47 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         oldTables.addAll(pack.getBusinessTables());
         pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO, tableDataJO));
 
+        saveTables(packageName, userId, tableIdsJO, tableDataJO, pack);
+        updateAnalysisTables();
+        saveTranslations(translationsJO, userId);
+        saveRelations(relationsJO, userId);
+        saveExcelView(excelViewJO, userId);
+        saveUpdateSetting(updateSettingJO, userId);
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+        //实时生成excel cube
+        updateExcelTables(userId, getExcelTable(oldTables, pack.getBusinessTables()));
+
+        BIBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {//单独的线程写业务包配置文件，web端立即返回
+            @Override
+            public void work() {
+                writeResource(userId);
+            }
+        });
+    }
+
+    private void updateAnalysisTables() {
+        try {
+            for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
+                CubeTableSource oriSource = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(table);
+                BusinessTable businessTable = getAnyTableWithSource(oriSource);
+                AnalysisCubeTableSource baseSource = (AnalysisCubeTableSource) businessTable.getTableSource();
+                baseSource.refreshWidget();
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+    }
+
+    private BusinessTable getAnyTableWithSource(CubeTableSource source) {
+        for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
+            if (ComparatorUtils.equals(table.getTableSource().getSourceID(), source.getSourceID())) {
+                return table;
+            }
+        }
+        return null;
+    }
+
+    private void saveTables(String packageName, long userId, JSONArray tableIdsJO, JSONObject tableDataJO, BIBusinessPackage pack) throws Exception {
         for (int i = 0; i < tableIdsJO.length(); i++) {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
             JSONObject tableJson = tableDataJO.optJSONObject(tableId);
@@ -144,22 +188,6 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 BILoggerFactory.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }
         }
-
-        saveTranslations(translationsJO, userId);
-        saveRelations(relationsJO, userId);
-        saveExcelView(excelViewJO, userId);
-        saveUpdateSetting(updateSettingJO, userId);
-        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-
-        //实时生成excel cube
-        updateExcelTables(userId, getExcelTable(oldTables, pack.getBusinessTables()));
-
-        BIBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {//单独的线程写业务包配置文件，web端立即返回
-            @Override
-            public void work() {
-                writeResource(userId);
-            }
-        });
     }
 
     private boolean reuseTableSource(CubeTableSource tableSource) {
