@@ -126,6 +126,9 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.GIS_MAP:
                 type = "bi.gis_map_regions_manager";
                 break;
+            case BICst.WIDGET.RECT_TREE:
+                type = "bi.rect_tree_regions_manager";
+                break;
             case BICst.WIDGET.DASHBOARD:
                 type = "bi.dashboard_regions_manager";
                 break;

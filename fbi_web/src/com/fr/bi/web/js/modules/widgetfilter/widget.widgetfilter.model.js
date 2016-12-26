@@ -230,6 +230,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.YEAR:
                 return widgetValue;
             case BICst.WIDGET.YMD:
+            case BICst.WIDGET.DATE_PANE:
                 if (BI.isNotNull(widgetValue)) {
                     var date = this._parseComplexDate(widgetValue);
                     text = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";

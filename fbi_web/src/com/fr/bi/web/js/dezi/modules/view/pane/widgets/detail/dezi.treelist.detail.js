@@ -245,6 +245,7 @@ BIDezi.TreeListDetailView=BI.inherit(BI.View,{
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();
+            this.treeList.populate();
         }
     },
 
@@ -258,7 +259,6 @@ BIDezi.TreeListDetailView=BI.inherit(BI.View,{
         }
         if (BI.has(changed, "value")) {
             this.treeList.populate();
-            // this.combo.setValue(this.model.get("value"))
         }
         if (BI.has(changed, "dimensions")) {
             this._checkDataBind();
@@ -290,6 +290,5 @@ BIDezi.TreeListDetailView=BI.inherit(BI.View,{
         this.dimensionsManager.populate();
         this._checkDataBind();
         this.treeList.populate();
-        // this.combo.setValue(this.model.get("value"));
     }
 });

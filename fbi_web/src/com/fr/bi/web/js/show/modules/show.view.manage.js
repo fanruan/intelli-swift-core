@@ -132,6 +132,9 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.YMD:
                 view = "BIShow.DateWidgetView";
                 break;
+            case BICst.WIDGET.DATE_PANE:
+                view = "BIShow.DatePaneView";
+                break;
             case BICst.WIDGET.TREE:
                 view = "BIShow.TreeWidgetView";
                 break;

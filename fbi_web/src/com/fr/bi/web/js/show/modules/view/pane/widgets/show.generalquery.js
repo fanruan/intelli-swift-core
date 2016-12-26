@@ -19,6 +19,11 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
+
+        //全局样式
+        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
+            self._refreshGlobalStyle(globalStyle);
+        });
     },
 
     _render: function (vessel) {
@@ -130,6 +135,18 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
         resetValue(value);
         this.model.set("value", value);
         this.refresh();
+    },
+
+    _refreshGlobalStyle: function () {
+        this._refreshTitlePosition();
+    },
+
+    _refreshTitlePosition: function () {
+        var pos = BI.Utils.getGSNamePos();
+        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
+            "dashboard-title-center" : "dashboard-title-left";
+        this.title.element.removeClass("dashboard-title-left")
+            .removeClass("dashboard-title-center").addClass(cls);
     },
 
     change: function () {

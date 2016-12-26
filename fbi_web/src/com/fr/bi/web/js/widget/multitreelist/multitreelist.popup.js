@@ -45,4 +45,4 @@ BI.MultiStringListPopup=BI.inherit(BI.Widget,{
 });
 BI.MultiStringListPopup.EVENT_AFTER_INIT="BI.MultiStringListPopup.EVENT_AFTER_INIT";
 BI.MultiStringListPopup.EVENT_CHANGE="BI.MultiStringListPopup.EVENT_CHANGE";
-$.shortcut("bi.multi_string_list_popup",BI.MultiStringListPopup);
+$.shortcut("bi.multi_tree_list_popup",BI.MultiStringListPopup);
