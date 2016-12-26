@@ -23,13 +23,13 @@ import java.util.List;
 /**
  * Created by 小灰灰 on 2015/12/11.
  */
-public class AnalysisBusinessTable extends BIBusinessTable {
+public class AnalysisBusiTable extends BIBusinessTable {
 
     private String describe;
     private String name;
     private long userId;
 
-    public AnalysisBusinessTable(String id, long userId) {
+    public AnalysisBusiTable(String id, long userId) {
         super(id, "");
         this.userId = userId;
     }
