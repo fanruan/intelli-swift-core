@@ -1731,7 +1731,7 @@ BICst.INIT_CHART_MAP[BICst.WIDGET.SCATTER] = {type: "bi.scatter_chart", events: 
 BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_PIE] = {type: "bi.multi_pie_chart", events: [BI.MultiPieChart.EVENT_CHANGE]};
-BICst.INIT_CHART_MAP[BICst.WIDGET.RECT_TREE] = {type: "bi.rect_tree_chart", events: [BI.RectTree.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.RECT_TREE] = {type: "bi.rect_tree_chart", events: [BI.RectTreeChart.EVENT_CHANGE]};
 
 BICst.WIDGET_ICON_CLS_MAP = {};
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.TABLE] = "drag-group-icon";
