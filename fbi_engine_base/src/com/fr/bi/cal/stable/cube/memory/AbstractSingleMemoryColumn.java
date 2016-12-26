@@ -22,10 +22,7 @@ import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.stable.StringUtils;
 import com.fr.stable.collections.array.IntArray;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2016/1/14.
@@ -120,7 +117,17 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     @Override
     public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
-        return 0;
+        T value = detail.get(row);
+        Iterator it = ((CubeTreeMap) getter).keySet().iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            Object o = it.next();
+            if (o.equals(value)) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
 
 
