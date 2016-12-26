@@ -34,8 +34,8 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         String newId = WebUtils.getHTTPRequestParameter(req, "new_id");
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
         String describe = WebUtils.getHTTPRequestParameter(req, "describe");
-        AnalysisBusiTable table = null;
-        CubeTableSource source = null;
+        AnalysisBusiTable table;
+        CubeTableSource source;
         if (StringUtils.isEmpty(newId)) {
             table = new AnalysisBusiTable(tableId, userId);
             table.setDescribe(describe);
@@ -45,22 +45,21 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
             BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
             source = AnalysisETLSourceFactory.createTableSource(items, userId);
             table.setSource(source);
+            BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
         } else {
             table = new AnalysisBusiTable(newId, userId);
             BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(newId, tableName, userId);
             AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
             source = oldTable.getSource();
-            JSONArray jsonArray = new JSONArray();
-            jsonArray.put(source.createJSON());
-            AnalysisCubeTableSource newSource = AnalysisETLSourceFactory.createTableSource(jsonArray, userId);
+            AnalysisCubeTableSource newSource= (AnalysisCubeTableSource) source.clone();
             table.setSource(newSource);
             table.setDescribe(oldTable.getDescribe());
+            BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, newSource);
         }
         BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
         BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("The added table is: " + logTable(table));
         BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
-        BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
         refreshTables(userId);
         try {
             BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));

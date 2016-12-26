@@ -341,20 +341,6 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof AbstractTableSource && ComparatorUtils.equals(fetchObjectCore(), ((AbstractTableSource) (obj)).fetchObjectCore());
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + fetchObjectCore().hashCode();
-        return result;
-    }
-
-    @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();
@@ -425,7 +411,17 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CubeTableSource that = (CubeTableSource) o;
+        return ComparatorUtils.equals(that.getSourceID(),this.getSourceID());
+
+    }
+
+    @Override
     public boolean hasAbsentFields() {
         return false;
     }
+
 }

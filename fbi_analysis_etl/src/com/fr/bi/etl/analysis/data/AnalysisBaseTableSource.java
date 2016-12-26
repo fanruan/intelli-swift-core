@@ -18,14 +18,12 @@ import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.sql.Types;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -42,6 +40,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     protected List<AnalysisETLSourceField> fieldList;
     protected String name;
     protected String widgetTableId;
+    protected String analysisSourceId;
 
     public BIWidget getWidget() {
         return widget;
@@ -54,6 +53,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         this.fieldList = fieldList;
         this.name = name;
         this.widgetTableId = widgetTableId;
+        analysisSourceId = UUID.randomUUID().toString();
     }
 
 
@@ -240,4 +240,21 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         widget.refreshSources();
     }
 
+    @Override
+    public Object clone() {
+        return new AnalysisBaseTableSource(widget, etlType, fieldList, name, widgetTableId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AnalysisBaseTableSource that = (AnalysisBaseTableSource) o;
+        return ComparatorUtils.equals(that.getAnalysisSourceId(), analysisSourceId);
+    }
+
+    public String getAnalysisSourceId() {
+        return analysisSourceId;
+    }
 }
