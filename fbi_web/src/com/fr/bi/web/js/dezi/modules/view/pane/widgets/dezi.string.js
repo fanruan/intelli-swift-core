@@ -8,7 +8,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         TOOL_ICON_WIDTH: 20,
         TOOL_ICON_HEIGHT: 20
     },
-    
+
     _defaultConfig: function () {
         return BI.extend(BIDezi.StringWidgetView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget bi-control-widget"
@@ -22,10 +22,6 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
             self._resetValue();
         });
 
-        //全局样式
-        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
-            self._refreshGlobalStyle(globalStyle);
-        });
     },
 
 
