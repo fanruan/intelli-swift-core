@@ -346,6 +346,16 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
         });
 
+        this.clickZoom = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Click_Zoom"),
+            width: 150
+        });
+
+        this.clickZoom.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RectTreeChartSetting.EVENT_CHANGE)
+        });
+
         var otherAttr = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
@@ -354,7 +364,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Interactive_Attr"),
                     cls: "line-title"
-                }, this.transferFilter]
+                }, this.transferFilter, this.clickZoom]
             },
             height: constant.SINGLE_LINE_HEIGHT,
             lhgap: constant.SIMPLE_H_GAP
@@ -388,6 +398,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+        this.clickZoom.setSelected(BI.Utils.getWSChartClickZoomByID(wId));
     },
 
     getValue: function () {
@@ -408,6 +419,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             dataLabelSetting: this.dataLabelSetting.getValue(),
 
             transferFilter: this.transferFilter.isSelected(),
+            clickZoom: this.clickZoom.isSelected()
         }
     }
 });

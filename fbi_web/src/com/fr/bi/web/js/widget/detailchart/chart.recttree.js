@@ -85,10 +85,11 @@ BI.RectTreeChart = BI.inherit(BI.AbstractChart, {
         return items;
     },
 
-    _formatItems: function (items) {
+    _formatItems: function (items, options) {
         var self = this;
         BI.each(items, function (idx, item) {
             BI.each(item, function (id, it) {
+                it.zoom = options.clickZoom;
                 BI.each(it.data, function (i, da) {
                     da.y = self.formatXYDataWithMagnify(da.y, 1);
                     da.name = da.x;
@@ -117,7 +118,7 @@ BI.RectTreeChart = BI.inherit(BI.AbstractChart, {
             types.push(type);
         });
 
-        this.combineChart.populate(this._formatItems(items), types);
+        this.combineChart.populate(this._formatItems(items, options), types);
     },
 
     resize: function () {

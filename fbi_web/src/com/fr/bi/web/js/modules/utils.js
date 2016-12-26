@@ -903,6 +903,12 @@
                 BICst.DEFAULT_CHART_SETTING.transferFilter;
         },
 
+        getWSChartClickZoomByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.clickZoom) ? ws.clickZoom :
+                BICst.DEFAULT_CHART_SETTING.clickZoom;
+        },
+
         getWSShowNameByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.showName) ? ws.showName :

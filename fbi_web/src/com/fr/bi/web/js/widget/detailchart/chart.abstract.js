@@ -691,6 +691,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                             fontSize: options.dataLabelSetting.textStyle.fontSize + 'px'
                     })
             }) : c.DATA_SETTING_STYLE,
+            clickZoom: options.clickZoom ? options.clickZoom : true
         }
     },
 

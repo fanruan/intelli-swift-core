@@ -266,6 +266,16 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RectTreeChartSetting.EVENT_CHANGE)
         });
 
+        this.clickZoom = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Click_Zoom"),
+            width: 150
+        });
+
+        this.clickZoom.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RectTreeChartSetting.EVENT_CHANGE)
+        });
+
         this.otherAttr = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
@@ -274,37 +284,11 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Interactive_Attr"),
                     cls: "line-title"
-                }, this.transferFilter/*, this.linkageSelection*/]
+                }, this.transferFilter/*, this.linkageSelection*/, this.clickZoom]
             },
             height: constant.SINGLE_LINE_HEIGHT,
             lhgap: constant.SIMPLE_H_GAP
         });
-
-        //极简模式
-        // this.miniModel = BI.createWidget({
-        //     type: "bi.multi_select_item",
-        //     value: BI.i18nText("BI-Minimalist_Model"),
-        //     width: 170
-        // });
-        //
-        // this.miniModel.on(BI.Controller.EVENT_CHANGE, function () {
-        //     self._invisible(!this.isSelected());
-        //     self.fireEvent(BI.RectTreeChartSetting.EVENT_CHANGE)
-        // });
-        //
-        // var modelChange = BI.createWidget({
-        //     type: "bi.left_right_vertical_adapt",
-        //     cls: "single-line-settings",
-        //     items: {
-        //         left: [{
-        //             type: "bi.label",
-        //             text: BI.i18nText("BI-Mode_Change"),
-        //             cls: "line-title"
-        //         }, this.miniModel]
-        //     },
-        //     height: constant.SINGLE_LINE_HEIGHT,
-        //     lhgap: constant.SIMPLE_H_GAP
-        // });
 
         BI.createWidget({
             type: "bi.vertical",
@@ -340,6 +324,7 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+        this.clickZoom.setSelected(BI.Utils.getWSChartClickZoomByID(wId));
 
         //this.miniModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
@@ -364,6 +349,7 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
             //miniModel: this.miniModel.isSelected(),
 
             transferFilter: this.transferFilter.isSelected(),
+            clickZoom: this.clickZoom.isSelected()
         }
     }
 });

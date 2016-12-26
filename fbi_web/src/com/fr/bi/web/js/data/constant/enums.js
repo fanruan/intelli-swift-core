@@ -469,6 +469,7 @@ BICst.DEFAULT_CHART_SETTING = {
     freeze_dim: true,
     freezeFirstColumn: false,
     transferFilter: true,
+    clickZoom: true,
     showName: true,
     name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
 
