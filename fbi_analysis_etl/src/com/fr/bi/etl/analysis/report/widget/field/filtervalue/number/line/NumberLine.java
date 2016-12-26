@@ -1,6 +1,7 @@
 package com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
@@ -12,6 +13,7 @@ public class NumberLine implements CalLineGetter {
         this.value = value;
     }
 
+    @BICoreField
     private Double value;
     @Override
     public Double getCalLine(ICubeTableService ti, BIKey key, GroupValueIndex gvi) {
