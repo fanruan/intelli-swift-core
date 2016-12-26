@@ -67,17 +67,17 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	//页面加载完成后加载Portal
-	$(document).ready(function () {
+	$(function () {
 	    var el = $("<div>");
 	    $("body").append(el);
 	    _reactDom2.default.render(_react2.default.createElement(_base.Portal, null), el[0]);
 	});
 
-	BI.TableReact = BI.inherit(BI.Widget, {
+	BI.TableComponent = BI.inherit(BI.Widget, {
 
 	    _defaultConfig: function _defaultConfig() {
-	        return BI.extend(BI.TableReact.superclass._defaultConfig.apply(this, arguments), {
-	            baseCls: "bi-table-react",
+	        return BI.extend(BI.TableComponent.superclass._defaultConfig.apply(this, arguments), {
+	            baseCls: "bi-table-component",
 
 	            isNeedResize: true,
 
@@ -98,7 +98,7 @@
 	    },
 
 	    _init: function _init() {
-	        BI.TableReact.superclass._init.apply(this, arguments);
+	        BI.TableComponent.superclass._init.apply(this, arguments);
 	        var self = this,
 	            o = this.options;
 	        BI.Resizers.add(this.getName(), function () {
@@ -169,7 +169,132 @@
 
 	    destroy: function destroy() {}
 	});
-	$.shortcut('bi.table_react', BI.TableReact);
+	$.shortcut('bi.table_component', BI.TableComponent);
+
+	BI.SummaryTableComponent = BI.inherit(BI.Widget, {
+
+	    _defaultConfig: function _defaultConfig() {
+	        return BI.extend(BI.SummaryTableComponent.superclass._defaultConfig.apply(this, arguments), {
+	            baseCls: "bi-summary-table-component",
+
+	            isNeedResize: true,
+
+	            isNeedFreeze: false, //是否需要冻结单元格
+	            freezeCols: [], //冻结的列号,从0开始,isNeedFreeze为true时生效
+
+	            columnSize: [],
+	            minColumnSize: [],
+	            maxColumnSize: [],
+	            headerRowSize: 25,
+	            rowSize: 25,
+
+	            regionColumnSize: [],
+
+	            header: [],
+	            items: [], //二维数组
+	            crossHeader: [],
+	            crossItems: []
+	        });
+	    },
+
+	    _init: function _init() {
+	        BI.SummaryTableComponent.superclass._init.apply(this, arguments);
+	        var self = this,
+	            o = this.options;
+	        BI.Resizers.add(this.getName(), function () {
+	            self.resize();
+	        });
+	    },
+
+	    _render: function _render() {
+	        var _options2 = this.options,
+	            header = _options2.header,
+	            items = _options2.items,
+	            crossHeader = _options2.crossHeader,
+	            crossItems = _options2.crossItems,
+	            regionColumnSize = _options2.regionColumnSize,
+	            isNeedFreeze = _options2.isNeedFreeze,
+	            isNeedResize = _options2.isNeedResize,
+	            freezeCols = _options2.freezeCols,
+	            mergeCols = _options2.mergeCols,
+	            styleType = _options2.styleType,
+	            color = _options2.color,
+	            columnSize = _options2.columnSize,
+	            onColumnResizeEnd = _options2.onColumnResizeEnd,
+	            onRegionColumnResizeEnd = _options2.onRegionColumnResizeEnd,
+	            showSequence = _options2.showSequence,
+	            tableStyle = _options2.tableStyle,
+	            vCurr = _options2.vCurr,
+	            hCurr = _options2.hCurr,
+	            hasVNext = _options2.hasVNext,
+	            hasHNext = _options2.hasHNext,
+	            onVPrev = _options2.onVPrev,
+	            onVNext = _options2.onVNext,
+	            onHPrev = _options2.onHPrev,
+	            onHNext = _options2.onHNext;
+
+	        var Component = void 0;
+	        switch (tableStyle) {
+	            case BICst.TABLE_FORM.OPEN_COL:
+	                Component = _components.LevelTableComponent;
+	                break;
+	            case BICst.TABLE_FORM.OPEN_ROW:
+	                Component = _components.SummaryTableComponent;
+	                break;
+	            default:
+	                Component = _components.SummaryTableComponent;
+	                break;
+	        }
+	        _reactDom2.default.render(_react2.default.createElement(Component, {
+	            styleType: styleType,
+	            color: color,
+	            regionColumnSize: regionColumnSize || [],
+	            isNeedFreeze: isNeedFreeze,
+	            isNeedResize: isNeedResize,
+	            freezeCols: freezeCols,
+	            mergeCols: mergeCols,
+	            header: header,
+	            items: items,
+	            crossHeader: crossHeader,
+	            crossItems: crossItems,
+	            columnSize: columnSize,
+	            width: this.element.width(),
+	            height: this.element.height(),
+	            onColumnResizeEnd: onColumnResizeEnd,
+	            onRegionColumnResizeEnd: onRegionColumnResizeEnd,
+	            showSequence: showSequence,
+	            vCurr: vCurr,
+	            hCurr: hCurr,
+	            hasVNext: hasVNext,
+	            hasHNext: hasHNext,
+	            onVPrev: onVPrev,
+	            onVNext: onVNext,
+	            onHPrev: onHPrev,
+	            onHNext: onHNext
+	        }), this.element[0]);
+	    },
+
+
+	    resize: function resize() {
+	        if (this.element.is(":visible")) {
+	            this._render();
+	        }
+	    },
+
+	    populate: function populate(opt) {
+	        var _this2 = this;
+
+	        BI.nextTick(function () {
+	            _this2.options = _extends({}, _this2.options, opt);
+	            if (_this2.element.is(":visible")) {
+	                _this2._render();
+	            }
+	        });
+	    },
+
+	    destroy: function destroy() {}
+	});
+	$.shortcut('bi.summary_table_component', BI.SummaryTableComponent);
 
 /***/ },
 /* 1 */,
@@ -48343,6 +48468,8 @@
 	                    style: _extends({
 	                        position: 'relative',
 	                        overflow: 'auto',
+	                        overflowX: 'auto',
+	                        overflowY: 'auto',
 	                        WebkitOverflowScrolling: 'touch',
 
 	                        WillChange: 'transform'
@@ -51802,11 +51929,14 @@
 	                            var _isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
 	                            if (_isNeedMergeCol && _isNeedMergeRow) {
 	                                mergeRow(i, j); //优先合并列
-	                            } else if (_isNeedMergeCol) {
+	                            }
+	                            if (_isNeedMergeCol) {
 	                                mergeCol(i, j);
-	                            } else if (_isNeedMergeRow) {
+	                            }
+	                            if (_isNeedMergeRow) {
 	                                mergeRow(i, j);
-	                            } else if (!_isNeedMergeCol && !_isNeedMergeRow) {
+	                            }
+	                            if (!_isNeedMergeCol && !_isNeedMergeRow) {
 	                                createOneEl(i, j);
 	                            }
 	                        }
@@ -52238,12 +52368,30 @@
 	            return this.state.bottomRightItems[index];
 	        }
 	    }, {
+	        key: '_bottomRightCellStyleGetter',
+	        value: function _bottomRightCellStyleGetter(_ref12) {
+	            var columnIndex = _ref12.columnIndex,
+	                rowIndex = _ref12.rowIndex;
+
+	            var style = {
+	                borderRight: '1px solid #eaeaea',
+	                borderBottom: '1px solid #eaeaea'
+	            };
+	            if (columnIndex === 0) {
+	                style.borderLeft = '1px solid #eaeaea';
+	            }
+	            if (rowIndex === 0) {
+	                style.borderTop = '1px solid #eaeaea';
+	            }
+	            return style;
+	        }
+	    }, {
 	        key: '_bottomRightOnScroll',
-	        value: function _bottomRightOnScroll(_ref12) {
+	        value: function _bottomRightOnScroll(_ref13) {
 	            var _this5 = this;
 
-	            var scrollLeft = _ref12.scrollLeft,
-	                scrollTop = _ref12.scrollTop;
+	            var scrollLeft = _ref13.scrollLeft,
+	                scrollTop = _ref13.scrollTop;
 
 	            this.setState({
 	                rightScrollLeft: scrollLeft,
@@ -54175,8 +54323,10 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 	var MERGE_RULE = function MERGE_RULE(col1, col2) {
+	    if (col1.tag && col2.tag) {
+	        return col1.tag === col2.tag;
+	    }
 	    return col1 === col2;
-	    // return isEqual(col1.text, col2.text);
 	};
 
 	var SummaryTableComponent = function (_Component) {
@@ -54206,6 +54356,9 @@
 
 	            var freezeCols = props.freezeCols;
 	            var columnSize = props.columnSize.slice();
+	            if (columnSize.length > minColumnSize.length) {
+	                columnSize = columnSize.splice(columnSize.length - minColumnSize.length);
+	            }
 	            if (freezeCols.length >= columnSize.length) {
 	                freezeCols = [];
 	            }
@@ -54385,6 +54538,7 @@
 	    columnSize: [],
 	    isNeedFreeze: true,
 	    freezeCols: [],
+	    mergeCols: [],
 	    header: [],
 	    items: [],
 	    crossHeader: [],
@@ -54398,7 +54552,6 @@
 	    hCurr: 1,
 	    hasVNext: _core.emptyFunction,
 	    hasHNext: _core.emptyFunction,
-	    label: '',
 	    onVPrev: _core.emptyFunction,
 	    onVNext: _core.emptyFunction,
 	    onHPrev: _core.emptyFunction,
@@ -55782,7 +55935,7 @@
 	        value: function getNumbersByScrollTop(scrollTop) {
 	            var result = [];
 	            var index = this.intervalTree.greatestLowerBound(scrollTop);
-	            var offsetTop = scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0);
+	            var offsetTop = -(scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0));
 	            var height = 0;
 	            while (height < this.height && index < this.numbers.length) {
 	                result.push({
@@ -56122,6 +56275,7 @@
 	    columnSize: [],
 	    isNeedFreeze: true,
 	    freezeCols: [],
+	    mergeCols: [],
 	    header: [],
 	    items: [],
 	    crossHeader: [],
@@ -56135,7 +56289,6 @@
 	    hCurr: 1,
 	    hasVNext: _core.emptyFunction,
 	    hasHNext: _core.emptyFunction,
-	    label: '',
 	    onVPrev: _core.emptyFunction,
 	    onVNext: _core.emptyFunction,
 	    onHPrev: _core.emptyFunction,
