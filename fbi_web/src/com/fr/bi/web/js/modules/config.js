@@ -201,7 +201,18 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Pie_Chart"),
     title: BI.i18nText("BI-Pie_Chart"),
     value: BICst.WIDGET.PIE,
-    cls: "drag-pie-icon"
+    cls: "drag-pie-icon",
+    children: [{
+        text: BI.i18nText("BI-Pie_Chart"),
+        title: BI.i18nText("BI-Pie_Chart"),
+        value: BICst.WIDGET.PIE,
+        cls: "drag-pie-icon",
+    }, {
+        text: BI.i18nText("BI-Multi_Pie_Chart"),
+        title: BI.i18nText("BI-Multi_Pie_Chart"),
+        value: BICst.WIDGET.MULTI_PIE,
+        cls: "drag-multi-pie-icon",
+    }]
 }, {
     text: BI.i18nText("BI-Donut_Chart"),
     title: BI.i18nText("BI-Donut_Chart"),
@@ -259,6 +270,11 @@ BICst.DASHBOARD_WIDGETS = [[{
     title: BI.i18nText("BI-Scatter"),
     value: BICst.WIDGET.SCATTER,
     cls: "drag-scatter-icon"
+}, {
+    text: BI.i18nText("BI-Rect_Tree_Chart"),
+    title: BI.i18nText("BI-Rect_Tree_Chart"),
+    value: BICst.WIDGET.RECT_TREE,
+    cls: "drag-rect-tree-icon"
 }], [{
     text: BI.i18nText("BI-Detail_Table"),
     title: BI.i18nText("BI-Detail_Table"),
@@ -348,7 +364,7 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Date_Control"),
     title: BI.i18nText("BI-Date_Control"),
     value: BICst.WIDGET.DATE,
-    cls: "drag-date-icon",
+    cls: "drag-date-range-icon",
     children: [
         {
             text: BI.i18nText("BI-Year_Control"),
@@ -371,10 +387,15 @@ BICst.DASHBOARD_WIDGETS = [[{
             value: BICst.WIDGET.YMD,
             cls: "drag-ymd-icon"
         }, {
+            text: BI.i18nText("BI-Date_Pane_Control"),
+            title: BI.i18nText("BI-Date_Pane_Control"),
+            value: BICst.WIDGET.DATE_PANE,
+            cls: "drag-date-icon"
+        },{
             text: BI.i18nText("BI-Date_Range_Control"),
             title: BI.i18nText("BI-Date_Range_Control"),
             value: BICst.WIDGET.DATE,
-            cls: "drag-date-icon"
+            cls: "drag-date-range-icon"
         }]
 }, {
     text: BI.i18nText("BI-General_Query"),
@@ -1169,6 +1190,15 @@ BICst.AXIS_STYLE_GROUP = [{
     value: BICst.CHART_STYLE.STYLE_GRADUAL
 }];
 
+//多层饼图的层级渐变
+BICst.MULTI_PIE_GRADIENT_STYLE_GROUP = [{
+    cls: "multi-pie-gradient-lighter-icon",
+    value: BICst.MULTI_PIE_GRADIENT_STYLE.LIGHTER
+}, {
+    cls: "multi-pie-gradient-darker-icon",
+    value: BICst.MULTI_PIE_GRADIENT_STYLE.DARKER
+}]
+
 //折线图和面积图线形
 BICst.LINE_CHART_STYLE_GROUP = [{
     cls: "line-chart-style-broken-icon",
@@ -1706,7 +1736,7 @@ BICst.INIT_CHART_MAP[BICst.WIDGET.SCATTER] = {type: "bi.scatter_chart", events: 
 BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_PIE] = {type: "bi.multi_pie_chart", events: [BI.MultiPieChart.EVENT_CHANGE]};
-BICst.INIT_CHART_MAP[BICst.WIDGET.RECT_TREE] = {type: "bi.rect_tree_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.RECT_TREE] = {type: "bi.rect_tree_chart", events: [BI.RectTreeChart.EVENT_CHANGE]};
 
 BICst.WIDGET_ICON_CLS_MAP = {};
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.TABLE] = "drag-group-icon";

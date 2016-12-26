@@ -310,7 +310,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     },
 
     _refreshTabs: function () {
-        if (BI.isEmptyArray(this.model.getTables())) {
+        if (BI.size(this.model.getTables()) === 0) {
             this.centerTab.setSelect(this._constant.SHOW_TIP);
         } else {
             this.centerTab.setSelect(this._constant.SHOW_TABLE);

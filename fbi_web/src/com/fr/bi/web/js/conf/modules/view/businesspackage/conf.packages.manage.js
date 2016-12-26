@@ -30,9 +30,6 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
             type: "bi.business_package_manage"
         });
 
-        // this.groupPane.on(BI.BusinessPackageManage.EVENT_BATCH_GROUP, function () {
-        //     self.addSubVessel("packageManagePane", vessel, {isLayer: true}).skipTo("packageManagePane", "packageManagePane");
-        // });
         this.groupPane.on(BI.BusinessPackageManage.EVENT_BATCH_GROUP, function () {
             if (BI.isNull(self.packageManagePane)) {
                 self.packageManagePane = BI.createWidget({
@@ -70,6 +67,16 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
             BI.Layers.remove(self.constants.ONE_PACKAGE_LAYER);
             var id = BI.UUID();
             var name = BI.Func.createDistinctName(self.model.get("packages"), BI.i18nText(BICst.PACKAGE));
+            //立刻添加到sharing pool中
+            if (BI.isNotNull(groupID) && BI.isNotEmptyString(groupID)) {
+
+            }
+            var packages = Data.SharingPool.cat("packages");
+            packages[id] = {
+                id: id,
+                tables: [],
+                name: name
+            };
             var onePackage = BI.createWidget({
                 type: "bi.one_package",
                 element: BI.Layers.create(self.constants.ONE_PACKAGE_LAYER),
@@ -203,17 +210,6 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
                     });
                     self.refresh();
                 }
-            });
-            return true;
-        }
-
-
-        if (this.model.has("newPack")) {
-            var newPack = this.model.get("newPack");
-            this.addSubVessel("onePackage", "body", {isLayer: true}).skipTo("group/" + newPack.id, "onePackage", "packages." + newPack.id, {}, {
-                action: new BI.EffectShowAction({
-                    src: self.element
-                })
             });
             return true;
         }

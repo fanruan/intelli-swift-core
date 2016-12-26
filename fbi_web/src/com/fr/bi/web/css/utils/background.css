@@ -150,6 +150,20 @@
   background-color: #ffffff;
   z-index: 2;
 }
+.multi-pie-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/multi_pie.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/multi_pie.png');
+  _background: none;
+  background-color: #ffffff;
+  z-index: 2;
+}
+.rect-tree-tip-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/rect_tree.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/rect_tree.png');
+  _background: none;
+  background-color: #ffffff;
+  z-index: 2;
+}
 .radar-tip-background {
   background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/radar.png') no-repeat center center;
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/radar.png');

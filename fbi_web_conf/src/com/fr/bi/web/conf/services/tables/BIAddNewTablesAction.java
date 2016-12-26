@@ -50,6 +50,7 @@ public class BIAddNewTablesAction extends AbstractBIConfigureAction {
 
         JSONArray relations = readRelation(newDBSourceMap, oldDBSourceMap, allFieldIdMap);
         BIReadRelationTranslationUtils.saveRelation(userId, relations, null);
+        BIReadRelationTranslationUtils.saveRelation(userId, new JSONArray(exRelations), null);
 
         JSONObject translations = BIReadRelationTranslationUtils.readTranslation(newDBSourceMap, allFieldIdMap);
         saveNewTranslation(userId, translations, exTranslations);
@@ -148,6 +149,13 @@ public class BIAddNewTablesAction extends AbstractBIConfigureAction {
         return map;
     }
 
+    /**
+     * 保存转义
+     * @param userId
+     * @param translationJO
+     * @param exTranslations
+     * @throws Exception
+     */
     private void saveNewTranslation(long userId, JSONObject translationJO, String exTranslations) throws Exception {
         JSONObject tableTranJO = translationJO.getJSONObject(BIJSONConstant.JSON_KEYS.TABLE);
         JSONObject fieldTranJO = translationJO.getJSONObject(BIJSONConstant.JSON_KEYS.FIELD);

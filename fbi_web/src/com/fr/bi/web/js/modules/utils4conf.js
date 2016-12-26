@@ -182,7 +182,11 @@ BI.extend(BI.Utils, {
     },
 
     // 保存关联
-    saveRelations4Conf: function (nreRelations) {
+    saveRelations4Conf: function (nreRelations, fieldId) {
+        //先删除已存在的
+        if (BI.isNotNull(fieldId)) {
+            this.removeRelationByFieldId4Conf(fieldId);
+        }
         var relations = Data.SharingPool.cat("relations");
         var nConn = nreRelations.connectionSet, nPKMap = nreRelations.primKeyMap, nFKMap = nreRelations.foreignKeyMap;
         var connectionSet = relations.connectionSet,
@@ -192,7 +196,7 @@ BI.extend(BI.Utils, {
             connectionSet.push((conn));
         });
         BI.extend(primKeyMap, nPKMap);
-        BI.extend(foreignKeyMap, foreignKeyMap);
+        BI.extend(foreignKeyMap, nFKMap);
     },
 
     //获取关联字段
@@ -496,8 +500,8 @@ BI.extend(BI.Utils, {
         return BI.keys(Data.SharingPool.cat("groups"));
     },
 
-    getConfGroupNameByGroupId: function (gid) {
-        var groups = Data.SharingPool.get("groups");
+    getGroupNameById4Conf: function (gid) {
+        var groups = Data.SharingPool.cat("groups");
         if (BI.isNotNull(groups[gid])) {
             return groups[gid].name;
         }
@@ -625,7 +629,7 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
-    updateRelation4Conf: function(data, callback, complete) {
+    updateRelation4Conf: function (data, callback, complete) {
         Data.Req.reqUpdateRelation(data, function (res) {
             callback(res);
         }, complete)
@@ -715,8 +719,8 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
-    getSimpleTablesByPackId: function (packId, callback, complete) {
-        BIReq.reqSimpleTablesByPackId(packId, function (res) {
+    getSimpleTablesByPackId: function (data, callback, complete) {
+        BIReq.reqSimpleTablesByPackId(data, function (res) {
             callback(res);
         }, complete);
     },

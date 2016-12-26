@@ -1,7 +1,7 @@
 /**
  * Created by zcf on 2016/12/21.
  */
-BIDezi.TreeListView=BI.inherit(BI.View,{
+BIDezi.TreeListView = BI.inherit(BI.View, {
 
     _constants: {
         TOOL_ICON_WIDTH: 20,
@@ -14,7 +14,7 @@ BIDezi.TreeListView=BI.inherit(BI.View,{
         })
     },
 
-    _init: function (){
+    _init: function () {
         BIDezi.TreeListView.superclass._init.apply(this, arguments);
 
         var self = this;
@@ -23,6 +23,7 @@ BIDezi.TreeListView=BI.inherit(BI.View,{
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function () {
+            // self.treeList.setValue(self.model.get("value"));
             self.treeList.populate();
         });
 
@@ -61,8 +62,8 @@ BIDezi.TreeListView=BI.inherit(BI.View,{
                 el: this.treeList,
                 top: 10,
                 right: 10,
-                left:10,
-                bottom:10
+                left: 10,
+                bottom: 10
             }]
         });
         this.widget.element.hover(function () {
@@ -120,10 +121,10 @@ BIDezi.TreeListView=BI.inherit(BI.View,{
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT,
-            title: function(){
-                if(BI.size(self.model.get("dimensions")) > 0){
+            title: function () {
+                if (BI.size(self.model.get("dimensions")) > 0) {
                     return BI.i18nText("BI-Detailed_Setting");
-                }else{
+                } else {
                     return BI.i18nText("BI-Please_Do_Detail_Setting");
                 }
             },
@@ -243,21 +244,22 @@ BIDezi.TreeListView=BI.inherit(BI.View,{
         }
         if (BI.has(changed, "bounds")) {
             this._refreshLayout();
+            this.treeList.resize();
         }
 
         if (BI.has(changed, "value")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(true, this.model.get("id"));
         }
-        if(BI.has(changed, "dimensions")){
+        if (BI.has(changed, "dimensions")) {
             this._checkDataBind();
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },
 
     _checkDataBind: function () {
-        if(BI.size(this.model.get("dimensions")) > 0){
+        if (BI.size(this.model.get("dimensions")) > 0) {
             this.treeList.setEnable(true);
-        }else{
+        } else {
             this.treeList.setEnable(false);
         }
     },

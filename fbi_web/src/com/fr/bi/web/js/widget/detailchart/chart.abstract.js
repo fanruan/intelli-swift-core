@@ -596,6 +596,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             radarChartType: options.radarChartType || c.NORMAL,
             dashboardChartType: options.dashboardChartType || c.NORMAL,
             innerRadius: options.innerRadius || 0,
+            startAngle: options.startAngle || 270,
+            endAngle: options.endAngle || 270,
+
             totalAngle: options.totalAngle || BICst.PIE_ANGLES.TOTAL,
             dashboardPointer: options.dashboardPointer || c.ONE_POINTER,
             dashboardStyles: options.dashboardStyles || [],

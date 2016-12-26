@@ -12,8 +12,8 @@ Data.Req = BIReq = {
         }, complete)
     },
 
-    reqSimpleTablesByPackId: function (packId, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "get_simple_tables_of_one_package", {id: packId}, function (res) {
+    reqSimpleTablesByPackId: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_simple_tables_of_one_package", data, function (res) {
             callback(res);
         }, complete)
     },
