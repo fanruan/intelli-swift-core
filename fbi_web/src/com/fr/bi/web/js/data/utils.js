@@ -2191,6 +2191,7 @@ Data.Utils = {
             configs.chartType = "gauge";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             return BI.extend(configs, {
                 series: items
             });
