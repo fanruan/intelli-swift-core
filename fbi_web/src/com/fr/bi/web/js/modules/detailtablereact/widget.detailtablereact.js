@@ -230,6 +230,7 @@ BI.DetailTableReact = BI.inherit(BI.Pane, {
                     var val = self._createItemWithStyle(rowValue, styleSettings[i], dimensionTypes[i], dimensionGroups[i]);
                     rowItems.push(BI.extend({
                         text: val.text,
+                        title: val.text,
                         iconCls: val.iconCls,
                         style: {
                             color: val.fontColor

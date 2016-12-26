@@ -60,11 +60,18 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _base = __webpack_require__(533);
+	var _base = __webpack_require__(537);
 
-	var _components = __webpack_require__(583);
+	var _components = __webpack_require__(593);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	//页面加载完成后加载Portal
+	$(document).ready(function () {
+	    var el = $("<div>");
+	    $("body").append(el);
+	    _reactDom2.default.render(_react2.default.createElement(_base.Portal, null), el[0]);
+	});
 
 	BI.TableReact = BI.inherit(BI.Widget, {
 
@@ -119,32 +126,27 @@
 	            onPrev = _options.onPrev,
 	            onNext = _options.onNext;
 
-	        _reactDom2.default.render(_react2.default.createElement(
-	            _layout.DefaultLayout,
-	            null,
-	            _react2.default.createElement(_components.DetailTableComponent, {
-	                styleType: styleType,
-	                color: color,
-	                regionColumnSize: regionColumnSize || [],
-	                isNeedFreeze: isNeedFreeze,
-	                isNeedResize: isNeedResize,
-	                freezeCols: freezeCols,
-	                header: header,
-	                items: items,
-	                columnSize: columnSize,
-	                width: this.element.width(),
-	                height: this.element.height(),
-	                onColumnResizeEnd: onColumnResizeEnd,
-	                onRegionColumnResizeEnd: onRegionColumnResizeEnd,
-	                showSequence: showSequence,
-	                curr: curr,
-	                pages: pages,
-	                label: BI.i18nText("BI-Total") + " " + total + " " + BI.i18nText("BI-Tiao") + BI.i18nText("BI-Data"),
-	                onPrev: onPrev,
-	                onNext: onNext
-	            }),
-	            _react2.default.createElement(_base.Portal, null)
-	        ), this.element[0]);
+	        _reactDom2.default.render(_react2.default.createElement(_components.DetailTableComponent, {
+	            styleType: styleType,
+	            color: color,
+	            regionColumnSize: regionColumnSize || [],
+	            isNeedFreeze: isNeedFreeze,
+	            isNeedResize: isNeedResize,
+	            freezeCols: freezeCols,
+	            header: header,
+	            items: items,
+	            columnSize: columnSize,
+	            width: this.element.width(),
+	            height: this.element.height(),
+	            onColumnResizeEnd: onColumnResizeEnd,
+	            onRegionColumnResizeEnd: onRegionColumnResizeEnd,
+	            showSequence: showSequence,
+	            curr: curr,
+	            pages: pages,
+	            label: BI.i18nText("BI-Total") + " " + total + " " + BI.i18nText("BI-Tiao") + BI.i18nText("BI-Data"),
+	            onPrev: onPrev,
+	            onNext: onNext
+	        }), this.element[0]);
 	    },
 
 
@@ -949,12 +951,18 @@
 	 * will remain to ensure logic does not differ in production.
 	 */
 
-	function invariant(condition, format, a, b, c, d, e, f) {
-	  if (process.env.NODE_ENV !== 'production') {
+	var validateFormat = function validateFormat(format) {};
+
+	if (process.env.NODE_ENV !== 'production') {
+	  validateFormat = function validateFormat(format) {
 	    if (format === undefined) {
 	      throw new Error('invariant requires an error message argument');
 	    }
-	  }
+	  };
+	}
+
+	function invariant(condition, format, a, b, c, d, e, f) {
+	  validateFormat(format);
 
 	  if (!condition) {
 	    var error;
@@ -21603,31 +21611,31 @@
 
 	var _Layout3 = _interopRequireDefault(_Layout2);
 
-	var _DefaultLayout2 = __webpack_require__(526);
+	var _DefaultLayout2 = __webpack_require__(530);
 
 	var _DefaultLayout3 = _interopRequireDefault(_DefaultLayout2);
 
-	var _HorizontalLayout2 = __webpack_require__(527);
+	var _HorizontalLayout2 = __webpack_require__(531);
 
 	var _HorizontalLayout3 = _interopRequireDefault(_HorizontalLayout2);
 
-	var _VerticalLayout2 = __webpack_require__(528);
+	var _VerticalLayout2 = __webpack_require__(532);
 
 	var _VerticalLayout3 = _interopRequireDefault(_VerticalLayout2);
 
-	var _CenterLayout2 = __webpack_require__(529);
+	var _CenterLayout2 = __webpack_require__(533);
 
 	var _CenterLayout3 = _interopRequireDefault(_CenterLayout2);
 
-	var _VerticalCenterLayout2 = __webpack_require__(530);
+	var _VerticalCenterLayout2 = __webpack_require__(534);
 
 	var _VerticalCenterLayout3 = _interopRequireDefault(_VerticalCenterLayout2);
 
-	var _HorizontalCenterLayout2 = __webpack_require__(531);
+	var _HorizontalCenterLayout2 = __webpack_require__(535);
 
 	var _HorizontalCenterLayout3 = _interopRequireDefault(_HorizontalCenterLayout2);
 
-	var _CardLayout2 = __webpack_require__(532);
+	var _CardLayout2 = __webpack_require__(536);
 
 	var _CardLayout3 = _interopRequireDefault(_CardLayout2);
 
@@ -22116,7 +22124,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.ReactComponentWithPureRenderMixin = exports.ReactComponentWithImmutableRenderMixin = exports.formatAddress = exports.math = exports.deepClone = exports.cloneDeep = exports.clone = exports.extend = exports.now = exports.values = exports.keys = exports.arrayMove = exports.remove = exports.nth = exports.last = exports.first = exports.toSafeInteger = exports.toInteger = exports.throttle = exports.debounce = exports.clamp = exports.isKey = exports.isNotEmptyString = exports.isString = exports.isPlainObject = exports.isObject = exports.isNumeric = exports.isNumber = exports.isNotNil = exports.isNil = exports.isInteger = exports.isArray = exports.isFunction = exports.isEqual = exports.immutableShallowEqual = exports.eq = exports.isEmpty = exports.findLast = exports.findKey = exports.findIndex = exports.find = exports.eachRight = exports.each = exports.filter = exports.map = exports.every = exports.some = exports.size = exports.invariant = exports.warning = exports.resolveImmediate = exports.memoizeStringOnly = exports.Keys = exports.keyOf = exports.keyMirrorRecursive = exports.keyMirror = exports.everySet = exports.someSet = exports.equalsSet = exports.equalsIterable = exports.enumerate = exports.emptyObject = exports.emptyFunction = exports.PromiseMap = exports.Promise = exports.Deferred = exports.shallowEqual = exports.colorUtils = exports.UserAgent = exports.removeStyle = exports.getComputedStyle = exports.Scroll = exports.getViewportDimensions = exports.getUnboundedScrollPosition = exports.getScrollPosition = exports.getElementRect = exports.getElementPosition = exports.containsNode = exports.focusNode = exports.translateDOMPositionXY = exports.getVendorPrefixedName = exports.BrowserSupportCore = exports.detectElementResize = exports.cancelAnimationFrame = exports.requestAnimationFrame = exports.fetchWithRetries = exports.fetch = exports.removeEventListener = exports.addEventListener = exports.EventListener = exports.MouseMoveTracker = exports.WheelHandler = exports.normalizeWheel = exports.sc = exports.cn = exports.Vector = exports.UUID = exports.Tree = exports.Queue = exports.Lru = exports.LinkedHashMap = exports.ChinesePY = exports.Base64 = exports.PrefixIntervalTree = exports.IntegerBufferSet = exports.Heap = undefined;
+	exports.ReactComponentWithPureRenderMixin = exports.ReactComponentWithImmutableRenderMixin = exports.formatAddress = exports.math = exports.deepClone = exports.cloneDeep = exports.clone = exports.extend = exports.now = exports.values = exports.keys = exports.arrayMove = exports.remove = exports.unzip = exports.zip = exports.nth = exports.last = exports.first = exports.toSafeInteger = exports.toInteger = exports.throttle = exports.debounce = exports.clamp = exports.isKey = exports.isNotEmptyArray = exports.isNotEmptyString = exports.isString = exports.isPlainObject = exports.isObject = exports.isNumeric = exports.isNumber = exports.isNotNil = exports.isNil = exports.isInteger = exports.isArray = exports.isFunction = exports.isEqual = exports.immutableShallowEqual = exports.eq = exports.isEmpty = exports.findLast = exports.findKey = exports.findIndex = exports.find = exports.eachRight = exports.each = exports.filter = exports.map = exports.every = exports.some = exports.size = exports.invariant = exports.warning = exports.resolveImmediate = exports.memoizeStringOnly = exports.Keys = exports.keyOf = exports.keyMirrorRecursive = exports.keyMirror = exports.everySet = exports.someSet = exports.equalsSet = exports.equalsIterable = exports.enumerate = exports.emptyObject = exports.emptyFunction = exports.PromiseMap = exports.Promise = exports.Deferred = exports.shallowEqual = exports.colorUtils = exports.UserAgent = exports.removeStyle = exports.getComputedStyle = exports.Scroll = exports.getViewportDimensions = exports.getUnboundedScrollPosition = exports.getScrollPosition = exports.getElementRect = exports.getElementPosition = exports.containsNode = exports.focusNode = exports.translateDOMPositionXY = exports.getVendorPrefixedName = exports.BrowserSupportCore = exports.detectElementResize = exports.cancelAnimationFrame = exports.requestAnimationFrame = exports.fetchWithRetries = exports.fetch = exports.removeEventListener = exports.addEventListener = exports.EventListener = exports.MouseMoveTracker = exports.WheelHandler = exports.normalizeWheel = exports.sc = exports.cn = exports.Vector = exports.UUID = exports.Tree = exports.Queue = exports.Lru = exports.LinkedHashMap = exports.ChinesePY = exports.Base64 = exports.PrefixIntervalTree = exports.IntegerBufferSet = exports.Heap = undefined;
 
 	__webpack_require__(195);
 
@@ -22460,19 +22468,23 @@
 
 	var _isNotEmptyString3 = _interopRequireDefault(_isNotEmptyString2);
 
+	var _isNotEmptyArray2 = __webpack_require__(482);
+
+	var _isNotEmptyArray3 = _interopRequireDefault(_isNotEmptyArray2);
+
 	var _isKey2 = __webpack_require__(435);
 
 	var _isKey3 = _interopRequireDefault(_isKey2);
 
-	var _clamp2 = __webpack_require__(482);
+	var _clamp2 = __webpack_require__(483);
 
 	var _clamp3 = _interopRequireDefault(_clamp2);
 
-	var _debounce2 = __webpack_require__(484);
+	var _debounce2 = __webpack_require__(485);
 
 	var _debounce3 = _interopRequireDefault(_debounce2);
 
-	var _throttle2 = __webpack_require__(486);
+	var _throttle2 = __webpack_require__(487);
 
 	var _throttle3 = _interopRequireDefault(_throttle2);
 
@@ -22480,7 +22492,7 @@
 
 	var _toInteger3 = _interopRequireDefault(_toInteger2);
 
-	var _toSafeInteger2 = __webpack_require__(487);
+	var _toSafeInteger2 = __webpack_require__(488);
 
 	var _toSafeInteger3 = _interopRequireDefault(_toSafeInteger2);
 
@@ -22496,11 +22508,19 @@
 
 	var _nth3 = _interopRequireDefault(_nth2);
 
-	var _remove2 = __webpack_require__(488);
+	var _zip2 = __webpack_require__(489);
+
+	var _zip3 = _interopRequireDefault(_zip2);
+
+	var _unzip2 = __webpack_require__(490);
+
+	var _unzip3 = _interopRequireDefault(_unzip2);
+
+	var _remove2 = __webpack_require__(492);
 
 	var _remove3 = _interopRequireDefault(_remove2);
 
-	var _arrayMove2 = __webpack_require__(493);
+	var _arrayMove2 = __webpack_require__(497);
 
 	var _arrayMove3 = _interopRequireDefault(_arrayMove2);
 
@@ -22508,11 +22528,11 @@
 
 	var _keys3 = _interopRequireDefault(_keys2);
 
-	var _values2 = __webpack_require__(494);
+	var _values2 = __webpack_require__(498);
 
 	var _values3 = _interopRequireDefault(_values2);
 
-	var _now2 = __webpack_require__(485);
+	var _now2 = __webpack_require__(486);
 
 	var _now3 = _interopRequireDefault(_now2);
 
@@ -22524,23 +22544,23 @@
 
 	var _clone3 = _interopRequireDefault(_clone2);
 
-	var _cloneDeep2 = __webpack_require__(496);
+	var _cloneDeep2 = __webpack_require__(500);
 
 	var _cloneDeep3 = _interopRequireDefault(_cloneDeep2);
 
-	var _math2 = __webpack_require__(497);
+	var _math2 = __webpack_require__(501);
 
 	var _math3 = _interopRequireDefault(_math2);
 
-	var _formatAddress2 = __webpack_require__(521);
+	var _formatAddress2 = __webpack_require__(525);
 
 	var _formatAddress3 = _interopRequireDefault(_formatAddress2);
 
-	var _ReactComponentWithImmutableRenderMixin2 = __webpack_require__(522);
+	var _ReactComponentWithImmutableRenderMixin2 = __webpack_require__(526);
 
 	var _ReactComponentWithImmutableRenderMixin3 = _interopRequireDefault(_ReactComponentWithImmutableRenderMixin2);
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(523);
+	var _reactAddonsPureRenderMixin = __webpack_require__(527);
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
@@ -22640,6 +22660,7 @@
 	exports.isPlainObject = _isPlainObject3.default;
 	exports.isString = _isString3.default;
 	exports.isNotEmptyString = _isNotEmptyString3.default;
+	exports.isNotEmptyArray = _isNotEmptyArray3.default;
 	exports.isKey = _isKey3.default;
 	exports.clamp = _clamp3.default;
 	exports.debounce = _debounce3.default;
@@ -22652,6 +22673,8 @@
 	exports.first = _first3.default;
 	exports.last = _last3.default;
 	exports.nth = _nth3.default;
+	exports.zip = _zip3.default;
+	exports.unzip = _unzip3.default;
 	exports.remove = _remove3.default;
 	exports.arrayMove = _arrayMove3.default;
 	exports.keys = _keys3.default;
@@ -32149,6 +32172,16 @@
 	    return promise
 	  }
 
+	  function readArrayBufferAsText(buf) {
+	    var view = new Uint8Array(buf)
+	    var chars = new Array(view.length)
+
+	    for (var i = 0; i < view.length; i++) {
+	      chars[i] = String.fromCharCode(view[i])
+	    }
+	    return chars.join('')
+	  }
+
 	  function bufferClone(buf) {
 	    if (buf.slice) {
 	      return buf.slice(0)
@@ -32212,6 +32245,14 @@
 	          return Promise.resolve(new Blob([this._bodyText]))
 	        }
 	      }
+
+	      this.arrayBuffer = function() {
+	        if (this._bodyArrayBuffer) {
+	          return consumed(this) || Promise.resolve(this._bodyArrayBuffer)
+	        } else {
+	          return this.blob().then(readBlobAsArrayBuffer)
+	        }
+	      }
 	    }
 
 	    this.text = function() {
@@ -32223,23 +32264,11 @@
 	      if (this._bodyBlob) {
 	        return readBlobAsText(this._bodyBlob)
 	      } else if (this._bodyArrayBuffer) {
-	        var view = new Uint8Array(this._bodyArrayBuffer)
-	        var str = String.fromCharCode.apply(null, view)
-	        return Promise.resolve(str)
+	        return Promise.resolve(readArrayBufferAsText(this._bodyArrayBuffer))
 	      } else if (this._bodyFormData) {
 	        throw new Error('could not read FormData body as text')
 	      } else {
 	        return Promise.resolve(this._bodyText)
-	      }
-	    }
-
-	    if (support.arrayBuffer) {
-	      this.arrayBuffer = function() {
-	        if (this._bodyArrayBuffer) {
-	          return consumed(this) || Promise.resolve(this._bodyArrayBuffer)
-	        } else {
-	          return this.blob().then(readBlobAsArrayBuffer)
-	        }
 	      }
 	    }
 
@@ -41738,7 +41767,27 @@
 /* 482 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseClamp = __webpack_require__(483),
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports.default = function (arr) {
+	    return (0, _isArray2.default)(arr) && arr.length > 0;
+	};
+
+	var _isArray = __webpack_require__(210);
+
+	var _isArray2 = _interopRequireDefault(_isArray);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 483 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseClamp = __webpack_require__(484),
 	    toNumber = __webpack_require__(387);
 
 	/**
@@ -41780,7 +41829,7 @@
 
 
 /***/ },
-/* 483 */
+/* 484 */
 /***/ function(module, exports) {
 
 	/**
@@ -41808,11 +41857,11 @@
 
 
 /***/ },
-/* 484 */
+/* 485 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(211),
-	    now = __webpack_require__(485),
+	    now = __webpack_require__(486),
 	    toNumber = __webpack_require__(387);
 
 	/** Error message constants. */
@@ -42002,7 +42051,7 @@
 
 
 /***/ },
-/* 485 */
+/* 486 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var root = __webpack_require__(224);
@@ -42031,10 +42080,10 @@
 
 
 /***/ },
-/* 486 */
+/* 487 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var debounce = __webpack_require__(484),
+	var debounce = __webpack_require__(485),
 	    isObject = __webpack_require__(211);
 
 	/** Error message constants. */
@@ -42106,10 +42155,10 @@
 
 
 /***/ },
-/* 487 */
+/* 488 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseClamp = __webpack_require__(483),
+	var baseClamp = __webpack_require__(484),
 	    toInteger = __webpack_require__(385);
 
 	/** Used as references for various `Number` constants. */
@@ -42147,11 +42196,129 @@
 
 
 /***/ },
-/* 488 */
+/* 489 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseRest = __webpack_require__(373),
+	    unzip = __webpack_require__(490);
+
+	/**
+	 * Creates an array of grouped elements, the first of which contains the
+	 * first elements of the given arrays, the second of which contains the
+	 * second elements of the given arrays, and so on.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Array
+	 * @param {...Array} [arrays] The arrays to process.
+	 * @returns {Array} Returns the new array of grouped elements.
+	 * @example
+	 *
+	 * _.zip(['a', 'b'], [1, 2], [true, false]);
+	 * // => [['a', 1, true], ['b', 2, false]]
+	 */
+	var zip = baseRest(unzip);
+
+	module.exports = zip;
+
+
+/***/ },
+/* 490 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arrayFilter = __webpack_require__(458),
+	    arrayMap = __webpack_require__(313),
+	    baseProperty = __webpack_require__(320),
+	    baseTimes = __webpack_require__(293),
+	    isArrayLikeObject = __webpack_require__(491);
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeMax = Math.max;
+
+	/**
+	 * This method is like `_.zip` except that it accepts an array of grouped
+	 * elements and creates an array regrouping the elements to their pre-zip
+	 * configuration.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 1.2.0
+	 * @category Array
+	 * @param {Array} array The array of grouped elements to process.
+	 * @returns {Array} Returns the new array of regrouped elements.
+	 * @example
+	 *
+	 * var zipped = _.zip(['a', 'b'], [1, 2], [true, false]);
+	 * // => [['a', 1, true], ['b', 2, false]]
+	 *
+	 * _.unzip(zipped);
+	 * // => [['a', 'b'], [1, 2], [true, false]]
+	 */
+	function unzip(array) {
+	  if (!(array && array.length)) {
+	    return [];
+	  }
+	  var length = 0;
+	  array = arrayFilter(array, function(group) {
+	    if (isArrayLikeObject(group)) {
+	      length = nativeMax(group.length, length);
+	      return true;
+	    }
+	  });
+	  return baseTimes(length, function(index) {
+	    return arrayMap(array, baseProperty(index));
+	  });
+	}
+
+	module.exports = unzip;
+
+
+/***/ },
+/* 491 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArrayLike = __webpack_require__(239),
+	    isObjectLike = __webpack_require__(238);
+
+	/**
+	 * This method is like `_.isArrayLike` except that it also checks if `value`
+	 * is an object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array-like object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArrayLikeObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject('abc');
+	 * // => false
+	 *
+	 * _.isArrayLikeObject(_.noop);
+	 * // => false
+	 */
+	function isArrayLikeObject(value) {
+	  return isObjectLike(value) && isArrayLike(value);
+	}
+
+	module.exports = isArrayLikeObject;
+
+
+/***/ },
+/* 492 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseIteratee = __webpack_require__(296),
-	    basePullAt = __webpack_require__(489);
+	    basePullAt = __webpack_require__(493);
 
 	/**
 	 * Removes all elements from `array` that `predicate` returns truthy for
@@ -42206,10 +42373,10 @@
 
 
 /***/ },
-/* 489 */
+/* 493 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseUnset = __webpack_require__(490),
+	var baseUnset = __webpack_require__(494),
 	    isIndex = __webpack_require__(294);
 
 	/** Used for built-in method references. */
@@ -42249,12 +42416,12 @@
 
 
 /***/ },
-/* 490 */
+/* 494 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var castPath = __webpack_require__(305),
 	    last = __webpack_require__(382),
-	    parent = __webpack_require__(491),
+	    parent = __webpack_require__(495),
 	    toKey = __webpack_require__(314);
 
 	/**
@@ -42275,11 +42442,11 @@
 
 
 /***/ },
-/* 491 */
+/* 495 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGet = __webpack_require__(304),
-	    baseSlice = __webpack_require__(492);
+	    baseSlice = __webpack_require__(496);
 
 	/**
 	 * Gets the parent value at `path` of `object`.
@@ -42297,7 +42464,7 @@
 
 
 /***/ },
-/* 492 */
+/* 496 */
 /***/ function(module, exports) {
 
 	/**
@@ -42334,7 +42501,7 @@
 
 
 /***/ },
-/* 493 */
+/* 497 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -42355,10 +42522,10 @@
 	}
 
 /***/ },
-/* 494 */
+/* 498 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseValues = __webpack_require__(495),
+	var baseValues = __webpack_require__(499),
 	    keys = __webpack_require__(291);
 
 	/**
@@ -42395,7 +42562,7 @@
 
 
 /***/ },
-/* 495 */
+/* 499 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(313);
@@ -42420,7 +42587,7 @@
 
 
 /***/ },
-/* 496 */
+/* 500 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseClone = __webpack_require__(333);
@@ -42455,33 +42622,33 @@
 
 
 /***/ },
-/* 497 */
+/* 501 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  'add': __webpack_require__(498),
-	  'ceil': __webpack_require__(501),
-	  'divide': __webpack_require__(503),
-	  'floor': __webpack_require__(504),
-	  'max': __webpack_require__(505),
-	  'maxBy': __webpack_require__(508),
-	  'mean': __webpack_require__(509),
-	  'meanBy': __webpack_require__(512),
-	  'min': __webpack_require__(513),
-	  'minBy': __webpack_require__(515),
-	  'multiply': __webpack_require__(516),
-	  'round': __webpack_require__(517),
-	  'subtract': __webpack_require__(518),
-	  'sum': __webpack_require__(519),
-	  'sumBy': __webpack_require__(520)
+	  'add': __webpack_require__(502),
+	  'ceil': __webpack_require__(505),
+	  'divide': __webpack_require__(507),
+	  'floor': __webpack_require__(508),
+	  'max': __webpack_require__(509),
+	  'maxBy': __webpack_require__(512),
+	  'mean': __webpack_require__(513),
+	  'meanBy': __webpack_require__(516),
+	  'min': __webpack_require__(517),
+	  'minBy': __webpack_require__(519),
+	  'multiply': __webpack_require__(520),
+	  'round': __webpack_require__(521),
+	  'subtract': __webpack_require__(522),
+	  'sum': __webpack_require__(523),
+	  'sumBy': __webpack_require__(524)
 	};
 
 
 /***/ },
-/* 498 */
+/* 502 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createMathOperation = __webpack_require__(499);
+	var createMathOperation = __webpack_require__(503);
 
 	/**
 	 * Adds two numbers.
@@ -42506,10 +42673,10 @@
 
 
 /***/ },
-/* 499 */
+/* 503 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToNumber = __webpack_require__(500),
+	var baseToNumber = __webpack_require__(504),
 	    baseToString = __webpack_require__(312);
 
 	/**
@@ -42550,7 +42717,7 @@
 
 
 /***/ },
-/* 500 */
+/* 504 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isSymbol = __webpack_require__(307);
@@ -42580,10 +42747,10 @@
 
 
 /***/ },
-/* 501 */
+/* 505 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createRound = __webpack_require__(502);
+	var createRound = __webpack_require__(506);
 
 	/**
 	 * Computes `number` rounded up to `precision`.
@@ -42612,7 +42779,7 @@
 
 
 /***/ },
-/* 502 */
+/* 506 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var toInteger = __webpack_require__(385),
@@ -42651,10 +42818,10 @@
 
 
 /***/ },
-/* 503 */
+/* 507 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createMathOperation = __webpack_require__(499);
+	var createMathOperation = __webpack_require__(503);
 
 	/**
 	 * Divide two numbers.
@@ -42679,10 +42846,10 @@
 
 
 /***/ },
-/* 504 */
+/* 508 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createRound = __webpack_require__(502);
+	var createRound = __webpack_require__(506);
 
 	/**
 	 * Computes `number` rounded down to `precision`.
@@ -42711,11 +42878,11 @@
 
 
 /***/ },
-/* 505 */
+/* 509 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseExtremum = __webpack_require__(506),
-	    baseGt = __webpack_require__(507),
+	var baseExtremum = __webpack_require__(510),
+	    baseGt = __webpack_require__(511),
 	    identity = __webpack_require__(318);
 
 	/**
@@ -42746,7 +42913,7 @@
 
 
 /***/ },
-/* 506 */
+/* 510 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isSymbol = __webpack_require__(307);
@@ -42784,7 +42951,7 @@
 
 
 /***/ },
-/* 507 */
+/* 511 */
 /***/ function(module, exports) {
 
 	/**
@@ -42804,11 +42971,11 @@
 
 
 /***/ },
-/* 508 */
+/* 512 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseExtremum = __webpack_require__(506),
-	    baseGt = __webpack_require__(507),
+	var baseExtremum = __webpack_require__(510),
+	    baseGt = __webpack_require__(511),
 	    baseIteratee = __webpack_require__(296);
 
 	/**
@@ -42844,10 +43011,10 @@
 
 
 /***/ },
-/* 509 */
+/* 513 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMean = __webpack_require__(510),
+	var baseMean = __webpack_require__(514),
 	    identity = __webpack_require__(318);
 
 	/**
@@ -42872,10 +43039,10 @@
 
 
 /***/ },
-/* 510 */
+/* 514 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSum = __webpack_require__(511);
+	var baseSum = __webpack_require__(515);
 
 	/** Used as references for various `Number` constants. */
 	var NAN = 0 / 0;
@@ -42898,7 +43065,7 @@
 
 
 /***/ },
-/* 511 */
+/* 515 */
 /***/ function(module, exports) {
 
 	/**
@@ -42928,11 +43095,11 @@
 
 
 /***/ },
-/* 512 */
+/* 516 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseIteratee = __webpack_require__(296),
-	    baseMean = __webpack_require__(510);
+	    baseMean = __webpack_require__(514);
 
 	/**
 	 * This method is like `_.mean` except that it accepts `iteratee` which is
@@ -42965,11 +43132,11 @@
 
 
 /***/ },
-/* 513 */
+/* 517 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseExtremum = __webpack_require__(506),
-	    baseLt = __webpack_require__(514),
+	var baseExtremum = __webpack_require__(510),
+	    baseLt = __webpack_require__(518),
 	    identity = __webpack_require__(318);
 
 	/**
@@ -43000,7 +43167,7 @@
 
 
 /***/ },
-/* 514 */
+/* 518 */
 /***/ function(module, exports) {
 
 	/**
@@ -43020,12 +43187,12 @@
 
 
 /***/ },
-/* 515 */
+/* 519 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseExtremum = __webpack_require__(506),
+	var baseExtremum = __webpack_require__(510),
 	    baseIteratee = __webpack_require__(296),
-	    baseLt = __webpack_require__(514);
+	    baseLt = __webpack_require__(518);
 
 	/**
 	 * This method is like `_.min` except that it accepts `iteratee` which is
@@ -43060,10 +43227,10 @@
 
 
 /***/ },
-/* 516 */
+/* 520 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createMathOperation = __webpack_require__(499);
+	var createMathOperation = __webpack_require__(503);
 
 	/**
 	 * Multiply two numbers.
@@ -43088,10 +43255,10 @@
 
 
 /***/ },
-/* 517 */
+/* 521 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createRound = __webpack_require__(502);
+	var createRound = __webpack_require__(506);
 
 	/**
 	 * Computes `number` rounded to `precision`.
@@ -43120,10 +43287,10 @@
 
 
 /***/ },
-/* 518 */
+/* 522 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createMathOperation = __webpack_require__(499);
+	var createMathOperation = __webpack_require__(503);
 
 	/**
 	 * Subtract two numbers.
@@ -43148,10 +43315,10 @@
 
 
 /***/ },
-/* 519 */
+/* 523 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSum = __webpack_require__(511),
+	var baseSum = __webpack_require__(515),
 	    identity = __webpack_require__(318);
 
 	/**
@@ -43178,11 +43345,11 @@
 
 
 /***/ },
-/* 520 */
+/* 524 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseIteratee = __webpack_require__(296),
-	    baseSum = __webpack_require__(511);
+	    baseSum = __webpack_require__(515);
 
 	/**
 	 * This method is like `_.sum` except that it accepts `iteratee` which is
@@ -43217,7 +43384,7 @@
 
 
 /***/ },
-/* 521 */
+/* 525 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -43243,7 +43410,7 @@
 	}
 
 /***/ },
-/* 522 */
+/* 526 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43267,13 +43434,13 @@
 	module.exports = ReactComponentWithImmutableRenderMixin;
 
 /***/ },
-/* 523 */
+/* 527 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(524);
+	module.exports = __webpack_require__(528);
 
 /***/ },
-/* 524 */
+/* 528 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43288,7 +43455,7 @@
 
 	'use strict';
 
-	var shallowCompare = __webpack_require__(525);
+	var shallowCompare = __webpack_require__(529);
 
 	/**
 	 * If your React component's render function is "pure", e.g. it will render the
@@ -43325,7 +43492,7 @@
 	module.exports = ReactComponentWithPureRenderMixin;
 
 /***/ },
-/* 525 */
+/* 529 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43354,7 +43521,7 @@
 	module.exports = shallowCompare;
 
 /***/ },
-/* 526 */
+/* 530 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43424,7 +43591,7 @@
 	exports.default = DefaultLayout;
 
 /***/ },
-/* 527 */
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43525,7 +43692,7 @@
 	exports.default = HorizontalLayout;
 
 /***/ },
-/* 528 */
+/* 532 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43594,7 +43761,7 @@
 	exports.default = VerticalLayout;
 
 /***/ },
-/* 529 */
+/* 533 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43655,7 +43822,7 @@
 	exports.default = CenterLayout;
 
 /***/ },
-/* 530 */
+/* 534 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43716,7 +43883,7 @@
 	exports.default = VerticalCenterLayout;
 
 /***/ },
-/* 531 */
+/* 535 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43777,7 +43944,7 @@
 	exports.default = HorizontalCenterLayout;
 
 /***/ },
-/* 532 */
+/* 536 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43835,9 +44002,11 @@
 	                    return _react2.default.createElement(
 	                        'div',
 	                        { key: key, style: {
-	                                position: 'relative',
-	                                width: '100%',
-	                                height: '100%',
+	                                position: 'absolute',
+	                                left: 0,
+	                                right: 0,
+	                                top: 0,
+	                                bottom: 0,
 	                                display: (0, _core.isNil)(defaultShowKey) || key === defaultShowKey ? 'flex' : 'none'
 	                            } },
 	                        child
@@ -43853,7 +44022,7 @@
 	exports.default = CardLayout;
 
 /***/ },
-/* 533 */
+/* 537 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43861,76 +44030,90 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Combo = exports.AdaptiveTable = exports.ResizableTable = exports.Table = exports.InfiniteLoader = exports.VirtualScroll = exports.Collection = exports.Grid = exports.AutoSizer = exports.Portal = exports.Tab = exports.Label = exports.Icon = exports.Text = exports.Button = undefined;
+	exports.LevelTable = exports.SummaryTable = exports.AdaptiveTable = exports.ResizableTable = exports.Table = exports.InfiniteLoader = exports.VirtualScroll = exports.Collection = exports.Grid = exports.AutoSizer = exports.Combo = exports.Portal = exports.Tab = exports.Label = exports.Icon = exports.Title = exports.Text = exports.Button = undefined;
 
-	var _Button2 = __webpack_require__(534);
+	var _Button2 = __webpack_require__(538);
 
 	var _Button3 = _interopRequireDefault(_Button2);
 
-	var _Text2 = __webpack_require__(537);
+	var _Text2 = __webpack_require__(541);
 
 	var _Text3 = _interopRequireDefault(_Text2);
 
-	var _Icon2 = __webpack_require__(538);
+	var _Title2 = __webpack_require__(542);
+
+	var _Title3 = _interopRequireDefault(_Title2);
+
+	var _Icon2 = __webpack_require__(549);
 
 	var _Icon3 = _interopRequireDefault(_Icon2);
 
-	var _Label2 = __webpack_require__(539);
+	var _Label2 = __webpack_require__(550);
 
 	var _Label3 = _interopRequireDefault(_Label2);
 
-	var _Tab2 = __webpack_require__(540);
+	var _Tab2 = __webpack_require__(551);
 
 	var _Tab3 = _interopRequireDefault(_Tab2);
 
-	var _Portal2 = __webpack_require__(541);
+	var _Portal2 = __webpack_require__(548);
 
 	var _Portal3 = _interopRequireDefault(_Portal2);
 
-	var _AutoSizer2 = __webpack_require__(542);
+	var _Combo2 = __webpack_require__(552);
+
+	var _Combo3 = _interopRequireDefault(_Combo2);
+
+	var _AutoSizer2 = __webpack_require__(553);
 
 	var _AutoSizer3 = _interopRequireDefault(_AutoSizer2);
 
-	var _Grid2 = __webpack_require__(546);
+	var _Grid2 = __webpack_require__(557);
 
 	var _Grid3 = _interopRequireDefault(_Grid2);
 
-	var _Collection2 = __webpack_require__(556);
+	var _Collection2 = __webpack_require__(567);
 
 	var _Collection3 = _interopRequireDefault(_Collection2);
 
-	var _VirtualScroll2 = __webpack_require__(564);
+	var _VirtualScroll2 = __webpack_require__(575);
 
 	var _VirtualScroll3 = _interopRequireDefault(_VirtualScroll2);
 
-	var _InfiniteLoader2 = __webpack_require__(566);
+	var _InfiniteLoader2 = __webpack_require__(577);
 
 	var _InfiniteLoader3 = _interopRequireDefault(_InfiniteLoader2);
 
-	var _Table2 = __webpack_require__(568);
+	var _Table2 = __webpack_require__(579);
 
 	var _Table3 = _interopRequireDefault(_Table2);
 
-	var _ResizableTable2 = __webpack_require__(573);
+	var _ResizableTable2 = __webpack_require__(584);
 
 	var _ResizableTable3 = _interopRequireDefault(_ResizableTable2);
 
-	var _AdaptiveTable2 = __webpack_require__(579);
+	var _AdaptiveTable2 = __webpack_require__(590);
 
 	var _AdaptiveTable3 = _interopRequireDefault(_AdaptiveTable2);
 
-	var _Combo2 = __webpack_require__(580);
+	var _SummaryTable2 = __webpack_require__(591);
 
-	var _Combo3 = _interopRequireDefault(_Combo2);
+	var _SummaryTable3 = _interopRequireDefault(_SummaryTable2);
+
+	var _LevelTable2 = __webpack_require__(592);
+
+	var _LevelTable3 = _interopRequireDefault(_LevelTable2);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.Button = _Button3.default;
 	exports.Text = _Text3.default;
+	exports.Title = _Title3.default;
 	exports.Icon = _Icon3.default;
 	exports.Label = _Label3.default;
 	exports.Tab = _Tab3.default;
 	exports.Portal = _Portal3.default;
+	exports.Combo = _Combo3.default;
 	exports.AutoSizer = _AutoSizer3.default;
 	exports.Grid = _Grid3.default;
 	exports.Collection = _Collection3.default;
@@ -43939,10 +44122,11 @@
 	exports.Table = _Table3.default;
 	exports.ResizableTable = _ResizableTable3.default;
 	exports.AdaptiveTable = _AdaptiveTable3.default;
-	exports.Combo = _Combo3.default;
+	exports.SummaryTable = _SummaryTable3.default;
+	exports.LevelTable = _LevelTable3.default;
 
 /***/ },
-/* 534 */
+/* 538 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43963,7 +44147,7 @@
 
 	var _core = __webpack_require__(194);
 
-	__webpack_require__(535);
+	__webpack_require__(539);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44026,13 +44210,13 @@
 	exports.default = Button;
 
 /***/ },
-/* 535 */
+/* 539 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(536);
+	var content = __webpack_require__(540);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -44052,7 +44236,7 @@
 	}
 
 /***/ },
-/* 536 */
+/* 540 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -44066,7 +44250,7 @@
 
 
 /***/ },
-/* 537 */
+/* 541 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44130,7 +44314,6 @@
 	                    overflow: 'hidden',
 	                    textOverflow: 'ellipsis',
 	                    wordWrap: 'break-word',
-	                    display: '-webkit-box',
 	                    WebkitLineClamp: numberOfLines,
 	                    WebkitBoxOrient: 'vertical'
 	                }) }));
@@ -44152,30 +44335,7 @@
 	exports.default = Text;
 
 /***/ },
-/* 538 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _react = __webpack_require__(9);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function (_ref) {
-	    var width = _ref.width,
-	        height = _ref.height;
-
-	    return _react2.default.createElement('i', { className: 'x-icon b-font', style: { width: width, height: height } });
-	};
-
-/***/ },
-/* 539 */
+/* 542 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44192,9 +44352,21 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactDom = __webpack_require__(40);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _layout = __webpack_require__(186);
 
-	var _Text = __webpack_require__(537);
+	var _core = __webpack_require__(194);
+
+	var _constants = __webpack_require__(543);
+
+	var _Portal = __webpack_require__(548);
+
+	var _Portal2 = _interopRequireDefault(_Portal);
+
+	var _Text = __webpack_require__(541);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
@@ -44206,123 +44378,331 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/21.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
-	var Label = function (_Component) {
-	    _inherits(Label, _Component);
 
-	    function Label() {
-	        _classCallCheck(this, Label);
+	var Title = function (_Component) {
+	    _inherits(Title, _Component);
 
-	        return _possibleConstructorReturn(this, (Label.__proto__ || Object.getPrototypeOf(Label)).apply(this, arguments));
+	    function Title(props, context) {
+	        _classCallCheck(this, Title);
+
+	        var _this = _possibleConstructorReturn(this, (Title.__proto__ || Object.getPrototypeOf(Title)).call(this, props, context));
+
+	        _this.state = {
+	            open: false,
+	            pageX: 0
+	        };
+
+	        _this._onMounseEnter = _this._onMounseEnter.bind(_this);
+	        _this._onMouseLeave = _this._onMouseLeave.bind(_this);
+	        _this.tag = _Portal2.default.allocateTag();
+	        return _this;
 	    }
 
-	    _createClass(Label, [{
+	    _createClass(Title, [{
+	        key: '_isTitleUsable',
+	        value: function _isTitleUsable() {
+	            return (0, _core.isFunction)(this.props.title) || (0, _core.isString)(this.props.title) && this.props.title.length > 0 || (0, _core.isNumber)(this.props.title);
+	        }
+	    }, {
+	        key: '_getTitle',
+	        value: function _getTitle() {
+	            var title = this.props.title;
+
+	            if ((0, _core.isFunction)(title)) {
+	                title = title();
+	            }
+	            return title + '';
+	        }
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate() {
+	            var _this2 = this;
+
+	            if (this._isTitleUsable()) {
+	                setTimeout(function () {
+	                    if (_this2.state.open === true) {
+	                        try {
+	                            var viewport = (0, _core.getViewportDimensions)();
+	                            var trigger = _reactDom2.default.findDOMNode(_this2);
+	                            var popup = _reactDom2.default.findDOMNode(_this2.title);
+	                            var triggerPos = (0, _core.getElementPosition)(trigger);
+	                            var popupPos = (0, _core.getElementPosition)(popup);
+	                            var x = _this2.state.pageX,
+	                                y = triggerPos.y + triggerPos.height;
+	                            x = (0, _core.clamp)(x, 0, viewport.width - popupPos.width);
+	                            y = (0, _core.clamp)(y, 0, viewport.height - popupPos.height);
+	                            popup.style.left = x + 'px';
+	                            popup.style.top = y + 'px';
+	                        } catch (e) {}
+	                    }
+	                }, this.props.tipType === 'success' ? 500 : 200);
+	            }
+	        }
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	            this._close();
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _props = this.props,
-	                children = _props.children,
-	                props = _objectWithoutProperties(_props, ['children']);
+	                tipType = _props.tipType,
+	                title = _props.title,
+	                props = _objectWithoutProperties(_props, ['tipType', 'title']);
 
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                _extends({ cross: 'center' }, props),
+	                _extends({ onMouseEnter: this._onMounseEnter,
+	                    onMouseLeave: this._onMouseLeave }, props),
+	                this.props.children
+	            );
+	        }
+	    }, {
+	        key: '_bodyEventListener',
+	        value: function _bodyEventListener(e) {
+	            var _this3 = this;
+
+	            if (this.state.open === false) {
+	                return;
+	            }
+	            var self = _reactDom2.default.findDOMNode(this);
+	            if (!(0, _core.containsNode)(self, e.target)) {
+	                this.setState({
+	                    open: false
+	                }, function () {
+	                    _this3._close();
+	                });
+	            }
+	        }
+	    }, {
+	        key: '_open',
+	        value: function _open() {
+	            var _this4 = this;
+
+	            _Portal2.default.showModal(this.tag, _react2.default.createElement(
+	                _layout.VerticalLayout,
+	                {
+	                    key: this.tag,
+	                    ref: function ref(_ref) {
+	                        return _this4.title = _ref;
+	                    }, style: (0, _core.sc)([{
+	                        position: 'fixed',
+	                        zIndex: _constants.ZIndex.TIP,
+	                        backgroundColor: this.props.tipType === 'success' ? _constants.Colors.SUCCESS : _constants.Colors.WARNING,
+	                        left: -999,
+	                        top: -999,
+	                        maxWidth: 220,
+	                        paddingTop: 3,
+	                        paddingBottom: 3,
+	                        paddingLeft: 5,
+	                        paddingRight: 5
+	                    }]) },
 	                _react2.default.createElement(
 	                    _Text2.default,
-	                    { numberOfLines: 1 },
-	                    children
+	                    null,
+	                    this._getTitle()
 	                )
-	            );
+	            ));
+	            this._mouseupEventListener = _core.EventListener.listen(document.body, 'mousedown', this._bodyEventListener.bind(this));
+	        }
+	    }, {
+	        key: '_close',
+	        value: function _close() {
+	            _Portal2.default.closeModal(this.tag);
+	            this._mouseupEventListener && this._mouseupEventListener.remove();
+	            this._mouseupEventListener = null;
+	        }
+	    }, {
+	        key: '_onMounseEnter',
+	        value: function _onMounseEnter(e) {
+	            var _this5 = this;
+
+	            if (this._isTitleUsable()) {
+	                this.setState({
+	                    open: true,
+	                    pageX: e.pageX
+	                }, function () {
+	                    _this5._open();
+	                });
+	            }
+	        }
+	    }, {
+	        key: '_onMouseLeave',
+	        value: function _onMouseLeave(e) {
+	            var _this6 = this;
+
+	            this.setState({
+	                open: false
+	            }, function () {
+	                _this6._close();
+	            });
 	        }
 	    }]);
 
-	    return Label;
+	    return Title;
 	}(_react.Component);
 
-	exports.default = Label;
+	Title.defaultProps = {
+	    tipType: 'success', //success warning
+	    title: ''
+	};
+	exports.default = Title;
 
 /***/ },
-/* 540 */
+/* 543 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ZIndex = exports.Status = exports.Sizes = exports.Colors = undefined;
+
+	var _Colors2 = __webpack_require__(544);
+
+	var _Colors3 = _interopRequireDefault(_Colors2);
+
+	var _Sizes2 = __webpack_require__(545);
+
+	var _Sizes3 = _interopRequireDefault(_Sizes2);
+
+	var _Status2 = __webpack_require__(546);
+
+	var _Status3 = _interopRequireDefault(_Status2);
+
+	var _ZIndex2 = __webpack_require__(547);
+
+	var _ZIndex3 = _interopRequireDefault(_ZIndex2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.Colors = _Colors3.default; /**
+	                                    * Created by Wang on 2016/12/22.
+	                                    */
+
+	exports.Sizes = _Sizes3.default;
+	exports.Status = _Status3.default;
+	exports.ZIndex = _ZIndex3.default;
+
+/***/ },
+/* 544 */
+/***/ function(module, exports) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(9);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _layout = __webpack_require__(186);
-
-	var _core = __webpack_require__(194);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Tab = function (_Component) {
-	    _inherits(Tab, _Component);
-
-	    function Tab(props, context) {
-	        _classCallCheck(this, Tab);
-
-	        var _this = _possibleConstructorReturn(this, (Tab.__proto__ || Object.getPrototypeOf(Tab)).call(this, props, context));
-
-	        _this.created = _defineProperty({}, props.defaultShowKey, props.cardCreator(props.defaultShowKey));
-	        return _this;
-	    }
-
-	    _createClass(Tab, [{
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(nextProps) {
-	            if (!this.created[nextProps.defaultShowKey]) {
-	                this.created[nextProps.defaultShowKey] = nextProps.cardCreator(nextProps.defaultShowKey);
-	            }
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _props = this.props,
-	                defaultShowKey = _props.defaultShowKey,
-	                cardCreator = _props.cardCreator,
-	                props = _objectWithoutProperties(_props, ['defaultShowKey', 'cardCreator']);
-
-	            return _react2.default.createElement(
-	                _layout.CardLayout,
-	                _extends({ defaultShowKey: defaultShowKey }, props),
-	                (0, _core.map)(this.created, function (card, key) {
-	                    return card;
-	                })
-	            );
-	        }
-	    }]);
-
-	    return Tab;
-	}(_react.Component);
-
-	Tab.defaultProps = {
-	    defaultShowKey: 0,
-	    cardCreator: _core.emptyFunction
+	exports.default = {
+	    DEFAULT: '#ffffff',
+	    PRESS: '#f0f0f0',
+	    BORDER: '#ddd',
+	    SPLIT: '#f0f0f0',
+	    HIGHLIGHT: '#007aff',
+	    DISABLED: '#c4c6c6',
+	    SUCCESS: '#fff5c1',
+	    WARINING: '#fddddd'
 	};
-	exports.default = Tab;
 
 /***/ },
-/* 541 */
+/* 545 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = {
+	    HEADER_HEIGHT: 44,
+	    FOOTER_HEIGHT: 44,
+	    TAB_HEIGHT: 47,
+	    BAR_HEIGHT: 37,
+	    ITEM_HEIGHT: 52
+	};
+
+/***/ },
+/* 546 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	/**
+	 * Created by Young's on 2016/10/27.
+	 */
+	exports.default = {
+	    Status: {
+	        SUCCESS: 1,
+	        WRONG: 2,
+	        START: 3,
+	        END: 4,
+	        WAITING: 5,
+	        READY: 6,
+	        RUNNING: 7,
+	        OUTOFBOUNDS: 8,
+	        NULL: -1
+	    },
+	    Direction: {
+	        Top: 'top',
+	        Bottom: 'bottom',
+	        Left: 'left',
+	        Right: 'right',
+	        Custom: 'custom'
+	    },
+	    Axis: {
+	        Vertical: 'vertical',
+	        Horizontal: 'horizontal'
+	    },
+	    Selection: {
+	        Default: -999,
+	        None: -1,
+	        Single: 0,
+	        Multi: 1,
+	        All: 2
+	    },
+	    HorizontalAlign: {
+	        Left: 'left',
+	        Right: 'right',
+	        Center: 'center'
+	    },
+	    VerticalAlign: {
+	        Middle: 'middle',
+	        Top: 'top',
+	        Bottom: 'bottom'
+	    }
+	};
+
+/***/ },
+/* 547 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	/**
+	 * Created by Wang on 2016/12/21.
+	 */
+	exports.default = {
+	    LAYER: 100000,
+	    FLOATBOX: 1000000,
+	    POPUP: 10000000,
+	    MASKER: 100000000,
+	    TIP: 1000000000
+	};
+
+/***/ },
+/* 548 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44353,10 +44733,7 @@
 	    modalsContainer: {
 	        position: 'absolute',
 	        left: 0,
-	        top: 0,
-	        right: 0,
-	        bottom: 0,
-	        zIndex: 999999
+	        top: 0
 	    }
 	};
 
@@ -44466,7 +44843,487 @@
 	exports.default = Portal;
 
 /***/ },
-/* 542 */
+/* 549 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (_ref) {
+	    var width = _ref.width,
+	        height = _ref.height;
+
+	    return _react2.default.createElement('i', { className: 'x-icon b-font', style: { width: width, height: height } });
+	};
+
+/***/ },
+/* 550 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _layout = __webpack_require__(186);
+
+	var _Text = __webpack_require__(541);
+
+	var _Text2 = _interopRequireDefault(_Text);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Label = function (_Component) {
+	    _inherits(Label, _Component);
+
+	    function Label() {
+	        _classCallCheck(this, Label);
+
+	        return _possibleConstructorReturn(this, (Label.__proto__ || Object.getPrototypeOf(Label)).apply(this, arguments));
+	    }
+
+	    _createClass(Label, [{
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                children = _props.children,
+	                style = _props.style,
+	                props = _objectWithoutProperties(_props, ['children', 'style']);
+
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                _extends({ cross: 'center' }, props, { style: _extends({}, style, {
+	                        overflow: 'hidden',
+	                        textOverflow: 'ellipsis',
+	                        wordWrap: 'break-word',
+	                        whiteSpace: 'nowrap',
+	                        wordBreak: 'break-all'
+	                    }) }),
+	                _react2.default.createElement(
+	                    _Text2.default,
+	                    { numberOfLines: 1 },
+	                    children
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Label;
+	}(_react.Component);
+
+	exports.default = Label;
+
+/***/ },
+/* 551 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _layout = __webpack_require__(186);
+
+	var _core = __webpack_require__(194);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Tab = function (_Component) {
+	    _inherits(Tab, _Component);
+
+	    function Tab(props, context) {
+	        _classCallCheck(this, Tab);
+
+	        var _this = _possibleConstructorReturn(this, (Tab.__proto__ || Object.getPrototypeOf(Tab)).call(this, props, context));
+
+	        _this.created = _defineProperty({}, props.defaultShowKey, props.cardCreator(props.defaultShowKey));
+	        return _this;
+	    }
+
+	    _createClass(Tab, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (!this.created[nextProps.defaultShowKey]) {
+	                this.created[nextProps.defaultShowKey] = nextProps.cardCreator(nextProps.defaultShowKey);
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                defaultShowKey = _props.defaultShowKey,
+	                cardCreator = _props.cardCreator,
+	                props = _objectWithoutProperties(_props, ['defaultShowKey', 'cardCreator']);
+
+	            return _react2.default.createElement(
+	                _layout.CardLayout,
+	                _extends({ defaultShowKey: defaultShowKey }, props),
+	                (0, _core.map)(this.created, function (card, key) {
+	                    return card;
+	                })
+	            );
+	        }
+	    }]);
+
+	    return Tab;
+	}(_react.Component);
+
+	Tab.defaultProps = {
+	    defaultShowKey: 0,
+	    cardCreator: _core.emptyFunction
+	};
+	exports.default = Tab;
+
+/***/ },
+/* 552 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(40);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _Button = __webpack_require__(538);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	var _Portal = __webpack_require__(548);
+
+	var _Portal2 = _interopRequireDefault(_Portal);
+
+	var _ZIndex = __webpack_require__(547);
+
+	var _ZIndex2 = _interopRequireDefault(_ZIndex);
+
+	var _Colors = __webpack_require__(544);
+
+	var _Colors2 = _interopRequireDefault(_Colors);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/21.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var Combo = function (_Component) {
+	    _inherits(Combo, _Component);
+
+	    function Combo(props, context) {
+	        _classCallCheck(this, Combo);
+
+	        var _this = _possibleConstructorReturn(this, (Combo.__proto__ || Object.getPrototypeOf(Combo)).call(this, props, context));
+
+	        _this.state = {
+	            open: false
+	        };
+
+	        _this._togglePopup = _this._togglePopup.bind(_this);
+	        _this.tag = _Portal2.default.allocateTag();
+	        return _this;
+	    }
+
+	    _createClass(Combo, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: '_getPosition',
+	        value: function _getPosition() {
+	            var direction = this.props.direction;
+
+	            var viewport = (0, _core.getViewportDimensions)();
+	            var trigger = _reactDom2.default.findDOMNode(this);
+	            var popup = _reactDom2.default.findDOMNode(this.popup);
+	            var triggerPos = (0, _core.getElementPosition)(trigger);
+	            var popupPos = (0, _core.getElementPosition)(popup);
+	            var left = void 0,
+	                top = void 0;
+	            var bottomPlaceHolder = function bottomPlaceHolder() {
+	                return triggerPos.y + triggerPos.height + popupPos.height <= viewport.height;
+	            };
+	            var topPlaceHolder = function topPlaceHolder() {
+	                return triggerPos.top - popupPos.height >= 0;
+	            };
+	            var leftPlaceHolder = function leftPlaceHolder() {
+	                return triggerPos.left - popupPos.width >= 0;
+	            };
+	            var rightPlaceHolder = function rightPlaceHolder() {
+	                return triggerPos.left + triggerPos.width + popupPos.width <= viewport.width;
+	            };
+	            switch (direction) {
+	                case 'bottom,top,right,left':
+	                    if (bottomPlaceHolder()) {
+	                        top = triggerPos.y + triggerPos.height;
+	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
+	                        break;
+	                    }
+	                    if (topPlaceHolder()) {
+	                        top = triggerPos.top - popupPos.height;
+	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
+	                        break;
+	                    }
+	                    if (rightPlaceHolder()) {
+	                        left = triggerPos.left + triggerPos.width;
+	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
+	                        break;
+	                    }
+	                    if (leftPlaceHolder()) {
+	                        left = triggerPos.left - popupPos.width;
+	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
+	                        break;
+	                    }
+	                    break;
+	                case 'right,left,bottom,top':
+	                    if (rightPlaceHolder()) {
+	                        left = triggerPos.left + triggerPos.width;
+	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
+	                        break;
+	                    }
+	                    if (leftPlaceHolder()) {
+	                        left = triggerPos.left - popupPos.width;
+	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
+	                        break;
+	                    }
+	                    if (bottomPlaceHolder()) {
+	                        top = triggerPos.y + triggerPos.height;
+	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
+	                        break;
+	                    }
+	                    if (topPlaceHolder()) {
+	                        top = triggerPos.top - popupPos.height;
+	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
+	                        break;
+	                    }
+	                    break;
+	                default:
+	                    break;
+	            }
+	            return { left: left, top: top };
+	        }
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate() {
+	            var _this2 = this;
+
+	            setTimeout(function () {
+	                if (_this2.state.open === true) {
+	                    var popup = _reactDom2.default.findDOMNode(_this2.popup);
+	                    var pos = _this2._getPosition();
+	                    popup.style.left = pos.left + 'px';
+	                    popup.style.top = pos.top + 'px';
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	            this._close();
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                triggerRenderer = _props.triggerRenderer,
+	                popupRenderer = _props.popupRenderer,
+	                trigger = _props.trigger,
+	                popup = _props.popup,
+	                props = _objectWithoutProperties(_props, ['triggerRenderer', 'popupRenderer', 'trigger', 'popup']);
+
+	            var open = this.state.open;
+
+	            return _react2.default.createElement(
+	                _layout.CenterLayout,
+	                props,
+	                this._triggerRenderer()
+	            );
+	        }
+	    }, {
+	        key: '_open',
+	        value: function _open() {
+	            var _this3 = this;
+
+	            var popup = this.props.popup;
+
+	            _Portal2.default.showModal(this.tag, _react2.default.createElement(
+	                _layout.VerticalLayout,
+	                _extends({
+	                    key: this.tag,
+	                    ref: function ref(_ref) {
+	                        return _this3.popup = _ref;
+	                    } }, popup, { style: (0, _core.sc)([{
+	                        position: 'fixed',
+	                        zIndex: _ZIndex2.default.POPUP,
+	                        backgroundColor: _Colors2.default.DEFAULT,
+	                        left: -999,
+	                        top: -999
+	                    }], [popup.style]) }),
+	                this.props.popupRenderer()
+	            ));
+	            this._mouseupEventListener = _core.EventListener.listen(document.body, 'mousedown', this._bodyEventListener.bind(this));
+	            this._mousewheelEventListener = _core.EventListener.listen(document.body, 'mousewheel', this._bodyEventListener.bind(this));
+	        }
+	    }, {
+	        key: '_bodyEventListener',
+	        value: function _bodyEventListener(e) {
+	            var _this4 = this;
+
+	            if (this.state.open === false) {
+	                return;
+	            }
+	            var self = _reactDom2.default.findDOMNode(this.trigger);
+	            var popup = _reactDom2.default.findDOMNode(this.popup);
+	            if (!(0, _core.containsNode)(self, e.target) && !(0, _core.containsNode)(popup, e.target)) {
+	                this.setState({
+	                    open: false
+	                }, function () {
+	                    _this4._close();
+	                });
+	            }
+	        }
+	    }, {
+	        key: '_close',
+	        value: function _close() {
+	            _Portal2.default.closeModal(this.tag);
+	            this._mouseupEventListener && this._mouseupEventListener.remove();
+	            this._mousewheelEventListener && this._mousewheelEventListener.remove();
+	            this._mouseupEventListener = null;
+	            this._mousewheelEventListener = null;
+	        }
+	    }, {
+	        key: 'open',
+	        value: function open() {
+	            var _this5 = this;
+
+	            this.setState({
+	                open: false
+	            }, function () {
+	                _this5._open();
+	            });
+	        }
+	    }, {
+	        key: 'close',
+	        value: function close() {
+	            var _this6 = this;
+
+	            this.setState({
+	                open: false
+	            }, function () {
+	                _this6._close();
+	            });
+	        }
+	    }, {
+	        key: '_triggerRenderer',
+	        value: function _triggerRenderer() {
+	            var _this7 = this;
+
+	            var trigger = this.props.trigger;
+
+	            return _react2.default.createElement(
+	                _Button2.default,
+	                _extends({ flex: true, ref: function ref(_ref2) {
+	                        return _this7.trigger = _ref2;
+	                    }
+	                }, trigger, { onClick: this._togglePopup }),
+	                this.props.triggerRenderer()
+	            );
+	        }
+	    }, {
+	        key: '_togglePopup',
+	        value: function _togglePopup() {
+	            var _this8 = this;
+
+	            this.setState({
+	                open: !this.state.open
+	            }, function () {
+	                _this8.state.open === true ? _this8._open() : _this8._close();
+	            });
+	        }
+	    }]);
+
+	    return Combo;
+	}(_react.Component);
+
+	Combo.defaultProps = {
+	    triggerRenderer: _core.emptyFunction,
+	    popupRenderer: _core.emptyFunction,
+	    trigger: {},
+	    popup: {},
+	    direction: 'bottom,top,right,left'
+	};
+	exports.default = Combo;
+
+/***/ },
+/* 553 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44476,7 +45333,7 @@
 	});
 	exports.AutoSizer = exports.default = undefined;
 
-	var _AutoSizer2 = __webpack_require__(543);
+	var _AutoSizer2 = __webpack_require__(554);
 
 	var _AutoSizer3 = _interopRequireDefault(_AutoSizer2);
 
@@ -44486,7 +45343,7 @@
 	exports.AutoSizer = _AutoSizer3.default;
 
 /***/ },
-/* 543 */
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44505,11 +45362,11 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(523);
+	var _reactAddonsPureRenderMixin = __webpack_require__(527);
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
@@ -44646,10 +45503,10 @@
 	exports.default = AutoSizer;
 
 /***/ },
-/* 544 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mixin = __webpack_require__(545);
+	var mixin = __webpack_require__(556);
 	var assign = __webpack_require__(12);
 
 	var mixinProto = mixin({
@@ -44805,7 +45662,7 @@
 
 
 /***/ },
-/* 545 */
+/* 556 */
 /***/ function(module, exports) {
 
 	function objToStr(x){ return Object.prototype.toString.call(x); };
@@ -44982,7 +45839,7 @@
 
 
 /***/ },
-/* 546 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44992,11 +45849,11 @@
 	});
 	exports.defaultCellRangeRenderer = exports.Grid = exports.default = undefined;
 
-	var _Grid2 = __webpack_require__(547);
+	var _Grid2 = __webpack_require__(558);
 
 	var _Grid3 = _interopRequireDefault(_Grid2);
 
-	var _defaultCellRangeRenderer2 = __webpack_require__(555);
+	var _defaultCellRangeRenderer2 = __webpack_require__(566);
 
 	var _defaultCellRangeRenderer3 = _interopRequireDefault(_defaultCellRangeRenderer2);
 
@@ -45007,7 +45864,7 @@
 	exports.defaultCellRangeRenderer = _defaultCellRangeRenderer3.default;
 
 /***/ },
-/* 547 */
+/* 558 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45028,11 +45885,11 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(523);
+	var _reactAddonsPureRenderMixin = __webpack_require__(527);
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
@@ -45040,31 +45897,31 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _calculateSizeAndPositionDataAndUpdateScrollOffset = __webpack_require__(548);
+	var _calculateSizeAndPositionDataAndUpdateScrollOffset = __webpack_require__(559);
 
 	var _calculateSizeAndPositionDataAndUpdateScrollOffset2 = _interopRequireDefault(_calculateSizeAndPositionDataAndUpdateScrollOffset);
 
-	var _ScalingCellSizeAndPositionManager = __webpack_require__(549);
+	var _ScalingCellSizeAndPositionManager = __webpack_require__(560);
 
 	var _ScalingCellSizeAndPositionManager2 = _interopRequireDefault(_ScalingCellSizeAndPositionManager);
 
-	var _createCallbackMemoizer = __webpack_require__(551);
+	var _createCallbackMemoizer = __webpack_require__(562);
 
 	var _createCallbackMemoizer2 = _interopRequireDefault(_createCallbackMemoizer);
 
-	var _getOverscanIndices = __webpack_require__(552);
+	var _getOverscanIndices = __webpack_require__(563);
 
 	var _getOverscanIndices2 = _interopRequireDefault(_getOverscanIndices);
 
-	var _scrollbarSize = __webpack_require__(553);
+	var _scrollbarSize = __webpack_require__(564);
 
 	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
-	var _updateScrollIndexHelper = __webpack_require__(554);
+	var _updateScrollIndexHelper = __webpack_require__(565);
 
 	var _updateScrollIndexHelper2 = _interopRequireDefault(_updateScrollIndexHelper);
 
-	var _defaultCellRangeRenderer = __webpack_require__(555);
+	var _defaultCellRangeRenderer = __webpack_require__(566);
 
 	var _defaultCellRangeRenderer2 = _interopRequireDefault(_defaultCellRangeRenderer);
 
@@ -46033,7 +46890,7 @@
 	exports.default = Grid;
 
 /***/ },
-/* 548 */
+/* 559 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -46085,7 +46942,7 @@
 	}
 
 /***/ },
-/* 549 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46097,7 +46954,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _CellSizeAndPositionManager = __webpack_require__(550);
+	var _CellSizeAndPositionManager = __webpack_require__(561);
 
 	var _CellSizeAndPositionManager2 = _interopRequireDefault(_CellSizeAndPositionManager);
 
@@ -46305,7 +47162,7 @@
 	exports.default = ScalingCellSizeAndPositionManager;
 
 /***/ },
-/* 550 */
+/* 561 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -46607,7 +47464,7 @@
 	exports.default = CellSizeAndPositionManager;
 
 /***/ },
-/* 551 */
+/* 562 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -46649,7 +47506,7 @@
 	}
 
 /***/ },
-/* 552 */
+/* 563 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -46680,7 +47537,7 @@
 	}
 
 /***/ },
-/* 553 */
+/* 564 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46710,7 +47567,7 @@
 	};
 
 /***/ },
-/* 554 */
+/* 565 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -46776,7 +47633,7 @@
 	}
 
 /***/ },
-/* 555 */
+/* 566 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46895,7 +47752,7 @@
 	}
 
 /***/ },
-/* 556 */
+/* 567 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46905,7 +47762,7 @@
 	});
 	exports.Collection = exports.default = undefined;
 
-	var _Collection2 = __webpack_require__(557);
+	var _Collection2 = __webpack_require__(568);
 
 	var _Collection3 = _interopRequireDefault(_Collection2);
 
@@ -46915,7 +47772,7 @@
 	exports.Collection = _Collection3.default;
 
 /***/ },
-/* 557 */
+/* 568 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46932,23 +47789,23 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(523);
+	var _reactAddonsPureRenderMixin = __webpack_require__(527);
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
-	var _CollectionView = __webpack_require__(558);
+	var _CollectionView = __webpack_require__(569);
 
 	var _CollectionView2 = _interopRequireDefault(_CollectionView);
 
-	var _calculateSizeAndPositionData2 = __webpack_require__(560);
+	var _calculateSizeAndPositionData2 = __webpack_require__(571);
 
 	var _calculateSizeAndPositionData3 = _interopRequireDefault(_calculateSizeAndPositionData2);
 
-	var _getUpdatedOffsetForIndex = __webpack_require__(563);
+	var _getUpdatedOffsetForIndex = __webpack_require__(574);
 
 	var _getUpdatedOffsetForIndex2 = _interopRequireDefault(_getUpdatedOffsetForIndex);
 
@@ -47164,7 +48021,7 @@
 	exports.default = Collection;
 
 /***/ },
-/* 558 */
+/* 569 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47185,11 +48042,11 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(523);
+	var _reactAddonsPureRenderMixin = __webpack_require__(527);
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
@@ -47197,11 +48054,11 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _createCallbackMemoizer = __webpack_require__(559);
+	var _createCallbackMemoizer = __webpack_require__(570);
 
 	var _createCallbackMemoizer2 = _interopRequireDefault(_createCallbackMemoizer);
 
-	var _scrollbarSize = __webpack_require__(553);
+	var _scrollbarSize = __webpack_require__(564);
 
 	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
@@ -47830,7 +48687,7 @@
 	exports.default = CollectionView;
 
 /***/ },
-/* 559 */
+/* 570 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -47872,7 +48729,7 @@
 	}
 
 /***/ },
-/* 560 */
+/* 571 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47882,7 +48739,7 @@
 	});
 	exports.default = calculateSizeAndPositionData;
 
-	var _SectionManager = __webpack_require__(561);
+	var _SectionManager = __webpack_require__(572);
 
 	var _SectionManager2 = _interopRequireDefault(_SectionManager);
 
@@ -47924,7 +48781,7 @@
 	}
 
 /***/ },
-/* 561 */
+/* 572 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47940,7 +48797,7 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-	var _Section = __webpack_require__(562);
+	var _Section = __webpack_require__(573);
 
 	var _Section2 = _interopRequireDefault(_Section);
 
@@ -48085,7 +48942,7 @@
 	exports.default = SectionManager;
 
 /***/ },
-/* 562 */
+/* 573 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -48159,7 +49016,7 @@
 	exports.default = Section;
 
 /***/ },
-/* 563 */
+/* 574 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -48204,7 +49061,7 @@
 	}
 
 /***/ },
-/* 564 */
+/* 575 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48214,7 +49071,7 @@
 	});
 	exports.VirtualScroll = exports.default = undefined;
 
-	var _VirtualScroll2 = __webpack_require__(565);
+	var _VirtualScroll2 = __webpack_require__(576);
 
 	var _VirtualScroll3 = _interopRequireDefault(_VirtualScroll2);
 
@@ -48224,7 +49081,7 @@
 	exports.VirtualScroll = _VirtualScroll3.default;
 
 /***/ },
-/* 565 */
+/* 576 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48237,7 +49094,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Grid = __webpack_require__(546);
+	var _Grid = __webpack_require__(557);
 
 	var _Grid2 = _interopRequireDefault(_Grid);
 
@@ -48245,11 +49102,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(523);
+	var _reactAddonsPureRenderMixin = __webpack_require__(527);
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
@@ -48524,7 +49381,7 @@
 	exports.default = VirtualScroll;
 
 /***/ },
-/* 566 */
+/* 577 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48534,7 +49391,7 @@
 	});
 	exports.InfiniteLoader = exports.default = undefined;
 
-	var _InfiniteLoader2 = __webpack_require__(567);
+	var _InfiniteLoader2 = __webpack_require__(578);
 
 	var _InfiniteLoader3 = _interopRequireDefault(_InfiniteLoader2);
 
@@ -48544,7 +49401,7 @@
 	exports.InfiniteLoader = _InfiniteLoader3.default;
 
 /***/ },
-/* 567 */
+/* 578 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48560,11 +49417,11 @@
 
 	var _react = __webpack_require__(9);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(523);
+	var _reactAddonsPureRenderMixin = __webpack_require__(527);
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
@@ -48799,7 +49656,7 @@
 	exports.default = InfiniteLoader;
 
 /***/ },
-/* 568 */
+/* 579 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48816,11 +49673,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _scrollbarSize = __webpack_require__(553);
+	var _scrollbarSize = __webpack_require__(564);
 
 	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
@@ -48828,15 +49685,15 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _Grid = __webpack_require__(546);
+	var _Grid = __webpack_require__(557);
 
 	var _Grid2 = _interopRequireDefault(_Grid);
 
-	var _Scrollbar = __webpack_require__(569);
+	var _Scrollbar = __webpack_require__(580);
 
 	var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
 
-	var _HorizontalScrollbar = __webpack_require__(572);
+	var _HorizontalScrollbar = __webpack_require__(583);
 
 	var _HorizontalScrollbar2 = _interopRequireDefault(_HorizontalScrollbar);
 
@@ -48872,7 +49729,7 @@
 	    _createClass(Table, [{
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            if (nextProps.columnSize !== this.props.columnSize || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
+	            if (!(0, _core.shallowEqual)(nextProps.columnSize, this.props.columnSize) || !(0, _core.shallowEqual)(nextProps.freezeCols, this.props.freezeCols) || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
 	                this.setState({
 	                    redraw: !this.state.redraw
 	                });
@@ -48896,6 +49753,8 @@
 	                columnSize = _props.columnSize,
 	                isNeedFreeze = _props.isNeedFreeze,
 	                freezeCols = _props.freezeCols,
+	                mergeCols = _props.mergeCols,
+	                mergeRule = _props.mergeRule,
 	                header = _props.header,
 	                items = _props.items,
 	                regionColumnSize = _props.regionColumnSize,
@@ -48904,7 +49763,7 @@
 	                h = _props.height,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
-	                props = _objectWithoutProperties(_props, ['headerRowHeight', 'rowHeight', 'columnSize', 'isNeedFreeze', 'freezeCols', 'header', 'items', 'regionColumnSize', 'onVerticalScroll', 'width', 'height', 'headerCellRenderer', 'cellRenderer']);
+	                props = _objectWithoutProperties(_props, ['headerRowHeight', 'rowHeight', 'columnSize', 'isNeedFreeze', 'freezeCols', 'mergeCols', 'mergeRule', 'header', 'items', 'regionColumnSize', 'onVerticalScroll', 'width', 'height', 'headerCellRenderer', 'cellRenderer']);
 
 	            var width = w,
 	                height = h;
@@ -48949,7 +49808,6 @@
 	                        columnWidth: this._topLeftColumnWidthGetter.bind(this),
 	                        columnCount: freezeCols.length,
 	                        rowCount: header.length,
-	                        cellStyle: this._topLeftCellStyleGetter.bind(this),
 	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
 	                        width: regionSize,
 	                        noContentRender: this._noContentRender.bind(this),
@@ -48965,7 +49823,6 @@
 	                        columnWidth: this._bottomLeftColumnWidthGetter.bind(this),
 	                        columnCount: freezeCols.length,
 	                        rowCount: items.length,
-	                        cellStyle: this._bottomLeftCellStyleGetter.bind(this),
 	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
 	                        width: height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize,
 	                        noContentRender: this._noContentRender.bind(this),
@@ -48983,7 +49840,6 @@
 	                    columnWidth: this._topRightColumnWidthGetter.bind(this),
 	                    columnCount: columnSize.length - freezeCols.length,
 	                    rowCount: header.length,
-	                    cellStyle: this._topRightCellStyleGetter.bind(this),
 	                    height: width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
 	                    width: width - regionSize,
 	                    noContentRender: this._noContentRender.bind(this),
@@ -49001,7 +49857,6 @@
 	                columnWidth: this._bottomRightColumnWidthGetter.bind(this),
 	                columnCount: columnSize.length - this._getFreezeColLength(),
 	                rowCount: items.length,
-	                cellStyle: this._bottomRightCellStyleGetter.bind(this),
 	                height: width - regionSize >= totalColumnSize - summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0 ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
 	                width: height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize,
 	                noContentRender: this._noContentRender.bind(this),
@@ -49025,18 +49880,18 @@
 	                    { dir: 'top', box: topLeft ? 'first' : 'mean',
 	                        style: { width: regionSize } },
 	                    topLeft ? _react2.default.createElement(
-	                        _layout.VerticalLayout,
+	                        _layout.DefaultLayout,
 	                        {
+	                            scrollx: false,
+	                            scrolly: false,
 	                            style: {
-	                                height: header.length * headerRowHeight,
-	                                overflow: 'hidden',
-	                                borderBottom: '2px solid #eaeaea'
+	                                height: header.length * headerRowHeight
 	                            } },
 	                        topLeft
 	                    ) : null,
 	                    _react2.default.createElement(
-	                        _layout.VerticalLayout,
-	                        { style: { overflow: 'hidden' } },
+	                        _layout.DefaultLayout,
+	                        { scrollx: false, scrolly: false },
 	                        bottomLeft
 	                    )
 	                ) : null,
@@ -49044,25 +49899,24 @@
 	                    _layout.Layout,
 	                    { dir: 'top', box: topRight ? 'first' : 'mean' },
 	                    topRight ? _react2.default.createElement(
-	                        _layout.VerticalLayout,
+	                        _layout.DefaultLayout,
 	                        {
+	                            scrollx: false,
+	                            scrolly: false,
 	                            style: {
-	                                height: header.length * headerRowHeight,
-	                                overflow: 'hidden',
-	                                borderBottom: '2px solid #eaeaea'
+	                                height: header.length * headerRowHeight
 	                            } },
 	                        topRight
 	                    ) : null,
 	                    _react2.default.createElement(
-	                        _layout.VerticalLayout,
-	                        { style: { overflow: 'hidden' } },
+	                        _layout.DefaultLayout,
+	                        { scrollx: false, scrolly: false },
 	                        bottomRight
 	                    )
 	                ),
 	                _react2.default.createElement(
 	                    _layout.VerticalLayout,
-	                    { style: {
-	                            position: 'absolute',
+	                    { abs: true, style: {
 	                            top: 0,
 	                            bottom: 0,
 	                            right: -_Scrollbar2.default.SIZE,
@@ -49145,7 +49999,7 @@
 	                columnIndex: columnIndex,
 	                rowIndex: rowIndex,
 	                width: this._topLeftColumnWidthGetter({ columnIndex: columnIndex }),
-	                left: left - this.state.leftScrollLeft,
+	                left: left,
 	                top: top
 	            }, props, {
 	                offsetLeftGetter: function offsetLeftGetter() {
@@ -49171,28 +50025,10 @@
 	            return this.props.headerRowHeight;
 	        }
 	    }, {
-	        key: '_topLeftCellStyleGetter',
-	        value: function _topLeftCellStyleGetter(_ref4) {
-	            var columnIndex = _ref4.columnIndex,
-	                rowIndex = _ref4.rowIndex;
-
-	            var style = {
-	                borderRight: '1px solid #eaeaea',
-	                borderBottom: '1px solid #eaeaea'
-	            };
-	            if (columnIndex === 0) {
-	                style.borderLeft = '1px solid #eaeaea';
-	            }
-	            if (rowIndex === 0) {
-	                style.borderTop = '1px solid #eaeaea';
-	            }
-	            return style;
-	        }
-	    }, {
 	        key: '_topLeftOnScroll',
-	        value: function _topLeftOnScroll(_ref5) {
-	            var scrollLeft = _ref5.scrollLeft,
-	                scrollTop = _ref5.scrollTop;
+	        value: function _topLeftOnScroll(_ref4) {
+	            var scrollLeft = _ref4.scrollLeft,
+	                scrollTop = _ref4.scrollTop;
 
 	            this.setState({
 	                leftScrollLeft: scrollLeft
@@ -49200,20 +50036,20 @@
 	        }
 	    }, {
 	        key: '_topRightCellRenderer',
-	        value: function _topRightCellRenderer(_ref6) {
+	        value: function _topRightCellRenderer(_ref5) {
 	            var _this4 = this;
 
-	            var columnIndex = _ref6.columnIndex,
-	                rowIndex = _ref6.rowIndex,
-	                left = _ref6.left,
-	                top = _ref6.top,
-	                props = _objectWithoutProperties(_ref6, ['columnIndex', 'rowIndex', 'left', 'top']);
+	            var columnIndex = _ref5.columnIndex,
+	                rowIndex = _ref5.rowIndex,
+	                left = _ref5.left,
+	                top = _ref5.top,
+	                props = _objectWithoutProperties(_ref5, ['columnIndex', 'rowIndex', 'left', 'top']);
 
 	            return this.props.headerCellRenderer(_extends({
 	                columnIndex: columnIndex + this._getFreezeColLength(),
 	                rowIndex: rowIndex,
 	                width: this._topRightColumnWidthGetter({ columnIndex: columnIndex }),
-	                left: left - this.state.rightScrollLeft,
+	                left: left,
 	                top: top
 	            }, props, {
 	                offsetLeftGetter: function offsetLeftGetter() {
@@ -49226,41 +50062,23 @@
 	        }
 	    }, {
 	        key: '_topRightColumnWidthGetter',
-	        value: function _topRightColumnWidthGetter(_ref7) {
-	            var index = _ref7.index;
+	        value: function _topRightColumnWidthGetter(_ref6) {
+	            var index = _ref6.index;
 
 	            return this.props.columnSize[index + this._getFreezeColLength()];
 	        }
 	    }, {
 	        key: '_topRightRowHeightGetter',
-	        value: function _topRightRowHeightGetter(_ref8) {
-	            var index = _ref8.index;
+	        value: function _topRightRowHeightGetter(_ref7) {
+	            var index = _ref7.index;
 
 	            return this.props.headerRowHeight;
 	        }
 	    }, {
-	        key: '_topRightCellStyleGetter',
-	        value: function _topRightCellStyleGetter(_ref9) {
-	            var columnIndex = _ref9.columnIndex,
-	                rowIndex = _ref9.rowIndex;
-
-	            var style = {
-	                borderRight: '1px solid #eaeaea',
-	                borderBottom: '1px solid #eaeaea'
-	            };
-	            if (columnIndex === 0) {
-	                style.borderLeft = '1px solid #eaeaea';
-	            }
-	            if (rowIndex === 0) {
-	                style.borderTop = '1px solid #eaeaea';
-	            }
-	            return style;
-	        }
-	    }, {
 	        key: '_topRightOnScroll',
-	        value: function _topRightOnScroll(_ref10) {
-	            var scrollLeft = _ref10.scrollLeft,
-	                scrollTop = _ref10.scrollTop;
+	        value: function _topRightOnScroll(_ref8) {
+	            var scrollLeft = _ref8.scrollLeft,
+	                scrollTop = _ref8.scrollTop;
 
 	            this.setState({
 	                rightScrollLeft: scrollLeft
@@ -49268,52 +50086,34 @@
 	        }
 	    }, {
 	        key: '_bottomLeftCellRenderer',
-	        value: function _bottomLeftCellRenderer(_ref11) {
-	            var columnIndex = _ref11.columnIndex,
-	                rowIndex = _ref11.rowIndex,
-	                props = _objectWithoutProperties(_ref11, ['columnIndex', 'rowIndex']);
+	        value: function _bottomLeftCellRenderer(_ref9) {
+	            var columnIndex = _ref9.columnIndex,
+	                rowIndex = _ref9.rowIndex,
+	                props = _objectWithoutProperties(_ref9, ['columnIndex', 'rowIndex']);
 
 	            return this.props.cellRenderer(_extends({ columnIndex: columnIndex, rowIndex: rowIndex }, props), this.props.items[rowIndex][columnIndex]);
 	        }
 	    }, {
 	        key: '_bottomLeftColumnWidthGetter',
-	        value: function _bottomLeftColumnWidthGetter(_ref12) {
-	            var index = _ref12.index;
+	        value: function _bottomLeftColumnWidthGetter(_ref10) {
+	            var index = _ref10.index;
 
 	            return this.props.columnSize[index];
 	        }
 	    }, {
 	        key: '_bottomLeftRowHeightGetter',
-	        value: function _bottomLeftRowHeightGetter(_ref13) {
-	            var index = _ref13.index;
+	        value: function _bottomLeftRowHeightGetter(_ref11) {
+	            var index = _ref11.index;
 
 	            return this.props.rowHeight;
 	        }
 	    }, {
-	        key: '_bottomLeftCellStyleGetter',
-	        value: function _bottomLeftCellStyleGetter(_ref14) {
-	            var columnIndex = _ref14.columnIndex,
-	                rowIndex = _ref14.rowIndex;
-
-	            var style = {
-	                borderRight: '1px solid #eaeaea',
-	                borderBottom: '1px solid #eaeaea'
-	            };
-	            if (columnIndex === 0) {
-	                style.borderLeft = '1px solid #eaeaea';
-	            }
-	            if (rowIndex === 0) {
-	                style.borderTop = '1px solid #eaeaea';
-	            }
-	            return style;
-	        }
-	    }, {
 	        key: '_bottomLeftOnScroll',
-	        value: function _bottomLeftOnScroll(_ref15) {
+	        value: function _bottomLeftOnScroll(_ref12) {
 	            var _this5 = this;
 
-	            var scrollLeft = _ref15.scrollLeft,
-	                scrollTop = _ref15.scrollTop;
+	            var scrollLeft = _ref12.scrollLeft,
+	                scrollTop = _ref12.scrollTop;
 
 	            this.setState({
 	                leftScrollLeft: scrollLeft,
@@ -49324,10 +50124,10 @@
 	        }
 	    }, {
 	        key: '_bottomRightCellRenderer',
-	        value: function _bottomRightCellRenderer(_ref16) {
-	            var columnIndex = _ref16.columnIndex,
-	                rowIndex = _ref16.rowIndex,
-	                props = _objectWithoutProperties(_ref16, ['columnIndex', 'rowIndex']);
+	        value: function _bottomRightCellRenderer(_ref13) {
+	            var columnIndex = _ref13.columnIndex,
+	                rowIndex = _ref13.rowIndex,
+	                props = _objectWithoutProperties(_ref13, ['columnIndex', 'rowIndex']);
 
 	            return this.props.cellRenderer(_extends({
 	                columnIndex: columnIndex + this._getFreezeColLength(),
@@ -49335,43 +50135,25 @@
 	        }
 	    }, {
 	        key: '_bottomRightColumnWidthGetter',
-	        value: function _bottomRightColumnWidthGetter(_ref17) {
-	            var index = _ref17.index;
+	        value: function _bottomRightColumnWidthGetter(_ref14) {
+	            var index = _ref14.index;
 
 	            return this.props.columnSize[index + this._getFreezeColLength()];
 	        }
 	    }, {
 	        key: '_bottomRightRowHeightGetter',
-	        value: function _bottomRightRowHeightGetter(_ref18) {
-	            var index = _ref18.index;
+	        value: function _bottomRightRowHeightGetter(_ref15) {
+	            var index = _ref15.index;
 
 	            return this.props.rowHeight;
 	        }
 	    }, {
-	        key: '_bottomRightCellStyleGetter',
-	        value: function _bottomRightCellStyleGetter(_ref19) {
-	            var columnIndex = _ref19.columnIndex,
-	                rowIndex = _ref19.rowIndex;
-
-	            var style = {
-	                borderRight: '1px solid #eaeaea',
-	                borderBottom: '1px solid #eaeaea'
-	            };
-	            if (columnIndex === 0) {
-	                style.borderLeft = '1px solid #eaeaea';
-	            }
-	            if (rowIndex === 0) {
-	                style.borderTop = '1px solid #eaeaea';
-	            }
-	            return style;
-	        }
-	    }, {
 	        key: '_bottomRightOnScroll',
-	        value: function _bottomRightOnScroll(_ref20) {
+	        value: function _bottomRightOnScroll(_ref16) {
 	            var _this6 = this;
 
-	            var scrollLeft = _ref20.scrollLeft,
-	                scrollTop = _ref20.scrollTop;
+	            var scrollLeft = _ref16.scrollLeft,
+	                scrollTop = _ref16.scrollTop;
 
 	            this.setState({
 	                rightScrollLeft: scrollLeft,
@@ -49429,7 +50211,7 @@
 	exports.default = Table;
 
 /***/ },
-/* 569 */
+/* 580 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49448,17 +50230,17 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(523);
+	var _reactAddonsPureRenderMixin = __webpack_require__(527);
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _core = __webpack_require__(194);
 
-	__webpack_require__(570);
+	__webpack_require__(581);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -49912,13 +50694,13 @@
 	exports.default = Scrollbar;
 
 /***/ },
-/* 570 */
+/* 581 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(571);
+	var content = __webpack_require__(582);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -49938,7 +50720,7 @@
 	}
 
 /***/ },
-/* 571 */
+/* 582 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -49952,7 +50734,7 @@
 
 
 /***/ },
-/* 572 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49969,21 +50751,21 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(523);
+	var _reactAddonsPureRenderMixin = __webpack_require__(527);
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _core = __webpack_require__(194);
 
-	var _Scrollbar = __webpack_require__(569);
+	var _Scrollbar = __webpack_require__(580);
 
 	var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
 
-	__webpack_require__(570);
+	__webpack_require__(581);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50054,7 +50836,7 @@
 	exports.default = HorizontalScrollbar;
 
 /***/ },
-/* 573 */
+/* 584 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50071,7 +50853,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
@@ -50079,15 +50861,15 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _Table = __webpack_require__(568);
+	var _Table = __webpack_require__(579);
 
 	var _Table2 = _interopRequireDefault(_Table);
 
-	var _ColumnResizeHandle = __webpack_require__(574);
+	var _ColumnResizeHandle = __webpack_require__(585);
 
 	var _ColumnResizeHandle2 = _interopRequireDefault(_ColumnResizeHandle);
 
-	__webpack_require__(577);
+	__webpack_require__(588);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50138,6 +50920,8 @@
 	                isNeedFreeze = _props.isNeedFreeze,
 	                isNeedResize = _props.isNeedResize,
 	                freezeCols = _props.freezeCols,
+	                mergeCols = _props.mergeCols,
+	                mergeRule = _props.mergeRule,
 	                header = _props.header,
 	                items = _props.items,
 	                regionColumnSize = _props.regionColumnSize,
@@ -50145,7 +50929,8 @@
 	                cellRenderer = _props.cellRenderer,
 	                onVerticalScroll = _props.onVerticalScroll,
 	                width = _props.width,
-	                height = _props.height;
+	                height = _props.height,
+	                Component = _props.Component;
 
 	            return _react2.default.createElement(
 	                _layout.Layout,
@@ -50153,7 +50938,7 @@
 	                        width: width,
 	                        height: height
 	                    } },
-	                _react2.default.createElement(_Table2.default, {
+	                _react2.default.createElement(Component, {
 	                    width: width,
 	                    height: height,
 	                    headerRowHeight: headerRowHeight,
@@ -50161,6 +50946,8 @@
 	                    columnSize: this.state.columnSize,
 	                    isNeedFreeze: isNeedFreeze,
 	                    freezeCols: freezeCols,
+	                    mergeCols: mergeCols,
+	                    mergeRule: mergeRule,
 	                    header: header,
 	                    items: items,
 	                    regionColumnSize: this.state.regionColumnSize,
@@ -50244,6 +51031,9 @@
 	                    regionSize += columnSize[col];
 	                });
 	            }
+	            if (isNeedFreeze === false) {
+	                regionSize = 0;
+	            }
 	            return regionSize;
 	        }
 	    }, {
@@ -50278,7 +51068,7 @@
 	                return _react2.default.createElement(
 	                    _layout.Layout,
 	                    {
-	                        style: { width: width - (columnIndex === 0 ? 2 : 1), height: height - (rowIndex === 0 ? 2 : 1) } },
+	                        style: { width: width, height: height } },
 	                    headerCellRenderer.apply(undefined, [_extends({ columnIndex: columnIndex, rowIndex: rowIndex, width: width, height: height, top: top, left: left }, props)].concat(others)),
 	                    _react2.default.createElement(
 	                        _layout.Layout,
@@ -50350,13 +51140,15 @@
 	    columnSize: [],
 	    isNeedFreeze: true,
 	    freezeCols: [],
+	    mergeCols: [],
 	    header: [],
 	    items: [],
 	    regionColumnSize: [],
 	    headerCellRenderer: _core.emptyFunction,
 	    cellRenderer: _core.emptyFunction,
 	    onColumnResizeEnd: _core.emptyFunction,
-	    onRegionColumnResizeEnd: _core.emptyFunction
+	    onRegionColumnResizeEnd: _core.emptyFunction,
+	    Component: _Table2.default
 	};
 
 	_reactMixin2.default.onClass(ResizableTable, _core.ReactComponentWithPureRenderMixin);
@@ -50364,7 +51156,7 @@
 	exports.default = ResizableTable;
 
 /***/ },
-/* 574 */
+/* 585 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50379,13 +51171,13 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
 	var _core = __webpack_require__(194);
 
-	__webpack_require__(575);
+	__webpack_require__(586);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50542,13 +51334,13 @@
 	exports.default = ColumnResizeHandle;
 
 /***/ },
-/* 575 */
+/* 586 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(576);
+	var content = __webpack_require__(587);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -50568,7 +51360,7 @@
 	}
 
 /***/ },
-/* 576 */
+/* 587 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -50582,13 +51374,13 @@
 
 
 /***/ },
-/* 577 */
+/* 588 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(578);
+	var content = __webpack_require__(589);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -50608,7 +51400,7 @@
 	}
 
 /***/ },
-/* 578 */
+/* 589 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -50616,13 +51408,13 @@
 
 
 	// module
-	exports.push([module.id, ".resizable-table-cell-layout-column-resizer-container {\n  position: absolute;\n  right: 0px;\n  width: 6px;\n  z-index: 1;\n}\n.resizable-table-cell-layout-column-resizer-container:hover {\n  cursor: ew-resize;\n}\n.resizable-table-cell-layout-column-resizer-container:hover .resizable-table-cell-layout-column-resizer-knob {\n  visibility: visible;\n}\n.resizable-table-cell-layout-column-resizer-knob {\n  position: absolute;\n  right: 0px;\n  visibility: hidden;\n  width: 4px;\n}\n.public-resizable-table-cell-column-resizer-knob {\n  background-color: #0284ff;\n}\n.resizable-table-cell-layout-region-resizer-container {\n  position: absolute;\n  width: 6px;\n  z-index: 1;\n  border-right: 2px solid #eaeaea;\n}\n.resizable-table-cell-layout-region-resizer-container:hover {\n  cursor: ew-resize;\n}\n.resizable-table-cell-layout-region-resizer-container:hover .resizable-table-cell-layout-region-resizer-knob {\n  visibility: visible;\n}\n.resizable-table-cell-layout-region-resizer-knob {\n  position: absolute;\n  right: 0px;\n  visibility: hidden;\n  width: 2px;\n}\n.public-resizable-table-cell-region-resizer-knob {\n  background-color: #0284ff;\n}\n", ""]);
+	exports.push([module.id, ".resizable-table-cell-layout-column-resizer-container {\n  position: absolute;\n  right: 0px;\n  width: 6px;\n  z-index: 1;\n}\n.resizable-table-cell-layout-column-resizer-container:hover {\n  cursor: ew-resize;\n}\n.resizable-table-cell-layout-column-resizer-container:hover .resizable-table-cell-layout-column-resizer-knob {\n  visibility: visible;\n}\n.resizable-table-cell-layout-column-resizer-knob {\n  position: absolute;\n  right: 0px;\n  visibility: hidden;\n  width: 4px;\n}\n.public-resizable-table-cell-column-resizer-knob {\n  background-color: #0284ff;\n}\n.resizable-table-cell-layout-region-resizer-container {\n  position: absolute;\n  width: 6px;\n  z-index: 1;\n}\n.resizable-table-cell-layout-region-resizer-container:hover {\n  cursor: ew-resize;\n}\n.resizable-table-cell-layout-region-resizer-container:hover .resizable-table-cell-layout-region-resizer-knob {\n  background-color: #0284ff;\n}\n.resizable-table-cell-layout-region-resizer-knob {\n  position: absolute;\n  right: 0px;\n  width: 2px;\n}\n.public-resizable-table-cell-region-resizer-knob {\n  background-color: #eaeaea;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 579 */
+/* 590 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50639,7 +51431,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
@@ -50647,11 +51439,11 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _Table = __webpack_require__(568);
+	var _Table = __webpack_require__(579);
 
 	var _Table2 = _interopRequireDefault(_Table);
 
-	var _ResizableTable = __webpack_require__(573);
+	var _ResizableTable = __webpack_require__(584);
 
 	var _ResizableTable2 = _interopRequireDefault(_ResizableTable);
 
@@ -50697,6 +51489,9 @@
 	                    regionColumnSize[0] += columnSize[col];
 	                });
 	            }
+	            if (freezeCols.length === 0) {
+	                regionColumnSize[0] = 0;
+	            }
 	            if (isNeedFreeze === true && regionColumnSize[0] >= tableWidth) {
 	                regionColumnSize[0] = freezeCols.length > columnSize.length - freezeCols.length ? Math.floor(2 / 3 * tableWidth) : Math.floor(tableWidth / 3);
 	            }
@@ -50734,6 +51529,8 @@
 	                isNeedFreeze = _props.isNeedFreeze,
 	                isNeedResize = _props.isNeedResize,
 	                freezeCols = _props.freezeCols,
+	                mergeCols = _props.mergeCols,
+	                mergeRule = _props.mergeRule,
 	                header = _props.header,
 	                items = _props.items,
 	                regionColumnSize = _props.regionColumnSize,
@@ -50741,7 +51538,8 @@
 	                cellRenderer = _props.cellRenderer,
 	                onVerticalScroll = _props.onVerticalScroll,
 	                width = _props.width,
-	                height = _props.height;
+	                height = _props.height,
+	                Component = _props.Component;
 
 	            return _react2.default.createElement(_ResizableTable2.default, {
 	                width: width,
@@ -50752,6 +51550,8 @@
 	                isNeedFreeze: isNeedFreeze,
 	                isNeedResize: isNeedResize,
 	                freezeCols: freezeCols,
+	                mergeCols: mergeCols,
+	                mergeRule: mergeRule,
 	                header: header,
 	                items: items,
 	                regionColumnSize: this.state.regionColumnSize,
@@ -50759,7 +51559,8 @@
 	                cellRenderer: cellRenderer,
 	                onColumnResizeEnd: this._onColumnResizeEnd.bind(this),
 	                onRegionColumnResizeEnd: this._onRegionColumnResizeEnd.bind(this),
-	                onVerticalScroll: onVerticalScroll
+	                onVerticalScroll: onVerticalScroll,
+	                Component: Component
 	            });
 	        }
 	    }, {
@@ -50827,7 +51628,7 @@
 	exports.default = AdaptiveTable;
 
 /***/ },
-/* 580 */
+/* 591 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50844,29 +51645,29 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(40);
+	var _reactMixin = __webpack_require__(555);
 
-	var _reactDom2 = _interopRequireDefault(_reactDom);
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _scrollbarSize = __webpack_require__(564);
+
+	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
 	var _core = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
-	var _Button = __webpack_require__(534);
+	var _Collection = __webpack_require__(567);
 
-	var _Button2 = _interopRequireDefault(_Button);
+	var _Collection2 = _interopRequireDefault(_Collection);
 
-	var _Portal = __webpack_require__(541);
+	var _Scrollbar = __webpack_require__(580);
 
-	var _Portal2 = _interopRequireDefault(_Portal);
+	var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
 
-	var _ZIndex = __webpack_require__(581);
+	var _HorizontalScrollbar = __webpack_require__(583);
 
-	var _ZIndex2 = _interopRequireDefault(_ZIndex);
-
-	var _Colors = __webpack_require__(582);
-
-	var _Colors2 = _interopRequireDefault(_Colors);
+	var _HorizontalScrollbar2 = _interopRequireDefault(_HorizontalScrollbar);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50877,245 +51678,632 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/21.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/22.
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
-	var Combo = function (_Component) {
-	    _inherits(Combo, _Component);
 
-	    function Combo(props, context) {
-	        _classCallCheck(this, Combo);
+	var MERGE_RULE = function MERGE_RULE(col1, col2) {
+	    return col1 === col2;
+	};
+	var SECTION_SIZE = 100;
 
-	        var _this = _possibleConstructorReturn(this, (Combo.__proto__ || Object.getPrototypeOf(Combo)).call(this, props, context));
+	var SummaryTable = function (_Component) {
+	    _inherits(SummaryTable, _Component);
 
-	        _this.state = {
-	            open: false
-	        };
+	    function SummaryTable(props, context) {
+	        _classCallCheck(this, SummaryTable);
 
-	        _this._togglePopup = _this._togglePopup.bind(_this);
-	        _this.tag = _Portal2.default.allocateTag();
+	        var _this = _possibleConstructorReturn(this, (SummaryTable.__proto__ || Object.getPrototypeOf(SummaryTable)).call(this, props, context));
+
+	        _this._scrollBarSize = (0, _scrollbarSize2.default)();
+	        _this.state = _extends({
+	            scrollTop: 0,
+	            leftScrollLeft: 0,
+	            rightScrollLeft: 0
+	        }, _this._digest(props));
 	        return _this;
 	    }
 
-	    _createClass(Combo, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            var _this2 = this;
+	    _createClass(SummaryTable, [{
+	        key: '_digest',
+	        value: function _digest(props) {
+	            var header = props.header,
+	                freezeCols = props.freezeCols,
+	                mergeCols = props.mergeCols,
+	                columnSize = props.columnSize,
+	                items = props.items,
+	                headerRowHeight = props.headerRowHeight,
+	                rowHeight = props.rowHeight;
 
-	            var fn = function fn(e) {
-	                if (_this2.state.open === false) {
-	                    return;
-	                }
-	                var self = _reactDom2.default.findDOMNode(_this2.trigger);
-	                var popup = _reactDom2.default.findDOMNode(_this2.popup);
-	                if (!(0, _core.containsNode)(self, e.target) && !(0, _core.containsNode)(popup, e.target)) {
-	                    _this2.setState({
-	                        open: false
-	                    }, function () {
-	                        _this2._close();
-	                    });
-	                }
+	            var topLeftItems = this._serialize(header, 0, freezeCols.length, headerRowHeight, columnSize, mergeCols);
+	            var topRightItems = this._serialize(header, freezeCols.length, columnSize.length, headerRowHeight, columnSize, true);
+	            var bottomLeftItems = this._serialize(items, 0, freezeCols.length, rowHeight, columnSize, mergeCols);
+	            var bottomRightItems = this._serialize(items, freezeCols.length, columnSize.length, rowHeight, columnSize, mergeCols);
+	            return {
+	                topLeftItems: topLeftItems,
+	                topRightItems: topRightItems,
+	                bottomLeftItems: bottomLeftItems,
+	                bottomRightItems: bottomRightItems
 	            };
-	            this._mouseupEventListener = _core.EventListener.listen(document.body, 'mouseup', fn);
-	            this._mousewheelEventListener = _core.EventListener.listen(document.body, 'mousewheel', fn);
 	        }
 	    }, {
-	        key: 'componentDidUpdate',
-	        value: function componentDidUpdate() {
-	            var _this3 = this;
+	        key: '_serialize',
+	        value: function _serialize(items, startCol, endCol, rowHeight, columnSize, mergeCols) {
+	            var mergeRule = this.props.mergeRule;
 
-	            setTimeout(function () {
-	                if (_this3.state.open === true) {
-	                    var viewport = (0, _core.getViewportDimensions)();
-	                    var trigger = _reactDom2.default.findDOMNode(_this3);
-	                    var popup = _reactDom2.default.findDOMNode(_this3.popup);
-	                    var triggerPos = (0, _core.getElementPosition)(trigger);
-	                    var popupPos = (0, _core.getElementPosition)(popup);
-	                    var x = triggerPos.x,
-	                        y = triggerPos.y + triggerPos.height;
-	                    x = (0, _core.clamp)(x, 0, viewport.width - popupPos.width);
-	                    y = (0, _core.clamp)(y, 0, viewport.height - popupPos.height);
-	                    popup.style.left = x + 'px';
-	                    popup.style.top = y + 'px';
+	            var result = [],
+	                cache = {},
+	                preCol = {},
+	                preRow = {};
+	            var summaryColumnSize = [];
+	            for (var i = startCol; i < endCol; i++) {
+	                if (i === startCol) {
+	                    summaryColumnSize[i] = columnSize[i];
+	                } else {
+	                    summaryColumnSize[i] = summaryColumnSize[i - 1] + columnSize[i];
 	                }
+	            }
+	            var mergeRow = function mergeRow(i, j) {
+	                preCol[j]._height += rowHeight;
+	                preCol[j].__mergeRows.push(i);
+	            };
+
+	            var mergeCol = function mergeCol(i, j) {
+	                preRow[i]._width += columnSize[j];
+	                preRow[i].__mergeCols.push(j);
+	            };
+
+	            var createOneEl = function createOneEl(r, c) {
+	                var width = columnSize[c];
+	                var height = rowHeight;
+	                items[r][c]._row = r;
+	                items[r][c]._col = c;
+	                items[r][c]._width = width;
+	                items[r][c]._height = height;
+	                preCol[c] = items[r][c];
+	                preCol[c].__mergeRows = [r];
+	                preRow[r] = items[r][c];
+	                preRow[r].__mergeCols = [c];
+
+	                result.push({
+	                    x: summaryColumnSize[c] - columnSize[c],
+	                    y: +r * rowHeight,
+	                    item: items[r][c]
+	                });
+	            };
+
+	            (0, _core.each)(items, function (cols, i) {
+	                for (var j = startCol; j < endCol; j++) {
+	                    if (!cache[i]) {
+	                        cache[i] = {};
+	                    }
+	                    cache[i][j] = cols[j];
+	                    if (mergeCols === true || mergeCols.indexOf(j) > -1) {
+	                        if (i === 0 && j === startCol) {
+	                            createOneEl(0, startCol);
+	                        } else if (j === startCol && i > 0) {
+	                            var isNeedMergeRow = mergeRule(cache[i][j], cache[i - 1][j]);
+	                            if (isNeedMergeRow === true) {
+	                                mergeRow(i, j);
+	                                preRow[i] = preCol[j];
+	                            } else {
+	                                createOneEl(i, j);
+	                            }
+	                        } else if (i === 0 && j > startCol) {
+	                            var isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
+	                            if (isNeedMergeCol === true) {
+	                                mergeCol(i, j);
+	                                preCol[j] = preRow[j - 1];
+	                            } else {
+	                                createOneEl(i, j);
+	                            }
+	                        } else {
+	                            var _isNeedMergeRow = mergeRule(cache[i][j], cache[i - 1][j]);
+	                            var _isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
+	                            if (_isNeedMergeCol && _isNeedMergeRow) {
+	                                mergeRow(i, j); //优先合并列
+	                            } else if (_isNeedMergeCol) {
+	                                mergeCol(i, j);
+	                            } else if (_isNeedMergeRow) {
+	                                mergeRow(i, j);
+	                            } else if (!_isNeedMergeCol && !_isNeedMergeRow) {
+	                                createOneEl(i, j);
+	                            }
+	                        }
+	                    } else {
+	                        createOneEl(i, j);
+	                    }
+	                }
+	            });
+	            return (0, _core.map)(result, function (item) {
+	                return {
+	                    x: item.x,
+	                    y: item.y,
+	                    row: item.item._row,
+	                    col: item.item._col,
+	                    width: item.item._width,
+	                    height: item.item._height
+	                };
 	            });
 	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(nextProps) {}
-	    }, {
-	        key: 'componentWillUnmount',
-	        value: function componentWillUnmount() {
-	            this._mouseupEventListener && this._mouseupEventListener.remove();
-	            this._mousewheelEventListener && this._mousewheelEventListener.remove();
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (!(0, _core.shallowEqual)(nextProps.columnSize, this.props.columnSize) || !(0, _core.shallowEqual)(nextProps.freezeCols, this.props.freezeCols) || !(0, _core.shallowEqual)(nextProps.mergeCols, this.props.mergeCols) || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
+	                this.refs.topLeftCollection && this.refs.topLeftCollection.recomputeCellSizesAndPositions();
+	                this.refs.topRightCollection && this.refs.topRightCollection.recomputeCellSizesAndPositions();
+	                this.refs.bottomLeftCollection && this.refs.bottomLeftCollection.recomputeCellSizesAndPositions();
+	                this.refs.bottomRightCollection && this.refs.bottomRightCollection.recomputeCellSizesAndPositions();
+	                this.setState(_extends({}, this._digest(nextProps)));
+	            }
+	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
+	                this.setState({
+	                    scrollTop: 0,
+	                    leftScrollLeft: 0,
+	                    rightScrollLeft: 0
+	                });
+	            }
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _props = this.props,
-	                triggerRenderer = _props.triggerRenderer,
-	                popupRenderer = _props.popupRenderer,
-	                trigger = _props.trigger,
-	                popup = _props.popup,
-	                props = _objectWithoutProperties(_props, ['triggerRenderer', 'popupRenderer', 'trigger', 'popup']);
+	                headerRowHeight = _props.headerRowHeight,
+	                rowHeight = _props.rowHeight,
+	                columnSize = _props.columnSize,
+	                isNeedFreeze = _props.isNeedFreeze,
+	                freezeCols = _props.freezeCols,
+	                header = _props.header,
+	                items = _props.items,
+	                mergeCols = _props.mergeCols,
+	                mergeRule = _props.mergeRule,
+	                regionColumnSize = _props.regionColumnSize,
+	                onVerticalScroll = _props.onVerticalScroll,
+	                w = _props.width,
+	                h = _props.height,
+	                headerCellRenderer = _props.headerCellRenderer,
+	                cellRenderer = _props.cellRenderer,
+	                props = _objectWithoutProperties(_props, ['headerRowHeight', 'rowHeight', 'columnSize', 'isNeedFreeze', 'freezeCols', 'header', 'items', 'mergeCols', 'mergeRule', 'regionColumnSize', 'onVerticalScroll', 'width', 'height', 'headerCellRenderer', 'cellRenderer']);
 
-	            var open = this.state.open;
+	            var width = w,
+	                height = h;
+	            width -= _Scrollbar2.default.SIZE;
+	            height -= _Scrollbar2.default.SIZE;
+	            var _state = this.state,
+	                scrollTop = _state.scrollTop,
+	                leftScrollLeft = _state.leftScrollLeft,
+	                rightScrollLeft = _state.rightScrollLeft;
+
+	            var topLeft = void 0,
+	                topRight = void 0,
+	                bottomLeft = void 0,
+	                bottomRight = void 0;
+	            var regionSize = this._getRegionSize(),
+	                totalLeftColumnSize = 0,
+	                totalRightColumnSize = 0,
+	                totalColumnSize = 0,
+	                summaryColumnSizeArray = [],
+	                totalRowSize = 0;
+	            (0, _core.each)(columnSize, function (size, i) {
+	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
+	                    totalLeftColumnSize += size;
+	                } else {
+	                    totalRightColumnSize += size;
+	                }
+	                totalColumnSize += size;
+	                if (i === 0) {
+	                    summaryColumnSizeArray[i] = size;
+	                } else {
+	                    summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
+	                }
+	            });
+	            (0, _core.each)(items, function (item, i) {
+	                totalRowSize += rowHeight;
+	            });
+	            if (isNeedFreeze) {
+	                if (freezeCols.length > 0) {
+	                    topLeft = _react2.default.createElement(_Collection2.default, {
+	                        ref: 'topLeftCollection',
+	                        cellCount: this.state.topLeftItems.length,
+	                        cellRenderer: this._topLeftCellRenderer.bind(this),
+	                        cellSizeAndPositionGetter: this._topLeftCellSizeAndPositionGetter.bind(this),
+	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
+	                        width: regionSize,
+	                        noContentRender: this._noContentRender.bind(this),
+	                        overscanColumnCount: 0,
+	                        overscanRowCount: 0,
+	                        scrollLeft: leftScrollLeft,
+	                        onScroll: this._topLeftOnScroll.bind(this),
+	                        sectionSize: SECTION_SIZE
+	                    });
+	                    bottomLeft = _react2.default.createElement(_Collection2.default, {
+	                        ref: 'bottomLeftCollection',
+	                        cellCount: this.state.bottomLeftItems.length,
+	                        cellRenderer: this._bottomLeftCellRenderer.bind(this),
+	                        cellSizeAndPositionGetter: this._bottomLeftCellSizeAndPositionGetter.bind(this),
+	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
+	                        width: height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize,
+	                        noContentRender: this._noContentRender.bind(this),
+	                        overscanColumnCount: 0,
+	                        overscanRowCount: 0,
+	                        scrollLeft: leftScrollLeft,
+	                        scrollTop: scrollTop,
+	                        onScroll: this._bottomLeftOnScroll.bind(this),
+	                        sectionSize: SECTION_SIZE
+	                    });
+	                }
+	                topRight = _react2.default.createElement(_Collection2.default, {
+	                    ref: 'topRightCollection',
+	                    cellCount: this.state.topRightItems.length,
+	                    cellRenderer: this._topRightCellRenderer.bind(this),
+	                    cellSizeAndPositionGetter: this._topRightCellSizeAndPositionGetter.bind(this),
+	                    height: width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
+	                    width: width - regionSize,
+	                    noContentRender: this._noContentRender.bind(this),
+	                    overscanColumnCount: 0,
+	                    overscanRowCount: 0,
+	                    scrollLeft: rightScrollLeft,
+	                    onScroll: this._topRightOnScroll.bind(this),
+	                    sectionSize: SECTION_SIZE
+	                });
+	            }
+
+	            bottomRight = _react2.default.createElement(_Collection2.default, {
+	                ref: 'bottomRightCollection',
+	                cellCount: this.state.bottomRightItems.length,
+	                cellRenderer: this._bottomRightCellRenderer.bind(this),
+	                cellSizeAndPositionGetter: this._bottomRightCellSizeAndPositionGetter.bind(this),
+	                height: width - regionSize >= totalColumnSize - summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0 ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
+	                width: height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize,
+	                noContentRender: this._noContentRender.bind(this),
+	                overscanColumnCount: 0,
+	                overscanRowCount: 0,
+	                scrollLeft: rightScrollLeft,
+	                scrollTop: scrollTop,
+	                onScroll: this._bottomRightOnScroll.bind(this),
+	                sectionSize: SECTION_SIZE
+	            });
 
 	            return _react2.default.createElement(
-	                _layout.CenterLayout,
-	                props,
-	                this._triggerRenderer()
+	                _layout.Layout,
+	                _extends({ box: this._getFreezeColLength() > 0 ? 'first' : 'mean' }, props, { style: _extends({}, props.style, {
+	                        width: width,
+	                        height: height,
+	                        overflow: 'visible'
+	                    }) }),
+	                this._getFreezeColLength() > 0 ? _react2.default.createElement(
+	                    _layout.Layout,
+	                    { dir: 'top', box: topLeft ? 'first' : 'mean',
+	                        style: { width: regionSize } },
+	                    topLeft ? _react2.default.createElement(
+	                        _layout.DefaultLayout,
+	                        {
+	                            scrollx: false,
+	                            scrolly: false,
+	                            style: {
+	                                height: header.length * headerRowHeight
+	                            } },
+	                        topLeft
+	                    ) : null,
+	                    _react2.default.createElement(
+	                        _layout.DefaultLayout,
+	                        { scrollx: false, scrolly: false },
+	                        bottomLeft
+	                    )
+	                ) : null,
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    { dir: 'top', box: topRight ? 'first' : 'mean' },
+	                    topRight ? _react2.default.createElement(
+	                        _layout.DefaultLayout,
+	                        {
+	                            scrollx: false,
+	                            scrolly: false,
+	                            style: {
+	                                height: header.length * headerRowHeight
+	                            } },
+	                        topRight
+	                    ) : null,
+	                    _react2.default.createElement(
+	                        _layout.DefaultLayout,
+	                        { scrollx: false, scrolly: false },
+	                        bottomRight
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    _layout.VerticalLayout,
+	                    { abs: true, style: {
+	                            top: 0,
+	                            bottom: 0,
+	                            right: -_Scrollbar2.default.SIZE,
+	                            width: _Scrollbar2.default.SIZE
+	                        } },
+	                    _react2.default.createElement(_Scrollbar2.default, { verticalTop: isNeedFreeze === true ? header.length * headerRowHeight : 0,
+	                        position: scrollTop, contentSize: totalRowSize,
+	                        size: height - (isNeedFreeze === true ? header.length * headerRowHeight : 0),
+	                        onScroll: this._verticalOnScroll.bind(this) })
+	                ),
+	                _react2.default.createElement(
+	                    _layout.VerticalLayout,
+	                    { abs: true,
+	                        style: { left: 0, top: height, width: regionSize, height: _Scrollbar2.default.SIZE } },
+	                    _react2.default.createElement(_HorizontalScrollbar2.default, { position: leftScrollLeft, offset: 0,
+	                        contentSize: totalLeftColumnSize,
+	                        size: regionSize, onScroll: this._leftHorizontalOnScroll.bind(this) })
+	                ),
+	                _react2.default.createElement(
+	                    _layout.VerticalLayout,
+	                    {
+	                        abs: true,
+	                        style: {
+	                            left: regionSize,
+	                            top: height,
+	                            width: width - regionSize,
+	                            height: _Scrollbar2.default.SIZE
+	                        } },
+	                    _react2.default.createElement(_HorizontalScrollbar2.default, { position: rightScrollLeft, offset: 0, contentSize: totalRightColumnSize,
+	                        size: width - regionSize, onScroll: this._rightHorizontalOnScroll.bind(this) })
+	                )
 	            );
 	        }
 	    }, {
-	        key: '_open',
-	        value: function _open() {
-	            var _this4 = this;
-
-	            var popup = this.props.popup;
-
-	            _Portal2.default.showModal(this.tag, _react2.default.createElement(
-	                _layout.VerticalLayout,
-	                _extends({
-	                    key: this.tag,
-	                    ref: function ref(_ref) {
-	                        return _this4.popup = _ref;
-	                    } }, popup, { style: (0, _core.sc)([{
-	                        position: 'fixed',
-	                        zIndex: _ZIndex2.default.POPUP,
-	                        backgroundColor: _Colors2.default.DEFAULT,
-	                        left: -999,
-	                        top: -999
-	                    }], [popup.style]) }),
-	                this.props.popupRenderer()
-	            ));
+	        key: '_getFreezeColLength',
+	        value: function _getFreezeColLength() {
+	            return this.props.isNeedFreeze ? this.props.freezeCols.length : 0;
 	        }
 	    }, {
-	        key: '_close',
-	        value: function _close() {
-	            _Portal2.default.closeModal(this.tag);
+	        key: '_getRegionSize',
+	        value: function _getRegionSize() {
+	            var _props2 = this.props,
+	                isNeedFreeze = _props2.isNeedFreeze,
+	                regionColumnSize = _props2.regionColumnSize,
+	                freezeCols = _props2.freezeCols,
+	                columnSize = _props2.columnSize;
+
+	            var regionSize = regionColumnSize[0] || 0;
+	            if (isNeedFreeze === false || freezeCols.length === 0) {
+	                return 0;
+	            }
+	            if (!regionSize) {
+	                (0, _core.each)(freezeCols, function (col) {
+	                    regionSize += columnSize[col];
+	                });
+	            }
+	            return regionSize;
 	        }
 	    }, {
-	        key: 'open',
-	        value: function open() {
-	            var _this5 = this;
+	        key: '_noContentRender',
+	        value: function _noContentRender() {
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                null,
+	                '\u65E0\u5185\u5BB9'
+	            );
+	        }
+	    }, {
+	        key: '_topLeftCellRenderer',
+	        value: function _topLeftCellRenderer(_ref) {
+	            var _this2 = this;
+
+	            var index = _ref.index,
+	                props = _objectWithoutProperties(_ref, ['index']);
+
+	            var columnIndex = this.state.topLeftItems[index].col,
+	                rowIndex = this.state.topLeftItems[index].row,
+	                top = this.state.topLeftItems[index].y,
+	                left = this.state.topLeftItems[index].x;
+	            return this.props.headerCellRenderer(_extends({
+	                columnIndex: columnIndex,
+	                rowIndex: rowIndex,
+	                width: this.state.topLeftItems[index].width,
+	                height: this.state.topLeftItems[index].height,
+	                left: left,
+	                top: top
+	            }, props, {
+	                offsetLeftGetter: function offsetLeftGetter() {
+	                    return left - _this2.state.leftScrollLeft;
+	                },
+	                offsetTopGetter: function offsetTopGetter() {
+	                    return top;
+	                }
+	            }), this.props.header[rowIndex][columnIndex]);
+	        }
+	    }, {
+	        key: '_topLeftCellSizeAndPositionGetter',
+	        value: function _topLeftCellSizeAndPositionGetter(_ref2) {
+	            var index = _ref2.index;
+
+	            return this.state.topLeftItems[index];
+	        }
+	    }, {
+	        key: '_topLeftOnScroll',
+	        value: function _topLeftOnScroll(_ref3) {
+	            var scrollLeft = _ref3.scrollLeft,
+	                scrollTop = _ref3.scrollTop;
 
 	            this.setState({
-	                open: false
-	            }, function () {
-	                _this5._open();
+	                leftScrollLeft: scrollLeft
 	            });
 	        }
 	    }, {
-	        key: 'close',
-	        value: function close() {
+	        key: '_topRightCellRenderer',
+	        value: function _topRightCellRenderer(_ref4) {
+	            var _this3 = this;
+
+	            var index = _ref4.index,
+	                props = _objectWithoutProperties(_ref4, ['index']);
+
+	            var columnIndex = this.state.topRightItems[index].col,
+	                rowIndex = this.state.topRightItems[index].row,
+	                top = this.state.topRightItems[index].y,
+	                left = this.state.topRightItems[index].x;
+	            return this.props.headerCellRenderer(_extends({
+	                columnIndex: columnIndex,
+	                rowIndex: rowIndex,
+	                width: this.state.topRightItems[index].width,
+	                height: this.state.topRightItems[index].height,
+	                left: left,
+	                top: top
+	            }, props, {
+	                offsetLeftGetter: function offsetLeftGetter() {
+	                    return left - _this3.state.rightScrollLeft + _this3._getRegionSize();
+	                },
+	                offsetTopGetter: function offsetTopGetter() {
+	                    return top;
+	                }
+	            }), this.props.header[rowIndex][columnIndex]);
+	        }
+	    }, {
+	        key: '_topRightCellSizeAndPositionGetter',
+	        value: function _topRightCellSizeAndPositionGetter(_ref5) {
+	            var index = _ref5.index;
+
+	            return this.state.topRightItems[index];
+	        }
+	    }, {
+	        key: '_topRightOnScroll',
+	        value: function _topRightOnScroll(_ref6) {
+	            var scrollLeft = _ref6.scrollLeft,
+	                scrollTop = _ref6.scrollTop;
+
+	            this.setState({
+	                rightScrollLeft: scrollLeft
+	            });
+	        }
+	    }, {
+	        key: '_bottomLeftCellRenderer',
+	        value: function _bottomLeftCellRenderer(_ref7) {
+	            var index = _ref7.index,
+	                props = _objectWithoutProperties(_ref7, ['index']);
+
+	            var columnIndex = this.state.bottomLeftItems[index].col,
+	                rowIndex = this.state.bottomLeftItems[index].row,
+	                top = this.state.bottomLeftItems[index].y,
+	                left = this.state.bottomLeftItems[index].x;
+	            return this.props.cellRenderer(_extends({
+	                columnIndex: columnIndex,
+	                rowIndex: rowIndex,
+	                width: this.state.bottomLeftItems[index].width,
+	                height: this.state.bottomLeftItems[index].height,
+	                top: top,
+	                left: left
+	            }, props), this.props.items[rowIndex][columnIndex]);
+	        }
+	    }, {
+	        key: '_bottomLeftCellSizeAndPositionGetter',
+	        value: function _bottomLeftCellSizeAndPositionGetter(_ref8) {
+	            var index = _ref8.index;
+
+	            return this.state.bottomLeftItems[index];
+	        }
+	    }, {
+	        key: '_bottomLeftOnScroll',
+	        value: function _bottomLeftOnScroll(_ref9) {
+	            var _this4 = this;
+
+	            var scrollLeft = _ref9.scrollLeft,
+	                scrollTop = _ref9.scrollTop;
+
+	            this.setState({
+	                leftScrollLeft: scrollLeft,
+	                scrollTop: scrollTop
+	            }, function () {
+	                _this4.props.onVerticalScroll(_this4.state.scrollTop);
+	            });
+	        }
+	    }, {
+	        key: '_bottomRightCellRenderer',
+	        value: function _bottomRightCellRenderer(_ref10) {
+	            var index = _ref10.index,
+	                props = _objectWithoutProperties(_ref10, ['index']);
+
+	            var columnIndex = this.state.bottomRightItems[index].col,
+	                rowIndex = this.state.bottomRightItems[index].row,
+	                top = this.state.bottomRightItems[index].y,
+	                left = this.state.bottomRightItems[index].x;
+	            return this.props.cellRenderer(_extends({
+	                columnIndex: columnIndex,
+	                rowIndex: rowIndex,
+	                width: this.state.bottomRightItems[index].width,
+	                height: this.state.bottomRightItems[index].height,
+	                top: top,
+	                left: left
+	            }, props), this.props.items[rowIndex][columnIndex]);
+	        }
+	    }, {
+	        key: '_bottomRightCellSizeAndPositionGetter',
+	        value: function _bottomRightCellSizeAndPositionGetter(_ref11) {
+	            var index = _ref11.index;
+
+	            return this.state.bottomRightItems[index];
+	        }
+	    }, {
+	        key: '_bottomRightOnScroll',
+	        value: function _bottomRightOnScroll(_ref12) {
+	            var _this5 = this;
+
+	            var scrollLeft = _ref12.scrollLeft,
+	                scrollTop = _ref12.scrollTop;
+
+	            this.setState({
+	                rightScrollLeft: scrollLeft,
+	                scrollTop: scrollTop
+	            }, function () {
+	                _this5.props.onVerticalScroll(_this5.state.scrollTop);
+	            });
+	        }
+	    }, {
+	        key: '_verticalOnScroll',
+	        value: function _verticalOnScroll(scrollTop) {
 	            var _this6 = this;
 
 	            this.setState({
-	                open: false
+	                scrollTop: Math.floor(scrollTop)
 	            }, function () {
-	                _this6._close();
+	                _this6.props.onVerticalScroll(_this6.state.scrollTop);
 	            });
 	        }
 	    }, {
-	        key: '_triggerRenderer',
-	        value: function _triggerRenderer() {
-	            var _this7 = this;
-
-	            var trigger = this.props.trigger;
-
-	            return _react2.default.createElement(
-	                _Button2.default,
-	                _extends({ ref: function ref(_ref2) {
-	                        return _this7.trigger = _ref2;
-	                    }
-	                }, trigger, { onClick: this._togglePopup }),
-	                this.props.triggerRenderer()
-	            );
+	        key: '_leftHorizontalOnScroll',
+	        value: function _leftHorizontalOnScroll(scrollLeft) {
+	            this.setState({
+	                leftScrollLeft: Math.floor(scrollLeft)
+	            });
 	        }
 	    }, {
-	        key: '_togglePopup',
-	        value: function _togglePopup() {
-	            var _this8 = this;
-
+	        key: '_rightHorizontalOnScroll',
+	        value: function _rightHorizontalOnScroll(scrollLeft) {
 	            this.setState({
-	                open: !this.state.open
-	            }, function () {
-	                _this8.state.open === true ? _this8._open() : _this8._close();
+	                rightScrollLeft: Math.floor(scrollLeft)
 	            });
 	        }
 	    }]);
 
-	    return Combo;
+	    return SummaryTable;
 	}(_react.Component);
 
-	Combo.defaultProps = {
-	    triggerRenderer: _core.emptyFunction,
-	    popupRenderer: _core.emptyFunction,
-	    trigger: {},
-	    popup: {}
-	};
-	exports.default = Combo;
-
-/***/ },
-/* 581 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	/**
-	 * Created by Wang on 2016/12/21.
-	 */
-	exports.default = {
-	    LAYER: 100000,
-	    FLOATBOX: 1000000,
-	    POPUP: 10000000,
-	    MASKER: 100000000,
-	    TIP: 1000000000
+	SummaryTable.defaultProps = {
+	    headerRowHeight: 25,
+	    rowHeight: 25,
+	    columnSize: [],
+	    isNeedFreeze: true,
+	    freezeCols: [],
+	    header: [],
+	    items: [],
+	    regionColumnSize: [],
+	    mergeCols: [],
+	    mergeRule: MERGE_RULE,
+	    headerCellRenderer: _core.emptyFunction,
+	    cellRenderer: _core.emptyFunction,
+	    onVerticalScroll: _core.emptyFunction
 	};
 
-/***/ },
-/* 582 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = {
-	    DEFAULT: '#ffffff',
-	    PRESS: '#f0f0f0',
-	    BORDER: '#ddd',
-	    SPLIT: '#f0f0f0',
-	    HIGHLIGHT: '#007aff',
-	    DISABLED: '#c4c6c6'
-	};
+	_reactMixin2.default.onClass(SummaryTable, _core.ReactComponentWithPureRenderMixin);
+	SummaryTable.SCROLLBAR_WIDTH = _Scrollbar2.default.SIZE;
+	exports.default = SummaryTable;
 
 /***/ },
-/* 583 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.DetailTableComponent = undefined;
-
-	var _DetailTableComponent2 = __webpack_require__(584);
-
-	var _DetailTableComponent3 = _interopRequireDefault(_DetailTableComponent2);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.DetailTableComponent = _DetailTableComponent3.default;
-
-/***/ },
-/* 584 */
+/* 592 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51132,7 +52320,709 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _scrollbarSize = __webpack_require__(564);
+
+	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _Grid = __webpack_require__(557);
+
+	var _Grid2 = _interopRequireDefault(_Grid);
+
+	var _Collection = __webpack_require__(567);
+
+	var _Collection2 = _interopRequireDefault(_Collection);
+
+	var _Scrollbar = __webpack_require__(580);
+
+	var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
+
+	var _HorizontalScrollbar = __webpack_require__(583);
+
+	var _HorizontalScrollbar2 = _interopRequireDefault(_HorizontalScrollbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/22.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+	var MERGE_RULE = function MERGE_RULE(col1, col2) {
+	    return col1 === col2;
+	};
+	var SECTION_SIZE = 100;
+
+	var LevelTable = function (_Component) {
+	    _inherits(LevelTable, _Component);
+
+	    function LevelTable(props, context) {
+	        _classCallCheck(this, LevelTable);
+
+	        var _this = _possibleConstructorReturn(this, (LevelTable.__proto__ || Object.getPrototypeOf(LevelTable)).call(this, props, context));
+
+	        _this._scrollBarSize = (0, _scrollbarSize2.default)();
+	        _this.state = _extends({
+	            redraw: false,
+	            scrollTop: 0,
+	            leftScrollLeft: 0,
+	            rightScrollLeft: 0
+	        }, _this._digest(props));
+	        return _this;
+	    }
+
+	    _createClass(LevelTable, [{
+	        key: '_digest',
+	        value: function _digest(props) {
+	            var header = props.header,
+	                freezeCols = props.freezeCols,
+	                mergeCols = props.mergeCols,
+	                columnSize = props.columnSize,
+	                items = props.items,
+	                headerRowHeight = props.headerRowHeight,
+	                rowHeight = props.rowHeight;
+
+	            var topLeftItems = this._serialize(header, 0, freezeCols.length, headerRowHeight, columnSize, true);
+	            var topRightItems = this._serialize(header, freezeCols.length, columnSize.length, headerRowHeight, columnSize, true);
+	            return {
+	                topLeftItems: topLeftItems,
+	                topRightItems: topRightItems
+	            };
+	        }
+	    }, {
+	        key: '_serialize',
+	        value: function _serialize(items, startCol, endCol, rowHeight, columnSize, mergeCols) {
+	            var mergeRule = this.props.mergeRule;
+
+	            var result = [],
+	                cache = {},
+	                preCol = {},
+	                preRow = {};
+	            var summaryColumnSize = [];
+	            for (var i = startCol; i < endCol; i++) {
+	                if (i === startCol) {
+	                    summaryColumnSize[i] = columnSize[i];
+	                } else {
+	                    summaryColumnSize[i] = summaryColumnSize[i - 1] + columnSize[i];
+	                }
+	            }
+	            var mergeRow = function mergeRow(i, j) {
+	                preCol[j]._height += rowHeight;
+	                preCol[j].__mergeRows.push(i);
+	            };
+
+	            var mergeCol = function mergeCol(i, j) {
+	                preRow[i]._width += columnSize[j];
+	                preRow[i].__mergeCols.push(j);
+	            };
+
+	            var createOneEl = function createOneEl(r, c) {
+	                var width = columnSize[c];
+	                var height = rowHeight;
+	                items[r][c]._row = r;
+	                items[r][c]._col = c;
+	                items[r][c]._width = width;
+	                items[r][c]._height = height;
+	                preCol[c] = items[r][c];
+	                preCol[c].__mergeRows = [r];
+	                preRow[r] = items[r][c];
+	                preRow[r].__mergeCols = [c];
+
+	                result.push({
+	                    x: summaryColumnSize[c] - columnSize[c],
+	                    y: +r * rowHeight,
+	                    item: items[r][c]
+	                });
+	            };
+
+	            (0, _core.each)(items, function (cols, i) {
+	                for (var j = startCol; j < endCol; j++) {
+	                    if (!cache[i]) {
+	                        cache[i] = {};
+	                    }
+	                    cache[i][j] = cols[j];
+	                    if (mergeCols === true || mergeCols.indexOf(j) > -1) {
+	                        if (i === 0 && j === startCol) {
+	                            createOneEl(0, startCol);
+	                        } else if (j === startCol && i > 0) {
+	                            var isNeedMergeRow = mergeRule(cache[i][j], cache[i - 1][j]);
+	                            if (isNeedMergeRow === true) {
+	                                mergeRow(i, j);
+	                                preRow[i] = preCol[j];
+	                            } else {
+	                                createOneEl(i, j);
+	                            }
+	                        } else if (i === 0 && j > startCol) {
+	                            var isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
+	                            if (isNeedMergeCol === true) {
+	                                mergeCol(i, j);
+	                                preCol[j] = preRow[j - 1];
+	                            } else {
+	                                createOneEl(i, j);
+	                            }
+	                        } else {
+	                            var _isNeedMergeRow = mergeRule(cache[i][j], cache[i - 1][j]);
+	                            var _isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
+	                            if (_isNeedMergeCol && _isNeedMergeRow) {
+	                                mergeRow(i, j); //优先合并列
+	                            } else if (_isNeedMergeCol) {
+	                                mergeCol(i, j);
+	                            } else if (_isNeedMergeRow) {
+	                                mergeRow(i, j);
+	                            } else if (!_isNeedMergeCol && !_isNeedMergeRow) {
+	                                createOneEl(i, j);
+	                            }
+	                        }
+	                    } else {
+	                        createOneEl(i, j);
+	                    }
+	                }
+	            });
+	            return (0, _core.map)(result, function (item) {
+	                return {
+	                    x: item.x,
+	                    y: item.y,
+	                    row: item.item._row,
+	                    col: item.item._col,
+	                    width: item.item._width,
+	                    height: item.item._height
+	                };
+	            });
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (!(0, _core.shallowEqual)(nextProps.columnSize, this.props.columnSize) || !(0, _core.shallowEqual)(nextProps.freezeCols, this.props.freezeCols) || !(0, _core.shallowEqual)(nextProps.mergeCols, this.props.mergeCols) || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
+	                this.refs.topLeftCollection && this.refs.topLeftCollection.recomputeCellSizesAndPositions();
+	                this.refs.topRightCollection && this.refs.topRightCollection.recomputeCellSizesAndPositions();
+	                this.setState(_extends({
+	                    redraw: !this.state.redraw
+	                }, this._digest(nextProps)));
+	            }
+	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
+	                this.setState({
+	                    scrollTop: 0,
+	                    leftScrollLeft: 0,
+	                    rightScrollLeft: 0
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                headerRowHeight = _props.headerRowHeight,
+	                rowHeight = _props.rowHeight,
+	                columnSize = _props.columnSize,
+	                isNeedFreeze = _props.isNeedFreeze,
+	                freezeCols = _props.freezeCols,
+	                header = _props.header,
+	                items = _props.items,
+	                mergeCols = _props.mergeCols,
+	                mergeRule = _props.mergeRule,
+	                regionColumnSize = _props.regionColumnSize,
+	                onVerticalScroll = _props.onVerticalScroll,
+	                w = _props.width,
+	                h = _props.height,
+	                headerCellRenderer = _props.headerCellRenderer,
+	                cellRenderer = _props.cellRenderer,
+	                props = _objectWithoutProperties(_props, ['headerRowHeight', 'rowHeight', 'columnSize', 'isNeedFreeze', 'freezeCols', 'header', 'items', 'mergeCols', 'mergeRule', 'regionColumnSize', 'onVerticalScroll', 'width', 'height', 'headerCellRenderer', 'cellRenderer']);
+
+	            var width = w,
+	                height = h;
+	            width -= _Scrollbar2.default.SIZE;
+	            height -= _Scrollbar2.default.SIZE;
+	            var _state = this.state,
+	                scrollTop = _state.scrollTop,
+	                leftScrollLeft = _state.leftScrollLeft,
+	                rightScrollLeft = _state.rightScrollLeft;
+
+	            var topLeft = void 0,
+	                topRight = void 0,
+	                bottomLeft = void 0,
+	                bottomRight = void 0;
+	            var regionSize = this._getRegionSize(),
+	                totalLeftColumnSize = 0,
+	                totalRightColumnSize = 0,
+	                totalColumnSize = 0,
+	                summaryColumnSizeArray = [],
+	                totalRowSize = 0;
+	            (0, _core.each)(columnSize, function (size, i) {
+	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
+	                    totalLeftColumnSize += size;
+	                } else {
+	                    totalRightColumnSize += size;
+	                }
+	                totalColumnSize += size;
+	                if (i === 0) {
+	                    summaryColumnSizeArray[i] = size;
+	                } else {
+	                    summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
+	                }
+	            });
+	            (0, _core.each)(items, function (item, i) {
+	                totalRowSize += rowHeight;
+	            });
+	            if (isNeedFreeze) {
+	                if (freezeCols.length > 0) {
+	                    topLeft = _react2.default.createElement(_Collection2.default, {
+	                        ref: 'topLeftCollection',
+	                        cellCount: this.state.topLeftItems.length,
+	                        cellRenderer: this._topLeftCellRenderer.bind(this),
+	                        cellSizeAndPositionGetter: this._topLeftCellSizeAndPositionGetter.bind(this),
+	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
+	                        width: regionSize,
+	                        noContentRender: this._noContentRender.bind(this),
+	                        overscanColumnCount: 0,
+	                        overscanRowCount: 0,
+	                        scrollLeft: leftScrollLeft,
+	                        onScroll: this._topLeftOnScroll.bind(this),
+	                        sectionSize: SECTION_SIZE
+	                    });
+	                    bottomLeft = _react2.default.createElement(_Grid2.default, {
+	                        redraw: this.state.redraw,
+	                        cellRenderer: this._bottomLeftCellRenderer.bind(this),
+	                        columnWidth: this._bottomLeftColumnWidthGetter.bind(this),
+	                        columnCount: freezeCols.length,
+	                        rowCount: items.length,
+	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
+	                        width: height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize,
+	                        noContentRender: this._noContentRender.bind(this),
+	                        overscanColumnCount: 0,
+	                        overscanRowCount: 0,
+	                        rowHeight: this._bottomLeftRowHeightGetter.bind(this),
+	                        scrollLeft: leftScrollLeft,
+	                        scrollTop: scrollTop,
+	                        onScroll: this._bottomLeftOnScroll.bind(this)
+	                    });
+	                }
+	                topRight = _react2.default.createElement(_Collection2.default, {
+	                    ref: 'topRightCollection',
+	                    cellCount: this.state.topRightItems.length,
+	                    cellRenderer: this._topRightCellRenderer.bind(this),
+	                    cellSizeAndPositionGetter: this._topRightCellSizeAndPositionGetter.bind(this),
+	                    height: width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
+	                    width: width - regionSize,
+	                    noContentRender: this._noContentRender.bind(this),
+	                    overscanColumnCount: 0,
+	                    overscanRowCount: 0,
+	                    scrollLeft: rightScrollLeft,
+	                    onScroll: this._topRightOnScroll.bind(this),
+	                    sectionSize: SECTION_SIZE
+	                });
+	            }
+
+	            bottomRight = _react2.default.createElement(_Grid2.default, {
+	                redraw: this.state.redraw,
+	                cellRenderer: this._bottomRightCellRenderer.bind(this),
+	                columnWidth: this._bottomRightColumnWidthGetter.bind(this),
+	                columnCount: columnSize.length - this._getFreezeColLength(),
+	                rowCount: items.length,
+	                height: width - regionSize >= totalColumnSize - summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0 ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
+	                width: height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize,
+	                noContentRender: this._noContentRender.bind(this),
+	                overscanColumnCount: 0,
+	                overscanRowCount: 0,
+	                rowHeight: this._bottomRightRowHeightGetter.bind(this),
+	                scrollLeft: rightScrollLeft,
+	                scrollTop: scrollTop,
+	                onScroll: this._bottomRightOnScroll.bind(this)
+	            });
+
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                _extends({ box: this._getFreezeColLength() > 0 ? 'first' : 'mean' }, props, { style: _extends({}, props.style, {
+	                        width: width,
+	                        height: height,
+	                        overflow: 'visible'
+	                    }) }),
+	                this._getFreezeColLength() > 0 ? _react2.default.createElement(
+	                    _layout.Layout,
+	                    { dir: 'top', box: topLeft ? 'first' : 'mean',
+	                        style: { width: regionSize } },
+	                    topLeft ? _react2.default.createElement(
+	                        _layout.DefaultLayout,
+	                        {
+	                            scrollx: false,
+	                            scrolly: false,
+	                            style: {
+	                                height: header.length * headerRowHeight
+	                            } },
+	                        topLeft
+	                    ) : null,
+	                    _react2.default.createElement(
+	                        _layout.DefaultLayout,
+	                        { scrollx: false, scrolly: false },
+	                        bottomLeft
+	                    )
+	                ) : null,
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    { dir: 'top', box: topRight ? 'first' : 'mean' },
+	                    topRight ? _react2.default.createElement(
+	                        _layout.DefaultLayout,
+	                        {
+	                            scrollx: false,
+	                            scrolly: false,
+	                            style: {
+	                                height: header.length * headerRowHeight
+	                            } },
+	                        topRight
+	                    ) : null,
+	                    _react2.default.createElement(
+	                        _layout.DefaultLayout,
+	                        { scrollx: false, scrolly: false },
+	                        bottomRight
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    _layout.VerticalLayout,
+	                    { abs: true, style: {
+	                            top: 0,
+	                            bottom: 0,
+	                            right: -_Scrollbar2.default.SIZE,
+	                            width: _Scrollbar2.default.SIZE
+	                        } },
+	                    _react2.default.createElement(_Scrollbar2.default, { verticalTop: isNeedFreeze === true ? header.length * headerRowHeight : 0,
+	                        position: scrollTop, contentSize: totalRowSize,
+	                        size: height - (isNeedFreeze === true ? header.length * headerRowHeight : 0),
+	                        onScroll: this._verticalOnScroll.bind(this) })
+	                ),
+	                _react2.default.createElement(
+	                    _layout.VerticalLayout,
+	                    { abs: true,
+	                        style: { left: 0, top: height, width: regionSize, height: _Scrollbar2.default.SIZE } },
+	                    _react2.default.createElement(_HorizontalScrollbar2.default, { position: leftScrollLeft, offset: 0,
+	                        contentSize: totalLeftColumnSize,
+	                        size: regionSize, onScroll: this._leftHorizontalOnScroll.bind(this) })
+	                ),
+	                _react2.default.createElement(
+	                    _layout.VerticalLayout,
+	                    {
+	                        abs: true,
+	                        style: {
+	                            left: regionSize,
+	                            top: height,
+	                            width: width - regionSize,
+	                            height: _Scrollbar2.default.SIZE
+	                        } },
+	                    _react2.default.createElement(_HorizontalScrollbar2.default, { position: rightScrollLeft, offset: 0, contentSize: totalRightColumnSize,
+	                        size: width - regionSize, onScroll: this._rightHorizontalOnScroll.bind(this) })
+	                )
+	            );
+	        }
+	    }, {
+	        key: '_getFreezeColLength',
+	        value: function _getFreezeColLength() {
+	            return this.props.isNeedFreeze ? this.props.freezeCols.length : 0;
+	        }
+	    }, {
+	        key: '_getRegionSize',
+	        value: function _getRegionSize() {
+	            var _props2 = this.props,
+	                isNeedFreeze = _props2.isNeedFreeze,
+	                regionColumnSize = _props2.regionColumnSize,
+	                freezeCols = _props2.freezeCols,
+	                columnSize = _props2.columnSize;
+
+	            var regionSize = regionColumnSize[0] || 0;
+	            if (isNeedFreeze === false || freezeCols.length === 0) {
+	                return 0;
+	            }
+	            if (!regionSize) {
+	                (0, _core.each)(freezeCols, function (col) {
+	                    regionSize += columnSize[col];
+	                });
+	            }
+	            return regionSize;
+	        }
+	    }, {
+	        key: '_noContentRender',
+	        value: function _noContentRender() {
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                null,
+	                '\u65E0\u5185\u5BB9'
+	            );
+	        }
+	    }, {
+	        key: '_topLeftCellRenderer',
+	        value: function _topLeftCellRenderer(_ref) {
+	            var _this2 = this;
+
+	            var index = _ref.index,
+	                props = _objectWithoutProperties(_ref, ['index']);
+
+	            var columnIndex = this.state.topLeftItems[index].col,
+	                rowIndex = this.state.topLeftItems[index].row,
+	                top = this.state.topLeftItems[index].y,
+	                left = this.state.topLeftItems[index].x;
+	            return this.props.headerCellRenderer(_extends({
+	                columnIndex: columnIndex,
+	                rowIndex: rowIndex,
+	                width: this.state.topLeftItems[index].width,
+	                height: this.state.topLeftItems[index].height,
+	                left: left,
+	                top: top
+	            }, props, {
+	                offsetLeftGetter: function offsetLeftGetter() {
+	                    return left - _this2.state.leftScrollLeft;
+	                },
+	                offsetTopGetter: function offsetTopGetter() {
+	                    return top;
+	                }
+	            }), this.props.header[rowIndex][columnIndex]);
+	        }
+	    }, {
+	        key: '_topLeftCellSizeAndPositionGetter',
+	        value: function _topLeftCellSizeAndPositionGetter(_ref2) {
+	            var index = _ref2.index;
+
+	            return this.state.topLeftItems[index];
+	        }
+	    }, {
+	        key: '_topLeftOnScroll',
+	        value: function _topLeftOnScroll(_ref3) {
+	            var scrollLeft = _ref3.scrollLeft,
+	                scrollTop = _ref3.scrollTop;
+
+	            this.setState({
+	                leftScrollLeft: scrollLeft
+	            });
+	        }
+	    }, {
+	        key: '_topRightCellRenderer',
+	        value: function _topRightCellRenderer(_ref4) {
+	            var _this3 = this;
+
+	            var index = _ref4.index,
+	                props = _objectWithoutProperties(_ref4, ['index']);
+
+	            var columnIndex = this.state.topRightItems[index].col,
+	                rowIndex = this.state.topRightItems[index].row,
+	                top = this.state.topRightItems[index].y,
+	                left = this.state.topRightItems[index].x;
+	            return this.props.headerCellRenderer(_extends({
+	                columnIndex: columnIndex,
+	                rowIndex: rowIndex,
+	                width: this.state.topRightItems[index].width,
+	                height: this.state.topRightItems[index].height,
+	                left: left,
+	                top: top
+	            }, props, {
+	                offsetLeftGetter: function offsetLeftGetter() {
+	                    return left - _this3.state.rightScrollLeft + _this3._getRegionSize();
+	                },
+	                offsetTopGetter: function offsetTopGetter() {
+	                    return top;
+	                }
+	            }), this.props.header[rowIndex][columnIndex]);
+	        }
+	    }, {
+	        key: '_topRightCellSizeAndPositionGetter',
+	        value: function _topRightCellSizeAndPositionGetter(_ref5) {
+	            var index = _ref5.index;
+
+	            return this.state.topRightItems[index];
+	        }
+	    }, {
+	        key: '_topRightOnScroll',
+	        value: function _topRightOnScroll(_ref6) {
+	            var scrollLeft = _ref6.scrollLeft,
+	                scrollTop = _ref6.scrollTop;
+
+	            this.setState({
+	                rightScrollLeft: scrollLeft
+	            });
+	        }
+	    }, {
+	        key: '_bottomLeftCellRenderer',
+	        value: function _bottomLeftCellRenderer(_ref7) {
+	            var columnIndex = _ref7.columnIndex,
+	                rowIndex = _ref7.rowIndex,
+	                props = _objectWithoutProperties(_ref7, ['columnIndex', 'rowIndex']);
+
+	            return this.props.cellRenderer(_extends({ columnIndex: columnIndex, rowIndex: rowIndex }, props), this.props.items[rowIndex][columnIndex]);
+	        }
+	    }, {
+	        key: '_bottomLeftColumnWidthGetter',
+	        value: function _bottomLeftColumnWidthGetter(_ref8) {
+	            var index = _ref8.index;
+
+	            return this.props.columnSize[index];
+	        }
+	    }, {
+	        key: '_bottomLeftRowHeightGetter',
+	        value: function _bottomLeftRowHeightGetter(_ref9) {
+	            var index = _ref9.index;
+
+	            return this.props.rowHeight;
+	        }
+	    }, {
+	        key: '_bottomLeftOnScroll',
+	        value: function _bottomLeftOnScroll(_ref10) {
+	            var _this4 = this;
+
+	            var scrollLeft = _ref10.scrollLeft,
+	                scrollTop = _ref10.scrollTop;
+
+	            this.setState({
+	                leftScrollLeft: scrollLeft,
+	                scrollTop: scrollTop
+	            }, function () {
+	                _this4.props.onVerticalScroll(_this4.state.scrollTop);
+	            });
+	        }
+	    }, {
+	        key: '_bottomRightCellRenderer',
+	        value: function _bottomRightCellRenderer(_ref11) {
+	            var columnIndex = _ref11.columnIndex,
+	                rowIndex = _ref11.rowIndex,
+	                props = _objectWithoutProperties(_ref11, ['columnIndex', 'rowIndex']);
+
+	            return this.props.cellRenderer(_extends({
+	                columnIndex: columnIndex + this._getFreezeColLength(),
+	                rowIndex: rowIndex }, props), this.props.items[rowIndex][columnIndex + this._getFreezeColLength()]);
+	        }
+	    }, {
+	        key: '_bottomRightColumnWidthGetter',
+	        value: function _bottomRightColumnWidthGetter(_ref12) {
+	            var index = _ref12.index;
+
+	            return this.props.columnSize[index + this._getFreezeColLength()];
+	        }
+	    }, {
+	        key: '_bottomRightRowHeightGetter',
+	        value: function _bottomRightRowHeightGetter(_ref13) {
+	            var index = _ref13.index;
+
+	            return this.props.rowHeight;
+	        }
+	    }, {
+	        key: '_bottomRightOnScroll',
+	        value: function _bottomRightOnScroll(_ref14) {
+	            var _this5 = this;
+
+	            var scrollLeft = _ref14.scrollLeft,
+	                scrollTop = _ref14.scrollTop;
+
+	            this.setState({
+	                rightScrollLeft: scrollLeft,
+	                scrollTop: scrollTop
+	            }, function () {
+	                _this5.props.onVerticalScroll(_this5.state.scrollTop);
+	            });
+	        }
+	    }, {
+	        key: '_verticalOnScroll',
+	        value: function _verticalOnScroll(scrollTop) {
+	            var _this6 = this;
+
+	            this.setState({
+	                scrollTop: Math.floor(scrollTop)
+	            }, function () {
+	                _this6.props.onVerticalScroll(_this6.state.scrollTop);
+	            });
+	        }
+	    }, {
+	        key: '_leftHorizontalOnScroll',
+	        value: function _leftHorizontalOnScroll(scrollLeft) {
+	            this.setState({
+	                leftScrollLeft: Math.floor(scrollLeft)
+	            });
+	        }
+	    }, {
+	        key: '_rightHorizontalOnScroll',
+	        value: function _rightHorizontalOnScroll(scrollLeft) {
+	            this.setState({
+	                rightScrollLeft: Math.floor(scrollLeft)
+	            });
+	        }
+	    }]);
+
+	    return LevelTable;
+	}(_react.Component);
+
+	LevelTable.defaultProps = {
+	    headerRowHeight: 25,
+	    rowHeight: 25,
+	    columnSize: [],
+	    isNeedFreeze: true,
+	    freezeCols: [],
+	    header: [],
+	    items: [],
+	    regionColumnSize: [],
+	    mergeRule: MERGE_RULE,
+	    headerCellRenderer: _core.emptyFunction,
+	    cellRenderer: _core.emptyFunction,
+	    onVerticalScroll: _core.emptyFunction
+	};
+
+	_reactMixin2.default.onClass(LevelTable, _core.ReactComponentWithPureRenderMixin);
+	LevelTable.SCROLLBAR_WIDTH = _Scrollbar2.default.SIZE;
+	exports.default = LevelTable;
+
+/***/ },
+/* 593 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.LevelTableComponent = exports.SummaryTableComponent = exports.DetailTableComponent = undefined;
+
+	var _DetailTableComponent2 = __webpack_require__(594);
+
+	var _DetailTableComponent3 = _interopRequireDefault(_DetailTableComponent2);
+
+	var _SummaryTableComponent2 = __webpack_require__(602);
+
+	var _SummaryTableComponent3 = _interopRequireDefault(_SummaryTableComponent2);
+
+	var _LevelTableComponent2 = __webpack_require__(612);
+
+	var _LevelTableComponent3 = _interopRequireDefault(_LevelTableComponent2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.DetailTableComponent = _DetailTableComponent3.default;
+	exports.SummaryTableComponent = _SummaryTableComponent3.default;
+	exports.LevelTableComponent = _LevelTableComponent3.default;
+
+/***/ },
+/* 594 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
@@ -51140,27 +53030,27 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _base = __webpack_require__(533);
+	var _base = __webpack_require__(537);
 
-	__webpack_require__(585);
+	__webpack_require__(595);
 
-	var _DetailTableCellComponent = __webpack_require__(587);
+	var _DetailTableCellComponent = __webpack_require__(597);
 
 	var _DetailTableCellComponent2 = _interopRequireDefault(_DetailTableCellComponent);
 
-	var _DetailTableHeaderCellComponent = __webpack_require__(588);
+	var _DetailTableHeaderCellComponent = __webpack_require__(598);
 
 	var _DetailTableHeaderCellComponent2 = _interopRequireDefault(_DetailTableHeaderCellComponent);
 
-	var _DetailTableComponentWidthHelper = __webpack_require__(589);
+	var _DetailTableComponentWidthHelper = __webpack_require__(599);
 
 	var _DetailTableComponentWidthHelper2 = _interopRequireDefault(_DetailTableComponentWidthHelper);
 
-	var _DetailTablePagerComponent = __webpack_require__(590);
+	var _DetailTablePagerComponent = __webpack_require__(600);
 
 	var _DetailTablePagerComponent2 = _interopRequireDefault(_DetailTablePagerComponent);
 
-	var _DetailTableSequenceComponent = __webpack_require__(591);
+	var _DetailTableSequenceComponent = __webpack_require__(601);
 
 	var _DetailTableSequenceComponent2 = _interopRequireDefault(_DetailTableSequenceComponent);
 
@@ -51174,26 +53064,24 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/19.
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
-	var DetailTable = function (_Component) {
-	    _inherits(DetailTable, _Component);
+	var DetailTableComponent = function (_Component) {
+	    _inherits(DetailTableComponent, _Component);
 
-	    function DetailTable(props, context) {
-	        _classCallCheck(this, DetailTable);
+	    function DetailTableComponent(props, context) {
+	        _classCallCheck(this, DetailTableComponent);
 
-	        var _this = _possibleConstructorReturn(this, (DetailTable.__proto__ || Object.getPrototypeOf(DetailTable)).call(this, props, context));
+	        var _this = _possibleConstructorReturn(this, (DetailTableComponent.__proto__ || Object.getPrototypeOf(DetailTableComponent)).call(this, props, context));
 
 	        _this._onVerticalScroll = _this._onVerticalScroll.bind(_this);
 	        _this.state = _extends({}, _this._digest(props), { scrollTop: 0 });
 	        return _this;
 	    }
 
-	    _createClass(DetailTable, [{
+	    _createClass(DetailTableComponent, [{
 	        key: '_digest',
 	        value: function _digest(props) {
 	            var helper = new _DetailTableComponentWidthHelper2.default(props);
 	            var minColumnSize = helper.getWidth();
-	            var header = props.header,
-	                items = props.items;
 	            var freezeCols = props.freezeCols;
 	            var columnSize = props.columnSize.slice();
 	            if (freezeCols.length >= columnSize.length) {
@@ -51206,8 +53094,6 @@
 	            return {
 	                columnSize: columnSize,
 	                minColumnSize: minColumnSize,
-	                header: header,
-	                items: items,
 	                freezeCols: freezeCols
 	            };
 	        }
@@ -51236,6 +53122,8 @@
 	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
 	                height = _props.height,
+	                header = _props.header,
+	                items = _props.items,
 	                showSequence = _props.showSequence,
 	                styleType = _props.styleType,
 	                color = _props.color,
@@ -51247,8 +53135,6 @@
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
 	                minColumnSize = _state.minColumnSize,
-	                header = _state.header,
-	                items = _state.items,
 	                freezeCols = _state.freezeCols,
 	                scrollTop = _state.scrollTop;
 
@@ -51295,7 +53181,7 @@
 	                        onVerticalScroll: this._onVerticalScroll
 	                    })
 	                ),
-	                _react2.default.createElement(_DetailTablePagerComponent2.default, { style: { height: 30, paddingRight: 10 }, curr: curr, pages: pages, label: label, onPrev: onPrev,
+	                _react2.default.createElement(_DetailTablePagerComponent2.default, { curr: curr, pages: pages, label: label, onPrev: onPrev,
 	                    onNext: onNext })
 	            );
 	        }
@@ -51347,10 +53233,10 @@
 	        }
 	    }]);
 
-	    return DetailTable;
+	    return DetailTableComponent;
 	}(_react.Component);
 
-	DetailTable.defaultProps = {
+	DetailTableComponent.defaultProps = {
 	    styleType: null,
 	    color: null,
 	    isNeedResize: false,
@@ -51373,18 +53259,18 @@
 	    onNext: _core.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(DetailTable, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(DetailTableComponent, _core.ReactComponentWithPureRenderMixin);
 
-	exports.default = DetailTable;
+	exports.default = DetailTableComponent;
 
 /***/ },
-/* 585 */
+/* 595 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(586);
+	var content = __webpack_require__(596);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -51404,7 +53290,7 @@
 	}
 
 /***/ },
-/* 586 */
+/* 596 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -51418,7 +53304,7 @@
 
 
 /***/ },
-/* 587 */
+/* 597 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51435,7 +53321,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
@@ -51443,7 +53329,7 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _base = __webpack_require__(533);
+	var _base = __webpack_require__(537);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51527,23 +53413,29 @@
 	            return _react2.default.createElement(
 	                _layout.Layout,
 	                _extends({ box: item.iconCls ? 'last' : 'mean' }, props, {
-	                    style: _extends({}, (0, _core.sc)([_extends({}, props.style, {
-	                        width: width - (colIndex === 0 ? 2 : 1),
-	                        height: height - 1
+	                    style: _extends({}, (0, _core.sc)([{
+	                        borderTop: '1px solid #eaeaea'
+	                    }, rowIndex === 0], [{
+	                        borderLeft: '1px solid #eaeaea'
+	                    }, colIndex === 0], [_extends({}, props.style, {
+	                        width: width,
+	                        height: height,
+	                        borderRight: '1px solid #eaeaea',
+	                        borderBottom: '1px solid #eaeaea'
 	                    })], [{
 	                        backgroundColor: rowIndex % 2 === 0 ? oddColor : evenColor
 	                    }, (0, _core.isNotNil)(oddColor)], [{
 	                        color: rowIndex % 2 === 0 ? oddFontColor : evenFontColor
 	                    }, (0, _core.isNotNil)(oddFontColor)])) }),
 	                _react2.default.createElement(
-	                    _layout.VerticalCenterLayout,
-	                    { style: _extends({}, item.style, {
+	                    _base.Title,
+	                    { cross: 'center', title: item.title, style: _extends({}, item.style, {
 	                            paddingLeft: 10,
 	                            paddingRight: 10
 	                        }) },
 	                    _react2.default.createElement(
-	                        _base.Text,
-	                        { numberOfLines: 1, style: {
+	                        _base.Label,
+	                        { style: {
 	                                cursor: item.onClick ? 'pointer' : 'default'
 	                            }, onClick: item.onClick },
 	                        item.text
@@ -51566,7 +53458,7 @@
 	exports.default = DetailTableCell;
 
 /***/ },
-/* 588 */
+/* 598 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51583,7 +53475,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
@@ -51591,9 +53483,9 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _base = __webpack_require__(533);
+	var _base = __webpack_require__(537);
 
-	var _Colors = __webpack_require__(582);
+	var _Colors = __webpack_require__(544);
 
 	var _Colors2 = _interopRequireDefault(_Colors);
 
@@ -51661,22 +53553,35 @@
 	                return _react2.default.createElement(
 	                    _layout.Layout,
 	                    _extends({ box: 'last' }, props, {
-	                        style: (0, _core.sc)([_extends({
-	                            width: width - (colIndex === 0 ? 2 : 1),
-	                            height: height - (rowIndex === 0 ? 2 : 1)
+	                        style: (0, _core.sc)([{
+	                            borderTop: '1px solid #eaeaea'
+	                        }, rowIndex === 0], [{
+	                            borderLeft: '1px solid #eaeaea'
+	                        }, colIndex === 0], [_extends({
+	                            width: width,
+	                            height: height,
+	                            borderRight: '1px solid #eaeaea',
+	                            borderBottom: '1px solid #eaeaea',
+	                            fontWeight: 'bold',
+	                            paddingLeft: 10,
+	                            paddingRight: 10
 	                        }, item.style, props.style)], [{
 	                            backgroundColor: backgroundColor
 	                        }, (0, _core.isNotNil)(backgroundColor)], [{
 	                            color: fontColor
 	                        }, (0, _core.isNotNil)(fontColor)]) }),
 	                    _react2.default.createElement(
-	                        _base.Label,
-	                        { main: 'center', style: {
+	                        _base.Title,
+	                        { cross: 'center', main: 'center', title: item.title, style: {
 	                                fontWeight: 'bold',
 	                                paddingLeft: 10,
 	                                paddingRight: 10
 	                            } },
-	                        item.text
+	                        _react2.default.createElement(
+	                            _base.Label,
+	                            null,
+	                            item.text
+	                        )
 	                    ),
 	                    _react2.default.createElement(_base.Combo, {
 	                        ref: function ref(_ref) {
@@ -51701,10 +53606,16 @@
 	                );
 	            }
 	            return _react2.default.createElement(
-	                _base.Label,
-	                { main: 'center', style: (0, _core.sc)([_extends({
-	                        width: width - (colIndex === 0 ? 2 : 1),
-	                        height: height - (rowIndex === 0 ? 2 : 1),
+	                _base.Title,
+	                { title: item.title, cross: 'center', main: 'center', style: (0, _core.sc)([{
+	                        borderTop: '1px solid #eaeaea'
+	                    }, rowIndex === 0], [{
+	                        borderLeft: '1px solid #eaeaea'
+	                    }, colIndex === 0], [_extends({
+	                        width: width,
+	                        height: height,
+	                        borderRight: '1px solid #eaeaea',
+	                        borderBottom: '1px solid #eaeaea',
 	                        fontWeight: 'bold',
 	                        paddingLeft: 10,
 	                        paddingRight: 10
@@ -51713,7 +53624,11 @@
 	                    }, (0, _core.isNotNil)(backgroundColor)], [{
 	                        color: fontColor
 	                    }, (0, _core.isNotNil)(fontColor)]) },
-	                item.text
+	                _react2.default.createElement(
+	                    _base.Label,
+	                    null,
+	                    item.text
+	                )
 	            );
 	        }
 	    }, {
@@ -51728,7 +53643,7 @@
 	    }, {
 	        key: '_getTriggerIconClassName',
 	        value: function _getTriggerIconClassName() {
-	            var iconClass = "";
+	            var iconClass = '';
 	            (0, _core.some)(this.props.item.list, function (items) {
 	                return (0, _core.some)(items, function (item) {
 	                    if (item.active) {
@@ -51765,9 +53680,13 @@
 	                                _react2.default.createElement(_base.Icon, null)
 	                            ),
 	                            _react2.default.createElement(
-	                                _base.Label,
-	                                null,
-	                                item.text
+	                                _base.Title,
+	                                { cross: 'center', title: item.title },
+	                                _react2.default.createElement(
+	                                    _base.Label,
+	                                    null,
+	                                    item.text
+	                                )
 	                            )
 	                        ));
 	                    });
@@ -51797,7 +53716,7 @@
 	exports.default = DetailTableHeaderCell;
 
 /***/ },
-/* 589 */
+/* 599 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51904,7 +53823,7 @@
 	exports.default = DetailTableComponentWidthHelper;
 
 /***/ },
-/* 590 */
+/* 600 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51913,15 +53832,13 @@
 	    value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(9);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
@@ -51929,11 +53846,9 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _base = __webpack_require__(533);
+	var _base = __webpack_require__(537);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -51969,12 +53884,9 @@
 	        value: function render() {
 	            var _props = this.props,
 	                label = _props.label,
-	                c = _props.curr,
 	                pages = _props.pages,
 	                onPrev = _props.onPrev,
-	                onNext = _props.onNext,
-	                props = _objectWithoutProperties(_props, ['label', 'curr', 'pages', 'onPrev', 'onNext']);
-
+	                onNext = _props.onNext;
 	            var curr = this.state.curr;
 
 	            var labelText = _react2.default.createElement(
@@ -52005,7 +53917,7 @@
 	            );
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                _extends({ box: 'last', cross: 'center' }, props),
+	                { box: 'last', cross: 'center', style: { height: 30, paddingRight: 10 } },
 	                labelText,
 	                _react2.default.createElement(
 	                    _layout.Layout,
@@ -52056,7 +53968,7 @@
 	exports.default = DetailTablePagerComponent;
 
 /***/ },
-/* 591 */
+/* 601 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52065,15 +53977,13 @@
 	    value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(9);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactMixin = __webpack_require__(544);
+	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
@@ -52081,13 +53991,13 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _base = __webpack_require__(533);
+	var _base = __webpack_require__(537);
 
-	var _DetailTableHeaderCellComponent = __webpack_require__(588);
+	var _DetailTableHeaderCellComponent = __webpack_require__(598);
 
 	var _DetailTableHeaderCellComponent2 = _interopRequireDefault(_DetailTableHeaderCellComponent);
 
-	var _DetailTableCellComponent = __webpack_require__(587);
+	var _DetailTableCellComponent = __webpack_require__(597);
 
 	var _DetailTableCellComponent2 = _interopRequireDefault(_DetailTableCellComponent);
 
@@ -52134,12 +54044,11 @@
 	                isNeedFreeze === true ? _react2.default.createElement(_DetailTableHeaderCellComponent2.default, {
 	                    styleType: styleType,
 	                    color: color,
-	                    style: {
-	                        border: '1px solid #eaeaea'
-	                    },
-	                    width: DetailTableSequenceComponent.WIDTH + 1,
-	                    height: header.length * headerRowHeight + 1,
-	                    item: { text: '序号' }
+	                    width: DetailTableSequenceComponent.WIDTH,
+	                    height: header.length * headerRowHeight,
+	                    item: { text: '序号' },
+	                    colIndex: 0,
+	                    rowIndex: 0
 	                }) : null,
 	                _react2.default.createElement(
 	                    _layout.Layout,
@@ -52170,25 +54079,17 @@
 	                    key: i,
 	                    styleType: styleType,
 	                    color: color,
-	                    style: (0, _core.sc)([_extends({}, style, {
-	                        position: 'absolute',
-	                        borderBottom: '1px solid #eaeaea',
-	                        borderRight: '1px solid #eaeaea',
-	                        borderLeft: '1px solid #eaeaea'
-	                    })], [{
-	                        borderTop: '1px solid #eaeaea'
-	                    }, i === 0]),
-	                    width: DetailTableSequenceComponent.WIDTH + 1,
-	                    height: rowHeight + 1,
+	                    abs: true,
+	                    style: style,
+	                    width: DetailTableSequenceComponent.WIDTH,
+	                    height: rowHeight,
 	                    item: { text: i + 1 },
-	                    rowIndex: i
+	                    rowIndex: i,
+	                    colIndex: 0
 	                }));
 	            }
 	            return result;
 	        }
-	    }, {
-	        key: '_cellRenderer',
-	        value: function _cellRenderer() {}
 	    }]);
 
 	    return DetailTableSequenceComponent;
@@ -52208,6 +54109,2745 @@
 	_reactMixin2.default.onClass(DetailTableSequenceComponent, _core.ReactComponentWithPureRenderMixin);
 
 	exports.default = DetailTableSequenceComponent;
+
+/***/ },
+/* 602 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	__webpack_require__(603);
+
+	var _SummaryTableCellComponent = __webpack_require__(605);
+
+	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
+
+	var _SummaryTableHeaderCellComponent = __webpack_require__(606);
+
+	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
+
+	var _SummaryTableComponentWidthHelper = __webpack_require__(607);
+
+	var _SummaryTableComponentWidthHelper2 = _interopRequireDefault(_SummaryTableComponentWidthHelper);
+
+	var _SummaryTableComponentItemsHelper = __webpack_require__(608);
+
+	var _SummaryTableComponentItemsHelper2 = _interopRequireDefault(_SummaryTableComponentItemsHelper);
+
+	var _SummaryTablePagerComponent = __webpack_require__(609);
+
+	var _SummaryTablePagerComponent2 = _interopRequireDefault(_SummaryTablePagerComponent);
+
+	var _SummaryTableSequenceComponent = __webpack_require__(610);
+
+	var _SummaryTableSequenceComponent2 = _interopRequireDefault(_SummaryTableSequenceComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/19.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var MERGE_RULE = function MERGE_RULE(col1, col2) {
+	    return col1 === col2;
+	    // return isEqual(col1.text, col2.text);
+	};
+
+	var SummaryTableComponent = function (_Component) {
+	    _inherits(SummaryTableComponent, _Component);
+
+	    function SummaryTableComponent(props, context) {
+	        _classCallCheck(this, SummaryTableComponent);
+
+	        var _this = _possibleConstructorReturn(this, (SummaryTableComponent.__proto__ || Object.getPrototypeOf(SummaryTableComponent)).call(this, props, context));
+
+	        _this._onVerticalScroll = _this._onVerticalScroll.bind(_this);
+	        _this.state = _extends({}, _this._digest(props), { scrollTop: 0, startSequence: 1 });
+	        return _this;
+	    }
+
+	    _createClass(SummaryTableComponent, [{
+	        key: '_digest',
+	        value: function _digest(props) {
+	            var itemsHelper = new _SummaryTableComponentItemsHelper2.default(props);
+
+	            var _itemsHelper$getForma = itemsHelper.getFormatted(),
+	                header = _itemsHelper$getForma.header,
+	                items = _itemsHelper$getForma.items;
+
+	            var widthHelper = new _SummaryTableComponentWidthHelper2.default(_extends({}, props, { header: header, items: items }));
+	            var minColumnSize = widthHelper.getWidth();
+
+	            var freezeCols = props.freezeCols;
+	            var columnSize = props.columnSize.slice();
+	            if (freezeCols.length >= columnSize.length) {
+	                freezeCols = [];
+	            }
+	            if (!(0, _core.isNumber)(props.columnSize[0])) {
+	                columnSize = minColumnSize;
+	            }
+
+	            return {
+	                columnSize: columnSize,
+	                minColumnSize: minColumnSize,
+	                header: header,
+	                items: items,
+	                freezeCols: freezeCols
+	            };
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header || nextProps.freezeCols !== this.props.freezeCols || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.showSequence !== this.props.showSequence) {
+	                this.setState(this._digest(nextProps));
+	            }
+	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header || nextProps.isNeedFreeze !== this.props.isNeedFreeze) {
+	                this.setState({
+	                    scrollTop: 0
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                headerRowHeight = _props.headerRowHeight,
+	                rowHeight = _props.rowHeight,
+	                isNeedFreeze = _props.isNeedFreeze,
+	                isNeedResize = _props.isNeedResize,
+	                mergeCols = _props.mergeCols,
+	                regionColumnSize = _props.regionColumnSize,
+	                headerCellRenderer = _props.headerCellRenderer,
+	                cellRenderer = _props.cellRenderer,
+	                width = _props.width,
+	                height = _props.height,
+	                showSequence = _props.showSequence,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                vCurr = _props.vCurr,
+	                hCurr = _props.hCurr,
+	                hasVNext = _props.hasVNext,
+	                hasHNext = _props.hasHNext,
+	                onVPrev = _props.onVPrev,
+	                onVNext = _props.onVNext,
+	                onHPrev = _props.onHPrev,
+	                onHNext = _props.onHNext;
+	            var _state = this.state,
+	                columnSize = _state.columnSize,
+	                minColumnSize = _state.minColumnSize,
+	                header = _state.header,
+	                items = _state.items,
+	                freezeCols = _state.freezeCols,
+	                scrollTop = _state.scrollTop;
+
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                { dir: 'top', box: 'last', style: {
+	                        width: width,
+	                        height: height
+	                    } },
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    { style: {
+	                            width: width,
+	                            height: height - 30
+	                        }, box: showSequence === true ? 'first' : 'mean' },
+	                    showSequence === true ? _react2.default.createElement(_SummaryTableSequenceComponent2.default, { isNeedFreeze: isNeedFreeze,
+	                        scrollTop: scrollTop,
+	                        height: height - 30,
+	                        headerRowHeight: headerRowHeight,
+	                        rowHeight: rowHeight,
+	                        styleType: styleType,
+	                        color: color,
+	                        vCurr: vCurr,
+	                        hCurr: hCurr,
+	                        header: this.props.header,
+	                        items: this.props.items,
+	                        crossHeader: this.props.crossHeader,
+	                        crossItems: this.props.crossItems }) : null,
+	                    _react2.default.createElement(_base.AdaptiveTable, {
+	                        width: width - (showSequence === true ? _SummaryTableSequenceComponent2.default.WIDTH : 0),
+	                        height: height - 30,
+	                        headerRowHeight: headerRowHeight,
+	                        rowHeight: rowHeight,
+	                        columnSize: columnSize,
+	                        minColumnSize: minColumnSize,
+	                        isNeedFreeze: isNeedFreeze,
+	                        isNeedResize: isNeedResize,
+	                        freezeCols: freezeCols,
+	                        mergeCols: mergeCols,
+	                        mergeRule: MERGE_RULE,
+	                        header: header,
+	                        items: items,
+	                        regionColumnSize: regionColumnSize,
+	                        headerCellRenderer: this._headerCellRenderer.bind(this),
+	                        cellRenderer: this._cellRenderer.bind(this),
+	                        onColumnResizeEnd: this._onColumnResizeEnd.bind(this),
+	                        onRegionColumnResizeEnd: this._onRegionColumnResizeEnd.bind(this),
+	                        onVerticalScroll: this._onVerticalScroll,
+	                        Component: _base.SummaryTable
+	                    })
+	                ),
+	                _react2.default.createElement(_SummaryTablePagerComponent2.default, { style: { height: 30, paddingRight: 10 },
+	                    vCurr: vCurr,
+	                    hCurr: hCurr,
+	                    hasVNext: hasVNext,
+	                    hasHNext: hasHNext,
+	                    onVPrev: onVPrev,
+	                    onVNext: onVNext,
+	                    onHPrev: onHPrev,
+	                    onHNext: onHNext })
+	            );
+	        }
+	    }, {
+	        key: '_headerCellRenderer',
+	        value: function _headerCellRenderer(_ref, item) {
+	            var colIndex = _ref.colIndex,
+	                rowIndex = _ref.rowIndex,
+	                width = _ref.width,
+	                height = _ref.height;
+
+	            return _react2.default.createElement(_SummaryTableHeaderCellComponent2.default, { item: item, colIndex: colIndex, rowIndex: rowIndex, width: width,
+	                height: height, styleType: this.props.styleType,
+	                color: this.props.color });
+	        }
+	    }, {
+	        key: '_cellRenderer',
+	        value: function _cellRenderer(_ref2, item) {
+	            var colIndex = _ref2.colIndex,
+	                rowIndex = _ref2.rowIndex,
+	                width = _ref2.width,
+	                height = _ref2.height;
+
+	            return _react2.default.createElement(_SummaryTableCellComponent2.default, { item: item, style: { backgroundColor: '' }, colIndex: colIndex,
+	                rowIndex: rowIndex, width: width,
+	                height: height, styleType: this.props.styleType,
+	                color: this.props.color });
+	        }
+	    }, {
+	        key: '_onColumnResizeEnd',
+	        value: function _onColumnResizeEnd() {
+	            var _props2;
+
+	            (_props2 = this.props).onColumnResizeEnd.apply(_props2, arguments);
+	        }
+	    }, {
+	        key: '_onRegionColumnResizeEnd',
+	        value: function _onRegionColumnResizeEnd() {
+	            var _props3;
+
+	            (_props3 = this.props).onRegionColumnResizeEnd.apply(_props3, arguments);
+	        }
+	    }, {
+	        key: '_onVerticalScroll',
+	        value: function _onVerticalScroll(scrollTop) {
+	            this.setState({
+	                scrollTop: scrollTop
+	            });
+	        }
+	    }]);
+
+	    return SummaryTableComponent;
+	}(_react.Component);
+
+	SummaryTableComponent.defaultProps = {
+	    styleType: null,
+	    color: null,
+	    isNeedResize: false,
+	    headerRowHeight: 25,
+	    rowHeight: 25,
+	    columnSize: [],
+	    isNeedFreeze: true,
+	    freezeCols: [],
+	    header: [],
+	    items: [],
+	    crossHeader: [],
+	    crossItems: [],
+	    regionColumnSize: [],
+	    onColumnResizeEnd: _core.emptyFunction,
+	    onRegionColumnResizeEnd: _core.emptyFunction,
+
+	    showSequence: false,
+	    vCurr: 1,
+	    hCurr: 1,
+	    hasVNext: _core.emptyFunction,
+	    hasHNext: _core.emptyFunction,
+	    label: '',
+	    onVPrev: _core.emptyFunction,
+	    onVNext: _core.emptyFunction,
+	    onHPrev: _core.emptyFunction,
+	    onHNext: _core.emptyFunction
+	};
+
+	_reactMixin2.default.onClass(SummaryTableComponent, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = SummaryTableComponent;
+
+/***/ },
+/* 603 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(604);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(190)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./../../../node_modules/less-loader/index.js!./SummaryTableComponent.less", function() {
+				var newContent = require("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./../../../node_modules/less-loader/index.js!./SummaryTableComponent.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 604 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(189)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "", ""]);
+
+	// exports
+
+
+/***/ },
+/* 605 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/19.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var parseHEXAlpha2HEX = function parseHEXAlpha2HEX(hex, alpha) {
+	    var rgb = _core.colorUtils.hex2rgb(hex);
+	    var rgbJSON = _core.colorUtils.rgb2json(rgb);
+	    rgbJSON.a = alpha;
+	    return _core.colorUtils.rgba2rgb(_core.colorUtils.json2rgba(rgbJSON));
+	};
+
+	var DARK_FONT_COLOR = '#1a1a1a';
+	var LIGHT_FONT_COLOR = '#ffffff';
+
+	var colorMap = {};
+	var getColor = function getColor(color) {
+	    if (colorMap[color]) {
+	        return colorMap[color];
+	    }
+	    var oddColor = parseHEXAlpha2HEX(color, 0.2);
+	    var evenColor = parseHEXAlpha2HEX(color, 0.05);
+	    colorMap[color] = {
+	        oddColor: oddColor,
+	        evenColor: evenColor,
+	        oddFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(oddColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR,
+	        evenFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(evenColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR
+	    };
+	    return colorMap[color];
+	};
+
+	var SummaryTableCell = function (_Component) {
+	    _inherits(SummaryTableCell, _Component);
+
+	    function SummaryTableCell(props, context) {
+	        _classCallCheck(this, SummaryTableCell);
+
+	        return _possibleConstructorReturn(this, (SummaryTableCell.__proto__ || Object.getPrototypeOf(SummaryTableCell)).call(this, props, context));
+	    }
+
+	    _createClass(SummaryTableCell, [{
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                item = _props.item,
+	                width = _props.width,
+	                height = _props.height,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                colIndex = _props.colIndex,
+	                rowIndex = _props.rowIndex,
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'colIndex', 'rowIndex']);
+
+	            var oddColor = void 0,
+	                evenColor = void 0,
+	                oddFontColor = void 0,
+	                evenFontColor = void 0;
+	            switch (styleType) {
+	                case 1:
+	                    var m = getColor(color);
+	                    oddColor = m.oddColor;
+	                    evenColor = m.evenColor;
+	                    oddFontColor = m.oddFontColor;
+	                    evenFontColor = m.evenFontColor;
+	                    break;
+	                case 2:
+	                    break;
+	                case 3:
+	                    break;
+	                default:
+	                    break;
+	            }
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                _extends({ box: item.iconCls ? 'last' : 'mean' }, props, {
+	                    style: _extends({}, (0, _core.sc)([{
+	                        borderTop: '1px solid #eaeaea'
+	                    }, rowIndex === 0], [{
+	                        borderLeft: '1px solid #eaeaea'
+	                    }, colIndex === 0], [_extends({}, props.style, {
+	                        width: width,
+	                        height: height,
+	                        borderRight: '1px solid #eaeaea',
+	                        borderBottom: '1px solid #eaeaea'
+	                    })], [{
+	                        backgroundColor: rowIndex % 2 === 0 ? oddColor : evenColor
+	                    }, (0, _core.isNotNil)(oddColor)], [{
+	                        color: rowIndex % 2 === 0 ? oddFontColor : evenFontColor
+	                    }, (0, _core.isNotNil)(oddFontColor)])) }),
+	                _react2.default.createElement(
+	                    _base.Title,
+	                    { cross: 'center', title: item.title, style: _extends({}, item.style, {
+	                            paddingLeft: 10,
+	                            paddingRight: 10
+	                        }) },
+	                    _react2.default.createElement(
+	                        _base.Label,
+	                        { style: {
+	                                cursor: item.onClick ? 'pointer' : 'default'
+	                            }, onClick: item.onClick },
+	                        item.text
+	                    )
+	                ),
+	                item.iconCls ? _react2.default.createElement(
+	                    _layout.CenterLayout,
+	                    { style: { width: 25 }, className: item.iconCls },
+	                    _react2.default.createElement(_base.Icon, null)
+	                ) : null
+	            );
+	        }
+	    }]);
+
+	    return SummaryTableCell;
+	}(_react.Component);
+
+	_reactMixin2.default.onClass(SummaryTableCell, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = SummaryTableCell;
+
+/***/ },
+/* 606 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	var _Colors = __webpack_require__(544);
+
+	var _Colors2 = _interopRequireDefault(_Colors);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/19.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var DARK_FONT_COLOR = '#1a1a1a';
+	var LIGHT_FONT_COLOR = '#ffffff';
+
+	var SummaryTableHeaderCell = function (_Component) {
+	    _inherits(SummaryTableHeaderCell, _Component);
+
+	    function SummaryTableHeaderCell(props, context) {
+	        _classCallCheck(this, SummaryTableHeaderCell);
+
+	        var _this = _possibleConstructorReturn(this, (SummaryTableHeaderCell.__proto__ || Object.getPrototypeOf(SummaryTableHeaderCell)).call(this, props, context));
+
+	        _this.state = {
+	            open: false
+	        };
+
+	        _this._triggerRenderer = _this._triggerRenderer.bind(_this);
+	        _this._popupRenderer = _this._popupRenderer.bind(_this);
+	        return _this;
+	    }
+
+	    _createClass(SummaryTableHeaderCell, [{
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var _props = this.props,
+	                item = _props.item,
+	                width = _props.width,
+	                height = _props.height,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                colIndex = _props.colIndex,
+	                rowIndex = _props.rowIndex,
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'colIndex', 'rowIndex']);
+
+	            var backgroundColor = void 0,
+	                fontColor = void 0;
+	            switch (styleType) {
+	                case 1:
+	                case 2:
+	                    backgroundColor = color;
+	                    fontColor = _core.colorUtils.isDarkColor(backgroundColor) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	                    break;
+	                case 3:
+	                    break;
+	                default:
+	                    break;
+	            }
+	            if (item.list && item.list.length > 0) {
+	                return _react2.default.createElement(
+	                    _layout.Layout,
+	                    _extends({ box: 'last' }, props, {
+	                        style: (0, _core.sc)([{
+	                            borderTop: '1px solid #eaeaea'
+	                        }, rowIndex === 0], [{
+	                            borderLeft: '1px solid #eaeaea'
+	                        }, colIndex === 0], [_extends({
+	                            width: width,
+	                            height: height,
+	                            borderRight: '1px solid #eaeaea',
+	                            borderBottom: '1px solid #eaeaea'
+	                        }, item.style, props.style)], [{
+	                            backgroundColor: backgroundColor
+	                        }, (0, _core.isNotNil)(backgroundColor)], [{
+	                            color: fontColor
+	                        }, (0, _core.isNotNil)(fontColor)]) }),
+	                    _react2.default.createElement(
+	                        _base.Title,
+	                        { cross: 'center', main: 'center', title: item.title, style: {
+	                                fontWeight: 'bold',
+	                                paddingLeft: 10,
+	                                paddingRight: 10
+	                            } },
+	                        _react2.default.createElement(
+	                            _base.Label,
+	                            null,
+	                            item.text
+	                        )
+	                    ),
+	                    _react2.default.createElement(_base.Combo, {
+	                        ref: function ref(_ref) {
+	                            return _this2.combo = _ref;
+	                        },
+	                        style: { width: 25 },
+	                        triggerRenderer: this._triggerRenderer,
+	                        popupRenderer: this._popupRenderer,
+	                        trigger: {
+	                            className: this._getTriggerIconClassName(),
+	                            flex: true
+	                        },
+	                        popup: {
+	                            style: {
+	                                borderColor: _Colors2.default.BORDER,
+	                                borderWidth: 1,
+	                                borderStyle: 'solid',
+	                                width: 100
+	                            }
+	                        }
+	                    })
+	                );
+	            }
+	            return _react2.default.createElement(
+	                _base.Title,
+	                { title: item.title, cross: 'center', main: 'center', style: (0, _core.sc)([{
+	                        borderTop: '1px solid #eaeaea'
+	                    }, rowIndex === 0], [{
+	                        borderLeft: '1px solid #eaeaea'
+	                    }, colIndex === 0], [_extends({
+	                        width: width,
+	                        height: height,
+	                        borderRight: '1px solid #eaeaea',
+	                        borderBottom: '1px solid #eaeaea',
+	                        fontWeight: 'bold',
+	                        paddingLeft: 10,
+	                        paddingRight: 10
+	                    }, item.style, props.style)], [{
+	                        backgroundColor: backgroundColor
+	                    }, (0, _core.isNotNil)(backgroundColor)], [{
+	                        color: fontColor
+	                    }, (0, _core.isNotNil)(fontColor)]) },
+	                _react2.default.createElement(
+	                    _base.Label,
+	                    null,
+	                    item.text
+	                )
+	            );
+	        }
+	    }, {
+	        key: '_triggerRenderer',
+	        value: function _triggerRenderer() {
+	            return _react2.default.createElement(
+	                _layout.CenterLayout,
+	                { flex: true },
+	                _react2.default.createElement(_base.Icon, null)
+	            );
+	        }
+	    }, {
+	        key: '_getTriggerIconClassName',
+	        value: function _getTriggerIconClassName() {
+	            var iconClass = '';
+	            (0, _core.some)(this.props.item.list, function (items) {
+	                return (0, _core.some)(items, function (item) {
+	                    if (item.active) {
+	                        iconClass = item.iconClass;
+	                        return true;
+	                    }
+	                });
+	            });
+	            return iconClass;
+	        }
+	    }, {
+	        key: '_popupRenderer',
+	        value: function _popupRenderer() {
+	            var _this3 = this;
+
+	            return _react2.default.createElement(
+	                _layout.VerticalLayout,
+	                null,
+	                (0, _core.map)(this.props.item.list, function (items, i) {
+	                    var list = [];
+	                    (0, _core.each)(items, function (item) {
+	                        list.push(_react2.default.createElement(
+	                            _base.Button,
+	                            { key: item.value, box: 'first', active: item.active,
+	                                className: (0, _core.cn)('bi-list-item', 'bi-list-item-stress', 'dot-e-font'),
+	                                style: { height: 25 },
+	                                onClick: function onClick() {
+	                                    _this3.combo.close();
+	                                    item.onClick(item);
+	                                } },
+	                            _react2.default.createElement(
+	                                _layout.CenterLayout,
+	                                { style: { width: 25 } },
+	                                _react2.default.createElement(_base.Icon, null)
+	                            ),
+	                            _react2.default.createElement(
+	                                _base.Title,
+	                                { cross: 'center', title: item.title },
+	                                _react2.default.createElement(
+	                                    _base.Label,
+	                                    null,
+	                                    item.text
+	                                )
+	                            )
+	                        ));
+	                    });
+	                    if (i > 0) {
+	                        return _react2.default.createElement(
+	                            _layout.VerticalLayout,
+	                            { key: i },
+	                            _react2.default.createElement(_layout.Layout, { style: { height: 1, backgroundColor: _Colors2.default.BORDER, marginLeft: 10, marginRight: 10 } }),
+	                            list
+	                        );
+	                    }
+	                    return _react2.default.createElement(
+	                        _layout.VerticalLayout,
+	                        { key: i },
+	                        list
+	                    );
+	                })
+	            );
+	        }
+	    }]);
+
+	    return SummaryTableHeaderCell;
+	}(_react.Component);
+
+	_reactMixin2.default.onClass(SummaryTableHeaderCell, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = SummaryTableHeaderCell;
+
+/***/ },
+/* 607 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(194);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var REMAIN_WIDTH = 20;
+
+	function sumBy(array, it) {
+	    var res = 0;
+	    (0, _core.each)(array, function (width, i) {
+	        res += it(width, i);
+	    });
+	    return res;
+	}
+
+	//最小二乘法  fx=bx+a
+	function fit(widths) {
+	    if (widths.length < 2) {
+	        return { a: widths[0], b: 0 };
+	    }
+	    var $11 = widths.length;
+	    var $12 = (1 + widths.length) * widths.length / 2;
+	    var $21 = $12;
+	    var $22 = sumBy(widths, function (width, i) {
+	        return (i + 1) * (i + 1);
+	    });
+	    var f1 = _core.math.sum(widths);
+	    var f2 = sumBy(widths, function (width, i) {
+	        return (i + 1) * width;
+	    });
+	    return {
+	        a: (f2 * $12 - f1 * $22) / ($12 * $21 - $11 * $22),
+	        b: (f2 * $11 - f1 * $21) / ($11 * $22 - $21 * $12)
+	    };
+	}
+
+	//获取字符宽度
+	function getGBWidth(str) {
+	    str = str + '';
+	    str = str.replace(/[^\x00-\xff]/g, 'xx');
+	    return Math.ceil(str.length / 2);
+	}
+
+	var SummaryTableComponentWidthHelper = function () {
+	    function SummaryTableComponentWidthHelper(props) {
+	        _classCallCheck(this, SummaryTableComponentWidthHelper);
+
+	        this.width = props.width;
+	        this.header = props.header;
+	        this.items = this._reverse(props.items);
+	        this.isNeedFreeze = props.isNeedFreeze;
+	        this.freezeCols = props.freezeCols;
+	    }
+
+	    _createClass(SummaryTableComponentWidthHelper, [{
+	        key: '_reverse',
+	        value: function _reverse(items) {
+	            var result = [];
+	            (0, _core.each)(items, function (cols, i) {
+	                (0, _core.each)(cols, function (item, j) {
+	                    if (!result[j]) {
+	                        result[j] = [];
+	                    }
+	                    result[j][i] = item;
+	                });
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: 'getWidthsByOneCol',
+	        value: function getWidthsByOneCol(col) {
+	            var widths = [];
+	            (0, _core.each)(col, function (item) {
+	                widths.push(getGBWidth(item.text));
+	            });
+	            return widths;
+	        }
+	    }, {
+	        key: 'getWidth',
+	        value: function getWidth() {
+	            var _this = this;
+
+	            var result = [];
+	            (0, _core.each)(this.items, function (col) {
+	                var fx = fit(_this.getWidthsByOneCol(col));
+	                result.push((0, _core.clamp)(_core.math.ceil((fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) * 12 * 1.2) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
+	            });
+	            return result;
+	        }
+	    }]);
+
+	    return SummaryTableComponentWidthHelper;
+	}();
+
+	exports.default = SummaryTableComponentWidthHelper;
+
+/***/ },
+/* 608 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Created by Wang on 2016/12/23.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+
+
+	var _core = __webpack_require__(194);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var formatHeader = function formatHeader(header, crossHeader, crossItems, hDeep, vDeep) {
+	    var items = formatCrossItems(crossItems, vDeep);
+	    var result = [];
+	    (0, _core.each)(items, function (node, row) {
+	        var c = [];
+	        for (var i = 0; i < hDeep; i++) {
+	            c.push(crossHeader[row]);
+	        }
+	        result.push(c.concat(node || []));
+	    });
+	    if (header && header.length > 0) {
+	        result.push(header);
+	    }
+	    return result;
+	};
+
+	var formatItems = function formatItems(nodes, deep, isCross) {
+	    var result = [];
+
+	    function track(store, node) {
+	        var next = void 0;
+	        if ((0, _core.isArray)(node.childs)) {
+	            (0, _core.each)(node.childs, function (child, index) {
+	                var next = void 0;
+	                if (store !== -1) {
+	                    next = store.slice();
+	                    next.push(node);
+	                } else {
+	                    next = [];
+	                }
+	                track(next, child);
+	            });
+	            if (store !== -1) {
+	                next = store.slice();
+	                next.push(node);
+	            } else {
+	                next = [];
+	            }
+	            if ( /**(store == -1 || node.childs.length > 1) &&**/(0, _core.isNotEmptyArray)(node.values)) {
+	                var summary = { text: '汇总' };
+	                for (var i = next.length; i < deep; i++) {
+	                    next.push(summary);
+	                }
+	                if (!isCross) {
+	                    next = next.concat(node.values);
+	                }
+	                if (next.length > 0) {
+	                    if (!isCross) {
+	                        result.push(next);
+	                    } else {
+	                        for (var k = 0, l = node.values.length; k < l; k++) {
+	                            result.push(next);
+	                        }
+	                    }
+	                }
+	            }
+
+	            return;
+	        }
+	        if (store !== -1) {
+	            next = store.slice();
+	            for (var _i = next.length; _i < deep; _i++) {
+	                next.push(node);
+	            }
+	        } else {
+	            next = [];
+	        }
+	        if (!isCross && (0, _core.isArray)(node.values)) {
+	            next = next.concat(node.values);
+	        }
+	        if (isCross && (0, _core.isArray)(node.values)) {
+	            for (var _i2 = 0, len = node.values.length; _i2 < len - 1; _i2++) {
+	                if (next.length > 0) {
+	                    result.push(next);
+	                }
+	            }
+	        }
+	        if (next.length > 0) {
+	            result.push(next);
+	        }
+	    }
+
+	    (0, _core.each)(nodes, function (node) {
+	        track(-1, node);
+	    });
+	    //填充空位
+	    (0, _core.each)(result, function (line) {
+	        var l = (0, _core.last)(line);
+	        for (var i = line.length; i < deep; i++) {
+	            line.push(l);
+	        }
+	    });
+	    return result;
+	};
+
+	var formatCrossItems = function formatCrossItems(nodes, deep) {
+	    var items = formatItems(nodes, deep, true);
+	    return (0, _core.unzip)(items);
+	};
+
+	var formatHorizontalItems = function formatHorizontalItems(nodes, deep, isCross) {
+	    var result = [];
+
+	    function track(store, node) {
+	        var next = void 0;
+	        if ((0, _core.isArray)(node.childs)) {
+	            (0, _core.each)(node.childs, function (child) {
+	                var next = void 0;
+	                if (store !== -1) {
+	                    next = store.slice();
+	                    next.push(node);
+	                } else {
+	                    next = [];
+	                }
+	                track(next, child);
+	            });
+	            if (store !== -1) {
+	                next = store.slice();
+	                next.push(node);
+	            } else {
+	                next = [];
+	            }
+	            if ((store === -1 || node.childs.length > 1) && (0, _core.isNotEmptyArray)(node.values)) {
+	                var summary = { text: '汇总' };
+	                for (var i = next.length; i < deep; i++) {
+	                    next.push(summary);
+	                }
+	                if (!isCross) {
+	                    next = next.concat(node.values);
+	                }
+	                if (next.length > 0) {
+	                    if (!isCross) {
+	                        result.push(next);
+	                    } else {
+	                        for (var k = 0, l = node.values.length; k < l; k++) {
+	                            result.push(next);
+	                        }
+	                    }
+	                }
+	            }
+	            return;
+	        }
+	        if (store !== -1) {
+	            next = store.slice();
+	            for (var _i3 = next.length; _i3 < deep; _i3++) {
+	                next.push(node);
+	            }
+	        } else {
+	            next = [];
+	        }
+	        if (!isCross && (0, _core.isArray)(node.values)) {
+	            next = next.concat(node.values);
+	        }
+	        if (isCross && (0, _core.isArray)(node.values)) {
+	            for (var _i4 = 0, len = node.values.length; _i4 < len - 1; _i4++) {
+	                if (next.length > 0) {
+	                    result.push(next);
+	                }
+	            }
+	        }
+	        if (next.length > 0) {
+	            result.push(next);
+	        }
+	    }
+
+	    (0, _core.each)(nodes, function (node) {
+	        track(-1, node);
+	    });
+	    //填充空位
+	    (0, _core.each)(result, function (line) {
+	        var l = (0, _core.last)(line);
+	        for (var i = line.length; i < deep; i++) {
+	            line.push(l);
+	        }
+	    });
+	    return result;
+	};
+
+	var formatSummaryItems = function formatSummaryItems(items, header, crossItems, deep) {
+	    //求纵向需要去除的列
+	    var cols = [];
+	    var leaf = 0;
+
+	    function track(node) {
+	        if ((0, _core.isArray)(node.childs)) {
+	            (0, _core.each)(node.childs, function (child) {
+	                track(child);
+	            });
+	            if ((0, _core.isNotEmptyArray)(node.values)) {
+	                if (node.childs.length === 1) {
+	                    for (var i = 0; i < node.values.length; i++) {
+	                        cols.push(leaf + i + deep);
+	                    }
+	                }
+	                leaf += node.values.length;
+	            }
+	            return;
+	        }
+	        if (node.values && node.values.length > 1) {
+	            leaf += node.values.length;
+	        } else {
+	            leaf++;
+	        }
+	    }
+
+	    (0, _core.each)(crossItems, function (node) {
+	        track(node);
+	    });
+
+	    if (cols.length > 0) {
+	        (0, _core.each)(header, function (node) {
+	            (0, _core.remove)(node, function (n, index) {
+	                return cols.indexOf(index) > -1;
+	            });
+	        });
+	        (0, _core.each)(items, function (node) {
+	            (0, _core.remove)(node, function (n, index) {
+	                return cols.indexOf(index) > -1;
+	            });
+	        });
+	    }
+	    return { items: items, header: header };
+	};
+
+	var maxDeep = function maxDeep(nodes) {
+	    function track(deep, node) {
+	        var d = deep;
+	        if ((0, _core.isNotEmptyArray)(node.childs)) {
+	            (0, _core.each)(node.childs, function (child) {
+	                d = Math.max(d, track(deep + 1, child));
+	            });
+	        }
+	        return d;
+	    }
+
+	    var deep = 1;
+	    if ((0, _core.isObject)(nodes)) {
+	        (0, _core.each)(nodes, function (node) {
+	            deep = Math.max(deep, track(1, node));
+	        });
+	    }
+	    return deep;
+	};
+
+	var SummaryTableComponentItemsHelper = function () {
+	    function SummaryTableComponentItemsHelper(props) {
+	        _classCallCheck(this, SummaryTableComponentItemsHelper);
+
+	        this.header = props.header;
+	        this.crossHeader = props.crossHeader;
+	        this.crossItems = props.crossItems;
+	        this.items = props.items;
+	        this.isNeedFreeze = props.isNeedFreeze;
+	        this.freezeCols = props.freezeCols;
+	        this.mergeCols = props.mergeCols;
+	    }
+
+	    _createClass(SummaryTableComponentItemsHelper, [{
+	        key: '_getVDeep',
+	        value: function _getVDeep() {
+	            return this.crossHeader.length; //纵向深度
+	        }
+	    }, {
+	        key: '_getHDeep',
+	        value: function _getHDeep() {
+	            return Math.max(this.mergeCols.length, this.freezeCols.length, maxDeep(this.items) - 1);
+	        }
+	    }, {
+	        key: 'getFormatted',
+	        value: function getFormatted() {
+	            var hDeep = this._getHDeep(),
+	                vDeep = this._getVDeep();
+	            var header = formatHeader(this.header, this.crossHeader, this.crossItems, hDeep, vDeep);
+	            var items = formatHorizontalItems(this.items, hDeep);
+	            return formatSummaryItems(items, header, this.crossItems, hDeep);
+	        }
+	    }]);
+
+	    return SummaryTableComponentItemsHelper;
+	}();
+
+	SummaryTableComponentItemsHelper.formatHeader = formatHeader;
+	SummaryTableComponentItemsHelper.formatItems = formatItems;
+	SummaryTableComponentItemsHelper.formatCrossItems = formatCrossItems;
+	SummaryTableComponentItemsHelper.formatHorizontalItems = formatHorizontalItems;
+	SummaryTableComponentItemsHelper.formatSummaryItems = formatSummaryItems;
+
+	exports.default = SummaryTableComponentItemsHelper;
+
+/***/ },
+/* 609 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/20.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var SummaryTablePagerComponent = function (_Component) {
+	    _inherits(SummaryTablePagerComponent, _Component);
+
+	    function SummaryTablePagerComponent(props, context) {
+	        _classCallCheck(this, SummaryTablePagerComponent);
+
+	        var _this = _possibleConstructorReturn(this, (SummaryTablePagerComponent.__proto__ || Object.getPrototypeOf(SummaryTablePagerComponent)).call(this, props, context));
+
+	        _this.state = {
+	            vCurr: props.vCurr,
+	            hCurr: props.hCurr
+	        };
+	        return _this;
+	    }
+
+	    _createClass(SummaryTablePagerComponent, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            this.setState({
+	                vCurr: nextProps.vCurr,
+	                hCurr: nextProps.hCurr
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                hasVNext = _props.hasVNext,
+	                hasHNext = _props.hasHNext,
+	                onVPrev = _props.onVPrev,
+	                onVNext = _props.onVNext,
+	                onHPrev = _props.onHPrev,
+	                onHNext = _props.onHNext;
+	            var _state = this.state,
+	                vCurr = _state.vCurr,
+	                hCurr = _state.hCurr;
+
+	            var vNext = hasVNext(vCurr);
+	            var hNext = hasVNext(hCurr);
+	            var leftVPage = _react2.default.createElement(
+	                _base.Button,
+	                { disabled: vCurr <= 1, main: 'center', cross: 'center',
+	                    className: 'column-pre-page-h-font',
+	                    style: { width: 16, height: 16, fontSize: 16 },
+	                    onClick: this._leftVPageOnClick.bind(this) },
+	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	            );
+	            var curVPage = _react2.default.createElement(
+	                _base.Label,
+	                { style: { paddingLeft: 5, paddingRight: 5 } },
+	                vCurr
+	            );
+	            var rightVPage = _react2.default.createElement(
+	                _base.Button,
+	                { disabled: !vNext, main: 'center', cross: 'center',
+	                    className: 'column-next-page-h-font',
+	                    style: { width: 16, height: 16, fontSize: 16 },
+	                    onClick: this._rightVPageOnClick.bind(this) },
+	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	            );
+
+	            var leftHPage = _react2.default.createElement(
+	                _base.Button,
+	                { disabled: hCurr <= 1, main: 'center', cross: 'center',
+	                    className: 'row-pre-page-h-font',
+	                    style: { width: 16, height: 16, fontSize: 16 },
+	                    onClick: this._leftHPageOnClick.bind(this) },
+	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	            );
+	            var curHPage = _react2.default.createElement(
+	                _base.Label,
+	                { style: { paddingLeft: 5, paddingRight: 5 } },
+	                hCurr
+	            );
+	            var rightHPage = _react2.default.createElement(
+	                _base.Button,
+	                { disabled: !hNext, main: 'center', cross: 'center',
+	                    className: 'row-next-page-h-font',
+	                    style: { width: 16, height: 16, fontSize: 16 },
+	                    onClick: this._rightHPageOnClick.bind(this) },
+	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	            );
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                { main: 'right', cross: 'center', style: { height: 30, paddingRight: 10 } },
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    { main: 'justify' },
+	                    leftVPage,
+	                    curVPage,
+	                    rightVPage
+	                ),
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    { main: 'justify' },
+	                    leftHPage,
+	                    curHPage,
+	                    rightHPage
+	                )
+	            );
+	        }
+	    }, {
+	        key: '_leftVPageOnClick',
+	        value: function _leftVPageOnClick() {
+	            var _this2 = this;
+
+	            this.setState({
+	                vCurr: this.state.vCurr - 1
+	            }, function () {
+	                _this2.props.onVPrev(_this2.state.vCurr);
+	            });
+	        }
+	    }, {
+	        key: '_rightVPageOnClick',
+	        value: function _rightVPageOnClick() {
+	            var _this3 = this;
+
+	            this.setState({
+	                vCurr: this.state.vCurr + 1
+	            }, function () {
+	                _this3.props.onVNext(_this3.state.vCurr);
+	            });
+	        }
+	    }, {
+	        key: '_leftHPageOnClick',
+	        value: function _leftHPageOnClick() {
+	            var _this4 = this;
+
+	            this.setState({
+	                hCurr: this.state.hCurr - 1
+	            }, function () {
+	                _this4.props.onHPrev(_this4.state.hCurr);
+	            });
+	        }
+	    }, {
+	        key: '_rightHPageOnClick',
+	        value: function _rightHPageOnClick() {
+	            var _this5 = this;
+
+	            this.setState({
+	                hCurr: this.state.hCurr + 1
+	            }, function () {
+	                _this5.props.onHNext(_this5.state.hCurr);
+	            });
+	        }
+	    }]);
+
+	    return SummaryTablePagerComponent;
+	}(_react.Component);
+
+	SummaryTablePagerComponent.defaultProps = {
+	    vCurr: 1,
+	    hCurr: 1,
+	    hasVNext: _core.emptyFunction,
+	    hasHNext: _core.emptyFunction,
+	    onVPrev: _core.emptyFunction,
+	    onVNext: _core.emptyFunction,
+	    onHPrev: _core.emptyFunction,
+	    onHNext: _core.emptyFunction
+	};
+
+	_reactMixin2.default.onClass(SummaryTablePagerComponent, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = SummaryTablePagerComponent;
+
+/***/ },
+/* 610 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	var _SummaryTableHeaderCellComponent = __webpack_require__(606);
+
+	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
+
+	var _SummaryTableCellComponent = __webpack_require__(605);
+
+	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
+
+	var _SummaryTableSequenceComponentHelper = __webpack_require__(611);
+
+	var _SummaryTableSequenceComponentHelper2 = _interopRequireDefault(_SummaryTableSequenceComponentHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/21.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var SummaryTableSequenceComponent = function (_Component) {
+	    _inherits(SummaryTableSequenceComponent, _Component);
+
+	    function SummaryTableSequenceComponent(props, context) {
+	        _classCallCheck(this, SummaryTableSequenceComponent);
+
+	        var _this = _possibleConstructorReturn(this, (SummaryTableSequenceComponent.__proto__ || Object.getPrototypeOf(SummaryTableSequenceComponent)).call(this, props, context));
+
+	        _this._helper = new _SummaryTableSequenceComponentHelper2.default(props);
+	        return _this;
+	    }
+
+	    _createClass(SummaryTableSequenceComponent, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            this._helper.update(nextProps);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                isNeedFreeze = _props.isNeedFreeze,
+	                headerRowHeight = _props.headerRowHeight,
+	                rowHeight = _props.rowHeight,
+	                header = _props.header,
+	                items = _props.items,
+	                crossHeader = _props.crossHeader,
+	                crossItems = _props.crossItems,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                curr = _props.curr,
+	                scrollTop = _props.scrollTop;
+
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                { dir: 'top', box: isNeedFreeze === true ? 'justify' : 'last',
+	                    style: {
+	                        width: SummaryTableSequenceComponent.WIDTH
+	                    } },
+	                isNeedFreeze === true ? _react2.default.createElement(_SummaryTableHeaderCellComponent2.default, {
+	                    styleType: styleType,
+	                    color: color,
+	                    width: SummaryTableSequenceComponent.WIDTH,
+	                    height: headerRowHeight * ((header.length > 0 ? 1 : 0) + crossHeader.length),
+	                    item: { text: '序号' },
+	                    colIndex: 0,
+	                    rowIndex: 0
+	                }) : null,
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    null,
+	                    this._renderSequence()
+	                ),
+	                _react2.default.createElement(_layout.Layout, { style: { height: _base.Table.SCROLLBAR_WIDTH } })
+	            );
+	        }
+	    }, {
+	        key: '_renderSequence',
+	        value: function _renderSequence() {
+	            var _props2 = this.props,
+	                items = _props2.items,
+	                scrollTop = _props2.scrollTop,
+	                styleType = _props2.styleType,
+	                color = _props2.color,
+	                rowHeight = _props2.rowHeight,
+	                height = _props2.height;
+
+	            var numbers = this._helper.getNumbersByScrollTop(scrollTop);
+	            var result = [];
+	            (0, _core.each)(numbers, function (number) {
+	                var style = {};
+	                (0, _core.translateDOMPositionXY)(style, 0, number.offsetTop);
+	                result.push(_react2.default.createElement(_SummaryTableCellComponent2.default, {
+	                    abs: true,
+	                    key: number.key,
+	                    styleType: styleType,
+	                    color: color,
+	                    style: style,
+	                    width: SummaryTableSequenceComponent.WIDTH,
+	                    height: number.height,
+	                    item: { text: number.text },
+	                    rowIndex: number.rowIndex,
+	                    colIndex: 0
+	                }));
+	            });
+	            return result;
+	        }
+	    }]);
+
+	    return SummaryTableSequenceComponent;
+	}(_react.Component);
+
+	SummaryTableSequenceComponent.WIDTH = 60;
+	SummaryTableSequenceComponent.defaultProps = {
+	    isNeedFreeze: false,
+	    items: [],
+	    styleType: null,
+	    color: null,
+	    curr: 1,
+	    scrollTop: 0
+	};
+
+	_reactMixin2.default.onClass(SummaryTableSequenceComponent, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = SummaryTableSequenceComponent;
+
+/***/ },
+/* 611 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Created by Wang on 2016/12/24.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+
+
+	var _core = __webpack_require__(194);
+
+	var _base = __webpack_require__(537);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var SummaryTableSequenceComponentHelper = function () {
+	    function SummaryTableSequenceComponentHelper(props) {
+	        _classCallCheck(this, SummaryTableSequenceComponentHelper);
+
+	        this.rowHeight = props.rowHeight;
+	        this.items = props.items;
+	        this.height = props.height - _base.Table.SCROLLBAR_WIDTH;
+	        this._clear();
+	    }
+
+	    _createClass(SummaryTableSequenceComponentHelper, [{
+	        key: '_clear',
+	        value: function _clear() {
+	            this.vCurr = 1;
+	            this.start = 1;
+	            this.cache = {};
+	            this._next();
+	        }
+	    }, {
+	        key: '_next',
+	        value: function _next() {
+	            this.numbers = this._nextNumbers();
+	            this.intervalTree = this._nextIntervalTree(this.numbers);
+	        }
+	    }, {
+	        key: '_prev',
+	        value: function _prev() {
+	            var firstChild = void 0;
+	            (0, _core.some)(this.items, function (node) {
+	                if ((0, _core.isNotEmptyArray)(node.childs)) {
+	                    (0, _core.some)(node.childs, function (child) {
+	                        firstChild = child;
+	                        return true;
+	                    });
+	                }
+	            });
+	            if (firstChild) {
+	                this.start = this.cache[firstChild.text || firstChild.value];
+	            } else {
+	                this.start = 1;
+	            }
+	            this._next();
+	        }
+	    }, {
+	        key: '_getStartSequence',
+	        value: function _getStartSequence(nodes) {
+	            var _this = this;
+
+	            var start = this.start;
+	            var cnt = this.start;
+
+	            var track = function track(node) {
+	                _this.cache[node.text || node.value] = cnt++;
+	            };
+
+	            (0, _core.each)(nodes, function (node) {
+	                if ((0, _core.isNotEmptyArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child, index) {
+	                        if (index === 0) {
+	                            if (_this.cache[child.text || child.value]) {
+	                                start = cnt = _this.cache[child.text || child.value];
+	                            }
+	                        }
+	                        track(child);
+	                    });
+	                }
+	            });
+	            this.start = cnt;
+	            return start;
+	        }
+	    }, {
+	        key: '_nextNumbers',
+	        value: function _nextNumbers() {
+	            var _this2 = this;
+
+	            var result = [];
+	            var count = this._getStartSequence(this.items);
+
+	            function getLeafCount(node) {
+	                var cnt = 0;
+	                if ((0, _core.isNotEmptyArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child) {
+	                        cnt += getLeafCount(child);
+	                    });
+	                    if (node.childs.length > 1 && (0, _core.isNotEmptyArray)(node.values)) {
+	                        cnt++;
+	                    }
+	                } else {
+	                    cnt++;
+	                }
+	                return cnt;
+	            }
+
+	            var start = 0;
+	            (0, _core.each)(this.items, function (node) {
+	                if ((0, _core.isArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child) {
+	                        var cnt = getLeafCount(child);
+	                        result.push({
+	                            text: count++,
+	                            rowIndex: start,
+	                            key: start,
+	                            height: cnt * _this2.rowHeight
+	                        });
+	                        start += cnt;
+	                    });
+	                    if ((0, _core.isNotEmptyArray)(node.values)) {
+	                        result.push({
+	                            text: '汇总',
+	                            key: start,
+	                            rowIndex: start,
+	                            height: _this2.rowHeight
+	                        });
+	                        start++;
+	                    }
+	                }
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: '_nextIntervalTree',
+	        value: function _nextIntervalTree(numbers) {
+	            var intervalTree = _core.PrefixIntervalTree.uniform(numbers.length, 0);
+	            (0, _core.each)(numbers, function (number, i) {
+	                intervalTree.set(i, number.height);
+	            });
+	            return intervalTree;
+	        }
+	    }, {
+	        key: 'getNumbersByScrollTop',
+	        value: function getNumbersByScrollTop(scrollTop) {
+	            var result = [];
+	            var index = this.intervalTree.greatestLowerBound(scrollTop);
+	            var offsetTop = scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0);
+	            var height = 0;
+	            while (height < this.height && index < this.numbers.length) {
+	                result.push({
+	                    key: this.numbers[index].key,
+	                    text: this.numbers[index].text,
+	                    rowIndex: this.numbers[index].rowIndex,
+	                    height: this.numbers[index].height,
+	                    offsetTop: offsetTop
+	                });
+	                offsetTop += this.numbers[index].height;
+	                height += this.numbers[index].height;
+	                index++;
+	            }
+	            return result;
+	        }
+	    }, {
+	        key: 'update',
+	        value: function update(props) {
+	            if (props.height - _base.Table.SCROLLBAR_WIDTH !== this.height) {
+	                this.height = props.height - _base.Table.SCROLLBAR_WIDTH;
+	            }
+	            if (props.vCurr === 1 && (props.items !== this.items || props.rowHeight !== this.rowHeight)) {
+	                this.items = props.items;
+	                this.rowHeight = props.rowHeight;
+	                this.vCurr = props.vCurr;
+	                this._clear();
+	                return;
+	            }
+	            if (props.vCurr === this.vCurr) {
+	                if (props.items !== this.items || props.rowHeight !== this.rowHeight) {
+	                    this.items = props.items;
+	                    this.rowHeight = props.rowHeight;
+	                    this._prev();
+	                }
+	                return;
+	            }
+	            if (props.vCurr === this.vCurr + 1) {
+	                this.items = props.items;
+	                this.rowHeight = props.rowHeight;
+	                this.vCurr = props.vCurr;
+	                this._next();
+	                return;
+	            }
+	            if (props.vCurr === this.vCurr - 1) {
+	                this.items = props.items;
+	                this.rowHeight = props.rowHeight;
+	                this.vCurr = props.vCurr;
+	                this._prev();
+	                return;
+	            }
+	        }
+	    }]);
+
+	    return SummaryTableSequenceComponentHelper;
+	}();
+
+	exports.default = SummaryTableSequenceComponentHelper;
+
+/***/ },
+/* 612 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	__webpack_require__(613);
+
+	var _LevelTableCellComponent = __webpack_require__(615);
+
+	var _LevelTableCellComponent2 = _interopRequireDefault(_LevelTableCellComponent);
+
+	var _SummaryTableHeaderCellComponent = __webpack_require__(606);
+
+	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
+
+	var _LevelTableComponentWidthHelper = __webpack_require__(616);
+
+	var _LevelTableComponentWidthHelper2 = _interopRequireDefault(_LevelTableComponentWidthHelper);
+
+	var _LevelTableComponentItemsHelper = __webpack_require__(617);
+
+	var _LevelTableComponentItemsHelper2 = _interopRequireDefault(_LevelTableComponentItemsHelper);
+
+	var _SummaryTablePagerComponent = __webpack_require__(609);
+
+	var _SummaryTablePagerComponent2 = _interopRequireDefault(_SummaryTablePagerComponent);
+
+	var _LevelTableSequenceComponent = __webpack_require__(618);
+
+	var _LevelTableSequenceComponent2 = _interopRequireDefault(_LevelTableSequenceComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/19.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var MERGE_RULE = function MERGE_RULE(col1, col2) {
+	    return col1 === col2;
+	    // return isEqual(col1.text, col2.text);
+	};
+
+	var LevelTableComponent = function (_Component) {
+	    _inherits(LevelTableComponent, _Component);
+
+	    function LevelTableComponent(props, context) {
+	        _classCallCheck(this, LevelTableComponent);
+
+	        var _this = _possibleConstructorReturn(this, (LevelTableComponent.__proto__ || Object.getPrototypeOf(LevelTableComponent)).call(this, props, context));
+
+	        _this._onVerticalScroll = _this._onVerticalScroll.bind(_this);
+	        _this.state = _extends({}, _this._digest(props), { scrollTop: 0 });
+	        return _this;
+	    }
+
+	    _createClass(LevelTableComponent, [{
+	        key: '_digest',
+	        value: function _digest(props) {
+	            var itemsHelper = new _LevelTableComponentItemsHelper2.default(props);
+
+	            var _itemsHelper$getForma = itemsHelper.getFormatted(),
+	                header = _itemsHelper$getForma.header,
+	                items = _itemsHelper$getForma.items;
+
+	            var widthHelper = new _LevelTableComponentWidthHelper2.default(_extends({}, props, { header: header, items: items }));
+	            var minColumnSize = widthHelper.getWidth();
+
+	            var freezeCols = props.freezeCols;
+	            var columnSize = props.columnSize.slice();
+	            if (columnSize.length > minColumnSize.length) {
+	                columnSize = columnSize.splice(columnSize.length - minColumnSize.length);
+	            }
+	            if (freezeCols.length >= columnSize.length) {
+	                freezeCols = [];
+	            }
+	            if (!(0, _core.isNumber)(props.columnSize[0])) {
+	                columnSize = minColumnSize;
+	            }
+	            if (freezeCols.length > 1) {
+	                freezeCols = [0];
+	            }
+
+	            return {
+	                columnSize: columnSize,
+	                minColumnSize: minColumnSize,
+	                header: header,
+	                items: items,
+	                freezeCols: freezeCols
+	            };
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header || nextProps.columnSize !== this.props.columnSize || nextProps.freezeCols !== this.props.freezeCols || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.showSequence !== this.props.showSequence) {
+	                this.setState(this._digest(nextProps));
+	            }
+	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header || nextProps.isNeedFreeze !== this.props.isNeedFreeze) {
+	                this.setState({
+	                    scrollTop: 0
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                headerRowHeight = _props.headerRowHeight,
+	                rowHeight = _props.rowHeight,
+	                isNeedFreeze = _props.isNeedFreeze,
+	                isNeedResize = _props.isNeedResize,
+	                mergeCols = _props.mergeCols,
+	                regionColumnSize = _props.regionColumnSize,
+	                headerCellRenderer = _props.headerCellRenderer,
+	                cellRenderer = _props.cellRenderer,
+	                width = _props.width,
+	                height = _props.height,
+	                showSequence = _props.showSequence,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                vCurr = _props.vCurr,
+	                hCurr = _props.hCurr,
+	                hasVNext = _props.hasVNext,
+	                hasHNext = _props.hasHNext,
+	                onVPrev = _props.onVPrev,
+	                onVNext = _props.onVNext,
+	                onHPrev = _props.onHPrev,
+	                onHNext = _props.onHNext;
+	            var _state = this.state,
+	                columnSize = _state.columnSize,
+	                minColumnSize = _state.minColumnSize,
+	                header = _state.header,
+	                items = _state.items,
+	                freezeCols = _state.freezeCols,
+	                scrollTop = _state.scrollTop;
+
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                { dir: 'top', box: 'last', style: {
+	                        width: width,
+	                        height: height
+	                    } },
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    { style: {
+	                            width: width,
+	                            height: height - 30
+	                        }, box: showSequence === true ? 'first' : 'mean' },
+	                    showSequence === true ? _react2.default.createElement(_LevelTableSequenceComponent2.default, { isNeedFreeze: isNeedFreeze,
+	                        scrollTop: scrollTop,
+	                        height: height - 30,
+	                        headerRowHeight: headerRowHeight,
+	                        rowHeight: rowHeight,
+	                        styleType: styleType,
+	                        color: color,
+	                        vCurr: vCurr,
+	                        hCurr: hCurr,
+	                        header: this.props.header,
+	                        items: this.props.items,
+	                        crossHeader: this.props.crossHeader,
+	                        crossItems: this.props.crossItems }) : null,
+	                    _react2.default.createElement(_base.AdaptiveTable, {
+	                        width: width - (showSequence === true ? _LevelTableSequenceComponent2.default.WIDTH : 0),
+	                        height: height - 30,
+	                        headerRowHeight: headerRowHeight,
+	                        rowHeight: rowHeight,
+	                        columnSize: columnSize,
+	                        minColumnSize: minColumnSize,
+	                        isNeedFreeze: isNeedFreeze,
+	                        isNeedResize: isNeedResize,
+	                        freezeCols: freezeCols,
+	                        mergeCols: mergeCols,
+	                        mergeRule: MERGE_RULE,
+	                        header: header,
+	                        items: items,
+	                        regionColumnSize: regionColumnSize,
+	                        headerCellRenderer: this._headerCellRenderer.bind(this),
+	                        cellRenderer: this._cellRenderer.bind(this),
+	                        onColumnResizeEnd: this._onColumnResizeEnd.bind(this),
+	                        onRegionColumnResizeEnd: this._onRegionColumnResizeEnd.bind(this),
+	                        onVerticalScroll: this._onVerticalScroll,
+	                        Component: _base.LevelTable
+	                    })
+	                ),
+	                _react2.default.createElement(_SummaryTablePagerComponent2.default, { style: { height: 30, paddingRight: 10 },
+	                    vCurr: vCurr,
+	                    hCurr: hCurr,
+	                    hasVNext: hasVNext,
+	                    hasHNext: hasHNext,
+	                    onVPrev: onVPrev,
+	                    onVNext: onVNext,
+	                    onHPrev: onHPrev,
+	                    onHNext: onHNext })
+	            );
+	        }
+	    }, {
+	        key: '_headerCellRenderer',
+	        value: function _headerCellRenderer(_ref, item) {
+	            var colIndex = _ref.colIndex,
+	                rowIndex = _ref.rowIndex,
+	                width = _ref.width,
+	                height = _ref.height;
+
+	            return _react2.default.createElement(_SummaryTableHeaderCellComponent2.default, { item: item, colIndex: colIndex, rowIndex: rowIndex, width: width,
+	                height: height, styleType: this.props.styleType,
+	                color: this.props.color });
+	        }
+	    }, {
+	        key: '_cellRenderer',
+	        value: function _cellRenderer(_ref2, item) {
+	            var colIndex = _ref2.colIndex,
+	                rowIndex = _ref2.rowIndex,
+	                width = _ref2.width,
+	                height = _ref2.height;
+
+	            return _react2.default.createElement(_LevelTableCellComponent2.default, { item: item, style: { backgroundColor: '' }, colIndex: colIndex,
+	                rowIndex: rowIndex, width: width,
+	                height: height, styleType: this.props.styleType,
+	                color: this.props.color });
+	        }
+	    }, {
+	        key: '_onColumnResizeEnd',
+	        value: function _onColumnResizeEnd() {
+	            var _props2;
+
+	            (_props2 = this.props).onColumnResizeEnd.apply(_props2, arguments);
+	        }
+	    }, {
+	        key: '_onRegionColumnResizeEnd',
+	        value: function _onRegionColumnResizeEnd() {
+	            var _props3;
+
+	            (_props3 = this.props).onRegionColumnResizeEnd.apply(_props3, arguments);
+	        }
+	    }, {
+	        key: '_onVerticalScroll',
+	        value: function _onVerticalScroll(scrollTop) {
+	            this.setState({
+	                scrollTop: scrollTop
+	            });
+	        }
+	    }]);
+
+	    return LevelTableComponent;
+	}(_react.Component);
+
+	LevelTableComponent.defaultProps = {
+	    styleType: null,
+	    color: null,
+	    isNeedResize: false,
+	    headerRowHeight: 25,
+	    rowHeight: 25,
+	    columnSize: [],
+	    isNeedFreeze: true,
+	    freezeCols: [],
+	    header: [],
+	    items: [],
+	    crossHeader: [],
+	    crossItems: [],
+	    regionColumnSize: [],
+	    onColumnResizeEnd: _core.emptyFunction,
+	    onRegionColumnResizeEnd: _core.emptyFunction,
+
+	    showSequence: false,
+	    vCurr: 1,
+	    hCurr: 1,
+	    hasVNext: _core.emptyFunction,
+	    hasHNext: _core.emptyFunction,
+	    label: '',
+	    onVPrev: _core.emptyFunction,
+	    onVNext: _core.emptyFunction,
+	    onHPrev: _core.emptyFunction,
+	    onHNext: _core.emptyFunction
+	};
+
+	_reactMixin2.default.onClass(LevelTableComponent, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = LevelTableComponent;
+
+/***/ },
+/* 613 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(614);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(190)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./../../../node_modules/less-loader/index.js!./LevelTableComponent.less", function() {
+				var newContent = require("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./../../../node_modules/less-loader/index.js!./LevelTableComponent.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 614 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(189)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "", ""]);
+
+	// exports
+
+
+/***/ },
+/* 615 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/19.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var parseHEXAlpha2HEX = function parseHEXAlpha2HEX(hex, alpha) {
+	    var rgb = _core.colorUtils.hex2rgb(hex);
+	    var rgbJSON = _core.colorUtils.rgb2json(rgb);
+	    rgbJSON.a = alpha;
+	    return _core.colorUtils.rgba2rgb(_core.colorUtils.json2rgba(rgbJSON));
+	};
+
+	var DARK_FONT_COLOR = '#1a1a1a';
+	var LIGHT_FONT_COLOR = '#ffffff';
+
+	var colorMap = {};
+	var getColor = function getColor(color) {
+	    if (colorMap[color]) {
+	        return colorMap[color];
+	    }
+	    var oddColor = parseHEXAlpha2HEX(color, 0.2);
+	    var evenColor = parseHEXAlpha2HEX(color, 0.05);
+	    colorMap[color] = {
+	        oddColor: oddColor,
+	        evenColor: evenColor,
+	        oddFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(oddColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR,
+	        evenFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(evenColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR
+	    };
+	    return colorMap[color];
+	};
+
+	var LevelTableCell = function (_Component) {
+	    _inherits(LevelTableCell, _Component);
+
+	    function LevelTableCell(props, context) {
+	        _classCallCheck(this, LevelTableCell);
+
+	        return _possibleConstructorReturn(this, (LevelTableCell.__proto__ || Object.getPrototypeOf(LevelTableCell)).call(this, props, context));
+	    }
+
+	    _createClass(LevelTableCell, [{
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                item = _props.item,
+	                width = _props.width,
+	                height = _props.height,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                colIndex = _props.colIndex,
+	                rowIndex = _props.rowIndex,
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'colIndex', 'rowIndex']);
+
+	            var oddColor = void 0,
+	                evenColor = void 0,
+	                oddFontColor = void 0,
+	                evenFontColor = void 0;
+	            switch (styleType) {
+	                case 1:
+	                    var m = getColor(color);
+	                    oddColor = m.oddColor;
+	                    evenColor = m.evenColor;
+	                    oddFontColor = m.oddFontColor;
+	                    evenFontColor = m.evenFontColor;
+	                    break;
+	                case 2:
+	                    break;
+	                case 3:
+	                    break;
+	                default:
+	                    break;
+	            }
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                _extends({ box: item.iconCls ? 'last' : 'mean' }, props, {
+	                    style: _extends({}, (0, _core.sc)([{
+	                        borderTop: '1px solid #eaeaea'
+	                    }, rowIndex === 0], [{
+	                        borderLeft: '1px solid #eaeaea'
+	                    }, colIndex === 0], [_extends({}, props.style, {
+	                        width: width,
+	                        height: height,
+	                        borderRight: '1px solid #eaeaea',
+	                        borderBottom: '1px solid #eaeaea',
+	                        paddingLeft: (item.layer || 0) * 10
+	                    })], [{
+	                        backgroundColor: rowIndex % 2 === 0 ? oddColor : evenColor
+	                    }, (0, _core.isNotNil)(oddColor)], [{
+	                        color: rowIndex % 2 === 0 ? oddFontColor : evenFontColor
+	                    }, (0, _core.isNotNil)(oddFontColor)])) }),
+	                _react2.default.createElement(
+	                    _base.Title,
+	                    { cross: 'center', title: item.title, style: _extends({}, item.style, {
+	                            paddingLeft: 10,
+	                            paddingRight: 10
+	                        }) },
+	                    _react2.default.createElement(
+	                        _base.Label,
+	                        { style: {
+	                                cursor: item.onClick ? 'pointer' : 'default'
+	                            }, onClick: item.onClick },
+	                        item.text
+	                    )
+	                ),
+	                item.iconCls ? _react2.default.createElement(
+	                    _layout.CenterLayout,
+	                    { style: { width: 25 }, className: item.iconCls },
+	                    _react2.default.createElement(_base.Icon, null)
+	                ) : null
+	            );
+	        }
+	    }]);
+
+	    return LevelTableCell;
+	}(_react.Component);
+
+	_reactMixin2.default.onClass(LevelTableCell, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = LevelTableCell;
+
+/***/ },
+/* 616 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(194);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var REMAIN_WIDTH = 20;
+
+	function sumBy(array, it) {
+	    var res = 0;
+	    (0, _core.each)(array, function (width, i) {
+	        res += it(width, i);
+	    });
+	    return res;
+	}
+
+	//最小二乘法  fx=bx+a
+	function fit(widths) {
+	    if (widths.length < 2) {
+	        return { a: widths[0], b: 0 };
+	    }
+	    var $11 = widths.length;
+	    var $12 = (1 + widths.length) * widths.length / 2;
+	    var $21 = $12;
+	    var $22 = sumBy(widths, function (width, i) {
+	        return (i + 1) * (i + 1);
+	    });
+	    var f1 = _core.math.sum(widths);
+	    var f2 = sumBy(widths, function (width, i) {
+	        return (i + 1) * width;
+	    });
+	    return {
+	        a: (f2 * $12 - f1 * $22) / ($12 * $21 - $11 * $22),
+	        b: (f2 * $11 - f1 * $21) / ($11 * $22 - $21 * $12)
+	    };
+	}
+
+	//获取字符宽度
+	function getGBWidth(str) {
+	    str = str + '';
+	    str = str.replace(/[^\x00-\xff]/g, 'xx');
+	    return Math.ceil(str.length / 2);
+	}
+
+	var LevelTableComponentWidthHelper = function () {
+	    function LevelTableComponentWidthHelper(props) {
+	        _classCallCheck(this, LevelTableComponentWidthHelper);
+
+	        this.width = props.width;
+	        this.header = props.header;
+	        this.items = this._reverse(props.items);
+	        this.isNeedFreeze = props.isNeedFreeze;
+	        this.freezeCols = props.freezeCols;
+	    }
+
+	    _createClass(LevelTableComponentWidthHelper, [{
+	        key: '_reverse',
+	        value: function _reverse(items) {
+	            var result = [];
+	            (0, _core.each)(items, function (cols, i) {
+	                (0, _core.each)(cols, function (item, j) {
+	                    if (!result[j]) {
+	                        result[j] = [];
+	                    }
+	                    result[j][i] = item;
+	                });
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: 'getWidthsByOneCol',
+	        value: function getWidthsByOneCol(col) {
+	            var widths = [];
+	            (0, _core.each)(col, function (item) {
+	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.layer || 0) * 10);
+	            });
+	            return widths;
+	        }
+	    }, {
+	        key: 'getWidth',
+	        value: function getWidth() {
+	            var _this = this;
+
+	            var result = [];
+	            (0, _core.each)(this.items, function (col) {
+	                var fx = fit(_this.getWidthsByOneCol(col));
+	                result.push((0, _core.clamp)(_core.math.ceil(fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
+	            });
+	            return result;
+	        }
+	    }]);
+
+	    return LevelTableComponentWidthHelper;
+	}();
+
+	exports.default = LevelTableComponentWidthHelper;
+
+/***/ },
+/* 617 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Created by Wang on 2016/12/23.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+
+
+	var _core = __webpack_require__(194);
+
+	var _SummaryTableComponentItemsHelper = __webpack_require__(608);
+
+	var _SummaryTableComponentItemsHelper2 = _interopRequireDefault(_SummaryTableComponentItemsHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var formatHeader = function formatHeader(header, crossHeader, crossItems, hDeep, vDeep) {
+	    var items = _SummaryTableComponentItemsHelper2.default.formatCrossItems(crossItems, vDeep);
+	    var result = [];
+	    (0, _core.each)(items, function (node, row) {
+	        var c = [crossHeader[row]];
+	        result.push(c.concat(node || []));
+	    });
+	    if (header && header.length > 0) {
+	        var newHeader = formatColumns(header, hDeep);
+	        if (hDeep <= 0) {
+	            newHeader.unshift({
+	                text: '行表头'
+	            });
+	        } else {
+	            newHeader[0] = {
+	                text: '行表头'
+	            };
+	        }
+	        result.push(newHeader);
+	    }
+	    return result;
+	};
+
+	var formatItems = function formatItems(nodes, header, crossItems) {
+	    var result = [];
+
+	    function track(node, layer) {
+	        node.layer = layer;
+	        var next = [node];
+	        next = next.concat(node.values || []);
+	        if (next.length > 0) {
+	            result.push(next);
+	        }
+	        if ((0, _core.isNotEmptyArray)(node.childs)) {
+	            (0, _core.each)(node.childs, function (child) {
+	                track(child, layer + 1);
+	            });
+	        }
+	    }
+
+	    (0, _core.each)(nodes, function (node) {
+	        (0, _core.each)(node.childs, function (c) {
+	            track(c, 0);
+	        });
+	        if ((0, _core.isArray)(node.values)) {
+	            var next = [{ text: '汇总' }].concat(node.values);
+	            result.push(next);
+	        }
+	    });
+	    return _SummaryTableComponentItemsHelper2.default.formatSummaryItems(result, header, crossItems, 1);
+	};
+
+	var formatCols = function formatCols(cols, hDeep) {
+	    cols = formatColumns(cols);
+	    return (0, _core.map)(cols, function (c) {
+	        return c - (hDeep - 1);
+	    });
+	};
+
+	var formatColumns = function formatColumns(columns, hDeep) {
+	    if ((0, _core.isNotEmptyArray)(columns)) {
+	        return columns.slice(Math.max(0, hDeep - 1));
+	    }
+	    return columns;
+	};
+
+	var maxDeep = function maxDeep(nodes) {
+	    function track(deep, node) {
+	        var d = deep;
+	        if ((0, _core.isNotEmptyArray)(node.childs)) {
+	            (0, _core.each)(node.childs, function (child) {
+	                d = Math.max(d, track(deep + 1, child));
+	            });
+	        }
+	        return d;
+	    }
+
+	    var deep = 1;
+	    if ((0, _core.isObject)(nodes)) {
+	        (0, _core.each)(nodes, function (node) {
+	            deep = Math.max(deep, track(1, node));
+	        });
+	    }
+	    return deep;
+	};
+
+	var LevelTableComponentItemsHelper = function () {
+	    function LevelTableComponentItemsHelper(props) {
+	        _classCallCheck(this, LevelTableComponentItemsHelper);
+
+	        this.header = props.header;
+	        this.crossHeader = props.crossHeader;
+	        this.crossItems = props.crossItems;
+	        this.items = props.items;
+	        this.isNeedFreeze = props.isNeedFreeze;
+	        this.freezeCols = props.freezeCols;
+	        this.mergeCols = props.mergeCols;
+	    }
+
+	    _createClass(LevelTableComponentItemsHelper, [{
+	        key: '_getVDeep',
+	        value: function _getVDeep() {
+	            return this.crossHeader.length; //纵向深度
+	        }
+	    }, {
+	        key: '_getHDeep',
+	        value: function _getHDeep() {
+	            return Math.max(this.mergeCols.length, this.freezeCols.length, maxDeep(this.items) - 1);
+	        }
+	    }, {
+	        key: 'getFormatted',
+	        value: function getFormatted() {
+	            var hDeep = this._getHDeep();
+	            var vDeep = this._getVDeep();
+	            var header = formatHeader(this.header, this.crossHeader, this.crossItems, hDeep, vDeep);
+	            return formatItems(this.items, header, this.crossItems);
+	        }
+	    }]);
+
+	    return LevelTableComponentItemsHelper;
+	}();
+
+	LevelTableComponentItemsHelper.formatColumns = formatColumns;
+
+	exports.default = LevelTableComponentItemsHelper;
+
+/***/ },
+/* 618 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	var _SummaryTableHeaderCellComponent = __webpack_require__(606);
+
+	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
+
+	var _LevelTableCellComponent = __webpack_require__(615);
+
+	var _LevelTableCellComponent2 = _interopRequireDefault(_LevelTableCellComponent);
+
+	var _LevelTableSequenceComponentHelper = __webpack_require__(619);
+
+	var _LevelTableSequenceComponentHelper2 = _interopRequireDefault(_LevelTableSequenceComponentHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/21.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var LevelTableSequenceComponent = function (_Component) {
+	    _inherits(LevelTableSequenceComponent, _Component);
+
+	    function LevelTableSequenceComponent(props, context) {
+	        _classCallCheck(this, LevelTableSequenceComponent);
+
+	        var _this = _possibleConstructorReturn(this, (LevelTableSequenceComponent.__proto__ || Object.getPrototypeOf(LevelTableSequenceComponent)).call(this, props, context));
+
+	        _this._helper = new _LevelTableSequenceComponentHelper2.default(props);
+	        return _this;
+	    }
+
+	    _createClass(LevelTableSequenceComponent, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            this._helper.update(nextProps);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                isNeedFreeze = _props.isNeedFreeze,
+	                headerRowHeight = _props.headerRowHeight,
+	                rowHeight = _props.rowHeight,
+	                header = _props.header,
+	                items = _props.items,
+	                crossHeader = _props.crossHeader,
+	                crossItems = _props.crossItems,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                curr = _props.curr,
+	                scrollTop = _props.scrollTop;
+
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                { dir: 'top', box: isNeedFreeze === true ? 'justify' : 'last',
+	                    style: {
+	                        width: LevelTableSequenceComponent.WIDTH
+	                    } },
+	                isNeedFreeze === true ? _react2.default.createElement(_SummaryTableHeaderCellComponent2.default, {
+	                    styleType: styleType,
+	                    color: color,
+	                    width: LevelTableSequenceComponent.WIDTH,
+	                    height: headerRowHeight * ((header.length > 0 ? 1 : 0) + crossHeader.length),
+	                    item: { text: '序号' },
+	                    colIndex: 0,
+	                    rowIndex: 0
+	                }) : null,
+	                _react2.default.createElement(
+	                    _layout.Layout,
+	                    null,
+	                    this._renderSequence()
+	                ),
+	                _react2.default.createElement(_layout.Layout, { style: { height: _base.Table.SCROLLBAR_WIDTH } })
+	            );
+	        }
+	    }, {
+	        key: '_renderSequence',
+	        value: function _renderSequence() {
+	            var _props2 = this.props,
+	                items = _props2.items,
+	                scrollTop = _props2.scrollTop,
+	                styleType = _props2.styleType,
+	                color = _props2.color,
+	                rowHeight = _props2.rowHeight,
+	                height = _props2.height;
+
+	            var numbers = this._helper.getNumbersByScrollTop(scrollTop);
+	            var result = [];
+	            (0, _core.each)(numbers, function (number) {
+	                var style = {};
+	                (0, _core.translateDOMPositionXY)(style, 0, number.offsetTop);
+	                result.push(_react2.default.createElement(_LevelTableCellComponent2.default, {
+	                    abs: true,
+	                    key: number.key,
+	                    styleType: styleType,
+	                    color: color,
+	                    style: style,
+	                    width: LevelTableSequenceComponent.WIDTH,
+	                    height: number.height,
+	                    item: { text: number.text },
+	                    rowIndex: number.rowIndex,
+	                    colIndex: 0
+	                }));
+	            });
+	            return result;
+	        }
+	    }]);
+
+	    return LevelTableSequenceComponent;
+	}(_react.Component);
+
+	LevelTableSequenceComponent.WIDTH = 60;
+	LevelTableSequenceComponent.defaultProps = {
+	    isNeedFreeze: false,
+	    items: [],
+	    styleType: null,
+	    color: null,
+	    curr: 1,
+	    scrollTop: 0
+	};
+
+	_reactMixin2.default.onClass(LevelTableSequenceComponent, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = LevelTableSequenceComponent;
+
+/***/ },
+/* 619 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(194);
+
+	var _base = __webpack_require__(537);
+
+	var _SummaryTableSequenceComponentHelper = __webpack_require__(611);
+
+	var _SummaryTableSequenceComponentHelper2 = _interopRequireDefault(_SummaryTableSequenceComponentHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/24.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+	var LevelTableSequenceComponentHelper = function (_SummaryTableSequence) {
+	    _inherits(LevelTableSequenceComponentHelper, _SummaryTableSequence);
+
+	    function LevelTableSequenceComponentHelper(props) {
+	        _classCallCheck(this, LevelTableSequenceComponentHelper);
+
+	        return _possibleConstructorReturn(this, (LevelTableSequenceComponentHelper.__proto__ || Object.getPrototypeOf(LevelTableSequenceComponentHelper)).call(this, props));
+	    }
+
+	    _createClass(LevelTableSequenceComponentHelper, [{
+	        key: '_nextNumbers',
+	        value: function _nextNumbers() {
+	            var _this2 = this;
+
+	            var result = [];
+	            var count = this._getStartSequence(this.items);
+
+	            function getLeafCount(node) {
+	                var cnt = 0;
+	                if ((0, _core.isNotEmptyArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child) {
+	                        cnt += getLeafCount(child);
+	                    });
+	                    if ( /**node.childs.length > 1 && **/(0, _core.isNotEmptyArray)(node.values)) {
+	                        cnt++;
+	                    }
+	                } else {
+	                    cnt++;
+	                }
+	                return cnt;
+	            }
+
+	            var start = 0;
+	            (0, _core.each)(this.items, function (node) {
+	                if ((0, _core.isArray)(node.childs)) {
+	                    (0, _core.each)(node.childs, function (child) {
+	                        var cnt = getLeafCount(child);
+	                        result.push({
+	                            text: count++,
+	                            rowIndex: start,
+	                            key: start,
+	                            height: cnt * _this2.rowHeight
+	                        });
+	                        start += cnt;
+	                    });
+	                    if ((0, _core.isNotEmptyArray)(node.values)) {
+	                        result.push({
+	                            text: '汇总',
+	                            key: start,
+	                            rowIndex: start,
+	                            height: _this2.rowHeight
+	                        });
+	                        start++;
+	                    }
+	                }
+	            });
+	            return result;
+	        }
+	    }]);
+
+	    return LevelTableSequenceComponentHelper;
+	}(_SummaryTableSequenceComponentHelper2.default);
+
+	exports.default = LevelTableSequenceComponentHelper;
 
 /***/ }
 /******/ ]);
