@@ -166,6 +166,12 @@ BI.TableChartManagerAspect = function () {
             case BICst.WIDGET.PIE:
                 tar1Size === 0 && (cls = "pie-tip-background");
                 break;
+            case BICst.WIDGET.MULTI_PIE:
+                tar1Size === 0 && (cls = "multi-pie-tip-background");
+                break;
+            case BICst.WIDGET.RECT_TREE:
+                tar1Size === 0 && (cls = "rect-tree-tip-background");
+                break;
             case BICst.WIDGET.DASHBOARD:
                 tar1Size === 0 && (cls = "dashboard-tip-background");
                 break;

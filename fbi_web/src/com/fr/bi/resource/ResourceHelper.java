@@ -1468,6 +1468,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.pie.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.radar.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.range.area.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.rect.tree.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.scatter.js",
 
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.string.js",
@@ -1821,6 +1822,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/donutchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/fallaxischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/piechartsetting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/multipiechartsetting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/recttreechartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/accumulateradarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",

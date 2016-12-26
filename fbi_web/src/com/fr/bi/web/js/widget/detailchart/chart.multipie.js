@@ -63,9 +63,9 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
 
         function formatChartStyle() {
             switch (self.config.chartStyle) {
-                case BICst.CHART_STYLE.STYLE_GRADUAL:
+                case BICst.MULTI_PIE_GRADIENT_STYLE.LIGHTER:
                     return "gradual";
-                case BICst.CHART_STYLE.STYLE_NORMAL:
+                case BICst.MULTI_PIE_GRADIENT_STYLE.DARKER:
                 default:
                     return "normal";
             }

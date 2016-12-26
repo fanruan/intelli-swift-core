@@ -307,6 +307,11 @@ BICst.PIE_ANGLES = {
     TOTAL: 360
 };
 
+BICst.MULTI_PIE_GRADIENT_STYLE = {
+    LIGHTER: 1,
+    DARKER: 2
+}
+
 BICst.CHART_LEGENDS = {
     NOT_SHOW: 1,
     TOP: 2,
