@@ -54,6 +54,7 @@ public interface BICubeManagerProvider {
 
     /**
      * 获取所有用户是否有cube生成任务
+     *
      * @return
      */
     boolean hasTask();
@@ -73,5 +74,7 @@ public interface BICubeManagerProvider {
     void setStatus(long userId, Status status);
 
     boolean isReplacing(long userId);
+
+    boolean hasBuildingTask();
 
 }
