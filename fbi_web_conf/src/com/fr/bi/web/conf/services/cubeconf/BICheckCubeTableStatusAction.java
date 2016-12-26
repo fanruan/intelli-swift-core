@@ -41,7 +41,7 @@ public class BICheckCubeTableStatusAction extends AbstractBIConfigureAction {
             }
             CubeTask cubeTask = getCubeTask(taskId);
             BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-            jo.put("hasTask", cubeManager.hasTask(cubeTask, userId));
+            jo.put("hasTask", cubeManager.hasTask(cubeTask, userId) || cubeManager.hasBuildingTask());
         } catch (Exception e) {
             jo.put("hasTask", false);
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);

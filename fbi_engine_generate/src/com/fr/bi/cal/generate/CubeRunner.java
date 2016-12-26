@@ -77,7 +77,7 @@ public class CubeRunner {
                 } finally {
                     finish(cubeTask);
                     try {
-                        recordLogs(cubeTask,BIConfigureManagerCenter.getLogManager());
+                        recordLogs(cubeTask, BIConfigureManagerCenter.getLogManager());
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -127,6 +127,10 @@ public class CubeRunner {
         return !cubeThread.isEmpty();
     }
 
+    public boolean isTaskBuilding() {
+        return statue == Status.PREPARING;
+    }
+
     public boolean hasWaitingCheckTask() {
         Iterator<CubeTask> iter = cubeThread.iterator();
         while (iter.hasNext()) {
@@ -139,7 +143,7 @@ public class CubeRunner {
     }
 
     public void addTask(CubeTask task) {
-            cubeThread.add(task);
+        cubeThread.add(task);
         setStatue(Status.PREPARED);
     }
 
@@ -181,7 +185,7 @@ public class CubeRunner {
             logger.info("meta data finished! time cost: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        }finally {
+        } finally {
             BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
         }
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
@@ -203,8 +207,8 @@ public class CubeRunner {
     }
 
     public void setStatue(Status statue) {
-        logger.info("previous cube status :"+getStatue());
-        logger.info("change cube status to :"+statue.name());
+        logger.info("previous cube status :" + getStatue());
+        logger.info("change cube status to :" + statue.name());
         this.statue = statue;
     }
 
@@ -227,14 +231,14 @@ public class CubeRunner {
 
     private void recordLogs(CubeTask cubeTask, BILogManagerProvider logManager) {
         logger.info("start persist cube task logs……");
-        BICubeTaskRecord record=new BICubeTaskRecord(cubeTask.getTaskType(),logManager.getStart(biUser.getUserId()),logManager.getEndTime(biUser.getUserId()), getStatue());
+        BICubeTaskRecord record = new BICubeTaskRecord(cubeTask.getTaskType(), logManager.getStart(biUser.getUserId()), logManager.getEndTime(biUser.getUserId()), getStatue());
         record.setErrorTableLogs(logManager.getErrorTables(biUser.getUserId()));
         Set<BITableSourceRelationPath> allRelationPathSet = logManager.getAllRelationPathSet(biUser.getUserId());
         record.setAllRelationPaths(allRelationPathSet);
         record.setErrorPathLogs(logManager.getErrorPaths(biUser.getUserId()));
         Set<CubeTableSource> allTableSourceSet = logManager.getAllTableSourceSet(biUser.getUserId());
         record.setAllSingleSourceLayers(allTableSourceSet);
-        BIConfigureManagerCenter.getCubeTaskRecordManager().saveCubeTaskRecord(biUser.getUserId(),record);
+        BIConfigureManagerCenter.getCubeTaskRecordManager().saveCubeTaskRecord(biUser.getUserId(), record);
         BIConfigureManagerCenter.getCubeTaskRecordManager().persistData(biUser.getUserId());
 
     }

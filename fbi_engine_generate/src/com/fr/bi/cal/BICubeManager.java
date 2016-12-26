@@ -107,10 +107,11 @@ public class BICubeManager implements BICubeManagerProvider {
     public boolean hasTask(long userId) {
         return getCubeManager(userId).hasTask();
     }
+
     @Override
-    public boolean hasTask(){
+    public boolean hasTask() {
         boolean result = false;
-        for(long userId: userMap.keySet()){
+        for (long userId : userMap.keySet()) {
             result = (result || getCubeManager(userId).hasTask());
         }
         return result;
@@ -187,5 +188,14 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public boolean isReplacing(long userId) {
         return getCubeManager(userId).isReplacing();
+    }
+
+    @Override
+    public boolean hasBuildingTask() {
+        boolean result = false;
+        for (long userId : userMap.keySet()) {
+            result = (result || getCubeManager(userId).isTaskBuilding());
+        }
+        return result;
     }
 }
