@@ -26,11 +26,6 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
             // self.treeList.setValue(self.model.get("value"));
             self.treeList.populate();
         });
-
-        //全局样式
-        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
-            self._refreshGlobalStyle(globalStyle);
-        });
     },
 
     _render: function (vessel) {
@@ -175,18 +170,6 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         this.tools.setVisible(false);
     },
 
-
-    _refreshGlobalStyle: function () {
-        this._refreshTitlePosition();
-    },
-
-    _refreshTitlePosition: function () {
-        var pos = BI.Utils.getGSNamePos();
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-            "dashboard-title-center" : "dashboard-title-left";
-        this.title.element.removeClass("dashboard-title-left")
-            .removeClass("dashboard-title-center").addClass(cls);
-    },
     _refreshLayout: function () {
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
@@ -284,8 +267,6 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
-        this._refreshTitlePosition();
-        this._refreshGlobalStyle();
         this._checkDataBind();
         this.treeList.populate();
     }
