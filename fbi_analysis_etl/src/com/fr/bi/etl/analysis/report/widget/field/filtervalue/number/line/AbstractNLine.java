@@ -4,6 +4,7 @@
 package com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.line;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -15,7 +16,7 @@ import com.fr.bi.stable.structure.tree.NTree;
  *
  */
 public abstract class AbstractNLine implements CalLineGetter {
-	
+	@BICoreField
 	protected int N;
 	AbstractNLine(int N) {
 		this.N = N;
