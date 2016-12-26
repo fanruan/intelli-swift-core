@@ -211,31 +211,17 @@ public class BIBaseConstant {
             private static class N implements Comparator<Comparable>, Serializable {
 
                 @Override
-                public int compare(Comparable v1, Comparable v2) {
-                    if (v1 == v2 || (v1 == null && v2 == null)) {
+                public int compare(Comparable o1, Comparable o2) {
+                    if (o1 == o2 || (o1 == null && o2 == null)) {
                         return 0;
                     }
-                    if (v1 == null) {
+                    if (o1 == null) {
                         return -1;
                     }
-                    if (v2 == null) {
+                    if (o2 == null) {
                         return 1;
                     }
-                    if (v1 instanceof Double || v2 instanceof Double) {
-                        Double o1 = ((Number) v1).doubleValue();
-                        Double o2 = ((Number) v2).doubleValue();
-                        return o1.compareTo(o2);
-
-                    } else if (v1 instanceof Float || v2 instanceof Float) {
-                        Float o1 = ((Number) v1).floatValue();
-                        Float o2 = ((Number) v2).floatValue();
-                        return o1.compareTo(o2);
-                    } else if (v1 instanceof Long || v2 instanceof Long) {
-                        Long o1 = ((Number) v1).longValue();
-                        Long o2 = ((Number) v2).longValue();
-                        return o1.compareTo(o2);
-                    }
-                    return v1.compareTo(v2);
+                    return o1.compareTo(o2);
                 }
 
             }
