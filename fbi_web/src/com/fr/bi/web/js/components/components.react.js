@@ -44733,8 +44733,7 @@
 	    modalsContainer: {
 	        position: 'absolute',
 	        left: 0,
-	        top: 0,
-	        zIndex: 999999
+	        top: 0
 	    }
 	};
 
