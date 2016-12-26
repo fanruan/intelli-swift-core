@@ -82,7 +82,6 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     }
 
 
-
     @Override
     public void deteleDetailFile() {
 
@@ -95,7 +94,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     @Override
     public GroupValueIndex getIndexByRow(int row, SingleUserNIOReadManager manager) {
-        return  this.initGetter(new IndexKey(StringUtils.EMPTY)).getGroupIndex(new Object[]{detail.get(row)})[0];
+        return this.initGetter(new IndexKey(StringUtils.EMPTY)).getGroupIndex(new Object[]{detail.get(row)})[0];
     }
 
     @Override
@@ -103,11 +102,11 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         return this.initGetter(key);
     }
 
-    private ICubeColumnIndexReader initGetter (BIKey key) {
-        if (getter == null){
-            synchronized (getterLock){
-                if (getter == null){
-                    getter = createGroupByType(key, ValueConverter.DEFAULT , ComparatorFacotry.createASCComparator());
+    private ICubeColumnIndexReader initGetter(BIKey key) {
+        if (getter == null) {
+            synchronized (getterLock) {
+                if (getter == null) {
+                    getter = createGroupByType(key, ValueConverter.DEFAULT, ComparatorFacotry.createASCComparator());
                 }
             }
         }
@@ -131,7 +130,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
             }
             i++;
         }
-        return -1;
+        return 0;
     }
 
 
@@ -139,16 +138,16 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         CubeTreeMap getter = new CubeTreeMap(comparator);
         Map<Object, IntArray> treeMap = new TreeMap<Object, IntArray>();
         IntArray nullList = new IntArray();
-        for (int i = 0; i < detail.size(); i ++){
+        for (int i = 0; i < detail.size(); i++) {
             T t = detail.get(i);
             Object value = t;
-            if(t != null) {
+            if (t != null) {
                 value = converter.result2Value(t);
-                if(value instanceof Integer) {
+                if (value instanceof Integer) {
                     value = ((Integer) value).longValue();
                 }
             }
-            if(value != null) {
+            if (value != null) {
                 IntArray list = treeMap.get(value);
                 if (list == null) {
                     list = new IntArray();
@@ -159,7 +158,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
                 nullList.add(i);
             }
         }
-        for (Map.Entry<Object, IntArray> entry : treeMap.entrySet()){
+        for (Map.Entry<Object, IntArray> entry : treeMap.entrySet()) {
             getter.put(entry.getKey(), GVIFactory.createGroupValueIndexBySimpleIndex(entry.getValue()));
         }
         return nullList.size == 0 ? getter : new CubeIndexGetterWithNullValue(getter, null, GVIFactory.createGroupValueIndexBySimpleIndex(nullList));
