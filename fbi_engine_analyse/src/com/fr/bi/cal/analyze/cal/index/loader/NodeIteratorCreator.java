@@ -2,7 +2,9 @@ package com.fr.bi.cal.analyze.cal.index.loader;
 
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.IRootDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.RootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -25,28 +27,26 @@ import java.util.*;
 public class NodeIteratorCreator {
 
     private BISession session;
-    private List<MergerInfo> mergerInfoList = new ArrayList<MergerInfo>();
+    private List<MetricGroupInfo> metricGroupInfoList = new ArrayList<MetricGroupInfo>();
     private BIDimension[] rowDimension;
     private BISummaryTarget[] usedTargets;
-    private Map<String, TargetCalculator> targetsMap;
-    private Map<String, DimensionFilter> targetFilterMap;
+    private NodeExpander expander;
+    private boolean isRealData;
     private NameObject targetSort;
     private final boolean showSum;
     private final boolean calAllPage;
 
-    public NodeIteratorCreator(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum, boolean setIndex, boolean calAllPage) {
-        this.mergerInfoList = mergerInfoList;
+    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, NodeExpander expander, boolean isRealData, BISession session, NameObject targetSort, boolean showSum, boolean setIndex, boolean calAllPage) {
+        this.metricGroupInfoList = metricGroupInfoList;
         this.rowDimension = rowDimension;
         this.usedTargets = usedTargets;
-        this.targetsMap = targetsMap;
-        this.targetFilterMap = targetFilterMap;
+        this.expander = expander;
+        this.isRealData = isRealData;
         this.session = session;
         this.targetSort = targetSort;
         this.showSum = showSum;
         this.calAllPage = calAllPage;
     }
-
-
 
     private CalLevel getConfiguredCalculatorTargetLevel() {
         CalLevel level = CalLevel.PART_NODE;
@@ -88,6 +88,7 @@ public class NodeIteratorCreator {
 
     private IRootDimensionGroup createNormalIteratorRoot() {
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
+        RootDimensionGroup root = new RootDimensionGroup();
         Map<GroupKey, IRootDimensionGroup> map = new HashMap<GroupKey, IRootDimensionGroup>();
         for (int i = 0; i < directFilterIndexes.length; i++) {
             if (directFilterIndexes[i] != null) {

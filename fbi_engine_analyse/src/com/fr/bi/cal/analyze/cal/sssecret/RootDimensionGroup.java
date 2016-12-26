@@ -43,9 +43,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected NoneDimensionGroup root;
-    protected DimensionCalculator[] cks;
+    protected DimensionCalculator[][] cks;
 
-    protected ICubeValueEntryGetter[] getters;
+    protected ICubeValueEntryGetter[][] getters;
 
     protected BISession session;
     protected BIWidget widget;
@@ -55,7 +55,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     private boolean useRealData;
 
     public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, ICubeValueEntryGetter[] getters, BIWidget widget) {
-        setRoot(root);
+        this.root = root;
         this.cks = cks;
         this.expander = expander;
         this.session = session;
@@ -68,7 +68,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, BIWidget widget) {
-        setRoot(root);
+        this.root = root;
         this.cks = cks;
         this.expander = expander;
         this.session = session;
@@ -113,14 +113,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             return new IndexKey(primaryField.getFieldName());
         }
         return column.createKey();
-    }
-
-    protected void setRoot(NoneDimensionGroup root) {
-        this.root = root;
-    }
-
-    public NoneDimensionGroup getRoot() {
-        return root;
     }
 
     public static int findPageIndexDichotomy(int[] shrinkPos, List<int[]> pageIndex, int start, int end) throws ArrayIndexOutOfBoundsException {
