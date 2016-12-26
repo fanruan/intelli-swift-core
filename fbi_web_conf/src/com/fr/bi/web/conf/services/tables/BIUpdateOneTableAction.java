@@ -2,6 +2,8 @@ package com.fr.bi.web.conf.services.tables;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.conf.utils.BIConfUtils;
@@ -21,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 更新一张表信息
+ * 更新一张表信息（可能是新添加的ETL）
  * Created by Young's on 2016/12/21.
  */
 public class BIUpdateOneTableAction extends AbstractBIConfigureAction {
@@ -33,9 +35,11 @@ public class BIUpdateOneTableAction extends AbstractBIConfigureAction {
         String tableStr = WebUtils.getHTTPRequestParameter(req, "table");
         String updateSettingStr = WebUtils.getHTTPRequestParameter(req, "updateSetting");
         String excelViewStr = WebUtils.getHTTPRequestParameter(req, "excelView");
+        String packageId = WebUtils.getHTTPRequestParameter(req, "packageId");
+        boolean isNew = WebUtils.getHTTPRequestBoolParameter(req, "isNew");
 
         JSONObject tableJO = new JSONObject(tableStr);
-        BusinessTable table = updateTable(userId, tableJO);
+        BusinessTable table = updateTable(userId, tableJO, packageId, isNew);
         JSONObject translationsJO = new JSONObject(translationsStr);
         updateTranslation(userId, translationsJO, table);
 
@@ -45,9 +49,15 @@ public class BIUpdateOneTableAction extends AbstractBIConfigureAction {
         BIWriteConfigResourcesUtils.writeResourceAsync(userId);
     }
 
-    private BusinessTable updateTable(long userId, JSONObject tableJO) throws Exception {
+    private BusinessTable updateTable(long userId, JSONObject tableJO, String packageId, boolean isNew) throws Exception {
         String tableId = tableJO.getString("id");
-        BusinessTable table = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
+        BusinessTable table;
+        if (isNew && packageId != null) {
+            table = new BIBusinessTable(new BITableID(tableId), tableJO.getString("table_name"));
+            BICubeConfigureCenter.getPackageManager().addTable(userId, new BIPackageID(packageId), (BIBusinessTable) table);
+        } else {
+            table = BusinessTableHelper.getBusinessTable(new BITableID(tableId));
+        }
         if (tableJO.has("fields")) {
             List<BusinessField> fields = BIConfUtils.parseField(tableJO.getJSONArray("fields"), table);
             table.setFields(fields);

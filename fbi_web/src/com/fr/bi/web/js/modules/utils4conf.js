@@ -5,15 +5,6 @@
  */
 BI.extend(BI.Utils, {
 
-    getCurrentPackage4Conf: function () {
-        return BI.firstObject(Data.SharingPool.get(BICst.CURRENT_EDITING_PACKAGE));
-    },
-
-    getCurrentPackageName4Conf: function () {
-        var pack = BI.firstObject(Data.SharingPool.get(BICst.CURRENT_EDITING_PACKAGE));
-        return pack.name;
-    },
-
     getCurrentPackageId4Conf: function () {
         return BI.firstKey(Data.SharingPool.cat(BICst.CURRENT_EDITING_PACKAGE));
     },
@@ -31,6 +22,16 @@ BI.extend(BI.Utils, {
     updateTranName4Conf: function (id, tranName) {
         var translation = Data.SharingPool.cat("translations");
         translation[id] = tranName;
+    },
+
+    updateTranslationsByTableId4Conf: function (tableId, newTranslations) {
+        var fields = this.getFieldsByTableId4Conf(tableId);
+        var translations = Data.SharingPool.cat("translations");
+        delete translations[tableId];
+        BI.each(fields, function (i, field) {
+            delete translations[field.id];
+        });
+        BI.extend(translations, newTranslations);
     },
 
     updateFields4Conf: function (id, field) {
@@ -484,16 +485,6 @@ BI.extend(BI.Utils, {
 
     getPackageNameByID4Conf: function (packageId) {
         return Data.SharingPool.cat("packages")[packageId].name;
-    },
-
-    getTableIDsOfPackageID4Conf: function (packageId) {
-        //这里要取最新的，从shared中
-        if (packageId === this.getCurrentPackageId4Conf()) {
-            return BI.keys(this.getCurrentPackageTables4Conf());
-        } else {
-            var packages = Data.SharingPool.cat("packages");
-            return BI.pluck(packages[packageId].tables, "id");
-        }
     },
 
     getConfPackageGroupIDs: function () {
