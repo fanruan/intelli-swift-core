@@ -77,7 +77,7 @@ public class CubeRunner {
                 } finally {
                     finish(cubeTask);
                     try {
-                        recordLogs(cubeTask, BIConfigureManagerCenter.getLogManager());
+                        recordLogs(cubeTask,BIConfigureManagerCenter.getLogManager());
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }

@@ -171,10 +171,10 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
             });
         } else {
             if (isDimension) {
-                return !(BI.contains(BI.values(BICst.TARGET_FILTER_NUMBER), filterType) || BI.contains(BI.values(BICst.TARGET_FILTER_STRING), filter) ||
+                return !(BI.contains(BI.values(BICst.TARGET_FILTER_NUMBER), filterType) || BI.contains(BI.values(BICst.TARGET_FILTER_STRING), filterType) ||
                     BI.contains(BI.values(BICst.FILTER_DATE, filterType)));
             } else {
-                return !(BI.contains(BI.values(BICst.DIMENSION_FILTER_NUMBER), filterType) || BI.contains(BI.values(BICst.DIMENSION_FILTER_STRING), filter) ||
+                return !(BI.contains(BI.values(BICst.DIMENSION_FILTER_NUMBER), filterType) || BI.contains(BI.values(BICst.DIMENSION_FILTER_STRING), filterType) ||
                 BI.contains(BI.values(BICst.DIMENSION_FILTER_DATE), filterType));
             }
         }
