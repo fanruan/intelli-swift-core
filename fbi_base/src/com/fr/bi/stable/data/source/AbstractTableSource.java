@@ -341,6 +341,15 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + fetchObjectCore().hashCode();
+        return result;
+    }
+
+    @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();
