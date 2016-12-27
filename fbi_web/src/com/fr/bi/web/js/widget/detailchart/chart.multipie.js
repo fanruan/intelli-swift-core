@@ -32,7 +32,7 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         delete config.zoom;
         config.colors = this.config.chartColor;
-        config.plotOptions.style = formatChartStyle();
+        config.plotOptions.gradual = formatChartStyle();
         formatChartPieStyle();
 
         this.formatChartLegend(config, this.config.legend);
@@ -64,10 +64,10 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
         function formatChartStyle() {
             switch (self.config.chartStyle) {
                 case BICst.MULTI_PIE_GRADIENT_STYLE.LIGHTER:
-                    return "gradual";
+                    return "lighter";
                 case BICst.MULTI_PIE_GRADIENT_STYLE.DARKER:
                 default:
-                    return "normal";
+                    return "darker";
             }
         }
 

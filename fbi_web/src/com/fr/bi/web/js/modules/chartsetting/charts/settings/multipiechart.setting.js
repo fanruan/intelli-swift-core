@@ -80,9 +80,10 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
         });
 
+        //层级渐变
         this.chartStyle = BI.createWidget({
             type: "bi.button_group",
-            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
+            items: BI.createItems(BICst.MULTI_PIE_GRADIENT_STYLE_GROUP, {
                 type: "bi.icon_button",
                 extraCls: "chart-style-font",
                 width: constant.BUTTON_WIDTH,
@@ -117,26 +118,6 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         // this.pieChartType.on(BI.ButtonGroup.EVENT_CHANGE, function () {
         //     self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
         // });
-
-        //层级渐变
-        this.hierarchicalGradient = BI.createWidget({
-            type: "bi.button_group",
-            items: BI.createItems(BICst.MULTI_PIE_GRADIENT_STYLE_GROUP, {
-                type: "bi.icon_button",
-                extraCls: "chart-style-font",
-                width: constant.BUTTON_WIDTH,
-                height: constant.BUTTON_HEIGHT,
-                iconWidth: constant.ICON_WIDTH,
-                iconHeight: constant.ICON_HEIGHT
-            }),
-            layouts: [{
-                type: "bi.vertical_adapt",
-                height: constant.SINGLE_LINE_HEIGHT
-            }]
-        });
-        this.hierarchicalGradient.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
-        });
 
         //内径大小
         this.innerRadius = BI.createWidget({
@@ -203,7 +184,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.hierarchicalGradient]
+                    items: [this.chartStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),

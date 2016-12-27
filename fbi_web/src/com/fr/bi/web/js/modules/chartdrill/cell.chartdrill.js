@@ -117,6 +117,11 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             case BICst.WIDGET.SCATTER:
                 value = v.seriesName;
                 break;
+            case BICst.WIDGET.RECT_TREE:
+                var drillDid = o.dId;
+                var regionType = BI.Utils.getRegionTypeByDimensionID(drillDid);
+                value = ((BI.Utils.isDimensionRegion1ByRegionType(regionType) || BI.isEmptyArray(v.parents)) ? (v.initialX || v.x) : (v.parents[0].initialX || v.parents[0].x));
+                break;
             default:
                 var drillMap = BI.Utils.getDrillByID(wId);
                 var drillDid = o.dId;

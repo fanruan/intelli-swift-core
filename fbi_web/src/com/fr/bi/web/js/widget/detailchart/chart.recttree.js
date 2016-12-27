@@ -48,6 +48,7 @@ BI.RectTreeChart = BI.inherit(BI.AbstractChart, {
             connectorWidth: this.config.dataLabelSetting.showTractionLine,
         });
         config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
+        config.plotOptions.dataLabels.formatter.identifier = "${NAME}${SERIES}${VALUE}";
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
