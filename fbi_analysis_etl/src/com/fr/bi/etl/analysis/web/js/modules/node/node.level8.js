@@ -21,9 +21,10 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
     },
 
     _init: function () {
-        this.options.title = BI.Utils.getDescribe(this.options.id) || this.options.title;
-        BI.SelectDataLevel8Node.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        o.title = BI.Utils.getDescribe(o.id) || o.title;
+        this.tableId = o.value;
+        BI.SelectDataLevel8Node.superclass._init.apply(this, arguments);
         self._initControl();
         this.checkbox = BI.createWidget({
             type: "bi.tree_group_node_checkbox",
@@ -118,6 +119,38 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
         self.settingIcon.setVisible(BI.Utils.isTableEditable(this.options.id));
         self.loadingBar.setVisible(false);
         self.controller.startChecker(this.options.id);
+        this._initBroadcast();
+    },
+
+    _initBroadcast: function () {
+        var self = this, o = this.options;
+        if (!BI.Utils.isTableUsableByWidgetID(this.tableId, o.wId)) {
+            this.setEnable(false);
+        }
+        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function (tableId) {
+            var enable = BI.Utils.isTableUsableByWidgetID(self.tableId, o.wId);
+            if (enable === false) {
+                self.setEnable(false);
+                return;
+            }
+            if (BI.isNotEmptyString(tableId)) {
+                var dIds = BI.Utils.getAllDimensionIDs(o.wId);
+                var tIds = [];
+                //这个地方要排除计算指标，因为和计算指标没有tableId
+                var filterDIds = BI.filter(dIds,  function(idx, dId){
+                    return !BI.Utils.isCalculateTargetByDimensionID(dId);
+                });
+                BI.each(filterDIds, function (id, dId) {
+                    tIds.push(BI.Utils.getTableIDByDimensionID(dId));
+                });
+                tIds.push(tableId);
+                enable = BI.Utils.isTableInRelativeTables(tIds, self.tableId);
+            }
+            self.setEnable(enable);
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function () {
+            self.setValue([]);
+        });
     },
 
     _createItemList : function (){
@@ -148,19 +181,6 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
         this.loadingBar.setPercent(percent);
     },
 
-    setEnable: function (b) {
-        BI.assert(b, [true, false]);
-        if (b === true) {
-            this.options.disabled = false;
-        } else if (b === false) {
-            this.options.disabled = true;
-        }
-        this.checkbox.setEnable(b);
-        this.text.setEnable(b);
-        this.icon.setEnable(b);
-        this.tip.setEnable(b);
-    },
-
     doRedMark: function () {
         this.text.doRedMark.apply(this.text,  this.controller.getMarkArguments(this.options.id, this.options.text));
     },
@@ -187,6 +207,21 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             this.tip.setText("(" + items.length + ")");
         }
         this.tip.setTitle(items.toString());
+    },
+
+    setEnable: function (b) {
+        BI.SelectDataLevel8Node.superclass.setEnable.apply(this, arguments);
+        !b && this.isOpened() && this.triggerCollapse();
+        BI.assert(b, [true, false]);
+        if (b === true) {
+            this.options.disabled = false;
+        } else if (b === false) {
+            this.options.disabled = true;
+        }
+        this.checkbox.setEnable(b);
+        this.text.setEnable(b);
+        this.icon.setEnable(b);
+        this.tip.setEnable(b);
     }
 });
 $.shortcut("bi.select_data_level" + ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE + "_node", BI.SelectDataLevel8Node);
