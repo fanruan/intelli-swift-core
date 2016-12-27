@@ -345,15 +345,11 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             type: "bi.etl",
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: tableId,
-            relations: this.model.getRelations(),
-            translations: this.model.getTranslations(),
-            all_fields: this.model.getAllFields(),
-            excel_view: this.model.getExcelViews()[tableId],
-            update_settings: this.model.getUpdateSettings()
+            packageId: this.model.getId()
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_SAVE, function (data) {
-            // self.model.changeTableInfo(tableId, data);
+            self.model.changeTableInfo(tableId, data);
             self._refreshTablesInPackage();
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
@@ -516,7 +512,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             });
         });
         etl.on(BI.ETL.EVENT_SAVE, function (data) {
-            // self.model.changeTableInfo(id, data);
+            self.model.changeTableInfo(id, data);
             self._refreshTablesInPackage();
             BI.Layers.remove(self._constant.ETL_LAYER);
         });

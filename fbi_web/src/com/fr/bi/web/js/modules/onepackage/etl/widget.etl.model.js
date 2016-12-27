@@ -7,20 +7,27 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var o = this.options;
         this.id = o.id;
         this.table = o.table;
-        this._prepareData();
+        this.allTableIds = [];
+        this.allTables = [];
+        this.translations = {};
+        this.tablesMap = {};
+        if (BI.isNotNull(this.table)) {
+            this._prepareData();
+        } else {
+            this.translations[this.id] = this.createDistinctTableTranName(this.id, "ETL");
+            this.isNew = true;
+        }
     },
 
     _prepareData: function () {
         var self = this;
         var finalTable = [this.table];
-        this.tablesMap = {};
         this.fields = this.table.fields;
         this._addId2Tables(finalTable, this.tablesMap);
         this.allTableIds = this._getTablesId(finalTable, []);
         this.allTables = [finalTable];
 
         //这里的转义只是放了当前表的所有转义信息
-        this.translations = {};
         this.translations[this.id] = BI.Utils.getTransNameById4Conf(this.id);
         BI.each(this.fields, function (i, fs) {
             BI.each(fs, function (j, field) {
@@ -79,6 +86,10 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     setTableName: function (name) {
         this.translations[this.id] = name;
+    },
+
+    getTableName: function () {
+        return this.translations[this.id];
     },
 
     setFieldsUsable: function (usedFields) {
@@ -143,10 +154,10 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return BI.deepClone(this.tablesMap[id]);
     },
 
-    getFieldById: function(id) {
+    getFieldById: function (id) {
         var field;
-        BI.each(this.fields, function(i, fs) {
-            BI.each(fs, function(j, f) {
+        BI.each(this.fields, function (i, fs) {
+            BI.each(fs, function (j, f) {
                 if (f.id === id) {
                     field = f;
                 }
@@ -248,7 +259,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     isValidTableTranName: function (name) {
         var self = this;
-        var packId = BI.Utils.getPackageIdByTableId4Conf(this.id);
+        var packId = this.options.packageId || BI.Utils.getPackageIdByTableId4Conf(this.id);
         var tableIds = BI.Utils.getTablesIdByPackageId4Conf(packId);
         var isValid = true;
         BI.some(tableIds, function (i, tId) {
@@ -258,6 +269,17 @@ BI.ETLModel = BI.inherit(FR.OB, {
             }
         });
         return isValid;
+    },
+
+    createDistinctTableTranName: function (id, v) {
+        var currentPackTrans = [];
+        var packId = this.options.packageId || BI.Utils.getPackageIdByTableId4Conf(this.id);
+        BI.each(BI.Utils.getTablesIdByPackageId4Conf(packId), function (i, tId) {
+            id !== tId && currentPackTrans.push({
+                name: BI.Utils.getTransNameById4Conf(tId)
+            })
+        });
+        return BI.Func.createDistinctName(currentPackTrans, v);
     },
 
     /**
@@ -481,19 +503,6 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return relation;
     },
 
-    _getDistinctTableName: function (name) {
-        var self = this;
-        var allTableNameTrans = [];
-        var currentPackTables = BI.Utils.getCurrentPackageTables4Conf();
-        var translations = this.getTranslations();
-        BI.each(currentPackTables, function (tid, table) {
-            if (tid !== self.getId()) {
-                allTableNameTrans.push({name: translations[tid]});
-            }
-        });
-        return BI.Func.createDistinctName(allTableNameTrans, name);
-    },
-
     //自己有id的table使用原来的
     _addId2Tables: function (tables, ids, isTemp) {
         var self = this;
@@ -604,13 +613,16 @@ BI.ETLModel = BI.inherit(FR.OB, {
         });
         var table = this.getAllTables()[0][0];
         table.id = this.id;
-        BI.Utils.updateOneTable4Conf({
+        var data = {
+            packageId: this.options.packageId,
             table: table,
+            fields: this.fields,
             translations: self.translations,
             excel_view: {},
             update_settings: {}
-        }, function () {
-            callback();
+        };
+        BI.Utils.updateOneTable4Conf(BI.deepClone(data), function () {
+            callback(data);
         }, function () {
             mask.destroy();
         })

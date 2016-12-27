@@ -33,6 +33,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.model = new BI.ETLModel({
             id: o.id,
+            packageId: o.packageId,
             table: o.table
         });
         BI.createWidget({
@@ -232,8 +233,8 @@ BI.ETL = BI.inherit(BI.Widget, {
             warningTitle: BI.bind(this._getWarningTitle, this)
         });
         this.saveButton.on(BI.Button.EVENT_CHANGE, function () {
-            self.model.saveTable(function () {
-                self.fireEvent(BI.ETL.EVENT_SAVE);
+            self.model.saveTable(function (data) {
+                self.fireEvent(BI.ETL.EVENT_SAVE, data);
             });
         });
         var removeButton = BI.createWidget({
@@ -426,7 +427,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         tableName.on(BI.SignEditor.EVENT_VALID, function () {
             self.saveButton.setEnable(true);
         });
-        tableName.setValue(BI.Utils.getTransNameById4Conf(this.model.getId()));
+        tableName.setValue(this.model.getTableName());
 
         this.refreshTable = BI.createWidget({
             type: "bi.icon_button",
@@ -1009,7 +1010,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         var tablePreview = BI.createWidget({
             type: "bi.etl_table_preview",
             table: this.model.getTableById(tId),
-            name: this.model.getTranName()
+            name: BI.Utils.getTransNameById4Conf(tId)
         });
         BI.Popovers.create(tId, tablePreview).open(tId);
     },
