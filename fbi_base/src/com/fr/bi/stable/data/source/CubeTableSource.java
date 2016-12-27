@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * Created by GUY on 2015/2/28.
  */
-public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
+public interface CubeTableSource extends XMLable, JSONCreator, BICoreService, Cloneable {
     BICore fetchObjectCore();
 
     IPersistentTable getPersistentTable();
@@ -126,6 +126,7 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
 
     /**
      * 字段是否发生变化
+     *
      * @return
      */
     boolean hasAbsentFields();
