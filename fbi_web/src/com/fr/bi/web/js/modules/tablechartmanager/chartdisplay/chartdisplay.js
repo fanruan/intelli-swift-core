@@ -230,6 +230,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         rightYShowLabel: false,
                         rightY2ShowLabel: false,
                         catLabelStyle: BI.Utils.getWSChartCatLabelStyleByID(o.wId),
+                        clickZoom: BI.Utils.getWSChartClickZoomByID(o.wId),
                         lineWidth: BICst.DEFAULT_CHART_SETTING.miniLineWidth,
                         enableTick: BICst.DEFAULT_CHART_SETTING.miniEnableTick,
                         enableMinorTick: BICst.DEFAULT_CHART_SETTING.miniEnableMinorTick,
@@ -240,6 +241,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         showDataLabel: BICst.DEFAULT_CHART_SETTING.miniShowDataLabel,
                         showGridLine: BICst.DEFAULT_CHART_SETTING.miniShowGridLine
                     }, {
+                        seriesAccumulation: self.model.getSeriesAccumulation(o.wId),
                         tooltip: self.model.getToolTip(type),
                         lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
                     })
@@ -334,6 +336,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         transferFilter: BI.Utils.getWSTransferFilterByID(o.wId),
                         bigDataMode: BI.Utils.getWSChartBigDataModeByID(o.wId),
                         dataLabelSetting: BI.Utils.getWSChartDataLabelSettingByID(o.wId),
+                        clickZoom: BI.Utils.getWSChartClickZoomByID(o.wId)
                     }, {
                         seriesAccumulation: self.model.getSeriesAccumulation(o.wId),
                         cordon: self.model.getCordon(),
