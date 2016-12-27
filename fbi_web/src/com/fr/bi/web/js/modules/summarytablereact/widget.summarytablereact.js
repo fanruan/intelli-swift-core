@@ -62,8 +62,8 @@ BI.SummaryTableReact = BI.inherit(BI.Pane, {
             if (hPage < self.hPage) {
                 pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
             }
-            self.hPage = hPage;
-            self.vPage = vPage;
+            self.hPage = hPage || 1;
+            self.vPage = vPage || 1;
             self.model.setPageOperator(pageOperator);
             self._onPageChange(function (op) {
                 self._refreshTable(op);
@@ -317,21 +317,395 @@ BI.SummaryTableReact = BI.inherit(BI.Pane, {
 
     },
 
+    _formatItem: function (item, dGroupMap) {
+        //日期的需要format
+        var text = item.text;
+        var dGroup = dGroupMap[item.dId];
+        if (BI.isNotNull(dGroup) && BI.isNumeric(text)) {
+            switch (dGroup.type) {
+                case BICst.GROUP.YMD:
+                    var date = new Date(BI.parseInt(text));
+                    text = date.print("%Y-%X-%d");
+                    break;
+                case BICst.GROUP.YMDHMS:
+                    var date = new Date(BI.parseInt(text));
+                    text = date.print("%Y-%X-%d  %H:%M:%S");
+                    break;
+                case BICst.GROUP.S:
+                    text = BICst.FULL_QUARTER_NAMES[text - 1];
+                    break;
+                case BICst.GROUP.M:
+                    text = BICst.FULL_MONTH_NAMES[text];
+                    break;
+                case BICst.GROUP.W:
+                    text = BICst.FULL_WEEK_NAMES[text - 1];
+                    break;
+            }
+        }
+        item.text = text;
+        return item;
+    },
+
+    _formatLinkageTarget: function (item) {
+        var dId = item.dId, clicked = item.clicked;
+        if (BI.isNotNull(dId)) {
+            var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
+            var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
+        }
+        var linkedWidgets = [], linkedFrom = [];
+        BI.each(linkage, function (i, link) {
+            if (link.from === item.dId && BI.isEmpty(link.cids)) {
+                linkedWidgets.push(link);
+            } else if (link.cids && link.cids[0] === item.dId) {
+                linkedFrom.push(link);
+            }
+        });
+        if (!BI.isEmptyArray(linkedWidgets) || !BI.isEmptyArray(linkedFrom)) {
+            item.style = {
+                textDecoration: 'underline'
+            };
+            //一般指标或只有一个指标联动的计算指标
+            if (!isContainsDiffLinkages(linkedFrom)) {
+                item.onClick = function () {
+                    //这个clicked应该放到子widget中保存起来
+                    BI.each(linkedWidgets.concat(linkedFrom), function (i, linkWid) {
+                        BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkWid.to, linkWid.from, clicked);
+                        send2AllChildLinkWidget(linkWid.to, item);
+                    });
+                };
+                return item;
+            }
+
+            //计算指标
+            var linkages = [];
+            BI.each(linkedFrom, function (idx, linkage) {
+                var name = BI.i18nText("BI-An");
+                BI.each(linkage.cids, function (i, cid) {
+                    name += BI.Utils.getDimensionNameByID(cid) + "-";
+                });
+                name += BI.Utils.getDimensionNameByID(linkage.from);
+                var temp = {
+                    text: name,
+                    value: name,
+                    title: name,
+                    from: linkage.from,
+                    to: linkage.to,
+                    cids: linkage.cids,
+                    onClick: clickCalculateTarget
+                };
+                var containsItem = containsLinkage(linkages, temp);
+                if (BI.isEmptyObject(containsItem)) {
+                    linkages.push(temp);
+                } else {
+                    BI.isArray(containsItem.to) ? containsItem.to.push(temp.to) : containsItem.to = [containsItem.to, temp.to];
+                }
+            });
+            item.downList = linkages;
+            return item;
+        }
+
+        function clickCalculateTarget(link) {
+            BI.each(BI.isArray(link.to) ? link.to : [link.to], function (idx, to) {
+                BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + to, link.from, clicked);
+                send2AllChildLinkWidget(to, {from: clicked});
+            });
+        }
+
+        function send2AllChildLinkWidget(wid, opt) {
+            var dId = opt.dId, clicked = opt.clicked;
+            var linkage = BI.Utils.getWidgetLinkageByID(wid);
+            BI.each(linkage, function (i, link) {
+                BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, dId, clicked);
+                send2AllChildLinkWidget(link.to);
+            });
+        }
+
+        function containsLinkage(list, item) {
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
+                    return list[i];
+                }
+            }
+            return {};
+        }
+
+        function isContainsDiffLinkages(linkages) {
+            for (var i = 0; i < linkages.length; i++) {
+                for (var j = i + 1; j < linkages.length; j++) {
+                    if (!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    },
+
+    _formatValue: function (item, styleSettingsMap) {
+        if (BI.isNull(item.dId)) {
+            return item;
+        }
+        var styleSettings = styleSettingsMap[item.dId];
+        var text = item.text;
+        var iconClass = "", color = "";
+        var format = styleSettings.format, numLevel = styleSettings.num_level, num_separators = styleSettings.num_separators;
+        text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
+        var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
+        iconClass = getIconByStyleAndMark(text, iconStyle, mark);
+        var conditions = styleSettings.conditions;
+        BI.some(conditions, function (i, co) {
+            var range = co.range;
+            var min = BI.parseFloat(range.min), max = BI.parseFloat(range.max);
+            var minBoolean = true;
+            var maxBoolean = true;
+            if (BI.isNumeric(min)) {
+                minBoolean = (range.closemin === true ? text >= min : text > min);
+            }
+            if (BI.isNumeric(max)) {
+                maxBoolean = (range.closemax === true ? text <= max : text < max);
+            }
+            if (minBoolean && maxBoolean) {
+                color = co.color;
+            }
+        });
+        text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
+        if (text === Infinity) {
+            text = "N/0";
+        } else if (numLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNumeric(text)) {
+            text += "%";
+        }
+
+        item.iconClass = iconClass;
+        item.color = color;
+        item.text = text;
+        item.title = text;
+
+        this._formatLinkageTarget(item);
+        return {
+            iconClass: iconClass,
+            color: color,
+            text: text
+        };
+
+        function getIconByStyleAndMark(text, style, mark) {
+            var num = BI.parseFloat(text), nMark = BI.parseFloat(mark);
+            switch (style) {
+                case BICst.TARGET_STYLE.ICON_STYLE.NONE:
+                    return "";
+                case BICst.TARGET_STYLE.ICON_STYLE.POINT:
+                    if (num > nMark) {
+                        return "target-style-more-dot-font";
+                    } else if (num === nMark) {
+                        return "target-style-equal-dot-font"
+                    } else {
+                        return "target-style-less-dot-font";
+                    }
+                case BICst.TARGET_STYLE.ICON_STYLE.ARROW:
+                    if (num > nMark) {
+                        return "target-style-more-arrow-font";
+                    } else if (num === nMark) {
+                        return "target-style-equal-arrow-font";
+                    } else {
+                        return "target-style-less-arrow-font";
+                    }
+            }
+            return "";
+        }
+    },
+
     _formatItems: function (items) {
-        function track(node) {
+        var self = this;
+
+        var dGroupMap = {}, styleSettingsMap = {};
+        BI.each(BI.Utils.getAllDimensionIDs(this.options.wId), function (i, dId) {
+            dGroupMap[dId] = BI.Utils.getDimensionGroupByID(dId);
+            styleSettingsMap[dId] = BI.Utils.getDimensionSettingsByID(dId);
+        });
+
+        //children在react中是关键字换成childs
+        //标识汇总行
+        function track(index, node) {
             if (node.children) {
                 node.childs = node.children;
                 BI.each(node.children, function (i, child) {
-                    track(child);
+                    track(index + 1, child);
                 });
                 delete node.children;
+                BI.each(node.values, function (i, val) {
+                    val.isSum = true;
+                    val.isLast = index === -1;
+                    self._formatValue(val, styleSettingsMap);
+                });
+            } else {
+                self._formatItem(node, dGroupMap);
+                BI.each(node.values, function (i, val) {
+                    self._formatValue(val, styleSettingsMap);
+                });
             }
+            node.title = node.text;
+            node.iconClass = "table-drill-up-down";
         }
 
         BI.each(items, function (i, node) {
-            track(node);
+            track(-1, node);
         });
         return items;
+    },
+
+    _formatCrossItems: function (items) {
+        var self = this;
+        //children在react中是关键字换成childs
+        //标识汇总行
+        function track(index, node) {
+            if (node.children) {
+                node.childs = node.children;
+                BI.each(node.children, function (i, child) {
+                    track(index + 1, child);
+                });
+                delete node.children;
+                BI.each(node.values, function (i, val) {
+                    val.isSum = true;
+                    val.isLast = index === -1;
+                });
+            } else {
+            }
+            node.title = node.text;
+        }
+
+        BI.each(items, function (i, node) {
+            track(-1, node);
+        });
+        return items;
+    },
+
+    _formatDimensionHeaderCell: function (cell) {
+        var sort = BI.Utils.getDimensionSortByID(cell.dId), filter = BI.Utils.getDimensionFilterValueByID(cell.dId);
+        if (BI.isEmptyObject(sort)) {
+            //默认排序方式
+            var sortType = BICst.SORT.ASC;
+            var fieldType = BI.Utils.getFieldTypeByDimensionID(cell.dId);
+            if (fieldType === BICst.COLUMN.NUMBER) {
+                sortType = BICst.SORT.CUSTOM;
+            }
+            sort = {type: sortType};
+        }
+        var isNotEmptyFilter = BI.isNotEmptyObject(filter);
+        cell.list = [[{
+            text: isFirstDimensionBydId(cell.dId) ? BI.i18nText("BI-Ascend") : BI.i18nText("BI-Asc_Group"),
+            active: sort.type === BICst.SORT.ASC,
+            iconClass: isNotEmptyFilter ? "table-ascending-filter-font" : "table-ascending-no-filter-font",
+            value: BICst.SORT.ASC,
+            onClick: function (item) {
+                cell.sortFilterChange(BICst.SORT.ASC);
+            }
+        }, {
+            text: isFirstDimensionBydId(cell.dId) ? BI.i18nText("BI-Descend") : BI.i18nText("BI-Des_Group"),
+            active: sort.type === BICst.SORT.DESC,
+            iconClass: isNotEmptyFilter ? "table-descending-filter-font" : "table-descending-no-filter-font",
+            value: BICst.SORT.DESC,
+            onClick: function (item) {
+                cell.sortFilterChange(BICst.SORT.DESC);
+            }
+        }], [{
+            text: BI.i18nText("BI-Filter_Number_Summary"),
+            active: isNotEmptyFilter,
+            value: -1,
+            onClick: function (item) {
+                cell.sortFilterChange(-1);
+            }
+        }]];
+        return cell;
+        function isFirstDimensionBydId(dId) {
+            var wId = BI.Utils.getWidgetIDByDimensionID(dId);
+            var dims = BI.Utils.getAllUsableDimDimensionIDs(wId);
+            return dims[0] === dId;
+        }
+    },
+
+    _formatTargetHeaderCell: function (cell) {
+        var targetFilters = BI.Utils.getWidgetFilterValueByID(BI.Utils.getWidgetIDByDimensionID(cell.dId));
+        var widgetType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(cell.dId));
+        var sort = BI.Utils.getWidgetSortByID(BI.Utils.getWidgetIDByDimensionID(cell.dId)), filter = targetFilters[cell.dId] || null;
+        if (widgetType === BICst.WIDGET.DETAIL) {
+            sort = BI.Utils.getDimensionSortByID(cell.dId);
+        }
+        var sortType = sort.sort_target === cell.dId ? sort.type : BICst.SORT.NONE;
+        var isNotEmptyFilter = BI.isNotNull(filter);
+        cell.list = [[{
+            text: BI.i18nText("BI-Ascend"),
+            active: sortType === BICst.SORT.ASC,
+            iconClass: isNotEmptyFilter ? "table-ascending-filter-font" : "table-ascending-no-filter-font",
+            value: BICst.SORT.ASC,
+            onClick: function (item) {
+                cell.sortFilterChange(BICst.SORT.ASC);
+            }
+        }, {
+            text: BI.i18nText("BI-Descend"),
+            active: sortType === BICst.SORT.DESC,
+            iconClass: isNotEmptyFilter ? "table-descending-filter-font" : "table-descending-no-filter-font",
+            value: BICst.SORT.DESC,
+            onClick: function (item) {
+                cell.sortFilterChange(BICst.SORT.DESC);
+            }
+        }, {
+            text: BI.i18nText("BI-Unsorted"),
+            active: sortType === BICst.SORT.NONE,
+            iconClass: isNotEmptyFilter ? "table-no-sort-filter-font" : "table-no-sort-no-filter-font",
+            value: BICst.SORT.NONE,
+            onClick: function (item) {
+                cell.sortFilterChange(BICst.SORT.NONE);
+            }
+        }], [{
+            text: BI.i18nText("BI-Filter_Number_Summary"),
+            active: isNotEmptyFilter,
+            value: -1,
+            onClick: function (item) {
+                cell.sortFilterChange(-1);
+            }
+        }]];
+        return cell;
+    },
+
+    _formatHeader: function (header) {
+        var self = this;
+        BI.each(header, function (i, node) {
+            if (BI.isNull(node.dId)) {
+                return;
+            }
+            var styleSettings = BI.Utils.getDimensionSettingsByID(node.dId);
+            var st = getNumLevelByLevel(styleSettings.num_level) + (styleSettings.unit || "");
+            if (BI.isNotEmptyString(st)) {
+                node.text = node.text + "(" + st + ")";
+            }
+            node.title = node.text;
+            if (BI.Utils.isDimensionByDimensionID(node.dId)) {
+                self._formatDimensionHeaderCell(node);
+            } else {
+                self._formatTargetHeaderCell(node);
+            }
+        });
+        return header;
+        function getNumLevelByLevel(level) {
+            var numLevel = "";
+            BI.each(BICst.TARGET_STYLE_LEVEL, function (i, ob) {
+                if (ob.value === level && level !== BICst.TARGET_STYLE.NUM_LEVEL.NORMAL) {
+                    numLevel = ob.text;
+                }
+            });
+            return numLevel;
+        }
+    },
+
+    _formatCrossHeader: function (header) {
+        var self = this;
+        BI.each(header, function (i, node) {
+            if (BI.isNull(node.dId)) {
+                return;
+            }
+            node.title = node.text;
+            self._formatDimensionHeaderCell(node);
+        });
+        return header;
     },
 
     _refreshTable: function (op) {
@@ -341,10 +715,10 @@ BI.SummaryTableReact = BI.inherit(BI.Pane, {
             freezeCols: this.model.getFreezeCols(),
             mergeCols: this.model.getMergeCols() || [],
             columnSize: this.model.getColumnSize(),
-            header: this.model.getHeader(),
+            header: this._formatHeader(this.model.getHeader()),
             items: this._formatItems(this.model.getItems()),
-            crossHeader: this.model.getCrossHeader(),
-            crossItems: this._formatItems(this.model.getCrossItems()),
+            crossHeader: this._formatCrossHeader(this.model.getCrossHeader()),
+            crossItems: this._formatCrossItems(this.model.getCrossItems()),
             showSequence: this.model.isShowNumber(),
             styleType: this.model.getTableStyle(),
             color: this.model.getThemeColor(),
