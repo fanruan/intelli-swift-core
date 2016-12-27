@@ -33,7 +33,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
 
     _init: function () {
         BI.OnePackageModel.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var o = this.options;
         this.id = o.id;
         this.gid = o.gid;
     },
@@ -106,13 +106,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         return this.constants.viewType;
     },
 
-    getTableIdByFieldId: function (fieldId) {
-        var field = this.allFields[fieldId];
-        if (BI.isNotNull(field)) {
-            return field.table_id;
-        }
-    },
-
     checkPackageName: function (name) {
         var self = this;
         var packages = Data.SharingPool.get("packages");
@@ -138,17 +131,20 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     },
 
     changeTableInfo: function (id, data) {
-        this.relations = data.relations;
-        this.translations = data.translations;
-        this.allFields = data.all_fields;
-        this.excelViews[id] = data.excel_view;
-        this.updateSettings = data.update_settings;
-        //可能是新添加的
-        if (BI.isNull(this.tablesData[id])) {
-            this.tables.push({id: id});
+        var translations = data.translations,
+            fields = data.fields,
+            table = data.table;
+        var tableIds = BI.Utils.getTablesIdByPackageId4Conf(this.id);
+        if (!tableIds.contains(table.id)) {
+            tableIds.push(table.id);
+            BI.Utils.updateTableIdsInPackage4Conf(this.id, tableIds);
         }
-        this.tablesData[id] = data;
-        this._syncSharedPackages();
+        BI.each(fields, function (i, field) {
+            BI.Utils.updateFields4Conf(field.id, field);
+        });
+        BI.Utils.updateTranslationsByTableId4Conf(id, translations);
+
+        this.tables[table.id] = table;
     },
 
     removeTable: function (tableId, callback) {
@@ -296,38 +292,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
 
         BI.Utils.updateTableIdsInPackage4Conf(this.id, tableIds);
 
-        //添加完之后需要读关联转义信息
-        //读关联的时候去除来自于服务器的
-        // var oTables = {}, nTables = {};
-        // BI.each(oldTables, function (id, t) {
-        //     t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION && (oTables[id] = t);
-        // });
-        // BI.each(newTables, function (id, t) {
-        //     if (!packTIds.contains(t.id) &&
-        //         t.connection_name !== BICst.CONNECTION.SERVER_CONNECTION) {
-        //         nTables[id] = t;
-        //     }
-        // });
-        // var data = {
-        //     oldTables: oTables,
-        //     newTables: nTables
-        // };
         if (BI.size(newTables) > 0) {
-            // var mask = BI.createWidget({
-            //     type: "bi.loading_mask",
-            //     masker: BICst.BODY_ELEMENT,
-            //     text: BI.i18nText("BI-Loading")
-            // });
-            // BI.Utils.getRelationAndTransByTables(data, function (res) {
-            //     var relations = res.relations, translations = res.translations;
-            //     BI.Msg.toast(BI.i18nText("BI-Auto_Read_Relation_Translation_Toast", relations.length, BI.keys(translations.table).length, BI.keys(translations.field).length));
-            //     self._setReadRelations(relations);
-            //     self._setReadTranslations(translations);
-            //     callback();
-            // }, function() {
-            //     mask.destroy();
-            // });
-
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: BICst.BODY_ELEMENT,
