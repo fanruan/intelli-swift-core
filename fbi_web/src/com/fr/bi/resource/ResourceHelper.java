@@ -938,16 +938,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/update/singletable/update.singletable.setting.css",
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
-                //指标弹出明细表
-                "com/fr/bi/web/css/modules/detailtablepopup/module/selectdata/treeitem/item.level0.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/selectdata/treeitem/item.level1.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
-
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
 
@@ -1652,27 +1642,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.model.js",
 
-                //指标弹出明细表
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/abstract.node.level.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treeitem/item.level0.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treeitem/item.level1.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treeitem/item.level2.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level0.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level1.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/selectdata.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/region.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/model.detailtable.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.js",
-
-                "com/fr/bi/web/js/modules/detailtablepopup/module/model/field/model.detailtablepopup.detail.dimension.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/model/model.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/view/field/view.detailtablepopup.detail.dimension.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/view/view.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/detailtablepopup.js",
-
 
                 //业务包选择字段服务
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.js",
@@ -1728,6 +1697,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/aspects/config.js",
 
                 "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
+
+                "com/fr/bi/web/js/modules/summarytablereact/widget.summarytablereact.js",
 
                 //工程配置
                 "com/fr/bi/web/js/config.js"
