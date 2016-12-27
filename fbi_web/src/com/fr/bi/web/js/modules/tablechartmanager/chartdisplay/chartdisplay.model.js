@@ -166,67 +166,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
     },
 
-    _formatDataForRectTree: function (da) {
-        var self = this, o = this.options;
-        var targetIds = this._getShowTarget();
-        var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
-        var drillseriDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.seriesDid]);
-        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
-        if (BI.isNotNull(drillcataDimId)) {
-            cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
-        }
-        var obj = {};
-        obj.data = _formatChidren(da, 0, []);
-        obj.name = BI.Utils.getDimensionNameByID(targetIds[0]);
-        return [obj];
-
-        function _formatChidren(data, currentLayer, parents) {
-            if (BI.has(data, "c")) {
-                var adjustData = [];
-                BI.each(data.c, function (id, item) {
-                    var res = {};
-                    if (BI.isNull(self._assertValue(item.s[0]))) {
-                        return;
-                    }
-                    var value = item.n, x = item.n;
-                    if (BI.isNotNull(cataGroup)) {
-                        x = self._getFormatDateText(cataGroup.type, x);
-                    }
-                    res = {
-                        x: x,
-                        initialX: value,
-                        y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
-                        parents: parents,
-                        dId: self.allDimIds[currentLayer],
-                        targetIds: [targetIds[0]]
-                    };
-                    if (BI.has(item, "c")) {
-                        res.children = _formatChidren(item, currentLayer + 1, BI.concat(parents, [{
-                            x: x,
-                            initialX: value,
-                            y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
-                            parents: parents,
-                            dId: self.allDimIds[currentLayer],
-                            targetIds: [targetIds[0]]
-                        }]));
-                    }
-                    adjustData.push(res);
-                });
-                return adjustData;
-            }
-            if (BI.has(data, "s")) {
-                return BI.map(data.s, function (idx, value) {
-                    return {
-                        x: BI.Utils.getDimensionNameByID(targetIds[0]),
-                        y: (BI.isFinite(value) ? value : 0),
-                        targetIds: [targetIds[idx]]
-                    };
-                });
-            }
-            return [];
-        }
-    },
-
     _formatDataForGISMap: function (data) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
@@ -885,11 +824,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var da = this._formatDataForGISMap(data);
                 return BI.isEmptyArray(da) ? da : [da];
             case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
                 var da = this._formatDataForMultiPie(data);
                 return BI.isEmptyArray(da) ? da : [da];
-            case BICst.WIDGET.RECT_TREE:
-                var da = this._formatDataForRectTree(data);
-                return BI.isEmptyArray(da) ? da : [da];
+
         }
     },
 
