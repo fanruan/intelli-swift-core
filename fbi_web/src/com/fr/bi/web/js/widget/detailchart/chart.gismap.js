@@ -53,6 +53,16 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
             "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
             "attribution": "<a><img src='http://webapi.amap.com/theme/v1.3/mapinfo_05.png'>&copy; 2016 AutoNavi</a>"
         };
+        if (this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)) {
+            config.geo = {};
+            if (this.config.background_layer_info.type === BICst.WMS_SERVER) {
+                config.geo.tileLayer = false;
+                config.geo.wmsUrl = this.config.background_layer_info.url;
+                config.geo.wmsLayer = this.config.background_layer_info.wmsLayer
+            } else {
+                config.geo.tileLayer = this.config.background_layer_info.url;
+            }
+        }
         config.chartType = "pointMap";
         config.plotOptions.icon = {
             iconUrl: BICst.GIS_ICON_PATH,
@@ -120,7 +130,9 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             lnglat: options.lnglat || c.LNG_FIRST,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            show_background_layer: options.show_background_layer || false,
+            background_layer_info: options.background_layer_info
         };
         this.options.items = items;
 
