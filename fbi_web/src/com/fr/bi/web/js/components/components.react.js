@@ -51717,8 +51717,8 @@
 	                regionColumnSize: regionColumnSize
 	            })), function () {
 	                _this2.props.onColumnResizeEnd({
-	                    columnSize: columnSize,
-	                    regionColumnSize: regionColumnSize
+	                    columnSize: _this2.state.columnSize,
+	                    regionColumnSize: _this2.state.regionColumnSize
 	                });
 	            });
 	        }
@@ -51733,8 +51733,8 @@
 	                regionColumnSize: regionColumnSize
 	            })), function () {
 	                _this3.props.onRegionColumnResizeEnd({
-	                    columnSize: columnSize,
-	                    regionColumnSize: regionColumnSize
+	                    columnSize: _this3.state.columnSize,
+	                    regionColumnSize: _this3.state.regionColumnSize
 	                });
 	            });
 	        }
@@ -53258,6 +53258,7 @@
 
 	            return {
 	                columnSize: columnSize,
+	                regionColumnSize: props.regionColumnSize,
 	                minColumnSize: minColumnSize,
 	                freezeCols: freezeCols
 	            };
@@ -53282,7 +53283,6 @@
 	                rowHeight = _props.rowHeight,
 	                isNeedFreeze = _props.isNeedFreeze,
 	                isNeedResize = _props.isNeedResize,
-	                regionColumnSize = _props.regionColumnSize,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
@@ -53299,6 +53299,7 @@
 	                onNext = _props.onNext;
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
+	                regionColumnSize = _state.regionColumnSize,
 	                minColumnSize = _state.minColumnSize,
 	                freezeCols = _state.freezeCols,
 	                scrollTop = _state.scrollTop;
@@ -53377,17 +53378,33 @@
 	        }
 	    }, {
 	        key: '_onColumnResizeEnd',
-	        value: function _onColumnResizeEnd() {
-	            var _props2;
+	        value: function _onColumnResizeEnd(size) {
+	            var _this2 = this;
 
-	            (_props2 = this.props).onColumnResizeEnd.apply(_props2, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this2.props.onColumnResizeEnd({
+	                    columnSize: _this2.state.columnSize,
+	                    regionColumnSize: _this2.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onRegionColumnResizeEnd',
-	        value: function _onRegionColumnResizeEnd() {
-	            var _props3;
+	        value: function _onRegionColumnResizeEnd(size) {
+	            var _this3 = this;
 
-	            (_props3 = this.props).onRegionColumnResizeEnd.apply(_props3, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this3.props.onRegionColumnResizeEnd({
+	                    columnSize: _this3.state.columnSize,
+	                    regionColumnSize: _this3.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onVerticalScroll',
