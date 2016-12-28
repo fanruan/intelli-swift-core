@@ -91,7 +91,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                             return new Map.Entry() {
                                 @Override
                                 public Object getKey() {
-                                    return "";
+                                    return null;
                                 }
 
                                 @Override
