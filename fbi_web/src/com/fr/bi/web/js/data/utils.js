@@ -761,7 +761,8 @@ Data.Utils = {
                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                 "color": "#1a1a1a",
                 "fontSize": "12px"
-            }
+            },
+            null_continue: options.null_continue || false
         };
 
         var maxes = [];
@@ -2543,6 +2544,7 @@ Data.Utils = {
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.style = config.chart_font;
+            configs.plotOptions.connectNulls = config.null_continue;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.enabled = config.show_zoom;
@@ -2620,8 +2622,13 @@ Data.Utils = {
             BI.each(items, function (idx, item) {
                 item.color = [configs.yAxis[idx].labelStyle.color];
                 if (item.type === "line") {
+                    config.chartType = "line";
                     lineItem.push(item);
-                } else {
+                } else if(item.type === "area") {
+                    config.chartType = "area";
+                    otherItem.push(item);
+                }else {
+                    config.chartType = "column";
                     otherItem.push(item);
                 }
             });
