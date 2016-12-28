@@ -59,7 +59,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
         BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("The added table is: " + logTable(table));
         BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
-        refreshTables(userId);
+//        refreshTables(userId);
         try {
             BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
         } catch (Exception e) {
