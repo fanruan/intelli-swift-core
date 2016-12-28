@@ -8,6 +8,7 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.Executor.Executor;
+import com.fr.bi.cal.analyze.cal.Executor.ExecutorPartner;
 import com.fr.bi.cal.analyze.cal.Executor.ILazyExecutorOperation;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedNode;
@@ -40,23 +41,22 @@ import java.util.Set;
  * @author Daniel
  *         分页机制，使用另外一个线程来判断计算当前已经计算了多少结果了 并取数
  */
-public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExecutorOperation<Entry, NewRootNodeChild>, ISingleDimensionGroup {
+public class SingleDimensionGroup extends ExecutorPartner<MergerNode> implements ILazyExecutorOperation<Entry, NewRootNodeChild>, ISingleDimensionGroup {
 
     protected TargetCalculator calculator;
     protected volatile Node root;
 
-    protected DimensionCalculator column;
-    protected transient DimensionCalculator[] pcolumns;
-
     protected transient Object[] data;
 
-    protected transient int ckIndex;
-
-    private ICubeValueEntryGetter getter;
 
     private transient boolean useRealData = true;
 
     private transient int demoGroupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
+
+    private BusinessTable[] metricTables;
+    private DimensionCalculator column;
+    private ICubeValueEntryGetter[] getters;
+    private ICubeDataLoader loader;
 
     /**
      * Group计算的构造函数
@@ -64,21 +64,16 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
      * @param column 维度
      * @param gvi    获取实际过滤条件的对象
      */
-    protected SingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, DimensionCalculator column, Object[] data, int ckIndex, ICubeValueEntryGetter getter, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
-        this.loader = loader;
-        this.tableKey = tableKey;
-        this.pcolumns = pcolumns;
+    protected SingleDimensionGroup(BusinessTable[] metricTabless, DimensionCalculator column, Object[] data, ICubeValueEntryGetter[] getters, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
+        this.metricTables = metricTables;
         this.column = column;
-        this.ckIndex = ckIndex;
-        this.getter = getter;
+        this.getters = getters;
+        this.loader = loader;
         this.data = data;
         this.useRealData = useRealData;
         this.initRoot(gvi);
-        this.lazyExecutor = new Executor();
         this.demoGroupLimit = demoGroupLimit;
-        if (isTurnOnWhenInit()) {
-            turnOnExecutor();
-        }
+        turnOnExecutor();
     }
 
     public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, ICubeValueEntryGetter getter, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
@@ -103,10 +98,6 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return new SortedSingleDimensionGroup(singleDimensionGroup, sortedNode);
     }
 
-    protected boolean isTurnOnWhenInit() {
-        return true;
-    }
-
     @Override
     protected void initRoot(GroupValueIndex gvi) {
         root = new Node(column, null);
@@ -114,44 +105,19 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     public void turnOnExecutor() {
+        this.lazyExecutor = new Executor();
         Iterator iterator = getIterator();
-        if (iterator != null) {
-            this.lazyExecutor.initial(this, iterator);
-        } else {
-            NewDiskBaseRootNodeChild child = new NewDiskBaseRootNodeChild(column, column.createEmptyValue());
-            GroupValueIndex gvi = null;
-            gvi = GVIFactory.createAllEmptyIndexGVI();
-            child.setGroupValueIndex(gvi);
-            addRootChild(child);
-        }
+        this.lazyExecutor.initial(this, iterator);
     }
 
     protected Iterator getIterator() {
-
-        return getNormalIterator();
-
-    }
-
-    private Iterator getNormalIterator() {
-        if (!useRealData) {
-            return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
-        }
-        if (hasSpecialGroup()) {
-            return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
-        }
-        BusinessTable target = getRealTableKey4Calculate();
-        double validPercent = 0.75;
-        int currentRowCount = root.getGroupValueIndex().getRowsCountWithData();
-        if (ckIndex != 0) {
-            return getIterByAllCal();
-        }
-        int wholeRowCount = getLoader().getTableIndex(target.getTableSource()).getRowCount();
-        if (currentRowCount * 1.0 / wholeRowCount > validPercent) {
-            return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
+        if (!useRealData || hasSpecialGroup()) {
+            return column.createValueMapIterator(getRealTableKey4Calculate(), loader, useRealData, demoGroupLimit);
         }
         return getIterByAllCal();
 
     }
+
 
     private boolean hasSpecialGroup() {
         int groupType = column.getGroup().getType();
@@ -192,8 +158,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             CubeTableSource primaryTableSource = column.getDirectToDimensionRelationList().get(0).getPrimaryTable();
             ICubeFieldSource primaryFieldSource = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
             final Set<String> keyValueSet = new LinkedHashSet<String>();
-            final ICubeColumnIndexReader dimensionGetter = getLoader().getTableIndex(column.getField().getTableBelongTo().getTableSource()).loadGroup(column.createKey());
-            ICubeColumnIndexReader primaryTableGetter = getLoader().getTableIndex(primaryTableSource).loadGroup(new IndexKey(primaryFieldSource.getFieldName()), column.getDirectToDimensionRelationList());
+            final ICubeColumnIndexReader dimensionGetter = loader.getTableIndex(column.getField().getTableBelongTo().getTableSource()).loadGroup(column.createKey());
+            ICubeColumnIndexReader primaryTableGetter = loader.getTableIndex(primaryTableSource).loadGroup(new IndexKey(primaryFieldSource.getFieldName()), column.getDirectToDimensionRelationList());
             primaryTableGetter.getGroupIndex(new Object[]{keyValue})[0].Traversal(new SingleRowTraversalAction() {
                 @Override
                 public void actionPerformed(int row) {
@@ -260,7 +226,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     public NoneDimensionGroup getChildDimensionGroup(int row) {
         MemNode node = getMemNodeByWait(row);
         if (isNull(node)) {
-            return NULL;
+            return NoneDimensionGroup.NULL;
         }
         return createDimensionGroup(tableKey, node, getLoader());
     }

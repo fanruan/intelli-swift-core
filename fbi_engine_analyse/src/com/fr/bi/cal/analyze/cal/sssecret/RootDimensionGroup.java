@@ -51,6 +51,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     private int rowSize;
     private TreeIterator iter;
     private ICubeValueEntryGetter[][] getters;
+    private ICubeTableService[] tis;
     private DimensionCalculator[][] rows;
     private ISingleDimensionGroup[] singleDimensionGroupCache;
     private NoneDimensionGroup root;
@@ -85,12 +86,13 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     private void initGetterAndRows() {
         getters = new ICubeValueEntryGetter[rowSize][metricGroupInfoList.size()];
         rows = new DimensionCalculator[rowSize][metricGroupInfoList.size()];
+        tis = new ICubeTableService[metricGroupInfoList.size()];
         for (int i = 0; i < metricGroupInfoList.size(); i++){
             DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
             for (int j = 0; j < rs.length; j++){
-                ICubeTableService ti = session.getLoader().getTableIndex(getSource(rs[j]));
+                tis[i] = session.getLoader().getTableIndex(getSource(rs[j]));
                 rows[j][i] = rs[j];
-                getters[j][i] = ti.getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
+                getters[j][i] = tis[i].getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
             }
         }
     }
@@ -428,21 +430,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         return gvi;
     }
 
-    protected Object[] getParentsValuesByGv(GroupConnectionValue groupConnectionValue, int deep) {
-        ArrayList al = new ArrayList();
-        GroupConnectionValue gv = groupConnectionValue;
-        while (deep-- > 0) {
-            al.add(gv.getData());
-            gv = gv.getParent();
-        }
-        int len = al.size();
-        Object[] obs = new Object[len];
-        for (int i = 0; i < len; i++) {
-            obs[i] = al.get(len - 1 - i);
-        }
-        return obs;
-    }
-
     private GroupValueIndex getCKGvigetter(Object[] values, int deep) {
         DimensionCalculator ck = cks[deep];
         GroupValueIndex gvi = iter.createFilterGvi(ck);
@@ -472,6 +459,21 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             }
         }
         return gvi;
+    }
+
+    protected Object[] getParentsValuesByGv(GroupConnectionValue groupConnectionValue, int deep) {
+        ArrayList al = new ArrayList();
+        GroupConnectionValue gv = groupConnectionValue;
+        while (deep-- > 0) {
+            al.add(gv.getData());
+            gv = gv.getParent();
+        }
+        int len = al.size();
+        Object[] obs = new Object[len];
+        for (int i = 0; i < len; i++) {
+            obs[i] = al.get(len - 1 - i);
+        }
+        return obs;
     }
 
     private ReturnStatus gotoNextChildValue(ISingleDimensionGroup sg, GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list) {
@@ -521,8 +523,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected GroupConnectionValue createGroupConnectionValue(ISingleDimensionGroup sg, int deep, int row, NoneDimensionGroup nds) {
-        GroupConnectionValue ngv = new GroupConnectionValue(cks[deep], sg.getChildData(row), sg.getChildNode(row).getComparator(), nds);
-        ngv.setGroupRow(row);
+        GroupConnectionValue ngv = new GroupConnectionValue(sg.getChildData(row), sg.getChildNode(row).getComparator(), nds);
         return ngv;
     }
 
@@ -638,7 +639,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
         private GroupConnectionValue seek(int[] index) {
             try {
-                GroupConnectionValue gv = new GroupConnectionValue(null, null, null, root);
+                GroupConnectionValue gv = new GroupConnectionValue(null, null, root);
                 IntList list = new IntList();
                 int indexCopy[] = Arrays.copyOf(index, index.length);
                 if (ReturnStatus.GroupEnd == getNext(gv, root, indexCopy, 0, expander, list)) {

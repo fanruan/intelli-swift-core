@@ -1,7 +1,5 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import com.fr.bi.stable.report.result.DimensionCalculator;
-
 import java.util.Comparator;
 
 public class GroupConnectionValue {
@@ -12,45 +10,14 @@ public class GroupConnectionValue {
 
     private Object data;
 
-    private Object key;
-
-    private int groupRow;
-
     private Comparator c;
 
     private NoneDimensionGroup currentValue;
 
-    private DimensionCalculator ck;
-
-
-    public GroupConnectionValue(DimensionCalculator ck, Object data, Comparator c, NoneDimensionGroup currentValue) {
-        this.ck = ck;
+    public GroupConnectionValue(Object data, Comparator c, NoneDimensionGroup currentValue) {
         this.data = data;
         this.c = c;
         this.currentValue = currentValue;
-    }
-
-    public Object getKey() {
-        if (key == null) {
-            setSortKey(data == null ? null : data.toString());
-        }
-        return key;
-    }
-
-    public void setSortKey(Object key) {
-        this.key = key;
-    }
-
-    public int getGroupRow() {
-        return groupRow;
-    }
-
-    public void setGroupRow(int groupRow) {
-        this.groupRow = groupRow;
-    }
-
-    public DimensionCalculator getCk() {
-        return ck;
     }
 
     public Object getData() {
