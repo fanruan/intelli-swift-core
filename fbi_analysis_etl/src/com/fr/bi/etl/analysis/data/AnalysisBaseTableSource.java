@@ -22,10 +22,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.sql.Types;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -43,8 +40,11 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     protected String name;
     protected String widgetTableId;
 
-    public BIWidget getWidget() {
-        return widget;
+    @Override
+    public Set<BIWidget> getWidgets() {
+        Set<BIWidget> widgets=new HashSet<BIWidget>();
+        widgets.add(widget);
+        return widgets;
     }
 
 
