@@ -233,11 +233,12 @@ public class BIDetailWidget extends BIAbstractWidget {
             return;
         }
         BusinessTable newTable = BusinessTableHelper.getBusinessTable(new BITableID(target.getID()));
-        if (null == newTable) {
+        if (null != newTable) {
+            if (!ComparatorUtils.equals(newTable.getTableSource().getSourceID(), target.getTableSource().getSourceID())) {
+                target.setSource(newTable.getTableSource());
+            }
+        } else {
             BILoggerFactory.getLogger(this.getClass()).error("error: the analysisTable " + target.getID().getIdentityValue() + " is absent");
-        }
-        if (!ComparatorUtils.equals(newTable.getTableSource().getSourceID(), target.getTableSource().getSourceID())) {
-            target.setSource(newTable.getTableSource());
         }
     }
 
