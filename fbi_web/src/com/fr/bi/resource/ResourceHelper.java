@@ -1843,6 +1843,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/complextable/widget.complextable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/detailed.setting.trigger.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/angle/angle.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/datalabel.detailed.setting.combo.js",
