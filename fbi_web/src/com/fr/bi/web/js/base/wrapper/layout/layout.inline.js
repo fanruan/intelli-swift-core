@@ -26,12 +26,7 @@ BI.InlineLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options;
-        if (!this.hasWidget(this.getName() + i)) {
-            var w = BI.createWidget(item);
-            this.addWidget(this.getName() + i, w);
-        } else {
-            var w = this.getWidgetByName(this.getName() + i);
-        }
+        var w = BI.InlineLayout.superclass._addElement.apply(this, arguments);
         w.element.css({"position": "relative", display: "inline-block", "*display": "inline", "*zoom": 1});
         if (o.hgap + o.lgap + (item.lgap || 0) > 0) {
             w.element.css({
@@ -60,26 +55,8 @@ BI.InlineLayout = BI.inherit(BI.Layout, {
         this.stroke(this.options.items);
     },
 
-    addItem: function (item) {
-        BI.InlineLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(this.options.items.length, item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
-        return w;
-    },
-
-    stroke: function(items){
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        });
-    },
-
     populate: function (items) {
         BI.InlineLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

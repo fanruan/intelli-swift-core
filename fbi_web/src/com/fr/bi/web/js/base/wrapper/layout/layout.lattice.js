@@ -21,12 +21,7 @@ BI.LatticeLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options;
-        if (!this.hasWidget(this.getName() + i)) {
-            var w = BI.createWidget(item);
-            this.addWidget(this.getName() + i, w);
-        } else {
-            var w = this.getWidgetByName(this.getName() + i);
-        }
+        var w = BI.LatticeLayout.superclass._addElement.apply(this, arguments);
         if (o.columnSize && o.columnSize[i]) {
             var width = o.columnSize[i] / BI.sum(o.columnSize) * 100 + "%";
         } else {
@@ -37,10 +32,7 @@ BI.LatticeLayout = BI.inherit(BI.Layout, {
     },
 
     addItem: function (item) {
-        BI.LatticeLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(this.options.items.length, item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
+        var w = BI.LatticeLayout.superclass.addItem.apply(this, arguments);
         this.resize();
         return w;
     },
@@ -49,18 +41,8 @@ BI.LatticeLayout = BI.inherit(BI.Layout, {
         this.stroke(this.options.items);
     },
 
-    stroke: function (items) {
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        });
-    },
-
     populate: function (items) {
         BI.LatticeLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

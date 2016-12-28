@@ -49888,8 +49888,6 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-
 	            var _props = this.props,
 	                headerRowHeight = _props.headerRowHeight,
 	                rowHeight = _props.rowHeight,
@@ -49926,7 +49924,7 @@
 	                totalRightColumnSize = 0,
 	                totalColumnSize = 0,
 	                summaryColumnSizeArray = [],
-	                totalRowSize = 0;
+	                totalRowSize = items.length * rowHeight;
 	            (0, _core.each)(columnSize, function (size, i) {
 	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
 	                    totalLeftColumnSize += size;
@@ -49940,9 +49938,14 @@
 	                    summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
 	                }
 	            });
-	            (0, _core.each)(items, function (item, i) {
-	                totalRowSize += _this2._bottomLeftRowHeightGetter({ index: i });
-	            });
+	            var tlw = regionSize;
+	            var tlh = regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var trw = width - regionSize;
+	            var trh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var blw = height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize;
+	            var blh = regionSize >= (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
+	            var brw = height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize;
+	            var brh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
 	            if (isNeedFreeze) {
 	                if (freezeCols.length > 0) {
 	                    topLeft = _react2.default.createElement(_Grid2.default, {
@@ -49951,8 +49954,8 @@
 	                        columnWidth: this._topLeftColumnWidthGetter.bind(this),
 	                        columnCount: freezeCols.length,
 	                        rowCount: header.length,
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                        width: regionSize,
+	                        height: tlh,
+	                        width: tlw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -49966,8 +49969,8 @@
 	                        columnWidth: this._bottomLeftColumnWidthGetter.bind(this),
 	                        columnCount: freezeCols.length,
 	                        rowCount: items.length,
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                        width: height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize,
+	                        height: blh,
+	                        width: blw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -49983,8 +49986,8 @@
 	                    columnWidth: this._topRightColumnWidthGetter.bind(this),
 	                    columnCount: columnSize.length - freezeCols.length,
 	                    rowCount: header.length,
-	                    height: width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                    width: width - regionSize,
+	                    height: trh,
+	                    width: trw,
 	                    noContentRender: this._noContentRender.bind(this),
 	                    overscanColumnCount: 0,
 	                    overscanRowCount: 0,
@@ -50000,8 +50003,8 @@
 	                columnWidth: this._bottomRightColumnWidthGetter.bind(this),
 	                columnCount: columnSize.length - this._getFreezeColLength(),
 	                rowCount: items.length,
-	                height: width - regionSize >= totalColumnSize - summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0 ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                width: height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize,
+	                height: brh,
+	                width: brw,
 	                noContentRender: this._noContentRender.bind(this),
 	                overscanColumnCount: 0,
 	                overscanRowCount: 0,
@@ -50130,7 +50133,7 @@
 	    }, {
 	        key: '_topLeftCellRenderer',
 	        value: function _topLeftCellRenderer(_ref) {
-	            var _this3 = this;
+	            var _this2 = this;
 
 	            var columnIndex = _ref.columnIndex,
 	                rowIndex = _ref.rowIndex,
@@ -50146,7 +50149,7 @@
 	                top: top
 	            }, props, {
 	                offsetLeftGetter: function offsetLeftGetter() {
-	                    return left - _this3.state.leftScrollLeft;
+	                    return left - _this2.state.leftScrollLeft;
 	                },
 	                offsetTopGetter: function offsetTopGetter() {
 	                    return top;
@@ -50180,7 +50183,7 @@
 	    }, {
 	        key: '_topRightCellRenderer',
 	        value: function _topRightCellRenderer(_ref5) {
-	            var _this4 = this;
+	            var _this3 = this;
 
 	            var columnIndex = _ref5.columnIndex,
 	                rowIndex = _ref5.rowIndex,
@@ -50196,7 +50199,7 @@
 	                top: top
 	            }, props, {
 	                offsetLeftGetter: function offsetLeftGetter() {
-	                    return left - _this4.state.rightScrollLeft + _this4._getRegionSize();
+	                    return left - _this3.state.rightScrollLeft + _this3._getRegionSize();
 	                },
 	                offsetTopGetter: function offsetTopGetter() {
 	                    return top;
@@ -50253,7 +50256,7 @@
 	    }, {
 	        key: '_bottomLeftOnScroll',
 	        value: function _bottomLeftOnScroll(_ref12) {
-	            var _this5 = this;
+	            var _this4 = this;
 
 	            var scrollLeft = _ref12.scrollLeft,
 	                scrollTop = _ref12.scrollTop;
@@ -50262,7 +50265,7 @@
 	                leftScrollLeft: scrollLeft,
 	                scrollTop: scrollTop
 	            }, function () {
-	                _this5.props.onVerticalScroll(_this5.state.scrollTop);
+	                _this4.props.onVerticalScroll(_this4.state.scrollTop);
 	            });
 	        }
 	    }, {
@@ -50293,7 +50296,7 @@
 	    }, {
 	        key: '_bottomRightOnScroll',
 	        value: function _bottomRightOnScroll(_ref16) {
-	            var _this6 = this;
+	            var _this5 = this;
 
 	            var scrollLeft = _ref16.scrollLeft,
 	                scrollTop = _ref16.scrollTop;
@@ -50302,18 +50305,18 @@
 	                rightScrollLeft: scrollLeft,
 	                scrollTop: scrollTop
 	            }, function () {
-	                _this6.props.onVerticalScroll(_this6.state.scrollTop);
+	                _this5.props.onVerticalScroll(_this5.state.scrollTop);
 	            });
 	        }
 	    }, {
 	        key: '_verticalOnScroll',
 	        value: function _verticalOnScroll(scrollTop) {
-	            var _this7 = this;
+	            var _this6 = this;
 
 	            this.setState({
 	                scrollTop: Math.floor(scrollTop)
 	            }, function () {
-	                _this7.props.onVerticalScroll(_this7.state.scrollTop);
+	                _this6.props.onVerticalScroll(_this6.state.scrollTop);
 	            });
 	        }
 	    }, {
@@ -51633,7 +51636,7 @@
 	                });
 	            }
 	            if (freezeCols.length === 0) {
-	                regionColumnSize[0] = 0;
+	                regionColumnSize = [];
 	            }
 	            if (isNeedFreeze === true && regionColumnSize[0] >= tableWidth) {
 	                regionColumnSize[0] = freezeCols.length > columnSize.length - freezeCols.length ? Math.floor(2 / 3 * tableWidth) : Math.floor(tableWidth / 3);
@@ -51711,7 +51714,7 @@
 	        value: function _onColumnResizeEnd(columnSize) {
 	            var _this2 = this;
 
-	            var regionColumnSize = this.state.regionColumnSize.slice();
+	            var regionColumnSize = this.state.regionColumnSize;
 	            this.setState(this._digestColumnSize(_extends({}, this.props, {
 	                columnSize: columnSize,
 	                regionColumnSize: regionColumnSize
@@ -51727,7 +51730,7 @@
 	        value: function _onRegionColumnResizeEnd(regionColumnSize) {
 	            var _this3 = this;
 
-	            var columnSize = this.state.columnSize.slice();
+	            var columnSize = this.state.columnSize;
 	            this.setState(this._digestColumnSize(_extends({}, this.props, {
 	                columnSize: columnSize,
 	                regionColumnSize: regionColumnSize
@@ -52030,7 +52033,7 @@
 	                totalRightColumnSize = 0,
 	                totalColumnSize = 0,
 	                summaryColumnSizeArray = [],
-	                totalRowSize = 0;
+	                totalRowSize = items.length * rowHeight;
 	            (0, _core.each)(columnSize, function (size, i) {
 	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
 	                    totalLeftColumnSize += size;
@@ -52044,9 +52047,14 @@
 	                    summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
 	                }
 	            });
-	            (0, _core.each)(items, function (item, i) {
-	                totalRowSize += rowHeight;
-	            });
+	            var tlw = regionSize;
+	            var tlh = regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var trw = width - regionSize;
+	            var trh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var blw = height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize;
+	            var blh = regionSize >= (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
+	            var brw = height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize;
+	            var brh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
 	            if (isNeedFreeze) {
 	                if (freezeCols.length > 0) {
 	                    topLeft = _react2.default.createElement(_Collection2.default, {
@@ -52054,8 +52062,8 @@
 	                        cellCount: this.state.topLeftItems.length,
 	                        cellRenderer: this._topLeftCellRenderer.bind(this),
 	                        cellSizeAndPositionGetter: this._topLeftCellSizeAndPositionGetter.bind(this),
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                        width: regionSize,
+	                        height: tlh,
+	                        width: tlw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -52068,8 +52076,8 @@
 	                        cellCount: this.state.bottomLeftItems.length,
 	                        cellRenderer: this._bottomLeftCellRenderer.bind(this),
 	                        cellSizeAndPositionGetter: this._bottomLeftCellSizeAndPositionGetter.bind(this),
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                        width: height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize,
+	                        height: blh,
+	                        width: blw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -52084,8 +52092,8 @@
 	                    cellCount: this.state.topRightItems.length,
 	                    cellRenderer: this._topRightCellRenderer.bind(this),
 	                    cellSizeAndPositionGetter: this._topRightCellSizeAndPositionGetter.bind(this),
-	                    height: width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                    width: width - regionSize,
+	                    height: trh,
+	                    width: trw,
 	                    noContentRender: this._noContentRender.bind(this),
 	                    overscanColumnCount: 0,
 	                    overscanRowCount: 0,
@@ -52100,8 +52108,8 @@
 	                cellCount: this.state.bottomRightItems.length,
 	                cellRenderer: this._bottomRightCellRenderer.bind(this),
 	                cellSizeAndPositionGetter: this._bottomRightCellSizeAndPositionGetter.bind(this),
-	                height: width - regionSize >= totalColumnSize - summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0 ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                width: height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize,
+	                height: brh,
+	                width: brw,
 	                noContentRender: this._noContentRender.bind(this),
 	                overscanColumnCount: 0,
 	                overscanRowCount: 0,
@@ -52634,7 +52642,7 @@
 	                            var isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
 	                            if (isNeedMergeCol === true) {
 	                                mergeCol(i, j);
-	                                preCol[j] = preRow[j - 1];
+	                                preCol[j] = preRow[i];
 	                            } else {
 	                                createOneEl(i, j);
 	                            }
@@ -52642,7 +52650,7 @@
 	                            var _isNeedMergeRow = mergeRule(cache[i][j], cache[i - 1][j]);
 	                            var _isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
 	                            if (_isNeedMergeCol && _isNeedMergeRow) {
-	                                mergeRow(i, j); //优先合并列
+	                                continue;
 	                            } else if (_isNeedMergeCol) {
 	                                mergeCol(i, j);
 	                            } else if (_isNeedMergeRow) {
@@ -52724,7 +52732,7 @@
 	                totalRightColumnSize = 0,
 	                totalColumnSize = 0,
 	                summaryColumnSizeArray = [],
-	                totalRowSize = 0;
+	                totalRowSize = items.length * rowHeight;
 	            (0, _core.each)(columnSize, function (size, i) {
 	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
 	                    totalLeftColumnSize += size;
@@ -52738,9 +52746,14 @@
 	                    summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
 	                }
 	            });
-	            (0, _core.each)(items, function (item, i) {
-	                totalRowSize += rowHeight;
-	            });
+	            var tlw = regionSize;
+	            var tlh = regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var trw = width - regionSize;
+	            var trh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var blw = height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize;
+	            var blh = regionSize >= (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
+	            var brw = height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize;
+	            var brh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
 	            if (isNeedFreeze) {
 	                if (freezeCols.length > 0) {
 	                    topLeft = _react2.default.createElement(_Collection2.default, {
@@ -52748,8 +52761,8 @@
 	                        cellCount: this.state.topLeftItems.length,
 	                        cellRenderer: this._topLeftCellRenderer.bind(this),
 	                        cellSizeAndPositionGetter: this._topLeftCellSizeAndPositionGetter.bind(this),
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                        width: regionSize,
+	                        height: tlh,
+	                        width: tlw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -52763,8 +52776,8 @@
 	                        columnWidth: this._bottomLeftColumnWidthGetter.bind(this),
 	                        columnCount: freezeCols.length,
 	                        rowCount: items.length,
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                        width: height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize,
+	                        height: blh,
+	                        width: blw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -52779,8 +52792,8 @@
 	                    cellCount: this.state.topRightItems.length,
 	                    cellRenderer: this._topRightCellRenderer.bind(this),
 	                    cellSizeAndPositionGetter: this._topRightCellSizeAndPositionGetter.bind(this),
-	                    height: width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                    width: width - regionSize,
+	                    height: trh,
+	                    width: trw,
 	                    noContentRender: this._noContentRender.bind(this),
 	                    overscanColumnCount: 0,
 	                    overscanRowCount: 0,
@@ -52796,8 +52809,8 @@
 	                columnWidth: this._bottomRightColumnWidthGetter.bind(this),
 	                columnCount: columnSize.length - this._getFreezeColLength(),
 	                rowCount: items.length,
-	                height: width - regionSize >= totalColumnSize - summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0 ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                width: height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize,
+	                height: brh,
+	                width: brw,
 	                noContentRender: this._noContentRender.bind(this),
 	                overscanColumnCount: 0,
 	                overscanRowCount: 0,
@@ -54405,6 +54418,7 @@
 
 	            var freezeCols = props.freezeCols;
 	            var columnSize = props.columnSize.slice();
+	            var regionColumnSize = props.regionColumnSize.slice();
 	            if (columnSize.length > minColumnSize.length) {
 	                columnSize = columnSize.splice(columnSize.length - minColumnSize.length);
 	            }
@@ -54419,6 +54433,7 @@
 	                hDeep: itemsHelper.getHDeep(),
 	                vDeep: itemsHelper.getVDeep(),
 	                columnSize: columnSize,
+	                regionColumnSize: regionColumnSize,
 	                minColumnSize: minColumnSize,
 	                header: header,
 	                items: items,
@@ -54446,7 +54461,6 @@
 	                isNeedFreeze = _props.isNeedFreeze,
 	                isNeedResize = _props.isNeedResize,
 	                mergeCols = _props.mergeCols,
-	                regionColumnSize = _props.regionColumnSize,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
@@ -54464,6 +54478,7 @@
 	                onHNext = _props.onHNext;
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
+	                regionColumnSize = _state.regionColumnSize,
 	                minColumnSize = _state.minColumnSize,
 	                header = _state.header,
 	                items = _state.items,
@@ -54564,17 +54579,33 @@
 	        }
 	    }, {
 	        key: '_onColumnResizeEnd',
-	        value: function _onColumnResizeEnd() {
-	            var _props2;
+	        value: function _onColumnResizeEnd(size) {
+	            var _this2 = this;
 
-	            (_props2 = this.props).onColumnResizeEnd.apply(_props2, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this2.props.onColumnResizeEnd({
+	                    columnSize: _this2.state.columnSize,
+	                    regionColumnSize: _this2.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onRegionColumnResizeEnd',
-	        value: function _onRegionColumnResizeEnd() {
-	            var _props3;
+	        value: function _onRegionColumnResizeEnd(size) {
+	            var _this3 = this;
 
-	            (_props3 = this.props).onRegionColumnResizeEnd.apply(_props3, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this3.props.onRegionColumnResizeEnd({
+	                    columnSize: _this3.state.columnSize,
+	                    regionColumnSize: _this3.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onVerticalScroll',
@@ -55716,7 +55747,7 @@
 	        value: function getWidthsByOneCol(col) {
 	            var widths = [];
 	            (0, _core.each)(col, function (item) {
-	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.needExpand ? 25 : 0) + (item.iconClass ? 25 : 0) + (item.list ? 25 : 0) + (item.drillList ? 25 : 0));
+	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.needExpand ? 25 : 0) + (item.iconClass ? 25 : 0) + (item.list ? 25 : 0));
 	            });
 	            return widths;
 	        }
@@ -56577,7 +56608,7 @@
 	            var result = [];
 	            var index = this.intervalTree.greatestLowerBound(scrollTop);
 	            var offsetTop = -(scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0));
-	            var height = 0;
+	            var height = offsetTop;
 	            while (height < this.height && index < this.numbers.length) {
 	                result.push({
 	                    key: this.numbers[index].key,
@@ -56667,13 +56698,21 @@
 
 	__webpack_require__(615);
 
-	var _LevelTableCellComponent = __webpack_require__(617);
+	var _SummaryTableCellComponent = __webpack_require__(605);
 
-	var _LevelTableCellComponent2 = _interopRequireDefault(_LevelTableCellComponent);
+	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
+
+	var _LevelTableDimensionCellComponent = __webpack_require__(617);
+
+	var _LevelTableDimensionCellComponent2 = _interopRequireDefault(_LevelTableDimensionCellComponent);
 
 	var _SummaryTableHeaderCellComponent = __webpack_require__(607);
 
 	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
+
+	var _SummaryTableCrossCellComponent = __webpack_require__(608);
+
+	var _SummaryTableCrossCellComponent2 = _interopRequireDefault(_SummaryTableCrossCellComponent);
 
 	var _LevelTableComponentWidthHelper = __webpack_require__(618);
 
@@ -56702,8 +56741,10 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 	var MERGE_RULE = function MERGE_RULE(col1, col2) {
+	    if (col1.tag && col2.tag) {
+	        return col1.tag === col2.tag;
+	    }
 	    return col1 === col2;
-	    // return isEqual(col1.text, col2.text);
 	};
 
 	var LevelTableComponent = function (_Component) {
@@ -56733,6 +56774,7 @@
 
 	            var freezeCols = props.freezeCols;
 	            var columnSize = props.columnSize.slice();
+	            var regionColumnSize = props.regionColumnSize.slice();
 	            if (columnSize.length > minColumnSize.length) {
 	                columnSize = columnSize.splice(columnSize.length - minColumnSize.length);
 	            }
@@ -56747,7 +56789,10 @@
 	            }
 
 	            return {
+	                hDeep: itemsHelper.getHDeep(),
+	                vDeep: itemsHelper.getVDeep(),
 	                columnSize: columnSize,
+	                regionColumnSize: regionColumnSize,
 	                minColumnSize: minColumnSize,
 	                header: header,
 	                items: items,
@@ -56775,7 +56820,6 @@
 	                isNeedFreeze = _props.isNeedFreeze,
 	                isNeedResize = _props.isNeedResize,
 	                mergeCols = _props.mergeCols,
-	                regionColumnSize = _props.regionColumnSize,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
@@ -56793,6 +56837,7 @@
 	                onHNext = _props.onHNext;
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
+	                regionColumnSize = _state.regionColumnSize,
 	                minColumnSize = _state.minColumnSize,
 	                header = _state.header,
 	                items = _state.items,
@@ -56866,7 +56911,11 @@
 	                width = _ref.width,
 	                height = _ref.height;
 
-	            return _react2.default.createElement(_SummaryTableHeaderCellComponent2.default, { item: item, columnIndex: columnIndex, rowIndex: rowIndex, width: width,
+	            var Component = _SummaryTableHeaderCellComponent2.default;
+	            if (!(this.props.header.length > 0 && rowIndex === this.state.vDeep || columnIndex < this.state.hDeep)) {
+	                Component = _SummaryTableCrossCellComponent2.default;
+	            }
+	            return _react2.default.createElement(Component, { item: item, columnIndex: columnIndex, rowIndex: rowIndex, width: width,
 	                height: height, styleType: this.props.styleType,
 	                color: this.props.color });
 	        }
@@ -56878,24 +56927,44 @@
 	                width = _ref2.width,
 	                height = _ref2.height;
 
-	            return _react2.default.createElement(_LevelTableCellComponent2.default, { item: item, style: { backgroundColor: '' }, columnIndex: columnIndex,
+	            var Component = _SummaryTableCellComponent2.default;
+	            if (columnIndex < this.state.hDeep) {
+	                Component = _LevelTableDimensionCellComponent2.default;
+	            }
+	            return _react2.default.createElement(Component, { item: item, columnIndex: columnIndex,
 	                rowIndex: rowIndex, width: width,
 	                height: height, styleType: this.props.styleType,
 	                color: this.props.color });
 	        }
 	    }, {
 	        key: '_onColumnResizeEnd',
-	        value: function _onColumnResizeEnd() {
-	            var _props2;
+	        value: function _onColumnResizeEnd(size) {
+	            var _this2 = this;
 
-	            (_props2 = this.props).onColumnResizeEnd.apply(_props2, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this2.props.onColumnResizeEnd({
+	                    columnSize: _this2.state.columnSize,
+	                    regionColumnSize: _this2.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onRegionColumnResizeEnd',
-	        value: function _onRegionColumnResizeEnd() {
-	            var _props3;
+	        value: function _onRegionColumnResizeEnd(size) {
+	            var _this3 = this;
 
-	            (_props3 = this.props).onRegionColumnResizeEnd.apply(_props3, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this3.props.onRegionColumnResizeEnd({
+	                    columnSize: _this3.state.columnSize,
+	                    regionColumnSize: _this3.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onVerticalScroll',
@@ -57000,11 +57069,17 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactDom = __webpack_require__(40);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
 	var _core = __webpack_require__(194);
+
+	var _constants = __webpack_require__(543);
 
 	var _layout = __webpack_require__(186);
 
@@ -57033,33 +57108,42 @@
 	var LIGHT_FONT_COLOR = '#ffffff';
 
 	var colorMap = {};
+
+	var getAdaptColor = function getAdaptColor(color) {
+	    return _core.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	};
 	var getColor = function getColor(color) {
 	    if (colorMap[color]) {
 	        return colorMap[color];
 	    }
 	    var oddColor = parseHEXAlpha2HEX(color, 0.2);
 	    var evenColor = parseHEXAlpha2HEX(color, 0.05);
+	    var summaryColor = parseHEXAlpha2HEX(color, 0.4);
 	    colorMap[color] = {
 	        oddColor: oddColor,
 	        evenColor: evenColor,
-	        oddFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(oddColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR,
-	        evenFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(evenColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR
+	        summaryColor: summaryColor,
+	        oddFontColor: getAdaptColor(_core.colorUtils.rgb2hex(oddColor)),
+	        evenFontColor: getAdaptColor(_core.colorUtils.rgb2hex(evenColor)),
+	        summaryFontColor: getAdaptColor(_core.colorUtils.rgb2hex(summaryColor))
 	    };
 	    return colorMap[color];
 	};
 
-	var LevelTableCell = function (_Component) {
-	    _inherits(LevelTableCell, _Component);
+	var SummaryTableDimensionCellComponent = function (_Component) {
+	    _inherits(SummaryTableDimensionCellComponent, _Component);
 
-	    function LevelTableCell(props, context) {
-	        _classCallCheck(this, LevelTableCell);
+	    function SummaryTableDimensionCellComponent(props, context) {
+	        _classCallCheck(this, SummaryTableDimensionCellComponent);
 
-	        return _possibleConstructorReturn(this, (LevelTableCell.__proto__ || Object.getPrototypeOf(LevelTableCell)).call(this, props, context));
+	        return _possibleConstructorReturn(this, (SummaryTableDimensionCellComponent.__proto__ || Object.getPrototypeOf(SummaryTableDimensionCellComponent)).call(this, props, context));
 	    }
 
-	    _createClass(LevelTableCell, [{
+	    _createClass(SummaryTableDimensionCellComponent, [{
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var _props = this.props,
 	                item = _props.item,
 	                width = _props.width,
@@ -57073,14 +57157,18 @@
 	            var oddColor = void 0,
 	                evenColor = void 0,
 	                oddFontColor = void 0,
-	                evenFontColor = void 0;
+	                evenFontColor = void 0,
+	                summaryColor = void 0,
+	                summaryFontColor = void 0;
 	            switch (styleType) {
 	                case 1:
 	                    var m = getColor(color);
 	                    oddColor = m.oddColor;
 	                    evenColor = m.evenColor;
+	                    summaryColor = item.isLast ? color : m.summaryColor;
 	                    oddFontColor = m.oddFontColor;
 	                    evenFontColor = m.evenFontColor;
+	                    summaryFontColor = item.isLast ? getAdaptColor(color) : m.summaryFontColor;
 	                    break;
 	                case 2:
 	                    break;
@@ -57089,9 +57177,32 @@
 	                default:
 	                    break;
 	            }
+	            var box = 'mean';
+	            //两个图标
+	            if (item.needExpand && item.iconClass) {
+	                box = 'justify';
+	            } else if (item.needExpand) {
+	                box = 'first';
+	            } else if (item.iconClass) {
+	                box = 'last';
+	            }
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                _extends({ box: item.iconClass ? 'last' : 'mean' }, props, {
+	                _extends({ box: box, cross: 'center' }, props, {
+	                    onMouseEnter: function onMouseEnter() {
+	                        if (_this2.icon) {
+	                            try {
+	                                _reactDom2.default.findDOMNode(_this2.icon).style.visibility = 'visible';
+	                            } catch (e) {}
+	                        }
+	                    },
+	                    onMouseLeave: function onMouseLeave() {
+	                        if (_this2.icon) {
+	                            try {
+	                                _reactDom2.default.findDOMNode(_this2.icon).style.visibility = 'hidden';
+	                            } catch (e) {}
+	                        }
+	                    },
 	                    style: _extends({}, (0, _core.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
@@ -57101,17 +57212,26 @@
 	                        height: height,
 	                        borderRight: '1px solid #eaeaea',
 	                        borderBottom: '1px solid #eaeaea',
-	                        paddingLeft: (item.layer || 0) * 10
+	                        paddingLeft: (item.layer || 0) * 30
 	                    })], [{
-	                        backgroundColor: rowIndex % 2 === 0 ? oddColor : evenColor
-	                    }, (0, _core.isNotNil)(oddColor)], [{
-	                        color: rowIndex % 2 === 0 ? oddFontColor : evenFontColor
-	                    }, (0, _core.isNotNil)(oddFontColor)])) }),
+	                        fontWeight: 'bold'
+	                    }, item.isSum === true], [{
+	                        backgroundColor: item.isSum ? summaryColor : rowIndex % 2 === 0 ? oddColor : evenColor
+	                    }, item.isSum ? (0, _core.isNotNil)(summaryColor) : (0, _core.isNotNil)(oddColor)], [{
+	                        color: item.isSum ? summaryFontColor : rowIndex % 2 === 0 ? oddFontColor : evenFontColor
+	                    }, item.isSum ? (0, _core.isNotNil)(summaryFontColor) : (0, _core.isNotNil)(oddFontColor)])) }),
+	                item.needExpand ? _react2.default.createElement(
+	                    _base.Button,
+	                    { style: { width: 25, height: 25 },
+	                        className: item.isExpanded ? 'tree-expand-icon-type1' : 'tree-collapse-icon-type1',
+	                        onClick: item.expandCallback },
+	                    _react2.default.createElement(_base.Icon, { width: 25, height: 25 })
+	                ) : null,
 	                _react2.default.createElement(
 	                    _base.Title,
-	                    { cross: 'center', title: item.title, style: _extends({}, item.style, {
-	                            paddingLeft: 10,
-	                            paddingRight: 10
+	                    { main: 'left', cross: 'center', title: item.title, style: _extends({}, item.style, {
+	                            paddingLeft: 5,
+	                            paddingRight: 5
 	                        }) },
 	                    _react2.default.createElement(
 	                        _base.Label,
@@ -57122,20 +57242,29 @@
 	                    )
 	                ),
 	                item.iconClass ? _react2.default.createElement(
-	                    _layout.CenterLayout,
-	                    { style: { width: 25 }, className: item.iconClass },
-	                    _react2.default.createElement(_base.Icon, null)
+	                    _base.Title,
+	                    { style: { width: 25, height: 25 }, title: '\u70B9\u51FB\u4E0A\u4E0B\u94BB' },
+	                    _react2.default.createElement(
+	                        _base.Button,
+	                        { cross: 'center', ref: function ref(_ref) {
+	                                return _this2.icon = _ref;
+	                            },
+	                            style: { width: 25, height: 25, visibility: 'hidden' },
+	                            className: item.iconClass,
+	                            onClick: item.drillCallback },
+	                        _react2.default.createElement(_base.Icon, null)
+	                    )
 	                ) : null
 	            );
 	        }
 	    }]);
 
-	    return LevelTableCell;
+	    return SummaryTableDimensionCellComponent;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(LevelTableCell, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableDimensionCellComponent, _core.ReactComponentWithPureRenderMixin);
 
-	exports.default = LevelTableCell;
+	exports.default = SummaryTableDimensionCellComponent;
 
 /***/ },
 /* 618 */
@@ -57221,7 +57350,7 @@
 	        value: function getWidthsByOneCol(col) {
 	            var widths = [];
 	            (0, _core.each)(col, function (item) {
-	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.layer || 0) * 10);
+	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.layer || 0) * 30 + (item.needExpand ? 25 : 0) + (item.iconClass ? 25 : 0) + (item.list ? 25 : 0));
 	            });
 	            return widths;
 	        }
@@ -57314,7 +57443,7 @@
 	            track(c, 0);
 	        });
 	        if ((0, _core.isArray)(node.values)) {
-	            var next = [{ text: '汇总' }].concat(node.values);
+	            var next = [{ text: '汇总', isSum: true, isLast: true }].concat(node.values);
 	            result.push(next);
 	        }
 	    });
@@ -57366,6 +57495,8 @@
 	        this.isNeedFreeze = props.isNeedFreeze;
 	        this.freezeCols = props.freezeCols;
 	        this.mergeCols = props.mergeCols;
+	        this.hDeep = this._getHDeep();
+	        this.vDeep = this._getVDeep();
 	    }
 
 	    _createClass(LevelTableComponentItemsHelper, [{
@@ -57379,11 +57510,22 @@
 	            return Math.max(this.mergeCols.length, this.freezeCols.length, maxDeep(this.items) - 1);
 	        }
 	    }, {
+	        key: 'getVDeep',
+	        value: function getVDeep() {
+	            return this.vDeep;
+	        }
+	    }, {
+	        key: 'getHDeep',
+	        value: function getHDeep() {
+	            if (this.isNeedFreeze === true && this.freezeCols.length > 0) {
+	                return 1;
+	            }
+	            return this.hDeep;
+	        }
+	    }, {
 	        key: 'getFormatted',
 	        value: function getFormatted() {
-	            var hDeep = this._getHDeep();
-	            var vDeep = this._getVDeep();
-	            var header = formatHeader(this.header, this.crossHeader, this.crossItems, hDeep, vDeep);
+	            var header = formatHeader(this.header, this.crossHeader, this.crossItems, this.hDeep, this.vDeep);
 	            return formatItems(this.items, header, this.crossItems);
 	        }
 	    }]);
@@ -57425,9 +57567,9 @@
 
 	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
 
-	var _LevelTableCellComponent = __webpack_require__(617);
+	var _SummaryTableCellComponent = __webpack_require__(605);
 
-	var _LevelTableCellComponent2 = _interopRequireDefault(_LevelTableCellComponent);
+	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
 
 	var _LevelTableSequenceComponentHelper = __webpack_require__(621);
 
@@ -57515,7 +57657,7 @@
 	            (0, _core.each)(numbers, function (number) {
 	                var style = {};
 	                (0, _core.translateDOMPositionXY)(style, 0, number.offsetTop);
-	                result.push(_react2.default.createElement(_LevelTableCellComponent2.default, {
+	                result.push(_react2.default.createElement(_SummaryTableCellComponent2.default, {
 	                    abs: true,
 	                    key: number.key,
 	                    styleType: styleType,
@@ -57523,7 +57665,7 @@
 	                    style: style,
 	                    width: LevelTableSequenceComponent.WIDTH,
 	                    height: number.height,
-	                    item: { text: number.text },
+	                    item: number,
 	                    rowIndex: number.rowIndex,
 	                    columnIndex: 0
 	                }));
@@ -57628,6 +57770,8 @@
 	                    if ((0, _core.isNotEmptyArray)(node.values)) {
 	                        result.push({
 	                            text: '汇总',
+	                            isSum: true,
+	                            isLast: true,
 	                            key: start,
 	                            rowIndex: start,
 	                            height: _this2.rowHeight
