@@ -126,7 +126,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         if (isStart) {
             this._showBar();
             this.processBar.setValue(1);
-            BI.delay(function () {
+            BI.delay(function() {
                 self._showBar();
                 self.processBar.setValue(10);
             }, 1000);
@@ -134,7 +134,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         if (BI.isNull(this.interval)) {
             this.interval = setInterval(function () {
                 self.refreshLog();
-            }, 5000)
+            }, 2000);
             return;
         }
         BI.Utils.getCubeLog(function (data) {
@@ -148,29 +148,27 @@ BI.CubeLog = BI.inherit(BI.Widget, {
     },
 
     _refreshProcess: function (data) {
-        if (BI.isNull(data.allTableInfo) && BI.isNull(data.allRelationInfo)) {
-            return;
-        }
-        var allFields = 0, generated = 0;
-        if (BI.isNotNull(data.allTableInfo)) {
+        var self = this;
+        if (BI.isNotNull(data.allRelationInfo)) {
+            var allFields = 0, generated = 0;
             BI.each(data.allTableInfo, function (tName, size) {
                 allFields += size;
             });
-        }
-        if (BI.isNotNull(data.allRelationInfo)) {
-            allFields += data.allRelationInfo.length;
-        }
-        generated += data.connections.length;
-        BI.each(data.tables, function (i, table) {
-            generated += table.column.length;
-        });
-        var process = 1;
-        if (BI.isNull(data.cube_end)) {
-            if (allFields === 0) {
-                return;
+            generated += data.connections.length;
+            BI.each(data.tables, function (i, table) {
+                generated += table.column.length;
+            });
+            var process = 1;
+            if (BI.isNull(data.cube_end)) {
+                if (allFields === 0) {
+                    return;
+                }
+                process = generated / allFields;
+                process = process > 0.9 ? 0.9 : process;
             }
-            process = generated / allFields;
-            process = process > 0.9 ? 0.9 : process;
+            process = Math.ceil(process * 100);
+            process = process < 10 ? 10 : process;
+            this.processBar.setValue(process);
             if (process < 100) {
                 this._showBar();
             } else {
@@ -179,9 +177,6 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 }, 1000);
             }
         }
-        process = Math.ceil(process * 100);
-        process = process < 10 ? 10 : process;
-        this.processBar.setValue(process);
     },
 
     _formatSecond: function (time) {

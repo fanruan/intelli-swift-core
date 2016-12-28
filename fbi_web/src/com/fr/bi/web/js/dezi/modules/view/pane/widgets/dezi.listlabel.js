@@ -19,11 +19,6 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
-
-        //全局样式
-        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
-            self._refreshGlobalStyle(globalStyle);
-        });
     },
 
 
@@ -111,22 +106,6 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
         } else {
             this.title.setValue(BI.Utils.getWidgetNameByID(this.model.get("id")));
         }
-    },
-
-    _refreshGlobalStyle: function (globalStyle) {
-        var titleFont = BI.isNotNull(globalStyle) ?
-            globalStyle.titleFont : BI.Utils.getGSTitleFont();
-        if (BI.isNotNull(titleFont)) {
-            this._refreshTitlePosition();
-        }
-    },
-
-    _refreshTitlePosition: function () {
-        var pos = BI.Utils.getGSNamePos();
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-            "dashboard-title-center" : "dashboard-title-left";
-        this.title.element.removeClass("dashboard-title-left")
-            .removeClass("dashboard-title-center").addClass(cls);
     },
 
     _createTools: function () {
@@ -260,8 +239,6 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
-        this._refreshTitlePosition();
-        this._refreshGlobalStyle();
         this.listLabel.populate();
     }
 });

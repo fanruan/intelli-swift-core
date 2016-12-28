@@ -14,7 +14,9 @@ BI.CalculateTargetRankGroupPane = BI.inherit(BI.CalculateTargetAbstractGroupPane
     _refreshLabel: function () {
         var self = this, o = this.options;
         this.logicPane.empty();
-        BI.each(o.model.getDimDimensionIDs(), function (i, dId) {
+        var dimDimensionIDs = BI.concat(o.model.getSeriesDimensionIDs(), o.model.getCatagoryDimensionIDs());
+        var lastDimensionID = dimDimensionIDs.pop();
+        BI.each(dimDimensionIDs, function (i, dId) {
             var dimensionName = BI.Utils.getDimensionNameByID(dId);
             var label = BI.createWidget({
                 type: "bi.label",
@@ -24,6 +26,13 @@ BI.CalculateTargetRankGroupPane = BI.inherit(BI.CalculateTargetAbstractGroupPane
             label.setValue(BI.i18nText("BI-Calculate_Target_Include_In_Same", dimensionName));
             self.logicPane.addItem(label);
         });
+        var lastDimLabel = BI.createWidget({
+            type: "bi.label",
+            textAlign: "left",
+            textHeight: 30
+        });
+        lastDimLabel.setValue(BI.i18nText("BI-Calculate_Target_Sum", BI.Utils.getDimensionNameByID(lastDimensionID) || ""));
+        this.logicPane.addItem(lastDimLabel);
         var lastLabel = BI.createWidget({
             type: "bi.label",
             textAlign: "left",

@@ -100,14 +100,6 @@ BIShow.DatePaneView = BI.inherit(BI.View, {
         }
     },
 
-    _refreshTitlePosition: function () {
-        var pos = BI.Utils.getGSNamePos();
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-            "dashboard-title-center" : "dashboard-title-left";
-        this.title.element.removeClass("dashboard-title-left")
-            .removeClass("dashboard-title-center").addClass(cls);
-    },
-
     _createTools: function () {
         var self = this;
         this.tools = BI.createWidget({
@@ -193,6 +185,5 @@ BIShow.DatePaneView = BI.inherit(BI.View, {
         this._refreshLayout();
         this._buildWidgetTitle();
         this.datePane.setValue(this.model.get("value"));
-        this._refreshTitlePosition();
     }
 });

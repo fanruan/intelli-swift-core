@@ -80,4 +80,7 @@ public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService {
     boolean showColumnTotal();
 
     void refreshColumns();
+
+    void refreshSources();
+
 }

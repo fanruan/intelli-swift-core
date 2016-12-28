@@ -95,12 +95,23 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         return {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)};
     },
 
-    _formatDate: function (d) {
-        if (BI.isNull(d) || !BI.isNumeric(d)) {
-            return d || "";
+    _getFormatDateText: function(type, text){
+        switch (type) {
+            case BICst.GROUP.S:
+                text = BICst.FULL_QUARTER_NAMES[text - 1];
+                break;
+            case BICst.GROUP.M:
+                text = BICst.FULL_MONTH_NAMES[text];
+                break;
+            case BICst.GROUP.W:
+                text = BICst.FULL_WEEK_NAMES[text - 1];
+                break;
+            case BICst.GROUP.YMD:
+                var date = new Date(BI.parseInt(text));
+                text = date.print("%Y-%X-%d");
+                break;
         }
-        var date = new Date(BI.parseInt(d));
-        return date.print("%Y-%X-%d")
+        return text;
     },
 
     _getShowValue: function(v){
@@ -140,11 +151,10 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
 
     _formatValue: function(v){
         var o = this.options;
-        if (BI.Utils.getFieldTypeByDimensionID(o.dId) === BICst.COLUMN.DATE &&
-            BI.Utils.getDimensionGroupByID(o.dId).type === BICst.GROUP.YMD) {
-            return this._formatDate(v);
+        if (BI.isNull(v) || !BI.isNumeric(v)) {
+            return v || "";
         }
-        return v;
+        return this._getFormatDateText(BI.Utils.getDimensionGroupByID(o.dId).type, v);
     },
 
     setDrillDownEnabled: function(b){
