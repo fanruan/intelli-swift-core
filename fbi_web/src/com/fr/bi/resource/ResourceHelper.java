@@ -693,12 +693,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/cordon/pane/pane.cordon.js",
                 "com/fr/bi/web/js/modules/cordon/popup.cordon.js",
 
-                "com/fr/bi/web/js/fragments/multirelation/expander.multirelation.js",
-                "com/fr/bi/web/js/fragments/multirelation/multirelation.js",
-                "com/fr/bi/web/js/fragments/multirelation/item.multirelation.js",
-                "com/fr/bi/web/js/fragments/multirelation/item.tablefield.multirelation.js",
-                "com/fr/bi/web/js/fragments/multirelation/view.searcher.multirelation.js",
-
                 //下拉树控件字段关联设置
                 "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/fieldrelationsettingwithpreviewpopup.js",
                 "com/fr/bi/web/js/modules/fieldrelationsettingwithpreview/model.fieldrelationsettingwithpreviewpopup.js",
@@ -853,8 +847,6 @@ public class ResourceHelper {
 
                 //查看真实数据
                 "com/fr/bi/web/css/fragments/base/items/widget.realdatacheckbox.css",
-
-                "com/fr/bi/web/css/fragments/datalink/widget.testlink.loading.css",
 
                 //计算指标
                 "com/fr/bi/web/css/modules/calculatetarget/calculatetargetpopup.css",
@@ -1055,6 +1047,9 @@ public class ResourceHelper {
         return new String[]{
                 "com/fr/bi/web/css/modules/tablefield/widget.tablefield.css",
                 "com/fr/bi/web/css/modules/tablefield/widget.tablefield.searchresult.pane.css",
+
+                //数据连接
+                "com/fr/bi/web/css/fragments/datalink/widget.testlink.loading.css",
 
                 //union
                 "com/fr/bi/web/css/modules/onepackage/etl/union/widget.addunion.table.css",
@@ -1436,6 +1431,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/datalink/schema/widget.datalink.schema.add.js",
                 "com/fr/bi/web/js/modules/datalink/schema/widget.datalink.schema.add.model.js",
 
+                //多路径设置
+                "com/fr/bi/web/js/fragments/multirelation/expander.multirelation.js",
+                "com/fr/bi/web/js/fragments/multirelation/multirelation.js",
+                "com/fr/bi/web/js/fragments/multirelation/item.multirelation.js",
+                "com/fr/bi/web/js/fragments/multirelation/item.tablefield.multirelation.js",
+                "com/fr/bi/web/js/fragments/multirelation/view.searcher.multirelation.js",
+
+                //cube路径
                 "com/fr/bi/web/js/modules/cubepath/widget.cubepath.js",
                 "com/fr/bi/web/js/modules/cubepath/widget.cubepath.confirm.js",
 
