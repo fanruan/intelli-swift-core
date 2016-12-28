@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -230,20 +229,15 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     @Override
     public void refreshSources() {
-        if (target != null) {
-            if (null == BusinessTableHelper.getBusinessTable(new BITableID(target.getID().getIdentityValue()))) {
-                BILoggerFactory.getLogger(this.getClass()).error("the analysisTable " + target.getID().getIdentityValue() + " is absent");
-                return;
-            }
-            for (BusinessTable table : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
-                table = BusinessTableHelper.getBusinessTable(new BITableID(table.getID()));
-                if (ComparatorUtils.equals(table.getID(), target.getID())) {
-                    if (!ComparatorUtils.equals(table.getTableSource().getSourceID(), target.getTableSource().getSourceID())) {
-                        target.setSource(table.getTableSource());
-                        break;
-                    }
-                }
-            }
+        if (target == null) {
+            return;
+        }
+        BusinessTable newTable = BusinessTableHelper.getBusinessTable(new BITableID(target.getID()));
+        if (null == newTable) {
+            BILoggerFactory.getLogger(this.getClass()).error("error: the analysisTable " + target.getID().getIdentityValue() + " is absent");
+        }
+        if (!ComparatorUtils.equals(newTable.getTableSource().getSourceID(), target.getTableSource().getSourceID())) {
+            target.setSource(newTable.getTableSource());
         }
     }
 

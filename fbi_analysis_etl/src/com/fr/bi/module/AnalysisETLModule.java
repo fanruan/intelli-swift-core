@@ -73,17 +73,15 @@ public class AnalysisETLModule extends AbstractModule {
     public void clearAnalysisETLCache(long userId) {
         for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
             try {
-                int tableType = table.getTableSource().getType();
-                if (tableType == Constants.TABLE_TYPE.BASE || tableType == Constants.TABLE_TYPE.ETL) {
-                    AnalysisCubeTableSource oriSource = (AnalysisCubeTableSource) table.getTableSource();
-                    oriSource.refreshWidget();
-                    table.setSource(oriSource);
-                    BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, oriSource);
-                }
+                AnalysisCubeTableSource oriSource = (AnalysisCubeTableSource) table.getTableSource();
+                oriSource.refreshWidget();
+                table.setSource(oriSource);
+                BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, oriSource);
             } catch (Exception e) {
                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             }
         }
+        //正在排查错误，两个动作先分开
         BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
         for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
             int tableType = table.getTableSource().getType();
