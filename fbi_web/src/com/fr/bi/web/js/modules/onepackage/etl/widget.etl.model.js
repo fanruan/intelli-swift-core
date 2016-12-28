@@ -6,37 +6,55 @@ BI.ETLModel = BI.inherit(FR.OB, {
         BI.ETLModel.superclass._init.apply(this, arguments);
         var o = this.options;
         this.id = o.id;
+        this.packageId = o.packageId;
         this.table = o.table;
         this.allTableIds = [];
         this.allTables = [];
         this.translations = {};
         this.tablesMap = {};
+        this.isNew = BI.isNull(BI.Utils.getTransNameById4Conf(this.id));
         if (BI.isNotNull(this.table)) {
             this._prepareData();
-        } else {
-            this.translations[this.id] = this.createDistinctTableTranName(this.id, "ETL");
-            this.isNew = true;
         }
     },
 
     _prepareData: function () {
-        var self = this;
         var finalTable = [this.table];
         this.fields = this.table.fields;
         this._addId2Tables(finalTable, this.tablesMap);
         this.allTableIds = this._getTablesId(finalTable, []);
         this.allTables = [finalTable];
+        this._initTranslations();
+    },
 
-        //这里的转义只是放了当前表的所有转义信息
-        this.translations[this.id] = BI.Utils.getTransNameById4Conf(this.id);
-        BI.each(this.fields, function (i, fs) {
-            BI.each(fs, function (j, field) {
-                var fieldName = BI.Utils.getTransNameById4Conf(field.id);
-                if (BI.isNotNull(fieldName)) {
-                    self.translations[field.id] = fieldName;
+    //当前表的所有的转义信息
+    _initTranslations: function() {
+        var self = this;
+        if (BI.isNotNull(this.table)) {
+            var tableName = BI.Utils.getTransNameById4Conf(this.id);
+            var connectionName = this.table.connection_name;
+            if (BI.isNull(tableName)) {
+                switch (connectionName) {
+                    case BICst.CONNECTION.EXCEL_CONNECTION:
+                        tableName = this.createDistinctTableTranName(this.id, BI.i18nText("BI-Excel_Dataset"));
+                        break;
+                    case BICst.CONNECTION.SQL_CONNECTION:
+                        tableName = this.createDistinctTableTranName(this.id, BI.i18nText("BI-Sql_DataSet"));
+                        break;
                 }
+            }
+            this.translations[this.id] = tableName;
+            BI.each(this.fields, function (i, fs) {
+                BI.each(fs, function (j, field) {
+                    var fieldName = BI.Utils.getTransNameById4Conf(field.id);
+                    if (BI.isNotNull(fieldName)) {
+                        self.translations[field.id] = fieldName;
+                    }
+                });
             });
-        });
+        } else {
+            this.translations[this.id] = this.createDistinctTableTranName(this.id, "ETL");
+        }
     },
 
     getId: function () {
@@ -45,10 +63,6 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     isNewTable: function () {
         return this.isNew;
-    },
-
-    getTableData: function () {
-        return BI.deepClone(this.tableData);
     },
 
     getFields: function () {
@@ -259,7 +273,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     isValidTableTranName: function (name) {
         var self = this;
-        var packId = this.options.packageId || BI.Utils.getPackageIdByTableId4Conf(this.id);
+        var packId = this.packageId || BI.Utils.getPackageIdByTableId4Conf(this.id);
         var tableIds = BI.Utils.getTablesIdByPackageId4Conf(packId);
         var isValid = true;
         BI.some(tableIds, function (i, tId) {
@@ -273,7 +287,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     createDistinctTableTranName: function (id, v) {
         var currentPackTrans = [];
-        var packId = this.options.packageId || BI.Utils.getPackageIdByTableId4Conf(this.id);
+        var packId = this.packageId || BI.Utils.getPackageIdByTableId4Conf(this.id);
         BI.each(BI.Utils.getTablesIdByPackageId4Conf(packId), function (i, tId) {
             id !== tId && currentPackTrans.push({
                 name: BI.Utils.getTransNameById4Conf(tId)
@@ -614,7 +628,8 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var table = this.getAllTables()[0][0];
         table.id = this.id;
         var data = {
-            packageId: this.options.packageId,
+            isNew: this.isNew,
+            packageId: this.packageId,
             table: table,
             fields: this.fields,
             translations: self.translations,
