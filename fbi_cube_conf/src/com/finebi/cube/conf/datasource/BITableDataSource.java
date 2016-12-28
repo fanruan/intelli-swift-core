@@ -9,6 +9,7 @@ import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.general.ComparatorUtils;
 
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class BITableDataSource extends BIBasicDataSource<BusinessTable, CubeTabl
 
     @Override
     boolean isEqual(CubeTableSource firstSource, CubeTableSource secondSource) {
-        return firstSource.equals(secondSource);
+        return ComparatorUtils.equals(firstSource.getSourceID(), secondSource.getSourceID());
     }
 
     @Override
