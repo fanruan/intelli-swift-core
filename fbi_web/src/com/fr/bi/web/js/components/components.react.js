@@ -57517,6 +57517,9 @@
 	    }, {
 	        key: 'getHDeep',
 	        value: function getHDeep() {
+	            if (this.isNeedFreeze === true && this.freezeCols.length > 0) {
+	                return 1;
+	            }
 	            return this.hDeep;
 	        }
 	    }, {

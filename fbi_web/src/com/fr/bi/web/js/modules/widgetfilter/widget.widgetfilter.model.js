@@ -47,22 +47,22 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 return new Date(currY, 11, 31);
 
             case BICst.MULTI_DATE_MONTH_PREV:
-                return BI.Utils.getBeforeMultiMonth(value);
+                return date.getBeforeMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_AFTER:
-                return BI.Utils.getAfterMultiMonth(value);
+                return date.getAfterMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_BEGIN:
                 return new Date(currY, currM, 1);
             case BICst.MULTI_DATE_MONTH_END:
                 return new Date(currY, currM, (date.getLastDateOfMonth()).getDate());
 
             case BICst.MULTI_DATE_QUARTER_PREV:
-                return BI.Utils.getBeforeMulQuarter(value);
+                return date.getBeforeMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_AFTER:
-                return BI.Utils.getAfterMulQuarter(value);
+                return date.getAfterMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_BEGIN:
-                return BI.Utils.getQuarterStartDate();
+                return date.getQuarterStartDate();
             case BICst.MULTI_DATE_QUARTER_END:
-                return BI.Utils.getQuarterEndDate();
+                return date.getQuarterEndDate();
 
             case BICst.MULTI_DATE_WEEK_PREV:
                 return date.getOffsetDate(-7 * value);

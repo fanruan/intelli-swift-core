@@ -276,7 +276,7 @@ public class ETLResourcesHelper {
                 "com/fr/bi/web/css/modules/onepackage/etl/group/group.dimension.css",
                 "com/fr/bi/web/css/modules/onepackage/etl/group/region.string.css",
 
-                
+
 				"com/fr/bi/etl/analysis/web/css/bibase.css",
 				"com/fr/bi/etl/analysis/web/css/lib/font.css",
 				"com/fr/bi/etl/analysis/web/css/lib/icon.css",
