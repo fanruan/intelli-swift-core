@@ -1,7 +1,7 @@
 package com.fr.bi.field.target.target.cal.target.configure;
 
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.field.target.target.BIAbstractTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -63,9 +63,9 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
     }
 
     @Override
-    public List<BIAbstractTarget> createCalculateUseTarget(BIAbstractTarget[] targets) {
-        List<BIAbstractTarget> list = new ArrayList<BIAbstractTarget>();
-        BIAbstractTarget target = BITravalUtils.getTargetByName(target_id, targets);
+    public List<BISummaryTarget> createCalculateUseTarget(BISummaryTarget[] targets) {
+        List<BISummaryTarget> list = new ArrayList<BISummaryTarget>();
+        BISummaryTarget target = BITravalUtils.getTargetByName(target_id, targets);
         if (target != null) {
             list.add(target);
         }

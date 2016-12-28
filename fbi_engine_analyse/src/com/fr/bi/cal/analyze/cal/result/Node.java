@@ -32,7 +32,6 @@ public class Node implements BINode {
      *
      */
     private static final long serialVersionUID = -3230643843227594588L;
-    protected DimensionCalculator key;
     /**
      * 子节点
      */
@@ -56,18 +55,14 @@ public class Node implements BINode {
     private volatile Map<TargetGettingKey, GroupValueIndex> gviMap;
     private GroupValueIndex gvi;
     private String showValue;
-    //只在复杂报表中调用
     private Comparator c = BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
     private transient Map<TargetGettingKey, Double> childAVG;
     private transient Map<TargetGettingKey, Double> allChildAVG;
     //TODO 低效的算法， 放在result无所谓
     private transient Map<TopNKey, Double> topNLineMap;
 
-    public Node(DimensionCalculator key, Object data) {
-        this.key = key;
-        if (key != null){
-            this.c = key.getComparator();
-        }
+    public Node(Comparator comparator, Object data) {
+        this.c = comparator;
         this.setData(data);
         childs = new ChildsMap<Node>();
     }
@@ -424,7 +419,7 @@ public class Node implements BINode {
     }
 
     protected Node createNewNode() {
-        Node newNode = new Node(key, this.getData());
+        Node newNode = new Node(c, this.getData());
         newNode.showValue = this.getShowValue();
         newNode.setGroupValueIndex(this.gvi);
         return newNode;
@@ -554,7 +549,7 @@ public class Node implements BINode {
      * @return 交叉表head的节点
      */
     public CrossHeader createCrossHeader() {
-        CrossHeader newnode = new CrossHeader(key, data, gvi);
+        CrossHeader newnode = new CrossHeader(c, data, gvi);
         newnode.setShowValue(getShowValue());
         try {
             newnode.getTargetIndexValueMap().putAll(this.getTargetIndexValueMap());

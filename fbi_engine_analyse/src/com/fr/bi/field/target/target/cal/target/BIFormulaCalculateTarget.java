@@ -2,7 +2,7 @@ package com.fr.bi.field.target.target.cal.target;
 
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
-import com.fr.bi.field.target.target.BIAbstractTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BIFormularUtils;
@@ -31,11 +31,11 @@ public class BIFormulaCalculateTarget extends BICalculateTarget {
 
 
     @Override
-    public List<BIAbstractTarget> createCalculateUseTarget(BIAbstractTarget[] targets) {
-        List<BIAbstractTarget> list = new ArrayList<BIAbstractTarget>();
+    public List<BISummaryTarget> createCalculateUseTarget(BISummaryTarget[] targets) {
+        List<BISummaryTarget> list = new ArrayList<BISummaryTarget>();
         Iterator<String> it = BIFormularUtils.createColumnIndexMap(expression).values().iterator();
         while (it.hasNext()) {
-            BIAbstractTarget target = BITravalUtils.getTargetByName(it.next(), targets);
+            BISummaryTarget target = BITravalUtils.getTargetByName(it.next(), targets);
             if (target != null) {
                 list.add(target);
             }

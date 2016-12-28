@@ -28,6 +28,9 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
 
     @Override
     public void calculateFilterIndex(ICubeDataLoader loader) {
+        if (target.getTargetFilter() == null || filterIndex != null){
+            return;
+        }
         synchronized (filterLock) {
             if (target.getTargetFilter() != null && filterIndex == null) {
                 filterIndex = target.getTargetFilter().createFilterIndex(this.createTableKey(), loader, loader.getUserId());

@@ -5,20 +5,18 @@ package com.fr.bi.cal.analyze.cal.result;
 
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.dimension.filter.ResultFilter;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
-import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Daniel
@@ -37,12 +35,12 @@ public class CrossHeader extends Node implements Serializable {
     /**
      * 构造函数
      *
-     * @param key    字段信息
+     * @param c    Comparator
      * @param data   值
-     * @param getter 索引
+     * @param gvi 索引
      */
-    public CrossHeader(DimensionCalculator key, Object data, GroupValueIndex gvi) {
-        super(key, data);
+    public CrossHeader(Comparator c, Object data, GroupValueIndex gvi) {
+        super(c, data);
         this.setGroupValueIndex(gvi);
     }
 
@@ -58,7 +56,7 @@ public class CrossHeader extends Node implements Serializable {
      */
     @Override
     protected CrossHeader createNewNode() {
-        CrossHeader header = new CrossHeader(key, this.getData(), null);
+        CrossHeader header = new CrossHeader(getComparator(), this.getData(), null);
         header.setShowValue(getShowValue());
         header.setGroupValueIndex(this.getGroupValueIndex());
         return header;

@@ -8,10 +8,10 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
@@ -28,6 +28,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
@@ -42,59 +43,60 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RootDimensionGroup implements IRootDimensionGroup {
 
-    protected NoneDimensionGroup root;
-    protected DimensionCalculator[][] cks;
-
-    protected ICubeValueEntryGetter[][] getters;
-
-    protected BISession session;
-    protected BIWidget widget;
-    ISingleDimensionGroup[] singleDimensionGroupCache;
+    private List<MetricGroupInfo> metricGroupInfoList;
     private NodeExpander expander;
-    private TreeIterator iter;
+    private BISession session;
     private boolean useRealData;
 
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, ICubeValueEntryGetter[] getters, BIWidget widget) {
-        this.root = root;
-        this.cks = cks;
+    private int rowSize;
+    private TreeIterator iter;
+    private ICubeValueEntryGetter[][] getters;
+    private DimensionCalculator[][] rows;
+    private ISingleDimensionGroup[] singleDimensionGroupCache;
+    private NoneDimensionGroup root;
+
+    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, NodeExpander expander, BISession session, boolean useRealData) {
+        this.metricGroupInfoList = metricGroupInfoList;
         this.expander = expander;
         this.session = session;
-        this.iter = new TreeIterator(cks.length);
-        this.widget = widget;
         this.useRealData = useRealData;
-        this.getters = getters;
-        this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
         init();
     }
 
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, BIWidget widget) {
-        this.root = root;
-        this.cks = cks;
-        this.expander = expander;
-        this.session = session;
-        this.widget = widget;
-        this.iter = new TreeIterator(cks.length);
-        this.useRealData = useRealData;
-        this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
-        init();
+    protected void init() {
+        initIterator();
+        initGetterAndRows();
+        initRoot();
     }
 
-    private void init() {
-        initGetters();
+    private void initIterator() {
+        if (metricGroupInfoList == null || metricGroupInfoList.isEmpty()){
+            BINonValueUtils.beyondControl("invalid parameters");
+        }
+        rowSize = metricGroupInfoList.get(0).getRows().length;
+        for (MetricGroupInfo info : metricGroupInfoList){
+            if (info.getRows().length != rowSize){
+                throw new RuntimeException("invalid parameters");
+            }
+        }
+        this.iter = new TreeIterator(rowSize);
     }
 
-    private void initGetters() {
-        if (null == getters) {
-            getters = new ICubeValueEntryGetter[cks.length];
-            for (int i = 0; i < cks.length; i++) {
-                ICubeTableService ti = session.getLoader().getTableIndex(getSource(cks[i]));
-                getters[i] = ti.getValueEntryGetter(createKey(cks[i]), cks[i].getRelationList());
+    private void initGetterAndRows() {
+        getters = new ICubeValueEntryGetter[rowSize][metricGroupInfoList.size()];
+        rows = new DimensionCalculator[rowSize][metricGroupInfoList.size()];
+        for (int i = 0; i < metricGroupInfoList.size(); i++){
+            DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
+            for (int j = 0; j < rs.length; j++){
+                ICubeTableService ti = session.getLoader().getTableIndex(getSource(rs[j]));
+                rows[j][i] = rs[j];
+                getters[j][i] = ti.getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
             }
         }
     }
 
-    public ICubeValueEntryGetter[] getGetters() {
-        return getters;
+    private void initRoot() {
+        root = NoneDimensionGroup.createDimensionGroup()
     }
 
     private CubeTableSource getSource(DimensionCalculator column) {
@@ -146,15 +148,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
     }
 
-    public boolean isUseRealData() {
-        return useRealData;
-    }
-
-    @Override
-    public void setExpander(NodeExpander expander) {
-        this.expander = expander;
-    }
-
     /**
      * TODO 这里可以改成可以前后移动的游标提高性能先这样
      */
@@ -189,7 +182,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     private int[] getValueStartRow(Object[] value) {
         IntList result = new IntList();
         getValueStartRow(root, value, 0, result);
-        for (int i = value.length; i < cks.length; i++) {
+        for (int i = value.length; i < rowSize; i++) {
             result.add(-1);
         }
         return result.toArray();
@@ -264,7 +257,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if (expander == null) {
             return groupEnd();
         }
-        if (cks.length == 0) {
+        if (rowSize == 0) {
             return ReturnStatus.NULL;
         }
         ISingleDimensionGroup sg;
@@ -652,7 +645,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                     this.tempIndex = null;
                     return null;
                 }
-                for (int i = list.size(); i < cks.length; i++) {
+                for (int i = list.size(); i < rowSize; i++) {
                     list.add(-1);
                 }
                 this.tempIndex = list.toArray();
