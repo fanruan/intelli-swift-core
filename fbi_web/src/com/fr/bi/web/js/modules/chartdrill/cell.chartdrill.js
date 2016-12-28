@@ -121,11 +121,16 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         }
         v = v || {};
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
-        var value = v.x;
+        var value = v.xValue;
         switch (wType) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
-                value = v.seriesName;
+                value = v.zValue;
+                break;
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+                value = BI.has(v, "xValue") ? v.xValue : v.zValue;
                 break;
             default:
                 var drillMap = BI.Utils.getDrillByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
@@ -137,7 +142,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                     }
                 });
                 var regionType = BI.Utils.getRegionTypeByDimensionID(drillDid);
-                value = ((regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) ? (v.value || v.x) : v.seriesName);
+                value = ((regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) ? v.xValue : v.zValue);
                 break;
         }
         return value;
@@ -162,6 +167,10 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         var v = this._formatValue(o.value);
         this.label.setValue(v);
         this.label.setTitle(v);
+    },
+
+    getDid: function(){
+        return this.options.dId;
     },
 
     populate: function(){

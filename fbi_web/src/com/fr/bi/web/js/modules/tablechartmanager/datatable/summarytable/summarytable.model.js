@@ -313,7 +313,17 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         });
                     }
                     drillMap[rootId] = drillOperators;
-                    self.clickedCallback(BI.extend(BI.Utils.getLinkageValuesByID(self.wId), drillMap));
+                    //self.clickedCallback(BI.extend(BI.Utils.getLinkageValuesByID(self.wId), drillMap));
+
+                    var regionType = BI.Utils.getRegionTypeByDimensionID(currDid);
+                    var obj = {};
+                    if(regionType < BICst.REGION.DIMENSION2){
+                        obj.xValue = child.n;
+                    }else{
+                        obj.zValue = child.n;
+                    }
+                    obj.dimensionIds = [currDid];
+                    BI.Broadcasts.send(BICst.BROADCAST.CHART_CLICK_PREFIX + self.wId, obj);
                 }
             };
             //展开情况——最后一层没有这个展开按钮
@@ -928,7 +938,17 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         });
                     }
                     drillMap[rootId] = drillOperators;
-                    self.clickedCallback(BI.extend(BI.Utils.getLinkageValuesByID(self.wId), drillMap));
+                    //self.clickedCallback(BI.extend(BI.Utils.getLinkageValuesByID(self.wId), drillMap));
+
+                    var regionType = BI.Utils.getRegionTypeByDimensionID(currDid);
+                    var obj = {};
+                    if(regionType < BICst.REGION.DIMENSION2){
+                        obj.xValue = child.n;
+                    }else{
+                        obj.zValue = child.n;
+                    }
+                    obj.dimensionIds = [currDid];
+                    BI.Broadcasts.send(BICst.BROADCAST.CHART_CLICK_PREFIX + self.wId, obj);
                 }
             };
             if (currentLayer < self.crossDimIds.length) {

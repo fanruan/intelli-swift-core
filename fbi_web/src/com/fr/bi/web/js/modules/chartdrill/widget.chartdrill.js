@@ -47,10 +47,17 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             }
             self.setVisible(showDrill);
             self.wrapper.setVisible(showDrill);
+            var visibleArray = self._getVisibleDrillCellArray();
+            var width = 0;
             BI.each(self.wrapper.getAllButtons(), function (idx, drill) {
-                drill.setValue(obj);
-                drill.populate();
+                if(BI.contains(visibleArray, drill.getDid()) || BI.contains(obj.dimensionIds, drill.getDid())){
+                    drill.setVisible(true);
+                    drill.setValue(obj);
+                    drill.populate();
+                    width += 190;
+                }
             });
+            self.wrapper.element.width(width);
             self._doHide = true;
             self._debounce2Hide();
         });
@@ -61,7 +68,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             items: [{
                 el: this.wrapper
             }, {
-                el: this.pushButton,
+                el: this.pushButton
             }]
         })
     },
@@ -82,8 +89,6 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
             case BICst.WIDGET.COMPLEX_TABLE:
-                showDrill = false;
-                break;
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -130,8 +135,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     _checkUPDrillEmpty: function () {
         var wId = this.options.wId;
         var wType = BI.Utils.getWidgetTypeByID(wId);
-        if (wType === BICst.WIDGET.TABLE || wType === BICst.WIDGET.CROSS_TABLE ||
-            wType === BICst.WIDGET.COMPLEX_TABLE || wType === BICst.WIDGET.DETAIL || wType === BICst.WIDGET.MAP) {
+        if (wType === BICst.WIDGET.DETAIL || wType === BICst.WIDGET.MAP) {
             return false
         }
         var drillMap = BI.Utils.getDrillByID(wId);
@@ -155,13 +159,23 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         return BI.isNull(upDrillID)
     },
 
+    _getVisibleDrillCellArray: function(){
+        var o = this.options;
+        var visibleArray = [];
+        var drillList = BI.Utils.getDrillList(o.wId);
+        BI.each(BI.Utils.getAllUsableDimDimensionIDs(o.wId), function (i, dim) {
+            if (BI.has(drillList, dim) && BI.isNotEmptyArray(drillList[dim])) {
+                var arr = drillList[dim];
+                visibleArray.push(arr[arr.length - 1]);
+            }
+        });
+        return visibleArray;
+    },
+
     populate: function () {
         var self = this, wId = this.options.wId;
         var wType = BI.Utils.getWidgetTypeByID(wId);
-        if (wType === BICst.WIDGET.TABLE ||
-            wType === BICst.WIDGET.CROSS_TABLE ||
-            wType === BICst.WIDGET.COMPLEX_TABLE ||
-            wType === BICst.WIDGET.DETAIL ||
+        if (wType === BICst.WIDGET.DETAIL ||
             wType === BICst.WIDGET.MAP) {
             this.setVisible(false);
             return;
@@ -171,10 +185,13 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         var currentDrilldIds = [];
         //看一下钻取
         var drillList = BI.Utils.getDrillList(wId);
+        //哪些钻取框可以显示
+        var visibleArray = [];
         BI.each(BI.Utils.getAllUsableDimDimensionIDs(wId), function (i, dim) {
             if (BI.has(drillList, dim) && BI.isNotEmptyArray(drillList[dim])) {
                 var arr = drillList[dim];
                 currentDrilldIds.push(arr[arr.length - 1]);
+                visibleArray.push(arr[arr.length - 1]);
             } else {
                 currentDrilldIds.push(dim);
             }
@@ -184,7 +201,8 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         BI.each(currentDrilldIds, function (idx, dId) {
             var drill = BI.createWidget({
                 type: "bi.chart_drill_cell",
-                dId: dId
+                dId: dId,
+                invisible: !BI.contains(visibleArray, dId)
             });
             drill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function (v) {
                 self.fireEvent(BI.ChartDrill.EVENT_CHANGE, v);
@@ -194,7 +212,9 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             });
             drill.populate();
             items.push(drill);
-            width += 190;
+            if(BI.contains(visibleArray, dId)){
+                width += 190;
+            }
         });
         this.wrapper.populate(items);
         this.wrapper.element.width(width);

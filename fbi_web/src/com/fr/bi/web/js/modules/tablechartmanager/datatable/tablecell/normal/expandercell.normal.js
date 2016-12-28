@@ -188,7 +188,15 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
             }, function () {
                 drillCombo.setVisible(false);
             });
-            return drillCombo;
+            //return drillCombo;
+            return BI.createWidget({
+                type: "bi.icon_button",
+                cls: "pull-down-font",
+                height: 25,
+                handler: function(){
+                    o.drillCallback()
+                }
+            })
         }
     }
 });
