@@ -234,6 +234,10 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("packages", pid, "name");
     },
 
+    getConfPackagePositionByID: function(pid) {
+        return Data.SharingPool.get("packages", pid, "position");
+    },
+
     getUpdateSettingByID: function (id) {
         return Data.SharingPool.get("update_settings", id);
     },
