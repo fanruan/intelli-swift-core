@@ -101,6 +101,7 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
                 onClickReport: function () {
                     try {
                         window.top.FS.tabPane.addItem({
+                            id: item.id,
                             title: item.text,
                             src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
                         });
