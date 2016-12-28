@@ -715,6 +715,7 @@ BI.SummaryTableReact = BI.inherit(BI.Pane, {
             freezeCols: this.model.getFreezeCols(),
             mergeCols: this.model.getMergeCols() || [],
             columnSize: this.model.getColumnSize(),
+            regionColumnSize: this.model.getStoredRegionColumnSize(),
             header: this._formatHeader(this.model.getHeader()),
             items: this._formatItems(this.model.getItems()),
             crossHeader: this._formatCrossHeader(this.model.getCrossHeader()),
