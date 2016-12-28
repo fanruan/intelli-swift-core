@@ -803,8 +803,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     reopen: true,
                     isGenerated: status.exists,
-                    tableInfo: table,
-                    relations: self.model.getRelations()
+                    tableInfo: table
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -919,8 +918,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                     reopen: true,
                     isGenerated: status.exists,
                     tableInfo: table,
-                    fields: self.model.getFields(),
-                    relations: self.model.getRelations()
+                    fields: self.model.getFields()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1155,8 +1153,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             info: {
                 reopen: false,
                 isGenerated: false,
-                tableInfo: self.model.getTableById(tId),
-                relationFieldNames: self.model.constructFieldNamesWhichHasRelation()
+                tableInfo: self.model.getTableById(tId)
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1179,9 +1176,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             info: {
                 reopen: false,
                 isGenerated: false,
-                tableInfo: self.model.getTableById(tId),
-                relations: self.model.getRelations(),
-                relationFieldNames: self.model.constructFieldNamesWhichHasRelation()
+                tableInfo: self.model.getTableById(tId)
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1255,8 +1250,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 reopen: false,
                 isGenerated: false,
                 fields: self.model.getFields(),
-                tableInfo: self.model.getTableById(tId),
-                relations: self.model.getRelations()
+                tableInfo: self.model.getTableById(tId)
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);

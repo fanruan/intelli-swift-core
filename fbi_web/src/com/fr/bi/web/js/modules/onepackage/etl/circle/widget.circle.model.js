@@ -81,11 +81,11 @@ BI.CircleModel = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        var self = this;
-        var etlValue = this.getOperatorValue();
-        var relations = this.getRelations(), tId = this.getId();
-        var primKeyMap = relations["primKeyMap"], foreignKeyMap = relations["foreignKeyMap"];
-        var connectionSet = relations["connectionSet"];
+        //var self = this;
+        //var etlValue = this.getOperatorValue();
+        //var relations = this.getRelations(), tId = this.getId();
+        //var primKeyMap = relations["primKeyMap"], foreignKeyMap = relations["foreignKeyMap"];
+        //var connectionSet = relations["connectionSet"];
         //先刪除上一次的关联
         //if (this.isReopen() === true) {
         //    var table = this.getPreTableStructure();
@@ -130,7 +130,6 @@ BI.CircleModel = BI.inherit(BI.Widget, {
         //}
 
         return {
-            relations: relations,
             etl_type: "circle",
             etl_value: this.getOperatorValue(),
             connection_name: BICst.CONNECTION.ETL_CONNECTION,

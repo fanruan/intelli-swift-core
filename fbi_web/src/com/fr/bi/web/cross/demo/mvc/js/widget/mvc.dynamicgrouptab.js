@@ -11,18 +11,30 @@ DynamicGroupTabView = BI.inherit(BI.View, {
 
     _render: function (vessel) {
         var self = this;
+        var addButton = BI.createWidget({
+            type:"bi.button",
+            width: 90,
+            level: 'ignore',
+            text: BI.i18nText("BI-add_sheet"),
+            title: BI.i18nText("BI-add_sheet")
+        });
+        addButton.on(BI.Button.EVENT_CHANGE, function(){
+            self.tab.addItems([{
+                type: "bi.button",
+                text: BI.parseInt((Math.random() * 100) % 100)
+            }]);
+        });
+        var mergeButton = BI.createWidget({
+            type:"bi.button",
+            width: 90,
+            level: 'ignore',
+            text: BI.i18nText("BI-merge_sheet"),
+            title: BI.i18nText("BI-merge_sheet")
+        });
         this.tab = BI.createWidget({
-            type: "bi.dynamic_group_tab",
-            cardCreator: function(v){
-                return BI.createWidget({
-                    type: "bi.center",
-                    items: [{
-                        type: "bi.label",
-                        text: v,
-                        value: v
-                    }]
-                });
-            }
+            type: "bi.dynamic_group_tab_button_group",
+            items: [],
+            frozenButtons: [addButton, mergeButton],
         });
 
         BI.createWidget({
@@ -32,32 +44,9 @@ DynamicGroupTabView = BI.inherit(BI.View, {
             vgap: 50,
             items: [{
                 el: this.tab
-            }, {
-                el: {
-                    type: "bi.button",
-                    value: "populate",
-                    height: 30,
-                    wudth: 200,
-                    handler: function(){
-                        self.tab.populate([]);
-                    }
-                },
-                height: 30
             }]
         })
-    },
-
-    _addNewButton : function(value) {
-        var item = {
-            type:"bi.dynamic_group_tab_sheet_button",
-            height: 29,
-            width: 90,
-            value : value,
-            text : "Sheet" + this.tab.getAllButtons().length
-        }
-        var button = BI.createWidget(item);
-        this.tab.addItems([button]);
-    },
+    }
 });
 
 DynamicGroupTabModel = BI.inherit(BI.Model, {});
