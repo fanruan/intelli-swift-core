@@ -182,7 +182,6 @@ BI.WindowLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.WindowLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

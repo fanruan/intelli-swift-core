@@ -22,12 +22,7 @@ BI.AbsoluteLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options;
-        if (!this.hasWidget(this.getName() + i)) {
-            var w = BI.createWidget(item);
-            this.addWidget(this.getName() + i, w);
-        } else {
-            var w = this.getWidgetByName(this.getName() + i);
-        }
+        var w = BI.AbsoluteLayout.superclass._addElement.apply(this, arguments);
         var left = 0, right = 0, top = 0, bottom = 0;
         if (BI.isNotNull(item.left)) {
             w.element.css({"left": item.left});
@@ -91,14 +86,6 @@ BI.AbsoluteLayout = BI.inherit(BI.Layout, {
         this.stroke(this.options.items);
     },
 
-    addItem: function (item) {
-        BI.AbsoluteLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(this.options.items.length, item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
-        return w;
-    },
-
     stroke: function (items) {
         var self = this;
         BI.each(items, function (i, item) {
@@ -113,7 +100,6 @@ BI.AbsoluteLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.AbsoluteLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

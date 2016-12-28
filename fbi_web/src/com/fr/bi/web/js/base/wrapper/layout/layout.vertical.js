@@ -23,12 +23,7 @@ BI.VerticalLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options;
-        if (!this.hasWidget(this.getName() + i)) {
-            var w = BI.createWidget(item);
-            this.addWidget(this.getName() + i, w);
-        } else {
-            var w = this.getWidgetByName(this.getName() + i);
-        }
+        var w = BI.VerticalLayout.superclass._addElement.apply(this, arguments);
         w.element.css({
             "position": "relative"
         });
@@ -59,26 +54,8 @@ BI.VerticalLayout = BI.inherit(BI.Layout, {
         this.stroke(this.options.items);
     },
 
-    addItem: function (item) {
-        BI.VerticalLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(this.options.items.length, item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
-        return w;
-    },
-
-    stroke: function(items){
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        })
-    },
-
     populate: function (items) {
         BI.VerticalLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

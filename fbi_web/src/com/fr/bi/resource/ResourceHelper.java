@@ -1736,6 +1736,9 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/css/base/wrapper/inline.center.css",
                 "com/fr/bi/web/css/base/wrapper/inline.vertical.css",
+                "com/fr/bi/web/css/base/wrapper/flex.center.css",
+                "com/fr/bi/web/css/base/wrapper/flex.horizontal.css",
+                "com/fr/bi/web/css/base/wrapper/flex.vertical.center.css",
 
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
@@ -2272,7 +2275,6 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/base/wrapper/layout.js",
                 "com/fr/bi/web/js/base/wrapper/layout/layout.absolute.js",
-                "com/fr/bi/web/js/base/wrapper/layout/layout.flexible.js",
                 "com/fr/bi/web/js/base/wrapper/layout/layout.adaptive.js",
                 "com/fr/bi/web/js/base/wrapper/layout/layout.border.js",
                 "com/fr/bi/web/js/base/wrapper/layout/layout.card.js",
@@ -2292,7 +2294,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/inline.center.js",
-                "com/fr/bi/web/js/base/wrapper/layout/adapt/flexbox.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.leftrightvertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.vertical.js",
@@ -2305,6 +2306,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.vertical.js",
+
+                "com/fr/bi/web/js/base/wrapper/layout/flex/flex.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/flex/flex.horizontal.js",
+                "com/fr/bi/web/js/base/wrapper/layout/flex/flex.vertical.center.js",
                 "com/fr/bi/web/js/data/utils.js",
 
                 "com/fr/bi/web/js/case/case.js",

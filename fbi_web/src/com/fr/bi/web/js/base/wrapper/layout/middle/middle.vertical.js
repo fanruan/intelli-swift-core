@@ -21,7 +21,7 @@ BI.VerticalCenterLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("vertical_center布局不需要resize");
+        // console.log("vertical_center布局不需要resize");
     },
 
     addItem: function (item) {
@@ -29,8 +29,7 @@ BI.VerticalCenterLayout = BI.inherit(BI.Layout, {
         throw new Error("不能添加元素")
     },
 
-    populate: function (items) {
-        BI.VerticalCenterLayout.superclass.populate.apply(this, arguments);
+    stroke: function (items) {
         var self = this, o = this.options;
         this.clear();
         var list = [];
@@ -65,6 +64,10 @@ BI.VerticalCenterLayout = BI.inherit(BI.Layout, {
             rows: list.length,
             items: list
         });
+    },
+
+    populate: function (items) {
+        BI.VerticalCenterLayout.superclass.populate.apply(this, arguments);
     }
 });
 $.shortcut('bi.vertical_center', BI.VerticalCenterLayout);

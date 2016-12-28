@@ -1,16 +1,15 @@
 /**
- * 内联布局
- * @class BI.InlineVerticalAdaptLayout
- * @extends BI.Layout
+ *自适应水平和垂直方向都居中容器
+ * Created by GUY on 2016/12/2.
  *
- * @cfg {JSON} options 配置属性
- * @cfg {Number} [hgap=0] 水平间隙
- * @cfg {Number} [vgap=0] 垂直间隙
+ * @class BI.FlexVerticalCenter
+ * @extends BI.Layout
  */
-BI.InlineVerticalAdaptLayout = BI.inherit(BI.Layout, {
+BI.FlexVerticalCenter = BI.inherit(BI.Layout, {
     _defaultConfig: function () {
-        return BI.extend(BI.InlineVerticalAdaptLayout.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-inline-vertical-adapt-layout",
+        return BI.extend(BI.FlexVerticalCenter.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-flex-vertical-center",
+            columnSize: [],
             hgap: 0,
             vgap: 0,
             lgap: 0,
@@ -20,23 +19,16 @@ BI.InlineVerticalAdaptLayout = BI.inherit(BI.Layout, {
         });
     },
     _init: function () {
-        BI.InlineVerticalAdaptLayout.superclass._init.apply(this, arguments);
-        this.element.css({
-            whiteSpace: "nowrap"
-        });
+        BI.FlexVerticalCenter.superclass._init.apply(this, arguments);
+        var o = this.options;
+        this.wrapper = $("<div>").addClass("flex-vertical-center-wrapper clearfix").appendTo(this.element);
         this.populate(this.options.items);
     },
 
     _addElement: function (i, item) {
         var o = this.options;
-        var w = BI.InlineVerticalAdaptLayout.superclass._addElement.apply(this, arguments);
-        w.element.css({
-            "position": "relative",
-            "display": "inline-block",
-            "vertical-align": "middle",
-            "*display": "inline",
-            "*zoom": 1
-        });
+        var w = BI.FlexVerticalCenter.superclass._addElement.apply(this, arguments);
+        w.element.css({"position": "relative"}).appendTo(this.wrapper);
         if (o.hgap + o.lgap + (item.lgap || 0) > 0) {
             w.element.css({
                 "margin-left": o.hgap + o.lgap + (item.lgap || 0) + "px"
@@ -60,13 +52,19 @@ BI.InlineVerticalAdaptLayout = BI.inherit(BI.Layout, {
         return w;
     },
 
+    addItem: function (item) {
+        var w = this._addElement(this.options.items.length, item);
+        this.options.items.push(item);
+        w.element.appendTo(this.wrapper);
+        return w;
+    },
+
     resize: function () {
-        this.stroke(this.options.items);
+        // console.log("flex_vertical_center布局不需要resize");
     },
 
     populate: function (items) {
-        BI.InlineVerticalAdaptLayout.superclass.populate.apply(this, arguments);
-        this.render();
+        BI.FlexVerticalCenter.superclass.populate.apply(this, arguments);
     }
 });
-$.shortcut('bi.inline_vertical_adapt', BI.InlineVerticalAdaptLayout);
+$.shortcut('bi.flex_vertical_center', BI.FlexVerticalCenter);
