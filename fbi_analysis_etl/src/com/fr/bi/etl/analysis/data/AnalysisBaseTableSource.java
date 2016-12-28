@@ -188,6 +188,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     @Override
     public void refreshWidget() {
+        widget.refreshSources();
         widget.refreshColumns();
     }
 
@@ -236,5 +237,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     public void clearUserBaseTableMap() {
         userBaseTableMap.clear();
         widget.refreshColumns();
+        widget.refreshSources();
     }
+
 }

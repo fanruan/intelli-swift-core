@@ -97,14 +97,6 @@ BIShow.SingleSliderWidgetView = BI.inherit(BI.View, {
         }
     },
 
-    _refreshTitlePosition: function () {
-        var pos = BI.Utils.getGSNamePos();
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-            "dashboard-title-center" : "dashboard-title-left";
-        this.title.element.removeClass("dashboard-title-left")
-            .removeClass("dashboard-title-center").addClass(cls);
-    },
-
     _createTools: function () {
         var self = this;
         this.tools = BI.createWidget({
@@ -190,6 +182,5 @@ BIShow.SingleSliderWidgetView = BI.inherit(BI.View, {
         this._refreshLayout();
         this._buildWidgetTitle();
         this.combo.populate();
-        this._refreshTitlePosition();
     }
 });

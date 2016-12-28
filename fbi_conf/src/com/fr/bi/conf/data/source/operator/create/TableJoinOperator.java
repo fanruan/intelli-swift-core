@@ -14,6 +14,10 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.operation.sort.comp.ASCComparator;
+import com.fr.bi.stable.operation.sort.comp.CastDoubleASCComparator;
+import com.fr.bi.stable.operation.sort.comp.CastFloatASCComparator;
+import com.fr.bi.stable.operation.sort.comp.CastLongASCComparator;
 import com.fr.cache.list.IntList;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -146,7 +150,11 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         ValuesAndGVI lValuesAndGVI = lValueIterator.next();
         Comparator[] comparators = new Comparator[left.size()];
         for (int i = 0; i < comparators.length; i++) {
-            comparators[i] = lti.getColumns().get(new IndexKey(left.get(i))).getFieldType() == DBConstant.COLUMN.STRING ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
+            if (lti.getColumns().get(new IndexKey(left.get(i))).getFieldType() == DBConstant.COLUMN.STRING) {
+                comparators[i] = BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
+            } else {
+                comparators[i] = generateComparatorByType(lti.getColumns().get(new IndexKey(left.get(i))).getClassType(), rti.getColumns().get(new IndexKey(right.get(i))).getClassType());
+            }
         }
         while (rValueIterator.hasNext()) {
             ValuesAndGVI rValuesAndGVI = rValueIterator.next();
@@ -169,6 +177,18 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         return index;
     }
 
+    private Comparator generateComparatorByType(int type1, int type2) {
+        if (type1 == DBConstant.CLASS.DOUBLE || type2 == DBConstant.CLASS.DOUBLE) {
+            return new CastDoubleASCComparator();
+        }
+        if (type1 == DBConstant.CLASS.FLOAT || type2 == DBConstant.CLASS.FLOAT) {
+            return new CastFloatASCComparator();
+        }
+        if (type1 == DBConstant.CLASS.LONG || type2 == DBConstant.CLASS.LONG) {
+            return new CastLongASCComparator();
+        }
+        return new ASCComparator();
+    }
 
     private int writeROneGroup(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti, int rLen, int lLeftCount, int index, GroupValueIndex lGvi, GroupValueIndex rGvi, List<? extends CubeTableSource> parents) {
         final IntList list = new IntList();
@@ -230,7 +250,11 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         ValuesAndGVI rValuesAndGVI = rValueIterator.next();
         Comparator[] comparators = new Comparator[left.size()];
         for (int i = 0; i < comparators.length; i++) {
-            comparators[i] = lti.getColumns().get(new IndexKey(left.get(i))).getFieldType() == DBConstant.COLUMN.STRING ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
+            if (lti.getColumns().get(new IndexKey(left.get(i))).getFieldType() == DBConstant.COLUMN.STRING) {
+                comparators[i] = BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
+            } else {
+                comparators[i] = generateComparatorByType(lti.getColumns().get(new IndexKey(left.get(i))).getClassType(), rti.getColumns().get(new IndexKey(right.get(i))).getClassType());
+            }
         }
         while (lValueIterator.hasNext()) {
             ValuesAndGVI lValuesAndGVI = lValueIterator.next();

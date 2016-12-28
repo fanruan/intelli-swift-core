@@ -92,17 +92,19 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         ut = getRealSource(ut);
         String md5Key = ut.fetchObjectCore().getID().getIdentityValue();
         SingleUserETLTableCubeManager manager = threadMap.get(md5Key);
-        if(manager == null){
+        if (manager == null) {
             synchronized (threadMap) {
                 manager = threadMap.get(md5Key);
-                if(manager == null){
+                if (manager == null) {
                     manager = new SingleUserETLTableCubeManager(ut);
                     threadMap.put(md5Key, manager);
                 }
             }
+        } else {
+            threadMap.get(md5Key).getSource().refreshWidget();
         }
-		manager.addTask();
-        return manager;
+        manager.addTask();
+        return threadMap.get(md5Key);
     }
 
     private UserCubeTableSource getRealSource(UserCubeTableSource ut) {

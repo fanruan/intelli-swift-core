@@ -321,8 +321,4 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         return null;
     }
 
-    @Override
-    public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId) {
-        return null;
-    }
 }

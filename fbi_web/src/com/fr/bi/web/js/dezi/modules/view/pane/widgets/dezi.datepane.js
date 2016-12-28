@@ -24,10 +24,6 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
             self.dataPane.setValue(self.model.get("value"));
         });
-        //全局样式
-        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
-            self._refreshGlobalStyle(globalStyle);
-        });
     },
 
     _render: function (vessel) {
@@ -109,17 +105,6 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
         }
     },
 
-    _refreshGlobalStyle: function () {
-        this._refreshTitlePosition();
-    },
-
-    _refreshTitlePosition: function () {
-        var pos = BI.Utils.getGSNamePos();
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-            "dashboard-title-center" : "dashboard-title-left";
-        this.title.element.removeClass("dashboard-title-left")
-            .removeClass("dashboard-title-center").addClass(cls);
-    },
     _createTools: function () {
         var self = this;
         var expand = BI.createWidget({
@@ -252,8 +237,6 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
-        this._refreshTitlePosition();
-        this._refreshGlobalStyle();
         this.dataPane.setValue(this.model.get("value"));
     }
 });

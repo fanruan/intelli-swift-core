@@ -33,14 +33,6 @@ public class AnalysisETLSourceFactory {
         }
     }
 
-    /**
-     * edit by kary 2016/12/19
-     * 无论是不是新增，baseSource都必须重新生成
-     * @param jo
-     * @param userId
-     * @return
-     * @throws Exception
-     */
     private static AnalysisCubeTableSource createOneTableSource(JSONObject jo, long userId) throws Exception {
         int type = jo.getInt("etlType");
         List<AnalysisETLSourceField> fieldList = new ArrayList<AnalysisETLSourceField>();
@@ -55,15 +47,20 @@ public class AnalysisETLSourceFactory {
         String name = jo.optString("table_name", StringUtils.EMPTY);
         switch (type) {
             case Constants.ETL_TYPE.SELECT_DATA:
+                return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, StringUtils.EMPTY);
             case Constants.ETL_TYPE.SELECT_NONE_DATA:
-                AnalysisBaseTableSource baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, StringUtils.EMPTY);
-                BusinessTable businessTable = getAnyTableWithSource(baseSource);
-                if (null == businessTable) {
-                    businessTable = new AnalysisBusiTable(UUID.randomUUID().toString(), userId);
-                    baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, businessTable.getID().getIdentity());
+                AnalysisBaseTableSource temp = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, StringUtils.EMPTY);
+                BusinessTable businessTable = getAnyTableWithSource(temp);
+                AnalysisBaseTableSource baseSource;
+                if (businessTable == null) {
+                    AnalysisBusiTable table = new AnalysisBusiTable(UUID.randomUUID().toString(), userId);
+                    baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, table.getID().getIdentity());
+                    table.setSource(baseSource);
+                    BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, baseSource);
+                } else {
+                    baseSource = (AnalysisBaseTableSource) businessTable.getTableSource();
+                    BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(businessTable, baseSource);
                 }
-                businessTable.setSource(baseSource);
-                BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(businessTable, baseSource);
                 return baseSource;
             default:
                 JSONArray parents = jo.getJSONArray("parents");

@@ -107,9 +107,9 @@ BI.AuthorityFilter = BI.inherit(BI.Widget, {
                 case BICst.MULTI_DATE_YEAR_END:
                     return new Date(currY, 11, 31).getTime();
                 case BICst.MULTI_DATE_MONTH_PREV:
-                    return BI.Utils.getBeforeMultiMonth(value).getTime();
+                    return new Date().getBeforeMultiMonth(value).getTime();
                 case BICst.MULTI_DATE_MONTH_AFTER:
-                    return BI.Utils.getAfterMultiMonth(value).getTime();
+                    return new Date().getAfterMultiMonth(value).getTime();
                 case BICst.MULTI_DATE_MONTH_BEGIN:
                     return new Date(currY, currM, 1).getTime();
                 case BICst.MULTI_DATE_MONTH_END:

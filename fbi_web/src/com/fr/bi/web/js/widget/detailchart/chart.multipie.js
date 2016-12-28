@@ -37,18 +37,17 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
 
         this.formatChartLegend(config, this.config.legend);
 
-        config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
+        config.plotOptions.tooltip.formatter.identifier = "${NAME}${VALUE}${PERCENT}";
+        config.plotOptions.tooltip.shared = true;
         config.chartType = "multiPie";
         delete config.xAxis;
         delete config.yAxis;
 
         BI.extend(config.plotOptions.dataLabels, {
             enabled: this.config.showDataLabel,
-            align: self.setDataLabelPosition(this.config),
-            style: this.config.dataLabelSetting.textStyle,
-            connectorWidth: this.config.dataLabelSetting.showTractionLine,
+            align: "top",
         });
-        config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
+        config.plotOptions.dataLabels.formatter.identifier = "${NAME}${VALUE}";
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);

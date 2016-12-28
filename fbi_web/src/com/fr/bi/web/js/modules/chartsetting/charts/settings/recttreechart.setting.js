@@ -179,16 +179,6 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.dataLabelSetting.setVisible(this.isSelected());
-            self.fireEvent(BI.RectTreeChartSetting.EVENT_CHANGE);
-        });
-
-        this.dataLabelSetting = BI.createWidget({
-            type: "bi.data_label_detailed_setting_combo",
-            wId: o.wId,
-        });
-
-        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.RectTreeChartSetting.EVENT_CHANGE);
         });
 
@@ -228,9 +218,6 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.dataLabelSetting]
                 }/*, {
                  type: "bi.label",
                  text: BI.i18nText("BI-Tooltip"),
@@ -319,8 +306,6 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
-        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
-        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
@@ -343,7 +328,6 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
             legend: this.legend.getValue()[0],
             legendStyle: this.legendStyle.getValue(),
             showDataLabel: this.showDataLabel.isSelected(),
-            dataLabelSetting: this.dataLabelSetting.getValue(),
             tooltipStyle: this.tooltipStyle.getValue(),
 
             //miniModel: this.miniModel.isSelected(),
