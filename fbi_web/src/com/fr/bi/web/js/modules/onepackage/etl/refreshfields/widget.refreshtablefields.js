@@ -129,7 +129,9 @@ BI.RefreshTableLoadingMask = BI.inherit(BI.Widget, {
                         type: "bi.icon",
                         width: 126,
                         height: 126
-                    }]
+                    }],
+                    width: 500,
+                    height: 126
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Refresh_Table_Failure"),

@@ -247,7 +247,9 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                                 type: "bi.icon",
                                 width: 126,
                                 height: 126
-                            }]
+                            }],
+                            width: 400,
+                            height: 126
                         }, {
                             type: "bi.label",
                             text: BI.i18nText("BI-Preview") + BI.i18nText("BI-Failed"),
