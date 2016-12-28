@@ -42,7 +42,7 @@ public class FormulaCollections {
                 BILoggerFactory.getLogger().error(throwable.getMessage());
             }
             try {
-                if (!BIConstructorUtils.isAbstract(formulaClass)) {
+                if (formulaClass != null && !BIConstructorUtils.isAbstract(formulaClass)) {
                     formula = (Function) formulaClass.newInstance();
 
                 } else {

@@ -761,7 +761,8 @@ Data.Utils = {
                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                 "color": "#1a1a1a",
                 "fontSize": "12px"
-            }
+            },
+            null_continue: options.null_continue || false
         };
 
         var maxes = [];
@@ -1498,6 +1499,7 @@ Data.Utils = {
         function formatConfigForMap(configs, items) {
             formatRangeLegend();
             delete configs.legend;
+            delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.tooltip.shared = true;
@@ -1776,6 +1778,7 @@ Data.Utils = {
             }];
             var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
             var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
+            delete configs.zoom;
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -1993,6 +1996,7 @@ Data.Utils = {
             }];
             var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
             var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
+            delete configs.zoom;
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -2191,6 +2195,7 @@ Data.Utils = {
             configs.chartType = "gauge";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             return BI.extend(configs, {
                 series: items
             });
@@ -2539,6 +2544,7 @@ Data.Utils = {
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.style = config.chart_font;
+            configs.plotOptions.connectNulls = config.null_continue;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.enabled = config.show_zoom;
@@ -2616,8 +2622,13 @@ Data.Utils = {
             BI.each(items, function (idx, item) {
                 item.color = [configs.yAxis[idx].labelStyle.color];
                 if (item.type === "line") {
+                    config.chartType = "line";
                     lineItem.push(item);
-                } else {
+                } else if(item.type === "area") {
+                    config.chartType = "area";
+                    otherItem.push(item);
+                }else {
+                    config.chartType = "column";
                     otherItem.push(item);
                 }
             });
@@ -2751,6 +2762,7 @@ Data.Utils = {
             configs.chartType = "pie";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             configs.plotOptions.dataLabels.align = "outside";
             configs.plotOptions.dataLabels.connectorWidth = "outside";
             configs.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
@@ -2816,6 +2828,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.style = config.chart_font;
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             return BI.extend(configs, {
                 series: items
             });

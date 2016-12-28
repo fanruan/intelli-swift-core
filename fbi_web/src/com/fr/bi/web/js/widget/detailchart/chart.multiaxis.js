@@ -90,8 +90,13 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             }
             item.color = [self.config.chartColor[0]];
             if (item.type === "line") {
+                config.chartType = "line";
                 lineItem.push(item);
-            } else {
+            } else if(item.type === "area") {
+                config.chartType = "area";
+                otherItem.push(item);
+            }else {
+                config.chartType = "column";
                 otherItem.push(item);
             }
         });

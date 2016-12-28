@@ -16,21 +16,16 @@ BI.DetailTableReact = BI.inherit(BI.Pane, {
         BI.DetailTableReact.superclass._init.apply(this, arguments);
         var self = this;
         var o = this.options;
+        var columnSizeChange = function (data) {
+            var columnSize = BI.clone(data.columnSize);
+            var regionColumnSize = BI.clone(data.regionColumnSize);
+            self.setStoredRegionColumnSize(regionColumnSize[0]);
+            self.fireEvent(BI.DetailTableReact.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
+        };
         this.table = BI.createWidget({
-            type: "bi.table_react",
-            regionColumnSize: this.getStoredRegionColumnSize() || [],
-            onColumnResizeEnd: function (data) {
-                var columnSize = BI.clone(data.columnSize);
-                var regionColumnSize = BI.clone(data.regionColumnSize);
-                self.setStoredRegionColumnSize(regionColumnSize[0]);
-                self.fireEvent(BI.DetailTableReact.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
-            },
-            onRegionColumnResizeEnd: function (data) {
-                var columnSize = BI.clone(data.columnSize);
-                var regionColumnSize = BI.clone(data.regionColumnSize);
-                self.setStoredRegionColumnSize(regionColumnSize[0]);
-                self.fireEvent(BI.DetailTableReact.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
-            },
+            type: "bi.table_component",
+            onColumnResizeEnd: columnSizeChange,
+            onRegionColumnResizeEnd: columnSizeChange,
 
             onPrev: function (curr) {
                 self._onPageChange(curr, function (opt) {
@@ -107,7 +102,7 @@ BI.DetailTableReact = BI.inherit(BI.Pane, {
 
                     callback({
                         columnSize: self._getColumnSize(header).slice(0, BI.Utils.getAllDimensionIDs(widgetId).length),
-                        regionColumnSize: self.getStoredRegionColumnSize(),
+                        regionColumnSize: self.getStoredRegionColumnSize() || [],
                         items: items,
                         header: [header],
                         pages: Math.ceil(row / size),
@@ -230,6 +225,7 @@ BI.DetailTableReact = BI.inherit(BI.Pane, {
                     var val = self._createItemWithStyle(rowValue, styleSettings[i], dimensionTypes[i], dimensionGroups[i]);
                     rowItems.push(BI.extend({
                         text: val.text,
+                        title: val.text,
                         iconCls: val.iconCls,
                         style: {
                             color: val.fontColor

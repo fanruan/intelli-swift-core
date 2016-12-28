@@ -171,7 +171,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
             case BICst.MULTI_DATE_QUARTER_BEGIN:
                 return new Date().getQuarterStartDate();
             case BICst.MULTI_DATE_QUARTER_END:
-                return BI.Utils.getQuarterEndDate();
+                return new Date().getQuarterEndDate();
             case BICst.MULTI_DATE_WEEK_PREV:
                 return date.getOffsetDate(-7 * value);
             case BICst.MULTI_DATE_WEEK_AFTER:

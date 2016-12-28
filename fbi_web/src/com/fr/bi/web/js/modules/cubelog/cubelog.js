@@ -121,6 +121,11 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         this.finishLable.setVisible(true);
     },
 
+    setStart: function() {
+        this._showBar();
+        this.processBar.setValue(1);
+    },
+
     refreshLog: function (isStart) {
         var self = this;
         if (isStart) {
