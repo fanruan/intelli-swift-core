@@ -84,9 +84,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
                 }
             }
         }.start();
-
-
-
         return iter;
     }
 
