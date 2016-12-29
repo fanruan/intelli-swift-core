@@ -5,22 +5,8 @@
  */
 BI.extend(BI.Utils, {
 
-    getCurrentPackage4Conf: function () {
-        return BI.firstObject(Data.SharingPool.get(BICst.CURRENT_EDITING_PACKAGE));
-    },
-
-    getCurrentPackageName4Conf: function () {
-        var pack = BI.firstObject(Data.SharingPool.get(BICst.CURRENT_EDITING_PACKAGE));
-        return pack.name;
-    },
-
     getCurrentPackageId4Conf: function () {
         return BI.firstKey(Data.SharingPool.cat(BICst.CURRENT_EDITING_PACKAGE));
-    },
-
-    getCurrentPackageTables4Conf: function () {
-        var pack = BI.firstObject(Data.SharingPool.get(BICst.CURRENT_EDITING_PACKAGE));
-        return pack.tables;
     },
 
     //转义 表名和字段名
@@ -31,6 +17,16 @@ BI.extend(BI.Utils, {
     updateTranName4Conf: function (id, tranName) {
         var translation = Data.SharingPool.cat("translations");
         translation[id] = tranName;
+    },
+
+    updateTranslationsByTableId4Conf: function (tableId, newTranslations) {
+        var fields = this.getFieldsByTableId4Conf(tableId);
+        var translations = Data.SharingPool.cat("translations");
+        delete translations[tableId];
+        BI.each(fields, function (i, field) {
+            delete translations[field.id];
+        });
+        BI.extend(translations, newTranslations);
     },
 
     updateFields4Conf: function (id, field) {
@@ -365,6 +361,106 @@ BI.extend(BI.Utils, {
         }
     },
 
+    //复制关联，用于选择业务包表时候的关联继承
+    copyRelation4Conf: function (oFields, fieldIds, id) {
+        var relations = Data.SharingPool.cat("relations");
+        var connectionSet = relations.connectionSet, primaryKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
+        var addedConn = [], addedPriMap = {}, addedForMap = {};
+        BI.each(connectionSet, function (k, keys) {
+            var copyRelation = getCopyOfRelation(keys, oFields, fieldIds, id);
+            if (BI.isNotEmptyObject(copyRelation)) {
+                addedConn.push(copyRelation);
+            }
+        });
+        relations.connectionSet = connectionSet.concat(addedConn);
+        BI.each(primaryKeyMap, function (pfId, maps) {
+            var addedPris = [], nPKId = null;
+            BI.each(maps, function (k, keys) {
+                var copyRelation = getCopyOfRelation(keys, oFields, fieldIds, id);
+                if (BI.isNotEmptyObject(copyRelation)) {
+                    nPKId = copyRelation.primaryKey.field_id;
+                    addedPris.push(copyRelation);
+                }
+            });
+            if (addedPris.length > 0 && BI.isNotNull(nPKId)) {
+                addedPriMap[nPKId] = addedPris;
+            }
+        });
+        BI.each(addedPriMap, function (pkId, ms) {
+            var pkMaps = relations.primKeyMap[pkId];
+            if (BI.isNotNull(pkMaps)) {
+                primaryKeyMap[pkId] = pkMaps.concat(ms);
+            } else {
+                primaryKeyMap[pkId] = ms;
+            }
+        });
+        BI.each(foreignKeyMap, function (ffId, maps) {
+            var addedFors = [], nFKId = null;
+            BI.each(maps, function (k, keys) {
+                var copyRelation = getCopyOfRelation(keys, oFields, fieldIds, id);
+                if (BI.isNotEmptyObject(copyRelation)) {
+                    nFKId = copyRelation.foreignKey.field_id;
+                    addedFors.push(copyRelation);
+                }
+            });
+            if (addedFors.length > 0 && BI.isNotNull(nFKId)) {
+                addedForMap[nFKId] = addedFors;
+            }
+        });
+        BI.each(addedForMap, function (fkId, ms) {
+            var fkMaps = relations.foreignKeyMap[fkId];
+            if (BI.isNotNull(fkMaps)) {
+                foreignKeyMap[fkId] = fkMaps.concat(ms);
+            } else {
+                foreignKeyMap[fkId] = ms;
+            }
+        });
+        return {
+            connectionSet: addedConn,
+            primKeyMap: addedPriMap,
+            foreignKeyMap: addedForMap
+        };
+
+        function getCopyOfRelation(keys, oFields, fieldIds, nTableId) {
+            var relation = {};
+            var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
+            BI.each(oFields, function (i, ofs) {
+                BI.each(ofs, function (j, oField) {
+                    if (oField.id === primKey.field_id) {
+                        var nPK = {}, nFK = BI.deepClone(foreignKey);
+                        BI.each(fieldIds, function (k, fid) {
+                            if (BI.Utils.getFieldNameById4Conf(fid) === BI.Utils.getFieldNameById4Conf(primKey.field_id)) {
+                                nPK = {
+                                    field_id: fid,
+                                    table_id: nTableId
+                                }
+                            }
+                        });
+                        relation = {
+                            primaryKey: nPK,
+                            foreignKey: nFK
+                        }
+                    }
+                    if (oField.id === foreignKey.field_id) {
+                        var nPK = BI.deepClone(primKey), nFK = {};
+                        BI.each(fieldIds, function (k, fid) {
+                            if (BI.Utils.getFieldNameById4Conf(fid) === BI.Utils.getFieldNameById4Conf(foreignKey.field_id)) {
+                                nFK = {
+                                    field_id: fid,
+                                    table_id: nTableId
+                                }
+                            }
+                        });
+                        relation = {
+                            primaryKey: nPK,
+                            foreignKey: nFK
+                        }
+                    }
+                });
+            });
+            return relation;
+        }
+    },
 
     /**
      * 获取所有业务包分组信息树结构
@@ -486,17 +582,7 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.cat("packages")[packageId].name;
     },
 
-    getTableIDsOfPackageID4Conf: function (packageId) {
-        //这里要取最新的，从shared中
-        if (packageId === this.getCurrentPackageId4Conf()) {
-            return BI.keys(this.getCurrentPackageTables4Conf());
-        } else {
-            var packages = Data.SharingPool.cat("packages");
-            return BI.pluck(packages[packageId].tables, "id");
-        }
-    },
-
-    getConfPackageGroupIDs: function () {
+    getPackageGroupIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("groups"));
     },
 
@@ -508,7 +594,7 @@ BI.extend(BI.Utils, {
         return "";
     },
 
-    getConfGroupChildrenByGroupId: function (gid) {
+    getGroupChildrenByGroupId4Conf: function (gid) {
         var groups = Data.SharingPool.get("groups");
         if (BI.isNotNull(groups[gid])) {
             return groups[gid].children;
@@ -516,28 +602,12 @@ BI.extend(BI.Utils, {
         return [];
     },
 
-    getConfGroupInitTimeByGroupId: function (gid) {
+    getGroupInitTimeByGroupId4Conf: function (gid) {
         var groups = Data.SharingPool.get("groups");
         if (BI.isNotNull(groups[gid])) {
             return groups[gid].init_time;
         }
         return "";
-    },
-
-    getConfPackageTablesByID: function (pid) {
-        return Data.SharingPool.get("packages", pid, "tables");
-    },
-
-    getConfAllPackageIDs: function () {
-        return BI.keys(Data.SharingPool.get("packages"));
-    },
-
-    getConfPackageNameByID: function (pid) {
-        return Data.SharingPool.get("packages", pid, "name");
-    },
-
-    getUpdateSettingByID: function (id) {
-        return Data.SharingPool.get("update_settings", id);
     },
 
     getAuthorityLoginField: function () {
@@ -801,8 +871,14 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
-    modifyGlobalUpdateSetting: function (data, callback, complete) {
-        Data.Req.reqModifyGlobalUpdateSetting(data, function (res) {
+    getUpdateSettingBySourceId: function (data, callback, complete) {
+        Data.Req.reqUpdateSettingById(data, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    modifyUpdateSetting: function (data, callback, complete) {
+        Data.Req.reqModifyUpdateSetting(data, function (res) {
             callback(res);
         }, complete)
     },

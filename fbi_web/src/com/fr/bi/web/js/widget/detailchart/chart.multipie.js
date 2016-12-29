@@ -32,23 +32,22 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         delete config.zoom;
         config.colors = this.config.chartColor;
-        config.plotOptions.style = formatChartStyle();
+        config.plotOptions.gradual = formatChartStyle();
         formatChartPieStyle();
 
         this.formatChartLegend(config, this.config.legend);
 
-        config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
+        config.plotOptions.tooltip.formatter.identifier = "${NAME}${VALUE}${PERCENT}";
+        config.plotOptions.tooltip.shared = true;
         config.chartType = "multiPie";
         delete config.xAxis;
         delete config.yAxis;
 
         BI.extend(config.plotOptions.dataLabels, {
             enabled: this.config.showDataLabel,
-            align: self.setDataLabelPosition(this.config),
-            style: this.config.dataLabelSetting.textStyle,
-            connectorWidth: this.config.dataLabelSetting.showTractionLine,
+            align: "top",
         });
-        config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
+        config.plotOptions.dataLabels.formatter.identifier = "${NAME}${VALUE}";
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
@@ -64,10 +63,10 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
         function formatChartStyle() {
             switch (self.config.chartStyle) {
                 case BICst.MULTI_PIE_GRADIENT_STYLE.LIGHTER:
-                    return "gradual";
+                    return "lighter";
                 case BICst.MULTI_PIE_GRADIENT_STYLE.DARKER:
                 default:
-                    return "normal";
+                    return "darker";
             }
         }
 
@@ -104,10 +103,11 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
         return items;
     },
 
-    _formatItems: function (items) {
+    _formatItems: function (items, options) {
         var self = this;
         BI.each(items, function (idx, item) {
             BI.each(item, function (id, it) {
+                it.drilldown = options.clickZoom;
                 BI.each(it.data, function (i, da) {
                     da.y = self.formatXYDataWithMagnify(da.y, 1);
                     da.name = da.x;
@@ -136,7 +136,7 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
             types.push(type);
         });
 
-        this.combineChart.populate(this._formatItems(items), types);
+        this.combineChart.populate(this._formatItems(items, options), types);
     },
 
     resize: function () {

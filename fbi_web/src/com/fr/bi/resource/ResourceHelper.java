@@ -1844,8 +1844,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/donutchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/fallaxischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/piechartsetting.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/settings/multipiechartsetting.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/settings/recttreechartsetting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/multipiechart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/recttreechart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/accumulateradarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
@@ -1856,6 +1856,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/complextable/widget.complextable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/detailed.setting.trigger.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/angle/angle.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/datalabel.detailed.setting.combo.js",
@@ -2351,8 +2352,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/sortabletable/sortabletable.css",
 
                 //螺旋分析tab控件
-                "com/fr/bi/web/css/widget/dynamicgrouptab/dynamicgroup.tab.buttonmanager.css",
-                "com/fr/bi/web/css/widget/dynamicgrouptab/dynamicgroup.tab.sheetbutton.css",
+                "com/fr/bi/web/css/widget/dynamicgrouptab/dynamicgroup.tab.buttongroup.css",
 
                 //Excel表
                 "com/fr/bi/web/css/widget/exceltable/exceltable.cell.css",
@@ -3163,9 +3163,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/sortabletable/sortabletable.dashline.horizontal.js",
 
                 //螺旋分析tab控件
-                "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.js",
-                "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.buttonmanager.js",
-                "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.sheetbutton.js",
+                "com/fr/bi/web/js/widget/dynamicgrouptab/dynamicgroup.tab.buttongroup.js",
 
                 //Excel表
                 "com/fr/bi/web/js/widget/exceltable/exceltable.cell.js",

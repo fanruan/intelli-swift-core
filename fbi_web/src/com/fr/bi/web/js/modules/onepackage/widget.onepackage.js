@@ -345,15 +345,11 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             type: "bi.etl",
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: tableId,
-            relations: this.model.getRelations(),
-            translations: this.model.getTranslations(),
-            all_fields: this.model.getAllFields(),
-            excel_view: this.model.getExcelViews()[tableId],
-            update_settings: this.model.getUpdateSettings()
+            packageId: this.model.getId()
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_SAVE, function (data) {
-            // self.model.changeTableInfo(tableId, data);
+            self.model.changeTableInfo(tableId, data);
             self._refreshTablesInPackage();
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
@@ -376,29 +372,20 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         editSQL.on(BI.EditSQL.EVENT_SAVE, function (data) {
             BI.Layers.remove(self._constant.SQL_LAYER);
             var tableId = BI.UUID();
-            var allFields = self.model.getAllFields();
             BI.each(data.fields, function (i, fs) {
                 BI.each(fs, function (j, field) {
                     field.table_id = tableId;
                     field.id = BI.UUID();
-                    allFields[field.id] = field;
                 });
             });
-            var translations = self.model.getTranslations();
-            var tableName = self.model.createDistinctTableTranName(tableId, BI.i18nText("BI-Sql_DataSet"));
-            translations[tableId] = tableName;
-            data.table_name = tableName;
+            data.table_name = BI.i18nText("BI-Sql_DataSet");
             BI.Layers.remove(self._constant.ETL_LAYER);
             var etl = BI.createWidget({
                 type: "bi.etl_sql",
                 element: BI.Layers.create(self._constant.ETL_LAYER),
                 id: tableId,
-                table_data: data,
-                relations: self.model.getRelations(),
-                translations: translations,
-                all_fields: allFields,
-                excel_view: self.model.getExcelViews()[tableId],
-                update_settings: self.model.getUpdateSettings()
+                table: data,
+                packageId: self.model.getId()
             });
             BI.Layers.show(self._constant.ETL_LAYER);
             etl.on(BI.ETL.EVENT_SAVE, function (data) {
@@ -426,29 +413,20 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function (data) {
             BI.Layers.remove(self._constant.EXCEL_LAYER);
             var tableId = BI.UUID();
-            var allFields = self.model.getAllFields();
             BI.each(data.fields, function (i, fs) {
                 BI.each(fs, function (j, field) {
                     field.table_id = tableId;
                     field.id = BI.UUID();
-                    allFields[field.id] = field;
                 });
             });
-            var tableName = self.model.createDistinctTableTranName(tableId, BI.i18nText("BI-Excel_Dataset"));
-            var translations = self.model.getTranslations();
-            translations[tableId] = tableName;
-            data.table_name = tableName;
+            data.table_name = BI.i18nText("BI-Excel_Dataset");
             BI.Layers.remove(self._constant.ETL_LAYER);
             var etl = BI.createWidget({
                 type: "bi.etl_excel",
                 element: BI.Layers.create(self._constant.ETL_LAYER),
                 id: tableId,
-                table_data: data,
-                relations: self.model.getRelations(),
-                translations: translations,
-                all_fields: allFields,
-                excel_view: self.model.getExcelViews()[tableId],
-                update_settings: self.model.getUpdateSettings()
+                table: data,
+                packageId: self.model.getId()
             });
             BI.Layers.show(self._constant.ETL_LAYER);
             etl.on(BI.ETL.EVENT_SAVE, function (data) {
@@ -481,7 +459,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         });
     },
 
-    _buildOneTablePane: function (id, table) {
+    _buildOneTablePane: function (id, data) {
         BI.Layers.remove(this._constant.ETL_LAYER);
         var self = this;
         var type = "bi.etl";
@@ -496,7 +474,10 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             type: type,
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: id,
-            table: table
+            packageId: this.model.getId(),
+            table: data.table,
+            excelView: data.excelView,
+            updateSettings: data.updateSettings
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_CUBE_SAVE, function (info, table) {
@@ -516,7 +497,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             });
         });
         etl.on(BI.ETL.EVENT_SAVE, function (data) {
-            // self.model.changeTableInfo(id, data);
+            self.model.changeTableInfo(id, data);
             self._refreshTablesInPackage();
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
