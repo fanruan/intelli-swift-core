@@ -30,12 +30,7 @@ BI.ETL = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.ETL.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
-        this.model = new BI.ETLModel({
-            id: o.id,
-            packageId: o.packageId,
-            table: o.table
-        });
+        this.model = new BI.ETLModel(this.options);
         BI.createWidget({
             type: "bi.border",
             element: this.element,
@@ -448,13 +443,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 self.model.refresh4Fields(data);
                 self.model = new BI.ETLModel({
                     id: o.id,
-                    table_data: data,
-                    relations: o.relations,
-                    translations: o.translations,
-                    all_fields: o.all_fields,
-                    used_fields: o.used_fields,
-                    excel_view: o.excel_view,
-                    update_settings: o.update_settings
+                    packageId: o.packageId,
+                    table: data
                 });
                 self._populate();
             });
@@ -505,7 +495,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 field: self.model.getFieldById(fieldId)
             });
             relationPane.on(BI.RelationSetPane.EVENT_CHANGE, function (relations) {
-                self.model.setRelations(fieldId, relations);
+                self.model.setRelations(relations, fieldId);
                 self._populate();
             });
             BI.Popovers.create(fieldId, relationPane).open(fieldId);

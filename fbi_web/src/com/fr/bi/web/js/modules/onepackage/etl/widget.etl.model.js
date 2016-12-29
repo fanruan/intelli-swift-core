@@ -8,6 +8,8 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.id = o.id;
         this.packageId = o.packageId;
         this.table = o.table;
+        this.excelView = o.excelView;
+        this.updateSettings = o.updateSettings;
         this.allTableIds = [];
         this.allTables = [];
         this.translations = {};
@@ -16,6 +18,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
         if (BI.isNotNull(this.table)) {
             this._prepareData();
         }
+        this._initTranslations();
     },
 
     _prepareData: function () {
@@ -24,13 +27,12 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this._addId2Tables(finalTable, this.tablesMap);
         this.allTableIds = this._getTablesId(finalTable, []);
         this.allTables = [finalTable];
-        this._initTranslations();
     },
 
     //当前表的所有的转义信息
-    _initTranslations: function() {
+    _initTranslations: function () {
         var self = this;
-        if (BI.isNotNull(this.table)) {
+        if (!this.isNew) {
             var tableName = BI.Utils.getTransNameById4Conf(this.id);
             var connectionName = this.table.connection_name;
             if (BI.isNull(tableName)) {
@@ -146,7 +148,8 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     //为了复用字段id
     _getCurrentFieldIdByFieldInfo: function (field) {
-        if (BI.isNotNull(BI.Utils.getFieldNameById4Conf(field.id))) {
+        if (BI.isNotNull(BI.Utils.getFieldNameById4Conf(field.id)) ||
+            BI.isNotNull(this.translations[field.id])) {
             return field.id;
         }
         return BI.Utils.getFieldIdByNameAndTableId4Conf(field.field_name, this.id) || BI.UUID();
@@ -181,7 +184,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     // relation不考虑取消的问题实时的保存
-    setRelations: function (fieldId, relations) {
+    setRelations: function (relations, fieldId) {
         BI.Utils.saveRelations4Conf(relations, fieldId);
         //同步到后台
         BI.Utils.updateRelation4Conf({
@@ -373,8 +376,14 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     refresh4Fields: function (data) {
-        var self = this;
         var fields = data.fields, oFields = this.fields;
+
+        BI.each(fields, function (i, fs) {
+            BI.each(fs, function (j, field) {
+                field.id = getFieldId(field.field_name, oFields);
+            });
+        });
+        this.fields = fields;
 
         function getFieldId(name, fields) {
             var fieldId = BI.UUID();
@@ -388,19 +397,12 @@ BI.ETLModel = BI.inherit(FR.OB, {
             });
             return fieldId;
         }
-
-        BI.each(fields, function (i, fs) {
-            BI.each(fs, function (j, field) {
-                field.id = getFieldId(field.field_name, oFields);
-                self.allFields[field.id] = field;
-            });
-        });
     },
 
     //添加业务包表
     _addPackageTable: function (table) {
         var self = this;
-        var id = BI.UUID(), tableId = table.id;
+        var id = BI.UUID();
         table.id = id;
         var fieldIds = [], oFields = BI.deepClone(table.fields);
         BI.each(table.fields, function (j, fs) {
@@ -408,113 +410,16 @@ BI.ETLModel = BI.inherit(FR.OB, {
                 var fId = BI.UUID();
                 fieldIds.push(fId);
                 //字段的转义
-                if (BI.isNotNull(field.id) && BI.isNotNull(self.translations[field.id])) {
-                    self.translations[fId] = self.translations[field.id];
+                if (BI.isNotNull(field.id) && BI.isNotNull(BI.Utils.getTransNameById4Conf(field.id))) {
+                    self.translations[fId] = BI.Utils.getTransNameById4Conf(field.id);
                 }
-
                 field.id = fId;
                 field.table_id = id;
-                self.allFields[fId] = field;
             });
         });
 
-        var connectionSet = this.relations.connectionSet,
-            primaryKeyMap = this.relations.primKeyMap,
-            foreignKeyMap = this.relations.foreignKeyMap;
-        var addedConns = [], addedPriMap = {}, addedForMap = {};
-        BI.each(connectionSet, function (k, keys) {
-            var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
-            if (BI.isNotEmptyObject(copyRelation)) {
-                addedConns.push(copyRelation);
-            }
-        });
-        this.relations.connectionSet = connectionSet.concat(addedConns);
-        BI.each(primaryKeyMap, function (pfId, maps) {
-            var addedPris = [], nPKId = null;
-            BI.each(maps, function (k, keys) {
-                var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
-                if (BI.isNotEmptyObject(copyRelation)) {
-                    nPKId = copyRelation.primaryKey.field_id;
-                    addedPris.push(copyRelation);
-                }
-            });
-            if (addedPris.length > 0 && BI.isNotNull(nPKId)) {
-                addedPriMap[nPKId] = addedPris;
-            }
-        });
-        BI.each(addedPriMap, function (pkId, ms) {
-            var pkMaps = self.relations.primKeyMap[pkId];
-            if (BI.isNotNull(pkMaps)) {
-                self.relations.primKeyMap[pkId] = pkMaps.concat(ms);
-            } else {
-                self.relations.primKeyMap[pkId] = ms;
-            }
-        });
-        BI.each(foreignKeyMap, function (ffId, maps) {
-            var addedFors = [], nFKId = null;
-            BI.each(maps, function (k, keys) {
-                var copyRelation = self._getCopyOfRelation(keys, oFields, fieldIds, tableId, id);
-                if (BI.isNotEmptyObject(copyRelation)) {
-                    nFKId = copyRelation.foreignKey.field_id;
-                    addedFors.push(copyRelation);
-                }
-            });
-            if (addedFors.length > 0 && BI.isNotNull(nFKId)) {
-                addedForMap[nFKId] = addedFors;
-            }
-        });
-        BI.each(addedForMap, function (fkId, ms) {
-            var fkMaps = self.relations.foreignKeyMap[fkId];
-            if (BI.isNotNull(fkMaps)) {
-                self.relations.foreignKeyMap[fkId] = fkMaps.concat(ms);
-            } else {
-                self.relations.foreignKeyMap[fkId] = ms;
-            }
-        });
-    },
-
-    //copy一份relation
-    _getCopyOfRelation: function (keys, oFields, fieldIds, oTableId, nTableId) {
-        var self = this;
-        var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
-        var relation = {};
-        BI.each(oFields, function (i, ofs) {
-            BI.each(ofs, function (j, oField) {
-                if (oField.id === primKey.field_id) {
-                    var nPK = {}, nFK = BI.deepClone(foreignKey);
-                    BI.each(fieldIds, function (k, fid) {
-                        if (self.allFields[fid] && self.allFields[primKey.field_id] &&
-                            self.allFields[fid].field_name === self.allFields[primKey.field_id].field_name) {
-                            nPK = {
-                                field_id: fid,
-                                table_id: nTableId
-                            }
-                        }
-                    });
-                    relation = {
-                        primaryKey: nPK,
-                        foreignKey: nFK
-                    }
-                }
-                if (oField.id === foreignKey.field_id) {
-                    var nPK = BI.deepClone(primKey), nFK = {};
-                    BI.each(fieldIds, function (k, fid) {
-                        if (self.allFields[fid] && self.allFields[foreignKey.field_id] &&
-                            self.allFields[fid].field_name === self.allFields[foreignKey.field_id].field_name) {
-                            nFK = {
-                                field_id: fid,
-                                table_id: nTableId
-                            }
-                        }
-                    });
-                    relation = {
-                        primaryKey: nPK,
-                        foreignKey: nFK
-                    }
-                }
-            });
-        });
-        return relation;
+        var addedRelations = BI.Utils.copyRelation4Conf(oFields, fieldIds, id);
+        this.setRelations(addedRelations);
     },
 
     //自己有id的table使用原来的
@@ -561,28 +466,26 @@ BI.ETLModel = BI.inherit(FR.OB, {
         });
     },
 
-    _replaceNode: function (tables, newNode) {
-        var self = this;
-        BI.some(tables, function (i, table) {
-            if (table.id === newNode.id) {
-                tables[i] = newNode;
-                return true;
-            }
-            if (BI.isNotNull(table.tables)) {
-                tables[i].tables = self._replaceNode(table.tables, newNode);
-            }
-
-        });
-        return tables;
-    },
-
     _replaceNodeInAllTables: function (newNode) {
-        var self = this;
         var allTables = BI.deepClone(this.getAllTables());
         BI.each(allTables, function (i, tables) {
-            allTables[i] = self._replaceNode(tables, newNode);
+            allTables[i] = replaceNode(tables, newNode);
         });
         this.allTables = allTables;
+
+        function replaceNode(tables, newNode) {
+            BI.some(tables, function (i, table) {
+                if (table.id === newNode.id) {
+                    tables[i] = newNode;
+                    return true;
+                }
+                if (BI.isNotNull(table.tables)) {
+                    tables[i].tables = replaceNode(table.tables, newNode);
+                }
+
+            });
+            return tables;
+        }
     },
 
     _getTablesId: function (tables, tableIds) {
@@ -601,8 +504,6 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var data = {
             id: this.getId(),
             translations: this.getTranslations(),
-            relations: this.getRelations(),
-            all_fields: this.getAllFields(),
             fields: this.getFields(),
             excel_view: this.getExcelView(),
             update_settings: this.getUpdateSettings()
@@ -619,7 +520,6 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     saveTable: function (callback) {
-        var self = this;
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
@@ -632,9 +532,9 @@ BI.ETLModel = BI.inherit(FR.OB, {
             packageId: this.packageId,
             table: table,
             fields: this.fields,
-            translations: self.translations,
-            excel_view: {},
-            update_settings: {}
+            translations: this.translations,
+            excelView: this.excelView,
+            updateSettings: this.updateSettings
         };
         BI.Utils.updateOneTable4Conf(BI.deepClone(data), function () {
             callback(data);
