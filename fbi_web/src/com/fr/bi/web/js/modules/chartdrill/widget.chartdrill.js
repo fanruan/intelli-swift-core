@@ -55,6 +55,8 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                     drill.setValue(obj);
                     drill.populate();
                     width += 190;
+                }else{
+                    drill.setVisible(false);
                 }
             });
             self.wrapper.element.width(width);
