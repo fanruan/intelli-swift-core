@@ -459,7 +459,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         });
     },
 
-    _buildOneTablePane: function (id, table) {
+    _buildOneTablePane: function (id, data) {
         BI.Layers.remove(this._constant.ETL_LAYER);
         var self = this;
         var type = "bi.etl";
@@ -474,8 +474,10 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             type: type,
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: id,
-            table: table,
-            packageId: this.model.getId()
+            packageId: this.model.getId(),
+            table: data.table,
+            excelView: data.excelView,
+            updateSettings: data.updateSettings
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_CUBE_SAVE, function (info, table) {
