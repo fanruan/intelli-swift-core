@@ -516,8 +516,6 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/css/modules/selectdata4filter/node/node.level0.dimension.css",
 
-                "com/fr/bi/web/css/modules/selectdatamask/widget.selectdata.mask.css",
-
                 //通用查询选字段
                 "com/fr/bi/web/css/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.css",
                 //选择文本
@@ -1319,7 +1317,7 @@ public class ResourceHelper {
 
     private static String[] getConfCssModule() {
         return new String[]{
-//数据连接
+                //数据连接
                 "com/fr/bi/web/css/fragments/datalink/widget.testlink.loading.css",
 
                 //union
@@ -1329,6 +1327,9 @@ public class ResourceHelper {
                 //etl relation
                 "com/fr/bi/web/css/modules/relation/button.relationtable.field.css",
                 "com/fr/bi/web/css/modules/relation/widget.relationset.group.css",
+
+                //建关联面板
+                "com/fr/bi/web/css/modules/selectdatamask/widget.selectdata.mask.css",
 
                 //etl预览
                 "com/fr/bi/web/css/modules/onepackage/etl/preview/widget.etltable.preview.css",
