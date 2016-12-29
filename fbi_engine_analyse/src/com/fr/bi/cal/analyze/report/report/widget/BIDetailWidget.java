@@ -1,10 +1,10 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
@@ -26,6 +26,7 @@ import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -228,15 +229,16 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     @Override
     public void refreshSources() {
-        if (target != null) {
-            for (BusinessTable table : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
-                if (table.getID().equals(target.getID())) {
-                    if (!table.getTableSource().getSourceID().equals(target.getTableSource().getSourceID())) {
-                        target.setSource(table.getTableSource());
-                        break;
-                    }
-                }
+        if (target == null) {
+            return;
+        }
+        BusinessTable newTable = BusinessTableHelper.getBusinessTable(new BITableID(target.getID()));
+        if (null != newTable) {
+            if (!ComparatorUtils.equals(newTable.getTableSource().getSourceID(), target.getTableSource().getSourceID())) {
+                target.setSource(newTable.getTableSource());
             }
+        } else {
+            BILoggerFactory.getLogger(this.getClass()).error("error: the analysisTable " + target.getID().getIdentityValue() + " is absent");
         }
     }
 

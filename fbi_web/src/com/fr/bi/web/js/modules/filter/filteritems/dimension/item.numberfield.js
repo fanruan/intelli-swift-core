@@ -238,7 +238,7 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.inline",
             items: [{
                 type: "bi.label",
-                text: "N = ",
+                text: "N=",
                 height: 30
             }, this.filterWidget]
         });

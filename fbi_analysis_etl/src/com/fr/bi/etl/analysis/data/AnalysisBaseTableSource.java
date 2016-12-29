@@ -237,7 +237,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     public void clearUserBaseTableMap() {
         userBaseTableMap.clear();
         widget.refreshColumns();
-        widget.refreshSources();
     }
 
 }
