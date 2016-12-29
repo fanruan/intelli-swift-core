@@ -1,5 +1,6 @@
 package com.fr.bi.resource;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -10,7 +11,6 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -19,7 +19,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
-import com.fr.web.core.A.S;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -574,7 +573,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selecttreedatacombo/selecttreedatacombo.js",
 
                 //日期控件
-                "com/fr/bi/web/js/modules/date/interval.date.js",
                 "com/fr/bi/web/js/modules/date/interval.date.param.js",
                 "com/fr/bi/web/js/modules/date/multi.date.js",
 
@@ -1608,6 +1606,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/broadcast.js",
                 "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/utils.js",
+
+                //日期区间
+                "com/fr/bi/web/js/modules/date/interval.date.js",
 
                 //自定义分组
                 "com/fr/bi/web/js/modules/customgroup/widget.group2other.customgroup.js",

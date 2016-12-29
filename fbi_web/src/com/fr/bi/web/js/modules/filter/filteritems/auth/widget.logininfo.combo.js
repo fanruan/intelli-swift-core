@@ -105,9 +105,10 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
         }
         var connectionSet = relations.connectionSet;
         BI.each(connectionSet, function (i, cs) {
-            if (cs.foreignKey.table_id === tableId) {
-                primaryFields.push(cs.primaryKey.field_id);
-                primaryFields = primaryFields.concat(self._getPrimaryFieldsByFieldId(cs.primaryKey.field_id));
+            var pFId = cs.primaryKey.field_id;
+            if (cs.foreignKey.table_id === tableId && !primaryFields.contains(pFId)) {
+                primaryFields.push(pFId);
+                primaryFields = primaryFields.concat(self._getPrimaryFieldsByFieldId(pFId));
             }
         });
         return primaryFields;
