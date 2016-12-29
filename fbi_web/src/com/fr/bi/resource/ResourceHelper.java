@@ -794,9 +794,6 @@ public class ResourceHelper {
                 //下拉树控件字段关联设置
                 "com/fr/bi/web/css/modules/fieldrelationsettingwithpreviewpopup/fieldrelationsettingwithpreviewpopup.css",
 
-                "com/fr/bi/web/css/modules/relation/button.relationtable.field.css",
-                "com/fr/bi/web/css/modules/relation/widget.relationset.group.css",
-
                 //选择字段
                 "com/fr/bi/web/css/modules/selectdata/tab.selectdata.css",
                 "com/fr/bi/web/css/modules/selectdata/preview/pane.preview.selectdata.css",
@@ -1068,6 +1065,10 @@ public class ResourceHelper {
 
                 //数据连接
                 "com/fr/bi/web/css/fragments/datalink/widget.testlink.loading.css",
+
+                //etl relation
+                "com/fr/bi/web/css/modules/relation/button.relationtable.field.css",
+                "com/fr/bi/web/css/modules/relation/widget.relationset.group.css",
 
                 //union
                 "com/fr/bi/web/css/modules/onepackage/etl/union/widget.addunion.table.css",
