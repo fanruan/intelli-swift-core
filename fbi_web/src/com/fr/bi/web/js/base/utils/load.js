@@ -38,10 +38,12 @@ $.extend(BI, {
         return function (src, ext, must) {
             loadReady(src, must);
             // alex:如果已经加载过了的,直接return
-            if (_LOADED[src] === true) return;
+            if (_LOADED[src] === true) {
+                return;
+            }
             if (ext === 'css') {
                 var link = document.createElement('link');
-                link.rel = 'stylesheet'
+                link.rel = 'stylesheet';
                 link.type = 'text/css';
                 link.href = src;
                 var head = document.getElementsByTagName('head')[0];
