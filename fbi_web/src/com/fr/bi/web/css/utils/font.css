@@ -3616,10 +3616,10 @@
 }
 .table-drill-up-down .b-font:before {
   content: "\e6c2";
-  color: #1a1a1a;
+  color: "";
 }
 .table-drill-up-down.native .b-font:before,
 .table-drill-up-down.disabled .b-font:before {
   content: "\e6c2";
-  color: #1a1a1a;
+  color: "";
 }
