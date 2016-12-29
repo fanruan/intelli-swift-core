@@ -53,7 +53,7 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
             var items = [];
             BI.each(tables, function (i, table) {
                 items.push({
-                    text: table.table_name,
+                    text: table.temp_name,
                     value: table.md5
                 })
             });

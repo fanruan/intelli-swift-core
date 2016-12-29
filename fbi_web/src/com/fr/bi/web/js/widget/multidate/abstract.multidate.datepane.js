@@ -69,64 +69,6 @@
             });
         },
 
-        //n个月之后的日期
-        _getAfterMultiMonth: function (n) {
-            var dt = new Date();
-            dt.setMonth(dt.getMonth() + parseInt(n));
-            return dt;
-        },
-
-        //n个月之前的日期
-        _getBeforeMultiMonth: function (n) {
-            var dt = new Date();
-            dt.setMonth(dt.getMonth() - parseInt(n));
-            return dt;
-        },
-
-        //n个季度之后的日期
-        _getAfterMulQuarter: function (n) {
-            var dt = new Date();
-            dt.setMonth(dt.getMonth() + n * 3);
-            return dt;
-        },
-
-        //n个季度之前的日期
-        _getBeforeMulQuarter: function (n) {
-            var dt = new Date();
-            dt.setMonth(dt.getMonth() - n * 3);
-            return dt;
-        },
-
-        //得到本季度的起始月份
-        _getQuarterStartMonth: function () {
-            var quarterStartMonth = 0;
-            var nowMonth = new Date().getMonth();
-            if (nowMonth < 3) {
-                quarterStartMonth = 0;
-            }
-            if (2 < nowMonth && nowMonth < 6) {
-                quarterStartMonth = 3;
-            }
-            if (5 < nowMonth && nowMonth < 9) {
-                quarterStartMonth = 6;
-            }
-            if (nowMonth > 8) {
-                quarterStartMonth = 9;
-            }
-            return quarterStartMonth;
-        },
-
-        //获得本季度的起始日期
-        _getQuarterStartDate: function () {
-            return new Date(new Date().getFullYear(), this._getQuarterStartMonth(), 1);
-        },
-
-        //得到本季度的结束日期
-        _getQuarterEndDate: function () {
-            var quarterEndMonth = this._getQuarterStartMonth() + 2;
-            return new Date(new Date().getFullYear(), quarterEndMonth, new Date().getMonthDays(quarterEndMonth));
-        },
-
         getValue: function () {
             var button = this.radioGroup.getSelectedButtons()[0];
             var type = button.getValue(), value = button.getInputValue();
@@ -184,21 +126,21 @@
                 case BICst.MULTI_DATE_DAY_TODAY:
                     return new Date();
                 case BICst.MULTI_DATE_MONTH_PREV:
-                    return this._getBeforeMultiMonth(value);
+                    return new Date().getBeforeMultiMonth(value);
                 case BICst.MULTI_DATE_MONTH_AFTER:
-                    return this._getAfterMultiMonth(value);
+                    return new Date().getAfterMultiMonth(value);
                 case BICst.MULTI_DATE_MONTH_BEGIN:
                     return new Date(new Date().getFullYear(), new Date().getMonth(), 1);
                 case BICst.MULTI_DATE_MONTH_END:
                     return new Date(new Date().getFullYear(), new Date().getMonth(), (new Date().getLastDateOfMonth()).getDate());
                 case BICst.MULTI_DATE_QUARTER_PREV:
-                    return this._getBeforeMulQuarter(value);
+                    return new Date().getBeforeMulQuarter(value);
                 case BICst.MULTI_DATE_QUARTER_AFTER:
-                    return this._getAfterMulQuarter(value);
+                    return new Date().getAfterMulQuarter(value);
                 case BICst.MULTI_DATE_QUARTER_BEGIN:
-                    return this._getQuarterStartDate();
+                    return new Date().getQuarterStartDate();
                 case BICst.MULTI_DATE_QUARTER_END:
-                    return this._getQuarterEndDate();
+                    return new Date().getQuarterEndDate();
                 case BICst.MULTI_DATE_WEEK_PREV:
                     return new Date().getOffsetDate(-7 * value);
                 case BICst.MULTI_DATE_WEEK_AFTER:

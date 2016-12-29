@@ -7,6 +7,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -139,6 +140,11 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         for (AnalysisCubeTableSource source : getParents()){
             source.refreshWidget();
         }
+    }
+
+    @Override
+    public Set<BIWidget> getWidgets() {
+        return new HashSet<BIWidget>();
     }
 
     @Override

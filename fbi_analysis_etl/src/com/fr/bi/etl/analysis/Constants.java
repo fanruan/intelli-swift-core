@@ -8,6 +8,8 @@ import com.fr.bi.stable.constant.BIReportConstant;
 public class Constants {
 
     public final static String PARENTS ="parents";
+    public final static String OPERATOR ="operator";
+    public final static String TYPE ="etlType";
     public final static String FIELDS ="etl_fields";
     public final static String ITEMS ="items";
     public final static String PACK_ID ="myetlidbuxudonga";

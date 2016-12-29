@@ -126,7 +126,6 @@ BI.BorderLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.BorderLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

@@ -32,7 +32,7 @@ BI.TableLayout = BI.inherit(BI.Layout, {
         this.populate(this.options.items);
     },
 
-    _addElement: function (arr) {
+    _addElement: function (idx, arr) {
         var o = this.options;
         var abs = [], left = 0, right = 0, i, j;
 
@@ -128,26 +128,18 @@ BI.TableLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("table布局不需要resize");
+        // console.log("table布局不需要resize");
     },
 
     addItem: function (arr) {
-        BI.TableLayout.superclass.addItem.apply(this, arguments);
         if (!BI.isArray(arr)) {
             throw new Error("item 必须是数组");
         }
-        var w = this._addElement(arr);
-        this.options.items.push(arr);
-        w.element.appendTo(this.element);
-        return w;
+        return BI.TableLayout.superclass.addItem.apply(this, arguments);
     },
 
     populate: function (items) {
         BI.TableLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, arr) {
-            self._addElement(arr);
-        });
         this.render();
     }
 });

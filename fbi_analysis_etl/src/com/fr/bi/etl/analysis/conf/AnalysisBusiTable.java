@@ -3,7 +3,10 @@ package com.fr.bi.etl.analysis.conf;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -16,9 +19,7 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
@@ -47,7 +48,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
     private void initFields() {
         String tableId = getID().getIdentity();
         List<BusinessField> fields = new ArrayList<BusinessField>();
-        for (PersistentField f : source.getPersistentTable().getFieldList()){
+        for (PersistentField f : source.getPersistentTable().getFieldList()) {
             fields.add(new BIBusinessField(this, new BIFieldID(tableId + f.getFieldName()), f.getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(f.getSqlType(), f.getColumnSize(), f.getScale()), f.getColumnSize()));
         }
         setFields(fields);
@@ -127,8 +128,19 @@ public class AnalysisBusiTable extends BIBusinessTable {
         jo.put("table_id", getID().getIdentity());
         jo.put("is_usable", true);
         //记录数的id先暂时用拼接
-        jo.put("id", jo.optString("table_id") +BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
+        jo.put("id", jo.optString("table_id") + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Records"));
         return jo;
     }
 
+    public Set<BusinessTable> getUsedTables() {
+        Set<BusinessTable> usedTables = new HashSet<BusinessTable>();
+        for (BIWidget widget : ((AnalysisCubeTableSource) source).getWidgets()) {
+            if (null != widget && null != widget.getUsedTableDefine()) {
+                for (BusinessTable table : widget.getUsedTableDefine()) {
+                    usedTables.add(table);
+                }
+            }
+        }
+        return usedTables;
+    }
 }

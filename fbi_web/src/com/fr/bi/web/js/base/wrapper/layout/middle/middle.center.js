@@ -15,13 +15,14 @@ BI.CenterLayout = BI.inherit(BI.Layout, {
             bgap: 0
         });
     },
+
     _init: function () {
         BI.CenterLayout.superclass._init.apply(this, arguments);
         this.populate(this.options.items);
     },
 
     resize: function () {
-        console.log("center布局不需要resize");
+        // console.log("center布局不需要resize");
     },
 
     addItem: function (item) {
@@ -29,8 +30,7 @@ BI.CenterLayout = BI.inherit(BI.Layout, {
         throw new Error("不能添加元素");
     },
 
-    populate: function (items) {
-        BI.CenterLayout.superclass.populate.apply(this, arguments);
+    stroke: function (items) {
         var self = this, o = this.options;
         this.clear();
         var list = [];
@@ -66,6 +66,10 @@ BI.CenterLayout = BI.inherit(BI.Layout, {
             rows: 1,
             items: list
         });
+    },
+
+    populate: function (items) {
+        BI.CenterLayout.superclass.populate.apply(this, arguments);
     }
 });
 $.shortcut('bi.center', BI.CenterLayout);
