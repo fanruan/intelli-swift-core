@@ -44,7 +44,6 @@
   -o-flex-wrap: nowrap;
   flex-wrap: nowrap;
   min-height: 100%;
-  float: left;
 }
 .bi-flex-horizontal-layout .flex-horizontal-layout-wrapper.middle {
   /* 09版 */

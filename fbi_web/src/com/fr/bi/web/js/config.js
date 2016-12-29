@@ -36,10 +36,10 @@ $(function () {
             return ob;
         }
     });
-    // BI.Plugin.registerWidget("bi.summary_table", function (ob) {
-    //     if (BI.isChrome() || BI.isSafari() || BI.isFireFox()) {
-    //         ob.type = "bi.summary_table_react";
-    //         return ob;
-    //     }
-    // });
+    BI.Plugin.registerWidget("bi.summary_table", function (ob) {
+        if (BI.isChrome() || BI.isSafari() || BI.isFireFox()) {
+            ob.type = "bi.summary_table_react";
+            return ob;
+        }
+    });
 });
