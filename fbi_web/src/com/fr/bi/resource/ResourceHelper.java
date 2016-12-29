@@ -2175,6 +2175,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/helper.scroll.js",
                 "com/fr/bi/web/js/base/utils/tableRowBuffer.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
+                "com/fr/bi/web/js/base/utils/load.js",
 
                 "com/fr/bi/web/js/base/parsers/expression.js",
                 "com/fr/bi/web/js/base/parsers/path.js",
