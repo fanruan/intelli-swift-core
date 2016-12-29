@@ -277,7 +277,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
             return map;
         }
         for (CubeTableSource source : this.getSingleSourceLayers()) {
-            UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), biUser.getUserId());
+            UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSetting(source.getSourceID(), biUser.getUserId());
             if (null == updateSettingSource) {
                 updateSettingSource = new UpdateSettingSource();
             }

@@ -79,8 +79,8 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
                 });
 
                 if (!findField) {
-                    var tables = BI.Utils.getConfPackageTablesByID(item_in.value);
-                    var packageName = BI.Utils.getConfPackageNameByID(item_in.value);
+                    var tables = BI.Utils.getTablesIdByPackageId4Conf(item_in.value);
+                    var packageName = BI.Utils.getPackageNameByID4Conf(item_in.value);
                     var fieldButton = BI.createWidget({
                         type: "bi.business_package_button",
                         text: packageName,
