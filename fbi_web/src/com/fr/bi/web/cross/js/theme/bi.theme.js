@@ -90,6 +90,25 @@ FS.THEME.config4navigation.onAfterInit = function () {
 //debugger;
 FS.Plugin.LookAndFeelSettings.push({
     item: function () {
+
+        FR.ajax({
+            url: FR.servletURL + '?op=fr_bi_base&cmd=get_build_no',
+            async: false,
+            data: {
+                '__time': new Date().getTime()
+            },
+            complete: function (res, status) {
+                if (status == 'success') {
+                    BI.$defaultImport({
+                        op: 'emb',
+                        path: 'third.js&__v__=' + res.responseText,
+                        type: 'js'
+                    });
+                }
+            }
+        });
+
+
         return {
             title: BI.i18nText("BI-BI_Style"),
             content: {
