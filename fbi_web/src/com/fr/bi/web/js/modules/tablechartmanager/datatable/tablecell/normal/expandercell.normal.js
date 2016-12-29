@@ -111,84 +111,22 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
      * @private
      */
     _createDrillItems: function () {
-        var self = this, o = this.options;
-        var dId = o.dId, drillCallback = o.drillCallback;
+        var o = this.options;
+        var dId = o.dId;
         var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
         var allDims = BI.Utils.getAllDimDimensionIDs(widgetId);
         var allUsedDims = BI.Utils.getAllUsableDimDimensionIDs(widgetId);
 
         //并非有未勾选的维度就一定对于当前节点来说可以下钻，如果未勾选维度已被钻取，自然也不能再次钻取
         if (allDims.length > allUsedDims.length) {
-            var drillMap = BI.Utils.getDrillByID(widgetId);
-            var drilledIds = [], upDrillName = null;
-            BI.each(drillMap, function (drId, ds) {
-                //存在于钻取中
-                if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
-                    if (ds.length > 1) {
-                        upDrillName = BI.Utils.getDimensionNameByID(ds[ds.length - 2].dId);
-                    } else {
-                        upDrillName = BI.Utils.getDimensionNameByID(drId);
-                    }
+            return BI.createWidget({
+                type: "bi.icon_button",
+                cls: "table-drill-up-down",
+                height: 25,
+                handler: function(){
+                    o.drillCallback()
                 }
-                BI.each(ds, function (i, drs) {
-                    drilledIds.push(drs.dId);
-                });
-            });
-            var upName = BI.isNotNull(upDrillName) ? BI.i18nText("BI-Drill_up") + "(" + upDrillName + ")" : BI.i18nText("BI-Drill_up");
-
-            var downChildren = [];
-            //下钻节点的时候需要去掉那些已下钻的
-            BI.each(allDims, function (i, dim) {
-                if (!allUsedDims.contains(dim) && !drilledIds.contains(dim)) {
-                    downChildren.push({
-                        text: BI.Utils.getDimensionNameByID(dim),
-                        value: dim
-                    })
-                }
-            });
-            if (BI.isNull(upDrillName) && BI.isEmptyArray(downChildren)) {
-                return;
-            }
-            if (BI.isEmptyArray(downChildren)) {
-                downChildren.push({
-                    text: BI.i18nText("BI-Null"),
-                    disabled: true
-                })
-            }
-
-            var drillCombo = BI.createWidget({
-                type: "bi.down_list_combo",
-                chooseType: BI.Selection.None,
-                title: BI.i18nText("BI-Drill"),
-                cls: "drill-combo",
-                height: 25
-            });
-            drillCombo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
-                var items = [[{
-                    text: upName,
-                    value: BI.NormalExpanderCell.UP_DRILL,
-                    disabled: BI.isNull(upDrillName)
-                }], [{
-                    el: {
-                        text: BI.i18nText("BI-Drill_down")
-                    },
-                    children: downChildren
-                }]];
-                this.populate(BI.deepClone(items));
-            });
-            drillCombo.on(BI.DownListCombo.EVENT_SON_VALUE_CHANGE, function (v) {
-                drillCallback(v);
-            });
-            drillCombo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
-                drillCallback(v);
-            });
-            drillCombo.setVisible(false);
-            this.element.hover(function () {
-                drillCombo.setVisible(true);
-            }, function () {
-                drillCombo.setVisible(false);
-            });
-            return drillCombo;
+            })
         }
     }
 });

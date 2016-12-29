@@ -67,7 +67,8 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
     },
 
     _onClickDrill: function (dId, value, drillId) {
-        var wId = BI.Utils.getWidgetIDByDimensionID(this.options.dId);
+        var o = this.options;
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var drillMap = BI.Utils.getDrillByID(wId);
         //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
         //当前钻取的根节点
@@ -85,10 +86,10 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         } else {
             drillOperators.push({
                 dId: drillId,
-                values: [{
+                values: BI.concat([{
                     dId: dId,
                     value: [BI.Utils.getClickedValue4Group(value, dId)]
-                }]
+                }], o.pValues)
             });
         }
         drillMap[rootId] = drillOperators;
@@ -121,11 +122,16 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         }
         v = v || {};
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
-        var value = v.x;
+        var value = v.xValue;
         switch (wType) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
-                value = v.seriesName;
+                value = v.zValue;
+                break;
+            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.COMPLEX_TABLE:
+                value = BI.has(v, "xValue") ? v.xValue : v.zValue;
                 break;
             default:
                 var drillMap = BI.Utils.getDrillByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
@@ -137,7 +143,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                     }
                 });
                 var regionType = BI.Utils.getRegionTypeByDimensionID(drillDid);
-                value = ((regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) ? (v.value || v.x) : v.seriesName);
+                value = ((regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) ? v.xValue : v.zValue);
                 break;
         }
         return value;
@@ -159,11 +165,25 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
     setValue: function(value){
         var o = this.options;
         o.value = this._getShowValue(value);
+        o.pValues = value.pValues || [];
         var v = this._formatValue(o.value);
         this.label.setValue(v);
         this.label.setTitle(v);
     },
 
+    getDid: function(){
+        return this.options.dId;
+    },
+
+    /**
+     * 结构 {1: [{dId: 2, value: x}, {dId: 3, value: y}], 5: [{dId: 4, value: z}}
+     * 此结构即为 维度1钻取两次，2-3，最终展示的维度为3  维度5钻取一次，4，最终显示4
+     * 上钻名称：从drill中找到currId，找到，取数组倒数第二个或key，找不到为null；下钻items：所有不在drill里的used=false的
+     * 下钻逻辑：当前点击的值currValue所在维度currId，先从drill中找，
+     * 1、如果找到，说明一定是钻取后的结果，往此节点drill数组下继续添加{dId: currId, value: currValue}；2、没找到，即新开一个节点
+     * 上钻逻辑：一定能找到currId，在drill中，找到即从数组中pop出去
+     * @private
+     */
     populate: function(){
         var dId = this.options.dId;
         var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
