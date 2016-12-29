@@ -116,13 +116,13 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             self._doDestroy = true;
             self._debounce2Destroy();
         });
-        this._debounce2Destroy = BI.debounce(BI.bind(destroyCombo , this), 3000);
+        this._debounce2Destroy = BI.debounce(BI.bind(destroyCombo , this.combo), 3000);
         this.combo.showView();
         this._debounce2Destroy();
 
         function destroyCombo() {
-            if (this._doDestroy) {
-                this.combo.destroy();
+            if (self._doDestroy) {
+                this.destroy();
             }
         }
     },

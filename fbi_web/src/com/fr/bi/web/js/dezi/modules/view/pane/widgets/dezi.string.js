@@ -8,7 +8,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         TOOL_ICON_WIDTH: 20,
         TOOL_ICON_HEIGHT: 20
     },
-    
+
     _defaultConfig: function () {
         return BI.extend(BIDezi.StringWidgetView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget bi-control-widget"
@@ -22,10 +22,6 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
             self._resetValue();
         });
 
-        //全局样式
-        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
-            self._refreshGlobalStyle(globalStyle);
-        });
     },
 
 
@@ -109,22 +105,6 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
         } else {
             this.title.setValue(BI.Utils.getWidgetNameByID(this.model.get("id")));
         }
-    },
-
-    _refreshGlobalStyle: function (globalStyle) {
-        var titleFont = BI.isNotNull(globalStyle) ?
-            globalStyle.titleFont : BI.Utils.getGSTitleFont();
-        if (BI.isNotNull(titleFont)) {
-            this._refreshTitlePosition();
-        }
-    },
-
-    _refreshTitlePosition: function () {
-        var pos = BI.Utils.getGSNamePos();
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-            "dashboard-title-center" : "dashboard-title-left";
-        this.title.element.removeClass("dashboard-title-left")
-            .removeClass("dashboard-title-center").addClass(cls);
     },
 
     _createTools: function () {
@@ -264,8 +244,6 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
-        this._refreshTitlePosition();
-        this._refreshGlobalStyle();
         this.combo.setValue(this.model.get("value"));
     }
 });

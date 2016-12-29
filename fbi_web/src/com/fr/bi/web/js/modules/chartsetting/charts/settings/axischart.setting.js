@@ -342,6 +342,17 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
+        this.nullContinue = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Null_Continue"),
+            invisible: !(BI.Utils.getWidgetTypeByID(this.options.wId) === BICst.WIDGET.COMBINE_CHART),
+            width: 115
+        });
+
+        this.nullContinue.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
+        });
+
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -375,6 +386,9 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.showZoom]
+                }, {
+                    type: "bi.center_adapt",
+                    items: [this.nullContinue]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -658,7 +672,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
         this.separatorsLeft.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
-        this.separatorsRight.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId))
+        this.separatorsRight.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
+        this.nullContinue.setSelected(BI.Utils.getWSNullContinueByID(wId));
     },
 
     getValue: function () {
@@ -688,7 +703,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_zoom: this.showZoom.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
             num_separators: this.separatorsLeft.isSelected(),
-            right_num_separators: this.separatorsRight.isSelected()
+            right_num_separators: this.separatorsRight.isSelected(),
+            null_continue: this.nullContinue.isSelected()
         }
     },
 

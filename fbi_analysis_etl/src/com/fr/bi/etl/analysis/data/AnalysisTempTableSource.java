@@ -2,6 +2,7 @@ package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -13,6 +14,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,6 +48,11 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     @Override
     public void refreshWidget() {
 
+    }
+
+    @Override
+    public Set<BIWidget> getWidgets() {
+        return new HashSet<BIWidget>();
     }
 
     @Override

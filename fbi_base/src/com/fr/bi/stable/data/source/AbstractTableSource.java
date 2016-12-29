@@ -19,6 +19,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.collections.array.IntArray;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -153,6 +154,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         JSONArray allFieldNamesJo = new JSONArray();
         JSONArray fieldValues = new JSONArray();
         JSONArray fieldTypes = new JSONArray();
+        IntArray remove = tableIndex.getRemovedList();
         for (PersistentField column : getPersistentTable().getFieldList()) {
             if (!fields.isEmpty() && !fields.contains(column.getFieldName())) {
                 continue;
@@ -163,7 +165,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
             fieldValues.put(values);
             int count = Math.min(tableIndex.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
             for (int i = 0; i < count; i++) {
-                if (tableIndex.getRemovedList().indexOf(i) < 0) {
+                if (remove.indexOf(i) < 0) {
                     values.put(tableIndex.getColumnDetailReader(new IndexKey(column.getFieldName())).getValue(i));
                 }
             }
@@ -341,11 +343,6 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof AbstractTableSource && ComparatorUtils.equals(fetchObjectCore(), ((AbstractTableSource) (obj)).fetchObjectCore());
-    }
-
-    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -425,7 +422,17 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CubeTableSource that = (CubeTableSource) o;
+        return ComparatorUtils.equals(that.getSourceID(),this.getSourceID());
+
+    }
+
+    @Override
     public boolean hasAbsentFields() {
         return false;
     }
+
 }
