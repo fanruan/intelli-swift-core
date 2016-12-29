@@ -570,6 +570,7 @@ BI.SummaryTableReact = BI.inherit(BI.Pane, {
             } else {
             }
             node.title = node.text;
+            node.iconClass = "table-drill-up-down";
         }
 
         BI.each(items, function (i, node) {
