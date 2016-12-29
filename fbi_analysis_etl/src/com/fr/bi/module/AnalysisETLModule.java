@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
@@ -10,6 +11,7 @@ import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisBaseTableSource;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLTableSource;
 import com.fr.bi.etl.analysis.manager.*;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBottomNFilter;
@@ -69,6 +71,18 @@ public class AnalysisETLModule extends AbstractModule {
 
     @Override
     public void clearAnalysisETLCache(long userId) {
+        for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
+            try {
+                AnalysisCubeTableSource oriSource = (AnalysisCubeTableSource) table.getTableSource();
+                oriSource.refreshWidget();
+                table.setSource(oriSource);
+                BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, oriSource);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+            }
+        }
+        //正在排查错误，两个动作先分开
+        BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
         for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
             int tableType = table.getTableSource().getType();
             if (tableType == Constants.TABLE_TYPE.BASE) {
