@@ -554,9 +554,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.js",
                 "com/fr/bi/web/js/modules/selectdata4generalquery/item/item.generalquery.selectdata.js",
 
-                //分组统计选字段
-                "com/fr/bi/web/js/modules/selectdata4statistics/widget.selectsingletablefield.js",
-
                 //文本控件选字段
                 "com/fr/bi/web/js/modules/selectstring/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectstring/pane.selectstring.js",
@@ -1215,6 +1212,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/base/combos/statistic/widget.statisticdate.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/statistic/widget.statisticstring.combo.js",
 
+                //分组统计选字段
+                "com/fr/bi/web/js/modules/selectdata4statistics/widget.selectsingletablefield.js",
+                
                 //group
                 "com/fr/bi/web/js/modules/base/combos/group/widget.groupnumber.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/group/widget.groupdate.combo.js",
@@ -1610,7 +1610,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/broadcast.js",
                 "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/utils.js",
-
 
                 //自定义分组
                 "com/fr/bi/web/js/modules/customgroup/widget.group2other.customgroup.js",
