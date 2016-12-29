@@ -1,12 +1,18 @@
 package com.fr.bi.data;
 
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.cluster.retry.RetryLoop;
+import com.fr.bi.cluster.retry.RetryNTimes;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * This class created on 2016/8/11.
@@ -47,11 +53,31 @@ public class DBQueryExecutor {
         return runSQL(sql, columns, traversal, 0);
     }
 
-    public long runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal, int row) {
+    public long runSQL(final SQLStatement sql, final ICubeFieldSource[] columns, final Traversal<BIDataValue> traversal, final int row) {
         if (DRIEVER_EXTRACOTR.containsKey(sql.getConn().getDriver())) {
             return DRIEVER_EXTRACOTR.get(sql.getConn().getDriver()).runSQL(sql, columns, traversal, row);
         } else {
-            return defaultExtractor.runSQL(sql, columns, traversal, row);
+
+            Callable task = new Callable<Integer>() {
+                @Override
+                public Integer call() throws Exception {
+                    try {
+                        if (sql.getSqlConn().isClosed()) {
+                            sql.createConn();
+                        }
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger(DBQueryExecutor.class).error(e.getMessage(), e);
+                    }
+                    return defaultExtractor.runSQL(sql, columns, traversal, row);
+                }
+            };
+            RetryLoop retryLoop = new RetryLoop();
+            retryLoop.initial(new RetryNTimes(PerformancePlugManager.getInstance().getRetryMaxTimes(), PerformancePlugManager.getInstance().getRetryMaxSleepTime()));
+            try {
+                return ((Number) RetryLoop.retry(task, retryLoop)).longValue();
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
         }
     }
 
