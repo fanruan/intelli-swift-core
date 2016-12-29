@@ -169,10 +169,10 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
         this.searcher.stopSearch();
         
         var treeItems = [];
-        var allGroupIds = BI.Utils.getConfPackageGroupIDs();
+        var allGroupIds = BI.Utils.getPackageGroupIDs4Conf();
         var pgMap = {}, gIds = [];
         BI.each(allGroupIds, function(i, gId){
-            var pids = BI.Utils.getConfGroupChildrenByGroupId(gId);
+            var pids = BI.Utils.getGroupChildrenByGroupId4Conf(gId);
             BI.each(pids, function(i, pack){
                 if(packages.contains(pack.id)) {
                     var gs = pgMap[pack.id] || [];
@@ -185,7 +185,7 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
         BI.each(gIds, function(i, gId){
             treeItems.push({
                 id: gId,
-                text: BI.Utils.getConfGroupNameByGroupId(gId),
+                text: BI.Utils.getGroupNameById4Conf(gId),
                 open: true
              });
         });

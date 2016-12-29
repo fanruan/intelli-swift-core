@@ -304,8 +304,14 @@ Data.Req = BIReq = {
         }, complete)
     },
 
-    reqModifyGlobalUpdateSetting: function (data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "modify_global_update_setting_action", data, function (res) {
+    reqUpdateSettingById: function(data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_update_setting", data, function(res) {
+            callback(res);
+        }, complete);
+    },
+
+    reqModifyUpdateSetting: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "modify_update_setting", data, function (res) {
             callback(res);
         }, complete)
     },
