@@ -9,11 +9,6 @@ BI.extend(BI.Utils, {
         return BI.firstKey(Data.SharingPool.cat(BICst.CURRENT_EDITING_PACKAGE));
     },
 
-    getCurrentPackageTables4Conf: function () {
-        var pack = BI.firstObject(Data.SharingPool.get(BICst.CURRENT_EDITING_PACKAGE));
-        return pack.tables;
-    },
-
     //转义 表名和字段名
     getTransNameById4Conf: function (id) {
         return Data.SharingPool.cat("translations")[id];
@@ -587,7 +582,7 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.cat("packages")[packageId].name;
     },
 
-    getConfPackageGroupIDs: function () {
+    getPackageGroupIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("groups"));
     },
 
@@ -599,7 +594,7 @@ BI.extend(BI.Utils, {
         return "";
     },
 
-    getConfGroupChildrenByGroupId: function (gid) {
+    getGroupChildrenByGroupId4Conf: function (gid) {
         var groups = Data.SharingPool.get("groups");
         if (BI.isNotNull(groups[gid])) {
             return groups[gid].children;
@@ -607,7 +602,7 @@ BI.extend(BI.Utils, {
         return [];
     },
 
-    getConfGroupInitTimeByGroupId: function (gid) {
+    getGroupInitTimeByGroupId4Conf: function (gid) {
         var groups = Data.SharingPool.get("groups");
         if (BI.isNotNull(groups[gid])) {
             return groups[gid].init_time;
@@ -896,8 +891,14 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
-    modifyGlobalUpdateSetting: function (data, callback, complete) {
-        Data.Req.reqModifyGlobalUpdateSetting(data, function (res) {
+    getUpdateSettingBySourceId: function (data, callback, complete) {
+        Data.Req.reqUpdateSettingById(data, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    modifyUpdateSetting: function (data, callback, complete) {
+        Data.Req.reqModifyUpdateSetting(data, function (res) {
             callback(res);
         }, complete)
     },
