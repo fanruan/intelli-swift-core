@@ -121,7 +121,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         if (allDims.length > allUsedDims.length) {
             return BI.createWidget({
                 type: "bi.icon_button",
-                cls: "pull-down-font",
+                cls: "table-drill-up-down",
                 height: 25,
                 handler: function(){
                     o.drillCallback()
