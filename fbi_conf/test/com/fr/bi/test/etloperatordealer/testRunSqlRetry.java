@@ -3,8 +3,6 @@ package com.fr.bi.test.etloperatordealer;
 import com.fr.bi.cluster.retry.RetryLoop;
 import com.fr.bi.cluster.retry.RetryNTimes;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.data.DBExtractor;
-import com.fr.bi.data.NormalExtractor;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.data.impl.Connection;
@@ -21,49 +19,50 @@ import java.util.concurrent.Callable;
  */
 public class testRunSqlRetry extends TestCase {
 
+    public static SQLStatement testSqlStatement;
+
+    public static int count = 0;
+
     /**
      * sql reconnect times test
      */
     public void test() {
+        //success connection
+        Connection connectionS = new JDBCDatabaseConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/foodmart", "lucifer", "root123");
+        final SQLStatement sqlStatementS = new SQLStatement(connectionS, "", "", "");
 
-        Connection connection = new JDBCDatabaseConnection();
-        final SQLStatement sqlStatement = new SQLStatement(connection, "", "", "");
-        final DBExtractor defaultExtractor = new NormalExtractor();
-        final Traversal traversal = new RetryTestTraversal();
+        //fail connection
+        Connection connectionF = new JDBCDatabaseConnection("", "", "", "");
+        final SQLStatement sqlStatementF = new SQLStatement(connectionF, "", "", "");
+
+        testSqlStatement = sqlStatementF;
 
         Callable task = new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 try {
-                    if (sqlStatement.getSqlConn().isClosed()) {
-                        sqlStatement.createConn();
+                    if (testSqlStatement.getSqlConn().isClosed()) {
+                        testSqlStatement.createConn();
                     }
                 } catch (Exception e) {
-                    traversal.actionPerformed(null);
+                    count++;
+                    if (count >= 3) {
+                        testSqlStatement = sqlStatementS;
+                    }
+                    throw new Exception();
                 }
-                return defaultExtractor.runSQL(sqlStatement, null, traversal, 0);
+                return 1;
             }
         };
+
         RetryLoop retryLoop = new RetryLoop();
         retryLoop.initial(new RetryNTimes(PerformancePlugManager.getInstance().getRetryMaxTimes(), PerformancePlugManager.getInstance().getRetryMaxSleepTime()));
         try {
             long a = ((Number) RetryLoop.retry(task, retryLoop)).longValue();
         } catch (Exception e) {
-
         } finally {
-            assertEquals(PerformancePlugManager.getInstance().getRetryMaxTimes() + 1, RetryTestTraversal.count);
+            assertEquals(3, count);
         }
-
-    }
-}
-
-class RetryTestTraversal<BIDataValue> implements Traversal<BIDataValue> {
-
-    public static int count = 0;
-
-    @Override
-    public void actionPerformed(BIDataValue v) {
-        count++;
     }
 }
 
