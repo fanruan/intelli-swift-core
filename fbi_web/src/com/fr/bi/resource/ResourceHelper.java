@@ -749,6 +749,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/targetstyle/combo/item.iconmark.js",
                 "com/fr/bi/web/js/modules/targetstyle/conditionitem/item.targetstylecondition.js",
 
+                //组件过滤
+                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.model.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.linkagefilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.targetfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.dimensionfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.controlfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.drillfilter.js",
+
                 //明细表超级链接
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.insert.js",
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.popup.js",
@@ -902,8 +911,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/predictionstyle/pagination/widget.globalstyle.pagination.icon.css",
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.css",
 
-                "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
-
                 //明细表超级链接
                 "com/fr/bi/web/css/modules/hyperlink/hyperlink.insert.css",
 
@@ -912,6 +919,17 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtable/cell/header.detailtable.css",
                 "com/fr/bi/web/css/modules/detailtable/cell/cell.detailtable.css",
 
+                "com/fr/bi/web/css/modules/targetstyle/widget.targetstylesetting.css",
+                "com/fr/bi/web/css/modules/targetstyle/widget.targetcondition.stylesetting.css",
+                "com/fr/bi/web/css/modules/targetstyle/widget.stylesetting.iconmark.css",
+
+                //组件过滤
+                "com/fr/bi/web/css/modules/widgetfilter/widget.widgetfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.linkagefilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.targetfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.dimensionfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
 
                 //联动
                 "com/fr/bi/web/css/modules/linkage/linkage.target.css",
@@ -1137,6 +1155,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/cubelog/tree.cubelog.css",
                 "com/fr/bi/web/css/modules/cubelog/cubelog.css",
 
+                //全局更新
+                "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
+
                 //excel
                 "com/fr/bi/web/css/extend/excel/excel.upload.css",
                 "com/fr/bi/web/css/extend/excel/fieldset/excel.fieldset.css",
@@ -1148,24 +1169,13 @@ public class ResourceHelper {
                 //sql
                 "com/fr/bi/web/css/extend/sql/sql.edit.css",
 
+                //数据连接
                 "com/fr/bi/web/css/modules/datalink/widget.datalink.add.css",
                 "com/fr/bi/web/css/modules/datalink/widget.datalink.schema.add.css",
 
+                //cube路径
                 "com/fr/bi/web/css/modules/cubepath/widget.cubepath.css",
                 "com/fr/bi/web/css/modules/cubepath/widget.cubepath.confirm.css",
-
-                "com/fr/bi/web/css/modules/targetstyle/widget.targetstylesetting.css",
-                "com/fr/bi/web/css/modules/targetstyle/widget.targetcondition.stylesetting.css",
-                "com/fr/bi/web/css/modules/targetstyle/widget.stylesetting.iconmark.css",
-
-                "com/fr/bi/web/css/modules/widgetfilter/widget.widgetfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.linkagefilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.targetfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.dimensionfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
-
-                "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 
                 //权限相关
                 "com/fr/bi/web/css/modules/permissionmanage/authoritypackagestree.css",
@@ -1452,14 +1462,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/cubelog/expander/expander.cubelog.js",
                 "com/fr/bi/web/js/modules/cubelog/tree.cubelog.js",
                 "com/fr/bi/web/js/modules/cubelog/cubelog.js",
-
-                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.model.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.linkagefilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.targetfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.dimensionfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.controlfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.drillfilter.js",
 
                 //全局更新
                 "com/fr/bi/web/js/modules/globalupdate/widget.globalupdate.setting.js",
