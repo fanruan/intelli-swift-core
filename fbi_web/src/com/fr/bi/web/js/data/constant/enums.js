@@ -476,6 +476,7 @@ BICst.DEFAULT_CHART_SETTING = {
     //图
     chartColor: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
     chartStyle: BICst.CHART_STYLE.STYLE_NORMAL,
+    gradientStyle: BICst.MULTI_PIE_GRADIENT_STYLE.LIGHTER,
     lineAreaChartType: BICst.CHART_SHAPE.NORMAL,
     pieChartType: BICst.CHART_SHAPE.NORMAL,
     radarChartType: BICst.CHART_SHAPE.POLYGON,

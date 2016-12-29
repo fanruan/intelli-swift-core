@@ -32,7 +32,8 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         delete config.zoom;
         config.colors = this.config.chartColor;
-        config.plotOptions.gradual = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
+        config.plotOptions.gradual = formatGradientType();
         formatChartPieStyle();
 
         this.formatChartLegend(config, this.config.legend);
@@ -62,27 +63,25 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
 
         function formatChartStyle() {
             switch (self.config.chartStyle) {
-                case BICst.MULTI_PIE_GRADIENT_STYLE.LIGHTER:
-                    return "lighter";
-                case BICst.MULTI_PIE_GRADIENT_STYLE.DARKER:
+                case BICst.CHART_STYLE.STYLE_GRADUAL:
+                    return "gradual";
+                case BICst.CHART_STYLE.STYLE_NORMAL:
                 default:
+                    return "normal";
+            }
+        }
+
+        function formatGradientType() {
+            switch (self.config.gradientType) {
+                case BICst.MULTI_PIE_GRADIENT_STYLE.DARKER:
                     return "darker";
+                case BICst.MULTI_PIE_GRADIENT_STYLE.LIGHTER:
+                default:
+                    return "lighter";
             }
         }
 
         function formatChartPieStyle() {
-            switch (self.config.MultiPieChartType) {
-                case BICst.CHART_SHAPE.EQUAL_ARC_ROSE:
-                    config.plotOptions.roseType = "sameArc";
-                    break;
-                case BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE:
-                    config.plotOptions.roseType = "differentArc";
-                    break;
-                case BICst.CHART_SHAPE.NORMAL:
-                default:
-                    delete config.plotOptions.roseType;
-                    break;
-            }
             config.plotOptions.innerRadius = self.config.innerRadius + "%";
             config.plotOptions.startAngle = 270;
             config.plotOptions.endAngle = (270 + self.config.totalAngle) % 360;
