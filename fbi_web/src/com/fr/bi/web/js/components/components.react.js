@@ -67,17 +67,17 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	//页面加载完成后加载Portal
-	$(document).ready(function () {
+	$(function () {
 	    var el = $("<div>");
 	    $("body").append(el);
 	    _reactDom2.default.render(_react2.default.createElement(_base.Portal, null), el[0]);
 	});
 
-	BI.TableReact = BI.inherit(BI.Widget, {
+	BI.TableComponent = BI.inherit(BI.Widget, {
 
 	    _defaultConfig: function _defaultConfig() {
-	        return BI.extend(BI.TableReact.superclass._defaultConfig.apply(this, arguments), {
-	            baseCls: "bi-table-react",
+	        return BI.extend(BI.TableComponent.superclass._defaultConfig.apply(this, arguments), {
+	            baseCls: "bi-table-component",
 
 	            isNeedResize: true,
 
@@ -98,7 +98,7 @@
 	    },
 
 	    _init: function _init() {
-	        BI.TableReact.superclass._init.apply(this, arguments);
+	        BI.TableComponent.superclass._init.apply(this, arguments);
 	        var self = this,
 	            o = this.options;
 	        BI.Resizers.add(this.getName(), function () {
@@ -169,7 +169,132 @@
 
 	    destroy: function destroy() {}
 	});
-	$.shortcut('bi.table_react', BI.TableReact);
+	$.shortcut('bi.table_component', BI.TableComponent);
+
+	BI.SummaryTableComponent = BI.inherit(BI.Widget, {
+
+	    _defaultConfig: function _defaultConfig() {
+	        return BI.extend(BI.SummaryTableComponent.superclass._defaultConfig.apply(this, arguments), {
+	            baseCls: "bi-summary-table-component",
+
+	            isNeedResize: true,
+
+	            isNeedFreeze: false, //是否需要冻结单元格
+	            freezeCols: [], //冻结的列号,从0开始,isNeedFreeze为true时生效
+
+	            columnSize: [],
+	            minColumnSize: [],
+	            maxColumnSize: [],
+	            headerRowSize: 25,
+	            rowSize: 25,
+
+	            regionColumnSize: [],
+
+	            header: [],
+	            items: [], //二维数组
+	            crossHeader: [],
+	            crossItems: []
+	        });
+	    },
+
+	    _init: function _init() {
+	        BI.SummaryTableComponent.superclass._init.apply(this, arguments);
+	        var self = this,
+	            o = this.options;
+	        BI.Resizers.add(this.getName(), function () {
+	            self.resize();
+	        });
+	    },
+
+	    _render: function _render() {
+	        var _options2 = this.options,
+	            header = _options2.header,
+	            items = _options2.items,
+	            crossHeader = _options2.crossHeader,
+	            crossItems = _options2.crossItems,
+	            regionColumnSize = _options2.regionColumnSize,
+	            isNeedFreeze = _options2.isNeedFreeze,
+	            isNeedResize = _options2.isNeedResize,
+	            freezeCols = _options2.freezeCols,
+	            mergeCols = _options2.mergeCols,
+	            styleType = _options2.styleType,
+	            color = _options2.color,
+	            columnSize = _options2.columnSize,
+	            onColumnResizeEnd = _options2.onColumnResizeEnd,
+	            onRegionColumnResizeEnd = _options2.onRegionColumnResizeEnd,
+	            showSequence = _options2.showSequence,
+	            tableStyle = _options2.tableStyle,
+	            vCurr = _options2.vCurr,
+	            hCurr = _options2.hCurr,
+	            hasVNext = _options2.hasVNext,
+	            hasHNext = _options2.hasHNext,
+	            onVPrev = _options2.onVPrev,
+	            onVNext = _options2.onVNext,
+	            onHPrev = _options2.onHPrev,
+	            onHNext = _options2.onHNext;
+
+	        var Component = void 0;
+	        switch (tableStyle) {
+	            case BICst.TABLE_FORM.OPEN_COL:
+	                Component = _components.LevelTableComponent;
+	                break;
+	            case BICst.TABLE_FORM.OPEN_ROW:
+	                Component = _components.SummaryTableComponent;
+	                break;
+	            default:
+	                Component = _components.SummaryTableComponent;
+	                break;
+	        }
+	        _reactDom2.default.render(_react2.default.createElement(Component, {
+	            styleType: styleType,
+	            color: color,
+	            regionColumnSize: regionColumnSize || [],
+	            isNeedFreeze: isNeedFreeze,
+	            isNeedResize: isNeedResize,
+	            freezeCols: freezeCols,
+	            mergeCols: mergeCols,
+	            header: header,
+	            items: items,
+	            crossHeader: crossHeader,
+	            crossItems: crossItems,
+	            columnSize: columnSize,
+	            width: this.element.width(),
+	            height: this.element.height(),
+	            onColumnResizeEnd: onColumnResizeEnd,
+	            onRegionColumnResizeEnd: onRegionColumnResizeEnd,
+	            showSequence: showSequence,
+	            vCurr: vCurr,
+	            hCurr: hCurr,
+	            hasVNext: hasVNext,
+	            hasHNext: hasHNext,
+	            onVPrev: onVPrev,
+	            onVNext: onVNext,
+	            onHPrev: onHPrev,
+	            onHNext: onHNext
+	        }), this.element[0]);
+	    },
+
+
+	    resize: function resize() {
+	        if (this.element.is(":visible")) {
+	            this._render();
+	        }
+	    },
+
+	    populate: function populate(opt) {
+	        var _this2 = this;
+
+	        BI.nextTick(function () {
+	            _this2.options = _extends({}, _this2.options, opt);
+	            if (_this2.element.is(":visible")) {
+	                _this2._render();
+	            }
+	        });
+	    },
+
+	    destroy: function destroy() {}
+	});
+	$.shortcut('bi.summary_table_component', BI.SummaryTableComponent);
 
 /***/ },
 /* 1 */,
@@ -45109,13 +45234,13 @@
 	                return triggerPos.y + triggerPos.height + popupPos.height <= viewport.height;
 	            };
 	            var topPlaceHolder = function topPlaceHolder() {
-	                return triggerPos.top - popupPos.height >= 0;
+	                return triggerPos.y - popupPos.height >= 0;
 	            };
 	            var leftPlaceHolder = function leftPlaceHolder() {
-	                return triggerPos.left - popupPos.width >= 0;
+	                return triggerPos.x - popupPos.width >= 0;
 	            };
 	            var rightPlaceHolder = function rightPlaceHolder() {
-	                return triggerPos.left + triggerPos.width + popupPos.width <= viewport.width;
+	                return triggerPos.x + triggerPos.width + popupPos.width <= viewport.width;
 	            };
 	            switch (direction) {
 	                case 'bottom,top,right,left':
@@ -45125,30 +45250,30 @@
 	                        break;
 	                    }
 	                    if (topPlaceHolder()) {
-	                        top = triggerPos.top - popupPos.height;
+	                        top = triggerPos.y - popupPos.height;
 	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
 	                        break;
 	                    }
 	                    if (rightPlaceHolder()) {
-	                        left = triggerPos.left + triggerPos.width;
+	                        left = triggerPos.x + triggerPos.width;
 	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
 	                        break;
 	                    }
 	                    if (leftPlaceHolder()) {
-	                        left = triggerPos.left - popupPos.width;
+	                        left = triggerPos.x - popupPos.width;
 	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
 	                        break;
 	                    }
 	                    break;
 	                case 'right,left,bottom,top':
 	                    if (rightPlaceHolder()) {
-	                        left = triggerPos.left + triggerPos.width;
-	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
+	                        left = triggerPos.x + triggerPos.width;
+	                        top = (0, _core.clamp)(triggerPos.y, 0, viewport.height - popupPos.height);
 	                        break;
 	                    }
 	                    if (leftPlaceHolder()) {
-	                        left = triggerPos.left - popupPos.width;
-	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
+	                        left = triggerPos.x - popupPos.width;
+	                        top = (0, _core.clamp)(triggerPos.y, 0, viewport.height - popupPos.height);
 	                        break;
 	                    }
 	                    if (bottomPlaceHolder()) {
@@ -45157,7 +45282,7 @@
 	                        break;
 	                    }
 	                    if (topPlaceHolder()) {
-	                        top = triggerPos.top - popupPos.height;
+	                        top = triggerPos.y - popupPos.height;
 	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
 	                        break;
 	                    }
@@ -45197,7 +45322,9 @@
 	                popupRenderer = _props.popupRenderer,
 	                trigger = _props.trigger,
 	                popup = _props.popup,
-	                props = _objectWithoutProperties(_props, ['triggerRenderer', 'popupRenderer', 'trigger', 'popup']);
+	                adjustXOffset = _props.adjustXOffset,
+	                adjustYOffset = _props.adjustYOffset,
+	                props = _objectWithoutProperties(_props, ['triggerRenderer', 'popupRenderer', 'trigger', 'popup', 'adjustXOffset', 'adjustYOffset']);
 
 	            var open = this.state.open;
 
@@ -45212,22 +45339,33 @@
 	        value: function _open() {
 	            var _this3 = this;
 
-	            var popup = this.props.popup;
+	            var _props2 = this.props,
+	                adjustXOffset = _props2.adjustXOffset,
+	                adjustYOffset = _props2.adjustYOffset,
+	                popup = _props2.popup;
 
 	            _Portal2.default.showModal(this.tag, _react2.default.createElement(
 	                _layout.VerticalLayout,
-	                _extends({
+	                {
 	                    key: this.tag,
 	                    ref: function ref(_ref) {
 	                        return _this3.popup = _ref;
-	                    } }, popup, { style: (0, _core.sc)([{
+	                    },
+	                    style: {
 	                        position: 'fixed',
 	                        zIndex: _ZIndex2.default.POPUP,
-	                        backgroundColor: _Colors2.default.DEFAULT,
+	                        paddingLeft: adjustXOffset,
+	                        paddingTop: adjustYOffset,
 	                        left: -999,
 	                        top: -999
-	                    }], [popup.style]) }),
-	                this.props.popupRenderer()
+	                    } },
+	                _react2.default.createElement(
+	                    _layout.VerticalLayout,
+	                    _extends({}, popup, { style: (0, _core.sc)([{
+	                            backgroundColor: _Colors2.default.DEFAULT
+	                        }], [popup.style]) }),
+	                    this.props.popupRenderer()
+	                )
 	            ));
 	            this._mouseupEventListener = _core.EventListener.listen(document.body, 'mousedown', this._bodyEventListener.bind(this));
 	            this._mousewheelEventListener = _core.EventListener.listen(document.body, 'mousewheel', this._bodyEventListener.bind(this));
@@ -45265,7 +45403,7 @@
 	            var _this5 = this;
 
 	            this.setState({
-	                open: false
+	                open: true
 	            }, function () {
 	                _this5._open();
 	            });
@@ -45293,7 +45431,8 @@
 	                _extends({ flex: true, ref: function ref(_ref2) {
 	                        return _this7.trigger = _ref2;
 	                    }
-	                }, trigger, { onClick: this._togglePopup }),
+	                }, trigger, {
+	                    onClick: this._togglePopup }),
 	                this.props.triggerRenderer()
 	            );
 	        }
@@ -45318,6 +45457,8 @@
 	    popupRenderer: _core.emptyFunction,
 	    trigger: {},
 	    popup: {},
+	    adjustXOffset: 0,
+	    adjustYOffset: 0,
 	    direction: 'bottom,top,right,left'
 	};
 	exports.default = Combo;
@@ -48343,6 +48484,8 @@
 	                    style: _extends({
 	                        position: 'relative',
 	                        overflow: 'auto',
+	                        overflowX: 'auto',
+	                        overflowY: 'auto',
 	                        WebkitOverflowScrolling: 'touch',
 
 	                        WillChange: 'transform'
@@ -49745,8 +49888,6 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-
 	            var _props = this.props,
 	                headerRowHeight = _props.headerRowHeight,
 	                rowHeight = _props.rowHeight,
@@ -49783,7 +49924,7 @@
 	                totalRightColumnSize = 0,
 	                totalColumnSize = 0,
 	                summaryColumnSizeArray = [],
-	                totalRowSize = 0;
+	                totalRowSize = items.length * rowHeight;
 	            (0, _core.each)(columnSize, function (size, i) {
 	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
 	                    totalLeftColumnSize += size;
@@ -49797,9 +49938,14 @@
 	                    summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
 	                }
 	            });
-	            (0, _core.each)(items, function (item, i) {
-	                totalRowSize += _this2._bottomLeftRowHeightGetter({ index: i });
-	            });
+	            var tlw = regionSize;
+	            var tlh = regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var trw = width - regionSize;
+	            var trh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var blw = height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize;
+	            var blh = regionSize >= (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
+	            var brw = height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize;
+	            var brh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
 	            if (isNeedFreeze) {
 	                if (freezeCols.length > 0) {
 	                    topLeft = _react2.default.createElement(_Grid2.default, {
@@ -49808,8 +49954,8 @@
 	                        columnWidth: this._topLeftColumnWidthGetter.bind(this),
 	                        columnCount: freezeCols.length,
 	                        rowCount: header.length,
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                        width: regionSize,
+	                        height: tlh,
+	                        width: tlw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -49823,8 +49969,8 @@
 	                        columnWidth: this._bottomLeftColumnWidthGetter.bind(this),
 	                        columnCount: freezeCols.length,
 	                        rowCount: items.length,
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                        width: height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize,
+	                        height: blh,
+	                        width: blw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -49840,8 +49986,8 @@
 	                    columnWidth: this._topRightColumnWidthGetter.bind(this),
 	                    columnCount: columnSize.length - freezeCols.length,
 	                    rowCount: header.length,
-	                    height: width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                    width: width - regionSize,
+	                    height: trh,
+	                    width: trw,
 	                    noContentRender: this._noContentRender.bind(this),
 	                    overscanColumnCount: 0,
 	                    overscanRowCount: 0,
@@ -49857,8 +50003,8 @@
 	                columnWidth: this._bottomRightColumnWidthGetter.bind(this),
 	                columnCount: columnSize.length - this._getFreezeColLength(),
 	                rowCount: items.length,
-	                height: width - regionSize >= totalColumnSize - summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0 ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                width: height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize,
+	                height: brh,
+	                width: brw,
 	                noContentRender: this._noContentRender.bind(this),
 	                overscanColumnCount: 0,
 	                overscanRowCount: 0,
@@ -49987,7 +50133,7 @@
 	    }, {
 	        key: '_topLeftCellRenderer',
 	        value: function _topLeftCellRenderer(_ref) {
-	            var _this3 = this;
+	            var _this2 = this;
 
 	            var columnIndex = _ref.columnIndex,
 	                rowIndex = _ref.rowIndex,
@@ -50003,7 +50149,7 @@
 	                top: top
 	            }, props, {
 	                offsetLeftGetter: function offsetLeftGetter() {
-	                    return left - _this3.state.leftScrollLeft;
+	                    return left - _this2.state.leftScrollLeft;
 	                },
 	                offsetTopGetter: function offsetTopGetter() {
 	                    return top;
@@ -50037,7 +50183,7 @@
 	    }, {
 	        key: '_topRightCellRenderer',
 	        value: function _topRightCellRenderer(_ref5) {
-	            var _this4 = this;
+	            var _this3 = this;
 
 	            var columnIndex = _ref5.columnIndex,
 	                rowIndex = _ref5.rowIndex,
@@ -50053,7 +50199,7 @@
 	                top: top
 	            }, props, {
 	                offsetLeftGetter: function offsetLeftGetter() {
-	                    return left - _this4.state.rightScrollLeft + _this4._getRegionSize();
+	                    return left - _this3.state.rightScrollLeft + _this3._getRegionSize();
 	                },
 	                offsetTopGetter: function offsetTopGetter() {
 	                    return top;
@@ -50110,7 +50256,7 @@
 	    }, {
 	        key: '_bottomLeftOnScroll',
 	        value: function _bottomLeftOnScroll(_ref12) {
-	            var _this5 = this;
+	            var _this4 = this;
 
 	            var scrollLeft = _ref12.scrollLeft,
 	                scrollTop = _ref12.scrollTop;
@@ -50119,7 +50265,7 @@
 	                leftScrollLeft: scrollLeft,
 	                scrollTop: scrollTop
 	            }, function () {
-	                _this5.props.onVerticalScroll(_this5.state.scrollTop);
+	                _this4.props.onVerticalScroll(_this4.state.scrollTop);
 	            });
 	        }
 	    }, {
@@ -50150,7 +50296,7 @@
 	    }, {
 	        key: '_bottomRightOnScroll',
 	        value: function _bottomRightOnScroll(_ref16) {
-	            var _this6 = this;
+	            var _this5 = this;
 
 	            var scrollLeft = _ref16.scrollLeft,
 	                scrollTop = _ref16.scrollTop;
@@ -50159,18 +50305,18 @@
 	                rightScrollLeft: scrollLeft,
 	                scrollTop: scrollTop
 	            }, function () {
-	                _this6.props.onVerticalScroll(_this6.state.scrollTop);
+	                _this5.props.onVerticalScroll(_this5.state.scrollTop);
 	            });
 	        }
 	    }, {
 	        key: '_verticalOnScroll',
 	        value: function _verticalOnScroll(scrollTop) {
-	            var _this7 = this;
+	            var _this6 = this;
 
 	            this.setState({
 	                scrollTop: Math.floor(scrollTop)
 	            }, function () {
-	                _this7.props.onVerticalScroll(_this7.state.scrollTop);
+	                _this6.props.onVerticalScroll(_this6.state.scrollTop);
 	            });
 	        }
 	    }, {
@@ -51061,9 +51207,9 @@
 	                others[_key - 1] = arguments[_key];
 	            }
 
-	            if (isNeedResize === true && rowIndex === header.length - 1 && columnIndex !== freezeCols.length - 1 && columnIndex !== columnSize.length - 1) {
+	            if (isNeedResize === true && (rowIndex === header.length - 1 || top + height >= headerRowHeight * header.length) && columnIndex !== freezeCols.length - 1 && columnIndex !== columnSize.length - 1) {
 	                var columnResizerStyle = {
-	                    height: headerRowHeight
+	                    height: height
 	                };
 	                return _react2.default.createElement(
 	                    _layout.Layout,
@@ -51490,7 +51636,7 @@
 	                });
 	            }
 	            if (freezeCols.length === 0) {
-	                regionColumnSize[0] = 0;
+	                regionColumnSize = [];
 	            }
 	            if (isNeedFreeze === true && regionColumnSize[0] >= tableWidth) {
 	                regionColumnSize[0] = freezeCols.length > columnSize.length - freezeCols.length ? Math.floor(2 / 3 * tableWidth) : Math.floor(tableWidth / 3);
@@ -51568,14 +51714,14 @@
 	        value: function _onColumnResizeEnd(columnSize) {
 	            var _this2 = this;
 
-	            var regionColumnSize = this.state.regionColumnSize.slice();
+	            var regionColumnSize = this.state.regionColumnSize;
 	            this.setState(this._digestColumnSize(_extends({}, this.props, {
 	                columnSize: columnSize,
 	                regionColumnSize: regionColumnSize
 	            })), function () {
 	                _this2.props.onColumnResizeEnd({
-	                    columnSize: columnSize,
-	                    regionColumnSize: regionColumnSize
+	                    columnSize: _this2.state.columnSize,
+	                    regionColumnSize: _this2.state.regionColumnSize
 	                });
 	            });
 	        }
@@ -51584,14 +51730,14 @@
 	        value: function _onRegionColumnResizeEnd(regionColumnSize) {
 	            var _this3 = this;
 
-	            var columnSize = this.state.columnSize.slice();
+	            var columnSize = this.state.columnSize;
 	            this.setState(this._digestColumnSize(_extends({}, this.props, {
 	                columnSize: columnSize,
 	                regionColumnSize: regionColumnSize
 	            })), function () {
 	                _this3.props.onRegionColumnResizeEnd({
-	                    columnSize: columnSize,
-	                    regionColumnSize: regionColumnSize
+	                    columnSize: _this3.state.columnSize,
+	                    regionColumnSize: _this3.state.regionColumnSize
 	                });
 	            });
 	        }
@@ -51793,7 +51939,7 @@
 	                            var isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
 	                            if (isNeedMergeCol === true) {
 	                                mergeCol(i, j);
-	                                preCol[j] = preRow[j - 1];
+	                                preCol[j] = preRow[i];
 	                            } else {
 	                                createOneEl(i, j);
 	                            }
@@ -51801,12 +51947,16 @@
 	                            var _isNeedMergeRow = mergeRule(cache[i][j], cache[i - 1][j]);
 	                            var _isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
 	                            if (_isNeedMergeCol && _isNeedMergeRow) {
-	                                mergeRow(i, j); //优先合并列
-	                            } else if (_isNeedMergeCol) {
+	                                continue;
+	                                //mergeRow(i, j);//优先合并列
+	                            }
+	                            if (_isNeedMergeCol) {
 	                                mergeCol(i, j);
-	                            } else if (_isNeedMergeRow) {
+	                            }
+	                            if (_isNeedMergeRow) {
 	                                mergeRow(i, j);
-	                            } else if (!_isNeedMergeCol && !_isNeedMergeRow) {
+	                            }
+	                            if (!_isNeedMergeCol && !_isNeedMergeRow) {
 	                                createOneEl(i, j);
 	                            }
 	                        }
@@ -51883,7 +52033,7 @@
 	                totalRightColumnSize = 0,
 	                totalColumnSize = 0,
 	                summaryColumnSizeArray = [],
-	                totalRowSize = 0;
+	                totalRowSize = items.length * rowHeight;
 	            (0, _core.each)(columnSize, function (size, i) {
 	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
 	                    totalLeftColumnSize += size;
@@ -51897,9 +52047,14 @@
 	                    summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
 	                }
 	            });
-	            (0, _core.each)(items, function (item, i) {
-	                totalRowSize += rowHeight;
-	            });
+	            var tlw = regionSize;
+	            var tlh = regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var trw = width - regionSize;
+	            var trh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var blw = height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize;
+	            var blh = regionSize >= (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
+	            var brw = height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize;
+	            var brh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
 	            if (isNeedFreeze) {
 	                if (freezeCols.length > 0) {
 	                    topLeft = _react2.default.createElement(_Collection2.default, {
@@ -51907,8 +52062,8 @@
 	                        cellCount: this.state.topLeftItems.length,
 	                        cellRenderer: this._topLeftCellRenderer.bind(this),
 	                        cellSizeAndPositionGetter: this._topLeftCellSizeAndPositionGetter.bind(this),
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                        width: regionSize,
+	                        height: tlh,
+	                        width: tlw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -51921,8 +52076,8 @@
 	                        cellCount: this.state.bottomLeftItems.length,
 	                        cellRenderer: this._bottomLeftCellRenderer.bind(this),
 	                        cellSizeAndPositionGetter: this._bottomLeftCellSizeAndPositionGetter.bind(this),
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                        width: height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize,
+	                        height: blh,
+	                        width: blw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -51937,8 +52092,8 @@
 	                    cellCount: this.state.topRightItems.length,
 	                    cellRenderer: this._topRightCellRenderer.bind(this),
 	                    cellSizeAndPositionGetter: this._topRightCellSizeAndPositionGetter.bind(this),
-	                    height: width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                    width: width - regionSize,
+	                    height: trh,
+	                    width: trw,
 	                    noContentRender: this._noContentRender.bind(this),
 	                    overscanColumnCount: 0,
 	                    overscanRowCount: 0,
@@ -51953,8 +52108,8 @@
 	                cellCount: this.state.bottomRightItems.length,
 	                cellRenderer: this._bottomRightCellRenderer.bind(this),
 	                cellSizeAndPositionGetter: this._bottomRightCellSizeAndPositionGetter.bind(this),
-	                height: width - regionSize >= totalColumnSize - summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0 ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                width: height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize,
+	                height: brh,
+	                width: brw,
 	                noContentRender: this._noContentRender.bind(this),
 	                overscanColumnCount: 0,
 	                overscanRowCount: 0,
@@ -52238,12 +52393,30 @@
 	            return this.state.bottomRightItems[index];
 	        }
 	    }, {
+	        key: '_bottomRightCellStyleGetter',
+	        value: function _bottomRightCellStyleGetter(_ref12) {
+	            var columnIndex = _ref12.columnIndex,
+	                rowIndex = _ref12.rowIndex;
+
+	            var style = {
+	                borderRight: '1px solid #eaeaea',
+	                borderBottom: '1px solid #eaeaea'
+	            };
+	            if (columnIndex === 0) {
+	                style.borderLeft = '1px solid #eaeaea';
+	            }
+	            if (rowIndex === 0) {
+	                style.borderTop = '1px solid #eaeaea';
+	            }
+	            return style;
+	        }
+	    }, {
 	        key: '_bottomRightOnScroll',
-	        value: function _bottomRightOnScroll(_ref12) {
+	        value: function _bottomRightOnScroll(_ref13) {
 	            var _this5 = this;
 
-	            var scrollLeft = _ref12.scrollLeft,
-	                scrollTop = _ref12.scrollTop;
+	            var scrollLeft = _ref13.scrollLeft,
+	                scrollTop = _ref13.scrollTop;
 
 	            this.setState({
 	                rightScrollLeft: scrollLeft,
@@ -52469,7 +52642,7 @@
 	                            var isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
 	                            if (isNeedMergeCol === true) {
 	                                mergeCol(i, j);
-	                                preCol[j] = preRow[j - 1];
+	                                preCol[j] = preRow[i];
 	                            } else {
 	                                createOneEl(i, j);
 	                            }
@@ -52477,7 +52650,7 @@
 	                            var _isNeedMergeRow = mergeRule(cache[i][j], cache[i - 1][j]);
 	                            var _isNeedMergeCol = mergeRule(cache[i][j], cache[i][j - 1]);
 	                            if (_isNeedMergeCol && _isNeedMergeRow) {
-	                                mergeRow(i, j); //优先合并列
+	                                continue;
 	                            } else if (_isNeedMergeCol) {
 	                                mergeCol(i, j);
 	                            } else if (_isNeedMergeRow) {
@@ -52559,7 +52732,7 @@
 	                totalRightColumnSize = 0,
 	                totalColumnSize = 0,
 	                summaryColumnSizeArray = [],
-	                totalRowSize = 0;
+	                totalRowSize = items.length * rowHeight;
 	            (0, _core.each)(columnSize, function (size, i) {
 	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
 	                    totalLeftColumnSize += size;
@@ -52573,9 +52746,14 @@
 	                    summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
 	                }
 	            });
-	            (0, _core.each)(items, function (item, i) {
-	                totalRowSize += rowHeight;
-	            });
+	            var tlw = regionSize;
+	            var tlh = regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var trw = width - regionSize;
+	            var trh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize;
+	            var blw = height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize;
+	            var blh = regionSize >= (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
+	            var brw = height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize;
+	            var brh = width - regionSize >= totalColumnSize - (summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0) ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize;
 	            if (isNeedFreeze) {
 	                if (freezeCols.length > 0) {
 	                    topLeft = _react2.default.createElement(_Collection2.default, {
@@ -52583,8 +52761,8 @@
 	                        cellCount: this.state.topLeftItems.length,
 	                        cellRenderer: this._topLeftCellRenderer.bind(this),
 	                        cellSizeAndPositionGetter: this._topLeftCellSizeAndPositionGetter.bind(this),
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                        width: regionSize,
+	                        height: tlh,
+	                        width: tlw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -52598,8 +52776,8 @@
 	                        columnWidth: this._bottomLeftColumnWidthGetter.bind(this),
 	                        columnCount: freezeCols.length,
 	                        rowCount: items.length,
-	                        height: regionSize >= summaryColumnSizeArray[freezeCols.length - 1] ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                        width: height - header.length * headerRowHeight >= totalRowSize ? regionSize : regionSize + this._scrollBarSize,
+	                        height: blh,
+	                        width: blw,
 	                        noContentRender: this._noContentRender.bind(this),
 	                        overscanColumnCount: 0,
 	                        overscanRowCount: 0,
@@ -52614,8 +52792,8 @@
 	                    cellCount: this.state.topRightItems.length,
 	                    cellRenderer: this._topRightCellRenderer.bind(this),
 	                    cellSizeAndPositionGetter: this._topRightCellSizeAndPositionGetter.bind(this),
-	                    height: width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeCols.length - 1] || 0) ? header.length * headerRowHeight : header.length * headerRowHeight + this._scrollBarSize,
-	                    width: width - regionSize,
+	                    height: trh,
+	                    width: trw,
 	                    noContentRender: this._noContentRender.bind(this),
 	                    overscanColumnCount: 0,
 	                    overscanRowCount: 0,
@@ -52631,8 +52809,8 @@
 	                columnWidth: this._bottomRightColumnWidthGetter.bind(this),
 	                columnCount: columnSize.length - this._getFreezeColLength(),
 	                rowCount: items.length,
-	                height: width - regionSize >= totalColumnSize - summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0 ? height - header.length * headerRowHeight : height - header.length * headerRowHeight + this._scrollBarSize,
-	                width: height - header.length * headerRowHeight >= totalRowSize ? width - regionSize : width - regionSize + this._scrollBarSize,
+	                height: brh,
+	                width: brw,
 	                noContentRender: this._noContentRender.bind(this),
 	                overscanColumnCount: 0,
 	                overscanRowCount: 0,
@@ -52994,7 +53172,7 @@
 
 	var _SummaryTableComponent3 = _interopRequireDefault(_SummaryTableComponent2);
 
-	var _LevelTableComponent2 = __webpack_require__(612);
+	var _LevelTableComponent2 = __webpack_require__(614);
 
 	var _LevelTableComponent3 = _interopRequireDefault(_LevelTableComponent2);
 
@@ -53093,6 +53271,7 @@
 
 	            return {
 	                columnSize: columnSize,
+	                regionColumnSize: props.regionColumnSize,
 	                minColumnSize: minColumnSize,
 	                freezeCols: freezeCols
 	            };
@@ -53117,7 +53296,6 @@
 	                rowHeight = _props.rowHeight,
 	                isNeedFreeze = _props.isNeedFreeze,
 	                isNeedResize = _props.isNeedResize,
-	                regionColumnSize = _props.regionColumnSize,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
@@ -53134,6 +53312,7 @@
 	                onNext = _props.onNext;
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
+	                regionColumnSize = _state.regionColumnSize,
 	                minColumnSize = _state.minColumnSize,
 	                freezeCols = _state.freezeCols,
 	                scrollTop = _state.scrollTop;
@@ -53188,41 +53367,57 @@
 	    }, {
 	        key: '_headerCellRenderer',
 	        value: function _headerCellRenderer(_ref, item) {
-	            var colIndex = _ref.colIndex,
+	            var columnIndex = _ref.columnIndex,
 	                rowIndex = _ref.rowIndex,
 	                width = _ref.width,
 	                height = _ref.height;
 
-	            return _react2.default.createElement(_DetailTableHeaderCellComponent2.default, { item: item, colIndex: colIndex, rowIndex: rowIndex, width: width,
+	            return _react2.default.createElement(_DetailTableHeaderCellComponent2.default, { item: item, columnIndex: columnIndex, rowIndex: rowIndex, width: width,
 	                height: height, styleType: this.props.styleType,
 	                color: this.props.color });
 	        }
 	    }, {
 	        key: '_cellRenderer',
 	        value: function _cellRenderer(_ref2, item) {
-	            var colIndex = _ref2.colIndex,
+	            var columnIndex = _ref2.columnIndex,
 	                rowIndex = _ref2.rowIndex,
 	                width = _ref2.width,
 	                height = _ref2.height;
 
-	            return _react2.default.createElement(_DetailTableCellComponent2.default, { item: item, style: { backgroundColor: '' }, colIndex: colIndex,
+	            return _react2.default.createElement(_DetailTableCellComponent2.default, { item: item, style: { backgroundColor: '' }, columnIndex: columnIndex,
 	                rowIndex: rowIndex, width: width,
 	                height: height, styleType: this.props.styleType,
 	                color: this.props.color });
 	        }
 	    }, {
 	        key: '_onColumnResizeEnd',
-	        value: function _onColumnResizeEnd() {
-	            var _props2;
+	        value: function _onColumnResizeEnd(size) {
+	            var _this2 = this;
 
-	            (_props2 = this.props).onColumnResizeEnd.apply(_props2, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this2.props.onColumnResizeEnd({
+	                    columnSize: _this2.state.columnSize,
+	                    regionColumnSize: _this2.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onRegionColumnResizeEnd',
-	        value: function _onRegionColumnResizeEnd() {
-	            var _props3;
+	        value: function _onRegionColumnResizeEnd(size) {
+	            var _this3 = this;
 
-	            (_props3 = this.props).onRegionColumnResizeEnd.apply(_props3, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this3.props.onRegionColumnResizeEnd({
+	                    columnSize: _this3.state.columnSize,
+	                    regionColumnSize: _this3.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onVerticalScroll',
@@ -53387,9 +53582,9 @@
 	                height = _props.height,
 	                styleType = _props.styleType,
 	                color = _props.color,
-	                colIndex = _props.colIndex,
+	                columnIndex = _props.columnIndex,
 	                rowIndex = _props.rowIndex,
-	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'colIndex', 'rowIndex']);
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'columnIndex', 'rowIndex']);
 
 	            var oddColor = void 0,
 	                evenColor = void 0,
@@ -53412,12 +53607,12 @@
 	            }
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                _extends({ box: item.iconCls ? 'last' : 'mean' }, props, {
+	                _extends({ box: item.iconClass ? 'last' : 'mean' }, props, {
 	                    style: _extends({}, (0, _core.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
-	                    }, colIndex === 0], [_extends({}, props.style, {
+	                    }, columnIndex === 0], [_extends({}, props.style, {
 	                        width: width,
 	                        height: height,
 	                        borderRight: '1px solid #eaeaea',
@@ -53441,9 +53636,9 @@
 	                        item.text
 	                    )
 	                ),
-	                item.iconCls ? _react2.default.createElement(
+	                item.iconClass ? _react2.default.createElement(
 	                    _layout.CenterLayout,
-	                    { style: { width: 25 }, className: item.iconCls },
+	                    { style: { width: 25 }, className: item.iconClass },
 	                    _react2.default.createElement(_base.Icon, null)
 	                ) : null
 	            );
@@ -53532,9 +53727,9 @@
 	                height = _props.height,
 	                styleType = _props.styleType,
 	                color = _props.color,
-	                colIndex = _props.colIndex,
+	                columnIndex = _props.columnIndex,
 	                rowIndex = _props.rowIndex,
-	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'colIndex', 'rowIndex']);
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'columnIndex', 'rowIndex']);
 
 	            var backgroundColor = void 0,
 	                fontColor = void 0;
@@ -53557,7 +53752,7 @@
 	                            borderTop: '1px solid #eaeaea'
 	                        }, rowIndex === 0], [{
 	                            borderLeft: '1px solid #eaeaea'
-	                        }, colIndex === 0], [_extends({
+	                        }, columnIndex === 0], [_extends({
 	                            width: width,
 	                            height: height,
 	                            borderRight: '1px solid #eaeaea',
@@ -53611,7 +53806,7 @@
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
-	                    }, colIndex === 0], [_extends({
+	                    }, columnIndex === 0], [_extends({
 	                        width: width,
 	                        height: height,
 	                        borderRight: '1px solid #eaeaea',
@@ -53894,27 +54089,32 @@
 	                null,
 	                label
 	            );
-	            var leftPage = _react2.default.createElement(
-	                _base.Button,
-	                { disabled: curr <= 1, main: 'center', cross: 'center',
-	                    className: 'column-pre-page-h-font',
-	                    style: { width: 16, height: 16, fontSize: 16 },
-	                    onClick: this._leftPageOnClick.bind(this) },
-	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	            );
-	            var curPage = _react2.default.createElement(
-	                _base.Label,
-	                { style: { paddingLeft: 5, paddingRight: 5 } },
-	                curr
-	            );
-	            var rightPage = _react2.default.createElement(
-	                _base.Button,
-	                { disabled: curr >= pages, main: 'center', cross: 'center',
-	                    className: 'column-next-page-h-font',
-	                    style: { width: 16, height: 16, fontSize: 16 },
-	                    onClick: this._rightPageOnClick.bind(this) },
-	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	            );
+	            var leftPage = void 0,
+	                curPage = void 0,
+	                rightPage = void 0;
+	            if (curr > 1 || curr === 1 && curr < pages) {
+	                leftPage = _react2.default.createElement(
+	                    _base.Button,
+	                    { disabled: curr <= 1, main: 'center', cross: 'center',
+	                        className: 'column-pre-page-h-font',
+	                        style: { width: 16, height: 16, fontSize: 16 },
+	                        onClick: this._leftPageOnClick.bind(this) },
+	                    _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	                );
+	                curPage = _react2.default.createElement(
+	                    _base.Label,
+	                    { style: { paddingLeft: 5, paddingRight: 5 } },
+	                    curr
+	                );
+	                rightPage = _react2.default.createElement(
+	                    _base.Button,
+	                    { disabled: curr >= pages, main: 'center', cross: 'center',
+	                        className: 'column-next-page-h-font',
+	                        style: { width: 16, height: 16, fontSize: 16 },
+	                        onClick: this._rightPageOnClick.bind(this) },
+	                    _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	                );
+	            }
 	            return _react2.default.createElement(
 	                _layout.Layout,
 	                { box: 'last', cross: 'center', style: { height: 30, paddingRight: 10 } },
@@ -53962,6 +54162,7 @@
 	    onPrev: _core.emptyFunction,
 	    onNext: _core.emptyFunction
 	};
+
 
 	_reactMixin2.default.onClass(DetailTablePagerComponent, _core.ReactComponentWithPureRenderMixin);
 
@@ -54047,7 +54248,7 @@
 	                    width: DetailTableSequenceComponent.WIDTH,
 	                    height: header.length * headerRowHeight,
 	                    item: { text: '序号' },
-	                    colIndex: 0,
+	                    columnIndex: 0,
 	                    rowIndex: 0
 	                }) : null,
 	                _react2.default.createElement(
@@ -54063,6 +54264,7 @@
 	        value: function _renderSequence() {
 	            var _props2 = this.props,
 	                items = _props2.items,
+	                curr = _props2.curr,
 	                scrollTop = _props2.scrollTop,
 	                styleType = _props2.styleType,
 	                color = _props2.color,
@@ -54083,9 +54285,9 @@
 	                    style: style,
 	                    width: DetailTableSequenceComponent.WIDTH,
 	                    height: rowHeight,
-	                    item: { text: i + 1 },
+	                    item: { text: (curr - 1) * 100 + i + 1 },
 	                    rowIndex: i,
-	                    colIndex: 0
+	                    columnIndex: 0
 	                }));
 	            }
 	            return result;
@@ -54144,23 +54346,31 @@
 
 	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
 
-	var _SummaryTableHeaderCellComponent = __webpack_require__(606);
+	var _SummaryTableDimensionCellComponent = __webpack_require__(606);
+
+	var _SummaryTableDimensionCellComponent2 = _interopRequireDefault(_SummaryTableDimensionCellComponent);
+
+	var _SummaryTableHeaderCellComponent = __webpack_require__(607);
 
 	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
 
-	var _SummaryTableComponentWidthHelper = __webpack_require__(607);
+	var _SummaryTableCrossCellComponent = __webpack_require__(608);
+
+	var _SummaryTableCrossCellComponent2 = _interopRequireDefault(_SummaryTableCrossCellComponent);
+
+	var _SummaryTableComponentWidthHelper = __webpack_require__(609);
 
 	var _SummaryTableComponentWidthHelper2 = _interopRequireDefault(_SummaryTableComponentWidthHelper);
 
-	var _SummaryTableComponentItemsHelper = __webpack_require__(608);
+	var _SummaryTableComponentItemsHelper = __webpack_require__(610);
 
 	var _SummaryTableComponentItemsHelper2 = _interopRequireDefault(_SummaryTableComponentItemsHelper);
 
-	var _SummaryTablePagerComponent = __webpack_require__(609);
+	var _SummaryTablePagerComponent = __webpack_require__(611);
 
 	var _SummaryTablePagerComponent2 = _interopRequireDefault(_SummaryTablePagerComponent);
 
-	var _SummaryTableSequenceComponent = __webpack_require__(610);
+	var _SummaryTableSequenceComponent = __webpack_require__(612);
 
 	var _SummaryTableSequenceComponent2 = _interopRequireDefault(_SummaryTableSequenceComponent);
 
@@ -54175,8 +54385,10 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 	var MERGE_RULE = function MERGE_RULE(col1, col2) {
+	    if (col1.tag && col2.tag) {
+	        return col1.tag === col2.tag;
+	    }
 	    return col1 === col2;
-	    // return isEqual(col1.text, col2.text);
 	};
 
 	var SummaryTableComponent = function (_Component) {
@@ -54206,6 +54418,10 @@
 
 	            var freezeCols = props.freezeCols;
 	            var columnSize = props.columnSize.slice();
+	            var regionColumnSize = props.regionColumnSize.slice();
+	            if (columnSize.length > minColumnSize.length) {
+	                columnSize = columnSize.splice(columnSize.length - minColumnSize.length);
+	            }
 	            if (freezeCols.length >= columnSize.length) {
 	                freezeCols = [];
 	            }
@@ -54214,7 +54430,10 @@
 	            }
 
 	            return {
+	                hDeep: itemsHelper.getHDeep(),
+	                vDeep: itemsHelper.getVDeep(),
 	                columnSize: columnSize,
+	                regionColumnSize: regionColumnSize,
 	                minColumnSize: minColumnSize,
 	                header: header,
 	                items: items,
@@ -54242,7 +54461,6 @@
 	                isNeedFreeze = _props.isNeedFreeze,
 	                isNeedResize = _props.isNeedResize,
 	                mergeCols = _props.mergeCols,
-	                regionColumnSize = _props.regionColumnSize,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
@@ -54260,6 +54478,7 @@
 	                onHNext = _props.onHNext;
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
+	                regionColumnSize = _state.regionColumnSize,
 	                minColumnSize = _state.minColumnSize,
 	                header = _state.header,
 	                items = _state.items,
@@ -54328,41 +54547,65 @@
 	    }, {
 	        key: '_headerCellRenderer',
 	        value: function _headerCellRenderer(_ref, item) {
-	            var colIndex = _ref.colIndex,
+	            var columnIndex = _ref.columnIndex,
 	                rowIndex = _ref.rowIndex,
 	                width = _ref.width,
 	                height = _ref.height;
 
-	            return _react2.default.createElement(_SummaryTableHeaderCellComponent2.default, { item: item, colIndex: colIndex, rowIndex: rowIndex, width: width,
+	            var Component = _SummaryTableHeaderCellComponent2.default;
+	            if (!(this.props.header.length > 0 && rowIndex === this.state.vDeep || columnIndex < this.state.hDeep)) {
+	                Component = _SummaryTableCrossCellComponent2.default;
+	            }
+	            return _react2.default.createElement(Component, { item: item, columnIndex: columnIndex, rowIndex: rowIndex, width: width,
 	                height: height, styleType: this.props.styleType,
 	                color: this.props.color });
 	        }
 	    }, {
 	        key: '_cellRenderer',
 	        value: function _cellRenderer(_ref2, item) {
-	            var colIndex = _ref2.colIndex,
+	            var columnIndex = _ref2.columnIndex,
 	                rowIndex = _ref2.rowIndex,
 	                width = _ref2.width,
 	                height = _ref2.height;
 
-	            return _react2.default.createElement(_SummaryTableCellComponent2.default, { item: item, style: { backgroundColor: '' }, colIndex: colIndex,
+	            var Component = _SummaryTableCellComponent2.default;
+	            if (columnIndex < this.state.hDeep) {
+	                Component = _SummaryTableDimensionCellComponent2.default;
+	            }
+	            return _react2.default.createElement(Component, { item: item, columnIndex: columnIndex,
 	                rowIndex: rowIndex, width: width,
 	                height: height, styleType: this.props.styleType,
 	                color: this.props.color });
 	        }
 	    }, {
 	        key: '_onColumnResizeEnd',
-	        value: function _onColumnResizeEnd() {
-	            var _props2;
+	        value: function _onColumnResizeEnd(size) {
+	            var _this2 = this;
 
-	            (_props2 = this.props).onColumnResizeEnd.apply(_props2, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this2.props.onColumnResizeEnd({
+	                    columnSize: _this2.state.columnSize,
+	                    regionColumnSize: _this2.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onRegionColumnResizeEnd',
-	        value: function _onRegionColumnResizeEnd() {
-	            var _props3;
+	        value: function _onRegionColumnResizeEnd(size) {
+	            var _this3 = this;
 
-	            (_props3 = this.props).onRegionColumnResizeEnd.apply(_props3, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this3.props.onRegionColumnResizeEnd({
+	                    columnSize: _this3.state.columnSize,
+	                    regionColumnSize: _this3.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onVerticalScroll',
@@ -54385,6 +54628,7 @@
 	    columnSize: [],
 	    isNeedFreeze: true,
 	    freezeCols: [],
+	    mergeCols: [],
 	    header: [],
 	    items: [],
 	    crossHeader: [],
@@ -54398,7 +54642,6 @@
 	    hCurr: 1,
 	    hasVNext: _core.emptyFunction,
 	    hasHNext: _core.emptyFunction,
-	    label: '',
 	    onVPrev: _core.emptyFunction,
 	    onVNext: _core.emptyFunction,
 	    onHPrev: _core.emptyFunction,
@@ -54473,6 +54716,8 @@
 
 	var _core = __webpack_require__(194);
 
+	var _constants = __webpack_require__(543);
+
 	var _layout = __webpack_require__(186);
 
 	var _base = __webpack_require__(537);
@@ -54500,54 +54745,67 @@
 	var LIGHT_FONT_COLOR = '#ffffff';
 
 	var colorMap = {};
+
+	var getAdaptColor = function getAdaptColor(color) {
+	    return _core.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	};
 	var getColor = function getColor(color) {
 	    if (colorMap[color]) {
 	        return colorMap[color];
 	    }
 	    var oddColor = parseHEXAlpha2HEX(color, 0.2);
 	    var evenColor = parseHEXAlpha2HEX(color, 0.05);
+	    var summaryColor = parseHEXAlpha2HEX(color, 0.4);
 	    colorMap[color] = {
 	        oddColor: oddColor,
 	        evenColor: evenColor,
-	        oddFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(oddColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR,
-	        evenFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(evenColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR
+	        summaryColor: summaryColor,
+	        oddFontColor: getAdaptColor(_core.colorUtils.rgb2hex(oddColor)),
+	        evenFontColor: getAdaptColor(_core.colorUtils.rgb2hex(evenColor)),
+	        summaryFontColor: getAdaptColor(_core.colorUtils.rgb2hex(summaryColor))
 	    };
 	    return colorMap[color];
 	};
 
-	var SummaryTableCell = function (_Component) {
-	    _inherits(SummaryTableCell, _Component);
+	var SummaryTableCellComponent = function (_Component) {
+	    _inherits(SummaryTableCellComponent, _Component);
 
-	    function SummaryTableCell(props, context) {
-	        _classCallCheck(this, SummaryTableCell);
+	    function SummaryTableCellComponent(props, context) {
+	        _classCallCheck(this, SummaryTableCellComponent);
 
-	        return _possibleConstructorReturn(this, (SummaryTableCell.__proto__ || Object.getPrototypeOf(SummaryTableCell)).call(this, props, context));
+	        return _possibleConstructorReturn(this, (SummaryTableCellComponent.__proto__ || Object.getPrototypeOf(SummaryTableCellComponent)).call(this, props, context));
 	    }
 
-	    _createClass(SummaryTableCell, [{
+	    _createClass(SummaryTableCellComponent, [{
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var _props = this.props,
 	                item = _props.item,
 	                width = _props.width,
 	                height = _props.height,
 	                styleType = _props.styleType,
 	                color = _props.color,
-	                colIndex = _props.colIndex,
+	                columnIndex = _props.columnIndex,
 	                rowIndex = _props.rowIndex,
-	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'colIndex', 'rowIndex']);
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'columnIndex', 'rowIndex']);
 
 	            var oddColor = void 0,
 	                evenColor = void 0,
 	                oddFontColor = void 0,
-	                evenFontColor = void 0;
+	                evenFontColor = void 0,
+	                summaryColor = void 0,
+	                summaryFontColor = void 0;
 	            switch (styleType) {
 	                case 1:
 	                    var m = getColor(color);
 	                    oddColor = m.oddColor;
 	                    evenColor = m.evenColor;
+	                    summaryColor = item.isLast ? color : m.summaryColor;
 	                    oddFontColor = m.oddFontColor;
 	                    evenFontColor = m.evenFontColor;
+	                    summaryFontColor = item.isLast ? getAdaptColor(color) : m.summaryFontColor;
 	                    break;
 	                case 2:
 	                    break;
@@ -54556,28 +54814,291 @@
 	                default:
 	                    break;
 	            }
+	            var box = 'mean';
+	            //两个图标
+	            if (item.iconClass || item.list && item.list.length > 0) {
+	                box = 'last';
+	            }
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                _extends({ box: item.iconCls ? 'last' : 'mean' }, props, {
+	                _extends({ box: box, cross: 'center' }, props, {
 	                    style: _extends({}, (0, _core.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
-	                    }, colIndex === 0], [_extends({}, props.style, {
+	                    }, columnIndex === 0], [_extends({}, props.style, {
 	                        width: width,
 	                        height: height,
 	                        borderRight: '1px solid #eaeaea',
 	                        borderBottom: '1px solid #eaeaea'
 	                    })], [{
-	                        backgroundColor: rowIndex % 2 === 0 ? oddColor : evenColor
-	                    }, (0, _core.isNotNil)(oddColor)], [{
-	                        color: rowIndex % 2 === 0 ? oddFontColor : evenFontColor
-	                    }, (0, _core.isNotNil)(oddFontColor)])) }),
+	                        fontWeight: 'bold'
+	                    }, item.isSum === true], [{
+	                        backgroundColor: item.isSum ? summaryColor : rowIndex % 2 === 0 ? oddColor : evenColor
+	                    }, item.isSum ? (0, _core.isNotNil)(summaryColor) : (0, _core.isNotNil)(oddColor)], [{
+	                        color: item.isSum ? summaryFontColor : rowIndex % 2 === 0 ? oddFontColor : evenFontColor
+	                    }, item.isSum ? (0, _core.isNotNil)(summaryFontColor) : (0, _core.isNotNil)(oddFontColor)])) }),
 	                _react2.default.createElement(
 	                    _base.Title,
-	                    { cross: 'center', title: item.title, style: _extends({}, item.style, {
-	                            paddingLeft: 10,
-	                            paddingRight: 10
+	                    { main: 'right', cross: 'center', title: item.title, style: _extends({}, item.style, {
+	                            height: 25,
+	                            paddingLeft: 5,
+	                            paddingRight: 5
+	                        }) },
+	                    item.downList && item.downList.length > 0 ? _react2.default.createElement(_base.Combo, {
+	                        ref: function ref(_ref) {
+	                            return _this2.combo = _ref;
+	                        },
+	                        triggerRenderer: function triggerRenderer() {
+	                            return _react2.default.createElement(
+	                                _base.Label,
+	                                { style: {
+	                                        cursor: 'pointer'
+	                                    } },
+	                                item.text
+	                            );
+	                        },
+	                        popupRenderer: function popupRenderer() {
+	                            var list = [];
+	                            (0, _core.each)(item.downList, function (item) {
+	                                list.push(_react2.default.createElement(
+	                                    _base.Button,
+	                                    { key: item.value, box: 'mean',
+	                                        className: (0, _core.cn)('bi-list-item', 'bi-list-item-stress'),
+	                                        style: { height: 25, paddingLeft: 10, paddingRight: 10 },
+	                                        onClick: function onClick() {
+	                                            _this2.combo.close();
+	                                            item.onClick(item);
+	                                        } },
+	                                    _react2.default.createElement(
+	                                        _base.Title,
+	                                        { cross: 'center', title: item.title },
+	                                        _react2.default.createElement(
+	                                            _base.Label,
+	                                            null,
+	                                            item.text
+	                                        )
+	                                    )
+	                                ));
+	                            });
+	                            return _react2.default.createElement(
+	                                _layout.VerticalLayout,
+	                                null,
+	                                list
+	                            );
+	                        },
+	                        popup: {
+	                            style: {
+	                                borderColor: _constants.Colors.BORDER,
+	                                borderWidth: 1,
+	                                borderStyle: 'solid',
+	                                width: 100
+	                            }
+	                        }
+	                    }) : _react2.default.createElement(
+	                        _base.Label,
+	                        { style: {
+	                                cursor: item.onClick ? 'pointer' : 'default'
+	                            }, onClick: item.onClick },
+	                        item.text
+	                    )
+	                ),
+	                item.iconClass ? _react2.default.createElement(
+	                    _layout.CenterLayout,
+	                    { style: { width: 25, height: 25 }, className: item.iconClass },
+	                    _react2.default.createElement(_base.Icon, null)
+	                ) : null
+	            );
+	        }
+	    }]);
+
+	    return SummaryTableCellComponent;
+	}(_react.Component);
+
+	_reactMixin2.default.onClass(SummaryTableCellComponent, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = SummaryTableCellComponent;
+
+/***/ },
+/* 606 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(40);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _constants = __webpack_require__(543);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/19.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var parseHEXAlpha2HEX = function parseHEXAlpha2HEX(hex, alpha) {
+	    var rgb = _core.colorUtils.hex2rgb(hex);
+	    var rgbJSON = _core.colorUtils.rgb2json(rgb);
+	    rgbJSON.a = alpha;
+	    return _core.colorUtils.rgba2rgb(_core.colorUtils.json2rgba(rgbJSON));
+	};
+
+	var DARK_FONT_COLOR = '#1a1a1a';
+	var LIGHT_FONT_COLOR = '#ffffff';
+
+	var colorMap = {};
+
+	var getAdaptColor = function getAdaptColor(color) {
+	    return _core.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	};
+	var getColor = function getColor(color) {
+	    if (colorMap[color]) {
+	        return colorMap[color];
+	    }
+	    var oddColor = parseHEXAlpha2HEX(color, 0.2);
+	    var evenColor = parseHEXAlpha2HEX(color, 0.05);
+	    var summaryColor = parseHEXAlpha2HEX(color, 0.4);
+	    colorMap[color] = {
+	        oddColor: oddColor,
+	        evenColor: evenColor,
+	        summaryColor: summaryColor,
+	        oddFontColor: getAdaptColor(_core.colorUtils.rgb2hex(oddColor)),
+	        evenFontColor: getAdaptColor(_core.colorUtils.rgb2hex(evenColor)),
+	        summaryFontColor: getAdaptColor(_core.colorUtils.rgb2hex(summaryColor))
+	    };
+	    return colorMap[color];
+	};
+
+	var SummaryTableDimensionCellComponent = function (_Component) {
+	    _inherits(SummaryTableDimensionCellComponent, _Component);
+
+	    function SummaryTableDimensionCellComponent(props, context) {
+	        _classCallCheck(this, SummaryTableDimensionCellComponent);
+
+	        return _possibleConstructorReturn(this, (SummaryTableDimensionCellComponent.__proto__ || Object.getPrototypeOf(SummaryTableDimensionCellComponent)).call(this, props, context));
+	    }
+
+	    _createClass(SummaryTableDimensionCellComponent, [{
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var _props = this.props,
+	                item = _props.item,
+	                width = _props.width,
+	                height = _props.height,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                columnIndex = _props.columnIndex,
+	                rowIndex = _props.rowIndex,
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'columnIndex', 'rowIndex']);
+
+	            var oddColor = void 0,
+	                evenColor = void 0,
+	                oddFontColor = void 0,
+	                evenFontColor = void 0,
+	                summaryColor = void 0,
+	                summaryFontColor = void 0;
+	            switch (styleType) {
+	                case 1:
+	                    var m = getColor(color);
+	                    oddColor = m.oddColor;
+	                    evenColor = m.evenColor;
+	                    summaryColor = item.isLast ? color : m.summaryColor;
+	                    oddFontColor = m.oddFontColor;
+	                    evenFontColor = m.evenFontColor;
+	                    summaryFontColor = item.isLast ? getAdaptColor(color) : m.summaryFontColor;
+	                    break;
+	                case 2:
+	                    break;
+	                case 3:
+	                    break;
+	                default:
+	                    break;
+	            }
+	            var box = 'mean';
+	            //两个图标
+	            if (item.needExpand && item.iconClass) {
+	                box = 'justify';
+	            } else if (item.needExpand) {
+	                box = 'first';
+	            } else if (item.iconClass) {
+	                box = 'last';
+	            }
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                _extends({ box: box, cross: 'center' }, props, {
+	                    onMouseEnter: function onMouseEnter() {
+	                        if (_this2.icon) {
+	                            try {
+	                                _reactDom2.default.findDOMNode(_this2.icon).style.visibility = 'visible';
+	                            } catch (e) {}
+	                        }
+	                    },
+	                    onMouseLeave: function onMouseLeave() {
+	                        if (_this2.icon) {
+	                            try {
+	                                _reactDom2.default.findDOMNode(_this2.icon).style.visibility = 'hidden';
+	                            } catch (e) {}
+	                        }
+	                    },
+	                    style: _extends({}, (0, _core.sc)([{
+	                        borderTop: '1px solid #eaeaea'
+	                    }, rowIndex === 0], [{
+	                        borderLeft: '1px solid #eaeaea'
+	                    }, columnIndex === 0], [_extends({}, props.style, {
+	                        width: width,
+	                        height: height,
+	                        borderRight: '1px solid #eaeaea',
+	                        borderBottom: '1px solid #eaeaea'
+	                    })], [{
+	                        fontWeight: 'bold'
+	                    }, item.isSum === true], [{
+	                        backgroundColor: item.isSum ? summaryColor : rowIndex % 2 === 0 ? oddColor : evenColor
+	                    }, item.isSum ? (0, _core.isNotNil)(summaryColor) : (0, _core.isNotNil)(oddColor)], [{
+	                        color: item.isSum ? summaryFontColor : rowIndex % 2 === 0 ? oddFontColor : evenFontColor
+	                    }, item.isSum ? (0, _core.isNotNil)(summaryFontColor) : (0, _core.isNotNil)(oddFontColor)])) }),
+	                item.needExpand ? _react2.default.createElement(
+	                    _base.Button,
+	                    { style: { width: 25, height: 25 },
+	                        className: item.isExpanded ? 'tree-expand-icon-type1' : 'tree-collapse-icon-type1',
+	                        onClick: item.expandCallback },
+	                    _react2.default.createElement(_base.Icon, { width: 25, height: 25 })
+	                ) : null,
+	                _react2.default.createElement(
+	                    _base.Title,
+	                    { main: 'left', cross: 'center', title: item.title, style: _extends({}, item.style, {
+	                            paddingLeft: 5,
+	                            paddingRight: 5
 	                        }) },
 	                    _react2.default.createElement(
 	                        _base.Label,
@@ -54587,24 +55108,33 @@
 	                        item.text
 	                    )
 	                ),
-	                item.iconCls ? _react2.default.createElement(
-	                    _layout.CenterLayout,
-	                    { style: { width: 25 }, className: item.iconCls },
-	                    _react2.default.createElement(_base.Icon, null)
+	                item.iconClass ? _react2.default.createElement(
+	                    _base.Title,
+	                    { style: { width: 25, height: 25 }, title: '\u70B9\u51FB\u4E0A\u4E0B\u94BB' },
+	                    _react2.default.createElement(
+	                        _base.Button,
+	                        { cross: 'center', ref: function ref(_ref) {
+	                                return _this2.icon = _ref;
+	                            },
+	                            style: { width: 25, height: 25, visibility: 'hidden' },
+	                            className: item.iconClass,
+	                            onClick: item.drillCallback },
+	                        _react2.default.createElement(_base.Icon, null)
+	                    )
 	                ) : null
 	            );
 	        }
 	    }]);
 
-	    return SummaryTableCell;
+	    return SummaryTableDimensionCellComponent;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(SummaryTableCell, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableDimensionCellComponent, _core.ReactComponentWithPureRenderMixin);
 
-	exports.default = SummaryTableCell;
+	exports.default = SummaryTableDimensionCellComponent;
 
 /***/ },
-/* 606 */
+/* 607 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -54678,9 +55208,9 @@
 	                height = _props.height,
 	                styleType = _props.styleType,
 	                color = _props.color,
-	                colIndex = _props.colIndex,
+	                columnIndex = _props.columnIndex,
 	                rowIndex = _props.rowIndex,
-	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'colIndex', 'rowIndex']);
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'columnIndex', 'rowIndex']);
 
 	            var backgroundColor = void 0,
 	                fontColor = void 0;
@@ -54699,11 +55229,11 @@
 	                return _react2.default.createElement(
 	                    _layout.Layout,
 	                    _extends({ box: 'last' }, props, {
-	                        style: (0, _core.sc)([{
+	                        style: _extends({}, (0, _core.sc)([{
 	                            borderTop: '1px solid #eaeaea'
 	                        }, rowIndex === 0], [{
 	                            borderLeft: '1px solid #eaeaea'
-	                        }, colIndex === 0], [_extends({
+	                        }, columnIndex === 0], [_extends({
 	                            width: width,
 	                            height: height,
 	                            borderRight: '1px solid #eaeaea',
@@ -54712,7 +55242,7 @@
 	                            backgroundColor: backgroundColor
 	                        }, (0, _core.isNotNil)(backgroundColor)], [{
 	                            color: fontColor
-	                        }, (0, _core.isNotNil)(fontColor)]) }),
+	                        }, (0, _core.isNotNil)(fontColor)]), props.style) }),
 	                    _react2.default.createElement(
 	                        _base.Title,
 	                        { cross: 'center', main: 'center', title: item.title, style: {
@@ -54754,7 +55284,7 @@
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
-	                    }, colIndex === 0], [_extends({
+	                    }, columnIndex === 0], [_extends({
 	                        width: width,
 	                        height: height,
 	                        borderRight: '1px solid #eaeaea',
@@ -54859,7 +55389,282 @@
 	exports.default = SummaryTableHeaderCell;
 
 /***/ },
-/* 607 */
+/* 608 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(9);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(40);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _reactMixin = __webpack_require__(555);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _core = __webpack_require__(194);
+
+	var _layout = __webpack_require__(186);
+
+	var _base = __webpack_require__(537);
+
+	var _Colors = __webpack_require__(544);
+
+	var _Colors2 = _interopRequireDefault(_Colors);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Wang on 2016/12/19.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var DARK_FONT_COLOR = '#1a1a1a';
+	var LIGHT_FONT_COLOR = '#ffffff';
+
+	var SummaryTableCrossCellComponent = function (_Component) {
+	    _inherits(SummaryTableCrossCellComponent, _Component);
+
+	    function SummaryTableCrossCellComponent(props, context) {
+	        _classCallCheck(this, SummaryTableCrossCellComponent);
+
+	        var _this = _possibleConstructorReturn(this, (SummaryTableCrossCellComponent.__proto__ || Object.getPrototypeOf(SummaryTableCrossCellComponent)).call(this, props, context));
+
+	        _this.state = {
+	            open: false
+	        };
+
+	        _this._triggerRenderer = _this._triggerRenderer.bind(_this);
+	        _this._popupRenderer = _this._popupRenderer.bind(_this);
+	        return _this;
+	    }
+
+	    _createClass(SummaryTableCrossCellComponent, [{
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var _props = this.props,
+	                item = _props.item,
+	                width = _props.width,
+	                height = _props.height,
+	                styleType = _props.styleType,
+	                color = _props.color,
+	                columnIndex = _props.columnIndex,
+	                rowIndex = _props.rowIndex,
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'columnIndex', 'rowIndex']);
+
+	            var backgroundColor = void 0,
+	                fontColor = void 0;
+	            switch (styleType) {
+	                case 1:
+	                case 2:
+	                    backgroundColor = color;
+	                    fontColor = _core.colorUtils.isDarkColor(backgroundColor) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	                    break;
+	                case 3:
+	                    break;
+	                default:
+	                    break;
+	            }
+	            var box = 'mean';
+	            //两个图标
+	            if (item.needExpand && (item.list && item.list.length > 0 || item.iconClass)) {
+	                box = 'justify';
+	            } else if (item.needExpand) {
+	                box = 'first';
+	            } else if (item.list && item.list.length > 0 || item.iconClass) {
+	                box = 'last';
+	            }
+	            return _react2.default.createElement(
+	                _layout.Layout,
+	                _extends({ box: box, cross: 'center' }, props, {
+	                    onMouseEnter: function onMouseEnter() {
+	                        if (_this2.icon) {
+	                            try {
+	                                _reactDom2.default.findDOMNode(_this2.icon).style.visibility = 'visible';
+	                            } catch (e) {}
+	                        }
+	                    },
+	                    onMouseLeave: function onMouseLeave() {
+	                        if (_this2.icon) {
+	                            try {
+	                                _reactDom2.default.findDOMNode(_this2.icon).style.visibility = 'hidden';
+	                            } catch (e) {}
+	                        }
+	                    },
+	                    style: _extends({}, (0, _core.sc)([{
+	                        borderTop: '1px solid #eaeaea'
+	                    }, rowIndex === 0], [{
+	                        borderLeft: '1px solid #eaeaea'
+	                    }, columnIndex === 0], [_extends({}, props.style, {
+	                        width: width,
+	                        height: height,
+	                        borderRight: '1px solid #eaeaea',
+	                        borderBottom: '1px solid #eaeaea'
+	                    })], [{
+	                        backgroundColor: backgroundColor
+	                    }, (0, _core.isNotNil)(backgroundColor)], [{
+	                        color: fontColor
+	                    }, (0, _core.isNotNil)(fontColor)])) }),
+	                item.needExpand ? _react2.default.createElement(
+	                    _base.Button,
+	                    { style: { width: 25, height: 25 },
+	                        className: item.isExpanded ? 'tree-expand-icon-type1' : 'tree-collapse-icon-type1',
+	                        onClick: item.expandCallback },
+	                    _react2.default.createElement(_base.Icon, { width: 25, height: 25 })
+	                ) : null,
+	                _react2.default.createElement(
+	                    _base.Title,
+	                    { main: 'left', cross: 'center', title: item.title, style: _extends({}, item.style, {
+	                            fontWeight: 'bold',
+	                            height: 25,
+	                            paddingLeft: 5,
+	                            paddingRight: 5
+	                        }) },
+	                    _react2.default.createElement(
+	                        _base.Label,
+	                        { style: {
+	                                cursor: item.onClick ? 'pointer' : 'default'
+	                            }, onClick: item.onClick },
+	                        item.text
+	                    )
+	                ),
+	                item.list && item.list.length > 0 ? _react2.default.createElement(_base.Combo, {
+	                    ref: function ref(_ref) {
+	                        return _this2.combo = _ref;
+	                    },
+	                    style: { width: 25, height: 25 },
+	                    triggerRenderer: this._triggerRenderer,
+	                    popupRenderer: this._popupRenderer,
+	                    trigger: {
+	                        className: this._getTriggerIconClassName(),
+	                        flex: true
+	                    },
+	                    popup: {
+	                        style: {
+	                            borderColor: _Colors2.default.BORDER,
+	                            borderWidth: 1,
+	                            borderStyle: 'solid',
+	                            width: 100
+	                        }
+	                    }
+	                }) : null,
+	                item.iconClass ? _react2.default.createElement(
+	                    _base.Button,
+	                    { cross: 'center', ref: function ref(_ref2) {
+	                            return _this2.icon = _ref2;
+	                        },
+	                        style: { width: 25, height: 25, visibility: 'hidden' },
+	                        className: item.iconClass,
+	                        onClick: item.drillCallback },
+	                    _react2.default.createElement(_base.Icon, null)
+	                ) : null
+	            );
+	        }
+	    }, {
+	        key: '_triggerRenderer',
+	        value: function _triggerRenderer() {
+	            return _react2.default.createElement(
+	                _layout.CenterLayout,
+	                { flex: true },
+	                _react2.default.createElement(_base.Icon, null)
+	            );
+	        }
+	    }, {
+	        key: '_getTriggerIconClassName',
+	        value: function _getTriggerIconClassName() {
+	            var iconClass = '';
+	            (0, _core.some)(this.props.item.list, function (items) {
+	                return (0, _core.some)(items, function (item) {
+	                    if (item.active) {
+	                        iconClass = item.iconClass;
+	                        return true;
+	                    }
+	                });
+	            });
+	            return iconClass;
+	        }
+	    }, {
+	        key: '_popupRenderer',
+	        value: function _popupRenderer() {
+	            var _this3 = this;
+
+	            return _react2.default.createElement(
+	                _layout.VerticalLayout,
+	                null,
+	                (0, _core.map)(this.props.item.list, function (items, i) {
+	                    var list = [];
+	                    (0, _core.each)(items, function (item) {
+	                        list.push(_react2.default.createElement(
+	                            _base.Button,
+	                            { key: item.value, box: 'first', active: item.active,
+	                                className: (0, _core.cn)('bi-list-item', 'bi-list-item-stress', 'dot-e-font'),
+	                                style: { height: 25 },
+	                                onClick: function onClick() {
+	                                    _this3.combo.close();
+	                                    item.onClick(item);
+	                                } },
+	                            _react2.default.createElement(
+	                                _layout.CenterLayout,
+	                                { style: { width: 25 } },
+	                                _react2.default.createElement(_base.Icon, null)
+	                            ),
+	                            _react2.default.createElement(
+	                                _base.Title,
+	                                { cross: 'center', title: item.title },
+	                                _react2.default.createElement(
+	                                    _base.Label,
+	                                    null,
+	                                    item.text
+	                                )
+	                            )
+	                        ));
+	                    });
+	                    if (i > 0) {
+	                        return _react2.default.createElement(
+	                            _layout.VerticalLayout,
+	                            { key: i },
+	                            _react2.default.createElement(_layout.Layout, { style: { height: 1, backgroundColor: _Colors2.default.BORDER, marginLeft: 10, marginRight: 10 } }),
+	                            list
+	                        );
+	                    }
+	                    return _react2.default.createElement(
+	                        _layout.VerticalLayout,
+	                        { key: i },
+	                        list
+	                    );
+	                })
+	            );
+	        }
+	    }]);
+
+	    return SummaryTableCrossCellComponent;
+	}(_react.Component);
+
+	_reactMixin2.default.onClass(SummaryTableCrossCellComponent, _core.ReactComponentWithPureRenderMixin);
+
+	exports.default = SummaryTableCrossCellComponent;
+
+/***/ },
+/* 609 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -54942,7 +55747,7 @@
 	        value: function getWidthsByOneCol(col) {
 	            var widths = [];
 	            (0, _core.each)(col, function (item) {
-	                widths.push(getGBWidth(item.text));
+	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.needExpand ? 25 : 0) + (item.iconClass ? 25 : 0) + (item.list ? 25 : 0));
 	            });
 	            return widths;
 	        }
@@ -54954,7 +55759,7 @@
 	            var result = [];
 	            (0, _core.each)(this.items, function (col) {
 	                var fx = fit(_this.getWidthsByOneCol(col));
-	                result.push((0, _core.clamp)(_core.math.ceil((fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) * 12 * 1.2) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
+	                result.push((0, _core.clamp)(_core.math.ceil(fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
 	            });
 	            return result;
 	        }
@@ -54966,7 +55771,7 @@
 	exports.default = SummaryTableComponentWidthHelper;
 
 /***/ },
-/* 608 */
+/* 610 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55023,7 +55828,7 @@
 	                next = [];
 	            }
 	            if ( /**(store == -1 || node.childs.length > 1) &&**/(0, _core.isNotEmptyArray)(node.values)) {
-	                var summary = { text: '汇总' };
+	                var summary = { text: '汇总', isSum: true, isLast: store === -1 };
 	                for (var i = next.length; i < deep; i++) {
 	                    next.push(summary);
 	                }
@@ -55107,7 +55912,7 @@
 	                next = [];
 	            }
 	            if ((store === -1 || node.childs.length > 1) && (0, _core.isNotEmptyArray)(node.values)) {
-	                var summary = { text: '汇总' };
+	                var summary = { text: '汇总', isSum: true, isLast: store === -1 };
 	                for (var i = next.length; i < deep; i++) {
 	                    next.push(summary);
 	                }
@@ -55239,6 +56044,8 @@
 	        this.isNeedFreeze = props.isNeedFreeze;
 	        this.freezeCols = props.freezeCols;
 	        this.mergeCols = props.mergeCols;
+	        this.hDeep = this._getHDeep();
+	        this.vDeep = this._getVDeep();
 	    }
 
 	    _createClass(SummaryTableComponentItemsHelper, [{
@@ -55252,13 +56059,21 @@
 	            return Math.max(this.mergeCols.length, this.freezeCols.length, maxDeep(this.items) - 1);
 	        }
 	    }, {
+	        key: 'getVDeep',
+	        value: function getVDeep() {
+	            return this.vDeep;
+	        }
+	    }, {
+	        key: 'getHDeep',
+	        value: function getHDeep() {
+	            return this.hDeep;
+	        }
+	    }, {
 	        key: 'getFormatted',
 	        value: function getFormatted() {
-	            var hDeep = this._getHDeep(),
-	                vDeep = this._getVDeep();
-	            var header = formatHeader(this.header, this.crossHeader, this.crossItems, hDeep, vDeep);
-	            var items = formatHorizontalItems(this.items, hDeep);
-	            return formatSummaryItems(items, header, this.crossItems, hDeep);
+	            var header = formatHeader(this.header, this.crossHeader, this.crossItems, this.hDeep, this.vDeep);
+	            var items = formatHorizontalItems(this.items, this.hDeep);
+	            return formatSummaryItems(items, header, this.crossItems, this.hDeep);
 	        }
 	    }]);
 
@@ -55274,7 +56089,7 @@
 	exports.default = SummaryTableComponentItemsHelper;
 
 /***/ },
-/* 609 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55347,50 +56162,59 @@
 	                hCurr = _state.hCurr;
 
 	            var vNext = hasVNext(vCurr);
-	            var hNext = hasVNext(hCurr);
-	            var leftVPage = _react2.default.createElement(
-	                _base.Button,
-	                { disabled: vCurr <= 1, main: 'center', cross: 'center',
-	                    className: 'column-pre-page-h-font',
-	                    style: { width: 16, height: 16, fontSize: 16 },
-	                    onClick: this._leftVPageOnClick.bind(this) },
-	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	            );
-	            var curVPage = _react2.default.createElement(
-	                _base.Label,
-	                { style: { paddingLeft: 5, paddingRight: 5 } },
-	                vCurr
-	            );
-	            var rightVPage = _react2.default.createElement(
-	                _base.Button,
-	                { disabled: !vNext, main: 'center', cross: 'center',
-	                    className: 'column-next-page-h-font',
-	                    style: { width: 16, height: 16, fontSize: 16 },
-	                    onClick: this._rightVPageOnClick.bind(this) },
-	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	            );
-
-	            var leftHPage = _react2.default.createElement(
-	                _base.Button,
-	                { disabled: hCurr <= 1, main: 'center', cross: 'center',
-	                    className: 'row-pre-page-h-font',
-	                    style: { width: 16, height: 16, fontSize: 16 },
-	                    onClick: this._leftHPageOnClick.bind(this) },
-	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	            );
-	            var curHPage = _react2.default.createElement(
-	                _base.Label,
-	                { style: { paddingLeft: 5, paddingRight: 5 } },
-	                hCurr
-	            );
-	            var rightHPage = _react2.default.createElement(
-	                _base.Button,
-	                { disabled: !hNext, main: 'center', cross: 'center',
-	                    className: 'row-next-page-h-font',
-	                    style: { width: 16, height: 16, fontSize: 16 },
-	                    onClick: this._rightHPageOnClick.bind(this) },
-	                _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	            );
+	            var hNext = hasHNext(hCurr);
+	            var leftVPage = void 0,
+	                curVPage = void 0,
+	                rightVPage = void 0,
+	                leftHPage = void 0,
+	                curHPage = void 0,
+	                rightHPage = void 0;
+	            if (vCurr > 1 || vCurr === 1 && vNext) {
+	                leftVPage = _react2.default.createElement(
+	                    _base.Button,
+	                    { disabled: vCurr <= 1, main: 'center', cross: 'center',
+	                        className: 'column-pre-page-h-font',
+	                        style: { width: 16, height: 16, fontSize: 16 },
+	                        onClick: this._leftVPageOnClick.bind(this) },
+	                    _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	                );
+	                curVPage = _react2.default.createElement(
+	                    _base.Label,
+	                    { style: { paddingLeft: 5, paddingRight: 5 } },
+	                    vCurr
+	                );
+	                rightVPage = _react2.default.createElement(
+	                    _base.Button,
+	                    { disabled: !vNext, main: 'center', cross: 'center',
+	                        className: 'column-next-page-h-font',
+	                        style: { width: 16, height: 16, fontSize: 16 },
+	                        onClick: this._rightVPageOnClick.bind(this) },
+	                    _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	                );
+	            }
+	            if (hCurr > 1 || hCurr === 1 && hNext) {
+	                leftHPage = _react2.default.createElement(
+	                    _base.Button,
+	                    { disabled: hCurr <= 1, main: 'center', cross: 'center',
+	                        className: 'row-pre-page-h-font',
+	                        style: { width: 16, height: 16, fontSize: 16, marginLeft: 20 },
+	                        onClick: this._leftHPageOnClick.bind(this) },
+	                    _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	                );
+	                curHPage = _react2.default.createElement(
+	                    _base.Label,
+	                    { style: { paddingLeft: 5, paddingRight: 5 } },
+	                    hCurr
+	                );
+	                rightHPage = _react2.default.createElement(
+	                    _base.Button,
+	                    { disabled: !hNext, main: 'center', cross: 'center',
+	                        className: 'row-next-page-h-font',
+	                        style: { width: 16, height: 16, fontSize: 16 },
+	                        onClick: this._rightHPageOnClick.bind(this) },
+	                    _react2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	                );
+	            }
 	            return _react2.default.createElement(
 	                _layout.Layout,
 	                { main: 'right', cross: 'center', style: { height: 30, paddingRight: 10 } },
@@ -55475,7 +56299,7 @@
 	exports.default = SummaryTablePagerComponent;
 
 /***/ },
-/* 610 */
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55500,7 +56324,7 @@
 
 	var _base = __webpack_require__(537);
 
-	var _SummaryTableHeaderCellComponent = __webpack_require__(606);
+	var _SummaryTableHeaderCellComponent = __webpack_require__(607);
 
 	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
 
@@ -55508,7 +56332,7 @@
 
 	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
 
-	var _SummaryTableSequenceComponentHelper = __webpack_require__(611);
+	var _SummaryTableSequenceComponentHelper = __webpack_require__(613);
 
 	var _SummaryTableSequenceComponentHelper2 = _interopRequireDefault(_SummaryTableSequenceComponentHelper);
 
@@ -55567,7 +56391,7 @@
 	                    width: SummaryTableSequenceComponent.WIDTH,
 	                    height: headerRowHeight * ((header.length > 0 ? 1 : 0) + crossHeader.length),
 	                    item: { text: '序号' },
-	                    colIndex: 0,
+	                    columnIndex: 0,
 	                    rowIndex: 0
 	                }) : null,
 	                _react2.default.createElement(
@@ -55602,9 +56426,9 @@
 	                    style: style,
 	                    width: SummaryTableSequenceComponent.WIDTH,
 	                    height: number.height,
-	                    item: { text: number.text },
+	                    item: number,
 	                    rowIndex: number.rowIndex,
-	                    colIndex: 0
+	                    columnIndex: 0
 	                }));
 	            });
 	            return result;
@@ -55629,7 +56453,7 @@
 	exports.default = SummaryTableSequenceComponent;
 
 /***/ },
-/* 611 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55758,6 +56582,7 @@
 	                    if ((0, _core.isNotEmptyArray)(node.values)) {
 	                        result.push({
 	                            text: '汇总',
+	                            isSum: true,
 	                            key: start,
 	                            rowIndex: start,
 	                            height: _this2.rowHeight
@@ -55782,12 +56607,14 @@
 	        value: function getNumbersByScrollTop(scrollTop) {
 	            var result = [];
 	            var index = this.intervalTree.greatestLowerBound(scrollTop);
-	            var offsetTop = scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0);
-	            var height = 0;
+	            var offsetTop = -(scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0));
+	            var height = offsetTop;
 	            while (height < this.height && index < this.numbers.length) {
 	                result.push({
 	                    key: this.numbers[index].key,
 	                    text: this.numbers[index].text,
+	                    isSum: this.numbers[index].isSum,
+	                    isLast: index === this.numbers.length - 1,
 	                    rowIndex: this.numbers[index].rowIndex,
 	                    height: this.numbers[index].height,
 	                    offsetTop: offsetTop
@@ -55842,7 +56669,7 @@
 	exports.default = SummaryTableSequenceComponentHelper;
 
 /***/ },
-/* 612 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55869,29 +56696,37 @@
 
 	var _base = __webpack_require__(537);
 
-	__webpack_require__(613);
+	__webpack_require__(615);
 
-	var _LevelTableCellComponent = __webpack_require__(615);
+	var _SummaryTableCellComponent = __webpack_require__(605);
 
-	var _LevelTableCellComponent2 = _interopRequireDefault(_LevelTableCellComponent);
+	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
 
-	var _SummaryTableHeaderCellComponent = __webpack_require__(606);
+	var _LevelTableDimensionCellComponent = __webpack_require__(617);
+
+	var _LevelTableDimensionCellComponent2 = _interopRequireDefault(_LevelTableDimensionCellComponent);
+
+	var _SummaryTableHeaderCellComponent = __webpack_require__(607);
 
 	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
 
-	var _LevelTableComponentWidthHelper = __webpack_require__(616);
+	var _SummaryTableCrossCellComponent = __webpack_require__(608);
+
+	var _SummaryTableCrossCellComponent2 = _interopRequireDefault(_SummaryTableCrossCellComponent);
+
+	var _LevelTableComponentWidthHelper = __webpack_require__(618);
 
 	var _LevelTableComponentWidthHelper2 = _interopRequireDefault(_LevelTableComponentWidthHelper);
 
-	var _LevelTableComponentItemsHelper = __webpack_require__(617);
+	var _LevelTableComponentItemsHelper = __webpack_require__(619);
 
 	var _LevelTableComponentItemsHelper2 = _interopRequireDefault(_LevelTableComponentItemsHelper);
 
-	var _SummaryTablePagerComponent = __webpack_require__(609);
+	var _SummaryTablePagerComponent = __webpack_require__(611);
 
 	var _SummaryTablePagerComponent2 = _interopRequireDefault(_SummaryTablePagerComponent);
 
-	var _LevelTableSequenceComponent = __webpack_require__(618);
+	var _LevelTableSequenceComponent = __webpack_require__(620);
 
 	var _LevelTableSequenceComponent2 = _interopRequireDefault(_LevelTableSequenceComponent);
 
@@ -55906,8 +56741,10 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 	var MERGE_RULE = function MERGE_RULE(col1, col2) {
+	    if (col1.tag && col2.tag) {
+	        return col1.tag === col2.tag;
+	    }
 	    return col1 === col2;
-	    // return isEqual(col1.text, col2.text);
 	};
 
 	var LevelTableComponent = function (_Component) {
@@ -55937,6 +56774,7 @@
 
 	            var freezeCols = props.freezeCols;
 	            var columnSize = props.columnSize.slice();
+	            var regionColumnSize = props.regionColumnSize.slice();
 	            if (columnSize.length > minColumnSize.length) {
 	                columnSize = columnSize.splice(columnSize.length - minColumnSize.length);
 	            }
@@ -55951,7 +56789,10 @@
 	            }
 
 	            return {
+	                hDeep: itemsHelper.getHDeep(),
+	                vDeep: itemsHelper.getVDeep(),
 	                columnSize: columnSize,
+	                regionColumnSize: regionColumnSize,
 	                minColumnSize: minColumnSize,
 	                header: header,
 	                items: items,
@@ -55979,7 +56820,6 @@
 	                isNeedFreeze = _props.isNeedFreeze,
 	                isNeedResize = _props.isNeedResize,
 	                mergeCols = _props.mergeCols,
-	                regionColumnSize = _props.regionColumnSize,
 	                headerCellRenderer = _props.headerCellRenderer,
 	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
@@ -55997,6 +56837,7 @@
 	                onHNext = _props.onHNext;
 	            var _state = this.state,
 	                columnSize = _state.columnSize,
+	                regionColumnSize = _state.regionColumnSize,
 	                minColumnSize = _state.minColumnSize,
 	                header = _state.header,
 	                items = _state.items,
@@ -56065,41 +56906,65 @@
 	    }, {
 	        key: '_headerCellRenderer',
 	        value: function _headerCellRenderer(_ref, item) {
-	            var colIndex = _ref.colIndex,
+	            var columnIndex = _ref.columnIndex,
 	                rowIndex = _ref.rowIndex,
 	                width = _ref.width,
 	                height = _ref.height;
 
-	            return _react2.default.createElement(_SummaryTableHeaderCellComponent2.default, { item: item, colIndex: colIndex, rowIndex: rowIndex, width: width,
+	            var Component = _SummaryTableHeaderCellComponent2.default;
+	            if (!(this.props.header.length > 0 && rowIndex === this.state.vDeep || columnIndex < this.state.hDeep)) {
+	                Component = _SummaryTableCrossCellComponent2.default;
+	            }
+	            return _react2.default.createElement(Component, { item: item, columnIndex: columnIndex, rowIndex: rowIndex, width: width,
 	                height: height, styleType: this.props.styleType,
 	                color: this.props.color });
 	        }
 	    }, {
 	        key: '_cellRenderer',
 	        value: function _cellRenderer(_ref2, item) {
-	            var colIndex = _ref2.colIndex,
+	            var columnIndex = _ref2.columnIndex,
 	                rowIndex = _ref2.rowIndex,
 	                width = _ref2.width,
 	                height = _ref2.height;
 
-	            return _react2.default.createElement(_LevelTableCellComponent2.default, { item: item, style: { backgroundColor: '' }, colIndex: colIndex,
+	            var Component = _SummaryTableCellComponent2.default;
+	            if (columnIndex < this.state.hDeep) {
+	                Component = _LevelTableDimensionCellComponent2.default;
+	            }
+	            return _react2.default.createElement(Component, { item: item, columnIndex: columnIndex,
 	                rowIndex: rowIndex, width: width,
 	                height: height, styleType: this.props.styleType,
 	                color: this.props.color });
 	        }
 	    }, {
 	        key: '_onColumnResizeEnd',
-	        value: function _onColumnResizeEnd() {
-	            var _props2;
+	        value: function _onColumnResizeEnd(size) {
+	            var _this2 = this;
 
-	            (_props2 = this.props).onColumnResizeEnd.apply(_props2, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this2.props.onColumnResizeEnd({
+	                    columnSize: _this2.state.columnSize,
+	                    regionColumnSize: _this2.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onRegionColumnResizeEnd',
-	        value: function _onRegionColumnResizeEnd() {
-	            var _props3;
+	        value: function _onRegionColumnResizeEnd(size) {
+	            var _this3 = this;
 
-	            (_props3 = this.props).onRegionColumnResizeEnd.apply(_props3, arguments);
+	            this.setState({
+	                columnSize: size.columnSize.slice(),
+	                regionColumnSize: size.regionColumnSize.slice()
+	            }, function () {
+	                _this3.props.onRegionColumnResizeEnd({
+	                    columnSize: _this3.state.columnSize,
+	                    regionColumnSize: _this3.state.regionColumnSize
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onVerticalScroll',
@@ -56122,6 +56987,7 @@
 	    columnSize: [],
 	    isNeedFreeze: true,
 	    freezeCols: [],
+	    mergeCols: [],
 	    header: [],
 	    items: [],
 	    crossHeader: [],
@@ -56135,7 +57001,6 @@
 	    hCurr: 1,
 	    hasVNext: _core.emptyFunction,
 	    hasHNext: _core.emptyFunction,
-	    label: '',
 	    onVPrev: _core.emptyFunction,
 	    onVNext: _core.emptyFunction,
 	    onHPrev: _core.emptyFunction,
@@ -56147,13 +57012,13 @@
 	exports.default = LevelTableComponent;
 
 /***/ },
-/* 613 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(614);
+	var content = __webpack_require__(616);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(190)(content, {});
@@ -56173,7 +57038,7 @@
 	}
 
 /***/ },
-/* 614 */
+/* 616 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(189)();
@@ -56187,7 +57052,7 @@
 
 
 /***/ },
-/* 615 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56204,11 +57069,17 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactDom = __webpack_require__(40);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _reactMixin = __webpack_require__(555);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
 	var _core = __webpack_require__(194);
+
+	var _constants = __webpack_require__(543);
 
 	var _layout = __webpack_require__(186);
 
@@ -56237,54 +57108,67 @@
 	var LIGHT_FONT_COLOR = '#ffffff';
 
 	var colorMap = {};
+
+	var getAdaptColor = function getAdaptColor(color) {
+	    return _core.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	};
 	var getColor = function getColor(color) {
 	    if (colorMap[color]) {
 	        return colorMap[color];
 	    }
 	    var oddColor = parseHEXAlpha2HEX(color, 0.2);
 	    var evenColor = parseHEXAlpha2HEX(color, 0.05);
+	    var summaryColor = parseHEXAlpha2HEX(color, 0.4);
 	    colorMap[color] = {
 	        oddColor: oddColor,
 	        evenColor: evenColor,
-	        oddFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(oddColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR,
-	        evenFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(evenColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR
+	        summaryColor: summaryColor,
+	        oddFontColor: getAdaptColor(_core.colorUtils.rgb2hex(oddColor)),
+	        evenFontColor: getAdaptColor(_core.colorUtils.rgb2hex(evenColor)),
+	        summaryFontColor: getAdaptColor(_core.colorUtils.rgb2hex(summaryColor))
 	    };
 	    return colorMap[color];
 	};
 
-	var LevelTableCell = function (_Component) {
-	    _inherits(LevelTableCell, _Component);
+	var SummaryTableDimensionCellComponent = function (_Component) {
+	    _inherits(SummaryTableDimensionCellComponent, _Component);
 
-	    function LevelTableCell(props, context) {
-	        _classCallCheck(this, LevelTableCell);
+	    function SummaryTableDimensionCellComponent(props, context) {
+	        _classCallCheck(this, SummaryTableDimensionCellComponent);
 
-	        return _possibleConstructorReturn(this, (LevelTableCell.__proto__ || Object.getPrototypeOf(LevelTableCell)).call(this, props, context));
+	        return _possibleConstructorReturn(this, (SummaryTableDimensionCellComponent.__proto__ || Object.getPrototypeOf(SummaryTableDimensionCellComponent)).call(this, props, context));
 	    }
 
-	    _createClass(LevelTableCell, [{
+	    _createClass(SummaryTableDimensionCellComponent, [{
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var _props = this.props,
 	                item = _props.item,
 	                width = _props.width,
 	                height = _props.height,
 	                styleType = _props.styleType,
 	                color = _props.color,
-	                colIndex = _props.colIndex,
+	                columnIndex = _props.columnIndex,
 	                rowIndex = _props.rowIndex,
-	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'colIndex', 'rowIndex']);
+	                props = _objectWithoutProperties(_props, ['item', 'width', 'height', 'styleType', 'color', 'columnIndex', 'rowIndex']);
 
 	            var oddColor = void 0,
 	                evenColor = void 0,
 	                oddFontColor = void 0,
-	                evenFontColor = void 0;
+	                evenFontColor = void 0,
+	                summaryColor = void 0,
+	                summaryFontColor = void 0;
 	            switch (styleType) {
 	                case 1:
 	                    var m = getColor(color);
 	                    oddColor = m.oddColor;
 	                    evenColor = m.evenColor;
+	                    summaryColor = item.isLast ? color : m.summaryColor;
 	                    oddFontColor = m.oddFontColor;
 	                    evenFontColor = m.evenFontColor;
+	                    summaryFontColor = item.isLast ? getAdaptColor(color) : m.summaryFontColor;
 	                    break;
 	                case 2:
 	                    break;
@@ -56293,29 +57177,61 @@
 	                default:
 	                    break;
 	            }
+	            var box = 'mean';
+	            //两个图标
+	            if (item.needExpand && item.iconClass) {
+	                box = 'justify';
+	            } else if (item.needExpand) {
+	                box = 'first';
+	            } else if (item.iconClass) {
+	                box = 'last';
+	            }
 	            return _react2.default.createElement(
 	                _layout.Layout,
-	                _extends({ box: item.iconCls ? 'last' : 'mean' }, props, {
+	                _extends({ box: box, cross: 'center' }, props, {
+	                    onMouseEnter: function onMouseEnter() {
+	                        if (_this2.icon) {
+	                            try {
+	                                _reactDom2.default.findDOMNode(_this2.icon).style.visibility = 'visible';
+	                            } catch (e) {}
+	                        }
+	                    },
+	                    onMouseLeave: function onMouseLeave() {
+	                        if (_this2.icon) {
+	                            try {
+	                                _reactDom2.default.findDOMNode(_this2.icon).style.visibility = 'hidden';
+	                            } catch (e) {}
+	                        }
+	                    },
 	                    style: _extends({}, (0, _core.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
-	                    }, colIndex === 0], [_extends({}, props.style, {
+	                    }, columnIndex === 0], [_extends({}, props.style, {
 	                        width: width,
 	                        height: height,
 	                        borderRight: '1px solid #eaeaea',
 	                        borderBottom: '1px solid #eaeaea',
-	                        paddingLeft: (item.layer || 0) * 10
+	                        paddingLeft: (item.layer || 0) * 30
 	                    })], [{
-	                        backgroundColor: rowIndex % 2 === 0 ? oddColor : evenColor
-	                    }, (0, _core.isNotNil)(oddColor)], [{
-	                        color: rowIndex % 2 === 0 ? oddFontColor : evenFontColor
-	                    }, (0, _core.isNotNil)(oddFontColor)])) }),
+	                        fontWeight: 'bold'
+	                    }, item.isSum === true], [{
+	                        backgroundColor: item.isSum ? summaryColor : rowIndex % 2 === 0 ? oddColor : evenColor
+	                    }, item.isSum ? (0, _core.isNotNil)(summaryColor) : (0, _core.isNotNil)(oddColor)], [{
+	                        color: item.isSum ? summaryFontColor : rowIndex % 2 === 0 ? oddFontColor : evenFontColor
+	                    }, item.isSum ? (0, _core.isNotNil)(summaryFontColor) : (0, _core.isNotNil)(oddFontColor)])) }),
+	                item.needExpand ? _react2.default.createElement(
+	                    _base.Button,
+	                    { style: { width: 25, height: 25 },
+	                        className: item.isExpanded ? 'tree-expand-icon-type1' : 'tree-collapse-icon-type1',
+	                        onClick: item.expandCallback },
+	                    _react2.default.createElement(_base.Icon, { width: 25, height: 25 })
+	                ) : null,
 	                _react2.default.createElement(
 	                    _base.Title,
-	                    { cross: 'center', title: item.title, style: _extends({}, item.style, {
-	                            paddingLeft: 10,
-	                            paddingRight: 10
+	                    { main: 'left', cross: 'center', title: item.title, style: _extends({}, item.style, {
+	                            paddingLeft: 5,
+	                            paddingRight: 5
 	                        }) },
 	                    _react2.default.createElement(
 	                        _base.Label,
@@ -56325,24 +57241,33 @@
 	                        item.text
 	                    )
 	                ),
-	                item.iconCls ? _react2.default.createElement(
-	                    _layout.CenterLayout,
-	                    { style: { width: 25 }, className: item.iconCls },
-	                    _react2.default.createElement(_base.Icon, null)
+	                item.iconClass ? _react2.default.createElement(
+	                    _base.Title,
+	                    { style: { width: 25, height: 25 }, title: '\u70B9\u51FB\u4E0A\u4E0B\u94BB' },
+	                    _react2.default.createElement(
+	                        _base.Button,
+	                        { cross: 'center', ref: function ref(_ref) {
+	                                return _this2.icon = _ref;
+	                            },
+	                            style: { width: 25, height: 25, visibility: 'hidden' },
+	                            className: item.iconClass,
+	                            onClick: item.drillCallback },
+	                        _react2.default.createElement(_base.Icon, null)
+	                    )
 	                ) : null
 	            );
 	        }
 	    }]);
 
-	    return LevelTableCell;
+	    return SummaryTableDimensionCellComponent;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(LevelTableCell, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableDimensionCellComponent, _core.ReactComponentWithPureRenderMixin);
 
-	exports.default = LevelTableCell;
+	exports.default = SummaryTableDimensionCellComponent;
 
 /***/ },
-/* 616 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56425,7 +57350,7 @@
 	        value: function getWidthsByOneCol(col) {
 	            var widths = [];
 	            (0, _core.each)(col, function (item) {
-	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.layer || 0) * 10);
+	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.layer || 0) * 30 + (item.needExpand ? 25 : 0) + (item.iconClass ? 25 : 0) + (item.list ? 25 : 0));
 	            });
 	            return widths;
 	        }
@@ -56449,7 +57374,7 @@
 	exports.default = LevelTableComponentWidthHelper;
 
 /***/ },
-/* 617 */
+/* 619 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56465,7 +57390,7 @@
 
 	var _core = __webpack_require__(194);
 
-	var _SummaryTableComponentItemsHelper = __webpack_require__(608);
+	var _SummaryTableComponentItemsHelper = __webpack_require__(610);
 
 	var _SummaryTableComponentItemsHelper2 = _interopRequireDefault(_SummaryTableComponentItemsHelper);
 
@@ -56518,7 +57443,7 @@
 	            track(c, 0);
 	        });
 	        if ((0, _core.isArray)(node.values)) {
-	            var next = [{ text: '汇总' }].concat(node.values);
+	            var next = [{ text: '汇总', isSum: true, isLast: true }].concat(node.values);
 	            result.push(next);
 	        }
 	    });
@@ -56570,6 +57495,8 @@
 	        this.isNeedFreeze = props.isNeedFreeze;
 	        this.freezeCols = props.freezeCols;
 	        this.mergeCols = props.mergeCols;
+	        this.hDeep = this._getHDeep();
+	        this.vDeep = this._getVDeep();
 	    }
 
 	    _createClass(LevelTableComponentItemsHelper, [{
@@ -56583,11 +57510,22 @@
 	            return Math.max(this.mergeCols.length, this.freezeCols.length, maxDeep(this.items) - 1);
 	        }
 	    }, {
+	        key: 'getVDeep',
+	        value: function getVDeep() {
+	            return this.vDeep;
+	        }
+	    }, {
+	        key: 'getHDeep',
+	        value: function getHDeep() {
+	            if (this.isNeedFreeze === true && this.freezeCols.length > 0) {
+	                return 1;
+	            }
+	            return this.hDeep;
+	        }
+	    }, {
 	        key: 'getFormatted',
 	        value: function getFormatted() {
-	            var hDeep = this._getHDeep();
-	            var vDeep = this._getVDeep();
-	            var header = formatHeader(this.header, this.crossHeader, this.crossItems, hDeep, vDeep);
+	            var header = formatHeader(this.header, this.crossHeader, this.crossItems, this.hDeep, this.vDeep);
 	            return formatItems(this.items, header, this.crossItems);
 	        }
 	    }]);
@@ -56600,7 +57538,7 @@
 	exports.default = LevelTableComponentItemsHelper;
 
 /***/ },
-/* 618 */
+/* 620 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56625,15 +57563,15 @@
 
 	var _base = __webpack_require__(537);
 
-	var _SummaryTableHeaderCellComponent = __webpack_require__(606);
+	var _SummaryTableHeaderCellComponent = __webpack_require__(607);
 
 	var _SummaryTableHeaderCellComponent2 = _interopRequireDefault(_SummaryTableHeaderCellComponent);
 
-	var _LevelTableCellComponent = __webpack_require__(615);
+	var _SummaryTableCellComponent = __webpack_require__(605);
 
-	var _LevelTableCellComponent2 = _interopRequireDefault(_LevelTableCellComponent);
+	var _SummaryTableCellComponent2 = _interopRequireDefault(_SummaryTableCellComponent);
 
-	var _LevelTableSequenceComponentHelper = __webpack_require__(619);
+	var _LevelTableSequenceComponentHelper = __webpack_require__(621);
 
 	var _LevelTableSequenceComponentHelper2 = _interopRequireDefault(_LevelTableSequenceComponentHelper);
 
@@ -56692,7 +57630,7 @@
 	                    width: LevelTableSequenceComponent.WIDTH,
 	                    height: headerRowHeight * ((header.length > 0 ? 1 : 0) + crossHeader.length),
 	                    item: { text: '序号' },
-	                    colIndex: 0,
+	                    columnIndex: 0,
 	                    rowIndex: 0
 	                }) : null,
 	                _react2.default.createElement(
@@ -56719,7 +57657,7 @@
 	            (0, _core.each)(numbers, function (number) {
 	                var style = {};
 	                (0, _core.translateDOMPositionXY)(style, 0, number.offsetTop);
-	                result.push(_react2.default.createElement(_LevelTableCellComponent2.default, {
+	                result.push(_react2.default.createElement(_SummaryTableCellComponent2.default, {
 	                    abs: true,
 	                    key: number.key,
 	                    styleType: styleType,
@@ -56727,9 +57665,9 @@
 	                    style: style,
 	                    width: LevelTableSequenceComponent.WIDTH,
 	                    height: number.height,
-	                    item: { text: number.text },
+	                    item: number,
 	                    rowIndex: number.rowIndex,
-	                    colIndex: 0
+	                    columnIndex: 0
 	                }));
 	            });
 	            return result;
@@ -56754,7 +57692,7 @@
 	exports.default = LevelTableSequenceComponent;
 
 /***/ },
-/* 619 */
+/* 621 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56769,7 +57707,7 @@
 
 	var _base = __webpack_require__(537);
 
-	var _SummaryTableSequenceComponentHelper = __webpack_require__(611);
+	var _SummaryTableSequenceComponentHelper = __webpack_require__(613);
 
 	var _SummaryTableSequenceComponentHelper2 = _interopRequireDefault(_SummaryTableSequenceComponentHelper);
 
@@ -56832,6 +57770,8 @@
 	                    if ((0, _core.isNotEmptyArray)(node.values)) {
 	                        result.push({
 	                            text: '汇总',
+	                            isSum: true,
+	                            isLast: true,
 	                            key: start,
 	                            rowIndex: start,
 	                            height: _this2.rowHeight

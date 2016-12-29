@@ -49,8 +49,8 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
     @Override
     public void Traversal(TableRowTraversal action) {
         while (true) {
-            GroupValueIndex sortGvi = index.createSortedGVI(paging.getEndRow() - row);
-            if (sortGvi == null) {
+            GroupValueIndex sortGvi = index.createSortedGVI(gvi, paging.getEndRow() - row);
+            if (sortGvi == null || sortGvi.isAllEmpty()) {
                 break;
             }
             if (row >= paging.getEndRow()) {
@@ -128,18 +128,15 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
         sortedGVI.BrokenableTraversal(new BrokenTraversalAction() {
             @Override
             public boolean actionPerformed(int rowIndex) {
-                checkAndSetSession();
-                PageStatus x = checkPage();
-                if (x != null) {
-                    return x.isAfter();
-                }
-                set.add(new BIRowValue(row, getRowValue(rowIndex)));
+                set.add(new BIRowValue(rowIndex, getRowValue(rowIndex)));
                 return false;
             }
         });
         Iterator<BIRowValue> it1 = set.iterator();
         while (it1.hasNext()) {
             BIRowValue value = it1.next();
+            checkAndSetSession();
+            value.setRow(row);
             if (action.actionPerformed(value)) {
                 return true;
             }

@@ -90,7 +90,10 @@ public class AnalysisETLSourceFactory {
             BusinessTable talbe = BIAnalysisETLManagerCenter.getDataSourceManager().getBusinessTable(new BITableID(jo.getString("widgetTableId")));
             AnalysisCubeTableSource source = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(talbe);
             if (source.getType() == Constants.TABLE_TYPE.BASE) {
-                return ((AnalysisBaseTableSource) source).getWidget();
+                if (null!=source.getWidgets())
+                for (BIWidget widget : source.getWidgets()) {
+                    return widget;
+                }
             }
         }
         return BIWidgetFactory.parseWidget(jo, userId);

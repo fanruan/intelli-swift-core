@@ -375,7 +375,7 @@ public class CrossHeader extends Node implements Serializable {
 
     public JSONObject toJSONObject(BIDimension[] dimensions, TargetGettingKey[] keys, int index, boolean isSummaryCalculated) throws JSONException {
         JSONObject jo = new JSONObject();
-        if (getData() != null) {
+        if(index > -1){
             jo.put("n", dimensions[index].toString(getData()));
         }
         if (isSummaryCalculated) {

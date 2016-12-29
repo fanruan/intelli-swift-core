@@ -1,10 +1,11 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
-import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -13,13 +14,12 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/5/13.
  */
-public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
+public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
@@ -31,8 +31,8 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
         jo.put("describe", busiTable.getDescribe());
         JSONObject source = busiTable.getSource().createJSON();
         JSONObject table;
-        JSONArray items ;
-        if (source.has(Constants.ITEMS)){
+        JSONArray items;
+        if (source.has(Constants.ITEMS)) {
             table = source;
         } else {
             table = new JSONObject();
@@ -40,22 +40,21 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction{
             items.put(source);
             table.put(Constants.ITEMS, items);
         }
-        jo.put("table",table);
+        jo.put("table", table);
 
         // 被自己和其他的螺旋分析使用过
-        JSONArray usedTables = new JSONArray();
-        usedTables.put(tableId);
-        for (BusinessTable businessTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()){
-            AnalysisCubeTableSource ss = (AnalysisCubeTableSource) businessTable.getTableSource();
-            Set<AnalysisCubeTableSource> sources = new HashSet<AnalysisCubeTableSource>();
-            ss.getSourceUsedAnalysisETLSource(sources);
-            if (!ComparatorUtils.equals(ss, busiTable.getTableSource()) && sources.contains(busiTable.getTableSource())){
-                jo.put("used", true);
-                usedTables.put(businessTable.getID().getIdentityValue());
+        JSONArray allUsedTables = new JSONArray();
+        allUsedTables.put(tableId);
+        for (BusinessTable anaTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
+            Set<BusinessTable> usedTables = ((AnalysisBusiTable) anaTable).getUsedTables();
+            if (usedTables.contains(new BIBusinessTable(new BITableID(tableId)))) {
+                if (!ComparatorUtils.equals(tableId, anaTable.getID().getIdentity())) {
+                    jo.put("used", true);
+                }
+                allUsedTables.put(anaTable.getID().getIdentityValue());
             }
         }
-        jo.put("usedTables", usedTables);
-
+        jo.put("usedTables", allUsedTables);
         WebUtils.printAsJSON(res, jo);
     }
 

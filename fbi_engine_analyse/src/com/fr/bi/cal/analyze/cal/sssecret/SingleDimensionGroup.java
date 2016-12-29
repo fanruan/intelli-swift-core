@@ -46,51 +46,52 @@ public class SingleDimensionGroup extends ExecutorPartner<MergerNode> implements
     protected TargetCalculator calculator;
     protected volatile Node root;
 
-    protected transient Object[] data;
-
 
     private transient boolean useRealData = true;
 
     private transient int demoGroupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
 
     private BusinessTable[] metricTables;
-    private DimensionCalculator column;
+    private DimensionCalculator[] columns;
     private ICubeValueEntryGetter[] getters;
+    private GroupValueIndex[] gvis;
+    private Object[] data;
     private ICubeDataLoader loader;
 
     /**
      * Group计算的构造函数
      *
-     * @param column 维度
-     * @param gvi    获取实际过滤条件的对象
      */
-    protected SingleDimensionGroup(BusinessTable[] metricTabless, DimensionCalculator column, Object[] data, ICubeValueEntryGetter[] getters, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
+    protected SingleDimensionGroup(BusinessTable[] metricTabless, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, ICubeDataLoader loader, boolean useRealData) {
         this.metricTables = metricTables;
-        this.column = column;
+        this.columns = columns;
         this.getters = getters;
-        this.loader = loader;
         this.data = data;
+        this.loader = loader;
+        this.gvis = gvis;
         this.useRealData = useRealData;
-        this.initRoot(gvi);
-        this.demoGroupLimit = demoGroupLimit;
         turnOnExecutor();
     }
 
-    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, ICubeValueEntryGetter getter, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
-        int groupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
-        if (useRealData == false){
-            BusinessTable target = ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
-            long rowCount = loader.getTableIndex(target.getTableSource()).getRowCount();
-            if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
-                useRealData = true;
-            } else {
-                long groupCount = loader.getTableIndex(column.getField().getTableBelongTo().getTableSource()).loadGroup(column.createKey(), new ArrayList<BITableSourceRelation>()).nonPrecisionSize();
-                groupLimit = (int) (groupCount * BIBaseConstant.PART_DATA_COUNT_LIMIT / rowCount);
-            }
-        }
-        final boolean urd = useRealData;
-        final int count = Math.min(Math.max(BIBaseConstant.PART_DATA_GROUP_LIMIT, groupLimit), BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT);
-        return new SingleDimensionGroup(tableKey, pcolumns, column, data, ckIndex, getter, gvi, loader, urd, count);
+    public static SingleDimensionGroup createDimensionGroup(BusinessTable[] metricTables, DimensionCalculator[] columns,  ICubeValueEntryGetter[] getters, final Object[] data,  GroupValueIndex[] gvis, ICubeDataLoader loader, boolean useRealData) {
+        return new SingleDimensionGroup(metricTables, columns, getters, data, gvis, loader, useRealData);
+    }
+
+    private void urd(){
+//        int groupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
+//        if (useRealData == false){
+//            BusinessTable target = ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
+//            long rowCount = loader.getTableIndex(target.getTableSource()).getRowCount();
+//            if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
+//                useRealData = true;
+//            } else {
+//                long groupCount = loader.getTableIndex(column.getField().getTableBelongTo().getTableSource()).loadGroup(column.createKey(), new ArrayList<BITableSourceRelation>()).nonPrecisionSize();
+//                groupLimit = (int) (groupCount * BIBaseConstant.PART_DATA_COUNT_LIMIT / rowCount);
+//            }
+//        }
+//        final boolean urd = useRealData;
+ //       final int count = Math.min(Math.max(BIBaseConstant.PART_DATA_GROUP_LIMIT, groupLimit), BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT);
+
     }
 
     public static ISingleDimensionGroup createSortDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, ICubeValueEntryGetter getter, final GroupValueIndex gvi, final ICubeDataLoader loader, SortedNode sortedNode, boolean useRealData) {

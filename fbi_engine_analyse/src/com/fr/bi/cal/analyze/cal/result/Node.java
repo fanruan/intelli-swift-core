@@ -912,7 +912,7 @@ public class Node implements BINode {
      */
     public JSONObject toJSONObject(BIDimension[] dimensions, TargetGettingKey[] keys, int index) throws JSONException {
         JSONObject jo = new JSONObject();
-        if (data != null) {
+        if(index > -1){
             jo.put("n", dimensions[index].toString(data));
         }
         JSONArray summary = new JSONArray();

@@ -215,9 +215,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if (ng instanceof TreeNoneDimensionGroup) {
             return ((TreeNoneDimensionGroup) ng).getSingleDimensionGroup();
         }
-        if (singleDimensionGroupCache[deep] != null) {
-            return singleDimensionGroupCache[deep];
-        }
         return createSingleDimensionGroup(value, ng, deep);
     }
 

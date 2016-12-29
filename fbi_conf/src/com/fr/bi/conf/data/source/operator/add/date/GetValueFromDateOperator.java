@@ -84,7 +84,7 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
         for (int row = 0; row < rowCount; row++) {
             Integer value = dg.get((Long)getter.getValue(row));
             try {
-                travel.actionPerformed(new BIDataValue(row, startCol, value == null ? value : value.longValue()));
+                travel.actionPerformed(new BIDataValue(row, startCol, value == null ? null : value.longValue()));
             } catch (Exception e) {
                 BILoggerFactory.getLogger(GetValueFromDateOperator.class).error("incorrect formular");
                 BILoggerFactory.getLogger(GetValueFromDateOperator.class).error(BIStringUtils.append("The value:", value.toString()));
