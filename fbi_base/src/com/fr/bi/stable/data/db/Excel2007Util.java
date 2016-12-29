@@ -1,7 +1,7 @@
 package com.fr.bi.stable.data.db;
 
-import com.fr.bi.stable.constant.DBConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -28,7 +28,6 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -505,8 +504,7 @@ public class Excel2007Util {
             if (isDateFormat) {
                 try {
                     Date date = HSSFDateUtil.getJavaDate(Double.parseDouble(n));
-                    SimpleDateFormat dformat = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
-                    cellValue = dformat.format(date);
+                    cellValue = DateUtils.getDate2LStr(date);
                 } catch (Exception e) {
                     cellValue = n;
                 }
