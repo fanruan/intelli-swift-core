@@ -67,7 +67,8 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
     },
 
     _onClickDrill: function (dId, value, drillId) {
-        var wId = BI.Utils.getWidgetIDByDimensionID(this.options.dId);
+        var o = this.options;
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var drillMap = BI.Utils.getDrillByID(wId);
         //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
         //当前钻取的根节点
@@ -85,10 +86,10 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         } else {
             drillOperators.push({
                 dId: drillId,
-                values: [{
+                values: BI.concat([{
                     dId: dId,
                     value: [BI.Utils.getClickedValue4Group(value, dId)]
-                }]
+                }], o.pValues)
             });
         }
         drillMap[rootId] = drillOperators;
@@ -164,6 +165,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
     setValue: function(value){
         var o = this.options;
         o.value = this._getShowValue(value);
+        o.pValues = value.pValues || [];
         var v = this._formatValue(o.value);
         this.label.setValue(v);
         this.label.setTitle(v);

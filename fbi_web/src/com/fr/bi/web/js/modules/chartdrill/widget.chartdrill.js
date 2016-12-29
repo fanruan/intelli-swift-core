@@ -159,6 +159,11 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         return BI.isNull(upDrillID)
     },
 
+    /**
+     * 当前使用中的维度中有哪些是要显示钻取框的（下钻过的）
+     * @returns {Array}
+     * @private
+     */
     _getVisibleDrillCellArray: function(){
         var o = this.options;
         var visibleArray = [];
