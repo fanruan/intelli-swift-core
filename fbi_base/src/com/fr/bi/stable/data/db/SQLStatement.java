@@ -38,11 +38,12 @@ public class SQLStatement {
         return conn;
     }
 
-    public  void createConn()throws Exception{
+    public void createConn() throws Exception {
         sqlConn = conn.createConnection();
     }
-    public java.sql.Connection getSqlConn() throws Exception{
-        if (sqlConn == null){
+
+    public java.sql.Connection getSqlConn() throws Exception {
+        if (sqlConn == null) {
             createConn();
         }
         return sqlConn;
