@@ -70,6 +70,7 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
     },
     _createFieldButtons: function (item) {
         var self = this, popupButtons = [], o = this.options;
+        var positionArray = [];
         if (BI.isNotNull(item.children) && BI.isNotEmptyArray(item.children)) {
             BI.each(item.children, function (i_in, item_in) {
                 var findField = BI.find(self.fieldWidgetMap, function (fieldId, fieldWidget) {
@@ -81,6 +82,7 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
                 if (!findField) {
                     var tables = BI.Utils.getConfPackageTablesByID(item_in.value);
                     var packageName = BI.Utils.getConfPackageNameByID(item_in.value);
+                    var position = BI.Utils.getConfPackagePositionByID(item_in.value);
                     var fieldButton = BI.createWidget({
                         type: "bi.business_package_button",
                         text: packageName,
@@ -91,6 +93,7 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
                         forceNotSelected: o.forceNotSelected
                     });
                     self.fieldWidgetMap[item_in.id] = fieldButton;
+                    positionArray.push({position: position, button: fieldButton});
                     fieldButton.on(BI.Controller.EVENT_CHANGE, function (type, value, obj) {
                         self.fireEvent(BI.BusinessPackageExpander.EVENT_CHANGE, obj);
                     });
@@ -100,10 +103,12 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
                     fieldButton.on(BI.BusinessPackageButton.EVENT_EDITOR_CONFIRM, function (packageName, packageID) {
                         self.fireEvent(BI.BusinessPackageExpander.EVENT_EDITOR_CONFIRM, packageName, packageID)
                     });
-                    popupButtons.push(fieldButton);
                 }
             })
         }
+        BI.each(BI.sortBy(positionArray, "position"), function (i, ob) {
+            popupButtons.push(ob.button);
+        });
         return popupButtons;
     },
 

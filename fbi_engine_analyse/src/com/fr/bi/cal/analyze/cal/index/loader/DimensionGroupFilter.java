@@ -126,8 +126,6 @@ public class DimensionGroupFilter {
         if (node.getData() instanceof BIDay) {
             oldData = node.getData();
             node.setShowValue(rowDimension[deep].toString(oldData));
-        } else {
-            node.setShowValue(node.getData().toString());
         }
         boolean ret = true;
         for (DimensionFilter filter : filterList) {
