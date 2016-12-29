@@ -61,8 +61,10 @@ BI.RegionWrapper = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.RegionWrapper.EVENT_CHANGE);
             },
             start: function (event, ui) {
+                self.fireEvent(BI.RegionWrapper.EVENT_START);
             },
             stop: function (event, ui) {
+                self.fireEvent(BI.RegionWrapper.EVENT_STOP);
             },
             over: function (event, ui) {
 
@@ -118,3 +120,5 @@ BI.RegionWrapper = BI.inherit(BI.Widget, {
     }
 });
 BI.RegionWrapper.EVENT_CHANGE = "RegionWrapper.EVENT_CHANGE";
+BI.RegionWrapper.EVENT_START = "RegionWrapper.EVENT_START";
+BI.RegionWrapper.EVENT_STOP = "RegionWrapper.EVENT_STOP";

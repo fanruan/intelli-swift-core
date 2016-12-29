@@ -11,6 +11,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
             name: "",
             type: BICst.WIDGET.TABLE,
             settings: {},
+            scopes: {},
             filter_value: {}
         });
     },
