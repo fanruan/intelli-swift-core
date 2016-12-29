@@ -46,6 +46,13 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
                 self.packageManagePane.on(BI.BusinessPackageGroup.EVENT_CANCEL, function () {
                     this.setVisible(false);
                 });
+                self.packageManagePane.on(BI.BusinessPackageGroup.EVENT_CONFIRM, function (packageName, packageID) {
+                    var groups = self.packageManagePane.getValue();
+                    groups.changedPackage = {};
+                    groups.changedPackage.newPackageName = packageName;
+                    groups.changedPackage.packageID = packageID;
+                    self.model.set("groups", groups);
+                });
                 self.packageManagePane.populate();
                 BI.createWidget({
                     type: "bi.absolute",
