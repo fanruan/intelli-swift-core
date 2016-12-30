@@ -38,9 +38,9 @@
 
     <script type="text/javascript">
         $(function () {
-            if (BI.isPopularBrowser()) {
-                FR.$defaultImport('/com/fr/bi/web/js/components/components.react.js', 'js');
-            }
+            /**
+             **TODO: 不用担心加参数就可以编辑的问题， 可以在服务端判断是否有编辑权限
+             */
             document.title = ${reportName}.name;
             BI.Show._init({
                 reportId: ${reportId},

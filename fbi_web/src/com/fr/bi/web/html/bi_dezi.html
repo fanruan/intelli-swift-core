@@ -18,6 +18,7 @@
     <![endif]-->
 
     <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}&__v__=${__v__}"></script>
+    <!--<script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.chart.js"></script>-->
     <script type="text/javascript" src="${Baidu}"></script>
     <script type="text/javascript" src="${Google}"></script>
     <script type="text/javascript" src="${servletURL}?op=emb&resource=third.js&__v__=${__v__}"></script>
@@ -30,15 +31,16 @@
     <script type="text/javascript"
             src="${servletURL}?op=emb&resource=map.js&__pre__=true&__v__=${__v__}"></script>
 
+
     <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js&__v__=${__v__}"></script>
     <script type="text/javascript" src="${servletURL}?op=emb&resource=dezi.js&__v__=${__v__}"></script>
 
+
     <script type="text/javascript">
         $(function () {
-            //部分浏览器需要使用的代码为ES5语法
-            if (BI.isPopularBrowser()) {
-                FR.$defaultImport('/com/fr/bi/web/js/components/components.react.js', 'js');
-            }
+            /**
+             **TODO: 不用担心加参数就可以编辑的问题， 可以在服务端判断是否有编辑权限
+             */
             document.title = ${reportName}.name;
             BI.Dezi._init({
                 reportId: ${reportId},
