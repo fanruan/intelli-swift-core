@@ -109,7 +109,7 @@ BI.VerticalAdaptLayout = BI.inherit(BI.Layout, {
 
     empty: function () {
         BI.each(this.widgets, function (i, wi) {
-            wi.destroy();
+            BI.isNotNull(wi) && wi.destroy();
         });
         this.widgets = {};
         this.tr.empty();
