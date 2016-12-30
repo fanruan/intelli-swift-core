@@ -60,17 +60,17 @@ BI.NumberCustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
             model: this.options.model
         });
 
-        this.group.on(BI.NumberIntervalCustomGroup.EVENT_ERROR,function(){
+        this.group.on(BI.ConfNumberIntervalCustomGroup.EVENT_ERROR,function(){
             self.saveButton.setValue(BI.i18nText("BI-Correct_The_Errors_Red"));
             self.saveButton.setEnable(false);
         });
 
-        this.group.on(BI.NumberIntervalCustomGroup.EVENT_VALID,function(){
+        this.group.on(BI.ConfNumberIntervalCustomGroup.EVENT_VALID,function(){
             self.saveButton.setValue(BI.i18nText("BI-Save"));
             self.saveButton.setEnable(true);
         });
 
-        this.group.on(BI.NumberIntervalCustomGroup.EVENT_EMPTY_GROUP,function(){
+        this.group.on(BI.ConfNumberIntervalCustomGroup.EVENT_EMPTY_GROUP,function(){
             self.saveButton.setEnable(false);
         });
 
