@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -22,10 +21,13 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -228,16 +230,31 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     @Override
     public void refreshSources() {
-        if (target != null) {
-            for (BusinessTable table : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
-                if (table.getID().equals(target.getID())) {
-                    if (!table.getTableSource().getSourceID().equals(target.getTableSource().getSourceID())) {
-                        target.setSource(table.getTableSource());
-                        break;
-                    }
-                }
-            }
+        if (target == null) {
+            return;
         }
+        try {
+            BusinessTable newTable = BIModuleUtils.getBusinessTableById(target.getID());
+            if (null != newTable) {
+                CubeTableSource newSource = newTable.getTableSource();
+                if (isAnalysisSource(newSource)) {
+                    newSource.refresh();
+                }
+                target.setSource(newSource);
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(BIStringUtils.append("error: the analysisTable " + target.getID().getIdentityValue() + " is absent", "\n", e.getMessage()), e);
+        }
+    }
+
+    private boolean isAnalysisSource(CubeTableSource newSource) {
+        List analysisTypes = new ArrayList();
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.BASE);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.ETL);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.TEMP);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_BASE);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_ETL);
+        return analysisTypes.contains(newSource.getType());
     }
 
     @Override

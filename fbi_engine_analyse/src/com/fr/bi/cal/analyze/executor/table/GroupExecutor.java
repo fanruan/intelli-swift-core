@@ -27,6 +27,7 @@ import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -162,8 +163,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
             ArrayList<String> currentIndex = (ArrayList<String>) indexList.clone();
             BIDimension rd = rowColumn[column];
             String name = rd.toString(tempNode.getData());
-            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && name != null) {
-                name = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(name)));
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(name) != null) {
+                name = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(name).longValue()));
             }
             currentIndex.add(name);
             NodeExpander childEx = expander.getChildExpander(name);
@@ -440,8 +441,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
             int rowSpan = (sumColumn.length == 0 || !chartSetting.showRowTotal()) ? tempNode.getTotalLength() : tempNode.getTotalLengthWithSummary();
             BIDimension rd = rowColumn[column];
             String text = rd.toString(tempNode.getData());
-            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && text != null) {
-                text = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(text)));
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(text) != null) {
+                text = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(text).longValue()));
             }
             cell = new CBCell(text);
             cell.setRow(tempRow);

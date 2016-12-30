@@ -58,11 +58,11 @@ BI.IconMarkItem = BI.inherit(BI.BasicButton, {
     },
 
     doClick: function(){
-        BI.ExcelFieldTypeItem.superclass.doClick.apply(this, arguments);
+        BI.IconMarkItem.superclass.doClick.apply(this, arguments);
     },
 
     setSelected: function(v){
-        BI.ExcelFieldTypeItem.superclass.setSelected.apply(this, arguments);
+        BI.IconMarkItem.superclass.setSelected.apply(this, arguments);
         this.checkMark.setSelected(v);
     },
 

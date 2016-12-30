@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -63,7 +64,7 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
 
     @Override
     public int getType() {
-        return Constants.TABLE_TYPE.TEMP;
+        return BIBaseConstant.TABLE_TYPE.TEMP;
     }
 
     @Override

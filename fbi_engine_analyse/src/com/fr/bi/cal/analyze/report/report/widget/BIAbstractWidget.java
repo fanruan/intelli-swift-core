@@ -29,6 +29,7 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.Constants;
 import com.fr.stable.unit.UnitRectangle;
+import com.fr.web.core.SessionDealWith;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -222,14 +223,14 @@ public abstract class BIAbstractWidget implements BIWidget {
     private List<TargetFilter> getAuthFilter(long userId) {
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
         List<BIPackageID> authPacks;
-        if (sessionId != null) {
+        if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
             authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(sessionId);
         } else {
             authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
         }
         for (int i = 0; i < authPacks.size(); i++) {
             List<BIPackageAuthority> packAuths;
-            if (sessionId != null) {
+            if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
                 packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), sessionId);
             } else {
                 packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
