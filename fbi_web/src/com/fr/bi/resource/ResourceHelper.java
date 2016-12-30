@@ -771,9 +771,9 @@ public class ResourceHelper {
 
 
                 //react明细表
-                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
+//                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
                 //react汇总表
-                "com/fr/bi/web/js/modules/summarytablereact/widget.summarytablereact.js",
+//                "com/fr/bi/web/js/modules/summarytablereact/widget.summarytablereact.js",
         };
     }
 
@@ -938,7 +938,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/excelview/excelview.css",
 
                 //react明细表
-                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
+//                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
         };
     }
 
@@ -2083,7 +2083,7 @@ public class ResourceHelper {
 
 
                 //react控件
-                "com/fr/bi/web/css/components/components.react.css",
+//                "com/fr/bi/web/css/components/components.react.css",
 
         };
     }
@@ -2856,7 +2856,7 @@ public class ResourceHelper {
 
 
                 //react控件
-                "com/fr/bi/web/js/components/components.react.js",
+//                "com/fr/bi/web/js/components/components.react.js",
         };
     }
 
