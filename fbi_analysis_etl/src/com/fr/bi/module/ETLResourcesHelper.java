@@ -22,6 +22,9 @@ public class ETLResourcesHelper {
                 "com/fr/bi/web/js/modules/base/combos/statistic/widget.statisticdate.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/statistic/widget.statisticstring.combo.js",
 
+                //分组统计选字段
+                "com/fr/bi/web/js/modules/selectdata4statistics/widget.selectsingletablefield.js",
+
                 //group
                 "com/fr/bi/web/js/modules/base/combos/group/widget.groupnumber.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/group/widget.groupdate.combo.js",

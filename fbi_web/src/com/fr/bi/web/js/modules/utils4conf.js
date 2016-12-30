@@ -610,6 +610,26 @@ BI.extend(BI.Utils, {
         return "";
     },
 
+    getConfPackageTablesByID: function (pid) {
+        return Data.SharingPool.get("packages", pid, "tables");
+    },
+
+    getConfAllPackageIDs: function () {
+        return BI.keys(Data.SharingPool.get("packages"));
+    },
+
+    getConfPackageNameByID: function (pid) {
+        return Data.SharingPool.get("packages", pid, "name");
+    },
+
+    getConfPackagePositionByID: function(pid) {
+        return Data.SharingPool.get("packages", pid, "position");
+    },
+
+    getUpdateSettingByID: function (id) {
+        return Data.SharingPool.get("update_settings", id);
+    },
+
     getAuthorityLoginField: function () {
         return Data.SharingPool.get("authority_settings", "login_field");
     },
