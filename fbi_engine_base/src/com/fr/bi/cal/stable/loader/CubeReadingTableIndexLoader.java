@@ -79,18 +79,11 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
             userMap.clear();
         }
     }
-
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
-        if (lastSource.get() == tableSource) {
-            return lastService.get();
-        }
-        ICubeTableService service = BIModuleUtils.getTableIndex(tableSource, childLoaderMap);
-        lastSource.set(tableSource);
-        lastService.set(service);
-        return service;
+            ICubeTableService service = BIModuleUtils.getTableIndex(tableSource, childLoaderMap);
+            return service;
     }
-
     @Override
     public BIKey getFieldIndex(BusinessField column) {
         return new IndexKey(column.getFieldName());
@@ -179,7 +172,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 //            lastService = new ThreadLocal<ICubeTableService>();
 //            userMap.remove(UserControl.getInstance().getSuperManagerID());
             for (String s : childLoaderMap.keySet()) {
-                if (s.equals("com.fr.bi.module.BICoreModule")&&null!=childLoaderMap.get(s)) {
+                if (s.equals("com.fr.bi.module.BICoreModule") && null != childLoaderMap.get(s)) {
                     childLoaderMap.get(s).clear();
                 }
             }
