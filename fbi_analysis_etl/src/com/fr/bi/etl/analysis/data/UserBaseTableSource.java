@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
-import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -59,7 +59,7 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
 
     @Override
     public int getType() {
-        return Constants.TABLE_TYPE.USER_BASE;
+        return BIBaseConstant.TABLE_TYPE.USER_BASE;
     }
 
     @Override
