@@ -70,5 +70,8 @@ FR.i18n = BI.i18n = {
 };
 
 BI.i18nText = function (key) {
+    if(FR.i18nText4Mobile[key]) {
+        return FR.i18nText4Mobile[key];
+    }
     return key;
 };
