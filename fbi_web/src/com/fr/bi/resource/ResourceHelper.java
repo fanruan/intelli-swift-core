@@ -572,10 +572,6 @@ public class ResourceHelper {
                 //树控件
                 "com/fr/bi/web/js/modules/selecttreedatacombo/selecttreedatacombo.js",
 
-                //日期控件
-                "com/fr/bi/web/js/modules/date/interval.date.param.js",
-                "com/fr/bi/web/js/modules/date/multi.date.js",
-
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/model.calculatetargetpopup.summary.js",
@@ -1609,6 +1605,8 @@ public class ResourceHelper {
 
                 //日期区间
                 "com/fr/bi/web/js/modules/date/interval.date.js",
+                "com/fr/bi/web/js/modules/date/interval.date.param.js",
+                "com/fr/bi/web/js/modules/date/multi.date.js",
 
                 //自定义分组
                 "com/fr/bi/web/js/modules/customgroup/widget.group2other.customgroup.js",
