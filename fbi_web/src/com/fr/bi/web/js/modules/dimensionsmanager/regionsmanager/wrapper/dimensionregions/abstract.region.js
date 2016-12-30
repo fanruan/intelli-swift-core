@@ -67,8 +67,10 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.AbstractRegion.EVENT_CHANGE);
             },
             start: function (event, ui) {
+                self.fireEvent(BI.AbstractRegion.EVENT_START);
             },
             stop: function (event, ui) {
+                self.fireEvent(BI.AbstractRegion.EVENT_STOP);
             },
             over: function (event, ui) {
 
@@ -329,4 +331,6 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         }
     }
 });
+BI.AbstractRegion.EVENT_START = "EVENT_START";
+BI.AbstractRegion.EVENT_STOP = "EVENT_STOP";
 BI.AbstractRegion.EVENT_CHANGE = "EVENT_CHANGE";

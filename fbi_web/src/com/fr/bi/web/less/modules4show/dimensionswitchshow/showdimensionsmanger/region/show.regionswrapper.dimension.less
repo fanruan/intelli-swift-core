@@ -1,0 +1,16 @@
+@import "../../../../bibase";
+.bi-show-dimension-region-wrapper{
+  border-top: 1px solid @color-bi-border-line;
+  & .dimension-sortable-helper{
+    background: @color-dimension-background;
+    .border-radius(2px);
+  }
+  & .dimension-region {
+    border: 1px solid @color-dimension-region-border;
+    .border-radius(2px);
+  }
+  & .drag-tool {
+    border-right: 1px solid @color-dimension-region-border;
+    cursor: move;
+  }
+}
