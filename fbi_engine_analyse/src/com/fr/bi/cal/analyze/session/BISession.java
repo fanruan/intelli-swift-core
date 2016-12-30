@@ -43,6 +43,7 @@ import com.fr.json.JSONObject;
 import com.fr.main.FineBook;
 import com.fr.main.TemplateWorkBook;
 import com.fr.main.workbook.ResultWorkBook;
+import com.fr.report.cell.FloatElement;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
@@ -377,6 +378,7 @@ public class BISession extends BIAbstractSession {
         polyECBlock.getBlockAttr().setFreezeHeight(true);
         polyECBlock.getBlockAttr().setFreezeWidth(true);
         polyECBlock.setBounds(new UnitRectangle(new Rectangle(), Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION));
+        polyECBlock.addFloatElement(new FloatElement());
         reportSheet.addBlock(polyECBlock);
         wb.addReport("Dashboard", reportSheet);
         for (String widgetName : widgetNames) {

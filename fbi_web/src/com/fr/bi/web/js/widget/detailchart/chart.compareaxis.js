@@ -21,7 +21,7 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
             },
             labelStyle: this.constants.FONT_STYLE,
             position: "bottom",
-            gridLineWidth: 0
+            gridLineWidth: 0,
         }, {
             title: {
                 style: this.constants.FONT_STYLE
@@ -67,12 +67,12 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
             axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
-                    BI.extend(axis, self.leftAxisSetting(self.config));
+                    BI.extend(axis, self.leftAxisSetting(self.config, true));
                     axis.reversed = false;
                     formatNumberLevelInYaxis(self.config.leftYNumberLevel, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    BI.extend(axis, self.rightAxisSetting(self.config));
+                    BI.extend(axis, self.rightAxisSetting(self.config, true));
                     axis.reversed = true;
                     formatNumberLevelInYaxis(self.config.rightYNumberLevel, idx, axis.formatter);
                     break;

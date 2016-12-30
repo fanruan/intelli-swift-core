@@ -6,7 +6,10 @@ import com.fr.general.IOUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.OperatingSystem;
+import sun.misc.BASE64Decoder;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -14,7 +17,7 @@ import java.net.URLConnection;
 /**
  * Created by AstronautOO7 on 2016/12/22.
  */
-public class ServerUtils {
+public class PhantomServerUtils {
     //ip,port of phantom server
     private static final String IP = "127.0.0.1";
     private static final int PORT = 8089;
@@ -30,7 +33,7 @@ public class ServerUtils {
 
     public static boolean checkServer(String ip, int port){
         try {
-            String res = ServerUtils.postMessage(ip, port, LIVE);
+            String res = PhantomServerUtils.postMessage(ip, port, LIVE);
             return isServerReady(res);
         } catch (IOException e) {
             return false;
@@ -72,7 +75,7 @@ public class ServerUtils {
      */
     public static void shutDownPhantomServer(String ip, int port) {
         try {
-            String res = ServerUtils.postMessage(ip, port, CLOSE);
+            String res = PhantomServerUtils.postMessage(ip, port, CLOSE);
         } catch (Exception e) {
             BILoggerFactory.getLogger().info(e.getMessage());
         }
@@ -108,11 +111,11 @@ public class ServerUtils {
         String exe = path + "/phantomjs";
         //if it is not windows, set authority
         if (isLinux32() || isLinux64()){
-            ServerUtils.setAuthority(exe);
+            PhantomServerUtils.setAuthority(exe);
         }else if (OperatingSystem.isMacOS()){
-            ServerUtils.setAuthority(exe);
+            PhantomServerUtils.setAuthority(exe);
         }else if (isUnix32() || isUnix64()){
-            ServerUtils.setAuthority(exe);
+            PhantomServerUtils.setAuthority(exe);
         }
         return exe;
     }
@@ -162,5 +165,25 @@ public class ServerUtils {
             }
         }
         return -1;
+    }
+
+    public static BufferedImage base64Decoder(String base64){
+        BASE64Decoder decoder = new BASE64Decoder();
+        BufferedImage img = null;
+        try {
+            // Base64解码
+            byte[] bytes = decoder.decodeBuffer(base64);
+            for (int i = 0; i < bytes.length; ++i) {
+                if (bytes[i] < 0) {// 调整异常数据
+                    bytes[i] += 256;
+                }
+            }
+            InputStream buffin = new ByteArrayInputStream(bytes, 0, bytes.length);
+
+            img = ImageIO.read(buffin);
+        } catch (Exception e) {
+            return null;
+        }
+        return img;
     }
 }
