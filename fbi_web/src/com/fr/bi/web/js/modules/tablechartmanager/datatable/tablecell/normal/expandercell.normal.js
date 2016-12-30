@@ -114,16 +114,23 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         var o = this.options;
         var dId = o.dId;
         //并非有未勾选的维度就一定对于当前节点来说可以下钻，如果未勾选维度已被钻取，自然也不能再次钻取
-        if(BI.isNotEmptyArray(BI.Utils.getDrillDownDIdsByWidgetId(BI.Utils.getWidgetIDByDimensionID(dId)))
-            || BI.isNotNull(BI.Utils.getDrillUpDimensionIdByDimensionId(dId))){
-            return BI.createWidget({
+        if (BI.isNotEmptyArray(BI.Utils.getDrillDownDIdsByWidgetId(BI.Utils.getWidgetIDByDimensionID(dId)))
+            || BI.isNotNull(BI.Utils.getDrillUpDimensionIdByDimensionId(dId))) {
+            var button = BI.createWidget({
                 type: "bi.icon_button",
+                invisible: true,
                 cls: "table-drill-up-down",
                 height: 25,
-                handler: function(){
+                handler: function () {
                     o.drillCallback()
                 }
-            })
+            });
+            this.element.hover(function () {
+                button.setVisible(true);
+            }, function () {
+                button.setVisible(false);
+            });
+            return button;
         }
     }
 });

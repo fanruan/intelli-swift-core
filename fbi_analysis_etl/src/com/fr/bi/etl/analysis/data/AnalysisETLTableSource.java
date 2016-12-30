@@ -8,6 +8,7 @@ import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.json.JSONArray;
@@ -92,7 +93,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
 
     @Override
     public int getType() {
-        return Constants.TABLE_TYPE.ETL;
+        return BIBaseConstant.TABLE_TYPE.ETL;
     }
 
     /**

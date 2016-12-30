@@ -6,10 +6,10 @@ package com.fr.bi.etl.analysis.manager;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserETLTableSource;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.file.XMLFileManager;
@@ -82,7 +82,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 
     @Override
     public void checkTableIndex(AnalysisCubeTableSource source, BIUser user) {
-        if (!(source.getType() == Constants.TABLE_TYPE.TEMP)) {
+        if (!(source.getType() == BIBaseConstant.TABLE_TYPE.TEMP)) {
             createManager(source, user);
         }
     }
@@ -112,7 +112,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     }
 
     private boolean isParentTableIndex(CubeTableSource source) {
-        return source.getType() == Constants.TABLE_TYPE.USER_ETL && (((UserETLTableSource) source).hasTableFilterOperator() || ((UserETLTableSource) source).getETLOperators().isEmpty());
+        return source.getType() == BIBaseConstant.TABLE_TYPE.USER_ETL && (((UserETLTableSource) source).hasTableFilterOperator() || ((UserETLTableSource) source).getETLOperators().isEmpty());
     }
 
     public void releaseCurrentThread() {
