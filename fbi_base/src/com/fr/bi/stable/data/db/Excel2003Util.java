@@ -58,8 +58,8 @@ public class Excel2003Util implements HSSFListener {
         resetValues();
         Object lock = BIPictureUtils.getImageLock(filePath);
         synchronized (lock) {
-            Excel2003Util excel2003Util = new Excel2003Util(filePath);
-            excel2003Util.process();
+            this.fs = new POIFSFileSystem(new FileInputStream(filePath));
+            process();
         }
         mergeCells();
         initFieldNames();
@@ -290,11 +290,14 @@ public class Excel2003Util implements HSSFListener {
     public void processMergeRecord(Record record) {
         try {
             MergeCellsRecord merge = (MergeCellsRecord) record;
-            String m = merge.getAreaAt(0).formatAsString();
-            String[] merged = m.split(":");
-            String s = merged[0], e = merged[1];
-            ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
-            mergeCells.put(start, end);
+            Short num = merge.getNumAreas();
+            for (int i = 0; i < num; i++) {
+                String m = merge.getAreaAt(i).formatAsString();
+                String[] merged = m.split(":");
+                String s = merged[0], e = merged[1];
+                ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
+                mergeCells.put(start, end);
+            }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
@@ -376,22 +379,51 @@ public class Excel2003Util implements HSSFListener {
         for (Map.Entry<ColumnRow, ColumnRow> m : merges.entrySet()) {
             ColumnRow s = m.getKey();
             ColumnRow e = m.getValue();
-            //如果是横向合并
-            if (s.getRow() == e.getRow() && s.getRow() != 0) {
-                int mergedColCount = e.getColumn() - s.getColumn();
-                for (int i = 0; i < mergedColCount; i++) {
-                    Object[] tempArray = rowDataList.get(e.getRow() - 1);
-                    tempArray[e.getColumn() - i] = rowDataList.get(e.getRow() - 1)[e.getColumn() - i - 1];
-                    rowDataList.set(e.getRow() - 1, tempArray);
-                }
-            } else if (s.getRow() != 0) {
+            if (s.getRow() == e.getRow()) {
+                //如果是横向合并
+                rowMerge(s, e);
+            } else if (s.getColumn() == e.getColumn()) {
+                //纵向合并
+                colMerge(s, e);
+            } else {
+                //横纵都合并
                 int mergedRowCount = e.getRow() - s.getRow();
-                for (int j = 0; j < mergedRowCount; j++) {
-                    Object[] tempArray = rowDataList.get(e.getRow() - j - 1);
-                    tempArray[e.getColumn()] = rowDataList.get(s.getRow() - 1)[e.getColumn()];
-                    rowDataList.set(e.getRow() - j - 1, tempArray);
+                Object v = rowDataList.get(s.getRow())[s.getColumn()];
+                for (int i = 0; i <= mergedRowCount; i++) {
+                    ColumnRow start = ColumnRow.valueOf(s.getColumn(), s.getRow() + i);
+                    ColumnRow end = ColumnRow.valueOf(e.getColumn(), s.getRow() + i);
+                    rowColMerge(start, end, v);
                 }
             }
         }
+    }
+
+    private void rowMerge(ColumnRow s, ColumnRow e) {
+        int mergedColCount = e.getColumn() - s.getColumn();
+        Object[] tempArray = rowDataList.get(s.getRow());
+        Object v = rowDataList.get(s.getRow())[s.getColumn()];
+        for (int i = 0; i < mergedColCount; i++) {
+            tempArray[e.getColumn() - i] = v;
+        }
+        rowDataList.set(s.getRow(), tempArray);
+    }
+
+    private void colMerge(ColumnRow s, ColumnRow e) {
+        int mergedRowCount = e.getRow() - s.getRow();
+        Object v = rowDataList.get(s.getRow())[s.getColumn()];
+        for (int j = 0; j < mergedRowCount; j++) {
+            Object[] tempArray = rowDataList.get(e.getRow() - j);
+            tempArray[e.getColumn()] = v;
+            rowDataList.set(e.getRow() - j, tempArray);
+        }
+    }
+
+    private void rowColMerge(ColumnRow s, ColumnRow e, Object v) {
+        int mergedColCount = e.getColumn() - s.getColumn();
+        Object[] tempArray = rowDataList.get(s.getRow());
+        for (int i = 0; i <= mergedColCount; i++) {
+            tempArray[e.getColumn() - i] = v;
+        }
+        rowDataList.set(s.getRow(), tempArray);
     }
 }

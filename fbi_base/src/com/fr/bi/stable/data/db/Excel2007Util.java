@@ -112,38 +112,25 @@ public class Excel2007Util {
             for (Map.Entry<ColumnRow, ColumnRow> m : merges.entrySet()) {
                 ColumnRow s = m.getKey();
                 ColumnRow e = m.getValue();
-                //如果是横向合并
                 if (s.getRow() == e.getRow()) {
-                    int mergedColCount = e.getColumn() - s.getColumn();
-                    for (int i = 0; i < mergedColCount; i++) {
-                        Object[] tempArray = tempRowDataList.get(e.getRow());
-                        if (tempArray.length < e.getColumn() + 1) {
-                            Object[] tArray = new Object[e.getColumn() + 1];
-                            for (int k = 0; k < tempArray.length; k++) {
-                                tArray[k] = tempArray[k];
-                            }
-                            tArray[e.getColumn() - i] = tempRowDataList.get(e.getRow())[s.getColumn()];
-                            tempRowDataList.set(e.getRow(), tArray);
-                        } else {
-                            tempArray[e.getColumn() - i] = tempRowDataList.get(e.getRow())[s.getColumn()];
-                            tempRowDataList.set(e.getRow(), tempArray);
-                        }
-                    }
+                    //如果是横向合并
+                    rowMerge(s, e);
+                } else if (s.getColumn() == e.getColumn()) {
+                    //纵向合并
+                    columnMerge(s, e);
                 } else {
+                    //横纵均合并
                     int mergedRowCount = e.getRow() - s.getRow();
-                    for (int j = 0; j < mergedRowCount; j++) {
-                        Object[] tempArray = tempRowDataList.get(e.getRow() - j);
-                        if (tempArray.length < e.getColumn() + 1) {
-                            Object[] tArray = new Object[e.getColumn() + 1];
-                            for (int k = 0; k < tempArray.length; k++) {
-                                tArray[k] = tempArray[k];
-                            }
-                            tArray[e.getColumn()] = tempRowDataList.get(s.getRow())[e.getColumn()];
-                            tempRowDataList.set(e.getRow() - j, tArray);
-                        } else {
-                            tempArray[e.getColumn()] = tempRowDataList.get(s.getRow())[e.getColumn()];
-                            tempRowDataList.set(e.getRow() - j, tempArray);
-                        }
+                    Object v;
+                    try {//处理为空的合并单元格
+                        v = tempRowDataList.get(s.getRow())[s.getColumn()];
+                    } catch (Exception ex) {
+                        v = StringUtils.EMPTY;
+                    }
+                    for (int i = 0; i <= mergedRowCount; i++) {
+                        ColumnRow start = ColumnRow.valueOf(s.getColumn(), s.getRow() + i);
+                        ColumnRow end = ColumnRow.valueOf(e.getColumn(), s.getRow() + i);
+                        rowColMerge(start, end, v);
                     }
                 }
             }
@@ -151,6 +138,87 @@ public class Excel2007Util {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
 
+    }
+
+    private void rowMerge(ColumnRow s, ColumnRow e) {
+        int mergedColCount = e.getColumn() - s.getColumn();
+        for (int i = 0; i < mergedColCount; i++) {
+            Object[] tempArray = tempRowDataList.get(e.getRow());
+            if (tempArray.length < e.getColumn() + 1) {
+                Object[] tArray = new Object[e.getColumn() + 1];
+                for (int k = 0; k < tempArray.length; k++) {
+                    tArray[k] = tempArray[k];
+                }
+                Object v;
+                try {//处理为空的合并单元格
+                    v = tempRowDataList.get(s.getRow())[s.getColumn()];
+                } catch (Exception ex) {
+                    v = StringUtils.EMPTY;
+                    tArray[s.getColumn()] = v;
+                }
+                tArray[e.getColumn() - i] = v;
+                tempRowDataList.set(e.getRow(), tArray);
+            } else {
+                tempArray[e.getColumn() - i] = tempRowDataList.get(s.getRow())[s.getColumn()];
+                tempRowDataList.set(e.getRow(), tempArray);
+            }
+        }
+    }
+
+    private void columnMerge(ColumnRow s, ColumnRow e) {
+        int mergedRowCount = e.getRow() - s.getRow();
+        for (int j = 0; j < mergedRowCount; j++) {
+            Object[] tempArray = tempRowDataList.get(e.getRow() - j);
+            if (tempArray.length < e.getColumn() + 1) {
+                Object[] tArray = new Object[e.getColumn() + 1];
+                for (int k = 0; k < tempArray.length; k++) {
+                    tArray[k] = tempArray[k];
+                }
+                Object v;
+                try {//处理为空的合并单元格
+                    v = tempRowDataList.get(s.getRow())[s.getColumn()];
+                } catch (Exception ex) {
+                    v = StringUtils.EMPTY;
+                    Object[] sArray = tempRowDataList.get(s.getRow());
+                    Object[] temArray = new Object[e.getColumn() + 1];
+                    for (int k = 0; k < sArray.length; k++) {
+                        temArray[k] = sArray[k];
+                    }
+                    temArray[s.getColumn()] = v;
+                    tempRowDataList.set(s.getRow(), temArray);
+                }
+                tArray[e.getColumn()] = v;
+                tempRowDataList.set(e.getRow() - j, tArray);
+            } else {
+                tempArray[e.getColumn()] = tempRowDataList.get(s.getRow())[s.getColumn()];
+                tempRowDataList.set(e.getRow() - j, tempArray);
+            }
+        }
+    }
+
+    private void rowColMerge(ColumnRow s, ColumnRow e, Object value) {
+        int mergedColCount = e.getColumn() - s.getColumn();
+        for (int i = 0; i < mergedColCount; i++) {
+            Object[] tempArray = tempRowDataList.get(e.getRow());
+            if (tempArray.length < e.getColumn() + 1) {
+                Object[] tArray = new Object[e.getColumn() + 1];
+                for (int k = 0; k < tempArray.length; k++) {
+                    tArray[k] = tempArray[k];
+                }
+                Object v;
+                try {
+                    v = tempRowDataList.get(s.getRow())[s.getColumn()];
+                } catch (Exception ex) {
+                    v = value;
+                    tArray[s.getColumn()] = value;
+                }
+                tArray[e.getColumn() - i] = v;
+                tempRowDataList.set(e.getRow(), tArray);
+            } else {
+                tempArray[e.getColumn() - i] = tempRowDataList.get(s.getRow())[s.getColumn()];
+                tempRowDataList.set(e.getRow(), tempArray);
+            }
+        }
     }
 
     private void createDistinctColumnNames() {
@@ -189,9 +257,11 @@ public class Excel2007Util {
             } else if (i == 1) {
                 columnTypes = new int[columnCount];
                 for (int j = 0; j < columnCount; j++) {
-                    String v = StringUtils.EMPTY;
-                    if (oneRow.length > j) {
-                        v = oneRow[j].toString().trim();
+                    String v;
+                    try {
+                        v = oneRow[j].toString();
+                    } catch (Exception e) {
+                        v = StringUtils.EMPTY;
                     }
                     currentRowData.add(v);
                     boolean dateType = false;
@@ -214,9 +284,11 @@ public class Excel2007Util {
                 rowDataList.add(currentRowData.toArray());
             } else {
                 for (int j = 0; j < columnCount; j++) {
-                    String v = StringUtils.EMPTY;
-                    if (oneRow.length > j) {
-                        v = oneRow[j].toString().trim();
+                    String v;
+                    try {
+                        v = oneRow[j].toString();
+                    } catch (Exception e) {
+                        v = StringUtils.EMPTY;
                     }
                     currentRowData.add(v);
                 }
@@ -478,6 +550,7 @@ public class Excel2007Util {
             } else if ("row".equals(name)) {
                 tempRowDataList.add(tempData.toArray());
                 tempData = new ArrayList<String>();
+                lastColumnNumber = -1;
             } else if (!"oddHeader".equals(name) && !"evenHeader".equals(name) && !"firstHeader".equals(name)) {
                 if ("oddFooter".equals(name) || "evenFooter".equals(name) || "firstFooter".equals(name)) {
                     this.hfIsOpen = false;
