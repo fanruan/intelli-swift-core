@@ -324,10 +324,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules4show/dimensionsmanager4show/dimensionsmanager.css",
 
                 //数据切换
-                "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionswitchpane.show.css",
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitch.show.css",
-                "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionregion/dimensionregion.show.css",
-                "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitchpane/button/dimensiontagbutton.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/button/dimensiontagbutton.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/show.region.dimension.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/show.region.target.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/show.regionswrapper.dimension.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/show.regionswrapper.target.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/show.regionswrapper.target.setting.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/specialregion/show.region.target.setting.css",
 
                 //最大化
                 "com/fr/bi/web/css/modules4show/maximization/widget.maximization.chartpane.css",
@@ -392,11 +396,20 @@ public class ResourceHelper {
                 //数据切换
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitch.show.js",
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpopup.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionswitchpane.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/model.dimensionswitchpane.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionregion/dimensionregion.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionregion/dimensionregionmanager.show.js",
-                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/button/dimensiontagbutton.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/card/dimensionregionmanager.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/button/dimensiontagbutton.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/showdimensionsmanger.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/showregionmanager/showregionmanager.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/showregionmanager/showregionmanagerforcombinechart.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/showregionmanagermodel/model.showregionmanager.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/show.region.dimension.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/show.region.target.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/show.regionswrapper.dimension.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/show.regionswrapper.target.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/show.regionswrapper.target.setting.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/emptyregion/show.region.empty.dimension.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/emptyregion/show.region.empty.target.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/specialregion/show.region.target.setting.js",
 
                 //最大化
                 "com/fr/bi/web/js/modules4show/maximization/widget.maximization.chartpane.js",

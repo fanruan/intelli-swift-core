@@ -16,7 +16,7 @@ BIShow.DetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.pane = BI.createWidget({
-            type: "bi.dimension_switch_pane_show",
+            type: "bi.show_dimension_manager",
             element: vessel,
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
@@ -29,8 +29,16 @@ BIShow.DetailView = BI.inherit(BI.View, {
                 return dimensionsVessel[dId];
             }
         });
-        this.pane.on(BI.DimensionSwitchPaneShow.EVENT_CHANGE, function () {
-            self.model.set("view", this.getValue());
+        this.pane.on(BI.ShowDimensionsManager.EVENT_CHANGE, function () {
+            var values = this.getValue();
+            var view = values.view, scopes = values.scopes || {};
+            //去除不需要的scope
+            BI.remove(scopes, function (regionType) {
+                return BI.isNull(view[regionType]) || view[regionType].length === 0;
+            });
+            self.model.set(values);
+            //即使区域没有变化也要刷新一次
+            this.populate();
         });
     },
 
