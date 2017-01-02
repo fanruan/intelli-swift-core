@@ -138,7 +138,7 @@ public class PartCubeDataLoader implements ICubeDataLoader {
                     Map.Entry<BICore, CubeTableSource> entry = it.next();
                     if (entry.getValue().getType() == BIBaseConstant.TABLE_TYPE.USER_ETL) {
                         ((AnalysisETLTableSource) entry.getValue()).clearUserBaseTableMap();
-                    } else if (entry.getValue().getType() == BIBaseConstant.TABLE_TYPE.USER_BASE) {
+                    } else {
                         ((UserBaseTableSource) entry.getValue()).clearUserBaseTableMap();
                     }
                 }
