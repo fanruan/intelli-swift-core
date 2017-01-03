@@ -78,6 +78,10 @@ BI.extend(BI.Utils, {
         return id;
     },
 
+    isFieldExistById4Conf: function (fieldId) {
+        return BI.isNotNull(Data.SharingPool.cat("fields")[fieldId]);
+    },
+
     //检查表名或者字段名的合法性
     checkTranNameById4Conf: function (id, name) {
         var fields = Data.SharingPool.cat("fields");
@@ -201,19 +205,21 @@ BI.extend(BI.Utils, {
         var translations = Data.SharingPool.cat("translations");
         var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
         var currentPrimKey = primKeyMap[fieldId] || [], currentForKey = foreignKeyMap[fieldId];
-        var relationIds = [];
+        var self = this, relationIds = [], rId;
 
         BI.each(currentPrimKey, function (i, maps) {
             var table = maps.primaryKey, relationTable = maps.foreignKey;
             //处理1:1 和 自循环
-            if (table.field_id === fieldId && (!relationIds.contains(relationTable.field_id) || table.field_id === relationTable.field_id)) {
-                relationIds.push(relationTable.field_id);
+            var rId = relationTable.fieldId;
+            if (table.field_id === fieldId && (!relationIds.contains(rId) || table.field_id === rId) && self.isFieldExistById4Conf(rId)) {
+                relationIds.push(rId);
             }
         });
         BI.each(currentForKey, function (i, maps) {
             var table = maps.foreignKey, relationTable = maps.primaryKey;
-            if (table.field_id === fieldId && !relationIds.contains(relationTable.field_id)) {
-                relationIds.push(relationTable.field_id);
+            rId = relationTable.field_id;
+            if (table.field_id === fieldId && !relationIds.contains(rId) && self.isFieldExistById4Conf(rId)) {
+                relationIds.push(rId);
             }
         });
         return relationIds;
@@ -622,7 +628,7 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("packages", pid, "name");
     },
 
-    getConfPackagePositionByID: function(pid) {
+    getConfPackagePositionByID: function (pid) {
         return Data.SharingPool.get("packages", pid, "position");
     },
 
