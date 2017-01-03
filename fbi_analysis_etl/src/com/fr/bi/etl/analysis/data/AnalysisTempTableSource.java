@@ -45,7 +45,10 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     @Override
     public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
     }
+    @Override
+    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set){
 
+    }
     @Override
     public void refreshWidget() {
 
@@ -54,6 +57,9 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     @Override
     public Set<BIWidget> getWidgets() {
         return new HashSet<BIWidget>();
+    }
+    @Override
+    public void reSetWidgetDetailGetter() {
     }
 
     @Override
