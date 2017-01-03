@@ -65,7 +65,7 @@ BI.CustomGroupGroup2Other = BI.inherit(BI.Widget, {
         } else {
             this.checkbox.setSelected(false);
             if(BI.contains(groupNames, BI.i18nText("BI-Others"))){
-                this.editor.setValue(BI.i18nText("BI-Others") + 1);
+                this.editor.setValue(BI.i18nText("BI-Others-One"));
             }
             this.editor.setEnable(false);
         }
