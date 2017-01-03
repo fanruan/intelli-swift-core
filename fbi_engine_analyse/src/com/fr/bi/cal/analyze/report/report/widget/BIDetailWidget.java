@@ -269,4 +269,14 @@ public class BIDetailWidget extends BIAbstractWidget {
         return new PolyCubeDetailECBlock(this, session, page);
     }
 
+    
+    @Override
+    public void reSetDetailTarget() {
+        for(BIDetailTarget ele : getDimensions()){
+            ele.reSetDetailGetter();
+        }
+        for (BIDetailTarget ele: getViewDimensions()){
+            ele.reSetDetailGetter();
+        }
+    }
 }

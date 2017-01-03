@@ -169,14 +169,17 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     @Override
     public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
-        if (set.contains(this)) {
-            return;
+        if (!set.contains(this)) {
+            set.add(this);
         }
         for (BITargetAndDimension dim : widget.getViewDimensions()) {
             if (dim.getStatisticElement() != null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 CubeTableSource source = dim.createTableKey().getTableSource();
                 if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
-                    ((AnalysisCubeTableSource) source).getSourceUsedAnalysisETLSource(set);
+//                   通知更新，只通知直接上层
+                    if (!set.contains(source)) {
+                        set.add((AnalysisCubeTableSource)source);
+                    }
                 }
             }
         }
@@ -184,16 +187,30 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             if (target.getStatisticElement() != null && target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
                 CubeTableSource source = target.createTableKey().getTableSource();
                 if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
-                    ((AnalysisCubeTableSource) source).getSourceUsedAnalysisETLSource(set);
+                    //测试，通知更新，只通知直接上层
+                    if (!set.contains(source)) {
+                        set.add((AnalysisCubeTableSource)source);
+                    }
                 }
             }
+        }
+    }
+
+    @Override
+    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set){
+        if(set.contains(this)){
+            return;
         }
         set.add(this);
     }
 
     @Override
     public void refreshWidget() {
+        try {
             widget.refreshSources();
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
         try {
             widget.refreshColumns();
         } catch (Exception e) {
@@ -204,6 +221,12 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     @Override
     public void refresh() {
         refreshWidget();
+    }
+
+
+    @Override
+    public void reSetWidgetDetailGetter() {
+        widget.reSetDetailTarget();
     }
 
     @Override
@@ -235,7 +258,9 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             return set;
         }
         helper.add(this);
-        for (BITargetAndDimension dim : widget.getViewDimensions()) {
+        set.add(this);
+        //                分析表网上走一层，找到自己的父表，
+/*        for (BITargetAndDimension dim : widget.getViewDimensions()) {
             if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 dim.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
@@ -244,7 +269,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             if (target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
                 target.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
-        }
+        }*/
         return set;
     }
 
