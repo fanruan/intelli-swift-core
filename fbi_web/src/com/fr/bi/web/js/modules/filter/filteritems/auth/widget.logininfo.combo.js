@@ -39,7 +39,9 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
         }
         //可能设置了，但是这个字段又已经不存在了
         if (BI.isNotNull(loginField) && BI.isNotNull(tableId)) {
-            var primaryFields = this._getPrimaryFieldsByFieldId(loginField);
+            var primaryFields = [];
+            BI.Utils.getPrimaryFieldsByFieldId4Conf(loginField, primaryFields);
+            BI.remove(primaryFields, loginField);
             primaryFields.splice(0, 0, loginField);
             var comboValue = this.combo.getValue();
             BI.each(primaryFields, function (i, fieldId) {
@@ -92,25 +94,6 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
             }
         });
         return fields;
-    },
-
-    _getPrimaryFieldsByFieldId: function (fieldId) {
-        var self = this;
-        var relations = Data.SharingPool.cat("relations");
-        var translations = Data.SharingPool.cat("translations");
-        var fields = Data.SharingPool.cat("fields");
-        var primaryFields = [], tableId = "";
-        if (BI.isNotNull(fields[fieldId])) {
-            tableId = fields[fieldId].table_id;
-        }
-        var connectionSet = relations.connectionSet;
-        BI.each(connectionSet, function (i, cs) {
-            if (cs.foreignKey.table_id === tableId) {
-                primaryFields.push(cs.primaryKey.field_id);
-                primaryFields = primaryFields.concat(self._getPrimaryFieldsByFieldId(cs.primaryKey.field_id));
-            }
-        });
-        return primaryFields;
     },
 
     setValue: function (v) {

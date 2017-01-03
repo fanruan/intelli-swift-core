@@ -317,7 +317,9 @@ BI.ETL = BI.inherit(BI.Widget, {
             type: "bi.excel_view_setting",
             element: BI.Layers.create(this.constants.EXCEL_VIEW_LAYER, BICst.BODY_ELEMENT),
             table: this.model.getValue(),
-            view: this.model.getExcelView()
+            view: this.model.getExcelView(),
+            fields: this.model.getFields(),
+            translations: this.model.getTranslations()
         });
         excelViewPane.on(BI.ExcelViewSetting.EVENT_CANCEL, function () {
             BI.Layers.remove(self.constants.EXCEL_VIEW_LAYER);

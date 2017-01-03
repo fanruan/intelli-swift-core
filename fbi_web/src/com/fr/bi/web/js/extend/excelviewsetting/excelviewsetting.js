@@ -15,11 +15,8 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.ExcelViewSetting.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
-        this.model = new BI.ExcelViewSettingModel({
-            table: o.table,
-            view: o.view
-        });
+        var self = this;
+        this.model = new BI.ExcelViewSettingModel(this.options);
         var tree = this._createSettingTree();
         var excel = this._createExcel();
         var clear = BI.createWidget({

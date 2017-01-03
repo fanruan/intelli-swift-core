@@ -104,7 +104,7 @@ BI.ExcelViewDisplayManager = BI.inherit(BI.Widget, {
                 masker: BICst.BODY_ELEMENT,
                 text: BI.i18nText("BI-Loading")
             });
-            BI.Utils.getExcelHTMLView(this.excelId, function (data) {
+            Data.Req.reqGetExcelHTMLView({fileId: this.excelId}, function (data) {
                 self.styleExcel.empty();
                 self.styleExcel.element.append(data.excelHTML);
                 self._populate();
