@@ -52,13 +52,17 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
+    public void refresh() {
+    }
+
+    @Override
     public Set<BIWidget> getWidgets() {
         return new HashSet<BIWidget>();
     }
 
     @Override
     public IPersistentTable getPersistentTable() {
-        return  new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
+        return new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
 
@@ -70,7 +74,7 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     @Override
     public JSONObject createJSON() throws Exception {
         JSONArray ja = new JSONArray();
-        for (AnalysisCubeTableSource source : this.sourceList){
+        for (AnalysisCubeTableSource source : this.sourceList) {
             ja.put(source.createJSON());
         }
         JSONObject table = new JSONObject();
@@ -83,5 +87,5 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
         throw new RuntimeException(UNSUPPORT);
     }
 
-    
+
 }

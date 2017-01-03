@@ -65,6 +65,11 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     }
 
     @Override
+    public void refresh() {
+        refreshWidget();
+    }
+
+    @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
         if (fieldList != null && !fieldList.isEmpty()) {
