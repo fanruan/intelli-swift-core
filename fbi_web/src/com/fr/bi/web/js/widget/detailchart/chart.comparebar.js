@@ -70,7 +70,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
 
         self.formatNumberLevelInXaxis(items, this.config.leftYNumberLevel);
 
-        BI.extend(config.xAxis[0], self.leftAxisSetting(self.config));
+        BI.extend(config.xAxis[0], self.leftAxisSetting(self.config, true));
         config.xAxis[0].title.rotation = 0;
 
         config.chartType = "bar";
