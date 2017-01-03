@@ -93,7 +93,7 @@ public class BIPlate extends AbstractFSPlate {
         notifyColumnParentIdType();
 
         //启动用于截图的phantom服务
-        initPhantomServer();
+//        initPhantomServer();
     }
 
     public void loadMemoryData() {

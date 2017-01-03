@@ -4,6 +4,8 @@ package com.fr.bi.web.conf;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.conf.services.*;
 import com.fr.bi.web.conf.services.cubeconf.*;
+import com.fr.bi.web.conf.services.cubeconf.updatesetting.BIGetUpdateSettingAction;
+import com.fr.bi.web.conf.services.cubeconf.updatesetting.BIModifyUpdateSettingAction;
 import com.fr.bi.web.conf.services.cubetask.*;
 import com.fr.bi.web.conf.services.datalink.*;
 import com.fr.bi.web.conf.services.dbconnection.*;
@@ -66,7 +68,8 @@ public class Service4BIConfigure implements Service {
 
             new BIGetTransFromDBAction(),
 
-            new BIModifyGlobalUpdateSettingAction(),
+            new BIModifyUpdateSettingAction(),
+            new BIGetUpdateSettingAction(),
             new BIGetCubeGenerateStatusAction(),
             new BISetCubeGenerateAction(),
             new BIGetCubeTaskListAction(),

@@ -152,7 +152,7 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
             BI.each(self.fieldInGroupMap[groupID], function (fieldID, fieldName) {
                 var fieldItem = {};
                 fieldItem.id = fieldName;
-                fieldItem.name = BI.Utils.getConfPackageNameByID(fieldName);
+                fieldItem.name = BI.Utils.getPackageNameByID4Conf(fieldName);
                 groupItem.children.push(fieldItem);
 
             });

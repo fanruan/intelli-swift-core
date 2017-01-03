@@ -49,6 +49,18 @@ public class ServerUtils {
         return false;
     }
 
+    public static boolean isServerInjectSuccess(String res){
+        try {
+            String status = getResParam(res, "status");
+            if (ComparatorUtils.equals(status, "success")){
+                return true;
+            }
+        } catch (JSONException e) {
+            return false;
+        }
+        return false;
+    }
+
     public static String getResParam(String res, String key) throws JSONException {
         JSONObject json = new JSONObject(res);
         return json.getString(key);

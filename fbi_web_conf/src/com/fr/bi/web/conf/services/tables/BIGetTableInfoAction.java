@@ -64,7 +64,7 @@ public class BIGetTableInfoAction extends AbstractBIConfigureAction {
             for (Set<CubeTableSource> set : usedSources) {
                 for (CubeTableSource tableSource : set) {
                     String sourceId = tableSource.getSourceID();
-                    UpdateSettingSource updateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(sourceId, userId);
+                    UpdateSettingSource updateSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSetting(sourceId, userId);
                     if (updateSetting != null) {
                         updateSettingJO.put(sourceId, updateSetting.createJSON());
                     }

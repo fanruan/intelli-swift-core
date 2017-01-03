@@ -156,6 +156,10 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BusinessPackageGroup.EVENT_CANCEL)
         });
 
+        this.groupPane.on(BI.BusinessUngroupAndGroupPane.EVENT_EDITOR_CONFIRM, function(packageName, packageID) {
+            self.fireEvent(BI.BusinessPackageGroup.EVENT_CONFIRM, packageName, packageID);
+        });
+
         this.groupPane.on(BI.BusinessUngroupAndGroupPane.EVENT_CHANGE, function () {
             self._checkChosenNum();
         });
@@ -244,8 +248,8 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this, o = this.options;
-        var pgids = BI.Utils.getConfPackageGroupIDs();
-        var pids = BI.Utils.getConfAllPackageIDs();
+        var pgids = BI.Utils.getPackageGroupIDs4Conf();
+        var pids = BI.Utils.getAllPackageIDs4Conf();
         var groupedFieldItems = [];
         var unGroupedFieldItem = {};
         unGroupedFieldItem.value = BI.i18nText("BI-Ungrouped_China");
@@ -253,16 +257,16 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
         var groupedFieldMap = {};
         BI.each(pgids, function (i, gid) {
             var item = {};
-            item.value = BI.Utils.getConfGroupNameByGroupId(gid);
+            item.value = BI.Utils.getGroupNameById4Conf(gid);
             item.children = [];
             item.id = gid;
-            item.init_time = BI.Utils.getConfGroupInitTimeByGroupId(gid);
-            BI.each(BI.Utils.getConfGroupChildrenByGroupId(gid), function (i, packageObject) {
+            item.init_time = BI.Utils.getGroupInitTimeByGroupId4Conf(gid);
+            BI.each(BI.Utils.getGroupChildrenByGroupId4Conf(gid), function (i, packageObject) {
                 var object = {};
                 object.value = packageObject.id;
                 item.children.push(object);
             });
-            BI.each(BI.Utils.getConfGroupChildrenByGroupId(gid), function (i, packageObject) {
+            BI.each(BI.Utils.getGroupChildrenByGroupId4Conf(gid), function (i, packageObject) {
                 groupedFieldMap[packageObject.id] = packageObject.id;
             });
             groupedFieldItems.push(item);
@@ -290,4 +294,5 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
 });
 BI.BusinessPackageGroup.EVENT_CHANGE = "EVENT_CHANGE";
 BI.BusinessPackageGroup.EVENT_CANCEL = "EVENT_CANCEL";
+BI.BusinessPackageGroup.EVENT_CONFIRM = "EVENT_CONFIRM";
 $.shortcut("bi.business_package_group", BI.BusinessPackageGroup);

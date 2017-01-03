@@ -53,7 +53,7 @@ public class BIUpdateSettingManager extends BISystemDataManager<SingleUserBIUpda
     }
 
     @Override
-    public UpdateSettingSource getTableUpdateSetting(String tableId, long userId) {
+    public UpdateSettingSource getUpdateSetting(String tableId, long userId) {
         for (String keys : getUpdateSettings(userId).keySet()) {
             if (keys.equals(tableId)) {
                 return getUpdateSettings(userId).get(keys);

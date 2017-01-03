@@ -43,16 +43,22 @@ import com.fr.json.JSONObject;
 import com.fr.main.FineBook;
 import com.fr.main.TemplateWorkBook;
 import com.fr.main.workbook.ResultWorkBook;
+import com.fr.report.poly.PolyECBlock;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
 import com.fr.script.Calculator;
+import com.fr.stable.CodeUtils;
+import com.fr.stable.Constants;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.script.CalculatorProvider;
+import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.SessionIDInfor;
 
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -360,11 +366,19 @@ public class BISession extends BIAbstractSession {
         return null;
     }
 
-    public ResultWorkBook getExportBoolByWidgetNames (String[] widgetNames) throws CloneNotSupportedException {
+    public ResultWorkBook getExportBookByWidgetNames (String[] widgetNames) throws CloneNotSupportedException {
         if(widgetNames.length == 0) {
             return null;
         }
         BIWorkBook wb = new BIWorkBook();
+        BIPolyWorkSheet reportSheet = new BIPolyWorkSheet();
+        PolyECBlock polyECBlock = new PolyECBlock();
+        polyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode("Dashboard")));
+        polyECBlock.getBlockAttr().setFreezeHeight(true);
+        polyECBlock.getBlockAttr().setFreezeWidth(true);
+        polyECBlock.setBounds(new UnitRectangle(new Rectangle(), Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION));
+        reportSheet.addBlock(polyECBlock);
+        wb.addReport("Dashboard", reportSheet);
         for (String widgetName : widgetNames) {
             BIWidget widget = report.getWidgetByName(widgetName);
             if(widget != null) {
@@ -387,8 +401,7 @@ public class BISession extends BIAbstractSession {
             }
         }
 
-        TemplateWorkBook workBook = wb;
-        return ((BIWorkBook) workBook).execute4BI((getParameterMap4Execute()));
+        return wb.execute4BI(getParameterMap4Execute());
     }
 
 

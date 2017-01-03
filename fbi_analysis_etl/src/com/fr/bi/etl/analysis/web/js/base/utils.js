@@ -207,8 +207,18 @@ BI.extend(BI.Utils, {
                     field_type:item.field_type,
                     field_id:item.field_id,
                     filterValueGetter : filterValueGetter
+                };
+                head[ETLCst.FIELDS] = model[ETLCst.FIELDS];
+                if(model[ETLCst.TYPE] === ETLCst.ETL_TYPE.GROUP_SUMMARY){
+                    var dimensions = model[ETLCst.OPERATOR].dimensions;
+                    var keys = BI.keys(dimensions);
+                    BI.each(head[ETLCst.FIELDS], function(idx, field){
+                        var group = dimensions[keys[idx]].group;
+                        if(BI.isNotNull(group)){
+                            field.group = group.type;
+                        }
+                    });
                 }
-                head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
                 header.push(head);
             });
             callback([data.value, header])

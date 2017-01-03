@@ -368,6 +368,9 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "settings") && (changed.settings.widgetBG !== prev.settings.widgetBG)) {
             this._refreshWidgetBG()
         }
+        if (BI.has(changed, "scopes")) {
+            this.tableChartPopupulate();
+        }
     },
 
     local: function () {

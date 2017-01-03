@@ -128,7 +128,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         if (v instanceof Double) {
             return StableUtils.convertNumberStringToString(((Double) v).doubleValue());
         }
-        return v == null ? null : v.toString();
+        return v == null ? "" : v.toString();
     }
 
     @Override
