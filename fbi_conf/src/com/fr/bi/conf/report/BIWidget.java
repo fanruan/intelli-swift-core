@@ -80,4 +80,5 @@ public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService {
 
     void refreshSources();
 
+    void reSetDetailTarget();
 }

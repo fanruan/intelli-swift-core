@@ -36,6 +36,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     @BICoreField
     protected IGroup group = new NoGroup();
 
+    private Object columnDetailGetterLock = new Object();
     private List<BITableRelation> relationList = new ArrayList<BITableRelation>();
 
 
@@ -65,8 +66,10 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     }
 
     protected void initialTableSource(ICubeDataLoader loader) {
-        if (columnDetailGetter == null) {
-            columnDetailGetter = loader.getTableIndex(this.createTableKey().getTableSource()).getColumnDetailReader(this.createKey(getStatisticElement()));
+        synchronized (columnDetailGetterLock) {
+            if (columnDetailGetter == null) {
+                columnDetailGetter = loader.getTableIndex(this.createTableKey().getTableSource()).getColumnDetailReader(this.createKey(getStatisticElement()));
+            }
         }
     }
 
@@ -135,9 +138,18 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
 
     @Override
     public void clear() {
-
+        if (columnDetailGetter != null) {
+            columnDetailGetter.clear();
+        }
     }
-
+    public void reSetDetailGetter(){
+        if (columnDetailGetter != null) {
+            synchronized (columnDetailGetterLock) {
+                columnDetailGetter.clear();
+                columnDetailGetter = null;
+            }
+        }
+    }
 
     public IGroup getGroup() {
         return group;
