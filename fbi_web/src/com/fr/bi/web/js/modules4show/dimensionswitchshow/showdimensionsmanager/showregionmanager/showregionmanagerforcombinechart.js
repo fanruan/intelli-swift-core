@@ -27,15 +27,15 @@ BI.ShowRegionManagerForCombineChart = BI.inherit(BI.ShowRegionManager, {
                 region = this._createRegionWrapperTargetSetting(viewType);
                 break;
         }
-        region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
+        region.on(BI.ShowAbstractRegion.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowRegionManager.EVENT_CHANGE);
         });
-        region.on(BI.AbstractRegion.EVENT_START, function () {
+        region.on(BI.ShowAbstractRegion.EVENT_START, function () {
             //设置拖动的维度type
             self.dragType = region.getViewType();
             self._dragStart();
         });
-        region.on(BI.AbstractRegion.EVENT_STOP, function () {
+        region.on(BI.ShowAbstractRegion.EVENT_STOP, function () {
             self._dragStop();
         });
         return region;
@@ -51,15 +51,15 @@ BI.ShowRegionManagerForCombineChart = BI.inherit(BI.ShowRegionManager, {
             wId: o.wId,
             viewType: viewType
         });
-        region.on(BI.RegionWrapper.EVENT_CHANGE, function () {
+        region.on(BI.ShowRegionWrapper.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowRegionManager.EVENT_CHANGE);
         });
-        region.on(BI.RegionWrapper.EVENT_START, function () {
+        region.on(BI.ShowRegionWrapper.EVENT_START, function () {
             //设置拖动的维度type
             self.dragType = region.getViewType();
             self._dragStart();
         });
-        region.on(BI.RegionWrapper.EVENT_STOP, function () {
+        region.on(BI.ShowRegionWrapper.EVENT_STOP, function () {
             self._dragStop();
         });
         return region;
@@ -70,11 +70,11 @@ BI.ShowRegionManagerForCombineChart = BI.inherit(BI.ShowRegionManager, {
         var accumulation = BI.Utils.getSeriesAccumulationByWidgetID(o.wId);
         if (!this.scopes[regionType]) {
             this.scopes[regionType] = BI.createWidget({
-                type: "bi.combine_chart_target_scope",
+                type: "bi.show_combine_chart_target_scope",
                 regionType: regionType,
                 wId: o.wId
             });
-            this.scopes[regionType].on(BI.CombineChartTargetScope.EVENT_CHANGE, function () {
+            this.scopes[regionType].on(BI.ShowCombineChartTargetScope.EVENT_CHANGE, function () {
                 self.fireEvent(BI.ShowRegionManager.EVENT_CHANGE, arguments);
             });
         }

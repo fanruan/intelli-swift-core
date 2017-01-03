@@ -142,7 +142,7 @@ BI.ShowAbstractRegion = BI.inherit(BI.Widget, {
     _createEmptyTip: function () {
         return BI.createWidget({
             type: "bi.label",
-            text: BI.i18nText("BI-Drag_Left_Field"),
+            text: BI.i18nText("BI-Drag_Field"),
             cls: "region-empty-tip",
             height: 25
         });

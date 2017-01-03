@@ -184,7 +184,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             wId: wId,
             status: BICst.WIDGET_STATUS.SHOW
         });
-        this.maximize.on(BI.Maximization.EVENT_SET, function (widget) {
+        this.maximize.on(BI.Maximization4Show.EVENT_SET, function (widget) {
             self.model.set(widget);
         });
 
