@@ -242,12 +242,18 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return (BI.isEmptyString(unit) && BI.isEmptyString(axisUnit)) ? unit : (unit + axisUnit);
     },
 
-    formatTickInXYaxis: function (type, numberLevel, separators) {
+    formatTickInXYaxis: function (type, numberLevel, separators, isCompareChart) {
         var formatter = this.formatNumberLevelAndSeparators(type, separators);
         if (numberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
             formatter += '%';
         }
         formatter += ";-" + formatter;
+        if(isCompareChart) {
+            return function () {
+                arguments[0] = arguments[0] > 0 ? arguments[0] : (-1) * arguments[0];
+                return BI.contentFormat(arguments[0], formatter);
+            }
+        }
         return function () {
             return BI.contentFormat(arguments[0], formatter)
         }
@@ -397,9 +403,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 var format;
                 if(config.xAxis[0] && (config.xAxis[0].type === 'value')) {
                     format = config.xAxis[item.yAxis].formatter;
+                } else {
+                    format = config.yAxis[item.yAxis].formatter;
                 }
-                format = config.yAxis[item.yAxis].formatter;
-
                 item.dataLabels = {
                     align: self.setDataLabelPosition(chartOptions),
                     autoAdjust: true,
@@ -490,7 +496,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         })
     },
 
-    leftAxisSetting: function (config) {
+    leftAxisSetting: function (config, isCompareChart) {
         var unit = this.getXYAxisUnit(config.leftYNumberLevel, config.leftYUnit);
         return BI.extend({
             lineWidth: config.lineWidth,
@@ -510,7 +516,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             max: config.leftYCustomScale.maxScale.scale || null,
             tickInterval: BI.isNumber(config.leftYCustomScale.interval.scale) && config.leftYCustomScale.interval.scale > 0 ?
                 config.leftYCustomScale.interval.scale : null,
-            formatter: this.formatTickInXYaxis(config.leftYNumberFormat, config.leftYNumberLevel, config.leftYSeparator)
+            formatter: this.formatTickInXYaxis(config.leftYNumberFormat, config.leftYNumberLevel, config.leftYSeparator, isCompareChart)
         }, {
             title: {
                 text: config.leftYShowTitle ? config.leftYTitle + unit : '',
@@ -522,7 +528,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         })
     },
 
-    rightAxisSetting: function (config) {
+    rightAxisSetting: function (config, isCompareChart) {
         var unit = this.getXYAxisUnit(config.rightYNumberLevel, config.rightYUnit);
         return BI.extend({
             lineWidth: config.lineWidth,
@@ -542,7 +548,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             max: config.rightYCustomScale.maxScale.scale || null,
             tickInterval: BI.isNumber(config.rightYCustomScale.interval.scale) && config.rightYCustomScale.interval.scale > 0 ?
                 config.rightYCustomScale.interval.scale : null,
-            formatter: this.formatTickInXYaxis(config.rightYNumberFormat, config.rightYNumberLevel, config.rightYSeparator)
+            formatter: this.formatTickInXYaxis(config.rightYNumberFormat, config.rightYNumberLevel, config.rightYSeparator,isCompareChart)
         }, {
             title: {
                 text: config.rightYShowTitle ? config.rightYTitle + unit : '',
