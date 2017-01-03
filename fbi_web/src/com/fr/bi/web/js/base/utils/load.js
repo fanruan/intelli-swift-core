@@ -8,13 +8,8 @@ $.extend(BI, {
             type: null,
             must: false
         }, options);
-        var arg = [];
         config.url = FR.servletURL + '?op=' + config.op + '&resource=' + config.path;
-        console.log(config.url);
-        arg.push(config.url);
-        arg.push(config.type);
-        arg.push(config.must);
-        this.$import.apply(null, arg);
+        this.$import(config.url, config.type,config.must);
     },
     $import: function () {
         var _LOADED = {}; // alex:保存加载过的
