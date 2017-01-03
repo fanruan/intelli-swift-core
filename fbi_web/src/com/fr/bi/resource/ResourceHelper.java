@@ -1104,6 +1104,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/onepackage/etl/group/group.select.fields.item.css",
                 "com/fr/bi/web/css/modules/onepackage/etl/group/group.dimension.css",
                 "com/fr/bi/web/css/modules/onepackage/etl/group/region.string.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.group.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.other.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.tab.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.combo.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.item.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.panel.css",
 
                 //etl选择部分字段
                 "com/fr/bi/web/css/modules/onepackage/etl/partfield/widget.selectpartfieldlist.css",
