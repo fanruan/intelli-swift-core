@@ -3,7 +3,7 @@ package com.fr.bi.web.dezi.phantom;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.web.dezi.phantom.utils.ServerUtils;
+import com.fr.bi.web.dezi.phantom.utils.PhantomServerUtils;
 import com.fr.general.IOUtils;
 import com.fr.general.RunTimeErorException;
 import com.fr.json.JSONObject;
@@ -113,13 +113,13 @@ public class PhantomServer {
     }
 
     public void start() throws IOException {
-        if (ServerUtils.checkServer(IP, PORT)) {
+        if (PhantomServerUtils.checkServer(IP, PORT)) {
             return;
         }
 
         getResources(PhantomLib, SCRIPT_SOURCES);
 
-        String exe = ServerUtils.getExe(PhantomEnv);
+        String exe = PhantomServerUtils.getExe(PhantomEnv);
 
         ArrayList<String> commands = new ArrayList<String>();
         commands.add(exe);
@@ -144,8 +144,8 @@ public class PhantomServer {
             JSONObject json = JSONObject.create();
             json.put("css", leafletCss);
             String cssCmd = json.toString();
-            String res = ServerUtils.postMessage(IP, PORT, cssCmd);
-            if(ServerUtils.isServerInjectSuccess(res)) {
+            String res = PhantomServerUtils.postMessage(IP, PORT, cssCmd);
+            if(PhantomServerUtils.isServerInjectSuccess(res)) {
                 BILoggerFactory.getLogger().info("Success to inject css.");
             } else {
                 BILoggerFactory.getLogger().info("Fail to inject css.");
