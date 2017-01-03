@@ -56,16 +56,18 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
         }
         set.add(this);
     }
+
     @Override
-    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set){
-        if(set.contains(this)){
+    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set) {
+        if (set.contains(this)) {
             return;
         }
-        for (AnalysisCubeTableSource source : getParents()){
+        for (AnalysisCubeTableSource source : getParents()) {
             source.getSourceNeedCheckSource(set);
         }
         set.add(this);
     }
+
     @Override
     public void refreshWidget() {
         for (AnalysisCubeTableSource source : getParents()) {
@@ -74,8 +76,12 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     }
 
     @Override
+    public void refresh() {
+        refreshWidget();
+    }
+
     public void reSetWidgetDetailGetter() {
-        for (AnalysisCubeTableSource source : getParents()){
+        for (AnalysisCubeTableSource source : getParents()) {
             source.reSetWidgetDetailGetter();
         }
     }
