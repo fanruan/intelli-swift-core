@@ -168,7 +168,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : "(" + unit + axis_unit + ")";
     },
 
-    formatTickInXYaxis: function (type, number_level, separators) {
+    formatTickInXYaxis: function (type, number_level, separators, isCompareChart) {
         var formatter = '#.##';
         switch (type) {
             case this.constants.NORMAL:
@@ -200,6 +200,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             formatter += '%';
         }
         formatter += ";-" + formatter;
+        if(isCompareChart) {
+            return function () {
+                arguments[0] = arguments[0] > 0 ? arguments[0] : (-1) * arguments[0];
+                return BI.contentFormat(arguments[0], formatter);
+            }
+        }
         return function () {
             return BI.contentFormat(arguments[0], formatter)
         }
