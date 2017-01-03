@@ -216,6 +216,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
+        widget.reSetDetailTarget();
     }
 
     @Override
