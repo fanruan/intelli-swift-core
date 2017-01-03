@@ -67,7 +67,7 @@ public class BIGlobalExportAction extends AbstractBIDeziAction {
             JSONObject widget = widgets.getJSONObject(wId);
             widgetNames[i++] = BIWidgetFactory.parseWidget(widget, node.getUserId()).getWidgetName();
         }
-        ResultWorkBook resultWorkBook = sessionIDInfo.getExportBoolByWidgetNames(widgetNames);
+        ResultWorkBook resultWorkBook = sessionIDInfo.getExportBookByWidgetNames(widgetNames);
         String fileName = Browser.resolve(req).getEncodedFileName4Download(reportName.replace(",", "_").replaceAll("\\s", "_"));
         ExportUtils.setExcel2007Content(res, fileName);
         if (resultWorkBook != null) {
