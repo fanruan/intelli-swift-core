@@ -22,7 +22,7 @@ public class ValueConverterFactory {
 
         @Override
         public Integer result2Value(Long t) {
-            return BITimeUtils.getFieldFromTime(t, Calendar.MONTH);
+            return BITimeUtils.getFieldFromTime(t, Calendar.MONTH) + 1;
         }
     };
     private static final ValueConverter<Long, Integer> SEASON = new ValueConverter<Long, Integer>() {
