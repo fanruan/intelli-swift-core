@@ -7,12 +7,14 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -100,13 +102,13 @@ class ValueIterator {
 
     private Iterator getIter(int index, GroupValueIndex gvi) {
         if (isCustomGroup(groups[index])) {
-            return createMapIterator(index);
+            return createMapIterator(index, gvi);
         }
         ICubeValueEntryGetter getter = getters[index];
         return DimensionIteratorCreator.createValueMapIterator(getter, gvi, true);
     }
 
-    private Iterator createMapIterator(int index) {
+    private Iterator createMapIterator(int index, GroupValueIndex gvi) {
         if (mapGetters[index] == null) {
             ICubeColumnIndexReader baseGroupMap = ti.loadGroup(keys[index], new ArrayList<BITableSourceRelation>());
             GroupValueIndex nullIndex = ti.getNullGroupValueIndex(keys[index]);
@@ -115,7 +117,17 @@ class ValueIterator {
             }
             mapGetters[index] = groups[index].createGroupedMap(baseGroupMap);
         }
-        return mapGetters[index].iterator();
+
+        Iterator it = mapGetters[index].iterator();
+        Map map = new LinkedHashMap();
+        while (it.hasNext()) {
+            Map.Entry<Object, GroupValueIndex> entry = (Map.Entry<Object, GroupValueIndex>) it.next();
+            GroupValueIndex groupValueIndex = GVIUtils.AND(gvi, entry.getValue());
+            if (groupValueIndex != null && !groupValueIndex.isAllEmpty()) {
+                map.put(entry.getKey(), groupValueIndex);
+            }
+        }
+        return map.entrySet().iterator();
     }
 
     private boolean isCustomGroup(IGroup group) {
