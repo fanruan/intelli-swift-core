@@ -151,9 +151,6 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
         } else {
             var beforeButton = this.buttons[this.buttons.length - 1];
             var beforeValue = beforeButton.getValue();
-            beforeButton.setValue(BI.extend(beforeValue, {
-                closemax: false
-            }));
             BI.extend(item, {
                 id: BI.UUID(),
                 min: BI.parseInt(beforeValue.max),
