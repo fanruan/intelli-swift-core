@@ -92,7 +92,7 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                 }
                 var dateStore = self.storeTriggerValue;
                 var dateObj = self.trigger.getKey();
-                if (BI.isNotEmptyString(dateObj)) {
+                if (BI.isNotEmptyString(dateObj) && !BI.isEqual(dateObj, dateStore)) {
                     self.storeValue = self.trigger.getValue();
                     self.setValue(self.trigger.getValue());
                 } else if (BI.isEmptyString(dateObj)) {
@@ -190,7 +190,7 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
             this.trigger.setValue(v);
         },
         getValue: function () {
-            return this.trigger.getValue();
+            return this.storeValue;
         },
         getKey: function(){
             return this.trigger.getKey();
