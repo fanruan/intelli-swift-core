@@ -22,6 +22,7 @@ import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.DBCPConnectionPoolAttr;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
@@ -311,9 +312,12 @@ public class BIDBUtils {
         try {
             DatabaseMetaData dbMetaData = conn.getMetaData();
             String catalog = conn.getCatalog();
-
-
-            ResultSet foreignKeyResultSet = dbMetaData.getExportedKeys(catalog, schemaName, tableName);
+            ResultSet foreignKeyResultSet;
+             if(ComparatorUtils.equals(conn.getMetaData().getDriverName(), "Hive JDBC")){
+                 foreignKeyResultSet = conn.getMetaData().getCatalogs();
+             }else{
+                 foreignKeyResultSet = dbMetaData.getExportedKeys(catalog, schemaName, tableName);
+             }
             while (foreignKeyResultSet.next()) {
                 String pkColumnName = foreignKeyResultSet.getString("PKCOLUMN_NAME");
 
