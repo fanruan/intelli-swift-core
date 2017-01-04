@@ -146,7 +146,7 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
                 min: 0,
                 max: this.constants.initialMax,
                 closemin: true,
-                closemax: true
+                closemax: false
             });
         } else {
             var beforeButton = this.buttons[this.buttons.length - 1];
@@ -156,7 +156,7 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
                 min: BI.parseInt(beforeValue.max),
                 max: BI.parseInt(beforeValue.max) + this.constants.initialMax,
                 closemin: !beforeValue.closemax,
-                closemax: true
+                closemax: false
             });
         }
         this.buttongroup.addItems([item]);
