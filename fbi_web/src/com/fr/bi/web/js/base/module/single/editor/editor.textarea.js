@@ -47,12 +47,18 @@ BI.TextAreaEditor = BI.inherit(BI.Single, {
                 self._focus();
                 self.fireEvent(BI.TextAreaEditor.EVENT_FOCUS);
             }
+            $(document).bind("mousedown." + self.getName(), function (e) {
+                if (BI.DOM.isExist(self) && !self.element.__isMouseInBounds__(e)) {
+                    self.content.element.blur();
+                }
+            });
         });
         this.content.element.blur(function () {
             if (self.isValid()) {
                 self._blur();
                 self.fireEvent(BI.TextAreaEditor.EVENT_BLUR);
             }
+            $(document).unbind("mousedown." + self.getName());
         });
         if (BI.isKey(o.value)) {
             self.setValue(o.value);
