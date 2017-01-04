@@ -135,9 +135,8 @@ class ValueIterator {
             return false;
         }
         int groupType = group.getType();
-        return groupType == BIReportConstant.GROUP.CUSTOM_GROUP
-                || groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP
-                || groupType == BIReportConstant.GROUP.AUTO_GROUP;
+        return groupType != BIReportConstant.GROUP.NO_GROUP
+                || groupType != BIReportConstant.GROUP.ID_GROUP;
     }
 
 }
