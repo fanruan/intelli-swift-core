@@ -49,6 +49,7 @@ BI.TextAreaEditor = BI.inherit(BI.Single, {
             }
             $(document).bind("mousedown." + self.getName(), function (e) {
                 if (BI.DOM.isExist(self) && !self.element.__isMouseInBounds__(e)) {
+                    $(document).unbind("mousedown." + self.getName());
                     self.content.element.blur();
                 }
             });
