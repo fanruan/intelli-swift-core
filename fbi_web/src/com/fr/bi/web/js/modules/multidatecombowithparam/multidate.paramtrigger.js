@@ -20,6 +20,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
     _init: function () {
         BI.MultiDateParamTrigger.superclass._init.apply(this, arguments);
         var self = this, o = this.options, c = this._const;
+        self.stored_value = {};
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: o.height,
@@ -63,7 +64,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
                 self.editor.setState(value);
             }
 
-            if (BI.isNotEmptyString(value)) {
+            if (BI.isNotEmptyString(value) && self.stored_value.type != BICst.MULTI_DATE_PARAM) {
                 var date = value.split("-");
                 self.stored_value = {
                     type: BICst.MULTI_DATE_CALENDAR,

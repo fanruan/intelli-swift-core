@@ -178,12 +178,12 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
                 break;
             case BICst.MULTI_DATE_QUARTER_BEGIN:
                 var text = BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_BEGIN];
-                date = this._getQuarterStartDate();
+                date = new Date().getQuarterStartDate();
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_QUARTER_END:
                 var text = BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_END];
-                date = this._getQuarterEndDate();
+                date = new Date().getQuarterEndDate();
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_MONTH_PREV:
