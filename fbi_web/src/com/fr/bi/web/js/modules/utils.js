@@ -3061,6 +3061,14 @@
                 filterValue.group = BICst.GROUP.YMD;
             }
         }
+
+        //数值类型为空忽略此条件
+        if ((filterType === BICst.TARGET_FILTER_NUMBER.EQUAL_TO ||
+            filterType === BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO) &&
+            BI.isEmptyString(filterValue)) {
+            return;
+        }
+
         return filter;
         //日期偏移值
         function getOffSetDateByDateAndValue(date, value) {
