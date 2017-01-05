@@ -6,6 +6,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
@@ -15,6 +16,7 @@ import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -66,7 +68,43 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
             table.setSource(source);
             table.setDescribe(oldTable.getDescribe());
         }
-        BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
+        addTable(table);
+        refreshTables(getUsedTables(table, oriSource));
+        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+        checkIndex(userId, source);
+        WebUtils.printAsJSON(res, getResult(userId, tableName, table));
+        new Thread() {
+            public void run() {
+                BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
+                BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
+                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
+            }
+        }.start();
+    }
+
+    private void checkIndex(long userId, CubeTableSource source) {
+        try {
+            BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(BIStringUtils.append("analysisSource update failed", source.getSourceID(), e.getMessage()),e);
+        }
+    }
+
+    private void addTable(AnalysisBusiTable table) {
+        try {
+            BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, table.getTableSource());
+            BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
+            BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
+            BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("The added table is: " + logTable(table));
+            BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
+        } catch (BIKeyDuplicateException e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+
+    }
+
+    private Set<AnalysisBusiTable> getUsedTables(AnalysisBusiTable table, CubeTableSource oriSource) {
         Set<AnalysisBusiTable> usedTables = new HashSet<AnalysisBusiTable>();
         if (null != oriSource) {
             for (BusinessTable businessTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
@@ -76,27 +114,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
             }
         }
         usedTables.add(table);
-        refreshTables(usedTables);
-        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
-        BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
-        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("The added table is: " + logTable(table));
-        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
-        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
-        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-        try {
-            BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error("etl update failed");
-        }
-        JSONObject result = getResult(userId, tableName, table);
-        WebUtils.printAsJSON(res, result);
-        new Thread() {
-            public void run() {
-                BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
-                BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
-            }
-        }.start();
+        return usedTables;
     }
 
     private void refreshTables(Set<AnalysisBusiTable> usedTables) {
@@ -137,20 +155,6 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         result.put("tables", tables);
         result.put("fields", fields);
         return result;
-    }
-
-    private BusinessTable getNewTable(BITableID tableId) throws BIKeyAbsentException {
-        BusinessTable table = BIAnalysisETLManagerCenter.getDataSourceManager().getBusinessTable(tableId);
-        if (null != table) {
-            try {
-                AnalysisCubeTableSource s = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(table);
-                s.refreshWidget();
-                table.setSource(s);
-            } catch (Exception e) {
-                BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).error("Refresh AnalysisETLTableSource Widget failed" + "\n" + "The Failed table is: " + logTable(table));
-            }
-        }
-        return table;
     }
 
     @Override
