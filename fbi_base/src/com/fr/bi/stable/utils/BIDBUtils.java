@@ -346,7 +346,7 @@ public class BIDBUtils {
         while (iterator.hasNext()) {
             Map item = (Map) iterator.next();
             String columnName = (String) item.get("column_name");
-            String columnNameText = getColumnNameTest(connection, item);
+            String columnNameText = getColumnNameText(connection, item);
             int columnType = ((Integer) item.get("column_type")).intValue();
             if (columnType == Types.OTHER && dialect instanceof OracleDialect) {
                 columnType = recheckOracleColumnType(conn, columnName, table, columnType);
@@ -368,7 +368,7 @@ public class BIDBUtils {
         return dbTable;
     }
 
-    private static String getColumnNameTest(com.fr.data.impl.Connection connection, Map item) throws UnsupportedEncodingException {
+    private static String getColumnNameText(com.fr.data.impl.Connection connection, Map item) throws UnsupportedEncodingException {
         String columnNameText = (String) item.get("column_comment");
         String originalCharsetName = connection.getOriginalCharsetName();
         String newCharsetName = connection.getNewCharsetName();
