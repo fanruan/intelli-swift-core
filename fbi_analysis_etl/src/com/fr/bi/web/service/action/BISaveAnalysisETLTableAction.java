@@ -77,7 +77,6 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         }
         usedTables.add(table);
         refreshTables(usedTables);
-        printUnRecordLogs();
         BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
         BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
         BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("The added table is: " + logTable(table));
@@ -121,16 +120,6 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             }
         }
-    }
-
-    private void printUnRecordLogs() throws Exception {
-        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********check unRecorded table*******");
-        for (BusinessTable businessTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
-            if (!BIAnalysisETLManagerCenter.getDataSourceManager().isRecord(businessTable.getTableSource())) {
-                BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("the table " + businessTable.getTableSource().getSourceID() + " is not recorded");
-            }
-        }
-        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("table check finished");
     }
 
     private JSONObject getResult(long userId, String tableName, AnalysisBusiTable table) throws Exception {
