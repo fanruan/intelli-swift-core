@@ -57,7 +57,9 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                         height: 28,
                         level: "ignore",
                         handler: function () {
-                            self.refreshLog();
+                            if (BI.isNotNull(self.finishLable) && !self.finishLable.isVisible()) {
+                                self.refreshLog();
+                            }
                         }
                     }]
                 },
@@ -110,18 +112,18 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         });
     },
 
-    _showBar: function() {
+    _showBar: function () {
         this.processBar.setVisible(true);
         this.finishLable.setVisible(false);
     },
 
-    _showFinish: function() {
+    _showFinish: function () {
         this.processBar.setVisible(false);
         this.processBar.setValue(1);
         this.finishLable.setVisible(true);
     },
 
-    setStart: function() {
+    setStart: function () {
         this._showBar();
         this.processBar.setValue(1);
     },
@@ -131,7 +133,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         if (isStart) {
             this._showBar();
             this.processBar.setValue(1);
-            BI.delay(function() {
+            BI.delay(function () {
                 self._showBar();
                 self.processBar.setValue(10);
             }, 1000);
@@ -177,7 +179,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             if (process < 100) {
                 this._showBar();
             } else {
-                BI.delay(function() {
+                BI.delay(function () {
                     self._showFinish();
                 }, 1000);
             }
