@@ -98,6 +98,10 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 return "drag-combine-mult-small-icon";
             case BICst.WIDGET.FUNNEL:
                 return "drag-funnel-small-icon";
+            case BICst.WIDGET.PARETO:
+                return "drag-pareto-small-icon";
+            case BICst.WIDGET.HEAT_MAP:
+                return "drag-map-heat-small-icon";
             case BICst.WIDGET.IMAGE:
                 return "drag-image-small-icon";
             case BICst.WIDGET.WEB:

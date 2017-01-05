@@ -84,6 +84,10 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 return "drag-combine-mult-small-icon";
             case BICst.WIDGET.FUNNEL:
                 return "drag-funnel-small-icon";
+            case BICst.WIDGET.PARETO:
+                return "drag-pareto-small-icon";
+            case BICst.WIDGET.HEAT_MAP:
+                return "drag-heat-map-small-icon";
             case BICst.WIDGET.IMAGE:
                 return "drag-image-small-icon";
             case BICst.WIDGET.WEB:

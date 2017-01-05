@@ -28,6 +28,7 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.PARETO:
                 item = BI.extend({"type": "column"}, items);
                 break;
             case BICst.WIDGET.LINE:
@@ -63,7 +64,11 @@ BI.ChartCombineFormatItemFactory = {
                 item = BI.extend({"type": "areaMap"}, items);
                 break;
             case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.HEAT_MAP:
                 item = BI.extend({"type": "pointMap"}, items);
+                break;
+            case BICst.WIDGET.FUNNEL:
+                item = BI.extend({"type": "funnel"}, items);
                 break;
             default:
                 item = BI.extend({"type": "column"}, items);
