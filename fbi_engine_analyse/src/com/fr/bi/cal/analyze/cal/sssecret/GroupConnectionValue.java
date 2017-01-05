@@ -14,9 +14,8 @@ public class GroupConnectionValue {
 
     private NoneDimensionGroup currentValue;
 
-    public GroupConnectionValue(Object data, Comparator c, NoneDimensionGroup currentValue) {
+    public GroupConnectionValue(Object data, NoneDimensionGroup currentValue) {
         this.data = data;
-        this.c = c;
         this.currentValue = currentValue;
     }
 

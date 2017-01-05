@@ -100,13 +100,13 @@ class ValueIterator {
 
     private Iterator getIter(int index, GroupValueIndex gvi) {
         if (isCustomGroup(groups[index])) {
-            return createMapIterator(index);
+            return createMapIterator(index, gvi);
         }
         ICubeValueEntryGetter getter = getters[index];
         return DimensionIteratorCreator.createValueMapIterator(getter, gvi, true);
     }
 
-    private Iterator createMapIterator(int index) {
+    private Iterator createMapIterator(int index, GroupValueIndex gvi) {
         if (mapGetters[index] == null) {
             ICubeColumnIndexReader baseGroupMap = ti.loadGroup(keys[index], new ArrayList<BITableSourceRelation>());
             GroupValueIndex nullIndex = ti.getNullGroupValueIndex(keys[index]);
@@ -117,6 +117,8 @@ class ValueIterator {
         }
         return mapGetters[index].iterator();
     }
+
+
 
     private boolean isCustomGroup(IGroup group) {
         if (group == null) {

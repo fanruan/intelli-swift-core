@@ -1,9 +1,9 @@
 package com.fr.bi.stable.report.result;
 
-import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.stable.report.key.SummaryCalculator;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 
 import java.io.Serializable;
@@ -21,16 +21,14 @@ public interface TargetCalculator extends Serializable {
      * @param cr   tableindex对象
      * @param node 节点
      */
-    public void doCalculator(ICubeTableService cr, SummaryContainer node);
-
-    public void doCalculator(ICubeTableService cr, SummaryContainer node, TargetGettingKey key);
+    void doCalculator(ICubeTableService cr, SummaryContainer node, GroupValueIndex gvi, TargetGettingKey key);
 
     /**
      * 构建计算指标-
      *
      * @return 计算指标
      */
-    public TargetCalculator[] createTargetCalculators();
+    TargetCalculator[] createTargetCalculators();
 
     /**
      * 计算集合C的汇总值
@@ -39,7 +37,7 @@ public interface TargetCalculator extends Serializable {
      * @param c   集合
      * @return 结果
      */
-    public <T extends BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c);
+    <T extends SummaryContainer & BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c);
 
 
     /**
@@ -49,7 +47,7 @@ public interface TargetCalculator extends Serializable {
      * @param c   集合
      * @return 结果
      */
-    public <T extends BICrossNode> Double calculateChildNodesOnce(TargetGettingKey key, Collection<T> c);
+    <T extends BICrossNode> Double calculateChildNodesOnce(TargetGettingKey key, Collection<T> c);
 
     /**
      * 计算集合C的汇总值
@@ -58,28 +56,18 @@ public interface TargetCalculator extends Serializable {
      * @param c 集合
      * @return 结果
      */
-    public Double calculateChildNodes(Collection<BINode> c);
+    Double calculateChildNodes(Collection<BINode> c);
 
     /**
      * 先计算好过滤的index
      */
-    public void calculateFilterIndex(ICubeDataLoader loader);
+    void calculateFilterIndex(ICubeDataLoader loader);
 
-    public BITargetKey createTargetKey();
+    BITargetKey createTargetKey();
 
-    public BusinessTable createTableKey();
+    BusinessTable createTableKey();
 
-    /**
-     * 创建 SummaryCalculator
-     *
-     * @param cr   tableindex对象
-     * @param node 节点
-     * @return 创建的SummaryCalculator
-     */
-    public SummaryCalculator createSummaryCalculator(ICubeTableService cr,
-                                                     SummaryContainer node);
+    String getName();
 
-    public String getName();
-
-    public TargetGettingKey createTargetGettingKey();
+    TargetGettingKey createTargetGettingKey();
 }

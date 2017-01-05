@@ -3,7 +3,7 @@ package com.fr.bi.conf.report.widget.field.dimension.filter;
 
 import com.fr.bi.conf.report.filter.FieldFilter;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 
 import java.util.List;
@@ -15,5 +15,5 @@ public interface DimensionFilter extends FieldFilter {
 
     boolean canCreateDirectFilter();
 
-    boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader);
+    boolean showNode(BINode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader);
 }

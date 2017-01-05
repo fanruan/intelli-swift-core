@@ -9,8 +9,8 @@ import com.fr.bi.stable.operation.sort.comp.ASCComparator;
 import com.fr.bi.stable.operation.sort.comp.DSCComparator;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
-import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
 import java.util.*;
@@ -28,12 +28,12 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
     }
 
     @Override
-    public void calCalculateTarget(LightNode node) {
+    public void calCalculateTarget(BINode node) {
         Object key = getCalKey();
         if (key == null) {
             return;
         }
-        LightNode tempNode = node;
+        BINode tempNode = node;
         for (int i = 0; i < start_group; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
@@ -43,7 +43,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             }
         }
         List nodeList = new ArrayList();
-        LightNode cursor_node = tempNode;
+        BINode cursor_node = tempNode;
         while (cursor_node != null) {
             nodeList.add(new RankDealWith(cursor_node));
             cursor_node = cursor_node.getSibling();
@@ -88,9 +88,9 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
 
 
     private class RankDealWith implements java.util.concurrent.Callable {
-        private LightNode rank_node;
+        private BINode rank_node;
 
-        private RankDealWith(LightNode rank_node) {
+        private RankDealWith(BINode rank_node) {
             this.rank_node = rank_node;
         }
 
@@ -101,7 +101,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             String targetName = ((TargetGettingKey) key).getTargetName();
             BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
             int deep = 0;
-            LightNode temp_node = rank_node;
+            BINode temp_node = rank_node;
             while (temp_node.getFirstChild() != null) {
                 temp_node = temp_node.getFirstChild();
                 deep++;
@@ -109,7 +109,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             Comparator c = type == BIReportConstant.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC ?
                     new ASCComparator() : new DSCComparator();
             TreeMap sortMap = new TreeMap(c);
-            LightNode cursor_node = temp_node;
+            BINode cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
                 Comparable value;
                 if (targetKey instanceof AvgKey) {
@@ -148,11 +148,11 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             return null;
         }
 
-        private boolean isNotEnd(LightNode node, int deep) {
+        private boolean isNotEnd(BINode node, int deep) {
             if (node == null) {
                 return false;
             }
-            LightNode temp = node;
+            BINode temp = node;
             for (int i = 0; i < deep; i++) {
                 temp = temp.getParent();
             }

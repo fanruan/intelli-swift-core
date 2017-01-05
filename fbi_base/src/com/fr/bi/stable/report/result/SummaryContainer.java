@@ -1,8 +1,7 @@
 package com.fr.bi.stable.report.result;
 
 
-import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import java.util.Map;
 
 /**
  * Created by 小灰灰 on 2014/4/2.
@@ -17,10 +16,10 @@ public interface SummaryContainer {
      */
     void setSummaryValue(Object key, Object value);
 
-    GroupValueIndex getIndex4Cal();
 
+    public Number getSummaryValue(Object key);
 
-    GroupValueIndex getIndex4CalByTargetKey(TargetGettingKey key);
+    Map getSummaryValue();
 
-    Number getSummaryValue(Object key);
+    void setSummaryValue(Map summaryValue);
 }

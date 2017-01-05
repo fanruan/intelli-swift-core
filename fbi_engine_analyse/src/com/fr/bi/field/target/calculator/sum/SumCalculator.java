@@ -8,6 +8,7 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
+import com.fr.bi.stable.report.result.SummaryContainer;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -43,7 +44,7 @@ public class SumCalculator extends AbstractSummaryCalculator {
      * @return double值
      */
     @Override
-    public <T extends BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
+    public <T extends SummaryContainer & BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
         return calculateNodes(key, c);
     }
 
@@ -87,7 +88,7 @@ public class SumCalculator extends AbstractSummaryCalculator {
         boolean hasValue = false;
         while (iter.hasNext()) {
             BINode n = iter.next();
-            Number number = (Number) n.getSummaryValue(key);
+            Number number = n.getSummaryValue(key);
             if (number != null) {
                 hasValue = true;
                 v += number.doubleValue();

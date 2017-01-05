@@ -2,7 +2,7 @@ package com.fr.bi.field.dimension.filter.field;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.json.JSONObject;
 
@@ -20,7 +20,7 @@ public class EmptyDimensionTargetValueFilter extends AbstractDimensionFilter {
     }
 
     @Override
-    public boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
         return true;
     }
 

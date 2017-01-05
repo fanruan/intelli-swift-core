@@ -1,16 +1,15 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.cal.result.MemNode;
-import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.report.result.SummaryContainer;
-import com.fr.bi.stable.report.result.TargetCalculator;
+
+import java.util.List;
 
 
 /**
@@ -23,7 +22,12 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 public class NoneDimensionGroup implements Release {
 
     public final static NoneDimensionGroup NULL = new NoneDimensionGroup();
-    protected ICubeDataLoader loader;
+
+    private BusinessTable[] metrics;
+    private List<TargetAndKey>[] summaryLists;
+    private GroupValueIndex[] gvis;
+    private ICubeTableService[] tis;
+    private ICubeDataLoader loader;
 
     protected NoneDimensionGroup() {
     }
@@ -32,46 +36,29 @@ public class NoneDimensionGroup implements Release {
     /**
      * Group计算的构造函数
      */
-    protected NoneDimensionGroup(BusinessTable tableKey, GroupValueIndex gvi, ICubeDataLoader loader) {
+    protected NoneDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader) {
+        this.metrics = metrics;
+        this.summaryLists = summaryLists;
+        this.tis = tis;
+        this.gvis = gvis;
         this.loader = loader;
     }
 
 
-    public static NoneDimensionGroup createDimensionGroup(final BusinessTable tableKey, final GroupValueIndex gvi, final ICubeDataLoader loader) {
-
-
-        return new NoneDimensionGroup(tableKey, gvi, loader);
-    }
-    /**
-     * 暂时去掉多线程
-     *
-     * @param key
-     * @return
-     */
-    public Number getSummaryValue(TargetCalculator key) {
-        return new NodeSummaryCalculator(getLoader()).getNodeSummary(node, key);
+    public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader) {
+        return new NoneDimensionGroup(metrics, summaryLists, tis, gvis, loader);
     }
 
 
-    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, DimensionCalculator ck, Object[] data, int ckIndex, ICubeValueEntryGetter getter, boolean useRealData) {
-        if (ckIndex == 0) {
-            pck = null;
-        }
-        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, getter, node.getGroupValueIndex(), loader, useRealData);
+    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, boolean useRealData) {
+        return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, loader, useRealData);
     }
 
-    /**
-     * 计算根节点 第一个维度 用于分页
-     *
-     * @return 分页的node
-     */
-    public Node getRoot() {
-        return node;
+
+    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, boolean useRealData) {
+        return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, loader, useRealData);
     }
 
-    public LightNode getLightNode() {
-        return node;
-    }
 
     /**
      * 释放资源，之前需要释放的，现在暂时没有什么需要释放的
@@ -81,18 +68,20 @@ public class NoneDimensionGroup implements Release {
 //        root.release();
     }
 
-    public BusinessTable getTableKey() {
-        return tableKey;
+    public List<TargetAndKey>[] getSummaryLists() {
+        return summaryLists;
+    }
+
+    public GroupValueIndex[] getGvis() {
+        return gvis;
+    }
+
+    public ICubeTableService[] getTis() {
+        return tis;
     }
 
     public ICubeDataLoader getLoader() {
         return loader;
     }
 
-    public void releaseMemNode() {
-        if (this.tempNode != null) {
-            tempNode.release();
-            tempNode = null;
-        }
-    }
 }

@@ -13,13 +13,13 @@ import java.util.List;
 public class MetricGroupInfo {
     private DimensionCalculator[] rows;
     private GroupValueIndex filterIndex;
-    private BusinessTable target;
+    private BusinessTable metric;
     private List<TargetAndKey> summaryList = new ArrayList<TargetAndKey>();
 
-    public MetricGroupInfo(DimensionCalculator[] rows, GroupValueIndex filterIndex, BusinessTable target) {
+    public MetricGroupInfo(DimensionCalculator[] rows, GroupValueIndex filterIndex, BusinessTable metric) {
         this.rows = rows;
         this.filterIndex = filterIndex;
-        this.target = target;
+        this.metric = metric;
     }
 
     public DimensionCalculator[] getRows() {
@@ -30,15 +30,15 @@ public class MetricGroupInfo {
         return filterIndex;
     }
 
-    public BusinessTable getTarget() {
-        return target;
+    public BusinessTable getMetric() {
+        return metric;
     }
 
     public List<TargetAndKey> getSummaryList() {
         return summaryList;
     }
 
-    public void addTargetAndKey(TargetAndKey targetAndKey) {
-        summaryList.add(targetAndKey);
+    public void addTargetAndKey(TargetAndKey calculator) {
+        summaryList.add(calculator);
     }
 }

@@ -7,7 +7,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BITargetKey;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 
 import java.util.Collection;
@@ -52,7 +52,7 @@ public class AvgCalculator extends FormulaCalculator {
      * @param node node节点
      */
     @Override
-    public void calCalculateTarget(LightNode node) {
+    public void calCalculateTarget(BINode node) {
         Double sum = (Double) node.getSummaryValue(new TargetGettingKey(this.sum.createTargetKey(), this.sum.getName()));
         Double count = (Double) node.getSummaryValue(new TargetGettingKey(this.count.createTargetKey(), this.count.getName()));
         Object value = null;

@@ -5,7 +5,6 @@ package com.fr.bi.cal.analyze.cal.result;
 
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
@@ -14,7 +13,6 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,13 +33,10 @@ public class CrossHeader extends Node implements Serializable {
     /**
      * 构造函数
      *
-     * @param c    Comparator
      * @param data   值
-     * @param gvi 索引
      */
-    public CrossHeader(Comparator c, Object data, GroupValueIndex gvi) {
-        super(c, data);
-        this.setGroupValueIndex(gvi);
+    public CrossHeader(Object data) {
+        super(data);
     }
 
     private static CrossNode getBottomNode(CrossNode valueNode, int[] index, int i) {
@@ -56,9 +51,8 @@ public class CrossHeader extends Node implements Serializable {
      */
     @Override
     protected CrossHeader createNewNode() {
-        CrossHeader header = new CrossHeader(getComparator(), this.getData(), null);
+        CrossHeader header = new CrossHeader(this.getData());
         header.setShowValue(getShowValue());
-        header.setGroupValueIndex(this.getGroupValueIndex());
         return header;
     }
 

@@ -1,20 +1,1 @@
-package com.fr.bi.stable.report.result;
-
-import com.fr.bi.stable.report.key.TargetGettingKey;
-
-import java.util.List;
-
-/**
- * Created by 小灰灰 on 2014/9/30.
- */
-public interface BINode extends SummaryContainer, LightNode {
-
-    public Comparable getChildBottomNValueLine(int n);
-
-    public double getChildAVGValue(TargetGettingKey key);
-
-    public <T extends BINode> List<T> getChilds();
-
-    public int getTotalLength();
-
-}
+package com.fr.bi.stable.report.result;import com.fr.bi.stable.gvi.GroupValueIndex;import com.fr.bi.stable.report.key.TargetGettingKey;import com.fr.general.NameObject;import java.util.List;import java.util.Map;/** * Created by Hiram on 2015/1/26. */public interface BINode extends SummaryContainer {    Object getData();    int getChildLength();    BINode getChild(int i);    BINode getFirstChild();    BINode getSibling();    void setSibling(BINode sibling);    BINode getParent();    void setParent(BINode parent);    BINode getChild(Object key);    void addChild(BINode child);    void setData(Object data);    String getShowValue();    void setShowValue(String showValue);    Comparable getChildTOPNValueLine(int N);    Comparable getChildBottomNValueLine(int n);    BINode getLastChild();    Map<TargetGettingKey, GroupValueIndex> getTargetIndexValueMap();    void setTargetIndexValueMap(Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap);    BINode createSortedNode(NameObject targetSort,                            Map<String, TargetGettingKey> targetsMap);    BINode createSortedNode(NameObject targetSort, Map<String, TargetCalculator> targetsMap, ISortInfoList sortInfoList, int i);    double getChildTOPNValueLine(TargetGettingKey targetKey, int n);    double getChildAVGValue(TargetGettingKey key);    <T extends BINode> List<T> getChilds();    int getTotalLength();}

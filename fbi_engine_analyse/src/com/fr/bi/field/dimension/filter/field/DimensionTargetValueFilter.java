@@ -8,7 +8,7 @@ import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.fr.bi.field.filtervalue.FilterValueFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -86,7 +86,7 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
     }
 
     @Override
-    public boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
         TargetCalculator targetCalculator = targetsMap.get(target_id);
         if (targetCalculator != null) {
             return filterValue.showNode(node, targetsMap.get(target_id).createTargetGettingKey(), loader);

@@ -3,11 +3,13 @@ package com.fr.bi.cal.analyze.cal.result;
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.*;
+import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.stable.report.result.ISortInfoList;
+import com.fr.bi.stable.report.result.SummaryContainer;
+import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
@@ -22,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author zhou
  */
-public class Node implements BINode {
+public class Node implements SummaryContainer, BINode {
 
     /**
      * 小于1表示不分页
@@ -52,29 +54,15 @@ public class Node implements BINode {
     private volatile Map summaryValue = new ConcurrentHashMap(1);
     //ConcurrentHashMap需要支持高并发访问，不一定是该map高并发,当node过多时也需要高并发
     private volatile Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap;
-    private volatile Map<TargetGettingKey, GroupValueIndex> gviMap;
-    private GroupValueIndex gvi;
     private String showValue;
-    private Comparator c = BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
     private transient Map<TargetGettingKey, Double> childAVG;
     private transient Map<TargetGettingKey, Double> allChildAVG;
     //TODO 低效的算法， 放在result无所谓
     private transient Map<TopNKey, Double> topNLineMap;
 
-    public Node(Comparator comparator, Object data) {
-        this.c = comparator;
+    public Node(Object data) {
         this.setData(data);
         childs = new ChildsMap<Node>();
-    }
-
-    @Override
-    public Comparator getComparator() {
-        return c;
-    }
-
-    @Override
-    public void setComparator(Comparator c) {
-        this.c = c;
     }
 
     /**
@@ -92,7 +80,7 @@ public class Node implements BINode {
     }
 
     @Override
-    public void setParent(LightNode parent) {
+    public void setParent(BINode parent) {
         this.parent = castNode(parent);
     }
 
@@ -112,7 +100,7 @@ public class Node implements BINode {
     }
 
     @Override
-    public void setSibling(LightNode sibling) {
+    public void setSibling(BINode sibling) {
         this.sibling = castNode(sibling);
     }
 
@@ -129,17 +117,13 @@ public class Node implements BINode {
         this.showValue = showValue;
     }
 
-    public GroupValueIndex getGroupValueIndex() {
-        return gvi;
-    }
-
     /**
      * 添加子节点
      *
      * @param child 子节点
      */
     @Override
-    public void addChild(LightNode child) {
+    public void addChild(BINode child) {
         Node node = castNode(child);
         node.setParent(this);
         if (!childs.isEmpty()) {
@@ -149,7 +133,7 @@ public class Node implements BINode {
         childs.put(node.getData(), node);
     }
 
-    private Node castNode(LightNode lightNode) {
+    private Node castNode(BINode lightNode) {
         return (Node) lightNode;
     }
 
@@ -169,19 +153,6 @@ public class Node implements BINode {
     @Override
     public void setTargetIndexValueMap(Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap) {
         this.targetIndexValueMap = targetIndexValueMap;
-    }
-
-    @Override
-    public Map<TargetGettingKey, GroupValueIndex> getGroupValueIndexMap() {
-        if (gviMap == null) {
-            gviMap = new ConcurrentHashMap<TargetGettingKey, GroupValueIndex>(1);
-        }
-        return gviMap;
-    }
-
-    @Override
-    public void setGroupValueIndexMap(Map<TargetGettingKey, GroupValueIndex> gviMap) {
-        this.gviMap = gviMap;
     }
 
     @Override
@@ -268,21 +239,6 @@ public class Node implements BINode {
         return res;
     }
 
-    @Override
-    public GroupValueIndex getIndex4Cal() {
-        return gvi;
-    }
-
-    @Override
-    public GroupValueIndex getIndex4CalByTargetKey(TargetGettingKey key) {
-        GroupValueIndex gvi = getGroupValueIndexMap().get(key);
-        return gvi == null ? getTargetIndexValueMap().get(key) : gvi;
-    }
-
-    public void setGroupValueIndex(GroupValueIndex gvi) {
-        this.gvi = gvi;
-    }
-
 
     public void setTargetIndex(TargetGettingKey key, GroupValueIndex gvi) {
         if (gvi != null) {
@@ -292,12 +248,6 @@ public class Node implements BINode {
 
     public GroupValueIndex getTargetIndex(TargetGettingKey key) {
         return getTargetIndexValueMap().get(key);
-    }
-
-    public void setTargetGetter(TargetGettingKey key, GroupValueIndex gvi) {
-        if (gvi != null) {
-            getGroupValueIndexMap().put(key, gvi);
-        }
     }
 
     public boolean needSummary() {
@@ -329,10 +279,6 @@ public class Node implements BINode {
         return ComparatorUtils.equals(o1, o2);
     }
 
-    public GroupValueIndex getGroupValueIndex(TargetGettingKey key) {
-        return getGroupValueIndexMap().get(key);
-    }
-
     @Override
     public void setSummaryValue(Object key, Object value) {
         if (value != null){
@@ -349,47 +295,6 @@ public class Node implements BINode {
         return (Number) getSummaryValue().get(key);
     }
 
-    @Override
-    public Map getSummaryValueMap() {
-        return getSummaryValue();
-    }
-
-    @Override
-    public void setSummaryValueMap(Map summaryValue) {
-        if (summaryValue == null) {
-            return;
-        }
-        this.summaryValue = summaryValue;
-    }
-
-    public int getIndexByValue(Object value) {
-        return getMinCompareValue(0, getChildLength() - 1, value);
-    }
-
-
-    /**
-     * 找出等于前值或者正好大一点的那个值
-     *
-     * @param start
-     * @param end
-     * @param value
-     * @return
-     */
-    private int getMinCompareValue(int start, int end, Object value) {
-        if (start > end) {
-            return start;
-        }
-        int index = (start + end) / 2;
-        Node c = childs.get(index);
-        int result = getComparator().compare(value, c.getData());
-        if (result > 0) {
-            return getMinCompareValue(index + 1, end, value);
-        } else if (result < 0) {
-            return getMinCompareValue(start, index - 1, value);
-        } else {
-            return index;
-        }
-    }
     /**
      * 创建新node
      *
@@ -419,9 +324,8 @@ public class Node implements BINode {
     }
 
     protected Node createNewNode() {
-        Node newNode = new Node(c, this.getData());
+        Node newNode = new Node(this.getData());
         newNode.showValue = this.getShowValue();
-        newNode.setGroupValueIndex(this.gvi);
         return newNode;
     }
 
@@ -549,15 +453,10 @@ public class Node implements BINode {
      * @return 交叉表head的节点
      */
     public CrossHeader createCrossHeader() {
-        CrossHeader newnode = new CrossHeader(c, data, gvi);
+        CrossHeader newnode = new CrossHeader(data);
         newnode.setShowValue(getShowValue());
-        try {
-            newnode.getTargetIndexValueMap().putAll(this.getTargetIndexValueMap());
-            newnode.getGroupValueIndexMap().putAll(this.getGroupValueIndexMap());
-        } catch (Exception e) {
-
-        }
-        newnode.setSummaryValueMap(this.getSummaryValueMap());
+        newnode.getTargetIndexValueMap().putAll(this.getTargetIndexValueMap());
+        newnode.setSummaryValue(this.getSummaryValue());
         ChildsMap<Node> childs = this.childs;
         Node tempNode = null;
         for (int i = 0; i < childs.size(); i++) {
@@ -810,7 +709,7 @@ public class Node implements BINode {
     }
 
     @Override
-    public LightNode createSortedNode(NameObject targetSort, Map<String, TargetCalculator> targetsMap, ISortInfoList sortInfoList, int i) {
+    public BINode createSortedNode(NameObject targetSort, Map<String, TargetCalculator> targetsMap, ISortInfoList sortInfoList, int i) {
         Map<String, TargetGettingKey> keys = new HashMap<String, TargetGettingKey>();
         Iterator<Entry<String, TargetCalculator>> it = targetsMap.entrySet().iterator();
         while (it.hasNext()) {

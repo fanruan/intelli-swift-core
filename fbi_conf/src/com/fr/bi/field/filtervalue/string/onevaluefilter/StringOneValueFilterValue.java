@@ -12,7 +12,7 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -160,7 +160,7 @@ public abstract class StringOneValueFilterValue extends AbstractFilterValue<Stri
     }
     
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         String value = StringFilterValueUtils.toString(node.getShowValue());
         if (value == null && this.value == null) {
             return true;

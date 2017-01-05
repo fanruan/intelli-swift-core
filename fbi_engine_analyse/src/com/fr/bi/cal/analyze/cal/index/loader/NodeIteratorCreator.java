@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
 
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.IRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.NoneMetricRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.RootDimensionGroup;
@@ -34,19 +33,17 @@ public class NodeIteratorCreator {
     private BIDimension[] rowDimension;
     private BISummaryTarget[] usedTargets;
     private Map<String, DimensionFilter> targetFilterMap;
-    private NodeExpander expander;
     private boolean isRealData;
     private NameObject targetSort;
     private TargetFilter filter;
     private final boolean showSum;
     private final boolean calAllPage;
 
-    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, DimensionFilter> targetFilterMap, NodeExpander expander, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, boolean showSum, boolean setIndex, boolean calAllPage) {
+    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, boolean showSum, boolean setIndex, boolean calAllPage) {
         this.metricGroupInfoList = metricGroupInfoList;
         this.rowDimension = rowDimension;
         this.usedTargets = usedTargets;
         this.targetFilterMap = targetFilterMap;
-        this.expander = expander;
         this.isRealData = isRealData;
         this.session = session;
         this.targetSort = targetSort;
@@ -95,7 +92,7 @@ public class NodeIteratorCreator {
 
     private IRootDimensionGroup createNormalIteratorRoot() {
         if (usedTargets == null || usedTargets.length == 0){
-            return new NoneMetricRootDimensionGroup(metricGroupInfoList, expander, session, isRealData, filter);
+            return new NoneMetricRootDimensionGroup(metricGroupInfoList, session, isRealData, filter);
         }
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
         for (int i = 0; i < directFilterIndexes.length; i++) {
@@ -103,7 +100,7 @@ public class NodeIteratorCreator {
                 metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]);
             }
         }
-        return new RootDimensionGroup(metricGroupInfoList, expander, session, isRealData);
+        return new RootDimensionGroup(metricGroupInfoList, session, isRealData);
     }
 
     private GroupValueIndex[] createDirectFilterIndex() {
@@ -114,7 +111,7 @@ public class NodeIteratorCreator {
                 DimensionFilter resultFilter = rowDimension[deep].getFilter();
                 if (resultFilter != null && resultFilter.canCreateDirectFilter()) {
                     DimensionCalculator c = metricGroupInfoList.get(i).getRows()[deep];
-                    BusinessTable t = metricGroupInfoList.get(i).getTarget();
+                    BusinessTable t = metricGroupInfoList.get(i).getMetric();
                     GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
                     retIndexes[i] = retIndexes[i].and(filterIndex);
                 }

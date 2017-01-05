@@ -1,11 +1,10 @@
 package com.fr.bi.field.target.calculator.sum;
 
-import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.SummaryCalculator;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.SummaryContainer;
 import com.fr.bi.stable.report.result.TargetCalculator;
@@ -28,7 +27,7 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
 
     @Override
     public void calculateFilterIndex(ICubeDataLoader loader) {
-        if (target.getTargetFilter() == null || filterIndex != null){
+        if (target.getTargetFilter() == null || filterIndex != null) {
             return;
         }
         synchronized (filterLock) {
@@ -41,18 +40,6 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
     @Override
     public BusinessTable createTableKey() {
         return target.createTableKey();
-    }
-
-    /**
-     * 创建 SummaryCalculator
-     *
-     * @param cr   tableindex对象
-     * @param node 节点
-     * @return 创建的SummaryCalculator
-     */
-    @Override
-    public SummaryCalculator createSummaryCalculator(ICubeTableService cr, SummaryContainer node) {
-        return new SummaryCalculator(cr, this, node);
     }
 
     @Override
@@ -71,22 +58,17 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
      * @param node node节点
      */
     @Override
-    public void doCalculator(ICubeTableService ti, SummaryContainer node) {
-        runTraversal(ti, node, node.getIndex4Cal());
+    public void doCalculator(ICubeTableService ti, SummaryContainer node, GroupValueIndex gvi, TargetGettingKey key) {
+        runTraversal(ti, node, gvi, key);
     }
 
-    @Override
-    public void doCalculator(ICubeTableService ti, SummaryContainer node, TargetGettingKey tk) {
-        runTraversal(ti, node, node.getIndex4CalByTargetKey(tk));
-    }
-
-    protected void runTraversal(ICubeTableService ti, SummaryContainer node, GroupValueIndex gvi) {
+    protected void runTraversal(ICubeTableService ti, SummaryContainer node, GroupValueIndex gvi, TargetGettingKey key) {
         if (gvi != null) {
             if (target.getTargetFilter() != null) {
                 gvi = gvi.AND(filterIndex);
             }
-            if (gvi != null) {
-                runValue(ti, node, gvi);
+            if (gvi != null || !gvi.isAllEmpty()) {
+                node.setSummaryValue(key, createSumValue(gvi, ti));
             }
         }
     }
@@ -99,13 +81,6 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
      * @return double值
      */
     public abstract double createSumValue(GroupValueIndex gvi, ICubeTableService ti);
-
-    protected void runValue(ICubeTableService ti, SummaryContainer node, GroupValueIndex gvi) {
-        if (!gvi.isAllEmpty()) {
-            node.setSummaryValue(createTargetGettingKey(), createSumValue(gvi, ti));
-        }
-    }
-
 
     /**
      * 创建指标

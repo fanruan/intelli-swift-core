@@ -235,7 +235,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
         int calpage = paging.getOprator();
         Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageGroup(true, widget, new BISummaryTarget[0], usedDimensions, allDimensions, new BISummaryTarget[0], calpage, widget.useRealData(), session, expander.getXExpander());
         if (tree == null) {
-            tree = new Node(null, null);
+            tree = new Node(null);
         }
         System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;

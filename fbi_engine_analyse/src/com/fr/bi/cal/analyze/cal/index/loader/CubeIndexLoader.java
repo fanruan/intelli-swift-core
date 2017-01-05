@@ -27,7 +27,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.BIUserUtils;
@@ -112,7 +112,7 @@ public class CubeIndexLoader {
         }
     }
 
-    public static void calculateTargets(List targetCalculator, List<CalCalculator> calculateTargets, LightNode n, boolean calConfig) {
+    public static void calculateTargets(List targetCalculator, List<CalCalculator> calculateTargets, BINode n, boolean calConfig) {
         int size = calculateTargets.size();
         Set<TargetGettingKey> set = new HashSet<TargetGettingKey>();
         Iterator<TargetCalculator> cit = targetCalculator.iterator();
@@ -431,7 +431,7 @@ public class CubeIndexLoader {
             session.setPageIteratorGroup(useRealData, widgetName, pg);
         }
         if (hasAllCalCalculatorTargets(usedTargets)) {
-            return getAllCalCrossRoot(rowDimension, colDimension, page, useRealData, session, expander, widget, usedTargets, targetGettingKey, calculateTargets, pg);
+            return getAllCalCrossRoot(rowDimension, colDimension, page, session, expander, widget, usedTargets, targetGettingKey, calculateTargets, pg);
         }
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, calculateTargets, pg);
         NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, calculateTargets, pg);
@@ -446,12 +446,12 @@ public class CubeIndexLoader {
         Set set = new HashSet(targetGettingKey);
         dealCalculateTarget(calculateTargets, n, size, set);
         if (n == null) {
-            n = new NewCrossRoot(new CrossHeader(null, null, null), new CrossHeader(null, null, null));
+            n = new NewCrossRoot(new CrossHeader(null), new CrossHeader(null));
         }
         return n;
     }
 
-    private NewCrossRoot getAllCalCrossRoot(BIDimension[] rowDimension, BIDimension[] colDimension, int page, boolean useRealData, BISession session, CrossExpander expander, BISummaryWidget widget, BISummaryTarget[] usedTargets, List targetGettingKey, LinkedList calculateTargets, PageIteratorGroup pg) {
+    private NewCrossRoot getAllCalCrossRoot(BIDimension[] rowDimension, BIDimension[] colDimension, int page, BISession session, CrossExpander expander, BISummaryWidget widget, BISummaryTarget[] usedTargets, List targetGettingKey, LinkedList calculateTargets, PageIteratorGroup pg) {
         NewCrossRoot n;
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, calculateTargets, pg);
         NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, -1, expander, widget, session, usedTargets, calculateTargets, new PageIteratorGroup());
@@ -467,7 +467,7 @@ public class CubeIndexLoader {
         Set set = new HashSet(targetGettingKey);
         dealCalculateTarget(calculateTargets, n, size, set);
         if (n == null) {
-            n = new NewCrossRoot(new CrossHeader(null, null, null), new CrossHeader(null, null, null));
+            n = new NewCrossRoot(new CrossHeader(null), new CrossHeader(null));
         }
         cutChilds(n.getLeft().getChilds(), leftInfo.getNode().getChilds());
         return n;
@@ -676,7 +676,7 @@ public class CubeIndexLoader {
         widget.setPageSpinner(BIReportConstant.TABLE_PAGE.TOTAL_PAGE, info.getPage());
         calculateTargets(targetCalculator, calculateTargets, n, false);
         if (n == null) {
-            n = new Node(null, null);
+            n = new Node(null);
         }
         return n;
     }
@@ -740,11 +740,11 @@ public class CubeIndexLoader {
             }
             node = node.createResultFilterNode(rowDimension, calMap);
             if (node == null) {
-                node = new Node(null, null);
+                node = new Node(null);
             }
             node = node.createResultFilterNode(widget.getTargetFilterMap(), calMap);
             if (node == null) {
-                node = new Node(null, null);
+                node = new Node(null);
             }
             if (widget.useTargetSort()) {
                 node = node.createSortedNode(widget.getTargetSort(), targetsMap);
@@ -752,12 +752,12 @@ public class CubeIndexLoader {
                 node = node.createSortedNode(rowDimension, targetsMap);
             }
             if (node == null) {
-                node = new Node(null, null);
+                node = new Node(null);
             }
         }
         dealWidthCalculateTarget(calculateTargets, node, targetGettingKey);
         if (node == null) {
-            node = new Node(null, null);
+            node = new Node(null);
         }
         nodeMap.put(i, node);
     }
@@ -818,9 +818,9 @@ public class CubeIndexLoader {
         }
         if (needCreateNewIterator(page) || root == null) {
             if (rowLength != 0 && summaryLength == 0) {
-                root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, expander, isCross, isHor, session, rowLength, page);
+                root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, isCross, isHor, session, rowLength, page);
             } else {
-                root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, expander, session, isCross, isHor, summaryLength, rowLength, page);
+                root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, isCross, isHor, summaryLength, rowLength, page);
             }
             if (isHor) {
                 pg.setColumnRoot(root);
@@ -828,10 +828,10 @@ public class CubeIndexLoader {
                 pg.setRowRoot(root);
             }
         }
-        return GroupUtils.createNextPageMergeNode(root, op, isHor ? widget.showColumnTotal() : widget.showRowToTal());
+        return GroupUtils.createNextPageMergeNode(root, op, expander, isHor ? widget.showColumnTotal() : widget.showRowToTal(), isCross);
     }
 
-    private IRootDimensionGroup createPageGroupNodeWithSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, NodeExpander expander, BISession session, boolean isCross, boolean isHor, int summaryLength, int rowLength, int page) {
+    private IRootDimensionGroup createPageGroupNodeWithSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, BISession session, boolean isCross, boolean isHor, int summaryLength, int rowLength, int page) {
         List<MetricGroupInfo> mergerInfoList = new ArrayList<MetricGroupInfo>();
         Map<GroupKey, MetricGroupInfo> map = new HashMap<GroupKey, MetricGroupInfo>();
         for (int i = 0; i < summaryLength; i++) {
@@ -853,22 +853,21 @@ public class CubeIndexLoader {
                 LoaderUtils.fillRowDimension(widget, row, rowDimension, rowLength, bdt);
                 GroupKey groupKey = new GroupKey(targetKey, row);
                 MetricGroupInfo metricGroupInfo = map.get(groupKey);
-                TargetGettingKey tkey = new TargetGettingKey(summary.createTargetKey(), target.getValue());
                 if (metricGroupInfo == null) {
                     GroupValueIndex gvi = widget.createFilterGVI(row, targetKey, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(targetKey));
                     metricGroupInfo = new MetricGroupInfo(row, gvi, summary.createTableKey());
-                    metricGroupInfo.addTargetAndKey(new TargetAndKey(summary, tkey));
+                    metricGroupInfo.addTargetAndKey(new TargetAndKey(summary, summary.createTargetGettingKey()));
                     map.put(groupKey, metricGroupInfo);
                     mergerInfoList.add(metricGroupInfo);
                 } else {
-                    metricGroupInfo.addTargetAndKey(new TargetAndKey(summary, tkey));
+                    metricGroupInfo.addTargetAndKey(new TargetAndKey(summary, summary.createTargetGettingKey()));
                 }
             }
         }
-        return getRootDimensionGroup(widget, expander, usedTargets, rowDimension, session, mergerInfoList, isCross, isHor, page);
+        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, mergerInfoList, isCross, isHor, page);
     }
 
-    private IRootDimensionGroup createPageGroupNodeWithNoSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, NodeExpander expander, boolean isCross, boolean isHor, BISession session, int rowLength, int page) {
+    private IRootDimensionGroup createPageGroupNodeWithNoSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, boolean isCross, boolean isHor, BISession session, int rowLength, int page) {
         DimensionCalculator[] row = new DimensionCalculator[rowLength];
         for (int i = 0; i < rowLength; i++) {
             row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), new ArrayList<BITableSourceRelation>());
@@ -880,13 +879,13 @@ public class CubeIndexLoader {
         metricGroupInfo.addTargetAndKey(new TargetAndKey(summary, summary.createTargetGettingKey()));
         List<MetricGroupInfo> list = new ArrayList<MetricGroupInfo>();
         list.add(metricGroupInfo);
-        return getRootDimensionGroup(widget, expander, usedTargets, rowDimension, session, list, isCross, isHor, page);
+        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, list, isCross, isHor, page);
     }
 
-    private IRootDimensionGroup getRootDimensionGroup(BISummaryWidget widget, NodeExpander expander, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, BISession session, List<MetricGroupInfo> metricGroupInfoList, boolean shouldSetIndex, boolean isHor, int page) {
+    private IRootDimensionGroup getRootDimensionGroup(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, BISession session, List<MetricGroupInfo> metricGroupInfoList, boolean shouldSetIndex, boolean isHor, int page) {
         boolean calAllPage = page == -1;
         boolean showSum = isHor ? widget.showColumnTotal() : widget.showRowToTal();
-        NodeIteratorCreator iteratorCreator = new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargetFilterMap(), expander, widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), showSum, shouldSetIndex, calAllPage);
+        NodeIteratorCreator iteratorCreator = new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), showSum, shouldSetIndex, calAllPage);
         return iteratorCreator.createRoot();
     }
 

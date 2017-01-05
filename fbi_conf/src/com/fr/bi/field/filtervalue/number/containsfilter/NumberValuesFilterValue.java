@@ -16,7 +16,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -172,7 +172,7 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
 
     @Override
     //TODO数值类型结果过滤应该都是按照文本处理的
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
 
         return true;
     }
