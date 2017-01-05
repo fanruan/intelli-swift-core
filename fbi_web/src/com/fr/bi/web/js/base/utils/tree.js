@@ -413,6 +413,27 @@
             return r;
         },
 
+        arrayFormat: function (nodes, pId) {
+            if (!nodes) return [];
+            var r = [];
+            if (BI.isArray(nodes)) {
+                for (var i = 0, l = nodes.length; i < l; i++) {
+                    var node = nodes[i];
+                    r.push(node);
+                    if (nodes[i]["children"]) {
+                        r = r.concat(BI.Tree.transformToArrayFormat(nodes[i]["children"], node.id));
+                    }
+                }
+            } else {
+                var newNodes = nodes;
+                r.push(newNodes);
+                if (nodes["children"]) {
+                    r = r.concat(BI.Tree.transformToArrayFormat(nodes["children"], newNodes.id));
+                }
+            }
+            return r;
+        },
+
         transformToTreeFormat: function (sNodes) {
             var i, l;
             if (!sNodes) {

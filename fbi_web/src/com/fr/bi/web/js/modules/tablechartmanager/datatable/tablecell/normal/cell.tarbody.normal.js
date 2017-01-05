@@ -199,26 +199,27 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 }
             });
             return combo;
+        }
 
-            function containsLinkage(list, item) {
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
-                        return list[i];
+        //这两个function写在else的最后会使得firefox45.0.1找不到这两个方法。
+        function containsLinkage(list, item) {
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
+                    return list[i];
+                }
+            }
+            return {};
+        }
+
+        function isContainsDiffLinkages(linkages) {
+            for(var i = 0; i < linkages.length; i++) {
+                for(var j = i + 1; j < linkages.length; j++) {
+                    if(!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
+                        return true;
                     }
                 }
-                return {};
             }
-
-            function isContainsDiffLinkages(linkages) {
-                for(var i = 0; i < linkages.length; i++) {
-                    for(var j = i + 1; j < linkages.length; j++) {
-                        if(!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
+            return false;
         }
     },
 
