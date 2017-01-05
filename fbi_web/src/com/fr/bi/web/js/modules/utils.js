@@ -2426,7 +2426,7 @@
                 // 对于drill和link 一般value的数组里只有一个值
                 var v = value[0];
                 if (groupNames.contains(v)) {
-                    if (v === ungroupName) {
+                    if (v === BICst.UNGROUP_TO_OTHER) {
                         var vs = [];
                         BI.each(groupMap, function (gk, gv) {
                             gk !== v && (vs = vs.concat(gv));
