@@ -178,7 +178,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
                 if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
 //                   通知更新，只通知直接上层
                     if (!set.contains(source)) {
-                        set.add((AnalysisCubeTableSource)source);
+                        set.add((AnalysisCubeTableSource) source);
                     }
                 }
             }
@@ -189,7 +189,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
                 if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
                     //测试，通知更新，只通知直接上层
                     if (!set.contains(source)) {
-                        set.add((AnalysisCubeTableSource)source);
+                        set.add((AnalysisCubeTableSource) source);
                     }
                 }
             }
@@ -197,8 +197,8 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
-    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set){
-        if(set.contains(this)){
+    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set) {
+        if (set.contains(this)) {
             return;
         }
         set.add(this);
@@ -206,11 +206,8 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     @Override
     public void refreshWidget() {
-        try {
-            widget.refreshSources();
-        } catch (Exception e) {
-            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
-        }
+        widget.refreshSources();
+        widget.reSetDetailTarget();
         try {
             widget.refreshColumns();
         } catch (Exception e) {
