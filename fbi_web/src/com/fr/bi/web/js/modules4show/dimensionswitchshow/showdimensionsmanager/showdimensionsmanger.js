@@ -63,6 +63,8 @@ BI.ShowDimensionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.RANGE_AREA:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 type = "bi.show_region_manager";
                 break;
         }

@@ -1,7 +1,7 @@
 /**
  * Created by zcf on 2016/12/26.
  */
-BI.ShowTargetRegionWrapper = BI.inherit(BI.TargetRegionWrapper, {
+BI.ShowTargetRegionWrapper = BI.inherit(BI.ShowRegionWrapper, {
     _defaultConfig: function () {
         return BI.extend(BI.ShowTargetRegionWrapper.superclass._defaultConfig(this, arguments), {
             baseCls: "bi-show-target-region-wrapper",
@@ -9,6 +9,48 @@ BI.ShowTargetRegionWrapper = BI.inherit(BI.TargetRegionWrapper, {
             wId: "",
             viewType: BICst.REGION.DIMENSION1
         });
+    },
+
+    _getRegionClass: function () {
+        return "target-region";
+    },
+
+    _getEmptyRegionClass: function () {
+        return "bi-target-empty-region";
+    },
+
+    _createRegionWrapper: function (regionType, dIds) {
+        var self = this, o = this.options;
+        if (!this.wrapper[regionType]) {
+            var wrapper = this.wrapper[regionType] = BI.createWidget({
+                type: "bi.layout",
+                cls: "target-region target-region-tag",
+                data: {
+                    regionType: regionType
+                }
+            });
+
+            var region = this.regions[regionType] = this._createRegion(regionType, dIds);
+
+            BI.createWidget({
+                type: "bi.default",
+                element: wrapper,
+                items: [region],
+                lgap: 11
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                element: wrapper,
+                items: [{
+                    el: this._createDragTool(),
+                    left: 0,
+                    top: 0,
+                    bottom: 0
+                }]
+            });
+        }
+        this.regions[regionType].populate();
+        return this.wrapper[regionType];
     },
 
     _createRegion: function (regionType, dIds) {
@@ -25,14 +67,14 @@ BI.ShowTargetRegionWrapper = BI.inherit(BI.TargetRegionWrapper, {
             viewType: o.viewType,
             regionType: regionType
         });
-        region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
-            self.fireEvent(BI.RegionWrapper.EVENT_CHANGE, arguments);
+        region.on(BI.ShowAbstractRegion.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ShowRegionWrapper.EVENT_CHANGE, arguments);
         });
-        region.on(BI.AbstractRegion.EVENT_START, function () {
-            self.fireEvent(BI.RegionWrapper.EVENT_START, arguments);
+        region.on(BI.ShowAbstractRegion.EVENT_START, function () {
+            self.fireEvent(BI.ShowRegionWrapper.EVENT_START, arguments);
         });
-        region.on(BI.AbstractRegion.EVENT_STOP, function () {
-            self.fireEvent(BI.RegionWrapper.EVENT_STOP, arguments);
+        region.on(BI.ShowAbstractRegion.EVENT_STOP, function () {
+            self.fireEvent(BI.ShowRegionWrapper.EVENT_STOP, arguments);
         });
         return region;
     },
@@ -74,6 +116,24 @@ BI.ShowTargetRegionWrapper = BI.inherit(BI.TargetRegionWrapper, {
 
     getViewType: function () {
         return this.options.viewType;
+    },
+
+    getValue: function () {
+        var self = this, o = this.options;
+        var regions = $(".target-region-tag", this.element);
+        var view = {};
+        var regionType = BI.parseInt(o.viewType);
+        BI.each(regions, function (i, region) {
+            var dIds = [];
+            var dimensions = $(".dimension-tag", region);
+            BI.each(dimensions, function (j, dimension) {
+                dIds.push($(dimension).data("dId"));
+            });
+            if (dIds.length > 0) {
+                view[regionType++] = dIds;
+            }
+        });
+        return view;
     }
 });
 $.shortcut("bi.show_target_region_wrapper", BI.ShowTargetRegionWrapper);

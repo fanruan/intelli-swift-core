@@ -50,6 +50,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 view = "BIDezi.DetailView";
                 break;
             case BICst.WIDGET.DETAIL:
@@ -143,6 +145,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 view = "BIDezi.WidgetView";
                 break;
             case BICst.WIDGET.CONTENT:
@@ -253,6 +257,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 if (BI.Utils.isDimensionRegionByRegionType(region)) {
                     view = "BIDezi.DimensionView";
                     break;

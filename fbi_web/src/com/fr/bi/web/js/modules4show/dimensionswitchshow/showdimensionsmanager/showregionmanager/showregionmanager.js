@@ -128,15 +128,15 @@ BI.ShowRegionManager = BI.inherit(BI.Widget, {
                 region = this._createRegionWrapperTarget(viewType);
                 break;
         }
-        region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
+        region.on(BI.ShowAbstractRegion.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowRegionManager.EVENT_CHANGE);
         });
-        region.on(BI.AbstractRegion.EVENT_START, function () {
+        region.on(BI.ShowAbstractRegion.EVENT_START, function () {
             //设置拖动的维度type
             self.dragType = region.getViewType();
             self._dragStart();
         });
-        region.on(BI.AbstractRegion.EVENT_STOP, function () {
+        region.on(BI.ShowAbstractRegion.EVENT_STOP, function () {
             self._dragStop();
         });
         return region;
@@ -181,15 +181,15 @@ BI.ShowRegionManager = BI.inherit(BI.Widget, {
             wId: o.wId,
             viewType: viewType
         });
-        region.on(BI.RegionWrapper.EVENT_CHANGE, function () {
+        region.on(BI.ShowRegionWrapper.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowRegionManager.EVENT_CHANGE);
         });
-        region.on(BI.RegionWrapper.EVENT_START, function () {
+        region.on(BI.ShowRegionWrapper.EVENT_START, function () {
             //设置拖动的维度type
             self.dragType = region.getViewType();
             self._dragStart();
         });
-        region.on(BI.RegionWrapper.EVENT_STOP, function () {
+        region.on(BI.ShowRegionWrapper.EVENT_STOP, function () {
             self._dragStop();
         });
         return region;
@@ -204,15 +204,15 @@ BI.ShowRegionManager = BI.inherit(BI.Widget, {
             wId: o.wId,
             viewType: viewType
         });
-        region.on(BI.RegionWrapper.EVENT_CHANGE, function () {
+        region.on(BI.ShowRegionWrapper.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowRegionManager.EVENT_CHANGE);
         });
-        region.on(BI.RegionWrapper.EVENT_START, function () {
+        region.on(BI.ShowRegionWrapper.EVENT_START, function () {
             //设置拖动的维度type
             self.dragType = region.getViewType();
             self._dragStart();
         });
-        region.on(BI.RegionWrapper.EVENT_STOP, function () {
+        region.on(BI.ShowRegionWrapper.EVENT_STOP, function () {
             self._dragStop();
         });
         return region;

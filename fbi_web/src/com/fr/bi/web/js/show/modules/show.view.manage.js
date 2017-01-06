@@ -42,6 +42,8 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 return "BIShow.DetailView";
             // case BICst.WIDGET.DETAIL:
             //     return "BIShow.DetailTableDetailView";
@@ -82,6 +84,8 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 view = "BIShow.WidgetView";
                 break;
             case BICst.WIDGET.CONTENT:
@@ -190,6 +194,8 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 if (BI.Utils.isDimensionRegionByRegionType(region)) {
                     view = "BIShow.DimensionView";
                     break;

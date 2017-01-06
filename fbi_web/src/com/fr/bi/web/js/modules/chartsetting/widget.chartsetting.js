@@ -65,7 +65,6 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.FUNNEL:
                 this.chartSetting = BI.createWidget({
                     type: "bi.axis_charts_setting",
                     wId: wId
@@ -250,9 +249,36 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
+            case BICst.WIDGET.HEAT_MAP:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.heat_map_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.MapSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
             case BICst.WIDGET.RECT_TREE:
                 this.chartSetting = BI.createWidget({
                     type: "bi.rect_tree_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.RectTreeChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.FUNNEL:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.funnel_chart_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.RectTreeChartSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
+                break;
+            case BICst.WIDGET.PARETO:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.pareto_chart_setting",
                     wId: wId
                 });
                 this.chartSetting.on(BI.RectTreeChartSetting.EVENT_CHANGE, function () {

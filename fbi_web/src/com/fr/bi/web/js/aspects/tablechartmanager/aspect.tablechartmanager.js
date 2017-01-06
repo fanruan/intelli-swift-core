@@ -157,11 +157,17 @@ BI.TableChartManagerAspect = function () {
             case BICst.WIDGET.FUNNEL:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "funnel-tip-background");
                 break;
+            case BICst.WIDGET.PARETO:
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "pareto-tip-background");
+                break;
             case BICst.WIDGET.MAP:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "map-tip-background");
                 break;
             case BICst.WIDGET.GIS_MAP:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "map-gis-tip-background");
+                break;
+            case BICst.WIDGET.HEAT_MAP:
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "map-heat-tip-background");
                 break;
             case BICst.WIDGET.PIE:
                 tar1Size === 0 && (cls = "pie-tip-background");

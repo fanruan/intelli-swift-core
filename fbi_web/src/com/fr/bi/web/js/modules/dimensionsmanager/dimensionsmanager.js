@@ -126,6 +126,9 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.GIS_MAP:
                 type = "bi.gis_map_regions_manager";
                 break;
+            case BICst.WIDGET.HEAT_MAP:
+                type = "bi.heat_map_regions_manager";
+                break;
             case BICst.WIDGET.RECT_TREE:
                 type = "bi.rect_tree_regions_manager";
                 break;
@@ -176,6 +179,9 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.FUNNEL:
                 type = "bi.funnel_regions_manager";
+                break;
+            case BICst.WIDGET.PARETO:
+                type = "bi.pareto_regions_manager";
                 break;
             default:
                 type = "bi.table_regions_manager";

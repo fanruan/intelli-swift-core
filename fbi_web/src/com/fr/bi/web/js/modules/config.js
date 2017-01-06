@@ -123,6 +123,11 @@ BICst.DASHBOARD_WIDGETS = [[{
         title: BI.i18nText("BI-Fall_Axis"),
         value: BICst.WIDGET.FALL_AXIS,
         cls: "drag-axis-fall-icon"
+    }, {
+        text: BI.i18nText("BI-Pareto"),
+        title: BI.i18nText("BI-Pareto"),
+        value: BICst.WIDGET.PARETO,
+        cls: "drag-pareto-icon"
     }]
 }, {
     text: BI.i18nText("BI-Bar_Chart"),
@@ -275,6 +280,11 @@ BICst.DASHBOARD_WIDGETS = [[{
     title: BI.i18nText("BI-Rect_Tree_Chart"),
     value: BICst.WIDGET.RECT_TREE,
     cls: "drag-rect-tree-icon"
+}, {
+    text: BI.i18nText("BI-Funnel_Chart"),
+    title: BI.i18nText("BI-Funnel_Chart"),
+    value: BICst.WIDGET.FUNNEL,
+    cls: "drag-funnel-icon"
 }], [{
     text: BI.i18nText("BI-Detail_Table"),
     title: BI.i18nText("BI-Detail_Table"),
@@ -1199,6 +1209,15 @@ BICst.MULTI_PIE_GRADIENT_STYLE_GROUP = [{
     value: BICst.MULTI_PIE_GRADIENT_STYLE.DARKER
 }]
 
+//漏斗图倾斜样式
+BICst.Funnel_SLANT_STYLE_GROUP = [{
+    cls: "multi-pie-gradient-lighter-icon",
+    value: BICst.FUNNEL_SLANT_STYLE.SAME
+}, {
+    cls: "multi-pie-gradient-darker-icon",
+    value: BICst.FUNNEL_SLANT_STYLE.DIFF
+}]
+
 //折线图和面积图线形
 BICst.LINE_CHART_STYLE_GROUP = [{
     cls: "line-chart-style-broken-icon",
@@ -1735,8 +1754,12 @@ BICst.INIT_CHART_MAP[BICst.WIDGET.FORCE_BUBBLE] = {type: "bi.force_bubble_chart"
 BICst.INIT_CHART_MAP[BICst.WIDGET.SCATTER] = {type: "bi.scatter_chart", events: [BI.ScatterChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.HEAT_MAP] = {type: "bi.heat_map_chart", events: [BI.HeatMapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_PIE] = {type: "bi.multi_pie_chart", events: [BI.MultiPieChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.RECT_TREE] = {type: "bi.rect_tree_chart", events: [BI.RectTreeChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.FUNNEL] = {type: "bi.funnel_chart", events: [BI.FunnelChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.PARETO] = {type: "bi.pareto_chart", events: [BI.ParetoChart.EVENT_CHANGE]};
+
 
 BICst.WIDGET_ICON_CLS_MAP = {};
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.TABLE] = "drag-group-icon";
@@ -1758,6 +1781,7 @@ BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MULTI_PIE] = "drag-multi-pie-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.RECT_TREE] = "drag-rect-tree-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MAP] = "drag-map-china-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.GIS_MAP] = "drag-map-gis-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.HEAT_MAP] = "drag-map-heat-icon";
 
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DASHBOARD] = "drag-dashboard-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DONUT] = "drag-donut-icon";
@@ -1775,6 +1799,7 @@ BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.RANGE_AREA] = "drag-area-range-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMBINE_CHART] = "drag-combine-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = "drag-combine-mult-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FUNNEL] = "drag-funnel-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PARETO] = "drag-pareto-icon";
 
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.IMAGE] = "drag-image-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.WEB] = "drag-web-icon";
