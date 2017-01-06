@@ -435,7 +435,7 @@ and dependencies (minified).
 				options.setHeight=(options.set_height) ? options.set_height : options.setHeight;
 				options.axis=(options.horizontalScroll) ? "x" : _findAxis(options.axis);
 				options.scrollInertia=options.scrollInertia>0 && options.scrollInertia<17 ? 17 : options.scrollInertia;
-				if(typeof options.mouseWheel!=="object" &&  options.mouseWheel==true){ /* old school mouseWheel option (non-object) */
+				if(typeof options.mouseWheel!=="object" &&  options.mouseWheel === true){ /* old school mouseWheel option (non-object) */
 					options.mouseWheel={enable:true,scrollAmount:"auto",axis:"y",preventDefault:false,deltaFactor:"auto",normalizeDelta:false,invert:false}
 				}
 				options.mouseWheel.scrollAmount=!options.mouseWheelPixels ? options.mouseWheel.scrollAmount : options.mouseWheelPixels;
@@ -2234,19 +2234,25 @@ and dependencies (minified).
 						break;
 					case "easeInOutSmooth":
 						t/=d/2;
-						if(t<1) return c/2*t*t + b;
+						if(t<1) {
+							return c/2*t*t + b;
+						}
 						t--;
 						return -c/2 * (t*(t-2) - 1) + b;
 						break;
 					case "easeInOutStrong":
 						t/=d/2;
-						if(t<1) return c/2 * Math.pow( 2, 10 * (t - 1) ) + b;
+						if(t<1) {
+							return c/2 * Math.pow( 2, 10 * (t - 1) ) + b;
+						}
 						t--;
 						return c/2 * ( -Math.pow( 2, -10 * t) + 2 ) + b;
 						break;
 					case "easeInOut": case "mcsEaseInOut":
 						t/=d/2;
-						if(t<1) return c/2*t*t*t + b;
+						if(t<1) {
+							return c/2*t*t*t + b;
+						}
 						t-=2;
 						return c/2*(t*t*t + 2) + b;
 						break;
@@ -2339,14 +2345,19 @@ and dependencies (minified).
 		/* checks if browser tab is hidden/inactive via Page Visibility API */
 		_isTabHidden=function(){
 			var prop=_getHiddenProp();
-			if(!prop) return false;
+			if(!prop) {
+				return false;
+			}
 			return document[prop];
 			function _getHiddenProp(){
 				var pfx=["webkit","moz","ms","o"];
-				if("hidden" in document) return "hidden"; //natively supported
+				if("hidden" in document) {
+					return "hidden"; //natively supported
+				}
 				for(var i=0; i<pfx.length; i++){ //prefixed
-				    if((pfx[i]+"Hidden") in document) 
-				        return pfx[i]+"Hidden";
+				    if((pfx[i]+"Hidden") in document) {
+						return pfx[i] + "Hidden";
+					}
 				}
 				return null; //not supported
 			}
