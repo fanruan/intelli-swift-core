@@ -481,6 +481,20 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             }
                         }
                     });
+                    BI.find(view[BICst.REGION.TARGET2], function(idx, dId){
+                        if(BI.Utils.isDimensionUsable(dId)){
+                            var select = false;
+                            BI.each(view[BICst.REGION.TARGET1], function(id, d){
+                                if (select === true) {
+                                    dimensions[d].used = false;
+                                }
+                                if (BI.Utils.isDimensionUsable(d)) {
+                                    select = true;
+                                }
+                            });
+                            return true;
+                        }
+                    })
                 }
                 this.set("dimensions", dimensions);
 
