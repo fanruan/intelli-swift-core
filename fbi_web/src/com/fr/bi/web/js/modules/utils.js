@@ -2252,7 +2252,7 @@
                     var dimensionIds = self.getAllDimensionIDs(id);
                     BI.each(dimensionIds, function (i, dimId) {
                         var fValue = value, fType = "";
-                        if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value)) {
+                        if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value) || !checkValueValid(self.getWidgetTypeByID(id), value)) {
                             return;
                         }
                         var filter = null;
@@ -2399,6 +2399,15 @@
                         }
                     }
                 );
+            }
+
+            function checkValueValid(type, value){
+                switch (type) {
+                    case BICst.WIDGET.NUMBER:
+                        return !(BI.isEmptyString(value.min) && BI.isEmptyString(value.max));
+                    default:
+                        return true;
+                }
             }
         },
 
