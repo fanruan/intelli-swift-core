@@ -339,7 +339,7 @@ public class BIDBUtils {
 
     private static PersistentTable getDBTable(com.fr.data.impl.Connection connection, Connection conn, String schema, String table) throws Exception {
         Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-        String translatedTableName = dialect.getTableCommentName(conn, table, schema, null);
+        String translatedTableName = getTransCodeText(connection, dialect.getTableCommentName(conn, table, schema, null));
         PersistentTable dbTable = new PersistentTable(schema, table, translatedTableName);
         List columnList = dialect.getTableFieldsInfor(conn, table, schema, null);
         Iterator iterator = columnList.iterator();
@@ -370,14 +370,18 @@ public class BIDBUtils {
 
     private static String getColumnNameText(com.fr.data.impl.Connection connection, Map item) throws UnsupportedEncodingException {
         String columnNameText = (String) item.get("column_comment");
+        return getTransCodeText(connection, columnNameText);
+    }
+
+    private static String getTransCodeText(com.fr.data.impl.Connection connection, String originalCodeText) throws UnsupportedEncodingException {
         String originalCharsetName = connection.getOriginalCharsetName();
         String newCharsetName = connection.getNewCharsetName();
         boolean needCharSetConvert = StringUtils.isNotBlank(originalCharsetName)
                 && StringUtils.isNotBlank(newCharsetName);
-        if (needCharSetConvert && columnNameText != null) {
-            columnNameText = new String(columnNameText.getBytes(originalCharsetName), newCharsetName);
+        if (needCharSetConvert && originalCodeText != null) {
+            originalCodeText = new String(originalCodeText.getBytes(originalCharsetName), newCharsetName);
         }
-        return columnNameText;
+        return originalCodeText;
     }
 
     //万恶的oracle万恶的timestamp长度
