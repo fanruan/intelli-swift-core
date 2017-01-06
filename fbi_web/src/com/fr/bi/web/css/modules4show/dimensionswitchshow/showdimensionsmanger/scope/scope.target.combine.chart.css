@@ -1,9 +1,9 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.bi-show-target-region .target-container {
-  background: #e1f4e7;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
+.bi-show-combine-chart-target-scope .bi-accumulate-selector-masker {
+  background-color: #c4c6c6;
+  z-index: 100000000;
+  opacity: 0.25;
+  filter: alpha(opacity=25);
 }
