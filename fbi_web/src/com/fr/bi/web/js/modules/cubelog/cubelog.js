@@ -102,12 +102,13 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
                 self.interval && clearInterval(self.interval);
                 self.interval = null;
+                self._showFinish();
             } else {
                 self.interval = setInterval(function () {
                     self.refreshLog();
                 }, 2000);
+                self._refreshProcess(data);
             }
-            self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
         });
     },
