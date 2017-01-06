@@ -1095,7 +1095,7 @@ and dependencies (minified).
 			if(o.advanced.extraDraggableSelectors){sel.add($(o.advanced.extraDraggableSelectors));}
 			if(d.bindEvents){ /* check if events are bound */
 				/* unbind namespaced events from document/selectors */
-				$(document).add($(!_canAccessIFrame() || top.document)).unbind("."+namespace);
+				//$(document).add($(!_canAccessIFrame() || top.document)).unbind("."+namespace);
 				sel.each(function(){
 					$(this).unbind("."+namespace);
 				});
@@ -1275,9 +1275,9 @@ and dependencies (minified).
 				_onTouchend(e);
 			});
 			if(iframe.length){
-				iframe.each(function(){
+				/*iframe.each(function(){
 					$(this).load(function(){
-						/* bind events on accessible iframes */
+						/!* bind events on accessible iframes *!/
 						if(_canAccessIFrame(this)){
 							$(this.contentDocument || this.contentWindow.document).bind(events[0],function(e){
 								_onTouchstart(e);
@@ -1289,7 +1289,7 @@ and dependencies (minified).
 							});
 						}
 					});
-				});
+				});*/
 			}
 			function _onTouchstart(e){
 				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){touchable=0; return;}
@@ -1458,16 +1458,16 @@ and dependencies (minified).
 				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
 				iframe=$("#mCSB_"+d.idx+"_container").find("iframe");
 			if(iframe.length){
-				iframe.each(function(){
+				/*iframe.each(function(){
 					$(this).load(function(){
-						/* bind events on accessible iframes */
+						/!* bind events on accessible iframes *!/
 						if(_canAccessIFrame(this)){
 							$(this.contentDocument || this.contentWindow.document).bind("mousewheel."+namespace,function(e,delta){
 								_onMousewheel(e,delta);
 							});
 						}
 					});
-				});
+				});*/
 			}
 			mCustomScrollBox.bind("mousewheel."+namespace,function(e,delta){
 				_onMousewheel(e,delta);
@@ -1513,20 +1513,20 @@ and dependencies (minified).
 		
 		/* checks if iframe can be accessed */
 		_canAccessIFrame=function(iframe){
-			var html=null;
+		/*	var html=null;
 			if(!iframe){
 				try{
 					var doc=top.document;
 					html=doc.body.innerHTML;
-				}catch(err){/* do nothing */}
+				}catch(err){/!* do nothing *!/}
 				return(html!==null);
 			}else{
 				try{
 					var doc=iframe.contentDocument || iframe.contentWindow.document;
 					html=doc.body.innerHTML;
-				}catch(err){/* do nothing */}
+				}catch(err){/!* do nothing *!/}
 				return(html!==null);
-			}
+			}*/
 		},
 		/* -------------------- */
 		
@@ -1689,16 +1689,16 @@ and dependencies (minified).
 				iframe=mCSB_container.find("iframe"),
 				events=["blur."+namespace+" keydown."+namespace+" keyup."+namespace];
 			if(iframe.length){
-				iframe.each(function(){
+				/*iframe.each(function(){
 					$(this).load(function(){
-						/* bind events on accessible iframes */
+						/!* bind events on accessible iframes *!/
 						if(_canAccessIFrame(this)){
 							$(this.contentDocument || this.contentWindow.document).bind(events[0],function(e){
 								_onKeyboard(e);
 							});
 						}
 					});
-				});
+				});*/
 			}
 			mCustomScrollBox.attr("tabindex","0").bind(events[0],function(e){
 				_onKeyboard(e);
