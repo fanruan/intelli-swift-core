@@ -83,6 +83,8 @@ BIShow.PaneView = BI.inherit(BI.View, {
                 case BICst.WIDGET.RADAR:
                 case BICst.WIDGET.ACCUMULATE_RADAR:
                 case BICst.WIDGET.FUNNEL:
+                case BICst.WIDGET.PARETO:
+                case BICst.WIDGET.HEAT_MAP:
                     type = BICst.WIDGET.TABLE;
             }
             self.skipTo(id + "/" + type, id, "widgets." + id, {}, {

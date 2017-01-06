@@ -597,6 +597,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return {
             chartColor: options.chartColor || [],
             chartStyle: options.chartStyle || c.STYLE_NORMAL,
+            gradientType: options.gradientType || c.NORMAL,
+            slantStyle: options.slantStyle || c.NORMAL,
             lienAreaChartType: options.lienAreaChartType || c.NORMAL,
             pieChartType: options.pieChartType || c.NORMAL,
             radarChartType: options.radarChartType || c.NORMAL,

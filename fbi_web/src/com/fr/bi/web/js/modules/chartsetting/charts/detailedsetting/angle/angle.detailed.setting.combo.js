@@ -67,6 +67,13 @@ BI.AngleDetailedSettingCombo = BI.inherit(BI.BasicButton, {
             },
             element: this.element
         });
+    },
+
+    getValue: function () {
+        return {
+            start: this.start.getValue(),
+            end: this.end.getValue()
+        }
     }
 });
 $.shortcut("bi.angle_detailed_setting_combo", BI.AngleDetailedSettingCombo);

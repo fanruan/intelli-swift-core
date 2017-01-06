@@ -777,6 +777,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.fall.axis.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.force.bubble.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.funnel.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.pareto.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.heat.map.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.gis.map.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.line.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.map.js",
@@ -1062,6 +1064,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/piechartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/multipiechart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/recttreechart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/funnelchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/heatmapchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/paretochart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/accumulateradarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
@@ -2883,6 +2888,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.rangearea.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.map.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.gismap.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.funnel.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.heatmap.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.pareto.js",
 
                 //年份控件
                 "com/fr/bi/web/js/widget/year/trigger.year.js",

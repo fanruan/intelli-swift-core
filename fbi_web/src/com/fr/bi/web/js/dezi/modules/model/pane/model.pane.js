@@ -44,6 +44,8 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                     case BICst.WIDGET.RADAR:
                     case BICst.WIDGET.ACCUMULATE_RADAR:
                     case BICst.WIDGET.FUNNEL:
+                    case BICst.WIDGET.PARETO:
+                    case BICst.WIDGET.HEAT_MAP:
                         return BICst.WIDGET.TABLE;
                 }
                 return type;

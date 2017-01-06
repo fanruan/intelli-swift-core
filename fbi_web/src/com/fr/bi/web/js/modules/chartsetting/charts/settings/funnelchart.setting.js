@@ -1,18 +1,18 @@
 /**
- * @class BI.MultiPieChartSetting
+ * @class BI.FunnelChartSetting
  * @extends BI.Widget
- * 多层饼图样式
+ * 漏斗图样式
  */
-BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
+BI.FunnelChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
-        return BI.extend(BI.MultiPieChartSetting.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.FunnelChartSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting bi-pie-chart-setting"
         })
     },
 
     _init: function () {
-        BI.MultiPieChartSetting.superclass._init.apply(this, arguments);
+        BI.FunnelChartSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         //显示组件标题
@@ -26,7 +26,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showName.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -37,7 +37,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -46,7 +46,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.widgetName.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
@@ -77,10 +77,10 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartColor.populate();
 
         this.chartColor.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE);
         });
 
-        //层级渐变
+        //样式
         this.chartStyle = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
@@ -97,10 +97,11 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
         this.chartStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE);
         });
 
-        this.gradientType = BI.createWidget({
+        //倾斜角
+        this.slantStyle = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.MULTI_PIE_GRADIENT_STYLE_GROUP, {
                 type: "bi.icon_button",
@@ -115,39 +116,8 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 height: constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.gradientType.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
-        });
-
-        //内径大小
-        this.innerRadius = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            cls: "unit-input",
-            errorText: BI.i18nText("BI-Please_Enter_Number_1_To_100"),
-            validationChecker: function (v) {
-                if (BI.isNaturalNumber(v)) {
-                    return BI.parseInt(v) <= 100 && BI.parseInt(v) >= 0;
-                }
-                return false;
-            }
-        });
-
-        this.innerRadius.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
-        });
-
-        //总角度
-        this.totalAngle = BI.createWidget({
-            type: "bi.segment",
-            width: 180,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.PIE_TOTAL_ANGLE
-        });
-
-        this.totalAngle.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
+        this.slantStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE);
         });
 
         //组件背景
@@ -155,7 +125,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.global_style_index_background"
         });
         this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
@@ -187,26 +157,11 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.chartStyle]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Hierarchical_Gradient"),
+                    text: BI.i18nText("BI-Style"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.gradientType]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Inner_Radius_Size"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.innerRadius]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Total_Angle"),
-                    lgap: constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.totalAngle]
+                    items: [this.slantStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
@@ -230,7 +185,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE);
         });
 
         //图例详细设置
@@ -239,7 +194,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.legendStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE)
         });
 
         //数据标签
@@ -250,7 +205,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE);
         });
 
         //数据点提示详细设置
@@ -260,7 +215,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.tooltipStyle.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE)
         });
 
         var showElement = BI.createWidget({
@@ -311,17 +266,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
-        });
-
-        this.clickZoom = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Click_Zoom"),
-            width: 150
-        });
-
-        this.clickZoom.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.RectTreeChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({
@@ -332,7 +277,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Interactive_Attr"),
                     cls: "line-title"
-                }, this.transferFilter, this.clickZoom]
+                }, this.transferFilter]
             },
             height: constant.SINGLE_LINE_HEIGHT,
             lhgap: constant.SIMPLE_H_GAP
@@ -356,15 +301,12 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
-        this.gradientType.setValue(BI.Utils.getWSMultiPieGradienTypeByID(wId));
-        this.totalAngle.setValue(BI.Utils.getWSChartTotalAngleByID(wId));
-        this.innerRadius.setValue(BI.Utils.getWSChartInnerRadiusByID(wId));
+        this.slantStyle.setValue(BI.Utils.getWSChartSlantStyleByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
-        this.clickZoom.setSelected(BI.Utils.getWSChartClickZoomByID(wId));
     },
 
     getValue: function () {
@@ -376,18 +318,14 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
             chartColor: this.chartColor.getValue()[0],
             chartStyle: this.chartStyle.getValue()[0],
-            gradientType: this.gradientType.getValue()[0],
-            //pieChartType: this.pieChartType.getValue()[0],
-            totalAngle: this.totalAngle.getValue()[0],
-            innerRadius: this.innerRadius.getValue(),
+            slantStyle: this.slantStyle.getValue()[0],
             legend: this.legend.getValue()[0],
             legendStyle: this.legendStyle.getValue(),
             showDataLabel: this.showDataLabel.isSelected(),
 
-            transferFilter: this.transferFilter.isSelected(),
-            clickZoom: this.clickZoom.isSelected()
+            transferFilter: this.transferFilter.isSelected()
         }
     }
 });
-BI.MultiPieChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.multi_pie_chart_setting", BI.MultiPieChartSetting);
+BI.FunnelChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.funnel_chart_setting", BI.FunnelChartSetting);
