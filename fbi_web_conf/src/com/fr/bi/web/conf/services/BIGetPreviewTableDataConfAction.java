@@ -28,9 +28,9 @@ public class BIGetPreviewTableDataConfAction extends AbstractBIConfigureAction {
         JSONArray ja = new JSONObject(WebUtils.getHTTPRequestParameter(req, BIJSONConstant.JSON_KEYS.TABLE)).getJSONArray(BIJSONConstant.JSON_KEYS.FIELDS);
         ArrayList<String> fields = new ArrayList<String>();
         for (int i = 0; i < ja.length(); i++) {
-            JSONArray tmp = new JSONArray(ja.getString(i));
+            JSONArray tmp = ja.getJSONArray(i);
             for (int j = 0; j < tmp.length(); j++) {
-                fields.add(new JSONObject(tmp.getString(j)).getString(BIJSONConstant.JSON_KEYS.FIELD_NAME));
+                fields.add(tmp.optJSONObject(j).getString(BIJSONConstant.JSON_KEYS.FIELD_NAME));
             }
         }
         JSONObject jo = null;
