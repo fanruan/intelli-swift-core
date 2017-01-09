@@ -6,16 +6,16 @@
  * rightYxis 右值轴属性
  * xAxis    分类轴属性
  */
-BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
+BI.MultiAxisCombineChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
-        return BI.extend(BI.MultiAxisChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-multi-axis-chart"
+        return BI.extend(BI.MultiAxisCombineChart.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-multi-axis-combine-chart"
         })
     },
 
     _init: function () {
-        BI.MultiAxisChart.superclass._init.apply(this, arguments);
+        BI.MultiAxisCombineChart.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.xAxis = [{
             type: "category",
@@ -36,7 +36,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
-            self.fireEvent(BI.MultiAxisChart.EVENT_CHANGE, obj);
+            self.fireEvent(BI.MultiAxisCombineChart.EVENT_CHANGE, obj);
         });
         this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
             self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
@@ -129,6 +129,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         var lineItem = [];
         var otherItem = [];
         BI.each(items, function (idx, item) {
+            item.color = [config.yAxis[item.yAxis].labelStyle.color];
             if (item.type === "line") {
                 config.chartType = "line";
                 lineItem.push(item);
@@ -335,5 +336,5 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.magnify();
     }
 });
-BI.MultiAxisChart.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut('bi.multi_axis_chart', BI.MultiAxisChart);
+BI.MultiAxisCombineChart.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut('bi.multi_axis_combine_chart', BI.MultiAxisCombineChart);
