@@ -62,8 +62,9 @@ BI.JoinPreviewTableHeaderCell = BI.inherit(BI.Widget, {
             showEditor();
         });
         nameEditor.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            var v = nameEditor.getValue();
             nameEditor.setVisible(false);
-            nameLabel.setValue(nameEditor.getValue() + oFields);
+            nameLabel.setValue((v === oFields) ? v : (v + "(" + oFields + ")"));
             o.onRenameField(this.getValue());
         });
         nameEditor.setVisible(false);
