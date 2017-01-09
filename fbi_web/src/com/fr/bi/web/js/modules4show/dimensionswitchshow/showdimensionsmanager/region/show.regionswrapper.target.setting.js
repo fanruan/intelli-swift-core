@@ -25,14 +25,14 @@ BI.ShowTargetRegionSettingsWrapper = BI.inherit(BI.ShowTargetRegionWrapper, {
             viewType: o.viewType,
             regionType: regionType
         });
-        region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
-            self.fireEvent(BI.RegionWrapper.EVENT_CHANGE, arguments);
+        region.on(BI.ShowAbstractRegion.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ShowRegionWrapper.EVENT_CHANGE, arguments);
         });
-        region.on(BI.AbstractRegion.EVENT_START, function () {
-            self.fireEvent(BI.RegionWrapper.EVENT_START, arguments);
+        region.on(BI.ShowAbstractRegion.EVENT_START, function () {
+            self.fireEvent(BI.ShowRegionWrapper.EVENT_START, arguments);
         });
-        region.on(BI.AbstractRegion.EVENT_STOP, function () {
-            self.fireEvent(BI.RegionWrapper.EVENT_STOP, arguments);
+        region.on(BI.ShowAbstractRegion.EVENT_STOP, function () {
+            self.fireEvent(BI.ShowRegionWrapper.EVENT_STOP, arguments);
         });
         return region;
     }

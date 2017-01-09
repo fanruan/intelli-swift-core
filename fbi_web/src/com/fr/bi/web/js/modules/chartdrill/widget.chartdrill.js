@@ -105,6 +105,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.PARETO:
                 if (allDims.length > allUsableDims.length && allUsableDims.length > 0) {
                     showDrill = true;
                 }

@@ -95,6 +95,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
                 this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Target");
                 break;
@@ -104,6 +105,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-Region_Suspension_Target");
                 break;
             case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.HEAT_MAP:
                 this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Address");
                 this.regionName[BICst.REGION.DIMENSION2] = BI.i18nText("BI-Name_Title");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Region_Target");
@@ -218,6 +220,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
                 this.regionType[BICst.REGION.DIMENSION1] = BICst.REGION_TYPE.REGION_DIMENSION;
                 this.regionType[BICst.REGION.TARGET1] = BICst.REGION_TYPE.REGION_TARGET;
                 break;
@@ -227,6 +230,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 this.regionType[BICst.REGION.TARGET2] = BICst.REGION_TYPE.REGION_TARGET;
                 break;
             case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.HEAT_MAP:
                 this.regionType[BICst.REGION.DIMENSION1] = BICst.REGION_TYPE.REGION_DIMENSION;
                 this.regionType[BICst.REGION.DIMENSION2] = BICst.REGION_TYPE.REGION_DIMENSION;
                 this.regionType[BICst.REGION.TARGET1] = BICst.REGION_TYPE.REGION_TARGET;

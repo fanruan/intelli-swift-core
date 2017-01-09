@@ -83,7 +83,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //层级渐变
         this.chartStyle = BI.createWidget({
             type: "bi.button_group",
-            items: BI.createItems(BICst.MULTI_PIE_GRADIENT_STYLE_GROUP, {
+            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
                 type: "bi.icon_button",
                 extraCls: "chart-style-font",
                 width: constant.BUTTON_WIDTH,
@@ -100,24 +100,24 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
         });
 
-        // this.pieChartType = BI.createWidget({
-        //     type: "bi.button_group",
-        //     items: BI.createItems(BICst.PIE_CHART_STYLE_GROUP, {
-        //         type: "bi.icon_button",
-        //         extraCls: "chart-style-font",
-        //         width: constant.BUTTON_WIDTH,
-        //         height: constant.BUTTON_HEIGHT,
-        //         iconWidth: constant.ICON_WIDTH,
-        //         iconHeight: constant.ICON_HEIGHT
-        //     }),
-        //     layouts: [{
-        //         type: "bi.vertical_adapt",
-        //         height: constant.SINGLE_LINE_HEIGHT
-        //     }]
-        // });
-        // this.pieChartType.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-        //     self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
-        // });
+        this.gradientType = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.MULTI_PIE_GRADIENT_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.gradientType.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MultiPieChartSetting.EVENT_CHANGE);
+        });
 
         //内径大小
         this.innerRadius = BI.createWidget({
@@ -180,18 +180,18 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.chartColor]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Hierarchical_Gradient"),
+                    text: BI.i18nText("BI-Style"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.chartStyle]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Type"),
+                    text: BI.i18nText("BI-Hierarchical_Gradient"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.pieChartType]
+                    items: [this.gradientType]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Inner_Radius_Size"),
@@ -356,7 +356,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
-        //this.pieChartType.setValue(BI.Utils.getWSPieChartTypeByID(wId));
+        this.gradientType.setValue(BI.Utils.getWSMultiPieGradienTypeByID(wId));
         this.totalAngle.setValue(BI.Utils.getWSChartTotalAngleByID(wId));
         this.innerRadius.setValue(BI.Utils.getWSChartInnerRadiusByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
@@ -376,6 +376,7 @@ BI.MultiPieChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
             chartColor: this.chartColor.getValue()[0],
             chartStyle: this.chartStyle.getValue()[0],
+            gradientType: this.gradientType.getValue()[0],
             //pieChartType: this.pieChartType.getValue()[0],
             totalAngle: this.totalAngle.getValue()[0],
             innerRadius: this.innerRadius.getValue(),

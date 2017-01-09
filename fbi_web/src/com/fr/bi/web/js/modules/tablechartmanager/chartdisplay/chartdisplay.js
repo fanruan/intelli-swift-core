@@ -218,7 +218,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                     op = BI.extend(options, {
                         chartColor: BI.Utils.getWSChartColorByID(o.wId),
                         chartStyle: BI.Utils.getWSChartStyleByID(o.wId),
+                        gradientType: BI.Utils.getWSMultiPieGradienTypeByID(o.wId),
                         chartType: BI.Utils.getWSLineAreaChartTypeByID(o.wId),
+                        slantStyle: BI.Utils.getWSChartSlantStyleByID(o.wId),
                         transferFilter: BI.Utils.getWSTransferFilterByID(o.wId),
                         leftYReverse: BI.Utils.getWSChartLeftYReverseByID(o.wId),
                         rightYReverse: BI.Utils.getWSChartRightYReverseByID(o.wId),
@@ -249,6 +251,8 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                     op = BI.extend(options, {
                         chartColor: BI.Utils.getWSChartColorByID(o.wId),
                         chartStyle: BI.Utils.getWSChartStyleByID(o.wId),
+                        gradientType: BI.Utils.getWSMultiPieGradienTypeByID(o.wId),
+                        slantStyle: BI.Utils.getWSChartSlantStyleByID(o.wId),
                         lienAreaChartType: BI.Utils.getWSLineAreaChartTypeByID(o.wId),
                         pieChartType: BI.Utils.getWSPieChartTypeByID(o.wId),
                         radarChartType: BI.Utils.getWSRadarChartTypeByID(o.wId),

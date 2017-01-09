@@ -323,7 +323,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regionsmanager.css",
                 "com/fr/bi/web/css/modules4show/dimensionsmanager4show/dimensionsmanager.css",
 
-                //数据切换
+                //show面板维度切换
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitch.show.css",
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/button/dimensiontagbutton.css",
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/show.region.dimension.css",
@@ -332,6 +332,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/show.regionswrapper.target.css",
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/show.regionswrapper.target.setting.css",
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/region/specialregion/show.region.target.setting.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/scope/scope.target.combine.chart.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/showdimensionsmanger/showregionmanager/showregionmanager.css",
 
                 //最大化
                 "com/fr/bi/web/css/modules4show/maximization/widget.maximization.chartpane.css",
@@ -366,19 +368,6 @@ public class ResourceHelper {
                 //实时报表指示器
                 "com/fr/bi/web/js/modules4show/cubeprogressindicator/cubeprogressindicator.js",
 
-//                //dimensionmanager4show
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/model.dimensionsmanagershow.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regionsmanagershow.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/dimensionsmanagershow.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/combo.tabletype.show.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/combo.maptype.show.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/combo/maptypescombo/popup.maptype.show.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/charttype/charttype.show.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.dimensionshow.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.targetshow.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/region.detailshow.js",
-//                "com/fr/bi/web/js/modules4show/dimensionsmanager4show/regions/abstract.regionshow.js",
-
                 //dimension show
                 "com/fr/bi/web/js/modules4show/dimension4show/abstract.dimensiontarget.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimension4show/dimension/abstract.dimension.combo.show.js",
@@ -393,13 +382,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
 
-                //数据切换
+                //show面板维度切换
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/abstractregion/show.abstract.region.js",
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/abstractregion/show.regionwrapper.js",
-                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/abstractregion/deziregion/region.dimension.js",
-                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/abstractregion/deziregion/region.target.js",
-                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/abstractregion/deziregion/regionwrapper.dimension.js",
-                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/region/abstractregion/deziregion/regionwrapper.target.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/scopes/scope.target.combine.chart.js",
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitch.show.js",
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpopup.show.js",
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/showdimensionsmanager/card/dimensionregionmanager.show.js",
@@ -777,6 +763,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.fall.axis.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.force.bubble.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.funnel.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.pareto.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.heat.map.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.gis.map.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.line.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.map.js",
@@ -1062,6 +1050,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/piechartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/multipiechart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/recttreechart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/funnelchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/heatmapchart.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/paretochart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/radarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/accumulateradarchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/rangeareachart.setting.js",
@@ -2883,6 +2874,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.rangearea.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.map.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.gismap.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.funnel.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.heatmap.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.pareto.js",
 
                 //年份控件
                 "com/fr/bi/web/js/widget/year/trigger.year.js",

@@ -812,6 +812,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
                 return this._formatDataForAxis(data);
             case BICst.WIDGET.BUBBLE:
                 return this._formatDataForBubble(data);
@@ -821,6 +823,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var da = this._formatDataForMap(data, 0);
                 return BI.isEmptyArray(da) ? da : [da];
             case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.HEAT_MAP:
                 var da = this._formatDataForGISMap(data);
                 return BI.isEmptyArray(da) ? da : [da];
             case BICst.WIDGET.MULTI_PIE:

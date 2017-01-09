@@ -990,6 +990,18 @@
                 BICst.DEFAULT_CHART_SETTING.pieChartType;
         },
 
+        getWSMultiPieGradienTypeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.gradientType) ? ws.gradientType :
+                BICst.DEFAULT_CHART_SETTING.gradientStyle;
+        },
+
+        getWSChartSlantStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.slantStyle) ? ws.slantStyle :
+                BICst.DEFAULT_CHART_SETTING.slantStyle;
+        },
+
         getWSRadarChartTypeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.radarChartType) ? ws.radarChartType :

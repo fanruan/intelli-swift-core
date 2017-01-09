@@ -288,7 +288,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     if (type === BICst.WIDGET.COMPARE_AXIS || type === BICst.WIDGET.COMPARE_AREA ||
                         type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_AXIS ||
                         type === BICst.WIDGET.BUBBLE || type === BICst.WIDGET.FORCE_BUBBLE || type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
-                        type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.MULTI_PIE || type === BICst.WIDGET.RECT_TREE) {
+                        type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.MULTI_PIE || type === BICst.WIDGET.RECT_TREE || type === BICst.WIDGET.PARETO) {
                         var preTar1Select = [], preTar2Select = [], preTar3Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {

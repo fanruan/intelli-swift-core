@@ -61,6 +61,8 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 return this._createChart();
         }
     },
