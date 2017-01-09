@@ -8,6 +8,7 @@ import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -24,6 +25,7 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by GUY on 2015/3/3.
@@ -154,7 +156,23 @@ public abstract class AbstractTableSource implements CubeTableSource {
         JSONArray fieldValues = new JSONArray();
         JSONArray fieldTypes = new JSONArray();
         IntArray remove = tableIndex.getRemovedList();
-        for (ICubeFieldSource column : tableIndex.getColumns().values()) {
+        Map<BIKey, ICubeFieldSource> map = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
+        map.putAll(tableIndex.getColumns());
+        ArrayList<ICubeFieldSource> fieldsCube = new ArrayList<ICubeFieldSource>();
+//        将内存中的cube的fields按照前端的fields排序，需要考虑数据库字段增加删除的情况
+        for(String fieldName : fields){
+            IndexKey key = new IndexKey(fieldName);
+            if(map.containsKey(key)){
+                fieldsCube.add(map.get(key));
+                map.remove(key);
+            }
+        }
+        if(!map.isEmpty()){
+            for (ICubeFieldSource field : map.values()){
+                fieldsCube.add(field);
+            }
+        }
+        for (ICubeFieldSource column : fieldsCube) {
             if (!fields.isEmpty() && !fields.contains(column.getFieldName())) {
                 continue;
             }
