@@ -61,7 +61,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         this.update({
             noset: true,
             success: function (data) {
-                if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
+                if (data.hasTask === false) {
                     self._setImmediateButtonStatus(true);
                     self._clearCheckInterval();
                 } else {

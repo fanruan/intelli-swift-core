@@ -115,7 +115,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
     _refreshLogImmediate: function () {
         var self = this;
         BI.Utils.getCubeLog(function (data) {
-            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
+            if (data.hasTask === false) {
                 return;
             }
             self._refreshProcess(data);
@@ -140,7 +140,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 generated += table.column.length;
             });
             var process = 1;
-            if (BI.isNull(data.cube_end)) {
+            if (data.hasTask === true) {
                 if (allFields === 0) {
                     return;
                 }
