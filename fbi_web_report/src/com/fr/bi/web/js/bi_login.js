@@ -115,7 +115,7 @@ $(function() {
             return;
         }
         FR.ajax({
-            url : FR.servletURL + '?op=fs_load&cmd=login&pid=com.fr.bi.plugin.login',
+            url : FR.servletURL + '?op=fs_load&cmd=login',
             data : FR.cjkEncodeDO({
                 fr_username : encodeURIComponent(user),
                 fr_password : encodeURIComponent(pw),
