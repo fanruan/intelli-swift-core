@@ -111,8 +111,8 @@ BI.ETLReq = {
 
     reqTableStatus: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
-        BI.requestAsync("fr_bi_analysis_etl", "get_cube_status", data, function (res) {
-            callback(res);
-        });
+            BI.requestAsync("fr_bi_analysis_etl", "get_cube_status", data, function (res) {
+                callback(res);
+            });
     }
 }
