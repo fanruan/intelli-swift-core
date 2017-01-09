@@ -300,6 +300,12 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
+    saveFileGetExcelViewData: function (fileId, callback, complete) {
+        Data.Req.reqSaveFileGetExcelViewData({fileId: fileId}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
     getExcelDataByFileName: function (fullFileName, callback, complete) {
         Data.Req.reqExcelDataByFileName({fileName: fullFileName}, function (res) {
             callback(res);
