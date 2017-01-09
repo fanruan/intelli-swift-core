@@ -47,6 +47,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var adjustData = [];
                 BI.each(data.c, function (id, item) {
                     var res = {};
+                    var y = (BI.isFinite(item.s[idx]) ? item.s[idx] : 0);
                     if (BI.isNull(assertValue(item.s[idx]))) {
                         return;
                     }
@@ -58,7 +59,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             default:
                                 res = {
                                     x: item.n,
-                                    y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                                    xValue: item.n,
+                                    y: y,
+                                    yValue: y,
                                     targetIds: [targetIds[idx]],
                                     dId: self.dimIds[currentLayer - 1],
                                     drillDid: self.dimIds[currentLayer]
@@ -67,7 +70,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     } else {
                         res = {
                             x: item.n,
-                            y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                            xValue: item.n,
+                            y: y,
+                            yValue: y,
                             targetIds: [targetIds[idx]],
                             dId: self.dimIds[currentLayer - 1],
                             drillDid: self.dimIds[currentLayer]
@@ -118,9 +123,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         if (BI.isNotNull(o) && BI.isNotNull(x)) {
                             data.push({
                                 "x": x,
+                                "xValue": x,
                                 "z": tObj.n,
+                                "zValue": tObj.n,
                                 "y": o,
-                                targetIds: [targetIds[i]]
+                                "yValue": o,
+                                "targetIds": [targetIds[i]]
                             });
                         }
                     });
@@ -153,7 +161,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     var x = item.n;
                     return {
                         x: x,
+                        xValue: x,
                         y: item.s[idx],
+                        yValue: item.s[idx],
                         targetIds: [targetIds[idx]]
                     };
                 });
@@ -236,11 +246,17 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             if (BI.isNotNull(dGroup)) {
                 name = self._getFormatDateText(dGroup.type, name);
             }
+            var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
+            var y = (BI.isFinite(item.s[0]) ? item.s[0] : 0);
             obj.data = [{
-                x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
-                y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
-                z: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
-                seriesName: seriesName,
+                x: x,
+                xValue: x,
+                y: y,
+                yValue: y,
+                size: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
+                z: name,
+                zValue: seriesName,
+                dimensionIds: BI.isNull(drillcataDimId) ? self.cataDid : [drillcataDimId],
                 targetIds: [targetIds[0], targetIds[1], targetIds[2]]
             }];
             obj.name = name;
@@ -270,10 +286,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 name = self._getFormatDateText(dGroup.type, name);
             }
             obj.name = name;
+            var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
+            var y = (BI.isFinite(item.s[0]) ? item.s[0] : 0);
             obj.data = [{
-                x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
-                y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
-                seriesName: seriesName,
+                x: x,
+                xValue: x,
+                y: y,
+                yValue: y,
+                z: name,
+                zValue: seriesName,
+                dimensionIds: BI.isNull(drillcataDimId) ? self.cataDid : [drillcataDimId],
                 targetIds: [targetIds[0], targetIds[1]]
             }];
             return obj;
@@ -286,7 +308,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 text = BICst.FULL_QUARTER_NAMES[text - 1];
                 break;
             case BICst.GROUP.M:
-                text = BICst.FULL_MONTH_NAMES[text];
+                text = BICst.FULL_MONTH_NAMES[text - 1];
                 break;
             case BICst.GROUP.W:
                 text = BICst.FULL_WEEK_NAMES[text - 1];
@@ -340,21 +362,29 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         if (BI.isNotNull(cataGroup)) {
                             x = self._getFormatDateText(cataGroup.type, x);
                         }
+                        var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
                         return {
                             "x": x,
-                            "y": (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
-                            "value": value,
-                            seriesName: seriesName,
+                            "xValue": value,
+                            "y": y,
+                            "yValue": y,
+                            "z": name,
+                            "zValue": seriesName,
+                            dimensionIds: [drillcataDimId || self.cataDid, drillseriDimId || self.seriesDid],
                             targetIds: [targetIds[0]]
                         };
                     });
                 } else {
                     var leftSeriesValue = left.s.c[id].s[0];
+                    var y = (BI.isNull(leftSeriesValue) || BI.isFinite(leftSeriesValue)) ? leftSeriesValue : 0;
                     data = [{
                         "x": "",
-                        "y": (BI.isNull(leftSeriesValue) || BI.isFinite(leftSeriesValue)) ? leftSeriesValue : 0,
-                        "value": "",
-                        seriesName: seriesName,
+                        "xValue": "",
+                        "y": y,
+                        "yValue": y,
+                        "z": name,
+                        "zValue": name,
+                        dimensionIds: [drillseriDimId || self.seriesDid],
                         targetIds: [targetIds[0]]
                     }]
                 }
@@ -374,11 +404,15 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     if (BI.isNotNull(cataGroup)) {
                         x = self._getFormatDateText(cataGroup.type, x);
                     }
+                    var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
                     return {
                         x: x,
-                        y: (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
-                        value: value,
-                        seriesName: BI.Utils.getDimensionNameByID(targetIds[idx]),
+                        xValue: value,
+                        y: y,
+                        yValue: y,
+                        z: BI.Utils.getDimensionNameByID(targetIds[idx]),
+                        zValue: BI.Utils.getDimensionNameByID(targetIds[idx]),
+                        dimensionIds: [drillcataDimId || self.cataDid],
                         targetIds: [targetIds[idx]]
                     };
                 });
@@ -390,11 +424,15 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
         if (BI.has(data, "s")) {
             return BI.map(data.s, function (idx, value) {
+                var y = (BI.isFinite(value) ? value : 0);
                 return {
                     name: BI.Utils.getDimensionNameByID(targetIds[idx]),
                     data: [{
                         x: "",
-                        y: (BI.isFinite(value) ? value : 0),
+                        xValue: "",
+                        y: y,
+                        yValue: y,
+                        dimensionIds: [],
                         targetIds: [targetIds[idx]]
                     }]
                 };
@@ -657,7 +695,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [BI.Utils.getClickedValue4Group(obj.seriesName, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.zValue, clickeddId)]
                 }];
                 break;
             case BICst.WIDGET.MAP:
@@ -665,7 +703,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [BI.Utils.getClickedValue4Group(obj.x, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.xValue, clickeddId)]
                 }];
                 break;
             default:
@@ -673,13 +711,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 if (BI.isNotNull(this.cataDid)) {
                     clicked = [{
                         dId: clickeddId,
-                        value: [BI.Utils.getClickedValue4Group(obj.value || obj.x, clickeddId)]
+                        value: [BI.Utils.getClickedValue4Group(obj.xValue, clickeddId)]
                     }];
                 }
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: obj.dId || this.crossDimIds[0],
-                        value: [BI.Utils.getClickedValue4Group(obj.seriesName, obj.dId || this.crossDimIds[0])]
+                        value: [BI.Utils.getClickedValue4Group(obj.zValue, obj.dId || this.crossDimIds[0])]
                     })
                 }
                 break;

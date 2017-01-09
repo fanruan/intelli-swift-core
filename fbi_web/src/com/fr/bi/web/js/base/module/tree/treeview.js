@@ -313,7 +313,7 @@ BI.TreeView = BI.inherit(BI.Pane, {
         //处理标红
         if (BI.isKey(o.paras.keyword)) {
             var keyword = o.paras.keyword;
-            var ns = BI.Tree.transformToArrayFormat(nodes);
+            var ns = BI.Tree.arrayFormat(nodes);
             BI.each(ns, function (i, n) {
                 n.text = $("<div>").__textKeywordMarked__(n.text, keyword, n.py).html();
             });

@@ -2,8 +2,8 @@ package com.fr.bi.stable.utils.file;
 
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.fr.bi.stable.data.db.BIExcelDataModel;
-import com.fr.bi.stable.data.db.BIExcelTableData;
+import com.fr.bi.stable.data.db.excel.BIExcelDataModel;
+import com.fr.bi.stable.data.db.excel.BIExcelTableData;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;

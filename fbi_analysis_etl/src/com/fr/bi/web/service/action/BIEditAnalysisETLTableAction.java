@@ -29,7 +29,7 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
         jo.put("name", BIAnalysisETLManagerCenter.getAliasManagerProvider().getAliasName(tableId, userId));
         AnalysisBusiTable busiTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
         jo.put("describe", busiTable.getDescribe());
-        JSONObject source = busiTable.getSource().createJSON();
+        JSONObject source = busiTable.getTableSource().createJSON();
         JSONObject table;
         JSONArray items;
         if (source.has(Constants.ITEMS)) {
@@ -46,9 +46,9 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
         JSONArray allUsedTables = new JSONArray();
         allUsedTables.put(tableId);
         for (BusinessTable anaTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
-            Set<BusinessTable> usedTables = ((AnalysisBusiTable) anaTable).getUsedTables();
-            if (usedTables.contains(new BIBusinessTable(new BITableID(tableId)))) {
-                if (!ComparatorUtils.equals(tableId, anaTable.getID().getIdentity())) {
+            if (!ComparatorUtils.equals(tableId, anaTable.getID().getIdentity())) {
+                Set<BusinessTable> usedTables = ((AnalysisBusiTable) anaTable).getUsedTables();
+                if (usedTables.contains(new BIBusinessTable(new BITableID(tableId)))) {
                     jo.put("used", true);
                 }
                 allUsedTables.put(anaTable.getID().getIdentityValue());

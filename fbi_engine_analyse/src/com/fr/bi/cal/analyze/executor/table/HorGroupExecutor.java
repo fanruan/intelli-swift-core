@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
@@ -23,9 +24,9 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -262,8 +263,8 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
             int dimensionIndex = rowData.getDimensionIndexFromRow(row, columnLength);
             BIDimension rd = colColumn[dimensionIndex];
             String name = rd.toString(tempNode.getData());
-            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && name != null) {
-                name = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(name)));
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(name) != null) {
+                name = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(name).longValue()));
             }
             NodeExpander childEx = expander.getChildExpander(name);
             int colSpan = (sumColumn.length == 0 || !chartSetting.showColTotal()) ? tempNode.getTotalLength(childEx) : tempNode.getTotalLengthWithSummary(childEx);
@@ -611,8 +612,8 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
             int dimensionIndex = rowData.getDimensionIndexFromRow(row, columnLengh);
             BIDimension rd = colColumn[dimensionIndex];
             String text = rd.toString(tempNode.getData());
-            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && text != null) {
-                text = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(text)));
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(text) != null) {
+                text = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(text).longValue()));
             }
             cell = new CBCell(text);
             cell.setRow(row);

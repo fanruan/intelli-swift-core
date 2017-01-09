@@ -172,7 +172,7 @@ BI.TargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             items: [{
                 type: "bi.label",
                 height: this._constant.BUTTON_HEIGHT,
-                text: "N = "
+                text: "N="
             }, this.filterWidget]
         });
     },

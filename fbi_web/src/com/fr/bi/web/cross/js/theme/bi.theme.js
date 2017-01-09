@@ -108,7 +108,6 @@ FS.Plugin.LookAndFeelSettings.push({
             }
         });
 
-
         return {
             title: BI.i18nText("BI-BI_Style"),
             content: {

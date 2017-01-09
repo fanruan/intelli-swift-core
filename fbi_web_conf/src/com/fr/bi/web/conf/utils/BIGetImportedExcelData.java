@@ -2,8 +2,8 @@ package com.fr.bi.web.conf.utils;
 
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.db.BIExcelDataModel;
-import com.fr.bi.stable.data.db.BIExcelTableData;
+import com.fr.bi.stable.data.db.excel.BIExcelDataModel;
+import com.fr.bi.stable.data.db.excel.BIExcelTableData;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;

@@ -14,12 +14,13 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             extraCls: "bi-multidate-param-trigger",
             min: '1900-01-01', //最小日期
             max: '2099-12-31', //最大日期
-            height: 24
+            height: 28
         });
     },
     _init: function () {
         BI.MultiDateParamTrigger.superclass._init.apply(this, arguments);
         var self = this, o = this.options, c = this._const;
+        self.stored_value = {};
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: o.height,
@@ -63,7 +64,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
                 self.editor.setState(value);
             }
 
-            if (BI.isNotEmptyString(value)) {
+            if (BI.isNotEmptyString(value) && self.stored_value.type != BICst.MULTI_DATE_PARAM) {
                 var date = value.split("-");
                 self.stored_value = {
                     type: BICst.MULTI_DATE_CALENDAR,
