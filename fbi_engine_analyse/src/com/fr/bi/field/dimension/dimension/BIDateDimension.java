@@ -6,29 +6,10 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.stable.StringUtils;
 
 import java.util.List;
 
 public class BIDateDimension extends BIAbstractDimension {
-
-    /**
-     * 转化string
-     *
-     * @param v 值
-     * @return 转化的string
-     */
-    @Override
-    public String toString(Object v) {
-        if (v == null || StringUtils.isEmpty(v.toString())) {
-            return StringUtils.EMPTY;
-        }
-//        if (group.getType() == BIReportConstant.GROUP.M) {
-//            return String.valueOf(((Number) v).intValue() + 1);
-//        }
-        return v.toString();
-    }
-
 
     @Override
     public boolean equals(Object o) {

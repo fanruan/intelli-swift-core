@@ -56,7 +56,6 @@ public class Node implements SummaryContainer, BINode {
     private volatile Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap;
     private String showValue;
     private transient Map<TargetGettingKey, Double> childAVG;
-    private transient Map<TargetGettingKey, Double> allChildAVG;
     //TODO 低效的算法， 放在result无所谓
     private transient Map<TopNKey, Double> topNLineMap;
 
@@ -513,7 +512,6 @@ public class Node implements SummaryContainer, BINode {
         Double nLine = getTopNLineMap().get(topNKey);
         if (nLine == null) {
             nLine = NodeUtils.getTopN(this, key, N);
-
             getTopNLineMap().put(topNKey, nLine);
         }
         return nLine;
@@ -840,12 +838,6 @@ public class Node implements SummaryContainer, BINode {
         return childAVG;
     }
 
-    private Map<TargetGettingKey, Double> getAllChildAVG() {
-        if (allChildAVG == null) {
-            allChildAVG = new ConcurrentHashMap<TargetGettingKey, Double>(1);
-        }
-        return allChildAVG;
-    }
 
     private Map<TopNKey, Double> getTopNLineMap() {
         if (topNLineMap == null) {

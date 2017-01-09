@@ -17,8 +17,10 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * 根，用于保存游标等其他信息，感觉可以优化成一个游标就完了
@@ -31,7 +33,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected BISession session;
     protected boolean useRealData;
 
-    private int rowSize;
     private TreeIterator iter;
     protected ICubeValueEntryGetter[][] getters;
     protected DimensionCalculator[][] columns;
@@ -40,6 +41,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected BusinessTable[] metrics;
     protected List<TargetAndKey>[] summaryLists;
     protected NoneDimensionGroup root;
+    protected int rowSize;
     private NodeExpander expander;
 
     public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, BISession session, boolean useRealData) {
@@ -56,12 +58,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private void initIterator() {
-        if (metricGroupInfoList == null || metricGroupInfoList.isEmpty()){
+        if (metricGroupInfoList == null || metricGroupInfoList.isEmpty()) {
             BINonValueUtils.beyondControl("invalid parameters");
         }
         rowSize = metricGroupInfoList.get(0).getRows().length;
-        for (MetricGroupInfo info : metricGroupInfoList){
-            if (info.getRows().length != rowSize){
+        for (MetricGroupInfo info : metricGroupInfoList) {
+            if (info.getRows().length != rowSize) {
                 throw new RuntimeException("invalid parameters");
             }
         }
@@ -73,9 +75,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         getters = new ICubeValueEntryGetter[rowSize][metricGroupInfoList.size()];
         columns = new DimensionCalculator[rowSize][metricGroupInfoList.size()];
         tis = new ICubeTableService[metricGroupInfoList.size()];
-        for (int i = 0; i < metricGroupInfoList.size(); i++){
+        for (int i = 0; i < metricGroupInfoList.size(); i++) {
             DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
-            for (int j = 0; j < rs.length; j++){
+            for (int j = 0; j < rs.length; j++) {
                 ICubeTableService ti = session.getLoader().getTableIndex(getSource(rs[j]));
                 columns[j][i] = rs[j];
                 getters[j][i] = ti.getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
@@ -88,7 +90,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         metrics = new BusinessTable[metricGroupInfoList.size()];
         summaryLists = new ArrayList[metricGroupInfoList.size()];
         GroupValueIndex[] gvis = new GroupValueIndex[metricGroupInfoList.size()];
-        for (int i = 0; i < metricGroupInfoList.size(); i++){
+        for (int i = 0; i < metricGroupInfoList.size(); i++) {
             metrics[i] = metricGroupInfoList.get(i).getMetric();
             summaryLists[i] = metricGroupInfoList.get(i).getSummaryList();
             gvis[i] = metricGroupInfoList.get(i).getFilterIndex();
@@ -171,12 +173,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     @Override
-    public TreeIterator moveToStart() {
-        iter.reset();
-        return iter;
-    }
-
-    @Override
     public void setExpander(NodeExpander expander) {
         this.expander = expander;
     }
@@ -200,15 +196,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             return;
         }
         list.add(i);
-        try {
-            NoneDimensionGroup currentNg = sg.getChildDimensionGroup(i);
-            if (currentNg == NoneDimensionGroup.NULL) {
-                return;
-            }
-            getValueStartRow(currentNg, value, deep + 1, list);
-        } catch (GroupOutOfBoundsException e) {
+        NoneDimensionGroup currentNg = sg.getChildDimensionGroup(i);
+        if (currentNg == NoneDimensionGroup.NULL) {
             return;
         }
+        getValueStartRow(currentNg, value, deep + 1, list);
     }
 
     private ISingleDimensionGroup getSingleDimensionGroupCache(Object[] value, NoneDimensionGroup ng, int deep) {
@@ -216,111 +208,73 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     /**
-     * 获得下一个值，可能是下一个child，也可能下一个brother。
-     * 如果是结点展开，同时深度没有到底。那么就是下一个child。（深度是指维度间的上下级关系）
-     * 否则是当前结点下一个brother。
-     *
-     * @param gv
-     * @param ng
-     * @param index
-     * @param deep
-     * @param expander
-     * @param list
-     */
-    private ReturnStatus getNext(GroupConnectionValue gv, NoneDimensionGroup ng, int[] index, int deep, NodeExpander expander, IntList list) {
-        return getNext(gv, ng, index, deep, expander, list, null);
-    }
-
-    /**
      * 加了一位nextBrother。
      * 当从nextParent进入到GetNext里面时，直接进入nextBrother方法。
      *
      * @param gv
-     * @param ng
      * @param index
      * @param deep
      * @param expander
      * @param list
-     * @param nextBrother
      */
     private ReturnStatus getNext(GroupConnectionValue gv,
-                                 NoneDimensionGroup ng,
                                  int[] index,
                                  int deep,
                                  NodeExpander expander,
-                                 IntList list,
-                                 Object nextBrother) {
+                                 IntList list) {
         if (expander == null) {
-            return groupEnd();
+            return ReturnStatus.GroupEnd;
         }
         if (rowSize == 0) {
-            return ReturnStatus.NULL;
+            return ReturnStatus.Success;
         }
-        ISingleDimensionGroup sg;
-        sg = getSingleDimensionGroup(gv, ng, deep);
-        String currentValueShowName = null;
-        //如果不是-1说明是从child搞上来的有可能是没有的
-        if (index[deep] != -1) {
-            try {
-                currentValueShowName = sg.getChildShowName(index[deep]);
-            } catch (GroupOutOfBoundsException e) {
-                if (ReturnStatus.GroupEnd == gotoNextParent(gv, index, deep, expander, list)) {
-                    return groupEnd();
-                }
-            }
+        ISingleDimensionGroup sg = getCacheDimensionGroup(gv, deep);
+        int row = index[deep];
+        //如果往下移动，行数就加1
+        if (notNextChild(index, deep, expander, sg)) {
+            row++;
         }
-        if (notNextChild(index, deep, expander, nextBrother, currentValueShowName)) {
-            try {
-                ReturnStatus returnStatus = gotoNextBrother(sg, gv, index, deep, expander, list);
-                if (returnStatus == ReturnStatus.GroupOutOfBounds) {
-                    if (ReturnStatus.GroupEnd == gotoNextParent(gv, index, deep, expander, list)) {
-                        return groupEnd();
-                    }
-                } else if (returnStatus == ReturnStatus.GroupOutOfBounds) {
-                    return catchGroupOutOfBounds(gv, index, deep, expander, list);
-                } else if (returnStatus == ReturnStatus.GroupEnd) {
-                    return groupEnd();
-                }
-            } catch (GroupOutOfBoundsException e) {
-                return catchGroupOutOfBounds(gv, index, deep, expander, list);
+        ReturnStatus returnStatus = findCurrentValue(sg, gv, list, row);
+        //如果越界，就一直往上移，直到不越界或者结束。
+        while (returnStatus == ReturnStatus.GroupEnd.GroupOutOfBounds){
+            //如果找到根节点还是越界，说明结束了。
+            if (deep == 0){
+                return ReturnStatus.GroupEnd;
             }
-        } else {
-            if (ReturnStatus.GroupEnd == gotoNextChildValue(sg, gv, index, deep, expander, list)) {
-                return groupEnd();
-            }
+            //把index数组deep位置后面的都清了，下移一位开始找，每次seek的时候这个while循环至多执行一次。
+            Arrays.fill(index, deep, index.length, -1);
+            list.remove(list.size() - 1);
+            deep -= 1;
+            gv = gv.getParent();
+            sg = getCacheDimensionGroup(gv, deep);
+            returnStatus = findCurrentValue(sg, gv, list, index[deep] + 1);
+        }
+        //如果往下展开，就继续往下
+        NodeExpander ex = expander.getChildExpander(sg.getChildShowName(row));
+        if (ex != null && deep + 1 < index.length) {
+            getNext(gv.getChild(), index, deep + 1, ex, list);
         }
         return ReturnStatus.Success;
     }
 
-    private ReturnStatus catchGroupOutOfBounds(GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list) {
-        ReturnStatus gotoNextParentStatus = gotoNextParent(gv, index, deep, expander, list);
-        if (ReturnStatus.GroupEnd == gotoNextParentStatus) {
-            return groupEnd();
+    //最后一个维度或者初始化的情况或者没有展开的情况必定是往下的
+    private boolean notNextChild(int[] index, int deep, NodeExpander expander, ISingleDimensionGroup sg) {
+        if (index.length == deep + 1 || index[deep] == -1) {
+            return true;
         }
-        return ReturnStatus.Success;
+        String showValue = sg.getChildShowName(index[deep]);
+        return showValue != null && expander.getChildExpander(showValue) == null;
     }
 
-    private boolean notNextChild(int[] index, int deep, NodeExpander expander, Object nextBrother, String currentValueShowName) {
-        return index.length == deep + 1 || (currentValueShowName != null && expander.getChildExpander(currentValueShowName) == null || nextBrother != null);
-    }
-
-    private ReturnStatus groupEnd() {
-        return ReturnStatus.GroupEnd;
-    }
-
-    protected ISingleDimensionGroup getSingleDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
-        return getCacheDimensionGroup(gv, ng, deep);
-    }
-
-    private ISingleDimensionGroup getCacheDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
+    private ISingleDimensionGroup getCacheDimensionGroup(GroupConnectionValue gv, int deep) {
         if (singleDimensionGroupCache[deep] == null || !ComparatorUtils.equals(singleDimensionGroupCache[deep].getData(), getParentsValuesByGv(gv, deep))) {
-            singleDimensionGroupCache[deep] = createSingleDimensionGroup(gv, ng, deep);
+            singleDimensionGroupCache[deep] = createSingleDimensionGroup(gv, deep);
         }
         return singleDimensionGroupCache[deep];
     }
 
-    protected ISingleDimensionGroup createSingleDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
-        return createSingleDimensionGroup(getParentsValuesByGv(gv, deep), ng, deep);
+    protected ISingleDimensionGroup createSingleDimensionGroup(GroupConnectionValue gv, int deep) {
+        return createSingleDimensionGroup(getParentsValuesByGv(gv, deep), gv.getCurrentValue(), deep);
     }
 
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
@@ -342,74 +296,20 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         return obs;
     }
 
-    private ReturnStatus gotoNextChildValue(ISingleDimensionGroup sg, GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list) {
-        if (index[deep] == -1) {
-            index[deep] += 1;
-        }
-        return findCurrentValue(sg, gv, index, deep, expander, list, index[deep]);
-    }
-
-    private ReturnStatus findCurrentValue(ISingleDimensionGroup sg, GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list, int row) {
-        NoneDimensionGroup nds;
-        if (row == 0) {
-            try {
-                nds = sg.getChildDimensionGroup(row);
-                if (NoneDimensionGroup.NULL == nds) {
-                    if (deep == 0) {
-                        return ReturnStatus.GroupEnd;
-                    }
-                    index[deep - 1] = index[deep - 1] + 1;
-                    list.set(deep - 1, index[deep - 1] + 1);
-                    return ReturnStatus.GroupOutOfBounds;
-                }
-            } catch (GroupOutOfBoundsException e) {
-                if (deep == 0) {
-                    return ReturnStatus.GroupEnd;
-                }
-                index[deep - 1] = index[deep - 1] + 1;
-                throw e;
-            }
-        } else {
-            nds = sg.getChildDimensionGroup(row);
-            if (nds == NoneDimensionGroup.NULL) {
-                return ReturnStatus.GroupOutOfBounds;
-            }
+    private ReturnStatus findCurrentValue(ISingleDimensionGroup sg, GroupConnectionValue gv, IntList list, int row) {
+        NoneDimensionGroup nds = sg.getChildDimensionGroup(row);
+        if (nds == NoneDimensionGroup.NULL) {
+            return ReturnStatus.GroupOutOfBounds;
         }
         GroupConnectionValue ngv = createGroupConnectionValue(sg, row, nds);
-        NodeExpander ex = expander.getChildExpander(sg.getChildShowName(row));
         list.add(row);
         ngv.setParent(gv);
-        if (ex != null && deep + 1 < index.length) {
-            ReturnStatus returnStatus = getNext(ngv, nds, index, deep + 1, ex, list);
-            if (ReturnStatus.GroupEnd == returnStatus) {
-                return groupEnd();
-            }
-        }
         return ReturnStatus.Success;
     }
 
     protected GroupConnectionValue createGroupConnectionValue(ISingleDimensionGroup sg, int row, NoneDimensionGroup nds) {
         GroupConnectionValue ngv = new GroupConnectionValue(sg.getChildData(row), nds);
         return ngv;
-    }
-
-    private ReturnStatus gotoNextBrother(ISingleDimensionGroup sg, GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list) {
-        return findCurrentValue(sg, gv, index, deep, expander, list, index[deep] + 1);
-    }
-
-    private ReturnStatus gotoNextParent(GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list) {
-        if (deep == 0) {
-            return groupEnd();
-        }
-        int[] newIndex = index.clone();
-        //Connery:这里移动下一位置，但是在getNext方法里面，调用了nextBrother，又在parent的向下移动了一个位置。
-        newIndex[deep - 1] = list.get(deep - 1);
-        Arrays.fill(newIndex, deep, newIndex.length, -1);
-        list.remove(list.size() - 1);
-        if (ReturnStatus.GroupEnd == getNext(gv.getParent(), gv.getParent().getCurrentValue(), newIndex, deep - 1, expander.getParent(), list, new Object())) {
-            return groupEnd();
-        }
-        return ReturnStatus.Success;
     }
 
     private static class TreePageComparator implements Comparator<int[]> {
@@ -444,10 +344,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     }
 
+    /**
+     * 类似n位进制不定的整数的加法，每次next就加1。
+     * 比如有三个维度，数组初始位置是{-1, -1, -1}, 从末尾依次往上加1，一旦越界，比如加到了{0, 0, 6}越界了，就进位加1，变成{0, 1, 0}再继续。
+     * 初始化为{-1, -1, -1}而不是{0, 0, -1}是因为可能没有展开倒最后一个维度，要是没有展开的情况会直接略过分组的第一个值。
+     */
     private class TreeIterator implements NodeDimensionIterator {
         private int[] index;
         private int[] tempIndex;
-        private Map<BusinessTable, GroupValueIndex> controlFilters = new ConcurrentHashMap<BusinessTable, GroupValueIndex>();
 
         /**
          * TODO 先放内存看看再说
@@ -462,18 +366,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
         private void moveLast() {
             int pos = pageIndex.size() - 3;
-            if (pos < 0) {
-                throw new GroupEndException();
-            }
             this.index = pageIndex.get(pos);
             this.pageIndex = this.pageIndex.subList(0, pos + 1);
         }
 
         private void moveCurrentStart() {
             int pos = pageIndex.size() - 2;
-            if (pos < 0) {
-                throw new GroupEndException();
-            }
             this.index = pageIndex.get(pos);
             this.pageIndex = this.pageIndex.subList(0, pos + 1);
         }
@@ -495,23 +393,19 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
 
         private GroupConnectionValue seek(int[] index) {
-            try {
-                GroupConnectionValue gv = new GroupConnectionValue(null, root);
-                IntList list = new IntList();
-                int indexCopy[] = Arrays.copyOf(index, index.length);
-                if (ReturnStatus.GroupEnd == getNext(gv, root, indexCopy, 0, expander, list)) {
-                    this.tempIndex = null;
-                    return null;
-                }
-                for (int i = list.size(); i < rowSize; i++) {
-                    list.add(-1);
-                }
-                this.tempIndex = list.toArray();
-                return gv;
-            } catch (GroupEndException e) {
+            GroupConnectionValue gv = new GroupConnectionValue(null, root);
+            IntList list = new IntList();
+            int indexCopy[] = Arrays.copyOf(index, index.length);
+            if (ReturnStatus.GroupEnd == getNext(gv, indexCopy, 0, expander, list)) {
                 this.tempIndex = null;
                 return null;
             }
+            //没有展开的情况list的size会小于维度的数量，要补齐。主要是怕越界。。。
+            for (int i = list.size(); i < rowSize; i++) {
+                list.add(-1);
+            }
+            this.tempIndex = list.toArray();
+            return gv;
         }
 
         @Override
@@ -540,15 +434,5 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         public void pageEnd() {
             pageIndex.add(this.index.clone());
         }
-
-        private void fillEndEmpty(int deep) {
-            Arrays.fill(this.index, deep, this.index.length, -1);
-        }
-
-        private void reset() {
-            fillEndEmpty(0);
-            this.pageIndex = this.pageIndex.subList(0, 0);
-        }
-
     }
 }

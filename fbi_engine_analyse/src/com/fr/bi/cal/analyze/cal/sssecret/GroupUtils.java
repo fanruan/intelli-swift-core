@@ -26,7 +26,6 @@ public class GroupUtils {
         return createMergePageNode(iterator, op, showSum, shouldSetIndex);
     }
 
-
     private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex) {
         Node node = new Node(null);
         GroupConnectionValue gc = iterator.next();
@@ -34,7 +33,7 @@ public class GroupUtils {
             return new NodeAndPageInfo(node, false, false, 0);
         }
         addSummaryValue(node, gc, showSum, shouldSetIndex);
-        while (!op.isPageEnd() && gc != null) {
+        while (!op.isPageEnd() && gc != null && gc.getChild() != null) {
             GroupConnectionValue gcvChild = gc.getChild();
             Node parent = node;
             int deep = 0;
@@ -57,7 +56,6 @@ public class GroupUtils {
             gc = iterator.next();
         }
         iterator.pageEnd();
-
         NodeUtils.setSiblingBetweenFirstAndLastChild(node);
         return new NodeAndPageInfo(node, iterator.hasPrevious(), iterator.hasNext(), getPage(iterator));
     }

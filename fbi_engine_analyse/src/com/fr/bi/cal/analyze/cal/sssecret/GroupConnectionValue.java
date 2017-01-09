@@ -1,7 +1,5 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import java.util.Comparator;
-
 public class GroupConnectionValue {
 
     private GroupConnectionValue parent;
@@ -9,8 +7,6 @@ public class GroupConnectionValue {
     private GroupConnectionValue child;
 
     private Object data;
-
-    private Comparator c;
 
     private NoneDimensionGroup currentValue;
 
@@ -23,13 +19,6 @@ public class GroupConnectionValue {
         return data;
     }
 
-    public Comparator getComparator() {
-        return c;
-    }
-
-    public void setComparator(Comparator c) {
-        this.c = c;
-    }
 
     public NoneDimensionGroup getCurrentValue() {
         return currentValue;

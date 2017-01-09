@@ -177,20 +177,12 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     @Override
     public Object getChildData(int row) {
         MetricMergeResult metricMergeResult = getMetricMergeResultByWait(row);
-        checkNotNull(metricMergeResult);
         return metricMergeResult.getData();
-    }
-
-    private void checkNotNull(MetricMergeResult metricMergeResult) {
-        if (metricMergeResult == MetricMergeResult.NULL) {
-            throw GroupOutOfBoundsException.create(-1);
-        }
     }
 
     @Override
     public String getChildShowName(int row) {
         MetricMergeResult metricMergeResult = getMetricMergeResultByWait(row);
-        checkNotNull(metricMergeResult);
         return metricMergeResult.getShowValue();
     }
 
@@ -217,7 +209,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
             if (gvis[i] == null || values[i] == null){
                 result[i] = null;
             } else {
-                result[i] = gvis[i].and(values[i]);
+                result[i] = gvis[i].AND(values[i]);
             }
         }
         return new MetricMergeResult(entry.getKey(), result);

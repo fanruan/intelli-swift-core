@@ -39,7 +39,10 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     }
     protected void initGetterAndRows() {
         super.initGetterAndRows();
-        this.dimensionCalculators = columns[0];
+        this.dimensionCalculators = new DimensionCalculator[rowSize];
+        for (int i = 0; i < rowSize; i++){
+            this.dimensionCalculators[i] = columns[i][0];
+        }
     }
     protected void initRoot() {
         metrics = new BusinessTable[metricGroupInfoList.size()];

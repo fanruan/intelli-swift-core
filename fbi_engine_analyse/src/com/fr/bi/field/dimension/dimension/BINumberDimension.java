@@ -8,6 +8,7 @@ import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.sort.BISortFactory;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 
 import java.util.List;
 
@@ -29,6 +30,14 @@ public class BINumberDimension extends BIAbstractDimension {
         }
         this.sort = BISortFactory.parseSort(sort);
         this.group = BIGroupFactory.parseNumberGroup(group);
+    }
+
+    @Override
+    public String toString(Object v) {
+        if (v instanceof Double) {
+            return StableUtils.convertNumberStringToString(((Double) v).doubleValue());
+        }
+        return super.toString(v);
     }
 
     @Override

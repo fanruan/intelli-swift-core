@@ -6,9 +6,7 @@ public interface NodeDimensionIterator {
 
     GroupConnectionValue next();
 
-
     void pageEnd();
-
 
     boolean hasPrevious();
 
