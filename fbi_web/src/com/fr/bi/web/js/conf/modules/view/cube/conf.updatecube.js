@@ -37,14 +37,13 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             text: BI.i18nText("BI-Immediate_Update_DataBase"),
             height: 28,
             handler: function () {
-                self._immediateButtonStatus(false);
+                self._setImmediateButtonStatus(false);
                 self.cubeLog.setStart();
                 BI.Utils.generateCube(function (data) {
-                    self.cubeLog.refreshLog(true);
                     if (data.result) {
                         self._createCheckInterval();
                     } else {
-                        self._immediateButtonStatus(true);
+                        self._setImmediateButtonStatus(true);
                     }
                 });
             }
@@ -62,13 +61,13 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         this.update({
             noset: true,
             success: function (data) {
-                var hasTask = data.hasTask;
-                if (!hasTask) {
-                    self._immediateButtonStatus(true);
+                if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
+                    self._setImmediateButtonStatus(true);
                     self._clearCheckInterval();
                 } else {
-                    self._immediateButtonStatus(false);
+                    self._setImmediateButtonStatus(false);
                 }
+                self.cubeLog.refreshLog(data);
             }
         });
     },
@@ -100,7 +99,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
 
     },
 
-    _immediateButtonStatus: function (isAvailable) {
+    _setImmediateButtonStatus: function (isAvailable) {
         var self = this;
         if (isAvailable) {
             self.immediateButton.setEnable(true);
