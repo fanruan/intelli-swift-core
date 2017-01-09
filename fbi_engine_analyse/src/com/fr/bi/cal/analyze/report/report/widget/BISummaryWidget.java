@@ -478,7 +478,9 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             while (dimensionFieldOfTargetIterator.hasNext()) {
                 Map.Entry<String, BusinessField> entry = dimensionFieldOfTargetIterator.next();
                 BusinessField dimensionFieldOfTarget = entry.getValue();
-                refreshedDimensionFieldOfTargetsMap.put(entry.getKey(), BIModuleUtils.getBusinessFieldById(dimensionFieldOfTarget.getFieldID()));
+                if (dimensionFieldOfTarget != null) {
+                    refreshedDimensionFieldOfTargetsMap.put(entry.getKey(), BIModuleUtils.getBusinessFieldById(dimensionFieldOfTarget.getFieldID()));
+                }
             }
             refreshedDimensionsMap.put(dimensionsMapEntry.getKey(), refreshedDimensionFieldOfTargetsMap);
         }
