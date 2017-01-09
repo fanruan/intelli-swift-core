@@ -3078,6 +3078,13 @@
             return;
         }
 
+        if((filterType === BICst.TARGET_FILTER_NUMBER.BELONG_VALUE ||
+            BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE) &&
+            (BI.isEmptyString(filterValue.min) && BI.isEmptyString(filterValue.max))
+        ){
+            return;
+        }
+
         return filter;
         //日期偏移值
         function getOffSetDateByDateAndValue(date, value) {
