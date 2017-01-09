@@ -4,13 +4,13 @@
 package com.fr.bi.test.etloperatordealer;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.PrimitiveDetailGetter;
 import com.finebi.cube.api.PrimitiveType;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.add.rowcal.correspondperiodpercentage.CorrespondPeriodPercentResultDealer;
 import com.fr.bi.stable.data.db.BIDataValue;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -134,6 +134,11 @@ public class testCorresponperiodpercent extends TestCase {
             }
 
             @Override
+            public String getICubeResourceLocationPath() {
+                return null;
+            }
+
+            @Override
             public void clear() {
 
             }
@@ -153,6 +158,11 @@ public class testCorresponperiodpercent extends TestCase {
 
             @Override
             public PrimitiveDetailGetter createPrimitiveDetailGetter() {
+                return null;
+            }
+
+            @Override
+            public String getICubeResourceLocationPath() {
                 return null;
             }
 
