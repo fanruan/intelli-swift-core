@@ -34,7 +34,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     el: {
                         el: {
                             el: {
-                                type: "bi.table_tree",
+                                type: "bi.fix_table",
                                 afterScroll: function () {
                                     self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(o.wId), BI.Utils.getWSThemeColorByID(o.wId));
                                 }
