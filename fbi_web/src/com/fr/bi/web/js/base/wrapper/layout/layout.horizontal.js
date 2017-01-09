@@ -91,7 +91,6 @@ BI.HorizontalLayout = BI.inherit(BI.Layout, {
                 "margin-bottom": o.vgap + o.bgap + (item.bgap || 0) + "px"
             })
         }
-        this.addWidget(td);
         return td;
     },
 

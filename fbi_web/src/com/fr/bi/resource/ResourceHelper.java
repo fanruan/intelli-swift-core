@@ -1,5 +1,6 @@
 package com.fr.bi.resource;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -10,7 +11,6 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -19,7 +19,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.Transmitter;
-import com.fr.web.core.A.S;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -554,9 +553,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.js",
                 "com/fr/bi/web/js/modules/selectdata4generalquery/item/item.generalquery.selectdata.js",
 
-                //分组统计选字段
-                "com/fr/bi/web/js/modules/selectdata4statistics/widget.selectsingletablefield.js",
-
                 //文本控件选字段
                 "com/fr/bi/web/js/modules/selectstring/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectstring/pane.selectstring.js",
@@ -575,11 +571,6 @@ public class ResourceHelper {
 
                 //树控件
                 "com/fr/bi/web/js/modules/selecttreedatacombo/selecttreedatacombo.js",
-
-                //日期控件
-                "com/fr/bi/web/js/modules/date/interval.date.js",
-                "com/fr/bi/web/js/modules/date/interval.date.param.js",
-                "com/fr/bi/web/js/modules/date/multi.date.js",
 
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",
@@ -749,6 +740,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/targetstyle/combo/item.iconmark.js",
                 "com/fr/bi/web/js/modules/targetstyle/conditionitem/item.targetstylecondition.js",
 
+                //组件过滤
+                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.model.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.linkagefilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.targetfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.dimensionfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.controlfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.drillfilter.js",
+
                 //明细表超级链接
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.insert.js",
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.popup.js",
@@ -767,9 +767,9 @@ public class ResourceHelper {
 
 
                 //react明细表
-                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
+//                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
                 //react汇总表
-                "com/fr/bi/web/js/modules/summarytablereact/widget.summarytablereact.js",
+//                "com/fr/bi/web/js/modules/summarytablereact/widget.summarytablereact.js",
         };
     }
 
@@ -785,17 +785,12 @@ public class ResourceHelper {
                 //下拉树控件字段关联设置
                 "com/fr/bi/web/css/modules/fieldrelationsettingwithpreviewpopup/fieldrelationsettingwithpreviewpopup.css",
 
-                "com/fr/bi/web/css/modules/relation/button.relationtable.field.css",
-                "com/fr/bi/web/css/modules/relation/widget.relationset.group.css",
-
                 //选择字段
                 "com/fr/bi/web/css/modules/selectdata/tab.selectdata.css",
                 "com/fr/bi/web/css/modules/selectdata/preview/pane.preview.selectdata.css",
                 "com/fr/bi/web/css/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.css",
 
                 "com/fr/bi/web/css/modules/selectdata4filter/node/node.level0.dimension.css",
-
-                "com/fr/bi/web/css/modules/selectdatamask/widget.selectdata.mask.css",
 
                 //通用查询选字段
                 "com/fr/bi/web/css/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.css",
@@ -902,8 +897,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/predictionstyle/pagination/widget.globalstyle.pagination.icon.css",
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.css",
 
-                "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
-
                 //明细表超级链接
                 "com/fr/bi/web/css/modules/hyperlink/hyperlink.insert.css",
 
@@ -912,6 +905,17 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtable/cell/header.detailtable.css",
                 "com/fr/bi/web/css/modules/detailtable/cell/cell.detailtable.css",
 
+                "com/fr/bi/web/css/modules/targetstyle/widget.targetstylesetting.css",
+                "com/fr/bi/web/css/modules/targetstyle/widget.targetcondition.stylesetting.css",
+                "com/fr/bi/web/css/modules/targetstyle/widget.stylesetting.iconmark.css",
+
+                //组件过滤
+                "com/fr/bi/web/css/modules/widgetfilter/widget.widgetfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.linkagefilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.targetfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.dimensionfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
 
                 //联动
                 "com/fr/bi/web/css/modules/linkage/linkage.target.css",
@@ -930,7 +934,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/excelview/excelview.css",
 
                 //react明细表
-                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
+//                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
         };
     }
 
@@ -1051,6 +1055,13 @@ public class ResourceHelper {
                 //数据连接
                 "com/fr/bi/web/css/fragments/datalink/widget.testlink.loading.css",
 
+                //etl relation
+                "com/fr/bi/web/css/modules/relation/button.relationtable.field.css",
+                "com/fr/bi/web/css/modules/relation/widget.relationset.group.css",
+
+                //建关联面板
+                "com/fr/bi/web/css/modules/selectdatamask/widget.selectdata.mask.css",
+
                 //union
                 "com/fr/bi/web/css/modules/onepackage/etl/union/widget.addunion.table.css",
                 "com/fr/bi/web/css/modules/onepackage/etl/union/widget.unionresult.header.css",
@@ -1093,6 +1104,12 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/onepackage/etl/group/group.select.fields.item.css",
                 "com/fr/bi/web/css/modules/onepackage/etl/group/group.dimension.css",
                 "com/fr/bi/web/css/modules/onepackage/etl/group/region.string.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.group.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.other.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.tab.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.combo.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.item.css",
+                "com/fr/bi/web/css/modules/onepackage/etl/group/number/numberintervalcustomgroup/widget.customgroup.number.panel.css",
 
                 //etl选择部分字段
                 "com/fr/bi/web/css/modules/onepackage/etl/partfield/widget.selectpartfieldlist.css",
@@ -1137,6 +1154,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/cubelog/tree.cubelog.css",
                 "com/fr/bi/web/css/modules/cubelog/cubelog.css",
 
+                //全局更新
+                "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
+
                 //excel
                 "com/fr/bi/web/css/extend/excel/excel.upload.css",
                 "com/fr/bi/web/css/extend/excel/fieldset/excel.fieldset.css",
@@ -1148,24 +1168,13 @@ public class ResourceHelper {
                 //sql
                 "com/fr/bi/web/css/extend/sql/sql.edit.css",
 
+                //数据连接
                 "com/fr/bi/web/css/modules/datalink/widget.datalink.add.css",
                 "com/fr/bi/web/css/modules/datalink/widget.datalink.schema.add.css",
 
+                //cube路径
                 "com/fr/bi/web/css/modules/cubepath/widget.cubepath.css",
                 "com/fr/bi/web/css/modules/cubepath/widget.cubepath.confirm.css",
-
-                "com/fr/bi/web/css/modules/targetstyle/widget.targetstylesetting.css",
-                "com/fr/bi/web/css/modules/targetstyle/widget.targetcondition.stylesetting.css",
-                "com/fr/bi/web/css/modules/targetstyle/widget.stylesetting.iconmark.css",
-
-                "com/fr/bi/web/css/modules/widgetfilter/widget.widgetfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.linkagefilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.targetfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.dimensionfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
-
-                "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 
                 //权限相关
                 "com/fr/bi/web/css/modules/permissionmanage/authoritypackagestree.css",
@@ -1453,14 +1462,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/cubelog/tree.cubelog.js",
                 "com/fr/bi/web/js/modules/cubelog/cubelog.js",
 
-                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.model.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.linkagefilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.targetfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.dimensionfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.controlfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.drillfilter.js",
-
                 //全局更新
                 "com/fr/bi/web/js/modules/globalupdate/widget.globalupdate.setting.js",
                 "com/fr/bi/web/js/modules/globalupdate/item/item.timesetting.js",
@@ -1608,6 +1609,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/utils.js",
 
+                //日期区间
+                "com/fr/bi/web/js/modules/date/interval.date.js",
+                "com/fr/bi/web/js/modules/date/interval.date.param.js",
+                "com/fr/bi/web/js/modules/date/multi.date.js",
 
                 //自定义分组
                 "com/fr/bi/web/js/modules/customgroup/widget.group2other.customgroup.js",
@@ -2082,7 +2087,7 @@ public class ResourceHelper {
 
 
                 //react控件
-                "com/fr/bi/web/css/components/components.react.css",
+//                "com/fr/bi/web/css/components/components.react.css",
 
         };
     }
@@ -2175,7 +2180,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/helper.scroll.js",
                 "com/fr/bi/web/js/base/utils/tableRowBuffer.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
-                "com/fr/bi/web/js/base/utils/load.js",
+            "com/fr/bi/web/js/base/utils/load.js",
 
                 "com/fr/bi/web/js/base/parsers/expression.js",
                 "com/fr/bi/web/js/base/parsers/path.js",
@@ -2856,7 +2861,7 @@ public class ResourceHelper {
 
 
                 //react控件
-                "com/fr/bi/web/js/components/components.react.js",
+//                "com/fr/bi/web/js/components/components.react.js",
         };
     }
 
@@ -2904,7 +2909,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/data/utils.js"
         };
     }
-
 
     public static String[] getFsJs() {
 

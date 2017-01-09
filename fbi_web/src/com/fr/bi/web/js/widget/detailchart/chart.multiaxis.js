@@ -137,7 +137,6 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                 config.chartType = "area";
                 otherItem.push(item);
             }else {
-                config.chartType = "column";
                 otherItem.push(item);
             }
         });

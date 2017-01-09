@@ -8,7 +8,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.PersistentField;
@@ -36,7 +36,7 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
 
     @Override
     public int getType() {
-        return Constants.TABLE_TYPE.USER_ETL;
+        return BIBaseConstant.TABLE_TYPE.USER_ETL;
     }
 
     /**
@@ -136,6 +136,17 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     }
 
     @Override
+    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set){
+        if(set.contains(this)){
+            return;
+        }
+        for (UserCubeTableSource source : getParents()){
+            source.getSourceNeedCheckSource(set);
+        }
+        set.add(this);
+    }
+
+    @Override
     public void refreshWidget() {
         for (AnalysisCubeTableSource source : getParents()){
             source.refreshWidget();
@@ -145,6 +156,12 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     @Override
     public Set<BIWidget> getWidgets() {
         return new HashSet<BIWidget>();
+    }
+    @Override
+    public void reSetWidgetDetailGetter() {
+        for (AnalysisCubeTableSource source : getParents()){
+            source.reSetWidgetDetailGetter();
+        }
     }
 
     @Override

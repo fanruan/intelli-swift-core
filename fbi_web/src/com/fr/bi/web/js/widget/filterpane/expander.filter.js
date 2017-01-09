@@ -23,7 +23,7 @@ BI.FilterExpander = BI.inherit(BI.AbstractFilterItem, {
         this._initExpander();
         this._initConditionsView();
         BI.createWidget({
-            type: "bi.horizontal",
+            type: "bi.horizontal_adapt",
             element: this.element,
             items: [this.expander, this.conditionsView]
         });

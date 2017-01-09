@@ -74,7 +74,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
         BI.extend(config.xAxis[0], {
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators),
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators, true),
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             lineWidth: this.config.line_width,
             showLabel: this.config.show_label,

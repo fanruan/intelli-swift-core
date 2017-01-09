@@ -99,7 +99,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         v || (v = {});
-        this.size.setValue(v["font-size"] || 14);
+        this.size.setValue(v["font-size"] || 12);
         this.bold.setSelected(v["font-weight"] === "bold");
         this.italic.setSelected(v["font-style"] === "italic");
         this.underline.setSelected(v["text-decoration"] === "underline");

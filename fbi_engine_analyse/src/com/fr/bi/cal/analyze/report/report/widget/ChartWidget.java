@@ -97,4 +97,9 @@ public class ChartWidget extends BISummaryWidget {
     public int getType() {
         return BIReportConstant.WIDGET.NONE;
     }
+
+    @Override
+    public void reSetDetailTarget() {
+
+    }
 }

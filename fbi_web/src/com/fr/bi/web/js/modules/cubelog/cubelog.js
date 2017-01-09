@@ -57,7 +57,9 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                         height: 28,
                         level: "ignore",
                         handler: function () {
-                            self.refreshLog();
+                            if (BI.isNotNull(self.finishLable) && !self.finishLable.isVisible()) {
+                                self.refreshLog();
+                            }
                         }
                     }]
                 },
@@ -100,28 +102,29 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
                 self.interval && clearInterval(self.interval);
                 self.interval = null;
+                self._showFinish();
             } else {
                 self.interval = setInterval(function () {
                     self.refreshLog();
                 }, 2000);
+                self._refreshProcess(data);
             }
-            self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
         });
     },
 
-    _showBar: function() {
+    _showBar: function () {
         this.processBar.setVisible(true);
         this.finishLable.setVisible(false);
     },
 
-    _showFinish: function() {
+    _showFinish: function () {
         this.processBar.setVisible(false);
         this.processBar.setValue(1);
         this.finishLable.setVisible(true);
     },
 
-    setStart: function() {
+    setStart: function () {
         this._showBar();
         this.processBar.setValue(1);
     },
@@ -131,7 +134,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         if (isStart) {
             this._showBar();
             this.processBar.setValue(1);
-            BI.delay(function() {
+            BI.delay(function () {
                 self._showBar();
                 self.processBar.setValue(10);
             }, 1000);
@@ -177,7 +180,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             if (process < 100) {
                 this._showBar();
             } else {
-                BI.delay(function() {
+                BI.delay(function () {
                     self._showFinish();
                 }, 1000);
             }

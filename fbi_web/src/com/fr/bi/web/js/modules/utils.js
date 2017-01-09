@@ -525,9 +525,9 @@
                         }
                     }
                     //维度公式过滤所用到的指标ID也要替换掉
-                    if(BI.has(oldFilter, "formula_ids")){
+                    if (BI.has(oldFilter, "formula_ids")) {
                         var ids = oldFilter.formula_ids || [];
-                        if(BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))){
+                        if (BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))) {
                             BI.each(ids, function (id, tId) {
                                 var result = createDimensionsAndTargets(tId);
                                 filter.filter_value = filter.filter_value.replaceAll(tId, result.id);
@@ -1101,7 +1101,7 @@
         getWSCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.custom_scale) ? ws.custom_scale :
-            {}
+                {}
         },
 
         getWSShowZoomByID: function (wid) {
@@ -1160,6 +1160,19 @@
             return drills;
         },
 
+        //获取组件中所有维度的钻取链A->B->C
+        getDrillList: function (wid) {
+            var drillMap = BI.Utils.getDrillByID(wid);
+            var map = {};
+            BI.each(drillMap, function (drId, ds) {
+                map[drId] = [];
+                BI.each(ds, function (idx, obj) {
+                    map[drId].push(obj.dId)
+                });
+            });
+            return map;
+        },
+
         getLinkageValuesByID: function (wid) {
             var self = this;
             var clicked = this.getClickedByID(wid);
@@ -1172,8 +1185,50 @@
             return drills;
         },
 
+        getDrillDownDIdsByWidgetId: function (wid) {
+            var allDims = BI.Utils.getAllDimDimensionIDs(wid);
+            var allUsedDims = BI.Utils.getAllUsableDimDimensionIDs(wid);
+            var result = [];
+            if (allDims.length > allUsedDims.length) {
+                var drillMap = this.getDrillByID(wid);
+                var drilledIds = [];
+                BI.each(drillMap, function (drId, ds) {
+                    BI.each(ds, function (i, drs) {
+                        drilledIds.push(drs.dId);
+                    });
+                });
+                BI.each(allDims, function (i, dim) {
+                    if (!allUsedDims.contains(dim) && !drilledIds.contains(dim)) {
+                        result.push(dim);
+                    }
+                });
+            }
+            return result;
+        },
+
+        getDrillUpDimensionIdByDimensionId: function (dId) {
+            var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
+            var allDims = BI.Utils.getAllDimDimensionIDs(widgetId);
+            var allUsedDims = BI.Utils.getAllUsableDimDimensionIDs(widgetId);
+            var updrillId = null;
+            if (allDims.length > allUsedDims.length) {
+                var drillMap = BI.Utils.getDrillByID(widgetId);
+                BI.any(drillMap, function (drId, ds) {
+                    if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
+                        if (ds.length > 1) {
+                            updrillId = ds[ds.length - 2].dId;
+                        } else {
+                            updrillId = drId;
+                        }
+                        return true;
+                    }
+                });
+            }
+            return updrillId;
+        },
+
         //根据text dId 获取clicked 处理分组的情况
-        getClickedValue4Group: function(v, dId) {
+        getClickedValue4Group: function (v, dId) {
             var group = this.getDimensionGroupByID(dId);
             var fieldType = this.getFieldTypeByDimensionID(dId);
             var clicked = v;
@@ -1210,19 +1265,6 @@
                 }
             }
             return clicked;
-        },
-
-        //获取组件中所有维度的钻取链A->B->C
-        getDrillList: function (wid) {
-            var drillMap = BI.Utils.getDrillByID(wid);
-            var map = {};
-            BI.each(drillMap, function (drId, ds) {
-                map[drId] = [];
-                BI.each(ds, function (idx, obj) {
-                    map[drId].push(obj.dId)
-                });
-            });
-            return map;
         },
 
         getWidgetFilterValueByID: function (wid) {
@@ -2045,9 +2087,9 @@
             view[BICst.REGION.DIMENSION1] = [dId];
 
             var targetIds = this.getAllTargetDimensionIDs(this.getWidgetIDByDimensionID(dId));
-            BI.each(targetIds, function(idx, targetId){
+            BI.each(targetIds, function (idx, targetId) {
                 dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
-                if(!BI.has(view, BICst.REGION.TARGET1)){
+                if (!BI.has(view, BICst.REGION.TARGET1)) {
                     view[BICst.REGION.TARGET1] = [];
                 }
                 view[BICst.REGION.TARGET1].push(targetId);
@@ -2073,9 +2115,9 @@
             widget.view[BICst.REGION.DIMENSION1] = [dId];
 
             var targetIds = this.getAllTargetDimensionIDs(this.getWidgetIDByDimensionID(dId));
-            BI.each(targetIds, function(idx, targetId){
+            BI.each(targetIds, function (idx, targetId) {
                 widget.dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
-                if(!BI.has(widget.view, BICst.REGION.TARGET1)){
+                if (!BI.has(widget.view, BICst.REGION.TARGET1)) {
                     widget.view[BICst.REGION.TARGET1] = [];
                 }
                 widget.view[BICst.REGION.TARGET1].push(targetId);
@@ -2210,7 +2252,7 @@
                     var dimensionIds = self.getAllDimensionIDs(id);
                     BI.each(dimensionIds, function (i, dimId) {
                         var fValue = value, fType = "";
-                        if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value)) {
+                        if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value) || !checkValueValid(self.getWidgetTypeByID(id), value)) {
                             return;
                         }
                         var filter = null;
@@ -2262,7 +2304,7 @@
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {group: BICst.GROUP.M, values: month};
+                                fValue = {group: BICst.GROUP.M, values: month + 1};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -2325,8 +2367,9 @@
 
                     if (value.length === 1) {
                         var filter = value[0];
-                        parseFilter(filter);
-                        filterValues.push(filter);
+                        if (BI.isNotNull(parseFilter(filter))) {
+                            filterValues.push(filter);
+                        }
                     }
                 }
             });
@@ -2357,6 +2400,15 @@
                     }
                 );
             }
+
+            function checkValueValid(type, value){
+                switch (type) {
+                    case BICst.WIDGET.NUMBER:
+                        return !(BI.isEmptyString(value.min) && BI.isEmptyString(value.max));
+                    default:
+                        return true;
+                }
+            }
         },
 
         getWidgetCalculationByID: function (wid) {
@@ -2383,7 +2435,7 @@
                 // 对于drill和link 一般value的数组里只有一个值
                 var v = value[0];
                 if (groupNames.contains(v)) {
-                    if (v === ungroupName) {
+                    if (v === BICst.UNGROUP_TO_OTHER) {
                         var vs = [];
                         BI.each(groupMap, function (gk, gv) {
                             gk !== v && (vs = vs.concat(gv));
@@ -2526,7 +2578,7 @@
                             var dIndex = widget.view[drillRegionType].indexOf(drId);
                             BI.remove(widget.view[tempRegionType], drill.dId);
                             // if (drillRegionType === tempRegionType) {
-                                widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
+                            widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
                             // } else {
                             //     widget.view[drillRegionType].push(drill.dId);
                             // }
@@ -2612,8 +2664,8 @@
                 //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
                 //联动过来的组件的联动条件被删除，忽略钻取条件
                 var linkDrill = self.getDrillByID(lId);
-                var notIgnore = BI.some(linkages, function(ldid, link) {
-                     return lId === self.getWidgetIDByDimensionID(ldid);
+                var notIgnore = BI.some(linkages, function (ldid, link) {
+                    return lId === self.getWidgetIDByDimensionID(ldid);
                 });
                 if (notIgnore && BI.isNotNull(linkDrill) && BI.isNotEmptyObject(linkDrill)) {
                     BI.each(linkDrill, function (drId, drArray) {
@@ -2633,7 +2685,7 @@
             });
 
             //联动过来的维度的过滤条件
-            BI.each(linkages, function(lTId, link) {
+            BI.each(linkages, function (lTId, link) {
                 filterValues = filterValues.concat(self.getDimensionsFilterByTargetId(lTId));
             });
 
@@ -2677,9 +2729,12 @@
                             if (!BI.has(dimensionMap, tId)) {
                                 var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
                                 var paths = BI.Utils.getPathsFromFieldAToFieldB(fieldId, BI.Utils.getFieldIDByDimensionID(tId))
-                                if(paths.length === 1){
-                                    widget.dimensions[dId].dimension_map[tId] = {_src: {field_id: fieldId}, target_relation: paths};
-                                }else{
+                                if (paths.length === 1) {
+                                    widget.dimensions[dId].dimension_map[tId] = {
+                                        _src: {field_id: fieldId},
+                                        target_relation: paths
+                                    };
+                                } else {
                                     valid = false;
                                     return true;
                                 }
@@ -2774,11 +2829,11 @@
             return this.isTableInRelativeTables(tIds, tableId);
         },
 
-        getDimensionsFilterByTargetId: function(tId) {
+        getDimensionsFilterByTargetId: function (tId) {
             var self = this;
             var dimensionIds = this.getAllDimDimensionIDs(this.getWidgetIDByDimensionID(tId));
             var dFilters = [];
-            BI.each(dimensionIds, function(i, dId) {
+            BI.each(dimensionIds, function (i, dId) {
                 var dimensionMap = self.getDimensionMapByDimensionID(dId);
                 if (BI.isNotNull(dimensionMap[tId])) {
                     var dFilterValue = self.getDimensionFilterValueByID(dId);
@@ -2793,7 +2848,7 @@
             function parseDimensionFilter4Linkage(dFilter, src, dId) {
                 if (dFilter.filter_type === BICst.FILTER_TYPE.AND ||
                     dFilter.filter_type === BICst.FILTER_TYPE.OR) {
-                    BI.each(dFilter.filter_value, function(i, fValue) {
+                    BI.each(dFilter.filter_value, function (i, fValue) {
                         parseDimensionFilter4Linkage(fValue, src, dId);
                     });
                 } else {
@@ -2820,7 +2875,7 @@
             if (BI.isNull(widgetInfo) || BI.isNull(offset)) {
                 return;
             }
-            var paramdate;
+            var paramDate;
             var wWid = widgetInfo.wId, se = widgetInfo.startOrEnd;
             if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                 var wWValue = BI.Utils.getWidgetValueByID(wWid);
@@ -2828,19 +2883,19 @@
                     return;
                 }
                 if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
-                    paramdate = parseComplexDateCommon(wWValue.start);
+                    paramDate = parseComplexDateCommon(wWValue.start);
                 }
                 if (se === BI.MultiDateParamPane.end && BI.isNotNull(wWValue.end)) {
-                    paramdate = parseComplexDateCommon(wWValue.end);
+                    paramDate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
                 if (BI.isNull(widgetInfo.wId) || BI.isNull(BI.Utils.getWidgetValueByID(widgetInfo.wId))) {
                     return;
                 }
-                paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
+                paramDate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
             }
-            if (BI.isNotNull(paramdate)) {
-                return parseComplexDateCommon(offset, new Date(paramdate));
+            if (BI.isNotNull(paramDate)) {
+                return parseComplexDateCommon(offset, new Date(paramDate));
             }
         }
 
@@ -2897,7 +2952,7 @@
             }
         }
 
-        function isValidDate(v){
+        function isValidDate(v) {
             return BI.isNotNull(v.year) && BI.isNotNull(v.month) && BI.isNotNull(v.day);
         }
     }
@@ -2906,9 +2961,13 @@
     function parseFilter(filter) {
         var filterType = filter.filter_type, filterValue = filter.filter_value;
         if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+            var indexOfInvalid = [];
             BI.each(filterValue, function (i, value) {
-                parseFilter(value);
+                if (BI.isNull(parseFilter(value))) {
+                    indexOfInvalid.push(i);
+                }
             });
+            BI.removeAt(filterValue, indexOfInvalid);
         }
         if (BI.isNull(filterValue)) {
             return;
@@ -3011,6 +3070,14 @@
                 filterValue.group = BICst.GROUP.YMD;
             }
         }
+
+        //数值类型为空忽略此条件
+        if ((filterType === BICst.TARGET_FILTER_NUMBER.EQUAL_TO ||
+            filterType === BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO) &&
+            BI.isEmptyString(filterValue)) {
+            return;
+        }
+
         return filter;
         //日期偏移值
         function getOffSetDateByDateAndValue(date, value) {
