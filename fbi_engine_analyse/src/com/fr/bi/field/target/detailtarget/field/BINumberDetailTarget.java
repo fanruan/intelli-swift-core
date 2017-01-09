@@ -1,10 +1,6 @@
 package com.fr.bi.field.target.detailtarget.field;
 
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.operation.sort.sort.NumberASCSort;
-import com.fr.bi.stable.operation.sort.sort.NumberDSCSort;
-import com.fr.json.JSONObject;
 
 import java.util.Map;
 
