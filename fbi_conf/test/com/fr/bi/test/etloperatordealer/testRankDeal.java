@@ -98,6 +98,11 @@ public class testRankDeal extends TestCase {
             }
 
             @Override
+            public String getICubeResourceLocationPath() {
+                return null;
+            }
+
+            @Override
             public void clear() {
 
             }

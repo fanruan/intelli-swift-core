@@ -50,6 +50,10 @@ public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
         }
         return null;
     }
+    @Override
+    public String getICubeResourceLocationPath(){
+       return service.getResourceLocation().getAbsolutePath();
+    }
 
     @Override
     public void clear() {

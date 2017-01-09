@@ -33,6 +33,11 @@ public class NormalDetailGetter implements ICubeColumnDetailGetter {
     }
 
     @Override
+    public String getICubeResourceLocationPath() {
+        return null;
+    }
+
+    @Override
     public void clear() {
         reader.clear();
     }

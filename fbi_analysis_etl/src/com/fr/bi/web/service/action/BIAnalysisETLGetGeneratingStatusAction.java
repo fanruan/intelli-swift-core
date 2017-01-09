@@ -19,9 +19,10 @@ import java.util.Set;
 /**
  * Created by 小灰灰 on 2016/6/2.
  */
-public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLAction{
+public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLAction {
+
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
-            final long userId = ServiceUtils.getCurrentUserID(req);
+        final long userId = ServiceUtils.getCurrentUserID(req);
             String tableId = WebUtils.getHTTPRequestParameter(req, "id");
             double percent;
             try {
@@ -31,7 +32,7 @@ public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLA
                 ((AnalysisCubeTableSource) table.getTableSource()).getSourceNeedCheckSource(sources);
                 int generated = 0;
                 for (AnalysisCubeTableSource s : sources) {
-                    BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of "+ s.createUserTableSource(userId).fetchObjectCore().getIDValue());
+                    BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of " + s.createUserTableSource(userId).fetchObjectCore().getIDValue());
                     if (BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkVersion(s, new BIUser(userId))) {
                         generated++;
                     }
@@ -43,7 +44,7 @@ public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLA
             JSONObject jo = new JSONObject();
             jo.put(Constants.GENERATED_PERCENT, percent);
             WebUtils.printAsJSON(res, jo);
-    }
+        }
 
 
     @Override
