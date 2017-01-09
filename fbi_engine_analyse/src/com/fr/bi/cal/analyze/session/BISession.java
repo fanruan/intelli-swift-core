@@ -8,11 +8,16 @@ import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
+import com.fr.base.ScreenResolution;
+import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartDataConvertFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSettingFactory;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
@@ -21,6 +26,7 @@ import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BIReportNodeLock;
@@ -29,6 +35,7 @@ import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
+import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.data.TableDataSource;
 import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
@@ -38,6 +45,7 @@ import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.FRLogManager;
 import com.fr.general.GeneralContext;
+import com.fr.general.IOUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.main.FineBook;
@@ -52,12 +60,22 @@ import com.fr.stable.CodeUtils;
 import com.fr.stable.Constants;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.script.CalculatorProvider;
+import com.fr.stable.unit.FU;
 import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.SessionIDInfor;
+import sun.misc.BASE64Decoder;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -123,7 +141,7 @@ public class BISession extends BIAbstractSession {
      */
     public void forceEdit() {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-        if(lockDAO == null){
+        if (lockDAO == null) {
             this.isEdit = true;
             return;
         }
@@ -133,6 +151,7 @@ public class BISession extends BIAbstractSession {
 
 
     private static final long TIME_OUT = 45000;
+
     /**
      * 半推半就
      *
@@ -141,7 +160,7 @@ public class BISession extends BIAbstractSession {
      */
     public boolean setEdit(boolean isEdit) {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-        if(lockDAO == null){
+        if (lockDAO == null) {
             this.isEdit = isEdit;
             return isEdit;
         }
@@ -176,7 +195,7 @@ public class BISession extends BIAbstractSession {
 
     private void releaseLock() {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-        if(lockDAO == null){
+        if (lockDAO == null) {
             return;
         }
         BIReportNodeLock lock = lockDAO.getLock(this.sessionID, node.getUserId(), node.getId());
@@ -224,11 +243,11 @@ public class BISession extends BIAbstractSession {
                 String gId = gIds.next();
                 JSONObject oneGroup = allGroups.getJSONObject(gId);
                 JSONArray nChildren = new JSONArray();
-                if(oneGroup.has("children")) {
+                if (oneGroup.has("children")) {
                     JSONArray children = oneGroup.getJSONArray("children");
-                    for(int i = 0; i < children.length(); i++) {
+                    for (int i = 0; i < children.length(); i++) {
                         JSONObject child = children.getJSONObject(i);
-                        if(allPacks.has(child.getString("id"))) {
+                        if (allPacks.has(child.getString("id"))) {
                             nChildren.put(child);
                         }
                     }
@@ -255,18 +274,18 @@ public class BISession extends BIAbstractSession {
                     String groupId = groupIds.next();
                     JSONObject group = allGroups.getJSONObject(groupId);
                     JSONArray nChildren = new JSONArray();
-                    if(group.has("children")) {
+                    if (group.has("children")) {
                         JSONArray children = group.getJSONArray("children");
-                        for(int i = 0; i < children.length(); i++) {
+                        for (int i = 0; i < children.length(); i++) {
                             JSONObject child = children.getJSONObject(i);
                             String childId = child.getString("id");
-                            if(packages.has(childId)) {
+                            if (packages.has(childId)) {
                                 nChildren.put(child);
                             }
                         }
                         group.put("children", nChildren);
                     }
-                    if(nChildren.length() > 0) {
+                    if (nChildren.length() > 0) {
                         groups.put(groupId, group);
                     }
                 }
@@ -367,8 +386,8 @@ public class BISession extends BIAbstractSession {
         return null;
     }
 
-    public ResultWorkBook getExportBookByWidgetNames (String[] widgetNames) throws CloneNotSupportedException {
-        if(widgetNames.length == 0) {
+    public ResultWorkBook getExportBookByWidgetNames(String[] widgetNames) throws Exception {
+        if (widgetNames.length == 0) {
             return null;
         }
         BIWorkBook wb = new BIWorkBook();
@@ -378,12 +397,45 @@ public class BISession extends BIAbstractSession {
         polyECBlock.getBlockAttr().setFreezeHeight(true);
         polyECBlock.getBlockAttr().setFreezeWidth(true);
         polyECBlock.setBounds(new UnitRectangle(new Rectangle(), Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION));
-        polyECBlock.addFloatElement(new FloatElement());
+
+        for(String widgetName : widgetNames) {
+            BIWidget widget= report.getWidgetByName(widgetName);
+            JSONObject jo = JSONObject.create();
+
+            try {
+                MultiThreadManagerImpl.getInstance().refreshExecutorService();
+                jo = widget.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionID));
+            } catch (Exception exception) {
+                BILoggerFactory.getLogger().error(exception.getMessage(), exception);
+                jo.put("error", BIPrintUtils.outputException(exception));
+            }
+
+            JSONObject configs = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.getJSONObject("data"));
+            JSONObject chartOptions = BIChartSettingFactory.parseChartSetting((MultiChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
+            //将plotOptions下的animation设为false否则不能截图（只截到网格线）
+            JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
+            plotOptions.put("animation", false);
+            chartOptions.put("plotOptions", plotOptions);
+            String base64 = null;
+            try {
+                base64 = postMessage("127.0.0.1", 8090, new JSONObject("{" + "options:" + chartOptions + "}").toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            BufferedImage img = base64Decoder(base64);
+            FloatElement floatElement = new FloatElement(img);
+            int resolution = ScreenResolution.getScreenResolution();
+            floatElement.setWidth(FU.valueOfPix(img.getWidth(null), resolution));
+            floatElement.setHeight(FU.valueOfPix(img.getHeight(null), resolution));
+            polyECBlock.addFloatElement(floatElement);
+        }
+
         reportSheet.addBlock(polyECBlock);
         wb.addReport("Dashboard", reportSheet);
         for (String widgetName : widgetNames) {
             BIWidget widget = report.getWidgetByName(widgetName);
-            if(widget != null) {
+            if (widget != null) {
                 widget = (BIWidget) widget.clone();
                 switch (widget.getType()) {
                     case BIReportConstant.WIDGET.TABLE:
@@ -406,7 +458,44 @@ public class BISession extends BIAbstractSession {
         return wb.execute4BI(getParameterMap4Execute());
     }
 
+    public static String postMessage(String ip, int port, String message) throws IOException {
+        URL url = new URL("http://" + ip + ":" + port + "/");
+        URLConnection connection = url.openConnection();
+        connection.setDoOutput(true);
+        connection.setConnectTimeout(50000);
+        connection.setReadTimeout(50000);
 
+        OutputStream out = connection.getOutputStream();
+        out.write(message.getBytes("utf-8"));
+        out.close();
+
+        //get base64 picture
+        InputStream in = connection.getInputStream();
+        String response = IOUtils.inputStream2String(in);
+        in.close();
+
+        return response;
+    }
+
+    public static BufferedImage base64Decoder(String base64) {
+        BASE64Decoder decoder = new BASE64Decoder();
+        BufferedImage img = null;
+        try {
+            // decode Base64
+            byte[] bytes = decoder.decodeBuffer(base64);
+            for (int i = 0; i < bytes.length; ++i) {
+                if (bytes[i] < 0) {// 调整异常数据
+                    bytes[i] += 256;
+                }
+            }
+            InputStream inputStream = new ByteArrayInputStream(bytes, 0, bytes.length);
+
+            img = ImageIO.read(inputStream);
+        } catch (Exception e) {
+            return null;
+        }
+        return img;
+    }
 
     @Override
     public String getDurationPrefix() {

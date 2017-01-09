@@ -24,7 +24,7 @@ import java.util.Map;
 public class PhantomServer {
 
     private static final String IP = "127.0.0.1";
-    private static final int PORT = 8089;
+    private static final int PORT = 8090;
 
     private static Map<String, String> osMap = new HashMap<String, String>();
     private static String PhantomEnv = FRContext.getCurrentEnv().getPath() + BIBaseConstant.PHANTOM.PHANTOM_PATH;
