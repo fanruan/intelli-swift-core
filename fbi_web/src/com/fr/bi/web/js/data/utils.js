@@ -1381,7 +1381,7 @@ Data.Utils = {
             }
         }
 
-        function _formatDataLabelForAxis(state, items, format, style) {
+        function _formatDataLabelForAxis(state, items, format, style, isPercentChart) {
             if (state === true) {
                 BI.each(items, function (idx, item) {
                     item.dataLabels = {
@@ -1394,6 +1394,10 @@ Data.Utils = {
                             valueFormat: format
                         }
                     };
+                    if(isPercentChart) {
+                        item.dataLabels.formatter.identifier = "${PERCENT}";
+                        item.dataLabels.formatter.percentFormat = format;
+                    }
                 });
             }
         }
@@ -1448,7 +1452,7 @@ Data.Utils = {
             })
         }
 
-        function _formatNumberLevelInYaxis(config, items, type, position, formatter) {
+        function _formatNumberLevelInYaxis(config, items, type, position, formatter, isPercentChart) {
             var magnify = _calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -1463,6 +1467,10 @@ Data.Utils = {
                 if (position === item.yAxis) {
                     item.tooltip = BI.deepClone(config.plotOptions.tooltip);
                     item.tooltip.formatter.valueFormat = formatter;
+                    if(isPercentChart) {
+                        item.tooltip.formatter.percentFormat = formatter;
+                        item.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
+                    }
                 }
             });
         }
@@ -4213,7 +4221,7 @@ Data.Utils = {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 formatter: _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
             });
-            _formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, constants.LEFT_AXIS, configs.yAxis[0].formatter);
+            _formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, constants.LEFT_AXIS, configs.yAxis[0].formatter, true);
 
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
@@ -4228,7 +4236,7 @@ Data.Utils = {
             configs.chartType = "area";
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
-            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.yAxis[0].formatter, config.chart_font);
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.yAxis[0].formatter, config.chart_font, true);
 
             return BI.extend(configs, {
                 series: items

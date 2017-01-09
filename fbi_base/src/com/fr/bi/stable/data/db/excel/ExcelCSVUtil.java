@@ -1,4 +1,4 @@
-package com.fr.bi.stable.data.db;
+package com.fr.bi.stable.data.db.excel;
 
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
