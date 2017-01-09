@@ -262,13 +262,13 @@ public class DBTableSource extends AbstractTableSource {
             jo.put(BIJSONConstant.JSON_KEYS.TYPE, fieldTypes);
             int colLen = dm.getColumnCount();
             int rolLen = Math.min(dm.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
+            Map<String, ICubeFieldSource> fieldsMap = getFields();
 
             for (int col = 0; col < colLen; col++) {
                 String name = dm.getColumnName(col);
                 if (!fields.isEmpty() && !fields.contains(name)) {
                     continue;
                 }
-                Map<String, ICubeFieldSource> fieldsMap = getFields();
                 int fieldType = fieldsMap.get(name).getFieldType();
                 fieldNames.put(name);
                 fieldTypes.put(fieldType);
