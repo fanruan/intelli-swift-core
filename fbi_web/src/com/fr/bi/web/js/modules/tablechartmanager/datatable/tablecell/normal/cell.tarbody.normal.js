@@ -201,7 +201,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
             return combo;
         }
 
-        //这两个function写在else的最后会使得firefox45.0.1找不到这两个方法。
+        //这两个function放在条件语句块内函数声明没有提升。
         function containsLinkage(list, item) {
             for (var i = 0; i < list.length; i++) {
                 if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
