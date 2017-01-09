@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -20,11 +21,13 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -41,6 +44,7 @@ public class BIDetailWidget extends BIAbstractWidget {
     private transient BIDetailTarget[] usedDimensions;
     @BICoreField
     private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
+
     @BICoreField
     private BusinessTable target;//目标表
     private List<String> parent_widget = new ArrayList<String>();
@@ -64,7 +68,7 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     @Override
     public BIDetailTarget[] getViewDimensions() {
-        if(usedDimensions != null) {
+        if (usedDimensions != null) {
             return usedDimensions;
         }
         BIDetailTarget[] dims = getDimensions();
@@ -73,7 +77,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
             for (int i = 0; i < array.length; i++) {
                 BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
-                    usedDimensions.add(dimension);
+                usedDimensions.add(dimension);
 
             }
             dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
@@ -99,7 +103,9 @@ public class BIDetailWidget extends BIAbstractWidget {
         if (dm != null) {
             for (int i = 0; i < dm.length; i++) {
                 BIDetailTarget dt = dm[i];
-                result.add(dt.createColumnKey().getTableBelongTo());
+                if (null != dt.createColumnKey() && null != dt.createColumnKey().getTableBelongTo()) {
+                    result.add(dt.createColumnKey().getTableBelongTo());
+                }
             }
         }
         return result;
@@ -225,6 +231,35 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
     @Override
+    public void refreshSources() {
+        if (target == null) {
+            return;
+        }
+        try {
+            BusinessTable newTable = BIModuleUtils.getBusinessTableById(target.getID());
+            if (null != newTable) {
+                CubeTableSource newSource = newTable.getTableSource();
+                if (isAnalysisSource(newSource)) {
+                    newSource.refresh();
+                }
+                target.setSource(newSource);
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(BIStringUtils.append("error: the analysisTable " + target.getID().getIdentityValue() + " is absent", "\n", e.getMessage()), e);
+        }
+    }
+
+    private boolean isAnalysisSource(CubeTableSource newSource) {
+        List analysisTypes = new ArrayList();
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.BASE);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.ETL);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.TEMP);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_BASE);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_ETL);
+        return analysisTypes.contains(newSource.getType());
+    }
+
+    @Override
     public int getType() {
         return BIReportConstant.WIDGET.DETAIL;
     }
@@ -232,5 +267,16 @@ public class BIDetailWidget extends BIAbstractWidget {
     @Override
     protected TemplateBlock createBIBlock(BISession session) {
         return new PolyCubeDetailECBlock(this, session, page);
+    }
+
+    
+    @Override
+    public void reSetDetailTarget() {
+        for(BIDetailTarget ele : getDimensions()){
+            ele.reSetDetailGetter();
+        }
+        for (BIDetailTarget ele: getViewDimensions()){
+            ele.reSetDetailGetter();
+        }
     }
 }

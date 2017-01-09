@@ -109,10 +109,16 @@ BI.AuthorityBatchSetPane = BI.inherit(BI.Widget, {
     },
 
     setValue: function(v){
-        this.packageIds = v;
-        this.packageName.setText(BI.isNotNull(v) ? BI.i18nText("BI-N_Packages", BI.uniq(v).length) : "");
+        //去掉分组名（分组里无业务包的）
+        var self = this;
+        var allPackIds = BI.Utils.getAllPackageIDs4Conf();
+        this.packageIds = [];
+        BI.each(v, function(i, pId) {
+            allPackIds.contains(pId) && self.packageIds.push(pId);
+        });
+        this.packageName.setText(BI.isNotNull(this.packageIds) ? BI.i18nText("BI-N_Packages", BI.uniq(this.packageIds).length) : "");
         this.rolesTab.setSelect(this._constants.SHOW_PANE);
-        BI.isNotNull(this.roles) && this.roles.populate(v);
+        BI.isNotNull(this.roles) && this.roles.populate(this.packageIds);
     },
 
     populate: function(){

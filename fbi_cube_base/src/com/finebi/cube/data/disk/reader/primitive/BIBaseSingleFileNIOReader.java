@@ -20,7 +20,6 @@ public abstract class BIBaseSingleFileNIOReader extends BIAbstractBaseNIOReader 
 
     public BIBaseSingleFileNIOReader(File cacheFile) {
         super(cacheFile);
-        initBuffer();
     }
     public BIBaseSingleFileNIOReader(String cacheFilePath) {
         this(new File(cacheFilePath));

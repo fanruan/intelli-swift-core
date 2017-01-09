@@ -47,9 +47,10 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
         var self = this;
         BI.Msg.confirm(BI.i18nText("BI-Cancel"), BI.i18nText("BI-Etl_Cancel_Warning"), function (v) {
             if(v === true) {
-                self._hideView(widget)
+                self._hideView(widget);
+                self._resetPoolCurrentUsedTables();
             }
-        })
+        });
     },
 
     _hideView : function (widget) {
@@ -75,6 +76,11 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
         } else {
             this._doSave(widget, model);
         }
+        this._resetPoolCurrentUsedTables();
+    },
+
+    _resetPoolCurrentUsedTables: function() {
+        Pool.current_edit_etl_used = [];
     },
     
     populate : function (widget, model) {

@@ -38,18 +38,19 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
             if (StringUtils.isEmpty(baseTableSourceId)) {
                 new CubeBuildManager().CubeBuildStaff(userId);
             } else {
-                new CubeBuildManager().CubeBuildSingleTable(userId, baseTableSourceId, updateType);
+                new CubeBuildManager().addSingleTableTask(userId, baseTableSourceId, updateType);
             }
             BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
             BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+            return true;
         } catch (Exception e) {
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
-            BILoggerFactory.getLogger(this.getClass()).error("cube task build failed" + "\n"+e.getMessage(), e);
-            CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
+            BILoggerFactory.getLogger(this.getClass()).error("cube task build failed" + "\n" + e.getMessage(), e);
             return false;
+        } finally {
+            CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
         }
-        return true;
     }
 
 }

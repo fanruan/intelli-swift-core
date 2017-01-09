@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.executor.detail.execute;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
@@ -31,10 +30,10 @@ public abstract class AbstractGVIRunner implements GVIRunner {
     protected transient String[] sortTargets;
     protected transient BusinessTable target;
     protected transient Map<String, TargetFilter> filterMap;
-    protected BIUser biUser;
+    protected long userId;
 
     public AbstractGVIRunner(GroupValueIndex gvi, BIDetailWidget widget, ICubeDataLoader loader, long userId) {
-        biUser = new BIUser(userId);
+        this.userId = userId;
         this.gvi = gvi;
         this.widget = widget;
         this.loader = loader;
@@ -85,7 +84,7 @@ public abstract class AbstractGVIRunner implements GVIRunner {
             while (it.hasNext()) {
                 BIDetailTarget calTarget = it.next();
                 if (!caledTargets.contains(calTarget.getValue()) && calTarget.isReady4Calculate(values)) {
-                    values.put(calTarget.getValue(), calTarget.createDetailValue(null, values, loader, biUser.getUserId()));
+                    values.put(calTarget.getValue(), calTarget.createDetailValue(null, values, loader, userId));
                     caledTargets.add(calTarget.getValue());
                     called = true;
                 }

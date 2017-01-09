@@ -8,6 +8,8 @@ import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
+import com.fr.bi.base.BIBusinessPackagePersistThread;
+import com.fr.bi.base.BIBusinessPackagePersistThreadHolder;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cal.generate.CubeBuildManager;
@@ -87,7 +89,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         String usedFields = WebUtils.getHTTPRequestParameter(req, "used_fields");
         String excelViews = WebUtils.getHTTPRequestParameter(req, "excel_views");
         String updateSettings = WebUtils.getHTTPRequestParameter(req, "update_settings");
-        long userId = ServiceUtils.getCurrentUserID(req);
+        final long userId = ServiceUtils.getCurrentUserID(req);
         JSONArray tableIdsJO = new JSONArray(tableIds);
         JSONObject tableDataJO = new JSONObject(tableString);
         JSONObject relationsJO = relations != null ? new JSONObject(relations) : new JSONObject();
@@ -101,6 +103,24 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         oldTables.addAll(pack.getBusinessTables());
         pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO, tableDataJO));
 
+        saveTables(packageName, userId, tableIdsJO, tableDataJO, pack);
+        saveTranslations(translationsJO, userId);
+        saveRelations(relationsJO, userId);
+        saveExcelView(excelViewJO, userId);
+        saveUpdateSetting(updateSettingJO, userId);
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+        //实时生成excel cube
+        updateExcelTables(userId, getExcelTable(oldTables, pack.getBusinessTables()));
+
+        BIBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {//单独的线程写业务包配置文件，web端立即返回
+            @Override
+            public void work() {
+                writeResource(userId);
+            }
+        });
+    }
+
+    private void saveTables(String packageName, long userId, JSONArray tableIdsJO, JSONObject tableDataJO, BIBusinessPackage pack) throws Exception {
         for (int i = 0; i < tableIdsJO.length(); i++) {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
             JSONObject tableJson = tableDataJO.optJSONObject(tableId);
@@ -122,7 +142,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                          * 因为如果数据库连接断掉，那么字段没有的。
                          */
                         if (ComparatorUtils.equals(storeTableSource.getSourceID(), tableSource.getSourceID())) {
-                            addTableSource(table, storeTableSource);
+                            addTableSource(table, tableSource);
                         } else {
                             /**
                              * 否则必须确保保存的TableSource是完整的。
@@ -142,17 +162,6 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 BILoggerFactory.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }
         }
-
-        saveTranslations(translationsJO, userId);
-        saveRelations(relationsJO, userId);
-        saveExcelView(excelViewJO, userId);
-        saveUpdateSetting(updateSettingJO, userId);
-        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-
-        //实时生成excel cube
-        updateExcelTables(userId, getExcelTable(oldTables, pack.getBusinessTables()));
-
-        writeResource(userId);
     }
 
     private boolean reuseTableSource(CubeTableSource tableSource) {
@@ -194,7 +203,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
     private void updateExcelTables(long userId, List<CubeTableSource> excelSources) {
         for (CubeTableSource source : excelSources) {
-            new CubeBuildManager().CubeBuildSingleTable(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+            new CubeBuildManager().addSingleTableTask(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
         }
     }
 

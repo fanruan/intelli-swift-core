@@ -20,8 +20,8 @@ import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
@@ -118,20 +118,20 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 lastRelationEntity = buildLastRelationReader();
                 frontRelationPathReader = buildFrontRelationPathReader();
                 targetPathEntity = buildTargetRelationPathWriter();
-                final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
+                GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
                 int[] reverse = new int[getJuniorTableRowCount()];
                 Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
                 for (int row = 0; row < primaryRowCount; row++) {
                     GroupValueIndex frontGroupValueIndex = frontRelationPathReader.getBitmapIndex(row);
                     GroupValueIndex resultGroupValueIndex = getTableLinkedOrGVI(frontGroupValueIndex, lastRelationEntity);
-                    appearPrimaryValue.or(resultGroupValueIndex);
+                    helper.add(resultGroupValueIndex);
                     targetPathEntity.addRelationIndex(row, resultGroupValueIndex);
                     initReverseIndex(reverse, row, resultGroupValueIndex);
                     if (CubeConstant.LOG_SEPERATOR_ROW != 0 && row % CubeConstant.LOG_SEPERATOR_ROW == 0) {
                         logger.info(BIStringUtils.append("\n    ", logPath(), "read ", String.valueOf(row), " rows field value and time elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
                     }
                 }
-                GroupValueIndex nullIndex = appearPrimaryValue.NOT(reverse.length);
+                GroupValueIndex nullIndex = helper.compute().NOT(reverse.length);
                 buildReverseIndex(targetPathEntity, reverse);
                 targetPathEntity.addRelationNULLIndex(0, nullIndex);
                 targetPathEntity.addVersion(System.currentTimeMillis());
@@ -143,6 +143,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 }
             } catch (Exception e) {
                 try {
+                    BILoggerFactory.getLogger().error(BIStringUtils.append("error path:", columnKeyInfo.createJSON().toString()) + e.getMessage(), e);
                     biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
                 } catch (Exception e1) {
                     BILoggerFactory.getLogger().error(e1.getMessage());

@@ -27,6 +27,7 @@ import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -162,8 +163,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
             ArrayList<String> currentIndex = (ArrayList<String>) indexList.clone();
             BIDimension rd = rowColumn[column];
             String name = rd.toString(tempNode.getData());
-            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && name != null) {
-                name = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(name)));
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(name) != null) {
+                name = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(name).longValue()));
             }
             currentIndex.add(name);
             NodeExpander childEx = expander.getChildExpander(name);
@@ -318,8 +319,12 @@ public class GroupExecutor extends AbstractNodeExecutor {
         int tempRow = row;
         tempRow = dealWithExpanNodeChildren(node, expander, cbcells, row, column, page,
                 rowColumn, sumColumn, keys, indexList, total, hasNumber, tempRow, rowData, chartSetting);
-        dealWithExpanSumNode(node, expander, cbcells, row, column,
-                rowColumn, sumColumn, keys, indexList, total, hasNumber, tempRow, rowData, chartSetting);
+        if (chartSetting.showRowTotal() && judgeNode(node, sumColumn)) {
+            dealWithExpanSumNode(node, expander, cbcells, row, column,
+                    rowColumn, sumColumn, keys, indexList, total, hasNumber, tempRow, rowData, chartSetting);
+        } else {
+            tempRow++;
+        }
     }
 
     static void dealWithNode(Node node, NodeExpander expander, CBCell[][] cbcells, int row, int column, int page,
@@ -433,11 +438,11 @@ public class GroupExecutor extends AbstractNodeExecutor {
         CBCell cell = null;
         for (int i = 0, len = node.getChildLength(); i < len; i++) {
             tempNode = node.getChild(i);
-            int rowSpan = (sumColumn.length == 0 || !chartSetting.showColTotal()) ? tempNode.getTotalLength() : tempNode.getTotalLengthWithSummary();
+            int rowSpan = (sumColumn.length == 0 || !chartSetting.showRowTotal()) ? tempNode.getTotalLength() : tempNode.getTotalLengthWithSummary();
             BIDimension rd = rowColumn[column];
             String text = rd.toString(tempNode.getData());
-            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && text != null) {
-                text = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(text)));
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(text) != null) {
+                text = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(text).longValue()));
             }
             cell = new CBCell(text);
             cell.setRow(tempRow);
@@ -601,6 +606,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
         if (chartSetting.showRowTotal() && judgeNode(node, sumColumn)) {
             dealWidthNodeSummary(node, cbcells, row, column,
                     rowColumn, sumColumn, keys, total, hasNumber, tempRow, rowData, chartSetting);
+        } else {
+            tempRow++;
         }
     }
 
@@ -650,12 +657,13 @@ public class GroupExecutor extends AbstractNodeExecutor {
         int rowLength = usedDimensions.length;
         int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
+        DetailChartSetting chartSetting = widget.getChartSetting();
         TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
         for (int i = 0; i < summaryLength; i++) {
             keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
         }
         //导出就全部展开吧
-        int rowLen = paging.isAllPage() ? tree.getTotalLengthWithSummary() : tree.getTotalLengthWithSummary(expander.getYExpander());
+        int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
         //+1是标题
         CBCell[][] cbcells;
         boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
@@ -663,17 +671,17 @@ public class GroupExecutor extends AbstractNodeExecutor {
         if (tree.getChildLength() == 0) {
             cbcells = new CBCell[columnLen][rowLen + 1];
             rectangle = new Rectangle(rowLength, 1, columnLen - 1, rowLen);
-            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, 0, widget.getChatSetting());
+            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, 0, widget.getChartSetting());
         } else {
             cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
             rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
-            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, widget.isOrder(), widget.getChatSetting());
+            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, widget.isOrder(), widget.getChartSetting());
         }
 
         if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-            dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, keys, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChatSetting());
+            dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, keys, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChartSetting());
         } else {
-            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, keys, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChatSetting());
+            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, keys, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChartSetting());
         }
 
         if (widget.isOrder() == 1 && tree.getChildLength() != 0) {

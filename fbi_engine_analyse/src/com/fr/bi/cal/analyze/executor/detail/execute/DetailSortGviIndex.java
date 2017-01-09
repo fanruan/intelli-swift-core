@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.executor.detail.execute;
 
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -12,9 +12,11 @@ import java.util.Map;
  */
 public class DetailSortGviIndex {
     private Object[] value;
-    private Object currentvalue;
+    private GroupValueIndex[] gvis;
     private int currentIndex;
-    private ICubeColumnIndexReader[] getters;
+    private int lastIndex;
+    private CubeIndexGetterWithNullValue[] getters;
+    private GroupValueIndex filterGVI;
 
     private transient boolean allSort;
 
@@ -22,14 +24,17 @@ public class DetailSortGviIndex {
 
     private Iterator<Map.Entry<Object, GroupValueIndex>>[] iters;
 
-    public DetailSortGviIndex(Object[] value, ICubeColumnIndexReader[] getters, boolean[] asc) {
+    public DetailSortGviIndex(Object[] value, CubeIndexGetterWithNullValue[] getters, boolean[] asc, GroupValueIndex filterGVI) {
         this.value = value;
         if (getters == null){
-            getters = new ICubeColumnIndexReader[0];
+            getters = new CubeIndexGetterWithNullValue[0];
         }
         this.getters = getters;
         this.asc = asc;
+        this.filterGVI = filterGVI;
         iters = new Iterator[getters.length];
+        gvis = new GroupValueIndex[getters.length + 1];
+        gvis[0] = filterGVI;
         init();
     }
 
@@ -45,12 +50,16 @@ public class DetailSortGviIndex {
         if (value == null || value.length == 0){
             value = new Object[getters.length];
             for (int i = 0; i < getters.length; i ++){
-                iters[i] = asc[i] ? getters[i].iterator() : getters[i].previousIterator();
-                value[i] = asc[i] ? getters[i].firstKey() : getters[i].lastKey();
+                iters[i] = asc[i] ? getters[i].iterator(gvis[i]) : getters[i].previousIterator(gvis[i]);
+                Map.Entry<Object, GroupValueIndex> entry = iters[i].next();
+                value[i] = entry.getKey();
+                gvis[i + 1] = gvis[i].AND(entry.getValue());
+                iters[i] = asc[i] ? getters[i].iterator(gvis[i]) : getters[i].previousIterator(gvis[i]);
             }
         } else {
             for (int i = 0; i < getters.length; i ++){
-                iters[i] = asc[i] ? getters[i].iterator(value[i]) : getters[i].previousIterator(value[i]);
+                iters[i] = asc[i] ? getters[i].iterator(value[i], gvis[i]) : getters[i].previousIterator(value[i], gvis[i]);
+                gvis[i + 1] = gvis[i].AND(getters[i].getIndex(value[i]));
             }
         }
     }
@@ -66,7 +75,8 @@ public class DetailSortGviIndex {
         if (getters[0] == null) {
             return filterGvi;
         }
-        for (int i = 0; i < iters.length; i++) {
+        filterGvi = gvis[lastIndex];
+        for (int i = lastIndex; i < iters.length; i++) {
             //少于剩下的行数就直接返回，迭代器当前列移位
             if (filterGvi.getRowsCountWithData() <= leftCount) {
                 allSort = false;
@@ -76,7 +86,7 @@ public class DetailSortGviIndex {
             if (iters[i].hasNext()) {
                 entry = iters[i].next();
                 currentIndex = i;
-                currentvalue = entry.getKey();
+                value[i] = entry.getKey();
                 filterGvi = filterGvi.AND(entry.getValue());
             } else {
                 return null;
@@ -87,33 +97,26 @@ public class DetailSortGviIndex {
     }
 
     public void next(){
-        resetValueAndIter(currentIndex);
-    }
-
-    private void resetValueAndIter(int index){
-        for (int i = index; i < value.length; i ++){
-            if (i < index){
-                iters[i] = asc[i] ? getters[i].iterator(value[i]) : getters[i].previousIterator(value[i]);
-            } else if (i == index){
-                value[i] = currentvalue;
-                moveNext(i);
-            } else if (i > index) {
-                value[i] = asc[i] ? getters[i].firstKey() : getters[i].lastKey();
-                iters[i] = asc[i] ? getters[i].iterator() : getters[i].previousIterator();
-            }
-        }
+        moveNext(currentIndex);
     }
 
     private void moveNext(int index){
-        if (index >= 0){
+        if (index >= 0 && iters.length > index){
             if (!iters[index].hasNext()){
-                value[index] = asc[index] ? getters[index].firstKey() : getters[index].lastKey();
-                iters[index] = asc[index] ? getters[index].iterator() : getters[index].previousIterator();
                 moveNext(index - 1);
             } else {
+                lastIndex = index + 1;
                 Map.Entry<Object, GroupValueIndex> entry = iters[index].next();
                 value[index] = entry.getKey();
-                iters[index] = asc[index] ? getters[index].iterator(value[index]) : getters[index].previousIterator(value[index]);
+                gvis[index + 1] = gvis[index].AND(entry.getValue());
+                for (int i = index + 1; i< iters.length; i++){
+                    iters[i] = asc[i] ? getters[i].iterator(gvis[i]) : getters[i].previousIterator(gvis[i]);
+                    Map.Entry<Object, GroupValueIndex> entry1 = iters[i].next();
+                    value[i] = entry1.getKey();
+                    gvis[i + 1] = gvis[i].AND(entry1.getValue());
+                    iters[i] = asc[i] ? getters[i].iterator(gvis[i]) : getters[i].previousIterator(gvis[i]);
+                }
+
             }
         }
     }

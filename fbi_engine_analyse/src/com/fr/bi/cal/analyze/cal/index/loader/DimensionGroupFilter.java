@@ -52,10 +52,11 @@ public class DimensionGroupFilter {
     NameObject targetSort;
     Comparator[] dimensionComparator;
     private boolean shouldRecalculateIndex = false;
+    private boolean calAllPage;
     private long startTime = System.currentTimeMillis();
 
 
-    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum) {
+    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum, boolean calAllPage) {
         this.mergerInfoList = mergerInfoList;
         this.rowDimension = rowDimension;
         this.dimensionComparator = new Comparator[rowDimension.length];
@@ -67,12 +68,8 @@ public class DimensionGroupFilter {
         calculatorTargets = LoaderUtils.getCalculatorTargets(usedTargets, session);
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
+        this.calAllPage = calAllPage;
         LoaderUtils.setAllExpander(mergerInfoList);
-        if (this.mergerInfoList != null) {
-            for (MergerInfo m : this.mergerInfoList) {
-                m.setHasTraverseResultFilter(hasTraverseResultFilter() || targetSort != null);
-            }
-        }
     }
 
     private NodeDimensionIterator[] getNodeIterators(List<MergerInfo> mergerInfoList) {
@@ -129,8 +126,6 @@ public class DimensionGroupFilter {
         if (node.getData() instanceof BIDay) {
             oldData = node.getData();
             node.setShowValue(rowDimension[deep].toString(oldData));
-        } else {
-            node.setShowValue(node.getData().toString());
         }
         boolean ret = true;
         for (DimensionFilter filter : filterList) {
@@ -185,17 +180,6 @@ public class DimensionGroupFilter {
         for (int deep = 0; deep < rowDimension.length; deep++) {
             DimensionFilter filter = rowDimension[deep].getFilter();
             filterList.add(filter);
-        }
-        return filterList;
-    }
-
-    private List<DimensionFilter> getAllNotDateDimensionFilter() {
-        List<DimensionFilter> filterList = new ArrayList<DimensionFilter>();
-        for (int deep = 0; deep < rowDimension.length; deep++) {
-            if (!isStringDimension(rowDimension[deep])) {
-                DimensionFilter filter = rowDimension[deep].getFilter();
-                filterList.add(filter);
-            }
         }
         return filterList;
     }
@@ -784,20 +768,6 @@ public class DimensionGroupFilter {
         return allMinChildGroups;
     }
 
-
-    private Node mergeNodes(Node[] minNodes) {
-        Node mergeNode = new Node(null, null);
-        for (int i = 0; i < minNodes.length; i++) {
-            if (minNodes[i] != null) {
-                if (mergeNode.getData() == null) {
-                    mergeNode.setData(minNodes[i].getData());
-                }
-                mergeNode.setSummaryValue(minNodes[i].getSummaryValue());
-            }
-        }
-        return mergeNode;
-    }
-
     public boolean shouldBuildTree() {
         if (hasTargetSort()) {
             return true;
@@ -808,27 +778,14 @@ public class DimensionGroupFilter {
             }
         }
 
-//		if (hasDateDimension()) {
-//			return true;
-//		}
-
         for (DimensionFilter filter : getAllResultFilters()) {
             if (filter.needParentRelation()) {
                 return true;
             }
         }
-
-        return false;
+        return calAllPage;
     }
 
-    private boolean hasDimensionTargetSort() {
-        for (int i = 0; i < rowDimension.length; i++) {
-            if (rowDimension[i].getSortTarget() != null) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private Comparator getComparator(int deep) {
         if (dimensionComparator[deep] == null) {
@@ -839,7 +796,6 @@ public class DimensionGroupFilter {
 
     private Comparator getComparator(BIDimension dimension) {
         return dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>()).getComparator();
-//		return dimension.createColumnKey(dimension.getColumn()).getComparator();
     }
 
     public boolean isShouldRecalculateIndex() {
@@ -848,10 +804,5 @@ public class DimensionGroupFilter {
 
     public void setShouldRecalculateIndex(boolean shouldRecalculateIndex) {
         this.shouldRecalculateIndex = shouldRecalculateIndex;
-    }
-
-    private List<TargetGettingKey> getNoCalculatorTargetKeys() {
-        List<BISummaryTarget> noCalculatorTargetKeys = Arrays.asList(usedTargets);
-        return null;
     }
 }

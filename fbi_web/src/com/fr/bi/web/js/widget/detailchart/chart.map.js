@@ -16,11 +16,15 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.MapChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -28,10 +32,11 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this, c = this.constants;
         formatRangeLegend();
         delete config.legend;
+        delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];
-        BI.backEach(items, function (idx, item) {
+        BI.each(items, function (idx, item) {
             if (BI.has(item, "settings")) {
                 formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
                     item.settings.unit || "", item.settings.num_separators || c.NUM_SEPARATORS));
@@ -163,15 +168,12 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
         function getRangeStyle(styles, change, defaultColor) {
             var range = [], color = null, defaultStyle = {};
-            var conditionMax = null, conditionMin = null, max = null, min = null;
+            var conditionMax = null, conditionMin = null, min = null;
 
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, it) {
                     if (BI.isNull(min) || BI.parseFloat(min) > BI.parseFloat(it.y)) {
                         min = it.y
-                    }
-                    if (BI.isNull(max) || BI.parseFloat(max) < BI.parseFloat(it.y)) {
-                        max = it.y
                     }
                 })
             });
@@ -201,7 +203,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                             });
                         }
 
-                        var maxScale = _calculateValueNiceDomain(0, max)[1];
+                        var maxScale = _calculateValueNiceDomain(0, this.max)[1];
 
                         if (conditionMax < maxScale) {
                             range.push({

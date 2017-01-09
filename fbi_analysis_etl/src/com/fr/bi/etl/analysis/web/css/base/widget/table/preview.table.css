@@ -32,8 +32,7 @@
 }
 .bi-analysis-etl-preview-table .bi-analysis-etl-preview-table-null-label {
   color: #808080;
-  font-size: 16px;
-  zoom: 2;
+  font-size: 32px;
 }
 .bi-analysis-etl-preview-table .warning {
   color: #e85050;

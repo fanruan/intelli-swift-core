@@ -13,7 +13,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.CompareBarChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "value",
             title: {
@@ -37,11 +37,15 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.CompareBarChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -62,14 +66,15 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
-            labelRotation: this.config.text_direction
+            labelRotation: this.config.text_direction,
+            maxWidth: '40%'
         });
 
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
         config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
         BI.extend(config.xAxis[0], {
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators),
+            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators, true),
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             lineWidth: this.config.line_width,
             showLabel: this.config.show_label,

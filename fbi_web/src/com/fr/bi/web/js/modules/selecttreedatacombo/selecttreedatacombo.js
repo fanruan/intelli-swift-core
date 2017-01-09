@@ -22,19 +22,21 @@ BI.SelectTreeDataCombo = BI.inherit(BI.Widget, {
                 var data = BI.extend({
                     floors: BI.size(BI.Utils.getAllDimensionIDs(o.wId))
                 }, op);
-                BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
-                    var hasNext = !!jsonData.hasNext, nodes = jsonData.items || [];
-                    //if (op.times === 1) {
-                    //    if (nodes.length === 0) {
-                    //        jsonData.items = [{
-                    //            value: BI.i18nText("BI-(Empty)"),
-                    //            text: BI.i18nText("BI-(Empty)"),
-                    //            id: BI.UUID(),
-                    //            nocheck: true
-                    //        }]
-                    //    }
-                    //}
-                    callback(jsonData);
+                BI.Utils.getWidgetDataByID(o.wId, {
+                    success: function (jsonData) {
+                        var hasNext = !!jsonData.hasNext, nodes = jsonData.items || [];
+                        //if (op.times === 1) {
+                        //    if (nodes.length === 0) {
+                        //        jsonData.items = [{
+                        //            value: BI.i18nText("BI-(Empty)"),
+                        //            text: BI.i18nText("BI-(Empty)"),
+                        //            id: BI.UUID(),
+                        //            nocheck: true
+                        //        }]
+                        //    }
+                        //}
+                        callback(jsonData);
+                    }
                 }, {tree_options: data})
             }
         });

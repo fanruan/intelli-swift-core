@@ -50,10 +50,6 @@ BI.CustomgroupGroupExpander = BI.inherit(BI.Widget, {
             self.fireEvent(BI.CustomgroupGroupExpander.EVENT_CLICK_DELETE);
         });
 
-        this.node.on(BI.ArrowNodeDelete.EVENT_CHANGE, function () {
-            self.fireEvent(BI.CustomgroupGroupExpander.EVENT_NODE_VALUE_CHANGE);
-        });
-
         this.node.on(BI.ArrowNodeDelete.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CustomgroupGroupExpander.EVENT_NODE_VALUE_CONFIRM);
         });
@@ -193,6 +189,5 @@ BI.CustomgroupGroupExpander = BI.inherit(BI.Widget, {
 
 BI.CustomgroupGroupExpander.EVENT_CHANGE = "EVENT_CHANGE";
 BI.CustomgroupGroupExpander.EVENT_CLICK_DELETE = "EVENT_CLICK_DELETE";
-BI.CustomgroupGroupExpander.EVENT_NODE_VALUE_CHANGE = "EVENT_NODE_VALUE_CHANGE";
 BI.CustomgroupGroupExpander.EVENT_NODE_VALUE_CONFIRM = "EVENT_NODE_VALUE_CONFIRM";
 $.shortcut("bi.etl_group_custom_group_group_expander", BI.CustomgroupGroupExpander);

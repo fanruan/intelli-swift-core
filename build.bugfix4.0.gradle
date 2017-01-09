@@ -34,6 +34,7 @@ def list=[
 		"fbi_base/src",
 		"fbi_engine_finereport/src",
 		"fbi_conf/src", 
+		"fbi_h5/src",
 		"fbi_engine_base/src",
 		"fbi_engine_generate/src",
 		"fbi_engine_analyse/src",
@@ -150,6 +151,7 @@ task compressJS(dependsOn:'copyFile'){
 			exclude (name:'**/js/third/*.js')
 			exclude (name:'**/cross/demo/**')
 			exclude (name:'**/test/**')
+			exclude (name:'js/components/components.react.js')
 		}
 	}
 }

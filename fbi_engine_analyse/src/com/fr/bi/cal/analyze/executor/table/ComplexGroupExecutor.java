@@ -188,9 +188,9 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
             NodeExpander nodeExpander = complexExpander.getYExpander(i);
 
             if (paging.getOprator() < Node.NONE_PAGE_LEVER) {
-                GroupExecutor.dealWithNode(node, cbcells, startRow, 0, rowDimension, usedSumTarget, keys, rowDimension.length - 1, 0, rowData, widget.getChatSetting());
+                GroupExecutor.dealWithNode(node, cbcells, startRow, 0, rowDimension, usedSumTarget, keys, rowDimension.length - 1, 0, rowData, widget.getChartSetting());
             } else {
-                GroupExecutor.dealWithNode(node, nodeExpander, cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, keys, new ArrayList<String>(), rowDimension.length - 1, 0, rowData, widget.getChatSetting());
+                GroupExecutor.dealWithNode(node, nodeExpander, cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, keys, new ArrayList<String>(), rowDimension.length - 1, 0, rowData, widget.getChartSetting());
             }
             startRow += needAll ? node.getTotalLengthWithSummary() : node.getTotalLengthWithSummary(nodeExpander);
         }

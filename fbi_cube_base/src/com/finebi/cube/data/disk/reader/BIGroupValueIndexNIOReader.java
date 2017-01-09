@@ -22,8 +22,7 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
     @Override
     public GroupValueIndex getSpecificValue(final int rowNumber) throws BIResourceInvalidException {
         try {
-            byte[] bytes = byteArray.getSpecificValue(rowNumber);
-            return GVIFactory.createGroupValueIndexByBytes(bytes);
+            return GVIFactory.createGroupValueIndexByDataInput(byteArray.getByteStream(rowNumber));
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }

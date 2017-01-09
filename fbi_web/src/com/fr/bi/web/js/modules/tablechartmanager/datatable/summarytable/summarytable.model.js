@@ -244,46 +244,6 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         return result;
     },
 
-    //clicked 中的值，如果是分组名使用分组对应的id
-    _parseClickedValue4Group: function (v, dId) {
-        var group = BI.Utils.getDimensionGroupByID(dId);
-        var fieldType = BI.Utils.getFieldTypeByDimensionID(dId);
-        var clicked = v;
-
-        if (BI.isNotNull(group)) {
-            if (fieldType === BICst.COLUMN.STRING) {
-                var details = group.details,
-                    ungroup2Other = group.ungroup2Other,
-                    ungroup2OtherName = group.ungroup2OtherName;
-                if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
-                    ungroup2OtherName === v) {
-                    clicked = BICst.UNGROUP_TO_OTHER;
-                }
-                BI.some(details, function (i, detail) {
-                    if (detail.value === v) {
-                        clicked = detail.id;
-                        return true;
-                    }
-                });
-            } else if (fieldType === BICst.COLUMN.NUMBER) {
-                var groupValue = group.group_value, groupType = group.type;
-                if (groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
-                    var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
-                    if (useOther === v) {
-                        clicked = BICst.UNGROUP_TO_OTHER;
-                    }
-                    BI.some(groupNodes, function (i, node) {
-                        if (node.group_name === v) {
-                            clicked = node.id;
-                            return true;
-                        }
-                    });
-                }
-            }
-        }
-        return clicked;
-    },
-
     /**
      * 表items
      */
@@ -304,7 +264,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             while (tempLayer > 0) {
                 var pv = self.tree.search(tempNodeId).get("name"), dId = self.dimIds[tempLayer - 1];
                 pValues.push({
-                    value: [self._parseClickedValue4Group(pv, dId)],
+                    value: [BI.Utils.getClickedValue4Group(pv, dId)],
                     dId: dId
                 });
                 tempNodeId = self.tree.search(tempNodeId).getParent().get("id");
@@ -331,29 +291,21 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     self.clickValue = child.n;
                     self.expanderCallback();
                 },
-                drillCallback: function (drillId) {
-                    var drillMap = BI.Utils.getDrillByID(self.wId);
-                    //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
-                    //当前钻取的根节点
-                    var rootId = currDid;
-                    BI.each(drillMap, function (drId, ds) {
-                        if (currDid === drId || (ds.length > 0 && ds[ds.length - 1].dId === currDid)) {
-                            rootId = drId;
-                        }
-                    });
-
-                    var drillOperators = drillMap[rootId] || [];
-                    //上钻
-                    if (drillId === BI.NormalExpanderCell.UP_DRILL) {
-                        drillOperators.pop();
-                    } else {
-                        drillOperators.push({
-                            dId: drillId,
-                            values: pValues
-                        });
+                drillCallback: function () {
+                    var regionType = BI.Utils.getRegionTypeByDimensionID(currDid);
+                    var obj = {};
+                    if(pValues.length > 0){
+                        BI.removeAt(pValues, 0);
                     }
-                    drillMap[rootId] = drillOperators;
-                    self.clickedCallback(BI.extend(BI.Utils.getLinkageValuesByID(self.wId), drillMap));
+                    if(regionType < BICst.REGION.DIMENSION2){
+                        obj.xValue = child.n;
+                        obj.pValues = pValues;
+                    }else{
+                        obj.zValue = child.n;
+                        obj.pValues = pValues;
+                    }
+                    obj.dimensionIds = [currDid];
+                    BI.Broadcasts.send(BICst.BROADCAST.CHART_CLICK_PREFIX + self.wId, obj);
                 }
             };
             //展开情况——最后一层没有这个展开按钮
@@ -799,14 +751,14 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                             BI.each(crossItem.values, function (j, v) {
                                 tempPV = pv.concat([{
                                     dId: crossItem.dId,
-                                    value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]
+                                    value: [BI.Utils.getClickedValue4Group(crossItem.text, crossItem.dId)]
                                 }]);
                             });
                             //显示列汇总的时候需要构造汇总
                         } else {
                             tempPV = pv.concat([{
                                 dId: crossItem.dId,
-                                value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]
+                                value: [BI.Utils.getClickedValue4Group(crossItem.text, crossItem.dId)]
                             }]);
                         }
                     }
@@ -816,7 +768,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         BI.each(crossItem.values, function (j, v) {
                             pValues.push([{
                                 dId: crossItem.dId,
-                                value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]
+                                value: [BI.Utils.getClickedValue4Group(crossItem.text, crossItem.dId)]
                             }]);
                         });
                     }
@@ -825,7 +777,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         BI.each(crossItem.values, function (j, v) {
                             pValues.push(pv.concat([{
                                 dId: crossItem.dId,
-                                value: [self._parseClickedValue4Group(crossItem.text, crossItem.dId)]
+                                value: [BI.Utils.getClickedValue4Group(crossItem.text, crossItem.dId)]
                             }]));
                         });
                     } else {
@@ -919,7 +871,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
             while (tempLayer > 0) {
                 var dId = self.crossDimIds[tempLayer - 1];
                 pValues.push({
-                    value: [self._parseClickedValue4Group(self.crossTree.search(tempNodeId).get("name"), dId)],
+                    value: [BI.Utils.getClickedValue4Group(self.crossTree.search(tempNodeId).get("name"), dId)],
                     dId: self.crossDimIds[tempLayer - 1]
                 });
                 tempNodeId = self.crossTree.search(tempNodeId).getParent().get("id");
@@ -946,29 +898,21 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     self.clickValue = child.n;
                     self.expanderCallback();
                 },
-                drillCallback: function (drillId) {
-                    var drillMap = BI.Utils.getDrillByID(self.wId);
-                    //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
-                    //当前钻取的根节点
-                    var rootId = currDid;
-                    BI.each(drillMap, function (drId, ds) {
-                        if (currDid === drId || (ds.length > 0 && ds[ds.length - 1].dId === currDid)) {
-                            rootId = drId;
-                        }
-                    });
-
-                    var drillOperators = drillMap[rootId] || [];
-                    //上钻
-                    if (drillId === BI.NormalExpanderCell.UP_DRILL) {
-                        drillOperators.pop();
-                    } else {
-                        drillOperators.push({
-                            dId: drillId,
-                            values: pValues
-                        });
+                drillCallback: function () {
+                    var regionType = BI.Utils.getRegionTypeByDimensionID(currDid);
+                    var obj = {};
+                    if(pValues.length > 0){
+                        BI.removeAt(pValues, 0);
                     }
-                    drillMap[rootId] = drillOperators;
-                    self.clickedCallback(BI.extend(BI.Utils.getLinkageValuesByID(self.wId), drillMap));
+                    if(regionType < BICst.REGION.DIMENSION2){
+                        obj.xValue = child.n;
+                        obj.pValues = pValues;
+                    }else{
+                        obj.zValue = child.n;
+                        obj.pValues = pValues;
+                    }
+                    obj.dimensionIds = [currDid];
+                    BI.Broadcasts.send(BICst.BROADCAST.CHART_CLICK_PREFIX + self.wId, obj);
                 }
             };
             if (currentLayer < self.crossDimIds.length) {
@@ -1026,15 +970,15 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 }]
             });
         });
-        createItems(items, l.s);
+        createItems(items, l.s, {cIndex: 0});
         this.items = items;
 
-        function createItems(items, data) {
+        function createItems(items, data, indexOb) {
             var s = data.s, c = data.c;
             if (BI.isNotEmptyArray(c)) {
                 BI.each(c, function (i, child) {
                     if (BI.isNotNull(child.s) && BI.isNotNull(child.c)) {
-                        createItems(items, child);
+                        createItems(items, child, indexOb);
                     } else if (BI.isNotNull(child.s)) {
                         BI.each(child.s, function (j, sum) {
                             if (BI.isNull(items[j].children[0].values)) {
@@ -1044,23 +988,27 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                                 type: "bi.target_body_normal_cell",
                                 text: sum,
                                 dId: self.targetIds[j],
-                                clicked: [{}]
+                                clicked: self.crossPV[indexOb.cIndex]
                             });
                         });
+                        indexOb.cIndex++;
                     }
                 });
             }
-            BI.each(s, function (j, sum) {
-                if (BI.isNull(items[j].children[0].values)) {
-                    items[j].children[0].values = [];
-                }
-                items[j].children[0].values.push({
-                    type: "bi.target_body_normal_cell",
-                    text: sum,
-                    dId: self.targetIds[j],
-                    clicked: [{}]
+            if (self.showColTotal) {
+                BI.each(s, function (j, sum) {
+                    if (BI.isNull(items[j].children[0].values)) {
+                        items[j].children[0].values = [];
+                    }
+                    items[j].children[0].values.push({
+                        type: "bi.target_body_normal_cell",
+                        text: sum,
+                        dId: self.targetIds[j],
+                        clicked: self.crossPV[indexOb.cIndex]
+                    });
                 });
-            });
+                indexOb.cIndex++;
+            }
         }
     },
 

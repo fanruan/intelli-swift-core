@@ -761,7 +761,8 @@ Data.Utils = {
                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                 "color": "#1a1a1a",
                 "fontSize": "12px"
-            }
+            },
+            null_continue: options.null_continue || false
         };
 
         var maxes = [];
@@ -1380,7 +1381,7 @@ Data.Utils = {
             }
         }
 
-        function _formatDataLabelForAxis(state, items, format, style) {
+        function _formatDataLabelForAxis(state, items, format, style, isPercentChart) {
             if (state === true) {
                 BI.each(items, function (idx, item) {
                     item.dataLabels = {
@@ -1393,6 +1394,10 @@ Data.Utils = {
                             valueFormat: format
                         }
                     };
+                    if(isPercentChart) {
+                        item.dataLabels.formatter.identifier = "${PERCENT}";
+                        item.dataLabels.formatter.percentFormat = format;
+                    }
                 });
             }
         }
@@ -1447,7 +1452,7 @@ Data.Utils = {
             })
         }
 
-        function _formatNumberLevelInYaxis(config, items, type, position, formatter) {
+        function _formatNumberLevelInYaxis(config, items, type, position, formatter, isPercentChart) {
             var magnify = _calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -1462,6 +1467,10 @@ Data.Utils = {
                 if (position === item.yAxis) {
                     item.tooltip = BI.deepClone(config.plotOptions.tooltip);
                     item.tooltip.formatter.valueFormat = formatter;
+                    if(isPercentChart) {
+                        item.tooltip.formatter.percentFormat = formatter;
+                        item.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
+                    }
                 }
             });
         }
@@ -1498,6 +1507,7 @@ Data.Utils = {
         function formatConfigForMap(configs, items) {
             formatRangeLegend();
             delete configs.legend;
+            delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.tooltip.shared = true;
@@ -1776,6 +1786,7 @@ Data.Utils = {
             }];
             var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
             var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
+            delete configs.zoom;
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -1993,6 +2004,7 @@ Data.Utils = {
             }];
             var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
             var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
+            delete configs.zoom;
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -2191,6 +2203,7 @@ Data.Utils = {
             configs.chartType = "gauge";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             return BI.extend(configs, {
                 series: items
             });
@@ -2539,6 +2552,7 @@ Data.Utils = {
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.style = config.chart_font;
+            configs.plotOptions.connectNulls = config.null_continue;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.enabled = config.show_zoom;
@@ -2616,8 +2630,13 @@ Data.Utils = {
             BI.each(items, function (idx, item) {
                 item.color = [configs.yAxis[idx].labelStyle.color];
                 if (item.type === "line") {
+                    config.chartType = "line";
                     lineItem.push(item);
-                } else {
+                } else if(item.type === "area") {
+                    config.chartType = "area";
+                    otherItem.push(item);
+                }else {
+                    config.chartType = "column";
                     otherItem.push(item);
                 }
             });
@@ -2751,6 +2770,7 @@ Data.Utils = {
             configs.chartType = "pie";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             configs.plotOptions.dataLabels.align = "outside";
             configs.plotOptions.dataLabels.connectorWidth = "outside";
             configs.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
@@ -2816,6 +2836,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.style = config.chart_font;
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             return BI.extend(configs, {
                 series: items
             });
@@ -4200,7 +4221,7 @@ Data.Utils = {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 formatter: _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
             });
-            _formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, constants.LEFT_AXIS, configs.yAxis[0].formatter);
+            _formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, constants.LEFT_AXIS, configs.yAxis[0].formatter, true);
 
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
@@ -4215,7 +4236,7 @@ Data.Utils = {
             configs.chartType = "area";
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
-            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.yAxis[0].formatter, config.chart_font);
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.yAxis[0].formatter, config.chart_font, true);
 
             return BI.extend(configs, {
                 series: items

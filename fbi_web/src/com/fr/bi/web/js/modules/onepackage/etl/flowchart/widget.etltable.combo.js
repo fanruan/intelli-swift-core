@@ -109,6 +109,20 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
                     items[items.length - 1].disabled = true;
                     items[items.length - 1].warningTitle = BI.i18nText("BI-Temp_Tables_No_Remove")
                 }
+                if (tableInfo.connection_name === BICst.CONNECTION.EXCEL_CONNECTION) {
+                    items.splice(0, 0, {
+                        text: BI.i18nText("BI-Update_Excel_Dot"),
+                        title: BI.i18nText("BI-Update_Excel_Dot"),
+                        value: BICst.ETL_MANAGE_EXCEL_CHANGE
+                    });
+                }
+                if (tableInfo.connection_name === BICst.CONNECTION.SQL_CONNECTION) {
+                    items.splice(0, 0, {
+                        text: BI.i18nText("BI-Remodify_Sql"),
+                        title: BI.i18nText("BI-Remodify_Sql"),
+                        value: BICst.ETL_MANAGE_SQL_CHANGE
+                    });
+                }
                 popup.populate(BI.createItems(items, {
                     type: "bi.text_item",
                     cls: "bi-list-item",

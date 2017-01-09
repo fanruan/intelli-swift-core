@@ -249,7 +249,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 BI.Utils.checkTableInUse({
                     id: self.model.getId()
                 }, function (res) {
-                    if (BI.isNotNull(res) && res.is_use === true) {
+                    if (BI.isNotNull(res) && res["inUse"] === true) {
                         BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Table_In_Use_Tip"), function (flag) {
                             if (flag === true) {
                                 self.fireEvent(BI.ETL.EVENT_REMOVE);
@@ -359,8 +359,8 @@ BI.ETL = BI.inherit(BI.Widget, {
         this._buildETLSetPane();
         this._changeButtonsStatus();
     },
-    
-    _populateAfterAddTables: function() {
+
+    _populateAfterAddTables: function () {
         var self = this;
         var allTables = this.model.getAllTables();
         if (allTables.length === 1) {
@@ -746,9 +746,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self.constants.ETL_OPERATOR_LAYER),
                 info: {
                     reopen: true,
-                    isGenerated: status.isGenerated,
-                    tableInfo: table,
-                    relationfieldNames: self.model.constructFieldNamesWhichHasRelation()
+                    isGenerated: status.exists,
+                    tableInfo: table
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -774,7 +773,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: self.model.getId(),
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table,
                     translations: self.model.getTranslations(),
                     fieldInfo: self.model.constructFieldNameAndTranslationFieldNameRelation()
@@ -802,7 +801,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self.constants.ETL_OPERATOR_LAYER),
                 info: {
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table,
                     relations: self.model.getRelations()
                 }
@@ -829,9 +828,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self.constants.ETL_OPERATOR_LAYER),
                 info: {
                     reopen: true,
-                    isGenerated: status.isGenerated,
-                    tableInfo: table,
-                    relationfieldNames: self.model.constructFieldNamesWhichHasRelation()
+                    isGenerated: status.exists,
+                    tableInfo: table
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -857,7 +855,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: tableId,
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     joinTables: table.tables,
                     tableInfo: table,
                     allETLTables: self.model.getAllTables()
@@ -889,7 +887,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: tableId,
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     unionTables: table.tables,
                     tableInfo: table,
                     allETLTables: self.model.getAllTables()
@@ -920,7 +918,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: self.model.getId(),
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table,
                     fields: self.model.getFields(),
                     relations: self.model.getRelations()
@@ -949,7 +947,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: tableId,
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table
                 }
             });
@@ -978,7 +976,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     id: tableId,
                     reopen: true,
-                    isGenerated: status.isGenerated,
+                    isGenerated: status.exists,
                     tableInfo: table
                 }
             });

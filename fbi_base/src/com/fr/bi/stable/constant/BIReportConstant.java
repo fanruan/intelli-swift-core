@@ -35,7 +35,7 @@ public class BIReportConstant {
 
     public static final class GROUP {
 
-        public final static int NO_GROUP = 0x2;
+        public final static int NO_GROUP = 0x0;
 
         public final static int AUTO_GROUP = 0x3;
 
@@ -570,6 +570,12 @@ public class BIReportConstant {
             public static final int POINT = 2;
             public static final int ARROW = 3;
         }
+    }
+
+    public static final class REPORT_AUTH {
+        public static final int NONE = 0;
+        public static final int EDIT = 1;
+        public static final int VIEW = 2;
     }
 
 }

@@ -405,7 +405,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             });
         }
         if(titleX === ""){
-            BI.any(view[BICst.REGION.DIMENSION1], function(idx, dId){
+            BI.any(view[BICst.REGION.TARGET2], function(idx, dId){
                 if(BI.Utils.isDimensionUsable(dId)){
                     titleX = BI.Utils.getDimensionNameByID(dId);
                     return true;

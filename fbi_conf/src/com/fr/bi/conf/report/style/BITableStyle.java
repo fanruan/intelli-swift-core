@@ -89,7 +89,7 @@ public class BITableStyle {
         noneValueStyle = numberStyle.deriveHorizontalAlignment(Constants.CENTER);
         noneValueOddStyle = noneValueStyle.deriveBackground(ColorBackground.getInstance(oddLine));
         totalStyle = noneValueStyle;
-        DecimalFormat decimalFormat = new CoreDecimalFormat(new DecimalFormat("#,###.##"), "#,###.##");
+        DecimalFormat decimalFormat = new CoreDecimalFormat(new DecimalFormat("#,##0.00"), "#,##0.00");
         numberStyle = numberStyle.deriveFormat(decimalFormat);
         integerNumberStyle = numberStyle.deriveFormat(new CoreDecimalFormat(new DecimalFormat("#,###"), "#,###"));
         numberOddStyle = numberStyle.deriveBackground(ColorBackground.getInstance(oddLine));
@@ -130,7 +130,11 @@ public class BITableStyle {
     }
 
     public Style getNumberCellStyle(Object cellValue, boolean isOdd, boolean isHyberLink) {
-        Style style = cellValue == null ? (isOdd ? noneValueOddStyle : noneValueStyle) : (isOdd ? numberOddStyle : numberStyle);
+        if (cellValue == null || ComparatorUtils.equals(cellValue, 0)) {
+            return isOdd ? noneValueOddStyle : noneValueStyle;
+        }
+        String v = GeneralUtils.objectToString(cellValue);
+        Style style = v.contains(".") ? (isOdd ? numberOddStyle : numberStyle) : (isOdd ? integerNumberOddStyle : integerNumberStyle);
         style = isHyberLink ? style.deriveFRFont(style.getFRFont().applyUnderline(Constants.LINE_THIN).applyForeground(Color.blue)) : style;
         return style;
     }

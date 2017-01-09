@@ -69,7 +69,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
                 var vId = "";
                 BI.some(self.valueMap, function (id, v) {
                     if (v.reportId === reportId &&
-                        v.createBy === createBy.toString()) {
+                        v.createBy.toString() === createBy.toString()) {
                         vId = id;
                     }
                 });
@@ -174,7 +174,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
                 self.valueMap[v] = {
                     reportName: report.text,
                     reportId: report.id,
-                    createBy: manager
+                    createBy: report.createBy
                 };
                 items.push({
                     id: self._constant.ID_PREFIX + report.id,

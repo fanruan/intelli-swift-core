@@ -212,8 +212,8 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                 }
 
                 BI.each(fieldValues, function (i, v) {
-                    var d = new Date(v);
                     if (BI.isNotNull(v)) {
+                        var d = new Date(v.replace(/-/g, "/"));
                         year.push(d.getFullYear());
                         season.push(Date._QN[getSeason(d.getMonth()) + 1]);
                         month.push(d.print("%B"));

@@ -21,8 +21,9 @@ BI.AbsoluteCenterLayout = BI.inherit(BI.Layout, {
         this.populate(this.options.items);
     },
 
-    _addElement: function (item) {
-        var o = this.options, w = BI.createWidget(item);
+    _addElement: function (i, item) {
+        var o = this.options;
+        var w = BI.AbsoluteCenterLayout.superclass._addElement.apply(this, arguments);
         w.element.css({
             "position": "absolute",
             "left": o.hgap + o.lgap + (item.lgap || 0),
@@ -31,30 +32,15 @@ BI.AbsoluteCenterLayout = BI.inherit(BI.Layout, {
             "bottom": o.vgap + o.bgap + (item.bgap || 0),
             "margin": "auto"
         });
-        this.addWidget(w);
         return w;
     },
 
     resize: function () {
-        console.log("absolute_center_adapt布局不需要resize");
-    },
-
-    addItem: function (item) {
-        BI.AbsoluteCenterLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
-        return w;
+        // console.log("absolute_center_adapt布局不需要resize");
     },
 
     populate: function (items) {
         BI.AbsoluteCenterLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(item);
-            }
-        });
         this.render();
     }
 });

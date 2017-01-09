@@ -32,26 +32,16 @@ public class Service4BIDezi implements Service {
 
     static {
         redirectSet.add(BIInitDeziPaneAction.CMD);
-        redirectSet.add(BIExcelExportAction.CMD);
-        redirectSet.add(BIWidgetSettingAction.CMD);
-        redirectSet.add(BIChartSettingAction.CMD);
     }
 
     private static AbstractBIDeziAction[] actions = {
             new BIUpdateSessionAction(),
-            new BIRemoveWidgetAction(),
 
             new BIWidgetSettingAction(),
-            new BIChartSettingAction(),
             new BIReportSavingAction(),
             new BIGetFieldMinMaxValueAction(),
 
-            new BIGetAccessablePackagesAction(),
-            new BIGetAccessableGroupPackagesAction(),
-
             new BIExcelExportAction(),
-
-            new BIGetPreviewTableDataAction(),
 
             new BIStartGenerateTempCubeAction(),
             new BIGetTempCubeGeneratingStatusAction(),

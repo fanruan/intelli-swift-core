@@ -333,8 +333,6 @@ public interface BISystemPackageConfigurationProvider {
      */
     Set<BusinessTable> getAnalysisAllTables(long userId);
 
-    Set<BIBusinessPackage> getPackages4CubeGenerate(long userId);
-
     /**
      * 当前的配置的表是否比分析部分的表，只少，没新增。
      *

@@ -4,3 +4,6 @@
 .detail-table-common-table-set .relation-setting-label {
   border: 1px solid #d4dadd;
 }
+.detail-table-common-table-set .tables-region {
+  z-index: 1;
+}

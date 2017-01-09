@@ -37,16 +37,23 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
 
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.RadarChart.EVENT_CHANGE, obj);
         });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
+        });
     },
 
     _formatConfig: function (config, items) {
         var self = this;
+
+        delete config.zoom;
+
         var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
 
         config.colors = this.config.chart_color;

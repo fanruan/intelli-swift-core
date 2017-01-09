@@ -1,10 +1,8 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
-import com.fr.bi.cal.analyze.cal.result.CrossExpander;
-import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
@@ -26,24 +24,24 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-public class HorGroupExecutor extends AbstractNodeExecutor {
+public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
 
-    public HorGroupExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
+    private BIDimension[] colDimension;
+
+    public HorGroupExecutor(TableWidget widget, BIDimension[] usedColumn, Paging paging, BISession session, CrossExpander expander) {
         super(widget, paging, session, expander);
+        colDimension = usedColumn;
     }
 
     //
@@ -212,7 +210,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
                 cbox.setType(CellConstant.CBCELL.TARGETTITLE_Y);
                 cbox.setSortTargetName(StringUtils.EMPTY);
                 cbox.setSortTargetValue("[]");
-                if (isTargetSort && ComparatorUtils.equals(sortDimension.getSortTarget(), StringUtils.EMPTY)) {
+                if (isTargetSort && sortDimension != null && ComparatorUtils.equals(sortDimension.getSortTarget(), StringUtils.EMPTY)) {
                     cbox.setSortType(sortDimension.getSortType());
                 } else {
                     cbox.setSortType(BIReportConstant.SORT.NONE);
@@ -238,7 +236,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
                     cbox.setType(CellConstant.CBCELL.TARGETTITLE_Y);
                     cbox.setSortTargetName(sumColumn[i].getValue());
                     cbox.setSortTargetValue("[]");
-                    if (isTargetSort && ComparatorUtils.equals(sortDimension.getSortTarget(), sumCol.getValue())) {
+                    if (isTargetSort && sortDimension != null && ComparatorUtils.equals(sortDimension.getSortTarget(), sumCol.getValue())) {
                         cbox.setSortType(sortDimension.getSortType());
                     } else {
                         cbox.setSortType(BIReportConstant.SORT.NONE);
@@ -265,8 +263,8 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             int dimensionIndex = rowData.getDimensionIndexFromRow(row, columnLength);
             BIDimension rd = colColumn[dimensionIndex];
             String name = rd.toString(tempNode.getData());
-            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && name != null) {
-                name = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(name)));
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(name) != null) {
+                name = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(name).longValue()));
             }
             NodeExpander childEx = expander.getChildExpander(name);
             int colSpan = (sumColumn.length == 0 || !chartSetting.showColTotal()) ? tempNode.getTotalLength(childEx) : tempNode.getTotalLengthWithSummary(childEx);
@@ -614,8 +612,8 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             int dimensionIndex = rowData.getDimensionIndexFromRow(row, columnLengh);
             BIDimension rd = colColumn[dimensionIndex];
             String text = rd.toString(tempNode.getData());
-            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && text != null) {
-                text = DateUtils.DATEFORMAT2.format(new Date(Long.parseLong(text)));
+            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(text) != null) {
+                text = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(text).longValue()));
             }
             cell = new CBCell(text);
             cell.setRow(row);
@@ -768,14 +766,51 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     @Override
-    public Node getCubeNode() {
+    public NewCrossRoot getCubeNode() {
+//        if (getSession() == null) {
+//            return null;
+//        }
+//        long start = System.currentTimeMillis();
+//        Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageGroup(true, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, paging.getOprator(), widget.useRealData(), session, expander.getXExpander());
+//        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+//        return tree;
+        long start = System.currentTimeMillis();
         if (getSession() == null) {
             return null;
         }
-        long start = System.currentTimeMillis();
-        Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageGroup(true, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, paging.getOprator(), widget.useRealData(), session, expander.getXExpander());
+        int len = usedSumTarget.length;
+        Map<String, TargetGettingKey> targetsMap = new HashMap<String, TargetGettingKey>();
+        TargetGettingKey[] keys = new TargetGettingKey[len];
+        for (int i = 0; i < len; i++) {
+            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
+            targetsMap.put(usedSumTarget[i].getValue(), keys[i]);
+        }
+        int calpage = paging.getOprator();
+
+        NewCrossRoot node = CubeIndexLoader.getInstance(session.getUserId()).loadPageCrossGroup(createTarget4Calculate(), new BIDimension[0], colDimension, allSumTarget, calpage, widget.useRealData(), session, expander, widget);
+
+        clearNullSummary(node.getLeft(), keys);
+        clearNullSummary(node.getTop(), keys);
+
+
         System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
-        return tree;
+        return node;
+    }
+
+    @Override
+    public JSONObject createJSONObject() throws Exception {
+        return getCubeNode().toJSONObject(new BIDimension[0], colDimension, widget.getTargetsKey());
+    }
+
+    private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {
+        for (TargetGettingKey key : keys) {
+            if (left.getSummaryValue(key) == null) {
+                left.getValue().setSummaryValue(key, 0);
+            }
+        }
+        for (int i = 0; i < left.getChildLength(); i++) {
+            clearNullSummary((CrossHeader) left.getChild(i), keys);
+        }
     }
 
     /**
@@ -786,24 +821,24 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
      */
     @Override
     public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
-        Node tree = getCubeNode();
+        NewCrossRoot tree = getCubeNode();
         if (tree == null) {
             return new CBCell[0][0];
         }
-        int colLength = usedDimensions.length;
+        int colLength = colDimension.length;
         int summaryLength = usedSumTarget.length;
         int rowLength = colLength + summaryLength;
         TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
         for (int i = 0; i < summaryLength; i++) {
             keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
         }
-        int collen = ExecutorCommonUtils.isAllPage(paging.getOprator()) ? tree.getTotalLengthWithSummary() : tree.getTotalLengthWithSummary(expander.getXExpander());
+        int collen = tree.getTop().getTotalLengthWithSummary();
 
-        CBCell[][] cbcells = new CBCell[collen + Math.min(tree.getChildLength(), 1) + widget.isOrder()][rowLength];
-        boolean isTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
+        CBCell[][] cbcells = new CBCell[collen + Math.min(tree.getTop().getChildLength(), 1) + widget.isOrder()][rowLength];
+        boolean isTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
 
         for (int i = 0; i < colLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) colDimension[i]).getText());
             cell.setColumn(0);
             cell.setRow(i);
             cell.setRowSpan(1);
@@ -812,11 +847,11 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
-            BITargetAndDimension rowCol = usedDimensions[i];
+            BITargetAndDimension rowCol = colDimension[i];
             cbox.setName(rowCol.getValue());
             cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_X);
             if (!isTargetSort) {
-                cbox.setSortType(usedDimensions[i].getSortType());
+                cbox.setSortType(colDimension[i].getSortType());
             } else {
                 cbox.setSortType(BIReportConstant.SORT.NONE);
             }
@@ -824,7 +859,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
         }
         for (int i = 0; i < summaryLength; i++) {
-            CBCell cell = new CBCell(usedSumTarget[i].getValue());
+            CBCell cell = new CBCell(usedSumTarget[i].getText());
             cell.setColumn(0);
             cell.setRow(colLength + i);
             cell.setRowSpan(1);
@@ -847,9 +882,9 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
         }
         if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-            dealWithNode(tree, cbcells, 0, 1, usedDimensions, usedSumTarget, keys, usedDimensions.length - 1, new BIComplexExecutData(usedDimensions), widget.getChatSetting());
+            dealWithNode(tree.getTop(), cbcells, 0, 1, colDimension, usedSumTarget, keys, colDimension.length - 1, new BIComplexExecutData(colDimension), widget.getChartSetting());
         } else {
-            dealWithNode(tree, expander.getXExpander(), cbcells, 0, 1, usedDimensions, usedSumTarget, keys, new ArrayList<String>(), usedDimensions.length - 1, false, new IntList(), false, null, widget, new BIComplexExecutData(usedDimensions), widget.getChatSetting());
+            dealWithNode(tree.getTop(), expander.getXExpander(), cbcells, 0, 1, colDimension, usedSumTarget, keys, new ArrayList<String>(), colDimension.length - 1, false, new IntList(), false, null, widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
         }
         return cbcells;
     }

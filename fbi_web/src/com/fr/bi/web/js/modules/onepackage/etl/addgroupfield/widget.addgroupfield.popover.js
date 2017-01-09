@@ -89,7 +89,7 @@ BI.AddGroupFieldPopover = BI.inherit(BI.BarPopoverSection, {
         });
 
         this.fieldPaneButton.on(BI.TextButton.EVENT_CHANGE, function () {
-            self.fieldPane.setVisible(true);
+            self.fieldPaneWrap.setVisible(true);
             self.sure.setVisible(false);
             self.newFieldNameEditor.setValue("");
             self.northLabel.setValue(BI.i18nText("BI-Select_Base_Column_Of_New_Columns"));
@@ -139,11 +139,17 @@ BI.AddGroupFieldPopover = BI.inherit(BI.BarPopoverSection, {
             bgap: this.constants.ETL_ADD_GROUP_FIELD_FLOAT_BOX_GAP_TEN
         });
 
+        this.fieldPaneWrap = BI.createWidget({
+            type: "bi.vertical",
+            cls: "field-group",
+            items: [this.fieldPane]
+        });
+
         BI.createWidget({
             type: "bi.absolute",
             element: center,
             items: [{
-                el: this.fieldPane,
+                el:this.fieldPaneWrap,
                 top: 0,
                 left: 0,
                 bottom: 0,
@@ -159,7 +165,7 @@ BI.AddGroupFieldPopover = BI.inherit(BI.BarPopoverSection, {
         if (this.model.isOpen2Change()) {
             var table_infor = this.model.getNewGroupsData()[id].table_infor;
             var group = this.model.getNewGroupsData()[id].group;
-            this.fieldPane.setVisible(false);
+            this.fieldPaneWrap.setVisible(false);
             this.sure.setVisible(true);
             fieldName = table_infor.target_field_name;
             var tables = this.model.getAllTables();
@@ -168,7 +174,7 @@ BI.AddGroupFieldPopover = BI.inherit(BI.BarPopoverSection, {
             this.fieldPaneButton.setValue(fieldName);
             this.northLabel.setValue(BI.i18nText("BI-Add_Grouping_Column"));
         } else {
-            this.fieldPane.setVisible(true);
+            this.fieldPaneWrap.setVisible(true);
             this.sure.setVisible(false);
         }
     },
@@ -187,7 +193,7 @@ BI.AddGroupFieldPopover = BI.inherit(BI.BarPopoverSection, {
             });
             button.on(BI.TextButton.EVENT_CHANGE, function (value) {
                 var table = self.model.getAllTables();
-                self.fieldPane.setVisible(false);
+                self.fieldPaneWrap.setVisible(false);
                 self.sure.setVisible(true);
                 self.customgroup.populate(table[0] || table, value);
                 self.fieldPaneButton.setValue(value);

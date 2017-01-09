@@ -29,6 +29,12 @@ BI.RelationViewItem = BI.inherit(BI.BasicButton, {
         })
     },
 
+    enableHover: function (opt) {
+        BI.RelationViewRegion.superclass.enableHover.apply(this, [{
+            container: "body"
+        }]);
+    },
+
     setSelected: function (b) {
         this.element[b ? "addClass" : "removeClass"]("active");
     }

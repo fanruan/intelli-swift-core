@@ -65,8 +65,8 @@ public class FBIConfig extends XMLFileManager {
             userAuthorAttr = new BIUserAuthorAttr();
             userAuthorAttr.readXML(reader);
         } else if (ComparatorUtils.equals(BIUserAuthorAttr.EDIT_AUTH_TAG, tagName) ||
-                ComparatorUtils.equals(BIUserAuthorAttr.EDIT_AUTH_TAG, tagName) ||
-                ComparatorUtils.equals(BIUserAuthorAttr.EDIT_AUTH_TAG, tagName)) {
+                ComparatorUtils.equals(BIUserAuthorAttr.VIEW_AUTH_TAG, tagName) ||
+                ComparatorUtils.equals(BIUserAuthorAttr.MOBILE_AUTH_TAG, tagName)) {
             userAuthorAttr.readXML(reader);
         } else if (ComparatorUtils.equals(tagName, BIChartStyleAttr.XML_TAG)) {
             chartStyleAttr = new BIChartStyleAttr();

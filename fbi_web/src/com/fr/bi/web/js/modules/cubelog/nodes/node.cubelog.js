@@ -49,7 +49,7 @@ BI.CubeLogNode = BI.inherit(BI.Widget, {
     },
 
     _formatText: function (text, second) {
-        return text + ": " + ((second >= 1000 ? Math.floor(second / 1000) : second) + (second >= 1000 ? "秒" : "毫秒"));
+        return text + ": " + ((second >= 1000 ? Math.floor(second / 1000) : second) + (second >= 1000 ? BI.i18nText("BI-Seconds") : BI.i18nText("BI-Millisecond")));
     },
 
     populate: function (items, keyword, context) {

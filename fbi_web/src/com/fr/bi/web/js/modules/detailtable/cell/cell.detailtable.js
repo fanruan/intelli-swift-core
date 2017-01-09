@@ -28,10 +28,11 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 textAlign: (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) ? "right" : "left",
                 height: o.height,
                 text: o.text,
+                title: o.text,
                 lgap: 5,
                 rgap: 5
             });
-            item.on(BI.TextButton.EVENT_CHANGE, function() {
+            item.on(BI.TextButton.EVENT_CHANGE, function () {
                 window.open(expression.replaceAll("\\$\\{.*\\}", o.text));
             });
         } else {
@@ -42,6 +43,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 whiteSpace: "nowrap",
                 height: this.options.height,
                 text: this.options.text,
+                title: this.options.text,
                 value: this.options.value,
                 lgap: 5,
                 rgap: 5
@@ -93,10 +95,6 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
 
-        if (text === Infinity) {
-            text = "N/0";
-        }
-
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
         BI.some(conditions, function (i, co) {
@@ -119,11 +117,36 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
         }
 
-        if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+        if (text === Infinity) {
+            text = "N/0";
+        } else if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNumeric(text)) {
             text += "%";
         }
 
+        //日期的需要format
+        var dGroup = BI.Utils.getDimensionGroupByID(o.dId);
+        if (BI.isNotNull(dGroup) && BI.isNumeric(text)) {
+            if (dGroup.type === BICst.GROUP.YMD) {
+                var date = new Date(BI.parseInt(text));
+                text = date.print("%Y-%X-%d");
+            }
+            if (dGroup.type === BICst.GROUP.YMDHMS) {
+                var date = new Date(BI.parseInt(text));
+                text = date.print("%Y-%X-%d  %H:%M:%S");
+            }
+            if (dGroup.type === BICst.GROUP.S) {
+                text = BICst.FULL_QUARTER_NAMES[text - 1];
+            }
+            if (dGroup.type === BICst.GROUP.M) {
+                text = BICst.FULL_MONTH_NAMES[text - 1];
+            }
+            if (dGroup.type === BICst.GROUP.W) {
+                text = BICst.FULL_WEEK_NAMES[text - 1];
+            }
+        }
+
         item.setText(text);
+        item.setTitle(text);
 
         if (BI.isNotEmptyString(color)) {
             item.element.css("color", color);

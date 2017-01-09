@@ -20,7 +20,8 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
     _refreshSelectDataPane : function (widget, model) {
 
         var tables = model.getTempFieldsTables();
-        tables = BI.Utils.getProbablySinglePathTables(tables)
+        tables = BI.Utils.getProbablySinglePathTables(tables);
+
         widget.selectPane.controller.setEnableTables(tables);
     },
 
@@ -44,7 +45,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
     checkNameValid : function (index, name, widget, model) {
         return model.checkNameValid(index, name);
     },
-    
+
     sortColumn : function (oldIndex, newIndex, widget, model) {
         model.sort(oldIndex, newIndex)
         this._refreshState(widget, model);
@@ -130,7 +131,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
         this.refreshPopData(this._editing ? ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, widget, model);
         this._editing === true ? this._clearMask(widget) : this._showMask(widget);
     },
-    
+
     populate : function (widget, model) {
         widget.center.populate(model.update(), BI.extend(this.options, {
             showContent: false,

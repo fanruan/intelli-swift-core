@@ -153,7 +153,7 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
     }
 
     private boolean hasNext(String[] parentValues, int times) throws JSONException {
-        return times * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE < createData(parentValues, -1).size();
+        return createData(parentValues, times + 1).size() > 0;
     }
 
     private JSONArray createJSONArrayForTree(List<String> list, String id, int times,
@@ -165,7 +165,7 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
             for (int i = 0; i < len; i++) {
                 JSONObject nodeJa = new JSONObject();
                 try {
-                    nodeJa.put("isParent", hasChild && hasChild(list.get(i), parentValues));
+                    nodeJa.put("isParent", hasChild);
                     if (id == null) {
                         nodeJa.put("id", times + "_" + (i + 1));
                     } else {
@@ -208,25 +208,6 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
         }
     }
 
-    private boolean hasChild(String value, JSONArray parentValues) throws JSONException {
-        String[] values;
-        if (parentValues == null) {
-            values = new String[1];
-            values[0] = value;
-        } else {
-            values = new String[parentValues.length() + 1];
-            for (int k = 0; k < parentValues.length(); k++) {
-                values[k] = parentValues.getString(k);
-            }
-            values[parentValues.length()] = value;
-        }
-        if (getChildCount(values) > 0) {
-            return true;
-        }
-        return false;
-    }
-
-
     private CheckState getCheckState(String value, JSONArray parentValues, Map<String, Node> valueMap,
                                      boolean checked, boolean half, boolean hasChild) throws JSONException {
         boolean tempCheck = false, halfCheck = false;
@@ -263,6 +244,4 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
     private int getChildCount(String[] values) throws JSONException {
         return createData(values, -1).size();
     }
-
-
 }

@@ -7,6 +7,7 @@ BI.CustomGroupFieldButton = BI.inherit(BI.BasicButton, {
         return BI.extend(conf, {
             tagName: "a",
             baseCls: (conf.baseCls || "") + " bi-text-button display-block" + " bi-custom-group-field-button",
+            height: 24,
             textAlign: "center",
             whiteSpace: "nowrap",
             textWidth: null,

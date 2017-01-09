@@ -16,7 +16,7 @@ BI.JoinPreviewTableHeaderCell = BI.inherit(BI.Widget, {
         if (merge.length > 1) {
             oFields = merge.join("/");
         }
-        var value = o.text === oFields ? o.text : (o.text + "(" + oFields + ")");
+        var value = (o.text === oFields || merge.length === 0) ? o.text : (o.text + "(" + oFields + ")");
         var nameLabel = BI.createWidget({
             type: "bi.text_button",
             textAlign: "left",

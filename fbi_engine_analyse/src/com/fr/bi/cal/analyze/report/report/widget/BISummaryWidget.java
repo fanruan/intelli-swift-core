@@ -28,7 +28,6 @@ import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -39,6 +38,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BISummaryWidget extends BIAbstractWidget {
     @BICoreField
@@ -79,12 +79,16 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
-            result.add(dimensions[i].getStatisticElement().getTableBelongTo());
+            if (dimensions[i].getStatisticElement() != null) {
+                result.add(dimensions[i].getStatisticElement().getTableBelongTo());
+            }
         }
         BISummaryTarget[] targets = getTargets();
         for (int i = 0; i < targets.length; i++) {
             BISummaryTarget st = targets[i];
-            result.add(st.getStatisticElement().getTableBelongTo());
+            if (st.getStatisticElement() != null) {
+                result.add(st.getStatisticElement().getTableBelongTo());
+            }
         }
         return result;
     }
@@ -255,7 +259,9 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         }
         this.dimensions = dims.toArray(new BIDimension[dims.size()]);
         List<BISummaryTarget> tars = new ArrayList<BISummaryTarget>();
-        Map<String, TargetGettingKey> targetMap = new ConcurrentCacheHashMap<String, TargetGettingKey>();
+
+        // young BI-2332 指标数超过65后，计算指标值不对
+        Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
         for (int j = 0; j < targetIds.length(); j++) {
             JSONObject tarJo = dimAndTar.getJSONObject(targetIds.getString(j));
             tarJo.put("did", targetIds.getString(j));
@@ -472,7 +478,9 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             while (dimensionFieldOfTargetIterator.hasNext()) {
                 Map.Entry<String, BusinessField> entry = dimensionFieldOfTargetIterator.next();
                 BusinessField dimensionFieldOfTarget = entry.getValue();
-                refreshedDimensionFieldOfTargetsMap.put(entry.getKey(), BIModuleUtils.getBusinessFieldById(dimensionFieldOfTarget.getFieldID()));
+                if (dimensionFieldOfTarget != null) {
+                    refreshedDimensionFieldOfTargetsMap.put(entry.getKey(), BIModuleUtils.getBusinessFieldById(dimensionFieldOfTarget.getFieldID()));
+                }
             }
             refreshedDimensionsMap.put(dimensionsMapEntry.getKey(), refreshedDimensionFieldOfTargetsMap);
         }

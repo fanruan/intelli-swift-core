@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
-import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -59,7 +59,7 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
 
     @Override
     public int getType() {
-        return Constants.TABLE_TYPE.USER_BASE;
+        return BIBaseConstant.TABLE_TYPE.USER_BASE;
     }
 
     @Override
@@ -91,12 +91,12 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
         helper.add(parent);
         set.add(parent);
         for (BITargetAndDimension dim : widget.getViewDimensions()) {
-            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
+            if (dim.getStatisticElement() != null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 dim.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
         for (BITargetAndDimension target : widget.getViewTargets()) {
-            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
+            if (target.getStatisticElement() != null && target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
                 target.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }

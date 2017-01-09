@@ -140,7 +140,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     top: 10
                 }]
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
+            this.title.on(BI.ShelterEditor.EVENT_CONFIRM, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
@@ -239,6 +239,9 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             });
             this.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
                 self.model.set(widget);
+                if (BI.isNotNull(widget.clicked)) {
+                    self._refreshTableAndFilter();
+                }
             });
             BI.createWidget({
                 type: "bi.absolute",

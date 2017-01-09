@@ -6,6 +6,7 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -51,7 +52,7 @@ public class AnalysisETLSourceFactory {
             case Constants.ETL_TYPE.SELECT_NONE_DATA:
                 AnalysisBaseTableSource temp = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, StringUtils.EMPTY);
                 BusinessTable businessTable = getAnyTableWithSource(temp);
-                AnalysisBaseTableSource baseSource = null;
+                AnalysisBaseTableSource baseSource;
                 if (businessTable == null) {
                     AnalysisBusiTable table = new AnalysisBusiTable(UUID.randomUUID().toString(), userId);
                     baseSource = new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, table.getID().getIdentity());
@@ -89,8 +90,11 @@ public class AnalysisETLSourceFactory {
         if (jo.has("widgetTableId")) {
             BusinessTable talbe = BIAnalysisETLManagerCenter.getDataSourceManager().getBusinessTable(new BITableID(jo.getString("widgetTableId")));
             AnalysisCubeTableSource source = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(talbe);
-            if (source.getType() == Constants.TABLE_TYPE.BASE) {
-                return ((AnalysisBaseTableSource) source).getWidget();
+            if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE) {
+                if (null!=source.getWidgets())
+                for (BIWidget widget : source.getWidgets()) {
+                    return widget;
+                }
             }
         }
         return BIWidgetFactory.parseWidget(jo, userId);

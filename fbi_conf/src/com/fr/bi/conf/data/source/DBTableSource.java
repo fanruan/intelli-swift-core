@@ -28,7 +28,6 @@ import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
-import com.fr.data.core.db.dialect.SybaseDialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
@@ -95,7 +94,7 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
-            BILoggerFactory.getLogger(DBTableSource.class).info("The table:"+this.getTableName()+"extract data from db");
+            BILoggerFactory.getLogger(DBTableSource.class).info("The table:" + this.getTableName() + "extract data from db");
             dbTable = BIDBUtils.getDBTable(dbName, tableName);
         }
         return dbTable;
@@ -243,7 +242,7 @@ public class DBTableSource extends AbstractTableSource {
         java.sql.Connection conn = connection.createConnection();
         Dialect dialect = DialectFactory.generateDialect(conn);
         Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
-        String query = dialect instanceof SybaseDialect ? "SELECT *  FROM " + dialect.table2SQL(table) : dialect.getTopNRowSql(BIBaseConstant.PREVIEW_COUNT, table);
+        String query = "SELECT *  FROM " + dialect.table2SQL(table);
         return new DBTableData(connection, query);
     }
 
@@ -257,21 +256,31 @@ public class DBTableSource extends AbstractTableSource {
             dm = emTableData.createDataModel(null);
             JSONArray fieldNames = new JSONArray();
             JSONArray values = new JSONArray();
+            JSONArray fieldTypes = new JSONArray();
             jo.put(BIJSONConstant.JSON_KEYS.FIELDS, fieldNames);
             jo.put(BIJSONConstant.JSON_KEYS.VALUE, values);
+            jo.put(BIJSONConstant.JSON_KEYS.TYPE, fieldTypes);
             int colLen = dm.getColumnCount();
             int rolLen = Math.min(dm.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
+            Map<String, ICubeFieldSource> fieldsMap = getFields();
 
             for (int col = 0; col < colLen; col++) {
                 String name = dm.getColumnName(col);
                 if (!fields.isEmpty() && !fields.contains(name)) {
                     continue;
                 }
+                int fieldType = fieldsMap.get(name).getFieldType();
                 fieldNames.put(name);
+                fieldTypes.put(fieldType);
                 JSONArray value = new JSONArray();
                 values.put(value);
                 for (int row = 0; row < rolLen; row++) {
-                    value.put(dm.getValueAt(row, col));
+                    boolean isString = false;
+                    if (fieldsMap.containsKey(name) &&  fieldType == DBConstant.COLUMN.STRING) {
+                        isString = true;
+                    }
+                    Object val = dm.getValueAt(row, col);
+                    value.put((isString && val == null) ? "" : val);
                 }
             }
         } catch (Exception e) {
@@ -395,5 +404,19 @@ public class DBTableSource extends AbstractTableSource {
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(SQL);
         return DBQueryExecutor.getInstance().testSQL(sqlStatement);
+    }
+
+    @Override
+    public boolean hasAbsentFields() {
+        Map<String, ICubeFieldSource> originalFields = getFields();
+        Map<String, ICubeFieldSource> persistFields = getFieldFromPersistentTable();
+        boolean isFieldAbsent=false;
+        for (String fieldName : originalFields.keySet()) {
+            if (!persistFields.containsKey(fieldName)||!persistFields.get(fieldName).equals(originalFields.get(fieldName))){
+                BILoggerFactory.getLogger(this.getClass()).error("The field the name is:" + fieldName + " is absent in table:" + getTableName() + " table ID:" + this.getSourceID());
+                isFieldAbsent=true;
+            }
+        }
+        return isFieldAbsent;
     }
 }

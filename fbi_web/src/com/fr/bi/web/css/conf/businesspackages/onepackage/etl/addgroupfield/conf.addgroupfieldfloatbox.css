@@ -11,3 +11,7 @@
 .bi-etl-add-group-field-float-box-label {
   color: #808080;
 }
+.field-group {
+  z-index: 1;
+  background-color: #ffffff;
+}

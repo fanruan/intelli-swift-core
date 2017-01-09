@@ -21,7 +21,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         PREVIEW_PANE: 1,
         PREVIEW_ERROR: 2
     },
-    
+
     _defaultConfig: function(){
         return BI.extend(BI.EditSQL.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-edit-sql"
@@ -68,11 +68,11 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
         });
         this.sqlEditor = BI.createWidget({
-            type: "bi.code_editor",
+            type: "bi.textarea_editor",
             watermark: BI.i18nText("BI-Please_Enter_SQL"),
             cls: "sql-editor"
         });
-        this.sqlEditor.on(BI.CodeEditor.EVENT_CHANGE, function(){
+        this.sqlEditor.on(BI.TextAreaEditor.EVENT_CHANGE, function(){
             var sql = this.getValue();
             self.model.setSQL(sql);
             self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
@@ -389,6 +389,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         if(BI.isEmptyString(this.model.getSQL())){
             this.saveButton.setEnable(false);
         }
+        this.previewButton.setEnable(BI.isNotEmptyString(this.model.getSQL()));
     },
 
     getValue: function(){
