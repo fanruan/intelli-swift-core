@@ -3,10 +3,7 @@ package com.fr.bi.web.base;
 
 import com.fr.bi.web.base.fs.BIFSGetConfigAction;
 import com.fr.bi.web.base.fs.BIFSSetConfigAction;
-import com.fr.bi.web.base.services.BICheckValidationOfExpressionAction;
-import com.fr.bi.web.base.services.BIGetPyAction;
-import com.fr.bi.web.base.services.BIGetTableAction;
-import com.fr.bi.web.base.services.BIGetTransNameAction;
+import com.fr.bi.web.base.services.*;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
 import com.fr.fs.privilege.auth.FSAuthentication;
@@ -26,13 +23,17 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Service4BIBase extends NoSessionIDService {
 
+    private static final int DATA_HEADER = -10;
+
     private static AbstractBIBaseAction[] actions = {
             new BIGetPyAction(),
             new BIGetTableAction(),
             new BIGetTransNameAction(),
             new BIFSGetConfigAction(),
             new BIFSSetConfigAction(),
-            new BICheckValidationOfExpressionAction()
+            new BICheckValidationOfExpressionAction(),
+            new BIGetMapJsonAction(),
+            new BIGetBuildNoAction()
 
     };
 
@@ -60,14 +61,14 @@ public class Service4BIBase extends NoSessionIDService {
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
-        res.setDateHeader("Expires", -10);
-
-        PrivilegeVote vote = getFSVote(req, res);
-        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
-        if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
-            vote.action(req, res);
-            return;
-        }
+        res.setDateHeader("Expires", DATA_HEADER);
+//
+//        PrivilegeVote vote = getFSVote(req, res);
+//        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
+//        if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
+//            vote.action(req, res);
+//            return;
+//        }
 //        long userId = ServiceUtils.getCurrentUserID(req);
 //        if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.BI)) {
             WebActionsDispatcher.dealForActionNoSessionIDCMD(req, res, actions);

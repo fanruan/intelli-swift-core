@@ -1,6 +1,7 @@
 package com.fr.bi.stable.utils.program;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 import java.util.Set;
@@ -28,7 +29,7 @@ public class BIStringUtils {
     }
 
     public static String append(String... strings) {
-        return StringUtils.join("", strings);
+        return StableUtils.join(strings, "");
     }
 
     /**

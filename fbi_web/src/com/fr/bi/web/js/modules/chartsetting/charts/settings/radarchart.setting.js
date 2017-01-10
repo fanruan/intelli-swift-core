@@ -182,6 +182,17 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
+        //空值连续
+        this.nullContinuity = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Null_Continue"),
+            width: 90
+        });
+
+        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function() {
+            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
+        });
+
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -209,6 +220,9 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.gridLine]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.nullContinuity]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -300,6 +314,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
     },
 
     getValue: function(){
@@ -313,7 +328,8 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
-            num_separators: this.separators.isSelected()
+            num_separators: this.separators.isSelected(),
+            null_continue: this.nullContinuity.isSelected()
         }
     },
 

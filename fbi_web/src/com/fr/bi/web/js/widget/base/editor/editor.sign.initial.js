@@ -39,7 +39,7 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
             rgap: o.rgap,
             tgap: o.tgap,
             bgap: o.bgap,
-            value: o.text,
+            value: o.value || o.text,
             validationChecker: o.validationChecker,
             quitChecker: o.quitChecker,
             mouseOut: o.mouseOut,
@@ -47,7 +47,9 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
             watermark: o.watermark,
             errorText: o.errorText
         });
-
+        if(BI.isNotNull(o.value)){
+            this.setState(o.value);
+        }
         this.editor.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });

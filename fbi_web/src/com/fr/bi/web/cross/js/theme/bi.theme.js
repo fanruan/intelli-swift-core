@@ -10,7 +10,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
         right: 400
     });
     BI.requestAsync("fr_bi", "get_user_edit_auth", {mode: Consts.BIEDIT}, function(res) {
-        if (FS.isAdmin() || BI.isNotNull(res.result)) {
+        if (FS.isAdmin() || res.result === BICst.REPORT_AUTH.EDIT) {
             var $header = $('#fs-frame-header');
             var header = BI.createWidget({
                 type: "bi.absolute",
@@ -38,6 +38,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
                     }, function (res, model) {
                         if (BI.isNotNull(res) && BI.isNotNull(res.reportId)) {
                             FS.tabPane.addItem({
+                                id: res.reportId,
                                 title: data.reportName,
                                 src: FR.servletURL + "?op=fr_bi&cmd=init_dezi_pane&reportId=" + res.reportId + "&edit=_bi_edit_"
                             });
@@ -65,6 +66,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
                 });
                 dataConfig.on(BI.IconTextItem.EVENT_CHANGE, function () {
                     FS.tabPane.addItem({
+                        id: BICst.DATA_CONFIG_TAB,
                         title: BI.i18nText('BI-Data_Setting'),
                         src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane'
                     });
@@ -88,6 +90,24 @@ FS.THEME.config4navigation.onAfterInit = function () {
 //debugger;
 FS.Plugin.LookAndFeelSettings.push({
     item: function () {
+
+        FR.ajax({
+            url: FR.servletURL + '?op=fr_bi_base&cmd=get_build_no',
+            async: false,
+            data: {
+                '__time': new Date().getTime()
+            },
+            complete: function (res, status) {
+                if (status == 'success') {
+                    BI.$defaultImport({
+                        op: 'emb',
+                        path: 'third.js&__v__=' + res.responseText,
+                        type: 'js'
+                    });
+                }
+            }
+        });
+
         return {
             title: BI.i18nText("BI-BI_Style"),
             content: {

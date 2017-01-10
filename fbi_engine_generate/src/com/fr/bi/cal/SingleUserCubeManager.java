@@ -70,6 +70,10 @@ public class SingleUserCubeManager {
         return runner.hasTask();
     }
 
+    public boolean isTaskBuilding() {
+        return runner.isTaskBuilding();
+    }
+
     public boolean hasWaitingCheckTask() {
         return runner.hasWaitingCheckTask();
     }
@@ -140,6 +144,10 @@ public class SingleUserCubeManager {
 
     public Status getStatus() {
         return runner.getStatue();
+    }
+
+    public void setStatus(Status status) {
+        runner.setStatue(status);
     }
 
     /**

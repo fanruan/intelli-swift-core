@@ -19,4 +19,6 @@ public interface NIOHandlerManager<T extends CubeResourceRelease> {
     boolean isHandlerEmpty();
 
     void registerHandlerKey(String handlerKey);
+
+    void reValidHandler();
 }

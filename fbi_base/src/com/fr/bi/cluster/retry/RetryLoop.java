@@ -38,7 +38,26 @@ public class RetryLoop {
         return result;
 
     }
+    public static <T> T retry(Callable<T> proc, RetryLoop retryLoop) throws Exception {
+        T result = null;
+        retryLoop.reset();
+        while (retryLoop.shouldRetry()) {
+            BILoggerFactory.getLogger(RetryLoop.class).debug("retry times: "+retryLoop.retryCount);
+            try {
+                result = proc.call();
+                retryLoop.markComplete();
+            } catch (Exception ex) {
+                BILoggerFactory.getLogger(RetryLoop.class).error(ex.getMessage(), ex);
+                retryLoop.takeException(ex);
+            }
+        }
+        return result;
 
+    }
+    public void initial(RetryPolicy policy) {
+        this.retryPolicy = policy;
+
+    }
     public void initial(RetryPolicy policy, ZooKeeperWrapper wrapper) {
         this.retryPolicy = policy;
         this.wrapper = wrapper;

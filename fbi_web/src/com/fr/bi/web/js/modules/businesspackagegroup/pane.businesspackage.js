@@ -208,11 +208,6 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
 
         });
 
-        groupWidget.on(BI.BusinessPackageExpander.EVENT_NODE_VALUE_CHANGE, function () {
-            self.groupMap[groupWidget.attr("id")].name = groupWidget.getNodeValue();
-            self.fireEvent(BI.BusinessPackageGroupPane.EVENT_GROUP_NAME_CHANGE);
-        });
-
         groupWidget.on(BI.BusinessPackageExpander.EVENT_NODE_VALUE_CONFIRM, function () {
             self.groupMap[groupWidget.attr("id")].name = groupWidget.getNodeValue();
             self.fireEvent(BI.BusinessPackageGroupPane.EVENT_GROUP_NAME_CONFIRM);
@@ -458,7 +453,6 @@ BI.BusinessPackageGroupPane.EVENT_EMPTY_GROUP = "EVENT_EMPTY_GROUP";
 BI.BusinessPackageGroupPane.EVENT_PACKAGE_DELETE = "EVENT_PACKAGE_DELETE";
 BI.BusinessPackageGroupPane.EVENT_CLICK_DELETE = "EVENT_CLICK_DELETE";
 BI.BusinessPackageGroupPane.EVENT_CLICK_ADD = "EVENT_CLICK_ADD";
-BI.BusinessPackageGroupPane.EVENT_GROUP_NAME_CHANGE = "EVENT_GROUP_NAME_CHANGE";
 BI.BusinessPackageGroupPane.EVENT_GROUP_NAME_CONFIRM = "EVENT_GROUP_NAME_CONFIRM";
 BI.BusinessPackageGroupPane.EVENT_PACKAGE_NAME_CHANGE = "EVENT_PACKAGE_NAME_CHANGE";
 BI.BusinessPackageGroupPane.EVENT_EDITOR_CONFIRM = "EVENT_EDITOR_CONFIRM";

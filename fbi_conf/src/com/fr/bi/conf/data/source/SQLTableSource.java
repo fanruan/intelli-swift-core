@@ -6,6 +6,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.data.db.ServerLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DecryptBi;
@@ -74,7 +75,17 @@ public class SQLTableSource extends ServerTableSource {
     @Override
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
-            dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
+            try {
+                BILoggerFactory.getLogger(SQLTableSource.class).info("The table:" + this.getTableName() + "extract data from db");
+                dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(SQLTableSource.class).error(e.getMessage(), e);
+                /**
+                 * 内部出现异常，但是仍然给了一个空table。
+                 * 这里table再也不会被初始化了。导致字段就丢失了
+                 */
+                dbTable = null;
+            }
         }
         return dbTable;
     }
@@ -112,7 +123,9 @@ public class SQLTableSource extends ServerTableSource {
         } catch (Exception e) {
             return false;
         }
-        return testSQL(getConnection(), sql);
+        SQLStatement sqlStatement = new SQLStatement(getConnection());
+        sqlStatement.setFrom("(\n" + sql + "\n) " + "t");
+        return testSQL(getConnection(), sqlStatement.toString());
     }
 
 }

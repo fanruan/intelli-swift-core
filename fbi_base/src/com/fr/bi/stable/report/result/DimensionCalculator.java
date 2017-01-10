@@ -35,6 +35,8 @@ public interface DimensionCalculator extends FCloneable {
 
     List<BITableSourceRelation> getDirectToDimensionRelationList();
 
+    void setRelationList(List<BITableSourceRelation> relationList);
+
     BIKey createKey();
 
     Comparator getComparator();
@@ -50,11 +52,6 @@ public interface DimensionCalculator extends FCloneable {
 
     Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit);
 
-    int getBaseTableValueCount(Object value, ICubeDataLoader loader);
-
-    boolean hasSelfGroup();
-
     IGroup getGroup();
-
 
 }

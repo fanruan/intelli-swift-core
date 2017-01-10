@@ -24,10 +24,20 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             var dids = BI.keys(dimensions);
             var linkages = this.get("linkages");
             BI.remove(linkages, function (i, linkage) {
+                //计算指标修改时删除相关的联动
+                if(linkage.cids && linkage.cids.length > 0) {
+                    var link = BI.concat(linkage.cids, linkage.from);
+                    for (var i = 0; i < link.length - 1; i++) {
+                        var ids = BI.Utils.getExpressionValuesByDimensionID(link[i]);
+                        if (!BI.contains(ids, link[i+1]) || !dids.contains(link[i])) {
+                            return true;
+                        }
+                    }
+                }
                 return !dids.contains(linkage.from);
             });
-            this.refresh();
             this.set("linkages", linkages);
+            this.refresh();
         }
         if (BI.has(changed, "linkages")) {
             //找到所有被删除掉的linkages，通知到相关的组件

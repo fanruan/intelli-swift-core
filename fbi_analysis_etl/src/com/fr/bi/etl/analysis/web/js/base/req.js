@@ -36,9 +36,15 @@ BI.ETLReq = {
             var text = BI.isNull(res.table) ? BI.i18nText('BI-Is_Delete_Table') : BI.i18nText('BI-ETL_Sure_Delete_Used_Table', res.table);
             BI.Msg.confirm(BI.i18nText("BI-Warning"), text, function (v) {
                 if (v === true) {
+                    var mask = BI.createWidget({
+                        type: "bi.etl_loading_mask",
+                        masker: 'body',
+                        text: BI.i18nText("BI-Loading")
+                    });
                     BI.requestAsync("fr_bi_analysis_etl", "delete_table", data, function () {
                         BI.Utils.afterDeleteTable(data.id);
                         callback();
+                        mask.destroy();
                     })
                 }
             })
@@ -58,12 +64,14 @@ BI.ETLReq = {
             if (mask != null) {
                 mask.destroy()
             }
+            // 当前编辑的螺旋分析被其他的螺旋分析正在使用 用于选字段禁用
+            Pool.current_edit_etl_used = res.usedTables;
             if (res['used']) {
                 BI.Msg.confirm(BI.i18nText("BI-Warning"), BI.i18nText("BI-ETL_Table_Edit_Warning"), function (v) {
                     if (v === true) {
                         callback(res);
                     }
-                })
+                });
             } else {
                 callback(res);
             }
@@ -72,7 +80,7 @@ BI.ETLReq = {
 
     reqPreviewTable: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
-        if (data.table && data.table[ETLCst.ITEMS]) {
+        if (data[ETLCst.ITEMS] && data[ETLCst.ITEMS].length > 0 && data[ETLCst.ITEMS][0].operator) {
             data[ETLCst.ITEMS][0].operator.sessionID = Data.SharingPool.get("sessionID");
         }
         if (data[ETLCst.ITEMS][0][ETLCst.FIELDS].length === 0) {

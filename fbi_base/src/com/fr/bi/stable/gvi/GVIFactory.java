@@ -29,7 +29,11 @@ public class GVIFactory {
         return RoaringGroupValueIndex.createGroupValueIndex(list.toArray());
     }
 
-    public static GroupValueIndex createGroupValueIndexByBytes(byte[] bytes) {
+    public static GroupValueIndex createGroupValueIndexBySimpleIndex(int... list) {
+        return RoaringGroupValueIndex.createGroupValueIndex(list);
+    }
+
+    public static GroupValueIndex createGroupValueIndexByDataInput(BIByteDataInput bytes) {
         return GroupValueIndexCreator.createGroupValueIndex(bytes);
     }
 }

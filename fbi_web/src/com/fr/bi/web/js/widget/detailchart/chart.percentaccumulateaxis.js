@@ -35,11 +35,15 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.PercentAccumulateAxisChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -71,7 +75,7 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators)
         });
-        self.formatNumberLevelInYaxis(config, items, this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
+        self.formatNumberLevelInYaxis(config, items, this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter, true);
 
         config.xAxis[0].title.align = "center";
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
@@ -80,13 +84,12 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
             enableMinorTick: this.config.enable_minor_tick,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
 
-        config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
-
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.yAxis[0].formatter, this.config.chart_font);
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.yAxis[0].formatter, this.config.chart_font, true);
 
         //全局样式的图表文字
         this.setFontStyle(this.config.chart_font, config);

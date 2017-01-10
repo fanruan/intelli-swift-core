@@ -46,9 +46,9 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
 
 
     public void buildStructure() {
-//        detailDataService.buildStructure();
-//        groupDataService.buildStructure();
-//        indexDataService.buildStructure();
+        detailDataService.buildStructure();
+        groupDataService.buildStructure();
+        indexDataService.buildStructure();
     }
 
     @Override

@@ -28,6 +28,7 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
     private ReaderHandlerManager readerHandlerManager;
     private WriterHandlerManager writerHandlerManager;
 
+
     public NIOResourceManager() {
         writerManager = BIPrimitiveNIOWriterManager.getInstance();
         readerManager = BIPrimitiveNIOReaderManager.getInstance();
@@ -37,6 +38,13 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
         return readWriteLock;
     }
 
+    public ReaderHandlerManager getReaderHandlerManager() {
+        return readerHandlerManager;
+    }
+
+    public WriterHandlerManager getWriterHandlerManager() {
+        return writerHandlerManager;
+    }
     @Override
     public ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
         synchronized (this) {
@@ -94,6 +102,12 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
         }
         if (isAvailable(writerHandlerManager)) {
             writerHandlerManager.destroyHandler();
+        }
+    }
+
+    public void reValidReader(){
+        if (isAvailable(readerHandlerManager)) {
+            readerHandlerManager.reValidHandler();
         }
     }
 }

@@ -248,7 +248,8 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                         table_id: id,
                         table_name: table.table_name,
                         field_name: field.field_name,
-                        field_type: field.field_type
+                        field_type: field.field_type,
+                        is_usable: BI.isNotNull(field.is_usable) ? field.is_usable : true
                     };
                 })
             });

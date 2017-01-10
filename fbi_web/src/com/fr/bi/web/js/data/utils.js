@@ -302,20 +302,31 @@ Data.Utils = {
                         var date = new Date(BI.parseInt(name));
                         name = date.print("%Y-%X-%d");
                     }
-                    var data = BI.map(left.c, function (idx, obj) {
-                        var value = obj.n, x = obj.n;
-                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                            var date = new Date(BI.parseInt(x));
-                            x = date.print("%Y-%X-%d");
-                        }
-                        return {
-                            "x": x,
-                            "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
-                            "value": value,
+                    var data = [];
+                    if(BI.has(left, "c")){
+                        data = BI.map(left.c, function (idx, obj) {
+                            var value = obj.n, x = obj.n;
+                            if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
+                                var date = new Date(BI.parseInt(x));
+                                x = date.print("%Y-%X-%d");
+                            }
+                            return {
+                                "x": x,
+                                "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
+                                "value": value,
+                                seriesName: seriesName,
+                                targetIds: [targetIds[0]]
+                            };
+                        });
+                    }else{
+                        data = [{
+                            "x": "",
+                            "y": (BI.isFinite(left.s.c[id].s[0]) ? left.s.c[id].s[0] : 0),
+                            "value": "",
                             seriesName: seriesName,
                             targetIds: [targetIds[0]]
-                        };
-                    });
+                        }]
+                    }
                     var obj = {};
                     obj.data = data;
                     obj.name = name;
@@ -611,18 +622,15 @@ Data.Utils = {
             switch (widget.type) {
                 case BICst.WIDGET.SCATTER:
                     if (targetIds.length < 2) {
-                        return "";
+                        return [];
                     } else {
-                        return "function(){ return this.seriesName+'<div>(X)" + widget.dimensions[targetIds[1]].name + ":'+ this.x +'</div><div>(Y)"
-                            + widget.dimensions[targetIds[0]].name + ":'+ this.y +'</div>'}";
+                        return [widget.dimensions[targetIds[1]].name, widget.dimensions[targetIds[0]].name];
                     }
                 case BICst.WIDGET.BUBBLE:
                     if (targetIds.length < 3) {
-                        return "";
+                        return [];
                     } else {
-                        return "function(){ return this.seriesName+'<div>(X)" + widget.dimensions[targetIds[1]].name + ":'+ this.x +'</div><div>(Y)"
-                            + widget.dimensions[targetIds[0]].name + ":'+ this.y +'</div><div>(" + BI.i18nText("BI-Size") + ")" + widget.dimensions[targetIds[2]].name
-                            + ":'+ this.size +'</div>'}";
+                        return [widget.dimensions[targetIds[1]].name, widget.dimensions[targetIds[0]].name, widget.dimensions[targetIds[2]].name];
                     }
                 default:
                     return "";
@@ -750,10 +758,11 @@ Data.Utils = {
             right_num_separators: options.right_num_separators || false,
             right2_num_separators: options.right2_num_separators || false,
             chart_font: {
-                "fontFamily": "inherit",
-                "color": "inherit",
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                "color": "#1a1a1a",
                 "fontSize": "12px"
-            }
+            },
+            null_continue: options.null_continue || false
         };
 
         var maxes = [];
@@ -1169,6 +1178,16 @@ Data.Utils = {
                                 })
                             });
                             items = [result];
+                        } else if(config.number_of_pointer === constants.ONE_POINTER && items[0].length > 1) {
+                            BI.each(items[0], function (idx, item) {
+                                result.push({
+                                    data: [BI.extend(item.data[0], {
+                                        x: item.name
+                                    })],
+                                    name: BI.UUID()
+                                })
+                            });
+                            return [result]
                         }
                         if (config.number_of_pointer === constants.MULTI_POINTER && items[0].length > 1) {//多个系列
                             BI.each(items, function (idx, item) {
@@ -1362,7 +1381,7 @@ Data.Utils = {
             }
         }
 
-        function _formatDataLabelForAxis(state, items, format, style) {
+        function _formatDataLabelForAxis(state, items, format, style, isPercentChart) {
             if (state === true) {
                 BI.each(items, function (idx, item) {
                     item.dataLabels = {
@@ -1375,6 +1394,10 @@ Data.Utils = {
                             valueFormat: format
                         }
                     };
+                    if(isPercentChart) {
+                        item.dataLabels.formatter.identifier = "${PERCENT}";
+                        item.dataLabels.formatter.percentFormat = format;
+                    }
                 });
             }
         }
@@ -1429,7 +1452,7 @@ Data.Utils = {
             })
         }
 
-        function _formatNumberLevelInYaxis(config, items, type, position, formatter) {
+        function _formatNumberLevelInYaxis(config, items, type, position, formatter, isPercentChart) {
             var magnify = _calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -1444,6 +1467,10 @@ Data.Utils = {
                 if (position === item.yAxis) {
                     item.tooltip = BI.deepClone(config.plotOptions.tooltip);
                     item.tooltip.formatter.valueFormat = formatter;
+                    if(isPercentChart) {
+                        item.tooltip.formatter.percentFormat = formatter;
+                        item.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
+                    }
                 }
             });
         }
@@ -1480,12 +1507,15 @@ Data.Utils = {
         function formatConfigForMap(configs, items) {
             formatRangeLegend();
             delete configs.legend;
+            delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.tooltip.shared = true;
             var formatterArray = [];
             BI.backEach(items, function (idx, item) {
                 if (BI.has(item, "settings")) {
-                    formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || constants.NORMAL));
+                    formatterArray.push(formatToolTipAndDataLabel(item.settings.format || constants.NORMAL, item.settings.num_level || constants.NORMAL,
+                        item.settings.unit || "", item.settings.num_separators || constants.NUM_SEPARATORS));
                 }
             });
             configs.plotOptions.tooltip.formatter = function () {
@@ -1693,6 +1723,7 @@ Data.Utils = {
             delete configs.legend;
             delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.dataLabels.useHtml = true;
             configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ BI.contentFormat(this.value, '#.##;-#.##') +'</div>'; return a;}";
             configs.plotOptions.tooltip.shared = true;
@@ -1755,6 +1786,7 @@ Data.Utils = {
             }];
             var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
             var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
+            delete configs.zoom;
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -1778,6 +1810,7 @@ Data.Utils = {
                     break;
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
 
             configs.yAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
@@ -1793,10 +1826,19 @@ Data.Utils = {
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "scatter";
 
+            if (BI.isNotEmptyArray(config.tooltip)) {
+                configs.plotOptions.tooltip.formatter = function () {
+                    var y = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)(this.y);
+                    var x = _formatTickInXYaxis(config.x_axis_style, config.x_axis_number_level, config.right_num_separators)(this.x);
+                    return this.seriesName + '<div>(X)' + config.tooltip[0]
+                        + ':' + x + '</div><div>(Y)' + config.tooltip[1] + ':' + y + '</div>'
+                };
+            }
+
             if (configs.plotOptions.dataLabels.enabled === true) {
                 BI.each(items, function (idx, item) {
                     item.dataLabels = {
-                        "style": constants.FONT_STYLE,
+                        "style": config.chart_font,
                         "align": "outside",
                         enabled: true,
                         formatter: {
@@ -1962,6 +2004,7 @@ Data.Utils = {
             }];
             var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
             var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
+            delete configs.zoom;
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -1986,6 +2029,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
             configs.plotOptions.shadow = config.bubble_style !== constants.NO_PROJECT;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
 
             configs.yAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
@@ -1999,6 +2043,15 @@ Data.Utils = {
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "bubble";
+
+            if (BI.isNotEmptyArray(config.tooltip)) {
+                configs.plotOptions.tooltip.formatter = function () {
+                    var y = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)(this.y);
+                    var x = _formatTickInXYaxis(config.x_axis_style, config.x_axis_number_level, config.right_num_separators)(this.x);
+                    return this.seriesName + '<div>(X)' + config.tooltip[0] + ':' + x + '</div><div>(Y)' + config.tooltip[1]
+                        + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + config.tooltip[2] + ':' + this.size + '</div>'
+                };
+            }
 
             if (configs.plotOptions.dataLabels.enabled === true) {
                 BI.each(items, function (idx, item) {
@@ -2143,61 +2196,77 @@ Data.Utils = {
                 "showLabel": true
             }];
 
+            var isDashboard = BI.contains([constants.NORMAL, constants.HALF_DASHBOARD], config.chart_dashboard_type);
+            var isMultiPointers = config.number_of_pointer === constants.MULTI_POINTER;
+
             formatChartDashboardStyle();
             configs.chartType = "gauge";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             return BI.extend(configs, {
                 series: items
             });
 
             function formatChartDashboardStyle() {
-                configs.gaugeAxis = gaugeAxis;
                 var bands = getBandsStyles(config.bands_styles, config.auto_custom_style);
-                var valueLabel = {
-                    formatter: configs.plotOptions.valueLabel.formatter
-                };
-
-                valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
-                valueLabel.style = configs.plotOptions.valueLabel.style;
                 var percentageLabel = BI.extend(configs.plotOptions.percentageLabel, {
                     enabled: config.show_percentage === BICst.PERCENTAGE.SHOW
                 });
+
+                configs.gaugeAxis = gaugeAxis;
+
                 var slotValueLAbel = {
                     formatter: function () {
-                        this.value = config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT ? BI.contentFormat(this.value, "#0.00%") :
-                            BI.contentFormat(this.value, "#.##;-#.##");
-                        if (config.chart_dashboard_type === BICst.CHART_SHAPE.VERTICAL_TUBE) {
-                            return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                        var value = this.value;
+                        if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && config.num_separators) {
+                            value = BI.contentFormat(this.value, "#,##0%;-#,##0%")
+                        } else if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && !config.num_separators) {
+                            value = BI.contentFormat(this.value, "#0.00%");
+                        } else if (!(config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) && config.num_separators) {
+                            value = BI.contentFormat(this.value, "#,###.##;-#,###.##")
                         } else {
-                            return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value +
-                                getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
+                            value = BI.contentFormat(this.value, "#.##;-#.##");
                         }
+
+                        var label = '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + value +
+                            getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
+
+                        if (isDashboard && items[0].data.length > 1) {
+                            if (isMultiPointers) {
+                                return '<div style="text-align: center">' + this.seriesName + ':' + value +
+                                    getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
+                            }
+                            return label
+                        } else if (isDashboard && BI.isNull(items[0].data[0].seriesName)) {
+                            return label
+                        }
+                        return '<div style="text-align: center">' + this.category + '</div>' + label;
                     },
-                    style: configs.plotOptions.valueLabel.style,
+                    style: config.chart_font,
                     useHtml: true
                 };
                 switch (config.chart_dashboard_type) {
                     case BICst.CHART_SHAPE.HALF_DASHBOARD:
-                        setPlotOptions("pointer_semi", bands, configs.plotOptions.valueLabel);
+                        setPlotOptions("pointer_semi", bands, slotValueLAbel, percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                         setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
-                        setPlotOptions("slot", bands, valueLabel, percentageLabel);
+                        setPlotOptions("slot", bands, slotValueLAbel, percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
-                        BI.extend(valueLabel, {
+                        BI.extend(slotValueLAbel, {
                             align: "bottom"
                         });
                         BI.extend(percentageLabel, {
                             align: "bottom"
                         });
-                        setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "horizontal", "vertical");
+                        setPlotOptions("thermometer", bands, slotValueLAbel, percentageLabel, "horizontal", "vertical");
                         break;
                     case BICst.CHART_SHAPE.VERTICAL_TUBE:
-                        BI.extend(valueLabel, {
+                        BI.extend(slotValueLAbel, {
                             align: "left"
                         });
                         BI.extend(percentageLabel, {
@@ -2207,21 +2276,28 @@ Data.Utils = {
                         break;
                     case BICst.CHART_SHAPE.NORMAL:
                     default:
-                        setPlotOptions("pointer", bands, configs.plotOptions.valueLabel);
+                        setPlotOptions("pointer", bands, slotValueLAbel, percentageLabel);
                         break;
                 }
                 changeMaxMinScale();
                 formatNumberLevelInYaxis(config.dashboard_number_level, constants.LEFT_AXIS);
                 if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.valueLabel.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0.00%');
-                    };
                     configs.gaugeAxis[0].formatter = function () {
-                        return BI.contentFormat(arguments[0], '#0.00%') + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
+                        var scaleValue = this;
+                        if (config.num_separators) {
+                            scaleValue = BI.contentFormat(scaleValue, '#,##0%;-#,##0%')
+                        } else {
+                            scaleValue = BI.contentFormat(scaleValue, '#0.00%')
+                        }
+                        return scaleValue + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
                     };
                 } else {
                     configs.gaugeAxis[0].formatter = function () {
-                        return this + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
+                        var value = this;
+                        if (config.num_separators) {
+                            value = BI.contentFormat(value, "#,###;-#,###")
+                        }
+                        return value + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
                     };
                 }
             }
@@ -2241,53 +2317,37 @@ Data.Utils = {
             }
 
             function formatNumberLevelInYaxis(type, position) {
-                var magnify = calcMagnify(type);
+                var magnify = _calcMagnify(type);
                 if (magnify > 1) {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if (!BI.isNumber(da.y)) {
-                                    da.y = BI.parseFloat(da.y);
-                                }
-                                da.y = da.y || 0;
-                                da.y = da.y.div(magnify);
-                                da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
-                                    da.y = 0;
-                                }
+                                da.y = _formatXYDataWithMagnify(da.y, magnify)
                             }
                         })
                     })
                 }
+
+                configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                    return BI.contentFormat(this, '#.##;-#.##') + getXYAxisUnit(type, position)
+                };
+
+                if (config.num_separators) {
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#,###.##;-#,###.##')
+                    };
+                }
+
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
                         return BI.contentFormat(arguments[0], '#0.00%')
                     };
-                } else {
-                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(this, "#.##;-#.##") + getXYAxisUnit(type, position)
+                    if (config.num_separators) {
+                        configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                            return BI.contentFormat(arguments[0], '#,##0%;-#,##0%')
+                        };
                     }
                 }
-            }
-
-            function calcMagnify(type) {
-                var magnify = 1;
-                switch (type) {
-                    case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                        magnify = 1;
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        magnify = 10000;
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        magnify = 1000000;
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        magnify = 100000000;
-                        break;
-                }
-                return magnify;
             }
 
             function getXYAxisUnit(numberLevelType, position) {
@@ -2413,10 +2473,12 @@ Data.Utils = {
             configs.plotOptions.shadow = config.bubble_style !== constants.NO_PROJECT;
             configs.plotOptions.dataLabels.enabled = true;
             configs.plotOptions.dataLabels.align = "inside";
+            configs.plotOptions.dataLabels.style = config.chart_font;
+            configs.legend.style = config.chart_font;
             configs.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
-            configs.chartType = "bubble";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete config.zoom;
             return BI.extend(configs, {
                 series: items
             });
@@ -2489,6 +2551,8 @@ Data.Utils = {
                     break;
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
+            configs.plotOptions.connectNulls = config.null_continue;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.enabled = config.show_zoom;
@@ -2566,8 +2630,13 @@ Data.Utils = {
             BI.each(items, function (idx, item) {
                 item.color = [configs.yAxis[idx].labelStyle.color];
                 if (item.type === "line") {
+                    config.chartType = "line";
                     lineItem.push(item);
-                } else {
+                } else if(item.type === "area") {
+                    config.chartType = "area";
+                    otherItem.push(item);
+                }else {
+                    config.chartType = "column";
                     otherItem.push(item);
                 }
             });
@@ -2697,10 +2766,11 @@ Data.Utils = {
 
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
-
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.chartType = "pie";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             configs.plotOptions.dataLabels.align = "outside";
             configs.plotOptions.dataLabels.connectorWidth = "outside";
             configs.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
@@ -2763,8 +2833,10 @@ Data.Utils = {
             configs.plotOptions.dataLabels.align = "outside";
             configs.plotOptions.dataLabels.connectorWidth = "outside";
             configs.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+            configs.plotOptions.dataLabels.style = config.chart_font;
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             return BI.extend(configs, {
                 series: items
             });
@@ -2870,6 +2942,8 @@ Data.Utils = {
             });
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
+
+            configs.plotOptions.tooltip.formatter.valueFormat = configs.xAxis[0].formatter;
 
             configs.chartType = "bar";
             return BI.extend(configs, {
@@ -3065,6 +3139,8 @@ Data.Utils = {
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
 
+            configs.plotOptions.tooltip.formatter.valueFormat = configs.xAxis[0].formatter;
+
             return BI.extend(configs, {
                 series: items
             });
@@ -3257,6 +3333,8 @@ Data.Utils = {
             configs.chartType = "bar";
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
+
+            configs.plotOptions.tooltip.formatter.valueFormat = configs.xAxis[0].formatter;
 
             return BI.extend(configs, {
                 series: items
@@ -4143,7 +4221,7 @@ Data.Utils = {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 formatter: _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
             });
-            _formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, constants.LEFT_AXIS, configs.yAxis[0].formatter);
+            _formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, constants.LEFT_AXIS, configs.yAxis[0].formatter, true);
 
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
@@ -4158,7 +4236,7 @@ Data.Utils = {
             configs.chartType = "area";
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
-            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.yAxis[0].formatter, config.chart_font);
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.yAxis[0].formatter, config.chart_font, true);
 
             return BI.extend(configs, {
                 series: items
@@ -4377,6 +4455,8 @@ Data.Utils = {
 
             _formatDataLabel(items, configs, config.chart_font);
 
+            configs.chartType = "line";
+
             return BI.extend(configs, {
                 series: items
             });
@@ -4548,6 +4628,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatCordon();
+            formatChartLineStyle();
             switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
@@ -4617,6 +4698,8 @@ Data.Utils = {
 
             _formatDataLabel(items, configs, config.chart_font);
 
+            configs.chartType = "area";
+
             return BI.extend(configs, {
                 series: items
             });
@@ -4628,6 +4711,24 @@ Data.Utils = {
                     case BICst.CHART_STYLE.STYLE_NORMAL:
                     default:
                         return "normal";
+                }
+            }
+
+            function formatChartLineStyle() {
+                switch (config.chart_line_type) {
+                    case BICst.CHART_SHAPE.RIGHT_ANGLE:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = true;
+                        break;
+                    case BICst.CHART_SHAPE.CURVE:
+                        configs.plotOptions.curve = true;
+                        configs.plotOptions.step = false;
+                        break;
+                    case BICst.CHART_SHAPE.NORMAL:
+                    default:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = false;
+                        break;
                 }
             }
 
@@ -4712,25 +4813,30 @@ Data.Utils = {
         }
 
         function formatConfigForAccumulateRadar(configs, items) {
+            var style = {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+            };
             var radiusAxis = [{
                 type: "value",
                 title: {
-                    style: {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                        "color": "#808080",
-                        "fontSize": "12px",
-                        "fontWeight": ""
-                    }
+                    style: style
                 },
-                labelStyle: {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-                },
+                labelStyle: style,
                 formatter: function () {
                     if (this > 0) return this; else return this * (-1);
                 },
                 gridLineWidth: 0,
                 position: "bottom"
             }];
+
+            var angleAxis = [{
+                type: "category",
+                title: {
+                    style: style
+                },
+                labelStyle: style
+            }];
+
             var title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
 
             configs.colors = config.chart_color;
@@ -4754,6 +4860,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
 
             configs.radiusAxis = radiusAxis;
+            configs.angleAxis = angleAxis;
             configs.radiusAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS, configs.radiusAxis[0].formatter);
             configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
@@ -4762,8 +4869,12 @@ Data.Utils = {
             configs.plotOptions.columnType = true;
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.radiusAxis[0].formatter, config.chart_font);
+            configs.radiusAxis[0].labelStyle = configs.radiusAxis[0].title.style = config.chart_font;
+            configs.angleAxis[0].labelStyle = configs.angleAxis[0].title.style = config.chart_font;
+            configs.legend.style = config.chart_font;
 
             return BI.extend(configs, {
                 series: items
@@ -4832,25 +4943,30 @@ Data.Utils = {
         }
 
         function formatConfigForRadar(configs, items) {
+            var style = {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+            };
             var radiusAxis = [{
                 type: "value",
                 title: {
-                    style: {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                        "color": "#808080",
-                        "fontSize": "12px",
-                        "fontWeight": ""
-                    }
+                    style: style
                 },
-                labelStyle: {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-                },
+                labelStyle: style,
                 formatter: function () {
                     if (this > 0) return this; else return this * (-1);
                 },
                 gridLineWidth: 0,
                 position: "bottom"
             }];
+
+            var angleAxis = [{
+                type: "category",
+                title: {
+                    style: style
+                },
+                labelStyle: style
+            }];
+
             var title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
 
             configs.colors = config.chart_color;
@@ -4874,6 +4990,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
 
             configs.radiusAxis = radiusAxis;
+            configs.angleAxis = angleAxis;
             configs.radiusAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS, configs.radiusAxis[0].formatter);
             configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
@@ -4881,8 +4998,12 @@ Data.Utils = {
             configs.chartType = "radar";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.radiusAxis[0].formatter, config.chart_font);
+            configs.radiusAxis[0].title.style = configs.radiusAxis[0].labelStyle = config.chart_font;
+            configs.angleAxis[0].title.style = configs.angleAxis[0].labelStyle = config.chart_font;
+            configs.legend.style = config.chart_font;
 
             return BI.extend(configs, {
                 series: items
@@ -5450,6 +5571,7 @@ Data.Utils = {
                 RIGHT_AXIS_SECOND: 2,
                 PERCENT_DASHBOARD: 10,
                 PERCENT_SCALE_SLOT: 11,
+                NUM_SEPARATORS: false
             }
         }
 
@@ -5672,7 +5794,7 @@ Data.Utils = {
                             }
                         },
                         "maxSize": 80,
-                        "fillColorOpacity": 1.0,
+                        "fillColorOpacity": 0.5,
                         "step": false,
                         "force": false,
                         "minSize": 15,

@@ -76,11 +76,15 @@ public interface Cube extends ICubeVersion {
 
     /**
      * cubeTableSource存在
+     *
      * @param tableKey
      * @return
      */
     boolean exist(ITableKey tableKey);
 
+    boolean exist(ITableKey tableKey, BICubeRelation relation);
 
+    boolean exist(ITableKey tableKey, BICubeTablePath relationPath);
 
+    boolean exist(ITableKey tableKey, BIColumnKey field, BICubeTablePath relationPath);
 }

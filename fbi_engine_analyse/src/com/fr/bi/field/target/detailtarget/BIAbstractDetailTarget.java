@@ -1,9 +1,6 @@
 package com.fr.bi.field.target.detailtarget;
 
-import com.finebi.cube.api.ICubeColumnDetailGetter;
-import com.finebi.cube.api.ICubeColumnIndexReader;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.*;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
@@ -39,6 +36,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     @BICoreField
     protected IGroup group = new NoGroup();
 
+    private Object columnDetailGetterLock = new Object();
     private List<BITableRelation> relationList = new ArrayList<BITableRelation>();
 
 
@@ -61,21 +59,17 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
             int r = row.intValue();
             if (r > -1) {
                 initialTableSource(loader);
-                Object name = columnDetailGetter.getValue(r);
-                if (name == null) {
-                    return null;
-                }
-                if (group.getType() == BIReportConstant.GROUP.NO_GROUP) {
-                    return name;
-                }
+                return columnDetailGetter.getValue(r);
             }
         }
         return null;
     }
 
     protected void initialTableSource(ICubeDataLoader loader) {
-        if (columnDetailGetter == null) {
-            columnDetailGetter = loader.getTableIndex(this.createTableKey().getTableSource()).getColumnDetailReader(this.createKey(getStatisticElement()));
+        synchronized (columnDetailGetterLock) {
+            if (columnDetailGetter == null) {
+                columnDetailGetter = loader.getTableIndex(this.createTableKey().getTableSource()).getColumnDetailReader(this.createKey(getStatisticElement()));
+            }
         }
     }
 
@@ -106,10 +100,11 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
      * @return 分组的map
      */
     @Override
-    public ICubeColumnIndexReader createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId) {
+    public CubeIndexGetterWithNullValue createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId) {
         ICubeTableService ti = loader.getTableIndex(column.getTableBelongTo().getTableSource());
         ICubeColumnIndexReader baseGroupMap = ti.loadGroup(createKey(getStatisticElement()), BIConfUtils.convert2TableSourceRelation(getRelationList(target, userId)));
-        return new CubeIndexGetterWithNullValue(baseGroupMap, ti.getNullGroupValueIndex(createKey(getStatisticElement())));
+        ICubeValueEntryGetter getter = ti.getValueEntryGetter(createKey(getStatisticElement()), BIConfUtils.convert2TableSourceRelation(getRelationList(target, userId)));
+        return new CubeIndexGetterWithNullValue(baseGroupMap, getter, ti.getNullGroupValueIndex(createKey(getStatisticElement())));
     }
 
     /**
@@ -143,9 +138,18 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
 
     @Override
     public void clear() {
-
+        if (columnDetailGetter != null) {
+            columnDetailGetter.clear();
+        }
     }
-
+    public void reSetDetailGetter(){
+        if (columnDetailGetter != null) {
+            synchronized (columnDetailGetterLock) {
+                columnDetailGetter.clear();
+                columnDetailGetter = null;
+            }
+        }
+    }
 
     public IGroup getGroup() {
         return group;

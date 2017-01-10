@@ -97,7 +97,6 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public void addVersion(long version) {
         this.version.addVersion(version);
-        this.version.forceRelease();
     }
 
     @Override
@@ -113,6 +112,11 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public int getReverseIndex(int row) throws BIResourceInvalidException {
         return reverseRelationService.getReverseRow(row);
+    }
+
+    @Override
+    public boolean isDataAvailable() {
+        return isVersionAvailable();
     }
 }
 

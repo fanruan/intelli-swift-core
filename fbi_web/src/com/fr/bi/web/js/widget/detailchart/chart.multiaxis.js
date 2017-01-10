@@ -16,7 +16,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.MultiAxisChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "category",
             title: {
@@ -31,11 +31,15 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.MultiAxisChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -46,6 +50,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         this.formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.connectNulls = this.config.null_continue;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.enabled = this.config.show_zoom;
@@ -117,16 +122,21 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
             enableMinorTick: this.config.enable_minor_tick,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
 
         var lineItem = [];
         var otherItem = [];
         BI.each(items, function (idx, item) {
-            item.color = [config.yAxis[idx].labelStyle.color];
+            item.color = [config.yAxis[item.yAxis].labelStyle.color];
             if (item.type === "line") {
+                config.chartType = "line";
                 lineItem.push(item);
-            } else {
+            } else if(item.type === "area") {
+                config.chartType = "area";
+                otherItem.push(item);
+            }else {
                 otherItem.push(item);
             }
         });
@@ -289,7 +299,8 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
             right2_num_separators: options.right2_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            null_continue: options.null_continue || false
         };
         this.options.items = items;
 

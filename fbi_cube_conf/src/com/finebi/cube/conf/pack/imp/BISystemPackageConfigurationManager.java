@@ -2,7 +2,6 @@ package com.finebi.cube.conf.pack.imp;
 
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
-import com.finebi.cube.conf.pack.IPackagesManagerService;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -13,14 +12,13 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -67,6 +65,10 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
         getUserGroupConfigManager(userId).finishGenerateCubes();
     }
 
+    @Override
+    public void finishGenerateCubes(long userId, Set<CubeTableSource> absentTables) {
+        getUserGroupConfigManager(userId).finishGenerateCubes(absentTables);
+    }
 
     @Override
     public Set<IBusinessPackageGetterService> getAllPackages(long userId) {
@@ -175,6 +177,11 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     }
 
     @Override
+    public void endBuildingCube(long userId, Set<CubeTableSource> absentTable) {
+        getUserGroupConfigManager(userId).getPackageConfigManager().setEndBuildCube(absentTable);
+    }
+
+    @Override
     public JSONObject createGroupJSON(long userId) throws JSONException {
         return getUserGroupConfigManager(userId).getPackageConfigManager().createGroupJSON();
     }
@@ -230,28 +237,23 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAllTables();
     }
 
-    @Override
-    public Set<BusinessTable> getAnalysisAllTables(long userId) {
-        return getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisAllTables();
+    public boolean isTableReduced(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().isTableReduced();
+    }
+
+    public boolean isTableIncreased(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().isTableIncreased();
+
     }
 
     @Override
-    public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId) {
-        IPackagesManagerService analysisPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisPackageManager();
-        IPackagesManagerService currentPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getCurrentPackageManager();
-        Set<BIBusinessPackage> analysisPackages = analysisPackageManager.getAllPackages();
-        Set<BIBusinessPackage> currentPackages = currentPackageManager.getAllPackages();
-        Set<BIBusinessPackage> packageSet = new HashSet<BIBusinessPackage>();
-        for (BIBusinessPackage biBusinessPackage : currentPackages) {
-            if (!analysisPackages.contains(biBusinessPackage)) {
-                try {
-                    packageSet.add((BIBusinessPackage) biBusinessPackage.clone());
-                } catch (CloneNotSupportedException e) {
-                    BILoggerFactory.getLogger().error(e.getMessage());
-                }
-            }
-        }
-        return packageSet;
+    public boolean isTableNoChange(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().isTableNoChange();
+    }
+
+    @Override
+    public Set<BusinessTable> getAnalysisAllTables(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisAllTables();
     }
 
 }

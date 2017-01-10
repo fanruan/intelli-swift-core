@@ -24,10 +24,10 @@ public class BITableSourceBuildWatcher extends BICubeBuildWatcher {
             if (lastReceiveMessage.isStopStatus()) {
                 messagePublish.publicStopMessage(generateStopBody(""));
             } else {
-                messagePublish.publicFinishMessage(generateFinishBody(""));
                 tableEntityService.recordLastExecuteTime(tableEntityService.getCurrentExecuteTime().getTime());
                 tableEntityService.forceReleaseWriter();
                 tableEntityService.clear();
+                messagePublish.publicFinishMessage(generateFinishBody(""));
             }
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);

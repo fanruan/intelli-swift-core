@@ -1,14 +1,17 @@
 package com.finebi.cube.gen.arrange;
 
-import com.finebi.cube.gen.oper.*;
+import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
+import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
+import com.finebi.cube.gen.oper.BISourceDataTransport;
 import com.finebi.cube.gen.oper.watcher.BICubeBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIDataSourceBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
-import com.finebi.cube.gen.subset.*;
+import com.finebi.cube.gen.subset.BIFieldIndexBuilder4Test;
+import com.finebi.cube.gen.subset.BIFieldPathIndexBuilder4Test;
+import com.finebi.cube.gen.subset.BISourceDataTransport4Test;
 import com.finebi.cube.gen.subset.watcher.BICubeBuildFinishWatcher4Test;
 import com.finebi.cube.gen.subset.watcher.BIDataSourceBuildFinish4Test;
 import com.finebi.cube.gen.subset.watcher.BIPathBuildFinishWatcher4Test;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.column.BIColumnKey;
@@ -26,13 +29,10 @@ import java.util.Set;
  */
 public class BICubeOperationManager4Test extends BICubeOperationManager {
     public BICubeOperationManager4Test(Cube cube, Set<CubeTableSource> originalTableSet) {
-        super(cube, originalTableSet);
+        super(cube, null, originalTableSet);
     }
 
-    @Override
-    protected BIRelationIndexGenerator getRelationBuilder(Cube cube, BITableSourceRelation relation) {
-        return new BIRelationIndexBuilder4Test(cube, null);
-    }
+
 
     @Override
     protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
@@ -45,10 +45,6 @@ public class BICubeOperationManager4Test extends BICubeOperationManager {
         return new BISourceDataTransport4Test(cube, tableSource, allSources, parent);
     }
 
-    @Override
-    protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, BITableSourceRelationPath tablePath) {
-        return new BITablePathIndexBuilder4Test(cube, null);
-    }
 
     @Override
     protected BIFieldPathIndexBuilder getFieldPathBuilder(Cube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {

@@ -107,18 +107,19 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
     },
 
     _groupNameChecker: function (v) {
-        var self = this;
-        var nameCount = 0;
-        BI.some(self.buttons, function (i, button) {
-            var val = button.getValue();
-            if (v === val.group_name) {
-                nameCount++;
-            }
-            if(nameCount > 1){
-                return true;
-            }
-        });
-        return nameCount === 1;
+        //var self = this;
+        //var nameCount = 0;
+        //BI.some(self.buttons, function (i, button) {
+        //    var val = button.getValue();
+        //    if (v === val.group_name) {
+        //        nameCount++;
+        //    }
+        //    if(nameCount > 1){
+        //        return true;
+        //    }
+        //});
+        //return nameCount === 1;
+        return true;
     },
 
     populate: function (items) {
@@ -145,20 +146,17 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
                 min: 0,
                 max: this.constants.initialMax,
                 closemin: true,
-                closemax: true
+                closemax: false
             });
         } else {
             var beforeButton = this.buttons[this.buttons.length - 1];
             var beforeValue = beforeButton.getValue();
-            beforeButton.setValue(BI.extend(beforeValue, {
-                closemax: false
-            }));
             BI.extend(item, {
                 id: BI.UUID(),
                 min: BI.parseInt(beforeValue.max),
                 max: BI.parseInt(beforeValue.max) + this.constants.initialMax,
                 closemin: !beforeValue.closemax,
-                closemax: true
+                closemax: false
             });
         }
         this.buttongroup.addItems([item]);

@@ -8,6 +8,7 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.utils.DateUtils;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -73,7 +74,9 @@ public class SingleValueOperator extends AbstractAddColumnOperator {
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error("incorrect formular");
+                BILoggerFactory.getLogger(SingleValueOperator.class).error("incorrect formular");
+                BILoggerFactory.getLogger(SingleValueOperator.class).error(BIStringUtils.append("The value:", value.toString()));
+                BILoggerFactory.getLogger(SingleValueOperator.class).error(e.getMessage(), e);
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }

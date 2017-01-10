@@ -35,13 +35,13 @@ import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.util.BICubeDBUtils;
+import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dml.Table;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.collections.array.IntArray;
 import org.slf4j.Logger;
@@ -251,39 +251,43 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     private String getModifySql(ICubeFieldSource[] fields, String sql) {
         sql = addDateCondition(sql);
         com.fr.data.impl.Connection connection = null;
-        if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
-            connection = ((DBTableSource) tableSource).getConnection();
-        }
-        if (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL) {
-            connection = ((SQLTableSource) tableSource).getConnection();
-        }
-        SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
-        sqlStatement.setSql(sql);
-        Dialect dialect = null;
-        try {
-            dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e.getMessage(), e);
-        }
+        java.sql.Connection sqlConn = null;
         String finalSql = null;
-        int columnNum = BICubeDBUtils.getColumnNum(connection, sqlStatement, sql);
-        if (columnNum == fields.length) {
-            finalSql = sql;
-        }
-        if (columnNum == 1) {
-            String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
-            ICubeFieldSource f = getCubeFieldSource(fields, columnName);
-            if (f == null) return null;
+        try {
             if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
-                String dbName = ((DBTableSource) tableSource).getDbName();
-                Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableSource.getTableName());
-                finalSql = "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+                connection = ((DBTableSource) tableSource).getConnection();
             }
             if (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL) {
-                finalSql = ((SQLTableSource) tableSource).getQuery() + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+                connection = ((SQLTableSource) tableSource).getConnection();
             }
-        } else {
-            logger.error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
+            SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
+            sqlStatement.setSql(sql);
+            sqlConn = sqlStatement.getSqlConn();
+            Dialect dialect = DialectFactory.generateDialect(sqlConn, connection.getDriver());
+
+            int columnNum = BICubeDBUtils.getColumnNum(connection, sqlStatement, sql);
+            if (columnNum == fields.length) {
+                finalSql = sql;
+            }
+            if (columnNum == 1) {
+                String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
+                ICubeFieldSource f = getCubeFieldSource(fields, columnName);
+                if (f == null) return null;
+                if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
+                    String dbName = ((DBTableSource) tableSource).getDbName();
+                    Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableSource.getTableName());
+                    finalSql = "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+                }
+                if (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL) {
+                    finalSql = ((SQLTableSource) tableSource).getQuery() + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+                }
+            } else {
+                logger.error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
+            }
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
+        } finally {
+            DBUtils.closeConnection(sqlConn);
         }
         return finalSql;
     }
@@ -472,10 +476,20 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     }
 
     private String getKeyName(String sql) {
-        com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
-        SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
-        sqlStatement.setSql(sql);
-        return BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
+        String name = null;
+        java.sql.Connection sqlConn = null;
+        try {
+            com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
+            SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
+            sqlConn = sqlStatement.getSqlConn();
+            sqlStatement.setSql(sql);
+            name = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
+        } finally {
+            DBUtils.closeConnection(sqlConn);
+        }
+        return name;
     }
 
     private ICubeFieldSource getCubeFieldSource(ICubeFieldSource[] fields, String columnName) {

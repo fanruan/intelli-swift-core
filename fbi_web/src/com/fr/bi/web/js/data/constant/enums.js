@@ -295,28 +295,6 @@ BICst.PERCENTAGE = {
 BICst.TABLE_MAX_ROW = 20;
 BICst.TABLE_MAX_COL = 7;
 
-//指标样式设置
-BICst.TARGET_STYLE = {
-    FORMAT: {
-        NORMAL: 1,      //原始
-        ZERO2POINT: 2,  //整数
-        ONE2POINT: 3,   //小数点后一位
-        TWO2POINT: 4    //小数点后两位
-    },
-    NUM_LEVEL: {
-        NORMAL: 1,          //个
-        TEN_THOUSAND: 2,    //万
-        MILLION: 3,         //百万
-        YI: 4,              //亿 T_T
-        PERCENT: 5
-    },
-    ICON_STYLE: {
-        NONE: 0,
-        POINT: 1,
-        ARROW: 2
-    }
-};
-
 //
 
 //仪表盘自动样式
@@ -562,16 +540,16 @@ BICst.MAP_STYLE_CONDITIONS = [{
     range: {
         min: 200,
         max: 300,
-        closemin: false,
-        closemax: true
+        closemin: true,
+        closemax: false
     },
     color: "#F8D08E"
 }, {
     range: {
         min: 300,
         max: 400,
-        closemin: false,
-        closemax: true
+        closemin: true,
+        closemax: false
     },
     color: "#e697c8"
 }, {

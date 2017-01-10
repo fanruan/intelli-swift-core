@@ -31,7 +31,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class created on 2016/3/9.
@@ -40,7 +39,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 4.0
  */
 public class DimensionGroupFilter {
-    private static Map<FilterGroupValueIndexKey, GroupValueIndex[]> filterGroupValueIndexMap = new ConcurrentHashMap<FilterGroupValueIndexKey, GroupValueIndex[]>();
     private final BISession session;
     List<MergerInfo> mergerInfoList = new ArrayList<MergerInfo>();
     BIDimension[] rowDimension;
@@ -54,10 +52,11 @@ public class DimensionGroupFilter {
     NameObject targetSort;
     Comparator[] dimensionComparator;
     private boolean shouldRecalculateIndex = false;
+    private boolean calAllPage;
     private long startTime = System.currentTimeMillis();
 
 
-    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort) {
+    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum, boolean calAllPage) {
         this.mergerInfoList = mergerInfoList;
         this.rowDimension = rowDimension;
         this.dimensionComparator = new Comparator[rowDimension.length];
@@ -69,12 +68,8 @@ public class DimensionGroupFilter {
         calculatorTargets = LoaderUtils.getCalculatorTargets(usedTargets, session);
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
+        this.calAllPage = calAllPage;
         LoaderUtils.setAllExpander(mergerInfoList);
-        if (this.mergerInfoList != null) {
-            for (MergerInfo m : this.mergerInfoList) {
-                m.setHasTraverseResultFilter(hasTraverseResultFilter() || targetSort != null);
-            }
-        }
     }
 
     private NodeDimensionIterator[] getNodeIterators(List<MergerInfo> mergerInfoList) {
@@ -88,8 +83,8 @@ public class DimensionGroupFilter {
 
     private TargetGettingKey[] getNoCalculatorTargets() {
         List<TargetGettingKey> list = new ArrayList<TargetGettingKey>();
-        for (MergerInfo info : mergerInfoList){
-            for (TargetAndKey targetAndKey : info.getTargetAndKeyList()){
+        for (MergerInfo info : mergerInfoList) {
+            for (TargetAndKey targetAndKey : info.getTargetAndKeyList()) {
                 list.add(targetAndKey.getTargetGettingKey());
             }
         }
@@ -131,8 +126,6 @@ public class DimensionGroupFilter {
         if (node.getData() instanceof BIDay) {
             oldData = node.getData();
             node.setShowValue(rowDimension[deep].toString(oldData));
-        } else {
-            node.setShowValue(node.getData().toString());
         }
         boolean ret = true;
         for (DimensionFilter filter : filterList) {
@@ -187,17 +180,6 @@ public class DimensionGroupFilter {
         for (int deep = 0; deep < rowDimension.length; deep++) {
             DimensionFilter filter = rowDimension[deep].getFilter();
             filterList.add(filter);
-        }
-        return filterList;
-    }
-
-    private List<DimensionFilter> getAllNotDateDimensionFilter() {
-        List<DimensionFilter> filterList = new ArrayList<DimensionFilter>();
-        for (int deep = 0; deep < rowDimension.length; deep++) {
-            if (!isStringDimension(rowDimension[deep])) {
-                DimensionFilter filter = rowDimension[deep].getFilter();
-                filterList.add(filter);
-            }
         }
         return filterList;
     }
@@ -302,17 +284,25 @@ public class DimensionGroupFilter {
         setRootIndexMap(nodeBuilder);
         boolean shouldBuildTree = shouldBuildTree();
         BIMultiThreadExecutor executor = null;
-        if (MultiThreadManagerImpl.getInstance().isMultiCall() && shouldBuildTree){
-            executor = new BIMultiThreadExecutor();
+        if (MultiThreadManagerImpl.getInstance().isMultiCall() && shouldBuildTree) {
+            executor = MultiThreadManagerImpl.getInstance().getExecutorService();
         }
         boolean hasFilter[] = new boolean[rowDimension.length];
-        for (int i = 0;i < rowDimension.length; i ++){
+        for (int i = 0; i < rowDimension.length; i++) {
             hasFilter[i] = !getDimensionTraverseResultFilters(i).isEmpty();
         }
         while (!GroupUtils.isAllEmpty(roots)) {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
             clearLastIndex(roots, lastRoots, firstChangeDeep);
+            if (null != lastRoots) {
+                for (int i = 0; i < roots.length; i++) {
+                    if (null == lastRoots[i] && null != roots[i]) {
+                        firstChangeDeep = 0;
+                        break;
+                    }
+                }
+            }
             for (int deep = firstChangeDeep; deep < rowDimension.length; deep++) {
                 fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, shouldBuildTree, executor, hasFilter[deep]);
             }
@@ -322,7 +312,7 @@ public class DimensionGroupFilter {
 
         if (shouldBuildTree) {
             if (MultiThreadManagerImpl.getInstance().isMultiCall()) {
-                executor.awaitExecutor();
+                executor.awaitExecutor(session);
                 executor = null;
             }
             buildTree(groupValueIndexe2D, counter, nodeBuilder);
@@ -332,23 +322,23 @@ public class DimensionGroupFilter {
     }
 
     private void clearLastIndex(GroupConnectionValue[] roots, GroupConnectionValue[] lastRoots, int firstChangeDeep) {
-        if (roots != null && lastRoots != null){
-            for (int i = 0; i < roots.length; i++){
-                if (roots[i] == null || lastRoots[i] == null){
+        if (roots != null && lastRoots != null) {
+            for (int i = 0; i < roots.length; i++) {
+                if (roots[i] == null || lastRoots[i] == null) {
                     continue;
                 }
                 GroupConnectionValue chain = lastRoots[i].getChild();
                 int deep = firstChangeDeep;
-                while (deep != 0){
-                    if (chain == null){
+                while (deep != 0) {
+                    if (chain == null) {
                         break;
                     }
                     chain = chain.getChild();
                     deep--;
                 }
-                if (chain != null){
+                if (chain != null) {
                     chain.getCurrentValue().releaseMemNode();
-                    while ((chain = chain.getChild()) != null){
+                    while ((chain = chain.getChild()) != null) {
                         chain.getCurrentValue().releaseMemNode();
                     }
                 }
@@ -358,9 +348,9 @@ public class DimensionGroupFilter {
 
     private void buildTree(GroupValueIndex[][] groupValueIndexe2D, RowCounter counter, TreeBuilder nodeBuilder) {
         LightNode sortedNode = buildTreeNode(groupValueIndexe2D, counter, nodeBuilder);
-        for (MergerInfo info : mergerInfoList){
+        for (MergerInfo info : mergerInfoList) {
             if (isShouldRecalculateIndex()) {
-                for (TargetAndKey targetAndKey : info.getTargetAndKeyList()){
+                for (TargetAndKey targetAndKey : info.getTargetAndKeyList()) {
                     NodeUtils.reCalculateIndex(sortedNode, targetAndKey.getTargetGettingKey());
                 }
             }
@@ -370,13 +360,13 @@ public class DimensionGroupFilter {
 
     private void createFinalIndexes(GroupValueIndex[] groupValueIndexes, GroupValueIndex[][] groupValueIndexe2D) {
         for (int i = 0; i < groupValueIndexe2D.length; i++) {
-                for (int j = 0; j < groupValueIndexe2D[i].length; j++) {
-                    if (groupValueIndexes[i] == MergerInfo.ALL_SHOW) {
-                        groupValueIndexes[i] = groupValueIndexe2D[i][j];
-                    } else {
-                        groupValueIndexes[i] = groupValueIndexes[i].AND(groupValueIndexe2D[i][j]);
-                    }
+            for (int j = 0; j < groupValueIndexe2D[i].length; j++) {
+                if (groupValueIndexes[i] == MergerInfo.ALL_SHOW) {
+                    groupValueIndexes[i] = groupValueIndexe2D[i][j];
+                } else {
+                    groupValueIndexes[i] = groupValueIndexes[i].AND(groupValueIndexe2D[i][j]);
                 }
+            }
         }
     }
 
@@ -392,18 +382,18 @@ public class DimensionGroupFilter {
                 mergeNode.setData(groupConnectionValueChildren[j].getData());
                 mergeNode.setComparator(getComparator(deep));
                 mergeNode.setCk(groupConnectionValueChildren[j].getCk());
-                if (hasFilter || shouldSetIndex()){
+                if (hasFilter || shouldSetIndex()) {
                     groupValueIndexArray[j] = currentValue.getRoot().getGroupValueIndex();
                 }
-                if (shouldSetIndex()){
-                    for (TargetAndKey targetAndKey : mergerInfoList.get(j).getTargetAndKeyList()){
+                if (shouldSetIndex()) {
+                    for (TargetAndKey targetAndKey : mergerInfoList.get(j).getTargetAndKeyList()) {
                         gviMap.put(targetAndKey.getTargetGettingKey(), currentValue.getRoot().getGroupValueIndex());
                     }
                 }
                 if (MultiThreadManagerImpl.getInstance().isMultiCall() && shouldBuildTree) {
                     executor.add(new MergeSummaryCall(mergeNode, currentValue, mergerInfoList.get(j)));
                 } else {
-                    for (TargetAndKey targetAndKey : mergerInfoList.get(j).getTargetAndKeyList()){
+                    for (TargetAndKey targetAndKey : mergerInfoList.get(j).getTargetAndKeyList()) {
                         Number summaryValue = currentValue.getSummaryValue(targetAndKey.getCalculator());
                         if (summaryValue != null) {
                             mergeNode.setSummaryValue(targetAndKey.getTargetGettingKey(), summaryValue);
@@ -416,7 +406,7 @@ public class DimensionGroupFilter {
         if (shouldSetIndex()) {
             Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap = new HashMap<TargetGettingKey, GroupValueIndex>();
             for (int i = 0; i < groupValueIndexArray.length; i++) {
-                for (TargetAndKey targetAndKey : mergerInfoList.get(i).getTargetAndKeyList()){
+                for (TargetAndKey targetAndKey : mergerInfoList.get(i).getTargetAndKeyList()) {
                     targetIndexValueMap.put(targetAndKey.getTargetGettingKey(), groupValueIndexArray[i]);
                 }
             }
@@ -439,7 +429,7 @@ public class DimensionGroupFilter {
         Map<TargetGettingKey, GroupValueIndex> gviMap = new HashMap<TargetGettingKey, GroupValueIndex>();
         Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap = new HashMap<TargetGettingKey, GroupValueIndex>();
         for (int i = 0; i < mergerInfoList.size(); i++) {
-            for (TargetAndKey targetAndKey : mergerInfoList.get(i).getTargetAndKeyList()){
+            for (TargetAndKey targetAndKey : mergerInfoList.get(i).getTargetAndKeyList()) {
                 gviMap.put(targetAndKey.getTargetGettingKey(), mergerInfoList.get(i).getGroupValueIndex());
                 targetIndexValueMap.put(targetAndKey.getTargetGettingKey(), mergerInfoList.get(i).getGroupValueIndex());
             }
@@ -505,7 +495,7 @@ public class DimensionGroupFilter {
         //没child就没计算了
         if (retNode.getChildLength() == 0) {
             for (int i = 0; i < mergerInfoList.size(); i++) {
-                for (TargetAndKey targetAndKey : mergerInfoList.get(i).getTargetAndKeyList()){
+                for (TargetAndKey targetAndKey : mergerInfoList.get(i).getTargetAndKeyList()) {
                     Number summaryValue = mergerInfoList.get(i).getRoot().getSummaryValue(targetAndKey.getCalculator());
                     if (summaryValue != null && retNode.getSummaryValue(targetAndKey.getTargetGettingKey().getTargetKey()) == null) {
                         retNode.setSummaryValue(targetAndKey.getTargetGettingKey(), summaryValue);
@@ -565,7 +555,7 @@ public class DimensionGroupFilter {
                 filterBuilder.addLastNode(deep, copyValue(mergeNode));
             }
             GroupValueIndex[] groupValueIndexArray = mergeNode.getGroupValueIndexArray();
-            if (filterList != null && !filterList.isEmpty()){
+            if (filterList != null && !filterList.isEmpty()) {
                 for (int j = 0; j < groupValueIndexArray.length; j++) {
                     if (groupValueIndexArray[j] != null) {
                         GroupValueIndex index = mergeNode.getGroupValueIndexArray()[j];
@@ -778,20 +768,6 @@ public class DimensionGroupFilter {
         return allMinChildGroups;
     }
 
-
-    private Node mergeNodes(Node[] minNodes) {
-        Node mergeNode = new Node(null, null);
-        for (int i = 0; i < minNodes.length; i++) {
-            if (minNodes[i] != null) {
-                if (mergeNode.getData() == null) {
-                    mergeNode.setData(minNodes[i].getData());
-                }
-                mergeNode.setSummaryValue(minNodes[i].getSummaryValue());
-            }
-        }
-        return mergeNode;
-    }
-
     public boolean shouldBuildTree() {
         if (hasTargetSort()) {
             return true;
@@ -802,27 +778,14 @@ public class DimensionGroupFilter {
             }
         }
 
-//		if (hasDateDimension()) {
-//			return true;
-//		}
-
         for (DimensionFilter filter : getAllResultFilters()) {
             if (filter.needParentRelation()) {
                 return true;
             }
         }
-
-        return false;
+        return calAllPage;
     }
 
-    private boolean hasDimensionTargetSort() {
-        for (int i = 0; i < rowDimension.length; i++) {
-            if (rowDimension[i].getSortTarget() != null) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private Comparator getComparator(int deep) {
         if (dimensionComparator[deep] == null) {
@@ -833,7 +796,6 @@ public class DimensionGroupFilter {
 
     private Comparator getComparator(BIDimension dimension) {
         return dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>()).getComparator();
-//		return dimension.createColumnKey(dimension.getColumn()).getComparator();
     }
 
     public boolean isShouldRecalculateIndex() {
@@ -842,10 +804,5 @@ public class DimensionGroupFilter {
 
     public void setShouldRecalculateIndex(boolean shouldRecalculateIndex) {
         this.shouldRecalculateIndex = shouldRecalculateIndex;
-    }
-
-    private List<TargetGettingKey> getNoCalculatorTargetKeys() {
-        List<BISummaryTarget> noCalculatorTargetKeys = Arrays.asList(usedTargets);
-        return null;
     }
 }

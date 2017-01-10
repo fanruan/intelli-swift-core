@@ -8,6 +8,7 @@ import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.constant.CubeConstant;
+import com.fr.bi.stable.gvi.BIByteDataInput;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
 import java.util.UUID;
@@ -38,11 +39,7 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().info(BIStringUtils.append(
-                    e.getMessage(),
-                    "\n" + "retry again!"
-            ));
-            releaseBuffers();
+            BILoggerFactory.getLogger(BIByteArrayNIOReader.class).info(e.getMessage(),e);
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         }
@@ -56,9 +53,18 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         return isNull(b) ? null : b;
     }
 
-    private void releaseBuffers() {
-        positionReader.releaseBuffer();
-        lengthReader.releaseBuffer();
+    public BIByteDataInput getByteStream(int row) throws BIResourceInvalidException{
+        long start;
+        int size;
+        try {
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BIByteArrayNIOReader.class).info(e.getMessage()+"retry again!",e);
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        }
+        return new ByteStreamDataInput(contentReader, start, size);
     }
 
     private boolean isNull(byte[] result) {
@@ -89,7 +95,6 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             size = lengthReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
-
         }
         return start + size;
     }
@@ -118,21 +123,5 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         return positionReader.isForceReleased() ||
                 lengthReader.isForceReleased() ||
                 contentReader.isForceReleased();
-    }
-
-    @Override
-    public byte getFirstByte(int row) throws BIResourceInvalidException {
-        long start;
-        try {
-            start = positionReader.getSpecificValue(row);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().info(BIStringUtils.append(
-                    e.getMessage(),
-                    "\n" + "retry again!"
-            ));
-            releaseBuffers();
-            start = positionReader.getSpecificValue(row);
-        }
-        return contentReader.getSpecificValue(start);
     }
 }

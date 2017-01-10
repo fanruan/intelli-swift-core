@@ -5,7 +5,6 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.base.FRContext;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
@@ -24,7 +23,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.sql.Types;
 import java.util.*;
 
 /**
@@ -180,8 +178,8 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     ICubeColumnDetailGetter showGetter = ti.getColumnDetailReader(new IndexKey(s));
                     for (int j = 0; j < columnLength; j++) {
                         if (tags[j] != null) {
-                            int r = valueIndexMap.get(tags[j]);
-                            if (r >= 0) {
+                            Integer r = valueIndexMap.get(tags[j]);
+                            if (r != null && r >= 0) {
                                 Object showOb = showGetter.getValue(r);
                                 if (showOb != null) {
                                     res[index] = showOb;

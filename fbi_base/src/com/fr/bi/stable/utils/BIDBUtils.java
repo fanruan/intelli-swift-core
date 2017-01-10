@@ -1,30 +1,34 @@
 package com.fr.bi.stable.utils;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.base.TableData;
+import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtils;
+import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtilsFactory;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.dbdealer.*;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.core.db.dml.Table;
-import com.fr.data.impl.DBTableData;
-import com.fr.data.impl.EmbeddedTableData;
-import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.data.impl.*;
 import com.fr.data.pool.DBCPConnectionPoolAttr;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.*;
+import java.sql.Connection;
 import java.util.*;
 import java.util.Date;
 
@@ -58,7 +62,7 @@ public class BIDBUtils {
 
         }
     }
-    
+
     public static int classTypeToSql(int classType) {
         switch (classType) {
             case DBConstant.CLASS.INTEGER: {
@@ -249,7 +253,7 @@ public class BIDBUtils {
             for (int i = 0, cols = columns.length; i < cols; i++) {
                 int columnSize = columns[i].getColumnSize();
                 PersistentField column;
-                if(columnSize == 0) {
+                if (columnSize == 0) {
                     column = new PersistentField(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize());
                 } else {
                     column = new PersistentField(columns[i].getColumnName(), null, columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
@@ -257,7 +261,7 @@ public class BIDBUtils {
                 table.addColumn(column);
             }
         } catch (Exception e) {
-            FRContext.getLogger().error(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e);
         } finally {
             com.fr.data.core.db.DBUtils.closeConnection(conn);
         }
@@ -278,7 +282,7 @@ public class BIDBUtils {
 
         DataModel dm = null;
         try {
-            dm = tableData.createDataModel(Calculator.createCalculator());
+            dm = tableData.createDataModel(Calculator.createCalculator(), tableName);
             int cols = dm.getColumnCount();
             JSONObject jo = new JSONObject();
             jo.put("tableName", tableName);
@@ -308,9 +312,12 @@ public class BIDBUtils {
         try {
             DatabaseMetaData dbMetaData = conn.getMetaData();
             String catalog = conn.getCatalog();
-
-
-            ResultSet foreignKeyResultSet = dbMetaData.getExportedKeys(catalog, schemaName, tableName);
+            ResultSet foreignKeyResultSet;
+            if (ComparatorUtils.equals(conn.getMetaData().getDriverName(), "Hive JDBC")) {
+                foreignKeyResultSet = conn.getMetaData().getCatalogs();
+            } else {
+                foreignKeyResultSet = dbMetaData.getExportedKeys(catalog, schemaName, tableName);
+            }
             while (foreignKeyResultSet.next()) {
                 String pkColumnName = foreignKeyResultSet.getString("PKCOLUMN_NAME");
 
@@ -332,14 +339,14 @@ public class BIDBUtils {
 
     private static PersistentTable getDBTable(com.fr.data.impl.Connection connection, Connection conn, String schema, String table) throws Exception {
         Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-        String translatedTableName = dialect.getTableCommentName(conn, table, schema, null);
+        String translatedTableName = getTransCodeText(connection, dialect.getTableCommentName(conn, table, schema, null));
         PersistentTable dbTable = new PersistentTable(schema, table, translatedTableName);
         List columnList = dialect.getTableFieldsInfor(conn, table, schema, null);
         Iterator iterator = columnList.iterator();
         while (iterator.hasNext()) {
             Map item = (Map) iterator.next();
             String columnName = (String) item.get("column_name");
-            String columnNameText = (String) item.get("column_comment");
+            String columnNameText = getColumnNameText(connection, item);
             int columnType = ((Integer) item.get("column_type")).intValue();
             if (columnType == Types.OTHER && dialect instanceof OracleDialect) {
                 columnType = recheckOracleColumnType(conn, columnName, table, columnType);
@@ -359,6 +366,22 @@ public class BIDBUtils {
             dbTable.addColumn(new PersistentField(columnName, columnNameText, columnType, columnKey, columnSize, decimal_digits));
         }
         return dbTable;
+    }
+
+    private static String getColumnNameText(com.fr.data.impl.Connection connection, Map item) throws UnsupportedEncodingException {
+        String columnNameText = (String) item.get("column_comment");
+        return getTransCodeText(connection, columnNameText);
+    }
+
+    private static String getTransCodeText(com.fr.data.impl.Connection connection, String originalCodeText) throws UnsupportedEncodingException {
+        String originalCharsetName = connection.getOriginalCharsetName();
+        String newCharsetName = connection.getNewCharsetName();
+        boolean needCharSetConvert = StringUtils.isNotBlank(originalCharsetName)
+                && StringUtils.isNotBlank(newCharsetName);
+        if (needCharSetConvert && originalCodeText != null) {
+            originalCodeText = new String(originalCodeText.getBytes(originalCharsetName), newCharsetName);
+        }
+        return originalCodeText;
     }
 
     //万恶的oracle万恶的timestamp长度
@@ -391,7 +414,7 @@ public class BIDBUtils {
             conn = connection.createConnection();
             return getDBTable(connection, conn, schema, tableName);
         } catch (Exception e) {
-            FRContext.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BIDBUtils.class).error(e.getMessage(), e);
         } finally {
             com.fr.data.core.db.DBUtils.closeConnection(conn);
         }
@@ -452,19 +475,25 @@ public class BIDBUtils {
      */
     public static SQLStatement getSQLStatement(String dbName, String tableName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        if (connection instanceof JDBCDatabaseConnection) {
+            BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils((JDBCDatabaseConnection) (connection));
+            connection = utils.optimizeConnection((JDBCDatabaseConnection) (connection));
+        }
         SQLStatement sql = new SQLStatement(connection);
         try {
             Connection conn = sql.getSqlConn();
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
             sql.setFrom(dialect.table2SQL(table));
-
+            sql.setSchema(table.getSchema());
+            sql.setTableName(table.getName());
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
         return sql;
     }
-    public static SQLStatement getSQLStatementByConditions(String dbName, String tableName,String where) {
+
+    public static SQLStatement getSQLStatementByConditions(String dbName, String tableName, String where) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         SQLStatement sql = new SQLStatement(connection);
         try {
@@ -479,6 +508,7 @@ public class BIDBUtils {
         }
         return sql;
     }
+
     public static SQLStatement getDistinctSQLStatement(String dbName, String tableName, String fieldName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         SqlSettedStatement sql = new SqlSettedStatement(connection);

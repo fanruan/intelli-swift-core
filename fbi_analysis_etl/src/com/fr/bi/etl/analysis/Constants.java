@@ -8,6 +8,8 @@ import com.fr.bi.stable.constant.BIReportConstant;
 public class Constants {
 
     public final static String PARENTS ="parents";
+    public final static String OPERATOR ="operator";
+    public final static String TYPE ="etlType";
     public final static String FIELDS ="etl_fields";
     public final static String ITEMS ="items";
     public final static String PACK_ID ="myetlidbuxudonga";
@@ -16,19 +18,6 @@ public class Constants {
 
     public final static class BUSINESS_TABLE_TYPE {
         public final static int ANALYSIS_TYPE = 0x8;
-    }
-
-    public static final class TABLE_TYPE {
-        public static final int TEMP = 0x6;
-
-        public static final int BASE = 0x7;
-
-        public static final int ETL = 0x8;
-
-        public static final int USER_BASE = 0x9;
-
-        public static final int USER_ETL = 0xa;
-
     }
 
     public static final class ETL_TYPE {

@@ -56,12 +56,18 @@ public class UserETLUpdateTask implements CubeTask {
 
     private Date start;
     private Date end;
-
+//  螺旋分析B基于A创建，A生成完毕后应强制B重新生成
+    private boolean isRebuild = false;
     private BIUser biUser;
     @BIIgnoreField
     protected BICube cube;
+    public boolean isRebuild() {
+        return isRebuild;
+    }
 
-
+    public void setRebuild(boolean rebuild) {
+        isRebuild = rebuild;
+    }
     public UserETLUpdateTask(UserCubeTableSource source) {
         this.source = source;
         this.biUser = new BIUser(source.getUserId());
@@ -140,8 +146,7 @@ public class UserETLUpdateTask implements CubeTask {
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
         manager.setCubePath(source.fetchObjectCore().getID().getIdentityValue(), getPath());
         end = new Date();
-        manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue(), source.getUserId());
-        manager.releaseCurrentThread();
+        manager.releaseCurrentThread(source.fetchObjectCore().getIDValue());
     }
 
 
@@ -193,9 +198,8 @@ public class UserETLUpdateTask implements CubeTask {
      */
     public boolean check(long oldVersion) {
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
-        return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion(oldVersion);
-    }
-
+    return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion(oldVersion);
+}
     /**
      * @return
      */

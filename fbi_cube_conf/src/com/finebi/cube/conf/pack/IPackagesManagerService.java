@@ -8,6 +8,7 @@ import com.finebi.cube.conf.pack.imp.BIPackageContainer;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 
 import java.util.Set;
@@ -36,6 +37,8 @@ public interface IPackagesManagerService extends IPackagesManagerGetterService {
     boolean isNeed2BuildCube(Set<BIBusinessPackage> targetPackages);
 
     void parsePackageContainer(BIPackageContainer container);
+
+    void removeTable(Set<CubeTableSource> absent);
 
     Boolean isPackageEmpty();
 

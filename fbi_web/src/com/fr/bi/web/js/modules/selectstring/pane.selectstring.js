@@ -19,25 +19,34 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
             type: "bi.package_select_data_service",
             element: this.element,
             wId: o.wId,
-            showRelativeTables: false,
+            showRelativeTables: true,
             showExcelView: false,
             showDateGroup: false,
-            tablesCreator: function (packageId) {
-                var ids = BI.Utils.getTableIDsOfPackageID(packageId);
+            tablesCreator: function (packageIdOrTableId, opt) {
+                if (opt.isRelation === true) {
+                    var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageIdOrTableId);
+                    return BI.map(tIds, function (i, id) {
+                        return {
+                            id: id
+                        }
+                    })
+                }
+                var ids = BI.Utils.getTableIDsOfPackageID(packageIdOrTableId);
                 return BI.map(ids, function (i, id) {
                     return {
                         id: id
                     }
                 })
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId, opt) {
+                opt = opt || {};
                 var ids = BI.Utils.getStringFieldIDsOfTableID(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
                         result.push({
                             id: fid,
-                            type: isRelation ? "bi.select_string_level1_item" : "bi.select_string_level0_item"
+                            type: "bi.select_string_level0_item"
                         })
                     }
                 });

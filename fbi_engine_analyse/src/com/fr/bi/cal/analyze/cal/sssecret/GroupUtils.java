@@ -59,7 +59,6 @@ public class GroupUtils {
                                 deep++;
                             }
                             if (n.getShowValue() != BIBaseConstant.EMPTY_NODE_DATA || deep != 0) {
-                                ((RootDimensionGroup) roots[i]).setWidgetDateMap(deep, data);
                                 node.addChild(n);
                                 addSummaryValue(n, gcvsChild, calculators);
                             }
@@ -90,7 +89,6 @@ public class GroupUtils {
             deep++;
         }
         String dataString = data.toString();
-        ((RootDimensionGroup) root).setWidgetDateMap(deep, dataString);
         n.setShowValue(dataString);
         node.getChilds().clear();
         node.addChild(n);
@@ -221,10 +219,14 @@ public class GroupUtils {
                     minValue = currentValue;
                 } else {
                     int c;
-                    if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
-                        c = gcv.getComparator().compare(minValue, currentValue);
-                    } else {
-                        c = 1;
+                    if(currentValue == null){
+                        c = 0;
+                    }else{
+                        if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
+                            c = gcv.getComparator().compare(minValue, currentValue);
+                        } else {
+                            c = 1;
+                        }
                     }
                     if (c > 0) {
                         minValue = currentValue;
@@ -237,12 +239,15 @@ public class GroupUtils {
             if (gcv != null) {
                 Object currentValue = gcv.getKey();
                 int c;
-                if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
-                    c = gcv.getComparator().compare(minValue, currentValue);
-                } else {
-                    c = 1;
+                if(currentValue == null && minValue == null){
+                    c = 0;
+                }else{
+                    if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
+                        c = gcv.getComparator().compare(minValue, currentValue);
+                    } else {
+                        c = 1;
+                    }
                 }
-
                 if (c == 0) {
                     result[i] = gcvs[i];
                 }
@@ -277,7 +282,7 @@ public class GroupUtils {
                     TargetCalculator[] cs = calculators.get(i);
                     if (cs != null){
                         for (TargetCalculator c : cs){
-                            MultiThreadManagerImpl.getInstance().getExecutorService().submit(new SummaryCall(node, groups[i],c));
+                            MultiThreadManagerImpl.getInstance().getExecutorService().add(new SummaryCall(node, groups[i],c));
                         }
                     }
                 } else {

@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -15,9 +16,12 @@ import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
+import com.fr.data.core.db.dialect.SybaseDialect;
+import com.fr.data.core.db.dml.Table;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
 
+import javax.transaction.NotSupportedException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -81,24 +85,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 int rsColumn = i + 1;
                 switch (field.getFieldType()) {
                     case DBConstant.COLUMN.DATE: {
-//                        switch (field.getClassType()) {
-//                           case DBConstant.CLASS.DATE : {
-//                               object = new DateDealer(rsColumn);
-//                               break;
-//                           }
-//                            case DBConstant.CLASS.TIME : {
-//                                object = new TimeDealer(rsColumn);
-//                                break;
-//                            }
-//                            case DBConstant.CLASS.TIMESTAMP : {
-//                                object = new TimestampDealer(rsColumn);
-//                                break;
-//                            }
-//                            default: {
-//                                object = new TimestampDealer(rsColumn);
-//                            }
-//                        }
-                        object = new TimestampDealer(rsColumn);
+                        object = dealWithDate(field, rsColumn);
                         break;
                     }
                     case DBConstant.COLUMN.NUMBER: {
@@ -130,6 +117,8 @@ public abstract class DBExtractorImpl implements DBExtractor {
         return res.toArray(new DBDealer[res.size()]);
     }
 
+    protected abstract DBDealer dealWithDate(ICubeFieldSource field, int rsColumn);
+
     /**
      * 执行sql语句，获取数据
      *
@@ -159,7 +148,8 @@ public abstract class DBExtractorImpl implements DBExtractor {
             }
             String sqlString = BIDBUtils.createSqlString(dialect, columns);
             sql.setSelect(sqlString);
-            String query = dealWithSqlCharSet(sql.toString(), connection);
+            String queryString = dealWithSqlCharSet(sql.toString(), connection);
+            String query = getDeployModeSql(queryString, dialect, sql);
             BILoggerFactory.getLogger().info("Start Query sql:" + query);
             stmt = createStatement(conn, dialect);
             try {
@@ -229,6 +219,19 @@ public abstract class DBExtractorImpl implements DBExtractor {
     }
 
     public abstract Statement createStatement(Connection conn, Dialect dialect) throws SQLException;
+
+    private String getDeployModeSql(String sql, Dialect dialect, SQLStatement sqlStatement) {
+        int selectColumnSize = PerformancePlugManager.getInstance().getDeployModeSelectSize();
+        if (selectColumnSize > 0 && sqlStatement.getTableName() != null) {
+            Table table = new Table(sqlStatement.getSchema(), sqlStatement.getTableName());
+            try {
+                return dialect instanceof SybaseDialect ? "SELECT *  FROM " + dialect.table2SQL(table) : dialect.getTopNRowSql(selectColumnSize, table);
+            } catch (NotSupportedException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+        }
+        return sql;
+    }
 
 
 }

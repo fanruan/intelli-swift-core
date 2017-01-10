@@ -3,6 +3,7 @@ package com.fr.bi.conf.data.source.operator.add.date;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
@@ -11,7 +12,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -83,9 +84,11 @@ public class GetValueFromDateOperator extends AbstractAddColumnOperator {
         for (int row = 0; row < rowCount; row++) {
             Integer value = dg.get((Long)getter.getValue(row));
             try {
-                travel.actionPerformed(new BIDataValue(row, startCol, value == null ? value : value.longValue()));
+                travel.actionPerformed(new BIDataValue(row, startCol, value == null ? null : value.longValue()));
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error("incorrect formular");
+                BILoggerFactory.getLogger(GetValueFromDateOperator.class).error("incorrect formular");
+                BILoggerFactory.getLogger(GetValueFromDateOperator.class).error(BIStringUtils.append("The value:", value.toString()));
+                BILoggerFactory.getLogger(GetValueFromDateOperator.class).error(e.getMessage(), e);
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }

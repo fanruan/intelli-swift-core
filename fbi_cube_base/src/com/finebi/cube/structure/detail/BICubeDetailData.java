@@ -86,7 +86,8 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
 
     public void buildStructure() {
 //        initCubeReader();
-//        initCubeWriter();
+        initCubeWriter();
+        forceReleaseWriter();
     }
 
     @Override
@@ -136,7 +137,7 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     protected void resetCubeReader() {
         if (isCubeReaderAvailable()) {
             cubeReader.clear();
-//            cubeReader = null;
+            cubeReader = null;
         }
     }
 

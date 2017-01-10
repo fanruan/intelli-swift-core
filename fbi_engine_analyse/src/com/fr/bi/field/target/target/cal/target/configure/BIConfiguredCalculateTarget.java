@@ -58,7 +58,7 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
         return target_id;
     }
 
-    protected int getStart_group() {
+    public int getStart_group() {
         return start_group;
     }
 
@@ -77,4 +77,7 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
         return start_group == BIReportConstant.TARGET_TYPE.CAL_POSITION.ALL;
     }
 
+    public void setStart_group(int start_group) {
+        this.start_group = start_group;
+    }
 }

@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.datasource.DataSourceCompoundService;
 import com.finebi.cube.conf.field.BusinessField;
@@ -63,12 +64,13 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
             if (!container.containsKey(key)) {
                 DataSourceCompoundService value = generateAbsentValue(key);
                 try {
-                    if(value!=null) {
+                    if (value != null) {
                         putKeyValue(key, value);
                     }
                     value.initialAll();
                 } catch (Exception e) {
-                    throw BINonValueUtils.beyondControl();
+//                    throw BINonValueUtils.beyondControl(e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
             if (containsKey(key)) {
@@ -95,7 +97,7 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
 
     @Override
     public void persistData(long userId) {
-        persistUserData(userId);
+        persistUserData(UserControl.getInstance().getSuperManagerID());
     }
 
     @Override

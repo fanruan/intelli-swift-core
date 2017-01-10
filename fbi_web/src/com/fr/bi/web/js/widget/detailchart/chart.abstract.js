@@ -49,7 +49,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.AbstractChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-abstract-chart"
+            baseCls: "bi-abstract-chart",
+            popupItemsGetter: BI.emptyFn
         })
     },
 
@@ -65,21 +66,26 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
      * @param position 坐标轴位置
      * @param formatter 系列tooltip格式化内容
      */
-    formatNumberLevelInYaxis: function (config, items, type, position, formatter) {
+    formatNumberLevelInYaxis: function (config, items, type, position, formatter, isPercentChart) {
         var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 if (position === item.yAxis) {
-                    if (!BI.isNumber(da.y)) {
+                    if (BI.isNotNull(da.y) && !BI.isNumber(da.y)) {
                         da.y = BI.parseFloat(da.y);
                     }
-                    da.y = da.y || 0;
-                    da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
+                    if (BI.isNotNull(da.y)) {
+                        da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
+                    }
                 }
             });
             if (position === item.yAxis) {
                 item.tooltip = BI.deepClone(config.plotOptions.tooltip);
                 item.tooltip.formatter.valueFormat = formatter;
+                if(isPercentChart) {
+                    item.tooltip.formatter.percentFormat = formatter;
+                    item.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
+                }
             }
         });
     },
@@ -88,20 +94,23 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
-                if (!BI.isNumber(da.x)) {
+                if (BI.isNotNull(da.x) && !BI.isNumber(da.x)) {
                     da.x = BI.parseFloat(da.x);
                 }
-                da.x = da.x || 0;
-                da.x = BI.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####;-#.####");
+                if (BI.isNotNull(da.x)) {
+                    da.x = BI.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####;-#.####");
+                }
             });
         })
     },
 
     formatXYDataWithMagnify: function (number, magnify) {
+        if (BI.isNull(number)) {
+            return null
+        }
         if (!BI.isNumber(number)) {
             number = BI.parseFloat(number);
         }
-        number = number || 0;
         return BI.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####;-#.####");
     },
 
@@ -163,7 +172,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : "(" + unit + axis_unit + ")";
     },
 
-    formatTickInXYaxis: function (type, number_level, separators) {
+    formatTickInXYaxis: function (type, number_level, separators, isCompareChart) {
         var formatter = '#.##';
         switch (type) {
             case this.constants.NORMAL:
@@ -195,6 +204,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             formatter += '%';
         }
         formatter += ";-" + formatter;
+        if(isCompareChart) {
+            return function () {
+                arguments[0] = arguments[0] > 0 ? arguments[0] : (-1) * arguments[0];
+                return BI.contentFormat(arguments[0], formatter);
+            }
+        }
         return function () {
             return BI.contentFormat(arguments[0], formatter)
         }
@@ -218,7 +233,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
-    formatDataLabelForAxis: function (state, items, format, style) {
+    formatDataLabelForAxis: function (state, items, format, style, isPercentChart) {
         var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
@@ -229,9 +244,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                     enabled: true,
                     formatter: {
                         identifier: "${VALUE}",
-                        valueFormat: format
+                        valueFormat: format,
                     }
                 };
+                if(isPercentChart) {
+                    item.dataLabels.formatter.identifier = "${PERCENT}";
+                    item.dataLabels.formatter.percentFormat = format;
+                }
             });
         }
     },
@@ -262,3 +281,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     magnify: function () {
     }
 });
+
+BI.AbstractChart.EVENT_CHANGE = "EVENT_CHANGE";
+BI.AbstractChart.EVENT_ITEM_CLICK = "EVENT_ITEM_CLICK";

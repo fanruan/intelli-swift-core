@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 public class BIChildMapClearAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        clearCache();
+
         WebUtils.printAsJSON(res, new JSONObject().put("result", "childMap_clear_success"));
     }
 

@@ -2,16 +2,20 @@ package com.fr.bi.stable.operation.group.group;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.operation.group.AbstractGroup;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -31,42 +35,66 @@ public class AutoGroup extends AbstractGroup {
 
     @Override
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
-        Number lastKey = (Number)BICollectionUtils.lastUnNullKey(baseMap);
+        Number lastKey = (Number) BICollectionUtils.lastUnNullKey(baseMap);
         double tiMax = 0d;
-        if(lastKey != null){
+        if (lastKey != null) {
             tiMax = lastKey.doubleValue();
         }
-        Number firstKey = ((Number) baseMap.firstKey());
+        Number firstKey = (Number) BICollectionUtils.firstUnNullKey(baseMap);
         double tiMin = 0d;
-        if(firstKey != null) {
+        if (firstKey != null) {
             tiMin = firstKey.doubleValue();
         }
         double interval = this.interval;
         if (!hasInterval) {
             interval = initGroup(tiMin, tiMax);
         }
+        int groupSize = (int) Math.ceil((tiMax - start) / interval);
         CubeLinkedHashMap resultMap = new CubeLinkedHashMap();
+        Map<Integer, GroupValueIndexOrHelper> indexMap = new HashMap<Integer, GroupValueIndexOrHelper>();
         Iterator<Map.Entry<Number, GroupValueIndex>> it = baseMap.iterator();
         while (it.hasNext()) {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
+            if (entry.getKey() == null || ComparatorUtils.equals(entry.getKey(), "")) {
+                if (resultMap.get("") == null) {
+                    resultMap.put("", entry.getValue());
+                } else {
+                    resultMap.put("", GVIUtils.OR(entry.getValue(), (GroupValueIndex) resultMap.get("")));
+                }
+                continue;
+            }
             Number k = entry.getKey();
-            if(k == null) {
+            if (k == null) {
                 continue;
             }
             double key = k.doubleValue();
             GroupValueIndex gvi = entry.getValue();
-            String groupName = getAutoGroupName(key, interval);
-            GroupValueIndex g = (GroupValueIndex) resultMap.get(groupName);
-            resultMap.put(groupName, gvi.OR(g));
+            int index = getAutoGroupIndex(key, interval, groupSize);
+            if (indexMap.containsKey(index)) {
+                indexMap.get(index).add(gvi);
+            } else {
+                GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
+                helper.add(gvi);
+                indexMap.put(index, helper);
+            }
+        }
+        Iterator<Map.Entry<Integer, GroupValueIndexOrHelper>> iterator = indexMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, GroupValueIndexOrHelper> entry = iterator.next();
+            resultMap.put(getAutoGroupName(entry.getKey(), interval), entry.getValue().compute());
         }
         return resultMap;
     }
 
-    private String getAutoGroupName(double value, double interval) {
+    private int getAutoGroupIndex(double value, double interval, int groupSize) {
         int index = (int) ((value - start) / interval);
-        if(value == start + interval * 5){
-            return nFormat.format(start + interval * (index - 1)) + "-" + nFormat.format(start + interval * index);
+        if (value == start + interval * groupSize) {
+            return index - 1;
         }
+        return index;
+    }
+
+    private String getAutoGroupName(int index, double interval) {
         return nFormat.format(start + interval * index) + "-" + nFormat.format(start + interval * (index + 1));
     }
 
@@ -78,7 +106,7 @@ public class AutoGroup extends AbstractGroup {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if(jo.has("group_value")){
+        if (jo.has("group_value")) {
             JSONObject valueJson = jo.optJSONObject("group_value");
             if (valueJson.has("max")) {
                 max = valueJson.getDouble("max");
@@ -102,8 +130,8 @@ public class AutoGroup extends AbstractGroup {
         return Double.parseDouble(val);
     }
 
-    private double cutBig(String val, int cutPosition){
-        if(val.charAt(cutPosition) == '0'){
+    private double cutBig(String val, int cutPosition) {
+        if (val.charAt(cutPosition) == '0') {
             return Double.parseDouble(val);
         }
         val = val.substring(0, cutPosition);
@@ -113,7 +141,7 @@ public class AutoGroup extends AbstractGroup {
             add.append("0");
         }
         add.append("1");
-        if( ComparatorUtils.equals(val.charAt(cutPosition - 1), '.')){
+        if (ComparatorUtils.equals(val.charAt(cutPosition - 1), '.')) {
             return new BigDecimal(val.substring(0, cutPosition - 1)).add(new BigDecimal("1")).doubleValue();
         }
         BigDecimal b1 = new BigDecimal(val);
@@ -158,11 +186,11 @@ public class AutoGroup extends AbstractGroup {
 
         //后面补零对齐
         int zeros = maxBuilder.length() - minBuilder.length();
-        if(zeros > 0){
+        if (zeros > 0) {
             while (zeros-- > 0) {
                 minBuilder.append("0");
             }
-        }else{
+        } else {
             while (zeros++ < 0) {
                 maxBuilder.append("0");
             }
@@ -185,9 +213,9 @@ public class AutoGroup extends AbstractGroup {
         double genMin = minV * magnify;
         double genMax = maxV * magnify;
         this.start = genMin;
-        if(!hasInterval){
-            return (genMax - genMin) / 5;
-        }else{
+        if (!hasInterval) {
+            return Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / 5));
+        } else {
             return this.interval;
         }
     }

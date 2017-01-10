@@ -29,7 +29,7 @@ public class BITablePathBuilderTest extends BICubeTestBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        tablePathIndexBuilder = new BITablePathIndexBuilder(cube, BICubePathTestTool.getABC());
+        tablePathIndexBuilder = new BITablePathIndexBuilder(cube, null, BICubePathTestTool.getABC());
         BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
         transportTest.transport(BIMemoryDataSourceFactory.generateTableA());
         transportTest.transport(BIMemoryDataSourceFactory.generateTableB());
@@ -56,17 +56,16 @@ public class BITablePathBuilderTest extends BICubeTestBase {
     }
 
 
-
     public void testPathIndex() {
         try {
             buildTablePath();
             CubeRelationEntityGetterService getterService = cube.getCubeRelation(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BICubePathTestTool.getABC());
-            assertEquals(getterService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));
-            assertEquals(getterService.getBitmapIndex(1), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{4, 6}));
-            assertEquals(getterService.getBitmapIndex(2), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(getterService.getBitmapIndex(3), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(getterService.getBitmapIndex(4), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(getterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0, 2, 3, 5}));
+            assertEquals(getterService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 7}));
+            assertEquals(getterService.getBitmapIndex(1), RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}));
+            assertEquals(getterService.getBitmapIndex(2), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(getterService.getBitmapIndex(3), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(getterService.getBitmapIndex(4), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(getterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{0, 2, 3, 5}));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -88,13 +87,14 @@ public class BITablePathBuilderTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
+
     public void buildEmptyTablePath() {
         try {
             setUp();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        tablePathIndexBuilder = new BITablePathIndexBuilder(cube, BICubePathTestTool.getEmptyTable_B_C());
+        tablePathIndexBuilder = new BITablePathIndexBuilder(cube, null, BICubePathTestTool.getEmptyTable_B_C());
         BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
         transportTest.transport(BIMemoryDataSourceFactory.generateEmptyTable());
         transportTest.transport(BIMemoryDataSourceFactory.generateTableB());

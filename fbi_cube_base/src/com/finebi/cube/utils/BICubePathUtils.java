@@ -1,8 +1,17 @@
 package com.finebi.cube.utils;
 
+import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.BICubeTablePath;
+import com.finebi.cube.structure.ITableKey;
+import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.Iterator;
@@ -15,6 +24,8 @@ import java.util.List;
  * @since 4.0
  */
 public class BICubePathUtils {
+    private static BILogger logger = BILoggerFactory.getLogger(BICubePathUtils.class);
+
     public static BICubeTablePath convert(BITableSourceRelationPath targetPath) {
         BITableSourceRelationPath path = new BITableSourceRelationPath();
         path.copyFrom(targetPath);
@@ -46,5 +57,16 @@ public class BICubePathUtils {
         return cubePath;
     }
 
-
+    public static boolean isPathExisted(BITableSourceRelationPath sourcePath, ICubeConfiguration cubeConfiguration) {
+        BICube cube = new BICube(new BICubeResourceRetrieval(cubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        BICubeTablePath path = convert(sourcePath);
+        ITableKey tableKey = null;
+        try {
+            tableKey = path.getFirstRelation().getPrimaryTable();
+        } catch (BITablePathEmptyException e) {
+            logger.warn(e.getMessage(), e);
+            return false;
+        }
+        return cube.exist(tableKey, path);
+    }
 }

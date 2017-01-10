@@ -19,11 +19,11 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -66,7 +66,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         try {
             setTaskId(businessTable, childTableSourceId);
             setAllSources(businessTable);
-            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getAllTableSources());
+            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSystemTableSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
             setChildTableSource(childTableSourceId);
@@ -77,12 +77,12 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     }
 
     private void setTaskId(BusinessTable businessTable, String childTableSourceId) {
-        taskId = BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, businessTable.getID().getIdentity(), childTableSourceId);
+        taskId = BIStringUtils.append(businessTable.getID().getIdentity(), childTableSourceId);
     }
 
     private void setChildTableSource(String childTableSourceId) {
         if (null != childTableSourceId) {
-            for (CubeTableSource source : this.getAllSingleSources()) {
+            for (CubeTableSource source : this.getSingleSourceLayers()) {
                 if (ComparatorUtils.equals(source.getSourceID(), childTableSourceId)) {
                     this.childTableSource = source;
                 }
@@ -126,7 +126,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         for (BITableRelation tableRelation : inUseRelations) {
             if (isTableRelationAvailable(tableRelation, cubeConfiguration)) {
                 BITableRelation tempTableRelation = new BITableRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField());
-                BITableSourceRelation convertRelation = convertRelation(tempTableRelation);
+                BITableSourceRelation convertRelation = configHelper.convertRelation(tempTableRelation);
                 if (null != convertRelation) {
                     this.biTableSourceRelationSet.add(convertRelation);
                     Set<CubeTableSource> dependTableSourceSet = new HashSet<CubeTableSource>();
@@ -157,21 +157,21 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
 
     private Set<BITableRelationPath> getGeneratedPaths(Set<BITableRelation> generatedRelations) {
         Set<BITableRelationPath> generatedRelationPaths = new HashSet<BITableRelationPath>();
-        for (BITableRelationPath tableRelationPath : allRelationPathSet) {
-            boolean flag = true;
-            if (tableRelationPath.size() == BIRelationUtils.PATH_NULL || tableRelationPath.size() == BIRelationUtils.PATH_RELATION) {
-                flag = false;
-            }
-            for (BITableRelation tableRelation : tableRelationPath.getAllRelations()) {
-                if (!generatedRelations.contains(tableRelation)) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                generatedRelationPaths.add(tableRelationPath);
-            }
-        }
+//        for (BITableRelationPath tableRelationPath : allRelationPathSet) {
+//            boolean flag = true;
+//            if (tableRelationPath.size() == BIRelationUtils.PATH_NULL || tableRelationPath.size() == BIRelationUtils.PATH_RELATION) {
+//                flag = false;
+//            }
+//            for (BITableRelation tableRelation : tableRelationPath.getAllRelations()) {
+//                if (!generatedRelations.contains(tableRelation)) {
+//                    flag = false;
+//                    break;
+//                }
+//            }
+//            if (flag) {
+//                generatedRelationPaths.add(tableRelationPath);
+//            }
+//        }
         return generatedRelationPaths;
     }
 
@@ -219,12 +219,12 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     /**
      * @return allTableSources
      */
-    public Set<CubeTableSource> getAllTableSources() {
+    public Set<CubeTableSource> getSystemTableSources() {
         return sources;
     }
 
 
-    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
+    public Set<BITableSourceRelationPath> getTableSourceRelationPathSet() {
         return biTableSourceRelationPathSet;
     }
 
@@ -233,7 +233,12 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     }
 
     @Override
-    public Set<CubeTableSource> getAllSingleSources() {
+    public CubeTaskType getTaskType() {
+        return CubeTaskType.SINGLE;
+    }
+
+    @Override
+    public Set<CubeTableSource> getSingleSourceLayers() {
         return allSingleSources;
     }
 
@@ -247,11 +252,6 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     }
 
     @Override
-    public Set<BITableRelation> getTableRelationSet() {
-        return inUseRelations;
-    }
-
-    @Override
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
         return this.cubeGenerateRelationPathSet;
     }
@@ -261,22 +261,13 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         return this.cubeGenerateRelationSet;
     }
 
-    @Override
-    public boolean preConditionsCheck() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleTable() {
-        return true;
-    }
-
     public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {
         this.dependTableResource = dependTableResource;
     }
 
     /***
      * 单表更新ETL时，除了选中的表外，其他基础表不作更新
+     *
      * @return
      */
     @Override
@@ -285,7 +276,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         if (null == childTableSource) {
             return map;
         }
-        for (CubeTableSource source : this.getAllSingleSources()) {
+        for (CubeTableSource source : this.getSingleSourceLayers()) {
             UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), biUser.getUserId());
             if (null == updateSettingSource) {
                 updateSettingSource = new UpdateSettingSource();

@@ -9,6 +9,7 @@ import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
@@ -18,10 +19,9 @@ import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
@@ -45,12 +45,20 @@ import java.util.concurrent.TimeUnit;
  */
 public class BITablePathIndexBuilder extends BIProcessor {
     protected Cube cube;
+    protected CubeChooser cubeChooser;
     protected BICubeTablePath relationPath;
     private static final Logger logger = LoggerFactory.getLogger(BITablePathIndexBuilder.class);
 
-    public BITablePathIndexBuilder(Cube cube, BICubeTablePath relationPath) {
+    public BITablePathIndexBuilder(Cube cube, Cube integrityCube, BICubeTablePath relationPath) {
         this.cube = cube;
+        this.cubeChooser = new CubeChooser(cube, integrityCube);
         this.relationPath = relationPath;
+        initThreadPool();
+    }
+
+    @Override
+    protected void initThreadPool() {
+        executorService = BIProcessorThreadManager.getInstance().getExecutorService();
     }
 
     @Override
@@ -64,7 +72,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     @Override
     public void release() {
-
+        cube.clear();
     }
 
     private String logPath() {
@@ -110,22 +118,23 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 lastRelationEntity = buildLastRelationReader();
                 frontRelationPathReader = buildFrontRelationPathReader();
                 targetPathEntity = buildTargetRelationPathWriter();
-                final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
+                GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
                 int[] reverse = new int[getJuniorTableRowCount()];
                 Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
                 for (int row = 0; row < primaryRowCount; row++) {
                     GroupValueIndex frontGroupValueIndex = frontRelationPathReader.getBitmapIndex(row);
                     GroupValueIndex resultGroupValueIndex = getTableLinkedOrGVI(frontGroupValueIndex, lastRelationEntity);
-                    appearPrimaryValue.or(resultGroupValueIndex);
+                    helper.add(resultGroupValueIndex);
                     targetPathEntity.addRelationIndex(row, resultGroupValueIndex);
                     initReverseIndex(reverse, row, resultGroupValueIndex);
                     if (CubeConstant.LOG_SEPERATOR_ROW != 0 && row % CubeConstant.LOG_SEPERATOR_ROW == 0) {
                         logger.info(BIStringUtils.append("\n    ", logPath(), "read ", String.valueOf(row), " rows field value and time elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
                     }
                 }
-                GroupValueIndex nullIndex = appearPrimaryValue.NOT(reverse.length);
+                GroupValueIndex nullIndex = helper.compute().NOT(reverse.length);
                 buildReverseIndex(targetPathEntity, reverse);
                 targetPathEntity.addRelationNULLIndex(0, nullIndex);
+                targetPathEntity.addVersion(System.currentTimeMillis());
                 long costTime = System.currentTimeMillis() - t;
                 try {
                     biLogManager.infoRelation(columnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
@@ -134,6 +143,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 }
             } catch (Exception e) {
                 try {
+                    BILoggerFactory.getLogger().error(BIStringUtils.append("error path:", columnKeyInfo.createJSON().toString()) + e.getMessage(), e);
                     biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
                 } catch (Exception e1) {
                     BILoggerFactory.getLogger().error(e1.getMessage());
@@ -192,17 +202,17 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     protected int getPrimaryTableRowCount() throws BITablePathEmptyException {
         ITableKey primaryTableKey = relationPath.getFirstRelation().getPrimaryTable();
-        CubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
+        CubeTableEntityGetterService primaryTable = cubeChooser.getCubeTable(primaryTableKey);
         int rowCount = primaryTable.getRowCount();
         primaryTable.clear();
         return rowCount;
     }
 
     protected int getJuniorTableRowCount() throws BITablePathEmptyException {
-        ITableKey primaryTableKey = relationPath.getLastRelation().getForeignTable();
-        CubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
-        int rowCount = primaryTable.getRowCount();
-        primaryTable.clear();
+        ITableKey foreignTableKey = relationPath.getLastRelation().getForeignTable();
+        CubeTableEntityGetterService foreignTable = cubeChooser.getCubeTable(foreignTableKey);
+        int rowCount = foreignTable.getRowCount();
+        foreignTable.clear();
         return rowCount;
     }
 
@@ -217,7 +227,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
         }
-        return cube.getCubeRelation(lastPrimaryKey, lastRelation);
+        return cubeChooser.getCubeRelation(lastPrimaryKey, lastRelation);
     }
 
     private ICubeRelationEntityService buildTargetRelationPathWriter() throws
@@ -237,7 +247,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
         }
-        return cube.getCubeRelation(firstPrimaryKey, frontRelation);
+        return cubeChooser.getCubeRelation(firstPrimaryKey, frontRelation);
     }
 
     private BICubeTablePath buildFrontRelation() throws BITablePathEmptyException {

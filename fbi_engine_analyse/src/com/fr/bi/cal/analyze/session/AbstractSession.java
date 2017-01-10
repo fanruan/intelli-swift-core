@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.session;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.TableDataSource;
 import com.fr.fs.control.UserControl;
+import com.fr.general.FRLogManager;
 import com.fr.general.LogDuration;
 import com.fr.main.FineBook;
 import com.fr.main.TemplateWorkBook;
@@ -114,8 +115,9 @@ public abstract class AbstractSession extends SessionIDInfor implements ReportSe
 
     @Override
     public void release() {
-        Calculator.putThreadSavedNameSpace(null);
         this.releaseShowBook();
+        FRLogManager.setSession(null);
+        Calculator.putThreadSavedNameSpace(null);
     }
 
     /**

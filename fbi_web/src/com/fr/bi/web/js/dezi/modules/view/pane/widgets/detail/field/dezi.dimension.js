@@ -51,6 +51,9 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             type: "bi.sign_editor",
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
             cls: "bi-dimension-name",
+            title: function () {
+                return self.editor.getValue();
+            },
             allowBlank: false,
             validationChecker: function () {
                 return self._checkDimensionName(self.editor.getValue());
@@ -128,15 +131,39 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
     },
 
     _checkDimensionValid: function(){
+        var dId = this.model.get("id"), self = this;
         var dimensionMap = this.model.get("dimension_map");
-        var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(this.model.get("id")));
+        var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(dId));
         var res = BI.find(tIds, function(idx, tId){
-            return !BI.has(dimensionMap, tId) && !BI.Utils.isCalculateTargetByDimensionID(tId);
+            return !BI.Utils.isCalculateTargetByDimensionID(tId) && !checkDimAndTarRelationValidInCurrentPaths(dId, tId);
         });
         if(BI.isNull(res)){
             this.editor.element.removeClass("dimension-invalid");
         }else{
             this.editor.element.addClass("dimension-invalid");
+        }
+
+        function checkDimAndTarRelationValidInCurrentPaths(dId, tId){
+            var valid = true;
+            if(BI.has(dimensionMap, tId)){
+                var targetRelation = dimensionMap[tId].target_relation;
+                BI.any(targetRelation, function (id, path) {
+                    var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
+                    var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
+                    var paths = BI.Utils.getPathsFromFieldAToFieldB(pId, fId);
+                    if (!BI.deepContains(paths, path)) {
+                        if (paths.length === 1) {
+                        } else {
+                            valid = false;
+                            return true;
+                        }
+                    }
+                })
+            }else{
+                var paths = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(dId), BI.Utils.getFieldIDByDimensionID(tId))
+                valid = paths.length === 1;
+            }
+            return valid
         }
     },
 

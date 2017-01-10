@@ -37,6 +37,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
@@ -45,6 +46,9 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             obj.x = obj.y;
             obj.y = tmp;
             self.fireEvent(BI.BarChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -55,11 +59,6 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if (this.config.show_zoom === true) {
-            delete config.dataSheet;
-            delete config.zoom.zoomType;
-        }
 
         //分类轴
         config.yAxis = this.yAxis;
@@ -69,7 +68,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             labelRotation: this.config.text_direction,
             enableTick: this.config.enable_tick,
-            lineWidth: this.config.line_width
+            lineWidth: this.config.line_width,
+            maxWidth: '40%'
         });
 
         //值轴

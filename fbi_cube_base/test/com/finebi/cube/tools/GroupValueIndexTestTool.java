@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class GroupValueIndexTestTool {
     public static GroupValueIndex generateSampleIndex() {
-        Integer[] values = new Integer[2];
+        int[] values = new int[2];
         values[0] = 1;
         values[1] = 4;
         return RoaringGroupValueIndex.createGroupValueIndex(values);
@@ -25,7 +25,7 @@ public class GroupValueIndexTestTool {
         int oneSize = 100;
         int indexLength = 10000;
         int size = Math.abs(BIRandomUitils.getRandomInteger()) % oneSize;
-        Integer[] values = new Integer[size];
+        int[] values = new int[size];
         for (int i = 0; i < size; i++) {
             values[i] = BIRandomUitils.getRandomInteger() % indexLength;
         }
@@ -39,7 +39,7 @@ public class GroupValueIndexTestTool {
                 count.add(i);
             }
         }
-        Integer[] temp = new Integer[count.size()];
+        int[] temp = new int[count.size()];
         for (int i = 0; i < count.size(); i++) {
             temp[i] = count.get(i);
         }
@@ -53,7 +53,7 @@ public class GroupValueIndexTestTool {
                 count.add(i);
             }
         }
-        Integer[] temp = new Integer[count.size()];
+        int[] temp = new int[count.size()];
         for (int i = 0; i < count.size(); i++) {
             temp[i] = count.get(i);
         }

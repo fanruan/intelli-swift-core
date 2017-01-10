@@ -60,11 +60,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             }
         } else {
             if (null == hostTable) {
-                BILoggerFactory.getLogger().error("hostTable null");
+                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable null");
             } else {
-                BILoggerFactory.getLogger().error("hostTable sourceId" + hostTable.tableKey.getSourceID());
+                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable sourceId" + hostTable.tableKey.getSourceID());
             }
-            throw new BICubeTableAbsentException("Please generate Cube firstly");
+            throw new BICubeTableAbsentException("Please generate Cube firstly ,The Table:" + hostTable.tableKey.getSourceID() + " absent");
         }
         if (isParentAvailable()) {
             for (ICubeFieldSource field : parentTable.getFieldInfo()) {
@@ -197,17 +197,33 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
                 return field;
             }
         }
-        throw new BICubeColumnAbsentException();
+
+        throw new BICubeColumnAbsentException("The missing field name:" + fieldName + " all field:" + allFieldLog());
+    }
+
+    private String allFieldLog() {
+        try {
+            String allField = "";
+            for (ICubeFieldSource field : compoundFields) {
+                if (field != null) {
+                    allField += field.getFieldName() + ",";
+                }
+            }
+            return allField;
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(CompoundCubeTableReader.class).error(e.getMessage(), e);
+            return " error ";
+        }
     }
 
     @Override
     public Date getLastExecuteTime() {
-        return  hostTable.getLastExecuteTime();
+        return hostTable.getLastExecuteTime();
     }
 
     @Override
     public Date getCurrentExecuteTime() {
-        return  hostTable.getCurrentExecuteTime();
+        return hostTable.getCurrentExecuteTime();
     }
 
 
@@ -253,6 +269,7 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             parentTable.forceReleaseWriter();
         }
     }
+
     @Override
     public void forceReleaseReader() {
         hostTable.forceReleaseReader();
@@ -260,6 +277,7 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             parentTable.forceReleaseReader();
         }
     }
+
     @Override
     public void recordParentsTable(List<ITableKey> parents) {
         throw new UnsupportedOperationException();
@@ -321,6 +339,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     @Override
     public Boolean isVersionAvailable() {
         return hostTable.isVersionAvailable();
+    }
+
+    @Override
+    public boolean relationExists(BICubeTablePath path) {
+        return hostTable.relationExists(path);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.finebi.cube.data.input;
 
 import com.finebi.cube.exception.BIResourceInvalidException;
+import com.fr.bi.stable.gvi.BIByteDataInput;
 
 /**
  * This class created on 2016/3/11.
@@ -9,5 +10,5 @@ import com.finebi.cube.exception.BIResourceInvalidException;
  * @since 4.0
  */
 public interface ICubeByteArrayReader extends ICubeReader, ICubeObjectReader<byte[]> {
-    byte getFirstByte(int row) throws BIResourceInvalidException;
+    BIByteDataInput getByteStream(int rowNumber) throws BIResourceInvalidException;
 }

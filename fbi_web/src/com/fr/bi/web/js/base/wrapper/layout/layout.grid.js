@@ -36,7 +36,7 @@ BI.GridLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("grid布局不需要resize")
+        // console.log("grid布局不需要resize")
     },
 
     addItem: function () {
@@ -44,8 +44,7 @@ BI.GridLayout = BI.inherit(BI.Layout, {
         throw new Error("不能添加元素")
     },
 
-    populate: function (items) {
-        BI.GridLayout.superclass.populate.apply(this, arguments);
+    stroke: function (items) {
         var o = this.options;
         var rows = o.rows || o.items.length, columns = o.columns || ((o.items[0] && o.items[0].length) | 0);
         var width = 100 / columns, height = 100 / rows;
@@ -118,6 +117,10 @@ BI.GridLayout = BI.inherit(BI.Layout, {
                 this.addWidget(els[i][j]);
             }
         }
+    },
+
+    populate: function (items) {
+        BI.GridLayout.superclass.populate.apply(this, arguments);
         this.render();
     }
 });

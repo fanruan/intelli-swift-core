@@ -184,6 +184,14 @@ BI.MVCController = BI.inherit(BI.Controller,  {
 
     },
 
+    _getWidget: function() {
+        return arguments[arguments.length - 2];
+    },
+
+    _getModel: function() {
+        return arguments[arguments.length - 1];
+    },
+
     deferChange : function () {
     },
 

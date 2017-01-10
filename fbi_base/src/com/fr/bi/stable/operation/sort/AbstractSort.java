@@ -52,7 +52,7 @@ public abstract class AbstractSort implements ISort, BICoreService {
         if (jo.has("type")) {
             sortType = jo.optInt("type", BIReportConstant.SORT.ASC);
         }
-        if (jo.has("details")) {
+        if (jo.has("details") && sortType == BIReportConstant.SORT.CUSTOM) {
             JSONArray ja = jo.optJSONArray("details");
             int len = ja.length();
             reg = new String[len];

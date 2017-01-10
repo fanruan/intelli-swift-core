@@ -21,7 +21,7 @@ BI.CubeLogWrongInfoItemTitle = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.switcher = BI.createWidget({
             type: "bi.text_button",
-            text: o.open === true ? "点击收起" : "点击展开",
+            text: o.open === true ? BI.i18nText("BI-Click_To_Close") : BI.i18nText("BI-Click_To_Open"),
             height: o.height,
             cls: "cube-log-wrong-info-item-title-switcher"
         });
@@ -57,7 +57,7 @@ BI.CubeLogWrongInfoItemTitle = BI.inherit(BI.Widget, {
     setOpened: function (v) {
         var o = this.options;
         o.open = v;
-        this.switcher.setText(o.open === true ? "点击收起" : "点击展开");
+        this.switcher.setText(o.open === true ? BI.i18nText("BI-Click_To_Close") : BI.i18nText("BI-Click_To_Open"));
     }
 });
 BI.CubeLogWrongInfoItemTitle.EVENT_CHANGE = "EVENT_CHANGE";

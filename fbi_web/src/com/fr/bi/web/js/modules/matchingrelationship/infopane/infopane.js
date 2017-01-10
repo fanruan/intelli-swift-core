@@ -71,8 +71,24 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
             var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
             if(BI.isNotEmptyObject(dimensionMap)){
                 BI.each(dimensionMap, function(tId, content){
-                    self.stored_paths[tId] = [content.target_relation];
-                    self.stored_value[tId] = content;
+                    var targetRelation = content.target_relation;
+                    var valid = true;
+                    BI.any(targetRelation, function (id, path) {
+                        var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
+                        var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
+                        var paths = BI.Utils.getPathsFromFieldAToFieldB(pId, fId);
+                        if (!BI.deepContains(paths, path)) {
+                            if (paths.length === 1) {
+                            }else{
+                                valid = false;
+                                return true;
+                            }
+                        }
+                    })
+                    if(valid === true){
+                        self.stored_paths[tId] = [content.target_relation];
+                        self.stored_value[tId] = content;
+                    }
                 });
             }
             return;

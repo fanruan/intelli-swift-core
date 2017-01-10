@@ -132,9 +132,24 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
     },
 
     getDimDimensionIDs: function () {
-        return BI.Utils.getAllDimDimensionIDs(this.wId);
+        return BI.filter(BI.Utils.getAllDimDimensionIDs(this.wId), function(idx, dId){
+            return BI.Utils.isDimensionUsable(dId);
+        });
     },
 
+    getSeriesDimensionIDs: function () {
+        return BI.filter(this.getDimDimensionIDs(), function(idx, dId){
+            var regionType = BI.Utils.getRegionTypeByDimensionID(dId);
+            return regionType >= BICst.REGION.DIMENSION2;
+        });
+    },
+
+    getCatagoryDimensionIDs: function () {
+        return BI.filter(BI.Utils.getAllDimDimensionIDs(this.wId), function(idx, dId){
+            var regionType = BI.Utils.getRegionTypeByDimensionID(dId);
+            return regionType < BICst.REGION.DIMENSION2;
+        });
+    },
 
     getDimensions: function () {
         return BI.deepClone(this.dimensions);

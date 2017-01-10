@@ -230,7 +230,7 @@ public class BILogger implements Logger {
 
     @Override
     public void warn(String s, Throwable throwable) {
-        logger.warn(s, throwable);
+        logger.warn("The log level of this exception is warning," + s, throwable);
     }
 
     @Override

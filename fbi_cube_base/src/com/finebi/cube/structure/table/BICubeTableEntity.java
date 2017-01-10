@@ -69,7 +69,8 @@ public class BICubeTableEntity implements CubeTableEntityService {
              * 否则简单的clear的话只是通知不再引用句柄。
              * 实际资源没有被close掉。
              */
-            tableProperty.forceRelease();
+//            tableProperty.forceRelease();
+            tableProperty.clear();
         }
         tableProperty = new BICubeTableProperty(currentLocation, discovery);
 
@@ -281,6 +282,15 @@ public class BICubeTableEntity implements CubeTableEntityService {
     @Override
     public boolean tableDataAvailable() {
         return tableProperty.isRowCountAvailable() || tableProperty.isVersionAvailable();
+    }
+
+    @Override
+    public boolean relationExists(BICubeTablePath path) {
+        try {
+            return relationManager.relationExists(path);
+        } catch (IllegalRelationPathException e) {
+            throw BINonValueUtils.illegalArgument(path.toString() + " the path is so terrible");
+        }
     }
 
     @Override

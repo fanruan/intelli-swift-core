@@ -16,7 +16,7 @@ public class BIRelationIndexBuilder4Test extends BIRelationIndexGenerator {
     public Object mainTask(IMessage lastReceiveMessage) {
         System.out.println("Relation Index!");
         BICubeBuildProbeTool.INSTANCE.getFlag().put("RelationIndex", 20);
-        BICubeBuildProbeTool.INSTANCE.getFlag().put("RelationIndex:"+lastReceiveMessage.getFragment(), 20);
+        BICubeBuildProbeTool.INSTANCE.getFlag().put("RelationIndex:" + lastReceiveMessage.getFragment(), 20);
 
 //        try {
 //            Thread.sleep(100);
@@ -25,11 +25,13 @@ public class BIRelationIndexBuilder4Test extends BIRelationIndexGenerator {
 //        }
         return null;
     }
+
     @Override
     public void release() {
 
     }
+
     public BIRelationIndexBuilder4Test(Cube cube, BICubeRelation relation) {
-        super(cube, relation);
+        super(cube, null, relation);
     }
 }

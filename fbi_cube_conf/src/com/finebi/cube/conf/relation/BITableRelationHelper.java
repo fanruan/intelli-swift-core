@@ -1,7 +1,9 @@
 package com.finebi.cube.conf.relation;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.field.BusinessFieldHelper;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -11,7 +13,7 @@ import com.fr.json.JSONObject;
  * Created by roy on 16/5/27.
  */
 public class BITableRelationHelper {
-    public static BITableRelation getRelation(JSONObject relationJson){
+    public static BITableRelation getRelation(JSONObject relationJson) {
         try {
             JSONObject primaryJson = relationJson.getJSONObject("primaryKey");
             JSONObject foreignJson = relationJson.getJSONObject("foreignKey");
@@ -19,8 +21,9 @@ public class BITableRelationHelper {
             String foreignFieldID = foreignJson.getString("field_id");
             BusinessField primaryField = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(primaryFieldID));
             BusinessField foreignField = BusinessFieldHelper.getBusinessFieldSource(new BIFieldID(foreignFieldID));
-          return   new BITableRelation(primaryField,foreignField);
-        }catch (Exception e){
+            return new BITableRelation(primaryField, foreignField);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BITableRelationHelper.class).error("get relation error and the relation is:" + BILogHelper.logTableRelation(relationJson));
             throw BINonValueUtils.beyondControl(e);
         }
 

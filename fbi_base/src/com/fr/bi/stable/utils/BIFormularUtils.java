@@ -5,6 +5,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.script.Calculator;
 import com.fr.stable.Primitive;
 import com.fr.stable.UtilEvalError;
@@ -43,6 +44,8 @@ public class BIFormularUtils {
             Object ob = c.eval(formula);
             return ob == Primitive.NULL ? null : ob;
         } catch (UtilEvalError e) {
+            BILoggerFactory.getLogger(BIFormularUtils.class).error("incorrect formula");
+            BILoggerFactory.getLogger(BIFormularUtils.class).error(BIStringUtils.append("The formula:", formula));
             return null;
         }
     }

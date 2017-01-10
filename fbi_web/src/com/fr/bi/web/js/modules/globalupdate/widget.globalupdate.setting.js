@@ -69,7 +69,7 @@ BI.GlobalUpdateSetting = BI.inherit(BI.Widget, {
     
     update: function(){
         var settings = Data.SharingPool.get("update_settings");
-        settings[BICst.GLOBAL_UPDATE] = this.getValue();
+        settings[BICst.CUBE_UPDATE_TYPE.GLOBAL_UPDATE] = this.getValue();
         Data.SharingPool.put("update_settings", settings);
         BI.Utils.modifyGlobalUpdateSetting({setting: this.getValue()}, function(){});
     },

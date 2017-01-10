@@ -62,7 +62,6 @@ public class BINationTablesTest extends BICubeTestBase {
     }
 
 
-
     public void testFieldPathIndex() {
         try {
 
@@ -74,7 +73,7 @@ public class BINationTablesTest extends BICubeTestBase {
             fieldIndexGenerator(BINationDataFactory.createTablePerson(), 1);
             fieldIndexGenerator(BINationDataFactory.createTablePerson(), 2);
             //生成依赖关系
-            BIRelationIndexGenerator indexGenerator = new BIRelationIndexGenerator(cube, generatePersonsAndNationsRelation());
+            BIRelationIndexGenerator indexGenerator = new BIRelationIndexGenerator(cube, null, generatePersonsAndNationsRelation());
             indexGenerator.mainTask(null);
 
 
@@ -83,14 +82,14 @@ public class BINationTablesTest extends BICubeTestBase {
 
             //测试relation
             CubeRelationEntityGetterService iCubeRelationEntityGetterService = cube.getCubeRelation(BITableKeyUtils.convert(BINationDataFactory.createTablePerson()), biCubeTablePath);
-            assertEquals(iCubeRelationEntityGetterService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0}));
-            assertEquals(iCubeRelationEntityGetterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
+            assertEquals(iCubeRelationEntityGetterService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{0}));
+            assertEquals(iCubeRelationEntityGetterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
 
             //根据value查找索引
             final CubeColumnReaderService iCubeColumnReaderService = cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTablePerson()), BIColumnKey.covertColumnKey(new BICubeFieldSource(BITableSourceTestTool.getDBTableSourcePerson(), "name", DBConstant.CLASS.STRING, 255)));
 
             //获取本表对应位置索引值
-            assertEquals(iCubeColumnReaderService.getIndexByGroupValue("nameA"), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0, 2}));
+            assertEquals(iCubeColumnReaderService.getIndexByGroupValue("nameA"), RoaringGroupValueIndex.createGroupValueIndex(new int[]{0, 2}));
             //根据行号(rowId来查询value
             assertEquals(iCubeColumnReaderService.getOriginalObjectValueByRow(1), "nameB");
 
@@ -134,7 +133,6 @@ public class BINationTablesTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
-
 
 
     /**

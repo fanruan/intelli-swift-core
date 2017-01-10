@@ -26,12 +26,7 @@ BI.FloatLeftLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options;
-        if (!this.hasWidget(this.getName() + i)) {
-            var w = BI.createWidget(item);
-            this.addWidget(this.getName() + i, w);
-        } else {
-            var w = this.getWidgetByName(this.getName() + i);
-        }
+        var w = BI.FloatLeftLayout.superclass._addElement.apply(this, arguments);
         w.element.css({"position": "relative", "float": "left"});
         if (BI.isNotNull(item.left)) {
             w.element.css({"left": item.left});
@@ -57,30 +52,12 @@ BI.FloatLeftLayout = BI.inherit(BI.Layout, {
         return w;
     },
 
-    addItem: function (item) {
-        BI.FloatLeftLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(this.options.items.length, item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
-        return w;
-    },
-
     resize: function () {
         this.stroke(this.options.items);
     },
 
-    stroke: function (items) {
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        });
-    },
-
     populate: function (items) {
         BI.FloatLeftLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });
@@ -114,12 +91,7 @@ BI.FloatRightLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options;
-        if (!this.hasWidget(this.getName() + i)) {
-            var w = BI.createWidget(item);
-            this.addWidget(this.getName() + i, w);
-        } else {
-            var w = this.getWidgetByName(this.getName() + i);
-        }
+        var w = BI.FloatRightLayout.superclass._addElement.apply(this, arguments);
         w.element.css({"position": "relative", "float": "right"});
         if (BI.isNotNull(item.left)) {
             w.element.css({"left": item.left});
@@ -149,25 +121,8 @@ BI.FloatRightLayout = BI.inherit(BI.Layout, {
         this.stroke(this.options.items);
     },
 
-    addItem: function (item) {
-        BI.FloatRightLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(this.options.items.length, item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
-    },
-
-    stroke: function (items) {
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        });
-    },
-
     populate: function (items) {
         BI.FloatRightLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

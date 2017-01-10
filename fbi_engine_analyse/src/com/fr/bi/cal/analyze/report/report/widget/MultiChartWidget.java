@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -23,7 +22,6 @@ public class MultiChartWidget extends TableWidget {
     private Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
     private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
     private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
-    private DetailChartSetting settings = new DetailChartSetting();
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
@@ -64,10 +62,6 @@ public class MultiChartWidget extends TableWidget {
                 String key = it.next().toString();
                 clicked.put(key, c.getJSONArray(key));
             }
-        }
-        if(jo.has("settings")){
-            settings = new DetailChartSetting();
-            settings.parseJSON(jo);
         }
         super.parseJSON(jo, userId);
         createDimensionAndTargetMap();
@@ -237,7 +231,4 @@ public class MultiChartWidget extends TableWidget {
         return subType;
     }
 
-    public DetailChartSetting getChatSetting(){
-        return settings;
-    }
 }

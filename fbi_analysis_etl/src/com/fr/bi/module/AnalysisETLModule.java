@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
@@ -16,9 +17,12 @@ import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBotto
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmallOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberTopNFilter;
+import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
 import com.fr.bi.resource.ResourceConstants;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.bi.web.service.action.PartCubeDataLoader;
 import com.fr.cluster.rpc.RPC;
@@ -26,10 +30,7 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.ResourceHelper;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 
 /**
@@ -69,16 +70,40 @@ public class AnalysisETLModule extends AbstractModule {
 
     @Override
     public void clearAnalysisETLCache(long userId) {
+        Map<BusinessTable, CubeTableSource> refreshTables = new HashMap<BusinessTable, CubeTableSource>();
+        for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
+            CubeTableSource oriSource = table.getTableSource();
+            oriSource.refresh();
+            table.setSource(oriSource);
+            refreshTables.put(table, oriSource);
+        }
+        refreshAnalysisSources(refreshTables);
+        clearAnalysisSourceCaches();
+        BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
+        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
+        PartCubeDataLoader.clearAll();
+    }
+
+    private void clearAnalysisSourceCaches() {
         for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
             int tableType = table.getTableSource().getType();
-            if (tableType == Constants.TABLE_TYPE.BASE) {
+            if (tableType == BIBaseConstant.TABLE_TYPE.BASE) {
                 ((AnalysisBaseTableSource) table.getTableSource()).clearUserBaseTableMap();
             }
-            if (tableType == Constants.TABLE_TYPE.ETL) {
+            if (tableType == BIBaseConstant.TABLE_TYPE.ETL) {
                 ((AnalysisETLTableSource) table.getTableSource()).clearUserBaseTableMap();
             }
         }
-        PartCubeDataLoader.clearAll();
+    }
+
+    private void refreshAnalysisSources(Map<BusinessTable, CubeTableSource> refreshTables) {
+        for (BusinessTable table : refreshTables.keySet()) {
+            try {
+                BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, refreshTables.get(table));
+            } catch (BIKeyDuplicateException e) {
+                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+            }
+        }
     }
 
     /**

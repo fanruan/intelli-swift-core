@@ -47,6 +47,16 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
     }
 
     @Override
+    public boolean relationExists(BICubeTablePath path) throws IllegalRelationPathException {
+        try {
+            ICubeRelationEntityService service = getRelationService(path);
+            return service.isDataAvailable();
+        } catch (BICubeRelationAbsentException e) {
+            return false;
+        }
+    }
+
+    @Override
     protected Map<ICubeResourceLocation, ICubeRelationEntityService> initContainer() {
         return new HashMap<ICubeResourceLocation, ICubeRelationEntityService>();
     }
@@ -121,12 +131,5 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
         super.clear();
     }
 
-    public boolean existPath(BICubeTablePath path) {
-        try {
-            ICubeRelationEntityService service = getRelationService(path);
-            return service.isEmpty();
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
-    }
+
 }

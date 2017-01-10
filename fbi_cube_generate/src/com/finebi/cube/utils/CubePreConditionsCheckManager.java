@@ -3,12 +3,10 @@ package com.finebi.cube.utils;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.data.impl.Connection;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * Created by kary on 2016/6/20.
@@ -39,9 +37,9 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
         }
 
     @Override
-    public boolean ConnectionCheck(JDBCDatabaseConnection jdbcDatabaseConnection) {
+    public boolean ConnectionCheck(Connection connection) {
         try {
-            jdbcDatabaseConnection.testConnection();
+            connection.testConnection();
             return true;
         } catch (Exception e) {
             return false;

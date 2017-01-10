@@ -28,7 +28,7 @@ public class BIGetFieldsOfOneTableAction extends AbstractBIConfigureAction {
         try{
             BusinessTable table = BICubeConfigureCenter.getDataSourceManager().getBusinessTable(new BITableID(tableId));
             CubeTableSource source = table.getTableSource();
-            ((AbstractTableSource) source).reGetBiTable();
+            ((AbstractTableSource) source).refreshDBTable();
             if (source.getPersistentTable() == null) {
                 JSONObject errorJson = new JSONObject();
                 errorJson.put("none_table", true);

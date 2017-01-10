@@ -81,7 +81,8 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             type: "bi.select_data_with_mask",
             element: mask,
             model: this.model,
-            field_id: fieldId
+            field_id: fieldId,
+            maskId: maskId
         });
         selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function(){
             BI.Maskers.remove(maskId);

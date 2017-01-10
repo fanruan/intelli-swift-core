@@ -18,7 +18,7 @@ public class CubeIndexManager {
 
     private static final int MEMORY_LIMIT = 64;
     private static CubeIndexManager loader;
-    private volatile Status status = Status.UNLOAD;
+    private volatile Status status = Status.NULL;
 
     /**
      * TODO 暂时先用这个，后面再优化

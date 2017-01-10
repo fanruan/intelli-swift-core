@@ -32,6 +32,12 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
     public static final String XML_TAG = "TableColumnFieldsFilterOperator";
     @BICoreField
     private List<FilterItem> filterList;
+    /**
+     * type属性加上 @BICoreField的原因
+     * 且或改变，对象core也要改变，在PartCubeDataLoader中core用来做key值
+     * 详见bug BI-2209
+     */
+    @BICoreField
     private int type = BIReportConstant.FILTER_TYPE.AND;
 
     public TableColumnFieldsFilterOperator(long userId) {

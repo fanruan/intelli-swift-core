@@ -113,8 +113,8 @@ BI.LinkageModel = BI.inherit(FR.OB, {
     },
 
     _isRelationsIntersect: function (relation1, relation2) {
-        var all1 = relation1.children.concat(relation1.parents).concat(relation1.current);
-        var all2 = relation2.children.concat(relation2.parents).concat(relation2.current);
+        var all1 = [relation1.current];
+        var all2 = relation2.children.concat(relation2.current);
         var intersection = BI.intersection(all1, all2);
         return intersection.length > 0;
     },
@@ -123,24 +123,26 @@ BI.LinkageModel = BI.inherit(FR.OB, {
         return this.widgets[wId].linkages || [];
     },
 
-    addLinkage: function (tId, wId) {
+    addLinkage: function (tId, wId, cIds) {
         var currentId = BI.Utils.getWidgetIDByDimensionID(tId);
         var linkages = this.widgets[currentId].linkages || [];
         linkages.push({
             from: tId,
-            to: wId
+            to: wId,
+            cids: cIds
         });
         this.widgets[currentId].linkages = linkages;
     },
 
-    deleteLinkage: function (tId, wId) {
+    deleteLinkage: function (tId, wId, cIds) {
         var currentId = BI.Utils.getWidgetIDByDimensionID(tId);
         var linkages = this.widgets[currentId].linkages || [];
         BI.remove(linkages, function (i, linkage) {
-            return BI.isEqual(linkage, {
-                from: tId,
-                to: wId
-            })
+            if (BI.isArray(linkage.cids)) {
+                return BI.isEqual(linkage.from, tId) && BI.isEqual(linkage.to, wId) && BI.isEqual(linkage.cids, cIds);
+            } else {
+                return BI.isEqual(linkage.from, tId) && BI.isEqual(linkage.to, wId);
+            }
         });
     },
 
@@ -166,11 +168,37 @@ BI.LinkageModel = BI.inherit(FR.OB, {
         var widgets = [];
         BI.each(this.widgets, function (wId, link) {
             BI.each(link.linkages, function (i, linkage) {
-                if (linkage.from === tId) {
+                if (linkage.from === tId && BI.isEmpty(linkage.cids)) {
                     widgets.push(linkage.to);
                 }
             })
         });
         return widgets;
+    },
+
+    getLinkedWidgetsByTargetIdAndCalculateIds: function (tId, cIds) {
+        var widgets = [];
+        BI.each(this.widgets, function (wId, link) {
+            BI.each(link.linkages, function (i, linkage) {
+                if (linkage.from === tId && BI.isEqual(linkage.cids, cIds)) {
+                    widgets.push(linkage.to);
+                }
+            })
+        });
+        return widgets;
+    },
+
+    getExistLinkageByWidgetId: function (from, to, parents, result) {
+        var self = this, childIds = this._initChildren(from);
+        if(BI.isNotEmptyArray(childIds)) {
+            BI.each(childIds, function (idx, cId) {
+                if(cId === to) {
+                    result.push(BI.concat(parents, [from, to]));
+                } else {
+                    self.getExistLinkageByWidgetId(cId, to, BI.concat(parents, from), result);
+                }
+            })
+
+        }
     }
 });

@@ -33,7 +33,7 @@ public interface BICubeManagerProvider {
     void generateCubes();
 
     /**
-     * 增加人物
+     * 增加任务
      *
      * @param task 任务
      * @return 是否增加
@@ -52,6 +52,13 @@ public interface BICubeManagerProvider {
 
     boolean hasTask(long useId);
 
+    /**
+     * 获取所有用户是否有cube生成任务
+     *
+     * @return
+     */
+    boolean hasTask();
+
     boolean hasWaitingCheckTask(long useId);
 
     Iterator<CubeTask> getWaitingTaskIterator(long userId);
@@ -64,6 +71,10 @@ public interface BICubeManagerProvider {
 
     Status getStatus(long userId);
 
+    void setStatus(long userId, Status status);
+
     boolean isReplacing(long userId);
+
+    boolean hasBuildingTask();
 
 }

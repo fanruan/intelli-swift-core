@@ -5,7 +5,9 @@ BI.DrillPushButton = BI.inherit(BI.BasicButton, {
     _defaultConfig: function () {
         var conf = BI.DrillPushButton.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: (conf.baseCls || "") + " bi-drill-push-button"
+            baseCls: (conf.baseCls || "") + " bi-drill-push-button",
+            width: 60,
+            height: 10
         })
     },
 
@@ -38,9 +40,7 @@ BI.DrillPushButton = BI.inherit(BI.BasicButton, {
                 right: 0,
                 bottom: 0,
                 left: 0
-            }],
-            width: 60,
-            height: 10
+            }]
         })
     },
     

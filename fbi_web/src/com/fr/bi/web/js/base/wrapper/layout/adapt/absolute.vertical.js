@@ -21,8 +21,9 @@ BI.AbsoluteVerticalLayout = BI.inherit(BI.Layout, {
         this.populate(this.options.items);
     },
 
-    _addElement: function (item) {
-        var o = this.options, w = BI.createWidget(item);
+    _addElement: function (i, item) {
+        var o = this.options;
+        var w = BI.AbsoluteVerticalLayout.superclass._addElement.apply(this, arguments);
         w.element.css({
             "position": "absolute",
             "left": item.lgap,
@@ -37,30 +38,15 @@ BI.AbsoluteVerticalLayout = BI.inherit(BI.Layout, {
         if (o.hgap + o.rgap + (item.rgap || 0) !== 0) {
             w.element.css("right", o.hgap + o.rgap + (item.rgap || 0));
         }
-        this.addWidget(w);
         return w;
     },
 
     resize: function () {
-        console.log("absolute_vertical_adapt布局不需要resize");
-    },
-
-    addItem: function (item) {
-        BI.AbsoluteVerticalLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
-        return w;
+        // console.log("absolute_vertical_adapt布局不需要resize");
     },
 
     populate: function (items) {
         BI.AbsoluteVerticalLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(item);
-            }
-        });
         this.render();
     }
 });

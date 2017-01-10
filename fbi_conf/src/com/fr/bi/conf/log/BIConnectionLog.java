@@ -60,4 +60,6 @@ public abstract class BIConnectionLog implements JSONCreator {
 
 
     public abstract long getTime();
+
+    public abstract int getType();
 }

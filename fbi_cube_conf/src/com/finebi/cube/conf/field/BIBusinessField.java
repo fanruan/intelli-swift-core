@@ -137,11 +137,11 @@ public class BIBusinessField implements BusinessField {
         return tableBelongTo;
     }
 
-    public boolean isCircle(){
+    public boolean isCircle() {
         return isCircle;
     }
 
-    public void setCircle(boolean isCircle){
+    public void setCircle(boolean isCircle) {
         this.isCircle = isCircle;
     }
 
@@ -176,6 +176,9 @@ public class BIBusinessField implements BusinessField {
         if (jo.has("is_enable")) {
             canSetUsable = jo.optBoolean("is_enable", true);
         }
+//        if (jo.has("class_type")) {
+//            classType = jo.optInt("class_type", 0);
+//        }
 //        if (jo.has("isCircle")){
 //            isCircle = jo.optBoolean("isCircle", false);
 //        }

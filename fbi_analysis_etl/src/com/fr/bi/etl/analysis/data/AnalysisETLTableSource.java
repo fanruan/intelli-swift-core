@@ -6,8 +6,11 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
-import com.fr.bi.stable.data.db.*;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -34,11 +37,20 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     }
 
     @Override
+    public Set<BIWidget> getWidgets() {
+        Set<BIWidget> widgets = new HashSet<BIWidget>();
+        for (AnalysisCubeTableSource source : getParents()) {
+            widgets.addAll(source.getWidgets());
+        }
+        return widgets;
+    }
+
+    @Override
     public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
-        if(set.contains(this)){
+        if (set.contains(this)) {
             return;
         }
-        for (AnalysisCubeTableSource source : getParents()){
+        for (AnalysisCubeTableSource source : getParents()) {
             source.getSourceUsedAnalysisETLSource(set);
             set.add(source);
         }
@@ -46,24 +58,46 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     }
 
     @Override
+    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set) {
+        if (set.contains(this)) {
+            return;
+        }
+        for (AnalysisCubeTableSource source : getParents()) {
+            source.getSourceNeedCheckSource(set);
+        }
+        set.add(this);
+    }
+
+    @Override
     public void refreshWidget() {
-        for (AnalysisCubeTableSource source : getParents()){
+        for (AnalysisCubeTableSource source : getParents()) {
             source.refreshWidget();
+        }
+    }
+
+    @Override
+    public void refresh() {
+        refreshWidget();
+    }
+
+    public void reSetWidgetDetailGetter() {
+        for (AnalysisCubeTableSource source : getParents()) {
+            source.reSetWidgetDetailGetter();
         }
     }
 
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
-        if (fieldList != null && !fieldList.isEmpty()){
+        if (fieldList != null && !fieldList.isEmpty()) {
             JSONArray ja = new JSONArray();
-            for (AnalysisETLSourceField f : fieldList){
+            for (AnalysisETLSourceField f : fieldList) {
                 ja.put(f.createJSON());
             }
             jo.put(Constants.FIELDS, ja);
         }
         jo.put("table_name", name);
-        if (invalidIndex != -1){
+        if (invalidIndex != -1) {
             jo.put("invalidIndex", invalidIndex);
         }
         JSONArray tables = new JSONArray();
@@ -71,7 +105,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
             tables.put(parents.get(i).createJSON());
         }
         jo.put(Constants.PARENTS, tables);
-        AnalysisETLOperatorFactory.createJSONByOperators(jo,oprators);
+        AnalysisETLOperatorFactory.createJSONByOperators(jo, oprators);
         return jo;
     }
 
@@ -81,7 +115,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
 
     @Override
     public int getType() {
-        return Constants.TABLE_TYPE.ETL;
+        return BIBaseConstant.TABLE_TYPE.ETL;
     }
 
     /**
@@ -111,12 +145,12 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     @Override
     public UserCubeTableSource createUserTableSource(long userId) {
         UserCubeTableSource source = userBaseTableMap.get(userId);
-        if (source == null){
-            synchronized (userBaseTableMap){
+        if (source == null) {
+            synchronized (userBaseTableMap) {
                 UserCubeTableSource tmp = userBaseTableMap.get(userId);
-                if (tmp == null){
+                if (tmp == null) {
                     List<UserCubeTableSource> parents = new ArrayList<UserCubeTableSource>();
-                    for (AnalysisCubeTableSource parent : getParents()){
+                    for (AnalysisCubeTableSource parent : getParents()) {
                         parents.add(parent.createUserTableSource(userId));
                     }
                     source = new UserETLTableSource(this, parents, userId);
@@ -129,7 +163,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
         return source;
     }
 
-    public void clearUserBaseTableMap(){
+    public void clearUserBaseTableMap() {
         userBaseTableMap.clear();
     }
 

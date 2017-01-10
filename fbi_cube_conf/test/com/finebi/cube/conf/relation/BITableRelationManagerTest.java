@@ -3,16 +3,16 @@ package com.finebi.cube.conf.relation;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
-
 import junit.framework.TestCase;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-    /**
+/**
  * Created by Connery on 2016/1/28.
  */
 public class BITableRelationManagerTest extends TestCase {
@@ -319,13 +319,13 @@ public class BITableRelationManagerTest extends TestCase {
             BITableRelation aaCa = BITableRelationTestTool.getAaCa();
             manager.registerTableRelation(user.getUserId(), aaBa);
             manager.registerTableRelation(user.getUserId(), aaCa);
-            assertFalse(manager.isRelationGenerated(user.getUserId(),aaBa));
-            assertFalse(manager.isRelationGenerated(user.getUserId(),aaCa));
+            assertFalse(manager.isRelationGenerated(user.getUserId(), aaBa));
+            assertFalse(manager.isRelationGenerated(user.getUserId(), aaCa));
             Set<BITableRelation> biTableRelationSet = new HashSet<BITableRelation>();
             biTableRelationSet.add(aaBa);
-            manager.finishGenerateCubes(user.getUserId());
-            assertTrue(manager.isRelationGenerated(user.getUserId(),aaBa));
-            assertFalse(manager.isRelationGenerated(user.getUserId(),aaCa));
+            manager.finishGenerateCubes(user.getUserId(), new HashSet<BITableSourceRelation>());
+            assertTrue(manager.isRelationGenerated(user.getUserId(), aaBa));
+            assertFalse(manager.isRelationGenerated(user.getUserId(), aaCa));
         } catch (Exception ignore) {
             assertTrue(false);
         }
