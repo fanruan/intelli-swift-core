@@ -65,7 +65,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 cell.setColumn(column == 0 ? i : (cbcells.length - len + i));
                 cell.setRowSpan(1);
                 cell.setColumnSpan(1);
-                cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
+                cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT));
                 cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
                 java.util.List<CBCell> cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
@@ -110,7 +110,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cell.setColumn(cbcells.length - len + i);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
+            cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
             java.util.List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
@@ -267,13 +267,14 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+                int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
+                v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
                 cell = new CBCell(v);
                 cell.setRow(tempRow);
                 cell.setColumn(cbcells.length - len + i);
                 cell.setRowSpan(1);
                 cell.setColumnSpan(1);
-                cell.setStyle(BITableStyle.getInstance().getYTotalCellStyle(v, total));
+                cell.setStyle(BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
                 cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
                 cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
@@ -373,14 +374,15 @@ public class GroupExecutor extends AbstractNodeExecutor {
         int index = column - rowLength;
         if (index == 0) {
             for (int i = 0, len = keys.length; i < len; i++) {
+                int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
                 Object v = node.getSummaryValue(keys[i]);
-                v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+                v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
                 cell = new CBCell(v);
                 cell.setRow(tempRow);
                 cell.setColumn(cbcells.length - len + i);
                 cell.setRowSpan(1);
                 cell.setColumnSpan(1);
-                cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
+                cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
                 cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
                 java.util.List<CBCell> cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
@@ -441,7 +443,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             int rowSpan = (sumColumn.length == 0 || !chartSetting.showRowTotal()) ? tempNode.getTotalLength() : tempNode.getTotalLengthWithSummary();
             BIDimension rd = rowColumn[column];
             String text = rd.toString(tempNode.getData());
-            if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(text) != null) {
+            if (ComparatorUtils.equals(rd.getGroup().getType(), BIReportConstant.GROUP.YMD) && GeneralUtils.string2Number(text) != null) {
                 text = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(text).longValue()));
             }
             cell = new CBCell(text);
@@ -535,14 +537,15 @@ public class GroupExecutor extends AbstractNodeExecutor {
         cbox.setDimensionJSON(ja.toString());
         cbcells[cell.getColumn()][cell.getRow()] = cell;
         for (int i = 0, len = keys.length; i < len; i++) {
+            int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
             Object v = node.getSummaryValue(keys[i]);
-            v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+            v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
             cell = new CBCell(v);
             cell.setRow(tempRow);
             cell.setColumn(cbcells.length - len + i);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getYTotalCellStyle(v, total));
+            cell.setStyle(BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
             cellList = new ArrayList<CBCell>();
             cellList.add(cell);

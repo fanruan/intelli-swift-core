@@ -415,6 +415,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 var view = changed.view, preView = prev.view;
                 var dimensions = BI.deepClone(this.get("dimensions"));
                 //region1、2中的维度增加的时候，先看原先中是否有已勾选了的，如果有将拖入的used设置为false
+                //此时如果指标勾选多于一个，则系列全不勾选
                 BI.each(view, function (region, dims) {
                     if (region < BICst.REGION.TARGET1) {
                         var adds = [], isPreSelect = false;
@@ -430,6 +431,11 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             if (isPreSelect === true) {
                                 BI.each(adds, function(i, add){
                                     dimensions[add].used = false;
+                                });
+                            }
+                            if(BI.Utils.getAllUsableTargetDimensionIDs(self.get("id")).length > 1){
+                                BI.each(view[BICst.REGION.DIMENSION2], function (i, dId) {
+                                    dimensions[dId].used = false;
                                 });
                             }
                         }
@@ -481,6 +487,20 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             }
                         }
                     });
+                    BI.find(view[BICst.REGION.TARGET2], function(idx, dId){
+                        if(BI.Utils.isDimensionUsable(dId)){
+                            var select = false;
+                            BI.each(view[BICst.REGION.TARGET1], function(id, d){
+                                if (select === true) {
+                                    dimensions[d].used = false;
+                                }
+                                if (BI.Utils.isDimensionUsable(d)) {
+                                    select = true;
+                                }
+                            });
+                            return true;
+                        }
+                    })
                 }
                 this.set("dimensions", dimensions);
 

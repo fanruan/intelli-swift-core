@@ -78,7 +78,7 @@ public class RangeIndexGetter {
 
                     //月中
                     GroupValueIndexOrHelper momthHelper = new GroupValueIndexOrHelper();
-                    createRangeIndex(monthMap, momthHelper, start.getMonth() + (isStart ? 0 : 1), end.getMonth() - (isEnd ? 0 : 1));
+                    createRangeIndex(monthMap, momthHelper, start.getMonth() + 1 + (isStart ? 0 : 1), end.getMonth() + 1 - (isEnd ? 0 : 1));
                     helper.add(year.AND(momthHelper.compute()));
                     //月头
                     if (!isStart) {
@@ -95,7 +95,7 @@ public class RangeIndexGetter {
                 //日
                 GroupValueIndex year = yearMap.getGroupIndex(new Integer[]{start.getYear()})[0];
                 if (year != null) {
-                    GroupValueIndex month = monthMap.getGroupIndex(new Integer[]{start.getMonth()})[0];
+                    GroupValueIndex month = monthMap.getGroupIndex(new Integer[]{start.getMonth() + 1})[0];
                     if (month != null) {
                         if (!isStartMonth(start) || !isEndMonth(end)) {
                             GroupValueIndexOrHelper dayHelper = new GroupValueIndexOrHelper();

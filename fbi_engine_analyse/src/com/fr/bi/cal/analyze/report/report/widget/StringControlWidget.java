@@ -154,7 +154,8 @@ public class StringControlWidget extends TableWidget {
 
     private JSONObject getCustomGroupResult(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, DimensionCalculator calculator) throws JSONException {
         List<Object> list = new ArrayList<Object>();
-        Iterator<Map.Entry<Object, GroupValueIndex>> it = reader.iterator();
+        int sortType = this.getDimensions()[0].getSortType();
+        Iterator<Map.Entry<Object, GroupValueIndex>> it = (sortType == BIReportConstant.SORT.ASC ? reader.iterator() : reader.previousIterator());
         while (it.hasNext()) {
             Map.Entry<Object, GroupValueIndex> entry = it.next();
             if (entry.getValue().hasSameValue(gvi)) {
@@ -318,11 +319,22 @@ public class StringControlWidget extends TableWidget {
                 matched++;
             }
         }
-        for (String s : match) {
-            ja.put(s);
-        }
-        for (String s : find) {
-            ja.put(s);
+        if(getDimensions()[0].getSortType() == BIReportConstant.SORT.DESC){
+            ListIterator<String> m = match.listIterator(match.size());
+            ListIterator<String> f = find.listIterator(find.size());
+            while (m.hasPrevious()){
+                ja.put(m.previous());
+            }
+            while (f.hasPrevious()){
+                ja.put(f.previous());
+            }
+        }else{
+            for (String s : match) {
+                ja.put(s);
+            }
+            for (String s : find) {
+                ja.put(s);
+            }
         }
         jo.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
         jo.put(BIJSONConstant.JSON_KEYS.HAS_NEXT, hasNext);

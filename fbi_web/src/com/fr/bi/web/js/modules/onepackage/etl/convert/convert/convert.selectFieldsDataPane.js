@@ -75,16 +75,20 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
 
     _createItemsByData: function(items, lc_values){
         var self = this;
-        items = BI.map(items, function(idx, item){
+        var res = [];
+        BI.each(items, function(idx, item){
             var lc_value =  BI.find(lc_values, function(idx, arr){
                 return arr[self.constants.initialValuePos] === item;
             });
-            return {
-                value: [item, BI.isNotNull(lc_value) ? lc_value[self.constants.newValuePos] : item],
-                selected: BI.isNull(lc_values) ? true : BI.isNotNull(lc_value)
+            if(BI.isNotEmptyString(item)){
+                res.push({
+                    value: [item, BI.isNotNull(lc_value) ? lc_value[self.constants.newValuePos] : item],
+                    selected: BI.isNull(lc_values) ? true : BI.isNotNull(lc_value)
+                });
             }
+
         });
-        return BI.createItems(items, {
+        return BI.createItems(res, {
             type: "bi.convert_multi_select_item",
             height: this.constants.itemHeight
         });

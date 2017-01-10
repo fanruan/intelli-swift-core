@@ -32,10 +32,12 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     protected TargetFilter filter;
     @BIIgnoreField
     protected ICubeColumnDetailGetter columnDetailGetter;
+    protected ICubeColumnDetailGetter copyColumnDetailGetter;
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();
 
+    private Object columnDetailGetterLock = new Object();
     private List<BITableRelation> relationList = new ArrayList<BITableRelation>();
 
 
@@ -65,11 +67,21 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     }
 
     protected void initialTableSource(ICubeDataLoader loader) {
-        if (columnDetailGetter == null) {
-            columnDetailGetter = loader.getTableIndex(this.createTableKey().getTableSource()).getColumnDetailReader(this.createKey(getStatisticElement()));
+        synchronized (columnDetailGetterLock) {
+            if (columnDetailGetter == null) {
+                columnDetailGetter = loader.getTableIndex(this.createTableKey().getTableSource()).getColumnDetailReader(this.createKey(getStatisticElement()));
+            }
         }
     }
 
+    private boolean shouldClearDetailGetter(ICubeColumnDetailGetter newGetter, ICubeColumnDetailGetter oldGetter){
+        if(newGetter !=null && oldGetter !=null
+                &&!newGetter.getICubeResourceLocationPath().equals(oldGetter.getICubeResourceLocationPath())){
+            return true;
+        }else {
+            return false;
+        }
+    }
     @Override
     public List<BITableRelation> getRelationList(BusinessTable target, long userId) {
         return relationList;
@@ -135,9 +147,21 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
 
     @Override
     public void clear() {
-
+//        if (columnDetailGetter != null) {
+//            columnDetailGetter.clear();
+//        }
     }
-
+    public void reSetDetailGetter(){
+        if (columnDetailGetter != null) {
+            synchronized (columnDetailGetterLock) {
+                if( shouldClearDetailGetter(columnDetailGetter,copyColumnDetailGetter)){
+                    copyColumnDetailGetter.clear();
+                    copyColumnDetailGetter = columnDetailGetter;
+                }
+                columnDetailGetter = null;
+            }
+        }
+    }
 
     public IGroup getGroup() {
         return group;
