@@ -101,7 +101,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                 text = BICst.FULL_QUARTER_NAMES[text - 1];
                 break;
             case BICst.GROUP.M:
-                text = BICst.FULL_MONTH_NAMES[text];
+                text = BICst.FULL_MONTH_NAMES[text - 1];
                 break;
             case BICst.GROUP.W:
                 text = BICst.FULL_WEEK_NAMES[text - 1];

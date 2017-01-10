@@ -8,11 +8,13 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
+import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -27,6 +29,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -45,7 +48,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     protected transient BusinessTable target;
     protected transient BIDetailTarget[] viewDimension;
     protected transient String[] sortTargets;
-    private  transient GroupValueIndex currentGvi;
+    private transient GroupValueIndex currentGvi;
     protected transient long userId;
     protected BIDetailWidget widget;
 
@@ -61,7 +64,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     }
 
     protected GroupValueIndex createDetailViewGvi() {
-        if(currentGvi == null) {
+        if (currentGvi == null) {
             ICubeTableService ti = getLoader().getTableIndex(target.getTableSource());
             GroupValueIndex gvi = ti.getAllShowIndex();
             for (int i = 0; i < this.viewDimension.length; i++) {
@@ -123,7 +126,6 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     }
 
 
-
     //创建一个数字格
     protected static void createNumberCellElement(CBCell[][] cbcells, Integer page, Integer index, int row, int rowSpan) {
         Integer curIndex = index + (page >= 1 ? (page - 1) : 0) * 20;
@@ -143,7 +145,6 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     }
 
 
-
     //创建一个数字格
     private void createNumberCellElement(StreamPagedIterator iter, int rowIndex, int row) {
         CBCell cell = new CBCell(rowIndex);
@@ -161,16 +162,25 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     }
 
     protected void fillOneLine(StreamPagedIterator iter, int row, Object[] ob, int rowNumber) {
-        if(widget.isOrder() > 0) {
+        if (widget.isOrder() > 0) {
             createNumberCellElement(iter, rowNumber, row);
         }
         for (int i = 0; i < viewDimension.length; i++) {
             BIDetailTarget t = viewDimension[i];
             Object v = ob[i];
             v = viewDimension[i].createShowValue(v);
-//            if (t instanceof BIDateDetailTarget && ((BIDateDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && v != null) {
-//                v = DateUtils.DATEFORMAT1.format(new Date(Long.parseLong(v.toString())));
-//            }
+            ChartSetting chartSetting = null;
+            if (t instanceof BINumberDetailTarget) {
+                chartSetting = ((BINumberDetailTarget) viewDimension[i]).getChartSetting();
+            }
+            if (t instanceof BINumberFormulaDetailTarget) {
+                chartSetting = ((BINumberFormulaDetailTarget) viewDimension[i]).getChartSetting();
+            }
+            if (chartSetting != null) {
+                JSONObject settings = chartSetting.getSettings();
+                int numLevel = settings.optInt("num_level", 0);
+                v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
+            }
 
             CBCell cell = new CBCell(v == null ? NONEVALUE : v.toString());
             cell.setRow(row);
@@ -205,7 +215,8 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         BIDetailTarget[] viewDimension = widget.getViewDimensions();
 
         for (int i = 0; i < viewDimension.length; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) viewDimension[i]).getText());
+            String dimensionName = ((BIAbstractTargetAndDimension) viewDimension[i]).getText();
+            CBCell cell = new CBCell(dimensionName);
             cell.setColumn(i + widget.isOrder());
             cell.setRow(0);
             cell.setRowSpan(1);
@@ -227,7 +238,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     protected List<CBCell> createCellTitle(int cellType) {
         List<CBCell> cells = new LinkedList<CBCell>();
         BIDetailTarget[] viewDimension = widget.getViewDimensions();
-        if(widget.isOrder() > 0) {
+        if (widget.isOrder() > 0) {
             CBCell cell = new CBCell(Inter.getLocText("BI-Number_Index"));
             cell.setColumn(0);
             cell.setRow(0);
@@ -243,7 +254,25 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             cells.add(cell);
         }
         for (int i = 0; i < viewDimension.length; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) viewDimension[i]).getText());
+            BIDetailTarget dimension = viewDimension[i];
+            String dimensionName = ((BIAbstractTargetAndDimension) viewDimension[i]).getText();
+            ChartSetting chartSetting = null;
+            if (dimension instanceof BINumberDetailTarget) {
+                chartSetting = ((BINumberDetailTarget) viewDimension[i]).getChartSetting();
+            }
+            if (dimension instanceof BINumberFormulaDetailTarget) {
+                chartSetting = ((BINumberFormulaDetailTarget) viewDimension[i]).getChartSetting();
+            }
+            if (chartSetting != null) {
+                JSONObject settings = chartSetting.getSettings();
+                int numLevel = settings.optInt("num_level", 0);
+                String unit = settings.optString("unit", StringUtils.EMPTY);
+                String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
+                if (!ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY)) {
+                    dimensionName = dimensionName + "(" + levelAndUnit + ")";
+                }
+            }
+            CBCell cell = new CBCell(dimensionName);
             cell.setColumn(i + widget.isOrder());
             cell.setRow(0);
             cell.setRowSpan(1);

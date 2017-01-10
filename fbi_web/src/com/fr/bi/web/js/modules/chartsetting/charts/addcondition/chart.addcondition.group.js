@@ -92,21 +92,16 @@ BI.ChartAddConditionGroup = BI.inherit(BI.Widget, {
 
         if (this.buttons.length === 0) {
             item.range.closemin = true;
-            item.range.closemax = true;
+            item.range.closemax = false;
         } else {
             var beforeButton = this.buttons[this.buttons.length - 1];
             var beforeValue = beforeButton.getValue().range;
-            beforeButton.setValue(BI.extend(beforeButton.getValue(), {
-                range: BI.extend(beforeValue, {
-                    closemax: false
-                })
-            }));
             BI.extend(item, {
                 range: {
                     min: BI.parseInt(beforeValue.max),
                     max: BI.parseInt(beforeValue.max) + 100,
                     closemin: !beforeValue.closemax,
-                    closemax: true
+                    closemax: false
                 }
             })
         }

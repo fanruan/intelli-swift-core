@@ -103,7 +103,9 @@ public class BIDetailWidget extends BIAbstractWidget {
         if (dm != null) {
             for (int i = 0; i < dm.length; i++) {
                 BIDetailTarget dt = dm[i];
-                result.add(dt.createColumnKey().getTableBelongTo());
+                if (null != dt.createColumnKey() && null != dt.createColumnKey().getTableBelongTo()) {
+                    result.add(dt.createColumnKey().getTableBelongTo());
+                }
             }
         }
         return result;
@@ -267,4 +269,14 @@ public class BIDetailWidget extends BIAbstractWidget {
         return new PolyCubeDetailECBlock(this, session, page);
     }
 
+    
+    @Override
+    public void reSetDetailTarget() {
+        for(BIDetailTarget ele : getDimensions()){
+            ele.reSetDetailGetter();
+        }
+        for (BIDetailTarget ele: getViewDimensions()){
+            ele.reSetDetailGetter();
+        }
+    }
 }

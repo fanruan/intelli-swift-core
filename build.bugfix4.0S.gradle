@@ -13,6 +13,7 @@ ant.delete(dir:"reports")
 repositories {
     mavenCentral()
 }
+
 //sourceCompatibility=1.5
 //BI工程的根目录
 def BI_HOME='../../'
@@ -131,8 +132,7 @@ def dataContent ={def dir ->
 				'**/*.g',
 				'**/package.html',
 				'**/*.less',
-				'**/cross/demo/**',
-				'**/test/**'
+				'**/cross/demo/**'
 			}
 		}
 }

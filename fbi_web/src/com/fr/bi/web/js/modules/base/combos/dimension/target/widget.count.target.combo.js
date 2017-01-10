@@ -220,7 +220,6 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 items[this.constants.CordonPos][0].cls = "";
                 items[this.constants.CordonPos][0] = {
                     el: items[this.constants.CordonPos][0],
@@ -244,6 +243,43 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     items[this.constants.CordonPos][0].children[1].disabled = true
                 }
                 items[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
+                break;
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                items[this.constants.CordonPos][0] = {
+                    el: {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        cls: ""
+                    },
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }]
+                };
+                items[0][this.constants.CHART_TYPE_POSITION] = {
+                    el: {
+                        text: BI.i18nText("BI-Chart_Type"),
+                        value: BICst.TARGET_COMBO.CHART_TYPE,
+                        iconCls1: "",
+                        disabled: false
+                    },
+                    children: [{
+                        text: BI.i18nText("BI-Column_Chart"),
+                        value: BICst.WIDGET.AXIS,
+                        cls: "dot-e-font"
+                    }, {
+                        text: BI.i18nText("BI-Line_Chart"),
+                        value: BICst.WIDGET.LINE,
+                        cls: "dot-e-font"
+                    }, {
+                        text: BI.i18nText("BI-Area_Chart"),
+                        value: BICst.WIDGET.AREA,
+                        cls: "dot-e-font"
+                    }]
+                };
+                if(minimalist){
+                    items[this.constants.CordonPos][0].disabled = true
+                }
                 break;
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:

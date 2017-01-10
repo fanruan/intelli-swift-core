@@ -15,6 +15,7 @@ public class BIJSONConstant {
         public static final String FILTER_TYPE = "filter_type";
         public static final String FIELD_TYPE = "field_type";
         public static final String FIELD_VALUE = "field_value";
+        public static final String FIELD_NAME = "field_name";
 
         public static final String TYPE = "type";
         public static final String VALUE = "value";

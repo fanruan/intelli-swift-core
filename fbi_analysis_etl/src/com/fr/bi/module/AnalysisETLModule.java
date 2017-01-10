@@ -78,24 +78,20 @@ public class AnalysisETLModule extends AbstractModule {
             refreshTables.put(table, oriSource);
         }
         refreshAnalysisSources(refreshTables);
-        clearAnalysisSourceCaches(refreshTables);
+        clearAnalysisSourceCaches();
         BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
         BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
         PartCubeDataLoader.clearAll();
     }
 
-    private void clearAnalysisSourceCaches(Map<BusinessTable, CubeTableSource> refreshTables) {
-        for (BusinessTable table : refreshTables.keySet()) {
-            try {
-                int tableType = table.getTableSource().getType();
-                if (tableType == BIBaseConstant.TABLE_TYPE.BASE) {
-                    ((AnalysisBaseTableSource) table.getTableSource()).clearUserBaseTableMap();
-                }
-                if (tableType == BIBaseConstant.TABLE_TYPE.ETL) {
-                    ((AnalysisETLTableSource) table.getTableSource()).clearUserBaseTableMap();
-                }
-            } catch (Exception e) {
-                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+    private void clearAnalysisSourceCaches() {
+        for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
+            int tableType = table.getTableSource().getType();
+            if (tableType == BIBaseConstant.TABLE_TYPE.BASE) {
+                ((AnalysisBaseTableSource) table.getTableSource()).clearUserBaseTableMap();
+            }
+            if (tableType == BIBaseConstant.TABLE_TYPE.ETL) {
+                ((AnalysisETLTableSource) table.getTableSource()).clearUserBaseTableMap();
             }
         }
     }
