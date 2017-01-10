@@ -1,5 +1,6 @@
 package com.fr.bi.common.persistent.xml.writer;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 
 import java.beans.IntrospectionException;
@@ -29,11 +30,17 @@ public class XMLBasicValueWriter extends XMLValueWriter {
             writer.attr("class", beanWrapper.getBean().getClass().getName());
             writer.startTAG(BASIC_TAG);
             if (XMLNormalValueWriter.USE_CONTENT_SAVE_VALUE) {
-                writer.textNode(beanWrapper.getBean().toString());
+                writer.textNode(filterInvalidChar(beanWrapper.getBean().toString()));
             } else {
-                writer.attr("value", beanWrapper.getBean().toString());
+                writer.attr("value", filterInvalidChar(beanWrapper.getBean().toString()));
             }
             writer.end();
         }
     }
+
+    private String filterInvalidChar(String content) {
+        BILoggerFactory.getLogger(XMLBasicValueWriter.class).warn("content is invalid : " + content);
+        return content.replaceAll("[\u0000-\u0008\u000b-\u000c\u000e-\u001f]", "");
+    }
+
 }
