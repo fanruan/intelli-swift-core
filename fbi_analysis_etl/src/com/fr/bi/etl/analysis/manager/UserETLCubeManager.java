@@ -87,6 +87,10 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         }
     }
 
+    public boolean isAvailable(AnalysisCubeTableSource source, BIUser user) {
+        return createManager(source, user).isAvailable();
+    }
+
     private SingleUserETLTableCubeManager createManager(AnalysisCubeTableSource source, BIUser user) {
         UserCubeTableSource ut = source.createUserTableSource(user.getUserId());
         ut = getRealSource(ut);
