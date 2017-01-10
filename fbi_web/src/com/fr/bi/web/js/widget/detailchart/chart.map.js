@@ -204,7 +204,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                             conditionMax = style.range.max
                         });
 
-                        conditionMin = BI.parseInt(styles[0].range.min);
+                        conditionMin = BI.parseFloat(styles[0].range.min);
                         if (conditionMin !== 0) {
                             range.push({
                                 color: "#808080",
