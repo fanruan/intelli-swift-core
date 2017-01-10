@@ -64,11 +64,13 @@ public class SumCalculator implements CubeDoubleDataCalculator {
                 @Override
                 public void actionPerformed(int row) {
                     Object value = getter.getValue(row);
-                    double v = ((Number) value).doubleValue();
-                    if (Double.isNaN(sum)) {
-                        sum = v;
-                    } else {
-                        sum += v;
+                    if (value != null) {
+                        double v = ((Number) value).doubleValue();
+                        if (Double.isNaN(sum)) {
+                            sum = v;
+                        } else {
+                            sum += v;
+                        }
                     }
                 }
 
