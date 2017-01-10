@@ -111,6 +111,14 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         this.processBar.setValue(1);
     },
 
+    setEnd: function () {
+        var self = this;
+        this.processBar.setValue(100);
+        BI.delay(function() {
+            self._showFinish();
+        }, 300);
+    },
+
     //刷新按钮不要去改状态，因为很有可能立即更新的时候，后台请求到的状态cube还没有开始更新
     _refreshLogImmediate: function () {
         var self = this;
