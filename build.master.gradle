@@ -2,6 +2,7 @@ apply plugin:'java'
 
 //应用jacoco plugin
 apply plugin : 'jacoco'
+
 tasks.withType(JavaCompile){
 	options.encoding = 'UTF-8'
 }
@@ -34,7 +35,6 @@ def list=[
 		"fbi_base/src",
 		"fbi_engine_finereport/src",
 		"fbi_conf/src", 
-		"fbi_h5/src",
 		"fbi_engine_base/src",
 		"fbi_engine_generate/src",
 		"fbi_engine_analyse/src",
@@ -70,6 +70,7 @@ sourceSets{
 			"fbi_web/test",
 			"fbi_web_conf/test",
 	]
+	
 	instrumentTest.java.srcDirs=[
 		//"fbi/test",
 		"fbi_base/test",
@@ -98,11 +99,12 @@ test {
 	//这条很重要，设置忽略fail掉的测试用例。否则会导致项目构建失败
 	ignoreFailures = true
 	jacoco {
-		append = true
+		append = false
 		//二进制代码覆盖测试报告文件存放路径
 		destinationFile = file("reports/jacoco/jacoco.exec")
 	}
 }
+
 //声明外部依赖
 dependencies{
 	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
@@ -151,7 +153,6 @@ task compressJS(dependsOn:'copyFile'){
 			exclude (name:'**/js/third/*.js')
 			exclude (name:'**/cross/demo/**')
 			exclude (name:'**/test/**')
-			exclude (name:'js/components/components.react.js')
 		}
 	}
 }
