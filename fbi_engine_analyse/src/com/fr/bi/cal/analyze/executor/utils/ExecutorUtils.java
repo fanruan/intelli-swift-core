@@ -33,7 +33,7 @@ public class ExecutorUtils {
                         value = (Double) value / 100000000;
                         break;
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                        value = (Double) value * 100;
+//                        value = (Double) value * 100;     //在excel单元格格式中设置
                         break;
                 }
             }
