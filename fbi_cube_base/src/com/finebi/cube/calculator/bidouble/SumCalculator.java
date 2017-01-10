@@ -5,6 +5,7 @@ package com.finebi.cube.calculator.bidouble;
 
 import com.finebi.cube.api.*;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.CalculatorTraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
@@ -19,6 +20,7 @@ public class SumCalculator implements CubeDoubleDataCalculator {
     @Override
     public double calculate(final ICubeTableService tableGetterService, final BIKey key, GroupValueIndex range) {
         final ICubeColumnDetailGetter getter = tableGetterService.getColumnDetailReader(key);
+        range = range.ANDNOT(tableGetterService.getNullGroupValueIndex(key));
         PrimitiveType type = getter.getPrimitiveType();
         CalculatorTraversalAction ss;
         if (type == PrimitiveType.LONG) {
@@ -27,12 +29,10 @@ public class SumCalculator implements CubeDoubleDataCalculator {
                 @Override
                 public void actionPerformed(int row) {
                     long value = g.getValue(row);
-                    if (value != NIOConstant.LONG.NULL_VALUE) {
-                        if (Double.isNaN(sum)) {
-                            sum = value;
-                        } else {
-                            sum += value;
-                        }
+                    if (Double.isNaN(sum)) {
+                        sum = value;
+                    } else {
+                        sum += value;
                     }
                 }
 
@@ -47,12 +47,10 @@ public class SumCalculator implements CubeDoubleDataCalculator {
                 @Override
                 public void actionPerformed(int row) {
                     double value = g.getValue(row);
-                    if (!Double.isNaN(value)) {
-                        if (Double.isNaN(sum)) {
-                            sum = value;
-                        } else {
-                            sum += value;
-                        }
+                    if (Double.isNaN(sum)) {
+                        sum = value;
+                    } else {
+                        sum += value;
                     }
                 }
 
@@ -66,13 +64,11 @@ public class SumCalculator implements CubeDoubleDataCalculator {
                 @Override
                 public void actionPerformed(int row) {
                     Object value = getter.getValue(row);
-                    if (value != null) {
-                        double v = ((Number) value).doubleValue();
-                        if (Double.isNaN(sum)) {
-                            sum = v;
-                        } else {
-                            sum += v;
-                        }
+                    double v = ((Number) value).doubleValue();
+                    if (Double.isNaN(sum)) {
+                        sum = v;
+                    } else {
+                        sum += v;
                     }
                 }
 
