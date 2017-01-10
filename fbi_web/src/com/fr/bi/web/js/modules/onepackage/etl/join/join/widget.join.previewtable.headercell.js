@@ -12,7 +12,7 @@ BI.JoinPreviewTableHeaderCell = BI.inherit(BI.Widget, {
         BI.JoinPreviewTableHeaderCell.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var merge = o.merge;
-        var oFields = "";
+        var oFields = o.text;
         if (merge.length > 1) {
             oFields = merge.join("/");
         }
