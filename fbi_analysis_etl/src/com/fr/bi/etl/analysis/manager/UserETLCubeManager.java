@@ -80,6 +80,14 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     }
 
     @Override
+    public void addTask(AnalysisCubeTableSource source, BIUser user) {
+        SingleUserETLTableCubeManager manager = createManager(source, user);
+        if (!manager.checkVersion()) {
+            manager.addTask(true);
+        }
+    }
+
+    @Override
     public ICubeTableService getTableIndex(AnalysisCubeTableSource source, BIUser user) {
         return createManager(source, user).getTableIndex();
     }
@@ -127,8 +135,9 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         }
 
     }
+
     @Override
-    public void releaseCurrentThread(String key){
+    public void releaseCurrentThread(String key) {
         SingleUserETLTableCubeManager manager = threadMap.get(key);
         if (manager != null) {
             manager.forceReleaseCurrentThread();
@@ -242,7 +251,6 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         if (manager.checkVersion()) {
             return true;
         } else {
-            manager.addTask(true);
             return false;
         }
     }
