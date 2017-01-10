@@ -39,7 +39,9 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
         }
         //可能设置了，但是这个字段又已经不存在了
         if (BI.isNotNull(loginField) && BI.isNotNull(tableId)) {
-            var primaryFields = this._getPrimaryFieldsByFieldId(loginField);
+            var primaryFields = [];
+            BI.Utils.getPrimaryFieldsByFieldId4Conf(loginField, primaryFields);
+            BI.remove(primaryFields, loginField);
             primaryFields.splice(0, 0, loginField);
             var comboValue = this.combo.getValue();
             BI.each(primaryFields, function (i, fieldId) {

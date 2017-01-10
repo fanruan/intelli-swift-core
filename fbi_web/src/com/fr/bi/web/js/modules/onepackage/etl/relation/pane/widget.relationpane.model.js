@@ -58,36 +58,44 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
                     //1:1，connectionSet里加2个，primKeyMap里加2个
                     connectionSet.push({
                         primaryKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         },
                         foreignKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         }
                     });
                     connectionSet.push({
                         primaryKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         },
                         foreignKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         }
                     });
                     primKeyMap[self.fieldId] || (primKeyMap[self.fieldId] = []);
                     primKeyMap[self.fieldId].push({
                         primaryKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         },
                         foreignKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         }
                     });
                     primKeyMap[rFieldId] || (primKeyMap[rFieldId] = []);
                     primKeyMap[rFieldId].push({
                         primaryKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         },
                         foreignKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         }
                     });
                     break;
@@ -95,28 +103,34 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
                     //1:N，connectionSet里加1个，primKeyMap里加一个，foreignKeyMap里加一个
                     connectionSet.push({
                         primaryKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         },
                         foreignKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         }
                     });
                     primKeyMap[self.fieldId] || (primKeyMap[self.fieldId] = []);
                     primKeyMap[self.fieldId].push({
                         primaryKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         },
                         foreignKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         }
                     });
                     foreignKeyMap[rFieldId] || (foreignKeyMap[rFieldId] = []);
                     foreignKeyMap[rFieldId].push({
                         primaryKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         },
                         foreignKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         }
                     });
                     break;
@@ -124,28 +138,34 @@ BI.RelationPaneModel = BI.inherit(FR.OB, {
                     //同上
                     connectionSet.push({
                         primaryKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         },
                         foreignKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         }
                     });
                     primKeyMap[rFieldId] || (primKeyMap[rFieldId] = []);
                     primKeyMap[rFieldId].push({
                         primaryKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         },
                         foreignKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         }
                     });
                     foreignKeyMap[self.fieldId] || (foreignKeyMap[self.fieldId] = []);
                     foreignKeyMap[self.fieldId].push({
                         primaryKey: {
-                            field_id: rFieldId
+                            field_id: rFieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(rFieldId)
                         },
                         foreignKey: {
-                            field_id: self.fieldId
+                            field_id: self.fieldId,
+                            table_id: BI.Utils.getTableIdByFieldId4Conf(self.fieldId)
                         }
                     });
                     break;

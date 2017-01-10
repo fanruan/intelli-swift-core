@@ -22,66 +22,55 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         var table = o.table;
         var tableFields = table.fields;
         var tableId = table.id;
-        this.relations = table.relations;
-        this.translations = table.translations;
-        this.allFields = table.all_fields;
+        var translations = table.translations;
 
         var view = o.view;
-        if (BI.isNotNull(view)) {
+        if (BI.isNotNull(view) && BI.isNotNull(view.name)) {
             this.excelName = view.name;
             this.excelFullName = view.excelFullName;
             this.positions = view.positions;
         }
 
         this.tables = [];
-        var fields = [];
+        var fields = [], allPrimaryFields = [];
         BI.each(tableFields, function (i, fs) {
             BI.each(fs, function (j, field) {
+                var primaryFields = [];
                 fields.push({
-                    field: field.field_name,
+                    field: translations[field.id] || field.field_name,
                     value: field.id
                 });
+                BI.Utils.getPrimaryFieldsByFieldId4Conf(field.id, primaryFields);
+                allPrimaryFields = allPrimaryFields.concat(primaryFields);
             });
         });
         this.tables.push({
             open: true,
             value: tableId,
-            tableName: this.translations[tableId],
+            tableName: translations[tableId],
             fields: fields
         });
 
-        //这里找到所有主表 和 主表的主表
-        this._getALlPrimaryTables(tableId);
+        this._initPrimaryTableInfo(allPrimaryFields, tableId);
     },
 
-    _getALlPrimaryTables: function (tableId) {
+    _initPrimaryTableInfo: function (primaryFields, baseTableId) {
         var self = this;
-        var foreignKeyMap = this.relations.foreignKeyMap;
-        BI.each(foreignKeyMap, function (fieldId, maps) {
-            if (BI.isNotNull(self.allFields[fieldId]) && tableId === self.allFields[fieldId].table_id) {
-                BI.each(maps, function (i, map) {
-                    var pFieldId = map.primaryKey.field_id;
-                    var pTableId = self.allFields[pFieldId].table_id;
-                    var pFields = [];
-                    BI.each(self.allFields, function (fId, field) {
-                        if (field.table_id === pTableId && field.field_type !== BICst.COLUMN.COUNTER) {
-                            pFields.push({
-                                field: field.field_name,
-                                value: field.id
-                            });
-                        }
-                    });
-                    if (BI.contains(BI.pluck(self.tables, "value"), pTableId)) {
-                        return;
-                    }
-                    self.tables.push({
-                        value: pTableId,
-                        tableName: self.translations[pTableId],
-                        fields: pFields
-                    });
-                    self._getALlPrimaryTables(pTableId);
-                })
-            }
+        BI.each(primaryFields, function (i, pId) {
+            var tableId = BI.Utils.getTableIdByFieldId4Conf(pId);
+            var fieldIds = BI.Utils.getFieldIdsByTableId4Conf(tableId);
+            var fields = [];
+            BI.each(fieldIds, function (i, fId) {
+                fields.push({
+                    field: BI.Utils.getTransNameById4Conf(fId) || BI.Utils.getFieldNameById4Conf(fId),
+                    value: fId
+                });
+            });
+            tableId !== baseTableId && self.tables.push({
+                value: tableId,
+                tableName: BI.Utils.getTransNameById4Conf(tableId),
+                fields: fields
+            })
         });
     },
 
@@ -121,7 +110,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         }, function () {
             callback();
             mask.destroy();
-        });
+        }, BI.emptyFn);
     },
 
     setRowColOnField: function (field, row, col) {
