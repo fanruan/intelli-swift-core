@@ -48,8 +48,8 @@ public abstract class CalCalculator implements TargetCalculator {
     public abstract void calCalculateTarget(BINode node);
 
     /**
-     * 计算
      *
+     * 计算
      * @param node 节点
      * @param key  关键字
      */

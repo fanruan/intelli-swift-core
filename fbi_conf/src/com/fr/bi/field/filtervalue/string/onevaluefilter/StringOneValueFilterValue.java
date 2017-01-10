@@ -7,12 +7,11 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
-import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -156,19 +155,22 @@ public abstract class StringOneValueFilterValue extends AbstractFilterValue<Stri
 
     @Override
     public boolean canCreateFilterIndex() {
-        return true;
+        return false;
     }
     
     @Override
     public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        String value = StringFilterValueUtils.toString(node.getShowValue());
-        if (value == null && this.value == null) {
+        return showNode(node.getData());
+    }
+
+    public boolean showNode(Object data){
+        if (data == null && this.value == null) {
             return true;
         }
-        if (value == null || this.value == null) {
+        if (data == null || this.value == null) {
             return false;
         }
-        return isMatchValue(value);
+        return isMatchValue(data.toString());
     }
 
     @Override

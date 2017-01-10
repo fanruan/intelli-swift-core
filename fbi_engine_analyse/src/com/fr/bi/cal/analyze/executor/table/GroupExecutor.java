@@ -823,7 +823,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
-            tree = new Node(null);
+            tree = new Node();
         }
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;

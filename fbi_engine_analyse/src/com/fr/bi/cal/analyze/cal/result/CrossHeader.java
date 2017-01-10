@@ -13,6 +13,7 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,13 +31,17 @@ public class CrossHeader extends Node implements Serializable {
 
     private CrossNode value;
 
+    public CrossHeader(){
+
+    }
+
     /**
      * 构造函数
      *
      * @param data   值
      */
-    public CrossHeader(Object data) {
-        super(data);
+    public CrossHeader(Comparator comparator, Object data) {
+        super(comparator, data);
     }
 
     private static CrossNode getBottomNode(CrossNode valueNode, int[] index, int i) {
@@ -51,7 +56,7 @@ public class CrossHeader extends Node implements Serializable {
      */
     @Override
     protected CrossHeader createNewNode() {
-        CrossHeader header = new CrossHeader(this.getData());
+        CrossHeader header = new CrossHeader(this.getComparator(), this.getData());
         header.setShowValue(getShowValue());
         return header;
     }

@@ -8,6 +8,8 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.fr.bi.field.dimension.filter.field.DimensionTargetValueFilter;
+import com.fr.bi.field.filtervalue.string.nfilter.StringNFilterValue;
 import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIPeriodCalTargetKey;
@@ -91,6 +93,7 @@ public class NodeIteratorCreator {
     }
 
     private IRootDimensionGroup createNormalIteratorRoot() {
+
         if (usedTargets == null || usedTargets.length == 0){
             return new NoneMetricRootDimensionGroup(metricGroupInfoList, session, isRealData, filter);
         }
@@ -118,6 +121,18 @@ public class NodeIteratorCreator {
             }
         }
         return retIndexes;
+    }
+
+    private DimensionFilter[] getDimensionFilter() {
+        DimensionFilter[] filters = new DimensionFilter[metricGroupInfoList.size()];
+        for (int i = 0; i < filters.length; i++) {
+            for (int deep = 0; deep < rowDimension.length; deep++) {
+                DimensionFilter resultFilter = rowDimension[deep].getFilter();
+                if (resultFilter instanceof DimensionTargetValueFilter && ((DimensionTargetValueFilter) resultFilter).getFilterValue() instanceof StringNFilterValue) {
+                }
+            }
+        }
+        return filters;
     }
 
 

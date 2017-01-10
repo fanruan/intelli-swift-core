@@ -17,7 +17,7 @@ public interface SummaryContainer {
     void setSummaryValue(Object key, Object value);
 
 
-    public Number getSummaryValue(Object key);
+    Number getSummaryValue(Object key);
 
     Map getSummaryValue();
 

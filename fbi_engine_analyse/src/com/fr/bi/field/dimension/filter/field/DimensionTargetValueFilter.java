@@ -32,9 +32,13 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
         filterValue = FilterValueFactory.parseFilterValue(jo, userId);
     }
 
+    public FilterValue getFilterValue() {
+        return filterValue;
+    }
+
     /* (non-Javadoc)
-     * @see com.fr.bi.report.data.dimension.filter.ResultFilter#getUsedTargets()
-     */
+         * @see com.fr.bi.report.data.dimension.filter.ResultFilter#getUsedTargets()
+         */
     @Override
     public List<String> getUsedTargets() {
         if (target_id == null) {

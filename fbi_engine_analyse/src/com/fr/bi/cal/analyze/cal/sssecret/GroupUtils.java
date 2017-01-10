@@ -27,7 +27,7 @@ public class GroupUtils {
     }
 
     private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex) {
-        Node node = new Node(null);
+        Node node = new Node();
         GroupConnectionValue gc = iterator.next();
         if (gc == null) {
             return new NodeAndPageInfo(node, false, false, 0);

@@ -3,11 +3,11 @@ package com.fr.bi.cal.analyze.cal.result;
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.ISortInfoList;
 import com.fr.bi.stable.report.result.SummaryContainer;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
@@ -42,6 +42,9 @@ public class Node implements SummaryContainer, BINode {
      *
      */
     private Object data;
+
+    private Comparator comparator = BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
+
     /**
      * 父亲节点
      */
@@ -59,9 +62,20 @@ public class Node implements SummaryContainer, BINode {
     //TODO 低效的算法， 放在result无所谓
     private transient Map<TopNKey, Double> topNLineMap;
 
-    public Node(Object data) {
+    public Node (){
+        childs = new ChildsMap<Node>();
+    }
+
+    public Node (Object data){
+        this();
         this.setData(data);
         childs = new ChildsMap<Node>();
+    }
+
+
+    public Node(Comparator comparator, Object data) {
+        this(data);
+        this.comparator = comparator;
     }
 
     /**
@@ -71,6 +85,11 @@ public class Node implements SummaryContainer, BINode {
      */
     private void initShowValue(Object data) {
         setShowValue(data == null ? null : data.toString());
+    }
+
+    @Override
+    public Comparator getComparator() {
+        return comparator;
     }
 
     @Override
@@ -323,7 +342,7 @@ public class Node implements SummaryContainer, BINode {
     }
 
     protected Node createNewNode() {
-        Node newNode = new Node(this.getData());
+        Node newNode = new Node(comparator, this.getData());
         newNode.showValue = this.getShowValue();
         return newNode;
     }
@@ -452,7 +471,7 @@ public class Node implements SummaryContainer, BINode {
      * @return 交叉表head的节点
      */
     public CrossHeader createCrossHeader() {
-        CrossHeader newnode = new CrossHeader(data);
+        CrossHeader newnode = new CrossHeader(comparator, data);
         newnode.setShowValue(getShowValue());
         newnode.getTargetIndexValueMap().putAll(this.getTargetIndexValueMap());
         newnode.setSummaryValue(this.getSummaryValue());
@@ -706,17 +725,6 @@ public class Node implements SummaryContainer, BINode {
         return createTargetSortedNode(targetSort, targetsMap);
     }
 
-    @Override
-    public BINode createSortedNode(NameObject targetSort, Map<String, TargetCalculator> targetsMap, ISortInfoList sortInfoList, int i) {
-        Map<String, TargetGettingKey> keys = new HashMap<String, TargetGettingKey>();
-        Iterator<Entry<String, TargetCalculator>> it = targetsMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, TargetCalculator> entry = it.next();
-            keys.put(entry.getKey(), entry.getValue().createTargetGettingKey());
-        }
-        return createTargetSortedNode(targetSort, keys);
-    }
-
     private Node createTargetSortedNode(NameObject targetSort,
                                         Map<String, TargetGettingKey> targetsMap) {
         if (targetSort == null) {
@@ -770,25 +778,6 @@ public class Node implements SummaryContainer, BINode {
         Node newnode = createNewNode();
         newnode.summaryValue = this.getSummaryValue();
         return newnode;
-    }
-
-    /**
-     * 挖掘用的，生成一个新列
-     *
-     * @param key        指标
-     * @param deltaValue delta值
-     */
-    public void addSummaryValue(Object key, double deltaValue) {
-        if (this.getSummaryValue().get(key) == null) {
-            this.getSummaryValue().put(key, deltaValue);
-        } else {
-            double value = (Double) this.getSummaryValue().get(key);
-            double newValue = value + deltaValue;
-            this.getSummaryValue().put(key, newValue);
-        }
-        if (this.getParent() != null) {
-            this.getParent().addSummaryValue(key, deltaValue);
-        }
     }
 
     public Map getSummaryValue() {

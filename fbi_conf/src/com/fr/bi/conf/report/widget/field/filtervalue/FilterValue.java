@@ -10,9 +10,7 @@ import com.fr.stable.xml.XMLable;
 
 public interface FilterValue<T> extends FieldFilter, XMLable, RowFilter<T> {
 
-
-    public boolean canCreateFilterIndex();
-
+    boolean canCreateFilterIndex();
 
     boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader);
 

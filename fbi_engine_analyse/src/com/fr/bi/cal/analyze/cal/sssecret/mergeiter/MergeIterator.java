@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.cal.sssecret;
+package com.fr.bi.cal.analyze.cal.sssecret.mergeiter;
 
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.stable.collections.array.IntArray;
@@ -15,7 +15,7 @@ public class MergeIterator implements Iterator<Map.Entry<Object, GroupValueIndex
     private Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators;
     private Comparator c;
     private Map.Entry<Object, GroupValueIndex>[] entries;
-    private Map.Entry<Object, GroupValueIndex[]> next;
+    protected Map.Entry<Object, GroupValueIndex[]> next;
 
     public MergeIterator(Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators, Comparator c) {
         this.iterators = iterators;
@@ -63,7 +63,7 @@ public class MergeIterator implements Iterator<Map.Entry<Object, GroupValueIndex
         }
     }
 
-    private void moveNext() {
+    protected void moveNext() {
         Object minValue = null;
         IntArray array = new IntArray();
         final GroupValueIndex[] gvis = new GroupValueIndex[iterators.length];
@@ -115,7 +115,7 @@ public class MergeIterator implements Iterator<Map.Entry<Object, GroupValueIndex
         moveEntries(array);
     }
 
-    protected static Iterator EMPTY = new Iterator() {
+    public static Iterator EMPTY = new Iterator() {
         @Override
         public void remove() {
 

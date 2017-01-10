@@ -25,7 +25,21 @@ public class StringTOPNFilterValue extends StringNFilterValue implements NFilter
      */
     @Override
     public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        throw new RuntimeException("Dimension N Filter should dealWith In Iterator, not after calculate all children");
+        BINode parentNode = node.getParent();
+        int count = parentNode.getChildLength();
+        if (N < 1){
+            return false;
+        }
+        if (N >= count){
+            return true;
+        }
+        Comparable nline;
+        if (N < count / 2){
+            nline = parentNode.getChildTOPNValueLine(N);
+        } else {
+            nline = parentNode.getChildBottomNValueLine(count + 1 - N);
+        }
+        return nline != null && node.getComparator().compare(node.getData(), nline) <= 0;
     }
 
 }

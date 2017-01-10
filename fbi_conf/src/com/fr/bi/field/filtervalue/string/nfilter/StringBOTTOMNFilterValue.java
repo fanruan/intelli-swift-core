@@ -30,6 +30,20 @@ public class StringBOTTOMNFilterValue extends StringNFilterValue implements NFil
      */
     @Override
     public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        throw new RuntimeException("Dimension N Filter should dealWith In Iterator, not after calculate all children");
+        BINode parentNode = node.getParent();
+        int count = parentNode.getChildLength();
+        if (N < 1){
+            return false;
+        }
+        if (N >= count){
+            return true;
+        }
+        Comparable nline;
+        if (N < count * 2){
+            nline = parentNode.getChildBottomNValueLine(N);
+        } else {
+            nline = parentNode.getChildTOPNValueLine(count + 1 - N);
+        }
+        return nline != null && node.getComparator().compare(nline, node.getData()) <= 0;
     }
 }

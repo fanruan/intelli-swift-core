@@ -208,14 +208,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     /**
-     * 加了一位nextBrother。
-     * 当从nextParent进入到GetNext里面时，直接进入nextBrother方法。
-     *
-     * @param gv
-     * @param index
-     * @param deep
-     * @param expander
-     * @param list
+     * @param gv 表示一行的值
+     * @param index 上一次游标的位置
+     * @param deep 维度的层级
+     * @param expander 展开信息
+     * @param list 当前的游标
      */
     private ReturnStatus getNext(GroupConnectionValue gv,
                                  int[] index,
@@ -236,7 +233,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
         ReturnStatus returnStatus = findCurrentValue(sg, gv, list, row);
         //如果越界，就一直往上移，直到不越界或者结束。
-        while (returnStatus == ReturnStatus.GroupEnd.GroupOutOfBounds){
+        while (returnStatus == ReturnStatus.GroupOutOfBounds){
             //如果找到根节点还是越界，说明结束了。
             if (deep == 0){
                 return ReturnStatus.GroupEnd;
