@@ -64,7 +64,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
                     BILoggerFactory.getLogger(UserETLCubeManager.class).info("parent table " + md5 + " invokeUpdate --> " + entry.getKey());
                     //					TODO 子表更新以前需要刷新父表表的columnDetailGetter
                     manager.getSource().reSetWidgetDetailGetter();
-                    manager.addTask(true);
+                    manager.addTask();
                 }
             }
         }
@@ -246,7 +246,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         if (manager.checkVersion()) {
             return true;
         } else {
-            manager.addTask(true);
+            manager.addTask();
             return false;
         }
     }

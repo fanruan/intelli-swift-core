@@ -102,7 +102,8 @@ public class SingleUserETLTableCubeManager implements Release {
 				}
 			}
 		}
-		updateTask.add(new UserETLUpdateTask(source));
+		UserETLUpdateTask task = new UserETLUpdateTask(source);
+		updateTask.add(task);
 	}
 	
 	
@@ -119,6 +120,10 @@ public class SingleUserETLTableCubeManager implements Release {
             return new UserETLUpdateTask(source).check(version);
         }
     }
+
+	public void forceReleaseCurrentThread(){
+		tq.forceReleaseObject();
+	}
 
 	/**
 	 * 
