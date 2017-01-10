@@ -92,6 +92,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     },
 
     _resizeTableColumnSize: function () {
+        var self = this, o = this.options;
         var cs = this.table.getColumnSize();
         var isValid = true;
         BI.some(cs, function (i, size) {
@@ -147,7 +148,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 })
             }
             this.table.setColumnSize(columnSize);
-            self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
+            this.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
         }
     },
 
