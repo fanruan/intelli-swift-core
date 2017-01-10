@@ -35,9 +35,9 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                         el: {
                             el: {
                                 type: "bi.table_view",
-                                afterScroll: function () {
-                                    self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(o.wId), BI.Utils.getWSThemeColorByID(o.wId));
-                                }
+                                // afterScroll: function () {
+                                //     self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(o.wId), BI.Utils.getWSThemeColorByID(o.wId));
+                                // }
                             }
                         }
                     },
