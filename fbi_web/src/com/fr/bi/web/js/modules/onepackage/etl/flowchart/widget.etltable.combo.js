@@ -79,7 +79,7 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
         var tableInfo = self.options.tableInfo;
         var tableName = this._getTableName(tableInfo);
         var baseItems = BI.deepClone(BICst.ETL_MANAGE_ITEMS);
-        this._addItem4SQLAndExcel(baseItems, tableInfo.connection_name, baseItems);
+        this._addItem4SQLAndExcel(tableInfo.connection_name, baseItems);
         var popup = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(baseItems, {
