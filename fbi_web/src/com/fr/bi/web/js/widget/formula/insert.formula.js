@@ -127,7 +127,7 @@ BI.FormulaInsert = BI.inherit(BI.Widget, {
             },
             popup: {
                 el: self.functionpane,
-                width: 322
+                width: 372
             },
             width: 65
         });
