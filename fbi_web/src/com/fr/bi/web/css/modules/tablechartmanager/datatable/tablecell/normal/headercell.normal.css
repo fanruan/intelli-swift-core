@@ -4,9 +4,6 @@
 .bi-normal-header-cell > table > tbody > tr > td {
   max-width: 0;
 }
-.bi-normal-header-cell > table > tbody > tr > td:last-child {
-  max-width: none;
-}
 .bi-normal-header-cell .header-cell-text {
   -webkit-user-select: initial;
   -khtml-user-select: initial;
