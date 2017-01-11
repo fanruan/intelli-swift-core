@@ -250,7 +250,12 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     @Override
     public boolean checkVersion(AnalysisCubeTableSource source, BIUser user) {
         SingleUserETLTableCubeManager manager = createManager(source, user);
-        return manager.checkVersion();
+        if (manager.checkVersion()) {
+            return true;
+        } else {
+            manager.addTask();
+            return false;
+        }
     }
 
 }
