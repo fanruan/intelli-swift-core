@@ -56,7 +56,7 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
             self.groupMap[group_id] = item.value;
             self.fieldInGroupMap[group_id] = {};
             BI.each(item.content, function (i_in, item_in) {
-                var field_id = self.fieldReserveMap[item_in.value];
+                var field_id = BI.isNotNull(item_in.id) ? item_in.id : self.fieldReserveMap[item_in.value];
                 /**
                  * 分组值不会有重复，不需要查重给相同id
                  */

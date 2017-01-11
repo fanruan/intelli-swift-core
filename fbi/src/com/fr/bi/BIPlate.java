@@ -336,7 +336,7 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public String[] getPlateJavaScriptFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(ResourceHelper.getFoundationJs(), new String[]{
+        return (String[]) ArrayUtils.addAll(ResourceHelper.getFsJs(), new String[]{
                 "/com/fr/bi/web/cross/js/bi.user.manager.js",
                 "/com/fr/bi/web/cross/js/effect/create.by.me.js",
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",

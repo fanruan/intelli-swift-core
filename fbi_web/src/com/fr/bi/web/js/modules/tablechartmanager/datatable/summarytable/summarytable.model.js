@@ -326,29 +326,21 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     self.clickValue = child.n;
                     self.expanderCallback();
                 },
-                drillCallback: function (drillId) {
-                    var drillMap = BI.Utils.getDrillByID(self.wId);
-                    //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
-                    //当前钻取的根节点
-                    var rootId = currDid;
-                    BI.each(drillMap, function (drId, ds) {
-                        if (currDid === drId || (ds.length > 0 && ds[ds.length - 1].dId === currDid)) {
-                            rootId = drId;
-                        }
-                    });
-
-                    var drillOperators = drillMap[rootId] || [];
-                    //上钻
-                    if (drillId === BI.NormalExpanderCell.UP_DRILL) {
-                        drillOperators.pop();
-                    } else {
-                        drillOperators.push({
-                            dId: drillId,
-                            values: pValues
-                        });
+                drillCallback: function () {
+                    var regionType = BI.Utils.getRegionTypeByDimensionID(currDid);
+                    var obj = {};
+                    if(pValues.length > 0){
+                        BI.removeAt(pValues, 0);
                     }
-                    drillMap[rootId] = drillOperators;
-                    self.clickedCallback(BI.extend(BI.Utils.getLinkageValuesByID(self.wId), drillMap));
+                    if(regionType < BICst.REGION.DIMENSION2){
+                        obj.xValue = child.n;
+                        obj.pValues = pValues;
+                    }else{
+                        obj.zValue = child.n;
+                        obj.pValues = pValues;
+                    }
+                    obj.dimensionIds = [currDid];
+                    BI.Broadcasts.send(BICst.BROADCAST.CHART_CLICK_PREFIX + self.wId, obj);
                 }
             };
             //展开情况——最后一层没有这个展开按钮
@@ -946,29 +938,21 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     self.clickValue = child.n;
                     self.expanderCallback();
                 },
-                drillCallback: function (drillId) {
-                    var drillMap = BI.Utils.getDrillByID(self.wId);
-                    //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
-                    //当前钻取的根节点
-                    var rootId = currDid;
-                    BI.each(drillMap, function (drId, ds) {
-                        if (currDid === drId || (ds.length > 0 && ds[ds.length - 1].dId === currDid)) {
-                            rootId = drId;
-                        }
-                    });
-
-                    var drillOperators = drillMap[rootId] || [];
-                    //上钻
-                    if (drillId === BI.NormalExpanderCell.UP_DRILL) {
-                        drillOperators.pop();
-                    } else {
-                        drillOperators.push({
-                            dId: drillId,
-                            values: pValues
-                        });
+                drillCallback: function () {
+                    var regionType = BI.Utils.getRegionTypeByDimensionID(currDid);
+                    var obj = {};
+                    if(pValues.length > 0){
+                        BI.removeAt(pValues, 0);
                     }
-                    drillMap[rootId] = drillOperators;
-                    self.clickedCallback(BI.extend(BI.Utils.getLinkageValuesByID(self.wId), drillMap));
+                    if(regionType < BICst.REGION.DIMENSION2){
+                        obj.xValue = child.n;
+                        obj.pValues = pValues;
+                    }else{
+                        obj.zValue = child.n;
+                        obj.pValues = pValues;
+                    }
+                    obj.dimensionIds = [currDid];
+                    BI.Broadcasts.send(BICst.BROADCAST.CHART_CLICK_PREFIX + self.wId, obj);
                 }
             };
             if (currentLayer < self.crossDimIds.length) {

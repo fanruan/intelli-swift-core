@@ -156,7 +156,7 @@ BI.Table = BI.inherit(BI.Widget, {
         }));
     },
 
-    _createBottomLeftBody: function(){
+    _createBottomLeftBody: function () {
         var body = this.bottomLeftBody = this._body();
         body.element.append(this._createCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems));
         return body;
@@ -193,7 +193,7 @@ BI.Table = BI.inherit(BI.Widget, {
         }));
     },
 
-    _createBottomRightBody: function(){
+    _createBottomRightBody: function () {
         var body = this.bottomRightBody = this._body();
         body.element.append(this._createCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length));
         return body;
@@ -695,7 +695,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     break;
                 case "easeInOutStrong":
                     t /= d / 2;
-                    if (t < 1){
+                    if (t < 1) {
                         return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
                     }
                     t--;
@@ -704,7 +704,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 case "easeInOut":
                 case "mcsEaseInOut":
                     t /= d / 2;
-                    if (t < 1){
+                    if (t < 1) {
                         return c / 2 * t * t * t + b;
                     }
                     t -= 2;
@@ -1583,7 +1583,7 @@ BI.Table = BI.inherit(BI.Widget, {
     getCalculateColumnSize: function () {
         var self = this, o = this.options;
         var columnSize = [];
-        if (o.isNeedFreeze) {
+        if (o.isNeedFreeze === true) {
             if (BI.size(this.bottomLeftBodyTds) > 0 || BI.size(this.bottomRightBodyTds) > 0) {
                 if (!BI.any(this.bottomLeftBodyTds, function (i, tds) {
                         if (!BI.any(tds, function (i, item) {
@@ -1653,7 +1653,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 })) {
                 BI.each(this.topLeftBodyTds[BI.size(this.topLeftBodyTds) - 1], function (i, item) {
                     var width = item.width() / item.__mergeCols.length;
-                    if (i == BI.size(self.topLeftBodyTds[BI.size(self.topLeftBodyTds) - 1]).length - 1) {
+                    if (i == BI.size(self.topLeftBodyTds[BI.size(self.topLeftBodyTds) - 1]) - 1) {
                         width++;
                     }
                     columnSize.push(width);
@@ -1677,7 +1677,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 })) {
                 BI.each(this.topRightBodyTds[BI.size(this.topRightBodyTds) - 1], function (i, item) {
                     var width = item.width() / item.__mergeCols.length;
-                    if (i == BI.size(self.topRightBodyTds[BI.size(self.topRightBodyTds) - 1]).length - 1) {
+                    if (i == BI.size(self.topRightBodyTds[BI.size(self.topRightBodyTds) - 1]) - 1) {
                         width++;
                     }
                     columnSize.push(width);
@@ -1686,7 +1686,7 @@ BI.Table = BI.inherit(BI.Widget, {
         } else {
             BI.each(this.headerTds[BI.size(this.headerTds) - 1], function (i, item) {
                 var width = item.width() / item.__mergeCols.length;
-                if (i == BI.size(self.headerTds[BI.size(self.headerTds) - 1]).length - 1) {
+                if (i == BI.size(self.headerTds[BI.size(self.headerTds) - 1]) - 1) {
                     width++;
                 }
                 columnSize.push(width);

@@ -27,10 +27,12 @@ public class BITableStyle {
     private Style dimensionNumberOddStyle = dimensionStyle;
     private Style numberStyle = Style.getInstance();
     private Style integerNumberStyle = numberStyle; //解决整数后面多个小数点问题
+    private Style percentNumberStyle = numberStyle; //导出的excel含有%
     private Style noneValueStyle = numberStyle;
     private Style noneValueOddStyle = numberStyle;
     private Style numberOddStyle = numberStyle;
     private Style integerNumberOddStyle = numberStyle;
+    private Style percentNumberOddStyle = numberStyle;
 
     private HashMap<Integer, Style> xTotal = new HashMap<Integer, Style>();
     private HashMap<Integer, Style> xNoneTotal = new HashMap<Integer, Style>();
@@ -49,8 +51,9 @@ public class BITableStyle {
     private HashMap<Integer, Style> yStringTotalGreen = new HashMap<Integer, Style>();
 
     private Style totalStyle = Style.getInstance();
-    private Style numberTotalStye = totalStyle;
+    private Style numberTotalStyle = totalStyle;
     private Style integerTotalStyle = totalStyle;
+    private Style percentTotalStyle = totalStyle;
 
     public BITableStyle() {
         initStyle();
@@ -92,8 +95,11 @@ public class BITableStyle {
         DecimalFormat decimalFormat = new CoreDecimalFormat(new DecimalFormat("#,##0.00"), "#,##0.00");
         numberStyle = numberStyle.deriveFormat(decimalFormat);
         integerNumberStyle = numberStyle.deriveFormat(new CoreDecimalFormat(new DecimalFormat("#,###"), "#,###"));
+        percentNumberStyle = numberStyle.deriveFormat(new CoreDecimalFormat(new DecimalFormat("0.00%"), "0.00%"));
         numberOddStyle = numberStyle.deriveBackground(ColorBackground.getInstance(oddLine));
         integerNumberOddStyle = numberOddStyle.deriveFormat(new CoreDecimalFormat(new DecimalFormat("#,###"), "#,###"));
+        percentNumberOddStyle = numberOddStyle.deriveFormat(new CoreDecimalFormat(new DecimalFormat("0.00%"), "0.00%"));
+
 
         FRFont font = FRFont.getInstance("MicroSoft Yahei", 100, 10);
         font.setForeground(new Color(255, 255, 255));
@@ -102,17 +108,20 @@ public class BITableStyle {
         titleStyle.put(0, dimensionStyle.deriveBackground(ColorBackground.getInstance(headerColor)).deriveFRFont(font).deriveBorder(1, headerBorderColor, 1, headerBorderColor, 1, headerBorderColor, 1, headerBorderColor));
 
         totalStyle = totalStyle.deriveBackground(ColorBackground.getInstance(new Color(101, 188, 231)));
-        numberTotalStye = numberStyle.deriveBackground(ColorBackground.getInstance(new Color(101, 188, 231)));
+        numberTotalStyle = numberStyle.deriveBackground(ColorBackground.getInstance(new Color(101, 188, 231)));
         integerTotalStyle = integerNumberStyle.deriveBackground(ColorBackground.getInstance(new Color(101, 188, 231)));
+        percentTotalStyle = percentNumberStyle.deriveBackground(ColorBackground.getInstance(new Color(101, 188, 231)));
     }
 
     public Style getDimensionCellStyle(boolean isNumber, boolean isOdd) {
         return isNumber ? (isOdd ? dimensionNumberOddStyle : dimensionNumberStyle) : (isOdd ? dimensionOddStyle : dimensionStyle);
     }
 
-    public Style getNumberCellStyle(Object cellValue, boolean isOdd) {
+    public Style getNumberCellStyle(Object cellValue, boolean isOdd, boolean isPercent) {
         if (cellValue == null || ComparatorUtils.equals(cellValue, 0)) {
             return isOdd ? noneValueOddStyle : noneValueStyle;
+        } else if (isPercent) {
+            return isOdd ? percentNumberOddStyle : percentNumberStyle;
         } else {
             String v = GeneralUtils.objectToString(cellValue);
             return isOdd ? (v.contains(".") ? numberOddStyle : integerNumberOddStyle) : (v.contains(".") ? numberStyle : integerNumberStyle);
@@ -129,28 +138,33 @@ public class BITableStyle {
         return titleStyle.get(0);
     }
 
-    public Style getNumberCellStyle(Object cellValue, boolean isOdd, boolean isHyberLink) {
+    public Style getNumberCellStyle(Object cellValue, boolean isOdd, boolean isHyberLink, boolean isPercent) {
         if (cellValue == null || ComparatorUtils.equals(cellValue, 0)) {
             return isOdd ? noneValueOddStyle : noneValueStyle;
         }
-        String v = GeneralUtils.objectToString(cellValue);
-        Style style = v.contains(".") ? (isOdd ? numberOddStyle : numberStyle) : (isOdd ? integerNumberOddStyle : integerNumberStyle);
+        Style style;
+        if (isPercent) {
+            style = isOdd ? percentNumberOddStyle : percentNumberStyle;
+        } else {
+            String v = GeneralUtils.objectToString(cellValue);
+            style = v.contains(".") ? (isOdd ? numberOddStyle : numberStyle) : (isOdd ? integerNumberOddStyle : integerNumberStyle);
+        }
         style = isHyberLink ? style.deriveFRFont(style.getFRFont().applyUnderline(Constants.LINE_THIN).applyForeground(Color.blue)) : style;
         return style;
     }
 
-    public Style getYTotalCellStyle(Object cellValue, int level) {
+    public Style getYTotalCellStyle(Object cellValue, int level, boolean isPercent) {
         if (cellValue != null && !ComparatorUtils.equals(cellValue, 0)) {
             String v = GeneralUtils.objectToString(cellValue);
-            return v.contains(".") ? numberTotalStye : integerTotalStyle;
+            return isPercent ? percentTotalStyle : (v.contains(".") ? numberTotalStyle : integerTotalStyle);
         }
         return totalStyle;
     }
 
-    public Style getXTotalCellStyle(Object cellValue, int level) {
+    public Style getXTotalCellStyle(Object cellValue, int level, boolean isPercent) {
         if (cellValue != null && !ComparatorUtils.equals(cellValue, 0)) {
             String v = GeneralUtils.objectToString(cellValue);
-            return v.contains(".") ? numberTotalStye : integerTotalStyle;
+            return isPercent ? percentTotalStyle : (v.contains(".") ? numberTotalStyle : integerTotalStyle);
         }
         return totalStyle;
     }

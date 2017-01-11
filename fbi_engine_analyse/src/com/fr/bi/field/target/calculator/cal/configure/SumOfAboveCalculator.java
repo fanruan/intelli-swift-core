@@ -101,7 +101,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
                 deep++;
             }
             LightNode cursor_node = temp_node;
-            double sum = 0;
+            Double sum = null;
             while (isNotEnd(cursor_node, deep)) {
                 Number value;
                 if (targetKey instanceof AvgKey) {
@@ -109,8 +109,13 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
                 } else {
                     value = cursor_node.getSummaryValue(key);
                 }
-                sum += value == null ? 0 : value.doubleValue();
-                cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
+                if (value != null) {
+                    if (sum == null) {
+                        sum = new Double(0.0f);
+                    }
+                    sum += value.doubleValue();
+                }
+                cursor_node.setSummaryValue(createTargetGettingKey(), sum);
                 cursor_node = cursor_node.getSibling();
             }
             return null;

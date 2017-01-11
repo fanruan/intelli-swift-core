@@ -190,7 +190,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             cell.setRow(row);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
-            cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
+            cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, false) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, false));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
@@ -201,14 +201,15 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
         } else {
             for (int k = 0; k < keys.length; k++) {
+                int numLevel = chartSetting.getNumberLevelByTargetId(keys[k].getTargetName());
                 Object v = node.getSummaryValue(keys[k]);
-                v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[k].getTargetName()));
+                v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
                 CBCell cell = new CBCell(v);
                 cell.setColumn(column + (pos * keys.length) + k + widget.isOrder());
                 cell.setRow(row);
                 cell.setRowSpan(1);
                 cell.setColumnSpan(1);
-                cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
+                cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
                 List cellList = new ArrayList();
                 cellList.add(cell);
                 CBBoxElement cbox = new CBBoxElement(cellList);

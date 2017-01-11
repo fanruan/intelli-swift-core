@@ -11,6 +11,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.tableobj.ETLTableObject;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.structure.queue.FixedQueueThread;
 import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
 import com.fr.bi.stable.utils.file.BIFileUtils;
@@ -25,7 +26,7 @@ import java.io.File;
  */
 public class SingleUserETLTableCubeManager implements Release {
 	
-	private QueueThread<UserETLUpdateTask> updateTask;
+	private FixedQueueThread<UserETLUpdateTask> updateTask;
 	
 	private ThreadUnitedQueue<ETLTableObject> tq = new ThreadUnitedQueue<ETLTableObject>();
 
@@ -59,12 +60,16 @@ public class SingleUserETLTableCubeManager implements Release {
 		}
 		addTask();
 	}
+
+	public boolean isAvailable() {
+		return !tq.isEmpty();
+	}
 	
 	public void addTask(){
 		if(updateTask == null){
 			synchronized (this) {
 				if(updateTask == null){
-					updateTask = new QueueThread<UserETLUpdateTask>();
+					updateTask = new FixedQueueThread<UserETLUpdateTask>();
 					updateTask.setCheck(new BrokenTraversal<UserETLUpdateTask>() {
 						@Override
 						public boolean actionPerformed(UserETLUpdateTask data) {
@@ -94,13 +99,11 @@ public class SingleUserETLTableCubeManager implements Release {
 							}
 						}
 					});
-                    updateTask.start();
 				}
 			}
 		}
-		if(updateTask.size() < 2) {
-			updateTask.add(new UserETLUpdateTask(source));
-		}
+		UserETLUpdateTask task = new UserETLUpdateTask(source);
+		updateTask.add(task);
 	}
 	
 	
@@ -118,13 +121,16 @@ public class SingleUserETLTableCubeManager implements Release {
         }
     }
 
+	public void forceReleaseCurrentThread(){
+		tq.forceReleaseObject();
+	}
+
 	/**
 	 * 
 	 */
 	@Override
 	public void clear() {
 		if(updateTask != null){
-			updateTask.clear();
 			updateTask = null;
 		}
 		tq.clear();

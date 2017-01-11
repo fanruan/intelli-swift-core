@@ -157,13 +157,6 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
         return widget.previewTable;
     },
 
-    _formatValue: function(group, value){
-        if (group === BICst.GROUP.M) {
-            return BI.isNull(value) ? "" : value + 1;
-        }
-        return value;
-    },
-
     filterChange : function (filter, widget){
         var showingCard = this._statusAdd ? this._getOperatorPane(widget).getContentWidget().getShowingCard() : this._getOperatorEditPane(widget).getContentWidget();
         showingCard.controller.filterChange(filter);
@@ -195,20 +188,10 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
     },
 
     populatePreviewData : function () {
-        var self = this;
-        var widget = arguments[arguments.length - 2];
+        var widget = arguments[arguments.length - 2]
         var args = Array.prototype.slice.call(arguments, 0, arguments.length - 2);
         this.currentData = BI.clone(args);
-        if(args.length > 1 && args[1].length > 0){
-            BI.each(args[1][0].etl_fields, function(idx, field){
-                if(BI.isNotNull(field.group) && field.group === BICst.GROUP.M){
-                    BI.each(args[0], function(id, row){
-                        row[idx].text = self._formatValue(field.group, row[idx].text);
-                    });
-                }
-            })
-        }
-        args.push(this.previewOperator);
+        args.push(this.previewOperator)
         this._getPreviewTable(widget).populate.apply(this._getPreviewTable(widget), args)
     },
 
