@@ -22181,7 +22181,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22220,7 +22220,7 @@
 	                _extends({ 'data-flex-box': flex === true ? 1 : flex,
 	                    'data-flex': 'dir:' + dir + ' main:' + main + ' cross:' + cross + ' box:' + box
 	                }, props, {
-	                    style: _extends({}, (0, _core.sc)([{ position: 'absolute' }, abs === true]), props.style)
+	                    style: _extends({}, (0, _utils.sc)([{ position: 'absolute' }, abs === true]), props.style)
 	                }),
 	                children
 	            );
@@ -43663,7 +43663,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43702,7 +43702,7 @@
 	                        overflowY: scrolly === true ? 'auto' : '',
 	                        position: 'relative',
 	                        overflowX: scrollx === true ? 'auto' : ''
-	                    }, style), (0, _core.sc)([{
+	                    }, style), (0, _utils.sc)([{
 	                        position: 'absolute'
 	                    }, abs === true])) }),
 	                children
@@ -43733,7 +43733,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43777,8 +43777,8 @@
 	                _extends({ 'data-flex-box': flex === true ? 1 : flex }, props, { style: _extends(_extends({
 	                        overflowX: 'auto',
 	                        position: 'relative',
-	                        overflowY: scrolly == null || scrolly === true ? 'auto' : 'hidden'
-	                    }, style), (0, _core.sc)([{
+	                        overflowY: scrolly === true ? 'auto' : 'hidden'
+	                    }, style), (0, _utils.sc)([{
 	                        position: 'absolute'
 	                    }, abs === true])) }),
 	                _react2.default.createElement(
@@ -43790,17 +43790,17 @@
 	                            alignSelf: 'flex-start',
 	                            minWidth: '100%',
 	                            minHeight: '100%'
-	                        }, (0, _core.sc)([{
+	                        }, (0, _utils.sc)([{
 	                            alignItems: 'flex-start'
 	                        }, top === true], [{
 	                            alignItems: 'center'
-	                        }, middle == null || middle === true], [{
+	                        }, middle === true], [{
 	                            alignItems: 'flex-end'
 	                        }, bottom === true], [{
 	                            justifyContent: 'flex-start'
-	                        }, left === 'left'], [{
+	                        }, left === true], [{
 	                            justifyContent: 'center'
-	                        }, center == null || center === true], [{
+	                        }, center === true], [{
 	                            justifyContent: 'flex-end'
 	                        }, right === true], [{
 	                            flexWrap: 'wrap'
@@ -43814,6 +43814,16 @@
 	    return HorizontalLayout;
 	}(_react.Component);
 
+	HorizontalLayout.defaultProps = {
+	    scrolly: true,
+	    top: false,
+	    bottom: false,
+	    left: true,
+	    right: false,
+	    center: false,
+	    middle: true,
+	    wrap: false
+	};
 	exports.default = HorizontalLayout;
 
 /***/ },
@@ -43834,7 +43844,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43871,8 +43881,8 @@
 	                _extends({ 'data-flex-box': flex === true ? 1 : flex }, props, { style: _extends(_extends({
 	                        overflowY: 'auto',
 	                        position: 'relative',
-	                        overflowX: scrollx == null || scrollx === true ? 'auto' : 'hidden'
-	                    }, style), (0, _core.sc)([{
+	                        overflowX: scrollx === true ? 'auto' : 'hidden'
+	                    }, style), (0, _utils.sc)([{
 	                        position: 'absolute'
 	                    }, abs === true])) }),
 	                children
@@ -43883,6 +43893,9 @@
 	    return VerticalLayout;
 	}(_react.Component);
 
+	VerticalLayout.defaultProps = {
+	    scrollx: true
+	};
 	exports.default = VerticalLayout;
 
 /***/ },
@@ -44086,7 +44099,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44132,7 +44145,7 @@
 	                                right: 0,
 	                                top: 0,
 	                                bottom: 0,
-	                                display: (0, _core.isNil)(defaultShowKey) || key === defaultShowKey ? 'flex' : 'none'
+	                                display: (0, _utils.isNil)(defaultShowKey) || key === defaultShowKey ? 'flex' : 'none'
 	                            } },
 	                        child
 	                    );
@@ -44270,7 +44283,7 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	__webpack_require__(539);
 
@@ -44309,7 +44322,7 @@
 	                style = _props.style,
 	                props = _objectWithoutProperties(_props, ['children', 'className', 'disabled', 'invalid', 'active', 'style']);
 
-	            var cls = (0, _core.cn)((_cn = {
+	            var cls = (0, _utils.cn)((_cn = {
 	                'react-button': true
 	            }, _defineProperty(_cn, className, className != null), _defineProperty(_cn, 'base-disabled', disabled), _defineProperty(_cn, 'active', active), _cn));
 	            if (disabled || invalid) {
@@ -44483,7 +44496,7 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _constants = __webpack_require__(543);
 
@@ -44530,14 +44543,14 @@
 	    _createClass(Title, [{
 	        key: '_isTitleUsable',
 	        value: function _isTitleUsable() {
-	            return (0, _core.isFunction)(this.props.title) || (0, _core.isString)(this.props.title) && this.props.title.length > 0 || (0, _core.isNumber)(this.props.title);
+	            return (0, _utils.isFunction)(this.props.title) || (0, _utils.isString)(this.props.title) && this.props.title.length > 0 || (0, _utils.isNumber)(this.props.title);
 	        }
 	    }, {
 	        key: '_getTitle',
 	        value: function _getTitle() {
 	            var title = this.props.title;
 
-	            if ((0, _core.isFunction)(title)) {
+	            if ((0, _utils.isFunction)(title)) {
 	                title = title();
 	            }
 	            return title + '';
@@ -44551,15 +44564,15 @@
 	                setTimeout(function () {
 	                    if (_this2.state.open === true) {
 	                        try {
-	                            var viewport = (0, _core.getViewportDimensions)();
+	                            var viewport = (0, _utils.getViewportDimensions)();
 	                            var trigger = _reactDom2.default.findDOMNode(_this2);
 	                            var popup = _reactDom2.default.findDOMNode(_this2.title);
-	                            var triggerPos = (0, _core.getElementPosition)(trigger);
-	                            var popupPos = (0, _core.getElementPosition)(popup);
+	                            var triggerPos = (0, _utils.getElementPosition)(trigger);
+	                            var popupPos = (0, _utils.getElementPosition)(popup);
 	                            var x = _this2.state.pageX,
 	                                y = triggerPos.y + triggerPos.height;
-	                            x = (0, _core.clamp)(x, 0, viewport.width - popupPos.width);
-	                            y = (0, _core.clamp)(y, 0, viewport.height - popupPos.height);
+	                            x = (0, _utils.clamp)(x, 0, viewport.width - popupPos.width);
+	                            y = (0, _utils.clamp)(y, 0, viewport.height - popupPos.height);
 	                            popup.style.left = x + 'px';
 	                            popup.style.top = y + 'px';
 	                        } catch (e) {}
@@ -44596,7 +44609,7 @@
 	                return;
 	            }
 	            var self = _reactDom2.default.findDOMNode(this);
-	            if (!(0, _core.containsNode)(self, e.target)) {
+	            if (!(0, _utils.containsNode)(self, e.target)) {
 	                this.setState({
 	                    open: false
 	                }, function () {
@@ -44615,7 +44628,7 @@
 	                    key: this.tag,
 	                    ref: function ref(_ref) {
 	                        return _this4.title = _ref;
-	                    }, style: (0, _core.sc)([{
+	                    }, style: (0, _utils.sc)([{
 	                        position: 'fixed',
 	                        zIndex: _constants.ZIndex.TIP,
 	                        backgroundColor: this.props.tipType === 'success' ? _constants.Colors.SUCCESS : _constants.Colors.WARNING,
@@ -44633,7 +44646,7 @@
 	                    this._getTitle()
 	                )
 	            ));
-	            this._mouseupEventListener = _core.EventListener.listen(document.body, 'mousedown', this._bodyEventListener.bind(this));
+	            this._mouseupEventListener = _utils.EventListener.listen(document.body, 'mousedown', this._bodyEventListener.bind(this));
 	        }
 	    }, {
 	        key: '_close',
@@ -45084,7 +45097,7 @@
 
 	var _layout = __webpack_require__(186);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45128,7 +45141,7 @@
 	            return _react2.default.createElement(
 	                _layout.CardLayout,
 	                _extends({ defaultShowKey: defaultShowKey }, props),
-	                (0, _core.map)(this.created, function (card, key) {
+	                (0, _utils.map)(this.created, function (card, key) {
 	                    return card;
 	                })
 	            );
@@ -45140,7 +45153,7 @@
 
 	Tab.defaultProps = {
 	    defaultShowKey: 0,
-	    cardCreator: _core.emptyFunction
+	    cardCreator: _utils.emptyFunction
 	};
 	exports.default = Tab;
 
@@ -45166,7 +45179,7 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -45223,11 +45236,11 @@
 	        value: function _getPosition() {
 	            var direction = this.props.direction;
 
-	            var viewport = (0, _core.getViewportDimensions)();
+	            var viewport = (0, _utils.getViewportDimensions)();
 	            var trigger = _reactDom2.default.findDOMNode(this);
 	            var popup = _reactDom2.default.findDOMNode(this.popup);
-	            var triggerPos = (0, _core.getElementPosition)(trigger);
-	            var popupPos = (0, _core.getElementPosition)(popup);
+	            var triggerPos = (0, _utils.getElementPosition)(trigger);
+	            var popupPos = (0, _utils.getElementPosition)(popup);
 	            var left = void 0,
 	                top = void 0;
 	            var bottomPlaceHolder = function bottomPlaceHolder() {
@@ -45246,44 +45259,44 @@
 	                case 'bottom,top,right,left':
 	                    if (bottomPlaceHolder()) {
 	                        top = triggerPos.y + triggerPos.height;
-	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
+	                        left = (0, _utils.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
 	                        break;
 	                    }
 	                    if (topPlaceHolder()) {
 	                        top = triggerPos.y - popupPos.height;
-	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
+	                        left = (0, _utils.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
 	                        break;
 	                    }
 	                    if (rightPlaceHolder()) {
 	                        left = triggerPos.x + triggerPos.width;
-	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
+	                        top = (0, _utils.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
 	                        break;
 	                    }
 	                    if (leftPlaceHolder()) {
 	                        left = triggerPos.x - popupPos.width;
-	                        top = (0, _core.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
+	                        top = (0, _utils.clamp)(triggerPos.y + triggerPos.height, 0, viewport.height - popupPos.height);
 	                        break;
 	                    }
 	                    break;
 	                case 'right,left,bottom,top':
 	                    if (rightPlaceHolder()) {
 	                        left = triggerPos.x + triggerPos.width;
-	                        top = (0, _core.clamp)(triggerPos.y, 0, viewport.height - popupPos.height);
+	                        top = (0, _utils.clamp)(triggerPos.y, 0, viewport.height - popupPos.height);
 	                        break;
 	                    }
 	                    if (leftPlaceHolder()) {
 	                        left = triggerPos.x - popupPos.width;
-	                        top = (0, _core.clamp)(triggerPos.y, 0, viewport.height - popupPos.height);
+	                        top = (0, _utils.clamp)(triggerPos.y, 0, viewport.height - popupPos.height);
 	                        break;
 	                    }
 	                    if (bottomPlaceHolder()) {
 	                        top = triggerPos.y + triggerPos.height;
-	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
+	                        left = (0, _utils.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
 	                        break;
 	                    }
 	                    if (topPlaceHolder()) {
 	                        top = triggerPos.y - popupPos.height;
-	                        left = (0, _core.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
+	                        left = (0, _utils.clamp)(triggerPos.x, 0, viewport.width - popupPos.width);
 	                        break;
 	                    }
 	                    break;
@@ -45361,14 +45374,14 @@
 	                    } },
 	                _react2.default.createElement(
 	                    _layout.VerticalLayout,
-	                    _extends({}, popup, { style: (0, _core.sc)([{
+	                    _extends({}, popup, { style: (0, _utils.sc)([{
 	                            backgroundColor: _Colors2.default.DEFAULT
 	                        }], [popup.style]) }),
 	                    this.props.popupRenderer()
 	                )
 	            ));
-	            this._mouseupEventListener = _core.EventListener.listen(document.body, 'mousedown', this._bodyEventListener.bind(this));
-	            this._mousewheelEventListener = _core.EventListener.listen(document.body, 'mousewheel', this._bodyEventListener.bind(this));
+	            this._mouseupEventListener = _utils.EventListener.listen(document.body, 'mousedown', this._bodyEventListener.bind(this));
+	            this._mousewheelEventListener = _utils.EventListener.listen(document.body, 'mousewheel', this._bodyEventListener.bind(this));
 	        }
 	    }, {
 	        key: '_bodyEventListener',
@@ -45380,7 +45393,7 @@
 	            }
 	            var self = _reactDom2.default.findDOMNode(this.trigger);
 	            var popup = _reactDom2.default.findDOMNode(this.popup);
-	            if (!(0, _core.containsNode)(self, e.target) && !(0, _core.containsNode)(popup, e.target)) {
+	            if (!(0, _utils.containsNode)(self, e.target) && !(0, _utils.containsNode)(popup, e.target)) {
 	                this.setState({
 	                    open: false
 	                }, function () {
@@ -45453,8 +45466,8 @@
 	}(_react.Component);
 
 	Combo.defaultProps = {
-	    triggerRenderer: _core.emptyFunction,
-	    popupRenderer: _core.emptyFunction,
+	    triggerRenderer: _utils.emptyFunction,
+	    popupRenderer: _utils.emptyFunction,
 	    trigger: {},
 	    popup: {},
 	    adjustXOffset: 0,
@@ -45511,7 +45524,7 @@
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45544,7 +45557,7 @@
 	    _createClass(AutoSizer, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            this._detectElementResize = _core.detectElementResize;
+	            this._detectElementResize = _utils.detectElementResize;
 	            this._detectElementResize.addResizeListener(this._parentNode, this._onResize);
 
 	            this._onResize();
@@ -45636,7 +45649,7 @@
 	    onResize: _react.PropTypes.func.isRequired
 	};
 	AutoSizer.defaultProps = {
-	    onResize: _core.emptyFunction
+	    onResize: _utils.emptyFunction
 	};
 
 	_reactMixin2.default.onClass(AutoSizer, _reactAddonsPureRenderMixin2.default);
@@ -46066,7 +46079,7 @@
 
 	var _defaultCellRangeRenderer2 = _interopRequireDefault(_defaultCellRangeRenderer);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -46329,7 +46342,7 @@
 	      }
 
 	      if (this._setNextStateAnimationFrameId) {
-	        (0, _core.cancelAnimationFrame)(this._setNextStateAnimationFrameId);
+	        (0, _utils.cancelAnimationFrame)(this._setNextStateAnimationFrameId);
 	      }
 	    }
 
@@ -46680,7 +46693,7 @@
 	      this._nextState = state;
 
 	      if (!this._setNextStateAnimationFrameId) {
-	        this._setNextStateAnimationFrameId = (0, _core.requestAnimationFrame)(this._setNextStateCallback);
+	        this._setNextStateAnimationFrameId = (0, _utils.requestAnimationFrame)(this._setNextStateCallback);
 	      }
 	    }
 	  }, {
@@ -47795,7 +47808,7 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47869,7 +47882,7 @@
 	            var className = cellClassName({ columnIndex: columnIndex, rowIndex: rowIndex });
 
 	            var pos = {};
-	            (0, _core.translateDOMPositionXY)(pos, columnDatum.offset + horizontalOffsetAdjustment, rowDatum.offset + verticalOffsetAdjustment);
+	            (0, _utils.translateDOMPositionXY)(pos, columnDatum.offset + horizontalOffsetAdjustment, rowDatum.offset + verticalOffsetAdjustment);
 	            var child = _react2.default.createElement(
 	                'div',
 	                {
@@ -48203,7 +48216,7 @@
 
 	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48379,7 +48392,7 @@
 	            }
 
 	            if (this._setNextStateAnimationFrameId) {
-	                (0, _core.cancelAnimationFrame)(this._setNextStateAnimationFrameId);
+	                (0, _utils.cancelAnimationFrame)(this._setNextStateAnimationFrameId);
 	            }
 	        }
 
@@ -48598,10 +48611,10 @@
 	            var _this5 = this;
 
 	            if (this._setNextStateAnimationFrameId) {
-	                (0, _core.cancelAnimationFrame)(this._setNextStateAnimationFrameId);
+	                (0, _utils.cancelAnimationFrame)(this._setNextStateAnimationFrameId);
 	            }
 
-	            this._setNextStateAnimationFrameId = (0, _core.requestAnimationFrame)(function () {
+	            this._setNextStateAnimationFrameId = (0, _utils.requestAnimationFrame)(function () {
 	                _this5._setNextStateAnimationFrameId = null;
 	                _this5.setState(state);
 	            });
@@ -49824,7 +49837,7 @@
 
 	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -49872,18 +49885,19 @@
 	    _createClass(Table, [{
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            if (!(0, _core.shallowEqual)(nextProps.columnSize, this.props.columnSize) || !(0, _core.shallowEqual)(nextProps.freezeCols, this.props.freezeCols) || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
+	            if (!(0, _utils.shallowEqual)(nextProps.columnSize, this.props.columnSize) || !(0, _utils.shallowEqual)(nextProps.freezeCols, this.props.freezeCols) || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
 	                this.setState({
 	                    redraw: !this.state.redraw
 	                });
 	            }
-	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
-	                this.setState({
-	                    scrollTop: 0,
-	                    leftScrollLeft: 0,
-	                    rightScrollLeft: 0
-	                });
-	            }
+	            // if (nextProps.items !== this.props.items ||
+	            //     nextProps.header !== this.props.header) {
+	            //     this.setState({
+	            //         scrollTop: 0,
+	            //         leftScrollLeft: 0,
+	            //         rightScrollLeft: 0
+	            //     })
+	            // }
 	        }
 	    }, {
 	        key: 'render',
@@ -49925,7 +49939,7 @@
 	                totalColumnSize = 0,
 	                summaryColumnSizeArray = [],
 	                totalRowSize = items.length * rowHeight;
-	            (0, _core.each)(columnSize, function (size, i) {
+	            (0, _utils.each)(columnSize, function (size, i) {
 	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
 	                    totalLeftColumnSize += size;
 	                } else {
@@ -50115,7 +50129,7 @@
 	                return 0;
 	            }
 	            if (!regionSize) {
-	                (0, _core.each)(freezeCols, function (col) {
+	                (0, _utils.each)(freezeCols, function (col) {
 	                    regionSize += columnSize[col];
 	                });
 	            }
@@ -50347,12 +50361,12 @@
 	    header: [],
 	    items: [],
 	    regionColumnSize: [],
-	    headerCellRenderer: _core.emptyFunction,
-	    cellRenderer: _core.emptyFunction,
-	    onVerticalScroll: _core.emptyFunction
+	    headerCellRenderer: _utils.emptyFunction,
+	    cellRenderer: _utils.emptyFunction,
+	    onVerticalScroll: _utils.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(Table, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(Table, _utils.ReactComponentWithPureRenderMixin);
 	Table.SCROLLBAR_WIDTH = _Scrollbar2.default.SIZE;
 	exports.default = Table;
 
@@ -50384,7 +50398,7 @@
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	__webpack_require__(581);
 
@@ -50447,7 +50461,7 @@
 	            var mainStyle = void 0;
 	            var faceStyle = void 0;
 
-	            var mainClassName = (0, _core.cn)({
+	            var mainClassName = (0, _utils.cn)({
 	                'scrollbar-layout-main': true,
 	                'scrollbar-layout-main-vertical': isVertical,
 	                'scrollbar-layout-main-horizontal': isHorizontal,
@@ -50456,7 +50470,7 @@
 	                'public-scrollbar-main-active': isActive
 	            });
 
-	            var faceClassName = (0, _core.cn)({
+	            var faceClassName = (0, _utils.cn)({
 	                'scrollbar-layout-face': true,
 	                'scrollbar-layout-face-horizontal': isHorizontal,
 	                'scrollbar-layout-face-vertical': isVertical,
@@ -50473,7 +50487,7 @@
 	                faceStyle = {
 	                    width: faceSize - FACE_MARGIN_2
 	                };
-	                (0, _core.translateDOMPositionXY)(faceStyle, position, 0);
+	                (0, _utils.translateDOMPositionXY)(faceStyle, position, 0);
 	            } else {
 	                mainStyle = {
 	                    top: verticalTop,
@@ -50482,7 +50496,7 @@
 	                faceStyle = {
 	                    height: faceSize - FACE_MARGIN_2
 	                };
-	                (0, _core.translateDOMPositionXY)(faceStyle, 0, position);
+	                (0, _utils.translateDOMPositionXY)(faceStyle, 0, position);
 	            }
 
 	            mainStyle.zIndex = this.props.zIndex;
@@ -50515,14 +50529,14 @@
 	            var isHorizontal = this.props.orientation === 'horizontal';
 	            var onWheel = isHorizontal ? this._onWheelX : this._onWheelY;
 
-	            this._wheelHandler = new _core.WheelHandler(onWheel.bind(this), this._shouldHandleX.bind(this), // Should hanlde horizontal scroll
+	            this._wheelHandler = new _utils.WheelHandler(onWheel.bind(this), this._shouldHandleX.bind(this), // Should hanlde horizontal scroll
 	            this._shouldHandleY.bind(this) // Should handle vertical scroll
 	            );
 	        }
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            this._mouseMoveTracker = new _core.MouseMoveTracker(this._onMouseMove.bind(this), this._onMouseMoveEnd.bind(this), document.documentElement);
+	            this._mouseMoveTracker = new _utils.MouseMoveTracker(this._onMouseMove.bind(this), this._onMouseMoveEnd.bind(this), document.documentElement);
 
 	            if (this.props.position !== undefined && this.state.position !== this.props.position) {
 	                this._didScroll();
@@ -50683,7 +50697,7 @@
 	        value: function _onKeyDown( /*object*/event) {
 	            var keyCode = event.keyCode;
 
-	            if (keyCode === _core.Keys.TAB) {
+	            if (keyCode === _utils.Keys.TAB) {
 	                // Let focus move off the scrollbar.
 	                return;
 	            }
@@ -50693,16 +50707,16 @@
 
 	            if (this.state.isHorizontal) {
 	                switch (keyCode) {
-	                    case _core.Keys.HOME:
+	                    case _utils.Keys.HOME:
 	                        direction = -1;
 	                        distance = this.props.contentSize;
 	                        break;
 
-	                    case _core.Keys.LEFT:
+	                    case _utils.Keys.LEFT:
 	                        direction = -1;
 	                        break;
 
-	                    case _core.Keys.RIGHT:
+	                    case _utils.Keys.RIGHT:
 	                        direction = 1;
 	                        break;
 
@@ -50713,7 +50727,7 @@
 
 	            if (!this.state.isHorizontal) {
 	                switch (keyCode) {
-	                    case _core.Keys.SPACE:
+	                    case _utils.Keys.SPACE:
 	                        if (event.shiftKey) {
 	                            direction = -1;
 	                        } else {
@@ -50721,25 +50735,25 @@
 	                        }
 	                        break;
 
-	                    case _core.Keys.HOME:
+	                    case _utils.Keys.HOME:
 	                        direction = -1;
 	                        distance = this.props.contentSize;
 	                        break;
 
-	                    case _core.Keys.UP:
+	                    case _utils.Keys.UP:
 	                        direction = -1;
 	                        break;
 
-	                    case _core.Keys.DOWN:
+	                    case _utils.Keys.DOWN:
 	                        direction = 1;
 	                        break;
 
-	                    case _core.Keys.PAGE_UP:
+	                    case _utils.Keys.PAGE_UP:
 	                        direction = -1;
 	                        distance = this.props.size;
 	                        break;
 
-	                    case _core.Keys.PAGE_DOWN:
+	                    case _utils.Keys.PAGE_DOWN:
 	                        direction = 1;
 	                        distance = this.props.size;
 	                        break;
@@ -50828,7 +50842,7 @@
 	Scrollbar.defaultProps = {
 	    defaultPosition: 0,
 	    isOpaque: false,
-	    onScroll: _core.emptyFunction,
+	    onScroll: _utils.emptyFunction,
 	    orientation: 'vertical',
 	    zIndex: 99
 	};
@@ -50905,7 +50919,7 @@
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _Scrollbar = __webpack_require__(580);
 
@@ -50946,7 +50960,7 @@
 	                overflow: 'hidden',
 	                width: this.props.size
 	            };
-	            (0, _core.translateDOMPositionXY)(innerContainerStyle, 0, this.props.offset);
+	            (0, _utils.translateDOMPositionXY)(innerContainerStyle, 0, this.props.offset);
 
 	            return _react2.default.createElement(
 	                'div',
@@ -51003,7 +51017,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -51148,14 +51162,14 @@
 	                isNeedResize && freezeCols.length > 0 ? _react2.default.createElement(
 	                    _layout.Layout,
 	                    {
-	                        className: (0, _core.cn)('resizable-table-cell-layout-region-resizer-container'),
+	                        className: (0, _utils.cn)('resizable-table-cell-layout-region-resizer-container'),
 	                        style: {
 	                            height: Math.min(height - _Table2.default.SCROLLBAR_WIDTH, header.length * headerRowHeight + items.length * rowHeight),
 	                            left: this._getRegionSize() - 6
 	                        },
 	                        onMouseDown: this._onRegionResizerMouseDown.bind(this) },
 	                    _react2.default.createElement(_layout.Layout, {
-	                        className: (0, _core.cn)('resizable-table-cell-layout-region-resizer-knob', 'public-resizable-table-cell-region-resizer-knob'),
+	                        className: (0, _utils.cn)('resizable-table-cell-layout-region-resizer-knob', 'public-resizable-table-cell-region-resizer-knob'),
 	                        style: { height: height }
 	                    })
 	                ) : null
@@ -51173,7 +51187,7 @@
 
 	            var regionSize = regionColumnSize[0] || 0;
 	            if (isNeedFreeze === true && !regionSize) {
-	                (0, _core.each)(freezeCols, function (col) {
+	                (0, _utils.each)(freezeCols, function (col) {
 	                    regionSize += columnSize[col];
 	                });
 	            }
@@ -51219,7 +51233,7 @@
 	                    _react2.default.createElement(
 	                        _layout.Layout,
 	                        {
-	                            className: (0, _core.cn)('resizable-table-cell-layout-column-resizer-container'),
+	                            className: (0, _utils.cn)('resizable-table-cell-layout-column-resizer-container'),
 	                            style: columnResizerStyle,
 	                            onMouseDown: this._onColumnResizerMouseDown.bind(this, {
 	                                columnIndex: columnIndex,
@@ -51230,7 +51244,7 @@
 	                                offsetTopGetter: offsetTopGetter
 	                            }) },
 	                        _react2.default.createElement(_layout.Layout, {
-	                            className: (0, _core.cn)('resizable-table-cell-layout-column-resizer-knob', 'public-resizable-table-cell-column-resizer-knob'),
+	                            className: (0, _utils.cn)('resizable-table-cell-layout-column-resizer-knob', 'public-resizable-table-cell-column-resizer-knob'),
 	                            style: columnResizerStyle
 	                        })
 	                    )
@@ -51251,7 +51265,7 @@
 	                    initialEvent: {
 	                        clientX: event.clientX,
 	                        clientY: event.clientY,
-	                        preventDefault: _core.emptyFunction
+	                        preventDefault: _utils.emptyFunction
 	                    },
 	                    key: columnIndex,
 	                    columnIndex: columnIndex,
@@ -51269,7 +51283,7 @@
 	                    initialEvent: {
 	                        clientX: event.clientX,
 	                        clientY: event.clientY,
-	                        preventDefault: _core.emptyFunction
+	                        preventDefault: _utils.emptyFunction
 	                    }
 	                }
 	            });
@@ -51290,14 +51304,14 @@
 	    header: [],
 	    items: [],
 	    regionColumnSize: [],
-	    headerCellRenderer: _core.emptyFunction,
-	    cellRenderer: _core.emptyFunction,
-	    onColumnResizeEnd: _core.emptyFunction,
-	    onRegionColumnResizeEnd: _core.emptyFunction,
+	    headerCellRenderer: _utils.emptyFunction,
+	    cellRenderer: _utils.emptyFunction,
+	    onColumnResizeEnd: _utils.emptyFunction,
+	    onRegionColumnResizeEnd: _utils.emptyFunction,
 	    Component: _Table2.default
 	};
 
-	_reactMixin2.default.onClass(ResizableTable, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(ResizableTable, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = ResizableTable;
 
@@ -51321,7 +51335,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	__webpack_require__(586);
 
@@ -51367,7 +51381,7 @@
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            this._mouseMoveTracker = new _core.MouseMoveTracker(this._onMove.bind(this), this._onColumnResizeEnd.bind(this), document.body);
+	            this._mouseMoveTracker = new _utils.MouseMoveTracker(this._onMove.bind(this), this._onColumnResizeEnd.bind(this), document.body);
 	        }
 	    }, {
 	        key: 'componentWillUnmount',
@@ -51386,14 +51400,14 @@
 	            return _react2.default.createElement(
 	                'div',
 	                {
-	                    className: (0, _core.cn)({
+	                    className: (0, _utils.cn)({
 	                        'column-resizer-line-layout-main': true,
 	                        'column-resizer-line-layout-hidden-elem': !this.props.visible,
 	                        'public-column-resizer-line-main': true
 	                    }),
 	                    style: style },
 	                _react2.default.createElement('div', {
-	                    className: (0, _core.cn)('column-resizer-line-layout-mouse-area'),
+	                    className: (0, _utils.cn)('column-resizer-line-layout-mouse-area'),
 	                    style: { height: this.props.height }
 	                })
 	            );
@@ -51402,7 +51416,7 @@
 	        key: '_onMove',
 	        value: function _onMove( /*number*/deltaX) {
 	            var newWidth = this.state.cursorDelta + deltaX;
-	            var newColumnWidth = (0, _core.clamp)(newWidth, this.props.minWidth, this.props.maxWidth);
+	            var newColumnWidth = (0, _utils.clamp)(newWidth, this.props.minWidth, this.props.maxWidth);
 
 	            // Please note cursor delta is the different between the currently width
 	            // and the new width.
@@ -51475,7 +51489,7 @@
 	    columnKey: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number])
 	};
 
-	_reactMixin2.default.onClass(ColumnResizeHandle, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(ColumnResizeHandle, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = ColumnResizeHandle;
 
@@ -51581,7 +51595,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -51631,7 +51645,7 @@
 	            var regionColumnSize = props.regionColumnSize.slice();
 	            if (isNeedFreeze === true && !regionColumnSize[0]) {
 	                regionColumnSize[0] = 0;
-	                (0, _core.each)(freezeCols, function (col) {
+	                (0, _utils.each)(freezeCols, function (col) {
 	                    regionColumnSize[0] += columnSize[col];
 	                });
 	            }
@@ -51643,18 +51657,18 @@
 	            }
 	            var freezeColumnSize = [];
 	            if (isNeedFreeze === true) {
-	                (0, _core.each)(freezeCols, function (col) {
+	                (0, _utils.each)(freezeCols, function (col) {
 	                    freezeColumnSize[col] = columnSize[col];
 	                });
 	            }
-	            var totalColumnSize = _core.math.sum(columnSize);
-	            var freezeTotalColumnSize = _core.math.sum(freezeColumnSize);
+	            var totalColumnSize = _utils.math.sum(columnSize);
+	            var freezeTotalColumnSize = _utils.math.sum(freezeColumnSize);
 	            if (isNeedFreeze && freezeCols.length > 0) {
 	                columnSize[freezeCols.length - 1] += regionColumnSize[0] - freezeTotalColumnSize;
-	                columnSize[freezeCols.length - 1] = (0, _core.clamp)(columnSize[freezeCols.length - 1], minColumnSize[freezeCols.length - 1] || 0, maxColumnSize[freezeCols.length - 1] || Number.MAX_VALUE);
+	                columnSize[freezeCols.length - 1] = (0, _utils.clamp)(columnSize[freezeCols.length - 1], minColumnSize[freezeCols.length - 1] || 0, maxColumnSize[freezeCols.length - 1] || Number.MAX_VALUE);
 	            }
 	            columnSize[columnSize.length - 1] += tableWidth - (regionColumnSize[0] || 0) - (totalColumnSize - freezeTotalColumnSize);
-	            columnSize[columnSize.length - 1] = (0, _core.clamp)(columnSize[columnSize.length - 1], minColumnSize[columnSize.length - 1] || 0, maxColumnSize[columnSize.length - 1] || Number.MAX_VALUE);
+	            columnSize[columnSize.length - 1] = (0, _utils.clamp)(columnSize[columnSize.length - 1], minColumnSize[columnSize.length - 1] || 0, maxColumnSize[columnSize.length - 1] || Number.MAX_VALUE);
 	            return {
 	                columnSize: columnSize,
 	                regionColumnSize: regionColumnSize
@@ -51763,13 +51777,13 @@
 	    header: [],
 	    items: [],
 	    regionColumnSize: [],
-	    headerCellRenderer: _core.emptyFunction,
-	    cellRenderer: _core.emptyFunction,
-	    onColumnResizeEnd: _core.emptyFunction,
-	    onRegionColumnResizeEnd: _core.emptyFunction
+	    headerCellRenderer: _utils.emptyFunction,
+	    cellRenderer: _utils.emptyFunction,
+	    onColumnResizeEnd: _utils.emptyFunction,
+	    onRegionColumnResizeEnd: _utils.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(AdaptiveTable, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(AdaptiveTable, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = AdaptiveTable;
 
@@ -51799,7 +51813,7 @@
 
 	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -51918,7 +51932,7 @@
 	                });
 	            };
 
-	            (0, _core.each)(items, function (cols, i) {
+	            (0, _utils.each)(items, function (cols, i) {
 	                for (var j = startCol; j < endCol; j++) {
 	                    if (!cache[i]) {
 	                        cache[i] = {};
@@ -51965,7 +51979,7 @@
 	                    }
 	                }
 	            });
-	            return (0, _core.map)(result, function (item) {
+	            return (0, _utils.map)(result, function (item) {
 	                return {
 	                    x: item.x,
 	                    y: item.y,
@@ -51979,20 +51993,21 @@
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            if (!(0, _core.shallowEqual)(nextProps.columnSize, this.props.columnSize) || !(0, _core.shallowEqual)(nextProps.freezeCols, this.props.freezeCols) || !(0, _core.shallowEqual)(nextProps.mergeCols, this.props.mergeCols) || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
+	            if (!(0, _utils.shallowEqual)(nextProps.columnSize, this.props.columnSize) || !(0, _utils.shallowEqual)(nextProps.freezeCols, this.props.freezeCols) || !(0, _utils.shallowEqual)(nextProps.mergeCols, this.props.mergeCols) || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
 	                this.refs.topLeftCollection && this.refs.topLeftCollection.recomputeCellSizesAndPositions();
 	                this.refs.topRightCollection && this.refs.topRightCollection.recomputeCellSizesAndPositions();
 	                this.refs.bottomLeftCollection && this.refs.bottomLeftCollection.recomputeCellSizesAndPositions();
 	                this.refs.bottomRightCollection && this.refs.bottomRightCollection.recomputeCellSizesAndPositions();
 	                this.setState(_extends({}, this._digest(nextProps)));
 	            }
-	            if (nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
-	                this.setState({
-	                    scrollTop: 0,
-	                    leftScrollLeft: 0,
-	                    rightScrollLeft: 0
-	                });
-	            }
+	            // if (nextProps.items !== this.props.items ||
+	            //     nextProps.header !== this.props.header) {
+	            //     this.setState({
+	            //         scrollTop: 0,
+	            //         leftScrollLeft: 0,
+	            //         rightScrollLeft: 0
+	            //     })
+	            // }
 	        }
 	    }, {
 	        key: 'render',
@@ -52034,7 +52049,7 @@
 	                totalColumnSize = 0,
 	                summaryColumnSizeArray = [],
 	                totalRowSize = items.length * rowHeight;
-	            (0, _core.each)(columnSize, function (size, i) {
+	            (0, _utils.each)(columnSize, function (size, i) {
 	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
 	                    totalLeftColumnSize += size;
 	                } else {
@@ -52220,7 +52235,7 @@
 	                return 0;
 	            }
 	            if (!regionSize) {
-	                (0, _core.each)(freezeCols, function (col) {
+	                (0, _utils.each)(freezeCols, function (col) {
 	                    regionSize += columnSize[col];
 	                });
 	            }
@@ -52466,12 +52481,12 @@
 	    regionColumnSize: [],
 	    mergeCols: [],
 	    mergeRule: MERGE_RULE,
-	    headerCellRenderer: _core.emptyFunction,
-	    cellRenderer: _core.emptyFunction,
-	    onVerticalScroll: _core.emptyFunction
+	    headerCellRenderer: _utils.emptyFunction,
+	    cellRenderer: _utils.emptyFunction,
+	    onVerticalScroll: _utils.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(SummaryTable, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTable, _utils.ReactComponentWithPureRenderMixin);
 	SummaryTable.SCROLLBAR_WIDTH = _Scrollbar2.default.SIZE;
 	exports.default = SummaryTable;
 
@@ -52501,7 +52516,7 @@
 
 	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -52621,7 +52636,7 @@
 	                });
 	            };
 
-	            (0, _core.each)(items, function (cols, i) {
+	            (0, _utils.each)(items, function (cols, i) {
 	                for (var j = startCol; j < endCol; j++) {
 	                    if (!cache[i]) {
 	                        cache[i] = {};
@@ -52664,7 +52679,7 @@
 	                    }
 	                }
 	            });
-	            return (0, _core.map)(result, function (item) {
+	            return (0, _utils.map)(result, function (item) {
 	                return {
 	                    x: item.x,
 	                    y: item.y,
@@ -52678,7 +52693,7 @@
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            if (!(0, _core.shallowEqual)(nextProps.columnSize, this.props.columnSize) || !(0, _core.shallowEqual)(nextProps.freezeCols, this.props.freezeCols) || !(0, _core.shallowEqual)(nextProps.mergeCols, this.props.mergeCols) || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
+	            if (!(0, _utils.shallowEqual)(nextProps.columnSize, this.props.columnSize) || !(0, _utils.shallowEqual)(nextProps.freezeCols, this.props.freezeCols) || !(0, _utils.shallowEqual)(nextProps.mergeCols, this.props.mergeCols) || nextProps.isNeedFreeze !== this.props.isNeedFreeze || nextProps.items !== this.props.items || nextProps.header !== this.props.header) {
 	                this.refs.topLeftCollection && this.refs.topLeftCollection.recomputeCellSizesAndPositions();
 	                this.refs.topRightCollection && this.refs.topRightCollection.recomputeCellSizesAndPositions();
 	                this.setState(_extends({
@@ -52733,7 +52748,7 @@
 	                totalColumnSize = 0,
 	                summaryColumnSizeArray = [],
 	                totalRowSize = items.length * rowHeight;
-	            (0, _core.each)(columnSize, function (size, i) {
+	            (0, _utils.each)(columnSize, function (size, i) {
 	                if (isNeedFreeze === true && freezeCols.indexOf(i) > -1) {
 	                    totalLeftColumnSize += size;
 	                } else {
@@ -52921,7 +52936,7 @@
 	                return 0;
 	            }
 	            if (!regionSize) {
-	                (0, _core.each)(freezeCols, function (col) {
+	                (0, _utils.each)(freezeCols, function (col) {
 	                    regionSize += columnSize[col];
 	                });
 	            }
@@ -53144,12 +53159,12 @@
 	    items: [],
 	    regionColumnSize: [],
 	    mergeRule: MERGE_RULE,
-	    headerCellRenderer: _core.emptyFunction,
-	    cellRenderer: _core.emptyFunction,
-	    onVerticalScroll: _core.emptyFunction
+	    headerCellRenderer: _utils.emptyFunction,
+	    cellRenderer: _utils.emptyFunction,
+	    onVerticalScroll: _utils.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(LevelTable, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(LevelTable, _utils.ReactComponentWithPureRenderMixin);
 	LevelTable.SCROLLBAR_WIDTH = _Scrollbar2.default.SIZE;
 	exports.default = LevelTable;
 
@@ -53204,7 +53219,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -53265,7 +53280,7 @@
 	            if (freezeCols.length >= columnSize.length) {
 	                freezeCols = [];
 	            }
-	            if (!(0, _core.isNumber)(props.columnSize[0])) {
+	            if (!(0, _utils.isNumber)(props.columnSize[0])) {
 	                columnSize = minColumnSize;
 	            }
 
@@ -53443,18 +53458,18 @@
 	    header: [],
 	    items: [],
 	    regionColumnSize: [],
-	    onColumnResizeEnd: _core.emptyFunction,
-	    onRegionColumnResizeEnd: _core.emptyFunction,
+	    onColumnResizeEnd: _utils.emptyFunction,
+	    onRegionColumnResizeEnd: _utils.emptyFunction,
 
 	    showSequence: false,
 	    curr: 1,
 	    pages: 1,
 	    label: '',
-	    onPrev: _core.emptyFunction,
-	    onNext: _core.emptyFunction
+	    onPrev: _utils.emptyFunction,
+	    onNext: _utils.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(DetailTableComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(DetailTableComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = DetailTableComponent;
 
@@ -53520,7 +53535,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -53539,10 +53554,10 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 	var parseHEXAlpha2HEX = function parseHEXAlpha2HEX(hex, alpha) {
-	    var rgb = _core.colorUtils.hex2rgb(hex);
-	    var rgbJSON = _core.colorUtils.rgb2json(rgb);
+	    var rgb = _utils.colorUtils.hex2rgb(hex);
+	    var rgbJSON = _utils.colorUtils.rgb2json(rgb);
 	    rgbJSON.a = alpha;
-	    return _core.colorUtils.rgba2rgb(_core.colorUtils.json2rgba(rgbJSON));
+	    return _utils.colorUtils.rgba2rgb(_utils.colorUtils.json2rgba(rgbJSON));
 	};
 
 	var DARK_FONT_COLOR = '#1a1a1a';
@@ -53558,8 +53573,8 @@
 	    colorMap[color] = {
 	        oddColor: oddColor,
 	        evenColor: evenColor,
-	        oddFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(oddColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR,
-	        evenFontColor: _core.colorUtils.isDarkColor(_core.colorUtils.rgb2hex(evenColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR
+	        oddFontColor: _utils.colorUtils.isDarkColor(_utils.colorUtils.rgb2hex(oddColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR,
+	        evenFontColor: _utils.colorUtils.isDarkColor(_utils.colorUtils.rgb2hex(evenColor)) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR
 	    };
 	    return colorMap[color];
 	};
@@ -53608,7 +53623,7 @@
 	            return _react2.default.createElement(
 	                _layout.Layout,
 	                _extends({ box: item.iconClass ? 'last' : 'mean' }, props, {
-	                    style: _extends({}, (0, _core.sc)([{
+	                    style: _extends({}, (0, _utils.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
@@ -53619,9 +53634,9 @@
 	                        borderBottom: '1px solid #eaeaea'
 	                    })], [{
 	                        backgroundColor: rowIndex % 2 === 0 ? oddColor : evenColor
-	                    }, (0, _core.isNotNil)(oddColor)], [{
+	                    }, (0, _utils.isNotNil)(oddColor)], [{
 	                        color: rowIndex % 2 === 0 ? oddFontColor : evenFontColor
-	                    }, (0, _core.isNotNil)(oddFontColor)])) }),
+	                    }, (0, _utils.isNotNil)(oddFontColor)])) }),
 	                _react2.default.createElement(
 	                    _base.Title,
 	                    { cross: 'center', title: item.title, style: _extends({}, item.style, {
@@ -53648,7 +53663,7 @@
 	    return DetailTableCell;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(DetailTableCell, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(DetailTableCell, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = DetailTableCell;
 
@@ -53674,7 +53689,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -53737,7 +53752,7 @@
 	                case 1:
 	                case 2:
 	                    backgroundColor = color;
-	                    fontColor = _core.colorUtils.isDarkColor(backgroundColor) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	                    fontColor = _utils.colorUtils.isDarkColor(backgroundColor) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
 	                    break;
 	                case 3:
 	                    break;
@@ -53748,7 +53763,7 @@
 	                return _react2.default.createElement(
 	                    _layout.Layout,
 	                    _extends({ box: 'last' }, props, {
-	                        style: (0, _core.sc)([{
+	                        style: (0, _utils.sc)([{
 	                            borderTop: '1px solid #eaeaea'
 	                        }, rowIndex === 0], [{
 	                            borderLeft: '1px solid #eaeaea'
@@ -53762,9 +53777,9 @@
 	                            paddingRight: 10
 	                        }, item.style, props.style)], [{
 	                            backgroundColor: backgroundColor
-	                        }, (0, _core.isNotNil)(backgroundColor)], [{
+	                        }, (0, _utils.isNotNil)(backgroundColor)], [{
 	                            color: fontColor
-	                        }, (0, _core.isNotNil)(fontColor)]) }),
+	                        }, (0, _utils.isNotNil)(fontColor)]) }),
 	                    _react2.default.createElement(
 	                        _base.Title,
 	                        { cross: 'center', main: 'center', title: item.title, style: {
@@ -53802,7 +53817,7 @@
 	            }
 	            return _react2.default.createElement(
 	                _base.Title,
-	                { title: item.title, cross: 'center', main: 'center', style: (0, _core.sc)([{
+	                { title: item.title, cross: 'center', main: 'center', style: (0, _utils.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
@@ -53816,9 +53831,9 @@
 	                        paddingRight: 10
 	                    }, item.style, props.style)], [{
 	                        backgroundColor: backgroundColor
-	                    }, (0, _core.isNotNil)(backgroundColor)], [{
+	                    }, (0, _utils.isNotNil)(backgroundColor)], [{
 	                        color: fontColor
-	                    }, (0, _core.isNotNil)(fontColor)]) },
+	                    }, (0, _utils.isNotNil)(fontColor)]) },
 	                _react2.default.createElement(
 	                    _base.Label,
 	                    null,
@@ -53839,8 +53854,8 @@
 	        key: '_getTriggerIconClassName',
 	        value: function _getTriggerIconClassName() {
 	            var iconClass = '';
-	            (0, _core.some)(this.props.item.list, function (items) {
-	                return (0, _core.some)(items, function (item) {
+	            (0, _utils.some)(this.props.item.list, function (items) {
+	                return (0, _utils.some)(items, function (item) {
 	                    if (item.active) {
 	                        iconClass = item.iconClass;
 	                        return true;
@@ -53857,13 +53872,13 @@
 	            return _react2.default.createElement(
 	                _layout.VerticalLayout,
 	                null,
-	                (0, _core.map)(this.props.item.list, function (items, i) {
+	                (0, _utils.map)(this.props.item.list, function (items, i) {
 	                    var list = [];
-	                    (0, _core.each)(items, function (item) {
+	                    (0, _utils.each)(items, function (item) {
 	                        list.push(_react2.default.createElement(
 	                            _base.Button,
 	                            { key: item.value, box: 'first', active: item.active,
-	                                className: (0, _core.cn)('bi-list-item', 'bi-list-item-stress', 'dot-e-font'),
+	                                className: (0, _utils.cn)('bi-list-item', 'bi-list-item-stress', 'dot-e-font'),
 	                                style: { height: 25 },
 	                                onClick: function onClick() {
 	                                    _this3.combo.close();
@@ -53906,7 +53921,7 @@
 	    return DetailTableHeaderCell;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(DetailTableHeaderCell, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(DetailTableHeaderCell, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = DetailTableHeaderCell;
 
@@ -53922,7 +53937,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -53930,7 +53945,7 @@
 
 	function sumBy(array, it) {
 	    var res = 0;
-	    (0, _core.each)(array, function (width, i) {
+	    (0, _utils.each)(array, function (width, i) {
 	        res += it(width, i);
 	    });
 	    return res;
@@ -53947,7 +53962,7 @@
 	    var $22 = sumBy(widths, function (width, i) {
 	        return (i + 1) * (i + 1);
 	    });
-	    var f1 = _core.math.sum(widths);
+	    var f1 = _utils.math.sum(widths);
 	    var f2 = sumBy(widths, function (width, i) {
 	        return (i + 1) * width;
 	    });
@@ -53979,8 +53994,8 @@
 	        key: '_reverse',
 	        value: function _reverse(items) {
 	            var result = [];
-	            (0, _core.each)(items, function (cols, i) {
-	                (0, _core.each)(cols, function (item, j) {
+	            (0, _utils.each)(items, function (cols, i) {
+	                (0, _utils.each)(cols, function (item, j) {
 	                    if (!result[j]) {
 	                        result[j] = [];
 	                    }
@@ -53993,7 +54008,7 @@
 	        key: 'getWidthsByOneCol',
 	        value: function getWidthsByOneCol(col) {
 	            var widths = [];
-	            (0, _core.each)(col, function (item) {
+	            (0, _utils.each)(col, function (item) {
 	                widths.push(getGBWidth(item.text));
 	            });
 	            return widths;
@@ -54004,9 +54019,9 @@
 	            var _this = this;
 
 	            var result = [];
-	            (0, _core.each)(this.items, function (col) {
+	            (0, _utils.each)(this.items, function (col) {
 	                var fx = fit(_this.getWidthsByOneCol(col));
-	                result.push((0, _core.clamp)(_core.math.ceil((fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) * 16 * 1.2) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
+	                result.push((0, _utils.clamp)(_utils.math.ceil((fx.a + fx.b * _utils.math.ceil((1 + col.length) / 2)) * 16 * 1.2) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
 	            });
 	            return result;
 	        }
@@ -54037,7 +54052,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -54134,7 +54149,7 @@
 	            var _this2 = this;
 
 	            this.setState({
-	                curr: (0, _core.clamp)(this.state.curr - 1, 1, this.props.pages)
+	                curr: (0, _utils.clamp)(this.state.curr - 1, 1, this.props.pages)
 	            }, function () {
 	                _this2.props.onPrev(_this2.state.curr);
 	            });
@@ -54145,7 +54160,7 @@
 	            var _this3 = this;
 
 	            this.setState({
-	                curr: (0, _core.clamp)(this.state.curr + 1, 1, this.props.pages)
+	                curr: (0, _utils.clamp)(this.state.curr + 1, 1, this.props.pages)
 	            }, function () {
 	                _this3.props.onNext(_this3.state.curr);
 	            });
@@ -54159,12 +54174,12 @@
 	    curr: 1,
 	    pages: 1,
 	    label: '',
-	    onPrev: _core.emptyFunction,
-	    onNext: _core.emptyFunction
+	    onPrev: _utils.emptyFunction,
+	    onNext: _utils.emptyFunction
 	};
 
 
-	_reactMixin2.default.onClass(DetailTablePagerComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(DetailTablePagerComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = DetailTablePagerComponent;
 
@@ -54188,7 +54203,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -54276,7 +54291,7 @@
 	            var result = [];
 	            for (var i = start; i <= end && i < items.length; i++) {
 	                var style = {};
-	                (0, _core.translateDOMPositionXY)(style, 0, -scrollTop % rowHeight + (i - start) * rowHeight);
+	                (0, _utils.translateDOMPositionXY)(style, 0, -scrollTop % rowHeight + (i - start) * rowHeight);
 	                result.push(_react2.default.createElement(_DetailTableCellComponent2.default, {
 	                    key: i,
 	                    styleType: styleType,
@@ -54308,7 +54323,7 @@
 	    scrollTop: 0
 	};
 
-	_reactMixin2.default.onClass(DetailTableSequenceComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(DetailTableSequenceComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = DetailTableSequenceComponent;
 
@@ -54334,7 +54349,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -54425,7 +54440,7 @@
 	            if (freezeCols.length >= columnSize.length) {
 	                freezeCols = [];
 	            }
-	            if (!(0, _core.isNumber)(props.columnSize[0])) {
+	            if (!(0, _utils.isNumber)(props.columnSize[0])) {
 	                columnSize = minColumnSize;
 	            }
 
@@ -54632,21 +54647,21 @@
 	    crossHeader: [],
 	    crossItems: [],
 	    regionColumnSize: [],
-	    onColumnResizeEnd: _core.emptyFunction,
-	    onRegionColumnResizeEnd: _core.emptyFunction,
+	    onColumnResizeEnd: _utils.emptyFunction,
+	    onRegionColumnResizeEnd: _utils.emptyFunction,
 
 	    showSequence: false,
 	    vCurr: 1,
 	    hCurr: 1,
-	    hasVNext: _core.emptyFunction,
-	    hasHNext: _core.emptyFunction,
-	    onVPrev: _core.emptyFunction,
-	    onVNext: _core.emptyFunction,
-	    onHPrev: _core.emptyFunction,
-	    onHNext: _core.emptyFunction
+	    hasVNext: _utils.emptyFunction,
+	    hasHNext: _utils.emptyFunction,
+	    onVPrev: _utils.emptyFunction,
+	    onVNext: _utils.emptyFunction,
+	    onHPrev: _utils.emptyFunction,
+	    onHNext: _utils.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(SummaryTableComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = SummaryTableComponent;
 
@@ -54712,7 +54727,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _constants = __webpack_require__(543);
 
@@ -54733,10 +54748,10 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 	var parseHEXAlpha2HEX = function parseHEXAlpha2HEX(hex, alpha) {
-	    var rgb = _core.colorUtils.hex2rgb(hex);
-	    var rgbJSON = _core.colorUtils.rgb2json(rgb);
+	    var rgb = _utils.colorUtils.hex2rgb(hex);
+	    var rgbJSON = _utils.colorUtils.rgb2json(rgb);
 	    rgbJSON.a = alpha;
-	    return _core.colorUtils.rgba2rgb(_core.colorUtils.json2rgba(rgbJSON));
+	    return _utils.colorUtils.rgba2rgb(_utils.colorUtils.json2rgba(rgbJSON));
 	};
 
 	var DARK_FONT_COLOR = '#1a1a1a';
@@ -54745,7 +54760,7 @@
 	var colorMap = {};
 
 	var getAdaptColor = function getAdaptColor(color) {
-	    return _core.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	    return _utils.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
 	};
 	var getColor = function getColor(color) {
 	    if (colorMap[color]) {
@@ -54758,9 +54773,9 @@
 	        oddColor: oddColor,
 	        evenColor: evenColor,
 	        summaryColor: summaryColor,
-	        oddFontColor: getAdaptColor(_core.colorUtils.rgb2hex(oddColor)),
-	        evenFontColor: getAdaptColor(_core.colorUtils.rgb2hex(evenColor)),
-	        summaryFontColor: getAdaptColor(_core.colorUtils.rgb2hex(summaryColor))
+	        oddFontColor: getAdaptColor(_utils.colorUtils.rgb2hex(oddColor)),
+	        evenFontColor: getAdaptColor(_utils.colorUtils.rgb2hex(evenColor)),
+	        summaryFontColor: getAdaptColor(_utils.colorUtils.rgb2hex(summaryColor))
 	    };
 	    return colorMap[color];
 	};
@@ -54824,7 +54839,7 @@
 	            return _react2.default.createElement(
 	                _layout.Layout,
 	                _extends({ box: box, cross: 'center' }, props, {
-	                    style: _extends({}, (0, _core.sc)([{
+	                    style: _extends({}, (0, _utils.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
@@ -54837,9 +54852,9 @@
 	                        fontWeight: 'bold'
 	                    }, item.isSum === true], [{
 	                        backgroundColor: item.isSum ? summaryColor : rowIndex % 2 === 0 ? oddColor : evenColor
-	                    }, item.isSum ? (0, _core.isNotNil)(summaryColor) : (0, _core.isNotNil)(oddColor)], [{
+	                    }, item.isSum ? (0, _utils.isNotNil)(summaryColor) : (0, _utils.isNotNil)(oddColor)], [{
 	                        color: item.isSum ? summaryFontColor : rowIndex % 2 === 0 ? oddFontColor : evenFontColor
-	                    }, item.isSum ? (0, _core.isNotNil)(summaryFontColor) : (0, _core.isNotNil)(oddFontColor)])) }),
+	                    }, item.isSum ? (0, _utils.isNotNil)(summaryFontColor) : (0, _utils.isNotNil)(oddFontColor)])) }),
 	                _react2.default.createElement(
 	                    _base.Title,
 	                    { main: 'right', cross: 'center', title: item.title, style: _extends({}, item.style, {
@@ -54862,11 +54877,11 @@
 	                        },
 	                        popupRenderer: function popupRenderer() {
 	                            var list = [];
-	                            (0, _core.each)(item.downList, function (item) {
+	                            (0, _utils.each)(item.downList, function (item) {
 	                                list.push(_react2.default.createElement(
 	                                    _base.Button,
 	                                    { key: item.value, box: 'mean',
-	                                        className: (0, _core.cn)('bi-list-item', 'bi-list-item-stress'),
+	                                        className: (0, _utils.cn)('bi-list-item', 'bi-list-item-stress'),
 	                                        style: { height: 25, paddingLeft: 10, paddingRight: 10 },
 	                                        onClick: function onClick() {
 	                                            _this2.combo.close();
@@ -54917,7 +54932,7 @@
 	    return SummaryTableCellComponent;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(SummaryTableCellComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableCellComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = SummaryTableCellComponent;
 
@@ -54947,7 +54962,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _constants = __webpack_require__(543);
 
@@ -54968,10 +54983,10 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 	var parseHEXAlpha2HEX = function parseHEXAlpha2HEX(hex, alpha) {
-	    var rgb = _core.colorUtils.hex2rgb(hex);
-	    var rgbJSON = _core.colorUtils.rgb2json(rgb);
+	    var rgb = _utils.colorUtils.hex2rgb(hex);
+	    var rgbJSON = _utils.colorUtils.rgb2json(rgb);
 	    rgbJSON.a = alpha;
-	    return _core.colorUtils.rgba2rgb(_core.colorUtils.json2rgba(rgbJSON));
+	    return _utils.colorUtils.rgba2rgb(_utils.colorUtils.json2rgba(rgbJSON));
 	};
 
 	var DARK_FONT_COLOR = '#1a1a1a';
@@ -54980,7 +54995,7 @@
 	var colorMap = {};
 
 	var getAdaptColor = function getAdaptColor(color) {
-	    return _core.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	    return _utils.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
 	};
 	var getColor = function getColor(color) {
 	    if (colorMap[color]) {
@@ -54993,9 +55008,9 @@
 	        oddColor: oddColor,
 	        evenColor: evenColor,
 	        summaryColor: summaryColor,
-	        oddFontColor: getAdaptColor(_core.colorUtils.rgb2hex(oddColor)),
-	        evenFontColor: getAdaptColor(_core.colorUtils.rgb2hex(evenColor)),
-	        summaryFontColor: getAdaptColor(_core.colorUtils.rgb2hex(summaryColor))
+	        oddFontColor: getAdaptColor(_utils.colorUtils.rgb2hex(oddColor)),
+	        evenFontColor: getAdaptColor(_utils.colorUtils.rgb2hex(evenColor)),
+	        summaryFontColor: getAdaptColor(_utils.colorUtils.rgb2hex(summaryColor))
 	    };
 	    return colorMap[color];
 	};
@@ -55077,7 +55092,7 @@
 	                            } catch (e) {}
 	                        }
 	                    },
-	                    style: _extends({}, (0, _core.sc)([{
+	                    style: _extends({}, (0, _utils.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
@@ -55090,9 +55105,9 @@
 	                        fontWeight: 'bold'
 	                    }, item.isSum === true], [{
 	                        backgroundColor: item.isSum ? summaryColor : rowIndex % 2 === 0 ? oddColor : evenColor
-	                    }, item.isSum ? (0, _core.isNotNil)(summaryColor) : (0, _core.isNotNil)(oddColor)], [{
+	                    }, item.isSum ? (0, _utils.isNotNil)(summaryColor) : (0, _utils.isNotNil)(oddColor)], [{
 	                        color: item.isSum ? summaryFontColor : rowIndex % 2 === 0 ? oddFontColor : evenFontColor
-	                    }, item.isSum ? (0, _core.isNotNil)(summaryFontColor) : (0, _core.isNotNil)(oddFontColor)])) }),
+	                    }, item.isSum ? (0, _utils.isNotNil)(summaryFontColor) : (0, _utils.isNotNil)(oddFontColor)])) }),
 	                item.needExpand ? _react2.default.createElement(
 	                    _base.Button,
 	                    { style: { width: 25, height: 25 },
@@ -55135,7 +55150,7 @@
 	    return SummaryTableDimensionCellComponent;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(SummaryTableDimensionCellComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableDimensionCellComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = SummaryTableDimensionCellComponent;
 
@@ -55161,7 +55176,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -55224,7 +55239,7 @@
 	                case 1:
 	                case 2:
 	                    backgroundColor = color;
-	                    fontColor = _core.colorUtils.isDarkColor(backgroundColor) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	                    fontColor = _utils.colorUtils.isDarkColor(backgroundColor) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
 	                    break;
 	                case 3:
 	                    break;
@@ -55235,7 +55250,7 @@
 	                return _react2.default.createElement(
 	                    _layout.Layout,
 	                    _extends({ box: 'last' }, props, {
-	                        style: _extends({}, (0, _core.sc)([{
+	                        style: _extends({}, (0, _utils.sc)([{
 	                            borderTop: '1px solid #eaeaea'
 	                        }, rowIndex === 0], [{
 	                            borderLeft: '1px solid #eaeaea'
@@ -55246,9 +55261,9 @@
 	                            borderBottom: '1px solid #eaeaea'
 	                        }, item.style, props.style)], [{
 	                            backgroundColor: backgroundColor
-	                        }, (0, _core.isNotNil)(backgroundColor)], [{
+	                        }, (0, _utils.isNotNil)(backgroundColor)], [{
 	                            color: fontColor
-	                        }, (0, _core.isNotNil)(fontColor)]), props.style) }),
+	                        }, (0, _utils.isNotNil)(fontColor)]), props.style) }),
 	                    _react2.default.createElement(
 	                        _base.Title,
 	                        { cross: 'center', main: 'center', title: item.title, style: {
@@ -55286,7 +55301,7 @@
 	            }
 	            return _react2.default.createElement(
 	                _base.Title,
-	                { title: item.title, cross: 'center', main: 'center', style: (0, _core.sc)([{
+	                { title: item.title, cross: 'center', main: 'center', style: (0, _utils.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
@@ -55300,9 +55315,9 @@
 	                        paddingRight: 10
 	                    }, item.style, props.style)], [{
 	                        backgroundColor: backgroundColor
-	                    }, (0, _core.isNotNil)(backgroundColor)], [{
+	                    }, (0, _utils.isNotNil)(backgroundColor)], [{
 	                        color: fontColor
-	                    }, (0, _core.isNotNil)(fontColor)]) },
+	                    }, (0, _utils.isNotNil)(fontColor)]) },
 	                _react2.default.createElement(
 	                    _base.Label,
 	                    null,
@@ -55323,8 +55338,8 @@
 	        key: '_getTriggerIconClassName',
 	        value: function _getTriggerIconClassName() {
 	            var iconClass = '';
-	            (0, _core.some)(this.props.item.list, function (items) {
-	                return (0, _core.some)(items, function (item) {
+	            (0, _utils.some)(this.props.item.list, function (items) {
+	                return (0, _utils.some)(items, function (item) {
 	                    if (item.active) {
 	                        iconClass = item.iconClass;
 	                        return true;
@@ -55341,13 +55356,13 @@
 	            return _react2.default.createElement(
 	                _layout.VerticalLayout,
 	                null,
-	                (0, _core.map)(this.props.item.list, function (items, i) {
+	                (0, _utils.map)(this.props.item.list, function (items, i) {
 	                    var list = [];
-	                    (0, _core.each)(items, function (item) {
+	                    (0, _utils.each)(items, function (item) {
 	                        list.push(_react2.default.createElement(
 	                            _base.Button,
 	                            { key: item.value, box: 'first', active: item.active,
-	                                className: (0, _core.cn)('bi-list-item', 'bi-list-item-stress', 'dot-e-font'),
+	                                className: (0, _utils.cn)('bi-list-item', 'bi-list-item-stress', 'dot-e-font'),
 	                                style: { height: 25 },
 	                                onClick: function onClick() {
 	                                    _this3.combo.close();
@@ -55390,7 +55405,7 @@
 	    return SummaryTableHeaderCell;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(SummaryTableHeaderCell, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableHeaderCell, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = SummaryTableHeaderCell;
 
@@ -55420,7 +55435,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -55483,7 +55498,7 @@
 	                case 1:
 	                case 2:
 	                    backgroundColor = color;
-	                    fontColor = _core.colorUtils.isDarkColor(backgroundColor) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	                    fontColor = _utils.colorUtils.isDarkColor(backgroundColor) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
 	                    break;
 	                case 3:
 	                    break;
@@ -55516,7 +55531,7 @@
 	                            } catch (e) {}
 	                        }
 	                    },
-	                    style: _extends({}, (0, _core.sc)([{
+	                    style: _extends({}, (0, _utils.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
@@ -55527,9 +55542,9 @@
 	                        borderBottom: '1px solid #eaeaea'
 	                    })], [{
 	                        backgroundColor: backgroundColor
-	                    }, (0, _core.isNotNil)(backgroundColor)], [{
+	                    }, (0, _utils.isNotNil)(backgroundColor)], [{
 	                        color: fontColor
-	                    }, (0, _core.isNotNil)(fontColor)])) }),
+	                    }, (0, _utils.isNotNil)(fontColor)])) }),
 	                item.needExpand ? _react2.default.createElement(
 	                    _base.Button,
 	                    { style: { width: 25, height: 25 },
@@ -55598,8 +55613,8 @@
 	        key: '_getTriggerIconClassName',
 	        value: function _getTriggerIconClassName() {
 	            var iconClass = '';
-	            (0, _core.some)(this.props.item.list, function (items) {
-	                return (0, _core.some)(items, function (item) {
+	            (0, _utils.some)(this.props.item.list, function (items) {
+	                return (0, _utils.some)(items, function (item) {
 	                    if (item.active) {
 	                        iconClass = item.iconClass;
 	                        return true;
@@ -55616,13 +55631,13 @@
 	            return _react2.default.createElement(
 	                _layout.VerticalLayout,
 	                null,
-	                (0, _core.map)(this.props.item.list, function (items, i) {
+	                (0, _utils.map)(this.props.item.list, function (items, i) {
 	                    var list = [];
-	                    (0, _core.each)(items, function (item) {
+	                    (0, _utils.each)(items, function (item) {
 	                        list.push(_react2.default.createElement(
 	                            _base.Button,
 	                            { key: item.value, box: 'first', active: item.active,
-	                                className: (0, _core.cn)('bi-list-item', 'bi-list-item-stress', 'dot-e-font'),
+	                                className: (0, _utils.cn)('bi-list-item', 'bi-list-item-stress', 'dot-e-font'),
 	                                style: { height: 25 },
 	                                onClick: function onClick() {
 	                                    _this3.combo.close();
@@ -55665,7 +55680,7 @@
 	    return SummaryTableCrossCellComponent;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(SummaryTableCrossCellComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableCrossCellComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = SummaryTableCrossCellComponent;
 
@@ -55681,7 +55696,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -55689,7 +55704,7 @@
 
 	function sumBy(array, it) {
 	    var res = 0;
-	    (0, _core.each)(array, function (width, i) {
+	    (0, _utils.each)(array, function (width, i) {
 	        res += it(width, i);
 	    });
 	    return res;
@@ -55706,7 +55721,7 @@
 	    var $22 = sumBy(widths, function (width, i) {
 	        return (i + 1) * (i + 1);
 	    });
-	    var f1 = _core.math.sum(widths);
+	    var f1 = _utils.math.sum(widths);
 	    var f2 = sumBy(widths, function (width, i) {
 	        return (i + 1) * width;
 	    });
@@ -55738,8 +55753,8 @@
 	        key: '_reverse',
 	        value: function _reverse(items) {
 	            var result = [];
-	            (0, _core.each)(items, function (cols, i) {
-	                (0, _core.each)(cols, function (item, j) {
+	            (0, _utils.each)(items, function (cols, i) {
+	                (0, _utils.each)(cols, function (item, j) {
 	                    if (!result[j]) {
 	                        result[j] = [];
 	                    }
@@ -55752,7 +55767,7 @@
 	        key: 'getWidthsByOneCol',
 	        value: function getWidthsByOneCol(col) {
 	            var widths = [];
-	            (0, _core.each)(col, function (item) {
+	            (0, _utils.each)(col, function (item) {
 	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.needExpand ? 25 : 0) + (item.iconClass ? 25 : 0) + (item.list ? 25 : 0));
 	            });
 	            return widths;
@@ -55763,9 +55778,9 @@
 	            var _this = this;
 
 	            var result = [];
-	            (0, _core.each)(this.items, function (col) {
+	            (0, _utils.each)(this.items, function (col) {
 	                var fx = fit(_this.getWidthsByOneCol(col));
-	                result.push((0, _core.clamp)(_core.math.ceil(fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
+	                result.push((0, _utils.clamp)(_utils.math.ceil(fx.a + fx.b * _utils.math.ceil((1 + col.length) / 2)) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
 	            });
 	            return result;
 	        }
@@ -55791,14 +55806,14 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var formatHeader = function formatHeader(header, crossHeader, crossItems, hDeep, vDeep) {
 	    var items = formatCrossItems(crossItems, vDeep);
 	    var result = [];
-	    (0, _core.each)(items, function (node, row) {
+	    (0, _utils.each)(items, function (node, row) {
 	        var c = [];
 	        for (var i = 0; i < hDeep; i++) {
 	            c.push(crossHeader[row]);
@@ -55816,8 +55831,8 @@
 
 	    function track(store, node) {
 	        var next = void 0;
-	        if ((0, _core.isArray)(node.childs)) {
-	            (0, _core.each)(node.childs, function (child, index) {
+	        if ((0, _utils.isArray)(node.childs)) {
+	            (0, _utils.each)(node.childs, function (child, index) {
 	                var next = void 0;
 	                if (store !== -1) {
 	                    next = store.slice();
@@ -55833,7 +55848,7 @@
 	            } else {
 	                next = [];
 	            }
-	            if ( /**(store == -1 || node.childs.length > 1) &&**/(0, _core.isNotEmptyArray)(node.values)) {
+	            if ( /**(store == -1 || node.childs.length > 1) &&**/(0, _utils.isNotEmptyArray)(node.values)) {
 	                var summary = { text: '汇总', isSum: true, isLast: store === -1 };
 	                for (var i = next.length; i < deep; i++) {
 	                    next.push(summary);
@@ -55862,10 +55877,10 @@
 	        } else {
 	            next = [];
 	        }
-	        if (!isCross && (0, _core.isArray)(node.values)) {
+	        if (!isCross && (0, _utils.isArray)(node.values)) {
 	            next = next.concat(node.values);
 	        }
-	        if (isCross && (0, _core.isArray)(node.values)) {
+	        if (isCross && (0, _utils.isArray)(node.values)) {
 	            for (var _i2 = 0, len = node.values.length; _i2 < len - 1; _i2++) {
 	                if (next.length > 0) {
 	                    result.push(next);
@@ -55877,12 +55892,12 @@
 	        }
 	    }
 
-	    (0, _core.each)(nodes, function (node) {
+	    (0, _utils.each)(nodes, function (node) {
 	        track(-1, node);
 	    });
 	    //填充空位
-	    (0, _core.each)(result, function (line) {
-	        var l = (0, _core.last)(line);
+	    (0, _utils.each)(result, function (line) {
+	        var l = (0, _utils.last)(line);
 	        for (var i = line.length; i < deep; i++) {
 	            line.push(l);
 	        }
@@ -55892,7 +55907,7 @@
 
 	var formatCrossItems = function formatCrossItems(nodes, deep) {
 	    var items = formatItems(nodes, deep, true);
-	    return (0, _core.unzip)(items);
+	    return (0, _utils.unzip)(items);
 	};
 
 	var formatHorizontalItems = function formatHorizontalItems(nodes, deep, isCross) {
@@ -55900,8 +55915,8 @@
 
 	    function track(store, node) {
 	        var next = void 0;
-	        if ((0, _core.isArray)(node.childs)) {
-	            (0, _core.each)(node.childs, function (child) {
+	        if ((0, _utils.isArray)(node.childs)) {
+	            (0, _utils.each)(node.childs, function (child) {
 	                var next = void 0;
 	                if (store !== -1) {
 	                    next = store.slice();
@@ -55917,7 +55932,7 @@
 	            } else {
 	                next = [];
 	            }
-	            if ((store === -1 || node.childs.length > 1) && (0, _core.isNotEmptyArray)(node.values)) {
+	            if ((store === -1 || node.childs.length > 1) && (0, _utils.isNotEmptyArray)(node.values)) {
 	                var summary = { text: '汇总', isSum: true, isLast: store === -1 };
 	                for (var i = next.length; i < deep; i++) {
 	                    next.push(summary);
@@ -55945,10 +55960,10 @@
 	        } else {
 	            next = [];
 	        }
-	        if (!isCross && (0, _core.isArray)(node.values)) {
+	        if (!isCross && (0, _utils.isArray)(node.values)) {
 	            next = next.concat(node.values);
 	        }
-	        if (isCross && (0, _core.isArray)(node.values)) {
+	        if (isCross && (0, _utils.isArray)(node.values)) {
 	            for (var _i4 = 0, len = node.values.length; _i4 < len - 1; _i4++) {
 	                if (next.length > 0) {
 	                    result.push(next);
@@ -55960,12 +55975,12 @@
 	        }
 	    }
 
-	    (0, _core.each)(nodes, function (node) {
+	    (0, _utils.each)(nodes, function (node) {
 	        track(-1, node);
 	    });
 	    //填充空位
-	    (0, _core.each)(result, function (line) {
-	        var l = (0, _core.last)(line);
+	    (0, _utils.each)(result, function (line) {
+	        var l = (0, _utils.last)(line);
 	        for (var i = line.length; i < deep; i++) {
 	            line.push(l);
 	        }
@@ -55979,11 +55994,11 @@
 	    var leaf = 0;
 
 	    function track(node) {
-	        if ((0, _core.isArray)(node.childs)) {
-	            (0, _core.each)(node.childs, function (child) {
+	        if ((0, _utils.isArray)(node.childs)) {
+	            (0, _utils.each)(node.childs, function (child) {
 	                track(child);
 	            });
-	            if ((0, _core.isNotEmptyArray)(node.values)) {
+	            if ((0, _utils.isNotEmptyArray)(node.values)) {
 	                if (node.childs.length === 1) {
 	                    for (var i = 0; i < node.values.length; i++) {
 	                        cols.push(leaf + i + deep);
@@ -56000,18 +56015,18 @@
 	        }
 	    }
 
-	    (0, _core.each)(crossItems, function (node) {
+	    (0, _utils.each)(crossItems, function (node) {
 	        track(node);
 	    });
 
 	    if (cols.length > 0) {
-	        (0, _core.each)(header, function (node) {
-	            (0, _core.remove)(node, function (n, index) {
+	        (0, _utils.each)(header, function (node) {
+	            (0, _utils.remove)(node, function (n, index) {
 	                return cols.indexOf(index) > -1;
 	            });
 	        });
-	        (0, _core.each)(items, function (node) {
-	            (0, _core.remove)(node, function (n, index) {
+	        (0, _utils.each)(items, function (node) {
+	            (0, _utils.remove)(node, function (n, index) {
 	                return cols.indexOf(index) > -1;
 	            });
 	        });
@@ -56022,8 +56037,8 @@
 	var maxDeep = function maxDeep(nodes) {
 	    function track(deep, node) {
 	        var d = deep;
-	        if ((0, _core.isNotEmptyArray)(node.childs)) {
-	            (0, _core.each)(node.childs, function (child) {
+	        if ((0, _utils.isNotEmptyArray)(node.childs)) {
+	            (0, _utils.each)(node.childs, function (child) {
 	                d = Math.max(d, track(deep + 1, child));
 	            });
 	        }
@@ -56031,8 +56046,8 @@
 	    }
 
 	    var deep = 1;
-	    if ((0, _core.isObject)(nodes)) {
-	        (0, _core.each)(nodes, function (node) {
+	    if ((0, _utils.isObject)(nodes)) {
+	        (0, _utils.each)(nodes, function (node) {
 	            deep = Math.max(deep, track(1, node));
 	        });
 	    }
@@ -56114,7 +56129,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -56292,15 +56307,15 @@
 	SummaryTablePagerComponent.defaultProps = {
 	    vCurr: 1,
 	    hCurr: 1,
-	    hasVNext: _core.emptyFunction,
-	    hasHNext: _core.emptyFunction,
-	    onVPrev: _core.emptyFunction,
-	    onVNext: _core.emptyFunction,
-	    onHPrev: _core.emptyFunction,
-	    onHNext: _core.emptyFunction
+	    hasVNext: _utils.emptyFunction,
+	    hasHNext: _utils.emptyFunction,
+	    onVPrev: _utils.emptyFunction,
+	    onVNext: _utils.emptyFunction,
+	    onHPrev: _utils.emptyFunction,
+	    onHNext: _utils.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(SummaryTablePagerComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTablePagerComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = SummaryTablePagerComponent;
 
@@ -56324,7 +56339,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -56421,9 +56436,9 @@
 
 	            var numbers = this._helper.getNumbersByScrollTop(scrollTop);
 	            var result = [];
-	            (0, _core.each)(numbers, function (number) {
+	            (0, _utils.each)(numbers, function (number) {
 	                var style = {};
-	                (0, _core.translateDOMPositionXY)(style, 0, number.offsetTop);
+	                (0, _utils.translateDOMPositionXY)(style, 0, number.offsetTop);
 	                result.push(_react2.default.createElement(_SummaryTableCellComponent2.default, {
 	                    abs: true,
 	                    key: number.key,
@@ -56454,7 +56469,7 @@
 	    scrollTop: 0
 	};
 
-	_reactMixin2.default.onClass(SummaryTableSequenceComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableSequenceComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = SummaryTableSequenceComponent;
 
@@ -56473,7 +56488,7 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _base = __webpack_require__(537);
 
@@ -56507,9 +56522,9 @@
 	        key: '_prev',
 	        value: function _prev() {
 	            var firstChild = void 0;
-	            (0, _core.some)(this.items, function (node) {
-	                if ((0, _core.isNotEmptyArray)(node.childs)) {
-	                    (0, _core.some)(node.childs, function (child) {
+	            (0, _utils.some)(this.items, function (node) {
+	                if ((0, _utils.isNotEmptyArray)(node.childs)) {
+	                    (0, _utils.some)(node.childs, function (child) {
 	                        firstChild = child;
 	                        return true;
 	                    });
@@ -56534,9 +56549,9 @@
 	                _this.cache[node.text || node.value] = cnt++;
 	            };
 
-	            (0, _core.each)(nodes, function (node) {
-	                if ((0, _core.isNotEmptyArray)(node.childs)) {
-	                    (0, _core.each)(node.childs, function (child, index) {
+	            (0, _utils.each)(nodes, function (node) {
+	                if ((0, _utils.isNotEmptyArray)(node.childs)) {
+	                    (0, _utils.each)(node.childs, function (child, index) {
 	                        if (index === 0) {
 	                            if (_this.cache[child.text || child.value]) {
 	                                start = cnt = _this.cache[child.text || child.value];
@@ -56559,11 +56574,11 @@
 
 	            function getLeafCount(node) {
 	                var cnt = 0;
-	                if ((0, _core.isNotEmptyArray)(node.childs)) {
-	                    (0, _core.each)(node.childs, function (child) {
+	                if ((0, _utils.isNotEmptyArray)(node.childs)) {
+	                    (0, _utils.each)(node.childs, function (child) {
 	                        cnt += getLeafCount(child);
 	                    });
-	                    if (node.childs.length > 1 && (0, _core.isNotEmptyArray)(node.values)) {
+	                    if (node.childs.length > 1 && (0, _utils.isNotEmptyArray)(node.values)) {
 	                        cnt++;
 	                    }
 	                } else {
@@ -56573,9 +56588,9 @@
 	            }
 
 	            var start = 0;
-	            (0, _core.each)(this.items, function (node) {
-	                if ((0, _core.isArray)(node.childs)) {
-	                    (0, _core.each)(node.childs, function (child) {
+	            (0, _utils.each)(this.items, function (node) {
+	                if ((0, _utils.isArray)(node.childs)) {
+	                    (0, _utils.each)(node.childs, function (child) {
 	                        var cnt = getLeafCount(child);
 	                        result.push({
 	                            text: count++,
@@ -56585,7 +56600,7 @@
 	                        });
 	                        start += cnt;
 	                    });
-	                    if ((0, _core.isNotEmptyArray)(node.values)) {
+	                    if ((0, _utils.isNotEmptyArray)(node.values)) {
 	                        result.push({
 	                            text: '汇总',
 	                            isSum: true,
@@ -56603,8 +56618,8 @@
 	    }, {
 	        key: '_nextIntervalTree',
 	        value: function _nextIntervalTree(numbers) {
-	            var intervalTree = _core.PrefixIntervalTree.uniform(numbers.length, 0);
-	            (0, _core.each)(numbers, function (number, i) {
+	            var intervalTree = _utils.PrefixIntervalTree.uniform(numbers.length, 0);
+	            (0, _utils.each)(numbers, function (number, i) {
 	                intervalTree.set(i, number.height);
 	            });
 	            return intervalTree;
@@ -56697,7 +56712,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -56788,7 +56803,7 @@
 	            if (freezeCols.length >= columnSize.length) {
 	                freezeCols = [];
 	            }
-	            if (!(0, _core.isNumber)(props.columnSize[0])) {
+	            if (!(0, _utils.isNumber)(props.columnSize[0])) {
 	                columnSize = minColumnSize;
 	            }
 	            if (freezeCols.length > 1) {
@@ -57000,21 +57015,21 @@
 	    crossHeader: [],
 	    crossItems: [],
 	    regionColumnSize: [],
-	    onColumnResizeEnd: _core.emptyFunction,
-	    onRegionColumnResizeEnd: _core.emptyFunction,
+	    onColumnResizeEnd: _utils.emptyFunction,
+	    onRegionColumnResizeEnd: _utils.emptyFunction,
 
 	    showSequence: false,
 	    vCurr: 1,
 	    hCurr: 1,
-	    hasVNext: _core.emptyFunction,
-	    hasHNext: _core.emptyFunction,
-	    onVPrev: _core.emptyFunction,
-	    onVNext: _core.emptyFunction,
-	    onHPrev: _core.emptyFunction,
-	    onHNext: _core.emptyFunction
+	    hasVNext: _utils.emptyFunction,
+	    hasHNext: _utils.emptyFunction,
+	    onVPrev: _utils.emptyFunction,
+	    onVNext: _utils.emptyFunction,
+	    onHPrev: _utils.emptyFunction,
+	    onHNext: _utils.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(LevelTableComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(LevelTableComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = LevelTableComponent;
 
@@ -57084,7 +57099,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _constants = __webpack_require__(543);
 
@@ -57105,10 +57120,10 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 	var parseHEXAlpha2HEX = function parseHEXAlpha2HEX(hex, alpha) {
-	    var rgb = _core.colorUtils.hex2rgb(hex);
-	    var rgbJSON = _core.colorUtils.rgb2json(rgb);
+	    var rgb = _utils.colorUtils.hex2rgb(hex);
+	    var rgbJSON = _utils.colorUtils.rgb2json(rgb);
 	    rgbJSON.a = alpha;
-	    return _core.colorUtils.rgba2rgb(_core.colorUtils.json2rgba(rgbJSON));
+	    return _utils.colorUtils.rgba2rgb(_utils.colorUtils.json2rgba(rgbJSON));
 	};
 
 	var DARK_FONT_COLOR = '#1a1a1a';
@@ -57117,7 +57132,7 @@
 	var colorMap = {};
 
 	var getAdaptColor = function getAdaptColor(color) {
-	    return _core.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
+	    return _utils.colorUtils.isDarkColor(color) ? LIGHT_FONT_COLOR : DARK_FONT_COLOR;
 	};
 	var getColor = function getColor(color) {
 	    if (colorMap[color]) {
@@ -57130,9 +57145,9 @@
 	        oddColor: oddColor,
 	        evenColor: evenColor,
 	        summaryColor: summaryColor,
-	        oddFontColor: getAdaptColor(_core.colorUtils.rgb2hex(oddColor)),
-	        evenFontColor: getAdaptColor(_core.colorUtils.rgb2hex(evenColor)),
-	        summaryFontColor: getAdaptColor(_core.colorUtils.rgb2hex(summaryColor))
+	        oddFontColor: getAdaptColor(_utils.colorUtils.rgb2hex(oddColor)),
+	        evenFontColor: getAdaptColor(_utils.colorUtils.rgb2hex(evenColor)),
+	        summaryFontColor: getAdaptColor(_utils.colorUtils.rgb2hex(summaryColor))
 	    };
 	    return colorMap[color];
 	};
@@ -57214,7 +57229,7 @@
 	                            } catch (e) {}
 	                        }
 	                    },
-	                    style: _extends({}, (0, _core.sc)([{
+	                    style: _extends({}, (0, _utils.sc)([{
 	                        borderTop: '1px solid #eaeaea'
 	                    }, rowIndex === 0], [{
 	                        borderLeft: '1px solid #eaeaea'
@@ -57228,9 +57243,9 @@
 	                        fontWeight: 'bold'
 	                    }, item.isSum === true], [{
 	                        backgroundColor: item.isSum ? summaryColor : rowIndex % 2 === 0 ? oddColor : evenColor
-	                    }, item.isSum ? (0, _core.isNotNil)(summaryColor) : (0, _core.isNotNil)(oddColor)], [{
+	                    }, item.isSum ? (0, _utils.isNotNil)(summaryColor) : (0, _utils.isNotNil)(oddColor)], [{
 	                        color: item.isSum ? summaryFontColor : rowIndex % 2 === 0 ? oddFontColor : evenFontColor
-	                    }, item.isSum ? (0, _core.isNotNil)(summaryFontColor) : (0, _core.isNotNil)(oddFontColor)])) }),
+	                    }, item.isSum ? (0, _utils.isNotNil)(summaryFontColor) : (0, _utils.isNotNil)(oddFontColor)])) }),
 	                item.needExpand ? _react2.default.createElement(
 	                    _base.Button,
 	                    { style: { width: 25, height: 25 },
@@ -57273,7 +57288,7 @@
 	    return SummaryTableDimensionCellComponent;
 	}(_react.Component);
 
-	_reactMixin2.default.onClass(SummaryTableDimensionCellComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(SummaryTableDimensionCellComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = SummaryTableDimensionCellComponent;
 
@@ -57289,7 +57304,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -57297,7 +57312,7 @@
 
 	function sumBy(array, it) {
 	    var res = 0;
-	    (0, _core.each)(array, function (width, i) {
+	    (0, _utils.each)(array, function (width, i) {
 	        res += it(width, i);
 	    });
 	    return res;
@@ -57314,7 +57329,7 @@
 	    var $22 = sumBy(widths, function (width, i) {
 	        return (i + 1) * (i + 1);
 	    });
-	    var f1 = _core.math.sum(widths);
+	    var f1 = _utils.math.sum(widths);
 	    var f2 = sumBy(widths, function (width, i) {
 	        return (i + 1) * width;
 	    });
@@ -57346,8 +57361,8 @@
 	        key: '_reverse',
 	        value: function _reverse(items) {
 	            var result = [];
-	            (0, _core.each)(items, function (cols, i) {
-	                (0, _core.each)(cols, function (item, j) {
+	            (0, _utils.each)(items, function (cols, i) {
+	                (0, _utils.each)(cols, function (item, j) {
 	                    if (!result[j]) {
 	                        result[j] = [];
 	                    }
@@ -57360,7 +57375,7 @@
 	        key: 'getWidthsByOneCol',
 	        value: function getWidthsByOneCol(col) {
 	            var widths = [];
-	            (0, _core.each)(col, function (item) {
+	            (0, _utils.each)(col, function (item) {
 	                widths.push(getGBWidth(item.text) * 12 * 1.2 + (item.layer || 0) * 30 + (item.needExpand ? 25 : 0) + (item.iconClass ? 25 : 0) + (item.list ? 25 : 0));
 	            });
 	            return widths;
@@ -57371,9 +57386,9 @@
 	            var _this = this;
 
 	            var result = [];
-	            (0, _core.each)(this.items, function (col) {
+	            (0, _utils.each)(this.items, function (col) {
 	                var fx = fit(_this.getWidthsByOneCol(col));
-	                result.push((0, _core.clamp)(_core.math.ceil(fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
+	                result.push((0, _utils.clamp)(_utils.math.ceil(fx.a + fx.b * _utils.math.ceil((1 + col.length) / 2)) + REMAIN_WIDTH, 80, Number.MAX_VALUE));
 	            });
 	            return result;
 	        }
@@ -57399,7 +57414,7 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _SummaryTableComponentItemsHelper = __webpack_require__(610);
 
@@ -57412,7 +57427,7 @@
 	var formatHeader = function formatHeader(header, crossHeader, crossItems, hDeep, vDeep) {
 	    var items = _SummaryTableComponentItemsHelper2.default.formatCrossItems(crossItems, vDeep);
 	    var result = [];
-	    (0, _core.each)(items, function (node, row) {
+	    (0, _utils.each)(items, function (node, row) {
 	        var c = [crossHeader[row]];
 	        result.push(c.concat(node || []));
 	    });
@@ -57442,18 +57457,18 @@
 	        if (next.length > 0) {
 	            result.push(next);
 	        }
-	        if ((0, _core.isNotEmptyArray)(node.childs)) {
-	            (0, _core.each)(node.childs, function (child) {
+	        if ((0, _utils.isNotEmptyArray)(node.childs)) {
+	            (0, _utils.each)(node.childs, function (child) {
 	                track(child, layer + 1);
 	            });
 	        }
 	    }
 
-	    (0, _core.each)(nodes, function (node) {
-	        (0, _core.each)(node.childs, function (c) {
+	    (0, _utils.each)(nodes, function (node) {
+	        (0, _utils.each)(node.childs, function (c) {
 	            track(c, 0);
 	        });
-	        if ((0, _core.isArray)(node.values)) {
+	        if ((0, _utils.isArray)(node.values)) {
 	            var next = [{ text: '汇总', isSum: true, isLast: true }].concat(node.values);
 	            result.push(next);
 	        }
@@ -57463,13 +57478,13 @@
 
 	var formatCols = function formatCols(cols, hDeep) {
 	    cols = formatColumns(cols);
-	    return (0, _core.map)(cols, function (c) {
+	    return (0, _utils.map)(cols, function (c) {
 	        return c - (hDeep - 1);
 	    });
 	};
 
 	var formatColumns = function formatColumns(columns, hDeep) {
-	    if ((0, _core.isNotEmptyArray)(columns)) {
+	    if ((0, _utils.isNotEmptyArray)(columns)) {
 	        return columns.slice(Math.max(0, hDeep - 1));
 	    }
 	    return columns;
@@ -57478,8 +57493,8 @@
 	var maxDeep = function maxDeep(nodes) {
 	    function track(deep, node) {
 	        var d = deep;
-	        if ((0, _core.isNotEmptyArray)(node.childs)) {
-	            (0, _core.each)(node.childs, function (child) {
+	        if ((0, _utils.isNotEmptyArray)(node.childs)) {
+	            (0, _utils.each)(node.childs, function (child) {
 	                d = Math.max(d, track(deep + 1, child));
 	            });
 	        }
@@ -57487,8 +57502,8 @@
 	    }
 
 	    var deep = 1;
-	    if ((0, _core.isObject)(nodes)) {
-	        (0, _core.each)(nodes, function (node) {
+	    if ((0, _utils.isObject)(nodes)) {
+	        (0, _utils.each)(nodes, function (node) {
 	            deep = Math.max(deep, track(1, node));
 	        });
 	    }
@@ -57568,7 +57583,7 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _layout = __webpack_require__(186);
 
@@ -57665,9 +57680,9 @@
 
 	            var numbers = this._helper.getNumbersByScrollTop(scrollTop);
 	            var result = [];
-	            (0, _core.each)(numbers, function (number) {
+	            (0, _utils.each)(numbers, function (number) {
 	                var style = {};
-	                (0, _core.translateDOMPositionXY)(style, 0, number.offsetTop);
+	                (0, _utils.translateDOMPositionXY)(style, 0, number.offsetTop);
 	                result.push(_react2.default.createElement(_SummaryTableCellComponent2.default, {
 	                    abs: true,
 	                    key: number.key,
@@ -57698,7 +57713,7 @@
 	    scrollTop: 0
 	};
 
-	_reactMixin2.default.onClass(LevelTableSequenceComponent, _core.ReactComponentWithPureRenderMixin);
+	_reactMixin2.default.onClass(LevelTableSequenceComponent, _utils.ReactComponentWithPureRenderMixin);
 
 	exports.default = LevelTableSequenceComponent;
 
@@ -57714,7 +57729,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _core = __webpack_require__(194);
+	var _utils = __webpack_require__(194);
 
 	var _base = __webpack_require__(537);
 
@@ -57752,11 +57767,11 @@
 
 	            function getLeafCount(node) {
 	                var cnt = 0;
-	                if ((0, _core.isNotEmptyArray)(node.childs)) {
-	                    (0, _core.each)(node.childs, function (child) {
+	                if ((0, _utils.isNotEmptyArray)(node.childs)) {
+	                    (0, _utils.each)(node.childs, function (child) {
 	                        cnt += getLeafCount(child);
 	                    });
-	                    if ( /**node.childs.length > 1 && **/(0, _core.isNotEmptyArray)(node.values)) {
+	                    if ( /**node.childs.length > 1 && **/(0, _utils.isNotEmptyArray)(node.values)) {
 	                        cnt++;
 	                    }
 	                } else {
@@ -57766,9 +57781,9 @@
 	            }
 
 	            var start = 0;
-	            (0, _core.each)(this.items, function (node) {
-	                if ((0, _core.isArray)(node.childs)) {
-	                    (0, _core.each)(node.childs, function (child) {
+	            (0, _utils.each)(this.items, function (node) {
+	                if ((0, _utils.isArray)(node.childs)) {
+	                    (0, _utils.each)(node.childs, function (child) {
 	                        var cnt = getLeafCount(child);
 	                        result.push({
 	                            text: count++,
@@ -57778,7 +57793,7 @@
 	                        });
 	                        start += cnt;
 	                    });
-	                    if ((0, _core.isNotEmptyArray)(node.values)) {
+	                    if ((0, _utils.isNotEmptyArray)(node.values)) {
 	                        result.push({
 	                            text: '汇总',
 	                            isSum: true,
