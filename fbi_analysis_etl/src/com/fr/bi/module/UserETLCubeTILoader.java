@@ -84,7 +84,6 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
         UserETLCubeManagerProvider cubeManager = getCubeManager();
-        cubeManager.checkVersion((AnalysisCubeTableSource) tableSource, user);
         return cubeManager.getTableIndex((AnalysisCubeTableSource) tableSource, user);
     }
 
