@@ -36,7 +36,7 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
                 min: 0,
                 max: 100,
                 closemin: true,
-                closemax: true
+                closemax: false
             },
             color_range: {
                 from_color: "#65B3EE",
@@ -51,17 +51,12 @@ BI.ChartAddGradientConditionGroup = BI.inherit(BI.Widget, {
         if(this.buttons.length != 0) {
             var lastButton = this.buttons[this.buttons.length - 1];
             var lastValue = lastButton.getValue();
-            lastButton.setValue(BI.extend(lastValue , {
-                range: BI.extend(lastValue.range , {
-                    closemax: false
-                })
-            }));
             BI.extend(item , {
                 range: {
                     min: BI.parseInt(lastValue.range.max),
                     max: BI.parseInt(lastValue.range.max) + 100,
                     closemin: !lastValue.range.closemax,
-                    closemax: true
+                    closemax: false
                 }
             });
         }

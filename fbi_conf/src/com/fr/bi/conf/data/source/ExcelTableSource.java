@@ -18,6 +18,7 @@ import com.fr.bi.stable.utils.file.BIExcelUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.*;
 
@@ -105,6 +106,8 @@ public class ExcelTableSource extends AbstractTableSource {
                             Calendar c = Calendar.getInstance();
                             c.setTimeInMillis(((Date) value).getTime());
                             resValue = (double) (c.get(Calendar.HOUR) * 3600 + c.get(Calendar.MINUTE) * 60 + c.get(Calendar.SECOND));
+                        } else if (StringUtils.EMPTY.equals(value)) {
+                            resValue = null;
                         } else {
                             Double d = 0d;
                             try {

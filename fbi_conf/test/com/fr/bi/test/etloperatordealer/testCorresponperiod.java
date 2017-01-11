@@ -102,6 +102,11 @@ public class testCorresponperiod extends TestCase {
             }
 
             @Override
+            public String getICubeResourceLocationPath() {
+                return null;
+            }
+
+            @Override
             public void clear() {
 
             }
@@ -121,6 +126,11 @@ public class testCorresponperiod extends TestCase {
 
             @Override
             public PrimitiveDetailGetter createPrimitiveDetailGetter() {
+                return null;
+            }
+
+            @Override
+            public String getICubeResourceLocationPath() {
                 return null;
             }
 

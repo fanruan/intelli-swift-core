@@ -4,16 +4,18 @@ import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.field.BITargetAndDimensionUtils;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.field.BITargetAndDimensionUtils;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -230,7 +232,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
                         HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0, startColumn, colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxColumnDimensionLen - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, columnData, widget.getChartSetting());
                     }
                     CrossExpander expander = CrossExpander.ALL_EXPANDER;
-                    dealWithNode(node.getLeft(), expander, expander.getYExpander(), cbcells, rowDimension, colDimension, startRow, startColumn, keys, maxRowDimensionLen - 1);
+                    dealWithNode(node.getLeft(), expander, expander.getYExpander(), cbcells, rowDimension, colDimension, startRow, startColumn, keys, maxRowDimensionLen - 1, widget.getChartSetting());
                     startColumn += !hasTarget ? node.getTop().getTotalLength() : node.getTop().getTotalLengthWithSummary();
                 } else {
                     CrossExpander expander = complexExpander.createCrossNode(rowRegionIndex, n - i * colRegionLength);
@@ -240,7 +242,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
                     if (i == 0) {
                         HorGroupExecutor.dealWithNode(node.getTop(), expander.getXExpander(), cbcells, 0, startColumn, colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxColumnDimensionLen - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, columnData, widget.getChartSetting());
                     }
-                    dealWithNode(node.getLeft(), expander, expander.getYExpander(), cbcells, rowDimension, colDimension, startRow, startColumn, keys, rowDimension.length - 1);
+                    dealWithNode(node.getLeft(), expander, expander.getYExpander(), cbcells, rowDimension, colDimension, startRow, startColumn, keys, rowDimension.length - 1, widget.getChartSetting());
                     startColumn += (!hasTarget ? node.getTop().getTotalLength(expander.getXExpander()) : node.getTop().getTotalLengthWithSummary(expander.getXExpander())) * (Math.max(1, keys.length));
                 }
 
@@ -367,12 +369,12 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     }
 
     private int dealWithNode(CrossHeader left, CrossExpander expander, NodeExpander yExpander, CBCell[][] cbcells, BIDimension[] rowDimension, BIDimension[] colDimension,
-                             int row, int column, TargetGettingKey[] keys, int total) {
+                             int row, int column, TargetGettingKey[] keys, int total, DetailChartSetting chartSetting) {
         int pos = 0;
         boolean discardSummary = false;
         if (yExpander != null) {
             for (int i = 0; i < left.getChildLength(); i++) {
-                pos += dealWithNode((CrossHeader) left.getChild(i), expander, yExpander.getChildExpander(left.getChild(i).getShowValue()), cbcells, rowDimension, colDimension, row + pos, column, keys, total - 1);
+                pos += dealWithNode((CrossHeader) left.getChild(i), expander, yExpander.getChildExpander(left.getChild(i).getShowValue()), cbcells, rowDimension, colDimension, row + pos, column, keys, total - 1, chartSetting);
             }
             discardSummary = (!left.needSummary()) || keys.length == 0;
         }
@@ -381,19 +383,19 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
         }
         //pos如果不为0说明是汇总的格子
         dealWithCrossNode(left.getValue(), paging.getOprator() < Node.NONE_PAGE_LEVER ? new NodeAllExpander(colDimension.length - 1) : expander.getXExpander(), cbcells,
-                rowDimension, colDimension, row + pos, column, keys, colDimension.length, pos != 0, total);
+                rowDimension, colDimension, row + pos, column, keys, colDimension.length, pos != 0, total, chartSetting);
         pos++;
         return pos;
     }
 
     private int dealWithCrossNode(CrossNode node, NodeExpander xExpander, CBCell[][] cbcells, BIDimension[] rowDimension,
-                                  BIDimension[] colDimension, int row, int column, TargetGettingKey[] keys, int xTotal, boolean isYSummary, int yTotal) {
+                                  BIDimension[] colDimension, int row, int column, TargetGettingKey[] keys, int xTotal, boolean isYSummary, int yTotal, DetailChartSetting chartSetting) {
         int pos = 0;
         boolean discardSummary = false;
         if (xExpander != null) {
             for (int i = 0; i < node.getTopChildLength(); i++) {
                 pos += dealWithCrossNode(node.getTopChild(i), xExpander.getChildExpander(node.getTopChild(i).getHead().getShowValue()), cbcells, rowDimension, colDimension,
-                        row, column + pos * Math.max(keys.length, 1), keys, xTotal - 1, isYSummary, yTotal);
+                        row, column + pos * Math.max(keys.length, 1), keys, xTotal - 1, isYSummary, yTotal, chartSetting);
             }
             discardSummary = (!node.getHead().needSummary()) || keys.length == 0;
         }
@@ -405,18 +407,20 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
             dealWithSumNode(node, cbcells, rowDimension, colDimension, row, column, xTotal, isYSummary, yTotal, pos);
         } else {
             for (int k = 0; k < keys.length; k++) {
+                int numLevel = chartSetting.getNumberLevelByTargetId(keys[k].getTargetName());
                 Object v = node.getSummaryValue(keys[k]);
-                CBCell cell = new CBCell(v == null ? NONEVALUE : v);
+                v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
+                CBCell cell = new CBCell(v);
                 cell.setColumn(column + (pos * keys.length) + k);
                 cell.setRow(row);
                 cell.setRowSpan(1);
                 cell.setColumnSpan(1);
                 cell.setStyle(
                         pos == 0 ? (isYSummary ?
-                                BITableStyle.getInstance().getYTotalCellStyle(v, yTotal)
+                                BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT))
                                 :
-                                BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1)
-                        ) : BITableStyle.getInstance().getXTotalCellStyle(v, xTotal));
+                                BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT))
+                        ) : BITableStyle.getInstance().getXTotalCellStyle(v, xTotal, false));
                 List cellList = new ArrayList();
                 cellList.add(cell);
                 CBBoxElement cbox = new CBBoxElement(cellList);
@@ -444,10 +448,10 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
         cell.setColumnSpan(1);
         cell.setStyle(
                 pos == 0 ? (isYSummary ?
-                        BITableStyle.getInstance().getYTotalCellStyle(v, yTotal)
+                        BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, false)
                         :
-                        BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1)
-                ) : BITableStyle.getInstance().getXTotalCellStyle(v, xTotal));
+                        BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, false)
+                ) : BITableStyle.getInstance().getXTotalCellStyle(v, xTotal, false));
         List cellList = new ArrayList();
         cellList.add(cell);
         CBBoxElement cbox = new CBBoxElement(cellList);

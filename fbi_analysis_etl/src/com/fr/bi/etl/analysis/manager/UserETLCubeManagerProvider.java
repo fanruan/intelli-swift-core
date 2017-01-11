@@ -31,9 +31,18 @@ public interface UserETLCubeManagerProvider extends Release{
 
     boolean checkVersion(AnalysisCubeTableSource source, BIUser user);
 
+	/**
+	 * 是否可用状态
+	 * @param source
+	 * @param user
+	 * @return
+	 */
+	boolean isAvailable(AnalysisCubeTableSource source, BIUser user);
+
     void envChanged();
 
     void releaseCurrentThread();
+	void releaseCurrentThread(String key);
 
     void invokeUpdate(String identityValue, long userId);
 

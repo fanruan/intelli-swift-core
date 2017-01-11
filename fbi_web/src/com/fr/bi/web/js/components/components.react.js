@@ -54461,8 +54461,6 @@
 	                isNeedFreeze = _props.isNeedFreeze,
 	                isNeedResize = _props.isNeedResize,
 	                mergeCols = _props.mergeCols,
-	                headerCellRenderer = _props.headerCellRenderer,
-	                cellRenderer = _props.cellRenderer,
 	                width = _props.width,
 	                height = _props.height,
 	                showSequence = _props.showSequence,
@@ -54810,6 +54808,10 @@
 	                case 2:
 	                    break;
 	                case 3:
+	                    if (item.isSum === true && item.isLast === true) {
+	                        summaryColor = color;
+	                        summaryFontColor = getAdaptColor(color);
+	                    }
 	                    break;
 	                default:
 	                    break;
@@ -55041,6 +55043,10 @@
 	                case 2:
 	                    break;
 	                case 3:
+	                    if (item.isSum === true && item.isLast === true) {
+	                        summaryColor = color;
+	                        summaryFontColor = getAdaptColor(color);
+	                    }
 	                    break;
 	                default:
 	                    break;
@@ -56583,6 +56589,7 @@
 	                        result.push({
 	                            text: '汇总',
 	                            isSum: true,
+	                            isLast: true,
 	                            key: start,
 	                            rowIndex: start,
 	                            height: _this2.rowHeight
@@ -57173,6 +57180,10 @@
 	                case 2:
 	                    break;
 	                case 3:
+	                    if (item.isSum === true && item.isLast === true) {
+	                        summaryColor = color;
+	                        summaryFontColor = getAdaptColor(color);
+	                    }
 	                    break;
 	                default:
 	                    break;

@@ -54,7 +54,8 @@ public class AnalysisBusiTable extends BIBusinessTable {
         setFields(fields);
     }
 
-    public CubeTableSource getSource() {
+    @Override
+    public CubeTableSource getTableSource() {
         if (source == null) {
             try {
                 source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(this);

@@ -78,7 +78,7 @@ public class ETLTableObject implements Release, Delete {
      */
     @Override
     public void delete() {
-        BIFileUtils.delete(new File(this.path));
+        BIFileUtils.delete(new File(this.path).getParentFile());
     }
 
 }

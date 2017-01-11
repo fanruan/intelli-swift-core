@@ -65,4 +65,6 @@ public interface BIDetailTarget extends BITargetAndDimension, Release {
     ISort getSort();
 
     TargetFilter getFilter();
+
+    void reSetDetailGetter();
 }
