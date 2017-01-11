@@ -257,7 +257,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 size: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
                 z: name,
                 zValue: seriesName,
-                dimensionIds: BI.isNull(drillcataDimId) ? self.cataDid : [drillcataDimId],
+                dimensionIds: BI.isNull(drillcataDimId) ? [self.cataDid] : [drillcataDimId],
                 targetIds: [targetIds[0], targetIds[1], targetIds[2]]
             }];
             obj.name = name;
@@ -296,7 +296,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 yValue: y,
                 z: name,
                 zValue: seriesName,
-                dimensionIds: BI.isNull(drillcataDimId) ? self.cataDid : [drillcataDimId],
+                dimensionIds: BI.isNull(drillcataDimId) ? [self.cataDid] : [drillcataDimId],
                 targetIds: [targetIds[0], targetIds[1]]
             }];
             return obj;
