@@ -1656,17 +1656,27 @@ Data.Utils = {
                         return defaultStyle;
                     case BICst.SCALE_SETTING.CUSTOM:
                         if (styles.length !== 0) {
+                            var maxScale = _calculateValueNiceDomain(0, max)[1];
                             BI.each(styles, function (idx, style) {
-                                range.push({
-                                    color: style.color,
-                                    from: style.range.min,
-                                    to: style.range.max
-                                });
+                                if(style.range.max) {
+                                    range.push({
+                                        color: style.color,
+                                        from: style.range.min,
+                                        to: style.range.max
+                                    });
+                                } else {
+                                    var to = style.range.min < maxScale ? maxScale : 266396;
+                                    range.push({
+                                        color: style.color,
+                                        from: style.range.min,
+                                        to: to,
+                                    });
+                                }
                                 color = style.color;
-                                conditionMax = style.range.max
+                                conditionMax = style.range.max;
                             });
 
-                            conditionMin = BI.parseInt(styles[0].range.min);
+                            conditionMin = BI.parseFloat(styles[0].range.min);
                             if (conditionMin !== 0) {
                                 range.push({
                                     color: "#808080",
@@ -1675,9 +1685,7 @@ Data.Utils = {
                                 });
                             }
 
-                            var maxScale = _calculateValueNiceDomain(0, max)[1];
-
-                            if (conditionMax < maxScale) {
+                            if (conditionMax && conditionMax < maxScale) {
                                 range.push({
                                     color: color,
                                     from: conditionMax,
@@ -2312,8 +2320,8 @@ Data.Utils = {
             }
 
             function changeMaxMinScale() {
-                gaugeAxis[0].max = config.max_scale || null;
-                gaugeAxis[0].min = config.min_scale || null;
+                gaugeAxis[0].max = BI.parseFloat(config.max_scale) || null;
+                gaugeAxis[0].min = BI.parseFloat(config.min_scale) || null;
             }
 
             function formatNumberLevelInYaxis(type, position) {
