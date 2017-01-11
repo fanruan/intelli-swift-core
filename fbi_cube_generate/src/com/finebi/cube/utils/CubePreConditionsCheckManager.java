@@ -2,12 +2,10 @@ package com.finebi.cube.utils;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.structure.Cube;
-import com.finebi.cube.structure.CubeTableEntityService;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.data.impl.Connection;
 import com.fr.general.ComparatorUtils;
-import com.sybase.jdbc2.utils.JavaVersion;
 
 import java.io.File;
 
