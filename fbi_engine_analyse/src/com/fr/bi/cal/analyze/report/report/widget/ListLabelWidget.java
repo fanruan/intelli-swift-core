@@ -321,4 +321,9 @@ public class ListLabelWidget extends BISummaryWidget {
         return BIReportConstant.WIDGET.STRING;
     }
 
+    @Override
+    public void reSetDetailTarget() {
+
+    }
+
 }

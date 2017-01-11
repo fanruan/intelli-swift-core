@@ -16,7 +16,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.operation.sort.comp.CustomComparator;
-import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
+import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 
 import java.util.Comparator;
@@ -139,18 +139,11 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
     private void initCustomMap(ICubeDataLoader loader, boolean useRealData, int groupLimit) {
         ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         GroupValueIndex nullGroupValueIndex = loader.getTableIndex(field.getTableBelongTo().getTableSource()).getNullGroupValueIndex(dimension.createKey(field));
-        CubeLinkedHashMap newGetter = new CubeLinkedHashMap();
-        newGetter.put("", nullGroupValueIndex);
-        Iterator iter = getter.iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            Object key = entry.getKey();
-            if (key == null) {
-                continue;
-            }
-            newGetter.put(key, entry.getValue());
+        if (!nullGroupValueIndex.isAllEmpty()) {
+            getter = new CubeIndexGetterWithNullValue(getter, null, nullGroupValueIndex);
         }
-        getter = dimension.getGroup().createGroupedMap(newGetter);
+        getter = dimension.getGroup().createGroupedMap(getter);
+
         if (isCustomSort()) {
             customMap = dimension.getSort().createGroupedMap(getter);
         } else {

@@ -41,8 +41,8 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
             name = name + "(" + st + ")";
         }
         BI.createWidget({
-            // type: "bi.horizontal_adapt",
-            type: "bi.htape",
+            type: "bi.horizontal_adapt",
+            // type: "bi.htape",
             element: this.element,
             columnSize: ["", 25],
             items: [{

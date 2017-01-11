@@ -94,6 +94,28 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 return "drag-web-small-icon";
             case BICst.WIDGET.CONTENT:
                 return "drag-input-small-icon";
+            case BICst.WIDGET.STRING:
+                return "reuse-string-font";
+            case BICst.WIDGET.NUMBER:
+                return "reuse-number-font";
+            case BICst.WIDGET.DATE:
+                return "reuse-date-font";
+            case BICst.WIDGET.YEAR:
+                return "reuse-year-font";
+            case BICst.WIDGET.QUARTER:
+                return "reuse-quarter-font";
+            case BICst.WIDGET.MONTH:
+                return "reuse-month-font";
+            case BICst.WIDGET.TREE:
+                return "reuse-tree-font";
+            case BICst.WIDGET.YMD:
+                return "reuse-ymd-font";
+            case BICst.WIDGET.GENERAL_QUERY:
+                return "reuse-general-query-font";
+            case BICst.WIDGET.QUERY:
+                return "reuse-query-font";
+            case BICst.WIDGET.RESET:
+                return "reuse-reset-font";
         }
     },
 
