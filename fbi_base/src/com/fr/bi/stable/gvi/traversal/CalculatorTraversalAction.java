@@ -2,7 +2,7 @@ package com.fr.bi.stable.gvi.traversal;
 
 
 public abstract class CalculatorTraversalAction implements SingleRowTraversalAction {
-    protected double sum = Double.NaN;
+    protected double sum;
 
     public CalculatorTraversalAction() {
     }
