@@ -64,6 +64,9 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             var columnSize = this.getCalculateRegionColumnSize();
             self.setStoredRegionColumnSize(columnSize[0]);
         });
+        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_INIT, function () {
+            self._resizeTableColumnSize();
+        });
         this.errorPane = BI.createWidget({
             type: "bi.table_chart_error_pane",
             invisible: true
@@ -161,10 +164,70 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         }, ob);
     },
 
+    _resizeTableColumnSize: function () {
+        var o = this.options;
+        var cs = this.table.getColumnSize();
+        var isValid = true;
+        BI.some(cs, function (i, size) {
+            if (!BI.isNumeric(size)) {
+                isValid = false;
+                return true;
+            }
+        });
+        if (!isValid) {
+            var columnSize = this.table.getCalculateColumnSize();
+            if (this._isNeedFreeze()) {
+                var regionColumnSize = this.table.getCalculateRegionColumnSize();
+                this.setStoredRegionColumnSize(regionColumnSize[0]);
+                var freezeCols = this._getFreezeCols();
+                var freezeColumnSize = columnSize.slice(0, freezeCols.length);
+                var otherSize = columnSize.slice(freezeCols.length);
+                var fl = freezeColumnSize.length, ol = otherSize.length;
+                BI.each(freezeColumnSize, function (i, size) {
+                    if (size > 200 && i < fl - 1) {
+                        freezeColumnSize[fl - 1] = freezeColumnSize[fl - 1] + freezeColumnSize[i] - 200;
+                        freezeColumnSize[i] = 200;
+                    }
+                    if (size < 80 && i < fl - 1) {
+                        var tempSize = freezeColumnSize[fl - 1] - (80 - freezeColumnSize[i]);
+                        freezeColumnSize[fl - 1] = tempSize < 80 ? 80 : tempSize;
+                        freezeColumnSize [i] = 80;
+                    }
+                });
+                BI.each(otherSize, function (i, size) {
+                    if (size > 200 && i < ol - 1) {
+                        otherSize[ol - 1] = otherSize[ol - 1] + otherSize[i] - 200;
+                        otherSize[i] = 200;
+                    }
+                    if (size < 80 && i < ol - 1) {
+                        var tempSize = otherSize[ol - 1] - (80 - otherSize[i]);
+                        otherSize[ol - 1] = tempSize < 80 ? 80 : tempSize;
+                        otherSize [i] = 80;
+                    }
+                });
+                columnSize = freezeColumnSize.concat(otherSize);
+            } else {
+                var cl = columnSize.length;
+                BI.each(columnSize, function (i, size) {
+                    if (size > 200 && i < cl - 1) {
+                        columnSize[cl - 1] = columnSize[cl - 1] + columnSize[i] - 200;
+                        columnSize[i] = 200;
+                    }
+                    if (size < 80 && i < cl - 1) {
+                        var tempSize = columnSize[cl - 1] - (80 - columnSize[i]);
+                        columnSize[cl - 1] = tempSize < 80 ? 80 : tempSize;
+                        columnSize [i] = 80;
+                    }
+                })
+            }
+            this.table.setColumnSize(columnSize);
+            self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
+        }
+    },
 
     _getColumnSize: function (header) {
         var columnSize = BI.Utils.getWidgetSettingsByID(this.options.wId).column_size;
-        if (BI.isNull(columnSize)) {
+        if (BI.isNull(columnSize) || columnSize.length !== header.length) {
             columnSize = BI.makeArray(header.length, "");
         }
         BI.each(columnSize, function (i, size) {
