@@ -20,6 +20,7 @@ import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.module.UserETLCubeTILoader;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
@@ -127,6 +128,13 @@ public class UserETLUpdateTask implements CubeTask, AV {
 
 
     private long getBaseSourceVersion(CubeTableSource source){
+        if(source instanceof AnalysisCubeTableSource){
+            if (!BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) source, biUser)){
+                return -1L;
+            } else {
+                return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getTableIndex((AnalysisCubeTableSource) source, biUser).getTableVersion(new IndexKey(StringUtils.EMPTY));
+            }
+        }
         ICubeTableService service = CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source);
         return service == null ? -1l : service.getTableVersion(new IndexKey(StringUtils.EMPTY));
     }
@@ -212,8 +220,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
     private long getTableVersion(){
 
         TreeMap<String, CubeTableSource> tm = new TreeMap<String, CubeTableSource>();
-        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
-        for (CubeTableSource s : source.getSourceUsedBaseSource(set, new HashSet<CubeTableSource>())){
+        for (CubeTableSource s : source.getParentSource()){
             tm.put(s.fetchObjectCore().getIDValue(), s);
         }
         tm.remove(source.getAnalysisCubeTableSource().fetchObjectCore().getIDValue());
