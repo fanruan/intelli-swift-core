@@ -306,24 +306,38 @@ Data.Utils = {
                     if(BI.has(left, "c")){
                         data = BI.map(left.c, function (idx, obj) {
                             var value = obj.n, x = obj.n;
+                            var seriesValue = obj.s.c[id].s[0];
                             if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
                                 var date = new Date(BI.parseInt(x));
                                 x = date.print("%Y-%X-%d");
                             }
+                            var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
                             return {
                                 "x": x,
-                                "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
+                                "xValue": value,
+                                "y": y,
+                                "yValue": y,
+                                "z": name,
+                                "zValue": seriesName,
                                 "value": value,
                                 seriesName: seriesName,
+                                dimensionIds: [drillcataDimId || cataDid, drillseriDimId || seriesDid],
                                 targetIds: [targetIds[0]]
                             };
                         });
                     }else{
+                        var leftSeriesValue = left.s.c[id].s[0];
+                        var y = (BI.isNull(leftSeriesValue) || BI.isFinite(leftSeriesValue)) ? leftSeriesValue : 0;
                         data = [{
                             "x": "",
-                            "y": (BI.isFinite(left.s.c[id].s[0]) ? left.s.c[id].s[0] : 0),
+                            "xValue": "",
+                            "y": y,
+                            "yValue": y,
+                            "z": name,
+                            "zValue": name,
                             "value": "",
                             seriesName: seriesName,
+                            dimensionIds: [drillseriDimId || seriesDid],
                             targetIds: [targetIds[0]]
                         }]
                     }
@@ -339,13 +353,21 @@ Data.Utils = {
                 return BI.map(columnSizeArray, function (idx, value) {
                     var adjustData = BI.map(data.c, function (id, item) {
                         var value = item.n, x = item.n;
+                        var seriesValue = item.s[idx];
                         if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
                             var date = new Date(BI.parseInt(x));
                             x = date.print("%Y-%X-%d");
                         }
+                        var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
+
                         return {
                             x: x,
-                            y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                            xValue: value,
+                            y: y,
+                            yValue: y,
+                            z: widget.dimensions[targetIds[idx]].name,
+                            zValue: widget.dimensions[targetIds[idx]].name,
+                            dimensionIds: [drillcataDimId || cataDid],
                             value: value,
                             seriesName: widget.dimensions[targetIds[idx]].name,
                             targetIds: [targetIds[idx]]
@@ -359,11 +381,15 @@ Data.Utils = {
             }
             if (BI.has(data, "s")) {
                 return BI.map(data.s, function (idx, value) {
+                    var y = (BI.isFinite(value) ? value : 0);
                     return {
                         name: widget.dimensions[targetIds[idx]].name,
                         data: [{
                             x: "",
-                            y: (BI.isFinite(value) ? value : 0),
+                            xValue: "",
+                            dimensionIds: [],
+                            y: y,
+                            yValue: y,
                             targetIds: [targetIds[idx]]
                         }]
                     };
@@ -424,10 +450,16 @@ Data.Utils = {
                     var date = new Date(BI.parseInt(name));
                     name = date.print("%Y-%X-%d");
                 }
+
+                var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
+                var y = (BI.isFinite(item.s[0]) ? item.s[0] : 0);
                 obj.data = [{
-                    x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
-                    y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
+                    x: x,
+                    xValue: x,
+                    y: y,
+                    yValue: y,
                     z: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
+                    dimensionIds: BI.isNull(drillcataDimId) ? [cataDid] : [drillcataDimId],
                     seriesName: seriesName,
                     targetIds: [targetIds[0], targetIds[1], targetIds[2]]
                 }];
@@ -452,13 +484,20 @@ Data.Utils = {
                     var date = new Date(BI.parseInt(name));
                     name = date.print("%Y-%X-%d");
                 }
-                obj.name = name;
+                var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
+                var y = (BI.isFinite(item.s[0]) ? item.s[0] : 0);
                 obj.data = [{
-                    x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
-                    y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
+                    x: x,
+                    xValue: x,
+                    y: y,
+                    yValue: y,
+                    z: name,
+                    zValue: seriesName,
                     seriesName: seriesName,
+                    dimensionIds: BI.isNull(drillcataDimId) ? [cataDid] : [drillcataDimId],
                     targetIds: [targetIds[0], targetIds[1]]
                 }];
+                obj.name = name;
                 return obj;
             })];
         }
@@ -477,6 +516,7 @@ Data.Utils = {
                     }
                     var adjustData = BI.map(data.c, function (id, item) {
                         var res = {};
+                        var y = (BI.isFinite(item.s[idx]) ? item.s[idx] : 0);
                         if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                             switch (type) {
                                 case BICst.WIDGET.BUBBLE:
@@ -485,7 +525,9 @@ Data.Utils = {
                                 default:
                                     res = {
                                         x: item.n,
-                                        y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                                        xValue: item.n,
+                                        y: y,
+                                        yValue: y,
                                         targetIds: [targetIds[idx]],
                                         dId: dimIds[currentLayer - 1],
                                         drillDid: dimIds[currentLayer]
@@ -494,7 +536,9 @@ Data.Utils = {
                         } else {
                             res = {
                                 x: item.n,
-                                y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                                xValue: item.n,
+                                y: y,
+                                yValue: y,
                                 targetIds: [targetIds[idx]],
                                 dId: dimIds[currentLayer - 1],
                                 drillDid: dimIds[currentLayer]
@@ -531,9 +575,12 @@ Data.Utils = {
                             if (BI.isNotNull(o) && BI.isNotNull(x)) {
                                 data.push({
                                     "x": x,
+                                    "xValue": x,
                                     "z": tObj.n,
+                                    "zValue": tObj.n,
                                     "y": o,
-                                    targetIds: [targetIds[i]]
+                                    "yValue": o,
+                                    "targetIds": [targetIds[i]]
                                 });
                             }
                         });
@@ -566,7 +613,9 @@ Data.Utils = {
                         var x = item.n;
                         return {
                             x: x,
+                            xValue: x,
                             y: item.s[idx],
+                            yValue: item.s[idx],
                             targetIds: [targetIds[idx]]
                         };
                     });
