@@ -8,35 +8,26 @@ import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
-import com.fr.base.ScreenResolution;
-import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartDataConvertFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSettingFactory;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
-import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
-import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
-import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.data.TableDataSource;
 import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
@@ -46,38 +37,20 @@ import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.FRLogManager;
 import com.fr.general.GeneralContext;
-import com.fr.general.IOUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.main.FineBook;
 import com.fr.main.TemplateWorkBook;
 import com.fr.main.workbook.ResultWorkBook;
-import com.fr.plugin.chart.phantom.PhantomService;
-import com.fr.report.cell.FloatElement;
-import com.fr.report.poly.PolyECBlock;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
 import com.fr.script.Calculator;
-import com.fr.stable.CodeUtils;
-import com.fr.stable.Constants;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.script.CalculatorProvider;
-import com.fr.stable.unit.FU;
-import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.SessionIDInfor;
-import sun.misc.BASE64Decoder;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -386,130 +359,6 @@ public class BISession extends BIAbstractSession {
             return ((BIWorkBook) workBook).execute4BI(getParameterMap4Execute());
         }
         return null;
-    }
-
-    public ResultWorkBook getExportBookByWidgetNames(String[] widgetNames) throws Exception {
-        if (widgetNames.length == 0) {
-            return null;
-        }
-        BIWorkBook wb = new BIWorkBook();
-        BIPolyWorkSheet reportSheet = new BIPolyWorkSheet();
-        PolyECBlock polyECBlock = new PolyECBlock();
-        polyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode("Dashboard")));
-        polyECBlock.getBlockAttr().setFreezeHeight(true);
-        polyECBlock.getBlockAttr().setFreezeWidth(true);
-        polyECBlock.setBounds(new UnitRectangle(new Rectangle(), Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION));
-
-        for(String widgetName : widgetNames) {
-            BIWidget widget= report.getWidgetByName(widgetName);
-
-            if(widget != null) {
-                JSONObject jo = JSONObject.create();
-                try {
-                    MultiThreadManagerImpl.getInstance().refreshExecutorService();
-                    jo = widget.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionID));
-                } catch (Exception exception) {
-                    BILoggerFactory.getLogger().error(exception.getMessage(), exception);
-                    jo.put("error", BIPrintUtils.outputException(exception));
-                }
-
-                JSONObject configs = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.optJSONObject("data"));
-                JSONObject chartOptions = BIChartSettingFactory.parseChartSetting((MultiChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
-                //将plotOptions下的animation设为false否则不能截图（只截到网格线）
-                JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
-                plotOptions.put("animation", false);
-                chartOptions.put("plotOptions", plotOptions);
-                String base64 = null;
-                try {
-                    base64 = postMessage(PerformancePlugManager.getInstance().getPhantomServerIP(), PerformancePlugManager.getInstance().getPhantomServerPort(), new JSONObject("{" + "options:" + chartOptions + "}").toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                BufferedImage img = base64Decoder(base64);
-                FloatElement floatElement = new FloatElement(img);
-                int resolution = ScreenResolution.getScreenResolution();
-                floatElement.setWidth(FU.valueOfPix(img.getWidth(null), resolution));
-                floatElement.setHeight(FU.valueOfPix(img.getHeight(null), resolution));
-                polyECBlock.addFloatElement(floatElement);
-            } else {
-
-            }
-        }
-
-        reportSheet.addBlock(polyECBlock);
-        wb.addReport("Dashboard", reportSheet);
-        for (String widgetName : widgetNames) {
-            BIWidget widget = report.getWidgetByName(widgetName);
-            if (widget != null) {
-                widget = (BIWidget) widget.clone();
-                switch (widget.getType()) {
-                    case BIReportConstant.WIDGET.TABLE:
-                    case BIReportConstant.WIDGET.CROSS_TABLE:
-                    case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                        ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
-                        ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
-                        break;
-                    case BIReportConstant.WIDGET.DETAIL:
-                        ((BIDetailWidget) widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
-                        break;
-                }
-
-                widget.setWidgetName(widget.getWidgetName() + Math.random());
-                BIPolyWorkSheet ws = widget.createWorkSheet(this);
-                wb.addReport(widgetName, ws);
-            } else {
-                BIPolyWorkSheet emptyWidgetSheet = new BIPolyWorkSheet();
-                PolyECBlock emptyWidgetPolyECBlock = new PolyECBlock();
-                emptyWidgetPolyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode(widgetName)));
-                emptyWidgetPolyECBlock.getBlockAttr().setFreezeHeight(true);
-                emptyWidgetPolyECBlock.getBlockAttr().setFreezeWidth(true);
-                emptyWidgetPolyECBlock.setBounds(new UnitRectangle(new Rectangle(), Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION));
-                emptyWidgetSheet.addBlock(emptyWidgetPolyECBlock);
-                wb.addReport(widgetName, emptyWidgetSheet);
-            }
-        }
-
-        return wb.execute4BI(getParameterMap4Execute());
-    }
-
-    public static String postMessage(String ip, int port, String message) throws IOException {
-        URL url = new URL("http://" + ip + ":" + port + "/");
-        URLConnection connection = url.openConnection();
-        connection.setDoOutput(true);
-        connection.setConnectTimeout(50000);
-        connection.setReadTimeout(50000);
-
-        OutputStream out = connection.getOutputStream();
-        out.write(message.getBytes("utf-8"));
-        out.close();
-
-        //get base64 picture
-        InputStream in = connection.getInputStream();
-        String response = IOUtils.inputStream2String(in);
-        in.close();
-
-        return response;
-    }
-
-    public static BufferedImage base64Decoder(String base64) {
-        BASE64Decoder decoder = new BASE64Decoder();
-        BufferedImage img = null;
-        try {
-            // decode Base64
-            byte[] bytes = decoder.decodeBuffer(base64);
-            for (int i = 0; i < bytes.length; ++i) {
-                if (bytes[i] < 0) {// 调整异常数据
-                    bytes[i] += 256;
-                }
-            }
-            InputStream inputStream = new ByteArrayInputStream(bytes, 0, bytes.length);
-
-            img = ImageIO.read(inputStream);
-        } catch (Exception e) {
-            return null;
-        }
-        return img;
     }
 
     @Override

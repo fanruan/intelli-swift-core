@@ -1,16 +1,13 @@
 package com.fr.bi.web.dezi.services;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
+import com.fr.bi.cal.analyze.report.report.BIReportExportExcel;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.io.BIExcel2007Exporter;
 import com.fr.bi.fs.BIReportNode;
-import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
-import com.fr.bi.web.dezi.phantom.utils.PhantomServerUtils;
 import com.fr.general.DateUtils;
 import com.fr.io.exporter.AppExporter;
-import com.fr.json.JSONObject;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.core.ReportUtils;
 import com.fr.stable.StringUtils;
@@ -20,10 +17,8 @@ import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.utils.ExportUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Iterator;
 
 /**
  * 模板全局导出
@@ -56,17 +51,8 @@ public class BIGlobalExportAction extends AbstractBIDeziAction {
 
         long t = System.currentTimeMillis();
 
-        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
-        JSONObject widgets = (JSONObject) reportSetting.get("widgets");
-        String[] widgetNames = new String[widgets.length()];
-        int i = 0;
-        Iterator it = widgets.keys();
-        while (it.hasNext()) {
-            String wId = (String) it.next();
-            JSONObject widget = widgets.getJSONObject(wId);
-            widgetNames[i++] = BIWidgetFactory.parseWidget(widget, node.getUserId()).getWidgetName();
-        }
-        ResultWorkBook resultWorkBook = sessionIDInfo.getExportBookByWidgetNames(widgetNames);
+        BIReportExportExcel biReportExportExcel = new BIReportExportExcel(sessionID);
+        ResultWorkBook resultWorkBook = biReportExportExcel.getExportBook();
         String fileName = Browser.resolve(req).getEncodedFileName4Download(reportName.replace(",", "_").replaceAll("\\s", "_"));
         ExportUtils.setExcel2007Content(res, fileName);
         if (resultWorkBook != null) {
