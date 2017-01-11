@@ -1,7 +1,23 @@
 @import "../../../bibase";
 
 .bi-detail-table-header {
+  & > table > tbody > tr {
+    > td {
+      max-width: 0;
+    }
+  }
   & .header-cell-text {
     .user-select(initial);
+  }
+}
+.bi-table {
+  & > div > div > table, & > div > div > div > table {
+    & > tbody > tr > td:last-child, & > thead > tr > td:last-child {
+      & .bi-detail-table-header {
+        & > table > tbody > tr > td:first-child {
+          max-width: none;
+        }
+      }
+    }
   }
 }

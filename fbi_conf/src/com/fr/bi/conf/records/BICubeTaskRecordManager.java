@@ -55,7 +55,7 @@ public class BICubeTaskRecordManager extends BISystemDataManager<SingleUserBICub
 
     @Override
     public List<BICubeTaskRecord> getAllTaskRecords() {
-        List<BICubeTaskRecord> records=new ArrayList<BICubeTaskRecord>();
+        List<BICubeTaskRecord> records = new ArrayList<BICubeTaskRecord>();
         for (Long userId : getContainer().keySet()) {
             records.addAll(getSingleUserBICubeTaskRecordManager(userId).getCubeTaskRecords());
         }
@@ -65,5 +65,11 @@ public class BICubeTaskRecordManager extends BISystemDataManager<SingleUserBICub
     @Override
     public void persistData(long userId) {
         super.persistUserData(userId);
+    }
+
+    @Override
+    public BISystemProperties getLastSysProperties(long userId) {
+        BISystemProperties lastProperties = getSingleUserBICubeTaskRecordManager(userId).getLastProperties();
+        return lastProperties;
     }
 }

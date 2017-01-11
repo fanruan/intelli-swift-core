@@ -325,4 +325,5 @@ public class ListLabelWidget extends BISummaryWidget {
     public void reSetDetailTarget() {
 
     }
+
 }

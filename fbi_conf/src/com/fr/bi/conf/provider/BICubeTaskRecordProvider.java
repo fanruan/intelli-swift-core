@@ -1,6 +1,7 @@
 package com.fr.bi.conf.provider;
 
 import com.fr.bi.conf.records.BICubeTaskRecord;
+import com.fr.bi.conf.records.BISystemProperties;
 import com.fr.bi.conf.records.SingleUserBICubeTaskRecordManager;
 
 import java.util.List;
@@ -24,4 +25,7 @@ public interface BICubeTaskRecordProvider {
 
     @Deprecated
     void persistData(long userId);
+
+    BISystemProperties getLastSysProperties(long userId);
+
 }

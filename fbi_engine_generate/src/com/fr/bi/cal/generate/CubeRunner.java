@@ -239,7 +239,12 @@ public class CubeRunner {
         Set<CubeTableSource> allTableSourceSet = logManager.getAllTableSourceSet(biUser.getUserId());
         record.setAllSingleSourceLayers(allTableSourceSet);
         BIConfigureManagerCenter.getCubeTaskRecordManager().saveCubeTaskRecord(biUser.getUserId(), record);
-        BIConfigureManagerCenter.getCubeTaskRecordManager().persistData(biUser.getUserId());
+        new Thread(){
+            @Override
+            public void run(){
+                BIConfigureManagerCenter.getCubeTaskRecordManager().persistData(biUser.getUserId());
+            }
+        }.start();
 
     }
 }

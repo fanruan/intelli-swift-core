@@ -17,6 +17,7 @@
   border: none;
   border-top: 1px solid #eaeaea;
   border-bottom: 1px solid #eaeaea;
+  border-right: 1px solid #eaeaea;
 }
 .bi-analysis-etl-operator-add-column-pane .bi-formula-insert .list-view-outer .bi-search-editor {
   border-color: #eaeaea;
