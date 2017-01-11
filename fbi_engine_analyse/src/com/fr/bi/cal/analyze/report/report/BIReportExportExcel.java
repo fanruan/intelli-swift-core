@@ -63,7 +63,7 @@ public class BIReportExportExcel {
         this.sessionID = sessionID;
         this.session = (BISession) SessionDealWith.getSessionIDInfor(sessionID);
         this.node = session.getReportNode();
-        JSONObject widgetsJSON = (JSONObject) BIReadReportUtils.getBIReportNodeJSON(node).get("widgets");
+        JSONObject widgetsJSON = BIReadReportUtils.getBIReportNodeJSON(node).optJSONObject("widgets");
         Iterator it = widgetsJSON.keys();
 
         while (it.hasNext()) {
