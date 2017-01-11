@@ -57,6 +57,8 @@ public class BIReportExportExcel {
 
     private BIReportNode node;
 
+    private static int bytesLength = 256;
+
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
 
     public BIReportExportExcel(String sessionID) throws Exception {
@@ -101,7 +103,7 @@ public class BIReportExportExcel {
                 try {
                     base64 = postMessage(PerformancePlugManager.getInstance().getPhantomServerIP(), PerformancePlugManager.getInstance().getPhantomServerPort(), new JSONObject("{" + "options:" + chartOptions + "}").toString());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
 
                 BufferedImage img = base64Decoder(base64);
@@ -172,7 +174,7 @@ public class BIReportExportExcel {
             byte[] bytes = decoder.decodeBuffer(base64);
             for (int i = 0; i < bytes.length; ++i) {
                 if (bytes[i] < 0) {// 调整异常数据
-                    bytes[i] += 256;
+                    bytes[i] += bytesLength;
                 }
             }
             InputStream inputStream = new ByteArrayInputStream(bytes, 0, bytes.length);
