@@ -9,7 +9,6 @@ import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.gvi.BIByteDataInput;
-import com.fr.bi.stable.utils.program.BIStringUtils;
 
 import java.util.UUID;
 
