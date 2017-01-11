@@ -33,4 +33,6 @@ public interface CubePreConditionsCheck {
      * @return
      */
     boolean ConnectionCheck(Connection connection);
+
+    boolean envCheck(long userId);
 }

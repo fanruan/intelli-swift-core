@@ -5,8 +5,8 @@ BI.FunctionPane = BI.inherit(BI.Widget, {
     constants: {
         search_height: 20,
         height: 200,
-        width: 320,
-        column_size_editor: 120,
+        width: 370,
+        column_size_editor: 170,
         column_size_right: 200,
         row_size: 30,
         hgap: 10,
@@ -70,7 +70,7 @@ BI.FunctionPane = BI.inherit(BI.Widget, {
                 searcher: self.searchFunctionTree
             },
             height: 25,
-            width: 110
+            width: 150
         });
 
 

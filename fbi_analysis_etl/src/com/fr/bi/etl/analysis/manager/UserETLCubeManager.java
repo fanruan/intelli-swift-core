@@ -64,7 +64,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
                     BILoggerFactory.getLogger(UserETLCubeManager.class).info("parent table " + md5 + " invokeUpdate --> " + entry.getKey());
                     //					TODO 子表更新以前需要刷新父表表的columnDetailGetter
                     manager.getSource().reSetWidgetDetailGetter();
-                    manager.addTask(true);
+                    manager.addTask();
                 }
             }
         }
@@ -80,6 +80,12 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     }
 
     @Override
+    public void addTask(AnalysisCubeTableSource source, BIUser user) {
+        SingleUserETLTableCubeManager manager = createManager(source, user);
+            manager.addTask();
+    }
+
+    @Override
     public ICubeTableService getTableIndex(AnalysisCubeTableSource source, BIUser user) {
         return createManager(source, user).getTableIndex();
     }
@@ -89,6 +95,10 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         if (!(source.getType() == BIBaseConstant.TABLE_TYPE.TEMP)) {
             createManager(source, user);
         }
+    }
+
+    public boolean isAvailable(AnalysisCubeTableSource source, BIUser user) {
+        return createManager(source, user).isAvailable();
     }
 
     private SingleUserETLTableCubeManager createManager(AnalysisCubeTableSource source, BIUser user) {
@@ -127,8 +137,9 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         }
 
     }
+
     @Override
-    public void releaseCurrentThread(String key){
+    public void releaseCurrentThread(String key) {
         SingleUserETLTableCubeManager manager = threadMap.get(key);
         if (manager != null) {
             manager.forceReleaseCurrentThread();
@@ -239,12 +250,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     @Override
     public boolean checkVersion(AnalysisCubeTableSource source, BIUser user) {
         SingleUserETLTableCubeManager manager = createManager(source, user);
-        if (manager.checkVersion()) {
-            return true;
-        } else {
-            manager.addTask(true);
-            return false;
-        }
+        return manager.checkVersion();
     }
 
 }

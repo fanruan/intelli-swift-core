@@ -31,6 +31,11 @@ public class MemoryDetailGetter implements ICubeColumnDetailGetter {
     }
 
     @Override
+    public String getICubeResourceLocationPath() {
+        return null;
+    }
+
+    @Override
     public void clear() {
 
     }

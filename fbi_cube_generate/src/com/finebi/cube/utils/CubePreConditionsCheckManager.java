@@ -3,8 +3,11 @@ package com.finebi.cube.utils;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.data.impl.Connection;
+import com.fr.general.ComparatorUtils;
+import com.sybase.jdbc2.utils.JavaVersion;
 
 import java.io.File;
 
@@ -25,16 +28,8 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
 
     @Override
     public boolean SQLCheck(Cube cube, CubeTableSource tableSource) {
-            CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
-            try {
-                return tableSource.canExecute();
-            } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-                return false;
-            } finally {
-                tableEntityService.clear();
-            }
-        }
+        return true;
+    }
 
     @Override
     public boolean ConnectionCheck(Connection connection) {
@@ -42,9 +37,21 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
             connection.testConnection();
             return true;
         } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return false;
         }
 
+    }
+
+    @Override
+    public boolean envCheck(long userId) {
+        String currentJavaVersion = System.getProperty("java.version");
+        String lastVersion = BIConfigureManagerCenter.getCubeTaskRecordManager().getLastSysProperties(userId).getJavaVersion();
+        if (null == lastVersion) {
+            return true;
+        }
+//        JavaVersion.atOrAboveVersion(lastVersion);
+        return ComparatorUtils.equals(currentJavaVersion, lastVersion);
     }
 
     private double getDirSize(File file) {

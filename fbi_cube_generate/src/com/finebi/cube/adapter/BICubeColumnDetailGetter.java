@@ -35,20 +35,23 @@ public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
             return new PrimitiveDoubleGetter() {
                 @Override
                 public double getValue(int row) {
-                    double value = ((BICubeDoubleColumn) service).getOriginalValueByRow(row);
-                    return Double.isNaN(value) ? 0 : value;
+                    return ((BICubeDoubleColumn) service).getOriginalValueByRow(row);
                 }
             };
         } else if (type == PrimitiveType.LONG) {
             return new PrimitiveLongGetter() {
                 @Override
                 public long getValue(int row) {
-                    long value = ((BICubeLongColumn) service).getOriginalValueByRow(row);
-                    return value == NIOConstant.LONG.NULL_VALUE ? 0 : value;
+                    return ((BICubeLongColumn) service).getOriginalValueByRow(row);
                 }
             };
         }
         return null;
+    }
+
+    @Override
+    public String getICubeResourceLocationPath() {
+        return service.getResourceLocation().getAbsolutePath();
     }
 
     @Override

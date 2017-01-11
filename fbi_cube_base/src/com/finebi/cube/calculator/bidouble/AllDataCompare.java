@@ -4,6 +4,7 @@ import com.finebi.cube.api.*;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.CalculatorTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 
 /**
  * This class created on 2016/4/14.
@@ -17,14 +18,18 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
         final ICubeColumnDetailGetter getter = tableGetterService.getColumnDetailReader(key);
         PrimitiveType type = getter.getPrimitiveType();
         CalculatorTraversalAction ss;
-        if (type == PrimitiveType.LONG){
+        if (type == PrimitiveType.LONG) {
             final PrimitiveLongGetter g = (PrimitiveLongGetter) getter.createPrimitiveDetailGetter();
             ss = new CalculatorTraversalAction() {
                 boolean firstValue = true;
-                long sl;
+                long sl = NIOConstant.LONG.NULL_VALUE;
+
                 @Override
                 public void actionPerformed(int row) {
                     long temp = g.getValue(row);
+                    if (temp == NIOConstant.LONG.NULL_VALUE) {
+                        return;
+                    }
                     if (firstValue) {
                         firstValue = false;
                         sl = temp;
@@ -32,12 +37,13 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
                         sl = compare(sl, temp);
                     }
                 }
+
                 @Override
                 public double getCalculatorValue() {
                     return sl;
                 }
             };
-        } else if (type == PrimitiveType.DOUBLE){
+        } else if (type == PrimitiveType.DOUBLE) {
             final PrimitiveDoubleGetter g = (PrimitiveDoubleGetter) getter.createPrimitiveDetailGetter();
             ss = new CalculatorTraversalAction() {
                 boolean firstValue = true;
@@ -49,7 +55,11 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
                         firstValue = false;
                         sum = temp;
                     } else {
-                        sum = compare(sum, temp);
+                        if (Double.isNaN(sum)) {
+                            sum = temp;
+                        } else {
+                            sum = compare(sum, temp);
+                        }
                     }
                 }
 
@@ -71,10 +81,15 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
                             firstValue = false;
                             sum = temp;
                         } else {
-                            sum = compare(sum, temp);
+                            if (Double.isNaN(sum)) {
+                                sum = temp;
+                            } else {
+                                sum = compare(sum, temp);
+                            }
                         }
                     }
                 }
+
                 @Override
                 public double getCalculatorValue() {
                     return sum;
@@ -83,8 +98,6 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
         }
         range.Traversal(ss);
         return ss.getCalculatorValue();
-
-
     }
 
     protected abstract double compare(double sum, double rowValue);
