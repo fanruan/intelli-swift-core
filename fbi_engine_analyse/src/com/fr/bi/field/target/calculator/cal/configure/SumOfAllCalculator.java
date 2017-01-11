@@ -53,7 +53,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
             int deep = getCalDeep(rank_node);
             LightNode temp_node = getDeepCalNode(rank_node);
             LightNode cursor_node = temp_node;
-            Double sum = null;
+            double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
                 Number value;
                 if (targetKey instanceof AvgKey) {
@@ -62,16 +62,16 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
                     value = cursor_node.getSummaryValue(key);
                 }
                 if (value != null) {
-                    if(sum == null){
-                        sum = new Double(0.0f);
-                    }
                     sum += value.doubleValue();
                 }
                 cursor_node = cursor_node.getSibling();
+
+
             }
             cursor_node = temp_node;
+            Object value = new Double(sum);
             while (isNotEnd(cursor_node, deep)) {
-                cursor_node.setSummaryValue(createTargetGettingKey(), sum);
+                cursor_node.setSummaryValue(createTargetGettingKey(), value);
                 cursor_node = cursor_node.getSibling();
             }
             return null;
