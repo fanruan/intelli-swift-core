@@ -2,6 +2,7 @@ package com.fr.bi.web.dezi.phantom;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.dezi.phantom.utils.PhantomServerUtils;
 import com.fr.general.IOUtils;
@@ -23,8 +24,8 @@ import java.util.Map;
  */
 public class PhantomServer {
 
-    private String IP = "127.0.0.1";
-    private int PORT = 60880;
+    private String IP = PerformancePlugManager.getInstance().getPhantomServerIP();
+    private int PORT =  PerformancePlugManager.getInstance().getPhantomServerPort();
     private int STARTTIMES = 5;
 
     private static Map<String, String> osMap = new HashMap<String, String>();
@@ -127,7 +128,7 @@ public class PhantomServer {
             ArrayList<String> commands = new ArrayList<String>();
             commands.add(exe);
             commands.add(PhantomEnv + "/webserver.js");
-            commands.add("" + PORT++);
+            commands.add("" + PORT);
 
             ProcessBuilder processBuilder = new ProcessBuilder(commands);
             Process process = processBuilder.start();
@@ -138,21 +139,17 @@ public class PhantomServer {
             if (readLine == null || !readLine.contains("true")) {
                 process.destroy();
                 if(i == STARTTIMES - 1) {
-                    BILoggerFactory.getLogger().info("Fail to inject css.");
+                    BILoggerFactory.getLogger().info("Fail to start phantom server.");
                 }
             } else {
+                PerformancePlugManager.getInstance().setPhantomServerIP(IP);
+                PerformancePlugManager.getInstance().setPhantomServerPort(PORT);
                 injectAllCss();
                 return;
             }
+
+            PORT++;
         }
-    }
-
-    public String getIP() {
-        return IP;
-    }
-
-    public int getPort() {
-        return PORT;
     }
 
     private void injectAllCss() {

@@ -31,6 +31,7 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -51,6 +52,7 @@ import com.fr.json.JSONObject;
 import com.fr.main.FineBook;
 import com.fr.main.TemplateWorkBook;
 import com.fr.main.workbook.ResultWorkBook;
+import com.fr.plugin.chart.phantom.PhantomService;
 import com.fr.report.cell.FloatElement;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.report.report.ResultReport;
@@ -400,35 +402,39 @@ public class BISession extends BIAbstractSession {
 
         for(String widgetName : widgetNames) {
             BIWidget widget= report.getWidgetByName(widgetName);
-            JSONObject jo = JSONObject.create();
 
-            try {
-                MultiThreadManagerImpl.getInstance().refreshExecutorService();
-                jo = widget.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionID));
-            } catch (Exception exception) {
-                BILoggerFactory.getLogger().error(exception.getMessage(), exception);
-                jo.put("error", BIPrintUtils.outputException(exception));
+            if(widget != null) {
+                JSONObject jo = JSONObject.create();
+                try {
+                    MultiThreadManagerImpl.getInstance().refreshExecutorService();
+                    jo = widget.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionID));
+                } catch (Exception exception) {
+                    BILoggerFactory.getLogger().error(exception.getMessage(), exception);
+                    jo.put("error", BIPrintUtils.outputException(exception));
+                }
+
+                JSONObject configs = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.optJSONObject("data"));
+                JSONObject chartOptions = BIChartSettingFactory.parseChartSetting((MultiChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
+                //将plotOptions下的animation设为false否则不能截图（只截到网格线）
+                JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
+                plotOptions.put("animation", false);
+                chartOptions.put("plotOptions", plotOptions);
+                String base64 = null;
+                try {
+                    base64 = postMessage(PerformancePlugManager.getInstance().getPhantomServerIP(), PerformancePlugManager.getInstance().getPhantomServerPort(), new JSONObject("{" + "options:" + chartOptions + "}").toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                BufferedImage img = base64Decoder(base64);
+                FloatElement floatElement = new FloatElement(img);
+                int resolution = ScreenResolution.getScreenResolution();
+                floatElement.setWidth(FU.valueOfPix(img.getWidth(null), resolution));
+                floatElement.setHeight(FU.valueOfPix(img.getHeight(null), resolution));
+                polyECBlock.addFloatElement(floatElement);
+            } else {
+
             }
-
-            JSONObject configs = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.getJSONObject("data"));
-            JSONObject chartOptions = BIChartSettingFactory.parseChartSetting((MultiChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
-            //将plotOptions下的animation设为false否则不能截图（只截到网格线）
-            JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
-            plotOptions.put("animation", false);
-            chartOptions.put("plotOptions", plotOptions);
-            String base64 = null;
-            try {
-                base64 = postMessage("127.0.0.1", 8090, new JSONObject("{" + "options:" + chartOptions + "}").toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            BufferedImage img = base64Decoder(base64);
-            FloatElement floatElement = new FloatElement(img);
-            int resolution = ScreenResolution.getScreenResolution();
-            floatElement.setWidth(FU.valueOfPix(img.getWidth(null), resolution));
-            floatElement.setHeight(FU.valueOfPix(img.getHeight(null), resolution));
-            polyECBlock.addFloatElement(floatElement);
         }
 
         reportSheet.addBlock(polyECBlock);
@@ -452,6 +458,15 @@ public class BISession extends BIAbstractSession {
                 widget.setWidgetName(widget.getWidgetName() + Math.random());
                 BIPolyWorkSheet ws = widget.createWorkSheet(this);
                 wb.addReport(widgetName, ws);
+            } else {
+                BIPolyWorkSheet emptyWidgetSheet = new BIPolyWorkSheet();
+                PolyECBlock emptyWidgetPolyECBlock = new PolyECBlock();
+                emptyWidgetPolyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode(widgetName)));
+                emptyWidgetPolyECBlock.getBlockAttr().setFreezeHeight(true);
+                emptyWidgetPolyECBlock.getBlockAttr().setFreezeWidth(true);
+                emptyWidgetPolyECBlock.setBounds(new UnitRectangle(new Rectangle(), Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION));
+                emptyWidgetSheet.addBlock(emptyWidgetPolyECBlock);
+                wb.addReport(widgetName, emptyWidgetSheet);
             }
         }
 
