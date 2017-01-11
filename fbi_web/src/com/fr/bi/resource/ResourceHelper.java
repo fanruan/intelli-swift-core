@@ -602,6 +602,19 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/cordon/pane/item.cordon.css",
                 "com/fr/bi/web/css/modules/cordon/pane/pane.cordon.css",
 
+                //指标样式
+                "com/fr/bi/web/css/modules/targetstyle/widget.targetstylesetting.css",
+                "com/fr/bi/web/css/modules/targetstyle/widget.targetcondition.stylesetting.css",
+                "com/fr/bi/web/css/modules/targetstyle/widget.stylesetting.iconmark.css",
+
+                //组件过滤面板
+                "com/fr/bi/web/css/modules/widgetfilter/widget.widgetfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.linkagefilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.targetfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.dimensionfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
+                "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
+
                 //维度下拉
                 "com/fr/bi/web/css/modules/base/combos/dimension/dimension/abstract.dimension.combo.css",
 
@@ -1438,17 +1451,6 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/css/modules/cubepath/widget.cubepath.css",
                 "com/fr/bi/web/css/modules/cubepath/widget.cubepath.confirm.css",
-
-                "com/fr/bi/web/css/modules/targetstyle/widget.targetstylesetting.css",
-                "com/fr/bi/web/css/modules/targetstyle/widget.targetcondition.stylesetting.css",
-                "com/fr/bi/web/css/modules/targetstyle/widget.stylesetting.iconmark.css",
-
-                "com/fr/bi/web/css/modules/widgetfilter/widget.widgetfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.linkagefilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.targetfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.dimensionfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.controlfilter.css",
-                "com/fr/bi/web/css/modules/widgetfilter/item.drillfilter.css",
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 
