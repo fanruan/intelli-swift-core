@@ -18,10 +18,6 @@ import java.net.URLConnection;
  * Created by AstronautOO7 on 2016/12/22.
  */
 public class PhantomServerUtils {
-    //ip,port of phantom server
-    private static final String IP = "127.0.0.1";
-    private static final int PORT = 8090;
-
     public static final String CLOSE = "{\"status\": \"close\"}";
     public static final String LIVE = "{\"status\": \"live\"}";
 
