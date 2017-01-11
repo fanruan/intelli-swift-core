@@ -234,6 +234,11 @@ BICst.DASHBOARD_WIDGETS = [[{
     value: BICst.WIDGET.GIS_MAP,
     cls: "drag-map-gis-icon"
 }, {
+    text: BI.i18nText("BI-Heat_Map"),
+    title: BI.i18nText("BI-Heat_Map"),
+    value: BICst.WIDGET.HEAT_MAP,
+    cls: "drag-map-heat-icon"
+}, {
     text: BI.i18nText("BI-Dashboard_Chart"),
     title: BI.i18nText("BI-Dashboard_Chart"),
     value: BICst.WIDGET.DASHBOARD,
@@ -276,15 +281,15 @@ BICst.DASHBOARD_WIDGETS = [[{
     value: BICst.WIDGET.SCATTER,
     cls: "drag-scatter-icon"
 }, {
-    text: BI.i18nText("BI-Rect_Tree_Chart"),
-    title: BI.i18nText("BI-Rect_Tree_Chart"),
-    value: BICst.WIDGET.RECT_TREE,
-    cls: "drag-rect-tree-icon"
-}, {
     text: BI.i18nText("BI-Funnel_Chart"),
     title: BI.i18nText("BI-Funnel_Chart"),
     value: BICst.WIDGET.FUNNEL,
     cls: "drag-funnel-icon"
+}, {
+    text: BI.i18nText("BI-Rect_Tree_Chart"),
+    title: BI.i18nText("BI-Rect_Tree_Chart"),
+    value: BICst.WIDGET.RECT_TREE,
+    cls: "drag-rect-tree-icon"
 }], [{
     text: BI.i18nText("BI-Detail_Table"),
     title: BI.i18nText("BI-Detail_Table"),
