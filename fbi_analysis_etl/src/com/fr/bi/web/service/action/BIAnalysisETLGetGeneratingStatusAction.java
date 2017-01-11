@@ -23,28 +23,30 @@ public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLA
 
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         final long userId = ServiceUtils.getCurrentUserID(req);
-            String tableId = WebUtils.getHTTPRequestParameter(req, "id");
-            double percent;
-            try {
-                BusinessTable table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
-                Set<AnalysisCubeTableSource> sources = new HashSet<AnalysisCubeTableSource>();
-                // 判断Version只需判断自身,如果是AnalysisETLTableSource，则需要同时check自己的parents即AnalysisBaseTableSource
-                ((AnalysisCubeTableSource) table.getTableSource()).getSourceNeedCheckSource(sources);
-                int generated = 0;
-                for (AnalysisCubeTableSource s : sources) {
-                    BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of " + s.createUserTableSource(userId).fetchObjectCore().getIDValue());
-                    if (BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkVersion(s, new BIUser(userId))) {
-                        generated++;
-                    }
+        String tableId = WebUtils.getHTTPRequestParameter(req, "id");
+        double percent;
+        try {
+            BusinessTable table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+            Set<AnalysisCubeTableSource> sources = new HashSet<AnalysisCubeTableSource>();
+            // 判断Version只需判断自身,如果是AnalysisETLTableSource，则需要同时check自己的parents即AnalysisBaseTableSource
+            ((AnalysisCubeTableSource) table.getTableSource()).getSourceNeedCheckSource(sources);
+            int generated = 0;
+            for (AnalysisCubeTableSource s : sources) {
+                BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of " + s.createUserTableSource(userId).fetchObjectCore().getIDValue());
+                if (BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkVersion(s, new BIUser(userId))) {
+                    generated++;
+                } else {
+                    BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().addTask(s, new BIUser(userId));
                 }
-                percent = generated == sources.size() ? 1 : (0.1 + 0.9 * generated / sources.size());
-            } catch (BITableAbsentException e) {
-                percent = 0.1;
             }
-            JSONObject jo = new JSONObject();
-            jo.put(Constants.GENERATED_PERCENT, percent);
-            WebUtils.printAsJSON(res, jo);
+            percent = generated == sources.size() ? 1 : (0.1 + 0.9 * generated / sources.size());
+        } catch (BITableAbsentException e) {
+            percent = 0.1;
         }
+        JSONObject jo = new JSONObject();
+        jo.put(Constants.GENERATED_PERCENT, percent);
+        WebUtils.printAsJSON(res, jo);
+    }
 
 
     @Override
