@@ -362,6 +362,9 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
     @Override
     public T lastKey() {
+        if (size() - 1 < 0) {
+            return null;
+        }
         return getGroupValue(size() - 1);
     }
 

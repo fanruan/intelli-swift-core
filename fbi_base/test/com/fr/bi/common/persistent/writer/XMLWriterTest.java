@@ -78,7 +78,7 @@ public class XMLWriterTest extends TestCase {
             wrapper.setTagAvailable(true);
             wrapper.setProperty(false);
             XMLPersistentWriter object = new XMLPersistentWriter(wrapper);
-            File var3 = new File("D:\\temp\\" + name + ".xml");
+            File var3 = new File("E:\\temp\\" + name + ".xml");
             StableUtils.makesureFileExist(var3);
             XMLTools.writeOutputStreamXML(object, new FileOutputStream(var3));
         } catch (Exception e) {
@@ -166,7 +166,7 @@ public class XMLWriterTest extends TestCase {
 
     private Object get(Object object, String name) {
         try {
-            File var3 = new File("D:\\temp\\" + name + ".xml");
+            File var3 = new File("E:\\temp\\" + name + ".xml");
             StableUtils.makesureFileExist(var3);
             XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object));
             XMLTools.readInputStreamXML(reader, new FileInputStream(var3));
@@ -342,4 +342,18 @@ public class XMLWriterTest extends TestCase {
         test.value = "";
         checkEquals(test, "testUseContentEmpty");
     }
+    public void testUseInvalidChar() {
+        NormalString4SpecialChar test = new NormalString4SpecialChar();
+        StringBuffer sb = new StringBuffer();
+        sb.append("abc").append("pn\u0003ô").append("  ").append("t\b");
+//        sb.append("abc").append("pn").append("  ").append("t\b");
+        char ch = (char) 0x08;
+        sb.append(ch).append("\r\n");
+        String cont = sb.toString();
+        cont.replace("\b", "");
+        System.out.printf(cont);
+        test.value = cont;
+//        checkEquals(test, "testUseInvalidChar");
+    }
+
 }
