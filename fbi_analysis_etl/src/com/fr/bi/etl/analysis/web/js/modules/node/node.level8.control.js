@@ -30,11 +30,6 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
 
     startChecker: function (id) {
         var self = this;
-        BI.ETLReq.reqAddTask(function () {
-            BI.ETLReq.reqTableStatus({
-                id: id
-            })
-        });
         var checker = setInterval(function () {
             BI.ETLReq.reqTableStatus({
                 id: id
@@ -45,7 +40,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
                 }
                 self.widget.showLoading(res[ETLCst.GENERATED_PERCENT]);
             })
-        }, 5000);
+        }, 8000);
     },
 
 
