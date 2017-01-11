@@ -14,7 +14,7 @@ public class Constants {
     public final static String ITEMS ="items";
     public final static String PACK_ID ="myetlidbuxudonga";
     public final static String GENERATED_PERCENT ="generated_percent";
-    public final static String ALL_TABLE_GENERATED_PERCENT="all_Table_generated_percent";
+    public final static String ALL_TABLE_GENERATED_PERCENT="all_table_generated_percent";
     public final static String SYSTEM_TIME = BIReportConstant.SYSTEM_TIME;
 
     public final static class BUSINESS_TABLE_TYPE {

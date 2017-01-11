@@ -1,6 +1,7 @@
 package com.fr.bi.web.service.action;
 
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.web.service.utils.BIAnalysisTableHelper;
@@ -21,11 +22,14 @@ public class BIAnalysisETLCheckAllTableStatusAction extends AbstractAnalysisETLA
         final long userId = ServiceUtils.getCurrentUserID(req);
         Map processesMap = new HashMap();
         for (BusinessTable table : BIAnalysisETLManagerCenter.getBusiPackManager().getAllTables(userId)) {
+            if (null == BIModuleUtils.getBusinessTableById(table.getID())) {
+                continue;
+            }
             String tableId = table.getID().getIdentityValue();
-            double percent= BIAnalysisTableHelper.getTableGeneratingProcessById(tableId, userId);
+            double percent = BIAnalysisTableHelper.getTableGeneratingProcessById(tableId, userId);
             processesMap.put(tableId, percent);
         }
-        WebUtils.printAsJSON(res, new JSONObject().put(Constants.ALL_TABLE_GENERATED_PERCENT,processesMap));
+        WebUtils.printAsJSON(res, new JSONObject().put(Constants.ALL_TABLE_GENERATED_PERCENT, processesMap));
     }
 
 
