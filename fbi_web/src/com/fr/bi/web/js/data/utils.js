@@ -334,7 +334,7 @@ Data.Utils = {
                             "y": y,
                             "yValue": y,
                             "z": name,
-                            "zValue": name,
+                            "zValue": seriesName,
                             "value": "",
                             seriesName: seriesName,
                             dimensionIds: [drillseriDimId || seriesDid],
