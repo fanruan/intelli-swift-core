@@ -165,8 +165,6 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                     self._showFinish();
                 }, 300);
             }
-        } else {
-            this.setStart();
         }
     },
 
