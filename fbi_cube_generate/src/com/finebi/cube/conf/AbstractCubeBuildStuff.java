@@ -80,14 +80,13 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         BILoggerFactory.getLogger().info("***************space check start*****************");
         boolean spaceCheck = getSpaceCheckResult();
         BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck);
-//        BILoggerFactory.getLogger().info("***************connection check start*****************");
-//        boolean connectionCheck = getConnectionCheck();
-//        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
-//        BILoggerFactory.getLogger().info("***************table check start*****************");
-//        boolean sqlTest = getSqlTest();
-//        BILoggerFactory.getLogger().info("***************table  check result: " + sqlTest);
-//        return spaceCheck && connectionCheck;
-        return spaceCheck;
+        BILoggerFactory.getLogger().info("***************system properties start*****************");
+        boolean envCheck = envCheck();
+        BILoggerFactory.getLogger().info("***************system properties result: " + spaceCheck);
+        BILoggerFactory.getLogger().info("***************connection check start*****************");
+        boolean connectionCheck = getConnectionCheck();
+        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
+        return spaceCheck && connectionCheck;
     }
 
     public Set<CubeTableSource> getSystemTableSources() {
@@ -264,6 +263,13 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
             }
         }
         return true;
+    }
+
+    private boolean envCheck() {
+        CubePreConditionsCheck check = new CubePreConditionsCheckManager();
+        check.envCheck(userId);
+        return true;
+
     }
 
     private boolean getSpaceCheckResult() {

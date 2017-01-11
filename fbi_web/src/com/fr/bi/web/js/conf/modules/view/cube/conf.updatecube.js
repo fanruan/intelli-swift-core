@@ -43,6 +43,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
                     if (data.result) {
                         self._createCheckInterval();
                     } else {
+                        self.cubeLog.setEnd();
                         self._setImmediateButtonStatus(true);
                     }
                 });

@@ -5,13 +5,7 @@ public abstract class CalculatorTraversalAction implements SingleRowTraversalAct
     protected double sum;
 
     public CalculatorTraversalAction() {
-        setSum(0);
     }
 
     public abstract double getCalculatorValue();
-
-    public void setSum(double sum) {
-        this.sum = sum;
-    }
-
 }

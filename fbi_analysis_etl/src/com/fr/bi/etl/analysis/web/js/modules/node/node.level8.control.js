@@ -40,7 +40,7 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
                 }
                 self.widget.showLoading(res[ETLCst.GENERATED_PERCENT]);
             })
-        }, 5000);
+        }, 8000);
     },
 
 

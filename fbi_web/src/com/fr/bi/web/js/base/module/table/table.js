@@ -1692,9 +1692,14 @@ BI.Table = BI.inherit(BI.Widget, {
                 columnSize.push(width);
             });
         }
+
         var result = [];
         for (var i = 0, len = Math.max(columnSize.length, headerColumnSize.length); i < len; i++) {
-            result.push(Math.max(columnSize[i], headerColumnSize[i]));
+            if (i === len - 1) {
+                result[i] = Math.max(columnSize[i], headerColumnSize[i]);
+            } else {
+                result[i] = columnSize[i] || headerColumnSize[i];
+            }
         }
         return result;
     },
@@ -1807,7 +1812,7 @@ BI.Table = BI.inherit(BI.Widget, {
             run(topright);
 
             var lw = 0, rw = 0;
-            BI.each(o.columnSize, function (i, size) {
+            BI.each(columnSize, function (i, size) {
                 if (o.freezeCols.contains(i)) {
                     lw += size;
                 } else {
@@ -1821,7 +1826,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 lw = BI.parseFloat(lw) + o.freezeCols.length;
             }
             if (BI.isNumeric(rw)) {
-                rw = BI.parseFloat(rw) + o.columnSize.length - o.freezeCols.length;
+                rw = BI.parseFloat(rw) + columnSize.length - o.freezeCols.length;
             }
             this.topLeftContainer.element.width(isRight ? rw : lw);
             this.topRightContainer.element.width(isRight ? lw : rw);
@@ -1829,23 +1834,22 @@ BI.Table = BI.inherit(BI.Widget, {
             this.scrollTopRight.element[0].scrollLeft = this.scrollBottomRight.element[0].scrollLeft;
             if (o.isNeedResize && o.isResizeAdapt) {
                 var leftWidth = BI.sum(o.freezeCols, function (i, col) {
-                    return o.columnSize[col] > 1 ? o.columnSize[col] + 1 : o.columnSize[col];
+                    return columnSize[col] > 1 ? columnSize[col] + 1 : columnSize[col];
                 });
                 this.partitions.attr("columnSize", isRight ? ['fill', leftWidth] : [leftWidth, 'fill']);
                 this.partitions.resize();
             }
         } else {
-            o.columnSize = columnSize || [];
             BI.each(this.colgroupTds, function (i, colgroup) {
                 var width = colgroup.attr("width") | 0;
-                if (width !== o.columnSize[i]) {
-                    var w = self._calculateWidth(o.columnSize[i]);
+                if (width !== columnSize[i]) {
+                    var w = self._calculateWidth(columnSize[i]);
                     colgroup.attr("width", w).css("width", w);
                     BI.each(self.headerTds, function (j, items) {
                         if (items[i]) {
                             if (items[i].__mergeCols.length > 1) {
                                 var wid = 0;
-                                BI.each(o.columnSize, function (t, s) {
+                                BI.each(columnSize, function (t, s) {
                                     if (items[i].__mergeCols.contains(t)) {
                                         wid += s;
                                     }
@@ -1876,7 +1880,7 @@ BI.Table = BI.inherit(BI.Widget, {
                         if (items[i]) {
                             if (self.headerTds[j][i].__mergeCols.length > 1) {
                                 var wid = 0;
-                                BI.each(o.columnSize, function (t, s) {
+                                BI.each(columnSize, function (t, s) {
                                     if (self.headerTds[j][i].__mergeCols.contains(t)) {
                                         wid += s;
                                     }
@@ -1909,9 +1913,9 @@ BI.Table = BI.inherit(BI.Widget, {
                     });
                 }
             });
-            var cW = this._calculateWidth(BI.sum(o.columnSize));
+            var cW = this._calculateWidth(BI.sum(columnSize));
             if (cW > 1.05) {
-                cW = cW + o.columnSize.length;
+                cW = cW + columnSize.length;
             }
             this.tableContainer.element.width(cW);
         }

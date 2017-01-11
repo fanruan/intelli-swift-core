@@ -5,7 +5,7 @@ if (!window.FR) {
 FR.serverURL = document.location.href;
 FR.servletURL = "";
 
-FR.i18nText4Mobile = {
+BI.i18nText4Mobile = {
     'BI-Count': '个',
     'BI-Wan': '万',
     'BI-Million': '百万',
@@ -70,8 +70,8 @@ FR.i18n = BI.i18n = {
 };
 
 BI.i18nText = function (key) {
-    if(FR.i18nText4Mobile[key]) {
-        return FR.i18nText4Mobile[key];
+    if(BI.i18nText4Mobile[key]) {
+        return BI.i18nText4Mobile[key];
     }
     return key;
 };

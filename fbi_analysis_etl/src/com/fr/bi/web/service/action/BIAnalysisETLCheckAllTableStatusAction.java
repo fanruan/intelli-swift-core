@@ -15,23 +15,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by 小灰灰 on 2016/6/2.
+ * Created by kary on 17-1-6.
  */
-public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLAction {
-
+public class BIAnalysisETLCheckAllTableStatusAction extends AbstractAnalysisETLAction {
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         final long userId = ServiceUtils.getCurrentUserID(req);
-        String tableId = WebUtils.getHTTPRequestParameter(req, "id");
-        double percent = BIAnalysisTableHelper.getTableGeneratingProcessById(tableId, userId);
-        JSONObject jo = new JSONObject();
-        jo.put(Constants.GENERATED_PERCENT, percent);
-        WebUtils.printAsJSON(res, jo);
+        Map processesMap = new HashMap();
+        for (BusinessTable table : BIAnalysisETLManagerCenter.getBusiPackManager().getAllTables(userId)) {
+            if (null == BIModuleUtils.getBusinessTableById(table.getID())) {
+                continue;
+            }
+            String tableId = table.getID().getIdentityValue();
+            double percent = BIAnalysisTableHelper.getTableGeneratingProcessById(tableId, userId);
+            processesMap.put(tableId, percent);
+        }
+        WebUtils.printAsJSON(res, new JSONObject().put(Constants.ALL_TABLE_GENERATED_PERCENT, processesMap));
     }
 
 
     @Override
     public String getCMD() {
-        return "get_cube_status";
+        return "check_all_table_status";
     }
-}
 
+}

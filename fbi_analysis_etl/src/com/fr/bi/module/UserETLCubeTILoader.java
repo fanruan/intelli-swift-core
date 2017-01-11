@@ -105,4 +105,5 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
     public long getVersion() {
         return 0;
     }
+
 }
