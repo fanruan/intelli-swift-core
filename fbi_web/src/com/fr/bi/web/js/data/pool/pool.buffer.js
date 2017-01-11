@@ -85,6 +85,29 @@
                 Buffer[key] = data;
                 callback(data);
             });
+        },
+
+        checkAllAnalysisTablesStatus: function() {
+            if (BI.isNotNull(Buffer[ETLCst.CHECK_STATUS_INTERVAL])) {
+                clearInterval(Buffer[ETLCst.CHECK_STATUS_INTERVAL]);
+            }
+            if (BI.size(Buffer[ETLCst.PACK_ID]) > 0) {
+                Buffer[ETLCst.CHECK_STATUS_INTERVAL] = setInterval(function() {
+                    BI.ETLReq.reqTableStatus({}, function(res) {
+                        var tables = Buffer[ETLCst.PACK_ID];
+                        BI.each(tables, function(id, tableFn) {
+                            tableFn(res[id]);
+                        });
+                    });
+                }, 3000);
+            }
+        },
+
+        putAnalysisTableStatusFn: function(id, callback) {
+            if (BI.isNull(Buffer[ETLCst.PACK_ID])) {
+                Buffer[ETLCst.PACK_ID] = {};
+            }
+            Buffer[ETLCst.PACK_ID][id] = callback;
         }
     };
 })();

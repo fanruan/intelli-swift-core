@@ -35,6 +35,9 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         //         id: id
         //     })
         // });
+        Data.BufferPool.putAnalysisTableStatusFn(id, function(percent) {
+            self.widget.showLoading(0.9);
+        });
         var checker = setInterval(function () {
             BI.ETLReq.reqTableStatus({
                 id: id

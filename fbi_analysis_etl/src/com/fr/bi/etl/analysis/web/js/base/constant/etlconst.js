@@ -22,4 +22,5 @@ ETLCst.ITEMS = "items";
 ETLCst.PACK_ID = "myetlidbuxudonga";
 ETLCst.GENERATED_PERCENT = "generated_percent";
 ETLCst.SYSTEM_TIME = "__system_time-3e1d05defe78__";
+ETLCst.CHECK_STATUS_INTERVAL = "__check_status_interval__";
 
