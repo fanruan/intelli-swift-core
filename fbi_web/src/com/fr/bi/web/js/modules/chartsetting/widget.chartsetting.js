@@ -281,7 +281,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     type: "bi.pareto_chart_setting",
                     wId: wId
                 });
-                this.chartSetting.on(BI.RectTreeChartSetting.EVENT_CHANGE, function () {
+                this.chartSetting.on(BI.ParetoChartsSetting.EVENT_CHANGE, function () {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;

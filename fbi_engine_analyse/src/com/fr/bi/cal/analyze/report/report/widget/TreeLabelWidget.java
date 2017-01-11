@@ -239,4 +239,9 @@ public class TreeLabelWidget extends BIAbstractWidget{
     public int getType() {
         return BIReportConstant.WIDGET.TREE_LABEL;
     }
+
+    @Override
+    public void reSetDetailTarget() {
+
+    }
 }
