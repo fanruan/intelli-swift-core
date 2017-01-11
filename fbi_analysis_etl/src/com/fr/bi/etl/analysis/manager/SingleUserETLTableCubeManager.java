@@ -62,7 +62,11 @@ public class SingleUserETLTableCubeManager implements Release {
 	}
 
 	public boolean isAvailable() {
-		return !tq.isEmpty();
+		boolean isEmpty =  tq.isEmpty();
+		if(isEmpty){
+			addTask();
+		}
+		return !isEmpty;
 	}
 	
 	public void addTask(){
@@ -93,6 +97,8 @@ public class SingleUserETLTableCubeManager implements Release {
 								data.run();
 								data.end();
 								tq.add(new ETLTableObject(source, data.getPath()));
+								UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
+								manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue(), source.getUserId());
 							} catch (Exception e){
 								BILoggerFactory.getLogger().error(e.getMessage(), e);
 							} finally {

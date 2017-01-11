@@ -78,6 +78,22 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
         return true;
     }
 
+    @Override
+    public Set<CubeTableSource> getParentSource() {
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+        for (BITargetAndDimension dim : widget.getViewDimensions()) {
+            if (dim.getStatisticElement() != null && dim.createTableKey() != null) {
+                set.add(dim.createTableKey().getTableSource());
+            }
+        }
+        for (BITargetAndDimension target : widget.getViewTargets()) {
+            if (target.getStatisticElement() != null && target.createTableKey() != null) {
+                set.add(target.createTableKey().getTableSource());
+            }
+        }
+        return set;
+    }
+
 
     private boolean isAvailable(CubeTableSource source) {
         if(source instanceof AnalysisCubeTableSource){
