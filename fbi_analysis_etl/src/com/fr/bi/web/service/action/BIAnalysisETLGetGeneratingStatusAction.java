@@ -34,6 +34,7 @@ public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLA
                 for (AnalysisCubeTableSource s : sources) {
                     BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of " + s.createUserTableSource(userId).fetchObjectCore().getIDValue());
                     if (BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkVersion(s, new BIUser(userId))) {
+                        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().addTask(s, new BIUser(userId));
                         generated++;
                     }
                 }
