@@ -562,7 +562,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.rightYTitleStyle]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.leftYShowLabel]
+                    items: [this.rightYShowLabel]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.rightYLabelStyle]

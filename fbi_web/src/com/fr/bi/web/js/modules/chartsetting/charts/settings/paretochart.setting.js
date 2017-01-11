@@ -7,7 +7,7 @@ BI.ParetoChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.ParetoChartsSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting bi-axis-chart-setting"
+            baseCls: "bi-charts-setting bi-pareto-chart-setting"
         })
     },
 
@@ -562,7 +562,7 @@ BI.ParetoChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.rightYTitleStyle]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.leftYShowLabel]
+                    items: [this.rightYShowLabel]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.rightYLabelStyle]
@@ -1134,4 +1134,4 @@ BI.ParetoChartsSetting = BI.inherit(BI.AbstractChartSetting, {
     }
 });
 BI.ParetoChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.pareto_charts_setting", BI.ParetoChartsSetting);
+$.shortcut("bi.pareto_chart_setting", BI.ParetoChartsSetting);
