@@ -458,9 +458,11 @@ Data.Utils = {
                     xValue: x,
                     y: y,
                     yValue: y,
-                    z: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
+                    size: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
                     dimensionIds: BI.isNull(drillcataDimId) ? [cataDid] : [drillcataDimId],
                     seriesName: seriesName,
+                    z: seriesName,
+                    zValue: seriesName,
                     targetIds: [targetIds[0], targetIds[1], targetIds[2]]
                 }];
                 obj.name = name;
@@ -1278,13 +1280,13 @@ Data.Utils = {
                 var opts = formatItems(items, t);
                 return formatConfigForDashboard(opts[1], opts[0]);
             case BICst.WIDGET.BUBBLE:
-                BI.each(data, function (idx, item) {
-                    BI.each(item, function (id, it) {
-                        BI.each(it.data, function (i, da) {
-                            da.size = da.z;
-                        })
-                    })
-                });
+                //BI.each(data, function (idx, item) {
+                //    BI.each(item, function (id, it) {
+                //        BI.each(it.data, function (i, da) {
+                //            da.size = da.z;
+                //        })
+                //    })
+                //});
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
                     var type = [];
@@ -2295,7 +2297,7 @@ Data.Utils = {
                                     getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
                             }
                             return label
-                        } else if (isDashboard && BI.isNull(items[0].data[0].seriesName)) {
+                        } else if (isDashboard && BI.isNull(items[0].data[0].z)) {
                             return label
                         }
                         return '<div style="text-align: center">' + this.category + '</div>' + label;
