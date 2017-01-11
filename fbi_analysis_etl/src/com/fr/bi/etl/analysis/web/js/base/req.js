@@ -115,9 +115,9 @@ BI.ETLReq = {
             });
     },
 
-    reqAddTask: function (data, callback) {
+    reqAllAnalysisTableProcesses: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
-        BI.requestAsync("fr_bi_analysis_etl", "add_analysis_task", data, function (res) {
+        BI.requestAsync("fr_bi_analysis_etl", "check_all_table_status", data, function (res) {
             callback(res);
         });
     }

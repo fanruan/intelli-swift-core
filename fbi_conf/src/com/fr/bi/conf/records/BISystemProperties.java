@@ -1,7 +1,5 @@
 package com.fr.bi.conf.records;
 
-import com.sybase.jdbc2.utils.JavaVersion;
-
 /**
  * This class created on 17-1-10.
  *
