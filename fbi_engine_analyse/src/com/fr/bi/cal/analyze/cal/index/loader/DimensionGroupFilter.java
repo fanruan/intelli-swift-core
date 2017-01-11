@@ -295,14 +295,6 @@ public class DimensionGroupFilter {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
             clearLastIndex(roots, lastRoots, firstChangeDeep);
-            if (null != lastRoots) {
-                for (int i = 0; i < roots.length; i++) {
-                    if (null == lastRoots[i] && null != roots[i]) {
-                        firstChangeDeep = 0;
-                        break;
-                    }
-                }
-            }
             for (int deep = firstChangeDeep; deep < rowDimension.length; deep++) {
                 fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, shouldBuildTree, executor, hasFilter[deep]);
             }
