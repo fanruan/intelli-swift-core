@@ -34,10 +34,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     el: {
                         el: {
                             el: {
-                                type: "bi.fix_table",
-                                afterScroll: function () {
-                                    self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(o.wId), BI.Utils.getWSThemeColorByID(o.wId));
-                                }
+                                type: "bi.table_view",
+                                // afterScroll: function () {
+                                //     self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(o.wId), BI.Utils.getWSThemeColorByID(o.wId));
+                                // }
                             }
                         }
                     },

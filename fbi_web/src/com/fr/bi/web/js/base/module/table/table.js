@@ -1692,9 +1692,14 @@ BI.Table = BI.inherit(BI.Widget, {
                 columnSize.push(width);
             });
         }
+
         var result = [];
         for (var i = 0, len = Math.max(columnSize.length, headerColumnSize.length); i < len; i++) {
-            result.push(Math.max(columnSize[i], headerColumnSize[i]));
+            if (i === len - 1) {
+                result[i] = Math.max(columnSize[i], headerColumnSize[i]);
+            } else {
+                result[i] = columnSize[i] || headerColumnSize[i];
+            }
         }
         return result;
     },
