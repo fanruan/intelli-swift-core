@@ -35,12 +35,12 @@ public class AutoGroup extends AbstractGroup {
 
     @Override
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
-        Number lastKey = (Number) BICollectionUtils.lastUnNullKey(baseMap);
+        Number lastKey = GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(baseMap));
         double tiMax = 0d;
         if (lastKey != null) {
             tiMax = lastKey.doubleValue();
         }
-        Number firstKey = (Number) BICollectionUtils.firstUnNullKey(baseMap);
+        Number firstKey = GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(baseMap));
         double tiMin = 0d;
         if (firstKey != null) {
             tiMin = firstKey.doubleValue();

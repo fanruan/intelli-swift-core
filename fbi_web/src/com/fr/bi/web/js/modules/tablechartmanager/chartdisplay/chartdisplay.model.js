@@ -383,7 +383,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         "y": y,
                         "yValue": y,
                         "z": name,
-                        "zValue": name,
+                        "zValue": seriesName,
                         dimensionIds: [drillseriDimId || self.seriesDid],
                         targetIds: [targetIds[0]]
                     }]
