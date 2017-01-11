@@ -167,6 +167,12 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         if (BI.isNull(columnSize)) {
             columnSize = BI.makeArray(header.length, "");
         }
+        BI.each(columnSize, function (i, size) {
+            if (size < 80) {
+                size = 80;
+            }
+            columnSize[i] = size;
+        });
         return columnSize;
     },
 
@@ -248,7 +254,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _getFreezeCols: function () {
         var wId = this.options.wId;
         return BI.Utils.getWSFreezeFirstColumnById(wId) ? [0] : [];
-
     },
 
     _isNeedFreeze: function () {
