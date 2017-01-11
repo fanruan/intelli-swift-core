@@ -128,7 +128,7 @@ public class SingleUserETLTableCubeManager implements Release {
     }
 
 	public void forceReleaseCurrentThread(){
-		tq.forceReleaseObject();
+		tq.releaseObject();
 	}
 
 	/**
