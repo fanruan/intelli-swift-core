@@ -4,6 +4,8 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.sssecret.IRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.NoneMetricRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.RootDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.SimpleMergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -91,9 +93,18 @@ public class NodeIteratorCreator {
         }
     }
 
+    private MergeIteratorCreator[] createMergeIteratorCreator(int allNode){
+        MergeIteratorCreator[] mergeIteratorCreators = new MergeIteratorCreator[rowDimension.length];
+        Arrays.fill(mergeIteratorCreators, new SimpleMergeIteratorCreator());
+        for (int i = 0; i < rowDimension.length; i++){
+            DimensionFilter filter = rowDimension[i].getFilter();
+        }
+        return mergeIteratorCreators;
+    }
+
     private IRootDimensionGroup createNormalIteratorRoot() {
         if (usedTargets == null || usedTargets.length == 0){
-            return new NoneMetricRootDimensionGroup(metricGroupInfoList, session, isRealData, filter, getDirectDimensionFilter());
+            return new NoneMetricRootDimensionGroup(metricGroupInfoList, createMergeIteratorCreator(), session, isRealData, filter, getDirectDimensionFilter());
         }
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
         for (int i = 0; i < directFilterIndexes.length; i++) {
@@ -101,7 +112,7 @@ public class NodeIteratorCreator {
                 metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]);
             }
         }
-        return new RootDimensionGroup(metricGroupInfoList, session, isRealData);
+        return new RootDimensionGroup(metricGroupInfoList, createMergeIteratorCreator(), session, isRealData);
     }
 
     private IRootDimensionGroup createAllNodeIteratorRoot() {
@@ -111,7 +122,7 @@ public class NodeIteratorCreator {
                 metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]);
             }
         }
-        return new RootDimensionGroup(metricGroupInfoList, session, isRealData);
+        return new RootDimensionGroup(metricGroupInfoList, createMergeIteratorCreator(), session, isRealData);
     }
 
     private GroupValueIndex[] createDirectFilterIndex() {
@@ -174,7 +185,7 @@ public class NodeIteratorCreator {
                 return true;
             }
         }
-        return false;
+        return !targetFilterMap.isEmpty();
     }
 
     private boolean hasTargetSort() {

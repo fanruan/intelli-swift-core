@@ -10,6 +10,7 @@ import com.fr.bi.cal.analyze.cal.Executor.Executor;
 import com.fr.bi.cal.analyze.cal.Executor.ExecutorPartner;
 import com.fr.bi.cal.analyze.cal.Executor.ILazyExecutorOperation;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.cal.sssecret.mergeiter.MergeIterator;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 
 /**
@@ -34,7 +34,7 @@ import java.util.Map.Entry;
  * @author Daniel
  *         分页机制，使用另外一个线程来判断计算当前已经计算了多少结果了 并取数
  */
-public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecutorOperation<Entry, MetricMergeResult>, ISingleDimensionGroup {
+public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecutorOperation<MetricMergeResult, MetricMergeResult>, ISingleDimensionGroup {
 
 
     private static int demoGroupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
@@ -46,6 +46,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     private ICubeValueEntryGetter[] getters;
     private GroupValueIndex[] gvis;
     private Object[] data;
+    private MergeIteratorCreator mergeIteratorCreator;
     private boolean useRealData = true;
     private ICubeDataLoader loader;
     private List<MetricMergeResult> metricMergeResultList = new ArrayList<MetricMergeResult>();
@@ -53,9 +54,8 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     /**
      * Group计算的构造函数
-     *
      */
-    protected SingleDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters,  Object[] data, GroupValueIndex[] gvis, ICubeDataLoader loader, boolean useRealData) {
+    protected SingleDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, boolean useRealData) {
         this.metricTables = metricTables;
         this.summaryLists = summaryLists;
         this.tis = tis;
@@ -64,12 +64,13 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         this.data = data;
         this.loader = loader;
         this.gvis = gvis;
+        this.mergeIteratorCreator = mergeIteratorCreator;
         this.useRealData = useRealData;
         turnOnExecutor();
     }
 
-    public static SingleDimensionGroup createDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, final Object[] data, GroupValueIndex[] gvis, ICubeDataLoader loader, boolean useRealData) {
-        return new SingleDimensionGroup(metricTables, summaryLists, tis, columns, getters, data, gvis, loader, useRealData);
+    public static SingleDimensionGroup createDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, final Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, boolean useRealData) {
+        return new SingleDimensionGroup(metricTables, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
     }
 
 
@@ -81,23 +82,23 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     protected Iterator getIterator() {
         Iterator[] iterators = new Iterator[metricTables.length];
-        for (int i = 0; i < iterators.length; i++){
+        for (int i = 0; i < iterators.length; i++) {
             Iterator it = getIterator(i);
             if (!columns[i].getDirectToDimensionRelationList().isEmpty()) {
-               it = new DirectToDimensionRelationIterator(it, columns[i], loader);
+                it = new DirectToDimensionRelationIterator(it, columns[i], loader);
             }
             iterators[i] = it;
         }
-        return new MergeIterator(iterators, columns[0].getComparator());
+        return mergeIteratorCreator.createIterator(iterators, gvis, columns[0].getComparator());
     }
 
     protected Iterator getIterator(int index) {
-        if (gvis[index] == null || GVIUtils.isAllEmptyRoaringGroupValueIndex(gvis[index])){
+        if (gvis[index] == null || GVIUtils.isAllEmptyRoaringGroupValueIndex(gvis[index])) {
             return MergeIterator.EMPTY;
         }
         boolean urd = useRealData;
         int groupLimit = demoGroupLimit;
-        if (!useRealData){
+        if (!useRealData) {
             long rowCount = tis[index].getRowCount();
             if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
                 urd = true;
@@ -203,28 +204,14 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     }
 
     @Override
-    public MetricMergeResult mainTaskConditions(Entry entry) {
-        GroupValueIndex[] values = (GroupValueIndex[]) entry.getValue();
-        GroupValueIndex[] result = new GroupValueIndex[gvis.length];
-        for (int i = 0; i < gvis.length; i++){
-            if (gvis[i] == null || values[i] == null){
-                result[i] = null;
-            } else {
-                result[i] = gvis[i].AND(values[i]);
-            }
-        }
-        return new MetricMergeResult(entry.getKey(), result);
-    }
-
-    @Override
-    public boolean preJumpCurrentOne(Entry entry) throws TerminateExecutorException {
-        return false;
+    public MetricMergeResult mainTaskConditions(MetricMergeResult result) {
+        return result;
     }
 
     @Override
     public boolean jumpCurrentOne(MetricMergeResult para) throws TerminateExecutorException {
-        for (GroupValueIndex gvi : para.getGvis()){
-            if (!indexIsAllEmpty(gvi)){
+        for (GroupValueIndex gvi : para.getGvis()) {
+            if (!indexIsAllEmpty(gvi)) {
                 return false;
             }
         }
@@ -236,11 +223,11 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     }
 
     @Override
-    public void mainTask(Entry obj, MetricMergeResult metricMergeResult) throws TerminateExecutorException {
+    public void mainTask(MetricMergeResult obj, MetricMergeResult metricMergeResult) throws TerminateExecutorException {
         addMetricMergeResult(metricMergeResult);
     }
 
-    private void addMetricMergeResult(MetricMergeResult metricMergeResult){
+    private void addMetricMergeResult(MetricMergeResult metricMergeResult) {
         metricMergeResultList.add(metricMergeResult);
     }
 

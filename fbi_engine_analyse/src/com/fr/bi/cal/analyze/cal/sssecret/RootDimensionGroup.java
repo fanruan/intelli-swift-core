@@ -7,6 +7,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -30,6 +31,7 @@ import java.util.List;
 public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected List<MetricGroupInfo> metricGroupInfoList;
+    protected MergeIteratorCreator[] mergeIteratorCreators;
     protected BISession session;
     protected boolean useRealData;
 
@@ -44,8 +46,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected int rowSize;
     private NodeExpander expander;
 
-    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, BISession session, boolean useRealData) {
+    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, BISession session, boolean useRealData) {
         this.metricGroupInfoList = metricGroupInfoList;
+        this.mergeIteratorCreators = mergeIteratorCreators;
         this.session = session;
         this.useRealData = useRealData;
         init();
@@ -208,11 +211,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     /**
-     * @param gv 表示一行的值
-     * @param index 上一次游标的位置
-     * @param deep 维度的层级
+     * @param gv       表示一行的值
+     * @param index    上一次游标的位置
+     * @param deep     维度的层级
      * @param expander 展开信息
-     * @param list 当前的游标
+     * @param list     当前的游标
      */
     private ReturnStatus getNext(GroupConnectionValue gv,
                                  int[] index,
@@ -233,9 +236,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
         ReturnStatus returnStatus = findCurrentValue(sg, gv, list, row);
         //如果越界，就一直往上移，直到不越界或者结束。
-        while (returnStatus == ReturnStatus.GroupOutOfBounds){
+        while (returnStatus == ReturnStatus.GroupOutOfBounds) {
             //如果找到根节点还是越界，说明结束了。
-            if (deep == 0){
+            if (deep == 0) {
                 return ReturnStatus.GroupEnd;
             }
             //把index数组deep位置后面的都清了，下移一位开始找，每次seek的时候这个while循环至多执行一次。
@@ -275,7 +278,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
-        return ng.createSingleDimensionGroup(columns[deep], getters[deep], data, useRealData);
+        return ng.createSingleDimensionGroup(columns[deep], getters[deep], data, mergeIteratorCreators[deep], useRealData);
     }
 
     protected Object[] getParentsValuesByGv(GroupConnectionValue groupConnectionValue, int deep) {

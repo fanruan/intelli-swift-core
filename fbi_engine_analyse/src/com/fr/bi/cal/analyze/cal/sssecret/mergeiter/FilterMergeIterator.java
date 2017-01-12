@@ -12,16 +12,24 @@ import java.util.Map;
  */
 public class FilterMergeIterator extends MergeIterator {
     private StringOneValueFilterValue filterValue;
-    public FilterMergeIterator(Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators, Comparator c, StringOneValueFilterValue filterValue) {
-        super(iterators, c);
+
+    public FilterMergeIterator(Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators, GroupValueIndex[] gvis, Comparator c, StringOneValueFilterValue filterValue) {
+        super(iterators, gvis, c);
         this.filterValue = filterValue;
     }
 
     @Override
     protected void moveNext() {
         super.moveNext();
-        if (next != null && !filterValue.showNode(next.getKey())){
+        if (next != null && !show(next.getData())) {
             moveNext();
         }
+    }
+
+    private boolean show(Object key) {
+        if (filterValue == null) {
+            return true;
+        }
+        return filterValue.showNode(key);
     }
 }

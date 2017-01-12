@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -50,13 +51,13 @@ public class NoneDimensionGroup implements Release {
     }
 
 
-    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, boolean useRealData) {
-        return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, loader, useRealData);
+    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, MergeIteratorCreator mergeIteratorCreator, boolean useRealData) {
+        return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
     }
 
 
-    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, boolean useRealData) {
-        return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, loader, useRealData);
+    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, MergeIteratorCreator mergeIteratorCreator, GroupValueIndex[] gvis, boolean useRealData) {
+        return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
     }
 
 

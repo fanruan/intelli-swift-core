@@ -16,14 +16,6 @@ public interface ILazyExecutorOperation<T, F> {
     F mainTaskConditions(T para_1);
 
     /**
-     * LazyExecutor在执行mainTaskConditions前，会判断是否跳过当前的
-     * mainTask
-     *
-     * @return 布尔值
-     */
-    boolean preJumpCurrentOne(T para_1);
-
-    /**
      * LazyExecutor在执行mainTask时，会判断是否跳过当前的
      * mainTask
      *

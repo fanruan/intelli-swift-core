@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.cal.sssecret.mergeiter;
 
+import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.stable.collections.array.IntArray;
 
@@ -11,14 +12,16 @@ import java.util.Map;
 /**
  * Created by 小灰灰 on 2016/12/30.
  */
-public class MergeIterator implements Iterator<Map.Entry<Object, GroupValueIndex[]>>{
+public class MergeIterator implements Iterator<MetricMergeResult>{
     private Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators;
+    private GroupValueIndex[] gvis;
     private Comparator c;
     private Map.Entry<Object, GroupValueIndex>[] entries;
-    protected Map.Entry<Object, GroupValueIndex[]> next;
+    protected MetricMergeResult next;
 
-    public MergeIterator(Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators, Comparator c) {
+    public MergeIterator(Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators, GroupValueIndex[] gvis, Comparator c) {
         this.iterators = iterators;
+        this.gvis = gvis;
         this.c = c;
         initEntries();
         moveNext();
@@ -32,8 +35,8 @@ public class MergeIterator implements Iterator<Map.Entry<Object, GroupValueIndex
     }
 
     @Override
-    public Map.Entry<Object, GroupValueIndex[]> next() {
-        Map.Entry<Object, GroupValueIndex[]> temp = next;
+    public MetricMergeResult next() {
+        MetricMergeResult temp = next;
         moveNext();
         return temp;
     }
@@ -66,7 +69,7 @@ public class MergeIterator implements Iterator<Map.Entry<Object, GroupValueIndex
     protected void moveNext() {
         Object minValue = null;
         IntArray array = new IntArray();
-        final GroupValueIndex[] gvis = new GroupValueIndex[iterators.length];
+        GroupValueIndex[] gvis = new GroupValueIndex[iterators.length];
         for (int i = 0; i < entries.length; i++) {
             Map.Entry<Object, GroupValueIndex> entry = entries[i];
             if (entry != null) {
@@ -94,23 +97,14 @@ public class MergeIterator implements Iterator<Map.Entry<Object, GroupValueIndex
         if (minValue == null){
             next = null;
         } else {
-            final Object finalMinValue = minValue;
-            next = new Map.Entry<Object, GroupValueIndex[]>() {
-                @Override
-                public Object getKey() {
-                    return finalMinValue;
+            for (int i = 0; i < gvis.length ; i++){
+                if (this.gvis[i] == null || gvis[i] == null){
+                    gvis[i] = null;
+                } else {
+                    gvis[i] = gvis[i].AND(this.gvis[i]);
                 }
-
-                @Override
-                public GroupValueIndex[] getValue() {
-                    return gvis;
-                }
-
-                @Override
-                public GroupValueIndex[] setValue(GroupValueIndex[] value) {
-                    return new GroupValueIndex[0];
-                }
-            };
+            }
+            next = new MetricMergeResult(minValue, gvis);
         }
         moveEntries(array);
     }
