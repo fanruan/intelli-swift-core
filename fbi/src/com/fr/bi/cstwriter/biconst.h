@@ -280,6 +280,7 @@
 # define BI_JSON_KEYS_FILTER_TYPE @"filter_type"
 # define BI_JSON_KEYS_FIELD_TYPE @"field_type"
 # define BI_JSON_KEYS_FIELD_VALUE @"field_value"
+# define BI_JSON_KEYS_FIELD_NAME @"field_name"
 # define BI_JSON_KEYS_TYPE @"type"
 # define BI_JSON_KEYS_VALUE @"value"
 # define BI_JSON_KEYS_EXPANDER @"expander"
