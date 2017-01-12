@@ -81,7 +81,7 @@ public class BIMapInfoManager {
         List<String> children = new ArrayList<String>();
         for(File f : files){
             String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
-            String currentName = (StringUtils.isEmpty(parentName) ? fileName : parentName + File.separator + fileName);
+            String currentName = (StringUtils.isEmpty(parentName) ? fileName : parentName + "/" + fileName);
             if(isInner){
                 innerMapName.put(fileName, prev + currentName);
                 innerMapTypeName.put(prev + currentName, fileName);
