@@ -256,22 +256,27 @@ public class DBTableSource extends AbstractTableSource {
             dm = emTableData.createDataModel(null);
             JSONArray fieldNames = new JSONArray();
             JSONArray values = new JSONArray();
+            JSONArray fieldTypes = new JSONArray();
             jo.put(BIJSONConstant.JSON_KEYS.FIELDS, fieldNames);
             jo.put(BIJSONConstant.JSON_KEYS.VALUE, values);
+            jo.put(BIJSONConstant.JSON_KEYS.TYPE, fieldTypes);
             int colLen = dm.getColumnCount();
             int rolLen = Math.min(dm.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
+            Map<String, ICubeFieldSource> fieldsMap = getFields();
 
             for (int col = 0; col < colLen; col++) {
                 String name = dm.getColumnName(col);
                 if (!fields.isEmpty() && !fields.contains(name)) {
                     continue;
                 }
+                int fieldType = fieldsMap.get(name).getFieldType();
                 fieldNames.put(name);
+                fieldTypes.put(fieldType);
                 JSONArray value = new JSONArray();
                 values.put(value);
                 for (int row = 0; row < rolLen; row++) {
                     boolean isString = false;
-                    if (getFields().containsKey(name) && getFields().get(name).getFieldType() == DBConstant.COLUMN.STRING) {
+                    if (fieldsMap.containsKey(name) &&  fieldType == DBConstant.COLUMN.STRING) {
                         isString = true;
                     }
                     Object val = dm.getValueAt(row, col);

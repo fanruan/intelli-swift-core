@@ -2282,7 +2282,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/table/table.js",
                 "com/fr/bi/web/js/base/module/table/table.tree.js",
 
-                "com/fr/bi/web/js/base/module/table/table.fix.js",
+//                "com/fr/bi/web/js/base/module/table/table.fix.js",
 
                 "com/fr/bi/web/js/base/module/layer/layer.floatbox.js",
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",
@@ -2515,6 +2515,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.area.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.multiaxis.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.multiaxiscombine.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",
@@ -3074,8 +3075,6 @@ public class ResourceHelper {
             "com/fr/bi/web/js/base/module/table/table.js",
             "com/fr/bi/web/js/base/module/table/table.tree.js",
 
-            "com/fr/bi/web/js/base/module/table/table.fix.js",
-
             "com/fr/bi/web/js/base/module/layer/layer.floatbox.js",
             "com/fr/bi/web/js/base/module/layer/layer.popup.js",
             "com/fr/bi/web/js/base/module/layer/layer.scroll.js",
@@ -3337,6 +3336,7 @@ public class ResourceHelper {
             "com/fr/bi/web/js/widget/detailchart/chart.area.js",
             "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
             "com/fr/bi/web/js/widget/detailchart/chart.multiaxis.js",
+            "com/fr/bi/web/js/widget/detailchart/chart.multiaxiscombine.js",
             "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
             "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
             "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",

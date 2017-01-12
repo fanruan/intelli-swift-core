@@ -7,6 +7,7 @@ import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.gen.oper.BuildLogHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIBusinessPackagePersistThread;
 import com.fr.bi.base.BIBusinessPackagePersistThreadHolder;
@@ -79,6 +80,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
      * @throws Exception
      */
     public void updatePackageTables(HttpServletRequest req) throws Exception {
+
         String packageName = WebUtils.getHTTPRequestParameter(req, "name");
         String groupName = WebUtils.getHTTPRequestParameter(req, "groupName");
         String packageId = WebUtils.getHTTPRequestParameter(req, "id");

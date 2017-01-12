@@ -11,15 +11,17 @@ import java.util.*;
 public class SingleUserBICubeTaskRecordManager {
     private final static String XML_TAG = "SingleUserBICubeTaskRecordManager";
     private List<BICubeTaskRecord> cubeTaskRecords = new ArrayList<BICubeTaskRecord>();
-    private int maxLogNums = 200;
+    final private int maxLogNums = 10;
+    private BISystemProperties lastProperties;
 
     public void saveTaskRecord(BICubeTaskRecord record) {
         synchronized (this) {
-            if (cubeTaskRecords.size() > (maxLogNums > 0 ? maxLogNums : 0)) {
+            if (cubeTaskRecords.size() >= (maxLogNums > 0 ? maxLogNums : 0)) {
                 cubeTaskRecords.remove(0);
             }
             cubeTaskRecords.add(record);
         }
+        lastProperties =new BISystemProperties(System.getProperties().getProperty("java.version"));
     }
 
     public void clear() {
@@ -30,5 +32,9 @@ public class SingleUserBICubeTaskRecordManager {
 
     public List<BICubeTaskRecord> getCubeTaskRecords() {
         return cubeTaskRecords;
+    }
+
+    public BISystemProperties getLastProperties() {
+        return lastProperties;
     }
 }

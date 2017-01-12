@@ -155,8 +155,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         }
 
         function changeMaxMinScale() {
-            self.gaugeAxis[0].min = self.config.min_scale || null;
-            self.gaugeAxis[0].max = self.config.max_scale || null;
+            self.gaugeAxis[0].min = BI.parseFloat(self.config.min_scale) || null;
+            self.gaugeAxis[0].max = BI.parseFloat(self.config.max_scale) || null;
         }
 
         function formatNumberLevelInYaxis(type, position) {
