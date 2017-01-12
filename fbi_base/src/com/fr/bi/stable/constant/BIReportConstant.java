@@ -431,7 +431,7 @@ public class BIReportConstant {
 
         public static final int TABLE_SHOW = 0x40;
 
-        public static final int HEAT = 0x41;
+        public static final int HEAT_MAP = 0x41;
         public static final int PARETO = 0x42;
 
         public static final int NONE = -1;
