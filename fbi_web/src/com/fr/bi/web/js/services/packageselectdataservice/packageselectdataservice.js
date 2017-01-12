@@ -44,6 +44,9 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 }
                 if (!op.node) {//根节点， 根据业务包找所有的表
                     populate(self._getTablesStructureByPackId(op.packageId));
+                    if (op.packageId === ETLCst.PACK_ID) {
+                        Data.BufferPool.checkAllAnalysisTablesStatus();
+                    }
                     return;
                 }
                 if (BI.isKey(op.node._keyword)) {
