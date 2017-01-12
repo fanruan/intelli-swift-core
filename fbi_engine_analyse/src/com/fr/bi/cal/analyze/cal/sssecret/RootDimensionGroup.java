@@ -3,7 +3,9 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
@@ -11,13 +13,17 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
+import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -26,11 +32,14 @@ import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.exception.BITableUnreachableException;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.cache.list.IntList;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import com.fr.web.core.SessionDealWith;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -416,6 +425,19 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
+                Long userId = session.getUserId();
+                GroupValueIndex authGVI = null;
+                if (userId != UserControl.getInstance().getSuperManagerID()) {
+                    List<TargetFilter> filters = getAuthFilter(userId);
+                    for (int k = 0; k < filters.size(); k++) {
+                        if (authGVI == null) {
+                            authGVI = filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId);
+                        } else {
+                            authGVI = GVIUtils.OR(authGVI, filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId));
+                        }
+                    }
+                }
+                gvi = gvi.AND(authGVI);
             } else if (ckp instanceof NumberDimensionCalculator) {
                 if (value == BIBaseConstant.EMPTY_NODE_DATA) {
                     v = v.getParent();
@@ -712,5 +734,36 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             this.pageIndex = this.pageIndex.subList(0, 0);
         }
 
+    }
+
+    private List<TargetFilter> getAuthFilter(long userId) {
+        List<TargetFilter> filters = new ArrayList<TargetFilter>();
+        List<BIPackageID> authPacks;
+        String sessionId = session.getSessionID();
+        if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(sessionId);
+        } else {
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+        }
+        for (int i = 0; i < authPacks.size(); i++) {
+            List<BIPackageAuthority> packAuths;
+            if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), sessionId);
+            } else {
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
+            }
+            for (int j = 0; j < packAuths.size(); j++) {
+                BIPackageAuthority auth = packAuths.get(j);
+                if (auth.getFilter() != null) {
+                    try {
+                        TargetFilter filter = TargetFilterFactory.parseFilter(auth.getFilter(), userId);
+                        filters.add(filter);
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
+        return filters;
     }
 }
