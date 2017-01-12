@@ -319,6 +319,7 @@ BICst.JSON_KEYS.FILTER_AND_OR = "andor";
 BICst.JSON_KEYS.FILTER_TYPE = "filter_type";
 BICst.JSON_KEYS.FIELD_TYPE = "field_type";
 BICst.JSON_KEYS.FIELD_VALUE = "field_value";
+BICst.JSON_KEYS.FIELD_NAME = "field_name";
 BICst.JSON_KEYS.TYPE = "type";
 BICst.JSON_KEYS.VALUE = "value";
 BICst.JSON_KEYS.EXPANDER = "expander";

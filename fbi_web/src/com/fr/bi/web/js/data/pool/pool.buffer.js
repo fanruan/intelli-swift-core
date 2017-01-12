@@ -85,6 +85,36 @@
                 Buffer[key] = data;
                 callback(data);
             });
+        },
+
+        checkAllAnalysisTablesStatus: function () {
+            if (BI.isNotNull(Buffer[BICst.CHECK_ANALYSIS_STATUS_INTERVAL])) {
+                clearInterval(Buffer[BICst.CHECK_ANALYSIS_STATUS_INTERVAL]);
+            }
+            if (BI.size(Buffer[ETLCst.PACK_ID]) > 0) {
+                Buffer[BICst.CHECK_ANALYSIS_STATUS_INTERVAL] = setInterval(function () {
+                    BI.ETLReq.reqAllAnalysisTableProcesses({}, function (res) {
+                        var generatedTables = [];
+                        var processMap = res[ETLCst.ALL_TABLE_GENERATED_PERCENT];
+                        var tables = Buffer[ETLCst.PACK_ID];
+                        BI.each(tables, function (id, tableFn) {
+                            tableFn(processMap[id]);
+                            processMap[id] === 1 && (generatedTables.push(id));
+                        });
+                        BI.remove(Buffer[ETLCst.PACK_ID], function (key, value) {
+                            return generatedTables.contains(key);
+                        });
+                        BI.size(Buffer[ETLCst.PACK_ID]) === 0 && clearInterval(Buffer[BICst.CHECK_ANALYSIS_STATUS_INTERVAL]);
+                    });
+                }, 3000);
+            }
+        },
+
+        putAnalysisTableStatusFn: function (id, callback) {
+            if (BI.isNull(Buffer[ETLCst.PACK_ID])) {
+                Buffer[ETLCst.PACK_ID] = {};
+            }
+            Buffer[ETLCst.PACK_ID][id] = callback;
         }
     };
 })();
