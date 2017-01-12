@@ -1,6 +1,6 @@
 /**
  * 图表控件
- * @class BI.MultiAxisChart
+ * @class BI.MultiAxisCombieChart
  * @extends BI.Widget
  * leftYxis 左值轴属性
  * rightYxis 右值轴属性
@@ -10,7 +10,7 @@ BI.MultiAxisCombineChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.MultiAxisCombineChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-multi-axis-chart"
+            baseCls: "bi-multi-axis-combine-chart"
         })
     },
 

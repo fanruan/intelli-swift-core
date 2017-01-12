@@ -2,6 +2,7 @@ package com.fr.bi.web.dezi.phantom;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.dezi.phantom.utils.PhantomServerUtils;
 import com.fr.general.IOUtils;
@@ -23,8 +24,9 @@ import java.util.Map;
  */
 public class PhantomServer {
 
-    private static final String IP = "127.0.0.1";
-    private static final int PORT = 8089;
+    private String IP = PerformancePlugManager.getInstance().getPhantomServerIP();
+    private int PORT =  PerformancePlugManager.getInstance().getPhantomServerPort();
+    private int STARTTIMES = 5;
 
     private static Map<String, String> osMap = new HashMap<String, String>();
     private static String PhantomEnv = FRContext.getCurrentEnv().getPath() + BIBaseConstant.PHANTOM.PHANTOM_PATH;
@@ -48,8 +50,8 @@ public class PhantomServer {
 
     //resources needed in the phantom server
     private static final String[][] SCRIPT_SOURCES = {
-            new String[]{PhantomResources + "/d3.js","d3.js"},
-            new String[]{PhantomResources + "/vancharts-all.js","vancharts-all.js"},
+            new String[]{PhantomResources + "/d3.js", "d3.js"},
+            new String[]{PhantomResources + "/vancharts-all.js", "vancharts-all.js"},
             new String[]{PhantomResources + "/leaflet.js", "leaflet.js"}
     };
 
@@ -76,7 +78,7 @@ public class PhantomServer {
         FORMAT_JS = createFormat();
     }
 
-    private static String createFormat(){
+    private static String createFormat() {
         String formatBase = new StringBuffer().append(IOUtils.concatFiles(FORMAT_BASE, '\n')).append("\n").toString();
         String localeJs = fetchJS(FRContext.getLocale());
         String formatJs = new StringBuffer().append(IOUtils.concatFiles(FORMAT, '\n')).append("\n").toString();
@@ -84,9 +86,9 @@ public class PhantomServer {
         return new StringBuffer().append(formatBase).append(localeJs).append(DATA_JS).append(formatJs).toString();
     }
 
-    public static String fetchJS(Locale locale){
+    public static String fetchJS(Locale locale) {
         String localeJS = localeJsMap.get(locale);
-        if (StringUtils.isEmpty(localeJS)){
+        if (StringUtils.isEmpty(localeJS)) {
             try {
                 localeJsMap.put(locale, ResourceHelper.fetchI18NJs(locale));
             } catch (Exception e) {
@@ -97,12 +99,13 @@ public class PhantomServer {
     }
 
     public static String leafletCss = injectLeafletCss(PhantomCss);
+
     private static String injectLeafletCss(String path) {
         try {
             InputStream input = new FileInputStream(path);
             String string = IOUtils.inputStream2String(input);
             string = string.replace('\uFEFF', ' ');
-            string = string.replace('\r',' ');
+            string = string.replace('\r', ' ');
             string = string.replace('\n', ' ');
             return string;
         } catch (Exception e) {
@@ -121,31 +124,41 @@ public class PhantomServer {
 
         String exe = PhantomServerUtils.getExe(PhantomEnv);
 
-        ArrayList<String> commands = new ArrayList<String>();
-        commands.add(exe);
-        commands.add(PhantomEnv + "/webserver.js");
+        for(int i = 0; i < STARTTIMES; i ++) {
+            ArrayList<String> commands = new ArrayList<String>();
+            commands.add(exe);
+            commands.add(PhantomEnv + "/webserver.js");
+            commands.add("" + PORT);
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commands);
-        Process process = processBuilder.start();
+            ProcessBuilder processBuilder = new ProcessBuilder(commands);
+            Process process = processBuilder.start();
 
-        final BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(process.getInputStream()));
-        final String readLine = bufferedReader.readLine();
-        if(readLine == null && !readLine.contains("ready")) {
-            process.destroy();
-            throw new RunTimeErorException("Error, PhantomJs can't start!");
+            final BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            final String readLine = bufferedReader.readLine();
+            if (readLine == null || !readLine.contains("true")) {
+                process.destroy();
+                if(i == STARTTIMES - 1) {
+                    BILoggerFactory.getLogger().info("Fail to start phantom server.");
+                }
+            } else {
+                PerformancePlugManager.getInstance().setPhantomServerIP(IP);
+                PerformancePlugManager.getInstance().setPhantomServerPort(PORT);
+                injectAllCss();
+                return;
+            }
+
+            PORT++;
         }
-
-        injectAllCss();
     }
 
-    private void injectAllCss () {
-        try{
+    private void injectAllCss() {
+        try {
             JSONObject json = JSONObject.create();
             json.put("css", leafletCss);
             String cssCmd = json.toString();
             String res = PhantomServerUtils.postMessage(IP, PORT, cssCmd);
-            if(PhantomServerUtils.isServerInjectSuccess(res)) {
+            if (PhantomServerUtils.isServerInjectSuccess(res)) {
                 BILoggerFactory.getLogger().info("Success to inject css.");
             } else {
                 BILoggerFactory.getLogger().info("Fail to inject css.");
@@ -155,17 +168,17 @@ public class PhantomServer {
         }
     }
 
-    private static void getResources (String libDir, String[][] libFiles) throws FileNotFoundException {
+    private static void getResources(String libDir, String[][] libFiles) throws FileNotFoundException {
         //delete old lib with dependence resources
         File serverLib = new File(libDir);
-        if(serverLib.exists() && serverLib.isDirectory()) {
+        if (serverLib.exists() && serverLib.isDirectory()) {
             deleteDir(serverLib);
         }
 
         serverLib.mkdirs();
 
         //build new phantom server lib
-        for (int i = 0; i < libFiles.length; i ++) {
+        for (int i = 0; i < libFiles.length; i++) {
             InputStream in = new FileInputStream(libFiles[i][0]);
             File file = new File(libDir + File.separator + libFiles[i][1]);
             try {
@@ -185,8 +198,8 @@ public class PhantomServer {
         }
     }
 
-    private static boolean deleteDir (File dir) {
-        if(dir.isDirectory()) {
+    private static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
             String[] children = dir.list();
             //recursion to delete sub directory
             for (int i = 0; i < children.length; i++) {

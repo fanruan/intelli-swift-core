@@ -18,10 +18,6 @@ import java.net.URLConnection;
  * Created by AstronautOO7 on 2016/12/22.
  */
 public class PhantomServerUtils {
-    //ip,port of phantom server
-    private static final String IP = "127.0.0.1";
-    private static final int PORT = 8089;
-
     public static final String CLOSE = "{\"status\": \"close\"}";
     public static final String LIVE = "{\"status\": \"live\"}";
 
@@ -165,25 +161,5 @@ public class PhantomServerUtils {
             }
         }
         return -1;
-    }
-
-    public static BufferedImage base64Decoder(String base64){
-        BASE64Decoder decoder = new BASE64Decoder();
-        BufferedImage img = null;
-        try {
-            // Base64解码
-            byte[] bytes = decoder.decodeBuffer(base64);
-            for (int i = 0; i < bytes.length; ++i) {
-                if (bytes[i] < 0) {// 调整异常数据
-                    bytes[i] += 256;
-                }
-            }
-            InputStream buffin = new ByteArrayInputStream(bytes, 0, bytes.length);
-
-            img = ImageIO.read(buffin);
-        } catch (Exception e) {
-            return null;
-        }
-        return img;
     }
 }
