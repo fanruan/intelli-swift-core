@@ -11,6 +11,7 @@ import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -18,6 +19,7 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
+import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.Transmitter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -244,6 +246,15 @@ public class ResourceHelper {
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
                     JSONObject jo = t.createJSONWithFieldsInfo(userId);
                     JSONObject tableFields = jo.getJSONObject("tableFields");
+                    CubeTableSource tableSource = t.getTableSource();
+                    JSONObject sourceJO = tableSource.createJSON();
+                    String connectionName;
+                    try {
+                        connectionName = sourceJO.getString("connection_name");
+                    } catch (Exception e) {
+                        connectionName = StringUtils.EMPTY;
+                    }
+                    tableFields.put("connection_name", connectionName);
                     tables.put(t.getID().getIdentityValue(), tableFields);
                     JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
                     fields.join(fieldsInfo);
@@ -1743,14 +1754,12 @@ public class ResourceHelper {
                 //excel
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.js",
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.model.js",
-                "com/fr/bi/web/js/extend/excel/upload/button.uploadexcel.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/excel.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/excel.fieldset.table.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/combo.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/trigger.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/item.excelfieldtype.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/popup.fieldset.js",
-                "com/fr/bi/web/js/extend/excel/upload/tipcombo/excel.tipcombo.js",
 
                 "com/fr/bi/web/js/extend/sql/editsql/sql.edit.js",
                 "com/fr/bi/web/js/extend/sql/editsql/sql.edit.model.js",
@@ -1964,9 +1973,18 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
                 "com/fr/bi/web/js/modules/filter/auth/filter.authority.js",
 
+                //更新excel相关
+                "com/fr/bi/web/js/extend/excel/upload/button.uploadexcel.js",
+                "com/fr/bi/web/js/extend/excel/upload/tipcombo/excel.tipcombo.js",
+
 
                 //业务包选择字段服务
+                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/model.updateexcel.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/updateexcelcombo.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/updateexcelpopup.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/excelfieldtable/updateexcelfieldtable.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.excel.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level2.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",

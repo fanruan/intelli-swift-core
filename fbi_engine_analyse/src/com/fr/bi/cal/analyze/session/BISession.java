@@ -27,6 +27,7 @@ import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
 import com.fr.data.TableDataSource;
@@ -50,6 +51,7 @@ import com.fr.report.stable.fun.Actor;
 import com.fr.script.Calculator;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.Constants;
+import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.script.CalculatorProvider;
 import com.fr.stable.unit.UnitRectangle;
@@ -123,7 +125,7 @@ public class BISession extends BIAbstractSession {
      */
     public void forceEdit() {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-        if(lockDAO == null){
+        if (lockDAO == null) {
             this.isEdit = true;
             return;
         }
@@ -133,6 +135,7 @@ public class BISession extends BIAbstractSession {
 
 
     private static final long TIME_OUT = 45000;
+
     /**
      * 半推半就
      *
@@ -141,7 +144,7 @@ public class BISession extends BIAbstractSession {
      */
     public boolean setEdit(boolean isEdit) {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-        if(lockDAO == null){
+        if (lockDAO == null) {
             this.isEdit = isEdit;
             return isEdit;
         }
@@ -176,7 +179,7 @@ public class BISession extends BIAbstractSession {
 
     private void releaseLock() {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
-        if(lockDAO == null){
+        if (lockDAO == null) {
             return;
         }
         BIReportNodeLock lock = lockDAO.getLock(this.sessionID, node.getUserId(), node.getId());
@@ -224,11 +227,11 @@ public class BISession extends BIAbstractSession {
                 String gId = gIds.next();
                 JSONObject oneGroup = allGroups.getJSONObject(gId);
                 JSONArray nChildren = new JSONArray();
-                if(oneGroup.has("children")) {
+                if (oneGroup.has("children")) {
                     JSONArray children = oneGroup.getJSONArray("children");
-                    for(int i = 0; i < children.length(); i++) {
+                    for (int i = 0; i < children.length(); i++) {
                         JSONObject child = children.getJSONObject(i);
-                        if(allPacks.has(child.getString("id"))) {
+                        if (allPacks.has(child.getString("id"))) {
                             nChildren.put(child);
                         }
                     }
@@ -255,18 +258,18 @@ public class BISession extends BIAbstractSession {
                     String groupId = groupIds.next();
                     JSONObject group = allGroups.getJSONObject(groupId);
                     JSONArray nChildren = new JSONArray();
-                    if(group.has("children")) {
+                    if (group.has("children")) {
                         JSONArray children = group.getJSONArray("children");
-                        for(int i = 0; i < children.length(); i++) {
+                        for (int i = 0; i < children.length(); i++) {
                             JSONObject child = children.getJSONObject(i);
                             String childId = child.getString("id");
-                            if(packages.has(childId)) {
+                            if (packages.has(childId)) {
                                 nChildren.put(child);
                             }
                         }
                         group.put("children", nChildren);
                     }
-                    if(nChildren.length() > 0) {
+                    if (nChildren.length() > 0) {
                         groups.put(groupId, group);
                     }
                 }
@@ -283,6 +286,15 @@ public class BISession extends BIAbstractSession {
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
                     JSONObject jo = t.createJSONWithFieldsInfo(userId);
                     JSONObject tableFields = jo.getJSONObject("tableFields");
+                    CubeTableSource tableSource = t.getTableSource();
+                    JSONObject sourceJO = tableSource.createJSON();
+                    String connectionName;
+                    try {
+                        connectionName = sourceJO.getString("connection_name");
+                    } catch (Exception e) {
+                        connectionName = StringUtils.EMPTY;
+                    }
+                    tableFields.put("connection_name", connectionName);
                     tables.put(t.getID().getIdentityValue(), tableFields);
                     JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
                     fields.join(fieldsInfo);
@@ -367,8 +379,8 @@ public class BISession extends BIAbstractSession {
         return null;
     }
 
-    public ResultWorkBook getExportBookByWidgetNames (String[] widgetNames) throws CloneNotSupportedException {
-        if(widgetNames.length == 0) {
+    public ResultWorkBook getExportBookByWidgetNames(String[] widgetNames) throws CloneNotSupportedException {
+        if (widgetNames.length == 0) {
             return null;
         }
         BIWorkBook wb = new BIWorkBook();
@@ -383,7 +395,7 @@ public class BISession extends BIAbstractSession {
         wb.addReport("Dashboard", reportSheet);
         for (String widgetName : widgetNames) {
             BIWidget widget = report.getWidgetByName(widgetName);
-            if(widget != null) {
+            if (widget != null) {
                 widget = (BIWidget) widget.clone();
                 switch (widget.getType()) {
                     case BIReportConstant.WIDGET.TABLE:
@@ -405,7 +417,6 @@ public class BISession extends BIAbstractSession {
 
         return wb.execute4BI(getParameterMap4Execute());
     }
-
 
 
     @Override
