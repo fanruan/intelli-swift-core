@@ -60,20 +60,11 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().info(BIStringUtils.append(
-                    e.getMessage(),
-                    "\n" + "retry again!"
-            ));
-            releaseBuffers();
+            BILoggerFactory.getLogger(BIByteArrayNIOReader.class).info(e.getMessage()+"retry again!",e);
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         }
         return new ByteStreamDataInput(contentReader, start, size);
-    }
-
-    private void releaseBuffers() {
-        positionReader.releaseBuffer();
-        lengthReader.releaseBuffer();
     }
 
     private boolean isNull(byte[] result) {

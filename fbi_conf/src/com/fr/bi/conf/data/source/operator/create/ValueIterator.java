@@ -7,12 +7,14 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -115,7 +117,17 @@ class ValueIterator {
             }
             mapGetters[index] = groups[index].createGroupedMap(baseGroupMap);
         }
-        return mapGetters[index].iterator();
+
+        Iterator it = mapGetters[index].iterator();
+        Map map = new LinkedHashMap();
+        while (it.hasNext()) {
+            Map.Entry<Object, GroupValueIndex> entry = (Map.Entry<Object, GroupValueIndex>) it.next();
+            GroupValueIndex groupValueIndex = GVIUtils.AND(gvi, entry.getValue());
+            if (groupValueIndex != null && !groupValueIndex.isAllEmpty()) {
+                map.put(entry.getKey(), groupValueIndex);
+            }
+        }
+        return map.entrySet().iterator();
     }
 
 
@@ -125,9 +137,8 @@ class ValueIterator {
             return false;
         }
         int groupType = group.getType();
-        return groupType == BIReportConstant.GROUP.CUSTOM_GROUP
-                || groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP
-                || groupType == BIReportConstant.GROUP.AUTO_GROUP;
+        return groupType != BIReportConstant.GROUP.NO_GROUP
+                || groupType != BIReportConstant.GROUP.ID_GROUP;
     }
 
 }

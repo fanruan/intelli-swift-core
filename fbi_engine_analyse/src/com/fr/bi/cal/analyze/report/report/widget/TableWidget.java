@@ -331,4 +331,9 @@ public class TableWidget extends BISummaryWidget {
             }
         }
     }
+
+    @Override
+    public void reSetDetailTarget() {
+
+    }
 }

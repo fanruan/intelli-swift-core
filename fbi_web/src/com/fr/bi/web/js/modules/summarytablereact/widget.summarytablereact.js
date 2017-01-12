@@ -335,7 +335,7 @@ BI.SummaryTableReact = BI.inherit(BI.Pane, {
                     text = BICst.FULL_QUARTER_NAMES[text - 1];
                     break;
                 case BICst.GROUP.M:
-                    text = BICst.FULL_MONTH_NAMES[text];
+                    text = BICst.FULL_MONTH_NAMES[text - 1];
                     break;
                 case BICst.GROUP.W:
                     text = BICst.FULL_WEEK_NAMES[text - 1];
@@ -543,7 +543,13 @@ BI.SummaryTableReact = BI.inherit(BI.Pane, {
                 });
             }
             node.title = node.text;
-            node.iconClass = "table-drill-up-down";
+            if(BI.isNull(node.dId)){
+                return;
+            }
+            if(BI.isNotEmptyArray(BI.Utils.getDrillDownDIdsByWidgetId(BI.Utils.getWidgetIDByDimensionID(node.dId))) ||
+                BI.isNotNull(BI.Utils.getDrillUpDimensionIdByDimensionId(node.dId))){
+                node.iconClass = "table-drill-up-down";
+            }
         }
 
         BI.each(items, function (i, node) {
@@ -570,6 +576,13 @@ BI.SummaryTableReact = BI.inherit(BI.Pane, {
             } else {
             }
             node.title = node.text;
+            if(BI.isNull(node.dId)){
+                return;
+            }
+            if(BI.isNotEmptyArray(BI.Utils.getDrillDownDIdsByWidgetId(BI.Utils.getWidgetIDByDimensionID(node.dId))) ||
+                BI.isNotNull(BI.Utils.getDrillUpDimensionIdByDimensionId(node.dId))){
+                node.iconClass = "table-drill-up-down";
+            }
         }
 
         BI.each(items, function (i, node) {

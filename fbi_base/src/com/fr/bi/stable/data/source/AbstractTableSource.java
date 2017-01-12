@@ -141,7 +141,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     public JSONObject createPreviewJSONFromCube(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
         try {
             ICubeTableService tableIndex = loader.getTableIndex(this);
-            return createPreviewJSONFromTableIndex(fields, tableIndex);
+            return createPreviewJSONFromCubeTableIndex(fields, tableIndex);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -149,18 +149,17 @@ public abstract class AbstractTableSource implements CubeTableSource {
         }
 
     }
-
-    public JSONObject createPreviewJSONFromTableIndex(ArrayList<String> fields, ICubeTableService tableIndex) throws Exception {
+    public JSONObject createPreviewJSONFromCubeTableIndex(ArrayList<String> fields, ICubeTableService tableIndex) throws Exception {
         JSONArray allFieldNamesJo = new JSONArray();
         JSONArray fieldValues = new JSONArray();
         JSONArray fieldTypes = new JSONArray();
         IntArray remove = tableIndex.getRemovedList();
-        for (PersistentField column : getPersistentTable().getFieldList()) {
+        for (ICubeFieldSource column : tableIndex.getColumns().values()) {
             if (!fields.isEmpty() && !fields.contains(column.getFieldName())) {
                 continue;
             }
             allFieldNamesJo.put(column.getFieldName());
-            fieldTypes.put(column.getBIType());
+            fieldTypes.put(column.getFieldType());
             JSONArray values = new JSONArray();
             fieldValues.put(values);
             int count = Math.min(tableIndex.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
@@ -172,7 +171,6 @@ public abstract class AbstractTableSource implements CubeTableSource {
         }
         return new JSONObject().put(BIJSONConstant.JSON_KEYS.FIELDS, allFieldNamesJo).put(BIJSONConstant.JSON_KEYS.VALUE, fieldValues).put(BIJSONConstant.JSON_KEYS.TYPE, fieldTypes);
     }
-
 
     @Override
     public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {

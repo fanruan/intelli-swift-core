@@ -10,6 +10,7 @@ import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.dimension.filter.field.DimensionTargetValueFilter;
 import com.fr.bi.field.filtervalue.string.nfilter.StringNFilterValue;
+import com.fr.bi.field.filtervalue.string.onevaluefilter.StringOneValueFilterValue;
 import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTargetKey;
 import com.fr.bi.field.target.key.cal.configuration.BIPeriodCalTargetKey;
@@ -83,20 +84,27 @@ public class NodeIteratorCreator {
 
     public IRootDimensionGroup createRoot() {
         switch (getCalLevel()) {
-            case SINGLE_NODE:
-                return createNormalIteratorRoot();
-            case PART_NODE:
-                return createNormalIteratorRoot();
+            case ALL_NODE:
+                return createAllNodeIteratorRoot();
             default:
                 return createNormalIteratorRoot();
         }
     }
 
     private IRootDimensionGroup createNormalIteratorRoot() {
-
         if (usedTargets == null || usedTargets.length == 0){
-            return new NoneMetricRootDimensionGroup(metricGroupInfoList, session, isRealData, filter);
+            return new NoneMetricRootDimensionGroup(metricGroupInfoList, session, isRealData, filter, getDirectDimensionFilter());
         }
+        GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
+        for (int i = 0; i < directFilterIndexes.length; i++) {
+            if (directFilterIndexes[i] != null) {
+                metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]);
+            }
+        }
+        return new RootDimensionGroup(metricGroupInfoList, session, isRealData);
+    }
+
+    private IRootDimensionGroup createAllNodeIteratorRoot() {
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
         for (int i = 0; i < directFilterIndexes.length; i++) {
             if (directFilterIndexes[i] != null) {
@@ -123,13 +131,36 @@ public class NodeIteratorCreator {
         return retIndexes;
     }
 
-    private DimensionFilter[] getDimensionFilter() {
-        DimensionFilter[] filters = new DimensionFilter[metricGroupInfoList.size()];
+    private DimensionFilter[] getDirectDimensionFilter() {
+        DimensionFilter[] filters = new DimensionFilter[rowDimension.length];
+        for (int i = 0; i < rowDimension.length; i++) {
+            DimensionFilter resultFilter = rowDimension[i].getFilter();
+            if (resultFilter != null && resultFilter.canCreateDirectFilter()) {
+                filters[i] = resultFilter;
+            }
+        }
+        return filters;
+    }
+
+
+
+    private StringNFilterValue[] getDimensionNFilter() {
+        StringNFilterValue[] filters = new StringNFilterValue[rowDimension.length];
+        for (int i = 0; i < rowDimension.length; i++) {
+            DimensionFilter resultFilter = rowDimension[i].getFilter();
+            if (resultFilter instanceof DimensionTargetValueFilter && ((DimensionTargetValueFilter) resultFilter).getFilterValue() instanceof StringNFilterValue) {
+                filters[i] = (StringNFilterValue) ((DimensionTargetValueFilter) resultFilter).getFilterValue();
+            }
+        }
+        return filters;
+    }
+
+    private StringOneValueFilterValue[] getDimensionOneValueFilter() {
+        StringOneValueFilterValue[] filters = new StringOneValueFilterValue[rowDimension.length];
         for (int i = 0; i < filters.length; i++) {
-            for (int deep = 0; deep < rowDimension.length; deep++) {
-                DimensionFilter resultFilter = rowDimension[deep].getFilter();
-                if (resultFilter instanceof DimensionTargetValueFilter && ((DimensionTargetValueFilter) resultFilter).getFilterValue() instanceof StringNFilterValue) {
-                }
+            DimensionFilter resultFilter = rowDimension[i].getFilter();
+            if (resultFilter instanceof DimensionTargetValueFilter && ((DimensionTargetValueFilter) resultFilter).getFilterValue() instanceof StringOneValueFilterValue) {
+                filters[i] = (StringOneValueFilterValue) ((DimensionTargetValueFilter) resultFilter).getFilterValue();
             }
         }
         return filters;

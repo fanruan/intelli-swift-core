@@ -8,7 +8,7 @@
 BI.FlexVerticalCenter = BI.inherit(BI.Layout, {
     _defaultConfig: function () {
         return BI.extend(BI.FlexVerticalCenter.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-flex-vertical-center",
+            baseCls: "bi-flex-vertical-center clearfix",
             columnSize: [],
             hgap: 0,
             vgap: 0,
@@ -21,7 +21,7 @@ BI.FlexVerticalCenter = BI.inherit(BI.Layout, {
     _init: function () {
         BI.FlexVerticalCenter.superclass._init.apply(this, arguments);
         var o = this.options;
-        this.wrapper = $("<div>").addClass("flex-vertical-center-wrapper clearfix").appendTo(this.element);
+        this.wrapper = $("<div>").addClass("flex-vertical-center-wrapper").appendTo(this.element);
         this.populate(this.options.items);
     },
 

@@ -6,6 +6,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
@@ -33,9 +34,11 @@ import java.util.Set;
 public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     private TargetFilter filter;
     private DimensionCalculator[] dimensionCalculators;
-    public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, BISession session, boolean useRealData, TargetFilter filter) {
+    private DimensionFilter[] directDimensionFilters;
+    public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, BISession session, boolean useRealData, TargetFilter filter, DimensionFilter[] directDimensionFilters) {
         super(metricGroupInfoList, session, useRealData);
         this.filter = filter;
+        this.directDimensionFilters = directDimensionFilters;
     }
     protected void initGetterAndRows() {
         super.initGetterAndRows();
@@ -66,6 +69,9 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     private GroupValueIndex getFilterIndex(Object[] values, int deep) {
         DimensionCalculator ck = dimensionCalculators[deep];
         GroupValueIndex gvi = session.createFilterGvi(ck.getField().getTableBelongTo());
+        if (directDimensionFilters[deep] != null){
+            gvi = gvi.AND(directDimensionFilters[deep].createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId()));
+        }
         int i = deep;
         while (i != 0) {
             i--;

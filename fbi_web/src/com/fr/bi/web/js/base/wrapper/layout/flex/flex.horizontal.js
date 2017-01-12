@@ -8,7 +8,7 @@
 BI.FlexHorizontalLayout = BI.inherit(BI.Layout, {
     _defaultConfig: function () {
         return BI.extend(BI.FlexHorizontalLayout.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-flex-horizontal-layout",
+            baseCls: "bi-flex-horizontal-layout clearfix",
             verticalAlign: "middle",
             columnSize: [],
             scrollx: true,
@@ -23,7 +23,7 @@ BI.FlexHorizontalLayout = BI.inherit(BI.Layout, {
     _init: function () {
         BI.FlexHorizontalLayout.superclass._init.apply(this, arguments);
         var o = this.options;
-        this.wrapper = $("<div>").addClass("flex-horizontal-layout-wrapper clearfix " + o.verticalAlign).appendTo(this.element);
+        this.wrapper = $("<div>").addClass("flex-horizontal-layout-wrapper " + o.verticalAlign).appendTo(this.element);
         this.populate(this.options.items);
     },
 
