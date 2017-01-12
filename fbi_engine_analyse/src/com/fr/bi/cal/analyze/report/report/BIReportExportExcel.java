@@ -82,9 +82,8 @@ public class BIReportExportExcel {
         BIPolyWorkSheet reportSheet = new BIPolyWorkSheet();
         PolyECBlock polyECBlock = createPolyECBlock("Dashboard");
 
-        for(BIWidget widget : widgets) {
-
-            if(widget != null) {
+        for (BIWidget widget : widgets) {
+            if (widgetHasData(widget)) {
                 JSONObject jo = JSONObject.create();
                 try {
                     jo = widget.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionID));
@@ -94,7 +93,7 @@ public class BIReportExportExcel {
                 }
 
                 JSONObject configs = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.optJSONObject("data"));
-                JSONObject chartOptions = BIChartSettingFactory.parseChartSetting((MultiChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
+                JSONObject chartOptions = BIChartSettingFactory.parseChartSetting((MultiChartWidget) widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
                 //将plotOptions下的animation设为false否则不能截图（只截到网格线）
                 JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
                 plotOptions.put("animation", false);
@@ -113,14 +112,16 @@ public class BIReportExportExcel {
                 floatElement.setHeight(FU.valueOfPix(img.getHeight(null), resolution));
                 polyECBlock.addFloatElement(floatElement);
             } else {
+                //todo data 为空时 从resources读取图片
 
             }
+
         }
 
         reportSheet.addBlock(polyECBlock);
         wb.addReport("Dashboard", reportSheet);
         for (BIWidget widget : widgets) {
-            if (widget != null) {
+            if(widgetHasData(widget)) {
                 widget = (BIWidget) widget.clone();
                 switch (widget.getType()) {
                     case BIReportConstant.WIDGET.TABLE:
@@ -137,17 +138,16 @@ public class BIReportExportExcel {
                 BIPolyWorkSheet ws = widget.createWorkSheet(session);
                 wb.addReport(widget.getWidgetName(), ws);
             } else {
-                BIPolyWorkSheet emptyWidgetSheet = new BIPolyWorkSheet();
-                PolyECBlock emptyWidgetPolyECBlock = createPolyECBlock(widget.getWidgetName());
-                emptyWidgetSheet.addBlock(emptyWidgetPolyECBlock);
-                wb.addReport(widget.getWidgetName(), emptyWidgetSheet);
+                BIPolyWorkSheet emptySheet = new BIPolyWorkSheet();
+                emptySheet.addBlock(createPolyECBlock(widget.getWidgetName()));
+                wb.addReport(widget.getWidgetName(), emptySheet);
             }
         }
 
         return wb.execute4BI(session.getParameterMap4Execute());
     }
 
-    public static String postMessage(String ip, int port, String message) throws IOException {
+    public String postMessage(String ip, int port, String message) throws IOException {
         URL url = new URL("http://" + ip + ":" + port + "/");
         URLConnection connection = url.openConnection();
         connection.setDoOutput(true);
@@ -166,7 +166,7 @@ public class BIReportExportExcel {
         return response;
     }
 
-    public static BufferedImage base64Decoder(String base64) {
+    public BufferedImage base64Decoder(String base64) {
         BASE64Decoder decoder = new BASE64Decoder();
         BufferedImage img = null;
         try {
@@ -186,12 +186,16 @@ public class BIReportExportExcel {
         return img;
     }
 
-    private static PolyECBlock createPolyECBlock(String widgetName) {
+    private PolyECBlock createPolyECBlock(String widgetName) {
         PolyECBlock polyECBlock = new PolyECBlock();
         polyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode(widgetName)));
         polyECBlock.getBlockAttr().setFreezeHeight(true);
         polyECBlock.getBlockAttr().setFreezeWidth(true);
         polyECBlock.setBounds(new UnitRectangle(new Rectangle(), Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION));
         return polyECBlock;
+    }
+
+    private boolean widgetHasData(BIWidget widget) {
+        return (widget.getViewDimensions().length + widget.getViewTargets().length) != 0;
     }
 }
