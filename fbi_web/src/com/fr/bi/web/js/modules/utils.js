@@ -1524,6 +1524,19 @@
             return drills;
         },
 
+        //获取组件中所有维度的钻取链A->B->C
+        getDrillList: function (wid) {
+            var drillMap = BI.Utils.getDrillByID(wid);
+            var map = {};
+            BI.each(drillMap, function (drId, ds) {
+                map[drId] = [];
+                BI.each(ds, function (idx, obj) {
+                    map[drId].push(obj.dId)
+                });
+            });
+            return map;
+        },
+
         getLinkageValuesByID: function (wid) {
             var self = this;
             var clicked = this.getClickedByID(wid);
@@ -1534,6 +1547,48 @@
                 }
             });
             return drills;
+        },
+
+        getDrillDownDIdsByWidgetId: function(wid){
+            var allDims = BI.Utils.getAllDimDimensionIDs(wid);
+            var allUsedDims = BI.Utils.getAllUsableDimDimensionIDs(wid);
+            var result = [];
+            if (allDims.length > allUsedDims.length) {
+                var drillMap = this.getDrillByID(wid);
+                var drilledIds = [];
+                BI.each(drillMap, function (drId, ds) {
+                    BI.each(ds, function (i, drs) {
+                        drilledIds.push(drs.dId);
+                    });
+                });
+                BI.each(allDims, function (i, dim) {
+                    if (!allUsedDims.contains(dim) && !drilledIds.contains(dim)) {
+                        result.push(dim);
+                    }
+                });
+            }
+            return result;
+        },
+
+        getDrillUpDimensionIdByDimensionId: function(dId){
+            var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
+            var allDims = BI.Utils.getAllDimDimensionIDs(widgetId);
+            var allUsedDims = BI.Utils.getAllUsableDimDimensionIDs(widgetId);
+            var updrillId = null;
+            if (allDims.length > allUsedDims.length) {
+                var drillMap = BI.Utils.getDrillByID(widgetId);
+                BI.any(drillMap, function (drId, ds) {
+                    if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
+                        if (ds.length > 1) {
+                            updrillId = ds[ds.length - 2].dId;
+                        } else {
+                            updrillId = drId;
+                        }
+                        return true;
+                    }
+                });
+            }
+            return updrillId;
         },
 
         //根据text dId 获取clicked 处理分组的情况
@@ -1574,19 +1629,6 @@
                 }
             }
             return clicked;
-        },
-
-        //获取组件中所有维度的钻取链A->B->C
-        getDrillList: function (wid) {
-            var drillMap = BI.Utils.getDrillByID(wid);
-            var map = {};
-            BI.each(drillMap, function (drId, ds) {
-                map[drId] = [];
-                BI.each(ds, function (idx, obj) {
-                    map[drId].push(obj.dId)
-                });
-            });
-            return map;
         },
 
         getWidgetFilterValueByID: function (wid) {

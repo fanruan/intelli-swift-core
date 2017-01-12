@@ -96,6 +96,26 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
         return fields;
     },
 
+    _getPrimaryFieldsByFieldId: function (fieldId) {
+        var self = this;
+        var relations = Data.SharingPool.cat("relations");
+        var translations = Data.SharingPool.cat("translations");
+        var fields = Data.SharingPool.cat("fields");
+        var primaryFields = [], tableId = "";
+        if (BI.isNotNull(fields[fieldId])) {
+            tableId = fields[fieldId].table_id;
+        }
+        var connectionSet = relations.connectionSet;
+        BI.each(connectionSet, function (i, cs) {
+            var pFId = cs.primaryKey.field_id;
+            if (cs.foreignKey.table_id === tableId && !primaryFields.contains(pFId)) {
+                primaryFields.push(pFId);
+                primaryFields = primaryFields.concat(self._getPrimaryFieldsByFieldId(pFId));
+            }
+        });
+        return primaryFields;
+    },
+
     setValue: function (v) {
         this.combo.setValue(v);
     },

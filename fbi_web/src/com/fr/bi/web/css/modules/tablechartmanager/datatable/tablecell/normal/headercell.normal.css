@@ -12,3 +12,9 @@
   -o-user-select: initial;
   user-select: initial;
 }
+.bi-table > div > div > table > tbody > tr > td:last-child .bi-normal-header-cell > table > tbody > tr > td:first-child,
+.bi-table > div > div > div > table > tbody > tr > td:last-child .bi-normal-header-cell > table > tbody > tr > td:first-child,
+.bi-table > div > div > table > thead > tr > td:last-child .bi-normal-header-cell > table > tbody > tr > td:first-child,
+.bi-table > div > div > div > table > thead > tr > td:last-child .bi-normal-header-cell > table > tbody > tr > td:first-child {
+  max-width: none;
+}

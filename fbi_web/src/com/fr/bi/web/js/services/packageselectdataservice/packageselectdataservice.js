@@ -129,11 +129,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }
         var isRelation = packages.length === 1;
         //选择了表
-        var isRelation = packages.length === 1;
         if (type & BI.SelectDataSearchSegment.SECTION_TABLE) {
             var result = [];
             BI.each(packages, function (i, pid) {
-                var items = self._getTablesStructureByPackId(pid, {isRelation: isRelation, isSearching: true});
+                var items = self._getTablesStructureByPackId(pid, {isRelation: false, isSearching: true});
                 result.push(BI.Func.getSearchResult(items, keyword));
             });
             BI.each(result, function (i, sch) {
@@ -143,7 +142,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         } else {
             var result = [], map = {}, tables = [], field2TableMap = {};
             BI.each(packages, function (i, pid) {
-                tables = self._getTablesStructureByPackId(pid, {isRelation: isRelation, isSearching: true});
+                tables = self._getTablesStructureByPackId(pid, {isRelation: false, isSearching: true});
                 var items = [];
                 BI.each(tables, function (i, table) {
                     var fields = self._getFieldsStructureByTableId(table.id || table.value, {

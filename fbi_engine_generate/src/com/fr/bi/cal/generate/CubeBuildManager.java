@@ -23,6 +23,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -111,6 +112,18 @@ public class CubeBuildManager {
             }
         }
         return true;
+    }
+
+    /**
+     * 直接执行全局更新，不会进行check
+     *
+     * @param userId
+     */
+    public void CubeBuildStaffComplete(long userId) {
+        BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append(BIDateUtils.getCurrentDateTime(), " Cube all update start"));
+        CubeBuildStuff cubeBuild = new CubeBuildStuffComplete(new BIUser(userId));
+        CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
+        cubeManager.addTask(task, userId);
     }
 
     public void CubeBuildStaff(long userId) {

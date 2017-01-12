@@ -628,16 +628,16 @@ BICst.MAP_STYLE_CONDITIONS = [{
     range: {
         min: 200,
         max: 300,
-        closemin: false,
-        closemax: true
+        closemin: true,
+        closemax: false
     },
     color: "#F8D08E"
 }, {
     range: {
         min: 300,
         max: 400,
-        closemin: false,
-        closemax: true
+        closemin: true,
+        closemax: false
     },
     color: "#e697c8"
 }, {

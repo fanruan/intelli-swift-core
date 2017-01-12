@@ -224,7 +224,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         return this.chartSetting;
     },
 
-
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();

@@ -686,8 +686,8 @@ BI.ETL = BI.inherit(BI.Widget, {
         });
         sqlEditor.on(BI.EditSQL.EVENT_SAVE, function (data) {
             BI.Layers.remove(self.constants.SQL_LAYER);
-            self.model.setFields(data.fields);
             self.model.saveTableById(table.id, data);
+            self._populateAfterETLOperator();
         });
 
     },

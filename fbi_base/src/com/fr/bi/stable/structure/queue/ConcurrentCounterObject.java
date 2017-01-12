@@ -34,7 +34,11 @@ public class ConcurrentCounterObject<T> implements Release {
 		}
 	}
 	
-	
+	public void forceSetZero(){
+		synchronized (this) {
+			count = 0;
+		}
+	}
 	
 	public boolean isZeroCount(){
 		return count == 0;

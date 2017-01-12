@@ -8,11 +8,11 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.memory.MemoryCubeFile;
 import com.fr.bi.cal.stable.tableindex.index.BITableIndex;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisETLTableSource;
 import com.fr.bi.etl.analysis.data.UserBaseTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserETLTableSource;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -47,12 +47,11 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         return loader;
     }
 
-
     private void registSource(CubeTableSource source) {
         BICore core = source.fetchObjectCore();
         if (!sourceMap.containsKey(core)) {
             sourceMap.put(source.fetchObjectCore(), source);
-            if (source.getType() == Constants.TABLE_TYPE.USER_ETL) {
+            if (source.getType() == BIBaseConstant.TABLE_TYPE.USER_ETL) {
                 for (CubeTableSource s : ((UserETLTableSource) source).getParents()) {
                     registSource(s);
                 }
@@ -100,7 +99,6 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         }, source.getFieldsArray(new HashSet<CubeTableSource>()), this));
         return new BITableIndex(cube);
     }
-
     @Override
     public BIKey getFieldIndex(BusinessField column) {
         return new IndexKey(column.getFieldName());
@@ -123,9 +121,8 @@ public class PartCubeDataLoader implements ICubeDataLoader {
     }
 
     private boolean isParentTableIndex(CubeTableSource source) {
-        return source.getType() == Constants.TABLE_TYPE.USER_ETL && (((UserETLTableSource) source).hasTableFilterOperator() || ((UserETLTableSource) source).getETLOperators().isEmpty());
+        return source.getType() == BIBaseConstant.TABLE_TYPE.USER_ETL && (((UserETLTableSource) source).hasTableFilterOperator() || ((UserETLTableSource) source).getETLOperators().isEmpty());
     }
-
     @Override
     public void clear() {
         synchronized (this) {
@@ -136,7 +133,7 @@ public class PartCubeDataLoader implements ICubeDataLoader {
                 Iterator<Map.Entry<BICore, CubeTableSource>> it = sourceMap.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry<BICore, CubeTableSource> entry = it.next();
-                    if (entry.getValue().getType() == Constants.TABLE_TYPE.USER_ETL) {
+                    if (entry.getValue().getType() == BIBaseConstant.TABLE_TYPE.USER_ETL) {
                         ((AnalysisETLTableSource) entry.getValue()).clearUserBaseTableMap();
                     } else {
                         ((UserBaseTableSource) entry.getValue()).clearUserBaseTableMap();

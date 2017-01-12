@@ -8,7 +8,7 @@ public interface ICubeColumnDetailGetter {
     /**
      * 获取某行的Cube存的值
      *
-     * @param row         行
+     * @param row 行
      * @return
      */
     Object getValue(int row);
@@ -16,6 +16,8 @@ public interface ICubeColumnDetailGetter {
     PrimitiveType getPrimitiveType();
 
     PrimitiveDetailGetter createPrimitiveDetailGetter();
+
+    String getICubeResourceLocationPath();
 
     void clear();
 }

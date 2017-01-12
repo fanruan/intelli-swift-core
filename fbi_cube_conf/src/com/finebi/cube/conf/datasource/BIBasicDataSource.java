@@ -123,8 +123,10 @@ public abstract class BIBasicDataSource<T, V> extends BIMapContainer<T, V> {
     protected V getSpecificCacheSource(V sourceTarget) {
         synchronized (container) {
             for (V source : sourceCache) {
-                if (isEqual(source, sourceTarget)) {
-                    return source;
+                if (source != null) {
+                    if (isEqual(source, sourceTarget)) {
+                        return source;
+                    }
                 }
             }
             return null;

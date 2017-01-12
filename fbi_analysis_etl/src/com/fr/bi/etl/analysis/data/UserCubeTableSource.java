@@ -13,4 +13,6 @@ public interface UserCubeTableSource extends AnalysisCubeTableSource {
     boolean containsIDParentsWithMD5(String md5, long userId);
 
     AnalysisCubeTableSource getAnalysisCubeTableSource();
+
+	boolean isParentAvailable();
 }

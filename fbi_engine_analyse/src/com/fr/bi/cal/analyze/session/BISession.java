@@ -14,7 +14,6 @@ import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
-import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
@@ -44,8 +43,6 @@ import com.fr.json.JSONObject;
 import com.fr.main.FineBook;
 import com.fr.main.TemplateWorkBook;
 import com.fr.main.workbook.ResultWorkBook;
-import com.fr.report.cell.FloatElement;
-import com.fr.report.poly.PolyECBlock;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
 import com.fr.script.Calculator;
@@ -54,12 +51,10 @@ import com.fr.stable.Constants;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.script.CalculatorProvider;
-import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.SessionIDInfor;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -378,46 +373,6 @@ public class BISession extends BIAbstractSession {
         }
         return null;
     }
-
-    public ResultWorkBook getExportBookByWidgetNames(String[] widgetNames) throws CloneNotSupportedException {
-        if (widgetNames.length == 0) {
-            return null;
-        }
-        BIWorkBook wb = new BIWorkBook();
-        BIPolyWorkSheet reportSheet = new BIPolyWorkSheet();
-        PolyECBlock polyECBlock = new PolyECBlock();
-        polyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode("Dashboard")));
-        polyECBlock.getBlockAttr().setFreezeHeight(true);
-        polyECBlock.getBlockAttr().setFreezeWidth(true);
-        polyECBlock.setBounds(new UnitRectangle(new Rectangle(), Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION));
-        polyECBlock.addFloatElement(new FloatElement());
-        reportSheet.addBlock(polyECBlock);
-        wb.addReport("Dashboard", reportSheet);
-        for (String widgetName : widgetNames) {
-            BIWidget widget = report.getWidgetByName(widgetName);
-            if (widget != null) {
-                widget = (BIWidget) widget.clone();
-                switch (widget.getType()) {
-                    case BIReportConstant.WIDGET.TABLE:
-                    case BIReportConstant.WIDGET.CROSS_TABLE:
-                    case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                        ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
-                        ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
-                        break;
-                    case BIReportConstant.WIDGET.DETAIL:
-                        ((BIDetailWidget) widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
-                        break;
-                }
-
-                widget.setWidgetName(widget.getWidgetName() + Math.random());
-                BIPolyWorkSheet ws = widget.createWorkSheet(this);
-                wb.addReport(widgetName, ws);
-            }
-        }
-
-        return wb.execute4BI(getParameterMap4Execute());
-    }
-
 
     @Override
     public String getDurationPrefix() {

@@ -356,6 +356,21 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         etl.on(BI.ETL.EVENT_CANCEL, function () {
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
+        etl.on(BI.ETL.EVENT_CUBE_SAVE, function (info, table) {
+            self.model.changeTableInfo(tableId, table);
+            self._refreshTablesInPackage();
+            var data = self.model.getValue();
+            //update sharing pool
+            Data.SharingPool.put("translations", data.translations);
+            Data.SharingPool.put("relations", data.relations);
+            Data.SharingPool.put("fields", self.model.getAllFields());
+            Data.SharingPool.put("update_settings", self.model.getUpdateSettings());
+            BI.Utils.updateTablesOfOnePackage(data, function () {
+                BI.Utils.generateCubeByTable(info.tableInfo, function () {
+
+                });
+            });
+        });
     },
 
     _onClickAddSQL: function () {

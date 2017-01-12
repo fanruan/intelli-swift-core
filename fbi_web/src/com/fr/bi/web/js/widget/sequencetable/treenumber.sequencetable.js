@@ -74,12 +74,17 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             self.cache[node.text || node.value] = cnt++;
         }
 
+        var finded = false;
         BI.each(nodes, function (i, node) {
             if (BI.isNotEmptyArray(node.children)) {
                 BI.each(node.children, function (index, child) {
                     if (index === 0) {
                         if (self.cache[child.text || child.value]) {
-                            start = cnt = self.cache[child.text || child.value];
+                            cnt = self.cache[child.text || child.value];
+                            if (!finded) {
+                                start = cnt;
+                                finded = true;
+                            }
                         }
                     }
                     track(child)

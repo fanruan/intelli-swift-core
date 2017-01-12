@@ -46,6 +46,7 @@ BI.DataLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
                 this.popup = BI.createWidget({
                     type: "bi.axis_data_label_detailed_setting_popup"
                 });

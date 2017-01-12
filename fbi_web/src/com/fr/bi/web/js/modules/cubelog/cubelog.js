@@ -57,7 +57,9 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                         height: 28,
                         level: "ignore",
                         handler: function () {
-                            self.refreshLog();
+                            if (BI.isNotNull(self.finishLable) && !self.finishLable.isVisible()) {
+                                self._refreshLogImmediate();
+                            }
                         }
                     }]
                 },
@@ -91,65 +93,47 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             }, this.cubeTree],
             vgap: 10
         });
-        this._refreshLog4Init();
     },
 
-    _refreshLog4Init: function () {
-        var self = this;
-        BI.Utils.getCubeLog(function (data) {
-            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
-                self.interval && clearInterval(self.interval);
-                self.interval = null;
-            } else {
-                self.interval = setInterval(function () {
-                    self.refreshLog();
-                }, 2000);
-            }
-            self._refreshProcess(data);
-            self.cubeTree.populate(self._formatItems(data));
-        });
-    },
-
-    _showBar: function() {
+    _showBar: function () {
         this.processBar.setVisible(true);
         this.finishLable.setVisible(false);
     },
 
-    _showFinish: function() {
+    _showFinish: function () {
         this.processBar.setVisible(false);
         this.processBar.setValue(1);
         this.finishLable.setVisible(true);
     },
 
-    setStart: function() {
+    setStart: function () {
         this._showBar();
         this.processBar.setValue(1);
     },
 
-    refreshLog: function (isStart) {
+    setEnd: function () {
         var self = this;
-        if (isStart) {
-            this._showBar();
-            this.processBar.setValue(1);
-            BI.delay(function() {
-                self._showBar();
-                self.processBar.setValue(10);
-            }, 1000);
-        }
-        if (BI.isNull(this.interval)) {
-            this.interval = setInterval(function () {
-                self.refreshLog();
-            }, 2000);
-            return;
-        }
+        this.processBar.setValue(100);
+        BI.delay(function() {
+            self._showFinish();
+        }, 300);
+    },
+
+    //刷新按钮不要去改状态，因为很有可能立即更新的时候，后台请求到的状态cube还没有开始更新
+    _refreshLogImmediate: function () {
+        var self = this;
         BI.Utils.getCubeLog(function (data) {
-            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
-                self.interval && clearInterval(self.interval);
-                self.interval = null;
+            if (data.hasTask === false) {
+                return;
             }
             self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
         });
+    },
+
+    refreshLog: function (data) {
+        this._refreshProcess(data);
+        this.cubeTree.populate(this._formatItems(data));
     },
 
     _refreshProcess: function (data) {
@@ -164,7 +148,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 generated += table.column.length;
             });
             var process = 1;
-            if (BI.isNull(data.cube_end)) {
+            if (data.hasTask === true) {
                 if (allFields === 0) {
                     return;
                 }
@@ -177,9 +161,9 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             if (process < 100) {
                 this._showBar();
             } else {
-                BI.delay(function() {
+                BI.delay(function () {
                     self._showFinish();
-                }, 1000);
+                }, 300);
             }
         }
     },

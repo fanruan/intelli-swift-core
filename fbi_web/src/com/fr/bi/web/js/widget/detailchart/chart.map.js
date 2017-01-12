@@ -144,17 +144,27 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     return defaultStyle;
                 case BICst.SCALE_SETTING.CUSTOM:
                     if (styles.length !== 0) {
+                        var maxScale = _calculateValueNiceDomain(0, self.max)[1];
                         BI.each(styles, function (idx, style) {
-                            range.push({
-                                color: style.color,
-                                from: style.range.min,
-                                to: style.range.max
-                            });
+                            if(style.range.max) {
+                                range.push({
+                                    color: style.color,
+                                    from: style.range.min,
+                                    to: style.range.max
+                                });
+                            } else {
+                                var to = style.range.min < maxScale ? maxScale : 266396;
+                                range.push({
+                                    color: style.color,
+                                    from: style.range.min,
+                                    to: to,
+                                });
+                            }
                             color = style.color;
                             conditionMax = style.range.max
                         });
 
-                        conditionMin = BI.parseInt(styles[0].range.min);
+                        conditionMin = BI.parseFloat(styles[0].range.min);
                         if (conditionMin !== 0) {
                             range.push({
                                 color: "#808080",
@@ -163,9 +173,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                             });
                         }
 
-                        var maxScale = _calculateValueNiceDomain(0, this.max)[1];
-
-                        if (conditionMax < maxScale) {
+                        if (conditionMax && conditionMax < maxScale) {
                             range.push({
                                 color: color,
                                 from: conditionMax,

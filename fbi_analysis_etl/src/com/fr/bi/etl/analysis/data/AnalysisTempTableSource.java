@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -44,32 +45,42 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     @Override
     public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
     }
+    @Override
+    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set){
 
+    }
     @Override
     public void refreshWidget() {
 
     }
 
     @Override
+    public void refresh() {
+    }
+
+    @Override
     public Set<BIWidget> getWidgets() {
         return new HashSet<BIWidget>();
+    }
+    @Override
+    public void reSetWidgetDetailGetter() {
     }
 
     @Override
     public IPersistentTable getPersistentTable() {
-        return  new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
+        return new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
 
     @Override
     public int getType() {
-        return Constants.TABLE_TYPE.TEMP;
+        return BIBaseConstant.TABLE_TYPE.TEMP;
     }
 
     @Override
     public JSONObject createJSON() throws Exception {
         JSONArray ja = new JSONArray();
-        for (AnalysisCubeTableSource source : this.sourceList){
+        for (AnalysisCubeTableSource source : this.sourceList) {
             ja.put(source.createJSON());
         }
         JSONObject table = new JSONObject();
@@ -82,5 +93,5 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
         throw new RuntimeException(UNSUPPORT);
     }
 
-    
+
 }

@@ -6,10 +6,10 @@ package com.fr.bi.etl.analysis.manager;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserETLTableSource;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.file.XMLFileManager;
@@ -59,7 +59,11 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
                     continue;
                 }
                 SingleUserETLTableCubeManager manager = entry.getValue();
+                manager.getSource().refreshWidget();
                 if (manager.getSource() != null && manager.getSource().containsIDParentsWithMD5(md5, userId)) {
+                    BILoggerFactory.getLogger(UserETLCubeManager.class).info("parent table " + md5 + " invokeUpdate --> " + entry.getKey());
+                    //					TODO 子表更新以前需要刷新父表表的columnDetailGetter
+                    manager.getSource().reSetWidgetDetailGetter();
                     manager.addTask();
                 }
             }
@@ -76,15 +80,25 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     }
 
     @Override
+    public void addTask(AnalysisCubeTableSource source, BIUser user) {
+        SingleUserETLTableCubeManager manager = createManager(source, user);
+            manager.addTask();
+    }
+
+    @Override
     public ICubeTableService getTableIndex(AnalysisCubeTableSource source, BIUser user) {
         return createManager(source, user).getTableIndex();
     }
 
     @Override
     public void checkTableIndex(AnalysisCubeTableSource source, BIUser user) {
-        if (!(source.getType() == Constants.TABLE_TYPE.TEMP)) {
+        if (!(source.getType() == BIBaseConstant.TABLE_TYPE.TEMP)) {
             createManager(source, user);
         }
+    }
+
+    public boolean isAvailable(AnalysisCubeTableSource source, BIUser user) {
+        return createManager(source, user).isAvailable();
     }
 
     private SingleUserETLTableCubeManager createManager(AnalysisCubeTableSource source, BIUser user) {
@@ -100,10 +114,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
                     threadMap.put(md5Key, manager);
                 }
             }
-        } else {
-            threadMap.get(md5Key).getSource().refreshWidget();
         }
-        manager.addTask();
         return threadMap.get(md5Key);
     }
 
@@ -112,7 +123,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     }
 
     private boolean isParentTableIndex(CubeTableSource source) {
-        return source.getType() == Constants.TABLE_TYPE.USER_ETL && (((UserETLTableSource) source).hasTableFilterOperator() || ((UserETLTableSource) source).getETLOperators().isEmpty());
+        return source.getType() == BIBaseConstant.TABLE_TYPE.USER_ETL && (((UserETLTableSource) source).hasTableFilterOperator() || ((UserETLTableSource) source).getETLOperators().isEmpty());
     }
 
     public void releaseCurrentThread() {
@@ -127,6 +138,13 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 
     }
 
+    @Override
+    public void releaseCurrentThread(String key) {
+        SingleUserETLTableCubeManager manager = threadMap.get(key);
+        if (manager != null) {
+            manager.forceReleaseCurrentThread();
+        }
+    }
 
     public UserETLCubeManager() {
         synchronized (cubePathMap) {
@@ -231,7 +249,8 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 
     @Override
     public boolean checkVersion(AnalysisCubeTableSource source, BIUser user) {
-        return createManager(source, user).checkVersion();
+        SingleUserETLTableCubeManager manager = createManager(source, user);
+        return manager.checkVersion();
     }
 
 }
