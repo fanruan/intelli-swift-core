@@ -401,7 +401,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
                 GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
                 if (pgvi != null) {
-                    gvi = gvi.AND(pgvi);
+                    gvi = getCKGroupValueIndex(ck, gvi, pgvi);
                 }
             } else if (ckp instanceof StringDimensionCalculator) {
                 if (value == BIBaseConstant.EMPTY_NODE_DATA) {
@@ -424,20 +424,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 }
                 GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
-                gvi = gvi.AND(pgvi);
-                Long userId = session.getUserId();
-                GroupValueIndex authGVI = null;
-                if (userId != UserControl.getInstance().getSuperManagerID()) {
-                    List<TargetFilter> filters = getAuthFilter(userId);
-                    for (int k = 0; k < filters.size(); k++) {
-                        if (authGVI == null) {
-                            authGVI = filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId);
-                        } else {
-                            authGVI = GVIUtils.OR(authGVI, filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId));
-                        }
-                    }
-                }
-                gvi = gvi.AND(authGVI);
+                gvi = getCKGroupValueIndex(ck, gvi, pgvi);
             } else if (ckp instanceof NumberDimensionCalculator) {
                 if (value == BIBaseConstant.EMPTY_NODE_DATA) {
                     v = v.getParent();
@@ -457,7 +444,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 }
                 ckp.setRelationList(BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
                 GroupValueIndex pgvi = ckp.createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
-                gvi = gvi.AND(pgvi);
+                gvi = getCKGroupValueIndex(ck, gvi, pgvi);
             }
             if (widget instanceof TableWidget) {
                 GroupValueIndex filterGvi = ((TableWidget) widget).getFilter().createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
@@ -468,6 +455,29 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             v = v.getParent();
         }
         return gvi;
+    }
+
+    private GroupValueIndex getCKGroupValueIndex(DimensionCalculator ck, GroupValueIndex gvi, GroupValueIndex pgvi) {
+        gvi = gvi.AND(pgvi);
+        GroupValueIndex authGVI = getAuthGroupValueIndex(ck);
+        gvi = gvi.AND(authGVI);
+        return gvi;
+    }
+
+    private GroupValueIndex getAuthGroupValueIndex(DimensionCalculator ck) {
+        Long userId = session.getUserId();
+        GroupValueIndex authGVI = null;
+        if (userId != UserControl.getInstance().getSuperManagerID()) {
+            List<TargetFilter> filters = getAuthFilter(userId);
+            for (int k = 0; k < filters.size(); k++) {
+                if (authGVI == null) {
+                    authGVI = filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId);
+                } else {
+                    authGVI = GVIUtils.OR(authGVI, filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId));
+                }
+            }
+        }
+        return authGVI;
     }
 
     protected Object[] getParentsValuesByGv(GroupConnectionValue groupConnectionValue, int deep) {
