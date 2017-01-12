@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.utils.BILogHelper;
+import com.fr.bi.base.BIBusinessPackagePersistThread;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleUtils;
@@ -74,13 +75,14 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         checkIndex(userId, source);
         WebUtils.printAsJSON(res, getResult(userId, tableName, table));
-        new Thread() {
-            public void run() {
+        BIDeleteAnalysisETLTableAction.biBusinessPackagePersistThread.triggerWork(new BIBusinessPackagePersistThread.Action(){
+            @Override
+            public void work() {
+                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
                 BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
                 BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
             }
-        }.start();
+        });
     }
 
     private void checkIndex(long userId, CubeTableSource source) {
