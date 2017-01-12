@@ -20,6 +20,7 @@ import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.BITargetAndDimensionUtils;
 import com.fr.bi.field.target.target.BIAbstractTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -373,14 +374,15 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
             cbox.setDimensionJSON(ja.toString());
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             for (int i = 0, len = keys.length; i < len; i++) {
+                int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
                 Object v = node.getSummaryValue(keys[i]);
-                v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+                v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
                 cell = new CBCell(v);
                 cell.setRow(columnData.getMaxArrayLength() + i);
                 cell.setColumn(tempCol + p);
                 cell.setRowSpan(1);
                 cell.setColumnSpan(1);
-                cell.setStyle(BITableStyle.getInstance().getYTotalCellStyle(v, total));
+                cell.setStyle(BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
                 cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
                 cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
@@ -450,14 +452,15 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
         cbox.setDimensionJSON(ja.toString());
         cbcells[cell.getColumn()][cell.getRow()] = cell;
         for (int i = 0, len = keys.length; i < len; i++) {
+            int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
             Object v = node.getSummaryValue(keys[i]);
-            v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+            v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
             cell = new CBCell(v);
             cell.setRow(columnData.getMaxArrayLength() + i);
             cell.setColumn(tempCol);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getXTotalCellStyle(v, total));
+            cell.setStyle(BITableStyle.getInstance().getXTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
             cellList = new ArrayList<CBCell>();
             cellList.add(cell);
@@ -568,7 +571,7 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
                 cell.setColumn(tempCol);
                 cell.setRowSpan(1);
                 cell.setColumnSpan(1);
-                cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
+                cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()) == BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.PERCENT));
                 cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
                 List<CBCell> cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
@@ -684,14 +687,15 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
         cbox.setDimensionJSON(ja.toString());
         cbcells[cell.getColumn()][cell.getRow()] = cell;
         for (int i = 0, len = keys.length; i < len; i++) {
+            int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
             Object v = node.getSummaryValue(keys[i]);
-            v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+            v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
             cell = new CBCell(v);
             cell.setRow(rowData.getMaxArrayLength() + i);
             cell.setColumn(tempCol);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getXTotalCellStyle(v, total));
+            cell.setStyle(BITableStyle.getInstance().getXTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
             cellList = new ArrayList<CBCell>();
             cellList.add(cell);

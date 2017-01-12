@@ -47,7 +47,6 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         return loader;
     }
 
-
     private void registSource(CubeTableSource source) {
         BICore core = source.fetchObjectCore();
         if (!sourceMap.containsKey(core)) {
@@ -100,7 +99,6 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         }, source.getFieldsArray(new HashSet<CubeTableSource>()), this));
         return new BITableIndex(cube);
     }
-
     @Override
     public BIKey getFieldIndex(BusinessField column) {
         return new IndexKey(column.getFieldName());
@@ -125,7 +123,6 @@ public class PartCubeDataLoader implements ICubeDataLoader {
     private boolean isParentTableIndex(CubeTableSource source) {
         return source.getType() == BIBaseConstant.TABLE_TYPE.USER_ETL && (((UserETLTableSource) source).hasTableFilterOperator() || ((UserETLTableSource) source).getETLOperators().isEmpty());
     }
-
     @Override
     public void clear() {
         synchronized (this) {

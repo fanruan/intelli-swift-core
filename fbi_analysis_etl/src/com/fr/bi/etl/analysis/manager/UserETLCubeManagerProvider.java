@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.bi.etl.analysis.manager;
 
@@ -10,33 +10,44 @@ import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 
 /**
  * @author Daniel
- *
  */
-public interface UserETLCubeManagerProvider extends Release{
-	
-	void setCubePath(String md5Key, String path);
+public interface UserETLCubeManagerProvider extends Release {
 
-	/**
-	 * @return
-	 */
-	ICubeTableService getTableIndex(AnalysisCubeTableSource core, BIUser user);
+    void setCubePath(String md5Key, String path);
+
+    /**
+     * @return
+     */
+    ICubeTableService getTableIndex(AnalysisCubeTableSource core, BIUser user);
 
     void checkTableIndex(AnalysisCubeTableSource core, BIUser user);
 
-	/**
-	 * @param md5
-	 * @return
-	 */
-	String getCubePath(String md5);
+    /**
+     * @param md5
+     * @return
+     */
+    String getCubePath(String md5);
 
     boolean checkVersion(AnalysisCubeTableSource source, BIUser user);
+
+	/**
+	 * 是否可用状态
+	 * @param source
+	 * @param user
+	 * @return
+	 */
+	boolean isAvailable(AnalysisCubeTableSource source, BIUser user);
 
     void envChanged();
 
     void releaseCurrentThread();
-	void releaseCurrentThread(String key);
+
+    void releaseCurrentThread(String key);
 
     void invokeUpdate(String identityValue, long userId);
 
     void refresh();
+
+    void addTask(AnalysisCubeTableSource source, BIUser user);
+
 }

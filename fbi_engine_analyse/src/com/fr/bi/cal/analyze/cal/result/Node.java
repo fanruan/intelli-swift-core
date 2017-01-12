@@ -299,8 +299,12 @@ public class Node implements SummaryContainer, BINode {
 
     @Override
     public void setSummaryValue(Object key, Object value) {
-        if (value != null){
-            value = ((Number)value).doubleValue();
+        if (value != null) {
+            if (Double.isNaN(((Number) value).doubleValue())) {
+                value = null;
+            } else {
+                value = ((Number) value).doubleValue();
+            }
         }
         getSummaryValue().put(key, value);
     }
@@ -798,7 +802,7 @@ public class Node implements SummaryContainer, BINode {
      */
     public JSONObject toJSONObject(BIDimension[] dimensions, TargetGettingKey[] keys, int index) throws JSONException {
         JSONObject jo = new JSONObject();
-        if(index > -1){
+        if (index > -1) {
             jo.put("n", dimensions[index].toString(data));
         }
         JSONArray summary = new JSONArray();
@@ -835,7 +839,7 @@ public class Node implements SummaryContainer, BINode {
         return topNLineMap;
     }
 
-    private class TopNKey{
+    private class TopNKey {
         private int N;
         private TargetGettingKey key;
 
@@ -847,7 +851,7 @@ public class Node implements SummaryContainer, BINode {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()){
+            if (o == null || getClass() != o.getClass()) {
                 return false;
             }
 

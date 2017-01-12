@@ -74,6 +74,11 @@ public class testAccmulateDeal extends TestCase {
             }
 
             @Override
+            public String getICubeResourceLocationPath() {
+                return null;
+            }
+
+            @Override
             public void clear() {
 
             }

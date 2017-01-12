@@ -1086,8 +1086,12 @@ if (!window.BI) {
                         if (BI.isNotNull(res.responseText) &&
                             res.responseText.indexOf("fs-login-content") > -1 &&
                             res.responseText.indexOf("fs-login-input-password-confirm") === -1) {
+                            if (BI.Popovers.isVisible(BI.LoginTimeOut.POPOVER_ID)) {
+                                return;
+                            }
                             if (BI.isNotNull(BI.Popovers.get(BI.LoginTimeOut.POPOVER_ID))) {
-                                BI.Popovers.remove(BI.LoginTimeOut.POPOVER_ID);
+                                BI.Popovers.open(BI.LoginTimeOut.POPOVER_ID);
+                                return;
                             }
                             var loginTimeout = BI.createWidget({
                                 type: "bi.login_timeout"
@@ -1095,13 +1099,12 @@ if (!window.BI) {
                             loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
                                 decodeBIParam(option.data);
                                 BI.ajax(option);
-                                BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
+                                BI.Popovers.remove(BI.LoginTimeOut.POPOVER_ID);
                             });
                             BI.Popovers.create(BI.LoginTimeOut.POPOVER_ID, loginTimeout, {
                                 width: 600,
                                 height: 400
                             }).open(BI.LoginTimeOut.POPOVER_ID);
-
                         } else if (BI.isNotNull(res.responseText) &&
                             res.responseText.indexOf("script") > -1 &&
                             res.responseText.indexOf("Session Timeout...") > -1) {
