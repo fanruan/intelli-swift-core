@@ -2075,6 +2075,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/table/table.footer.css",
                 "com/fr/bi/web/css/base/table/table.css",
                 "com/fr/bi/web/css/base/table/table.tree.css",
+                "com/fr/bi/web/css/base/table/table.grid.cell.css",
+                "com/fr/bi/web/css/base/table/table.grid.scrollbar.css",
+                "com/fr/bi/web/css/base/table/table.grid.resizable.cell.css",
+                "com/fr/bi/web/css/base/table/table.grid.resizable.css",
                 "com/fr/bi/web/css/base/layer/panel.css",
                 "com/fr/bi/web/css/base/layer/layer.searcher.css",
                 "com/fr/bi/web/css/base/layer/layer.multiselect.css",
@@ -2083,21 +2087,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/logintimeout/login.timeout.css",
 
                 "com/fr/bi/web/css/utils/widget.css",
-                "com/fr/bi/web/css/utils/color.css",
                 "com/fr/bi/web/css/utils/common.css",
                 "com/fr/bi/web/css/utils/cursor.css",
                 "com/fr/bi/web/css/utils/font.css",
                 "com/fr/bi/web/css/utils/icon.css",
                 "com/fr/bi/web/css/utils/animate.css",
                 "com/fr/bi/web/css/utils/background.css",
-                "com/fr/bi/web/css/utils/opacity.css",
                 "com/fr/bi/web/css/utils/overflow.css",
                 "com/fr/bi/web/css/utils/pos.css",
-                "com/fr/bi/web/css/utils/size.css",
                 "com/fr/bi/web/css/utils/sizing.css",
-                "com/fr/bi/web/css/utils/triangle.css",
-                "com/fr/bi/web/css/utils/xtable.css",
-                "com/fr/bi/web/css/utils/zindex.css",
                 "com/fr/bi/web/css/utils/special.css",
 
                 //默认主题配色
@@ -2488,7 +2486,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/prefixIntervalTree.js",
                 "com/fr/bi/web/js/base/utils/helper.scroll.js",
                 "com/fr/bi/web/js/base/utils/tableRowBuffer.js",
+                "com/fr/bi/web/js/base/utils/cellSizeAndPositionManager.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
+                "com/fr/bi/web/js/base/utils/events/eventlistener.js",
+                "com/fr/bi/web/js/base/utils/events/wheelhandler.js",
+                "com/fr/bi/web/js/base/utils/events/mousemovetracker.js",
 
                 "com/fr/bi/web/js/base/parsers/expression.js",
                 "com/fr/bi/web/js/base/parsers/path.js",
@@ -2590,8 +2592,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/table/table.footer.js",
                 "com/fr/bi/web/js/base/module/table/table.js",
                 "com/fr/bi/web/js/base/module/table/table.tree.js",
+                "com/fr/bi/web/js/base/module/table/table.grid.cell.js",
+                "com/fr/bi/web/js/base/module/table/table.grid.scrollbar.js",
+                "com/fr/bi/web/js/base/module/table/table.grid.js",
 
-                "com/fr/bi/web/js/base/module/table/table.fix.js",
+//                "com/fr/bi/web/js/base/module/table/table.fix.js",
+
+                "com/fr/bi/web/js/base/module/grid/grid.js",
 
                 "com/fr/bi/web/js/base/module/layer/layer.floatbox.js",
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",
@@ -2772,7 +2779,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/table/table.layertree.js",
                 "com/fr/bi/web/js/case/table/table.dynamicsummarytree.js",
                 "com/fr/bi/web/js/case/table/table.dynamicsummarylayertree.js",
-                "com/fr/bi/web/js/case/table/tabler.js",
+                "com/fr/bi/web/js/base/module/table/table.grid.resizable.cell.js",
+                "com/fr/bi/web/js/base/module/table/table.grid.resizable.js",
 
                 //chart
                 "com/fr/bi/web/js/case/chart/chart.combine.js",
@@ -3333,10 +3341,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/set.js",
                 "com/fr/bi/web/js/base/utils/lru.js",
                 "com/fr/bi/web/js/base/utils/heap.js",
-                "com/fr/bi/web/js/base/utils/integerBufferSet.js",
-                "com/fr/bi/web/js/base/utils/prefixIntervalTree.js",
-                "com/fr/bi/web/js/base/utils/helper.scroll.js",
-                "com/fr/bi/web/js/base/utils/tableRowBuffer.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
                 "com/fr/bi/web/js/base/utils/load.js",
 

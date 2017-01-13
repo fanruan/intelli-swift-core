@@ -1,0 +1,13 @@
+@import "../../bibase";
+
+.bi-resizable-grid-table {
+  & .resizable-grid-table-region-resizer {
+    cursor: ew-resize;
+    z-index: 1;
+    &:hover {
+      & .resizable-grid-table-region-resizer-knob {
+        background-color: @color-bi-background-highlight;
+      }
+    }
+  }
+}
