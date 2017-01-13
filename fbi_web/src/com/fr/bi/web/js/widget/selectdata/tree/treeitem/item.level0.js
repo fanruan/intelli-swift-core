@@ -88,7 +88,7 @@ BI.SelectDataLevel0Item = BI.inherit(BI.Single, {
     },
 
     setEnable: function (v) {
-        BI.SelectStringLevel0Item.superclass.setEnable.apply(this, arguments)
+        BI.SelectDataLevel0Item.superclass.setEnable.apply(this, arguments)
         this.button.setEnable(v);
         try {
             this.button.element.draggable(v ? "enable" : "disable");
