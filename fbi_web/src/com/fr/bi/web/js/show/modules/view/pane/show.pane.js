@@ -130,14 +130,14 @@ BIShow.PaneView = BI.inherit(BI.View, {
             var count = 30;
             var countInterval = setInterval(function () {
                 countDown.setText(count);
-                count === 0 ? (count = 30) : count--;
+                count === 0 ? (count = 30) : (count--);
             }, 1000);
             var checkInterval = setInterval(function () {
                 BI.requestAsync("fr_bi", "check_report_edit", {
                     id: Data.SharingPool.get("reportId"),
                     createBy: Data.SharingPool.get("createBy")
                 }, function (res) {
-                    if (BI.isNotNull(res.result) && res.result.length > 0) {
+                    if (BI.isNotNull(res.result) && res.result.length === 0) {
                         viewChange.setEnable(true);
                         countDown.setVisible(false);
                         clearInterval(countInterval);
