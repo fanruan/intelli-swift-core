@@ -50,7 +50,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             var width = 0;
             BI.each(self.wrapper.getAllButtons(), function (idx, drill) {
                 //当前点击的要展示
-                if(BI.contains(obj.dimensionIds, drill.getDid())){
+                if(BI.isNotNull(obj.dimensionIds) && BI.contains(obj.dimensionIds, drill.getDid())){
                     drill.setVisible(true);
                     drill.setValue(obj);
                     drill.populate();
