@@ -115,6 +115,9 @@
                 Buffer[ETLCst.PACK_ID] = {};
             }
             Buffer[ETLCst.PACK_ID][id] = callback;
+            if(BI.size(Buffer[ETLCst.PACK_ID]) === 1){
+                this.checkAllAnalysisTablesStatus();
+            }
         }
     };
 })();
