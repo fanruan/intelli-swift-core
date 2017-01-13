@@ -3,8 +3,18 @@
  */
 BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
     _constant: {
-        LABEL_HEIGHT: 30,
-        LABEL_WIDTH: 80
+        LABEL_HEIGHT: 25,
+        LABEL_WIDTH: 80,
+        UPDATE_BUTTON_WIDTH: 110,
+        UPDATE_BUTTON_HEIGHT: 30,
+        UPDATE_BAR_HEIGHT: 70,
+        HELP_COMBO_WIDTH: 50,
+
+        FIELDS_LABEL_HEIGHT: 40,
+
+        BOTTOM_BUTTON_HEIGHT: 30,
+        BOTTOM_BUTTON_WIDTH: 90,
+        BOTTOM_BUTTON_BAR_HEIGHT: 60
     },
 
     _defaultConfig: function () {
@@ -19,7 +29,7 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
     },
 
     _createPopup: function () {
-        var self = this, o = this.options;
+        var self = this, o = this.options, c = this._constant;
 
         if (!this.model) {
             this.model = new BI.UpdateExcelModel({
@@ -32,26 +42,35 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
             var tableFieldMassage = this._createTableFieldsMassage();
             var bottomButton = this._createBottomButton();
 
-            this.popup = BI.createWidget({
+            var wrapper = BI.createWidget({
                 type: "bi.vtape",
-                element: this.element,
                 items: [{
                     el: updateExcelBar,
-                    height: 60
+                    height: c.UPDATE_BAR_HEIGHT
                 }, {
                     el: tableFieldMassage,
                     height: "fill"
                 }, {
                     el: bottomButton,
-                    height: 40
+                    height: c.BOTTOM_BUTTON_BAR_HEIGHT
+                }]
+            });
+            this.popup = BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: wrapper,
+                    top: 0,
+                    bottom: 0,
+                    left: 20,
+                    right: 20
                 }]
             })
-
         }
     },
 
     _createUpdateExcelBar: function () {
-        var c = this._constant;
+        var self = this, c = this._constant;
 
         var nameLabel = BI.createWidget({
             type: "bi.label",
@@ -100,53 +119,79 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
                 el: this.updateDate
             }]
         });
-
+        var emptyDiv = BI.createWidget({
+            type: "bi.layout",
+            height: 20
+        });
         var excelMessage = BI.createWidget({
             type: "bi.vertical",
-            items: [nameWrapper, dateWrapper]
+            cls: "label-text",
+            items: [emptyDiv, nameWrapper, dateWrapper]
         });
 
         var updateButton = BI.createWidget({
             type: "bi.upload_excel_button",
             text: BI.i18nText("BI-Excel_Reupload"),
-            width: 110,
-            height: c.LABEL_HEIGHT
+            width: c.UPDATE_BUTTON_WIDTH,
+            height: c.UPDATE_BUTTON_HEIGHT
         });
         updateButton.on(BI.UploadExcelButton.EVENT_AFTER_UPLOAD, function (files) {
-            self.model.setFile(files[files.length - 1], function (firstRowHasMerge) {
-                if (firstRowHasMerge === true) {
-                    // BI.Msg.alert(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Excel_First_Row_Has_Merge_Cell"));
+            self.model.setFile(files[files.length - 1], function () {
+                self.mask = BI.createWidget({
+                    type: "bi.loading_mask",
+                    masker: self.element,
+                    container: self.element,
+                    text: BI.i18nText("BI-Loading")
+                });
+            }, function () {
+                if (self.model.getValidation() === false) {
+                    BI.Msg.toast(BI.i18nText("BI-Excel_Modify_Fail"), "warning");
                 } else {
                     self._refreshAfterUpload();
                 }
+            }, function () {
+                self.mask.destroy()
             });
         });
 
         var helpButton = BI.createWidget({
-            type: "bi.excel_tip_combo"
+            type: "bi.excel_tip_combo",
+            cls: "excel-help-combo"
         });
 
         return BI.createWidget({
             type: "bi.htape",
+            cls: "excel-update-bar",
             items: [{
                 width: "fill",
                 el: excelMessage
             }, {
-                width: 110,
-                el: updateButton
+                width: c.UPDATE_BUTTON_WIDTH,
+                el: {
+                    type: "bi.center_adapt",
+                    items: [updateButton],
+                    height: c.UPDATE_BAR_HEIGHT
+                }
             }, {
-                width: 50,
-                el: helpButton
+                width: c.HELP_COMBO_WIDTH,
+                el: {
+                    type: "bi.center_adapt",
+                    items: [helpButton],
+                    height: c.UPDATE_BAR_HEIGHT
+                }
             }]
         })
     },
 
     _createTableFieldsMassage: function () {
+        var c = this._constant;
+
         var label = BI.createWidget({
             type: "bi.label",
+            cls: "label-text",
             text: BI.i18nText("BI-Excel_Table_Fields"),
             textAlign: "left",
-            height: 30
+            height: c.FIELDS_LABEL_HEIGHT
         });
         this.fieldsTableWrapper = BI.createWidget({
             type: "bi.absolute",
@@ -162,7 +207,7 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
             type: "bi.vtape",
             items: [{
                 el: label,
-                height: 30
+                height: c.FIELDS_LABEL_HEIGHT
             }, {
                 el: this.fieldsTableWrapper,
                 height: "fill"
@@ -171,26 +216,27 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
     },
 
     _createBottomButton: function () {
-        var self = this;
+        var self = this, c = this._constant;
 
         var confirm = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-OK"),
-            height: 30,
-            width: 90
+            height: c.BOTTOM_BUTTON_HEIGHT,
+            width: c.BOTTOM_BUTTON_WIDTH
         });
         confirm.on(BI.Button.EVENT_CHANGE, function () {
-
+            self.fireEvent(BI.UpdateExcelPopup.EVENT_CONFIRM);
         });
+
         var cancel = BI.createWidget({
             type: "bi.button",
             level: 'ignore',
             text: BI.i18nText("BI-Cancel"),
-            height: 30,
-            width: 90
+            height: c.BOTTOM_BUTTON_HEIGHT,
+            width: c.BOTTOM_BUTTON_WIDTH
         });
         cancel.on(BI.Button.EVENT_CHANGE, function () {
-
+            self.fireEvent(BI.UpdateExcelPopup.EVENT_CANCEL);
         });
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
@@ -209,11 +255,30 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
     },
 
     _refreshAfterUpload: function () {
+        this.excelName.setText(this.model.getExcelName());
+        this.updateDate.setText(this.model.getUpdateDate());
+        BI.Msg.toast(BI.i18nText("BI-Excel_Pass_Verification"), "success");
+    },
 
+    _destroyMask: function () {
+        if (this.mask) {
+            this.mask.destroy();
+        }
+    },
+
+    getExcelFullName: function () {
+        return this.model.getFullFileName();
+    },
+
+    getIsAllowUpdate: function () {
+        return this.model.getValidation();
     },
 
     populate: function () {
         this._createPopup();
+        this._destroyMask();
     }
 });
+BI.UpdateExcelPopup.EVENT_CONFIRM = "BI.UpdateExcelPopup.EVENT_CONFIRM";
+BI.UpdateExcelPopup.EVENT_CANCEL = "BI.UpdateExcelPopup.EVENT_CANCEL";
 $.shortcut("bi.update_excel_popup", BI.UpdateExcelPopup);

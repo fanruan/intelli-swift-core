@@ -1907,6 +1907,9 @@ public class ResourceHelper {
 
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
+                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/updateexcelpopup.css",
+                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/excelfieldstable/updateexcelfieldtable.css",
+                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/updateexcelcombo.css",
         };
     }
 

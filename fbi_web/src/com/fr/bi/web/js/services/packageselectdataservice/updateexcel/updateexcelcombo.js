@@ -23,10 +23,21 @@ BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
         textButton.on(BI.TextButton.EVENT_CHANGE, function () {
             self.combo.showView();
         });
+
         this.popup = BI.createWidget({
             type: "bi.update_excel_popup",
             tableId: o.tableId
         });
+        this.popup.on(BI.UpdateExcelPopup.EVENT_CONFIRM, function () {
+            if (this.getIsAllowUpdate()) {
+                self._updateExcelTableDate();
+            }
+            self.combo.hideView();
+        });
+        this.popup.on(BI.UpdateExcelPopup.EVENT_CANCEL, function () {
+            self.combo.hideView();
+        });
+
         this.combo = BI.createWidget({
             type: "bi.combo",
             toggle: true,
@@ -34,12 +45,26 @@ BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
             el: textButton,
             popup: {
                 el: this.popup,
-                minWidth: 600,
-                minHeight: 400
+                minWidth: 550,
+                minHeight: 350
             }
         });
         this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
             self.popup.populate();
+        })
+    },
+
+    _updateExcelTableDate: function () {
+        var oldTableId = this.options.tableId;
+        var newExcelFullName = this.popup.getExcelFullName();
+        var data = {
+            oldTableId: oldTableId,
+            newExcelFullName: newExcelFullName
+        };
+        Data.Req.reqUpdateExcelTableCube(data, function (date) {
+            console.log(date);
+        }, function () {
+            console.log("complete");
         })
     }
 });

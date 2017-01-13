@@ -42,13 +42,13 @@ BI.UpdateExcelFieldsTable = BI.inherit(BI.Widget, {
             var item = [];
             item.push({
                 type: "bi.label",
+                cls: "fields-name",
                 text: field.field_name,
-                textAlign: "left",
-                cls: ""
+                textAlign: "left"
             });
             item.push({
                 type: "bi.left",
-                cls: self._getFieldCls(field.field_type),
+                cls: self._getFieldCls(field.field_type)+" fields-type",
                 items: [{
                     type: "bi.icon",
                     height: 20,
