@@ -1,9 +1,9 @@
 package com.fr.bi.conf.base.datasource;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.data.db.DataLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -76,6 +76,11 @@ public class BIConnectionManager extends XMLFileManager {
             connMap.put(name, new BIConnection(name, schemas != null && schemas.length != 0 ? schemas[0] : StringUtils.EMPTY));
         } else {
             connMap.put(name, new BIConnection(name, null));
+        }
+        try {
+            FRContext.getCurrentEnv().writeResource(this);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return null;
     }
@@ -183,36 +188,6 @@ public class BIConnectionManager extends XMLFileManager {
         }
     }
 
-
-//    public JSONObject createJSON() throws JSONException {
-//        JSONObject jsonObject = new JSONObject();
-//        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
-//        Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
-//
-//        int index = 0;
-//        for (Map.Entry<String, JDBCDatabaseConnection> connectionMap : availableConnection.entrySet()) {
-//            String name = connectionMap.getKey();
-//            JDBCDatabaseConnection c = connectionMap.getValue();
-//            if (c != null) {
-//                if (isMicrosoftAccessDatabase(c)) {
-//                    continue;
-//                }
-//                JSONObject jo = new JSONObject();
-//                jo.put("name", name);
-//                jo.put("driver", c.getDriver());
-//                jo.put("url", c.getURL());
-//                jo.put("user", c.getUser());
-//                jo.put("password", c.getPassword());
-//                jo.put("originalCharsetName", StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
-//                jo.put("newCharsetName", StringUtils.alwaysNotNull(c.getNewCharsetName()));
-//                jo.put("schema", getSchema(name));
-//                jsonObject.put("link" + index++, jo);
-//            }
-//        }
-//
-//        return jsonObject;
-//    }
-
     public JSONObject createJSON() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
@@ -251,8 +226,8 @@ public class BIConnectionManager extends XMLFileManager {
         if (testConnection(c)) {
             try {
                 conn = c.createConnection();
-                Dialect dialcet = DialectFactory.generateDialect(conn, c.getDriver());
-                return dialcet instanceof OracleDialect || dialcet instanceof MSSQLDialect;
+                Dialect dialect = DialectFactory.generateDialect(conn, c.getDriver());
+                return dialect instanceof OracleDialect || dialect instanceof MSSQLDialect;
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
