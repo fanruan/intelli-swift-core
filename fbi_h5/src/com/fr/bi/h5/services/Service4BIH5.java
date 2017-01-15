@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Service4BIH5 implements Service {
 
-    private static final int EXPiIRES = -10;
 
     private static ActionCMD[] actions = {
             new EmbResourceService(),
@@ -49,7 +48,7 @@ public class Service4BIH5 implements Service {
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
         res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setDateHeader("Expires", EXPiIRES);
+        res.setDateHeader("Expires", -10);
 
 //        PrivilegeVote vote = getFSVote(req, res);
 //        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
