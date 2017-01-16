@@ -258,6 +258,10 @@ public class ExcelTableSource extends AbstractTableSource {
     public String getTableName() {
         return this.fileName;
     }
+
+    public void setFullFileName(String fullFileName) {
+        this.fullFileName = fullFileName;
+    }
 //    @Override
 //    public void readXML(XMLableReader reader) {
 //        super.readXML(reader);

@@ -131,6 +131,7 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
 
         var updateButton = BI.createWidget({
             type: "bi.upload_excel_button",
+            progressEL:this.element,
             text: BI.i18nText("BI-Excel_Reupload"),
             width: c.UPDATE_BUTTON_WIDTH,
             height: c.UPDATE_BUTTON_HEIGHT

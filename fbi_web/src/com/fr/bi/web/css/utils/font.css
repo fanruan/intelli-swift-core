@@ -2493,6 +2493,15 @@
   content: "\e649";
   color: #009de3;
 }
+.excel-complete-font .b-font:before {
+  content: "\e6e5";
+  color: #009de3;
+}
+.excel-complete-font.native .b-font:before,
+.excel-complete-font.disabled .b-font:before {
+  content: "\e6e5";
+  color: #009de3;
+}
 .select-data-field-calc-font .b-font:before {
   content: "\e6a3";
   color: #1a1a1a;

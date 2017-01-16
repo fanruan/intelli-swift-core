@@ -131,7 +131,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
         var copyButton = BI.createWidget({
             type: 'bi.copy_link_icon_button',
             cls: "template-item-icon",
-            buildUrl: o.buildUrl + "&edit=_bi_edit_"
+            buildUrl: o.buildUrl
         });
 
         var renameIcon = BI.createWidget({
@@ -142,7 +142,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             stopPropagation: true
         });
         renameIcon.on(BI.IconButton.EVENT_CHANGE, function () {
-            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id, createBy: o.createBy}, function(res) {
+            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id, createBy: o.createBy}, function (res) {
                 if (BI.isNotNull(res.result) && res.result.length > 0) {
                     BI.Msg.toast(BI.i18nText("BI-Report_Editing_Cannot_Rename", res.result), "warning");
                 } else {
@@ -163,7 +163,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             deleteIcon.setWarningTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Delete"));
         }
         deleteIcon.on(BI.IconButton.EVENT_CHANGE, function () {
-            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id, createBy: o.createBy}, function(res) {
+            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id, createBy: o.createBy}, function (res) {
                 if (BI.isNotNull(res.result) && res.result.length > 0) {
                     BI.Msg.toast(BI.i18nText("BI-Report_Editing_Cannot_Remove", res.result), "warning");
                 } else {

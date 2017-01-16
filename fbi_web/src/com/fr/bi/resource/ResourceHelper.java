@@ -1910,6 +1910,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/updateexcelpopup.css",
                 "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/excelfieldstable/updateexcelfieldtable.css",
                 "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/updateexcelcombo.css",
+                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/button/stateiconbutton.css"
         };
     }
 
@@ -1990,6 +1991,8 @@ public class ResourceHelper {
                 //业务包选择字段服务
                 "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/model.updateexcel.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/updateexcelcombo.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/updateexceltrigger.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/button/stateiconbutton.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/updateexcelpopup.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/excelfieldtable/updateexcelfieldtable.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.js",

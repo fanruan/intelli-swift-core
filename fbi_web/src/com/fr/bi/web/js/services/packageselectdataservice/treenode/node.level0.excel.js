@@ -17,7 +17,6 @@ BI.DetailSelectDataLevel0ExcelNode = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.node = BI.createWidget({
             type: "bi.select_data_level0_node",
-            // element: this.element,
             layer: o.layer,
             id: o.id,
             pId: o.pId,
@@ -37,11 +36,9 @@ BI.DetailSelectDataLevel0ExcelNode = BI.inherit(BI.Widget, {
             type:"bi.update_excel_combo",
             tableId:o.id,
             height:o.height,
-            width:70
+            width:90
         });
-        // setExcelButton.on(BI.TextButton.EVENT_CHANGE,function () {
-        //     console.log("excel");
-        // });
+
         BI.createWidget({
             type:"bi.htape",
             element:this.element,
@@ -50,24 +47,9 @@ BI.DetailSelectDataLevel0ExcelNode = BI.inherit(BI.Widget, {
                 width:"fill"
             },{
                 el:setExcelButton,
-                width:70
+                width:90
             }]
         });
-        // BI.createWidget({
-        //     type:"bi.absolute",
-        //     element:this.element,
-        //     items:[{
-        //         el:this.node,
-        //         top:0,
-        //         bottom:0,
-        //         left:0,
-        //         right:0
-        //     },{
-        //         el:setExcelButton,
-        //         top:0,
-        //         right:0
-        //     }]
-        // })
     },
 
     doRedMark: function () {

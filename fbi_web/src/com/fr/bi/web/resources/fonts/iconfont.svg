@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg">
 <metadata>
-Created by FontForge 20120731 at Tue Dec 13 15:37:11 2016
+Created by FontForge 20120731 at Mon Jan 16 17:01:54 2017
  By admin
 </metadata>
 <defs>
@@ -19,7 +19,7 @@ Created by FontForge 20120731 at Tue Dec 13 15:37:11 2016
     bbox="0 -218 1308 896"
     underline-thickness="0"
     underline-position="0"
-    unicode-range="U+0078-E6E4"
+    unicode-range="U+0078-E6E6"
   />
 <missing-glyph 
  />
@@ -646,5 +646,11 @@ q-3 -9 -9 -23.5t-28.5 -56.5t-49 -80t-72 -83.5t-97.5 -76.5h128q7 6 18 16.5t40.5 4
     <glyph glyph-name="icon_danbiaogengxin_zeng-" unicode="&#xe6e4;" 
 d="M352 192v256h64v-64h64v-384h64v64h192v-64h64v320h-64v-64h-192v64h256v64h64v256h-448v-128h-64v256h-64v-256h-128v-64h128v-256h64zM736 192v-64h-192v64h192zM800 576v-128h-64v64h-64v64h128zM480 576h128v-64h-64v-64h-64v128zM32 832v-896q0 -26 19 -45t45 -19
 h832q26 0 45 19t19 45v896q0 26 -19 45t-45 19h-832q-26 0 -45 -19t-19 -45zM928 -64h-832v896h832v-896zM608 640h-64l-64 128h64zM672 640h64l64 128h-64zM416 192l-256 -128v64l256 128v-64z" />
+    <glyph glyph-name="gengxinchenggong-" unicode="&#xe6e5;" 
+d="M512 808q115 0 213 -56.5t154.5 -154.5t56.5 -213t-56.5 -213t-154.5 -154.5t-213 -56.5t-213 56.5t-154.5 154.5t-56.5 213t56.5 213t154.5 154.5t213 56.5zM512 896q-139 0 -257 -68.5t-186.5 -186.5t-68.5 -257t68.5 -257t186.5 -186.5t257 -68.5t257 68.5
+t186.5 186.5t68.5 257t-68.5 257t-186.5 186.5t-257 68.5zM444 166v0q-18 0 -31 13l-175 175q-12 12 -12 30.5t12.5 31t31 12.5t30.5 -12l144 -144l280 280q12 13 30.5 13t31.5 -13t13 -31t-13 -31l-311 -311q-13 -13 -31 -13v0z" />
+    <glyph glyph-name="gengxinshibai-" unicode="&#xe6e6;" 
+d="M512 896q-104 0 -199 -40.5t-163.5 -109t-109 -163.5t-40.5 -199t40.5 -199t109 -163.5t163.5 -109t199 -40.5t199 40.5t163.5 109t109 163.5t40.5 199t-40.5 199t-109 163.5t-163.5 109t-199 40.5zM512 -28q-112 0 -207 55t-150 150t-55 207t55 207t150 150t207 55
+t207 -55t150 -150t55 -207t-55 -207t-150 -150t-207 -55zM512 -28zM478 715h68q29 0 28 -31l-16 -403q0 -8 -6 -14t-15 -6h-50q-9 0 -15 6t-6 14l-16 403q-1 31 28 31zM512 53q-29 0 -49 20.5t-20 49t20 49t49 20.5t49 -20.5t20 -49t-20 -49t-49 -20.5z" />
   </font>
 </defs></svg>

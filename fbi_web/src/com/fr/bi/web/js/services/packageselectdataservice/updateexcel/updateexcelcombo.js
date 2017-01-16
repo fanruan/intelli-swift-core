@@ -7,20 +7,19 @@ BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
             baseCls: "bi-update-excel-combo",
             tableId: "",
             height: 25,
-            width: 70
+            width: 90
         })
     },
     _init: function () {
         BI.UpdateExcelCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var textButton = BI.createWidget({
-            type: "bi.text_button",
-            text: BI.i18nText("BI-Update_Excel"),
-            stopPropagation: true,
-            height: o.height,
-            width: o.width
+
+        this.trigger=BI.createWidget({
+            type:"bi.update_excel_trigger",
+            height:o.height,
+            width:o.width
         });
-        textButton.on(BI.TextButton.EVENT_CHANGE, function () {
+        this.trigger.on(BI.UpdateExcelTrigger.EVENT_CHANGE,function () {
             self.combo.showView();
         });
 
@@ -42,7 +41,7 @@ BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
             type: "bi.combo",
             toggle: true,
             element: this.element,
-            el: textButton,
+            el: this.trigger,
             popup: {
                 el: this.popup,
                 minWidth: 550,
@@ -55,16 +54,20 @@ BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
     },
 
     _updateExcelTableDate: function () {
+        var self = this;
         var oldTableId = this.options.tableId;
         var newExcelFullName = this.popup.getExcelFullName();
         var data = {
-            oldTableId: oldTableId,
+            tableId: oldTableId,
             newExcelFullName: newExcelFullName
         };
-        Data.Req.reqUpdateExcelTableCube(data, function (date) {
-            console.log(date);
+        this.trigger.setText(BI.i18nText("BI-Excel_Is_Updating"));
+        Data.Req.reqUpdateExcelTableCube(data, function () {
+
         }, function () {
-            console.log("complete");
+            self.trigger.setText(BI.i18nText("BI-Excel_Update_Complete"));
+            self.trigger.setState(false);//todo
+            BI.Utils.broadcastAllWidgets2Refresh(true);
         })
     }
 });
