@@ -68,10 +68,3 @@ FR.i18n = BI.i18n = {
     Time: 'Time'
 
 };
-
-BI.i18nText = function (key) {
-    if(BI.i18nText4Mobile[key]) {
-        return BI.i18nText4Mobile[key];
-    }
-    return key;
-};

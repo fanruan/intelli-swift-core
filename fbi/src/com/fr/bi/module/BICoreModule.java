@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
@@ -28,8 +29,8 @@ import com.fr.bi.conf.records.BICubeTaskRecordManager;
 import com.fr.bi.fs.*;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
+import com.fr.bi.services.Service4BIH5;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.mobile.Service4BIMobile;
@@ -415,7 +416,9 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIMobile(),
                 new Service4BIBase(),
 
-                new Service4FineCube()
+                new Service4FineCube(),
+
+                new Service4BIH5()
         };
     }
 

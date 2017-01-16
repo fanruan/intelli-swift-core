@@ -1,5 +1,6 @@
 Data.Utils = {
-    /**
+
+/**
      * 数据转化方法
      * @param data 原始数据
      * @param widget 组件信息
@@ -19,6 +20,7 @@ Data.Utils = {
      */
     convertDataToWidgetData: function (data, widget, op) {
         var options = {};
+        var dateConfig = getDateConfig();
         var type = widget.type;
         var dimsInfo = refreshDimsInfo();
         var dimIds = dimsInfo.dimIds;
@@ -284,6 +286,61 @@ Data.Utils = {
             };
         }
 
+        function _getFormatDateText (type, text){
+            switch (type) {
+                case BICst.GROUP.S:
+                    text = dateConfig.FULL_QUARTER_NAMES[text];
+                    break;
+                case BICst.GROUP.M:
+                    text = dateConfig.FULL_MONTH_NAMES[text];
+                    break;
+                case BICst.GROUP.W:
+                    text = dateConfig.FULL_WEEK_NAMES[text];
+                    break;
+                case BICst.GROUP.YMD:
+                    var date = new Date(BI.parseInt(text));
+                    text = date.print("%Y-%X-%d");
+                    break;
+            }
+            return text;
+        }
+
+        function getDateConfig(){
+            return {
+                FULL_WEEK_NAMES: [BI.i18nText("BI-Sunday"), BI.i18nText("BI-Monday"),
+                    BI.i18nText("BI-Tuesday"),
+                    BI.i18nText("BI-Wednesday"),
+                    BI.i18nText("BI-Thursday"),
+                    BI.i18nText("BI-Friday"),
+                    BI.i18nText("BI-Saturday"),
+                    BI.i18nText("BI-Sunday")],
+
+                //full month names
+                FULL_MONTH_NAMES: [
+                    BI.i18nText("BI-December"),
+                    BI.i18nText("BI-January"),
+                    BI.i18nText("BI-February"),
+                    BI.i18nText("BI-March"),
+                    BI.i18nText("BI-April"),
+                    BI.i18nText("BI-May"),
+                    BI.i18nText("BI-June"),
+                    BI.i18nText("BI-July"),
+                    BI.i18nText("BI-August"),
+                    BI.i18nText("BI-September"),
+                    BI.i18nText("BI-October"),
+                    BI.i18nText("BI-November"),
+                    BI.i18nText("BI-December")],
+
+                //full quarter names
+                FULL_QUARTER_NAMES: [
+                    BI.i18nText("BI-Quarter_4"),
+                    BI.i18nText("BI-Quarter_1"),
+                    BI.i18nText("BI-Quarter_2"),
+                    BI.i18nText("BI-Quarter_3"),
+                    BI.i18nText("BI-Quarter_4")]
+            }
+        }
+
         function getRegionTypeByDimensionID(dId) {
             var view = widget.view;
             return BI.findKey(view, function (regionType, dIds) {
@@ -298,18 +355,16 @@ Data.Utils = {
                 var top = data.t, left = data.l;
                 return BI.map(top.c, function (id, tObj) {
                     var name = tObj.n, seriesName = tObj.n;
-                    if (BI.isNotNull(seriesGroup) && seriesGroup.type === BICst.GROUP.YMD) {
-                        var date = new Date(BI.parseInt(name));
-                        name = date.print("%Y-%X-%d");
+                    if (BI.isNotNull(seriesGroup)) {
+                        name = _getFormatDateText(seriesGroup.type, name);
                     }
                     var data = [];
                     if(BI.has(left, "c")){
                         data = BI.map(left.c, function (idx, obj) {
                             var value = obj.n, x = obj.n;
                             var seriesValue = obj.s.c[id].s[0];
-                            if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                                var date = new Date(BI.parseInt(x));
-                                x = date.print("%Y-%X-%d");
+                            if (BI.isNotNull(cataGroup)) {
+                                x = _getFormatDateText(cataGroup.type, x);
                             }
                             var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
                             return {
@@ -354,9 +409,8 @@ Data.Utils = {
                     var adjustData = BI.map(data.c, function (id, item) {
                         var value = item.n, x = item.n;
                         var seriesValue = item.s[idx];
-                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                            var date = new Date(BI.parseInt(x));
-                            x = date.print("%Y-%X-%d");
+                        if (BI.isNotNull(cataGroup)) {
+                            x = _getFormatDateText(cataGroup.type, x);
                         }
                         var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
 
@@ -446,9 +500,8 @@ Data.Utils = {
                 var obj = {};
                 var name = item.n, seriesName = item.n;
                 var dGroup = widget.dimensions[cataDid].group;
-                if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
-                    var date = new Date(BI.parseInt(name));
-                    name = date.print("%Y-%X-%d");
+                if (BI.isNotNull(dGroup)) {
+                    name = _getFormatDateText(dGroup.type, name);
                 }
 
                 var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
@@ -482,9 +535,8 @@ Data.Utils = {
                 var obj = {};
                 var name = item.n, seriesName = item.n;
                 var dGroup = widget.dimensions[cataDid].group;
-                if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
-                    var date = new Date(BI.parseInt(name));
-                    name = date.print("%Y-%X-%d");
+                if (BI.isNotNull(dGroup)) {
+                    name = _getFormatDateText(dGroup.type, name);
                 }
                 var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
                 var y = (BI.isFinite(item.s[0]) ? item.s[0] : 0);
