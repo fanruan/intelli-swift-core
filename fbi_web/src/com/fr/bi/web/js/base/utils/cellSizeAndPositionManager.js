@@ -53,7 +53,7 @@ BI.CellSizeAndPositionManager.prototype = {
         return this._cellSizeAndPositionData[index];
     },
 
-    getSizeAndPositionOfLastMeasuredCell () {
+    getSizeAndPositionOfLastMeasuredCell: function () {
         return this._lastMeasuredIndex >= 0
             ? this._cellSizeAndPositionData[this._lastMeasuredIndex]
             : {
@@ -62,12 +62,12 @@ BI.CellSizeAndPositionManager.prototype = {
         }
     },
 
-    getTotalSize () {
+    getTotalSize: function () {
         var lastMeasuredCellSizeAndPosition = this.getSizeAndPositionOfLastMeasuredCell();
         return lastMeasuredCellSizeAndPosition.offset + lastMeasuredCellSizeAndPosition.size + (this._cellCount - this._lastMeasuredIndex - 1) * this._estimatedCellSize
     },
 
-    getUpdatedOffsetForIndex (align, containerSize, currentOffset, targetIndex) {
+    getUpdatedOffsetForIndex: function (align, containerSize, currentOffset, targetIndex) {
         var datum = this.getSizeAndPositionOfCell(targetIndex);
         var maxOffset = datum.offset;
         var minOffset = maxOffset - containerSize + datum.size;
@@ -94,7 +94,7 @@ BI.CellSizeAndPositionManager.prototype = {
         return Math.max(0, Math.min(totalSize - containerSize, idealOffset));
     },
 
-    getVisibleCellRange (containerSize, offset) {
+    getVisibleCellRange: function (containerSize, offset) {
         var totalSize = this.getTotalSize();
 
         if (totalSize === 0) {
@@ -115,16 +115,16 @@ BI.CellSizeAndPositionManager.prototype = {
         }
 
         return {
-            start,
-            stop
+            start: start,
+            stop: stop
         }
     },
 
-    resetCell (index) {
+    resetCell: function (index) {
         this._lastMeasuredIndex = Math.min(this._lastMeasuredIndex, index - 1)
     },
 
-    _binarySearch (high, low, offset) {
+    _binarySearch: function (high, low, offset) {
         var middle;
         var currentOffset;
 
@@ -146,7 +146,7 @@ BI.CellSizeAndPositionManager.prototype = {
         }
     },
 
-    _exponentialSearch (index, offset) {
+    _exponentialSearch: function (index, offset) {
         var interval = 1;
 
         while (index < this._cellCount && this.getSizeAndPositionOfCell(index).offset < offset) {
@@ -157,7 +157,7 @@ BI.CellSizeAndPositionManager.prototype = {
         return this._binarySearch(Math.min(index, this._cellCount - 1), Math.floor(index / 2), offset);
     },
 
-    _findNearestCell (offset) {
+    _findNearestCell: function (offset) {
         if (isNaN(offset)) {
             return;
         }
@@ -187,19 +187,19 @@ BI.ScalingCellSizeAndPositionManager.prototype = {
         this._cellSizeAndPositionManager.configure.apply(this._cellSizeAndPositionManager, arguments);
     },
 
-    getCellCount () {
+    getCellCount: function () {
         return this._cellSizeAndPositionManager.getCellCount()
     },
 
-    getEstimatedCellSize () {
+    getEstimatedCellSize: function () {
         return this._cellSizeAndPositionManager.getEstimatedCellSize()
     },
 
-    getLastMeasuredIndex () {
+    getLastMeasuredIndex: function () {
         return this._cellSizeAndPositionManager.getLastMeasuredIndex()
     },
 
-    getOffsetAdjustment (containerSize, offset) {
+    getOffsetAdjustment: function (containerSize, offset) {
         var totalSize = this._cellSizeAndPositionManager.getTotalSize();
         var safeTotalSize = this.getTotalSize();
         var offsetPercentage = this._getOffsetPercentage(containerSize, offset, safeTotalSize);
@@ -207,19 +207,19 @@ BI.ScalingCellSizeAndPositionManager.prototype = {
         return Math.round(offsetPercentage * (safeTotalSize - totalSize));
     },
 
-    getSizeAndPositionOfCell (index) {
+    getSizeAndPositionOfCell: function (index) {
         return this._cellSizeAndPositionManager.getSizeAndPositionOfCell(index);
     },
 
-    getSizeAndPositionOfLastMeasuredCell () {
+    getSizeAndPositionOfLastMeasuredCell: function () {
         return this._cellSizeAndPositionManager.getSizeAndPositionOfLastMeasuredCell();
     },
 
-    getTotalSize () {
+    getTotalSize: function () {
         return Math.min(this._maxScrollSize, this._cellSizeAndPositionManager.getTotalSize());
     },
 
-    getUpdatedOffsetForIndex (align, containerSize, currentOffset, targetIndex) {
+    getUpdatedOffsetForIndex: function (align, containerSize, currentOffset, targetIndex) {
         currentOffset = this._safeOffsetToOffset(containerSize, currentOffset);
 
         var offset = this._cellSizeAndPositionManager.getUpdatedOffsetForIndex(align, containerSize, currentOffset, targetIndex);
@@ -227,23 +227,23 @@ BI.ScalingCellSizeAndPositionManager.prototype = {
         return this._offsetToSafeOffset(containerSize, offset);
     },
 
-    getVisibleCellRange (containerSize, offset) {
+    getVisibleCellRange: function (containerSize, offset) {
         offset = this._safeOffsetToOffset(containerSize, offset);
 
         return this._cellSizeAndPositionManager.getVisibleCellRange(containerSize, offset);
     },
 
-    resetCell (index) {
+    resetCell: function (index) {
         this._cellSizeAndPositionManager.resetCell(index)
     },
 
-    _getOffsetPercentage (containerSize, offset, totalSize) {
+    _getOffsetPercentage: function (containerSize, offset, totalSize) {
         return totalSize <= containerSize
             ? 0
             : offset / (totalSize - containerSize)
     },
 
-    _offsetToSafeOffset (containerSize, offset) {
+    _offsetToSafeOffset: function (containerSize, offset) {
         var totalSize = this._cellSizeAndPositionManager.getTotalSize();
         var safeTotalSize = this.getTotalSize();
 
@@ -256,7 +256,7 @@ BI.ScalingCellSizeAndPositionManager.prototype = {
         }
     },
 
-    _safeOffsetToOffset (containerSize, offset) {
+    _safeOffsetToOffset: function (containerSize, offset) {
         var totalSize = this._cellSizeAndPositionManager.getTotalSize();
         var safeTotalSize = this.getTotalSize();
 
