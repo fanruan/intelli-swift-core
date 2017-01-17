@@ -232,6 +232,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
                 summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
             }
         });
+
         var tlw = regionSize;
         var tlh = regionSize >= summaryColumnSizeArray[freezeColLength - 1] ? (o.header.length * o.headerRowSize) : (o.header.length * o.headerRowSize + this._scrollBarSize);
         var trw = this._width - regionSize;

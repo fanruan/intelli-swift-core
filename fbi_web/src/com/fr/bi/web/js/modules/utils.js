@@ -2683,7 +2683,7 @@
                     var dimensionIds = self.getAllDimensionIDs(id);
                     BI.each(dimensionIds, function (i, dimId) {
                         var fValue = value, fType = "";
-                        if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value)) {
+                        if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value) || !checkValueValid(self.getWidgetTypeByID(id), value)) {
                             return;
                         }
                         var filter = null;
@@ -2739,7 +2739,7 @@
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {group: BICst.GROUP.M, values: month};
+                                fValue = {group: BICst.GROUP.M, values: month + 1};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -2881,6 +2881,16 @@
                     }
                 );
             }
+
+            function checkValueValid(type, value){
+                switch (type) {
+                    case BICst.WIDGET.NUMBER:
+                        return !(BI.isEmptyString(value.min) && BI.isEmptyString(value.max));
+                    default:
+                        return true;
+                }
+            }
+
         },
 
         getWidgetCalculationByID: function (wid) {
@@ -3540,6 +3550,21 @@
                 filterValue.group = BICst.GROUP.YMD;
             }
         }
+
+        //数值类型为空忽略此条件
+        if ((filterType === BICst.TARGET_FILTER_NUMBER.EQUAL_TO ||
+            filterType === BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO) &&
+            BI.isEmptyString(filterValue)) {
+            return;
+        }
+
+        if((filterType === BICst.TARGET_FILTER_NUMBER.BELONG_VALUE ||
+            BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE) &&
+            (BI.isEmptyString(filterValue.min) && BI.isEmptyString(filterValue.max))
+        ){
+            return;
+        }
+
         return filter;
         //日期偏移值
         function getOffSetDateByDateAndValue(date, value) {

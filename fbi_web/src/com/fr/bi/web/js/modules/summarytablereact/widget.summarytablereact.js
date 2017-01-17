@@ -332,13 +332,13 @@ BI.SummaryTableReact = BI.inherit(BI.Pane, {
                     text = date.print("%Y-%X-%d  %H:%M:%S");
                     break;
                 case BICst.GROUP.S:
-                    text = BICst.FULL_QUARTER_NAMES[text - 1];
+                    text = BICst.FULL_QUARTER_NAMES[text];
                     break;
                 case BICst.GROUP.M:
-                    text = BICst.FULL_MONTH_NAMES[text - 1];
+                    text = BICst.FULL_MONTH_NAMES[text];
                     break;
                 case BICst.GROUP.W:
-                    text = BICst.FULL_WEEK_NAMES[text - 1];
+                    text = BICst.FULL_WEEK_NAMES[text];
                     break;
             }
         }
