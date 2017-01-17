@@ -7,6 +7,8 @@ import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateT
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ASCComparator;
 import com.fr.bi.stable.operation.sort.comp.DSCComparator;
+import com.fr.bi.stable.operation.sort.comp.RankConfASCComparator;
+import com.fr.bi.stable.operation.sort.comp.RankConfDSCComparator;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BITargetKey;
@@ -179,7 +181,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
                 deep++;
             }
             Comparator c = type == BIReportConstant.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC ?
-                    new ASCComparator() : new DSCComparator();
+                    new RankConfASCComparator() : new RankConfDSCComparator();
             TreeMap sortMap = new TreeMap(c);
             BICrossNode cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
