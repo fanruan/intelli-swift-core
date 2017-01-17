@@ -96,7 +96,7 @@ BI.Collection = BI.inherit(BI.Widget, {
         this._width = width;
     },
 
-    _cellRenderers(height, width, x, y) {
+    _cellRenderers: function (height, width, x, y) {
         this._lastRenderedCellIndices = this._sectionManager.getCellIndices(height, width, x, y);
         return this._cellGroupRenderer()
     },
