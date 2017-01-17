@@ -98,9 +98,10 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
                 bottom: 0
             }]
         });
-        var size = 0, offset = 0, defaultSize = 0;
+        var size = 0, offset = 0, defaultSize = 0, start = false;
         var mouseMoveTracker = new BI.MouseMoveTracker(function (deltaX, deltaY) {
             if (mouseMoveTracker.isDragging()) {
+                start = true;
                 offset += deltaX;
                 size = BI.clamp(defaultSize + offset, 15, o.width - 15);
 
@@ -109,18 +110,21 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
             }
 
         }, function () {
-            o.regionColumnSize[0] = BI.clamp(size, 15, o.width - 15);
-            self.table.setRegionColumnSize(o.regionColumnSize);
-            if (o.isResizeAdapt === true) {
-                var freezeColumnSize = self._getFreezeColumnSize();
-                o.columnSize[self._getFreezeColLength() - 1] += o.regionColumnSize[0] - freezeColumnSize;
-                self.table.setColumnSize(o.columnSize);
+            if (start === true) {
+                o.regionColumnSize[0] = BI.clamp(size, 15, o.width - 15);
+                self.table.setRegionColumnSize(o.regionColumnSize);
+                if (o.isResizeAdapt === true) {
+                    var freezeColumnSize = self._getFreezeColumnSize();
+                    o.columnSize[self._getFreezeColLength() - 1] += o.regionColumnSize[0] - freezeColumnSize;
+                    self.table.setColumnSize(o.columnSize);
+                }
+                self.table.populate();
+                self._populate();
+                self.regionResizerHandler.element.removeClass("dragging");
+                mouseMoveTracker.releaseMouseMoves();
+                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
+                start = false;
             }
-            self.table.populate();
-            self._populate();
-            self.regionResizerHandler.element.removeClass("dragging");
-            mouseMoveTracker.releaseMouseMoves();
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
         }, document);
         regionResizerHandler.element.on("mousedown", function (event) {
             defaultSize = size = self._getRegionSize();
