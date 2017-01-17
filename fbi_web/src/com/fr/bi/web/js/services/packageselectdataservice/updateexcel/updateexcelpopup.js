@@ -67,6 +67,30 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
                 }]
             })
         }
+
+        if (!this.failpane) {
+            this.failpane = BI.createWidget({
+                type: "bi.update_excel_fail_pane"
+            });
+            BI.createWidget({
+                type: "bi.horizontal_auto",
+                element: this.element,
+                items: [this.failpane]
+            });
+            this.failpane.setVisible(false);
+        }
+
+        if (!this.successPane) {
+            this.successPane = BI.createWidget({
+                type: "bi.update_excel_success_pane"
+            });
+            BI.createWidget({
+                type: "bi.horizontal_auto",
+                element: this.element,
+                items: [this.successPane]
+            });
+            this.successPane.setVisible(false);
+        }
     },
 
     _createUpdateExcelBar: function () {
@@ -131,7 +155,7 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
 
         var updateButton = BI.createWidget({
             type: "bi.upload_excel_button",
-            progressEL:this.element,
+            progressEL: this.element,
             text: BI.i18nText("BI-Excel_Reupload"),
             width: c.UPDATE_BUTTON_WIDTH,
             height: c.UPDATE_BUTTON_HEIGHT
@@ -146,7 +170,7 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
                 });
             }, function () {
                 if (self.model.getValidation() === false) {
-                    BI.Msg.toast(BI.i18nText("BI-Excel_Modify_Fail"), "warning");
+                    self.failpane.setVisible(true);
                 } else {
                     self._refreshAfterUpload();
                 }
@@ -256,9 +280,13 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
     },
 
     _refreshAfterUpload: function () {
+        var self = this;
         this.excelName.setText(this.model.getExcelName());
         this.updateDate.setText(this.model.getUpdateDate());
-        BI.Msg.toast(BI.i18nText("BI-Excel_Pass_Verification"), "success");
+        this.successPane.setVisible(true);
+        setTimeout(function () {
+            self.successPane.setVisible(false);
+        }, 3000);
     },
 
     _destroyMask: function () {
