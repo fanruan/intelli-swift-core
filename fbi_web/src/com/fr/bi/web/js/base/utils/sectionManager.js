@@ -11,14 +11,14 @@
 
     Section.prototype = {
         constructor: Section,
-        addCellIndex(index) {
+        addCellIndex: function (index) {
             if (!this._indexMap[index]) {
                 this._indexMap[index] = true;
                 this._indices.push(index);
             }
         },
 
-        getCellIndices() {
+        getCellIndices: function () {
             return this._indices
         }
     };
