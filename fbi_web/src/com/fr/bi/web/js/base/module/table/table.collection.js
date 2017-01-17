@@ -232,7 +232,7 @@ BI.CollectionTable = BI.inherit(BI.Widget, {
         var blw = (this._height - o.header.length * o.headerRowSize >= totalRowSize) ? regionSize : (regionSize + this._scrollBarSize);
         var blh = (regionSize >= (summaryColumnSizeArray[freezeColLength - 1] || 0)) ? (this._height - o.header.length * o.headerRowSize) : (this._height - o.header.length * o.headerRowSize + this._scrollBarSize);
         var brw = (this._height - o.header.length * o.headerRowSize >= totalRowSize) ? (this._width - regionSize) : (this._width - regionSize + this._scrollBarSize);
-        var brh = (this._width - regionSize >= totalColumnSize - (summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0)) ? (this._height - o.header.length * o.headerRowSize) : (this._height - o.header.length * o.headerRowSize + this._scrollBarSize);
+        var brh = (this._width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeColLength - 1] || 0)) ? (this._height - o.header.length * o.headerRowSize) : (this._height - o.header.length * o.headerRowSize + this._scrollBarSize);
 
         var otlw = regionSize;
         var otlh = o.header.length * o.headerRowSize;
@@ -271,14 +271,14 @@ BI.CollectionTable = BI.inherit(BI.Widget, {
             }
         };
 
-        this.topLeft.setWidth(regionSize);
-        this.topLeft.setHeight(o.header.length * o.headerRowSize);
-        this.topRight.setWidth(this._width - regionSize);
-        this.topRight.setHeight(o.header.length * o.headerRowSize);
-        this.bottomLeft.setWidth(regionSize);
-        this.bottomLeft.setHeight(this._height - o.header.length * o.headerRowSize);
-        this.bottomRight.setWidth(this._width - regionSize);
-        this.bottomRight.setHeight(this._height - o.header.length * o.headerRowSize);
+        this.topLeft.setWidth(otlw);
+        this.topLeft.setHeight(otlh);
+        this.topRight.setWidth(otrw);
+        this.topRight.setHeight(otrh);
+        this.bottomLeft.setWidth(oblw);
+        this.bottomLeft.setHeight(oblh);
+        this.bottomRight.setWidth(obrw);
+        this.bottomRight.setHeight(obrh);
 
         this.topLeftCollection.setWidth(tlw);
         this.topLeftCollection.setHeight(tlh);
@@ -323,7 +323,7 @@ BI.CollectionTable = BI.inherit(BI.Widget, {
         this.bottomRightCollection.populate(rightItems);
     },
 
-    _digest() {
+    _digest: function () {
         var o = this.options;
         var freezeColLength = this._getFreezeColLength();
         this.topLeftItems = this._serialize(o.header, 0, freezeColLength, o.headerRowSize, o.columnSize, o.mergeCols);
@@ -332,7 +332,7 @@ BI.CollectionTable = BI.inherit(BI.Widget, {
         this.bottomRightItems = this._serialize(o.items, freezeColLength, o.columnSize.length, o.rowSize, o.columnSize, o.mergeCols);
     },
 
-    _serialize(items, startCol, endCol, rowHeight, columnSize, mergeCols) {
+    _serialize: function (items, startCol, endCol, rowHeight, columnSize, mergeCols) {
         var self = this, o = this.options;
         var result = [], cache = {}, preCol = {}, preRow = {}, map = {};
         var summaryColumnSize = [];

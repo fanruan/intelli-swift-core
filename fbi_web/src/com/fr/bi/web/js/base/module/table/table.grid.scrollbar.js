@@ -95,27 +95,27 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
         return faceSize;
     },
 
-    _shouldHandleX(delta) {
+    _shouldHandleX: function (delta) {
         return this.options.orientation === 'horizontal' ?
             this._shouldHandleChange(delta) :
             false;
     },
 
-    _shouldHandleY(delta) {
+    _shouldHandleY: function (delta) {
         return this.options.orientation !== 'horizontal' ?
             this._shouldHandleChange(delta) :
             false;
     },
 
-    _shouldHandleChange(delta) {
+    _shouldHandleChange: function (delta) {
         return this.options.position + delta !== this.options.position;
     },
 
-    _onWheelY(deltaX, deltaY) {
+    _onWheelY: function (deltaX, deltaY) {
         this._onWheel(deltaY);
     },
 
-    _onWheelX(deltaX, deltaY) {
+    _onWheelX: function (deltaX, deltaY) {
         this._onWheel(deltaX);
     },
 
@@ -183,7 +183,7 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
             NUMPAD_0: 96,
             NUMPAD_9: 105
         };
-        const keyCode = event.keyCode;
+        var keyCode = event.keyCode;
 
         if (keyCode === Keys.TAB) {
             return;
@@ -268,7 +268,9 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
 
             for (var i = 0; i < arguments.length; i++) {
                 var arg = arguments[i];
-                if (!arg) continue;
+                if (!arg) {
+                    continue;
+                }
 
                 var argType = typeof arg;
 

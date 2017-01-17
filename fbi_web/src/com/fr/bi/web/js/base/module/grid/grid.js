@@ -65,14 +65,14 @@ BI.Grid = BI.inherit(BI.Widget, {
         }
     },
 
-    _getOverscanIndices (cellCount, overscanCellsCount, startIndex, stopIndex) {
+    _getOverscanIndices: function (cellCount, overscanCellsCount, startIndex, stopIndex) {
         return {
             overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
             overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount)
         }
     },
 
-    _calculateChildrenToRender () {
+    _calculateChildrenToRender: function () {
         var self = this, o = this.options;
 
         var width = o.width, height = o.height, scrollLeft = BI.clamp(o.scrollLeft, 0, this._getMaxScrollLeft()), scrollTop = BI.clamp(o.scrollTop, 0, this._getMaxScrollTop()),
@@ -193,15 +193,17 @@ BI.Grid = BI.inherit(BI.Widget, {
 
     _populate: function () {
         var self = this, o = this.options;
-        this.columnCount = o.items[0].length;
-        this.rowCount = o.items.length;
-        this.container.setWidth(this.columnCount * o.estimatedColumnSize);
-        this.container.setHeight(this.rowCount * o.estimatedRowSize);
+        if (o.items.length > 0) {
+            this.columnCount = o.items[0].length;
+            this.rowCount = o.items.length;
+            this.container.setWidth(this.columnCount * o.estimatedColumnSize);
+            this.container.setHeight(this.rowCount * o.estimatedRowSize);
 
-        this._columnSizeAndPositionManager = new BI.ScalingCellSizeAndPositionManager(this.columnCount, o.columnWidthGetter, o.estimatedColumnSize);
-        this._rowSizeAndPositionManager = new BI.ScalingCellSizeAndPositionManager(this.rowCount, o.rowHeightGetter, o.estimatedRowSize);
+            this._columnSizeAndPositionManager = new BI.ScalingCellSizeAndPositionManager(this.columnCount, o.columnWidthGetter, o.estimatedColumnSize);
+            this._rowSizeAndPositionManager = new BI.ScalingCellSizeAndPositionManager(this.rowCount, o.rowHeightGetter, o.estimatedRowSize);
 
-        this._calculateChildrenToRender();
+            this._calculateChildrenToRender();
+        }
     },
 
     setScrollLeft: function (scrollLeft) {
