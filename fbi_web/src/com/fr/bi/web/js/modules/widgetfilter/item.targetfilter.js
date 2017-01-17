@@ -96,11 +96,11 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
                 break;
             case BICst.FILTER_DATE.EQUAL_TO:
                 relation = BI.i18nText("BI-Equal");
-                value = filter.filter_value;
+                value = model.getDateText(filter.filter_value);
                 break;
             case BICst.FILTER_DATE.NOT_EQUAL_TO:
                 relation = BI.i18nText("BI-Not_Equal_To");
-                value = filter.filter_value;
+                value = model.getDateText(filter.filter_value);
                 break;
             case BICst.FILTER_DATE.IS_NULL:
                 relation = BI.i18nText("BI-Is_Null");

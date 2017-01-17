@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.bi.module;
 
@@ -21,30 +21,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Daniel
- *
  */
 public class UserETLCubeTILoader implements ICubeDataLoader {
 
     public static Map<Long, UserETLCubeTILoader> userMap = new ConcurrentHashMap<Long, UserETLCubeTILoader>();
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3766201942015813978L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3766201942015813978L;
 
     private BIUser user;
 
-	/**
-	 * @param userId
-	 */
-	public UserETLCubeTILoader(long userId) {
+    /**
+     * @param userId
+     */
+    public UserETLCubeTILoader(long userId) {
         this.user = new BIUser(userId);
-	}
+    }
 
     public static UserETLCubeTILoader getInstance(long userId) {
         return BIConstructorUtils.constructObject(userId, UserETLCubeTILoader.class, userMap, false);
     }
 
-    private UserETLCubeManagerProvider getCubeManager(){
+    private UserETLCubeManagerProvider getCubeManager() {
         return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
     }
 
@@ -70,9 +69,9 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
     }
 
     @Override
-	public void releaseCurrentThread(){
+    public void releaseCurrentThread() {
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
-        if(manager != null){
+        if (manager != null) {
             manager.releaseCurrentThread();
         }
     }
@@ -84,7 +83,8 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
-        return getCubeManager().getTableIndex((AnalysisCubeTableSource) tableSource, user);
+        UserETLCubeManagerProvider cubeManager = getCubeManager();
+        return cubeManager.getTableIndex((AnalysisCubeTableSource) tableSource, user);
     }
 
     @Override
@@ -93,16 +93,17 @@ public class UserETLCubeTILoader implements ICubeDataLoader {
     }
 
     @Override
-	public void clear() {
+    public void clear() {
         synchronized (this) {
-            if(userMap != null){
+            if (userMap != null) {
                 userMap.clear();
             }
         }
-	}
+    }
 
     @Override
     public long getVersion() {
         return 0;
     }
+
 }

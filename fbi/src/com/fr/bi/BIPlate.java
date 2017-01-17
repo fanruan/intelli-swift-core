@@ -1,7 +1,6 @@
 package com.fr.bi;
 
 
-import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
@@ -27,6 +26,7 @@ import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.web.login.BILoginUIProcessor;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
@@ -40,6 +40,8 @@ import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
 import com.fr.fs.dao.EntryDAO;
 import com.fr.fs.dao.FSDAOManager;
+import com.fr.fs.fun.LoginUIProcessor;
+import com.fr.fs.plugin.ExtraPlatformClassManager;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.GeneralUtils;
@@ -282,6 +284,8 @@ public class BIPlate extends AbstractFSPlate {
     private void initPlugin() {
         try {
             ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.ads"));
+
+            ExtraPlatformClassManager.getInstance().setImmutable(LoginUIProcessor.XML_TAG, new BILoginUIProcessor(), PluginSimplify.create("bi", "com.fr.bi.plugin.login"));
             ExtraClassManager.getInstance().addHackActionCMD("fs_load", "fs_signin", "com.fr.bi.plugin.login", "com.fr.bi.web.base.services.BISignInAction");
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
@@ -321,7 +325,7 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public String[] getPlateJavaScriptFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(ResourceHelper.getFoundationJs(), new String[]{
+        return (String[]) ArrayUtils.addAll(ResourceHelper.getFsJs(), new String[]{
                 "/com/fr/bi/web/cross/js/bi.user.manager.js",
                 "/com/fr/bi/web/cross/js/effect/create.by.me.js",
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",

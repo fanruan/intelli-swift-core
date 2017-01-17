@@ -92,7 +92,6 @@ BI.InlineCenterAdaptLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.InlineCenterAdaptLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

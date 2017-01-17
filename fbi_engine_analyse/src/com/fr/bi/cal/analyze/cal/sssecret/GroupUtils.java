@@ -219,10 +219,14 @@ public class GroupUtils {
                     minValue = currentValue;
                 } else {
                     int c;
-                    if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
-                        c = gcv.getComparator().compare(minValue, currentValue);
-                    } else {
-                        c = 1;
+                    if(currentValue == null){
+                        c = 0;
+                    }else{
+                        if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
+                            c = gcv.getComparator().compare(minValue, currentValue);
+                        } else {
+                            c = 1;
+                        }
                     }
                     if (c > 0) {
                         minValue = currentValue;
@@ -235,12 +239,15 @@ public class GroupUtils {
             if (gcv != null) {
                 Object currentValue = gcv.getKey();
                 int c;
-                if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
-                    c = gcv.getComparator().compare(minValue, currentValue);
-                } else {
-                    c = 1;
+                if(currentValue == null && minValue == null){
+                    c = 0;
+                }else{
+                    if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
+                        c = gcv.getComparator().compare(minValue, currentValue);
+                    } else {
+                        c = 1;
+                    }
                 }
-
                 if (c == 0) {
                     result[i] = gcvs[i];
                 }

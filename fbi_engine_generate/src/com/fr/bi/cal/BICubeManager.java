@@ -114,10 +114,11 @@ public class BICubeManager implements BICubeManagerProvider {
     public boolean hasTask(long userId) {
         return getCubeManager(userId).hasTask();
     }
+
     @Override
-    public boolean hasTask(){
+    public boolean hasTask() {
         boolean result = false;
-        for(long userId: userMap.keySet()){
+        for (long userId : userMap.keySet()) {
             result = (result || getCubeManager(userId).hasTask());
         }
         return result;
@@ -201,19 +202,29 @@ public class BICubeManager implements BICubeManagerProvider {
             if (StringUtils.isEmpty(baseTableSourceId)) {
                 new CubeBuildManager().CubeBuildStaff(userId);
             } else {
-                new CubeBuildManager().CubeBuildSingleTable(userId, baseTableSourceId, updateType);
+                new CubeBuildManager().addSingleTableTask(userId, baseTableSourceId, updateType);
             }
             BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
             BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+            return true;
         } catch (Exception e) {
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
-            BILoggerFactory.getLogger(this.getClass()).error("cube task build failed" + "\n");
-            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
-            CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
+            BILoggerFactory.getLogger(this.getClass()).error("cube task build failed" + "\n" + e.getMessage(), e);
             return false;
+        } finally {
+            CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
         }
-        return true;
+
     }
 
+
+    @Override
+    public boolean hasBuildingTask() {
+        boolean result = false;
+        for (long userId : userMap.keySet()) {
+            result = (result || getCubeManager(userId).isTaskBuilding());
+        }
+        return result;
+    }
 }

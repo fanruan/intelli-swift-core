@@ -356,7 +356,8 @@ BI.UnionModel = BI.inherit(BI.Widget, {
         BI.each(fields, function (i, fs) {
             BI.each(fs, function (j, field) {
                 if (BI.isNotEmptyString(self.unionArray[j][1])) {
-                    field.id = originalFields[0][index].id;
+                    var oField = originalFields[0][index];
+                    field.id = BI.isNotNull(oField) ? oField.id : BI.UUID();
                     index++;
                 }
             });

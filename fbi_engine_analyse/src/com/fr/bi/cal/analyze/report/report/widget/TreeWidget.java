@@ -338,4 +338,8 @@ public class TreeWidget extends BIAbstractWidget {
         return BIReportConstant.WIDGET.TREE;
     }
 
+    @Override
+    public void reSetDetailTarget() {
+
+    }
 }

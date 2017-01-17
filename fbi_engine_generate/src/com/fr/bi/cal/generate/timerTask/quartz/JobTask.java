@@ -30,10 +30,10 @@ public class JobTask implements Job {
         String tableKey = data.getString("tableKey");
         int updateType = data.getInt("updateType");
         if (ComparatorUtils.equals(tableKey, DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE)) {
-            new CubeBuildManager().CubeBuildStaff(userId);
+            new CubeBuildManager().CubeBuildStaffComplete(userId);
         } else {
             if (isTableUsed(userId, tableKey)) {
-                new CubeBuildManager().CubeBuildSingleTable(userId, tableKey, updateType);
+                new CubeBuildManager().addSingleTableTask(userId, tableKey, updateType);
             } else {
                 BILoggerFactory.getLogger().warn("the table " + tableKey + " is not existed. Timer task canceled");
             }

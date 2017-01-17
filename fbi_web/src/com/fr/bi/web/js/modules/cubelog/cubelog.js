@@ -24,7 +24,14 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             type: "bi.progress_bar",
             width: "100%"
         });
-        this.processBar.setValue(100);
+        this.processBar.setValue(1);
+
+        this.finishLable = BI.createWidget({
+            type: "bi.label",
+            text: BI.i18nText("BI-Completed"),
+            cls: "finish-label"
+        });
+        this._showFinish();
 
         BI.createWidget({
             type: "bi.vertical",
@@ -50,7 +57,9 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                         height: 28,
                         level: "ignore",
                         handler: function () {
-                            self.refreshLog();
+                            if (BI.isNotNull(self.finishLable) && !self.finishLable.isVisible()) {
+                                self._refreshLogImmediate();
+                            }
                         }
                     }]
                 },
@@ -66,56 +75,69 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                     },
                     width: 90
                 }, {
-                    el: this.processBar
+                    el: {
+                        type: "bi.absolute",
+                        items: [{
+                            el: this.processBar,
+                            left: 0,
+                            right: 0,
+                            top: 0
+                        }, {
+                            el: this.finishLable,
+                            left: 0,
+                            top: 2
+                        }]
+                    }
                 }],
                 height: 30
             }, this.cubeTree],
             vgap: 10
         });
-        this._refreshLog4Init();
     },
 
-    _refreshLog4Init: function () {
+    _showBar: function () {
+        this.processBar.setVisible(true);
+        this.finishLable.setVisible(false);
+    },
+
+    _showFinish: function () {
+        this.processBar.setVisible(false);
+        this.processBar.setValue(1);
+        this.finishLable.setVisible(true);
+    },
+
+    setStart: function () {
+        this._showBar();
+        this.processBar.setValue(1);
+    },
+
+    setEnd: function () {
+        var self = this;
+        this.processBar.setValue(100);
+        BI.delay(function() {
+            self._showFinish();
+        }, 300);
+    },
+
+    //刷新按钮不要去改状态，因为很有可能立即更新的时候，后台请求到的状态cube还没有开始更新
+    _refreshLogImmediate: function () {
         var self = this;
         BI.Utils.getCubeLog(function (data) {
-            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
-                self.interval && clearInterval(self.interval);
-                self.interval = null;
-            } else {
-                self.interval = setInterval(function () {
-                    self.refreshLog();
-                }, 5000);
+            if (data.hasTask === false) {
+                return;
             }
             self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
         });
     },
 
-    refreshLog: function (isStart) {
-        var self = this;
-        if (isStart) {
-            this.processBar.setValue(1);
-            BI.delay(function() {
-                self.processBar.setValue(10);
-            }, 1000);
-        }
-        if (BI.isNull(this.interval)) {
-            this.interval = setInterval(function () {
-                self.refreshLog();
-            }, 5000);
-            return;
-        }
-        BI.Utils.getCubeLog(function (data) {
-            if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
-                self.interval && clearInterval(self.interval);
-                self.interval = null;
-            }
-            self._refreshProcess(data);
-            self.cubeTree.populate(self._formatItems(data));
-        });
+    refreshLog: function (data) {
+        this._refreshProcess(data);
+        this.cubeTree.populate(this._formatItems(data));
     },
 
     _refreshProcess: function (data) {
+        var self = this;
         if (BI.isNotNull(data.allRelationInfo)) {
             var allFields = 0, generated = 0;
             BI.each(data.allTableInfo, function (tName, size) {
@@ -126,7 +148,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 generated += table.column.length;
             });
             var process = 1;
-            if (BI.isNull(data.cube_end)) {
+            if (data.hasTask === true) {
                 if (allFields === 0) {
                     return;
                 }
@@ -136,6 +158,13 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             process = Math.ceil(process * 100);
             process = process < 10 ? 10 : process;
             this.processBar.setValue(process);
+            if (process < 100) {
+                this._showBar();
+            } else {
+                BI.delay(function () {
+                    self._showFinish();
+                }, 300);
+            }
         }
     },
 

@@ -66,4 +66,6 @@ public interface BIDetailTarget extends BITargetAndDimension, Release,Serializab
     ISort getSort();
 
     TargetFilter getFilter();
+
+    void reSetDetailGetter();
 }

@@ -51,13 +51,13 @@ BI.ArrowNodeDelete = BI.inherit(BI.NodeButton, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
-
-        this.editor.on(BI.Editor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ArrowNodeDelete.EVENT_CHANGE);
-        });
-
         this.editor.on(BI.Editor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.ArrowNodeDelete.EVENT_CONFIRM);
+            var v = this.getValue();
+            // 避免没有改动的时候发出事件
+            if (self.preValue !== v) {
+                self.preValue = v;
+                self.fireEvent(BI.ArrowNodeDelete.EVENT_CONFIRM);
+            }
         });
 
         this.deletebutton.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -105,6 +105,7 @@ BI.ArrowNodeDelete = BI.inherit(BI.NodeButton, {
     },
 
     setValue: function (v) {
+        this.preValue = v;
         return this.editor.setValue(v);
     },
 
@@ -114,6 +115,5 @@ BI.ArrowNodeDelete = BI.inherit(BI.NodeButton, {
 })
 
 BI.ArrowNodeDelete.EVENT_CLICK_DELETE = "EVENT_CLICK_DELETE";
-BI.ArrowNodeDelete.EVENT_CHANGE = "EVENT_CHANGE";
 BI.ArrowNodeDelete.EVENT_CONFIRM = "EVENT_CONFIRM";
 $.shortcut("bi.arrow_group_node_delete", BI.ArrowNodeDelete);

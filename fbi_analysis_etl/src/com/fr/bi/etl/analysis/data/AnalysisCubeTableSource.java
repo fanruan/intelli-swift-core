@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.List;
@@ -15,5 +16,11 @@ public interface AnalysisCubeTableSource extends CubeTableSource {
 
     void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set);
 
+    void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set);
+
     void refreshWidget();
+
+    Set<BIWidget> getWidgets();
+
+    void reSetWidgetDetailGetter();
 }

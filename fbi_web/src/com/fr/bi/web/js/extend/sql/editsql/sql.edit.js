@@ -21,7 +21,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         PREVIEW_PANE: 1,
         PREVIEW_ERROR: 2
     },
-    
+
     _defaultConfig: function(){
         return BI.extend(BI.EditSQL.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-edit-sql"
@@ -389,6 +389,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         if(BI.isEmptyString(this.model.getSQL())){
             this.saveButton.setEnable(false);
         }
+        this.previewButton.setEnable(BI.isNotEmptyString(this.model.getSQL()));
     },
 
     getValue: function(){

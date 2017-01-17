@@ -3,11 +3,15 @@ package com.fr.bi.etl.analysis.data;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
-import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.PersistentField;
@@ -36,7 +40,7 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
 
     @Override
     public int getType() {
-        return Constants.TABLE_TYPE.USER_ETL;
+        return BIBaseConstant.TABLE_TYPE.USER_ETL;
     }
 
     /**
@@ -111,6 +115,28 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     }
 
     @Override
+    public boolean isParentAvailable() {
+        List<UserCubeTableSource>  parents = getParents();
+        for(UserCubeTableSource source : parents) {
+            if(!BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable(source, new BIUser(userId))) {
+                return  false;
+            }
+        }
+        return true;
+    }
+
+
+    @Override
+    public Set<CubeTableSource> getParentSource() {
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+        List<UserCubeTableSource>  parents = getParents();
+        for(UserCubeTableSource source : parents) {
+            set.add(source);
+        }
+        return set;
+    }
+
+    @Override
     public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
         if(helper.contains(parent)){
             return set;
@@ -136,9 +162,31 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     }
 
     @Override
+    public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set){
+        if(set.contains(this)){
+            return;
+        }
+        for (UserCubeTableSource source : getParents()){
+            source.getSourceNeedCheckSource(set);
+        }
+        set.add(this);
+    }
+
+    @Override
     public void refreshWidget() {
         for (AnalysisCubeTableSource source : getParents()){
             source.refreshWidget();
+        }
+    }
+
+    @Override
+    public Set<BIWidget> getWidgets() {
+        return new HashSet<BIWidget>();
+    }
+    @Override
+    public void reSetWidgetDetailGetter() {
+        for (AnalysisCubeTableSource source : getParents()){
+            source.reSetWidgetDetailGetter();
         }
     }
 

@@ -10,12 +10,6 @@ BI.Plugin.registerWidget("bi.detail_select_data_level0_node", function(el){
         return BI.extend({}, el, {type: "bi.analysis_detail_select_data_level0_node"});
     }
 });
-
-BI.Plugin.registerWidget("bi.detail_detail_select_data_level0_node", function(el){
-    if (BI.Utils.getTableTypeByID(el['id']) == ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE){
-        return BI.extend({}, el, {type: "bi.select_data_level" + ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE + "_node"});
-    }
-});
 BI.Plugin.DATA_STYLE_TAB_ITEM = BI.Plugin.DATA_STYLE_TAB_ITEM || [];
 (function () {
     BI.Plugin.registerObject('bi.data_style_tab', function(obj){

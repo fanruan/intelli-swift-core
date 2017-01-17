@@ -235,10 +235,12 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         return getUserGroupConfigManager(userId).isRelationIncreased();
 
     }
-    public boolean isRelationNoChange(long userId){
+
+    public boolean isRelationNoChange(long userId) {
         return getUserGroupConfigManager(userId).isRelationNoChange();
 
     }
+
     @Override
     public Set<BITableRelationPath> getAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException {
         userId = UserControl.getInstance().getSuperManagerID();

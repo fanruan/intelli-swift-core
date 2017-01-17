@@ -168,6 +168,11 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     }
 
     @Override
+    public boolean hasAbsentFields() {
+        return false;
+    }
+
+    @Override
     public BICore fetchObjectCore() {
         return BIBasicCore.generateValueCore(this.hostTableSource.getSourceID());
     }

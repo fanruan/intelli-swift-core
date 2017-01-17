@@ -15,7 +15,6 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -25,9 +24,10 @@ import com.fr.fs.control.UserControl;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * This class created on 2016/5/23.
@@ -268,24 +268,6 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisAllTables();
     }
 
-    @Override
-    public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId) {
-        IPackagesManagerService analysisPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisPackageManager();
-        IPackagesManagerService currentPackageManager = getUserGroupConfigManager(userId).getPackageConfigManager().getCurrentPackageManager();
-        Set<BIBusinessPackage> analysisPackages = analysisPackageManager.getAllPackages();
-        Set<BIBusinessPackage> currentPackages = currentPackageManager.getAllPackages();
-        Set<BIBusinessPackage> packageSet = new HashSet<BIBusinessPackage>();
-        for (BIBusinessPackage biBusinessPackage : currentPackages) {
-            if (!analysisPackages.contains(biBusinessPackage)) {
-                try {
-                    packageSet.add((BIBusinessPackage) biBusinessPackage.clone());
-                } catch (CloneNotSupportedException e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(),e);
-                }
-            }
-        }
-        return packageSet;
-    }
     private JSONObject createTablesJsonObject(JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception {
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();

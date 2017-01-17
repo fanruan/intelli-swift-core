@@ -219,7 +219,6 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         var cubeEnd = self.model.get("cubeEnd");
         var relations = self.model.get("relations");
         var availableRelations = self.model.get("availableRelations");
-        self.mask.destroy();
         relations = BI.sortBy(relations, function (i, item) {
             return BI.Utils.getTableNameByFieldId4Conf(BI.lastObject(item[0]).foreignKey.field_id)
         });
@@ -229,6 +228,11 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
-        this.readData(true);
+        var self = this;
+        this.readData(true, {
+            complete: function() {
+                self.mask.destroy();
+            }
+        });
     }
 });

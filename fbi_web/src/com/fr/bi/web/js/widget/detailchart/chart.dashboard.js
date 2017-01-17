@@ -80,7 +80,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                                 getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
                         }
                         return label
-                    } else if (isDashboard &&  BI.isNull(items[0].data[0].seriesName)) {
+                    } else if (isDashboard &&  BI.isNull(items[0].data[0].z)) {
                         return label
                     }
 
@@ -155,8 +155,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         }
 
         function changeMaxMinScale() {
-            self.gaugeAxis[0].min = self.config.min_scale || null;
-            self.gaugeAxis[0].max = self.config.max_scale || null;
+            self.gaugeAxis[0].min = BI.parseFloat(self.config.min_scale) || null;
+            self.gaugeAxis[0].max = BI.parseFloat(self.config.max_scale) || null;
         }
 
         function formatNumberLevelInYaxis(type, position) {
@@ -328,7 +328,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             }
         } else {
             var others = [];
-            if (BI.isNotNull(items[0][0].data[0].seriesName)) {
+            if (BI.isNotNull(items[0][0].data[0].z)) {
                 BI.each(items[0], function (idx, item) {
                     BI.each(item.data, function (id, da) {
                         others.push({

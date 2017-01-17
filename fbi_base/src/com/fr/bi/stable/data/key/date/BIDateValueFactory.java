@@ -11,7 +11,7 @@ public class BIDateValueFactory {
             case BIReportConstant.GROUP.Y:
                 return new BIYearValue(value.intValue());
             case BIReportConstant.GROUP.M:
-                return new BIMonthValue(value.intValue() - 1);
+                return new BIMonthValue(value.intValue());
             case BIReportConstant.GROUP.S:
                 return new BISeasonValue(value.intValue());
             case BIReportConstant.GROUP.W:

@@ -8,7 +8,7 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
         TOOL_ICON_WIDTH: 20,
         TOOL_ICON_HEIGHT: 20
     },
-    
+
     _defaultConfig: function () {
         return BI.extend(BIDezi.DateRangeView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dashboard-widget bi-control-widget"
@@ -20,10 +20,6 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
         var self = this;
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
-        });
-        //全局样式
-        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
-            self._refreshGlobalStyle(globalStyle);
         });
     },
 
@@ -99,7 +95,7 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
                     right: 10
                 }]
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
+            this.title.on(BI.ShelterEditor.EVENT_CONFIRM, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
@@ -107,17 +103,6 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
         }
     },
 
-    _refreshGlobalStyle: function () {
-        this._refreshTitlePosition();
-    },
-
-    _refreshTitlePosition: function () {
-        var pos = BI.Utils.getGSNamePos();
-        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-            "dashboard-title-center" : "dashboard-title-left";
-        this.title.element.removeClass("dashboard-title-left")
-            .removeClass("dashboard-title-center").addClass(cls);
-    },
     _createTools: function () {
         var self = this;
         var expand = BI.createWidget({
@@ -233,7 +218,7 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
         if (BI.has(changed, "bounds")) {
             this._refreshLayout();
         }
-      
+
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
@@ -251,8 +236,6 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
-        this._refreshTitlePosition();
-        this._refreshGlobalStyle();
         this.combo.setValue(this.model.get("value"));
     }
 });

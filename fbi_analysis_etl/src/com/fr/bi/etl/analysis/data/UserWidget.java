@@ -97,6 +97,7 @@ public class UserWidget implements Serializable {
         List<List> v = new ArrayList<List>();
         int rowCount = tempValue.size();
         while (rowCount < end) {
+            v.clear();
             if (rowCount == 0) {
                 v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
             } else {

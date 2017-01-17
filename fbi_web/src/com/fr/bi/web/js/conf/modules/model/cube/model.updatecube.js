@@ -42,6 +42,6 @@ BIConf.UpdateCubePaneModel = BI.inherit(BI.Model, {
     },
 
     updateURL: function(){
-        return this.cmd("get_cube_generate_status");
+        return this.cmd("get_cube_log");
     }
 });

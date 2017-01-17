@@ -1,5 +1,6 @@
 Data.Utils = {
-    /**
+
+/**
      * 数据转化方法
      * @param data 原始数据
      * @param widget 组件信息
@@ -19,6 +20,7 @@ Data.Utils = {
      */
     convertDataToWidgetData: function (data, widget, op) {
         var options = {};
+        var dateConfig = getDateConfig();
         var type = widget.type;
         var dimsInfo = refreshDimsInfo();
         var dimIds = dimsInfo.dimIds;
@@ -284,6 +286,61 @@ Data.Utils = {
             };
         }
 
+        function _getFormatDateText (type, text){
+            switch (type) {
+                case BICst.GROUP.S:
+                    text = dateConfig.FULL_QUARTER_NAMES[text];
+                    break;
+                case BICst.GROUP.M:
+                    text = dateConfig.FULL_MONTH_NAMES[text];
+                    break;
+                case BICst.GROUP.W:
+                    text = dateConfig.FULL_WEEK_NAMES[text];
+                    break;
+                case BICst.GROUP.YMD:
+                    var date = new Date(BI.parseInt(text));
+                    text = date.print("%Y-%X-%d");
+                    break;
+            }
+            return text;
+        }
+
+        function getDateConfig(){
+            return {
+                FULL_WEEK_NAMES: [BI.i18nText("BI-Sunday"), BI.i18nText("BI-Monday"),
+                    BI.i18nText("BI-Tuesday"),
+                    BI.i18nText("BI-Wednesday"),
+                    BI.i18nText("BI-Thursday"),
+                    BI.i18nText("BI-Friday"),
+                    BI.i18nText("BI-Saturday"),
+                    BI.i18nText("BI-Sunday")],
+
+                //full month names
+                FULL_MONTH_NAMES: [
+                    BI.i18nText("BI-December"),
+                    BI.i18nText("BI-January"),
+                    BI.i18nText("BI-February"),
+                    BI.i18nText("BI-March"),
+                    BI.i18nText("BI-April"),
+                    BI.i18nText("BI-May"),
+                    BI.i18nText("BI-June"),
+                    BI.i18nText("BI-July"),
+                    BI.i18nText("BI-August"),
+                    BI.i18nText("BI-September"),
+                    BI.i18nText("BI-October"),
+                    BI.i18nText("BI-November"),
+                    BI.i18nText("BI-December")],
+
+                //full quarter names
+                FULL_QUARTER_NAMES: [
+                    BI.i18nText("BI-Quarter_4"),
+                    BI.i18nText("BI-Quarter_1"),
+                    BI.i18nText("BI-Quarter_2"),
+                    BI.i18nText("BI-Quarter_3"),
+                    BI.i18nText("BI-Quarter_4")]
+            }
+        }
+
         function getRegionTypeByDimensionID(dId) {
             var view = widget.view;
             return BI.findKey(view, function (regionType, dIds) {
@@ -298,24 +355,47 @@ Data.Utils = {
                 var top = data.t, left = data.l;
                 return BI.map(top.c, function (id, tObj) {
                     var name = tObj.n, seriesName = tObj.n;
-                    if (BI.isNotNull(seriesGroup) && seriesGroup.type === BICst.GROUP.YMD) {
-                        var date = new Date(BI.parseInt(name));
-                        name = date.print("%Y-%X-%d");
+                    if (BI.isNotNull(seriesGroup)) {
+                        name = _getFormatDateText(seriesGroup.type, name);
                     }
-                    var data = BI.map(left.c, function (idx, obj) {
-                        var value = obj.n, x = obj.n;
-                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                            var date = new Date(BI.parseInt(x));
-                            x = date.print("%Y-%X-%d");
-                        }
-                        return {
-                            "x": x,
-                            "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
-                            "value": value,
+                    var data = [];
+                    if(BI.has(left, "c")){
+                        data = BI.map(left.c, function (idx, obj) {
+                            var value = obj.n, x = obj.n;
+                            var seriesValue = obj.s.c[id].s[0];
+                            if (BI.isNotNull(cataGroup)) {
+                                x = _getFormatDateText(cataGroup.type, x);
+                            }
+                            var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
+                            return {
+                                "x": x,
+                                "xValue": value,
+                                "y": y,
+                                "yValue": y,
+                                "z": name,
+                                "zValue": seriesName,
+                                "value": value,
+                                seriesName: seriesName,
+                                dimensionIds: [drillcataDimId || cataDid, drillseriDimId || seriesDid],
+                                targetIds: [targetIds[0]]
+                            };
+                        });
+                    }else{
+                        var leftSeriesValue = left.s.c[id].s[0];
+                        var y = (BI.isNull(leftSeriesValue) || BI.isFinite(leftSeriesValue)) ? leftSeriesValue : 0;
+                        data = [{
+                            "x": "",
+                            "xValue": "",
+                            "y": y,
+                            "yValue": y,
+                            "z": name,
+                            "zValue": seriesName,
+                            "value": "",
                             seriesName: seriesName,
+                            dimensionIds: [drillseriDimId || seriesDid],
                             targetIds: [targetIds[0]]
-                        };
-                    });
+                        }]
+                    }
                     var obj = {};
                     obj.data = data;
                     obj.name = name;
@@ -328,13 +408,20 @@ Data.Utils = {
                 return BI.map(columnSizeArray, function (idx, value) {
                     var adjustData = BI.map(data.c, function (id, item) {
                         var value = item.n, x = item.n;
-                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                            var date = new Date(BI.parseInt(x));
-                            x = date.print("%Y-%X-%d");
+                        var seriesValue = item.s[idx];
+                        if (BI.isNotNull(cataGroup)) {
+                            x = _getFormatDateText(cataGroup.type, x);
                         }
+                        var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
+
                         return {
                             x: x,
-                            y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                            xValue: value,
+                            y: y,
+                            yValue: y,
+                            z: widget.dimensions[targetIds[idx]].name,
+                            zValue: widget.dimensions[targetIds[idx]].name,
+                            dimensionIds: [drillcataDimId || cataDid],
                             value: value,
                             seriesName: widget.dimensions[targetIds[idx]].name,
                             targetIds: [targetIds[idx]]
@@ -348,11 +435,15 @@ Data.Utils = {
             }
             if (BI.has(data, "s")) {
                 return BI.map(data.s, function (idx, value) {
+                    var y = (BI.isFinite(value) ? value : 0);
                     return {
                         name: widget.dimensions[targetIds[idx]].name,
                         data: [{
                             x: "",
-                            y: (BI.isFinite(value) ? value : 0),
+                            xValue: "",
+                            dimensionIds: [],
+                            y: y,
+                            yValue: y,
                             targetIds: [targetIds[idx]]
                         }]
                     };
@@ -409,15 +500,22 @@ Data.Utils = {
                 var obj = {};
                 var name = item.n, seriesName = item.n;
                 var dGroup = widget.dimensions[cataDid].group;
-                if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
-                    var date = new Date(BI.parseInt(name));
-                    name = date.print("%Y-%X-%d");
+                if (BI.isNotNull(dGroup)) {
+                    name = _getFormatDateText(dGroup.type, name);
                 }
+
+                var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
+                var y = (BI.isFinite(item.s[0]) ? item.s[0] : 0);
                 obj.data = [{
-                    x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
-                    y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
-                    z: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
+                    x: x,
+                    xValue: x,
+                    y: y,
+                    yValue: y,
+                    size: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
+                    dimensionIds: BI.isNull(drillcataDimId) ? [cataDid] : [drillcataDimId],
                     seriesName: seriesName,
+                    z: seriesName,
+                    zValue: seriesName,
                     targetIds: [targetIds[0], targetIds[1], targetIds[2]]
                 }];
                 obj.name = name;
@@ -437,17 +535,23 @@ Data.Utils = {
                 var obj = {};
                 var name = item.n, seriesName = item.n;
                 var dGroup = widget.dimensions[cataDid].group;
-                if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
-                    var date = new Date(BI.parseInt(name));
-                    name = date.print("%Y-%X-%d");
+                if (BI.isNotNull(dGroup)) {
+                    name = _getFormatDateText(dGroup.type, name);
                 }
-                obj.name = name;
+                var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
+                var y = (BI.isFinite(item.s[0]) ? item.s[0] : 0);
                 obj.data = [{
-                    x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
-                    y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
+                    x: x,
+                    xValue: x,
+                    y: y,
+                    yValue: y,
+                    z: name,
+                    zValue: seriesName,
                     seriesName: seriesName,
+                    dimensionIds: BI.isNull(drillcataDimId) ? [cataDid] : [drillcataDimId],
                     targetIds: [targetIds[0], targetIds[1]]
                 }];
+                obj.name = name;
                 return obj;
             })];
         }
@@ -466,6 +570,7 @@ Data.Utils = {
                     }
                     var adjustData = BI.map(data.c, function (id, item) {
                         var res = {};
+                        var y = (BI.isFinite(item.s[idx]) ? item.s[idx] : 0);
                         if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                             switch (type) {
                                 case BICst.WIDGET.BUBBLE:
@@ -474,7 +579,9 @@ Data.Utils = {
                                 default:
                                     res = {
                                         x: item.n,
-                                        y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                                        xValue: item.n,
+                                        y: y,
+                                        yValue: y,
                                         targetIds: [targetIds[idx]],
                                         dId: dimIds[currentLayer - 1],
                                         drillDid: dimIds[currentLayer]
@@ -483,7 +590,9 @@ Data.Utils = {
                         } else {
                             res = {
                                 x: item.n,
-                                y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                                xValue: item.n,
+                                y: y,
+                                yValue: y,
                                 targetIds: [targetIds[idx]],
                                 dId: dimIds[currentLayer - 1],
                                 drillDid: dimIds[currentLayer]
@@ -520,9 +629,12 @@ Data.Utils = {
                             if (BI.isNotNull(o) && BI.isNotNull(x)) {
                                 data.push({
                                     "x": x,
+                                    "xValue": x,
                                     "z": tObj.n,
+                                    "zValue": tObj.n,
                                     "y": o,
-                                    targetIds: [targetIds[i]]
+                                    "yValue": o,
+                                    "targetIds": [targetIds[i]]
                                 });
                             }
                         });
@@ -555,7 +667,9 @@ Data.Utils = {
                         var x = item.n;
                         return {
                             x: x,
+                            xValue: x,
                             y: item.s[idx],
+                            yValue: item.s[idx],
                             targetIds: [targetIds[idx]]
                         };
                     });
@@ -750,7 +864,8 @@ Data.Utils = {
                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                 "color": "#1a1a1a",
                 "fontSize": "12px"
-            }
+            },
+            null_continue: options.null_continue || false
         };
 
         var maxes = [];
@@ -1217,13 +1332,13 @@ Data.Utils = {
                 var opts = formatItems(items, t);
                 return formatConfigForDashboard(opts[1], opts[0]);
             case BICst.WIDGET.BUBBLE:
-                BI.each(data, function (idx, item) {
-                    BI.each(item, function (id, it) {
-                        BI.each(it.data, function (i, da) {
-                            da.size = da.z;
-                        })
-                    })
-                });
+                //BI.each(data, function (idx, item) {
+                //    BI.each(item, function (id, it) {
+                //        BI.each(it.data, function (i, da) {
+                //            da.size = da.z;
+                //        })
+                //    })
+                //});
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
                     var type = [];
@@ -1369,7 +1484,7 @@ Data.Utils = {
             }
         }
 
-        function _formatDataLabelForAxis(state, items, format, style) {
+        function _formatDataLabelForAxis(state, items, format, style, isPercentChart) {
             if (state === true) {
                 BI.each(items, function (idx, item) {
                     item.dataLabels = {
@@ -1382,6 +1497,10 @@ Data.Utils = {
                             valueFormat: format
                         }
                     };
+                    if(isPercentChart) {
+                        item.dataLabels.formatter.identifier = "${PERCENT}";
+                        item.dataLabels.formatter.percentFormat = format;
+                    }
                 });
             }
         }
@@ -1436,7 +1555,7 @@ Data.Utils = {
             })
         }
 
-        function _formatNumberLevelInYaxis(config, items, type, position, formatter) {
+        function _formatNumberLevelInYaxis(config, items, type, position, formatter, isPercentChart) {
             var magnify = _calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
@@ -1451,6 +1570,10 @@ Data.Utils = {
                 if (position === item.yAxis) {
                     item.tooltip = BI.deepClone(config.plotOptions.tooltip);
                     item.tooltip.formatter.valueFormat = formatter;
+                    if(isPercentChart) {
+                        item.tooltip.formatter.percentFormat = formatter;
+                        item.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
+                    }
                 }
             });
         }
@@ -1487,7 +1610,9 @@ Data.Utils = {
         function formatConfigForMap(configs, items) {
             formatRangeLegend();
             delete configs.legend;
+            delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.tooltip.shared = true;
             var formatterArray = [];
             BI.backEach(items, function (idx, item) {
@@ -1634,17 +1759,27 @@ Data.Utils = {
                         return defaultStyle;
                     case BICst.SCALE_SETTING.CUSTOM:
                         if (styles.length !== 0) {
+                            var maxScale = _calculateValueNiceDomain(0, max)[1];
                             BI.each(styles, function (idx, style) {
-                                range.push({
-                                    color: style.color,
-                                    from: style.range.min,
-                                    to: style.range.max
-                                });
+                                if(style.range.max) {
+                                    range.push({
+                                        color: style.color,
+                                        from: style.range.min,
+                                        to: style.range.max
+                                    });
+                                } else {
+                                    var to = style.range.min < maxScale ? maxScale : 266396;
+                                    range.push({
+                                        color: style.color,
+                                        from: style.range.min,
+                                        to: to,
+                                    });
+                                }
                                 color = style.color;
-                                conditionMax = style.range.max
+                                conditionMax = style.range.max;
                             });
 
-                            conditionMin = BI.parseInt(styles[0].range.min);
+                            conditionMin = BI.parseFloat(styles[0].range.min);
                             if (conditionMin !== 0) {
                                 range.push({
                                     color: "#808080",
@@ -1653,9 +1788,7 @@ Data.Utils = {
                                 });
                             }
 
-                            var maxScale = _calculateValueNiceDomain(0, max)[1];
-
-                            if (conditionMax < maxScale) {
+                            if (conditionMax && conditionMax < maxScale) {
                                 range.push({
                                     color: color,
                                     from: conditionMax,
@@ -1701,6 +1834,7 @@ Data.Utils = {
             delete configs.legend;
             delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.dataLabels.useHtml = true;
             configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ BI.contentFormat(this.value, '#.##;-#.##') +'</div>'; return a;}";
             configs.plotOptions.tooltip.shared = true;
@@ -1763,6 +1897,7 @@ Data.Utils = {
             }];
             var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
             var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
+            delete configs.zoom;
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -1786,6 +1921,7 @@ Data.Utils = {
                     break;
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
 
             configs.yAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
@@ -1813,7 +1949,7 @@ Data.Utils = {
             if (configs.plotOptions.dataLabels.enabled === true) {
                 BI.each(items, function (idx, item) {
                     item.dataLabels = {
-                        "style": constants.FONT_STYLE,
+                        "style": config.chart_font,
                         "align": "outside",
                         enabled: true,
                         formatter: {
@@ -1979,6 +2115,7 @@ Data.Utils = {
             }];
             var yText = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
             var xText = getXYAxisUnit(config.x_axis_number_level, constants.X_AXIS);
+            delete configs.zoom;
             configs.yAxis = yAxis;
             configs.xAxis = xAxis;
             configs.colors = config.chart_color;
@@ -2003,6 +2140,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
             configs.plotOptions.shadow = config.bubble_style !== constants.NO_PROJECT;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
 
             configs.yAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
@@ -2176,6 +2314,7 @@ Data.Utils = {
             configs.chartType = "gauge";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             return BI.extend(configs, {
                 series: items
             });
@@ -2210,7 +2349,7 @@ Data.Utils = {
                                     getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
                             }
                             return label
-                        } else if (isDashboard && BI.isNull(items[0].data[0].seriesName)) {
+                        } else if (isDashboard && BI.isNull(items[0].data[0].z)) {
                             return label
                         }
                         return '<div style="text-align: center">' + this.category + '</div>' + label;
@@ -2284,8 +2423,8 @@ Data.Utils = {
             }
 
             function changeMaxMinScale() {
-                gaugeAxis[0].max = config.max_scale || null;
-                gaugeAxis[0].min = config.min_scale || null;
+                gaugeAxis[0].max = BI.parseFloat(config.max_scale) || null;
+                gaugeAxis[0].min = BI.parseFloat(config.min_scale) || null;
             }
 
             function formatNumberLevelInYaxis(type, position) {
@@ -2523,6 +2662,8 @@ Data.Utils = {
                     break;
             }
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
+            configs.plotOptions.dataLabels.style = config.chart_font;
+            configs.plotOptions.connectNulls = config.null_continue;
             configs.dataSheet.enabled = config.show_data_table;
             configs.xAxis[0].showLabel = !configs.dataSheet.enabled;
             configs.zoom.zoomTool.enabled = config.show_zoom;
@@ -2600,8 +2741,13 @@ Data.Utils = {
             BI.each(items, function (idx, item) {
                 item.color = [configs.yAxis[idx].labelStyle.color];
                 if (item.type === "line") {
+                    config.chartType = "line";
                     lineItem.push(item);
-                } else {
+                } else if(item.type === "area") {
+                    config.chartType = "area";
+                    otherItem.push(item);
+                }else {
+                    config.chartType = "column";
                     otherItem.push(item);
                 }
             });
@@ -2731,10 +2877,11 @@ Data.Utils = {
 
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
-
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.chartType = "pie";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             configs.plotOptions.dataLabels.align = "outside";
             configs.plotOptions.dataLabels.connectorWidth = "outside";
             configs.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
@@ -2797,8 +2944,10 @@ Data.Utils = {
             configs.plotOptions.dataLabels.align = "outside";
             configs.plotOptions.dataLabels.connectorWidth = "outside";
             configs.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+            configs.plotOptions.dataLabels.style = config.chart_font;
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
             return BI.extend(configs, {
                 series: items
             });
@@ -4183,7 +4332,7 @@ Data.Utils = {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
                 formatter: _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
             });
-            _formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, constants.LEFT_AXIS, configs.yAxis[0].formatter);
+            _formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, constants.LEFT_AXIS, configs.yAxis[0].formatter, true);
 
             configs.xAxis[0].title.text = config.show_x_axis_title === true ? config.x_axis_title : "";
             configs.xAxis[0].title.align = "center";
@@ -4198,7 +4347,7 @@ Data.Utils = {
             configs.chartType = "area";
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
-            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.yAxis[0].formatter, config.chart_font);
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.yAxis[0].formatter, config.chart_font, true);
 
             return BI.extend(configs, {
                 series: items
@@ -4417,6 +4566,8 @@ Data.Utils = {
 
             _formatDataLabel(items, configs, config.chart_font);
 
+            configs.chartType = "line";
+
             return BI.extend(configs, {
                 series: items
             });
@@ -4588,6 +4739,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatCordon();
+            formatChartLineStyle();
             switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
@@ -4657,6 +4809,8 @@ Data.Utils = {
 
             _formatDataLabel(items, configs, config.chart_font);
 
+            configs.chartType = "area";
+
             return BI.extend(configs, {
                 series: items
             });
@@ -4668,6 +4822,24 @@ Data.Utils = {
                     case BICst.CHART_STYLE.STYLE_NORMAL:
                     default:
                         return "normal";
+                }
+            }
+
+            function formatChartLineStyle() {
+                switch (config.chart_line_type) {
+                    case BICst.CHART_SHAPE.RIGHT_ANGLE:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = true;
+                        break;
+                    case BICst.CHART_SHAPE.CURVE:
+                        configs.plotOptions.curve = true;
+                        configs.plotOptions.step = false;
+                        break;
+                    case BICst.CHART_SHAPE.NORMAL:
+                    default:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = false;
+                        break;
                 }
             }
 
@@ -4752,25 +4924,30 @@ Data.Utils = {
         }
 
         function formatConfigForAccumulateRadar(configs, items) {
+            var style = {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+            };
             var radiusAxis = [{
                 type: "value",
                 title: {
-                    style: {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                        "color": "#808080",
-                        "fontSize": "12px",
-                        "fontWeight": ""
-                    }
+                    style: style
                 },
-                labelStyle: {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-                },
+                labelStyle: style,
                 formatter: function () {
                     if (this > 0) return this; else return this * (-1);
                 },
                 gridLineWidth: 0,
                 position: "bottom"
             }];
+
+            var angleAxis = [{
+                type: "category",
+                title: {
+                    style: style
+                },
+                labelStyle: style
+            }];
+
             var title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
 
             configs.colors = config.chart_color;
@@ -4794,6 +4971,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
 
             configs.radiusAxis = radiusAxis;
+            configs.angleAxis = angleAxis;
             configs.radiusAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS, configs.radiusAxis[0].formatter);
             configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
@@ -4802,8 +4980,12 @@ Data.Utils = {
             configs.plotOptions.columnType = true;
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.radiusAxis[0].formatter, config.chart_font);
+            configs.radiusAxis[0].labelStyle = configs.radiusAxis[0].title.style = config.chart_font;
+            configs.angleAxis[0].labelStyle = configs.angleAxis[0].title.style = config.chart_font;
+            configs.legend.style = config.chart_font;
 
             return BI.extend(configs, {
                 series: items
@@ -4872,25 +5054,30 @@ Data.Utils = {
         }
 
         function formatConfigForRadar(configs, items) {
+            var style = {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+            };
             var radiusAxis = [{
                 type: "value",
                 title: {
-                    style: {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                        "color": "#808080",
-                        "fontSize": "12px",
-                        "fontWeight": ""
-                    }
+                    style: style
                 },
-                labelStyle: {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
-                },
+                labelStyle: style,
                 formatter: function () {
                     if (this > 0) return this; else return this * (-1);
                 },
                 gridLineWidth: 0,
                 position: "bottom"
             }];
+
+            var angleAxis = [{
+                type: "category",
+                title: {
+                    style: style
+                },
+                labelStyle: style
+            }];
+
             var title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
 
             configs.colors = config.chart_color;
@@ -4914,6 +5101,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
 
             configs.radiusAxis = radiusAxis;
+            configs.angleAxis = angleAxis;
             configs.radiusAxis[0].formatter = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators);
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS, configs.radiusAxis[0].formatter);
             configs.radiusAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
@@ -4921,8 +5109,12 @@ Data.Utils = {
             configs.chartType = "radar";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete configs.zoom;
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.radiusAxis[0].formatter, config.chart_font);
+            configs.radiusAxis[0].title.style = configs.radiusAxis[0].labelStyle = config.chart_font;
+            configs.angleAxis[0].title.style = configs.angleAxis[0].labelStyle = config.chart_font;
+            configs.legend.style = config.chart_font;
 
             return BI.extend(configs, {
                 series: items

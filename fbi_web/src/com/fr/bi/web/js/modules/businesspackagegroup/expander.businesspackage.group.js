@@ -51,10 +51,6 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BusinessPackageExpander.EVENT_CLICK_DELETE);
         });
 
-        this.node.on(BI.ArrowNodeDelete.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BusinessPackageExpander.EVENT_NODE_VALUE_CHANGE);
-        });
-
         this.node.on(BI.ArrowNodeDelete.EVENT_CONFIRM, function () {
             self.fireEvent(BI.BusinessPackageExpander.EVENT_NODE_VALUE_CONFIRM);
         })
@@ -74,6 +70,7 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
     },
     _createFieldButtons: function (item) {
         var self = this, popupButtons = [], o = this.options;
+        var positionArray = [];
         if (BI.isNotNull(item.children) && BI.isNotEmptyArray(item.children)) {
             BI.each(item.children, function (i_in, item_in) {
                 var findField = BI.find(self.fieldWidgetMap, function (fieldId, fieldWidget) {
@@ -85,6 +82,7 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
                 if (!findField) {
                     var tables = BI.Utils.getConfPackageTablesByID(item_in.value);
                     var packageName = BI.Utils.getConfPackageNameByID(item_in.value);
+                    var position = BI.Utils.getConfPackagePositionByID(item_in.value);
                     var fieldButton = BI.createWidget({
                         type: "bi.business_package_button",
                         text: packageName,
@@ -95,6 +93,7 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
                         forceNotSelected: o.forceNotSelected
                     });
                     self.fieldWidgetMap[item_in.id] = fieldButton;
+                    positionArray.push({position: position, button: fieldButton});
                     fieldButton.on(BI.Controller.EVENT_CHANGE, function (type, value, obj) {
                         self.fireEvent(BI.BusinessPackageExpander.EVENT_CHANGE, obj);
                     });
@@ -104,10 +103,12 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
                     fieldButton.on(BI.BusinessPackageButton.EVENT_EDITOR_CONFIRM, function (packageName, packageID) {
                         self.fireEvent(BI.BusinessPackageExpander.EVENT_EDITOR_CONFIRM, packageName, packageID)
                     });
-                    popupButtons.push(fieldButton);
                 }
             })
         }
+        BI.each(BI.sortBy(positionArray, "position"), function (i, ob) {
+            popupButtons.push(ob.button);
+        });
         return popupButtons;
     },
 
@@ -183,7 +184,6 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
 BI.BusinessPackageExpander.EVENT_CHANGE = "EVENT_CHANGE";
 BI.BusinessPackageExpander.EVENT_CLICK_DELETE = "EVENT_CLICK_DELETE";
 BI.BusinessPackageExpander.EVENT_PACKAGE_DELETE = "EVENT_PACKAGE_DELETE";
-BI.BusinessPackageExpander.EVENT_NODE_VALUE_CHANGE = "EVENT_NODE_VALUE_CHANGE";
 BI.BusinessPackageExpander.EVENT_NODE_VALUE_CONFIRM = "EVENT_NODE_VALUE_CONFIRM";
 BI.BusinessPackageExpander.EVENT_CLICK_ADD = "EVENT_CLICK_ADD";
 BI.BusinessPackageExpander.EVENT_EDITOR_CONFIRM = "EVENT_EDITOR_CONFIRM";

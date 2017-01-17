@@ -8,6 +8,7 @@ import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BIEmptyDetailTarget;
+import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.connection.DirectTableConnectionFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -40,6 +41,11 @@ public class DetailParas {
     private boolean[] asc;
     private GroupValueIndex gvi;
 
+    public ConnectionRowGetter[] getConnectionRowGetters() {
+        return connectionRowGetters;
+    }
+
+    private ConnectionRowGetter[] connectionRowGetters;
     public DetailParas(BIDetailWidget widget, GroupValueIndex gvi, ICubeDataLoader loader) {
         this.loader = loader;
 
@@ -92,12 +98,13 @@ public class DetailParas {
 
     private void init() {
         initCalList();
+        connectionRowGetters = new ConnectionRowGetter[noneCalculateList.size()];
         for (int i = 0; i < noneCalculateList.size(); i++) {
-
             List<BITableSourceRelation> relations = BIConfUtils.convert2TableSourceRelation(noneCalculateList.get(i).getRelationList(target, biUser.getUserId()));
             CollectionKey<BITableSourceRelation> reKey = new CollectionKey<BITableSourceRelation>(relations);
+            connectionRowGetters[i] = DirectTableConnectionFactory.createConnectionRow(relations, loader);
             if (rowMap.get(reKey) == null) {
-                rowMap.put(reKey, DirectTableConnectionFactory.createConnectionRow(relations, loader));
+                rowMap.put(reKey, connectionRowGetters[i]);
             }
         }
         List<BIDetailTarget> sortList = getTargetSortMap();

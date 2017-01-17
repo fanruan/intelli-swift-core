@@ -79,6 +79,7 @@ public class SQLTableSource extends ServerTableSource {
                 BILoggerFactory.getLogger(SQLTableSource.class).info("The table:" + this.getTableName() + "extract data from db");
                 dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
             } catch (Exception e) {
+                BILoggerFactory.getLogger(SQLTableSource.class).error("The error Sql is:" + sql);
                 BILoggerFactory.getLogger(SQLTableSource.class).error(e.getMessage(), e);
                 /**
                  * 内部出现异常，但是仍然给了一个空table。
