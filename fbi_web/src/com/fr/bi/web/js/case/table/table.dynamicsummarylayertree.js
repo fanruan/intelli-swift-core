@@ -10,11 +10,11 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DynamicSummaryLayerTreeTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dynamic-summary-layer-tree-table",
-            logic: { //冻结的页面布局逻辑
-                dynamic: false
-            },
 
-            isNeedResize: false,//是否需要调整列宽
+            el: {
+                type: "bi.resizable_table"
+            },
+            isNeedResize: true,//是否需要调整列宽
             isResizeAdapt: true,//是否需要在调整列宽或区域宽度的时候它们自适应变化
 
             isNeedFreeze: false,//是否需要冻结单元格
@@ -23,7 +23,7 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
             isNeedMerge: true,//是否需要合并单元格
             mergeCols: [],
             mergeRule: function (row1, row2) { //合并规则, 默认相等时合并
-                return BI.isEqual(row1, row2);
+                return row1 === row2;
             },
 
             columnSize: [],
@@ -111,14 +111,6 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         return BI.DynamicSummaryTreeTable.formatSummaryItems(result, header, o.crossItems, 1);
     },
 
-    _formatCols: function (cols, deep) {
-        deep = deep || this._getHDeep();
-        cols = this._formatColumns(cols);
-        return BI.map(cols, function (i, c) {
-            return c - (deep - 1);
-        })
-    },
-
     _formatColumns: function (columns, deep) {
         if (BI.isNotEmptyArray(columns)) {
             deep = deep || this._getHDeep();
@@ -127,69 +119,93 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         return columns;
     },
 
-    _init: function () {
-        BI.DynamicSummaryLayerTreeTable.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+    _formatFreezeCols: function () {
+        if (this.options.freezeCols.length > 0) {
+            return [0];
+        }
+        return [];
+    },
+
+    _formatColumnSize: function (columnSize, deep) {
+        if (columnSize.length <= 0) {
+            return [];
+        }
+        var result = [0];
+        deep = deep || this._getHDeep();
+        BI.each(columnSize, function (i, size) {
+            if (i < deep) {
+                result[0] += size;
+                return;
+            }
+            result.push(size);
+        });
+        return result;
+    },
+
+    _digest: function () {
+        var o = this.options;
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
         var header = this._createHeader(vDeep);
-        var info = this._formatItems(o.items, header, deep);
-        this.table = BI.createWidget({
-            type: "bi.table_view",
+        var items = this._formatItems(o.items, header, deep);
+        return {
+            header: header,
+            items: items,
+            columnSize: this._formatColumnSize(o.columnSize, deep),
+            minColumnSize: this._formatColumns(o.minColumnSize, deep),
+            maxColumnSize: this._formatColumns(o.maxColumnSize, deep),
+            freezeCols: this._formatFreezeCols()
+        }
+    },
+
+    _init: function () {
+        BI.DynamicSummaryLayerTreeTable.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
+        var data = this._digest();
+        this.table = BI.createWidget(o.el, {
+            type: "bi.resizable_table",
             element: this.element,
-            logic: o.logic,
+            width: o.width,
+            height: o.height,
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
             isNeedFreeze: o.isNeedFreeze,
-            freezeCols: this._formatCols(o.freezeCols, deep),
+            freezeCols: data.freezeCols,
             isNeedMerge: o.isNeedMerge,
             mergeCols: [],
             mergeRule: o.mergeRule,
-            columnSize: this._formatColumns(o.columnSize, deep),
+            columnSize: data.columnSize,
+            minColumnSize: data.minColumnSize,
+            maxColumnSize: data.maxColumnSize,
             headerRowSize: o.headerRowSize,
-            footerRowSize: o.footerRowSize,
             rowSize: o.rowSize,
             regionColumnSize: o.regionColumnSize,
-            header: info.header,
-            footer: this._formatColumns(o.footer, deep),
-            items: info.items
-        });
-        this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
+            header: data.header,
+            items: data.items
         });
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
-        this.table.on(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE, arguments);
-        });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
     },
 
-    resize: function () {
-        this.table.resize();
+    setWidth: function (width) {
+        BI.DynamicSummaryLayerTreeTable.superclass.setWidth.apply(this, arguments);
+        this.table.setWidth(width);
+    },
+
+    setHeight: function (width) {
+        BI.DynamicSummaryLayerTreeTable.superclass.setHeight.apply(this, arguments);
+        this.table.setHeight(width);
     },
 
     setColumnSize: function (columnSize) {
-        columnSize = this._formatColumns(columnSize);
-        this.table.setColumnSize(columnSize);
+        this.options.columnSize = columnSize;
     },
 
     getColumnSize: function () {
@@ -197,56 +213,18 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         var deep = this._getHDeep();
         var pre = [];
         if (deep > 0) {
-            pre = BI.makeArray(deep - 1, 0);
+            pre = BI.makeArray(deep, columnSize[0] / deep);
         }
-        return pre.concat(columnSize);
-    },
-
-    getCalculateColumnSize: function () {
-        var columnSize = this.table.getCalculateColumnSize();
-        var deep = this._getHDeep();
-        var pre = [];
-        if (deep > 0) {
-            pre = BI.makeArray(deep - 1, "");
-        }
-        return pre.concat(columnSize);
-    },
-
-    setHeaderColumnSize: function (columnSize) {
-        columnSize = this._formatColumns(columnSize);
-        this.table.setHeaderColumnSize(columnSize);
+        return pre.concat(columnSize.slice(1));
     },
 
     setRegionColumnSize: function (columnSize) {
+        this.options.regionColumnSize = columnSize;
         this.table.setRegionColumnSize(columnSize);
     },
 
     getRegionColumnSize: function () {
         return this.table.getRegionColumnSize();
-    },
-
-    getCalculateRegionColumnSize: function () {
-        return this.table.getCalculateRegionColumnSize();
-    },
-
-    getCalculateRegionRowSize: function () {
-        return this.table.getCalculateRegionRowSize();
-    },
-
-    getClientRegionColumnSize: function () {
-        return this.table.getClientRegionColumnSize();
-    },
-
-    getScrollRegionColumnSize: function () {
-        return this.table.getScrollRegionColumnSize();
-    },
-
-    getScrollRegionRowSize: function () {
-        return this.table.getScrollRegionRowSize();
-    },
-
-    hasVerticalScroll: function () {
-        return this.table.hasVerticalScroll();
     },
 
     setVerticalScroll: function (scrollTop) {
@@ -273,10 +251,6 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         return this.table.getRightHorizontalScroll();
     },
 
-    getColumns: function () {
-        return this.table.getColumns();
-    },
-
     attr: function (key, value) {
         var self = this;
         if (BI.isObject(key)) {
@@ -288,17 +262,17 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         BI.DynamicSummaryLayerTreeTable.superclass.attr.apply(this, arguments);
         switch (key) {
             case "columnSize":
-            case "footer":
-                value = this._formatColumns(value);
-                break;
+            case "minColumnSize":
+            case "maxColumnSize":
             case "freezeCols":
-                value = value.length > 0 ? [0] : [];
-                break;
             case "mergeCols":
-                value = value.length > 0 ? [0] : [];
-                break;
+                return;
         }
         this.table.attr.apply(this.table, [key, value]);
+    },
+
+    restore: function () {
+        this.table.restore();
     },
 
     populate: function (items, header, crossItems, crossHeader) {

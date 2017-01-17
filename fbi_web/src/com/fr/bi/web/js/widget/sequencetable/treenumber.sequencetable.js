@@ -11,12 +11,11 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             baseCls: "bi-sequence-table-tree-number",
             isNeedFreeze: false,
             startSequence: 1,//开始的序号
-            headerRowSize: 37,
-            footerRowSize: 37,
-            rowSize: 30,
+            scrollTop: 0,
+            headerRowSize: 25,
+            rowSize: 25,
 
             header: [],
-            footer: false,
             items: [], //二维数组
 
             //交叉表头
@@ -28,6 +27,11 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
     _init: function () {
         BI.SequenceTableTreeNumber.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        this.vCurr = 1;
+        this.hCurr = 1;
+        this.renderedCells = [];
+        this.renderedKeys = [];
+
         var header = BI.createWidget({
             type: "bi.label",
             cls: "sequence-table-title",
@@ -36,14 +40,17 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Number_Index"),
             hgap: 5
         });
-        this.buttonGroup = BI.createWidget({
-            type: "bi.button_group",
-            layouts: [{
-                type: "bi.vertical",
-                scrolly: false,
-                scrollx: false,
-                scrollable: false
-            }]
+        this.container = BI.createWidget({
+            type: "bi.absolute",
+            width: 60,
+            scrollable: false
+        });
+
+        this.scrollContainer = BI.createWidget({
+            type: "bi.vertical",
+            scrollable: false,
+            scrolly: false,
+            items: [this.container]
         });
 
         this.layout = BI.createWidget({
@@ -51,17 +58,16 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 el: header,
-                height: o.headerRowSize + 1
+                height: o.headerRowSize * o.header.length
             }, {
-                el: {type: "bi.layout"},
-                height: 0
-            }, {
-                el: this.buttonGroup
+                el: this.scrollContainer
             }]
         });
         //缓存第一行对应的序号
         this.start = this.options.startSequence;
         this.cache = {};
+        this._nextState();
+
         this._populate();
     },
 
@@ -74,17 +80,12 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             self.cache[node.text || node.value] = cnt++;
         }
 
-        var finded = false;
         BI.each(nodes, function (i, node) {
             if (BI.isNotEmptyArray(node.children)) {
                 BI.each(node.children, function (index, child) {
                     if (index === 0) {
                         if (self.cache[child.text || child.value]) {
-                            cnt = self.cache[child.text || child.value];
-                            if (!finded) {
-                                start = cnt;
-                                finded = true;
-                            }
+                            start = cnt = self.cache[child.text || child.value];
                         }
                     }
                     track(child)
@@ -115,7 +116,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             return cnt;
         }
 
-        var start = 0;
+        var start = 0, top = 0;
         BI.each(nodes, function (i, node) {
             if (BI.isArray(node.children)) {
                 BI.each(node.children, function (index, child) {
@@ -123,91 +124,202 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                     result.push({
                         text: count++,
                         start: start,
+                        top: top,
                         cnt: cnt,
                         cls: "sequence-table-number",
-                        height: cnt * o.rowSize + (cnt - 1)
+                        height: cnt * o.rowSize
                     });
                     start += cnt;
+                    top += cnt * o.rowSize;
                 });
                 if (BI.isNotEmptyArray(node.values)) {
                     result.push({
                         text: BI.i18nText("BI-Summary_Values"),
                         start: start++,
+                        top: top,
                         cnt: 1,
                         cls: "sequence-table-number sequence-table-summary",
                         height: o.rowSize
                     });
+                    top += o.rowSize;
                 }
             }
         });
         return result;
     },
 
-    _formatItems: function () {
-        var o = this.options;
-        var result = [];
-        if (o.isNeedFreeze === false) {
-            result.push({
-                type: "bi.label",
-                cls: "sequence-table-title",
-                textAlign: "left",
-                forceCenter: true,
-                height: (o.crossHeader.length + 1) * (o.headerRowSize || o.rowSize) - 1,
-                text: BI.i18nText("BI-Number_Index"),
-                hgap: 5
-            })
-        }
-        var numbers = this._formatNumber(o.items);
-        result = result.concat(BI.map(numbers, function (i, num) {
-            var cls = num.cls;
-            if (BI.isOdd(num.start)) {
-                cls += " even";
-            } else {
-                cls += " odd";
-            }
-            return BI.extend(num, {
-                type: "bi.label",
-                textAlign: "left",
-                hgap: 5,
-                cls: cls + (i === numbers.length - 1 ? " last" : "")
-            })
-        }));
-
-        return result;
-    },
-
     _layout: function () {
         var self = this, o = this.options;
-        var headerHeight = o.headerRowSize * (o.crossHeader.length + (o.header.length > 0 ? 1 : 0));
+        var headerHeight = this._getHeaderHeight();
         var items = this.layout.attr("items");
         if (o.isNeedFreeze === false) {
             items[0].height = 0;
-            items[1].height = 0;
         } else if (o.isNeedFreeze === true) {
-            items[0].height = headerHeight + o.crossHeader.length;
-            items[1].height = 2;
+            items[0].height = headerHeight;
         }
         this.layout.attr("items", items);
         this.layout.resize();
     },
 
-    _populate: function () {
-        this._layout();
-        this.buttonGroup.populate(this._formatItems());
+    _getHeaderHeight: function () {
+        var o = this.options;
+        return o.headerRowSize * (o.crossHeader.length + (o.header.length > 0 ? 1 : 0));
     },
 
-    setVerticalScroll: function (scroll) {
-        this.buttonGroup.element.scrollTop(scroll);
+    _nextState: function () {
+        var o = this.options;
+        this.numbers = this._formatNumber(o.items);
+        var intervalTree = BI.PrefixIntervalTree.uniform(this.numbers.length, 0);
+        BI.each(this.numbers, (i, number) => {
+            intervalTree.set(i, number.height);
+        });
+        this.intervalTree = intervalTree;
+    },
+
+    _prevState: function () {
+        var self = this, o = this.options;
+        var firstChild;
+        BI.some(o.items, function (i, node) {
+            if (BI.isNotEmptyArray(node.children)) {
+                return BI.some(node.children, function (j, child) {
+                    firstChild = child;
+                    return true;
+                });
+            }
+        });
+        if (firstChild) {
+            this.start = this.cache[firstChild.text || firstChild.value];
+        } else {
+            this.start = 1;
+        }
+        this._nextState();
+    },
+
+    _calculateChildrenToRender: function () {
+        var self = this, o = this.options;
+
+        var renderedCells = [], renderedKeys = [];
+        let index = this.intervalTree.greatestLowerBound(o.scrollTop);
+        let offsetTop = -(o.scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0));
+        let height = offsetTop;
+        var bodyHeight = o.height - this._getHeaderHeight();
+        while (height < bodyHeight && index < this.numbers.length) {
+            renderedKeys.push(index);
+            offsetTop += this.numbers[index].height;
+            height += this.numbers[index].height;
+            index++;
+        }
+
+        BI.each(renderedKeys, function (i, index) {
+            var contains = BI.deepContains(self.renderedKeys, index);
+            if (contains === true) {
+                if (self.numbers[index].height !== self.renderedCells[index]._height) {
+                    self.renderedCells[index]._height = o.rowSize;
+                    self.renderedCells[index].el.setHeight(self.numbers[index].height);
+                }
+                if (self.numbers[index].top !== self.renderedCells[index].top) {
+                    self.renderedCells[index].top = self.numbers[index].top;
+                    self.renderedCells[index].el.element.css("top", self.numbers[index].top + "px");
+                }
+                renderedCells.push(self.renderedCells[index]);
+            } else {
+                var child = BI.createWidget(BI.extend({
+                    type: "bi.label",
+                    width: 60,
+                    textAlign: "left",
+                    hgap: 5
+                }, self.numbers[index]));
+                renderedCells.push({
+                    el: child,
+                    left: 0,
+                    top: self.numbers[index].top,
+                    _height: self.numbers[index].height
+                });
+            }
+        });
+
+        //已存在的， 需要添加的和需要删除的
+        var existSet = {}, addSet = {}, deleteArray = [];
+        BI.each(renderedKeys, function (i, key) {
+            if (BI.deepContains(self.renderedKeys, key)) {
+                existSet[i] = key;
+            } else {
+                addSet[i] = key;
+            }
+        });
+        BI.each(this.renderedKeys, function (i, key) {
+            if (BI.deepContains(existSet, key)) {
+                return;
+            }
+            if (BI.deepContains(addSet, key)) {
+                return;
+            }
+            deleteArray.push(i);
+        });
+        BI.each(deleteArray, function (i, index) {
+            self.renderedCells[index].el.destroy();
+        });
+        var addedItems = [];
+        BI.each(addSet, function (index) {
+            addedItems.push(renderedCells[index])
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.container,
+            items: addedItems
+        });
+        this.renderedCells = renderedCells;
+        this.renderedKeys = renderedKeys;
+
+        this.container.setHeight(this.intervalTree.sumUntil(this.numbers.length))
+    },
+
+    _restore: function () {
+        this.vCurr = 1;
+        this.start = this.options.startSequence;
+        this.cache = {};
+    },
+
+    _populate: function () {
+        this._layout();
+        this._calculateChildrenToRender();
+    },
+
+    setVerticalScroll: function (scrollTop) {
+        if (this.options.scrollTop !== scrollTop) {
+            this.options.scrollTop = scrollTop;
+            this.scrollContainer.element.scrollTop(scrollTop);
+        }
+    },
+
+    getVerticalScroll: function () {
+        return this.options.scrollTop;
     },
 
     setVPage: function (v) {
         if (v <= 1) {
-            this.cache = {};
-            this.start = this.options.startSequence;
+            this._clear();
+        } else if (v === this.vCurr + 1) {
+            this._nextState();
+        } else if (v === this.vCurr - 1) {
+            this._prevState();
         }
+        this.vCurr = v;
     },
 
-    populate: function (items, header, crossItems, crossHeader, startSequence) {
+    setHPage: function (v) {
+        if (v !== this.hCurr) {
+            this._prevState();
+        }
+        this.hCurr = v;
+    },
+
+    restore: function () {
+        this._restore();
+        this.options.scrollTop = 0;
+    },
+
+    populate: function (items, header, crossItems, crossHeader) {
         var o = this.options;
         if (items) {
             o.items = items;
@@ -220,9 +332,6 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         }
         if (crossHeader) {
             o.crossHeader = crossHeader;
-        }
-        if (BI.isNotNull(startSequence)) {
-            o.startSequence = startSequence;
         }
         this._populate();
     }

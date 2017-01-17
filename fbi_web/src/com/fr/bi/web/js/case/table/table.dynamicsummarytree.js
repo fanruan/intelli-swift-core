@@ -10,11 +10,11 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DynamicSummaryTreeTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dynamic-summary-tree-table",
-            logic: { //冻结的页面布局逻辑
-                dynamic: false
+            el: {
+                type: "bi.resizable_table"
             },
 
-            isNeedResize: false,//是否需要调整列宽
+            isNeedResize: true,//是否需要调整列宽
             isResizeAdapt: true,//是否需要在调整列宽或区域宽度的时候它们自适应变化
 
             isNeedFreeze: false,//是否需要冻结单元格
@@ -23,7 +23,7 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
             isNeedMerge: true,//是否需要合并单元格
             mergeCols: [],
             mergeRule: function (row1, row2) { //合并规则, 默认相等时合并
-                return BI.isEqual(row1, row2);
+                return row1 === row2;
             },
 
             columnSize: [],
@@ -60,10 +60,11 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
         var header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
         var items = BI.DynamicSummaryTreeTable.formatHorizontalItems(o.items, deep);
         items = BI.DynamicSummaryTreeTable.formatSummaryItems(items, header, o.crossItems, deep);
-        this.table = BI.createWidget({
-            type: "bi.table_view",
+        this.table = BI.createWidget(o.el, {
+            type: "bi.resizable_table",
             element: this.element,
-            logic: o.logic,
+            width: o.width,
+            height: o.height,
 
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
@@ -76,49 +77,36 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
 
             columnSize: o.columnSize,
             headerRowSize: o.headerRowSize,
-            footerRowSize: o.footerRowSize,
             rowSize: o.rowSize,
 
             regionColumnSize: o.regionColumnSize,
 
             header: header,
-            footer: o.footer,
             items: items
-        });
-        this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
-        this.table.on(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_REGION_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE, arguments);
-        });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_BEFORE_COLUMN_RESIZE, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_COLUMN_RESIZE, arguments);
+            self.fireEvent(BI.Table.EVENT_TABLE_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
     },
 
-    resize: function () {
-        this.table.resize();
+    setWidth: function (width) {
+        BI.DynamicSummaryTreeTable.superclass.setWidth.apply(this, arguments);
+        this.table.setWidth(width);
+    },
+
+    setHeight: function (width) {
+        BI.DynamicSummaryTreeTable.superclass.setHeight.apply(this, arguments);
+        this.table.setHeight(width);
     },
 
     setColumnSize: function (columnSize) {
+        this.options.columnSize = columnSize;
         this.table.setColumnSize(columnSize);
     },
 
@@ -126,44 +114,13 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
         return this.table.getColumnSize();
     },
 
-    getCalculateColumnSize: function () {
-        return this.table.getCalculateColumnSize();
-    },
-
-    setHeaderColumnSize: function (columnSize) {
-        this.table.setHeaderColumnSize(columnSize);
-    },
-
     setRegionColumnSize: function (columnSize) {
+        this.options.regionColumnSize = columnSize;
         this.table.setRegionColumnSize(columnSize);
     },
 
     getRegionColumnSize: function () {
         return this.table.getRegionColumnSize();
-    },
-
-    getCalculateRegionColumnSize: function () {
-        return this.table.getCalculateRegionColumnSize();
-    },
-
-    getCalculateRegionRowSize: function () {
-        return this.table.getCalculateRegionRowSize();
-    },
-
-    getClientRegionColumnSize: function () {
-        return this.table.getClientRegionColumnSize();
-    },
-
-    getScrollRegionColumnSize: function () {
-        return this.table.getScrollRegionColumnSize();
-    },
-
-    getScrollRegionRowSize: function () {
-        return this.table.getScrollRegionRowSize();
-    },
-
-    hasVerticalScroll: function () {
-        return this.table.hasVerticalScroll();
     },
 
     setVerticalScroll: function (scrollTop) {
@@ -190,18 +147,20 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
         return this.table.getRightHorizontalScroll();
     },
 
-    getColumns: function () {
-        return this.table.getColumns();
-    },
-
     attr: function () {
         BI.DynamicSummaryTreeTable.superclass.attr.apply(this, arguments);
         this.table.attr.apply(this.table, arguments);
     },
 
+    restore: function () {
+        this.table.restore();
+    },
+
     populate: function (items, header, crossItems, crossHeader) {
         var o = this.options;
-        o.items = items || [];
+        if (items) {
+            o.items = items;
+        }
         if (header) {
             o.header = header;
         }
@@ -327,7 +286,7 @@ BI.extend(BI.DynamicSummaryTreeTable, {
                 BI.each(node.children, function (index, child) {
                     var next;
                     if (store != -1) {
-                        next = BI.clone(store);
+                        next = store.slice();
                         next.push(node);
                     } else {
                         next = [];
@@ -335,16 +294,16 @@ BI.extend(BI.DynamicSummaryTreeTable, {
                     track(next, child);
                 });
                 if (store != -1) {
-                    next = BI.clone(store);
+                    next = store.slice();
                     next.push(node);
                 } else {
                     next = [];
                 }
                 if ((store == -1 || node.children.length > 1) && BI.isNotEmptyArray(node.values)) {
                     var cls = store === -1 ? " last" : "";
-                    var id = BI.UUID();
+                    var summary = {text: BI.i18nText("BI-Summary_Values"), cls: "summary-cell" + cls};
                     for (var i = next.length; i < deep; i++) {
-                        next.push({text: BI.i18nText("BI-Summary_Values"), tag: id, cls: "summary-cell" + cls});
+                        next.push(summary);
                     }
                     if (!isCross) {
                         next = next.concat(node.values);
@@ -362,7 +321,7 @@ BI.extend(BI.DynamicSummaryTreeTable, {
                 return;
             }
             if (store != -1) {
-                next = BI.clone(store);
+                next = store.slice();
                 for (var i = next.length; i < deep; i++) {
                     next.push(node);
                 }
@@ -390,7 +349,7 @@ BI.extend(BI.DynamicSummaryTreeTable, {
         //填充空位
         BI.each(result, function (i, line) {
             var last = BI.last(line);
-            for (var i = line.length; i < deep; i++) {
+            for (var j = line.length; j < deep; j++) {
                 line.push(last);
             }
         });
