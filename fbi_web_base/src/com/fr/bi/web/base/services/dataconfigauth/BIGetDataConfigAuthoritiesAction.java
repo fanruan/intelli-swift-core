@@ -1,4 +1,4 @@
-package com.fr.bi.web.base.services;
+package com.fr.bi.web.base.services.dataconfigauth;
 
 import com.fr.bi.conf.base.dataconfig.source.BIDataConfigAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
+ * 获取数据配置权限
  * Created by Young's on 2017/1/17.
  */
 public class BIGetDataConfigAuthoritiesAction extends AbstractBIBaseAction {

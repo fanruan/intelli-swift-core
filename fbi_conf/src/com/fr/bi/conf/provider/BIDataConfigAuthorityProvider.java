@@ -14,6 +14,8 @@ public interface BIDataConfigAuthorityProvider {
 
     Set<BIDataConfigAuthority> getDataConfigAuthoritiesByRole(String roleName, int roleType);
 
+    void saveDataConfigAuthorities(Set<BIDataConfigAuthority> authorities);
+
     void clear();
 
     @Deprecated
