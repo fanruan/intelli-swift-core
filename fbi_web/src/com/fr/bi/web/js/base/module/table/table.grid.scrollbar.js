@@ -268,7 +268,9 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
 
             for (var i = 0; i < arguments.length; i++) {
                 var arg = arguments[i];
-                if (!arg) continue;
+                if (!arg) {
+                    continue;
+                }
 
                 var argType = typeof arg;
 
