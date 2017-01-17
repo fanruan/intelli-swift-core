@@ -110,6 +110,9 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         if (!regionSize || regionSize >= o.width - 10 || regionSize <= 10) {
             regionSize = (freezeColLength > o.columnSize.length / 2 ? 2 / 3 : 1 / 3) * o.width;
         }
+        if (freezeColLength === 0) {
+            regionSize = 0;
+        }
         if (freezeCols.length >= columnSize.length) {
             freezeCols = [];
         }
