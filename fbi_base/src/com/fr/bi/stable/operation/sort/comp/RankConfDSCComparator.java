@@ -15,6 +15,6 @@ public class RankConfDSCComparator extends DSCComparator{
         if (o2 == null) {
             return -1;
         }
-        return super.compare(o2, o1);
+        return super.compare(o1, o2);
     }
 }
