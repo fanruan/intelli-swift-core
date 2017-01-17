@@ -1,5 +1,6 @@
 package com.fr.bi.conf.log;
 
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.json.JSONObject;
 
@@ -24,7 +25,6 @@ public class BITableRunningLog extends BITableLog {
     }
 
 
-
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
@@ -41,6 +41,11 @@ public class BITableRunningLog extends BITableLog {
     @Override
     public long getTotalTime() {
         return Math.max(seconds, 0L);
+    }
+
+    @Override
+    public int getLogType() {
+        return BILogConstant.TABLE_LOG_TYPE.RUNNING;
     }
 
 }

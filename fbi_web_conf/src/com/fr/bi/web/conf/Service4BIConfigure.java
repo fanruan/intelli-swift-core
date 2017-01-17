@@ -74,6 +74,7 @@ public class Service4BIConfigure extends NoSessionIDService {
 
 
             new BISaveFileGetExcelDataAction(),
+            new BISaveFileGetExcelViewDataAction(),
 
             new BICheckCubeTableStatusAction(),
             new BICheckCubeTableAction(),
@@ -117,8 +118,10 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIDownloadFineindexLogAction(),
             new BIGetThreadPoolSizeAction(),
             new BISetThreadPoolSizeAction(),
-            new BISimpleAPIDemoAction()
-
+            new BISimpleAPIDemoAction(),
+            new BIGetCubeTaskLogsSDKAction(),
+            new BISetTransportThreadPoolSizeAction(),
+            new BIGetTransportThreadPoolSizeAction()
     };
 
     /**

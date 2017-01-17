@@ -14,7 +14,7 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
         var dId = o.dId;
         var name = o.text;
         var combo = BI.createWidget();
-        if(BI.Utils.getDimensionTypeByID(dId) < BICst.TARGET_TYPE.FORMULA) {
+        if (!BI.Utils.isCalculateTargetByDimensionID(dId)) {
             combo = BI.createWidget({
                 type: "bi.sort_filter_detail_combo",
                 dId: dId
@@ -29,8 +29,10 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
             name = name + "(" + st + ")";
         }
         BI.createWidget({
-            type: "bi.htape",
+            type: "bi.horizontal_adapt",
+            // type: "bi.htape",
             element: this.element,
+            columnSize: ["", 25],
             items: [{
                 el: {
                     type: "bi.label",

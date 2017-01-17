@@ -94,9 +94,11 @@ BI.ExcelView = BI.inherit(BI.Single, {
             },
             start: function () {
                 self.combo.hideView();
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, store);
             },
             stop: function () {
                 self.combo.showView();
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);
             },
             helper: function () {
                 var text;

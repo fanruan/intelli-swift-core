@@ -20,7 +20,7 @@ BI.FloatCenterAdaptLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("float_center_adapt布局不需要resize");
+        // console.log("float_center_adapt布局不需要resize");
     },
 
     addItem: function () {
@@ -28,8 +28,7 @@ BI.FloatCenterAdaptLayout = BI.inherit(BI.Layout, {
         throw new Error("不能添加元素")
     },
 
-    populate: function (items) {
-        BI.FloatCenterAdaptLayout.superclass.populate.apply(this, arguments);
+    stroke: function (items) {
         var self = this, o = this.options;
         var left = BI.createWidget({
             type: "bi.vertical",
@@ -59,6 +58,10 @@ BI.FloatCenterAdaptLayout = BI.inherit(BI.Layout, {
                 items: [left]
             })
         });
+    },
+
+    populate: function (items) {
+        BI.FloatCenterAdaptLayout.superclass.populate.apply(this, arguments);
     }
 });
 $.shortcut('bi.float_center_adapt', BI.FloatCenterAdaptLayout);

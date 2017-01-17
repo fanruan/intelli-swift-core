@@ -234,6 +234,10 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("packages", pid, "name");
     },
 
+    getConfPackagePositionByID: function(pid) {
+        return Data.SharingPool.get("packages", pid, "position");
+    },
+
     getUpdateSettingByID: function (id) {
         return Data.SharingPool.get("update_settings", id);
     },
@@ -265,8 +269,8 @@ BI.extend(BI.Utils, {
     },
 
     //fuck you
-    getConfNumberFieldMaxMinValue: function (table, fieldName, fieldType, callback, complete) {
-        Data.Req.reqNumberFieldMaxMinValue(table, fieldName, fieldType,
+    getConfNumberFieldMaxMinValue: function (table, fieldName, callback, complete) {
+        Data.Req.reqNumberFieldMaxMinValue(table, fieldName,
             function (res) {
                 callback(res);
             }, complete)
@@ -292,6 +296,12 @@ BI.extend(BI.Utils, {
 
     saveFileGetExcelData: function (fileId, callback, complete) {
         Data.Req.reqSaveFileGetExcelData({fileId: fileId}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    saveFileGetExcelViewData: function (fileId, callback, complete) {
+        Data.Req.reqSaveFileGetExcelViewData({fileId: fileId}, function (res) {
             callback(res);
         }, complete)
     },
@@ -362,7 +372,7 @@ BI.extend(BI.Utils, {
         }, complete);
     },
 
-    getTablesDetailInfoByTables4Refresh: function(tables, callback, complete) {
+    getTablesDetailInfoByTables4Refresh: function (tables, callback, complete) {
         Data.Req.reqTablesDetailInfoByTables4Refresh(tables, function (res) {
             callback(res);
         }, complete);
@@ -374,8 +384,8 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
-    reqCubeStatusCheck: function (callback, complete) {
-        Data.Req.reqCubeStatusCheck(function (data) {
+    reqCubeStatusCheck: function (table, callback, complete) {
+        Data.Req.reqCubeStatusCheck(table,function (data) {
             callback(data);
         }, complete)
     },

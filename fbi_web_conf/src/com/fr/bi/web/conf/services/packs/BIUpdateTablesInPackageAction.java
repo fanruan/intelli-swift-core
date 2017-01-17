@@ -9,6 +9,7 @@ import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.trans.UserAliasManager;
+import com.finebi.cube.gen.oper.BuildLogHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIBusinessPackagePersistThread;
 import com.fr.bi.base.BIBusinessPackagePersistThreadHolder;
@@ -81,6 +82,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
      * @throws Exception
      */
     public void updatePackageTables(HttpServletRequest req) throws Exception {
+
         String packageName = WebUtils.getHTTPRequestParameter(req, "name");
         String groupName = WebUtils.getHTTPRequestParameter(req, "groupName");
         String packageId = WebUtils.getHTTPRequestParameter(req, "id");
@@ -107,6 +109,27 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         packageConfigProvider.parseSinglePackageJSON(userId,pack.getID(),tableIdsJO, usedFieldsJO, tableDataJO);
         pack = (BIBusinessPackage) packageConfigProvider.getPackage(userId,pack.getID());
 
+        saveTables(packageName, userId, tableIdsJO, tableDataJO, pack,packageConfigProvider);
+        saveTranslations(translationsJO, userId);
+        saveRelations(relationsJO, userId);
+        saveExcelView(excelViewJO, userId);
+        saveUpdateSetting(updateSettingJO, userId);
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+
+//      更新远程的pack到本地
+        pack = (BIBusinessPackage) packageConfigProvider.getPackage(userId,pack.getID());
+        //实时生成excel cube
+        updateExcelTables(userId, getExcelTable(oldTables, pack.getBusinessTables()));
+
+        BIBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {//单独的线程写业务包配置文件，web端立即返回
+            @Override
+            public void work() {
+                writeResource(userId);
+            }
+        });
+    }
+
+    private void saveTables(String packageName, long userId, JSONArray tableIdsJO, JSONObject tableDataJO, BIBusinessPackage pack,BISystemPackageConfigurationProvider packageConfigProvider) throws Exception {
         for (int i = 0; i < tableIdsJO.length(); i++) {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
             JSONObject tableJson = tableDataJO.optJSONObject(tableId);
@@ -151,24 +174,6 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 BILoggerFactory.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }
         }
-
-        saveTranslations(translationsJO, userId);
-        saveRelations(relationsJO, userId);
-        saveExcelView(excelViewJO, userId);
-        saveUpdateSetting(updateSettingJO, userId);
-        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-
-//      更新远程的pack到本地
-        pack = (BIBusinessPackage) packageConfigProvider.getPackage(userId,pack.getID());
-        //实时生成excel cube，应该通过RPC接口远程进行生成
-        updateExcelTables(userId, getExcelTable(oldTables, pack.getBusinessTables()));
-
-        BIBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {//单独的线程写业务包配置文件，web端立即返回
-            @Override
-            public void work() {
-                writeResource(userId);
-            }
-        });
     }
 
     private boolean reuseTableSource(CubeTableSource tableSource) {

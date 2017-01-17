@@ -14,11 +14,13 @@ import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.module.UserETLCubeTILoader;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
@@ -29,6 +31,7 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.structure.queue.AV;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -44,7 +47,7 @@ import java.util.*;
  * @author Daniel
  *
  */
-public class UserETLUpdateTask implements CubeTask {
+public class UserETLUpdateTask implements CubeTask, AV {
 
     /**
      *
@@ -56,12 +59,18 @@ public class UserETLUpdateTask implements CubeTask {
 
     private Date start;
     private Date end;
-
+//  螺旋分析B基于A创建，A生成完毕后应强制B重新生成
+    private boolean isRebuild = false;
     private BIUser biUser;
     @BIIgnoreField
     protected BICube cube;
+    public boolean isRebuild() {
+        return isRebuild;
+    }
 
-
+    public void setRebuild(boolean rebuild) {
+        isRebuild = rebuild;
+    }
     public UserETLUpdateTask(UserCubeTableSource source) {
         this.source = source;
         this.biUser = new BIUser(source.getUserId());
@@ -119,6 +128,13 @@ public class UserETLUpdateTask implements CubeTask {
 
 
     private long getBaseSourceVersion(CubeTableSource source){
+        if(source instanceof AnalysisCubeTableSource){
+            if (!BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) source, biUser)){
+                return -1L;
+            } else {
+                return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getTableIndex((AnalysisCubeTableSource) source, biUser).getTableVersion(new IndexKey(StringUtils.EMPTY));
+            }
+        }
         ICubeTableService service = CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source);
         return service == null ? -1l : service.getTableVersion(new IndexKey(StringUtils.EMPTY));
     }
@@ -140,8 +156,7 @@ public class UserETLUpdateTask implements CubeTask {
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
         manager.setCubePath(source.fetchObjectCore().getID().getIdentityValue(), getPath());
         end = new Date();
-        manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue(), source.getUserId());
-        manager.releaseCurrentThread();
+        manager.releaseCurrentThread(source.fetchObjectCore().getIDValue());
     }
 
 
@@ -195,7 +210,6 @@ public class UserETLUpdateTask implements CubeTask {
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
     return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion(oldVersion);
 }
-
     /**
      * @return
      */
@@ -206,8 +220,7 @@ public class UserETLUpdateTask implements CubeTask {
     private long getTableVersion(){
 
         TreeMap<String, CubeTableSource> tm = new TreeMap<String, CubeTableSource>();
-        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
-        for (CubeTableSource s : source.getSourceUsedBaseSource(set, new HashSet<CubeTableSource>())){
+        for (CubeTableSource s : source.getParentSource()){
             tm.put(s.fetchObjectCore().getIDValue(), s);
         }
         tm.remove(source.getAnalysisCubeTableSource().fetchObjectCore().getIDValue());
@@ -219,5 +232,13 @@ public class UserETLUpdateTask implements CubeTask {
             versionList.add(getBaseSourceVersion(entry.getValue()));
         }
         return Arrays.hashCode(versionList.toArray());
+    }
+
+    public boolean isAvailable() {
+        return source.isParentAvailable();
+    }
+
+    public BICore getKey() {
+        return source.fetchObjectCore();
     }
 }

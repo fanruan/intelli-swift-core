@@ -156,6 +156,10 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BusinessPackageGroup.EVENT_CANCEL)
         });
 
+        this.groupPane.on(BI.BusinessUngroupAndGroupPane.EVENT_EDITOR_CONFIRM, function(packageName, packageID) {
+            self.fireEvent(BI.BusinessPackageGroup.EVENT_CONFIRM, packageName, packageID);
+        });
+
         this.groupPane.on(BI.BusinessUngroupAndGroupPane.EVENT_CHANGE, function () {
             self._checkChosenNum();
         });
@@ -290,4 +294,5 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
 });
 BI.BusinessPackageGroup.EVENT_CHANGE = "EVENT_CHANGE";
 BI.BusinessPackageGroup.EVENT_CANCEL = "EVENT_CANCEL";
+BI.BusinessPackageGroup.EVENT_CONFIRM = "EVENT_CONFIRM";
 $.shortcut("bi.business_package_group", BI.BusinessPackageGroup);

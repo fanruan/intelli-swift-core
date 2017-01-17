@@ -26,7 +26,7 @@ BI.LeftRightVerticalAdaptLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("left_right_vertical_adapt布局不需要resize");
+        // console.log("left_right_vertical_adapt布局不需要resize");
     },
 
     addItem: function () {
@@ -34,8 +34,7 @@ BI.LeftRightVerticalAdaptLayout = BI.inherit(BI.Layout, {
         throw new Error("不能添加元素")
     },
 
-    populate: function (items) {
-        BI.LeftRightVerticalAdaptLayout.superclass.populate.apply(this, arguments);
+    stroke: function (items) {
         var o = this.options;
         if ("left" in items) {
             var left = BI.createWidget({
@@ -69,6 +68,10 @@ BI.LeftRightVerticalAdaptLayout = BI.inherit(BI.Layout, {
             });
             this.addWidget(right);
         }
+    },
+
+    populate: function (items) {
+        BI.LeftRightVerticalAdaptLayout.superclass.populate.apply(this, arguments);
     }
 });
 $.shortcut('bi.left_right_vertical_adapt', BI.LeftRightVerticalAdaptLayout);

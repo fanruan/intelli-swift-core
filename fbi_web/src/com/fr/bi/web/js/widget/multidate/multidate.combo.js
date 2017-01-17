@@ -190,7 +190,7 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
             this.trigger.setValue(v);
         },
         getValue: function () {
-            return this.trigger.getValue();
+            return this.storeValue;
         },
         getKey: function(){
             return this.trigger.getKey();

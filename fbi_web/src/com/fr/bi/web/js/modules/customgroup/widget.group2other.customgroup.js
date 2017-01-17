@@ -56,15 +56,16 @@ BI.CustomGroupGroup2Other = BI.inherit(BI.Widget, {
     },
 
 
-    populate: function (ungroup2Other, ungroup2OtherName) {
-        c = this._constant;
+    populate: function (ungroup2Other, ungroup2OtherName, groupNames) {
         if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
             this.checkbox.setSelected(true);
             this.editor.setValue(ungroup2OtherName);
             this.editor.setEnable(true);
         } else {
             this.checkbox.setSelected(false);
-            this.editor.setValue(BI.i18nText("BI-Others"));
+            if(BI.contains(groupNames, BI.i18nText("BI-Others"))){
+                this.editor.setValue(BI.i18nText("BI-Others-One"));
+            }
             this.editor.setEnable(false);
         }
     }

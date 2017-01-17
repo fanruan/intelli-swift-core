@@ -3,19 +3,27 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
+import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -24,11 +32,14 @@ import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.exception.BITableUnreachableException;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.cache.list.IntList;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import com.fr.web.core.SessionDealWith;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,29 +57,31 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected ICubeValueEntryGetter[] getters;
 
     protected BISession session;
-
+    protected BIWidget widget;
     ISingleDimensionGroup[] singleDimensionGroupCache;
     private NodeExpander expander;
     private TreeIterator iter;
     private boolean useRealData;
 
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks,  NodeExpander expander, BISession session,  boolean useRealData, ICubeValueEntryGetter[] getters) {
+    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, ICubeValueEntryGetter[] getters, BIWidget widget) {
         setRoot(root);
         this.cks = cks;
         this.expander = expander;
         this.session = session;
         this.iter = new TreeIterator(cks.length);
+        this.widget = widget;
         this.useRealData = useRealData;
         this.getters = getters;
         this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
         init();
     }
 
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks,  NodeExpander expander, BISession session,  boolean useRealData) {
+    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, BIWidget widget) {
         setRoot(root);
         this.cks = cks;
         this.expander = expander;
         this.session = session;
+        this.widget = widget;
         this.iter = new TreeIterator(cks.length);
         this.useRealData = useRealData;
         this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
@@ -80,11 +93,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private void initGetters() {
-        if (null == getters){
+        if (null == getters) {
             getters = new ICubeValueEntryGetter[cks.length];
-            for(int i = 0; i < cks.length; i++){
+            for (int i = 0; i < cks.length; i++) {
                 ICubeTableService ti = session.getLoader().getTableIndex(getSource(cks[i]));
-                getters[i] =  ti.getValueEntryGetter(createKey(cks[i]), cks[i].getRelationList());
+                getters[i] = ti.getValueEntryGetter(createKey(cks[i]), cks[i].getRelationList());
             }
         }
     }
@@ -93,16 +106,16 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         return getters;
     }
 
-    private CubeTableSource getSource(DimensionCalculator column){
+    private CubeTableSource getSource(DimensionCalculator column) {
         //多对多
         if (column.getDirectToDimensionRelationList().size() > 0) {
             ICubeFieldSource primaryField = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
-            return  primaryField.getTableBelongTo();
+            return primaryField.getTableBelongTo();
         }
         return column.getField().getTableBelongTo().getTableSource();
     }
 
-    private BIKey createKey(DimensionCalculator column){
+    private BIKey createKey(DimensionCalculator column) {
         //多对多
         if (column.getDirectToDimensionRelationList().size() > 0) {
             ICubeFieldSource primaryField = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
@@ -354,7 +367,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
         ISingleDimensionGroup sg;
         if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
-            sg = ng.createNoneTargetSingleDimensionGroup(cks, cks[deep], data, deep, getters[deep],  getCKGvigetter(data, deep), useRealData);
+            sg = ng.createNoneTargetSingleDimensionGroup(cks, cks[deep], data, deep, getters[deep], getCKGvigetter(data, deep), useRealData);
         } else {
             sg = ng.createSingleDimensionGroup(cks, cks[deep], data, deep, getters[deep], useRealData);
         }
@@ -388,7 +401,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
                 GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
                 if (pgvi != null) {
-                    gvi = gvi.AND(pgvi);
+                    gvi = getCKGroupValueIndex(ck, gvi, pgvi);
                 }
             } else if (ckp instanceof StringDimensionCalculator) {
                 if (value == BIBaseConstant.EMPTY_NODE_DATA) {
@@ -411,7 +424,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 }
                 GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
-                gvi = gvi.AND(pgvi);
+                gvi = getCKGroupValueIndex(ck, gvi, pgvi);
             } else if (ckp instanceof NumberDimensionCalculator) {
                 if (value == BIBaseConstant.EMPTY_NODE_DATA) {
                     v = v.getParent();
@@ -431,11 +444,40 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 }
                 ckp.setRelationList(BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
                 GroupValueIndex pgvi = ckp.createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
-                gvi = gvi.AND(pgvi);
+                gvi = getCKGroupValueIndex(ck, gvi, pgvi);
+            }
+            if (widget instanceof TableWidget) {
+                GroupValueIndex filterGvi = ((TableWidget) widget).getFilter().createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+                if (filterGvi != null) {
+                    gvi = filterGvi.AND(gvi);
+                }
             }
             v = v.getParent();
         }
         return gvi;
+    }
+
+    private GroupValueIndex getCKGroupValueIndex(DimensionCalculator ck, GroupValueIndex gvi, GroupValueIndex pgvi) {
+        gvi = gvi.AND(pgvi);
+        GroupValueIndex authGVI = getAuthGroupValueIndex(ck);
+        gvi = gvi.AND(authGVI);
+        return gvi;
+    }
+
+    private GroupValueIndex getAuthGroupValueIndex(DimensionCalculator ck) {
+        Long userId = session.getUserId();
+        GroupValueIndex authGVI = null;
+        if (userId != UserControl.getInstance().getSuperManagerID()) {
+            List<TargetFilter> filters = getAuthFilter(userId);
+            for (int k = 0; k < filters.size(); k++) {
+                if (authGVI == null) {
+                    authGVI = filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId);
+                } else {
+                    authGVI = GVIUtils.OR(authGVI, filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId));
+                }
+            }
+        }
+        return authGVI;
     }
 
     protected Object[] getParentsValuesByGv(GroupConnectionValue groupConnectionValue, int deep) {
@@ -702,5 +744,36 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             this.pageIndex = this.pageIndex.subList(0, 0);
         }
 
+    }
+
+    private List<TargetFilter> getAuthFilter(long userId) {
+        List<TargetFilter> filters = new ArrayList<TargetFilter>();
+        List<BIPackageID> authPacks;
+        String sessionId = session.getSessionID();
+        if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(sessionId);
+        } else {
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+        }
+        for (int i = 0; i < authPacks.size(); i++) {
+            List<BIPackageAuthority> packAuths;
+            if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), sessionId);
+            } else {
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
+            }
+            for (int j = 0; j < packAuths.size(); j++) {
+                BIPackageAuthority auth = packAuths.get(j);
+                if (auth.getFilter() != null) {
+                    try {
+                        TargetFilter filter = TargetFilterFactory.parseFilter(auth.getFilter(), userId);
+                        filters.add(filter);
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
+        return filters;
     }
 }

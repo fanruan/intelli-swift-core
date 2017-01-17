@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Service4BIBase extends NoSessionIDService {
 
+    private static final int DATA_HEADER = -10;
+
     private static AbstractBIBaseAction[] actions = {
             new BIGetPyAction(),
             new BIGetTableAction(),
@@ -30,7 +32,8 @@ public class Service4BIBase extends NoSessionIDService {
             new BIFSGetConfigAction(),
             new BIFSSetConfigAction(),
             new BICheckValidationOfExpressionAction(),
-            new BIGetMapJsonAction()
+            new BIGetMapJsonAction(),
+            new BIGetBuildNoAction()
 
     };
 
@@ -58,7 +61,7 @@ public class Service4BIBase extends NoSessionIDService {
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
-        res.setDateHeader("Expires", -10);
+        res.setDateHeader("Expires", DATA_HEADER);
 //
 //        PrivilegeVote vote = getFSVote(req, res);
 //        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);

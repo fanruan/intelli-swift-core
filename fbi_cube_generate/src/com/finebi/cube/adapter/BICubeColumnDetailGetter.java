@@ -4,7 +4,6 @@ import com.finebi.cube.api.*;
 import com.finebi.cube.structure.column.BICubeDoubleColumn;
 import com.finebi.cube.structure.column.BICubeLongColumn;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
-import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
 
@@ -54,6 +53,10 @@ public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
             };
         }
         return null;
+    }
+    @Override
+    public String getICubeResourceLocationPath(){
+        return service.getResourceLocation().getAbsolutePath();
     }
 
     @Override

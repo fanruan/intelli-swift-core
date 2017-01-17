@@ -46,6 +46,13 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
                 self.packageManagePane.on(BI.BusinessPackageGroup.EVENT_CANCEL, function () {
                     this.setVisible(false);
                 });
+                self.packageManagePane.on(BI.BusinessPackageGroup.EVENT_CONFIRM, function (packageName, packageID) {
+                    var groups = self.packageManagePane.getValue();
+                    groups.changedPackage = {};
+                    groups.changedPackage.newPackageName = packageName;
+                    groups.changedPackage.packageID = packageID;
+                    self.model.set("groups", groups);
+                });
                 self.packageManagePane.populate();
                 BI.createWidget({
                     type: "bi.absolute",
@@ -169,7 +176,7 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
         var groupedItems = this.model.get("groups");
         var allPackages = this.model.get("packages");
         this.groupPane.populate(BI.sortBy(groupedItems, "init_time"), BI.sortBy(allPackages, "position"));
-        this.mask.destroy();
+        // this.mask.destroy();
     },
 
     change: function (changed) {
@@ -226,11 +233,11 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
 
 
     refresh: function () {
-        this.mask = BI.createWidget({
-            type: "bi.loading_mask",
-            masker: self.element,
-            text: BI.i18nText("BI-Loading")
-        });
+        // this.mask = BI.createWidget({
+        //     type: "bi.loading_mask",
+        //     masker: this.element,
+        //     text: BI.i18nText("BI-Loading")
+        // });
         this.readData(true);
     }
 });

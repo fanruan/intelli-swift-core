@@ -8,6 +8,7 @@ import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -19,10 +20,12 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.collections.array.IntArray;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by GUY on 2015/3/3.
@@ -84,7 +87,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     public void refreshDBTable() {
         PersistentTable tempTable = dbTable;
         try {
-            dbTable=null;
+            dbTable = null;
             dbTable = (PersistentTable) getPersistentTable();
         } catch (Exception e) {
             BILoggerFactory.getLogger(AbstractTableSource.class).error(e.getMessage(), e);
@@ -140,7 +143,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     public JSONObject createPreviewJSONFromCube(ArrayList<String> fields, ICubeDataLoader loader) throws Exception {
         try {
             ICubeTableService tableIndex = loader.getTableIndex(this);
-            return createPreviewJSONFromTableIndex(fields, tableIndex);
+            return createPreviewJSONFromCubeTableIndex(fields, tableIndex);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -148,29 +151,44 @@ public abstract class AbstractTableSource implements CubeTableSource {
         }
 
     }
-
-    public JSONObject createPreviewJSONFromTableIndex(ArrayList<String> fields, ICubeTableService tableIndex) throws Exception {
+    public JSONObject createPreviewJSONFromCubeTableIndex(ArrayList<String> fields, ICubeTableService tableIndex) throws Exception {
         JSONArray allFieldNamesJo = new JSONArray();
         JSONArray fieldValues = new JSONArray();
         JSONArray fieldTypes = new JSONArray();
-        for (PersistentField column : getPersistentTable().getFieldList()) {
+        IntArray remove = tableIndex.getRemovedList();
+        Map<BIKey, ICubeFieldSource> map = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
+        map.putAll(tableIndex.getColumns());
+        ArrayList<ICubeFieldSource> fieldsCube = new ArrayList<ICubeFieldSource>();
+//        将内存中的cube的fields按照前端的fields排序，需要考虑数据库字段增加删除的情况
+        for(String fieldName : fields){
+            IndexKey key = new IndexKey(fieldName);
+            if(map.containsKey(key)){
+                fieldsCube.add(map.get(key));
+                map.remove(key);
+            }
+        }
+        if(!map.isEmpty()){
+            for (ICubeFieldSource field : map.values()){
+                fieldsCube.add(field);
+            }
+        }
+        for (ICubeFieldSource column : fieldsCube) {
             if (!fields.isEmpty() && !fields.contains(column.getFieldName())) {
                 continue;
             }
             allFieldNamesJo.put(column.getFieldName());
-            fieldTypes.put(column.getBIType());
+            fieldTypes.put(column.getFieldType());
             JSONArray values = new JSONArray();
             fieldValues.put(values);
             int count = Math.min(tableIndex.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
             for (int i = 0; i < count; i++) {
-                if (tableIndex.getRemovedList().indexOf(i) < 0) {
+                if (remove.indexOf(i) < 0) {
                     values.put(tableIndex.getColumnDetailReader(new IndexKey(column.getFieldName())).getValue(i));
                 }
             }
         }
         return new JSONObject().put(BIJSONConstant.JSON_KEYS.FIELDS, allFieldNamesJo).put(BIJSONConstant.JSON_KEYS.VALUE, fieldValues).put(BIJSONConstant.JSON_KEYS.TYPE, fieldTypes);
     }
-
 
     @Override
     public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {
@@ -285,7 +303,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return values.toArray(new ICubeFieldSource[values.size()]);
     }
 
-    private Map<String, ICubeFieldSource> getFieldFromPersistentTable() {
+    protected Map<String, ICubeFieldSource> getFieldFromPersistentTable() {
         Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
         IPersistentTable bt = getPersistentTable();
         if (bt == null) {
@@ -338,11 +356,6 @@ public abstract class AbstractTableSource implements CubeTableSource {
             BILoggerFactory.getLogger().info(e.getMessage(),e);
         }
         return null;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof AbstractTableSource && ComparatorUtils.equals(fetchObjectCore(), ((AbstractTableSource) (obj)).fetchObjectCore());
     }
 
     @Override
@@ -423,4 +436,19 @@ public abstract class AbstractTableSource implements CubeTableSource {
     public boolean canExecute() throws Exception {
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CubeTableSource that = (CubeTableSource) o;
+        return ComparatorUtils.equals(that.getSourceID(),this.getSourceID());
+
+    }
+
+    @Override
+    public boolean hasAbsentFields() {
+        return false;
+    }
+
 }

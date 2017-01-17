@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
@@ -26,14 +27,22 @@ import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
+<<<<<<< HEAD
 import com.fr.bi.conf.report.BIFSReportProvider;
+=======
+import com.fr.bi.conf.records.BICubeTaskRecordManager;
+>>>>>>> cbeb026ccf71f3dcf5174a6acbbbd07c16b11761
 import com.fr.bi.fs.*;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
+import com.fr.bi.services.Service4BIH5;
 import com.fr.bi.stable.utils.BIDBUtils;
+<<<<<<< HEAD
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.tool.BIReadReportProvider;
 import com.fr.bi.tool.BIReadReportUtils;
+=======
+>>>>>>> cbeb026ccf71f3dcf5174a6acbbbd07c16b11761
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.mobile.Service4BIMobile;
@@ -123,6 +132,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, getBICubeConfManager());
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
+        StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManager());
 
     }
 
@@ -602,7 +612,9 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIMobile(),
                 new Service4BIBase(),
 
-                new Service4FineCube()
+                new Service4FineCube(),
+
+                new Service4BIH5()
         };
     }
 

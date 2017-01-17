@@ -64,12 +64,14 @@ BI.ETLReq = {
             if (mask != null) {
                 mask.destroy()
             }
+            // 当前编辑的螺旋分析被其他的螺旋分析正在使用 用于选字段禁用
+            Pool.current_edit_etl_used = res.usedTables;
             if (res['used']) {
                 BI.Msg.confirm(BI.i18nText("BI-Warning"), BI.i18nText("BI-ETL_Table_Edit_Warning"), function (v) {
                     if (v === true) {
                         callback(res);
                     }
-                })
+                });
             } else {
                 callback(res);
             }
@@ -106,11 +108,18 @@ BI.ETLReq = {
         });
     },
 
-
     reqTableStatus: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
         BI.requestAsync("fr_bi_analysis_etl", "get_cube_status", data, function (res) {
             callback(res);
         });
+    },
+
+    reqAllAnalysisTableProcesses: function (data, callback) {
+        data.sessionID = Data.SharingPool.get("sessionID");
+        BI.requestAsync("fr_bi_analysis_etl", "check_all_table_status", data, function (res) {
+            callback(res);
+        });
     }
+
 }

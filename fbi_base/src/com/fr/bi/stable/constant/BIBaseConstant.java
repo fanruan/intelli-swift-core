@@ -473,4 +473,17 @@ public class BIBaseConstant {
         public static final int COMPANY = 1;
         public static final int CUSTOM = 2;
     }
+
+    public static final class TABLE_TYPE {
+        public static final int TEMP = 0x6;
+
+        public static final int BASE = 0x7;
+
+        public static final int ETL = 0x8;
+
+        public static final int USER_BASE = 0x9;
+
+        public static final int USER_ETL = 0xa;
+
+    }
 }

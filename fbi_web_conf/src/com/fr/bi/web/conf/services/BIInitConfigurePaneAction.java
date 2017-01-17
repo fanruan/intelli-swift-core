@@ -3,6 +3,7 @@ package com.fr.bi.web.conf.services;
 import com.fr.base.ExcelUtils;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.general.GeneralUtils;
 import com.fr.general.VT4FR;
 import com.fr.web.utils.WebUtils;
 
@@ -24,6 +25,7 @@ public class BIInitConfigurePaneAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
         HashMap<String, String> data = new HashMap<String, String>();
         //多sheet支持
+        data.put("__v__", GeneralUtils.readBuildNO());
         data.put("supportSheets", String.valueOf(VT4FR.WORK_BOOK.support()));
         data.put("supportExcelVersion", ExcelUtils.checkPOIJarExist() ? "2007" : "2003");
 //        data.put("supportMultiSheet", "");

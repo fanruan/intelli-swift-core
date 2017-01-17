@@ -1,10 +1,11 @@
 /**
- * 
+ *
  */
 package com.fr.bi.stable.structure.queue;
 
 import com.fr.bi.common.inter.Delete;
 import com.fr.bi.common.inter.Release;
+import com.fr.bi.common.inter.Traversal;
 
 import java.util.Deque;
 import java.util.Iterator;
@@ -20,7 +21,7 @@ public class ThreadUnitedQueue<T extends Delete> implements Release {
 	private volatile Deque<ConcurrentUUIDObject<T>> queue = new LinkedBlockingDeque<ConcurrentUUIDObject<T>>();
 	private volatile boolean isClear = false;
 	private Map<Long, ConcurrentUUIDObject<T>> map = new ConcurrentHashMap<Long, ConcurrentUUIDObject<T>>();
-	
+
 	public T get() {
 		Long threadId = Thread.currentThread().getId();
 		ConcurrentUUIDObject<T> result = map.get(threadId);
@@ -38,7 +39,7 @@ public class ThreadUnitedQueue<T extends Delete> implements Release {
 		map.put(threadId, result);
 		return result.get();
 	}
-	
+
 	public void add(T t){
 		if(isClear){
 			return;
@@ -46,7 +47,7 @@ public class ThreadUnitedQueue<T extends Delete> implements Release {
 		ConcurrentUUIDObject<T> u = new ConcurrentUUIDObject<T>(t);
 		queue.offerFirst(u);
 	}
-	
+
 	public void releaseObject(){
 		Long threadId = Thread.currentThread().getId();
 		ConcurrentUUIDObject<T> result = map.get(threadId);
@@ -57,24 +58,31 @@ public class ThreadUnitedQueue<T extends Delete> implements Release {
 		}
 	}
 
-    public boolean isEmpty(){
-        return queue.isEmpty();
-    }
+	public boolean isEmpty(){
+		return queue.isEmpty();
+	}
 
+
+	private static QueueThread<ThreadUnitedQueue> gcThread  = new QueueThread<ThreadUnitedQueue>();
+
+	static {
+		gcThread.setTraversal(new Traversal<ThreadUnitedQueue>() {
+			@Override
+			public void actionPerformed(ThreadUnitedQueue data) {
+				data.releaseInThread();
+			}
+		});
+		gcThread.start();
+	}
 	/**
-	 * 
+	 *
 	 */
 	private void releaseOffuse() {
 		if(queue.size() > 1){
-			new Thread(){
-				@Override
-				public void run(){
-					releaseInThread();
-				}
-			}.start();
+			gcThread.add(this);
 		}
 	}
-	
+
 	private void releaseInThread(){
 		Iterator<ConcurrentUUIDObject<T>> iter = queue.descendingIterator();
 		while(iter.hasNext()){

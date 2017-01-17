@@ -50,7 +50,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
     public void Traversal(TableRowTraversal action) {
         while (true) {
             GroupValueIndex sortGvi = index.createSortedGVI(gvi, paging.getEndRow() - row);
-            if (sortGvi == null) {
+            if (sortGvi == null || sortGvi.isAllEmpty()) {
                 break;
             }
             if (row >= paging.getEndRow()) {
@@ -94,20 +94,16 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
     }
 
     private Object[] getRowValue(int rowIndex) {
-        Map resMap = new HashMap();
-        Iterator iter = paras.getRowMap().entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            ConnectionRowGetter c = (ConnectionRowGetter) entry.getValue();
-            resMap.put(entry.getKey(), new Long(c.getConnectedRow(rowIndex)));
+        if (paras.getCalculateList().isEmpty()) {
+            return getNoneCalculateRowValue(rowIndex);
         }
         Map<String, Object> values = new HashMap<String, Object>();
         Iterator<BIDetailTarget> iterator = paras.getNoneCalculateList().iterator();
         while (iterator.hasNext()) {
             BIDetailTarget dimension = iterator.next();
-            CollectionKey<BITableSourceRelation> key = new CollectionKey<BITableSourceRelation>(BIConfUtils.convert2TableSourceRelation(dimension.getRelationList(target, biUser.getUserId())));
-            Long row = (Long) resMap.get(key);
-            values.put(dimension.getValue(), dimension.createDetailValue(row, values, loader, biUser.getUserId()));
+            CollectionKey<BITableSourceRelation> key = new CollectionKey<BITableSourceRelation>(BIConfUtils.convert2TableSourceRelation(dimension.getRelationList(target, userId)));
+            ConnectionRowGetter c = (ConnectionRowGetter) paras.getRowMap().get(key);
+            values.put(dimension.getValue(), dimension.createDetailValue((long) c.getConnectedRow(rowIndex), values, loader, userId));
         }
         HashSet<String> calledTargets = new HashSet<String>();
         executeUntilCallOver(paras, values, calledTargets);
@@ -118,23 +114,29 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
         return ob;
     }
 
+    public Object[] getNoneCalculateRowValue(int row) {
+        Map<String, Object> values = new HashMap<String, Object>(0);
+        Object[] ob = new Object[viewDimension.length];
+        for (int i = 0; i < viewDimension.length; i++) {
+            ob[i] = viewDimension[i].createDetailValue((long)paras.getConnectionRowGetters()[i].getConnectedRow(row), values, loader, userId);
+        }
+        return ob;
+    }
+
     private boolean setNoneSortedCells(GroupValueIndex sortedGVI, TableRowTraversal action) {
         final TreeSet<BIRowValue> set = new TreeSet<BIRowValue>(new DetailSortCompactor());
         sortedGVI.BrokenableTraversal(new BrokenTraversalAction() {
             @Override
             public boolean actionPerformed(int rowIndex) {
-                checkAndSetSession();
-                PageStatus x = checkPage();
-                if (x != null) {
-                    return x.isAfter();
-                }
-                set.add(new BIRowValue(row, getRowValue(rowIndex)));
+                set.add(new BIRowValue(rowIndex, getRowValue(rowIndex)));
                 return false;
             }
         });
         Iterator<BIRowValue> it1 = set.iterator();
         while (it1.hasNext()) {
             BIRowValue value = it1.next();
+            checkAndSetSession();
+            value.setRow(row);
             if (action.actionPerformed(value)) {
                 return true;
             }

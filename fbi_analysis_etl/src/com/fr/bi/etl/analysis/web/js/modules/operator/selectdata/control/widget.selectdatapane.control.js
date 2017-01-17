@@ -14,6 +14,9 @@ BI.AnalysisETLSelectDataPaneController = BI.inherit(BI.MVCController, {
     },
 
     isEnable: function (tableId) {
+        if (BI.isNotNull(Pool.current_edit_etl_used) && Pool.current_edit_etl_used.contains(tableId)) {
+            return false;
+        }
         return BI.isNull(this.tables) || BI.isEmptyArray(this.tables) || BI.deepContains(this.tables, tableId);
     },
 

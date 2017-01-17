@@ -78,8 +78,16 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
         var self = this;
         var tableInfo = self.options.tableInfo;
         var tableName = this._getTableName(tableInfo);
+        var baseItems = BI.deepClone(BICst.ETL_MANAGE_ITEMS);
+        this._addItem4SQLAndExcel(tableInfo.connection_name, baseItems);
         var popup = BI.createWidget({
             type: "bi.button_group",
+            items: BI.createItems(baseItems, {
+                type: "bi.text_item",
+                cls: "bi-list-item",
+                textHgap: self.constants.ITEM_TEXT_GAP,
+                height: self.constants.ITEM_HEIGHT
+            }),
             layouts: [{
                 type: "bi.vertical"
             }]
@@ -109,6 +117,7 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
                     items[items.length - 1].disabled = true;
                     items[items.length - 1].warningTitle = BI.i18nText("BI-Temp_Tables_No_Remove")
                 }
+                self._addItem4SQLAndExcel(tableInfo.connection_name, items);
                 popup.populate(BI.createItems(items, {
                     type: "bi.text_item",
                     cls: "bi-list-item",
@@ -126,6 +135,25 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
             bottom: self.constants.COMBO_BOTTOM_GAP,
             left: self.constants.WRAPPER_GAP
         });
+    },
+
+    _addItem4SQLAndExcel: function (type, items) {
+        switch (type) {
+            case BICst.CONNECTION.EXCEL_CONNECTION:
+                items.splice(0, 0, {
+                    text: BI.i18nText("BI-Update_Excel_Dot"),
+                    title: BI.i18nText("BI-Update_Excel_Dot"),
+                    value: BICst.ETL_MANAGE_EXCEL_CHANGE
+                });
+                break;
+            case BICst.CONNECTION.SQL_CONNECTION:
+                items.splice(0, 0, {
+                    text: BI.i18nText("BI-Remodify_Sql"),
+                    title: BI.i18nText("BI-Remodify_Sql"),
+                    value: BICst.ETL_MANAGE_SQL_CHANGE
+                });
+                break;
+        }
     },
 
     _getTableName: function (table) {

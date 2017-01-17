@@ -34,10 +34,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     el: {
                         el: {
                             el: {
-                                type: "bi.fix_table",
-                                afterScroll: function(){
-                                    self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(o.wId), BI.Utils.getWSThemeColorByID(o.wId));
-                                }
+                                type: "bi.table_view",
+                                // afterScroll: function () {
+                                //     self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(o.wId), BI.Utils.getWSThemeColorByID(o.wId));
+                                // }
                             }
                         }
                     },
@@ -63,6 +63,9 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             var columnSize = this.getCalculateRegionColumnSize();
             self.setStoredRegionColumnSize(columnSize[0]);
+        });
+        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_INIT, function () {
+            self._resizeTableColumnSize();
         });
         this.errorPane = BI.createWidget({
             type: "bi.table_chart_error_pane",
@@ -94,8 +97,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.loading();
         this.errorPane.setVisible(false);
         this.data = [];
-        var hyperLinkExpressions = [];
-        var isUseHyperLinkDimension = [];
         var dimensions = BI.Utils.getAllDimensionIDs(widgetId);
         if (BI.isEmpty(dimensions)) {
             this.loaded();
@@ -109,65 +110,132 @@ BI.DetailTable = BI.inherit(BI.Pane, {
 
         var ob = {};
         ob.page = this.pageOperator;
-        BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
-            self.loaded();
-            if (BI.isNotNull(jsonData.error)) {
-                self.errorPane.setErrorInfo(jsonData.error);
-                self.errorPane.setVisible(true);
-                return;
-            }
-            try {
-                var json = jsonData.data, row = jsonData.row, size = jsonData.size;
-                if (BI.isNull(json) || BI.isNull(row)) {
-                    callback([], [], [], []);
+        BI.Utils.getWidgetDataByID(widgetId, {
+            success: function (jsonData) {
+                if (BI.isNotNull(jsonData.error)) {
+                    self.errorPane.setErrorInfo(jsonData.error);
+                    self.errorPane.setVisible(true);
                     return;
                 }
-                var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
-                BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
-                    var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId) || {};
-                    isUseHyperLinkDimension.push(hyperlink.used || false);
-                    hyperLinkExpressions.push(hyperlink.expression || "");
-                    BI.isNotNull(dId) &&
-                    BI.Utils.isDimensionUsable(dId) === true &&
-                    header.push({
-                        type: "bi.detail_table_header",
-                        dId: dId,
-                        text: BI.Utils.getDimensionNameByID(dId),
-                        sortFilterChange: function (v) {
-                            self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-                            self._headerOperatorChange(v, dId);
-                        }
+                try {
+                    var json = jsonData.data, row = jsonData.row, size = jsonData.size;
+                    if (BI.isNull(json) || BI.isNull(row)) {
+                        callback([], [], [], []);
+                        return;
+                    }
+                    var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
+                    BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
+                        BI.isNotNull(dId) &&
+                        BI.Utils.isDimensionUsable(dId) === true &&
+                        header.push({
+                            type: "bi.detail_table_header",
+                            dId: dId,
+                            text: BI.Utils.getDimensionNameByID(dId),
+                            sortFilterChange: function (v) {
+                                self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
+                                self._headerOperatorChange(v, dId);
+                            }
+                        });
                     });
-                });
-                var items = self._createTableItems(json.value);
+                    var items = self._createTableItems(json.value);
 
-                self.pager.setAllPages(Math.ceil(row / size));
-                self.pager.setValue(vPage);
-                self.table.attr("columnSize", self._getColumnSize(header));
-                callback(items, [header]);
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
-                self.errorPane.setVisible(true);
-                return;
-            }
-            //显示序号
-            if (BI.Utils.getWSShowNumberByID(widgetId)) {
-                self.table.showSequence();
-            } else {
-                self.table.hideSequence();
-            }
+                    self.pager.setAllPages(Math.ceil(row / size));
+                    self.pager.setValue(vPage);
+                    self.table.attr("columnSize", self._getColumnSize(header));
+                    callback(items, [header]);
+                } catch (e) {
+                    self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                //显示序号
+                if (BI.Utils.getWSShowNumberByID(widgetId)) {
+                    self.table.showSequence();
+                } else {
+                    self.table.hideSequence();
+                }
 
-            //设置样式和颜色
-            self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(widgetId), BI.Utils.getWSThemeColorByID(widgetId));
+                //设置样式和颜色
+                self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(widgetId), BI.Utils.getWSThemeColorByID(widgetId));
+            },
+            done: function () {
+                self.loaded();
+            }
         }, ob);
     },
 
+    _resizeTableColumnSize: function () {
+        var o = this.options;
+        var cs = this.table.getColumnSize();
+        var isValid = true;
+        BI.some(cs, function (i, size) {
+            if (!BI.isNumeric(size)) {
+                isValid = false;
+                return true;
+            }
+        });
+        if (!isValid) {
+            var columnSize = this.table.getCalculateColumnSize();
+            if (this._isNeedFreeze()) {
+                var regionColumnSize = this.table.getCalculateRegionColumnSize();
+                this.setStoredRegionColumnSize(regionColumnSize[0]);
+                var freezeCols = this._getFreezeCols();
+                var freezeColumnSize = columnSize.slice(0, freezeCols.length);
+                var otherSize = columnSize.slice(freezeCols.length);
+                var fl = freezeColumnSize.length, ol = otherSize.length;
+                BI.each(freezeColumnSize, function (i, size) {
+                    if (size > 200 && i < fl - 1) {
+                        freezeColumnSize[fl - 1] = freezeColumnSize[fl - 1] + freezeColumnSize[i] - 200;
+                        freezeColumnSize[i] = 200;
+                    }
+                    if (size < 80 && i < fl - 1) {
+                        var tempSize = freezeColumnSize[fl - 1] - (80 - freezeColumnSize[i]);
+                        freezeColumnSize[fl - 1] = tempSize < 80 ? 80 : tempSize;
+                        freezeColumnSize [i] = 80;
+                    }
+                });
+                BI.each(otherSize, function (i, size) {
+                    if (size > 200 && i < ol - 1) {
+                        otherSize[ol - 1] = otherSize[ol - 1] + otherSize[i] - 200;
+                        otherSize[i] = 200;
+                    }
+                    if (size < 80 && i < ol - 1) {
+                        var tempSize = otherSize[ol - 1] - (80 - otherSize[i]);
+                        otherSize[ol - 1] = tempSize < 80 ? 80 : tempSize;
+                        otherSize [i] = 80;
+                    }
+                });
+                columnSize = freezeColumnSize.concat(otherSize);
+            } else {
+                var cl = columnSize.length;
+                BI.each(columnSize, function (i, size) {
+                    if (size > 200 && i < cl - 1) {
+                        columnSize[cl - 1] = columnSize[cl - 1] + columnSize[i] - 200;
+                        columnSize[i] = 200;
+                    }
+                    if (size < 80 && i < cl - 1) {
+                        var tempSize = columnSize[cl - 1] - (80 - columnSize[i]);
+                        columnSize[cl - 1] = tempSize < 80 ? 80 : tempSize;
+                        columnSize [i] = 80;
+                    }
+                })
+            }
+            this.table.setColumnSize(columnSize);
+            self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
+        }
+    },
 
     _getColumnSize: function (header) {
         var columnSize = BI.Utils.getWidgetSettingsByID(this.options.wId).column_size;
-        if (BI.isNull(columnSize)) {
+        if (BI.isNull(columnSize) || columnSize.length !== header.length) {
             columnSize = BI.makeArray(header.length, "");
         }
+        BI.each(columnSize, function (i, size) {
+            if (size < 80) {
+                size = 80;
+            }
+            columnSize[i] = size;
+        });
         return columnSize;
     },
 
@@ -249,7 +317,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _getFreezeCols: function () {
         var wId = this.options.wId;
         return BI.Utils.getWSFreezeFirstColumnById(wId) ? [0] : [];
-
     },
 
     _isNeedFreeze: function () {

@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.executor.utils;
 
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.stable.StringUtils;
 
@@ -13,7 +14,9 @@ public class ExecutorUtils {
     public static Object formatExtremeSumValue(Object value, int numLevel) {
         if (value == null) {
             value = NONE_VALUE;
-        } else if (value instanceof Double) {
+        } else if (value instanceof Double || value instanceof Long) {
+            Number v = GeneralUtils.objectToNumber(value);
+            value = v.doubleValue();
             if (Double.isInfinite((Double) value)) {
                 value = "N/0";
             } else if (Double.isNaN((Double) value)) {
@@ -30,7 +33,7 @@ public class ExecutorUtils {
                         value = (Double) value / 100000000;
                         break;
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                        value = (Double) value * 100;
+//                        value = (Double) value * 100;     //在excel单元格格式中设置
                         break;
                 }
             }

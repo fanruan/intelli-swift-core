@@ -11,7 +11,9 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         TITLE_ICON_HEIGHT: 20,
         TITLE_ICON_WIDTH: 20,
         REGION_HEIGHT_NORMAL: 25,
-        REGION_DIMENSION_GAP: 5
+        REGION_DIMENSION_GAP: 5,
+        DIMENSION_FILTER_TYPE: [],
+        TARGET_FILTER_TYPE: []
     },
 
     _defaultConfig: function () {
@@ -91,11 +93,21 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                             dimension.type === BICst.TARGET_TYPE.RANK ||
                             dimension.type === BICst.TARGET_TYPE.RANK_IN_GROUP;
                     });
+                    BI.each(data, function(i, dimension){
+                        if(!self._checkFilter(dimension.filter_value, false)){
+                            delete dimension.filter_value;
+                        }
+                    })
                 }
                 if (self.options.regionType < BICst.REGION.TARGET1) {
                     data = BI.filter(data, function (i, dimension) {
                         return dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.DATE || dimension.type === BICst.TARGET_TYPE.NUMBER;
                     });
+                    BI.each(data, function(i, dimension){
+                        if(!self._checkFilter(dimension.filter_value, true)){
+                            delete dimension.filter_value;
+                        }
+                    })
                 }
                 BI.each(data, function (i, dimension) {
                     dimension.name = createDimName(dimension.name);
@@ -144,6 +156,28 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 items: [this.center]
             }]
         })
+    },
+
+    //1.明细表的维度复用到组件维度区域
+    //2.数值类指标复用到维度区域
+    //3.数值类维度复用到指标区域
+    _checkFilter: function(filters, isDimension){
+        var self = this;
+        var filter = filters || {};
+        var filterType = filter.filter_type, filterValue = filter.filter_value;
+        if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+            return BI.any(filterValue, function (i, value) {
+                return self._checkFilter(value, isDimension);
+            });
+        } else {
+            if (isDimension) {
+                return !(BI.contains(BI.values(BICst.TARGET_FILTER_NUMBER), filterType) || BI.contains(BI.values(BICst.TARGET_FILTER_STRING), filterType) ||
+                    BI.contains(BI.values(BICst.FILTER_DATE, filterType)));
+            } else {
+                return !(BI.contains(BI.values(BICst.DIMENSION_FILTER_NUMBER), filterType) || BI.contains(BI.values(BICst.DIMENSION_FILTER_STRING), filterType) ||
+                BI.contains(BI.values(BICst.DIMENSION_FILTER_DATE), filterType));
+            }
+        }
     },
 
     getSortableCenter: function () {

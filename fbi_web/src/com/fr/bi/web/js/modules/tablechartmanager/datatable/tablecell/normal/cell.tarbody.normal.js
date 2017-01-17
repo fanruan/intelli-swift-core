@@ -105,14 +105,14 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         BI.each(linkage, function (i, link) {
             if (link.from === dId && BI.isEmpty(link.cids)) {
                 linkedWidgets.push(link);
-            } else if (link.cids && link.cids.contains(dId)) {
+            } else if (link.cids && link.cids[0] === dId) {
                 linkedFrom.push(link);
             }
         });
 
         if (text === Infinity) {
             text = "N/0";
-        } else if (BI.Utils.getDimensionSettingsByID(dId).numLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isKey(text)) {
+        } else if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNumeric(text)) {
             text += "%";
         }
 
@@ -137,7 +137,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 rgap: 5
             });
             //一般指标或只有一个指标联动的计算指标
-            if (linkedFrom.length <= 1) {
+            if (!isContainsDiffLinkages(linkedFrom)) {
                 textButton.on(BI.TextButton.EVENT_CHANGE, function () {
                     //这个clicked应该放到子widget中保存起来
                     BI.each(linkedWidgets.concat(linkedFrom), function (i, linkWid) {
@@ -199,15 +199,27 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 }
             });
             return combo;
+        }
 
-            function containsLinkage(list, item) {
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
-                        return list[i];
+        //这两个function放在条件语句块内函数声明没有提升。
+        function containsLinkage(list, item) {
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
+                    return list[i];
+                }
+            }
+            return {};
+        }
+
+        function isContainsDiffLinkages(linkages) {
+            for(var i = 0; i < linkages.length; i++) {
+                for(var j = i + 1; j < linkages.length; j++) {
+                    if(!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
+                        return true;
                     }
                 }
-                return {};
             }
+            return false;
         }
     },
 

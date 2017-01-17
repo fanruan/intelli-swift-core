@@ -10,7 +10,7 @@ public interface ICubeColumnDetailGetter extends Serializable {
     /**
      * 获取某行的Cube存的值
      *
-     * @param row         行
+     * @param row 行
      * @return
      */
     Object getValue(int row);
@@ -18,6 +18,8 @@ public interface ICubeColumnDetailGetter extends Serializable {
     PrimitiveType getPrimitiveType();
 
     PrimitiveDetailGetter createPrimitiveDetailGetter();
+
+    String getICubeResourceLocationPath();
 
     void clear();
 }

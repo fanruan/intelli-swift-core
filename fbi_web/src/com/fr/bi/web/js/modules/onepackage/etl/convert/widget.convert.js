@@ -119,7 +119,8 @@ BI.Convert = BI.inherit(BI.Widget, {
 
         this.baseFieldCombo = BI.createWidget({
             type: "bi.text_value_combo",
-            height: 30
+            height: 30,
+            width: this.constants.CONVERT_EDITOR_WIDTH
         });
 
         this.baseFieldCombo.on(BI.StaticCombo.EVENT_CHANGE, function () {
@@ -196,10 +197,8 @@ BI.Convert = BI.inherit(BI.Widget, {
                         text: BI.i18nText("BI-Sequence_Based_On"),
                         width: this.constants.CONVERT_CAUSE_LABEL_WIDTH
                     }, {
-                        type: "bi.center_adapt",
-                        items: [{
-                            el: this.baseFieldCombo
-                        }]
+                        type: "bi.vertical_adapt",
+                        items: [this.baseFieldCombo]
                     }, {
                         type: "bi.label",
                         cls: "table-name-text-twenty",

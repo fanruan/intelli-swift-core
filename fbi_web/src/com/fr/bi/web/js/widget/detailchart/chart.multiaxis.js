@@ -129,10 +129,13 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         var lineItem = [];
         var otherItem = [];
         BI.each(items, function (idx, item) {
-            item.color = [config.yAxis[item.yAxis].labelStyle.color];
             if (item.type === "line") {
+                config.chartType = "line";
                 lineItem.push(item);
-            } else {
+            } else if(item.type === "area") {
+                config.chartType = "area";
+                otherItem.push(item);
+            }else {
                 otherItem.push(item);
             }
         });

@@ -3,8 +3,10 @@ package com.finebi.cube.utils;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.BITableKey;
+import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -26,4 +28,14 @@ public class BITableKeyUtils {
         return iCube.exist(iTableKey);
     }
 
+    public static long getLastUpdateTime(CubeTableSource tableSource, ICubeConfiguration cubeConfiguration) {
+        ICubeResourceRetrievalService retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
+        BICube cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+        if (isTableExisted(tableSource, cubeConfiguration) && tableEntityService.isLastExecuteTimeAvailable()) {
+            return tableEntityService.getLastExecuteTime().getTime();
+        } else {
+            return 0;
+        }
+    }
 }

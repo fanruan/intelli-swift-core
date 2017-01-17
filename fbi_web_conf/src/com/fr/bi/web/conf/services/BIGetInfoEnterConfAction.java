@@ -30,12 +30,13 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        JSONObject relations = createJSONWithTableName(userId);
+        JSONObject allFields = getAllFields(userId);
+        JSONObject relations = createJSONWithTableName(userId, allFields);
         JSONObject translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
         JSONObject jo = new JSONObject();
         jo.put("relations", relations);
         jo.put("translations", translations);
-        jo.put("fields", getAllFields(userId));
+        jo.put("fields", allFields);
         jo.put("update_settings", BIConfigureManagerCenter.getUpdateFrequencyManager().createJSON(userId));
         WebUtils.printAsJSON(res, jo);
     }
@@ -64,7 +65,7 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         return fields;
     }
 
-    private JSONObject createJSONWithTableName(long userId) throws Exception {
+    private JSONObject createJSONWithTableName(long userId, JSONObject allFields) throws Exception {
         Set<BITableRelation> connectionSet = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
         Map<BusinessTable, IRelationContainer> primKeyMap = BICubeConfigureCenter.getTableRelationManager().getAllTable2PrimaryRelation(userId);
         Map<BusinessTable, IRelationContainer> foreignKeyMap = BICubeConfigureCenter.getTableRelationManager().getAllTable2ForeignRelation(userId);
@@ -72,16 +73,20 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         Iterator<Map.Entry<BusinessTable, IRelationContainer>> foreignIter = foreignKeyMap.entrySet().iterator();
         JSONArray setJO = new JSONArray();
         for (BITableRelation relation : connectionSet) {
-            setJO.put(relation.createJSON());
+            // young 2016.12.22 如果存在无用的关联(all fields里已经找不到相关字段的)
+            if (allFields.has(relation.getPrimaryKey().getFieldID().getIdentityValue()) &&
+                    allFields.has(relation.getForeignKey().getFieldID().getIdentityValue())) {
+                setJO.put(relation.createJSON());
+            }
         }
         JSONObject jo = new JSONObject();
         jo.put("connectionSet", setJO);
-        jo.put("primKeyMap", getPrimKeyMap(primIter));
-        jo.put("foreignKeyMap", getForKeyMap(foreignIter));
+        jo.put("primKeyMap", getPrimKeyMap(primIter, allFields));
+        jo.put("foreignKeyMap", getForKeyMap(foreignIter, allFields));
         return jo;
     }
 
-    private JSONObject getPrimKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it) throws Exception {
+    private JSONObject getPrimKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it, JSONObject allFields) throws Exception {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
             Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
@@ -89,23 +94,28 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
             Set<BITableRelation> relations = entry.getValue().getContainer();
             Map<String, JSONArray> tableRelationMap = new HashMap<String, JSONArray>();
             for (BITableRelation relation : relations) {
-                JSONArray ja = new JSONArray();
-                primaryId = relation.getPrimaryField().getFieldID().getIdentityValue();
-                if (tableRelationMap.containsKey(primaryId)) {
-                    ja = tableRelationMap.get(primaryId);
+                if (allFields.has(relation.getPrimaryKey().getFieldID().getIdentityValue()) &&
+                        allFields.has(relation.getForeignKey().getFieldID().getIdentityValue())) {
+                    JSONArray ja = new JSONArray();
+                    primaryId = relation.getPrimaryField().getFieldID().getIdentityValue();
+                    if (tableRelationMap.containsKey(primaryId)) {
+                        ja = tableRelationMap.get(primaryId);
+                    }
+                    ja.put(relation.createJSON());
+                    tableRelationMap.put(primaryId, ja);
                 }
-                ja.put(relation.createJSON());
-                tableRelationMap.put(primaryId, ja);
             }
             Set<String> tableRelationKeySet = tableRelationMap.keySet();
             for (String primaryFieldId : tableRelationKeySet) {
-                jo.put(primaryFieldId, tableRelationMap.get(primaryFieldId));
+                if (tableRelationMap.get(primaryFieldId) != null) {
+                    jo.put(primaryFieldId, tableRelationMap.get(primaryFieldId));
+                }
             }
         }
         return jo;
     }
 
-    private JSONObject getForKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it) throws Exception {
+    private JSONObject getForKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it, JSONObject allFields) throws Exception {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
             Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
@@ -113,17 +123,22 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
             Set<BITableRelation> relations = entry.getValue().getContainer();
             Map<String, JSONArray> tableRelationMap = new HashMap<String, JSONArray>();
             for (BITableRelation relation : relations) {
-                JSONArray ja = new JSONArray();
-                foreignId = relation.getForeignField().getFieldID().getIdentity();
-                if (tableRelationMap.containsKey(foreignId)) {
-                    ja = tableRelationMap.get(foreignId);
+                if (allFields.has(relation.getPrimaryKey().getFieldID().getIdentityValue()) &&
+                        allFields.has(relation.getForeignKey().getFieldID().getIdentityValue())) {
+                    JSONArray ja = new JSONArray();
+                    foreignId = relation.getForeignField().getFieldID().getIdentity();
+                    if (tableRelationMap.containsKey(foreignId)) {
+                        ja = tableRelationMap.get(foreignId);
+                    }
+                    ja.put(relation.createJSON());
+                    tableRelationMap.put(foreignId, ja);
                 }
-                ja.put(relation.createJSON());
-                tableRelationMap.put(foreignId, ja);
             }
             Set<String> tableRelationKeySet = tableRelationMap.keySet();
             for (String foreignFieldId : tableRelationKeySet) {
-                jo.put(foreignFieldId, tableRelationMap.get(foreignFieldId));
+                if (tableRelationMap.get(foreignFieldId) != null) {
+                    jo.put(foreignFieldId, tableRelationMap.get(foreignFieldId));
+                }
             }
 
         }

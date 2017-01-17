@@ -42,7 +42,7 @@ BI.TdLayout = BI.inherit(BI.Layout, {
         this.populate(this.options.items);
     },
 
-    _addElement: function (arr) {
+    _addElement: function (idx, arr) {
         var o = this.options;
 
         function firstElement(item, row, col) {
@@ -113,26 +113,18 @@ BI.TdLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("td布局不需要resize");
+        // console.log("td布局不需要resize");
     },
 
     addItem: function (arr) {
-        BI.TdLayout.superclass.addItem.apply(this, arguments);
         if (!BI.isArray(arr)) {
             throw new Error("item 必须是数组");
         }
-        var w = this._addElement(arr);
-        this.options.items.push(arr);
-        w.element.appendTo(this.table.element);
-        return w;
+        return BI.TdLayout.superclass.addItem.apply(this, arguments);
     },
 
     populate: function (items) {
         BI.TdLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, arr) {
-            self._addElement(arr);
-        });
     }
 });
 $.shortcut('bi.td', BI.TdLayout);

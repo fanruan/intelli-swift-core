@@ -54,6 +54,7 @@ public interface BICubeManagerProvider {
 
     /**
      * 获取所有用户是否有cube生成任务
+     *
      * @return
      */
     boolean hasTask();
@@ -74,6 +75,6 @@ public interface BICubeManagerProvider {
 
     boolean isReplacing(long userId);
 
+    boolean hasBuildingTask();
     boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType);
-
 }

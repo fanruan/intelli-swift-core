@@ -36,3 +36,7 @@ BICst.ETL_OPERATOR = {
     FORMULA: "formula",
     NEW_GROUP: "new_group"
 };
+
+BICst.DATA_CONFIG_TAB = "__bi_data_config_tab__";
+
+BICst.CHECK_ANALYSIS_STATUS_INTERVAL = "__check_analysis_status_interval__";

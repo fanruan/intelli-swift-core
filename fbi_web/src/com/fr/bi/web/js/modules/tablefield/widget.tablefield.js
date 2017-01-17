@@ -204,7 +204,10 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
                 var allFields = self.tableInfo.all_fields;
                 BI.each(self.translations, function (id, name) {
                     if (BI.isNotNull(allFields[id])) {
-                        if (allFields[id].table_id === allFields[fieldId].table_id && fieldId != id && isValid === true) {
+                        if (BI.isNotNull(allFields[id]) &&
+                            BI.isNotNull(allFields[fieldId]) &&
+                            allFields[id].table_id === allFields[fieldId].table_id &&
+                            fieldId != id && isValid === true) {
                             v === name && (isValid = false);
                         }
                     }
@@ -238,14 +241,14 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
             var pk = maps.primaryKey, fk = maps.foreignKey;
             if (pk.field_id === fieldId && fk.field_id !== fieldId && !relationIds.contains(fk.field_id)) {
                 relationIds.push(fk.field_id);
-                relationTables.push(translations[allFields[fk.field_id].table_id]);
+                BI.isNotNull(allFields[fk.field_id]) && relationTables.push(translations[allFields[fk.field_id].table_id]);
             }
         });
         BI.each(currentForKey, function (i, maps) {
             var pk = maps.primaryKey, fk = maps.foreignKey;
             if (fk.field_id === fieldId && pk.field_id !== fieldId && !relationIds.contains(pk.field_id)) {
                 relationIds.push(pk.field_id);
-                relationTables.push(translations[allFields[pk.field_id].table_id]);
+                BI.isNotNull(allFields[pk.field_id]) && relationTables.push(translations[allFields[pk.field_id].table_id]);
             }
         });
         return relationTables;

@@ -199,7 +199,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         return this.chartSetting;
     },
 
-
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             this.dimensionsManager.populate();
@@ -240,7 +239,10 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             this.tablePopulate();
         }
         if (BI.has(changed, "settings")) {
-            this.tablePopulate();
+            var diffs = BI.deepDiff(changed.settings, prev.settings);
+            if (diffs.length > 0 && (diffs.length > 1 || diffs[0] !== "column_size")) {
+                this.tablePopulate();
+            }
         }
     },
 
