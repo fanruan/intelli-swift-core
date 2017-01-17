@@ -323,7 +323,7 @@ BI.CollectionTable = BI.inherit(BI.Widget, {
         this.bottomRightCollection.populate(rightItems);
     },
 
-    _digest() {
+    _digest: function () {
         var o = this.options;
         var freezeColLength = this._getFreezeColLength();
         this.topLeftItems = this._serialize(o.header, 0, freezeColLength, o.headerRowSize, o.columnSize, o.mergeCols);
@@ -332,7 +332,7 @@ BI.CollectionTable = BI.inherit(BI.Widget, {
         this.bottomRightItems = this._serialize(o.items, freezeColLength, o.columnSize.length, o.rowSize, o.columnSize, o.mergeCols);
     },
 
-    _serialize(items, startCol, endCol, rowHeight, columnSize, mergeCols) {
+    _serialize: function (items, startCol, endCol, rowHeight, columnSize, mergeCols) {
         var self = this, o = this.options;
         var result = [], cache = {}, preCol = {}, preRow = {}, map = {};
         var summaryColumnSize = [];
