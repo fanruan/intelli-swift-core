@@ -81,24 +81,6 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqRelationsByTableIds: function (data, callback) {
-        BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
-            callback(res);
-        })
-    },
-
-    reqTransByTableIds: function (tableIds, callback) {
-        BI.requestAsync("fr_bi_configure", "get_trans_from_db", {tables: tableIds}, function (res) {
-            callback(res);
-        })
-    },
-
-    reqRelationAndTransByTables: function (data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
-            callback(res);
-        }, complete)
-    },
-
     reqFieldsDataByData: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "get_field_value", data, function (res) {
             callback(res);
