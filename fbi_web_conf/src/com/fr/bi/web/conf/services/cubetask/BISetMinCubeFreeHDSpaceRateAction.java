@@ -15,10 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 public class BISetMinCubeFreeHDSpaceRateAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String size = WebUtils.getHTTPRequestParameter(req, "value");
+        String rate = WebUtils.getHTTPRequestParameter(req, "value");
 
         try {
-            PerformancePlugManager.getInstance().setMinCubeFreeHDSpaceRate(Integer.parseInt(size));
+            PerformancePlugManager.getInstance().setMinCubeFreeHDSpaceRate(Double.valueOf(rate));
             WebUtils.printAsJSON(res, new JSONObject().put("message:", "the MinCubeFreeHDSpaceRate has been set:" + PerformancePlugManager.getInstance().getMinCubeFreeHDSpaceRate()));
         } catch (Exception e) {
             WebUtils.printAsJSON(res, new JSONObject().put("message:", BIPrintUtils.outputException(e)));
