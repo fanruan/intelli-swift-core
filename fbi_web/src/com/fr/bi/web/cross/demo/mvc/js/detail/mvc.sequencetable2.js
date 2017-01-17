@@ -107,21 +107,33 @@ SequenceTable2View = BI.inherit(BI.View, {
         var table = BI.createWidget({
             type: "bi.sequence_table",
             el: {
+                type: "bi.table_tree",
                 el: {
+                    type: "bi.adaptive_table",
                     el: {
-                        type: "bi.table_tree"
+                        type: "bi.resizable_table",
+                        el: {
+                            type: "bi.collection_table"
+                        }
                     }
-                }
+                },
             },
             sequence: {
                 type: "bi.sequence_table_tree_number"
             },
+            showSequence: true,
+            width: 600,
+            height: 400,
             isNeedResize: true,
             isNeedMerge: true,
+            mergeRule: function (row1, row2) {
+                return row1 === row2;
+            },
+            columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+            minColumnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
             isNeedFreeze: true,
             freezeCols: [0, 1, 2],
             mergeCols: [0, 1, 2],
-            columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
             header: header,
             items: items,
             crossHeader: crossHeader,
@@ -146,28 +158,6 @@ SequenceTable2View = BI.inherit(BI.View, {
                 right: 10,
                 top: 10,
                 bottom: 50
-            }, {
-                el: {
-                    type: "bi.button",
-                    height: 25,
-                    text: "showSequence",
-                    handler: function () {
-                        table.showSequence();
-                    }
-                },
-                left: 10,
-                bottom: 10
-            }, {
-                el: {
-                    type: "bi.button",
-                    height: 25,
-                    text: "hideSequence",
-                    handler: function () {
-                        table.hideSequence();
-                    }
-                },
-                right: 10,
-                bottom: 10
             }]
         })
     }

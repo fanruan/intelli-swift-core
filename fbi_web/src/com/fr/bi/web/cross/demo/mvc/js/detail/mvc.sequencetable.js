@@ -130,13 +130,17 @@ SequenceTableView = BI.inherit(BI.View, {
 
         var table1 = BI.createWidget({
             type: "bi.sequence_table",
+            width: 600,
+            height: 400,
             isNeedFreeze: true,
             freezeCols: [0, 1],
-            columnSize: ["", "", ""],
+            columnSize: [100, 100, 100],
+            minColumnSize: [100, 100, 100],
             isNeedMerge: true,
             mergeCols: [0, 1],
             header: header,
-            items: items
+            items: items,
+            showSequence: true
         });
         BI.createWidget({
             type: "bi.absolute",
@@ -160,7 +164,8 @@ SequenceTableView = BI.inherit(BI.View, {
                     height: 25,
                     text: "showSequence",
                     handler: function () {
-                        table1.showSequence();
+                        table1.attr("showSequence", true);
+                        table1.populate();
                     }
                 },
                 left: 10,
@@ -171,7 +176,8 @@ SequenceTableView = BI.inherit(BI.View, {
                     height: 25,
                     text: "hideSequence",
                     handler: function () {
-                        table1.hideSequence();
+                        table1.attr("showSequence", false);
+                        table1.populate();
                     }
                 },
                 right: 10,
