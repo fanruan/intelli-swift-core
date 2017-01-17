@@ -118,7 +118,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
             height: 30
         });
         this.pager.on(BI.Pager.EVENT_CHANGE, function () {
-            var vpage = this.getHPage && this.getVPage();
+            var vpage = this.getVPage && this.getVPage();
             if (BI.isNull(vpage)) {
                 vpage = this.getCurrentPage();
             }

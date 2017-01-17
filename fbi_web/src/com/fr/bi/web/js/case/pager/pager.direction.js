@@ -119,6 +119,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
         });
         this.vpager.on(BI.Pager.EVENT_AFTER_POPULATE, function () {
             self.vlabel.setValue(this.getCurrentPage());
+            self.vlabel.setTitle(this.getCurrentPage());
         });
     },
 
@@ -180,6 +181,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
         });
         this.hpager.on(BI.Pager.EVENT_AFTER_POPULATE, function () {
             self.hlabel.setValue(this.getCurrentPage());
+            self.hlabel.setTitle(this.getCurrentPage());
         });
     },
 
