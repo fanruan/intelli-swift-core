@@ -104,7 +104,7 @@ BI.AllCountPager = BI.inherit(BI.Widget, {
             }, this.rowCount, {
                 type: "bi.label",
                 height: o.height,
-                text: "条数据",//BI.i18nText("BI-Tiao_Data"),
+                text: BI.i18nText("BI-Tiao_Data"),
                 width: 50,
                 textAlign: "left"
             }]
