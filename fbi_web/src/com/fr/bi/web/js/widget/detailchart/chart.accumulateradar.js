@@ -53,7 +53,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         return BI.map(items, function (idx, item) {
             var i = BI.UUID();
             return BI.map(item, function (id, it) {
-                return BI.extend({}, it, {stack: i});
+                return BI.extend({}, {stack: i}, it);
             });
         });
     },
@@ -156,6 +156,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
 
     populate: function (items, options) {
         options || (options = {});
+        items = this.formatSeriesAccumulation(items, options.seriesAccumulation);
         var self = this, c = this.constants;
         this.config = self.getChartConfig(options);
         this.options.items = items;

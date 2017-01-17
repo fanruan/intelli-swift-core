@@ -158,7 +158,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         return BI.map(items, function (idx, item) {
             var i = BI.UUID();
             return BI.map(item, function (id, it) {
-                return BI.extend({}, it, {stack: i});
+                return BI.extend({}, {stack: i}, it);
             });
         });
     },
@@ -197,7 +197,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             };
             self.yAxis.push(newYAxis);
         });
-        this.combineChart.populate(this._formatItems(items), types);
+        this.combineChart.populate(items, types);
     },
 
     resize: function () {

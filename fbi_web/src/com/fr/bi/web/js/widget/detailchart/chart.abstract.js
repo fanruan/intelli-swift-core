@@ -301,64 +301,30 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
 
     formatSeriesAccumulation: function (items, accumulationObj) {
         var accumulations = accumulationObj.items,
-            type = accumulationObj.type,
-            result = [];
+            type = accumulationObj.type;
         if(BI.isEmpty(accumulationObj) || BI.isEmpty(items) || type !== BICst.SERIES_ACCUMULATION.EXIST) {
             return items;
         }
+        BI.each(accumulations, function (idx, accumulation) {
+            accumulation.stack = idx + BI.UUID();
+        });
         for(var i = 0; i < items.length; i++) {
-            var values = [];
-            BI.each(accumulations.slice(1), function (idx, accumulation) {
-                var temp = [];
+            BI.each(accumulations, function (idx, accumulation) {
                 BI.each(items[i], function (id, data) {
+                    data.isNew = true;
                     if(BI.contains(accumulation.items, data.name)) {
-                        data.flag = true;
-                        BI.each(data.data, function (t, da) {
-                            var flag = true;
-                            da.seriesName = accumulation.index;
-                            BI.each(temp, function (t, item) {
-                                if(item.x === da.x) {
-                                    item.y = item.y + da.y;
-                                    flag = false;
-                                }
-                            })
-                            if(flag) {
-                                temp.push(da);
-                            }
-                        })
+                        data.stack = accumulation.stack;
+                        data.isNew = false;
                     }
                 })
-                values.push({
-                    name: accumulation.title,
-                    data: temp
-                });
             })
-            var temp = [];
-            // 默认分组
-            BI.each(items[i], function (idx, data) {
-                if(!data.flag) {
-                    BI.each(data.data, function (t, da) {
-                        var flag = true;
-                        da.seriesName = accumulations[0].index;
-                        BI.each(temp, function (t, item) {
-                            if(item.x === da.x) {
-                                item.y = item.y + da.y;
-                                flag = false;
-                            }
-                        })
-                        if(flag) {
-                            temp.push(da);
-                        }
-                    })
+            BI.each(items[i], function (id, data) {
+                if(data.isNew) {
+                    data.stack = accumulations[0].stack;
                 }
             })
-            values.push({
-                name: accumulations[0].title,
-                data: temp
-            });
-            result.push(values);
         };
-        return result;
+        return items;
     },
 
     setDataLabelContent: function (chartOptions) {
