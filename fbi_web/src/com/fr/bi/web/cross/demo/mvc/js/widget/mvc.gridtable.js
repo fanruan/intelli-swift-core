@@ -12,7 +12,7 @@ GridTableView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var items = [], header = [], columnSize = [];
 
-        var rowCount = 10, columnCount = 10;
+        var rowCount = 100, columnCount = 100;
         for (var i = 0; i < 1; i++) {
             header[i] = [];
             for (var j = 0; j < columnCount; j++) {
@@ -28,21 +28,28 @@ GridTableView = BI.inherit(BI.View, {
             for (var j = 0; j < columnCount; j++) {
                 items[i][j] = {
                     type: "bi.label",
-                    text: i + "-" + j
+                    text: (i < 3 ? 0 : i) + "-" + j
                 }
             }
         }
 
         var table = BI.createWidget({
-            type: "bi.resizable_grid_table",
+            type: "bi.resizable_table",
+            el: {
+                type: "bi.collection_table",
+                isNeedMerge: true,
+                mergeCols: [0, 1],
+                mergeRule: function (col1, col2) {
+                    return BI.isEqual(col1, col2);
+                }
+            },
             width: 600,
             height: 500,
-            isResizeAdapt: false,
+            isResizeAdapt: true,
             isNeedResize: true,
             isNeedMerge: true,
             isNeedFreeze: true,
             freezeCols: [0, 1],
-            mergeCols: [0, 1],
             columnSize: columnSize,
             items: items,
             header: header
@@ -51,16 +58,7 @@ GridTableView = BI.inherit(BI.View, {
             type: "bi.absolute",
             element: vessel,
             items: [{
-                el: {
-                    type: "bi.grid",
-                    columns: 1,
-                    rows: 1,
-                    items: [{
-                        column: 0,
-                        row: 0,
-                        el: table
-                    }]
-                },
+                el: table,
                 left: 10,
                 right: 10,
                 top: 10,

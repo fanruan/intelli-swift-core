@@ -186,6 +186,8 @@ var _JS = [
 
     "widget/mvc.gridview.js",
 
+    "widget/mvc.collectionview.js",
+
     "widget/mvc.bubble.js",
 
     "widget/mvc.toast.js",
@@ -543,6 +545,7 @@ var _Routes = {
     "/layer_tree_table": "LayerTreeTableView",
     "/tabler": "TablerView",
     "/gridview": "Grid_View",
+    "/collectionview": "Collection_View",
     "/gridtable": "GridTableView",
     "/bubble": "BubbleView",
     "/toast": "ToastView",
@@ -1036,6 +1039,9 @@ _Models.widget = [{
 }, {
     text: "bi.grid_view",
     value: "gridview"
+}, {
+    text: "bi.collection_view",
+    value: "collectionview"
 }, {
     text: "bi.grid_table",
     value: "gridtable"

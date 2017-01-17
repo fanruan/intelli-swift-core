@@ -9,10 +9,10 @@ BI.GridTable = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.GridTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-grid-table",
-            headerRowHeight: 25,
-            rowHeight: 25,
+            headerRowSize: 25,
+            rowSize: 25,
             columnSize: [],
-            isNeedFreeze: true,
+            isNeedFreeze: false,
             freezeCols: [],
             header: [],
             items: [],
@@ -30,7 +30,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
         this._height = 0;
         this._scrollBarSize = BI.DOM.getScrollWidth();
         var rowHeightGetter = function () {
-            return o.rowHeight;
+            return o.rowSize;
         };
         var columnLeftWidthGetter = function (index) {
             return o.columnSize[index];
@@ -45,6 +45,8 @@ BI.GridTable = BI.inherit(BI.Widget, {
         });
         this.topLeftGrid.on(BI.Grid.EVENT_SCROLL, function (scroll) {
             self.bottomLeftGrid.setScrollLeft(scroll.scrollLeft);
+            self._populateScrollbar();
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.topRightGrid = BI.createWidget({
             type: "bi.grid_view",
@@ -53,6 +55,8 @@ BI.GridTable = BI.inherit(BI.Widget, {
         });
         this.topRightGrid.on(BI.Grid.EVENT_SCROLL, function (scroll) {
             self.bottomRightGrid.setScrollLeft(scroll.scrollLeft);
+            self._populateScrollbar();
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.bottomLeftGrid = BI.createWidget({
             type: "bi.grid_view",
@@ -63,6 +67,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
             self.bottomRightGrid.setScrollTop(scroll.scrollTop);
             self.topLeftGrid.setScrollLeft(scroll.scrollLeft);
             self._populateScrollbar();
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.bottomRightGrid = BI.createWidget({
             type: "bi.grid_view",
@@ -73,6 +78,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
             self.bottomLeftGrid.setScrollTop(scroll.scrollTop);
             self.topRightGrid.setScrollLeft(scroll.scrollLeft);
             self._populateScrollbar();
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.topLeft = BI.createWidget({
             type: "bi.vertical",
@@ -123,6 +129,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
         this.topScrollbar.on(BI.GridTableScrollbar.EVENT_SCROLL, function (scrollTop) {
             self.bottomLeftGrid.setScrollTop(scrollTop);
             self.bottomRightGrid.setScrollTop(scrollTop);
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.leftScrollbar = BI.createWidget({
             type: "bi.grid_table_horizontal_scrollbar",
@@ -131,6 +138,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
         this.leftScrollbar.on(BI.GridTableHorizontalScrollbar.EVENT_SCROLL, function (scrollLeft) {
             self.topLeftGrid.setScrollLeft(scrollLeft);
             self.bottomLeftGrid.setScrollLeft(scrollLeft);
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.rightScrollbar = BI.createWidget({
             type: "bi.grid_table_horizontal_scrollbar",
@@ -139,6 +147,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
         this.rightScrollbar.on(BI.GridTableHorizontalScrollbar.EVENT_SCROLL, function (scrollLeft) {
             self.topRightGrid.setScrollLeft(scrollLeft);
             self.bottomRightGrid.setScrollLeft(scrollLeft);
+            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.scrollBarLayout = BI.createWidget({
             type: "bi.absolute",
@@ -156,7 +165,9 @@ BI.GridTable = BI.inherit(BI.Widget, {
         });
         this._width = o.width - BI.GridTableScrollbar.SIZE;
         this._height = o.height - BI.GridTableScrollbar.SIZE;
-        this._populate();
+        if (o.items.length > 0) {
+            this._populate();
+        }
     },
 
     _getFreezeColLength: function () {
@@ -165,10 +176,10 @@ BI.GridTable = BI.inherit(BI.Widget, {
 
     _populateScrollbar: function () {
         var o = this.options;
-        var regionSize = this.getRegionSize(), totalLeftColumnSize = 0, totalRightColumnSize = 0, totalColumnSize = 0, summaryColumnSizeArray = [], totalRowSize = o.items.length * o.rowHeight;
+        var regionSize = this.getRegionSize(), totalLeftColumnSize = 0, totalRightColumnSize = 0, totalColumnSize = 0, summaryColumnSizeArray = [], totalRowSize = o.items.length * o.rowSize;
         var freezeColLength = this._getFreezeColLength();
         BI.each(o.columnSize, function (i, size) {
-            if (o.isNeedFreeze === true && o.freezeCols.contains(i)) {
+            if (o.freezeCols.contains(i)) {
                 totalLeftColumnSize += size;
             } else {
                 totalRightColumnSize += size;
@@ -180,8 +191,8 @@ BI.GridTable = BI.inherit(BI.Widget, {
                 summaryColumnSizeArray[i] = summaryColumnSizeArray[i - 1] + size;
             }
         });
-        this.topScrollbar.setContentSize(o.items.length * o.rowHeight);
-        this.topScrollbar.setSize(this._height - (o.isNeedFreeze === true ? o.header.length * o.headerRowHeight : 0));
+        this.topScrollbar.setContentSize(o.items.length * o.rowSize);
+        this.topScrollbar.setSize(this._height - o.header.length * o.headerRowSize);
         this.topScrollbar.setPosition(Math.min(this.bottomLeftGrid.getScrollTop(), this.bottomRightGrid.getScrollTop()));
         this.topScrollbar.populate();
 
@@ -196,7 +207,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
         this.rightScrollbar.populate();
 
         var items = this.scrollBarLayout.attr("items");
-        items[0].top = o.header.length * o.headerRowHeight;
+        items[0].top = o.header.length * o.headerRowSize;
         items[1].top = this._height;
         items[2].top = this._height;
         items[2].left = regionSize;
@@ -206,7 +217,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
 
     _populateTable: function () {
         var self = this, o = this.options;
-        var regionSize = this.getRegionSize(), totalLeftColumnSize = 0, totalRightColumnSize = 0, totalColumnSize = 0, summaryColumnSizeArray = [], totalRowSize = o.items.length * o.rowHeight;
+        var regionSize = this.getRegionSize(), totalLeftColumnSize = 0, totalRightColumnSize = 0, totalColumnSize = 0, summaryColumnSizeArray = [], totalRowSize = o.items.length * o.rowSize;
         var freezeColLength = this._getFreezeColLength();
         BI.each(o.columnSize, function (i, size) {
             if (o.isNeedFreeze === true && o.freezeCols.contains(i)) {
@@ -222,22 +233,59 @@ BI.GridTable = BI.inherit(BI.Widget, {
             }
         });
         var tlw = regionSize;
-        var tlh = regionSize >= summaryColumnSizeArray[o.freezeCols.length - 1] ? (o.header.length * o.headerRowHeight) : (o.header.length * o.headerRowHeight + this._scrollBarSize);
+        var tlh = regionSize >= summaryColumnSizeArray[freezeColLength - 1] ? (o.header.length * o.headerRowSize) : (o.header.length * o.headerRowSize + this._scrollBarSize);
         var trw = this._width - regionSize;
-        var trh = (this._width - regionSize >= totalColumnSize - (summaryColumnSizeArray[o.freezeCols.length - 1] || 0)) ? (o.header.length * o.headerRowHeight) : (o.header.length * o.headerRowHeight + this._scrollBarSize);
-        var blw = (this._height - o.header.length * o.headerRowHeight >= totalRowSize) ? regionSize : (regionSize + this._scrollBarSize);
-        var blh = (regionSize >= (summaryColumnSizeArray[o.freezeCols.length - 1] || 0)) ? (this._height - o.header.length * o.headerRowHeight) : (this._height - o.header.length * o.headerRowHeight + this._scrollBarSize);
-        var brw = (this._height - o.header.length * o.headerRowHeight >= totalRowSize) ? (this._width - regionSize) : (this._width - regionSize + this._scrollBarSize);
-        var brh = (this._width - regionSize >= totalColumnSize - (summaryColumnSizeArray[this._getFreezeColLength() - 1] || 0)) ? (this._height - o.header.length * o.headerRowHeight) : (this._height - o.header.length * o.headerRowHeight + this._scrollBarSize);
+        var trh = (this._width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeColLength - 1] || 0)) ? (o.header.length * o.headerRowSize) : (o.header.length * o.headerRowSize + this._scrollBarSize);
+        var blw = (this._height - o.header.length * o.headerRowSize >= totalRowSize) ? regionSize : (regionSize + this._scrollBarSize);
+        var blh = (regionSize >= (summaryColumnSizeArray[freezeColLength - 1] || 0)) ? (this._height - o.header.length * o.headerRowSize) : (this._height - o.header.length * o.headerRowSize + this._scrollBarSize);
+        var brw = (this._height - o.header.length * o.headerRowSize >= totalRowSize) ? (this._width - regionSize) : (this._width - regionSize + this._scrollBarSize);
+        var brh = (this._width - regionSize >= totalColumnSize - (summaryColumnSizeArray[freezeColLength - 1] || 0)) ? (this._height - o.header.length * o.headerRowSize) : (this._height - o.header.length * o.headerRowSize + this._scrollBarSize);
 
-        this.topLeft.setWidth(regionSize);
-        this.topLeft.setHeight(o.header.length * o.headerRowHeight);
-        this.topRight.setWidth(this._width - regionSize);
-        this.topRight.setHeight(o.header.length * o.headerRowHeight);
-        this.bottomLeft.setWidth(regionSize);
-        this.bottomLeft.setHeight(this._height - o.header.length * o.headerRowHeight);
-        this.bottomRight.setWidth(this._width - regionSize);
-        this.bottomRight.setHeight(this._height - o.header.length * o.headerRowHeight);
+        var otlw = regionSize;
+        var otlh = o.header.length * o.headerRowSize;
+        var otrw = this._width - regionSize;
+        var otrh = o.header.length * o.headerRowSize;
+        var oblw = regionSize;
+        var oblh = this._height - o.header.length * o.headerRowSize;
+        var obrw = this._width - regionSize;
+        var obrh = this._height - o.header.length * o.headerRowSize;
+
+        var digest = function (w, h, tw, th, el) {
+            if (w >= tw && h >= th) {
+                el.element.css({
+                    overflow: "hidden",
+                    overflowX: "hidden",
+                    overflowY: "hidden"
+                })
+            } else if (w >= tw) {
+                el.element.css({
+                    overflow: "hidden",
+                    overflowX: "hidden",
+                    overflowY: "auto"
+                })
+            } else if (h >= th) {
+                el.element.css({
+                    overflow: "hidden",
+                    overflowX: "auto",
+                    overflowY: "hidden"
+                })
+            } else {
+                el.element.css({
+                    overflow: "auto",
+                    overflowX: "auto",
+                    overflowY: "auto"
+                })
+            }
+        };
+
+        this.topLeft.setWidth(otlw);
+        this.topLeft.setHeight(otlh);
+        this.topRight.setWidth(otrw);
+        this.topRight.setHeight(otrh);
+        this.bottomLeft.setWidth(oblw);
+        this.bottomLeft.setHeight(oblh);
+        this.bottomRight.setWidth(obrw);
+        this.bottomRight.setHeight(obrh);
 
         this.topLeftGrid.setWidth(tlw);
         this.topLeftGrid.setHeight(tlh);
@@ -248,20 +296,25 @@ BI.GridTable = BI.inherit(BI.Widget, {
         this.bottomRightGrid.setWidth(brw);
         this.bottomRightGrid.setHeight(brh);
 
+        digest(tlw, tlh, totalLeftColumnSize, o.header.length * o.headerRowSize, this.topLeftGrid);
+        digest(trw, trh, totalRightColumnSize, o.header.length * o.headerRowSize, this.topRightGrid);
+        digest(blw, blh, totalLeftColumnSize, o.items.length * o.rowSize, this.bottomLeftGrid);
+        digest(brw, brh, totalRightColumnSize, o.items.length * o.rowSize, this.bottomRightGrid);
+
         this.topLeftGrid.setEstimatedColumnSize(freezeColLength > 0 ? totalLeftColumnSize / freezeColLength : 0);
-        this.topLeftGrid.setEstimatedRowSize(o.headerRowHeight);
+        this.topLeftGrid.setEstimatedRowSize(o.headerRowSize);
         this.topRightGrid.setEstimatedColumnSize(totalRightColumnSize / (o.columnSize.length - freezeColLength));
-        this.topRightGrid.setEstimatedRowSize(o.headerRowHeight);
+        this.topRightGrid.setEstimatedRowSize(o.headerRowSize);
         this.bottomLeftGrid.setEstimatedColumnSize(freezeColLength > 0 ? totalLeftColumnSize / freezeColLength : 0);
-        this.bottomLeftGrid.setEstimatedRowSize(o.rowHeight);
+        this.bottomLeftGrid.setEstimatedRowSize(o.rowSize);
         this.bottomRightGrid.setEstimatedColumnSize(totalRightColumnSize / (o.columnSize.length - freezeColLength));
-        this.bottomRightGrid.setEstimatedRowSize(o.rowHeight);
+        this.bottomRightGrid.setEstimatedRowSize(o.rowSize);
 
         var items = this.contextLayout.attr("items");
         items[1].left = regionSize;
-        items[2].top = o.header.length * o.headerRowHeight;
+        items[2].top = o.header.length * o.headerRowSize;
         items[3].left = regionSize;
-        items[3].top = o.header.length * o.headerRowHeight;
+        items[3].top = o.header.length * o.headerRowSize;
         this.contextLayout.attr("items", items);
         this.contextLayout.resize();
 
@@ -272,7 +325,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
             BI.each(cols, function (j, col) {
                 var cell = {
                     type: "bi.grid_table_cell",
-                    el: col
+                    cell: col
                 };
                 if (j < freezeColLength) {
                     leftHeader[i].push(cell);
@@ -287,7 +340,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
             BI.each(cols, function (j, col) {
                 var cell = {
                     type: "bi.grid_table_cell",
-                    el: col
+                    cell: col
                 };
                 if (j < freezeColLength) {
                     leftItems[i].push(cell);
@@ -324,18 +377,32 @@ BI.GridTable = BI.inherit(BI.Widget, {
         return regionSize;
     },
 
-    getScrollTop: function () {
+    setVerticalScroll: function (scrollTop) {
+        this.bottomLeftGrid.setScrollTop(scrollTop);
+        this.bottomRightGrid.setScrollTop(scrollTop);
+    },
+
+    setLeftHorizontalScroll: function (scrollLeft) {
+        this.topLeftGrid.setScrollLeft(scrollLeft);
+        this.bottomLeftGrid.setScrollLeft(scrollLeft);
+    },
+
+    setRightHorizontalScroll: function (scrollLeft) {
+        this.topRightGrid.setScrollLeft(scrollLeft);
+        this.bottomRightGrid.setScrollLeft(scrollLeft);
+    },
+
+    getVerticalScroll: function () {
         return this.bottomRightGrid.getScrollTop();
     },
 
-    getLeftScrollLeft: function () {
+    getLeftHorizontalScroll: function () {
         return this.bottomLeftGrid.getScrollLeft();
     },
 
-    getRightScrollLeft: function () {
+    getRightHorizontalScroll: function () {
         return this.bottomRightGrid.getScrollLeft();
     },
-
 
     setWidth: function (width) {
         BI.GridTable.superclass.setWidth.apply(this, arguments);
@@ -355,22 +422,41 @@ BI.GridTable = BI.inherit(BI.Widget, {
         this.options.regionColumnSize = regionColumnSize;
     },
 
+    getColumnSize: function () {
+        return this.options.columnSize;
+    },
+
+    getRegionColumnSize: function () {
+        return this.options.regionColumnSize;
+    },
+
     populate: function (items, header) {
-        if (items) {
+        if (items && this.options.items !== items) {
             this.options.items = items;
+            this._restore();
         }
-        if (header) {
+        if (header && this.options.header !== header) {
             this.options.header = header;
+            this._restore();
         }
         this._populate();
     },
 
-    clear: function () {
-        this.topLeftGrid.clear();
-        this.topRightGrid.clear();
-        this.bottomLeftGrid.clear();
-        this.bottomRightGrid.clear();
+    _restore: function () {
+        this.topLeftGrid.restore();
+        this.topRightGrid.restore();
+        this.bottomLeftGrid.restore();
+        this.bottomRightGrid.restore();
+    },
+
+    restore: function () {
+        this._restore();
+        this.scrollTop = 0;
+        this.leftScrollLeft = 0;
+        this.rightScrollLeft = 0;
+        this.setVerticalScroll(0);
+        this.setLeftHorizontalScroll(0);
+        this.setRightHorizontalScroll(0);
     }
 });
-BI.GridTable.EVENT_VALUE_CHANGE = "EVENT_VALUE_CHANGE";
 $.shortcut('bi.grid_table', BI.GridTable);

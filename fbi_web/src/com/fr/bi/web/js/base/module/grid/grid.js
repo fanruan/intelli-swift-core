@@ -99,7 +99,7 @@ BI.Grid = BI.inherit(BI.Widget, {
             var rowStartIndex = overscanRowIndices.overscanStartIndex;
             var rowStopIndex = overscanRowIndices.overscanStopIndex;
 
-            const renderedCells = [], renderedKeys = [];
+            var renderedCells = [], renderedKeys = [];
 
             for (var rowIndex = rowStartIndex; rowIndex <= rowStopIndex; rowIndex++) {
                 var rowDatum = this._rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex);
@@ -110,6 +110,20 @@ BI.Grid = BI.inherit(BI.Widget, {
 
                     var index = BI.deepIndexOf(this.renderedKeys, key);
                     if (index > -1) {
+                        if (columnDatum.size !== this.renderedCells[index]._width) {
+                            this.renderedCells[index]._width = columnDatum.size;
+                            this.renderedCells[index].el.setWidth(columnDatum.size);
+                        }
+                        if (rowDatum.size !== this.renderedCells[index]._height) {
+                            this.renderedCells[index]._height = rowDatum.size;
+                            this.renderedCells[index].el.setHeight(rowDatum.size);
+                        }
+                        if (this.renderedCells[index].left !== columnDatum.offset + horizontalOffsetAdjustment) {
+                            this.renderedCells[index].el.element.css("left", (columnDatum.offset + horizontalOffsetAdjustment) + "px");
+                        }
+                        if (this.renderedCells[index].top !== rowDatum.offset + verticalOffsetAdjustment) {
+                            this.renderedCells[index].el.element.css("top", (rowDatum.offset + verticalOffsetAdjustment) + "px");
+                        }
                         renderedCells.push(this.renderedCells[index]);
                     } else {
                         var child = BI.createWidget(BI.extend({
@@ -126,7 +140,9 @@ BI.Grid = BI.inherit(BI.Widget, {
                         renderedCells.push({
                             el: child,
                             left: columnDatum.offset + horizontalOffsetAdjustment,
-                            top: rowDatum.offset + verticalOffsetAdjustment
+                            top: rowDatum.offset + verticalOffsetAdjustment,
+                            _width: columnDatum.size,
+                            _height: rowDatum.size
                         });
                     }
                     renderedKeys.push(key);
@@ -226,7 +242,7 @@ BI.Grid = BI.inherit(BI.Widget, {
         this.options.estimatedRowSize = height;
     },
 
-    clear: function () {
+    restore: function () {
         BI.each(this.renderedCells, function (i, cell) {
             cell.el.destroy();
         });
@@ -236,7 +252,7 @@ BI.Grid = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
-        if (items) {
+        if (items && items !== this.options.items) {
             this.options.items = items;
         }
         this._populate();

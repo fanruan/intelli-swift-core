@@ -2077,8 +2077,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/table/table.tree.css",
                 "com/fr/bi/web/css/base/table/table.grid.cell.css",
                 "com/fr/bi/web/css/base/table/table.grid.scrollbar.css",
-                "com/fr/bi/web/css/base/table/table.grid.resizable.cell.css",
-                "com/fr/bi/web/css/base/table/table.grid.resizable.css",
+                "com/fr/bi/web/css/base/table/table.collection.cell.css",
+                "com/fr/bi/web/css/base/table/table.resizable.cell.css",
+                "com/fr/bi/web/css/base/table/table.resizable.css",
                 "com/fr/bi/web/css/base/layer/panel.css",
                 "com/fr/bi/web/css/base/layer/layer.searcher.css",
                 "com/fr/bi/web/css/base/layer/layer.multiselect.css",
@@ -2322,9 +2323,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/previewtable/previewtable.header.cell.css",
                 "com/fr/bi/web/css/widget/previewtable/previewtable.css",
 
-                //自适应表
-                "com/fr/bi/web/css/widget/adaptivetable/adaptivetable.css",
-
                 //列可拖拽排序表
                 "com/fr/bi/web/css/widget/sortabletable/sortabletable.css",
 
@@ -2335,10 +2333,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/exceltable/exceltable.cell.css",
                 "com/fr/bi/web/css/widget/exceltable/exceltable.header.cell.css",
                 "com/fr/bi/web/css/widget/exceltable/exceltable.css",
-
-                //自定义滚动条表
-                "com/fr/bi/web/css/widget/customscrolltable/customscrolltable.scrollbar.css",
-                "com/fr/bi/web/css/widget/customscrolltable/customscrolltable.css",
 
                 //分页表格
                 "com/fr/bi/web/css/widget/pagetable/pagetable.cell.css",
@@ -2402,7 +2396,6 @@ public class ResourceHelper {
     public static String[] getThirdCss() {
         return new String[]{
                 "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
-                "com/fr/bi/web/css/base/third/jquery.mCustomScrollbar.css",
                 "com/fr/bi/web/css/base/third/leaflet.css",
         };
     }
@@ -2410,7 +2403,6 @@ public class ResourceHelper {
     public static String[] getThirdJs() {
         return new String[]{
                 "com/fr/bi/web/js/third/jquery.mousewheel.js",
-                "com/fr/bi/web/js/third/jquery.mCustomScrollbar.js",
                 "com/fr/bi/web/js/third/jquery.ui.core.js",
                 "com/fr/bi/web/js/third/jquery.ui.widget.js",
                 "com/fr/bi/web/js/third/jquery.ui.mouse.js",
@@ -2487,6 +2479,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/utils/helper.scroll.js",
                 "com/fr/bi/web/js/base/utils/tableRowBuffer.js",
                 "com/fr/bi/web/js/base/utils/cellSizeAndPositionManager.js",
+                "com/fr/bi/web/js/base/utils/sectionManager.js",
+                "com/fr/bi/web/js/base/utils/detectElementResize.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
                 "com/fr/bi/web/js/base/utils/events/eventlistener.js",
                 "com/fr/bi/web/js/base/utils/events/wheelhandler.js",
@@ -2591,14 +2585,19 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/table/table.header.js",
                 "com/fr/bi/web/js/base/module/table/table.footer.js",
                 "com/fr/bi/web/js/base/module/table/table.js",
-                "com/fr/bi/web/js/base/module/table/table.tree.js",
+                "com/fr/bi/web/js/case/table/table.tree.js",
                 "com/fr/bi/web/js/base/module/table/table.grid.cell.js",
                 "com/fr/bi/web/js/base/module/table/table.grid.scrollbar.js",
                 "com/fr/bi/web/js/base/module/table/table.grid.js",
+                "com/fr/bi/web/js/base/module/table/table.collection.cell.js",
+                "com/fr/bi/web/js/base/module/table/table.collection.js",
+                "com/fr/bi/web/js/base/module/table/table.resizable.cell.js",
+                "com/fr/bi/web/js/base/module/table/table.resizable.js",
 
 //                "com/fr/bi/web/js/base/module/table/table.fix.js",
 
                 "com/fr/bi/web/js/base/module/grid/grid.js",
+                "com/fr/bi/web/js/base/module/collection/collection.js",
 
                 "com/fr/bi/web/js/base/module/layer/layer.floatbox.js",
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",
@@ -2775,12 +2774,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/pager/pager.all.js",
                 "com/fr/bi/web/js/case/pager/pager.all.count.js",
 
+                //各种表格
+                "com/fr/bi/web/js/case/table/table.adaptive.js",
+                "com/fr/bi/web/js/case/table/table.tree.js",
                 "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",
                 "com/fr/bi/web/js/case/table/table.dynamicsummarytree.js",
                 "com/fr/bi/web/js/case/table/table.dynamicsummarylayertree.js",
-                "com/fr/bi/web/js/base/module/table/table.grid.resizable.cell.js",
-                "com/fr/bi/web/js/base/module/table/table.grid.resizable.js",
 
                 //chart
                 "com/fr/bi/web/js/case/chart/chart.combine.js",
@@ -3143,9 +3143,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/previewtable/previewtable.header.cell.js",
                 "com/fr/bi/web/js/widget/previewtable/previewtable.js",
 
-                //自适应表
-                "com/fr/bi/web/js/widget/adaptivetable/adaptivetable.js",
-
                 //列可拖拽排序表
                 "com/fr/bi/web/js/widget/sortabletable/sortabletable.js",
                 "com/fr/bi/web/js/widget/sortabletable/sortabletable.drag.button.js",
@@ -3159,10 +3156,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/exceltable/exceltable.cell.js",
                 "com/fr/bi/web/js/widget/exceltable/exceltable.header.cell.js",
                 "com/fr/bi/web/js/widget/exceltable/exceltable.js",
-
-                //自定义滚动条表
-                "com/fr/bi/web/js/widget/customscrolltable/customscrolltable.scrollbar.js",
-                "com/fr/bi/web/js/widget/customscrolltable/customscrolltable.js",
 
                 //分页表格
                 "com/fr/bi/web/js/widget/pagetable/pagetable.cell.js",
@@ -3443,7 +3436,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/table/table.header.js",
                 "com/fr/bi/web/js/base/module/table/table.footer.js",
                 "com/fr/bi/web/js/base/module/table/table.js",
-                "com/fr/bi/web/js/base/module/table/table.tree.js",
 
                 "com/fr/bi/web/js/base/module/layer/layer.floatbox.js",
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",
