@@ -227,7 +227,9 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
         BI.each(groups, function (i, group) {
             var item = {
                 text: group.value,
-                value: group
+                value: group,
+                connName: self.connectionName,
+                linkNames: self.options.linkNames
             };
             BI.some(tables, function (j, table) {
                 if (group.value === table.table_name &&
@@ -248,8 +250,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
             type: "bi.button_group",
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_MULTI,
             items: BI.createItems(this._formatGroup(group), {
-                type: "bi.database_table",
-                cls: "bi-table-ha-button"
+                type: "bi.database_table"
             }),
             layouts: [{
                 type: "bi.left",

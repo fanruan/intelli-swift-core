@@ -172,11 +172,19 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
 
     _setDefaultRelation: function (dimensions, dId) {
         var self = this;
+        //除却当前参与计算的维度所在表
         var viewTableIds = [];
+        //包括当前参与计算的维度所在表
+        var allTableIds = [];
         BI.each(dimensions, function (did, dimension) {
             var tableId = BI.Utils.getTableIdByFieldID(dimension._src.field_id);
             if (BI.isNotNull(tableId)) {
-                (!BI.contains(viewTableIds, tableId)) && viewTableIds.push(tableId);
+                if(did !== dId){
+                    viewTableIds.pushDistinct(tableId);
+                    allTableIds.pushDistinct(tableId);
+                }else{
+                    allTableIds.pushDistinct(tableId);
+                }
             }
         });
         var isFromSameTable = false;
@@ -185,7 +193,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 return tableId === BI.Utils.getTableIdByFieldID(dimensions[dId]._src.field_id)
             }));
         }
-        var defaultCommonTable = BI.firstObject(BI.Utils.getCommonForeignTablesByTableIDs(viewTableIds));
+        var defaultCommonTable = BI.firstObject(BI.Utils.getCommonForeignTablesByTableIDs(allTableIds));
         if(isFromSameTable === false){
             BI.each(dimensions, function (did, dimension) {
                 dimension.dimension_map = self._getDefaultRelation(dimension, defaultCommonTable);
