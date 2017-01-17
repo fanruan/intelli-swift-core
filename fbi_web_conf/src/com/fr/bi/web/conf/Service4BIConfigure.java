@@ -66,8 +66,6 @@ public class Service4BIConfigure implements Service {
             new BIGetPreviewTableDataConfAction(),
             new BIImportDBTableConnectionAction(),
 
-            new BIGetTransFromDBAction(),
-
             new BIModifyUpdateSettingAction(),
             new BIGetUpdateSettingAction(),
             new BIGetCubeGenerateStatusAction(),

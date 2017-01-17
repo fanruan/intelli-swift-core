@@ -28,13 +28,14 @@ public class Service4BIBase extends NoSessionIDService {
     private static AbstractBIBaseAction[] actions = {
             new BIGetPyAction(),
             new BIGetTableAction(),
-            new BIGetTransNameAction(),
             new BIFSGetConfigAction(),
             new BIFSSetConfigAction(),
             new BICheckValidationOfExpressionAction(),
             new BIFSSaveUploadImageAction(),
             new BIFSGetImageSizeAction(),
-            new BIGetMapJsonAction()
+            new BIGetMapJsonAction(),
+
+            new BIGetDataConfigAuthoritiesAction()
     };
 
     /**
