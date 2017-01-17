@@ -2056,7 +2056,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/pager/pager.number.css",
                 "com/fr/bi/web/css/base/pager/pager.direction.css",
                 "com/fr/bi/web/css/base/pager/pager.skip.css",
-                "com/fr/bi/web/css/base/pager/pager.all.css",
+                "com/fr/bi/web/css/base/pager/pager.all.count.css",
                 "com/fr/bi/web/css/base/segment/button.segment.css",
                 "com/fr/bi/web/css/base/segment/segment.css",
                 "com/fr/bi/web/css/base/trigger/trigger.css",

@@ -2,20 +2,19 @@
  * 有总页数和总行数的分页控件
  * Created by Young's on 2016/10/13.
  */
-BI.AllCountPagger = BI.inherit(BI.Widget, {
+BI.AllCountPager = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
-        return BI.extend(BI.AllCountPagger.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-all-pager",
-            width: 220,
-            height: 25,
+        return BI.extend(BI.AllCountPager.superclass._defaultConfig.apply(this, arguments), {
+            extraCls: "bi-all-count-pager",
+            height: 30,
             pages: 1, //必选项
             curr: 1, //初始化当前页， pages为数字时可用，
             count: 1 //总行数
         })
     },
     _init: function () {
-        BI.AllCountPagger.superclass._init.apply(this, arguments);
+        BI.AllCountPager.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.editor = BI.createWidget({
             type: "bi.small_text_editor",
@@ -28,7 +27,7 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
             value: o.curr,
             errorText: BI.i18nText("BI-Please_Input_Integer"),
             width: 30,
-            height: o.height - 2
+            height: 20
         });
         this.pager = BI.createWidget({
             type: "bi.pager",
@@ -51,7 +50,7 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
                 value: "prev",
                 title: BI.i18nText("BI-Previous_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_First_Page"),
-                height: o.height - 2,
+                height: 20,
                 cls: "all-pager-prev column-pre-page-h-font"
             },
             next: {
@@ -59,7 +58,7 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
                 value: "next",
                 title: BI.i18nText("BI-Next_Page"),
                 warningTitle: BI.i18nText("BI-Current_Is_Last_Page"),
-                height: o.height - 2,
+                height: 20,
                 cls: "all-pager-next column-next-page-h-font"
             },
 
@@ -71,10 +70,10 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
 
         this.editor.on(BI.TextEditor.EVENT_CONFIRM, function () {
             self.pager.setValue(BI.parseInt(self.editor.getValue()));
-            self.fireEvent(BI.AllCountPagger.EVENT_CHANGE);
+            self.fireEvent(BI.AllCountPager.EVENT_CHANGE);
         });
         this.pager.on(BI.Pager.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AllCountPagger.EVENT_CHANGE);
+            self.fireEvent(BI.AllCountPager.EVENT_CHANGE);
         });
         this.pager.on(BI.Pager.EVENT_AFTER_POPULATE, function () {
             self.editor.setValue(self.pager.getCurrentPage());
@@ -89,14 +88,14 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
 
         this.rowCount = BI.createWidget({
             type: "bi.label",
+            height: o.height,
+            hgap: 5,
             text: o.count,
-            title: o.count,
-            width: 50
+            title: o.count
         });
 
         var count = BI.createWidget({
-            type: "bi.center_adapt",
-            columnSize: [15, 50, 60],
+            type: "bi.left",
             items: [{
                 type: "bi.label",
                 height: o.height,
@@ -105,7 +104,7 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
             }, this.rowCount, {
                 type: "bi.label",
                 height: o.height,
-                text: "条数据",//BI.i18nText("BI-Tiao_Data"),
+                text: BI.i18nText("BI-Tiao_Data"),
                 width: 50,
                 textAlign: "left"
             }]
@@ -113,7 +112,7 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.center_adapt",
             element: this.element,
-            columnSize: [115, 30, "", 36],
+            columnSize: ["", 30, 40, 36],
             items: [count, this.editor, this.allPages, this.pager]
         })
     },
@@ -159,5 +158,5 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
         this.pager.populate();
     }
 });
-BI.AllCountPagger.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.all_count_pager", BI.AllCountPagger);
+BI.AllCountPager.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.all_count_pager", BI.AllCountPager);
