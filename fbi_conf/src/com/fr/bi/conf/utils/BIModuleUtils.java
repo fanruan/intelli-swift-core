@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BIAliasManagerProvider;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.field.BusinessField;
@@ -182,5 +183,18 @@ public class BIModuleUtils {
                 BILoggerFactory.getLogger(BIModuleUtils.class).warn(e.getMessage(), e);
             }
         }
+    }
+
+    public static CubeTableSource getActualDBTableSource(CubeTableSource tableSource) {
+        for (BusinessTable table : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
+            try {
+                if (table.getTableSource().equals(tableSource)) {
+                    return table.getTableSource();
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(BIModuleUtils.class).error(e.getMessage(), e);
+            }
+        }
+        return tableSource;
     }
 }
