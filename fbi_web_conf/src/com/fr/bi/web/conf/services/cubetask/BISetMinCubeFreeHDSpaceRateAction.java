@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by roy on 2017/1/17.
  */
-public class BISetMinCubeFreeHDSpaceRate extends AbstractBIConfigureAction {
+public class BISetMinCubeFreeHDSpaceRateAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String size = WebUtils.getHTTPRequestParameter(req, "value");

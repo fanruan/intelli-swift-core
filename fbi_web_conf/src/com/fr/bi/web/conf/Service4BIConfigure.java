@@ -122,8 +122,8 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetCubeTaskLogsSDKAction(),
             new BISetTransportThreadPoolSizeAction(),
             new BIGetTransportThreadPoolSizeAction(),
-            new BISetMinCubeFreeHDSpaceRate(),
-            new BIGetMinCubeFreeHDSpaceRate()
+            new BISetMinCubeFreeHDSpaceRateAction(),
+            new BIGetMinCubeFreeHDSpaceRateAction()
     };
 
     /**
