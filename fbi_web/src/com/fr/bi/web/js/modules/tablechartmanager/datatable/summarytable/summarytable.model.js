@@ -32,7 +32,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         if (BI.isKey(columnSize)) {
             return [BI.parseInt(columnSize), ""];
         }
-        return false;
+        return [];
     },
 
     setStoredRegionColumnSize: function (columnSize) {
