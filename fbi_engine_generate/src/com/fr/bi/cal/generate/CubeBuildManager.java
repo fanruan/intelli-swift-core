@@ -147,11 +147,11 @@ public class CubeBuildManager {
             cubeBuild = new CubeBuildStuffComplete(new BIUser(userId));
             BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " preCondition checking……");
         }
-//        if (preConditionsCheck(userId, cubeBuild)) {
-        CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
-        BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + msg);
-        cubeManager.addTask(task, userId);
-//        }
+        if (preConditionsCheck(userId, cubeBuild)) {
+            CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
+            BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + msg);
+            cubeManager.addTask(task, userId);
+        }
     }
 
     /**
