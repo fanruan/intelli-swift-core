@@ -18,7 +18,7 @@ public class BISystemDataConfigAuthorityManager extends BISystemDataManager<BIDa
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getDataConfigAuthorities();
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BISystemDataConfigAuthorityManager.class).error(e.getMessage(), e);
         }
         return null;
     }
@@ -28,7 +28,7 @@ public class BISystemDataConfigAuthorityManager extends BISystemDataManager<BIDa
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getDataConfigAuthoritiesByRole(roleName, roleType);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BISystemDataConfigAuthorityManager.class).error(e.getMessage(), e);
         }
         return null;
     }
@@ -36,9 +36,9 @@ public class BISystemDataConfigAuthorityManager extends BISystemDataManager<BIDa
     @Override
     public void saveDataConfigAuthorities(Set<BIDataConfigAuthority> authorities) {
         try {
-            getValue(UserControl.getInstance().getSuperManagerID()).setDataConfigAuths(authorities);
+            getValue(UserControl.getInstance().getSuperManagerID()).setDataConfigAuthorities(authorities);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BISystemDataConfigAuthorityManager.class).error(e.getMessage(), e);
         }
     }
 
@@ -47,7 +47,7 @@ public class BISystemDataConfigAuthorityManager extends BISystemDataManager<BIDa
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).clear();
         } catch (BIKeyAbsentException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BISystemDataConfigAuthorityManager.class).error(e.getMessage(), e);
         }
     }
 

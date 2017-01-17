@@ -17,7 +17,7 @@ public class BIDataConfigAuthorityManager {
         return dataConfigAuthorities;
     }
 
-    public void setDataConfigAuths(Set<BIDataConfigAuthority> dataConfigAuthorities) {
+    public void setDataConfigAuthorities(Set<BIDataConfigAuthority> dataConfigAuthorities) {
         this.dataConfigAuthorities = dataConfigAuthorities;
     }
 
