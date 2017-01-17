@@ -40,7 +40,7 @@ BI.SelectString4RealTime = BI.inherit(BI.Widget, {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
                         result.push({
                             id: fid,
-                            type: isRelation ? "bi.select_date_level1_item" : "bi.select_date_level0_item"
+                            type: opt.isRelation ? "bi.select_date_level1_item" : "bi.select_date_level0_item"
                         })
                     }
                 });
