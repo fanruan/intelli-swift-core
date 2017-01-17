@@ -20,15 +20,16 @@ public class BILoggerFactory {
          */
         PropertyConfigurator.configure(defaultProperties());
 //        if (PerformancePlugManager.getInstance().useLog4JPropertiesFile()) {
-            URL resource = Loader.getResource("log4j.properties");
-            if (resource != null) {
-                PropertyConfigurator.configure(resource);
-                System.out.println("The log properties url:" + resource.toString());
-            }
+        URL resource = Loader.getResource("log4j.properties");
+        if (resource != null) {
+            PropertyConfigurator.configure(resource);
+            System.out.println("The log properties url:" + resource.toString());
+        }
 //        }
     }
 
     public static Map<Class, BILogger> loggerMap = new HashMap<Class, BILogger>();
+    public static Map<String, Map<String, Object>> loggerCacheMap = new HashMap<String, Map<String, Object>>();
 
     public static BILogger getLogger(Class clazz) {
         if (loggerMap.containsKey(clazz)) {
@@ -70,6 +71,44 @@ public class BILoggerFactory {
                 "log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH\\:mm\\:ss} %p [%c] %m%n";
 
         return new ByteArrayInputStream(str.getBytes());
+    }
+
+
+    public static void cacheLoggerInfo(String cacheTag, String cacheSubTag, Object cacheContent) {
+        Map<String, Object> cacheMap = BILoggerFactory.getSpecificCacheMap(cacheTag);
+        cacheMap.put(cacheSubTag, cacheContent);
+    }
+
+    public static Map<String, Object> getSpecificCacheMap(String cacheTag) {
+        if (loggerCacheMap.containsKey(cacheTag)) {
+            return loggerCacheMap.get(cacheTag);
+        } else {
+            synchronized (BILoggerFactory.class) {
+                if (!loggerCacheMap.containsKey(cacheTag)) {
+                    loggerCacheMap.put(cacheTag, new HashMap<String, Object>());
+                }
+                return loggerCacheMap.get(cacheTag);
+            }
+        }
+    }
+
+    public static Object getLoggerCacheValue(String cacheTag, String cacheSubTag) {
+        if (!loggerCacheMap.containsKey(cacheTag)) {
+            return "\n" + "The LoggerInfoCache does not contains the cacheTag: " + cacheTag;
+        }
+
+        Map specificCacheMap = getSpecificCacheMap(cacheTag);
+        if (!specificCacheMap.containsKey(cacheSubTag)) {
+            return "\n" + "The LoggerInfoCache contains the cacheTag: " + cacheTag + "but does not contains the subTag: " + cacheSubTag;
+        }
+        return specificCacheMap.get(cacheSubTag);
+    }
+
+    public static void clearLoggerCacheValue(String cacheTag) {
+        if (loggerCacheMap.containsKey(cacheTag)) {
+            loggerCacheMap.get(cacheTag).clear();
+            loggerCacheMap.remove(cacheTag);
+        }
     }
 
 
