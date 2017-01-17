@@ -1,10 +1,10 @@
-!(function(){
+!(function () {
     var cancelAnimationFrame =
-        window.cancelAnimationFrame       ||
+        window.cancelAnimationFrame ||
         window.webkitCancelAnimationFrame ||
-        window.mozCancelAnimationFrame    ||
-        window.oCancelAnimationFrame      ||
-        window.msCancelAnimationFrame     ||
+        window.mozCancelAnimationFrame ||
+        window.oCancelAnimationFrame ||
+        window.msCancelAnimationFrame ||
         window.clearTimeout;
 
     var requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || window.setTimeout;
@@ -23,7 +23,7 @@
     };
     BI.MouseMoveTracker.prototype = {
         constructor: BI.MouseMoveTracker,
-        captureMouseMoves(/*object*/ event) {
+        captureMouseMoves: function (/*object*/ event) {
             if (!this._eventMoveToken && !this._eventUpToken) {
                 this._eventMoveToken = BI.EventListener.listen(
                     this._domNode,
@@ -47,7 +47,7 @@
             event.preventDefault();
         },
 
-        releaseMouseMoves() {
+        releaseMouseMoves: function () {
             if (this._eventMoveToken && this._eventUpToken) {
                 this._eventMoveToken.remove();
                 this._eventMoveToken = null;
@@ -67,11 +67,11 @@
             }
         },
 
-        isDragging() /*boolean*/{
+        isDragging: function () /*boolean*/ {
             return this._isDragging;
         },
 
-        _onMouseMove(/*object*/ event) {
+        _onMouseMove: function (/*object*/ event) {
             var x = event.clientX;
             var y = event.clientY;
 
@@ -90,14 +90,14 @@
             event.preventDefault();
         },
 
-        _didMouseMove() {
+        _didMouseMove: function () {
             this._animationFrameID = null;
             this._onMove(this._deltaX, this._deltaY);
             this._deltaX = 0;
             this._deltaY = 0;
         },
 
-        _onMouseUp() {
+        _onMouseUp: function () {
             if (this._animationFrameID) {
                 this._didMouseMove();
             }
