@@ -30,7 +30,7 @@ BI.PackageTablesListPane = BI.inherit(BI.Widget, {
         })
     },
 
-    _getAllDatabaseLinkNames: function(items) {
+    _getAllDatabaseLinkNames(items) {
         var linkNames = [];
         BI.each(items, function (i, item) {
             var connName = item.connName;
