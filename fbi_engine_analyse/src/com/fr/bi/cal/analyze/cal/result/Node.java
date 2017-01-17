@@ -54,7 +54,7 @@ public class Node implements SummaryContainer, BINode {
      */
     private Node sibling;
     //ConcurrentHashMap需要支持高并发访问，不一定是该map高并发,当node过多时也需要高并发
-    private volatile Map summaryValue = new ConcurrentHashMap(1);
+    protected volatile Map summaryValue;
     //ConcurrentHashMap需要支持高并发访问，不一定是该map高并发,当node过多时也需要高并发
     private volatile Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap;
     private String showValue;
@@ -69,7 +69,6 @@ public class Node implements SummaryContainer, BINode {
     public Node (Object data){
         this();
         this.setData(data);
-        childs = new ChildsMap<Node>();
     }
 
 
@@ -163,15 +162,15 @@ public class Node implements SummaryContainer, BINode {
     @Override
     public Map<TargetGettingKey, GroupValueIndex> getTargetIndexValueMap() {
         if (targetIndexValueMap == null) {
-            targetIndexValueMap = new ConcurrentHashMap<TargetGettingKey, GroupValueIndex>(1);
+            synchronized (this){
+                if (targetIndexValueMap == null){
+                    targetIndexValueMap = new ConcurrentHashMap<TargetGettingKey, GroupValueIndex>(1);
+                }
+            }
         }
         return targetIndexValueMap;
     }
 
-    @Override
-    public void setTargetIndexValueMap(Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap) {
-        this.targetIndexValueMap = targetIndexValueMap;
-    }
 
     @Override
     public Node getFirstChild() {
@@ -276,7 +275,7 @@ public class Node implements SummaryContainer, BINode {
             return false;
         }
         Node child = getChild(0);
-        Iterator it = getSummaryValue().entrySet().iterator();
+        Iterator it = getNotNullSummaryValue().entrySet().iterator();
         while (it.hasNext()) {
             Entry entry = (Entry) it.next();
             if (!equalsSummaryValue(child.getSummaryValue(entry.getKey()), entry.getValue())) {
@@ -306,7 +305,7 @@ public class Node implements SummaryContainer, BINode {
                 value = ((Number) value).doubleValue();
             }
         }
-        getSummaryValue().put(key, value);
+        getNotNullSummaryValue().put(key, value);
     }
 
     @Override
@@ -478,7 +477,7 @@ public class Node implements SummaryContainer, BINode {
         CrossHeader newnode = new CrossHeader(comparator, data);
         newnode.setShowValue(getShowValue());
         newnode.getTargetIndexValueMap().putAll(this.getTargetIndexValueMap());
-        newnode.setSummaryValue(this.getSummaryValue());
+        newnode.summaryValue = this.summaryValue;
         ChildsMap<Node> childs = this.childs;
         Node tempNode = null;
         for (int i = 0; i < childs.size(); i++) {
@@ -552,7 +551,7 @@ public class Node implements SummaryContainer, BINode {
         if (N < 1 || count == 0) {
             return null;
         }
-        return (Comparable) getChild(Math.min(N, count) - 1);
+        return (Comparable) getChild(Math.min(N, count) - 1).getData();
     }
 
     /**
@@ -788,8 +787,19 @@ public class Node implements SummaryContainer, BINode {
         return summaryValue;
     }
 
+    protected Map getNotNullSummaryValue() {
+        if (summaryValue == null){
+            synchronized (this){
+                if (summaryValue == null){
+                    summaryValue = new ConcurrentHashMap(1);
+                }
+            }
+        }
+        return summaryValue;
+    }
+
     public void setSummaryValue(Map summaryValueMap) {
-        getSummaryValue().putAll(summaryValueMap);
+        getNotNullSummaryValue().putAll(summaryValueMap);
     }
 
     /**

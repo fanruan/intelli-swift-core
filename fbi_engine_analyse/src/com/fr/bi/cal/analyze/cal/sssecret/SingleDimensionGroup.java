@@ -89,7 +89,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
             }
             iterators[i] = it;
         }
-        return mergeIteratorCreator.createIterator(iterators, gvis, columns[0].getComparator());
+        return mergeIteratorCreator.createIterator(iterators, gvis, columns[0].getComparator(), tis, loader);
     }
 
     protected Iterator getIterator(int index) {
@@ -169,7 +169,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         if (isNull(metricMergeResult)) {
             return NoneDimensionGroup.NULL;
         }
-        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, tis, metricMergeResult.getGvis(), loader);
+        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, tis, metricMergeResult.getGvis(), metricMergeResult.getSummaryValue() ,loader);
     }
 
     private boolean isNull(MetricMergeResult node) {
@@ -193,7 +193,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         if (row < metricMergeResultList.size()) {
             return metricMergeResultList.get(row);
         } else {
-            if (row == 0) {
+            if (row == 0 && mergeIteratorCreator.isSimple()) {
                 MetricMergeResult result = createEmptyResult();
                 addMetricMergeResult(result);
                 return result;
@@ -233,8 +233,10 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     @Override
     public void executorTerminated() {
-        MetricMergeResult metricMergeResult = createEmptyResult();
-        addMetricMergeResult(metricMergeResult);
+        if (mergeIteratorCreator.isSimple()){
+            MetricMergeResult metricMergeResult = createEmptyResult();
+            addMetricMergeResult(metricMergeResult);
+        }
     }
 
     private MetricMergeResult createEmptyResult() {

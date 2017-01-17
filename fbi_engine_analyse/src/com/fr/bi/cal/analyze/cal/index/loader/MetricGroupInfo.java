@@ -30,6 +30,10 @@ public class MetricGroupInfo {
         return filterIndex;
     }
 
+    public void setFilterIndex(GroupValueIndex gvi) {
+        filterIndex = gvi;
+    }
+
     public BusinessTable getMetric() {
         return metric;
     }

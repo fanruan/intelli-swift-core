@@ -240,6 +240,13 @@ public class CrossHeader extends Node implements Serializable {
         return value.getSummaryValue();
     }
 
+    protected Map getNotNullSummaryValue() {
+        if (value == null) {
+            return new HashMap();
+        }
+        return value.getSummaryValue();
+    }
+
     /**
      * 根据值过滤创建新的节点
      *

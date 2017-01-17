@@ -24,21 +24,19 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
         this.gvis = gvis;
         this.c = c;
         initEntries();
-        moveNext();
     }
 
 
 
     @Override
     public boolean hasNext() {
+        moveNext();
         return next != null;
     }
 
     @Override
     public MetricMergeResult next() {
-        MetricMergeResult temp = next;
-        moveNext();
-        return temp;
+        return next;
     }
 
     @Override
@@ -104,7 +102,7 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
                     gvis[i] = gvis[i].AND(this.gvis[i]);
                 }
             }
-            next = new MetricMergeResult(minValue, gvis);
+            next = new MetricMergeResult(c, minValue, gvis);
         }
         moveEntries(array);
     }

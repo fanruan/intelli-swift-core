@@ -819,11 +819,11 @@ public class CubeIndexLoader {
                 if (metricGroupInfo == null) {
                     GroupValueIndex gvi = widget.createFilterGVI(row, targetKey, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(targetKey));
                     metricGroupInfo = new MetricGroupInfo(row, gvi, summary.createTableKey());
-                    metricGroupInfo.addTargetAndKey(new TargetAndKey(summary, summary.createTargetGettingKey()));
+                    metricGroupInfo.addTargetAndKey(new TargetAndKey(target.getName(), summary, summary.createTargetGettingKey()));
                     map.put(groupKey, metricGroupInfo);
                     mergerInfoList.add(metricGroupInfo);
                 } else {
-                    metricGroupInfo.addTargetAndKey(new TargetAndKey(summary, summary.createTargetGettingKey()));
+                    metricGroupInfo.addTargetAndKey(new TargetAndKey(target.getName(), summary, summary.createTargetGettingKey()));
                 }
             }
         }
@@ -839,7 +839,7 @@ public class CubeIndexLoader {
         BusinessTable tableBelongTo = row[0].getField().getTableBelongTo();
         GroupValueIndex gvi = widget.createFilterGVI(row, tableBelongTo, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(tableBelongTo));
         MetricGroupInfo metricGroupInfo = new MetricGroupInfo(row, gvi, summary.createTableKey());
-        metricGroupInfo.addTargetAndKey(new TargetAndKey(summary, summary.createTargetGettingKey()));
+        metricGroupInfo.addTargetAndKey(new TargetAndKey(summary.getName(), summary, summary.createTargetGettingKey()));
         List<MetricGroupInfo> list = new ArrayList<MetricGroupInfo>();
         list.add(metricGroupInfo);
         return getRootDimensionGroup(widget, usedTargets, rowDimension, session, list, isCross, isHor, page);

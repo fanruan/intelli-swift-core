@@ -1,33 +1,27 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
+import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+
+import java.util.Comparator;
 
 /**
  * Created by 小灰灰 on 2017/1/3.
  */
-public class MetricMergeResult {
+public class MetricMergeResult extends Node {
     protected final static MetricMergeResult NULL = new MetricMergeResult(null, null);
 
-    private Object data;
-    private String showValue;
     private GroupValueIndex[] gvis;
 
+
     public MetricMergeResult(Object data, GroupValueIndex[] gvis) {
-        this.data = data;
+        super(data);
         this.gvis = gvis;
-        initShowValue();
     }
 
-    private void initShowValue() {
-        showValue = data == null ? null : data.toString();
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public String getShowValue() {
-        return showValue;
+    public MetricMergeResult(Comparator c, Object data, GroupValueIndex[] gvis) {
+        super(c, data);
+        this.gvis = gvis;
     }
 
     public GroupValueIndex[] getGvis() {

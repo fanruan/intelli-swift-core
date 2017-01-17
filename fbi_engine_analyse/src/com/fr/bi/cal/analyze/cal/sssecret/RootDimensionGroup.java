@@ -229,12 +229,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             return ReturnStatus.Success;
         }
         ISingleDimensionGroup sg = getCacheDimensionGroup(gv, deep);
-        int row = index[deep];
         //如果往下移动，行数就加1
         if (notNextChild(index, deep, expander, sg)) {
-            row++;
+            index[deep]++;
         }
-        ReturnStatus returnStatus = findCurrentValue(sg, gv, list, row);
+        ReturnStatus returnStatus = findCurrentValue(sg, gv, list, index[deep]);
         //如果越界，就一直往上移，直到不越界或者结束。
         while (returnStatus == ReturnStatus.GroupOutOfBounds) {
             //如果找到根节点还是越界，说明结束了。
@@ -247,10 +246,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             deep -= 1;
             gv = gv.getParent();
             sg = getCacheDimensionGroup(gv, deep);
-            returnStatus = findCurrentValue(sg, gv, list, index[deep] + 1);
+            expander = expander.getParent();
+            returnStatus = findCurrentValue(sg, gv, list, ++index[deep]);
         }
         //如果往下展开，就继续往下
-        NodeExpander ex = expander.getChildExpander(sg.getChildShowName(row));
+        NodeExpander ex = expander.getChildExpander(sg.getChildShowName(index[deep]));
         if (ex != null && deep + 1 < index.length) {
             getNext(gv.getChild(), index, deep + 1, ex, list);
         }

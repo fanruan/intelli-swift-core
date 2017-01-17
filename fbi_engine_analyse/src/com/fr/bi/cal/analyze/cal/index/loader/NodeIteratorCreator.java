@@ -3,30 +3,26 @@ package com.fr.bi.cal.analyze.cal.index.loader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.sssecret.IRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.NoneMetricRootDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.PartConstructedRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.RootDimensionGroup;
-import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
-import com.fr.bi.cal.analyze.cal.sssecret.diminfo.SimpleMergeIteratorCreator;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.*;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
+import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.dimension.filter.field.DimensionTargetValueFilter;
-import com.fr.bi.field.filtervalue.string.nfilter.StringNFilterValue;
+import com.fr.bi.field.filtervalue.string.nfilter.StringTOPNFilterValue;
 import com.fr.bi.field.filtervalue.string.onevaluefilter.StringOneValueFilterValue;
-import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
-import com.fr.bi.field.target.key.cal.configuration.BIConfiguratedCalculatorTargetKey;
-import com.fr.bi.field.target.key.cal.configuration.BIPeriodCalTargetKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2016/11/17.
@@ -57,31 +53,14 @@ public class NodeIteratorCreator {
         this.calAllPage = calAllPage;
     }
 
-    private CalLevel getConfiguredCalculatorTargetLevel() {
-        CalLevel level = CalLevel.PART_NODE;
-        for (BICalculatorTargetKey key : LoaderUtils.getCalculatorTargets(usedTargets)) {
-            if (key instanceof BIPeriodCalTargetKey) {
-                return CalLevel.ALL_NODE;
-            }
-            if (key instanceof BIConfiguratedCalculatorTargetKey) {
-                level = CalLevel.SINGLE_NODE;
-            }
-        }
-        return level;
-    }
-
     public CalLevel getCalLevel() {
-        if (calAllPage){
+        if (calAllPage || !LoaderUtils.getCalculatorTargets(usedTargets).isEmpty()) {
             return CalLevel.ALL_NODE;
         }
-        CalLevel level = getConfiguredCalculatorTargetLevel();
-        if (level == CalLevel.ALL_NODE){
-            return level;
-        }
-        if (hasDimensionInDirectFilter() && showSum){
+        if (hasDimensionInDirectFilter() && showSum) {
             return CalLevel.ALL_NODE;
         }
-        return hasTargetSort() ? CalLevel.SINGLE_NODE : level;
+        return CalLevel.PART_NODE;
     }
 
     public IRootDimensionGroup createRoot() {
@@ -93,23 +72,65 @@ public class NodeIteratorCreator {
         }
     }
 
-    private MergeIteratorCreator[] createMergeIteratorCreator(int allNode){
+    private MergeIteratorCreator[] createMergeIteratorCreator() {
         MergeIteratorCreator[] mergeIteratorCreators = new MergeIteratorCreator[rowDimension.length];
-        Arrays.fill(mergeIteratorCreators, new SimpleMergeIteratorCreator());
-        for (int i = 0; i < rowDimension.length; i++){
+        for (int i = 0; i < rowDimension.length; i++) {
             DimensionFilter filter = rowDimension[i].getFilter();
+            if (hasTargetSort()) {
+                createAllNodeCreator(mergeIteratorCreators, i, filter);
+            } else if (filter == null || filter.canCreateDirectFilter()) {
+                mergeIteratorCreators[i] = new SimpleMergeIteratorCreator();
+            } else if (filter instanceof DimensionTargetValueFilter) {
+                FilterValue filterValue = ((DimensionTargetValueFilter) filter).getFilterValue();
+                if (filterValue instanceof StringTOPNFilterValue) {
+                    mergeIteratorCreators[i] = new NFilterMergeIteratorCreator(((StringTOPNFilterValue) filterValue).getN());
+                } else if (filterValue instanceof StringOneValueFilterValue) {
+                    mergeIteratorCreators[i] = new FilterMergeIteratorCreator((StringOneValueFilterValue) filterValue);
+                }
+            } else {
+                createAllNodeCreator(mergeIteratorCreators, i, filter);
+            }
         }
         return mergeIteratorCreators;
     }
 
+    private void createAllNodeCreator(MergeIteratorCreator[] mergeIteratorCreators, int index, DimensionFilter filter) {
+        List<TargetAndKey>[] metricsToCalculate = new List[mergeIteratorCreators.length];
+        Map<String, TargetCalculator> calculatedMap = new HashMap<String, TargetCalculator>();
+        List<String> metrics = new ArrayList<String>();
+        if (filter != null){
+            metrics = filter.getUsedTargets();
+        }
+        if (targetSort != null){
+            metrics.add(targetSort.getName());
+        }
+        fillMetricsToCalculate(metrics, metricsToCalculate, calculatedMap);
+        mergeIteratorCreators[index] = new AllNodeMergeIteratorCreator(filter, targetSort, metricsToCalculate, calculatedMap);
+    }
+
+    private void fillMetricsToCalculate(List<String> metrics, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap) {
+        for (int i = 0; i < metricGroupInfoList.size(); i++){
+            MetricGroupInfo info = metricGroupInfoList.get(i);
+            List<TargetAndKey> calList = new ArrayList<TargetAndKey>();
+            metricsToCalculate[i] = calList;
+            List<TargetAndKey> list = info.getSummaryList();
+            for (TargetAndKey targetAndKey : list){
+                if (metrics.contains(targetAndKey.getTargetId())){
+                    calculatedMap.put(targetAndKey.getTargetId(), targetAndKey.getCalculator());
+                    calList.add(targetAndKey);
+                }
+            }
+        }
+    }
+
     private IRootDimensionGroup createNormalIteratorRoot() {
-        if (usedTargets == null || usedTargets.length == 0){
+        if (usedTargets == null || usedTargets.length == 0) {
             return new NoneMetricRootDimensionGroup(metricGroupInfoList, createMergeIteratorCreator(), session, isRealData, filter, getDirectDimensionFilter());
         }
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
         for (int i = 0; i < directFilterIndexes.length; i++) {
             if (directFilterIndexes[i] != null) {
-                metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]);
+                metricGroupInfoList.get(i).setFilterIndex(metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]));
             }
         }
         return new RootDimensionGroup(metricGroupInfoList, createMergeIteratorCreator(), session, isRealData);
@@ -119,10 +140,23 @@ public class NodeIteratorCreator {
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
         for (int i = 0; i < directFilterIndexes.length; i++) {
             if (directFilterIndexes[i] != null) {
-                metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]);
+                metricGroupInfoList.get(i).setFilterIndex(metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]));
             }
         }
-        return new RootDimensionGroup(metricGroupInfoList, createMergeIteratorCreator(), session, isRealData);
+        return new PartConstructedRootDimensionGroup(metricGroupInfoList, createMergeIteratorCreator(), session, isRealData, getLastAllNodeDimensionIndex());
+    }
+
+    private int getLastAllNodeDimensionIndex() {
+        if (calAllPage || !LoaderUtils.getCalculatorTargets(usedTargets).isEmpty() || !targetFilterMap.isEmpty()) {
+            return rowDimension.length - 1;
+        }
+        int index = 0;
+        for (int i = 0; i < rowDimension.length; i++){
+            if (rowDimension[i].getFilter() != null && !rowDimension[i].getFilter().canCreateDirectFilter()){
+                index = i;
+            }
+        }
+        return index;
     }
 
     private GroupValueIndex[] createDirectFilterIndex() {
@@ -153,35 +187,10 @@ public class NodeIteratorCreator {
         return filters;
     }
 
-
-
-    private StringNFilterValue[] getDimensionNFilter() {
-        StringNFilterValue[] filters = new StringNFilterValue[rowDimension.length];
-        for (int i = 0; i < rowDimension.length; i++) {
-            DimensionFilter resultFilter = rowDimension[i].getFilter();
-            if (resultFilter instanceof DimensionTargetValueFilter && ((DimensionTargetValueFilter) resultFilter).getFilterValue() instanceof StringNFilterValue) {
-                filters[i] = (StringNFilterValue) ((DimensionTargetValueFilter) resultFilter).getFilterValue();
-            }
-        }
-        return filters;
-    }
-
-    private StringOneValueFilterValue[] getDimensionOneValueFilter() {
-        StringOneValueFilterValue[] filters = new StringOneValueFilterValue[rowDimension.length];
-        for (int i = 0; i < filters.length; i++) {
-            DimensionFilter resultFilter = rowDimension[i].getFilter();
-            if (resultFilter instanceof DimensionTargetValueFilter && ((DimensionTargetValueFilter) resultFilter).getFilterValue() instanceof StringOneValueFilterValue) {
-                filters[i] = (StringOneValueFilterValue) ((DimensionTargetValueFilter) resultFilter).getFilterValue();
-            }
-        }
-        return filters;
-    }
-
-
     private boolean hasDimensionInDirectFilter() {
-        for (BIDimension dimension : rowDimension){
+        for (BIDimension dimension : rowDimension) {
             DimensionFilter filter = dimension.getFilter();
-            if (filter != null && !filter.canCreateDirectFilter()){
+            if (filter != null && !filter.canCreateDirectFilter()) {
                 return true;
             }
         }
@@ -189,11 +198,11 @@ public class NodeIteratorCreator {
     }
 
     private boolean hasTargetSort() {
-        if (targetSort == null){
+        if (targetSort == null) {
             return false;
         }
-        for (BISummaryTarget t : usedTargets){
-            if (ComparatorUtils.equals(t.getValue(), targetSort.getName())){
+        for (BISummaryTarget t : usedTargets) {
+            if (ComparatorUtils.equals(t.getValue(), targetSort.getName())) {
                 return true;
             }
         }
