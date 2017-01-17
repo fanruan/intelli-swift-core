@@ -6,12 +6,10 @@ import com.fr.fs.base.FSManager;
 import com.fr.fs.privilege.auth.FSAuthentication;
 import com.fr.fs.privilege.auth.FSAuthenticationManager;
 import com.fr.fs.web.service.AbstractFSAuthService;
-import com.fr.general.ComparatorUtils;
 import com.fr.privilege.base.PrivilegeVote;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.ActionCMD;
 import com.fr.web.core.WebActionsDispatcher;
-import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Service4BIH5 implements Service {
 
+    private static final int EXPIRES = -10;
 
     private static ActionCMD[] actions = {
             new EmbResourceService(),
@@ -50,7 +49,7 @@ public class Service4BIH5 implements Service {
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
         res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setDateHeader("Expires", -10);
+        res.setDateHeader("Expires", EXPIRES);
 
 //        PrivilegeVote vote = getFSVote(req, res);
 //        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);

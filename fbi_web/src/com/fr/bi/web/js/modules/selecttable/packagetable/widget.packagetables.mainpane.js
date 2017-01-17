@@ -62,14 +62,14 @@ BI.PackageTablesMainPane = BI.inherit(BI.Widget, {
                 var table = tables[id];
                 self.tables.push({
                     type: "bi.database_table",
-                    cls: "bi-table-ha-button",
-                    connName: table.connection_name,
                     text: self._getTableTranName(id, table),
-                    linkNames: o.linkNames,
                     value: BI.extend(table, {
                         id: id,
                         temp_name: BI.Utils.getTransNameById4Conf(id)
-                    })
+                    }),
+                    linkNames: o.linkNames,
+                    connName: table.connection_name,
+                    needMark: true
                 })
             });
             self.tablesPane.populate(self.tables);

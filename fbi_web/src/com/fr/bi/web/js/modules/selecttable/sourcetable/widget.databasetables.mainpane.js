@@ -18,13 +18,14 @@ BI.DatabaseTablesMainPane = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.DatabaseTablesMainPane.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         //所有表面板
         this.tablesPane = BI.createWidget({
             type: "bi.database_tables_pane",
-            tables: this.options.tables,
-            container: this.element
+            container: this.element,
+            tables: o.tables,
+            linkNames: o.linkNames
         });
         this.tablesPane.on(BI.DatabaseTablesPane.EVENT_CHANGE, function () {
             self.fireEvent(BI.DatabaseTablesMainPane.EVENT_CHANGE);

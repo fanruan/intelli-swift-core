@@ -29,7 +29,7 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
         //这边 value 拼了一下，不好
         BI.each(linkNames, function (i, name) {
             var text = name;
-            if(name === BICst.CONNECTION.SERVER_CONNECTION) {
+            if (name === BICst.CONNECTION.SERVER_CONNECTION) {
                 text = BI.i18nText("BI-Server_Data_Set");
             }
             dataLinks.push({
@@ -62,18 +62,18 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
                 return self._createLinksCards(v, linkNames);
             }
         });
-        if(BI.isNotEmptyArray(items.etl)) {
+        if (BI.isNotEmptyArray(items.etl)) {
             this.tab.setSelect(items.etl[0].value);
-        } else if(BI.isNotEmptyArray(items.dataLinks)){
+        } else if (BI.isNotEmptyArray(items.dataLinks)) {
             this.tab.setSelect(items.dataLinks[0].value);
-        } else if(BI.isNotEmptyArray(items.packages)) {
+        } else if (BI.isNotEmptyArray(items.packages)) {
             this.tab.setSelect(items.packages[0].value);
         }
     },
 
     _createLinksCards: function (v, linkNames) {
         if (v.indexOf(BICst.DATA_LINK.DATA_SOURCE) !== -1) {
-            return this._createDataSourceCard(v.slice(BICst.DATA_LINK.DATA_SOURCE.length));
+            return this._createDataSourceCard(v.slice(BICst.DATA_LINK.DATA_SOURCE.length), linkNames);
         } else if (v.indexOf(BICst.DATA_LINK.PACKAGES) !== -1) {
             return this._createPackagesCard(v.slice(BICst.DATA_LINK.PACKAGES.length), linkNames);
         } else if (v.indexOf(BICst.DATA_LINK.ETL) !== -1) {
@@ -81,11 +81,12 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
         }
     },
 
-    _createDataSourceCard: function (connName) {
+    _createDataSourceCard: function (connName, linkNames) {
         var self = this;
         this.tablesTab = BI.createWidget({
             type: "bi.database_tables_main_pane",
-            tables: this.options.tables
+            tables: this.options.tables,
+            linkNames: linkNames
         });
         this.tablesTab.populate(connName);
         this.tablesTab.on(BI.DatabaseTablesMainPane.EVENT_CHANGE, function () {
@@ -100,7 +101,6 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
         var packagePane = BI.createWidget({
             type: "bi.package_tables_main_pane",
             packId: packId,
-            translations: this.options.translations,
             linkNames: linkNames
         });
         packagePane.on(BI.PackageTablesMainPane.EVENT_CHANGE, function () {

@@ -36,7 +36,7 @@ BI.SequenceTableDynamicNumber = BI.inherit(BI.SequenceTableTreeNumber, {
             return cnt;
         }
 
-        var start = 0;
+        var start = 0, top = 0;
         BI.each(nodes, function (i, node) {
             if (BI.isArray(node.children)) {
                 BI.each(node.children, function (index, child) {
@@ -44,20 +44,24 @@ BI.SequenceTableDynamicNumber = BI.inherit(BI.SequenceTableTreeNumber, {
                     result.push({
                         text: count++,
                         start: start,
+                        top: top,
                         cnt: cnt,
                         cls: "sequence-table-number",
                         height: cnt * o.rowSize + (cnt - 1)
                     });
                     start += cnt;
+                    top += cnt * o.rowSize;
                 });
                 if (BI.isNotEmptyArray(node.values)) {
                     result.push({
                         text: BI.i18nText("BI-Summary_Values"),
                         start: start++,
+                        top: top,
                         cnt: 1,
                         cls: "sequence-table-number sequence-table-summary",
                         height: o.rowSize
                     });
+                    top += o.rowSize;
                 }
             }
         });

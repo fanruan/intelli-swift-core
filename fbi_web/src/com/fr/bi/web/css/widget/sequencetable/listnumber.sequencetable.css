@@ -2,15 +2,28 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-sequence-table-list-number .sequence-table-title {
+  -webkit-box-sizing: border-box;
+  /*Safari3.2+*/
+  -moz-box-sizing: border-box;
+  /*Firefox3.5+*/
+  -ms-box-sizing: border-box;
+  /*IE8*/
+  box-sizing: border-box;
+  /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
   overflow-x: hidden;
   overflow-y: hidden;
   border: 1px solid #eaeaea;
 }
 .bi-sequence-table-list-number .sequence-table-number {
-  border-top: 1px solid #eaeaea;
+  -webkit-box-sizing: border-box;
+  /*Safari3.2+*/
+  -moz-box-sizing: border-box;
+  /*Firefox3.5+*/
+  -ms-box-sizing: border-box;
+  /*IE8*/
+  box-sizing: border-box;
+  /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
   border-left: 1px solid #eaeaea;
   border-right: 1px solid #eaeaea;
-}
-.bi-sequence-table-list-number .sequence-table-number.last {
   border-bottom: 1px solid #eaeaea;
 }

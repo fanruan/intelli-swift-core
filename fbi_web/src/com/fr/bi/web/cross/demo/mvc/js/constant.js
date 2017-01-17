@@ -176,13 +176,17 @@ var _JS = [
 
     "widget/mvc.tableview.js",
 
-    "widget/mvc.fixtable.js",
+    "widget/mvc.gridtable.js",
 
     "widget/mvc.tabletree.js",
 
     "widget/mvc.layertree.table.js",
 
     "widget/mvc.tabler.js",
+
+    "widget/mvc.gridview.js",
+
+    "widget/mvc.collectionview.js",
 
     "widget/mvc.bubble.js",
 
@@ -537,10 +541,12 @@ var _Routes = {
     "/message": "MessageView",
     "/button": "ButtonView",
     "/table_view": "Table_View",
-    "/fixtable": "FixTableView",
     "/tabletree": "TableTreeView",
     "/layer_tree_table": "LayerTreeTableView",
     "/tabler": "TablerView",
+    "/gridview": "Grid_View",
+    "/collectionview": "Collection_View",
+    "/gridtable": "GridTableView",
     "/bubble": "BubbleView",
     "/toast": "ToastView",
     "/tooltip": "TooltipView",
@@ -937,10 +943,6 @@ _Models.widget = [{
     value: "table_view"
 }, {
     pId: 7,
-    text: "大数据表格",
-    value: "fixtable"
-}, {
-    pId: 7,
     text: "bi.table_tree",
     value: "tabletree"
 }, {
@@ -1034,6 +1036,15 @@ _Models.widget = [{
 }, {
     text: "bi.zero_clip",
     value: "zclip"
+}, {
+    text: "bi.grid_view",
+    value: "gridview"
+}, {
+    text: "bi.collection_view",
+    value: "collectionview"
+}, {
+    text: "bi.grid_table",
+    value: "gridtable"
 }];
 _Models.layout = [{
     text: "bi.center_adapt",

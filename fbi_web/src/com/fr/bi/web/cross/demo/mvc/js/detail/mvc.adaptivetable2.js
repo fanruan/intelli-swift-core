@@ -106,15 +106,18 @@ AdaptiveTable2View = BI.inherit(BI.View, {
         }];
 
         var table1 = BI.createWidget({
-            type: "bi.adaptive_table",
+            type: "bi.table_tree",
+            width: 600,
+            height: 400,
             el: {
-                type: "bi.table_tree"
+                type: "bi.adaptive_table"
             },
             isNeedFreeze: true,
             isNeedMerge: true,
             freezeCols: [],
             mergeCols: [0, 1, 2],
-            columnSize: ["", "", "", "", "", "", "", "", "", ""],
+            columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+            minColumnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
             header: header,
             items: items,
             crossHeader: crossHeader,
