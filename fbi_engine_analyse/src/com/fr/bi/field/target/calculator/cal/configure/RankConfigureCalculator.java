@@ -109,7 +109,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
                 deep++;
             }
             Comparator c = type == BIReportConstant.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC ?
-                    new ASCComparator() : new DSCComparator();
+                    new RankConfASCComparator() : new RankConfDSCComparator();
             TreeMap sortMap = new TreeMap(c);
             LightNode cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
