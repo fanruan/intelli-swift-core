@@ -170,10 +170,10 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             if (v === BICst.WIDGET.MAP) {
                 chart.on(BI.MapChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
-                    BI.isNotNull(obj.drillDid) && self._onClickDrill(obj.dId, obj.x, obj.drillDid);
+                    BI.isNotNull(obj.drillDid) && self._onClickDrill(obj.dimensionIds[0], obj.xValue, obj.drillDid);
                 });
                 chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function (obj) {
-                    self._onClickDrill(obj.dId, obj.x);
+                    self._onClickDrill(obj.dimensionIds[0], obj.xValue);
                 });
             } else {
                 BI.each(BICst.INIT_CHART_MAP[v].events, function (idx, v) {
