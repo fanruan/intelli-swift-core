@@ -178,8 +178,8 @@ Data.Req = BIReq = {
         }, complete)
     },
 
-    reqUpdateExcelTableCube: function (date, callback, complete) {
-        BI.requestAsync("fr_bi_dezi", "update_excel_table_cube_by_table_id", date, function (res) {
+    reqUpdateExcelTableCube: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_dezi", "update_excel_table_cube_by_table_id", data, function (res) {
             callback(res);
         }, complete)
     },
