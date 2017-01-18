@@ -477,7 +477,7 @@
 
         getWidgetSubTypeByID: function (wid) {
             var type = this.getWidgetTypeByID(wid);
-            var subType = Data.SharingPool.get("widgets", wid, "sub_type");
+            var subType = Data.SharingPool.get("widgets", wid, "subType");
             if (type === BICst.WIDGET.MAP && BI.isNull(subType)) {
                 return BI.findKey(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
                     if (layer === 0) {
