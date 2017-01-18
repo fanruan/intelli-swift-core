@@ -452,6 +452,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.setWidth(this.element.width());
         this.table.setHeight(this.element.height());
         this.table.attr("isNeedFreeze", true);
+        this.table.attr("showSequence", this.model.isShowNumber());
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());

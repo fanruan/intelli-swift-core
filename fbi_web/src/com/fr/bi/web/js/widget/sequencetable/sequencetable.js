@@ -156,6 +156,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
     setHeight: function (height) {
         BI.PageTable.superclass.setHeight.apply(this, arguments);
         this.table.setHeight(height);
+        this.sequence.setHeight(height - BI.GridTableScrollbar.SIZE);
     },
 
     setColumnSize: function (columnSize) {
@@ -182,6 +183,11 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
     hasRightHorizontalScroll: function () {
         return this.table.hasRightHorizontalScroll();
+    },
+
+    setVerticalScroll: function (scrollTop) {
+        this.table.setVerticalScroll(scrollTop);
+        this.sequence.setVerticalScroll(scrollTop);
     },
 
     getVerticalScroll: function () {
