@@ -33,9 +33,10 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction{
 
         CubeTableSource taleSource=BICubeConfigureCenter.getDataSourceManager().getTableSource(new BIBusinessTable(new BITableID(tableId)));
 
-        if(taleSource instanceof ExcelTableSource){
-            ((ExcelTableSource) taleSource).setFullFileName(newExcelFullName);
-            new CubeBuildManager().addSingleTableTask(userId, taleSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
-        }
+        //这样写不对
+//        if(taleSource instanceof ExcelTableSource){
+//            ((ExcelTableSource) taleSource).setFullFileName(newExcelFullName);
+//            new CubeBuildManager().addSingleTableTask(userId, taleSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+//        }
     }
 }
