@@ -170,7 +170,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         var o = this.options;
         this.numbers = this._formatNumber(o.items);
         var intervalTree = BI.PrefixIntervalTree.uniform(this.numbers.length, 0);
-        BI.each(this.numbers, (i, number) => {
+        BI.each(this.numbers, function (i, number) {
             intervalTree.set(i, number.height);
         });
         this.intervalTree = intervalTree;

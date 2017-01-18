@@ -179,7 +179,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
         var regionSize = this.getRegionSize(), totalLeftColumnSize = 0, totalRightColumnSize = 0, totalColumnSize = 0, summaryColumnSizeArray = [], totalRowSize = o.items.length * o.rowSize;
         var freezeColLength = this._getFreezeColLength();
         BI.each(o.columnSize, function (i, size) {
-            if (o.freezeCols.contains(i)) {
+            if (o.isNeedFreeze === true && o.freezeCols.contains(i)) {
                 totalLeftColumnSize += size;
             } else {
                 totalRightColumnSize += size;
