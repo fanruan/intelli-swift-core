@@ -693,6 +693,14 @@ public class ResourceHelper {
 
                 //react控件
                 "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
+
+                //业务人员导入Excel
+                "com/fr/bi/web/css/modules/updateexcel/updateexcelpopup.css",
+                "com/fr/bi/web/css/modules/updateexcel/excelfieldstable/updateexcelfieldtable.css",
+                "com/fr/bi/web/css/modules/updateexcel/updateexcelcombo.css",
+                "com/fr/bi/web/css/modules/updateexcel/button/stateiconbutton.css",
+                "com/fr/bi/web/css/modules/updateexcel/messagepane/failpane.css",
+                "com/fr/bi/web/css/modules/updateexcel/messagepane/successpane.css",
         };
     }
 
@@ -1915,12 +1923,6 @@ public class ResourceHelper {
 
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
-                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/updateexcelpopup.css",
-                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/excelfieldstable/updateexcelfieldtable.css",
-                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/updateexcelcombo.css",
-                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/button/stateiconbutton.css",
-                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/messagepane/failpane.css",
-                "com/fr/bi/web/css/services/packageselectdataservice/updateexcel/messagepane/successpane.css",
         };
     }
 
