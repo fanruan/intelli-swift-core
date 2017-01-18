@@ -47,7 +47,7 @@ BI.SequenceTableDynamicNumber = BI.inherit(BI.SequenceTableTreeNumber, {
                         top: top,
                         cnt: cnt,
                         cls: "sequence-table-number",
-                        height: cnt * o.rowSize + (cnt - 1)
+                        height: cnt * o.rowSize
                     });
                     start += cnt;
                     top += cnt * o.rowSize;
