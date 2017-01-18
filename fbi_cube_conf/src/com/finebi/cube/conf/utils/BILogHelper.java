@@ -18,16 +18,18 @@ public class BILogHelper {
     private static BILogger logger = BILoggerFactory.getLogger(BILogHelper.class);
 
     public static String logBusinessTable(BusinessTable table) {
+        long userID = UserControl.getInstance().getSuperManagerID();
         try {
             table = BusinessTableHelper.getBusinessTable(table.getID());
-            long userID = UserControl.getInstance().getSuperManagerID();
             return BIStringUtils.append(
+                    "\n" + "       Package Name:", BusinessTableHelper.getPackageNameByTableId(table.getID().getIdentityValue()),
                     "\n" + "       Business Table Alias Name:", BICubeConfigureCenter.getAliasManager().getAliasName(table.getID().getIdentityValue(), userID),
                     "\n" + "       Business Table ID:", table.getID().getIdentity(),
                     "\n" + "       Corresponding  Table Source name:", table.getTableSource().getTableName(),
                     "\n" + "       Corresponding  Table Source ID:", table.getTableSource().getSourceID()
             );
         } catch (Exception e) {
+            logger.debug("get businessTable info error, the table ID is: " + table.getID().getIdentityValue() + "the table name is: " + BICubeConfigureCenter.getAliasManager().getAliasName(table.getID().getIdentityValue(), userID));
             logger.debug(e.getMessage(), e);
             return "";
         }
@@ -90,6 +92,7 @@ public class BILogHelper {
         }
     }
 
+
     public static String logAnalysisETLTableField(BusinessTable table, String prefix) {
         try {
             StringBuffer sb = new StringBuffer();
@@ -136,6 +139,5 @@ public class BILogHelper {
         }
 
     }
-
 
 }

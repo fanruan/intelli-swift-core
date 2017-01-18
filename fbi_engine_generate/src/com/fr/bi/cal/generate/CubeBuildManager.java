@@ -20,7 +20,6 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -201,9 +200,8 @@ public class CubeBuildManager {
     private boolean preConditionsCheck(long userId, CubeBuildStuff cubeBuild) {
         boolean conditionsMeet = cubeBuild.preConditionsCheck();
         if (!conditionsMeet) {
-            String errorMessage = "preConditions check failed! Please check the available HD space and data connections";
-            BILoggerFactory.getLogger().error(errorMessage);
-            BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
+            String errorMessage = "preConditions check failed!";
+            BILoggerFactory.getLogger(CubeBuildManager.class).error(errorMessage);
             BIConfigureManagerCenter.getLogManager().logEnd(userId);
         }
         return conditionsMeet;

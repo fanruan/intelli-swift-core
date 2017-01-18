@@ -396,7 +396,7 @@ public class BuildCubeTask implements CubeTask {
                 Iterator<CubeTableSource> it = relationDepend.getDependTableSourceSet().iterator();
                 while (it.hasNext()) {
                     CubeTableSource dependTable = it.next();
-                    sb.append("\n").append("tabel ").append(countDepend).append("\n").append(BuildLogHelper.tableLogContent(dependTable));
+                    sb.append("\n").append("table ").append(countDepend).append("\n").append(BuildLogHelper.tableLogContent(dependTable));
                 }
                 logger.info(sb.toString());
             }
