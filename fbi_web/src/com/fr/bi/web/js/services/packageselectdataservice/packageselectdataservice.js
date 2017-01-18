@@ -46,7 +46,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     return;
                 }
                 if (!op.node) {//根节点， 根据业务包找所有的表
-
                     populate(self._getTablesStructureByPackId(op.packageId));
                     return;
                 }
