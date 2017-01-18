@@ -32,6 +32,7 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -44,9 +45,10 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.PARETO:
             case BICst.WIDGET.HEAT_MAP:
+            case BICst.WIDGET.RECT_TREE:
                 return "BIShow.DetailView";
-            // case BICst.WIDGET.DETAIL:
-            //     return "BIShow.DetailTableDetailView";
+            case BICst.WIDGET.DETAIL:
+                return "BIShow.DetailTableDetailView";
             default:
                 return;
         }
@@ -74,6 +76,7 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -86,6 +89,7 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.PARETO:
             case BICst.WIDGET.HEAT_MAP:
+            case BICst.WIDGET.RECT_TREE:
                 view = "BIShow.WidgetView";
                 break;
             case BICst.WIDGET.CONTENT:
@@ -184,6 +188,7 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -196,6 +201,7 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.PARETO:
             case BICst.WIDGET.HEAT_MAP:
+            case BICst.WIDGET.RECT_TREE:
                 if (BI.Utils.isDimensionRegionByRegionType(region)) {
                     view = "BIShow.DimensionView";
                     break;
@@ -204,32 +210,6 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
                 break;
             case BICst.WIDGET.DETAIL:
                 view = "BIShow.DetailDimensionView";
-                break;
-            case BICst.WIDGET.STRING:
-                view = "BIShow.StringDimensionView";
-                break;
-            case BICst.WIDGET.NUMBER:
-            case BICst.WIDGET.SINGLE_SLIDER:
-            case BICst.WIDGET.INTERVAL_SLIDER:
-                view = "BIShow.NumberDimensionView";
-                break;
-            case BICst.WIDGET.DATE:
-                view = "BIShow.DateDimensionView";
-                break;
-            case BICst.WIDGET.YEAR:
-            case BICst.WIDGET.QUARTER:
-            case BICst.WIDGET.MONTH:
-            case BICst.WIDGET.YMD:
-                view = "BIShow.DateDimensionView";
-                break;
-            case BICst.WIDGET.TREE:
-                view = "BIShow.TreeDimensionView";
-                break;
-            case BICst.WIDGET.QUERY:
-                view = "";
-                break;
-            case BICst.WIDGET.RESET:
-                view = "";
                 break;
         }
         return view;

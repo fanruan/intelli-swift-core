@@ -32,6 +32,7 @@ BI.ShowDimensionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
                 type = "bi.show_region_manager_for_combine_chart";
                 break;
+            case BICst.WIDGET.DETAIL:
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
             case BICst.WIDGET.COMPLEX_TABLE:

@@ -11,6 +11,7 @@ import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -18,6 +19,7 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StableUtils;
+import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.Transmitter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -244,6 +246,10 @@ public class ResourceHelper {
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
                     JSONObject jo = t.createJSONWithFieldsInfo(userId);
                     JSONObject tableFields = jo.getJSONObject("tableFields");
+                    CubeTableSource tableSource = t.getTableSource();
+                    JSONObject sourceJO = tableSource.createJSON();
+                    String connectionName=sourceJO.optString("connection_name",StringUtils.EMPTY);
+                    tableFields.put("connection_name", connectionName);
                     tables.put(t.getID().getIdentityValue(), tableFields);
                     JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
                     fields.join(fieldsInfo);
@@ -687,6 +693,14 @@ public class ResourceHelper {
 
                 //react控件
                 "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
+
+                //业务人员导入Excel
+                "com/fr/bi/web/css/modules/updateexcel/updateexcelpopup.css",
+                "com/fr/bi/web/css/modules/updateexcel/excelfieldstable/updateexcelfieldtable.css",
+                "com/fr/bi/web/css/modules/updateexcel/updateexcelcombo.css",
+                "com/fr/bi/web/css/modules/updateexcel/button/stateiconbutton.css",
+                "com/fr/bi/web/css/modules/updateexcel/messagepane/failpane.css",
+                "com/fr/bi/web/css/modules/updateexcel/messagepane/successpane.css",
         };
     }
 
@@ -815,6 +829,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level1.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level2.js",
+                "com/fr/bi/web/js/modules/selectdata/treeitem/node.level0.excel.js",
 
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.button.level0.js",
@@ -827,6 +842,7 @@ public class ResourceHelper {
                 //明细表选字段
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/abstract.node.level.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.excel.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/widget.selectdatapane.detail.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treeitem/item.match.search.js",
@@ -834,6 +850,7 @@ public class ResourceHelper {
                 //树控件选字段
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/abstract.node.level.js",
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level0.excel.js",
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4tree/widget.selectdatapane.tree.js",
 
@@ -1208,6 +1225,16 @@ public class ResourceHelper {
 
                 //react表格控件
                 "com/fr/bi/web/js/modules/summarytablereact/widget.summarytablereact.js",
+
+                //业务人员上传excel
+                "com/fr/bi/web/js/modules/updateexcel/model.updateexcel.js",
+                "com/fr/bi/web/js/modules/updateexcel/messagepane/failpane.js",
+                "com/fr/bi/web/js/modules/updateexcel/messagepane/successpane.js",
+                "com/fr/bi/web/js/modules/updateexcel/updateexcelcombo.js",
+                "com/fr/bi/web/js/modules/updateexcel/updateexceltrigger.js",
+                "com/fr/bi/web/js/modules/updateexcel/button/stateiconbutton.js",
+                "com/fr/bi/web/js/modules/updateexcel/updateexcelpopup.js",
+                "com/fr/bi/web/js/modules/updateexcel/excelfieldtable/updateexcelfieldtable.js",
         };
     }
 
@@ -1749,14 +1776,12 @@ public class ResourceHelper {
                 //excel
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.js",
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.model.js",
-                "com/fr/bi/web/js/extend/excel/upload/button.uploadexcel.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/excel.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/excel.fieldset.table.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/combo.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/trigger.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/item.excelfieldtype.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/popup.fieldset.js",
-                "com/fr/bi/web/js/extend/excel/upload/tipcombo/excel.tipcombo.js",
 
                 "com/fr/bi/web/js/extend/sql/editsql/sql.edit.js",
                 "com/fr/bi/web/js/extend/sql/editsql/sql.edit.model.js",
@@ -1969,6 +1994,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/generalquery/filter.generalquery.js",
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
                 "com/fr/bi/web/js/modules/filter/auth/filter.authority.js",
+
+                //更新excel相关
+                "com/fr/bi/web/js/extend/excel/upload/button.uploadexcel.js",
+                "com/fr/bi/web/js/extend/excel/upload/tipcombo/excel.tipcombo.js",
 
 
                 //业务包选择字段服务
