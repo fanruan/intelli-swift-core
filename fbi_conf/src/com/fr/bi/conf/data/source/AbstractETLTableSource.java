@@ -3,21 +3,20 @@ package com.fr.bi.conf.data.source;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.data.source.operator.create.TableFilterOperator;
 import com.fr.bi.conf.data.source.operator.create.UsePartOperator;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BICollectionUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -155,7 +154,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
         while (it.hasNext()) {
             CubeTableSource parentSource = it.next();
             if (reuseTableSource(parentSource)) {
-                parentSource = getActualDBTableSource(parentSource);
+                parentSource = BIModuleUtils.getActualDBTableSource(parentSource);
             }
             List<Set<CubeTableSource>> parent = parentSource.createGenerateTablesList();
             if (!parent.isEmpty()) {
@@ -365,12 +364,5 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
         return tableSource instanceof DBTableSource && !(tableSource instanceof ServerTableSource);
     }
 
-    private CubeTableSource getActualDBTableSource(CubeTableSource tableSource) {
-        for (BusinessTable table : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
-            if (table.getTableSource().equals(tableSource)) {
-                return table.getTableSource();
-            }
-        }
-        return tableSource;
-    }
+
 }

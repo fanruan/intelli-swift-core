@@ -79,14 +79,8 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     public boolean preConditionsCheck() {
         BILoggerFactory.getLogger().info("***************space check start*****************");
         boolean spaceCheck = getSpaceCheckResult();
-        BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck);
-        BILoggerFactory.getLogger().info("***************system properties start*****************");
-        boolean envCheck = envCheck();
-        BILoggerFactory.getLogger().info("***************system properties result: " + spaceCheck);
-        BILoggerFactory.getLogger().info("***************connection check start*****************");
-        boolean connectionCheck = getConnectionCheck();
-        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
-        return spaceCheck && connectionCheck;
+        BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck + " *****************");
+        return spaceCheck;
     }
 
     public Set<CubeTableSource> getSystemTableSources() {

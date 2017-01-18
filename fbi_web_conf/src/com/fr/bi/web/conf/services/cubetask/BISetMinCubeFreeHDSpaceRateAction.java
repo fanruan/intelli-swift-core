@@ -10,16 +10,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by roy on 2016/12/14.
+ * Created by roy on 2017/1/17.
  */
-public class BISetTransportThreadPoolSizeAction extends AbstractBIConfigureAction {
+public class BISetMinCubeFreeHDSpaceRateAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String size = WebUtils.getHTTPRequestParameter(req, "value");
+        String rate = WebUtils.getHTTPRequestParameter(req, "value");
 
         try {
-            PerformancePlugManager.getInstance().setBiTransportThreadPoolSize(Integer.parseInt(size));
-            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the cube TransportThreadPool size has been set:" + PerformancePlugManager.getInstance().getBiTransportThreadPoolSize()));
+            PerformancePlugManager.getInstance().setMinCubeFreeHDSpaceRate(Double.valueOf(rate));
+            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the MinCubeFreeHDSpaceRate has been set:" + PerformancePlugManager.getInstance().getMinCubeFreeHDSpaceRate()));
         } catch (Exception e) {
             WebUtils.printAsJSON(res, new JSONObject().put("message:", BIPrintUtils.outputException(e)));
         }
@@ -27,6 +27,6 @@ public class BISetTransportThreadPoolSizeAction extends AbstractBIConfigureActio
 
     @Override
     public String getCMD() {
-        return "set_transport_thread_pool_size";
+        return "set_min_cube_free_hd_space_rate";
     }
 }
