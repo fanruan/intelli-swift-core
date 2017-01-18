@@ -2347,6 +2347,34 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/timesetting/timesetting.day.css",
                 "com/fr/bi/web/css/widget/timesetting/timesetting.hour.css",
 
+                /**
+                 * components
+                */
+                //模板管理
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/report.cardview.item.css",
+                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/folder.cardview.item.css",
+                "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
+                "com/fr/bi/web/css/components/templatemanager/tools/reportsearchresult.pane.css",
+                "com/fr/bi/web/css/components/templatemanager/tools/foldermoveto.pane.css",
+                "com/fr/bi/web/css/components/templatemanager/tools/share/sharereport.pane.css",
+                "com/fr/bi/web/css/components/templatemanager/tools/share/selecteduser.grouplist.css",
+                "com/fr/bi/web/css/components/templatemanager/tools/share/selecteduser.button.css",
+                "com/fr/bi/web/css/components/templatemanager/tools/share/usersearchresult.pane.css",
+                "com/fr/bi/web/css/components/templatemanager/templatemanager.css",
+
+                //所有模板
+                "com/fr/bi/web/css/components/allreports/allreports.css",
+                "com/fr/bi/web/css/components/allreports/allreports.filter.css",
+                "com/fr/bi/web/css/components/allreports/item/allreports.list.item.css",
+                "com/fr/bi/web/css/components/allreports/item/allreports.card.item.css",
+                "com/fr/bi/web/css/components/allreports/hangout/reporthangout.css",
+
+                //分享给我的
+                "com/fr/bi/web/css/components/share/sharetome.css",
+                "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
+
                 //excelview
                 "com/fr/bi/web/css/components/excel/excelview/excelviewdisplaymanager.css",
         };
@@ -3172,35 +3200,47 @@ public class ResourceHelper {
 
                 //数据预处理表格
                 "com/fr/bi/web/js/components/pretreatedtable/pretreatedtable.js",
+
+                //模板管理
+                "com/fr/bi/web/js/components/templatemanager/liststyleitems/report.listview.item.js",
+                "com/fr/bi/web/js/components/templatemanager/liststyleitems/folder.listview.item.js",
+                "com/fr/bi/web/js/components/templatemanager/cardstyleitems/folder.cardview.item.js",
+                "com/fr/bi/web/js/components/templatemanager/cardstyleitems/report.cardview.item.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/folderandfile.sortcombo.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/reportsearchresult.pane.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/foldermoveto.pane.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/share/sharereport.pane.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.grouplist.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.button.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/share/usersearchresult.pane.js",
+                "com/fr/bi/web/js/components/templatemanager/tools/editshared/pane.editshared.js",
+                "com/fr/bi/web/js/components/templatemanager/buttongroup.templatemanager.js",
+                "com/fr/bi/web/js/components/templatemanager/templatemanager.js",
+                "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
+
+                //查看所有模板（管理员）
+                "com/fr/bi/web/js/components/allreports/allreports.js",
+                "com/fr/bi/web/js/components/allreports/allreports.filter.js",
+                "com/fr/bi/web/js/components/allreports/allreports.group.js",
+                "com/fr/bi/web/js/components/allreports/item/allreports.item.model.js",
+                "com/fr/bi/web/js/components/allreports/item/allreports.list.item.js",
+                "com/fr/bi/web/js/components/allreports/item/allreports.card.item.js",
+                "com/fr/bi/web/js/components/allreports/hangout/reporthangout.js",
+
+                //分享给我
+                "com/fr/bi/web/js/components/share/sharetome.js",
+                "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
         };
     }
 
     public static String[] getFsCss() {
         String[] base = getBaseCss();
         String[] fs = new String[]{
-                //模板管理
-                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
-                "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
-                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/report.cardview.item.css",
-                "com/fr/bi/web/css/components/templatemanager/cardstyleitem/folder.cardview.item.css",
-                "com/fr/bi/web/css/components/templatemanager/items/item.folder.templatemanager.css",
-                "com/fr/bi/web/css/components/templatemanager/tools/reportsearchresult.pane.css",
-                "com/fr/bi/web/css/components/templatemanager/tools/foldermoveto.pane.css",
-                "com/fr/bi/web/css/components/templatemanager/tools/share/sharereport.pane.css",
-                "com/fr/bi/web/css/components/templatemanager/tools/share/selecteduser.grouplist.css",
-                "com/fr/bi/web/css/components/templatemanager/tools/share/selecteduser.button.css",
-                "com/fr/bi/web/css/components/templatemanager/tools/share/usersearchresult.pane.css",
-                "com/fr/bi/web/css/components/templatemanager/templatemanager.css",
-                //所有模板
-                "com/fr/bi/web/css/components/allreports/allreports.css",
-                "com/fr/bi/web/css/components/allreports/allreports.filter.css",
-                "com/fr/bi/web/css/components/allreports/item/allreports.list.item.css",
-                "com/fr/bi/web/css/components/allreports/item/allreports.card.item.css",
-                "com/fr/bi/web/css/components/allreports/hangout/reporthangout.css",
-
-                //分享给我的
-                "com/fr/bi/web/css/components/share/sharetome.css",
-                "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
+                //BI风格中用到的全局样式
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.css"
         };
         return (String[]) ArrayUtils.addAll(base, fs);
     }
@@ -3214,6 +3254,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/core/mvc/fbi.js",
                 "com/fr/bi/web/js/core/mvc/factory/factory.js",
                 "com/fr/bi/web/js/core/mvc/router/rooter.js",
+
 
                 //const
                 "com/fr/bi/web/js/data/data.js",
@@ -3654,35 +3695,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/base/toolbar/toolbar.progress.bar.js",
                 "com/fr/bi/web/js/widget/base/toolbar/toolbar.progress.js",
 
-                //模板管理
-                "com/fr/bi/web/js/components/templatemanager/liststyleitems/report.listview.item.js",
-                "com/fr/bi/web/js/components/templatemanager/liststyleitems/folder.listview.item.js",
-                "com/fr/bi/web/js/components/templatemanager/cardstyleitems/folder.cardview.item.js",
-                "com/fr/bi/web/js/components/templatemanager/cardstyleitems/report.cardview.item.js",
-                "com/fr/bi/web/js/components/templatemanager/tools/folderandfile.sortcombo.js",
-                "com/fr/bi/web/js/components/templatemanager/tools/reportsearchresult.pane.js",
-                "com/fr/bi/web/js/components/templatemanager/tools/foldermoveto.pane.js",
-                "com/fr/bi/web/js/components/templatemanager/tools/share/sharereport.pane.js",
-                "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.grouplist.js",
-                "com/fr/bi/web/js/components/templatemanager/tools/share/selecteduser.button.js",
-                "com/fr/bi/web/js/components/templatemanager/tools/share/usersearchresult.pane.js",
-                "com/fr/bi/web/js/components/templatemanager/tools/editshared/pane.editshared.js",
-                "com/fr/bi/web/js/components/templatemanager/buttongroup.templatemanager.js",
-                "com/fr/bi/web/js/components/templatemanager/templatemanager.js",
-                "com/fr/bi/web/js/components/templatemanager/templatemanager.model.js",
 
-                //查看所有模板（管理员）
-                "com/fr/bi/web/js/components/allreports/allreports.js",
-                "com/fr/bi/web/js/components/allreports/allreports.filter.js",
-                "com/fr/bi/web/js/components/allreports/allreports.group.js",
-                "com/fr/bi/web/js/components/allreports/item/allreports.item.model.js",
-                "com/fr/bi/web/js/components/allreports/item/allreports.list.item.js",
-                "com/fr/bi/web/js/components/allreports/item/allreports.card.item.js",
-                "com/fr/bi/web/js/components/allreports/hangout/reporthangout.js",
-
-                //分享给我
-                "com/fr/bi/web/js/components/share/sharetome.js",
-                "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
+                //BI风格中用到的全局样式
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.js"
         };
     }
 }
