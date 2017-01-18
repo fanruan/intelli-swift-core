@@ -29,6 +29,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
     _init: function () {
         BI.SequenceTableListNumber.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        this.start = o.startSequence;
         this.renderedCells = [];
         this.renderedKeys = [];
 
@@ -86,7 +87,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
         var end = start + Math.floor((o.height - o.header.length * o.headerRowSize) / o.rowSize);
         var renderedCells = [], renderedKeys = [];
         for (var i = start; i <= end && i < o.items.length; i++) {
-            var index = BI.deepIndexOf(this.renderedKeys, o.startSequence + i);
+            var index = BI.deepIndexOf(this.renderedKeys, this.start + i);
             var top = i * o.rowSize;
             if (index > -1) {
                 if (o.rowSize !== this.renderedCells[index]._height) {
@@ -97,16 +98,14 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
                     this.renderedCells[index].top = top;
                     this.renderedCells[index].el.element.css("top", top + "px");
                 }
+                this.renderedCells[index].el.setText(this.start + i);
                 renderedCells.push(this.renderedCells[index]);
             } else {
                 var child = BI.createWidget(BI.extend({
-                    type: "bi.label",
-                    cls: "sequence-table-number",
+                    type: "bi.sequence_table_number_cell",
                     width: 60,
-                    textAlign: "left",
                     height: o.rowSize,
-                    hgap: 5,
-                    text: o.startSequence + i
+                    text: this.start + i
                 }));
                 renderedCells.push({
                     el: child,
@@ -115,7 +114,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
                     _height: o.rowSize
                 });
             }
-            renderedKeys.push(o.startSequence + i);
+            renderedKeys.push(this.start + i);
         }
 
         //已存在的， 需要添加的和需要删除的
@@ -170,11 +169,17 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
 
     setVPage: function (v) {
         var o = this.options;
-        o.startSequence = (v - 1) * o.pageSize + 1;
+        this.start = (v - 1) * o.pageSize + 1;
     },
 
     restore: function () {
-        this.options.scrollTop = 0;
+        var o = this.options;
+        BI.each(this.renderedCells, function (i, cell) {
+            cell.el.destroy();
+        });
+        this.renderedCells = [];
+        this.renderedKeys = [];
+        this.start = o.startSequence;
     },
 
     populate: function (items, header) {

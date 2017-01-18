@@ -107,10 +107,14 @@ BI.PageTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
+            o.regionColumnSize = this.getRegionColumnSize();
+            o.columnSize = this.getColumnSize();
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
+            o.regionColumnSize = this.getRegionColumnSize();
+            o.columnSize = this.getColumnSize();
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
 
         this.pager = BI.createWidget(o.pager, {
@@ -127,6 +131,8 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 vpage: vpage,
                 hpage: hpage
             }, function (items, header, crossItems, crossHeader) {
+                self.table.setVPage ? self.table.setVPage(vpage) : self.table.setCurrentPage(vpage);
+                self.table.setHPage && self.table.setHPage(hpage);
                 self.populate.apply(self, arguments);
             });
         });
@@ -200,6 +206,15 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
     getColumnSize: function () {
         return this.table.getColumnSize();
+    },
+
+    setRegionColumnSize: function (columnSize) {
+        this.options.columnSize = columnSize;
+        this.table.setRegionColumnSize(columnSize);
+    },
+
+    getRegionColumnSize: function () {
+        return this.table.getRegionColumnSize();
     },
 
     getVerticalScroll: function () {

@@ -1,4 +1,7 @@
 BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
+    _const: {
+        ROOT_CREATE_BY_ME: -1
+    },
     _defaultConfig: function () {
         return BI.extend(BI.NewAnalysisFloatBox.superclass._defaultConfig.apply(this, arguments), {});
     },
@@ -71,7 +74,7 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
             //在这边找到所有的模板名称 和 文件夹
             self.allItems = data;
             self.reportLocation.populate(self._formatItems(self.allItems));
-            self.reportLocation.setValue(BI.FileManagerNav.ROOT_CREATE_BY_ME);
+            self.reportLocation.setValue(self._const.ROOT_CREATE_BY_ME);
         });
         BI.createWidget({
             type: "bi.vertical",
@@ -169,9 +172,9 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
             }
         });
         formatItems.push({
-            id: BI.FileManagerNav.ROOT_CREATE_BY_ME,
+            id: this._const.ROOT_CREATE_BY_ME,
             text: BI.i18nText("BI-Created_By_Me"),
-            value: BI.FileManagerNav.ROOT_CREATE_BY_ME
+            value: this._const.ROOT_CREATE_BY_ME
         });
         return formatItems;
     },
