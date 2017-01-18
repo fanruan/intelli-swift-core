@@ -81,7 +81,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 bottom: 0,
                 right: 0
             }]
-        })
+        });
+        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+            self.resize();
+        });
     },
 
     _onPageChange: function (vPage, callback) {
