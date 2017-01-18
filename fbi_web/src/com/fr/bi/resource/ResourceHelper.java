@@ -684,9 +684,6 @@ public class ResourceHelper {
 
                 //日期面板
                 "com/fr/bi/web/css/modules/datepane/datepane.css",
-
-                //react控件
-                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
         };
     }
 
@@ -1202,12 +1199,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4realtime/broadcast.js",
                 "com/fr/bi/web/js/modules4realtime/cache.js",
                 "com/fr/bi/web/js/modules4realtime/utils.js",
-
-                //react明细表控件
-                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
-
-                //react表格控件
-                "com/fr/bi/web/js/modules/summarytablereact/widget.summarytablereact.js",
         };
     }
 
@@ -2386,10 +2377,6 @@ public class ResourceHelper {
 
                 //excelview
                 "com/fr/bi/web/css/components/excel/excelview/excelviewdisplaymanager.css",
-
-
-                //react控件
-                "com/fr/bi/web/css/components/components.react.css",
         };
     }
 
@@ -3247,10 +3234,6 @@ public class ResourceHelper {
                 //分享给我
                 "com/fr/bi/web/js/components/share/sharetome.js",
                 "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
-
-
-                //react控件
-                "com/fr/bi/web/js/components/components.react.js",
         };
     }
 
