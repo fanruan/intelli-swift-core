@@ -183,13 +183,14 @@ BI.LayerTreeTable = BI.inherit(BI.Widget, {
             header: data.header,
             items: data.items
         });
-        this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
-            self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
-        });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+            o.regionColumnSize = this.getRegionColumnSize();
+            o.columnSize = this.getColumnSize();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+            o.regionColumnSize = this.getRegionColumnSize();
+            o.columnSize = this.getColumnSize();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
     },
