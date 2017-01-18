@@ -45,7 +45,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             BI.has(changed, "real_data")) {
             this.tableChartPopupulate();
         }
-        if (BI.has(changed, "type") || BI.has(changed, "sub_type")) {
+        if (BI.has(changed, "type") || BI.has(changed, "subType")) {
             this.tableChartPopupulate();
             this._refreshDimensions();
         }

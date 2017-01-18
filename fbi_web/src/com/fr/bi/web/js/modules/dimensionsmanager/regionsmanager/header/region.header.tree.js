@@ -29,7 +29,7 @@ BI.TreeRegionHeader = BI.inherit(BI.RegionHeader, {
                 wId: o.wId
             });
             self.popup.on(BI.FieldRelationSettingWithPreviewPopup.EVENT_CHANGE, function () {
-                BI.each(self.getValue(), function (i, dId) {
+                BI.each(BI.Utils.getAllDimensionIDs(o.wId), function (i, dId) {
                     self._setDimensionRelation(dId, {
                         relationItem: self.popup.getValue()
                     })
