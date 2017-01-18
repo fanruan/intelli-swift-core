@@ -26,7 +26,7 @@ BI.MultiAxisCombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
         this.wrappers[BICst.REGION.DIMENSION1] = this._createDimension1RegionWrapper();
         this.wrappers[BICst.REGION.TARGET1] = this._createTarget1RegionWrapper();
         this.wrappers[BICst.REGION.TARGET2] = this._createTarget2RegionWrapper();
-        this.wrappers[BICst.REGION.TARGET2] = this._createTarget3RegionWrapper();
+        this.wrappers[BICst.REGION.TARGET3] = this._createTarget3RegionWrapper();
         var items = [{
             type: "bi.vtape",
             cls: "dimension-region-manager",

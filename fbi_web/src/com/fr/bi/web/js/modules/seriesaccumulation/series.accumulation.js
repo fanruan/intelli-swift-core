@@ -65,6 +65,14 @@ BI.SeriesAccumulation = BI.inherit(BI.Widget, {
         var accumulationObj = BI.Utils.getSeriesAccumulationByDimensionID(o.dId);
         var items = accumulationObj.items;
         BI.Utils.getDataByDimensionID(id, function (allData) {
+            var seriesGroup = BI.Utils.getDimensionGroupByID(id);
+            if (BI.isNotNull(seriesGroup)) {
+                var convertData = [];
+                BI.each(allData, function (idx, data) {
+                    convertData.push(getFormatDateText(seriesGroup.type, data))
+                });
+                allData = convertData;
+            }
             if(allData.length <= self._constant.MAX_LENGTH) {
                 self._createGroups();
                 BI.each(items, function (idx, item) {
@@ -77,6 +85,25 @@ BI.SeriesAccumulation = BI.inherit(BI.Widget, {
                 self._createMask();
             }
         })
+
+        function getFormatDateText(type, text){
+            switch (type) {
+                case BICst.GROUP.S:
+                    text = BICst.FULL_QUARTER_NAMES[text];
+                    break;
+                case BICst.GROUP.M:
+                    text = BICst.FULL_MONTH_NAMES[text];
+                    break;
+                case BICst.GROUP.W:
+                    text = BICst.FULL_WEEK_NAMES[text];
+                    break;
+                case BICst.GROUP.YMD:
+                    var date = new Date(BI.parseInt(text));
+                    text = date.print("%Y-%X-%d");
+                    break;
+            }
+            return text;
+        }
     },
 
     getValue: function () {
