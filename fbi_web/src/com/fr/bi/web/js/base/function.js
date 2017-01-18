@@ -316,17 +316,13 @@ $(function () {
         //获取滚动条的宽度
         getScrollWidth: function () {
             if (this._scrollWidth == null) {
-                var scrollDiv = document.createElement('div');
-
-                scrollDiv.style.position = 'absolute';
-                scrollDiv.style.top = '-9999px';
-                scrollDiv.style.width = '50px';
-                scrollDiv.style.height = '50px';
-                scrollDiv.style.overflow = 'scroll';
-
-                document.body.appendChild(scrollDiv);
-                this._scrollWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-                document.body.removeChild(scrollDiv);
+                var ul = $("<div>").width(50).height(50).css({
+                    position: "absolute",
+                    top: "-9999px",
+                    overflow: "scroll"
+                }).appendTo($("#container"));
+                this._scrollWidth = ul[0].offsetWidth - ul[0].clientWidth;
+                ul.destroy();
             }
             return this._scrollWidth;
         }
