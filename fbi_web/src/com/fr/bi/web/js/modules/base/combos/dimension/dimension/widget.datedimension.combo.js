@@ -102,19 +102,23 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
             BICst.WIDGET.ACCUMULATE_AREA,
             BICst.WIDGET.ACCUMULATE_AXIS,
             BICst.WIDGET.ACCUMULATE_BAR,
-            BICst.WIDGET.ACCUMULATE_RADAR,
             BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
-            BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
-            BICst.WIDGET.COMBINE_CHART,
-            // BICst.WIDGET.MULTI_AXIS_COMBINE_CHART
+            BICst.WIDGET.PERCENT_ACCUMULATE_AXIS
         ];
         var items = BI.DimensionDateCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
         var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         if(BI.Utils.isDimensionRegion2ByRegionType(rType) && BI.contains(chartTypes, wType)) {
             items.splice(2, 0, [{
+                text: BI.i18nText("BI-Series_Accumulation_Setting"),
+                cls: "",
+                value: BICst.DIMENSION_DATE_COMBO.SERIES_ACCUMULATION_ATTRIBUTE
+            }]);
+        }
+        if(BI.Utils.isDimensionRegion2ByRegionType(rType) && wType === BICst.WIDGET.COMBINE_CHART) {
+            items.splice(2, 0, [{
                 el: {
-                    text: BI.i18nText("BI-Series_Accumulation_Attribute"),
+                    text: BI.i18nText("BI-Series_Accumulation_Setting"),
                     cls: "",
                     value: BICst.DIMENSION_DATE_COMBO.SERIES_ACCUMULATION_ATTRIBUTE
                 },

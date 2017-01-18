@@ -1,5 +1,5 @@
 /**
- * 图表控件
+ * 组合图
  * @class BI.MultiAxisChart
  * @extends BI.Widget
  * leftYxis 左值轴属性
@@ -88,7 +88,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                 config.yAxis[item.yAxis].lineColor = self.config.chartColor[0];
                 config.yAxis[item.yAxis].tickColor = self.config.chartColor[0];
             }
-            item.color = [self.config.chartColor[0]];
+            item.color = [self.config.chartColor[idx % self.config.chartColor.length]];
             if (item.type === "line") {
                 config.chartType = "line";
                 lineItem.push(item);

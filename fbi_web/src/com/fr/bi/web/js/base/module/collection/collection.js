@@ -201,10 +201,15 @@ BI.Collection = BI.inherit(BI.Widget, {
     },
 
     _populate: function () {
-        this.container.setWidth(this._width);
-        this.container.setHeight(this._height);
+        var o = this.options;
+        if (o.items.length > 0) {
+            this.container.setWidth(this._width);
+            this.container.setHeight(this._height);
 
-        this._calculateChildrenToRender();
+            this._calculateChildrenToRender();
+            this.element.scrollTop(o.scrollTop);
+            this.element.scrollLeft(o.scrollLeft);
+        }
     },
 
     setScrollLeft: function (scrollLeft) {

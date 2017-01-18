@@ -76,6 +76,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
             width: 76,
             layouts: [{
                 type: "bi.horizontal",
+                scrollx: false,
                 rgap: 24,
                 vgap: 1
             }],
@@ -138,6 +139,7 @@ BI.DirectionPager = BI.inherit(BI.Widget, {
             width: 76,
             layouts: [{
                 type: "bi.horizontal",
+                scrollx: false,
                 rgap: 24,
                 vgap: 1
             }],

@@ -203,6 +203,8 @@ BI.Grid = BI.inherit(BI.Widget, {
             this._rowSizeAndPositionManager = new BI.ScalingCellSizeAndPositionManager(this.rowCount, o.rowHeightGetter, o.estimatedRowSize);
 
             this._calculateChildrenToRender();
+            this.element.scrollTop(o.scrollTop);
+            this.element.scrollLeft(o.scrollLeft);
         }
     },
 

@@ -141,6 +141,14 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
 
     _refreshCheckType: function () {
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.model.get("id")));
+        if (wType === BICst.WIDGET.ACCUMULATE_AREA ||
+            wType === BICst.WIDGET.ACCUMULATE_BAR ||
+            wType === BICst.WIDGET.ACCUMULATE_AXIS ||
+            wType === BICst.WIDGET.COMBINE_CHART) {
+            this.chartTypeIcon.setVisible(true);
+        } else {
+            this.chartTypeIcon.setVisible(false);
+        }
         if (wType === BICst.WIDGET.TABLE ||
             wType === BICst.WIDGET.CROSS_TABLE ||
             wType === BICst.WIDGET.COMPLEX_TABLE ||
