@@ -19,7 +19,7 @@ BI.SequenceTableDynamicNumber = BI.inherit(BI.SequenceTableTreeNumber, {
     _formatNumber: function (nodes) {
         var self = this, o = this.options;
         var result = [];
-        var count = this._getStartSequence(nodes);
+        var count = this._getStart(nodes);
 
         function getLeafCount(node) {
             var cnt = 0;

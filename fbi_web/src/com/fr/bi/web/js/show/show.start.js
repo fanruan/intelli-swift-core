@@ -17,7 +17,7 @@ BI.extend(BIShow, {
         this.router = new AppRouter;
         BI.history.start();
 
-        Data.SharingPool.put("urlParameters", (function GetRequest() {
+        var urlParameters = (function () {
             var url = location.search; //获取url中"?"符后的字串
             var theRequest = {};
             if (url.indexOf("?") != -1) {
@@ -28,6 +28,9 @@ BI.extend(BIShow, {
                 }
             }
             return theRequest;
-        })());
+        })();
+        delete urlParameters.op;
+        delete urlParameters.cmd;
+        Data.SharingPool.put("urlParameters", urlParameters);
     }
 });

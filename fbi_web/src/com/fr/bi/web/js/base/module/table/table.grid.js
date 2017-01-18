@@ -449,9 +449,6 @@ BI.GridTable = BI.inherit(BI.Widget, {
 
     restore: function () {
         this._restore();
-        this.setVerticalScroll(0);
-        this.setLeftHorizontalScroll(0);
-        this.setRightHorizontalScroll(0);
     }
 });
 $.shortcut('bi.grid_table', BI.GridTable);

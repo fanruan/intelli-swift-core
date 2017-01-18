@@ -194,6 +194,14 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         return this.table.getVerticalScroll();
     },
 
+    setVPage: function (page) {
+        this.sequence.setVPage && this.sequence.setVPage(page);
+    },
+
+    setHPage: function (page) {
+        this.sequence.setHPage && this.sequence.setHPage(page);
+    },
+
     attr: function () {
         BI.SequenceTable.superclass.attr.apply(this, arguments);
         this.table.attr.apply(this.table, arguments);

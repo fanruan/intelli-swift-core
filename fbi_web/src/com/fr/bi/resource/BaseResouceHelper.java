@@ -660,6 +660,7 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/css/widget/pagetable/pagetable.css",
 
                 //带序号表格
+                "com/fr/bi/web/css/widget/sequencetable/numbercell.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/listnumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/treenumber.sequencetable.css",
                 "com/fr/bi/web/css/widget/sequencetable/dynamicnumber.sequencetable.css",
@@ -1453,6 +1454,7 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/widget/pagetable/pagetable.js",
 
                 //带序号表格
+                "com/fr/bi/web/js/widget/sequencetable/numbercell.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/dynamicnumber.sequencetable.js",
