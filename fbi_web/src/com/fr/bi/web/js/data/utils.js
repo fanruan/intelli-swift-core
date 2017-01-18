@@ -67,7 +67,7 @@ Data.Utils = {
             });
         });
         if (type === BICst.WIDGET.MAP) {
-            var subType = widget.sub_type;
+            var subType = widget.subType;
             if (BI.isNull(subType)) {
                 BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
                     if (layer === 0) {

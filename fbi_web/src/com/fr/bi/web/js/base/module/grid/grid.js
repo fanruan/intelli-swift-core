@@ -65,14 +65,14 @@ BI.Grid = BI.inherit(BI.Widget, {
         }
     },
 
-    _getOverscanIndices (cellCount, overscanCellsCount, startIndex, stopIndex) {
+    _getOverscanIndices: function (cellCount, overscanCellsCount, startIndex, stopIndex) {
         return {
             overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
             overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount)
         }
     },
 
-    _calculateChildrenToRender () {
+    _calculateChildrenToRender: function () {
         var self = this, o = this.options;
 
         var width = o.width, height = o.height, scrollLeft = BI.clamp(o.scrollLeft, 0, this._getMaxScrollLeft()), scrollTop = BI.clamp(o.scrollTop, 0, this._getMaxScrollTop()),
@@ -203,6 +203,8 @@ BI.Grid = BI.inherit(BI.Widget, {
             this._rowSizeAndPositionManager = new BI.ScalingCellSizeAndPositionManager(this.rowCount, o.rowHeightGetter, o.estimatedRowSize);
 
             this._calculateChildrenToRender();
+            this.element.scrollTop(o.scrollTop);
+            this.element.scrollLeft(o.scrollLeft);
         }
     },
 

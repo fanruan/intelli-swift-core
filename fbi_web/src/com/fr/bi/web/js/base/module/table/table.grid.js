@@ -23,9 +23,6 @@ BI.GridTable = BI.inherit(BI.Widget, {
     _init: function () {
         BI.GridTable.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.scrollTop = 0;
-        this.leftScrollLeft = 0;
-        this.rightScrollLeft = 0;
         this._width = 0;
         this._height = 0;
         this._scrollBarSize = BI.DOM.getScrollWidth();
@@ -179,7 +176,7 @@ BI.GridTable = BI.inherit(BI.Widget, {
         var regionSize = this.getRegionSize(), totalLeftColumnSize = 0, totalRightColumnSize = 0, totalColumnSize = 0, summaryColumnSizeArray = [], totalRowSize = o.items.length * o.rowSize;
         var freezeColLength = this._getFreezeColLength();
         BI.each(o.columnSize, function (i, size) {
-            if (o.freezeCols.contains(i)) {
+            if (o.isNeedFreeze === true && o.freezeCols.contains(i)) {
                 totalLeftColumnSize += size;
             } else {
                 totalRightColumnSize += size;
@@ -452,12 +449,6 @@ BI.GridTable = BI.inherit(BI.Widget, {
 
     restore: function () {
         this._restore();
-        this.scrollTop = 0;
-        this.leftScrollLeft = 0;
-        this.rightScrollLeft = 0;
-        this.setVerticalScroll(0);
-        this.setLeftHorizontalScroll(0);
-        this.setRightHorizontalScroll(0);
     }
 });
 $.shortcut('bi.grid_table', BI.GridTable);

@@ -1,5 +1,5 @@
 /**
- * 图表控件
+ * 多值轴组合图
  * @class BI.MultiAxisCombieChart
  * @extends BI.Widget
  * leftYxis 左值轴属性

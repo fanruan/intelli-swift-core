@@ -98,9 +98,10 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
                 bottom: 0
             }]
         });
-        var size = 0, offset = 0, defaultSize = 0;
+        var size = 0, offset = 0, defaultSize = 0, start = false;
         var mouseMoveTracker = new BI.MouseMoveTracker(function (deltaX, deltaY) {
             if (mouseMoveTracker.isDragging()) {
+                start = true;
                 offset += deltaX;
                 size = BI.clamp(defaultSize + offset, 15, o.width - 15);
 
@@ -109,18 +110,21 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
             }
 
         }, function () {
-            o.regionColumnSize[0] = BI.clamp(size, 15, o.width - 15);
-            self.table.setRegionColumnSize(o.regionColumnSize);
-            if (o.isResizeAdapt === true) {
-                var freezeColumnSize = self._getFreezeColumnSize();
-                o.columnSize[self._getFreezeColLength() - 1] += o.regionColumnSize[0] - freezeColumnSize;
-                self.table.setColumnSize(o.columnSize);
+            if (start === true) {
+                o.regionColumnSize[0] = BI.clamp(size, 15, o.width - 15);
+                self.table.setRegionColumnSize(o.regionColumnSize);
+                if (o.isResizeAdapt === true) {
+                    var freezeColumnSize = self._getFreezeColumnSize();
+                    o.columnSize[self._getFreezeColLength() - 1] += o.regionColumnSize[0] - freezeColumnSize;
+                    self.table.setColumnSize(o.columnSize);
+                }
+                self.table.populate();
+                self._populate();
+                self.regionResizerHandler.element.removeClass("dragging");
+                mouseMoveTracker.releaseMouseMoves();
+                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
+                start = false;
             }
-            self.table.populate();
-            self._populate();
-            self.regionResizerHandler.element.removeClass("dragging");
-            mouseMoveTracker.releaseMouseMoves();
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
         }, document);
         regionResizerHandler.element.on("mousedown", function (event) {
             defaultSize = size = self._getRegionSize();
@@ -162,7 +166,7 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
     _getRegionRowSize: function () {
         var o = this.options;
         return [o.header.length * o.headerRowSize,
-            Math.min(o.height - o.header.length * o.headerRowSize - this.table.getVerticalScroll(), o.items.length * o.rowSize)];
+            Math.min(o.height - o.header.length * o.headerRowSize, o.items.length * o.rowSize)];
     },
 
     _getFreezeColLength: function () {
@@ -197,7 +201,9 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
     _formatHeader: function (header) {
         var self = this, o = this.options;
         var result = [];
+        var startDrag = false;
         var resize = function (j, size) {
+            startDrag = true;
             self.resizer.setVisible(true);
             var height = o.headerRowSize + self._getRegionRowSize()[1];
             self.resizer.setHeight(height);
@@ -205,13 +211,16 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
             self._setResizerPosition(self._getResizerLeft(j) + size, (o.header.length - 1) * o.headerRowSize);
         };
         var stop = function (j, size) {
-            self.resizer.setVisible(false);
-            o.columnSize[j] = size;
-            self.table.setColumnSize(o.columnSize);
-            // self.table.clear();
-            self.table.populate();
-            self._populate();
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
+            if (startDrag === true) {
+                self.resizer.setVisible(false);
+                o.columnSize[j] = size;
+                self.table.setColumnSize(o.columnSize);
+                // self.table.clear();
+                self.table.populate();
+                self._populate();
+                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
+                startDrag = false;
+            }
         };
         BI.each(header, function (i, cols) {
             if (i === header.length - 1) {

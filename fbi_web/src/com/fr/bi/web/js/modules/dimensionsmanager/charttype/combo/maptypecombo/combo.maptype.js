@@ -83,7 +83,8 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        this.mapTypeCombo.setValue(v);
+        v = v[0] || {};
+        this.mapTypeCombo.setValue(v.subType || []);
     },
 
     setEnable: function (v) {

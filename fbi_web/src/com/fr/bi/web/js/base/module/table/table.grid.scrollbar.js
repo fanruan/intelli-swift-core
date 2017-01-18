@@ -15,6 +15,7 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
     },
     _defaultConfig: function () {
         return BI.extend(BI.GridTableScrollbar.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "scrollbar-layout-main public-scrollbar-main",
             attributes: {
                 tabIndex: 0
             },
@@ -32,7 +33,11 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.focused = false;
         this.isDragging = false;
-        this.face = BI.createWidget();
+        this.face = BI.createWidget({
+            type: "bi.layout",
+            cls: "scrollbar-layout-face public-scrollbar-face "
+            + (this._isHorizontal() ? "scrollbar-layout-face-horizontal" : "scrollbar-layout-face-vertical")
+        });
         this.contextLayout = BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -51,7 +56,7 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
         this._mouseMoveTracker = new BI.MouseMoveTracker(
             BI.bind(this._onMouseMove, this),
             BI.bind(this._onMouseMoveEnd, this),
-            $("body")[0]
+            document
         );
         this.element.on("mousedown", BI.bind(this._onMouseDown, this));
         this.element.on("mousewheel", function (e) {
@@ -66,6 +71,11 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
             self.focused = false;
             self._populate();
         });
+        if (this._isHorizontal()) {
+            this.element.addClass("scrollbar-layout-main-horizontal");
+        } else {
+            this.element.addClass("scrollbar-layout-main-vertical");
+        }
         this._populate();
     },
 
@@ -95,27 +105,27 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
         return faceSize;
     },
 
-    _shouldHandleX(delta) {
+    _shouldHandleX: function (delta) {
         return this.options.orientation === 'horizontal' ?
             this._shouldHandleChange(delta) :
             false;
     },
 
-    _shouldHandleY(delta) {
+    _shouldHandleY: function (delta) {
         return this.options.orientation !== 'horizontal' ?
             this._shouldHandleChange(delta) :
             false;
     },
 
-    _shouldHandleChange(delta) {
+    _shouldHandleChange: function (delta) {
         return this.options.position + delta !== this.options.position;
     },
 
-    _onWheelY(deltaX, deltaY) {
+    _onWheelY: function (deltaX, deltaY) {
         this._onWheel(deltaY);
     },
 
-    _onWheelX(deltaX, deltaY) {
+    _onWheelX: function (deltaX, deltaY) {
         this._onWheel(deltaX);
     },
 
@@ -153,9 +163,11 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
     },
 
     _onMouseMoveEnd: function (event) {
-        this._mouseMoveTracker.releaseMouseMoves();
-        this.isDragging = false;
-        this._populate();
+        if (this.isDragging === true) {
+            this._mouseMoveTracker.releaseMouseMoves();
+            this.isDragging = false;
+            this._populate();
+        }
     },
 
     _onKeyDown: function (event) {
@@ -183,7 +195,7 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
             NUMPAD_0: 96,
             NUMPAD_9: 105
         };
-        const keyCode = event.keyCode;
+        var keyCode = event.keyCode;
 
         if (keyCode === Keys.TAB) {
             return;
@@ -263,55 +275,17 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
             return;
         }
         this.setVisible(true);
-        function classNames() {
-            var classes = [];
-
-            for (var i = 0; i < arguments.length; i++) {
-                var arg = arguments[i];
-                if (!arg) continue;
-
-                var argType = typeof arg;
-
-                if (argType === 'string' || argType === 'number') {
-                    classes.push(arg);
-                } else if (Array.isArray(arg)) {
-                    classes.push(classNames.apply(null, arg));
-                } else if (argType === 'object') {
-                    for (var key in arg) {
-                        if ({}.hasOwnProperty.call(arg, key) && arg[key]) {
-                            classes.push(key);
-                        }
-                    }
-                }
-            }
-
-            return classes.join(' ');
-        }
 
         var size = o.size;
         var isHorizontal = this._isHorizontal();
-        var isVertical = !isHorizontal;
         var isActive = this.focused || this.isDragging;
 
         var faceSize = this._getFaceSize();
         var isOpaque = o.isOpaque;
+        this.element[isOpaque === true ? "addClass" : "removeClass"]("public-scrollbar-main-opaque");
+        this.element[isActive === true ? "addClass" : "removeClass"]("public-scrollbar-main-active");
 
-        var mainClassName = classNames({
-            'scrollbar-layout-main': true,
-            'scrollbar-layout-main-vertical': isVertical,
-            'scrollbar-layout-main-horizontal': isHorizontal,
-            'public-scrollbar-main': true,
-            'public-scrollbar-main-opaque': isOpaque,
-            'public-scrollbar-main-active': isActive
-        });
-
-        var faceClassName = classNames({
-            'scrollbar-layout-face': true,
-            'scrollbar-layout-face-horizontal': isHorizontal,
-            'scrollbar-layout-face-vertical': isVertical,
-            'public-scrollbar-face-active': isActive,
-            'public-scrollbar-face': true
-        });
+        this.face.element[isActive === true ? "addClass" : "removeClass"]("public-scrollbar-face-active");
 
         var position = o.position * this._getScale() + this._const.FACE_MARGIN;
 
@@ -329,10 +303,6 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
         }
         this.contextLayout.attr("items", items);
         this.contextLayout.resize();
-
-        this.element.removeClass().addClass(mainClassName);
-        this.face.element.removeClass().addClass(faceClassName);
-
     },
 
     setContentSize: function (contentSize) {

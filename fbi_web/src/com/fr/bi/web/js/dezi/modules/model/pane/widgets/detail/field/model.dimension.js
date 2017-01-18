@@ -110,7 +110,11 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
 
         if (BI.isNotNull(change.group)) {
             var groupObject = self.get("group");
-            var accumulations = self.get("seriesAccumulation");
+            var accumulation = self.get("seriesAccumulation");
+            if(BI.isEmpty(accumulation)) {
+                return;
+            }
+            var accumulations = accumulation.items;
             if(groupObject.type === BICst.GROUP.CUSTOM_GROUP && BI.isNotEmptyArray(accumulations)) {
                 groupsItems = groupObject.details;
 
@@ -138,8 +142,8 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
                         accumulations[0].items = BI.concat(accumulations[0].items, items.value);
                     }
                 })
-
-                self.set("seriesAccumulation", accumulations);
+                accumulation.items = accumulations;
+                self.set("seriesAccumulation", accumulation);
             }
         }
 

@@ -112,7 +112,7 @@
     };
     BI.WheelHandler.prototype = {
         constructor: BI.WheelHandler,
-        onWheel(/*object*/ event) {
+        onWheel: function (/*object*/ event) {
             var normalizedEvent = normalizeWheel(event);
             var deltaX = this._deltaX + normalizedEvent.pixelX;
             var deltaY = this._deltaY + normalizedEvent.pixelY;
@@ -139,7 +139,7 @@
             }
         },
 
-        _didWheel() {
+        _didWheel: function () {
             this._animationFrameID = null;
             this._onWheelCallback(this._deltaX, this._deltaY);
             this._deltaX = 0;

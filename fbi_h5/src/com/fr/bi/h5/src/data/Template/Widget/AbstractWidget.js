@@ -166,7 +166,7 @@ class AbstractWidget {
     }
 
     getWidgetSubType() {
-        return this.$widget.get('sub_type');
+        return this.$widget.get('subType');
     }
 
     getSortType() {

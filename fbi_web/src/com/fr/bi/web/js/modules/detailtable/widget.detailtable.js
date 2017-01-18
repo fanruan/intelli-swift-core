@@ -81,7 +81,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 bottom: 0,
                 right: 0
             }]
-        })
+        });
+        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+            self.resize();
+        });
     },
 
     _onPageChange: function (vPage, callback) {
@@ -116,7 +119,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                         callback([], [], [], []);
                         return;
                     }
-                    self.pager.setCount(row);
                     var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
                     BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
                         BI.isNotNull(dId) &&
@@ -133,11 +135,16 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     });
                     var items = self._createTableItems(json.value);
 
+                    self.pager.setCount(row);
                     self.pager.setAllPages(Math.ceil(row / size));
                     self.pager.setValue(vPage);
+
                     self.table.setWidth(self.element.width());
                     self.table.setHeight(self.element.height());
                     self.table.attr("columnSize", self._getColumnSize(header));
+                    self.table.attr("isNeedFreeze", true);
+                    self.table.attr("freezeCols", self._getFreezeCols());
+                    self.table.attr("showSequence", BI.Utils.getWSShowNumberByID(widgetId));
                     callback(items, [header]);
                 } catch (e) {
                     self.errorPane.setErrorInfo("error happens during populate chart: " + e);
@@ -253,11 +260,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         return BI.Utils.getWSFreezeFirstColumnById(wId) ? [0] : [];
     },
 
-    _isNeedFreeze: function () {
-        var wId = this.options.wId;
-        return BI.Utils.getWSFreezeFirstColumnById(wId);
-    },
-
     getStoredRegionColumnSize: function () {
         var columnSize = BI.Cache.getItem(BICst.CACHE.REGION_COLUMN_SIZE_PREFIX + this.options.wId);
         if (BI.isKey(columnSize)) {
@@ -276,8 +278,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
-            self.table.attr("isNeedFreeze", true);
-            self.table.attr("freezeCols", self._getFreezeCols());
+            self.table.restore();
             self.table.populate(items, header);
         });
     },

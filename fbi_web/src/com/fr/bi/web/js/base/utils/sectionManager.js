@@ -11,14 +11,14 @@
 
     Section.prototype = {
         constructor: Section,
-        addCellIndex(index) {
+        addCellIndex: function (index) {
             if (!this._indexMap[index]) {
                 this._indexMap[index] = true;
                 this._indices.push(index);
             }
         },
 
-        getCellIndices() {
+        getCellIndices: function () {
             return this._indices
         }
     };
@@ -32,7 +32,7 @@
 
     BI.SectionManager.prototype = {
         constructor: BI.SectionManager,
-        getCellIndices(height, width, x, y) {
+        getCellIndices: function (height, width, x, y) {
             var indices = {};
 
             BI.each(this.getSections(height, width, x, y), function (i, section) {
@@ -46,11 +46,11 @@
             });
         },
 
-        getCellMetadata(index) {
+        getCellMetadata: function (index) {
             return this._cellMetadata[index];
         },
 
-        getSections(height, width, x, y) {
+        getSections: function (height, width, x, y) {
             var sectionXStart = Math.floor(x / this._sectionSize);
             var sectionXStop = Math.floor((x + width - 1) / this._sectionSize);
             var sectionYStart = Math.floor(y / this._sectionSize);
@@ -73,11 +73,11 @@
             return sections
         },
 
-        getTotalSectionCount() {
+        getTotalSectionCount: function () {
             return BI.size(this._sections);
         },
 
-        registerCell(cellMetadatum, index) {
+        registerCell: function (cellMetadatum, index) {
             this._cellMetadata[index] = cellMetadatum;
 
             BI.each(this.getSections(cellMetadatum.height, cellMetadatum.width, cellMetadatum.x, cellMetadatum.y), function (i, section) {
