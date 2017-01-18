@@ -300,7 +300,7 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public String[] getPlateStyleFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(ResourceHelper.getFoundationCss(), new String[]{
+        return (String[]) ArrayUtils.addAll(ResourceHelper.getFsCss(), new String[]{
                 "/com/fr/bi/web/cross/css/bi.toolbar.add.css",
                 "/com/fr/bi/web/cross/css/bi.shared.table.css",
 
