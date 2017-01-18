@@ -1,5 +1,5 @@
 /**
- * Created by zcf on 2017/1/6.
+ * Created by zcf on 2017/1/18.
  */
 BI.DetailSelectDataLevel0ExcelNode = BI.inherit(BI.Widget, {
     _defaultConfig: function () {

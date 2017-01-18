@@ -821,6 +821,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level1.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level2.js",
+                "com/fr/bi/web/js/modules/selectdata/treeitem/node.level0.excel.js",
 
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.button.level0.js",
@@ -833,6 +834,7 @@ public class ResourceHelper {
                 //明细表选字段
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/abstract.node.level.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.excel.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/widget.selectdatapane.detail.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treeitem/item.match.search.js",
@@ -840,6 +842,7 @@ public class ResourceHelper {
                 //树控件选字段
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/abstract.node.level.js",
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level0.js",
+                "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level0.excel.js",
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4tree/widget.selectdatapane.tree.js",
 
@@ -1214,6 +1217,16 @@ public class ResourceHelper {
 
                 //react表格控件
                 "com/fr/bi/web/js/modules/summarytablereact/widget.summarytablereact.js",
+
+                //业务人员上传excel
+                "com/fr/bi/web/js/modules/updateexcel/model.updateexcel.js",
+                "com/fr/bi/web/js/modules/updateexcel/messagepane/failpane.js",
+                "com/fr/bi/web/js/modules/updateexcel/messagepane/successpane.js",
+                "com/fr/bi/web/js/modules/updateexcel/updateexcelcombo.js",
+                "com/fr/bi/web/js/modules/updateexcel/updateexceltrigger.js",
+                "com/fr/bi/web/js/modules/updateexcel/button/stateiconbutton.js",
+                "com/fr/bi/web/js/modules/updateexcel/updateexcelpopup.js",
+                "com/fr/bi/web/js/modules/updateexcel/excelfieldtable/updateexcelfieldtable.js",
         };
     }
 
@@ -1986,16 +1999,7 @@ public class ResourceHelper {
 
 
                 //业务包选择字段服务
-                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/model.updateexcel.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/messagepane/failpane.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/messagepane/successpane.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/updateexcelcombo.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/updateexceltrigger.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/button/stateiconbutton.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/updateexcelpopup.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/updateexcel/excelfieldtable/updateexcelfieldtable.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.excel.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level2.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",

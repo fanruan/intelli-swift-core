@@ -230,16 +230,12 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             });
         }
         BI.each(relationAndCurrentTables, function (i, table) {
-            var nodeType = "bi.detail_select_data_level0_node";
-            if (BI.Utils.getConnectionNameByTableId(table.id) === BICst.TABLE_TYPE_EXCEL) {
-                nodeType = "bi.detail_select_data_level0_excel_node";
-            }
             var showText = BI.contains(currentTablesIds, table.id) ? (BI.Utils.getTableNameByID(table.id) || "")
                 : (BI.Utils.getTableNameByID(table.id) || "") + "(" + BI.i18nText("BI-Relation_Table") + ")";
             tablesStructure.push(BI.extend({
                 id: table.id,
                 wId: o.wId,
-                type: nodeType,
+                type: "bi.detail_select_data_level0_node",
                 layer: 0,
                 text: showText,
                 title: self._getTitleByTableId(table.id),
