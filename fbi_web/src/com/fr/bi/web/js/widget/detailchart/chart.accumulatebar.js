@@ -141,7 +141,9 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, item) {
             var stackId = BI.UUID();
             BI.each(item, function (id, it) {
-                it.stack = stackId;
+                if (BI.isEmpty(it.stack)) {
+                    it.stack = stackId;
+                }
                 BI.each(it.data, function (i, t) {
                     var tmp = t.x;
                     t.x = t.y;
