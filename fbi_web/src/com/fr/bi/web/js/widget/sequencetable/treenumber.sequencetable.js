@@ -199,9 +199,9 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         var renderedCells = [], renderedKeys = [];
-        let index = this.intervalTree.greatestLowerBound(o.scrollTop);
-        let offsetTop = -(o.scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0));
-        let height = offsetTop;
+        var index = this.intervalTree.greatestLowerBound(o.scrollTop);
+        var offsetTop = -(o.scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0));
+        var height = offsetTop;
         var bodyHeight = o.height - this._getHeaderHeight();
         while (height < bodyHeight && index < this.numbers.length) {
             renderedKeys.push(index);

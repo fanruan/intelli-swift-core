@@ -52,8 +52,13 @@ BI.HyperLinkInsert = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 el: {
-                    type: "bi.center_adapt",
-                    items: [this.used]
+                    type: "bi.absolute",
+                    items: [{
+                        el: this.used,
+                        left: 0,
+                        right: 0,
+                        top: 0
+                    }]
                 },
                 height: 40
             }, {
