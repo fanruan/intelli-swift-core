@@ -212,7 +212,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         };
         if (BI.isNotNull(this.subType)) {
             return BI.extend(v, {
-                sub_type: this.subType
+                subType: this.subType
             })
         }
         return v;

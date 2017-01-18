@@ -68,8 +68,8 @@ public class MultiChartWidget extends TableWidget {
         if(jo.has("type")){
             type = jo.getInt("type");
         }
-        if(jo.has("sub_type")){
-            subType = jo.getString("sub_type");
+        if(jo.has("subType")){
+            subType = jo.getString("subType");
         }
         if(jo.has("clicked")){
             JSONObject c = jo.getJSONObject("clicked");

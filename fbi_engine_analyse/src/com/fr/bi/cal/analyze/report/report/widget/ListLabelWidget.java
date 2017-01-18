@@ -246,9 +246,6 @@ public class ListLabelWidget extends BISummaryWidget {
         int matched = 0;
         String key = this.keyword.toLowerCase();
         for (Object ob : list){
-            if (calculator instanceof DateDimensionCalculator && calculator.getGroup().getType() == BIReportConstant.GROUP.M) {
-                ob = ((Integer) ob) + 1;
-            }
             if (ob == null) {
                 continue;
             }
