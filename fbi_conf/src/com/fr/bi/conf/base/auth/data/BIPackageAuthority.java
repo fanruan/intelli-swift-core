@@ -55,5 +55,6 @@ public class BIPackageAuthority implements JSONTransform {
         if (jo.has("filter")) {
             this.filter = jo.getJSONObject("filter");
         }
+
     }
 }
