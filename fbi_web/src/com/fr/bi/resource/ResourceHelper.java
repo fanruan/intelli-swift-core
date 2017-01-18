@@ -248,12 +248,7 @@ public class ResourceHelper {
                     JSONObject tableFields = jo.getJSONObject("tableFields");
                     CubeTableSource tableSource = t.getTableSource();
                     JSONObject sourceJO = tableSource.createJSON();
-                    String connectionName;
-                    try {
-                        connectionName = sourceJO.getString("connection_name");
-                    } catch (Exception e) {
-                        connectionName = StringUtils.EMPTY;
-                    }
+                    String connectionName=sourceJO.optString("connection_name",StringUtils.EMPTY);
                     tableFields.put("connection_name", connectionName);
                     tables.put(t.getID().getIdentityValue(), tableFields);
                     JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
