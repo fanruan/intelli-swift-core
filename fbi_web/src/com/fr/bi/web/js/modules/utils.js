@@ -485,6 +485,7 @@
                     }
                 });
             }
+            return subType;
         },
 
         getWidgetNameByID: function (wid) {
