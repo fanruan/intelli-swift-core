@@ -133,7 +133,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
             if (!BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) source, biUser)){
                 return -1L;
             } else {
-                return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getTableIndex((AnalysisCubeTableSource) source, biUser).getTableVersion(new IndexKey(StringUtils.EMPTY));
+                return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getTableVersion((AnalysisCubeTableSource) source, biUser);
             }
         }
         ICubeTableService service = CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source);

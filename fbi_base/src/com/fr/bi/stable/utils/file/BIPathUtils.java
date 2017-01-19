@@ -72,7 +72,7 @@ public class BIPathUtils {
                 + BASEPATH : CubeConfManager.getInstance().getCubePath();
     }
 
-    private static String createUserETLBasePath() {
+    public static String createUserETLBasePath() {
         return new File(new File(createBasePath()).getParentFile(), USERETL
                 + File.separator
                 + File.separator + CUBE).getAbsolutePath();
@@ -87,7 +87,7 @@ public class BIPathUtils {
     }
 
     public static String createUserETLCubePath(String md5, String path) {
-        return createUserETLTableBasePath(md5) + File.separator + path + File.separator + md5;
+        return createUserETLTablePath(md5, path) + File.separator + md5;
     }
 
     public static String createUserTotalPath(long userId) {
