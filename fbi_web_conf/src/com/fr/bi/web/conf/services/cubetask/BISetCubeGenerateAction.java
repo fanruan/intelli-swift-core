@@ -1,15 +1,10 @@
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.fr.bi.cal.generate.CubeBuildManager;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
