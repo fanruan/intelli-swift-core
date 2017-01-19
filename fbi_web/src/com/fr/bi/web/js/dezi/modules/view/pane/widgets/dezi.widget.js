@@ -426,7 +426,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
         this.chartDrill.populate();
-        this.maximize.populate();
+        setTimeout(BI.bind(this.maximize.populate, this.maximize));
     },
 
     _refreshLayout: function () {
