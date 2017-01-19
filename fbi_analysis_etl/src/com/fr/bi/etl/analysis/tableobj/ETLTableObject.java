@@ -6,6 +6,8 @@ package com.fr.bi.etl.analysis.tableobj;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.adapter.BICubeTableAdapter;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
@@ -23,6 +25,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * @author Daniel
@@ -78,7 +81,14 @@ public class ETLTableObject implements Release, Delete {
      */
     @Override
     public void delete() {
-        BIFileUtils.delete(new File(this.path).getParentFile());
+        boolean success = BIFileUtils.delete(new File(this.path).getParentFile());
+        if(!success) {
+            BILoggerFactory.getLogger().error("delete failed" + this.path);
+            List<String> fileList = BIFileUtils.deleteFiles(new File(this.path).getParentFile());
+            for(String s : fileList) {
+                new File(s).deleteOnExit();
+            }
+        }
     }
 
 }

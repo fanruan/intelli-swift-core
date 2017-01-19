@@ -50,4 +50,6 @@ public interface UserETLCubeManagerProvider extends Release {
 
     void addTask(AnalysisCubeTableSource source, BIUser user);
 
+    long getTableVersion(AnalysisCubeTableSource source, BIUser user);
+
 }
