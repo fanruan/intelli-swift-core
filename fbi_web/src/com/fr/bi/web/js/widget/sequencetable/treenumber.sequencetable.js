@@ -237,6 +237,13 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                     self.renderedCells[index].top = numbers[key].top;
                     self.renderedCells[index].el.element.css("top", numbers[key].top + "px");
                 }
+                self.renderedCells[index].el.attr("styleGetter", function () {
+                    if (numbers[key].isSummary === true) {
+                        return o.summaryCellStyleGetter(true);
+                    } else {
+                        return o.sequenceCellStyleGetter(numbers[key].index);
+                    }
+                });
                 self.renderedCells[index].el.setText(numbers[key].text);
                 renderedCells.push(self.renderedCells[index]);
             } else {
