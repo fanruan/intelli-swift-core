@@ -12,7 +12,6 @@ import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.tableobj.ETLTableObject;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.structure.queue.FixedQueueThread;
-import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
@@ -99,8 +98,9 @@ public class SingleUserETLTableCubeManager implements Release {
 								tq.add(new ETLTableObject(source, data.getPath()));
 								UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
 								manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue(), source.getUserId());
-							} catch (Exception e){
+							} catch (Throwable e){
 								BILoggerFactory.getLogger().error(e.getMessage(), e);
+								data.rollback();
 							} finally {
 							}
 						}
