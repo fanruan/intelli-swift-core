@@ -40,9 +40,9 @@ BI.ResizableTableCell = BI.inherit(BI.Widget, {
                 offset = 0;
                 defaultSize = o.width;
                 self.handler.element.removeClass("dragging");
-                mouseMoveTracker.releaseMouseMoves();
                 startDrag = false;
             }
+            mouseMoveTracker.releaseMouseMoves();
         }, document);
         this.handler = BI.createWidget({
             type: "bi.absolute",
