@@ -5,7 +5,7 @@ import com.fr.stable.ArrayUtils;
 /**
  * Created by Wang on 2017/1/18.
  */
-public class ShowResouceHelper {
+public class ShowResourceHelper {
     private static String[] getShowCssModule() {
         return new String[]{
                 //实时报表进度条
@@ -38,7 +38,7 @@ public class ShowResouceHelper {
     }
 
     public static String[] getShowCss() {
-        String[] dezi = DeziResouceHelper.getDeziCssModule();
+        String[] dezi = DeziResourceHelper.getDeziCssModule();
         String[] show = getShowCssModule();
         String[] module = ArrayUtils.addAll(dezi, show);
         return (String[]) ArrayUtils.addAll(module, new String[]{
@@ -113,7 +113,7 @@ public class ShowResouceHelper {
     }
 
     public static String[] getShowJs() {
-        String[] dezi = DeziResouceHelper.getDeziJsModule();
+        String[] dezi = DeziResourceHelper.getDeziJsModule();
         String[] show = getShowJsModule();
         return (String[]) ArrayUtils.addAll(ArrayUtils.addAll(dezi, show), new String[]{
 
