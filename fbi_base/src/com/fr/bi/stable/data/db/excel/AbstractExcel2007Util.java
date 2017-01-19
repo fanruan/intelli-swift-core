@@ -487,7 +487,6 @@ public abstract class AbstractExcel2007Util {
                 } catch (Exception e) {
                     cellValue = n;
                 }
-
             }
         }
 
