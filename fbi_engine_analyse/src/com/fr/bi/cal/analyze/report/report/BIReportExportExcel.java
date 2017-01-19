@@ -72,6 +72,9 @@ public class BIReportExportExcel {
 
         while (it.hasNext()) {
             JSONObject widgetJSON = widgetsJSON.getJSONObject((String) it.next());
+            JSONObject exp = new JSONObject("{ type: true, value: [[]]}");
+            widgetJSON.put("page", BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
+            widgetJSON.put("expander", new JSONObject("{ x:" + exp + ", y:" + exp + "}"));
             widgets.add(BIWidgetFactory.parseWidget(widgetJSON, node.getUserId()));
         }
     }
@@ -134,30 +137,32 @@ public class BIReportExportExcel {
         JSONObject chartOptions = BIChartSettingFactory.parseChartSetting((MultiChartWidget) widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
         //将plotOptions下的animation设为false否则不能截图（只截到网格线）
         JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
+        Rectangle rect = widget.getRect();
         plotOptions.put("animation", false);
         chartOptions.put("plotOptions", plotOptions);
+        String postOptions = new JSONObject("{" + "options:" + chartOptions + ", width:" + rect.getWidth() + ", height:" + rect.getHeight() + "}").toString();
         String base64 = null;
         try {
-            base64 = postMessage(PerformancePlugManager.getInstance().getPhantomServerIP(), PerformancePlugManager.getInstance().getPhantomServerPort(), new JSONObject("{" + "options:" + chartOptions + "}").toString());
+            base64 = postMessage(PerformancePlugManager.getInstance().getPhantomServerIP(), PerformancePlugManager.getInstance().getPhantomServerPort(), postOptions);
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-
-        BufferedImage img = base64Decoder(base64);
-        FloatElement floatElement = new FloatElement(img);
-        int resolution = ScreenResolution.getScreenResolution();
-        floatElement.setWidth(FU.valueOfPix(img.getWidth(null), resolution));
-        floatElement.setHeight(FU.valueOfPix(img.getHeight(null), resolution));
-        return floatElement;
+        return createFloatElement(base64Decoder(base64), rect);
     }
 
     private FloatElement renderDefaultChartPic (BIWidget widget) {
         String imageFolder = FRContext.getCurrentEnv().getPath() + "/classes/com/fr/bi/web/images/background/charts";
         BufferedImage img = getDefaultImage(widget.getType(), imageFolder);
+        return createFloatElement(img, widget.getRect());
+    }
+
+    private FloatElement createFloatElement (BufferedImage img, Rectangle rect) {
         FloatElement floatElement = new FloatElement(img);
         int resolution = ScreenResolution.getScreenResolution();
         floatElement.setWidth(FU.valueOfPix(img.getWidth(null), resolution));
         floatElement.setHeight(FU.valueOfPix(img.getHeight(null), resolution));
+        floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX(), resolution));
+        floatElement.setTopDistance(FU.valueOfPix((int) rect.getY(), resolution));
         return floatElement;
     }
 
