@@ -244,13 +244,13 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                     type: "bi.table_style_cell",
                     cls: "sequence-table-number-cell",
                     width: 60,
-                    styleGetter: function () {
-                        if (numbers[key].isSummary === true) {
-                            return o.summaryCellStyleGetter(true);
-                        } else {
-                            return o.sequenceCellStyleGetter(numbers[key].index);
+                    styleGetter: numbers[key].isSummary === true ? function () {
+                        return o.summaryCellStyleGetter(true);
+                    } : function (key) {
+                        return function () {
+                            return o.sequenceCellStyleGetter(key);
                         }
-                    }
+                    }(numbers[key].index)
                 }, numbers[key]));
                 renderedCells.push({
                     el: child,
