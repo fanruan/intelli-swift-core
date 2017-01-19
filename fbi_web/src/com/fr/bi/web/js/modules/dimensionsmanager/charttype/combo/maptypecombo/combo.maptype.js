@@ -94,7 +94,7 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
 
     getValue: function () {
         var arr = this.mapTypeCombo.getValue();
-        return BI.isEmptyArray(arr) ? [] : {type: BICst.WIDGET.MAP, subType: arr};
+        return BI.isEmptyArray(arr) ? [] : [{type: BICst.WIDGET.MAP, subType: arr[0]}];
     }
 });
 BI.MapTypeCombo.EVENT_CHANGE = "EVENT_CHANGE";
