@@ -109,7 +109,7 @@ public class PhantomServerUtils {
         if (isLinux32() || isLinux64()){
             PhantomServerUtils.setAuthority(exe);
         }else if (OperatingSystem.isMacOS()){
-            PhantomServerUtils.setAuthority(exe);
+            exe += "-mac";
         }else if (isUnix32() || isUnix64()){
             PhantomServerUtils.setAuthority(exe);
         }
