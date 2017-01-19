@@ -30,7 +30,9 @@ BI.TableStyleCell = BI.inherit(BI.Single, {
     _digestStyle: function () {
         var o = this.options;
         var style = o.styleGetter();
-        this.text.element.css(style || {});
+        if (style) {
+            this.text.element.css(style);
+        }
     },
 
     setText: function (text) {
