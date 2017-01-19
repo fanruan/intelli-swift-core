@@ -103,9 +103,13 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+            o.regionColumnSize = this.getRegionColumnSize();
+            o.columnSize = this.getColumnSize();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+            o.regionColumnSize = this.getRegionColumnSize();
+            o.columnSize = this.getColumnSize();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
 
@@ -152,6 +156,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
     setHeight: function (height) {
         BI.PageTable.superclass.setHeight.apply(this, arguments);
         this.table.setHeight(height);
+        this.sequence.setHeight(height - BI.GridTableScrollbar.SIZE);
     },
 
     setColumnSize: function (columnSize) {
@@ -163,6 +168,15 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         return this.table.getColumnSize();
     },
 
+    setRegionColumnSize: function (columnSize) {
+        this.options.columnSize = columnSize;
+        this.table.setRegionColumnSize(columnSize);
+    },
+
+    getRegionColumnSize: function () {
+        return this.table.getRegionColumnSize();
+    },
+
     hasLeftHorizontalScroll: function () {
         return this.table.hasLeftHorizontalScroll();
     },
@@ -171,8 +185,21 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         return this.table.hasRightHorizontalScroll();
     },
 
+    setVerticalScroll: function (scrollTop) {
+        this.table.setVerticalScroll(scrollTop);
+        this.sequence.setVerticalScroll(scrollTop);
+    },
+
     getVerticalScroll: function () {
         return this.table.getVerticalScroll();
+    },
+
+    setVPage: function (page) {
+        this.sequence.setVPage && this.sequence.setVPage(page);
+    },
+
+    setHPage: function (page) {
+        this.sequence.setHPage && this.sequence.setHPage(page);
     },
 
     attr: function () {

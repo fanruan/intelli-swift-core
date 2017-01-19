@@ -1063,6 +1063,7 @@ if (!window.BI) {
             var loading;
             return function (option) {
                 option || (option = {});
+                option.data = BI.extend({}, Data.SharingPool.cat("urlParameters"), option.data);
                 //encode
                 encodeBIParam(option.data);
 

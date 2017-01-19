@@ -23,7 +23,7 @@ import com.fr.bi.fs.entry.BIReportEntryDAO;
 import com.fr.bi.fs.entry.EntryConstants;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
-import com.fr.bi.resource.ResourceHelper;
+import com.fr.bi.resource.FsResouceHelper;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.web.dezi.phantom.PhantomServer;
@@ -300,7 +300,7 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public String[] getPlateStyleFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(ResourceHelper.getFoundationCss(), new String[]{
+        return (String[]) ArrayUtils.addAll(FsResouceHelper.getFsCss(), new String[]{
                 "/com/fr/bi/web/cross/css/bi.toolbar.add.css",
                 "/com/fr/bi/web/cross/css/bi.shared.table.css",
 
@@ -321,11 +321,6 @@ public class BIPlate extends AbstractFSPlate {
 
                 "/com/fr/bi/web/cross/css/bi.text.css",
 
-                //BI风格中用到的全局样式
-                "com/fr/bi/web/css/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.css",
-                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.css",
-                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.css",
-                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.css"
         });
     }
 
@@ -336,7 +331,7 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public String[] getPlateJavaScriptFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(ResourceHelper.getFsJs(), new String[]{
+        return (String[]) ArrayUtils.addAll(FsResouceHelper.getFsJs(), new String[]{
                 "/com/fr/bi/web/cross/js/bi.user.manager.js",
                 "/com/fr/bi/web/cross/js/effect/create.by.me.js",
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",
@@ -350,13 +345,6 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/bi.directory.edit.js",
                 "/com/fr/bi/web/cross/js/reporthangout/hangoutreport.plate.js",
                 "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js",
-
-                //BI风格中用到的全局样式
-                "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
-                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
-                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.js",
-                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
-                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.js"
         });
     }
 

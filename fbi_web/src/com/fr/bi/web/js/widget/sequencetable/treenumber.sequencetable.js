@@ -29,6 +29,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.vCurr = 1;
         this.hCurr = 1;
+        this.tasks = [];
         this.renderedCells = [];
         this.renderedKeys = [];
 
@@ -71,7 +72,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         this._populate();
     },
 
-    _getStartSequence: function (nodes) {
+    _getNextSequence: function (nodes) {
         var self = this;
         var start = this.start;
         var cnt = this.start;
@@ -96,10 +97,27 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         return start;
     },
 
+    _getStart: function (nodes) {
+        var self = this;
+        var start = this.start;
+        BI.each(nodes, function (i, node) {
+            if (BI.isNotEmptyArray(node.children)) {
+                BI.each(node.children, function (index, child) {
+                    if (index === 0) {
+                        if (self.cache[child.text || child.value]) {
+                            start = self.cache[child.text || child.value];
+                        }
+                    }
+                });
+            }
+        });
+        return start;
+    },
+
     _formatNumber: function (nodes) {
         var self = this, o = this.options;
         var result = [];
-        var count = this._getStartSequence(nodes);
+        var count = this._getStart(nodes);
 
         function getLeafCount(node) {
             var cnt = 0;
@@ -168,12 +186,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
 
     _nextState: function () {
         var o = this.options;
-        this.numbers = this._formatNumber(o.items);
-        var intervalTree = BI.PrefixIntervalTree.uniform(this.numbers.length, 0);
-        BI.each(this.numbers, function (i, number) {
-            intervalTree.set(i, number.height);
-        });
-        this.intervalTree = intervalTree;
+        this._getNextSequence(o.items);
     },
 
     _prevState: function () {
@@ -199,41 +212,45 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         var renderedCells = [], renderedKeys = [];
-        let index = this.intervalTree.greatestLowerBound(o.scrollTop);
-        let offsetTop = -(o.scrollTop - (index > 0 ? this.intervalTree.sumTo(index - 1) : 0));
-        let height = offsetTop;
+        var numbers = this._formatNumber(o.items);
+        var intervalTree = BI.PrefixIntervalTree.uniform(numbers.length, 0);
+        BI.each(numbers, function (i, number) {
+            intervalTree.set(i, number.height);
+        });
+        var index = intervalTree.greatestLowerBound(o.scrollTop);
+        var offsetTop = -(o.scrollTop - (index > 0 ? intervalTree.sumTo(index - 1) : 0));
+        var height = offsetTop;
         var bodyHeight = o.height - this._getHeaderHeight();
-        while (height < bodyHeight && index < this.numbers.length) {
+        while (height < bodyHeight && index < numbers.length) {
             renderedKeys.push(index);
-            offsetTop += this.numbers[index].height;
-            height += this.numbers[index].height;
+            offsetTop += numbers[index].height;
+            height += numbers[index].height;
             index++;
         }
 
-        BI.each(renderedKeys, function (i, index) {
-            var contains = BI.deepContains(self.renderedKeys, index);
-            if (contains === true) {
-                if (self.numbers[index].height !== self.renderedCells[index]._height) {
-                    self.renderedCells[index]._height = o.rowSize;
-                    self.renderedCells[index].el.setHeight(self.numbers[index].height);
+        BI.each(renderedKeys, function (i, key) {
+            var index = BI.deepIndexOf(self.renderedKeys, key);
+            if (index > -1) {
+                if (numbers[key].height !== self.renderedCells[index]._height) {
+                    self.renderedCells[index]._height = numbers[key].height;
+                    self.renderedCells[index].el.setHeight(numbers[key].height);
                 }
-                if (self.numbers[index].top !== self.renderedCells[index].top) {
-                    self.renderedCells[index].top = self.numbers[index].top;
-                    self.renderedCells[index].el.element.css("top", self.numbers[index].top + "px");
+                if (numbers[key].top !== self.renderedCells[index].top) {
+                    self.renderedCells[index].top = numbers[key].top;
+                    self.renderedCells[index].el.element.css("top", numbers[key].top + "px");
                 }
+                self.renderedCells[index].el.setText(numbers[key].text);
                 renderedCells.push(self.renderedCells[index]);
             } else {
                 var child = BI.createWidget(BI.extend({
-                    type: "bi.label",
+                    type: "bi.sequence_table_number_cell",
                     width: 60,
-                    textAlign: "left",
-                    hgap: 5
-                }, self.numbers[index]));
+                }, numbers[key]));
                 renderedCells.push({
                     el: child,
                     left: 0,
-                    top: self.numbers[index].top,
-                    _height: self.numbers[index].height
+                    top: numbers[key].top,
+                    _height: numbers[key].height
                 });
             }
         });
@@ -271,16 +288,27 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         this.renderedCells = renderedCells;
         this.renderedKeys = renderedKeys;
 
-        this.container.setHeight(this.intervalTree.sumUntil(this.numbers.length))
+        this.container.setHeight(intervalTree.sumUntil(numbers.length));
     },
 
     _restore: function () {
+        BI.each(this.renderedCells, function (i, cell) {
+            cell.el.destroy();
+        });
+        this.renderedCells = [];
+        this.renderedKeys = [];
         this.vCurr = 1;
+        this.hCurr = 1;
         this.start = this.options.startSequence;
         this.cache = {};
     },
 
     _populate: function () {
+        var self = this;
+        BI.each(this.tasks, function (i, task) {
+            task.apply(self);
+        });
+        this.tasks = [];
         this._layout();
         this._calculateChildrenToRender();
     },
@@ -298,25 +326,25 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
 
     setVPage: function (v) {
         if (v <= 1) {
-            this._clear();
+            this._restore();
+            this.tasks.push(this._nextState);
         } else if (v === this.vCurr + 1) {
-            this._nextState();
+            this.tasks.push(this._nextState);
         } else if (v === this.vCurr - 1) {
-            this._prevState();
+            this.tasks.push(this._prevState);
         }
         this.vCurr = v;
     },
 
     setHPage: function (v) {
         if (v !== this.hCurr) {
-            this._prevState();
+            this.tasks.push(this._prevState);
         }
         this.hCurr = v;
     },
 
     restore: function () {
         this._restore();
-        this.options.scrollTop = 0;
     },
 
     populate: function (items, header, crossItems, crossHeader) {

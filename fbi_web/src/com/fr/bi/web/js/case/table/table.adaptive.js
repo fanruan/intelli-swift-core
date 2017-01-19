@@ -144,7 +144,10 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
     },
 
     _populate: function () {
+        var o = this.options;
         var data = this._digest();
+        o.regionColumnSize = data.regionColumnSize;
+        o.columnSize = data.columnSize;
         this.table.setColumnSize(data.columnSize);
         this.table.setRegionColumnSize(data.regionColumnSize);
         this.table.attr("freezeCols", data.freezeCols);

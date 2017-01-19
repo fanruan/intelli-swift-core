@@ -129,6 +129,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
                     });
                 }
                 return this.dateCombo;
+            case BICst.WIDGET.DATE_PANE:
             case BICst.WIDGET.DATE:
                 this.dateRangeCombo = BI.createWidget({
                     type: "bi.range_value_combo",
