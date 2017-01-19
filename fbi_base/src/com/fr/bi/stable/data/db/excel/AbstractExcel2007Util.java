@@ -283,6 +283,7 @@ public abstract class AbstractExcel2007Util {
         private int thisColumn = -1;
         private int lastColumnNumber = -1;
         private static final int PERCENT = 100;
+        private static final int SCINOTATION = 0;
 
         public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings, DataFormatter dataFormatter) {
             this.value = new StringBuffer();
@@ -478,8 +479,14 @@ public abstract class AbstractExcel2007Util {
                 } catch (Exception e) {
                     cellValue = n;
                 }
+            } else if (this.formatIndex == SCINOTATION) {
+                cellValue = n;
             } else {
-                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
+                try {
+                    cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
+                } catch (Exception e) {
+                    cellValue = n;
+                }
             }
         }
 

@@ -39,7 +39,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             }]
         });
         BI.createWidget({
-            type: "bi.vertical",
+            type: "bi.default",
             element: this.container,
             items: this.items
         });
@@ -124,17 +124,17 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
 
     refreshView: function (data) {
         if (data.titles) {
-            this.setTitles(BI.isEmpty(data.titles) ? [{
+            this._setTitles(BI.isEmpty(data.titles) ? [{
                 text: BI.i18nText("BI-Tree_Label_Con") + BI.i18nText("BI-Colon"),
                 title: BI.i18nText("BI-Tree_Label_Con")
             }] : data.titles);
         }
         if (data.items) {
-            this.setItems(BI.isEmpty(data.items) ? [[]] : data.items);
+            this._setItems(BI.isEmpty(data.items) ? [[]] : data.items);
         }
     },
 
-    setItems: function (items) {
+    _setItems: function (items) {
         var self = this;
         var length = this.right.getAllButtons().length;
         var deletes = [];
@@ -160,14 +160,14 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             self.items.push(temp);
         });
         var temp = BI.createWidget({
-            type: "bi.vertical",
+            type: "bi.default",
             items: self.items
         });
         this.right.addItems([temp]);
         this.right.setHeight(self.items.length * this._constant.LIST_LABEL_HEIGHT);
     },
 
-    setTitles: function (titles) {
+    _setTitles: function (titles) {
         var length = this.title.getAllButtons().length;
         var deletes = [];
         for (var i = 0; i < length; i++) {
@@ -181,7 +181,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         }));
         this.title.setHeight(titles.length * this._constant.LIST_LABEL_HEIGHT);
     },
-
 
     setValue: function (v) {
         var value = [];

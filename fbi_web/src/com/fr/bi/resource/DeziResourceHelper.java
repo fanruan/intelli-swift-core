@@ -5,7 +5,7 @@ import com.fr.stable.ArrayUtils;
 /**
  * Created by Wang on 2017/1/18.
  */
-public class DeziResouceHelper {
+public class DeziResourceHelper {
     public static String[] getDeziCssModule() {
         return new String[]{
                 //驾驶舱相关模块
@@ -497,6 +497,11 @@ public class DeziResouceHelper {
 
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/widget.summarytable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/summarytable.model.js",
+
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.grouptable.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.crosstable.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/grouptable.model.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/crosstable.model.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/widget.complextable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/complextable.model.js",

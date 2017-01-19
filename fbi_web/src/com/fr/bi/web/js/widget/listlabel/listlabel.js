@@ -7,8 +7,8 @@ BI.ListLabel = BI.inherit(BI.Widget, {
 
     _constant: {
         MAX_COLUMN_SIZE: 40,
-        DEFAULT_LABEL_GAP: 25,
-        DEFAULT_LEFT_GAP: 20
+        DEFAULT_LABEL_GAP: 15,
+        DEFAULT_RIGHT_GAP: 10
     },
 
     _defaultConfig: function () {
@@ -35,13 +35,13 @@ BI.ListLabel = BI.inherit(BI.Widget, {
             title: o.title,
             height: o.height
         });
-        this.items = BI.filter(this.items, function (idx, item) {
-            return item.value !== "";
-        });
+
         this.container = BI.createWidget({
             type: "bi.list_label_item_group",
             items: BI.createItems(this.items.slice(0, this._constant.MAX_COLUMN_SIZE), {
-                type: "bi.text_button"
+                type: "bi.text_button",
+                height: o.height,
+                rgap: this._constant.DEFAULT_RIGHT_GAP
             }),
             layouts: [{
                 type: "bi.inline_vertical_adapt",
@@ -97,9 +97,6 @@ BI.ListLabel = BI.inherit(BI.Widget, {
     },
 
     addItems: function (v) {
-        v = BI.filter(v, function (idx, item) {
-                return item.value !== "";
-            }) || [];
         this.checkTipsState(v);
         this.container.addItems(v.slice(0, this._constant.MAX_COLUMN_SIZE - 1));
     },
@@ -157,7 +154,11 @@ BI.ListLabel = BI.inherit(BI.Widget, {
             this.title.setTitle(BI.i18nText("BI-List_Label_Con"))
         }
         this.removeAllItems();
-        this.addItems(v.items);
+        this.addItems(BI.createItems(v.items, {
+            type: "bi.text_button",
+            height: this.options.height,
+            rgap: this._constant.DEFAULT_RIGHT_GAP
+        }));
     },
 
 
