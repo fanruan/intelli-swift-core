@@ -97,6 +97,9 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 BI.nextTick(function () {
                     self.center.element.scrollTop(self.center.element[0].scrollHeight);
                 });
+                if (data.length > 0) {
+                    self.fireEvent(BI.AbstractRegion.EVENT_CHANGE);
+                }
                 self._dropHook();
             },
             over: function (event, ui) {
@@ -303,9 +306,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         BI.each(dimensions, function (i, dimension) {
             dIds.push($(dimension).data("dId"));
         });
-        if (dIds.length > 0) {
-            view[o.viewType] = dIds;
-        }
+        view[o.viewType] = dIds.length > 0 ? dIds : [];
         return view;
     },
 
