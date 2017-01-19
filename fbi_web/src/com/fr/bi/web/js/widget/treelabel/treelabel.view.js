@@ -83,57 +83,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         this.fireEvent(BI.TreeLabelView.EVENT_CHANGE, options);
     },
 
-    updateView: function (items, floor) {
-        var self = this;
-        var updateList = this.items.slice(floor + 1);
-        var values = items.slice(floor + 1);
-        for (var i = 0; i < updateList.length; i++) {
-            if (BI.isNull(values[i])) {
-                return;
-            }
-            if (BI.isEmptyArray(values[i])) {
-                for (var j = i; j < updateList.length; j++) {
-                    updateList[j].populate({items: []});
-                }
-                return;
-            }
-            var value = updateList[i].getValue();
-            updateList[i].populate({
-                items: values[i]
-            });
-            updateList[i].setValue(value);
-
-            var now = updateList[i].getValue();
-            if (!arraysEqual(value, now)) {     //接着刷新剩余行
-                return;
-            }
-        }
-
-        function arraysEqual(a1, a2) {     //仅考虑数值字符串等简单数据
-            if (a1.length !== a2.length) {
-                return false;
-            }
-            BI.each(a2, function (idx, data) {
-                if (a1.indexOf(data) === -1) {
-                    return false;
-                }
-            });
-            return true;
-        }
-    },
-
-    refreshView: function (data) {
-        if (data.titles) {
-            this._setTitles(BI.isEmpty(data.titles) ? [{
-                text: BI.i18nText("BI-Tree_Label_Con") + BI.i18nText("BI-Colon"),
-                title: BI.i18nText("BI-Tree_Label_Con")
-            }] : data.titles);
-        }
-        if (data.items) {
-            this._setItems(BI.isEmpty(data.items) ? [[]] : data.items);
-        }
-    },
-
     _setItems: function (items) {
         var self = this;
         var length = this.right.getAllButtons().length;
@@ -180,6 +129,53 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             width: this.options.titleWidth
         }));
         this.title.setHeight(titles.length * this._constant.LIST_LABEL_HEIGHT);
+    },
+
+    updateView: function (items, floor) {
+        var self = this,
+            updateList = this.items.slice(floor + 1),
+            values = items.slice(floor + 1);
+        for (var i = 0; i < updateList.length; i++) {
+            if (BI.isNull(values[i])) {
+                return;
+            }
+            if (BI.isEmptyArray(values[i])) {
+                for (var j = i; j < updateList.length; j++) {
+                    updateList[j].populate({items: []});
+                }
+                return;
+            }
+            var originalValue = updateList[i].getValue();
+            updateList[i].populate({
+                items: values[i]
+            });
+            updateList[i].setValue(originalValue);
+
+            var currentValue = updateList[i].getValue();
+            if (!arraysEqual(originalValue, currentValue)) {     //接着刷新剩余行
+                return;
+            }
+        }
+
+        function arraysEqual(a1, a2) {     //仅考虑数值字符串等简单数据
+            if (a1.length !== a2.length) {
+                return false;
+            }
+            BI.each(a2, function (idx, data) {
+                if (a1.indexOf(data) === -1) {
+                    return false;
+                }
+            });
+            return true;
+        }
+    },
+
+    refreshView: function (data) {
+        data.titles && this._setTitles(BI.isEmpty(data.titles) ? [{
+            text: BI.i18nText("BI-Tree_Label_Con") + BI.i18nText("BI-Colon"),
+            title: BI.i18nText("BI-Tree_Label_Con")
+        }] : data.titles);
+        data.items && this._setItems(BI.isEmpty(data.items) ? [[]] : data.items);
     },
 
     setValue: function (v) {
