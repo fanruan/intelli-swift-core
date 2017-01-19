@@ -28,7 +28,7 @@ BI.Widget = BI.inherit(FR.Widget, {
 
     _init: function () {
         var o = this.options;
-        this._initOpts()
+        this._initOpts();
         BI.isWidget(o.element) && (o.element = o.element.element);
         BI.isString(o.element) && (o.element = $(o.element));
         o.element || (o.element = $(document.createElement(o.tagName)));
@@ -277,7 +277,13 @@ BI.Widget = BI.inherit(FR.Widget, {
 
     destroy: function () {
         this.empty();
+        this.destroyed();
         BI.Widget.superclass.destroy.apply(this, arguments);
         this.fireEvent(BI.Events.DESTROY);
+    },
+
+    //override
+    destroyed: function () {
+
     }
 });

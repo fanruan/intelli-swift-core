@@ -147,10 +147,16 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
         var header = this._createHeader(vDeep);
-        var items = this._formatItems(o.items, header, deep);
+        var data = this._formatItems(o.items, header, deep);
+        var columnSize = o.columnSize.slice();
+        var minColumnSize = o.minColumnSize.slice();
+        var maxColumnSize = o.maxColumnSize.slice();
+        BI.removeAt(columnSize, data.deletedCols);
+        BI.removeAt(minColumnSize, data.deletedCols);
+        BI.removeAt(maxColumnSize, data.deletedCols);
         return {
-            header: header,
-            items: items,
+            header: data.header,
+            items: data.items,
             columnSize: this._formatColumnSize(o.columnSize, deep),
             minColumnSize: this._formatColumns(o.minColumnSize, deep),
             maxColumnSize: this._formatColumns(o.maxColumnSize, deep),
@@ -281,7 +287,9 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
 
     populate: function (items, header, crossItems, crossHeader) {
         var o = this.options;
-        o.items = items || [];
+        if (items) {
+            o.items = items;
+        }
         if (header) {
             o.header = header;
         }
@@ -291,11 +299,12 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         if (crossHeader) {
             o.crossHeader = crossHeader;
         }
-        var deep = this._getHDeep();
-        var vDeep = this._getVDeep();
-        header = this._createHeader(vDeep);
-        var info = this._formatItems(o.items, header, deep);
-        this.table.populate(info.items, info.header);
+        var data = this._digest();
+        this.table.setColumnSize(data.columnSize);
+        this.table.attr("minColumnSize", data.minColumnSize);
+        this.table.attr("maxColumnSize", data.maxColumnSize);
+        this.table.attr("freezeCols", data.freezeCols);
+        this.table.populate(data.items, data.header);
     },
 
     destroy: function () {

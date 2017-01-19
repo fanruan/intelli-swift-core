@@ -382,9 +382,7 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/css/base/chart/chart.combine.css",
                 "com/fr/bi/web/css/base/colorpicker/editor.colorpicker.css",
                 "com/fr/bi/web/css/base/pager/pager.css",
-                "com/fr/bi/web/css/base/pager/pager.number.css",
                 "com/fr/bi/web/css/base/pager/pager.direction.css",
-                "com/fr/bi/web/css/base/pager/pager.skip.css",
                 "com/fr/bi/web/css/base/pager/pager.all.count.css",
                 "com/fr/bi/web/css/base/segment/button.segment.css",
                 "com/fr/bi/web/css/base/segment/segment.css",
@@ -1060,10 +1058,7 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/case/tree/tree.branch.js",
                 "com/fr/bi/web/js/case/tree/tree.branch.handstand.js",
 
-                "com/fr/bi/web/js/case/pager/pager.number.js",
                 "com/fr/bi/web/js/case/pager/pager.direction.js",
-                "com/fr/bi/web/js/case/pager/pager.skip.js",
-                "com/fr/bi/web/js/case/pager/pager.all.js",
                 "com/fr/bi/web/js/case/pager/pager.all.count.js",
 
                 //各种表格
