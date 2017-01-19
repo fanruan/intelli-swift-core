@@ -31,7 +31,7 @@ BI.TreeDimensionsManager = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return {view: this.manager.getValue()};
+        return this.manager.getValue();
     },
 
     populate: function () {
