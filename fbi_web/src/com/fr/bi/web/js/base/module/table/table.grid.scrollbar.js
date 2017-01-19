@@ -148,8 +148,9 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
             this.options.position = BI.clamp(position - (this._getFaceSize() * 0.5 / this._getScale()), 0, this.options.contentSize - this.options.size);
             this._populate();
             this.fireEvent(BI.GridTableScrollbar.EVENT_SCROLL, this.options.position);
+        } else {
+            this._mouseMoveTracker.captureMouseMoves(e);
         }
-        this._mouseMoveTracker.captureMouseMoves(e);
         this.element[0].focus();
     },
 
