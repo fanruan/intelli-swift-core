@@ -172,6 +172,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                 text: currValue,
                 dId: currDid,
                 isCross: true,
+                styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                 expandCallback: function () {
                     var clickNode = self.crossETree.search(nodeId);
                     //全部展开再收起——纵向
@@ -259,6 +260,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                     type: "bi.normal_header_cell",
                     dId: dId,
                     text: BI.Utils.getDimensionNameByID(dId),
+                    styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                     sortFilterChange: function (v) {
                         self.resetETree();
                         self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
@@ -273,6 +275,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                     type: "bi.normal_header_cell",
                     dId: dId,
                     text: BI.Utils.getDimensionNameByID(dId),
+                    styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                     sortFilterChange: function (v) {
                         self.resetETree();
                         self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
@@ -288,6 +291,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                 targetsArray.push({
                     type: "bi.page_table_cell",
                     cls: "cross-table-target-header",
+                    styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                     text: BI.Utils.getDimensionNameByID(tId),
                     title: BI.Utils.getDimensionNameByID(tId)
                 });
@@ -330,6 +334,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                         type: "bi.normal_header_cell",
                         dId: tId,
                         text: BI.i18nText("BI-Summary_Values"),
+                        styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                         tag: BI.UUID(),
                         sortFilterChange: function (v) {
                             self.resetETree();
@@ -424,6 +429,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                             text: v,
                             dId: tId,
                             cls: "summary-cell last",
+                            styles: BI.SummaryTableHelper.getLastSummaryStyles(self.themeColor, self.tableStyle),
                             clicked: [{}]
                         });
                     }
@@ -441,18 +447,17 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
     /**
      * 交叉表的(指标)汇总值
      */
-    _createTableSumItems: function (s, sum, pValues, ob, isLast) {
+    _createTableSumItems: function (s, sum, pValues, ob, isLast, rowIndex) {
         var self = this;
         BI.each(s, function (i, v) {
             if (BI.isObject(v)) {
                 var sums = v.s, child = v.c;
                 if (BI.isNotNull(sums) && BI.isNotNull(child)) {
-                    self._createTableSumItems(child, sum, pValues, ob, isLast);
-                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob, isLast);
+                    self._createTableSumItems(child, sum, pValues, ob, isLast, rowIndex);
+                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob, isLast, rowIndex);
                 } else if (BI.isNotNull(sums)) {
-                    self._createTableSumItems(sums, sum, pValues, ob, isLast);
+                    self._createTableSumItems(sums, sum, pValues, ob, isLast, rowIndex);
                 }
-
             } else {
                 var tId = self.targetIds[i];
                 if (self.targetIds.length === 0) {
@@ -464,7 +469,9 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                     text: v,
                     dId: tId,
                     clicked: pValues.concat(self.crossPV[ob.index]),
-                    cls: isLast ? "last summary-cell" : ""
+                    cls: isLast ? "last summary-cell" : "",
+                    styles: isLast ? BI.SummaryTableHelper.getLastSummaryStyles(self.themeColor, self.tableStyle) :
+                        BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, rowIndex)
                 });
                 ob.index++;
             }
@@ -489,6 +496,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                             self.header.push({
                                 type: "bi.page_table_cell",
                                 cls: "cross-table-target-header",
+                                styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                                 text: BI.i18nText("BI-Summary_Values") + ":" + BI.Utils.getDimensionNameByID(tarId),
                                 title: BI.i18nText("BI-Summary_Values") + ":" + BI.Utils.getDimensionNameByID(tarId),
                                 tag: BI.UUID()
@@ -509,6 +517,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                             self.header.push({
                                 type: "bi.page_table_cell",
                                 cls: "cross-table-target-header",
+                                styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                                 text: BI.Utils.getDimensionNameByID(self.targetIds[k]),
                                 title: BI.Utils.getDimensionNameByID(self.targetIds[k]),
                                 tag: BI.UUID()
@@ -519,6 +528,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                     self.header.push({
                         type: "bi.page_table_cell",
                         cls: "cross-table-target-header",
+                        styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                         text: dName,
                         title: dName,
                         tag: BI.UUID()
@@ -538,7 +548,10 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
         BI.each(this.targetIds, function (i, tId) {
             items.push({
                 children: [{
-                    text: BI.Utils.getDimensionNameByID(tId)
+                    type: "bi.page_table_cell",
+                    text: BI.Utils.getDimensionNameByID(tId),
+                    title: BI.Utils.getDimensionNameByID(tId),
+                    styles: BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i)
                 }]
             });
         });
@@ -559,6 +572,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                             items[j].children[0].values.push({
                                 type: "bi.target_body_normal_cell",
                                 text: sum,
+                                styles: BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, j),
                                 dId: self.targetIds[j],
                                 clicked: self.crossPV[indexOb.cIndex]
                             });
@@ -575,6 +589,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                     items[j].children[0].values.push({
                         type: "bi.target_body_normal_cell",
                         text: sum,
+                        styles: BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, j),
                         dId: self.targetIds[j],
                         clicked: self.crossPV[indexOb.cIndex]
                     });
@@ -595,7 +610,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                 self._initCrossItemsSum(currentLayer, v.c);
             }
             BI.isNull(self.crossItemsSums[currentLayer]) && (self.crossItemsSums[currentLayer] = []);
-            self.crossItemsSums[currentLayer].push(BI.isNotNull(v.s) ? true : false);
+            self.crossItemsSums[currentLayer].push(BI.isNotNull(v.s));
         });
     },
 
@@ -608,6 +623,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                     type: "bi.normal_header_cell",
                     dId: dId,
                     text: BI.Utils.getDimensionNameByID(dId),
+                    styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                     sortFilterChange: function (v) {
                         self.resetETree();
                         self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
@@ -642,7 +658,6 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
             self.mergeCols.push(i);
             self.freezeCols.push(i);
         });
-        // this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
         BI.each(this.header, function (i, id) {
             cSize.push("");
         });

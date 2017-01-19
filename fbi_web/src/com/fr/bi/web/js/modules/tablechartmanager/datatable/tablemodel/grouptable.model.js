@@ -292,6 +292,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                 type: "bi.normal_expander_cell",
                 text: child.n,
                 dId: currDid,
+                styles: BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i),
                 expandCallback: function () {
                     //全部展开再收起——横向
                     var clickNode = self.eTree.search(nodeId);
@@ -344,7 +345,8 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                             text: sum,
                             dId: self.targetIds[i % tarSize],
                             clicked: pValues,
-                            cls: "summary-cell"
+                            cls: "summary-cell",
+                            styles: BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle)
                         });
                     });
                     item.values = vs;
@@ -356,10 +358,10 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                 if (BI.isNotNull(child.s.c) || BI.isArray(child.s.s)) {
                     //交叉表，pValue来自于行列表头的结合
                     var ob = {index: 0};
-                    self._createTableSumItems(child.s.c, values, pValues, ob);
+                    self._createTableSumItems(child.s.c, values, pValues, ob, false, i);
                     //显示列汇总 有指标
                     if (self.showColTotal === true && self.targetIds.length > 0) {
-                        self._createTableSumItems(child.s.s, values, pValues, ob);
+                        self._createTableSumItems(child.s.s, values, pValues, ob, false, i);
                     }
                 } else {
                     BI.each(child.s, function (j, sum) {
@@ -368,7 +370,8 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                             type: "bi.target_body_normal_cell",
                             text: sum,
                             dId: tId,
-                            clicked: pValues
+                            clicked: pValues,
+                            styles: BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i)
                         })
                     });
                 }
@@ -464,6 +467,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                 type: "bi.normal_header_cell",
                 dId: dId,
                 text: BI.Utils.getDimensionNameByID(dId),
+                styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
                 sortFilterChange: function (v) {
                     self.resetETree();
                     self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
@@ -490,7 +494,8 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                         text: v,
                         dId: tId,
                         cls: "summary-cell last",
-                        clicked: [{}]
+                        clicked: [{}],
+                        styles: BI.SummaryTableHelper.getLastSummaryStyles(self.themeColor, self.tableStyle)
                     });
                 });
                 item.values = outerValues;
@@ -506,7 +511,8 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                         text: v,
                         dId: tId,
                         cls: "summary-cell",
-                        clicked: [{}]
+                        clicked: [{}],
+                        styles: BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle)
                     });
                 });
                 item.children.push({
@@ -517,7 +523,8 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                     clicked: [{}],
                     tag: BI.UUID(),
                     isSum: true,
-                    values: outerValues
+                    values: outerValues,
+                    styles: BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle)
                 });
                 item.values = item;
             }
