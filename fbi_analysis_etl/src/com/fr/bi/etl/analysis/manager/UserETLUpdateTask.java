@@ -32,6 +32,7 @@ import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.structure.queue.AV;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -240,5 +241,16 @@ public class UserETLUpdateTask implements CubeTask, AV {
 
     public BICore getKey() {
         return source.fetchObjectCore();
+    }
+
+    public void rollback() {
+        if(this.cube != null) {
+            try {
+                this.cube.clear();
+                BIFileUtils.delete(new File(this.path).getParentFile());
+            } catch (Throwable e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+        }
     }
 }
