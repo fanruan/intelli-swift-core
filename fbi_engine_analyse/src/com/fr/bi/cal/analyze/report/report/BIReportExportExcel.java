@@ -159,8 +159,8 @@ public class BIReportExportExcel {
     private FloatElement createFloatElement (BufferedImage img, Rectangle rect) {
         FloatElement floatElement = new FloatElement(img);
         int resolution = ScreenResolution.getScreenResolution();
-        floatElement.setWidth(FU.valueOfPix(img.getWidth(null), resolution));
-        floatElement.setHeight(FU.valueOfPix(img.getHeight(null), resolution));
+        floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
+        floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
         floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX(), resolution));
         floatElement.setTopDistance(FU.valueOfPix((int) rect.getY(), resolution));
         return floatElement;
