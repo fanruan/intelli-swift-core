@@ -84,6 +84,7 @@ BI.MultiStringList = BI.inherit(BI.Widget, {
                     assertShowValue();
                     self.populate();
                     self._setStartValue("");
+                    self.fireEvent(BI.MultiStringList.EVENT_CHANGE);
                 })
             }
         });
