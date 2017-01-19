@@ -534,7 +534,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this._refreshGlobalStyle();
     },
 
-    destroy: function () {
+    destroyed: function () {
         BI.each(this._broadcasts, function (I, removeBroadcast) {
             removeBroadcast();
         });

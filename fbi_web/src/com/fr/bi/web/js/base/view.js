@@ -25,10 +25,8 @@ BI.View = BI.inherit(BI.V, {
             this.model._changing_ = false;
             this.model.actionEnd() && this.actionEnd();
         }).listenTo(this.model, "destroy", function () {
-            this._destroy();
             this.destroy();
         }).listenTo(this.model, "unset", function () {
-            this._destroy();
             this.destroy();
         }).listenTo(this.model, "splice", function (arg) {
             this.splice.apply(this, arg);
@@ -504,16 +502,17 @@ BI.View = BI.inherit(BI.V, {
 
     },
 
-    _destroy: function () {
+    destroy: function () {
         BI.each(this._cardLayouts, function (name, card) {
             card && card.destroy();
         });
         delete this._cardLayouts;
         delete this._cards;
         this.remove();
+        this.destroyed();
     },
 
-    destroy: function () {
+    destroyed: function () {
 
     }
 });
