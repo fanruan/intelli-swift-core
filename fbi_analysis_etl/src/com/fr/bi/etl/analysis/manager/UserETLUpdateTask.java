@@ -247,10 +247,10 @@ public class UserETLUpdateTask implements CubeTask, AV {
         if(this.cube != null) {
             try {
                 this.cube.clear();
-                BIFileUtils.delete(new File(this.path).getParentFile());
             } catch (Throwable e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
+        BIFileUtils.delete(new File(this.path).getParentFile());
     }
 }
