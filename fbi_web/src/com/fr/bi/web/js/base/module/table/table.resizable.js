@@ -54,7 +54,15 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
             freezeCols: o.freezeCols,
             isNeedMerge: o.isNeedMerge,
             mergeCols: o.mergeCols,
-            mergeRule: o.mergeRule,
+            mergeRule: function (row1, row2) {
+                if (row1.type === "bi.resizable_table_cell") {
+                    row1 = row1.cell;
+                }
+                if (row2.type === "bi.resizable_table_cell") {
+                    row2 = row2.cell;
+                }
+                return o.mergeRule(row1, row2);
+            },
 
             header: this._formatHeader(o.header),
             items: o.items,
