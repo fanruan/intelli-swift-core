@@ -2,6 +2,7 @@ package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
@@ -38,6 +39,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task"));
+        logger.info(BILogHelper.logCubeGeneratingTableSourceInfoByTableSourceID(tableSource.getSourceID()));
         tableEntityService.recordCurrentExecuteTime();
         long t = System.currentTimeMillis();
         try {
