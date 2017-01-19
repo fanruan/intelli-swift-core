@@ -32,6 +32,8 @@ public class SingleUserETLTableCubeManager implements Release {
 
     private UserCubeTableSource source;
 
+	private volatile boolean isError = false;
+
     public UserCubeTableSource getSource() {
         return source;
     }
@@ -93,8 +95,15 @@ public class SingleUserETLTableCubeManager implements Release {
 		}
 		return !isEmpty;
 	}
+
+	public void resetErrorStatus() {
+		isError = false;
+	}
 	
 	public void addTask(){
+		if(isError) {
+			return;
+		}
 		if(updateTask == null){
 			synchronized (this) {
 				if(updateTask == null){
@@ -126,6 +135,7 @@ public class SingleUserETLTableCubeManager implements Release {
 								manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue(), source.getUserId());
 							} catch (Throwable e){
 								BILoggerFactory.getLogger().error(e.getMessage(), e);
+								isError = true;
 								data.rollback();
 							} finally {
 							}

@@ -108,6 +108,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
                 manager.getSource().refreshWidget();
             }
         }
+        resetErrorStatus();
     }
 
     @Override
@@ -168,6 +169,18 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
             }
         }
 
+    }
+
+
+    public void resetErrorStatus() {
+        Iterator<Entry<String, SingleUserETLTableCubeManager>> iter = threadMap.entrySet().iterator();
+        while (iter.hasNext()) {
+            Entry<String, SingleUserETLTableCubeManager> entry = iter.next();
+            SingleUserETLTableCubeManager manager = entry.getValue();
+            if (manager != null) {
+                manager.resetErrorStatus();
+            }
+        }
     }
 
     @Override
