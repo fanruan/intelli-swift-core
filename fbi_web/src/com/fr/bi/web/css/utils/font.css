@@ -2493,6 +2493,15 @@
   content: "\e649";
   color: #009de3;
 }
+.excel-complete-font .b-font:before {
+  content: "\e6e5";
+  color: #009de3;
+}
+.excel-complete-font.native .b-font:before,
+.excel-complete-font.disabled .b-font:before {
+  content: "\e6e5";
+  color: #009de3;
+}
 .select-data-field-calc-font .b-font:before {
   content: "\e6a3";
   color: #1a1a1a;
@@ -4124,4 +4133,13 @@
 .single-table-update-full-font.disabled .b-font:before {
   content: "\e6e3";
   color: #009de3;
+}
+.table-drill-up-down .b-font:before {
+  content: "\e6c2";
+  color: "";
+}
+.table-drill-up-down.native .b-font:before,
+.table-drill-up-down.disabled .b-font:before {
+  content: "\e6c2";
+  color: "";
 }

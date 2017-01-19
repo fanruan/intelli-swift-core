@@ -47,10 +47,19 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             }
             self.setVisible(showDrill);
             self.wrapper.setVisible(showDrill);
+            var width = 0;
             BI.each(self.wrapper.getAllButtons(), function (idx, drill) {
-                drill.setValue(obj);
-                drill.populate();
+                //当前点击的要展示
+                if (BI.isNotNull(obj.dimensionIds) && BI.contains(obj.dimensionIds, drill.getDid())) {
+                    drill.setVisible(true);
+                    drill.setValue(obj);
+                    drill.populate();
+                    width += 190;
+                } else {
+                    drill.setVisible(false);
+                }
             });
+            self.wrapper.element.width(width);
             self._doHide = true;
             self._debounce2Hide();
         });
@@ -61,13 +70,13 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             items: [{
                 el: this.wrapper
             }, {
-                el: this.pushButton,
+                el: this.pushButton
             }]
         })
     },
 
     _hideDrill: function () {
-        if (this._doHide && this._checkUPDrillEmpty(this.options.wId)) {
+        if (this._doHide && BI.Utils.isWidgetExistByID(this.options.wId) && !this._hasUpDrill()) {
             this.setVisible(false);
         }
     },
@@ -82,8 +91,6 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
             case BICst.WIDGET.COMPLEX_TABLE:
-                showDrill = false;
-                break;
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -130,64 +137,48 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
     },
 
-    _checkUPDrillEmpty: function () {
-        var wId = this.options.wId;
-        var wType = BI.Utils.getWidgetTypeByID(wId);
-        if (wType === BICst.WIDGET.TABLE || wType === BICst.WIDGET.CROSS_TABLE ||
-            wType === BICst.WIDGET.COMPLEX_TABLE || wType === BICst.WIDGET.DETAIL || wType === BICst.WIDGET.MAP) {
-            return false
-        }
-        var drillMap = BI.Utils.getDrillByID(wId);
-        var upDrillID = null, dId = null;
-        BI.each(drillMap, function (drId, ds) {
-            var rType = BI.Utils.getRegionTypeByDimensionID(drId);
-            if (BI.Utils.isDimensionRegion1ByRegionType(rType) && ds.length > 0) {
-                dId = ds[ds.length - 1].dId;
-            }
-            if (BI.Utils.isDimensionRegion2ByRegionType(rType) && ds.length > 0) {
-                dId = ds[ds.length - 1].dId;
-            }
-            if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
-                if (ds.length > 1) {
-                    upDrillID = ds[ds.length - 2].dId
-                } else {
-                    upDrillID = drId;
-                }
-            }
-        });
-        return BI.isNull(upDrillID)
+    _hasUpDrill: function () {
+        var allUsedDims = BI.Utils.getAllUsableDimDimensionIDs(this.options.wId);
+        return BI.any(allUsedDims, function (idx, dId) {
+            return BI.isNotNull(BI.Utils.getDrillUpDimensionIdByDimensionId(dId));
+        })
     },
 
     populate: function () {
         var self = this, wId = this.options.wId;
         var wType = BI.Utils.getWidgetTypeByID(wId);
-        if (wType === BICst.WIDGET.TABLE ||
-            wType === BICst.WIDGET.CROSS_TABLE ||
-            wType === BICst.WIDGET.COMPLEX_TABLE ||
-            wType === BICst.WIDGET.DETAIL ||
+        if (wType === BICst.WIDGET.DETAIL ||
             wType === BICst.WIDGET.MAP) {
             this.setVisible(false);
             return;
         }
 
-        this.setVisible(self._canChartDrillShow() && !self._checkUPDrillEmpty());
+        this.setVisible(self._canChartDrillShow() && self._hasUpDrill());
         var currentDrilldIds = [];
         //看一下钻取
         var drillList = BI.Utils.getDrillList(wId);
+
+        //哪些钻取框可以显示
+        var visibleArray = [];
         BI.each(BI.Utils.getAllUsableDimDimensionIDs(wId), function (i, dim) {
-            if (BI.has(drillList, dim) && BI.isNotEmptyArray(drillList[dim])) {
+
+            var dId = BI.Utils.getDrillUpDimensionIdByDimensionId(dim);
+            if (BI.isNotNull(dId)) {
                 var arr = drillList[dim];
                 currentDrilldIds.push(arr[arr.length - 1]);
+                visibleArray.push(arr[arr.length - 1]);
             } else {
                 currentDrilldIds.push(dim);
             }
         });
+
         var width = 0;
         var items = [];
         BI.each(currentDrilldIds, function (idx, dId) {
             var drill = BI.createWidget({
                 type: "bi.chart_drill_cell",
-                dId: dId
+                dId: dId,
+                invisible: !BI.contains(visibleArray, dId)
             });
             drill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function (v) {
                 self.fireEvent(BI.ChartDrill.EVENT_CHANGE, v);
@@ -197,14 +188,16 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             });
             drill.populate();
             items.push(drill);
-            width += 190;
+            if (BI.contains(visibleArray, dId)) {
+                width += 190;
+            }
         });
         this.wrapper.populate(items);
         this.wrapper.element.width(width);
         this.wrapper.setVisible(true);
 
         //如果已经下钻过了
-        if (!this._checkUPDrillEmpty(wId)) {
+        if (this._hasUpDrill(wId)) {
             BI.each(this.wrapper.getAllButtons(), function (idx, drill) {
                 drill.setValue(BI.i18nText("BI-Unchosen"));
                 drill.setDrillDownEnabled(false);

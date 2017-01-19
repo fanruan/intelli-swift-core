@@ -261,6 +261,21 @@
             return translations[tableId];
         },
 
+        getConnectionNameByTableId: function (tableId) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
+                var connectionName = Pool.tables[tableId].connection_name;
+                return connectionName || "";
+            }
+            return "";
+        },
+
+        getFieldsByTableId: function (tableId) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
+                return Pool.tables[tableId].fields[0] || [];
+            }
+            return [];
+        },
+
         getFieldIDsOfTableID: function (tableId) {
             if (BI.isNotNull(Pool.tables[tableId])) {
                 var fields = Pool.tables[tableId].fields;
@@ -477,7 +492,7 @@
 
         getWidgetSubTypeByID: function (wid) {
             var type = this.getWidgetTypeByID(wid);
-            var subType = Data.SharingPool.get("widgets", wid, "sub_type");
+            var subType = Data.SharingPool.get("widgets", wid, "subType");
             if (type === BICst.WIDGET.MAP && BI.isNull(subType)) {
                 return BI.findKey(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
                     if (layer === 0) {
@@ -485,6 +500,7 @@
                     }
                 });
             }
+            return subType;
         },
 
         getWidgetNameByID: function (wid) {
@@ -2683,7 +2699,7 @@
                     var dimensionIds = self.getAllDimensionIDs(id);
                     BI.each(dimensionIds, function (i, dimId) {
                         var fValue = value, fType = "";
-                        if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value)) {
+                        if (BI.isNull(fValue) || BI.isEmptyString(value) || BI.isEmptyObject(value) || !checkValueValid(self.getWidgetTypeByID(id), value)) {
                             return;
                         }
                         var filter = null;
@@ -2739,7 +2755,7 @@
                                 if (!BI.isNumeric(month)) {
                                     return;
                                 }
-                                fValue = {group: BICst.GROUP.M, values: month};
+                                fValue = {group: BICst.GROUP.M, values: month + 1};
                                 filter = {
                                     filter_type: fType,
                                     filter_value: fValue,
@@ -2881,6 +2897,16 @@
                     }
                 );
             }
+
+            function checkValueValid(type, value){
+                switch (type) {
+                    case BICst.WIDGET.NUMBER:
+                        return !(BI.isEmptyString(value.min) && BI.isEmptyString(value.max));
+                    default:
+                        return true;
+                }
+            }
+
         },
 
         getWidgetCalculationByID: function (wid) {
@@ -3540,6 +3566,21 @@
                 filterValue.group = BICst.GROUP.YMD;
             }
         }
+
+        //数值类型为空忽略此条件
+        if ((filterType === BICst.TARGET_FILTER_NUMBER.EQUAL_TO ||
+            filterType === BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO) &&
+            BI.isEmptyString(filterValue)) {
+            return;
+        }
+
+        if((filterType === BICst.TARGET_FILTER_NUMBER.BELONG_VALUE ||
+            BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE) &&
+            (BI.isEmptyString(filterValue.min) && BI.isEmptyString(filterValue.max))
+        ){
+            return;
+        }
+
         return filter;
         //日期偏移值
         function getOffSetDateByDateAndValue(date, value) {

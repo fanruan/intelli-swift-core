@@ -24,6 +24,10 @@ BI.View = BI.inherit(BI.V, {
             notLocal && !BI.isEmpty(changed) && this.change(changed, prev, context, options);
             this.model._changing_ = false;
             this.model.actionEnd() && this.actionEnd();
+        }).listenTo(this.model, "destroy", function () {
+            this.destroy();
+        }).listenTo(this.model, "unset", function () {
+            this.destroy();
         }).listenTo(this.model, "splice", function (arg) {
             this.splice.apply(this, arg);
         }).listenTo(this.model, "duplicate", function (arg) {
@@ -213,7 +217,6 @@ BI.View = BI.inherit(BI.V, {
             view.listenTo(view.model, "destroy", function () {
                 delete self._cards[cardName];
                 cardLayout.deleteCardByName(cardName);
-                view.destroy();
                 if (cardLayout.isAllCardHide()) {
                     cardLayout.setVisible(false);
                     BI.Layers.hide(layout + self.cid);
@@ -221,7 +224,6 @@ BI.View = BI.inherit(BI.V, {
             }).listenTo(view.model, "unset", function () {
                 delete self._cards[cardName];
                 cardLayout.deleteCardByName(cardName);
-                view.destroy();
             });
             cardLayout.addCardByName(cardName, view);
             this._cards || (this._cards = {});
@@ -507,5 +509,10 @@ BI.View = BI.inherit(BI.V, {
         delete this._cardLayouts;
         delete this._cards;
         this.remove();
+        this.destroyed();
+    },
+
+    destroyed: function () {
+
     }
 });

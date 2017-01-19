@@ -248,7 +248,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             formatter += '%';
         }
         formatter += ";-" + formatter;
-        if(isCompareChart) {
+        if (isCompareChart) {
             return function () {
                 arguments[0] = arguments[0] > 0 ? arguments[0] : (-1) * arguments[0];
                 return BI.contentFormat(arguments[0], formatter);
@@ -301,84 +301,51 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
 
     formatSeriesAccumulation: function (items, accumulationObj) {
         var accumulations = accumulationObj.items,
-            type = accumulationObj.type,
-            result = [];
-        if(BI.isEmpty(accumulationObj) || BI.isEmpty(items) || type !== BICst.SERIES_ACCUMULATION.EXIST) {
+            type = accumulationObj.type;
+        if (BI.isEmpty(accumulationObj) || BI.isEmpty(items) || type !== BICst.SERIES_ACCUMULATION.EXIST) {
             return items;
         }
-        for(var i = 0; i < items.length; i++) {
-            var values = [];
-            BI.each(accumulations.slice(1), function (idx, accumulation) {
-                var temp = [];
+        BI.each(accumulations, function (idx, accumulation) {
+            accumulation.stack = idx + BI.UUID();
+        });
+        for (var i = 0; i < items.length; i++) {
+            BI.each(accumulations, function (idx, accumulation) {
                 BI.each(items[i], function (id, data) {
-                    if(BI.contains(accumulation.items, data.name)) {
-                        data.flag = true;
-                        BI.each(data.data, function (t, da) {
-                            var flag = true;
-                            da.seriesName = accumulation.index;
-                            BI.each(temp, function (t, item) {
-                                if(item.x === da.x) {
-                                    item.y = item.y + da.y;
-                                    flag = false;
-                                }
-                            })
-                            if(flag) {
-                                temp.push(da);
-                            }
-                        })
+                    data.isNew = true;
+                    if (BI.contains(accumulation.items, data.name)) {
+                        data.stack = accumulation.stack;
+                        data.isNew = false;
                     }
                 })
-                values.push({
-                    name: accumulation.title,
-                    data: temp
-                });
             })
-            var temp = [];
-            // 默认分组
-            BI.each(items[i], function (idx, data) {
-                if(!data.flag) {
-                    BI.each(data.data, function (t, da) {
-                        var flag = true;
-                        da.seriesName = accumulations[0].index;
-                        BI.each(temp, function (t, item) {
-                            if(item.x === da.x) {
-                                item.y = item.y + da.y;
-                                flag = false;
-                            }
-                        })
-                        if(flag) {
-                            temp.push(da);
-                        }
-                    })
+            BI.each(items[i], function (id, data) {
+                if (data.isNew) {
+                    data.stack = accumulations[0].stack;
                 }
             })
-            values.push({
-                name: accumulations[0].title,
-                data: temp
-            });
-            result.push(values);
-        };
-        return result;
+        }
+        ;
+        return items;
     },
 
     setDataLabelContent: function (chartOptions) {
         var setting = chartOptions.dataLabelSetting, identifier = '';
-        if(setting.showCategoryName) {
+        if (setting.showCategoryName) {
             identifier += '${CATEGORY}'
         }
-        if(setting.showBlockName) {
+        if (setting.showBlockName) {
             identifier += '${NAME}'
         }
-        if(setting.showSeriesName) {
+        if (setting.showSeriesName) {
             identifier += '${SERIES}'
         }
-        if(setting.showSize) {
+        if (setting.showSize) {
             identifier += '${SIZE}';
         }
-        if(setting.showValue) {
+        if (setting.showValue) {
             identifier += '${VALUE}'
         }
-        if(setting.showPercentage) {
+        if (setting.showPercentage) {
             identifier += '${PERCENT}'
         }
         return identifier
@@ -395,13 +362,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 return 'outside'
         }
     },
-    
+
     formatDataLabelForAxis: function (items, config, chartOptions) {
         var self = this;
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
                 var format;
-                if(config.xAxis[0] && (config.xAxis[0].type === 'value')) {
+                if (config.xAxis[0] && (config.xAxis[0].type === 'value')) {
                     format = config.xAxis[item.yAxis].formatter;
                 } else {
                     format = config.yAxis[item.yAxis].formatter;
@@ -548,7 +515,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             max: config.rightYCustomScale.maxScale.scale || null,
             tickInterval: BI.isNumber(config.rightYCustomScale.interval.scale) && config.rightYCustomScale.interval.scale > 0 ?
                 config.rightYCustomScale.interval.scale : null,
-            formatter: this.formatTickInXYaxis(config.rightYNumberFormat, config.rightYNumberLevel, config.rightYSeparator,isCompareChart)
+            formatter: this.formatTickInXYaxis(config.rightYNumberFormat, config.rightYNumberLevel, config.rightYSeparator, isCompareChart)
         }, {
             title: {
                 text: config.rightYShowTitle ? config.rightYTitle + unit : '',
@@ -683,10 +650,10 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             vGridLineColor: options.vGridLineColor,
             tooltipStyle: options.tooltipStyle,
             chartFont: options.chartFont && BI.extend({}, options.chartFont, {
-                fontSize:  options.chartFont.fontSize ? options.chartFont.fontSize + "px" : ""
+                fontSize: options.chartFont.fontSize ? options.chartFont.fontSize + "px" : ""
             }),
             nullContinuity: options.nullContinuity,
-            backgroundLayerInfo: MapConst.WMS_INFO[options.backgroundLayerInfo],
+            backgroundLayerInfo: window.MapConst && MapConst.WMS_INFO[options.backgroundLayerInfo],
             transferFilter: options.transferFilter,
             bigDataMode: options.bigDataMode || false,
             geo: options.geo,
@@ -695,9 +662,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             tooltip: options.tooltip || [],
             lnglat: options.lnglat,
             dataLabelSetting: options.dataLabelSetting ? BI.extend(options.dataLabelSetting, {
-                    textStyle: BI.extend(options.dataLabelSetting.textStyle, {
-                            fontSize: options.dataLabelSetting.textStyle.fontSize + 'px'
-                    })
+                textStyle: BI.extend(options.dataLabelSetting.textStyle, {
+                    fontSize: options.dataLabelSetting.textStyle.fontSize + 'px'
+                })
             }) : c.DATA_SETTING_STYLE,
             clickZoom: options.clickZoom ? options.clickZoom : true
         }

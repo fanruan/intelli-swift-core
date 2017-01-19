@@ -83,7 +83,8 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        this.mapTypeCombo.setValue(v);
+        v = v[0] || {};
+        this.mapTypeCombo.setValue(v.subType || []);
     },
 
     setEnable: function (v) {
@@ -92,7 +93,8 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return {type: BICst.WIDGET.MAP, subType: this.mapTypeCombo.getValue()};
+        var arr = this.mapTypeCombo.getValue();
+        return BI.isEmptyArray(arr) ? [] : [{type: BICst.WIDGET.MAP, subType: arr[0]}];
     }
 });
 BI.MapTypeCombo.EVENT_CHANGE = "EVENT_CHANGE";

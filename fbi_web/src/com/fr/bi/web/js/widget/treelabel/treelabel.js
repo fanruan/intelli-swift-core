@@ -282,22 +282,6 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     _updateLabelView: function (op, callback) {
         var self = this, o = this.options;
         var floor = op.floor;
-        // var ids = op.id;
-        // var resultId = [];
-        // if (BI.isArray(ids)) {
-        //     BI.each(ids, function (idx, id) {
-        //         if (self.itemsMap[id] && self.itemsMap[id].clicked !== true) {
-        //             resultId.push(id);
-        //             self.itemsMap[id].clicked = true;   //表示已获取某ID下的数据
-        //         }
-        //     });
-        // } else {
-        //     if (self.itemsMap[ids] && self.itemsMap[ids].clicked !== true) {
-        //         resultId.push(ids);
-        //         self.itemsMap[ids].clicked = true;
-        //     }
-        // }
-
         o.itemsCreator(op, function (value) {
             BI.each(value.items || [], function (idx, items) {
                 self._updateData(items);
@@ -308,6 +292,8 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     },
 
     populate: function (v) {
+        // var items = v.items || [],
+        //     titles = v.titles || [];
         this._initData(v.items);
         var items = [];
         BI.each(v.items, function (idx, array) {
@@ -332,7 +318,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
 
         function convertToArray(obj, result, i) {
             if (BI.isEmptyObject(obj)) {
-                return;
+                return [];
             }
             var keys = Object.keys(obj);
             result[i] = BI.uniq(BI.concat(result[i] || [], keys));
@@ -342,30 +328,6 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             return result;
         }
     },
-
-    // setValue: function (v) {
-    //     v = v || {};
-    //     var result = [];
-    //     convertToArray(v,result,0);
-    //     this._updateItems(0, result);
-    //     this.view.refreshView({
-    //         items: this.items
-    //     });
-    //
-    //     this.view.setValue(result);
-    //
-    //     function convertToArray(obj, result, i) {
-    //         if(BI.isEmptyObject(obj)) {
-    //             return ;
-    //         }
-    //         var keys = Object.keys(obj);
-    //         result[i] = BI.uniq(BI.concat(result[i]||[],keys));
-    //         BI.each(keys, function (idx, key) {
-    //             convertToArray(obj[key], result, i+1)
-    //         })
-    //
-    //     }
-    // },
 
     getValue: function () {
         var selectedButtons = this.view.getSelectedButtons();

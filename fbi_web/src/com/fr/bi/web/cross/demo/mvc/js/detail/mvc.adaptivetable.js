@@ -223,27 +223,44 @@ AdaptiveTableView = BI.inherit(BI.View, {
             values: [0]
         }];
 
-        var table1 = BI.createWidget({
-            type: "bi.adaptive_table",
-            el: {
-                type: "bi.table_tree"
-            },
-            columnSize: ["", "", "", "", "", "", "", "", "", ""],
-            header: header,
-            items: items,
-            crossHeader: crossHeader,
-            crossItems: crossItems
-        });
+        // var table1 = BI.createWidget({
+        //     type: "bi.adaptive_table",
+        //     el: {
+        //         type: "bi.table_tree",
+        //         el: {
+        //             type: "bi.resizable_table",
+        //             el: {
+        //                 type: "bi.collection_table"
+        //             }
+        //         }
+        //     },
+        //     width: 400,
+        //     height: 300,
+        //     columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+        //     header: header,
+        //     items: items,
+        //     crossHeader: crossHeader,
+        //     crossItems: crossItems
+        // });
         var table2 = BI.createWidget({
-            type: "bi.adaptive_table",
+            type: "bi.table_tree",
             el: {
-                type: "bi.layer_tree_table"
+                type: "bi.adaptive_table",
+                el: {
+                    type: "bi.resizable_table",
+                    el: {
+                        type: "bi.collection_table"
+                    }
+                }
             },
+            width: 600,
+            height: 400,
             isNeedFreeze: true,
             isNeedMerge: true,
             freezeCols: [0, 1, 2],
             mergeCols: [0, 1, 2],
-            columnSize: ["", "", "", "", "", "", "", "", "", ""],
+            minColumnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+            columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
             header: header,
             items: items,
             crossHeader: crossHeader,
@@ -255,11 +272,9 @@ AdaptiveTableView = BI.inherit(BI.View, {
             items: [{
                 el: {
                     type: "bi.grid",
-                    columns: 2,
+                    columns: 1,
                     rows: 1,
                     items: [[{
-                        el: table1
-                    }, {
                         el: table2
                     }]]
                 },

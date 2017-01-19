@@ -315,8 +315,12 @@ $(function () {
 
         //获取滚动条的宽度
         getScrollWidth: function () {
-            if (!this._scrollWidth) {
-                var ul = $("<ul>").width(20).addClass("y-overflow-scroll").appendTo($("#container"));
+            if (this._scrollWidth == null) {
+                var ul = $("<div>").width(50).height(50).css({
+                    position: "absolute",
+                    top: "-9999px",
+                    overflow: "scroll"
+                }).appendTo($("#container"));
                 this._scrollWidth = ul[0].offsetWidth - ul[0].clientWidth;
                 ul.destroy();
             }

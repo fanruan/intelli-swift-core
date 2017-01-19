@@ -45,7 +45,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             BI.has(changed, "real_data")) {
             this.tableChartPopupulate();
         }
-        if (BI.has(changed, "type") || BI.has(changed, "sub_type")) {
+        if (BI.has(changed, "type") || BI.has(changed, "subType")) {
             this.tableChartPopupulate();
             this._refreshDimensions();
         }
@@ -308,6 +308,9 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             //即使区域没有变化也要刷新一次
             this.populate();
         });
+        this.dimensionsManager.on(BI.Events.DESTROY, function () {
+            dimensionsVessel = null;
+        });
         return this.dimensionsManager;
     },
 
@@ -339,5 +342,17 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         this._refreshDimensions();
         this.tableChartPopupulate();
         this.tab.setSelect(BICst.DETAIL_TAB_TYPE_DATA)
+    },
+
+    destroyed: function () {
+        this.tableChartTab.destroy();
+        this.tab.destroy();
+        this.dimensionsManager.destroy();
+        this.chartSetting && this.chartSetting.destroy();
+        this.tableChartTab = null;
+        this.tab = null;
+        this.dimensionsManager = null;
+        this.chartSetting = null;
+        this.tableChartPopupulate = null;
     }
 });

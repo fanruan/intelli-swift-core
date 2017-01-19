@@ -24,11 +24,11 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
         BI.TargetDateTab.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var filterDateWidgetTypes = o.dateWidgetType;
-        var dateWidgetIds = BI.filter(BI.Utils.getAllWidgetIDs(), function(id, wid){
+        var dateWidgetIds = BI.filter(BI.Utils.getAllWidgetIDs(), function (id, wid) {
             return BI.contains(filterDateWidgetTypes, BI.Utils.getWidgetTypeByID(wid));
         });
 
-        var widgetItems = BI.map(dateWidgetIds, function(id, w){
+        var widgetItems = BI.map(dateWidgetIds, function (id, w) {
             return {
                 text: BI.Utils.getWidgetNameByID(w),
                 value: w
@@ -53,11 +53,11 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
             cardCreator: BI.bind(this._cardCreator, this)
         });
 
-        this.tab.on(BI.Controller.EVENT_CHANGE, function(){
+        this.tab.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
 
-        this.tab.on(BI.Tab.EVENT_CHANGE, function(){
+        this.tab.on(BI.Tab.EVENT_CHANGE, function () {
             self.fireEvent(BI.TargetDateTab.EVENT_CHANGE);
         });
 
@@ -77,10 +77,10 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
         });
     },
 
-    _cardCreator: function(v){
+    _cardCreator: function (v) {
         var self = this, o = this.options;
         var ids = BI.Utils.getAllWidgetIDs();
-        if(!BI.contains(ids, v)){
+        if (!BI.contains(ids, v)) {
             return BI.createWidget({
                 type: "bi.text_value_combo",
                 height: this.constants.comboHeight,
@@ -92,7 +92,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
                 this.yearCombo = BI.createWidget({
                     type: "bi.year_param_combo"
                 });
-                this.yearCombo.on(BI.YearParamCombo.EVENT_CONFIRM, function(){
+                this.yearCombo.on(BI.YearParamCombo.EVENT_CONFIRM, function () {
                     self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
                 });
                 return this.yearCombo;
@@ -100,7 +100,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
                 this.monthCombo = BI.createWidget({
                     type: "bi.year_month_param_combo"
                 });
-                this.monthCombo.on(BI.YearParamCombo.EVENT_CONFIRM, function(){
+                this.monthCombo.on(BI.YearParamCombo.EVENT_CONFIRM, function () {
                     self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
                 });
                 return this.monthCombo;
@@ -108,23 +108,24 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
                 this.qurterCombo = BI.createWidget({
                     type: "bi.year_season_param_combo"
                 });
-                this.qurterCombo.on(BI.YearSeasonParamCombo.EVENT_CONFIRM, function(){
+                this.qurterCombo.on(BI.YearSeasonParamCombo.EVENT_CONFIRM, function () {
                     self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
                 });
                 return this.qurterCombo;
             case BICst.WIDGET.YMD:
-                if(o.isTimePoint === true){
+            case BICst.WIDGET.DATE_PANE:
+                if (o.isTimePoint === true) {
                     this.dateCombo = BI.createWidget({
                         type: "bi.date_param_combo"
                     });
-                    this.dateCombo.on(BI.DateParamCombo.EVENT_CONFIRM, function(){
+                    this.dateCombo.on(BI.DateParamCombo.EVENT_CONFIRM, function () {
                         self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
                     });
-                }else{
+                } else {
                     this.dateCombo = BI.createWidget({
                         type: "bi.date_interval_param_combo"
                     });
-                    this.dateCombo.on(BI.DateIntervalParamCombo.EVENT_CONFIRM, function(){
+                    this.dateCombo.on(BI.DateIntervalParamCombo.EVENT_CONFIRM, function () {
                         self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
                     });
                 }
@@ -134,7 +135,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
                     type: "bi.range_value_combo",
                     height: this.constants.comboHeight
                 });
-                this.dateRangeCombo.on(BI.RangeValueCombo.EVENT_CHANGE, function(){
+                this.dateRangeCombo.on(BI.RangeValueCombo.EVENT_CHANGE, function () {
                     self.fireEvent(BI.TargetDateTab.EVENT_SHOW_CARD_VALUE_CHANGE);
                 });
                 return this.dateRangeCombo;

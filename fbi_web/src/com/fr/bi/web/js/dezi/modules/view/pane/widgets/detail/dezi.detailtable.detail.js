@@ -267,8 +267,10 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             this.tablePopulate();
         }
         if (BI.has(changed, "settings")) {
-            this.tablePopulate();
-            this.title.setText(changed.settings.widgetName);
+            var diffs = BI.deepDiff(changed.settings, prev.settings);
+            if (diffs.length > 0 && (diffs.length > 1 || diffs[0] !== "column_size")) {
+                this.tablePopulate();
+            }
         }
     },
 

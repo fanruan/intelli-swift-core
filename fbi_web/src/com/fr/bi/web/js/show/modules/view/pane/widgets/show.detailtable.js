@@ -149,15 +149,26 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
         });
 
         var expand = BI.createWidget({
-            type: "bi.icon_button",
-            width: this._constants.TOOL_ICON_WIDTH,
-            height: this._constants.TOOL_ICON_HEIGHT,
-            title: BI.i18nText("BI-Detailed_Setting"),
-            cls: "widget-combo-detail-font dashboard-title-detail"
+            type: "bi.dimension_switch_show",
+            wId: wId,
+            popupCreator: function () {
+                var vessel = BI.createWidget({
+                    type: "bi.layout"
+                });
+                self.addSubVessel("detail", vessel).skipTo("detail", "detail", "detail", {}, {id: wId});
+                return vessel;
+            }
         });
-        expand.on(BI.IconButton.EVENT_CHANGE, function () {
-            self._expandWidget();
-        });
+        // var expand = BI.createWidget({
+        //     type: "bi.icon_button",
+        //     width: this._constants.TOOL_ICON_WIDTH,
+        //     height: this._constants.TOOL_ICON_HEIGHT,
+        //     title: BI.i18nText("BI-Detailed_Setting"),
+        //     cls: "widget-combo-detail-font dashboard-title-detail"
+        // });
+        // expand.on(BI.IconButton.EVENT_CHANGE, function () {
+        //     self._expandWidget();
+        // });
 
         var filterIcon = BI.createWidget({
             type: "bi.icon_button",

@@ -24,7 +24,7 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqReleaseTableLock: function(data) {
+    reqReleaseTableLock: function (data) {
         BI.requestAsync("fr_bi_configure", "cancel_edit_table", data, BI.emptyFn, BI.emptyFn);
     },
 
@@ -79,24 +79,6 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_dezi", "dezi_get_field_min_max_value", data, function (res) {
             callback(res);
         }, complete);
-    },
-
-    reqRelationsByTableIds: function (data, callback) {
-        BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
-            callback(res);
-        })
-    },
-
-    reqTransByTableIds: function (tableIds, callback) {
-        BI.requestAsync("fr_bi_configure", "get_trans_from_db", {tables: tableIds}, function (res) {
-            callback(res);
-        })
-    },
-
-    reqRelationAndTransByTables: function (data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
-            callback(res);
-        }, complete)
     },
 
     reqFieldsDataByData: function (data, callback, complete) {
@@ -184,14 +166,20 @@ Data.Req = BIReq = {
         }, complete)
     },
 
-    reqUpdateRelation: function(data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "update_relation", data, function() {
+    reqUpdateRelation: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "update_relation", data, function () {
             callback();
         }, complete);
     },
 
     reqUpdateTablesOfOnePackage: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "update_tables_in_package", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqUpdateExcelTableCube: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_dezi", "update_excel_table_cube_by_table_id", data, function (res) {
             callback(res);
         }, complete)
     },
@@ -310,8 +298,8 @@ Data.Req = BIReq = {
         }, complete)
     },
 
-    reqUpdateSettingById: function(data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "get_update_setting", data, function(res) {
+    reqUpdateSettingById: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_update_setting", data, function (res) {
             callback(res);
         }, complete);
     },

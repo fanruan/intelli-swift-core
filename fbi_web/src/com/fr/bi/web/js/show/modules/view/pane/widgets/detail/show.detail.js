@@ -52,7 +52,7 @@ BIShow.DetailView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev) {
-        if (BI.has(changed, "type") || BI.has(changed, "sub_type")) {
+        if (BI.has(changed, "type") || BI.has(changed, "subType")) {
             this._refreshDimensions();
         }
         if (BI.has(changed, "dimensions")) {

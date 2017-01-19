@@ -11,7 +11,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         return BI.extend(BI.SequenceTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-sequence-table",
             el: {
-                type: "bi.custom_scroll_table"
+                type: "bi.adaptive_table"
             },
 
             sequence: {},
@@ -25,24 +25,25 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             isNeedMerge: false,//是否需要合并单元格
             mergeCols: [], //合并的单元格列号
             mergeRule: function (row1, row2) { //合并规则, 默认相等时合并
-                return BI.isEqual(row1, row2);
+                return row1 === row2;
             },
 
             columnSize: [],
+            minColumnSize: [],
+            maxColumnSize: [],
             headerRowSize: 25,
-            footerRowSize: 25,
             rowSize: 25,
 
-            regionColumnSize: false,
+            regionColumnSize: [],
 
             header: [],
-            footer: false,
             items: [], //二维数组
 
             //交叉表头
             crossHeader: [],
             crossItems: [],
 
+            showSequence: false,
             startSequence: 1//开始的序号
         });
     },
@@ -53,23 +54,22 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
         this.sequence = BI.createWidget(o.sequence, {
             type: "bi.sequence_table_list_number",
+            invisible: o.showSequence === false,
             startSequence: o.startSequence,
             isNeedFreeze: o.isNeedFreeze,
             header: o.header,
-            footer: o.footer,
             items: o.items,
             crossHeader: o.crossHeader,
             crossItems: o.crossItems,
             headerRowSize: o.headerRowSize,
-            footerRowSize: o.footerRowSize,
             rowSize: o.rowSize,
-            width: 60
+            width: 60,
+            height: o.height - BI.GridTableScrollbar.SIZE
         });
         this.table = BI.createWidget(o.el, {
-            type: "bi.custom_scroll_table",
-
-            hideHorizontalScrollChecker: o.hideHorizontalScrollChecker,
-
+            type: "bi.adaptive_table",
+            width: o.showSequence === true ? o.width - 60 : o.width,
+            height: o.height,
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
 
@@ -81,118 +81,100 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             mergeRule: o.mergeRule,
 
             columnSize: o.columnSize,
+            minColumnSize: o.minColumnSize,
+            maxColumnSize: o.maxColumnSize,
             headerRowSize: o.headerRowSize,
-            footerRowSize: o.footerRowSize,
             rowSize: o.rowSize,
 
             regionColumnSize: o.regionColumnSize,
 
             header: o.header,
-            footer: o.footer,
             items: o.items,
             //交叉表头
             crossHeader: o.crossHeader,
             crossItems: o.crossItems
         });
 
-        this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-            self._adjustSequence();
-            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
-            self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_INIT, arguments);
-        });
-        this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-            self._adjustSequence();
-            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
-        });
-
-        this.table.on(BI.Table.EVENT_TABLE_SCROLL, function (scrollTop) {
-            if (BI.isNotNull(scrollTop)) {
-                self.sequence.setVerticalScroll(scrollTop);
+        this.table.on(BI.Table.EVENT_TABLE_SCROLL, function (scroll) {
+            if (self.sequence.getVerticalScroll() !== this.getVerticalScroll()) {
+                self.sequence.setVerticalScroll(this.getVerticalScroll());
+                self.sequence.populate();
             }
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            self._adjustSequence();
+            o.regionColumnSize = this.getRegionColumnSize();
+            o.columnSize = this.getColumnSize();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
-            self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
-            self._adjustSequence();
+            o.regionColumnSize = this.getRegionColumnSize();
+            o.columnSize = this.getColumnSize();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
-            self.fireEvent(BI.SequenceTable.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         });
 
-        this.sequenceContainer = BI.createWidget({
-            type: "bi.vtape",
-            cls: "sequence-table-wrapper",
-            items: [{
-                el: this.sequence
-            }, {
-                el: {
-                    type: "bi.layout",
-                    cls: "sequence-table-scroll"
-                },
-                height: 18
-            }]
-        });
         this.htape = BI.createWidget({
-            type: "bi.htape",
+            type: "bi.absolute",
             element: this.element,
             items: [{
-                el: this.sequenceContainer,
-                width: 0
+                el: this.sequence,
+                left: 0,
+                top: 0
             }, {
-                el: this.table
+                el: this.table,
+                top: 0,
+                left: o.showSequence === true ? 60 : 0
             }]
-        })
+        });
+        this._populate();
     },
 
-    _hideChecker: function () {
+    _populate: function () {
         var o = this.options;
-        return !this.table.hasLeftHorizontalScroll()
-            && !this.table.hasRightHorizontalScroll()
-            && o.hideHorizontalScrollChecker();
+        this.sequence.attr({
+            items: o.items,
+            header: o.header,
+            crossItems: o.crossItems,
+            crossHeader: o.crossHeader
+        });
+        if (o.showSequence === true) {
+            this.sequence.setVisible(true);
+            this.table.element.css("left", "60px");
+            this.table.setWidth(o.width - 60);
+        } else {
+            this.sequence.setVisible(false);
+            this.table.element.css("left", "0px");
+            this.table.setWidth(o.width);
+        }
     },
 
-    _adjustSequence: function () {
-        var self = this;
-        BI.delay(function () {
-            var checker = self._hideChecker();
-            var items = self.sequenceContainer.attr("items");
-            if (checker === true) {
-                items[1].height = 0;
-            } else {
-                items[1].height = 18;
-            }
-            self.sequenceContainer.attr("items", items);
-            self.sequenceContainer.resize();
-        }, 30);
+    setWidth: function (width) {
+        BI.PageTable.superclass.setWidth.apply(this, arguments);
+        this.table.setWidth(this.options.showSequence ? width - 60 : width);
     },
 
-    resize: function () {
-        this.table.resize();
-        this.sequence.setVerticalScroll(this.table.getVerticalScroll());
-        this._adjustSequence();
+    setHeight: function (height) {
+        BI.PageTable.superclass.setHeight.apply(this, arguments);
+        this.table.setHeight(height);
+        this.sequence.setHeight(height - BI.GridTableScrollbar.SIZE);
     },
 
-    setColumnSize: function (size) {
-        this.table.setColumnSize(size);
+    setColumnSize: function (columnSize) {
+        this.options.columnSize = columnSize;
+        this.table.setColumnSize(columnSize);
     },
 
     getColumnSize: function () {
         return this.table.getColumnSize();
     },
 
-    getCalculateColumnSize: function () {
-        return this.table.getCalculateColumnSize();
+    setRegionColumnSize: function (columnSize) {
+        this.options.columnSize = columnSize;
+        this.table.setRegionColumnSize(columnSize);
     },
 
-    getCalculateRegionColumnSize: function () {
-        return this.table.getCalculateRegionColumnSize();
-    },
-
-    hasVerticalScroll: function () {
-        return this.table.hasVerticalScroll();
+    getRegionColumnSize: function () {
+        return this.table.getRegionColumnSize();
     },
 
     hasLeftHorizontalScroll: function () {
@@ -203,17 +185,21 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         return this.table.hasRightHorizontalScroll();
     },
 
+    setVerticalScroll: function (scrollTop) {
+        this.table.setVerticalScroll(scrollTop);
+        this.sequence.setVerticalScroll(scrollTop);
+    },
+
     getVerticalScroll: function () {
         return this.table.getVerticalScroll();
     },
 
-    setVPage: function (v) {
-        this.table.setVPage && this.table.setVPage(v);
-        this.sequence.setVPage(v);
+    setVPage: function (page) {
+        this.sequence.setVPage && this.sequence.setVPage(page);
     },
 
-    getVPage: function () {
-        return this.table.getVPage();
+    setHPage: function (page) {
+        this.sequence.setHPage && this.sequence.setHPage(page);
     },
 
     attr: function () {
@@ -222,35 +208,29 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         this.sequence.attr.apply(this.sequence, arguments);
     },
 
-    showSequence: function () {
-        var items = this.htape.attr("items");
-        items[0].width = 60;
-        this.htape.attr("items", items);
-        this.htape.resize();
-        this.table.resize();
-        this._adjustSequence();
+    restore: function () {
+        this.table.restore();
+        this.sequence.restore();
     },
 
-    hideSequence: function () {
-        var items = this.htape.attr("items");
-        items[0].width = 0;
-        this.htape.attr("items", items);
-        this.htape.resize();
-        this.table.resize();
-    },
-
-    refresh: function () {
-        this.table.refresh.apply(this.table, arguments);
-        this.sequence.populate.apply(this.sequence, arguments);
-        this.sequence.setVerticalScroll(this.table.getVerticalScroll());
-        this._adjustSequence();
-    },
-
-    populate: function (items) {
+    populate: function (items, header, crossItems, crossHeader) {
+        var o = this.options;
+        if (items) {
+            o.items = items;
+        }
+        if (header) {
+            o.header = header;
+        }
+        if (crossItems) {
+            o.crossItems = crossItems;
+        }
+        if (crossHeader) {
+            o.crossHeader = crossHeader;
+        }
+        this._populate();
         this.table.populate.apply(this.table, arguments);
         this.sequence.populate.apply(this.sequence, arguments);
         this.sequence.setVerticalScroll(this.table.getVerticalScroll());
-        this._adjustSequence();
     },
 
     destroy: function () {
@@ -258,8 +238,4 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
         BI.SequenceTable.superclass.destroy.apply(this, arguments);
     }
 });
-BI.SequenceTable.EVENT_CHANGE = "SequenceTable.EVENT_CHANGE";
-BI.SequenceTable.EVENT_TABLE_AFTER_INIT = "EVENT_TABLE_AFTER_INIT";
-BI.SequenceTable.EVENT_TABLE_AFTER_COLUMN_RESIZE = "SequenceTable.EVENT_TABLE_AFTER_COLUMN_RESIZE";
-BI.SequenceTable.EVENT_TABLE_AFTER_REGION_RESIZE = "SequenceTable.EVENT_TABLE_AFTER_REGION_RESIZE";
 $.shortcut('bi.sequence_table', BI.SequenceTable);

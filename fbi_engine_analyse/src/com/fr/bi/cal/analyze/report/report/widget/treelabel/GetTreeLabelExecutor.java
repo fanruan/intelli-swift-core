@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.report.report.widget.treelabel;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeLabelWidget;
-import com.fr.bi.cal.analyze.report.report.widget.tree.GetTreeTreeNodeExecutor;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -14,7 +13,6 @@ import com.fr.stable.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by fay on 2016/10/17.

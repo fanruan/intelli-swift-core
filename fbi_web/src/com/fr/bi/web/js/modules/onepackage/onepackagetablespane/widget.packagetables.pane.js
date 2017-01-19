@@ -4,13 +4,13 @@
  * 单个业务包界面所有表
  */
 BI.PackageTablesListPane = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.PackageTablesListPane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-package-tables-list-pane"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.PackageTablesListPane.superclass._init.apply(this, arguments);
         this.tablesPane = BI.createWidget({
             type: "bi.button_group",
@@ -30,17 +30,37 @@ BI.PackageTablesListPane = BI.inherit(BI.Widget, {
         })
     },
 
-    populate: function(items){
+    _getAllDatabaseLinkNames: function (items) {
+        var linkNames = [];
+        BI.each(items, function (i, item) {
+            var connName = item.connName;
+            if (BI.isNotNull(connName) && !linkNames.contains(connName) &&
+                connName !== BICst.CONNECTION.ETL_CONNECTION &&
+                connName !== BICst.CONNECTION.EXCEL_CONNECTION &&
+                connName !== BICst.CONNECTION.SQL_CONNECTION &&
+                connName !== BICst.CONNECTION.SERVER_CONNECTION) {
+                linkNames.push(connName);
+            }
+        });
+        return linkNames;
+    },
+
+    populate: function (items) {
         var self = this;
         this.options.items = items;
         var tables = [];
-        BI.each(items, function(i, item){
+        var linkNames = this._getAllDatabaseLinkNames(items);
+
+        BI.each(items, function (i, item) {
             var dbTable = BI.createWidget({
                 type: "bi.database_table",
+                forceNotSelected: true,
                 text: item.text,
-                connName: item.connName
+                connName: item.connName,
+                linkNames: linkNames,
+                needMark: true
             });
-            dbTable.on(BI.Controller.EVENT_CHANGE, function(){
+            dbTable.on(BI.Controller.EVENT_CHANGE, function () {
                 arguments[1] = item.id;
                 self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
                 self.fireEvent(BI.PackageTablesListPane.EVENT_CLICK_TABLE, item.id);
@@ -51,11 +71,11 @@ BI.PackageTablesListPane = BI.inherit(BI.Widget, {
         this.tablesPane.populate.apply(this.tablesPane, arguments);
     },
 
-    getValue: function(){
+    getValue: function () {
 
     },
 
-    setValue: function(){
+    setValue: function () {
 
     }
 });

@@ -133,7 +133,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 type: "bi.text_button",
                 text: text,
                 title: text,
-                height: 25,
+                height: o.height,
                 textAlign: "right",
                 cls: "target-linkage-label",
                 rgap: 5
@@ -184,7 +184,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                         items: BI.createItems(linkages, {
                             type: "bi.text_button",
                             cls: "bi-linkage-list-item",
-                            height: 30,
+                            height: o.height,
                             textAlign: "left",
                             handler: function () {
                                 var link = this.options;

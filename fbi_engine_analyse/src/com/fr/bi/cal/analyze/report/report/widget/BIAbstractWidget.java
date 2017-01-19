@@ -260,4 +260,8 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     }
 
+    @Override
+    public Rectangle getRect() {
+        return rect;
+    }
 }

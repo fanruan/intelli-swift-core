@@ -92,7 +92,7 @@ PageTableView = BI.inherit(BI.View, {
                 type: "bi.page_table_cell",
                 text: "node1",
                 values: [1, 2, 3]
-            },{
+            }, {
                 type: "bi.page_table_cell",
                 text: "node3",
                 values: [1, 2]
@@ -103,9 +103,41 @@ PageTableView = BI.inherit(BI.View, {
         var table1 = BI.createWidget({
             type: "bi.page_table",
             el: {
+                type: "bi.sequence_table",
                 el: {
+                    type: "bi.table_tree",
                     el: {
-                        type: "bi.table_tree"
+                        type: "bi.adaptive_table",
+                        el: {
+                            type: "bi.resizable_table",
+                            el: {
+                                type: "bi.collection_table"
+                            }
+                        }
+                    },
+                },
+            },
+            pager: {
+                horizontal: {
+                    pages: false, //总页数
+                    curr: 1, //初始化当前页， pages为数字时可用
+
+                    hasPrev: function (page) {
+                        return page > 1;
+                    },
+                    hasNext: function (page) {
+                        return page < 3;
+                    }
+                },
+                vertical: {
+                    pages: false, //总页数
+                    curr: 1, //初始化当前页， pages为数字时可用
+
+                    hasPrev: function (page) {
+                        return page > 1;
+                    },
+                    hasNext: function (page) {
+                        return page < 3;
                     }
                 }
             },
@@ -115,11 +147,12 @@ PageTableView = BI.inherit(BI.View, {
                 BI.each(header, function (i, h) {
                     h.text = h.text + "V" + vpage + "H" + hpage;
                 });
-                BI.delay(function () {
-                    populate(items, header, crossItems, crossHeader);
-                }, 1000);
+                populate(items, header, crossItems, crossHeader);
             },
-            columnSize: ["", "", "", "", "", "", ""],
+            width: 600,
+            height: 400,
+            columnSize: [100, 100, 100, 100, 100, 100, 100],
+            minColumnSize: [100, 100, 100, 100, 100, 100, 100],
             isNeedMerge: true,
             mergeCols: [0, 1],
             // header: header,
@@ -127,7 +160,7 @@ PageTableView = BI.inherit(BI.View, {
             // crossHeader: crossHeader,
             // crossItems: crossItems
         });
-        table1.populate([], [], crossItems, crossHeader);
+        table1.populate(items, header, crossItems, crossHeader);
         BI.createWidget({
             type: "bi.absolute",
             element: vessel,

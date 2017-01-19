@@ -35,7 +35,11 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
                 }
                 var ids = BI.Utils.getTableIDsOfPackageID(packageId);
                 return BI.map(ids, function (i, id) {
-                    return {
+                    return BI.Utils.getConnectionNameByTableId(id) === BICst.TABLE_TYPE_EXCEL ? {
+                        id: id,
+                        type: "bi.tree_select_data_level0_excel_node",
+                        warningTitle: BI.i18nText("BI-Added_Data_Unavailable")
+                    } : {
                         id: id,
                         type: "bi.tree_select_data_level0_node",
                         warningTitle: BI.i18nText("BI-Added_Data_Unavailable")
@@ -46,20 +50,20 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
                 opt = opt || {};
                 var ids = BI.Utils.getStringFieldIDsOfTableID(tableId);
                 var result = [];
-                var fieldNames = BI.map(ids, function(idx, fid){
+                var fieldNames = BI.map(ids, function (idx, fid) {
                     return BI.Utils.getFieldNameByID(fid);
                 });
                 var matched = BI.Func.getSearchResult(fieldNames, opt.keyword).matched;
                 BI.each(ids, function (i, fid) {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
-                        if(opt.isSearching === true && !self._isFieldValid(fid, o.wId)){
-                            if(BI.contains(matched, BI.Utils.getFieldNameByID(fid))){
+                        if (opt.isSearching === true && !self._isFieldValid(fid, o.wId)) {
+                            if (BI.contains(matched, BI.Utils.getFieldNameByID(fid))) {
                                 result.push({
                                     id: fid,
                                     type: "bi.detail_select_data_no_relation_match_search_item"
                                 });
                             }
-                        }else{
+                        } else {
                             result.push({
                                 id: fid,
                                 type: "bi.select_string_level0_item"
@@ -73,7 +77,7 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
     },
 
 
-    _isFieldValid: function(fieldId, wId){
+    _isFieldValid: function (fieldId, wId) {
         var tableId = BI.Utils.getTableIdByFieldID(fieldId)
         return BI.Utils.isTableUsableByWidgetID(tableId, wId);
     }

@@ -40,7 +40,7 @@ public class AutoGroup extends AbstractGroup {
         if (lastKey != null) {
             tiMax = lastKey.doubleValue();
         }
-        Number firstKey = GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(baseMap));
+        Number firstKey = GeneralUtils.objectToNumber(BICollectionUtils.firstUnNullKey(baseMap));
         double tiMin = 0d;
         if (firstKey != null) {
             tiMin = firstKey.doubleValue();

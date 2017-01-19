@@ -76,10 +76,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         return this.gid;
     },
 
-    getGroupName: function () {
-        return BI.Utils.getConfGroupNameByGroupId(this.gid);
-    },
-
     getTables: function () {
         return BI.deepClone(this.tables);
     },
@@ -217,22 +213,23 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             });
             tableIds.push(id);
 
+            var tranName;
             if (BI.isNull(table.id)) {
-                BI.Utils.updateTranName4Conf(id, self.createDistinctTableTranName(id, table.table_name));
+                tranName = self.createDistinctTableTranName(id, table.table_name);
             } else {
                 //业务包表
                 packTIds.push(id);
                 var tableId = table.id;
 
                 //转义、关联都是用sharing pool中的，相当于复制一份
-                var tName = self.createDistinctTableTranName(tableId, BI.Utils.getTransNameById4Conf(tableId));
-                exTranslations[id] = tName;
-                BI.Utils.updateTranName4Conf(id, tName);
+                tranName = self.createDistinctTableTranName(tableId, BI.Utils.getTransNameById4Conf(tableId));
 
                 //copy relations
                 var copyRelations = BI.Utils.copyRelation4Conf(oFields, fieldIds, id);
                 exRelations = exRelations.concat(copyRelations.connectionSet);
             }
+            exTranslations[id] = tranName;
+            BI.Utils.updateTranName4Conf(id, tranName);
             table.id = id;
             newTables.push(table);
             self.tables[id] = table;

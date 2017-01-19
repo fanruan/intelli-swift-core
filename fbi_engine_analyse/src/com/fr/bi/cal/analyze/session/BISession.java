@@ -26,6 +26,7 @@ import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
 import com.fr.data.TableDataSource;
@@ -45,6 +46,9 @@ import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
 import com.fr.script.Calculator;
+import com.fr.stable.CodeUtils;
+import com.fr.stable.Constants;
+import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.script.CalculatorProvider;
 import com.fr.web.core.SessionDealWith;
@@ -277,6 +281,10 @@ public class BISession extends BIAbstractSession {
                 for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
                     JSONObject jo = t.createJSONWithFieldsInfo(userId);
                     JSONObject tableFields = jo.getJSONObject("tableFields");
+                    CubeTableSource tableSource = t.getTableSource();
+                    JSONObject sourceJO = tableSource.createJSON();
+                    String connectionName=sourceJO.optString("connection_name",StringUtils.EMPTY);
+                    tableFields.put("connection_name", connectionName);
                     tables.put(t.getID().getIdentityValue(), tableFields);
                     JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
                     fields.join(fieldsInfo);
