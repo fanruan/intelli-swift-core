@@ -50,12 +50,12 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             var width = 0;
             BI.each(self.wrapper.getAllButtons(), function (idx, drill) {
                 //当前点击的要展示
-                if(BI.isNotNull(obj.dimensionIds) && BI.contains(obj.dimensionIds, drill.getDid())){
+                if (BI.isNotNull(obj.dimensionIds) && BI.contains(obj.dimensionIds, drill.getDid())) {
                     drill.setVisible(true);
                     drill.setValue(obj);
                     drill.populate();
                     width += 190;
-                }else{
+                } else {
                     drill.setVisible(false);
                 }
             });
@@ -76,7 +76,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     },
 
     _hideDrill: function () {
-        if (this._doHide && !this._hasUpDrill()) {
+        if (this._doHide && BI.Utils.isWidgetExistByID(this.options.wId) && !this._hasUpDrill()) {
             this.setVisible(false);
         }
     },
@@ -139,7 +139,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
     _hasUpDrill: function () {
         var allUsedDims = BI.Utils.getAllUsableDimDimensionIDs(this.options.wId);
-        return BI.any(allUsedDims, function(idx, dId){
+        return BI.any(allUsedDims, function (idx, dId) {
             return BI.isNotNull(BI.Utils.getDrillUpDimensionIdByDimensionId(dId));
         })
     },
@@ -188,7 +188,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             });
             drill.populate();
             items.push(drill);
-            if(BI.contains(visibleArray, dId)){
+            if (BI.contains(visibleArray, dId)) {
                 width += 190;
             }
         });
