@@ -5,7 +5,6 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
 import com.fr.bi.cal.analyze.cal.sssecret.mergeiter.AllNodeMergeIterator;
-import com.fr.bi.cal.analyze.cal.sssecret.mergeiter.MergeIterator;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.TargetCalculator;
@@ -24,17 +23,23 @@ public class AllNodeMergeIteratorCreator implements MergeIteratorCreator {
     private NameObject targetSort;
     private List<TargetAndKey>[] metricsToCalculate;
     private Map<String, TargetCalculator> calculatedMap;
+    private MergeIteratorCreator creator;
 
-    public AllNodeMergeIteratorCreator(DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap) {
+    public AllNodeMergeIteratorCreator(DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, MergeIteratorCreator creator) {
         this.filter = filter;
         this.targetSort = targetSort;
         this.metricsToCalculate = metricsToCalculate;
         this.calculatedMap = calculatedMap;
+        this.creator = creator;
+    }
+
+    public Map<String, TargetCalculator> getCalculatedMap() {
+        return calculatedMap;
     }
 
     @Override
     public Iterator<MetricMergeResult> createIterator(Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
-        MergeIterator iterator = new MergeIterator(iterators, gvis, c);
+        Iterator<MetricMergeResult> iterator = creator.createIterator(iterators, gvis, c, tis, loader);
         return new AllNodeMergeIterator(iterator, filter, targetSort, metricsToCalculate, calculatedMap, tis, loader);
     }
 

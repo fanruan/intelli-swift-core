@@ -5,8 +5,10 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
+import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.common.inter.Release;
+import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
@@ -31,6 +33,7 @@ public class NoneDimensionGroup implements Release {
     private ICubeTableService[] tis;
     private Map summaryValue;
     private ICubeDataLoader loader;
+    private List<Node> children;
 
     protected NoneDimensionGroup() {
     }
@@ -72,6 +75,9 @@ public class NoneDimensionGroup implements Release {
         return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
     }
 
+    public ISingleDimensionGroup createNodeSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, MergeIteratorCreator mergeIteratorCreator, List<Node> metricMergeResultList, TargetAndKey sortTarget, int sortIndex, int sortType, DimensionFilter filter) {
+        return NodeSingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, metricMergeResultList, sortTarget, sortIndex, sortType, filter);
+    }
 
     /**
      * 释放资源，之前需要释放的，现在暂时没有什么需要释放的
@@ -99,5 +105,13 @@ public class NoneDimensionGroup implements Release {
 
     public Map getSummaryValue() {
         return summaryValue;
+    }
+
+    public List<Node> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Node> children) {
+        this.children = children;
     }
 }

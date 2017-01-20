@@ -3,6 +3,7 @@ package com.fr.bi.field.target.target.cal.target;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BIFormularUtils;
@@ -41,6 +42,9 @@ public class BIFormulaCalculateTarget extends BICalculateTarget {
             }
         }
         return list;
+    }
+    public TargetType getType(){
+        return TargetType.FORMULA;
     }
 
     @Override

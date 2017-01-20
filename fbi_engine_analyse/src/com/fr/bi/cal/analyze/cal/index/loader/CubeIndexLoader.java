@@ -17,6 +17,8 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
+import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
+import com.fr.bi.field.target.calculator.cal.configure.AbstractConfigureCalulator;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -111,7 +113,7 @@ public class CubeIndexLoader {
         }
     }
 
-    public static void calculateTargets(List targetCalculator, List<CalCalculator> calculateTargets, BINode n) {
+    public static void calculateTargets(List<TargetCalculator> targetCalculator, List<? extends CalCalculator> calculateTargets, BINode n) {
         int size = calculateTargets.size();
         Set<TargetGettingKey> set = new HashSet<TargetGettingKey>();
         Iterator<TargetCalculator> cit = targetCalculator.iterator();
@@ -119,7 +121,7 @@ public class CubeIndexLoader {
             set.add(cit.next().createTargetGettingKey());
         }
         while (!calculateTargets.isEmpty() && n != null) {
-            Iterator<CalCalculator> iter = calculateTargets.iterator();
+            Iterator<? extends CalCalculator> iter = calculateTargets.iterator();
             while (iter.hasNext()) {
                 CalCalculator calCalculator = iter.next();
                 if (calCalculator.isAllFieldsReady(set)) {
@@ -654,7 +656,7 @@ public class CubeIndexLoader {
         checkRegisteration(sumTarget, allDimension);
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, sumTarget);
         List<TargetCalculator> targetCalculator = new ArrayList<TargetCalculator>();
-        LinkedList calculateTargets = new LinkedList();
+        List<FormulaCalculator> calculateTargets =  new ArrayList<FormulaCalculator>();
         PageIteratorGroup pg = null;
 
         String widgetName = widget.getWidgetName();
@@ -711,7 +713,7 @@ public class CubeIndexLoader {
     private void loadRegionComplexPageGroup(boolean isHor, TableWidget widget, BISummaryTarget[] usedTarget, BIDimension[] dimensionArray, BIDimension[] allDimension, BISummaryTarget[] sumTarget, TargetGettingKey[] keys, boolean useRealData, NodeExpander nodeExpanderPara, BISession session, Map<Integer, Node> nodeMap, int i) {
         int calPage = -1;
         BIDimension[] rowDimension = dimensionArray;
-        List targetCalculators = new ArrayList();
+        List<TargetCalculator> targetCalculators = new ArrayList<TargetCalculator>();
         LinkedList calculateTargets = new LinkedList();
         NodeExpander nodeExpander = nodeExpanderPara;
         PageIteratorGroup pg;
@@ -762,22 +764,20 @@ public class CubeIndexLoader {
     /**
      * 处理计算指标
      *
-     * @param calculateTargets 指标指标数据
      */
     private NodeAndPageInfo createPageGroupNode(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, int page,
-                                                NodeExpander expander, BISession session, LinkedList calculateTargets, List<TargetCalculator> calculators, Operator op
+                                                NodeExpander expander, BISession session, List<FormulaCalculator> formulaCalculateTargets, List<TargetCalculator> calculators, Operator op
             , PageIteratorGroup pg, boolean isCross, boolean isHor) {
         int summaryLength = usedTargets.length;
         int rowLength = rowDimension.length;
         IRootDimensionGroup root = isHor ? pg.getColumnRoot() : pg.getRowRoot();
-        LinkedList noneCalculateTargets = new LinkedList();
         for (int i = 0; i < summaryLength; i++) {
             addTargetGettingKey(usedTargets[i], calculators);
         }
         if (rowLength != 0 && summaryLength == 0) {
             calculators.add(CountCalculator.NONE_TARGET_COUNT_CAL);
         } else {
-            LoaderUtils.classifyTarget(usedTargets, calculateTargets, noneCalculateTargets, session);
+            LoaderUtils.classifyTarget(usedTargets, formulaCalculateTargets);
         }
         if (needCreateNewIterator(page) || root == null) {
             if (rowLength != 0 && summaryLength == 0) {

@@ -26,10 +26,10 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private ICubeTableService[] tis;
     private ICubeDataLoader loader;
     private Node root;
-    private MergeIterator mergeIterator;
+    private Iterator<MetricMergeResult> mergeIterator;
     private Iterator<MetricMergeResult> resultIter;
 
-    public AllNodeMergeIterator(MergeIterator mergeIterator, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader) {
+    public AllNodeMergeIterator(Iterator<MetricMergeResult> mergeIterator, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader) {
         this.mergeIterator = mergeIterator;
         this.filter = filter;
         this.metricsToCalculate = metricsToCalculate;

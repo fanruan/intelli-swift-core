@@ -77,6 +77,7 @@ public class GroupUtils {
             if (group != null) {
                 List<TargetAndKey>[] summaryLists = group.getSummaryLists();
                 GroupValueIndex[] gvis = group.getGvis();
+                node.setSummaryValue(group.getSummaryValue());
                 ICubeTableService[] tis = group.getTis();
                 for (int i = 0; i < summaryLists.length; i++) {
                     List<TargetAndKey> targetAndKeys = summaryLists[i];

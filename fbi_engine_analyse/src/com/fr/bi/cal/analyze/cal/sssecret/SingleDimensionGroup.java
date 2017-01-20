@@ -41,14 +41,14 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     private BusinessTable[] metricTables;
     private List<TargetAndKey>[] summaryLists;
-    private ICubeTableService[] tis;
+    protected ICubeTableService[] tis;
     private DimensionCalculator[] columns;
     private ICubeValueEntryGetter[] getters;
     private GroupValueIndex[] gvis;
     private Object[] data;
-    private MergeIteratorCreator mergeIteratorCreator;
+    protected MergeIteratorCreator mergeIteratorCreator;
     private boolean useRealData = true;
-    private ICubeDataLoader loader;
+    protected ICubeDataLoader loader;
     private List<MetricMergeResult> metricMergeResultList = new ArrayList<MetricMergeResult>();
 
 
@@ -74,12 +74,6 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     }
 
 
-    public void turnOnExecutor() {
-        this.lazyExecutor = new Executor();
-        Iterator iterator = getIterator();
-        this.lazyExecutor.initial(this, iterator);
-    }
-
     protected Iterator getIterator() {
         Iterator[] iterators = new Iterator[metricTables.length];
         for (int i = 0; i < iterators.length; i++) {
@@ -90,6 +84,12 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
             iterators[i] = it;
         }
         return mergeIteratorCreator.createIterator(iterators, gvis, columns[0].getComparator(), tis, loader);
+    }
+
+    public void turnOnExecutor() {
+        this.lazyExecutor = new Executor();
+        Iterator iterator = getIterator();
+        this.lazyExecutor.initial(this, iterator);
     }
 
     protected Iterator getIterator(int index) {
@@ -148,12 +148,12 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
             @Override
             public int maxIndex() {
-                return metricMergeResultList.size() - 1;
+                return getChildLength() - 1;
             }
 
             @Override
             public MetricMergeResult lookupByIndex(int index) {
-                return metricMergeResultList.get(index);
+                return getMetricMergeResultByWait(index);
             }
 
             @Override
@@ -186,6 +186,10 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     public String getChildShowName(int row) {
         MetricMergeResult metricMergeResult = getMetricMergeResultByWait(row);
         return metricMergeResult.getShowValue();
+    }
+
+    protected int getChildLength(){
+        return metricMergeResultList.size();
     }
 
     protected MetricMergeResult getMetricMergeResultByWait(int row) {

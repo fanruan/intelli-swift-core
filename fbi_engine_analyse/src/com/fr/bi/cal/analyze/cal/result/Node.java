@@ -799,7 +799,9 @@ public class Node implements SummaryContainer, BINode {
     }
 
     public void setSummaryValue(Map summaryValueMap) {
-        getNotNullSummaryValue().putAll(summaryValueMap);
+        if (summaryValueMap != null){
+            getNotNullSummaryValue().putAll(summaryValueMap);
+        }
     }
 
     /**

@@ -252,7 +252,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         //如果往下展开，就继续往下
         NodeExpander ex = expander.getChildExpander(sg.getChildShowName(index[deep]));
         if (ex != null && deep + 1 < index.length) {
-            getNext(gv.getChild(), index, deep + 1, ex, list);
+            if (ReturnStatus.GroupEnd == getNext(gv.getChild(), index, deep + 1, ex, list)){
+                return ReturnStatus.GroupEnd;
+            }
         }
         return ReturnStatus.Success;
     }

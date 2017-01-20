@@ -31,7 +31,8 @@ public class BIMultiThreadExecutor {
         index++;
     }
 
-    public void awaitExecutor(final BISession session) {
+
+    protected void awaitExecutor(final BISession session) {
         if (null != lists) {
             for (MergeSummaryCallList list : lists) {
                 list.add(new BISingleThreadCal() {
