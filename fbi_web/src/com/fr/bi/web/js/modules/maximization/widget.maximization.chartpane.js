@@ -26,8 +26,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         this._createTableChart(type);
         this._buildWidgetTitle();
 
-        this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
-
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -177,6 +175,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         var expand = this._createToolsButton("BI-Detailed_Setting", "widget-combo-detail-font");
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, BICst.DASHBOARD_WIDGET_EXPAND);
+            self.fireEvent(BI.MaximizationChartPane.EVENT_CLOSE);
         });
 
         var combo = BI.createWidget({
@@ -185,9 +184,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         });
         combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
-                case BICst.DASHBOARD_WIDGET_EXPAND:
-                    self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
-                    break;
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
                     self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
                     self._setTitleVisible();
@@ -199,8 +195,8 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
                     break;
                 case BICst.DASHBOARD_WIDGET_RENAME:
                     self.title.focus();
-                    //     self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
                     break;
+                case BICst.DASHBOARD_WIDGET_EXPAND:
                 case BICst.DASHBOARD_WIDGET_LINKAGE:
                 case BICst.DASHBOARD_WIDGET_COPY:
                 case BICst.DASHBOARD_WIDGET_DELETE:
@@ -295,7 +291,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
 
     _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
-        this.tableChartPopupulate();
+        this.tableChart.populate();
         this.chartDrill.populate();
     },
 

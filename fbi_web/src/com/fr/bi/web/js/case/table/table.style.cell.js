@@ -37,6 +37,10 @@ BI.TableStyleCell = BI.inherit(BI.Single, {
 
     setText: function (text) {
         this.text.setText(text);
+    },
+
+    populate: function () {
+        this._digestStyle();
     }
 });
 $.shortcut('bi.table_style_cell', BI.TableStyleCell);

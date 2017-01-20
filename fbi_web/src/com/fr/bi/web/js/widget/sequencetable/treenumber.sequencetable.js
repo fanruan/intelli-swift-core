@@ -33,7 +33,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         this.renderedCells = [];
         this.renderedKeys = [];
 
-        var header = BI.createWidget({
+        this.header = BI.createWidget({
             type: "bi.table_style_cell",
             cls: "sequence-table-title-cell",
             styleGetter: o.headerCellStyleGetter,
@@ -56,7 +56,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             type: "bi.vtape",
             element: this.element,
             items: [{
-                el: header,
+                el: this.header,
                 height: o.headerRowSize * o.header.length
             }, {
                 el: this.scrollContainer
@@ -303,10 +303,6 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         });
         this.renderedCells = [];
         this.renderedKeys = [];
-        this.vCurr = 1;
-        this.hCurr = 1;
-        this.start = this.options.startSequence;
-        this.cache = {};
     },
 
     _populate: function () {
@@ -315,6 +311,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             task.apply(self);
         });
         this.tasks = [];
+        this.header.populate();
         this._layout();
         this._calculateChildrenToRender();
     },
@@ -332,6 +329,8 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
 
     setVPage: function (v) {
         if (v <= 1) {
+            this.cache = {};
+            this.start = this.options.startSequence;
             this._restore();
             this.tasks.push(this._nextState);
         } else if (v === this.vCurr + 1) {
@@ -355,16 +354,18 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
 
     populate: function (items, header, crossItems, crossHeader) {
         var o = this.options;
-        if (items) {
+        if (items && items !== this.options.items) {
             o.items = items;
+            this._restore();
+            this.tasks.push(this._prevState);
         }
-        if (header) {
+        if (header && header !== this.options.header) {
             o.header = header;
         }
-        if (crossItems) {
+        if (crossItems && crossItems !== this.options.crossItems) {
             o.crossItems = crossItems;
         }
-        if (crossHeader) {
+        if (crossHeader && crossHeader !== this.options.crossHeader) {
             o.crossHeader = crossHeader;
         }
         this._populate();
