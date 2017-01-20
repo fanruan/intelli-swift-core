@@ -372,15 +372,15 @@ BICst.DASHBOARD_WIDGETS = [[{
         title: BI.i18nText("BI-Tree_Label_Con"),
         value: BICst.WIDGET.TREE_LABEL,
         cls: "drag-tree-label-icon"
-    },{
+    }, {
         text: BI.i18nText("BI-Tree_List"),
         title: BI.i18nText("BI-Tree_List"),
         value: BICst.WIDGET.TREE_LIST,
         cls: "drag-tree-list-icon"
     }]
 }, {
-    text: BI.i18nText("BI-Date_Control"),
-    title: BI.i18nText("BI-Date_Control"),
+    text: BI.i18nText("BI-Date_Range_Control"),
+    title: BI.i18nText("BI-Date_Range_Control"),
     value: BICst.WIDGET.DATE,
     cls: "drag-date-range-icon",
     children: [
@@ -409,7 +409,7 @@ BICst.DASHBOARD_WIDGETS = [[{
             title: BI.i18nText("BI-Date_Pane_Control"),
             value: BICst.WIDGET.DATE_PANE,
             cls: "drag-date-icon"
-        },{
+        }, {
             text: BI.i18nText("BI-Date_Range_Control"),
             title: BI.i18nText("BI-Date_Range_Control"),
             value: BICst.WIDGET.DATE,

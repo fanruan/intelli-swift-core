@@ -139,9 +139,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                         self._buildCordonPane();
                     } else if (s === BICst.TARGET_COMBO.DATA_LABEL) {
                         self._buildDataLabelPane();
-                    } else if(s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
+                    } else if (s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
                         self._buildDataLabelPane4ScatterBubble();
-                    } else if(s === BICst.TARGET_COMBO.DATA_IMAGE) {
+                    } else if (s === BICst.TARGET_COMBO.DATA_IMAGE) {
                         self._buildDataImagePane();
                     } else {
                         self._buildStyleSettingPane();
@@ -185,8 +185,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                             field_id: s,
                             table_id: BI.Utils.getTableIdByFieldID(s)
                         }
-                    )
-                    ;
+                    );
                     break;
                 case BICst.TARGET_COMBO.CHART_TYPE:
                     self.model.set("style_of_chart", {type: s});
@@ -196,9 +195,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                         self._buildCordonPane();
                     } else if (s === BICst.TARGET_COMBO.DATA_LABEL) {
                         self._buildDataLabelPane();
-                    } else if(s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
+                    } else if (s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
                         self._buildDataLabelPane4ScatterBubble();
-                    } else if(s === BICst.TARGET_COMBO.DATA_IMAGE) {
+                    } else if (s === BICst.TARGET_COMBO.DATA_IMAGE) {
                         self._buildDataImagePane();
                     } else {
                         self._buildStyleSettingPane();
@@ -241,9 +240,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                         self._buildCordonPane();
                     } else if (s === BICst.TARGET_COMBO.DATA_LABEL) {
                         self._buildDataLabelPane();
-                    } else if(s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
+                    } else if (s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
                         self._buildDataLabelPane4ScatterBubble();
-                    } else if(s === BICst.TARGET_COMBO.DATA_IMAGE) {
+                    } else if (s === BICst.TARGET_COMBO.DATA_IMAGE) {
                         self._buildDataImagePane();
                     } else {
                         self._buildStyleSettingPane();
@@ -365,7 +364,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             wType === BICst.WIDGET.MULTI_PIE ||
             wType === BICst.WIDGET.RECT_TREE ||
             wType === BICst.WIDGET.FUNNEL ||
-            wType === BICst.WIDGET.PARETO ) {
+            wType === BICst.WIDGET.PARETO) {
             this.usedCheck.setVisible(false);
             this.usedRadio.setVisible(true);
             return;
@@ -386,7 +385,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                         return isTar2Checked = true;
                     }
                 });
-                if(isTar2Checked === true) {
+                if (isTar2Checked === true) {
                     this.usedCheck.setVisible(false);
                     this.usedRadio.setVisible(true);
                     return;
@@ -462,7 +461,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             dId: this.model.get("id")
         });
         popup.on(BI.DataLabelPopup.EVENT_CHANGE, function (v) {
-            BI.Broadcasts.send(BICst.BROADCAST.FILTER_LIST_PREFIX+BI.Utils.getWidgetIDByDimensionID(id), v);
+            BI.Broadcasts.send(BICst.BROADCAST.FILTER_LIST_PREFIX + BI.Utils.getWidgetIDByDimensionID(id), v);
         });
         BI.Popovers.create(id, popup).open(id);
         popup.populate();
