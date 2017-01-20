@@ -357,6 +357,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         if (items && items !== this.options.items) {
             o.items = items;
             this._restore();
+            this.tasks.push(this._prevState);
         }
         if (header && header !== this.options.header) {
             o.header = header;
