@@ -52,22 +52,14 @@ BI.GroupTable = BI.inherit(BI.Pane, {
             type: "bi.page_table",
             isNeedFreeze: null,
             summaryCellStyleGetter: function (isLast) {
-                return {
-                    backgroundColor: isLast ? "#1E90FF" : "#6495ED",
-                    color: "#ffffff"
-                }
+                return isLast ? BI.SummaryTableHelper.getLastSummaryStyles(self.model.getThemeColor(), self.model.getTableStyle()) :
+                    BI.SummaryTableHelper.getSummaryStyles(self.model.getThemeColor(), self.model.getTableStyle())
             },
             sequenceCellStyleGetter: function (index) {
-                return {
-                    backgroundColor: index % 2 ? "#87CEFA" : "#E1FFFF",
-                    color: "#1a1a1a"
-                }
+                return BI.SummaryTableHelper.getBodyStyles(self.model.getThemeColor(), self.model.getTableStyle(), index);
             },
             headerCellStyleGetter: function () {
-                return {
-                    backgroundColor: "#6A5ACD",
-                    color: "#ffffff"
-                }
+                return BI.SummaryTableHelper.getHeaderStyles(self.model.getThemeColor(), self.model.getTableStyle());
             },
             mergeRule: function (col1, col2) {
                 if (col1.tag && col2.tag) {
@@ -321,7 +313,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 self.model.setDataAndPage(jsonData);
                 try {
                     self.model.createTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self));
-                    self._refreshTable();
+                    self._populateTable();
                 } catch (e) {
                     self.errorPane.setErrorInfo("error happens during populate table: " + e);
                     self.errorPane.setVisible(true);
@@ -331,11 +323,6 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 self.loaded();
             }
         }, this.model.getExtraInfo());
-    },
-
-    _populateTable: function () {
-        this.table.restore();
-        this._refreshTable();
     },
 
     _refreshAttrs: function () {
@@ -350,7 +337,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         this.table.attr("rowSize", this.model.getRowSize());
     },
 
-    _refreshTable: function () {
+    _populateTable: function () {
         this.errorPane.setVisible(false);
         this._refreshAttrs();
         this.table.populate(this.model.getItems(), this.model.getHeader());
@@ -364,6 +351,8 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         this.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
         this.model.resetETree();
         this.loading();
+        this.table.setVPage(1); //回到首页
+        this.table.setHPage(1);
         BI.Utils.getWidgetDataByID(widgetId, {
             success: function (jsonData) {
                 if (!self._isJSONDataValid(jsonData)) {
@@ -374,7 +363,6 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 if (self.model.getTableForm() !== self.tableForm) {
                     self._createTable();
                 }
-                self.table.setVPage(1);
                 self._populateTable();
             },
             done: function () {

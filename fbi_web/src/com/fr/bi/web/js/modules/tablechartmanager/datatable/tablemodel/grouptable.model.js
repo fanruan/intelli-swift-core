@@ -262,10 +262,12 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
      * @param c json结构中的c节点
      * @param currentLayer 当前所在层数
      * @param parent 父节点node
+     * @param dimIds 行表头
+     * @param crossPV 交叉表部分的parentValues 为了通用于交叉表和复杂表
      * @returns {Array}
      * @private
      */
-    _createCommonTableItems: function (c, currentLayer, parent) {
+    _createCommonTableItems: function (c, currentLayer, parent, dimIds, crossPV) {
         var self = this, items = [];
         currentLayer++;
         BI.each(c, function (i, child) {
@@ -274,13 +276,13 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
             var cId = BI.isEmptyString(child.n) ? self.EMPTY_VALUE : child.n;
             var nodeId = BI.isNotNull(parent) ? parent.get("id") + cId : cId;
             var node = new BI.Node(nodeId);
-            var currDid = self.dimIds[currentLayer - 1], currValue = child.n;
+            var currDid = dimIds[currentLayer - 1], currValue = child.n;
             node.set("name", currValue);
             self.tree.addNode(parent, node);
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
             while (tempLayer > 0) {
-                var pv = self.tree.search(tempNodeId).get("name"), dId = self.dimIds[tempLayer - 1];
+                var pv = self.tree.search(tempNodeId).get("name"), dId = dimIds[tempLayer - 1];
                 pValues.push({
                     value: [BI.Utils.getClickedValue4Group(pv, dId)],
                     dId: dId
@@ -327,13 +329,13 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                 }
             };
             //展开情况——最后一层没有这个展开按钮
-            if (currentLayer < self.dimIds.length) {
+            if (currentLayer < dimIds.length) {
                 item.needExpand = true;
                 item.isExpanded = false;
             }
             //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
             if (BI.isNotNull(child.c)) {
-                item.children = self._createCommonTableItems(child.c, currentLayer, node) || [];
+                item.children = self._createCommonTableItems(child.c, currentLayer, node, self.dimIds) || [];
                 //在tableForm为 行展开模式 的时候 如果不显示汇总行 只是最后一行不显示汇总
                 if (self.showRowTotal === true || self.getTableForm() === BICst.TABLE_FORM.OPEN_COL) {
                     var vs = [];
@@ -358,10 +360,10 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                 if (BI.isNotNull(child.s.c) || BI.isArray(child.s.s)) {
                     //交叉表，pValue来自于行列表头的结合
                     var ob = {index: 0};
-                    self._createTableSumItems(child.s.c, values, pValues, ob, false, i);
+                    self._createTableSumItems(child.s.c, values, pValues, ob, false, i, crossPV);
                     //显示列汇总 有指标
                     if (self.showColTotal === true && self.targetIds.length > 0) {
-                        self._createTableSumItems(child.s.s, values, pValues, ob, false, i);
+                        self._createTableSumItems(child.s.s, values, pValues, ob, false, i, crossPV);
                     }
                 } else {
                     BI.each(child.s, function (j, sum) {
@@ -481,7 +483,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
         var self = this;
         var currentLayer = 0;
         var item = {
-            children: this._createCommonTableItems(this.data.c, currentLayer) || []
+            children: this._createCommonTableItems(this.data.c, currentLayer, null, this.dimIds) || []
         };
         //汇总
         if (this.showRowTotal === true && BI.isNotEmptyArray(this.data.s)) {

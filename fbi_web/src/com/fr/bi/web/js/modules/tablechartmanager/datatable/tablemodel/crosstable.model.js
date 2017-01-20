@@ -317,7 +317,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
         if (BI.isNotNull(left.s)) {
             this.crossItemsSums[0].push(true);
         }
-        this._initCrossItemsSum(0, left.c);
+        this._initCrossItemsSum(0, left.c, this.crossItemsSums);
 
         //交叉表items
         var crossItem = {
@@ -408,16 +408,16 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
         }
 
         var item = {
-            children: this._createCommonTableItems(left.c, 0)
+            children: this._createCommonTableItems(left.c, 0, null, this.dimIds, this.crossPV)
         };
 
         if (this.showRowTotal === true) {
             //汇总值
             var sums = [], ob = {index: 0};
             if (BI.isNotNull(left.s.c) && BI.isNotNull(left.s.s)) {
-                this._createTableSumItems(left.s.c, sums, [], ob, true);
+                this._createTableSumItems(left.s.c, sums, [], ob, true, null, this.crossPV);
             } else {
-                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob, true);
+                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob, true, null, this.crossPV);
             }
             if (this.showColTotal === true) {
                 var outerValues = [];
@@ -446,17 +446,25 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
 
     /**
      * 交叉表的(指标)汇总值
+     * @param s json中的s节点数据
+     * @param sum 汇总格子列表
+     * @param pValues parentValues
+     * @param ob 记录index
+     * @param isLast 是否为最后一个
+     * @param rowIndex 行号（用于样式）
+     * @param crossPV 交叉部分的parentValues
+     * @private
      */
-    _createTableSumItems: function (s, sum, pValues, ob, isLast, rowIndex) {
+    _createTableSumItems: function (s, sum, pValues, ob, isLast, rowIndex, crossPV) {
         var self = this;
         BI.each(s, function (i, v) {
             if (BI.isObject(v)) {
                 var sums = v.s, child = v.c;
                 if (BI.isNotNull(sums) && BI.isNotNull(child)) {
-                    self._createTableSumItems(child, sum, pValues, ob, isLast, rowIndex);
-                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob, isLast, rowIndex);
+                    self._createTableSumItems(child, sum, pValues, ob, isLast, rowIndex, crossPV);
+                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob, isLast, rowIndex, crossPV);
                 } else if (BI.isNotNull(sums)) {
-                    self._createTableSumItems(sums, sum, pValues, ob, isLast, rowIndex);
+                    self._createTableSumItems(sums, sum, pValues, ob, isLast, rowIndex, crossPV);
                 }
             } else {
                 var tId = self.targetIds[i];
@@ -468,7 +476,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                     type: "bi.target_body_normal_cell",
                     text: v,
                     dId: tId,
-                    clicked: pValues.concat(self.crossPV[ob.index]),
+                    clicked: pValues.concat(crossPV[ob.index]),
                     cls: isLast ? "last summary-cell" : "",
                     styles: isLast ? BI.SummaryTableHelper.getLastSummaryStyles(self.themeColor, self.tableStyle) :
                         BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, rowIndex)
@@ -602,15 +610,15 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
     /**
      * 初始化 crossItemsSum
      */
-    _initCrossItemsSum: function (currentLayer, sums) {
+    _initCrossItemsSum: function (currentLayer, sums, crossItemsSums) {
         var self = this;
         currentLayer++;
         BI.each(sums, function (i, v) {
             if (BI.isNotNull(v) && BI.isNotNull(v.c)) {
-                self._initCrossItemsSum(currentLayer, v.c);
+                self._initCrossItemsSum(currentLayer, v.c, crossItemsSums);
             }
-            BI.isNull(self.crossItemsSums[currentLayer]) && (self.crossItemsSums[currentLayer] = []);
-            self.crossItemsSums[currentLayer].push(BI.isNotNull(v.s));
+            BI.isNull(crossItemsSums[currentLayer]) && (crossItemsSums[currentLayer] = []);
+            crossItemsSums[currentLayer].push(BI.isNotNull(v.s));
         });
     },
 

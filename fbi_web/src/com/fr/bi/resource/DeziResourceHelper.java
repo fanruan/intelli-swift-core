@@ -501,8 +501,10 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/helper/summarytable.helper.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.grouptable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.crosstable.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.complextable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/grouptable.model.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/crosstable.model.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/complextable.model.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/widget.complextable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/complextable.model.js",
