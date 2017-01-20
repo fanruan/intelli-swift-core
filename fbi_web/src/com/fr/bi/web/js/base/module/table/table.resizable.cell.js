@@ -22,22 +22,26 @@ BI.ResizableTableCell = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.cell = BI.createWidget(BI.extend({type: "bi.label"}, o.cell, {width: o.width, height: o.height}));
 
+        var startDrag = false;
         var size = 0, offset = 0, defaultSize = o.width;
         var mouseMoveTracker = new BI.MouseMoveTracker(function (deltaX, deltaY) {
             if (mouseMoveTracker.isDragging()) {
+                startDrag = true;
                 offset += deltaX;
                 size = BI.clamp(defaultSize + offset, 15, Number.MAX_VALUE);
                 self.handler.element.addClass("dragging");
                 o.resize(size);
             }
-
         }, function () {
-            size = BI.clamp(size, 15, Number.MAX_VALUE);
-            o.stop(size);
-            size = 0;
-            offset = 0;
-            defaultSize = o.width;
-            self.handler.element.removeClass("dragging");
+            if (startDrag === true) {
+                size = BI.clamp(size, 15, Number.MAX_VALUE);
+                o.stop(size);
+                size = 0;
+                offset = 0;
+                defaultSize = o.width;
+                self.handler.element.removeClass("dragging");
+                startDrag = false;
+            }
             mouseMoveTracker.releaseMouseMoves();
         }, document);
         this.handler = BI.createWidget({
@@ -56,6 +60,7 @@ BI.ResizableTableCell = BI.inherit(BI.Widget, {
             }]
         });
         this.handler.element.on("mousedown", function (event) {
+            defaultSize = o.width;
             mouseMoveTracker.captureMouseMoves(event);
         });
         BI.createWidget({

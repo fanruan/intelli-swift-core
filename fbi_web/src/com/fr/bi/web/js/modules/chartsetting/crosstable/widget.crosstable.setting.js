@@ -36,7 +36,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showName.on(BI.BasicButton.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
@@ -48,7 +48,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
             width: 120
         });
 
-        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.widgetName.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -152,7 +152,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
             width: 135
         });
 
-        this.isCustomTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
+        this.isCustomTableStyle.on(BI.BasicButton.EVENT_CHANGE, function() {
             self.customTableStyle.setVisible(this.isSelected());
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
@@ -215,7 +215,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.showNumber.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showNumber.on(BI.BasicButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.CrossTableSetting.EVENT_CHANGE);
         });
         //显示行汇总
@@ -227,7 +227,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.showRowTotal.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showRowTotal.on(BI.BasicButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.CrossTableSetting.EVENT_CHANGE);
         });
         //显示列汇总
@@ -239,7 +239,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.showColTotal.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showColTotal.on(BI.BasicButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.CrossTableSetting.EVENT_CHANGE);
         });
         //展开所有行表头节点
@@ -251,7 +251,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.openRowNode.on(BI.Controller.EVENT_CHANGE, function () {
+        this.openRowNode.on(BI.BasicButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.CrossTableSetting.EVENT_CHANGE);
         });
         //展开所有列表头节点
@@ -263,7 +263,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.openColNode.on(BI.Controller.EVENT_CHANGE, function () {
+        this.openColNode.on(BI.BasicButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.CrossTableSetting.EVENT_CHANGE);
         });
         //单页最大行数
@@ -278,7 +278,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 return BI.isInteger(v) && v > 0 && v <= 100;
             }
         });
-        this.maxRow.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.maxRow.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CrossTableSetting.EVENT_CHANGE);
         });
         //单页最大列数
@@ -292,7 +292,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 return BI.isInteger(v) && v > 0 && v <= 100;
             }
         });
-        this.maxCol.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.maxCol.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CrossTableSetting.EVENT_CHANGE);
         });
 
@@ -308,7 +308,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 return BI.isInteger(v) && v > 0 && v <= 100;
             }
         });
-        this.rowHeight.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.rowHeight.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
@@ -389,7 +389,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.freezeDim.on(BI.Controller.EVENT_CHANGE, function () {
+        this.freezeDim.on(BI.BasicButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.CrossTableSetting.EVENT_CHANGE);
         });
         //联动传递过滤条件
@@ -401,7 +401,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
+        this.transferFilter.on(BI.BasicButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.CrossTableSetting.EVENT_CHANGE);
         });
         var otherAttr = BI.createWidget({

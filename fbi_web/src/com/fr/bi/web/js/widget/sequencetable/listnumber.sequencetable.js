@@ -34,12 +34,10 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
         this.renderedKeys = [];
 
         var header = BI.createWidget({
-            type: "bi.label",
-            cls: "sequence-table-title",
-            textAlign: "left",
-            forceCenter: true,
-            text: BI.i18nText("BI-Number_Index"),
-            hgap: 5
+            type: "bi.table_style_cell",
+            cls: "sequence-table-title-cell",
+            styleGetter: o.headerCellStyleGetter,
+            text: BI.i18nText("BI-Number_Index")
         });
         this.container = BI.createWidget({
             type: "bi.absolute",
@@ -86,7 +84,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
         var start = Math.floor(o.scrollTop / o.rowSize);
         var end = start + Math.floor((o.height - o.header.length * o.headerRowSize) / o.rowSize);
         var renderedCells = [], renderedKeys = [];
-        for (var i = start; i <= end && i < o.items.length; i++) {
+        for (var i = start, cnt = 0; i <= end && i < o.items.length; i++, cnt++) {
             var index = BI.deepIndexOf(this.renderedKeys, this.start + i);
             var top = i * o.rowSize;
             if (index > -1) {
@@ -102,10 +100,16 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
                 renderedCells.push(this.renderedCells[index]);
             } else {
                 var child = BI.createWidget(BI.extend({
-                    type: "bi.sequence_table_number_cell",
+                    type: "bi.table_style_cell",
+                    cls: "sequence-table-number-cell",
                     width: 60,
                     height: o.rowSize,
-                    text: this.start + i
+                    text: this.start + i,
+                    styleGetter: function (index) {
+                        return function () {
+                            return o.sequenceCellStyleGetter(index);
+                        }
+                    }(cnt)
                 }));
                 renderedCells.push({
                     el: child,

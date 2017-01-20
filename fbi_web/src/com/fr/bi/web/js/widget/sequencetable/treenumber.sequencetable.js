@@ -34,12 +34,10 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         this.renderedKeys = [];
 
         var header = BI.createWidget({
-            type: "bi.label",
-            cls: "sequence-table-title",
-            textAlign: "left",
-            forceCenter: true,
-            text: BI.i18nText("BI-Number_Index"),
-            hgap: 5
+            type: "bi.table_style_cell",
+            cls: "sequence-table-title-cell",
+            styleGetter: o.headerCellStyleGetter,
+            text: BI.i18nText("BI-Number_Index")
         });
         this.container = BI.createWidget({
             type: "bi.absolute",
@@ -144,7 +142,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                         start: start,
                         top: top,
                         cnt: cnt,
-                        cls: "sequence-table-number",
+                        index: index,
                         height: cnt * o.rowSize
                     });
                     start += cnt;
@@ -156,7 +154,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                         start: start++,
                         top: top,
                         cnt: 1,
-                        cls: "sequence-table-number sequence-table-summary",
+                        isSummary: true,
                         height: o.rowSize
                     });
                     top += o.rowSize;
@@ -243,8 +241,16 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                 renderedCells.push(self.renderedCells[index]);
             } else {
                 var child = BI.createWidget(BI.extend({
-                    type: "bi.sequence_table_number_cell",
+                    type: "bi.table_style_cell",
+                    cls: "sequence-table-number-cell",
                     width: 60,
+                    styleGetter: numbers[key].isSummary === true ? function () {
+                        return o.summaryCellStyleGetter(true);
+                    } : function (key) {
+                        return function () {
+                            return o.sequenceCellStyleGetter(key);
+                        }
+                    }(numbers[key].index)
                 }, numbers[key]));
                 renderedCells.push({
                     el: child,
