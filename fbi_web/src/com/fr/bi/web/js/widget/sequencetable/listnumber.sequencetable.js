@@ -33,7 +33,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
         this.renderedCells = [];
         this.renderedKeys = [];
 
-        var header = BI.createWidget({
+        this.header = BI.createWidget({
             type: "bi.table_style_cell",
             cls: "sequence-table-title-cell",
             styleGetter: o.headerCellStyleGetter,
@@ -56,7 +56,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
             type: "bi.vtape",
             element: this.element,
             items: [{
-                el: header,
+                el: this.header,
                 height: o.headerRowSize * o.header.length
             }, {
                 el: this.scrollContainer
@@ -156,6 +156,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
     },
 
     _populate: function () {
+        this.header.populate();
         this._layout();
         this._calculateChildrenToRender();
     },
@@ -176,22 +177,26 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
         this.start = (v - 1) * o.pageSize + 1;
     },
 
-    restore: function () {
+    _restore: function () {
         var o = this.options;
         BI.each(this.renderedCells, function (i, cell) {
             cell.el.destroy();
         });
         this.renderedCells = [];
         this.renderedKeys = [];
-        this.start = o.startSequence;
+    },
+
+    restore: function () {
+        this._restore();
     },
 
     populate: function (items, header) {
         var o = this.options;
-        if (items) {
+        if (items && items !== this.options.items) {
             o.items = items;
+            this._restore();
         }
-        if (header) {
+        if (header && header !== this.options.header) {
             o.header = header;
         }
         this._populate();
