@@ -67,6 +67,10 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 items: [textLabel]
             })
         }
+
+        if (BI.isNotNull(o.styles) && BI.isObject(o.styles)) {
+            this.element.css(o.styles);
+        }
     },
 
     _getIconByStyleAndMark: function (text, style, mark) {
@@ -210,11 +214,11 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 }
                 return {};
             }
-            
+
             function isContainsDiffLinkages(linkages) {
-                for(var i = 0; i < linkages.length; i++) {
-                    for(var j = i + 1; j < linkages.length; j++) {
-                        if(!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
+                for (var i = 0; i < linkages.length; i++) {
+                    for (var j = i + 1; j < linkages.length; j++) {
+                        if (!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
                             return true;
                         }
                     }

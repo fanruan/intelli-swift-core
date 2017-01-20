@@ -498,6 +498,7 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/widget.summarytable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/summarytable.model.js",
 
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/helper/summarytable.helper.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.grouptable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.crosstable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/grouptable.model.js",
