@@ -179,8 +179,11 @@ public class BILogHelper {
                 if (ReadOnlyBusinessTablesOfTableSourceMap.containsKey(tableSourceID)) {
                     StringBuffer sb = new StringBuffer();
                     Iterator<String> it = ReadOnlyBusinessTablesOfTableSourceMap.get(tableSourceID).iterator();
+                    int businessTableCount = 0;
                     while (it.hasNext()) {
+                        businessTableCount++;
                         String businessTableID = it.next();
+                        sb.append("\n" + "*******************" + "BusinessTable " + businessTableCount + " *******************");
                         sb.append(logBusinessTableByBusinessTableID(businessTableID));
                     }
                     logInfo = sb.toString();
