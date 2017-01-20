@@ -116,7 +116,9 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
                 if (j === 0) {
                     tempItems.push(singleTable.item);
                 }
-                tempCrossItems.push(singleTable.crossItem);
+                if (BI.parseInt(i) === 0) {
+                    tempCrossItems.push(singleTable.crossItem);
+                }
             });
         });
         this._parseColTableItems(tempItems);
@@ -149,6 +151,7 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
                     dId: tId,
                     text: BI.i18nText("BI-Summary_Values"),
                     tag: BI.UUID(),
+                    styles: BI.SummaryTableHelper.getHeaderStyles(self.getThemeColor(), self.getTableStyle()),
                     sortFilterChange: function (v) {
                         self.resetETree();
                         self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
@@ -231,9 +234,11 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
                         outerValues.push({
                             type: "bi.target_body_normal_cell",
                             text: v,
+                            tag: BI.UUID(),
                             dId: tId,
                             cls: "summary-cell last",
-                            clicked: [{}]
+                            clicked: [{}],
+                            styles: BI.SummaryTableHelper.getLastSummaryStyles(self.getThemeColor(), self.getTableStyle())
                         });
                     }
                 });
@@ -280,6 +285,7 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
             var item = {
                 type: "bi.normal_expander_cell",
                 text: currValue,
+                tag: BI.UUID(),
                 dId: currDid,
                 isCross: true,
                 styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
@@ -412,9 +418,12 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
             if (self.showRowTotal === true &&
                 (self._isColRegionExist() || self._isRowRegionExist())) {
                 children.push({
+                    type: "bi.page_table_cell",
                     text: BI.i18nText("BI-Summary_Values"),
+                    tag: BI.UUID(),
                     values: tItem.values,
-                    cls: "summary-cell last"
+                    cls: "summary-cell last",
+                    styles: BI.SummaryTableHelper.getLastSummaryStyles(self.getThemeColor(), self.getTableStyle())
                 });
             }
         });
@@ -431,7 +440,7 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         this._refreshDimsInfo();
 
         //正常复杂表
-        if (BI.isNotNull(this.data) && BI.isNotNull(this.data.t)) {
+        if (this._isColRegionExist() && this._isRowRegionExist()) {
             this._createComplexTableItems();
             this._createCrossTableHeader();
             this._setOtherCrossAttrs();

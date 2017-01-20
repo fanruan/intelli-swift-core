@@ -173,6 +173,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                 dId: currDid,
                 isCross: true,
                 styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
+                tag: BI.UUID(),
                 expandCallback: function () {
                     var clickNode = self.crossETree.search(nodeId);
                     //全部展开再收起——纵向
