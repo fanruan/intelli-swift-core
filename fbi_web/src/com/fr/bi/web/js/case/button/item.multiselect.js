@@ -73,5 +73,5 @@ BI.MultiSelectItem = BI.inherit(BI.BasicButton, {
         this.checkbox.setSelected(v);
     }
 });
-
+BI.MultiSelectItem.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.multi_select_item", BI.MultiSelectItem);

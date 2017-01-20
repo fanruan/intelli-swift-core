@@ -8,7 +8,7 @@ BI.SequenceTableDynamicNumber = BI.inherit(BI.SequenceTableTreeNumber, {
 
     _defaultConfig: function () {
         return BI.extend(BI.SequenceTableDynamicNumber.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-sequence-table-dynamic-number"
+            extraCls: "bi-sequence-table-dynamic-number"
         });
     },
 
@@ -46,7 +46,7 @@ BI.SequenceTableDynamicNumber = BI.inherit(BI.SequenceTableTreeNumber, {
                         start: start,
                         top: top,
                         cnt: cnt,
-                        cls: "sequence-table-number",
+                        index: index,
                         height: cnt * o.rowSize
                     });
                     start += cnt;
@@ -58,7 +58,7 @@ BI.SequenceTableDynamicNumber = BI.inherit(BI.SequenceTableTreeNumber, {
                         start: start++,
                         top: top,
                         cnt: 1,
-                        cls: "sequence-table-number sequence-table-summary",
+                        isSummary: true,
                         height: o.rowSize
                     });
                     top += o.rowSize;
