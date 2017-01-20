@@ -330,6 +330,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
     setVPage: function (v) {
         if (v <= 1) {
             this.cache = {};
+            this.start = this.options.startSequence;
             this._restore();
             this.tasks.push(this._nextState);
         } else if (v === this.vCurr + 1) {
