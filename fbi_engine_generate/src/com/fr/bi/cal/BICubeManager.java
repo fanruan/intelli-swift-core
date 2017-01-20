@@ -4,13 +4,11 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
-import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.provider.AllUserTravel;
-import com.fr.bi.cal.generate.CubeBuildManager;
+import com.fr.bi.cal.generate.CubeBuildHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
@@ -196,13 +194,14 @@ public class BICubeManager implements BICubeManagerProvider {
     public boolean isReplacing(long userId) {
         return getCubeManager(userId).isReplacing();
     }
+
     @Override
     public boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType) {
         try {
             if (StringUtils.isEmpty(baseTableSourceId)) {
-                new CubeBuildManager().CubeBuildStaff(userId);
+                CubeBuildHelper.getInstance().CubeBuildStaff(userId);
             } else {
-                new CubeBuildManager().addSingleTableTask(userId, baseTableSourceId, updateType);
+                CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, baseTableSourceId, updateType);
             }
             BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
             BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);

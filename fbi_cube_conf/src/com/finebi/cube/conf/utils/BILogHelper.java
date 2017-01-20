@@ -6,10 +6,14 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
+
+import java.util.*;
 
 /**
  * Created by Connery on 10/25/2016.
@@ -137,7 +141,58 @@ public class BILogHelper {
             logger.debug(e.getMessage(), e);
             return "";
         }
-
     }
+
+    public static Map<String, Set<String>> getReadOnlyBusinessTablesOfTableSourceMap() {
+        HashMap<String, Set<String>> sourceMap = new HashMap<String, Set<String>>();
+        for (BusinessTable businessTable : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
+            String sourceId = businessTable.getTableSource().getSourceID();
+            if (sourceMap.containsKey(sourceId)) {
+                sourceMap.get(sourceId).add(businessTable.getID().getIdentityValue());
+            } else {
+                HashSet<String> businessTableSet = new HashSet<String>();
+                businessTableSet.add(businessTable.getID().getIdentityValue());
+                sourceMap.put(sourceId, businessTableSet);
+            }
+        }
+        return Collections.unmodifiableMap(sourceMap);
+    }
+
+    public static String logBusinessTableByBusinessTableID(String businessTableID) {
+        String tableInfo = StringUtils.EMPTY;
+        try {
+            BusinessTable table = BusinessTableHelper.getBusinessTable(new BITableID(businessTableID));
+            tableInfo = logBusinessTable(table);
+        } catch (Exception e) {
+            logger.info("get businessTable info error the tableID is: " + businessTableID);
+            logger.info(e.getMessage(), e);
+        }
+        return tableInfo;
+    }
+
+    public static String logCubeGeneratingTableSourceInfoByTableSourceID(String tableSourceID) {
+        Object cacheValue = BILoggerFactory.getLoggerCacheValue("Cube Generate Info", "ReadOnlyBusinessTablesOfTableSourceMap");
+        String logInfo = StringUtils.EMPTY;
+        if (cacheValue instanceof Map) {
+            try {
+                Map<String, Set<String>> ReadOnlyBusinessTablesOfTableSourceMap = (Map<String, Set<String>>) cacheValue;
+                if (ReadOnlyBusinessTablesOfTableSourceMap.containsKey(tableSourceID)) {
+                    StringBuffer sb = new StringBuffer();
+                    Iterator<String> it = ReadOnlyBusinessTablesOfTableSourceMap.get(tableSourceID).iterator();
+                    while (it.hasNext()) {
+                        String businessTableID = it.next();
+                        sb.append(logBusinessTableByBusinessTableID(businessTableID));
+                    }
+                    logInfo = sb.toString();
+                }
+            } catch (Exception e) {
+                logger.debug(e.getMessage(), e);
+            }
+        } else {
+            logger.info("the ReadOnlyBusinessTablesOfTableSourceMap is not instanceof Map");
+        }
+        return logInfo;
+    }
+
 
 }

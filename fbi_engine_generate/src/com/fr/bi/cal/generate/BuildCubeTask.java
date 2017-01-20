@@ -6,6 +6,7 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.exception.BIDeliverFailureException;
@@ -101,6 +102,7 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
+        BILoggerFactory.cacheLoggerInfo("Cube Generate Info", "ReadOnlyBusinessTablesOfTableSourceMap", BILogHelper.getReadOnlyBusinessTablesOfTableSourceMap());
         PerformancePlugManager.getInstance().printSystemParameters();
         logCubeTaskType();
         logBusinessTable();
@@ -153,6 +155,7 @@ public class BuildCubeTask implements CubeTask {
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
+                    BILoggerFactory.clearLoggerCacheValue("Cube Generate Info");
                     BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 }
             }
@@ -190,7 +193,7 @@ public class BuildCubeTask implements CubeTask {
                     break;
                 }
 //                集群模式通过zookeeper通知slaver释放资源
-                if(ClusterEnv.isCluster()) {
+                if (ClusterEnv.isCluster()) {
                     try {
                         ZooKeeperManager.getInstance().getZooKeeper().setData(BICubeStatusWatcher.CUBE_STATUS, "finish".getBytes(), -1);
                     } catch (Exception e) {
