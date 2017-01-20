@@ -1,6 +1,3 @@
-/**
- * Created by fay on 2016/9/18.
- */
 BI.TreeLabelView = BI.inherit(BI.Widget, {
     _constant: {
         LIST_LABEL_HEIGHT: 40,
@@ -18,7 +15,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.TreeLabelView.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
         this.container = BI.createWidget();
         this.items = [];
         this._initView();
@@ -132,8 +128,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     },
 
     updateView: function (items, floor) {
-        var self = this,
-            updateList = this.items.slice(floor + 1),
+        var updateList = this.items.slice(floor + 1),
             values = items.slice(floor + 1);
         for (var i = 0; i < updateList.length; i++) {
             if (BI.isNull(values[i])) {
@@ -172,9 +167,9 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
 
     refreshView: function (data) {
         data.titles && this._setTitles(BI.isEmpty(data.titles) ? [{
-            text: BI.i18nText("BI-Tree_Label_Con") + BI.i18nText("BI-Colon"),
-            title: BI.i18nText("BI-Tree_Label_Con")
-        }] : data.titles);
+                text: BI.i18nText("BI-Tree_Label_Con") + BI.i18nText("BI-Colon"),
+                title: BI.i18nText("BI-Tree_Label_Con")
+            }] : data.titles);
         data.items && this._setItems(BI.isEmpty(data.items) ? [[]] : data.items);
     },
 
