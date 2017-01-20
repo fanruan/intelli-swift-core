@@ -10,7 +10,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 
 
 public class DateNotInRangeFilterValue extends DateRangeFilterValue {
@@ -62,7 +62,7 @@ public class DateNotInRangeFilterValue extends DateRangeFilterValue {
     }
 
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         return false;
     }
 }

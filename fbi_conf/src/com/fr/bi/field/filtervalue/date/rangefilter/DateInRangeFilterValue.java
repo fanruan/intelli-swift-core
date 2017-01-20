@@ -4,7 +4,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 
 public class DateInRangeFilterValue extends DateRangeFilterValue {
 
@@ -41,7 +41,7 @@ public class DateInRangeFilterValue extends DateRangeFilterValue {
     }
 
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         return false;
     }
 }

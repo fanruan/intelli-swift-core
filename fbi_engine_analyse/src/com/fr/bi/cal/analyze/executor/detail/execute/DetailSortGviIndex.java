@@ -64,7 +64,8 @@ public class DetailSortGviIndex {
         }
     }
 
-    public GroupValueIndex createSortedGVI(GroupValueIndex filterGvi, int leftCount){
+    public GroupValueIndex createSortedGVI(int leftCount){
+        GroupValueIndex filterGvi = this.filterGVI;
         if (filterGvi.getRowsCountWithData() == 0) {
             return null;
         }

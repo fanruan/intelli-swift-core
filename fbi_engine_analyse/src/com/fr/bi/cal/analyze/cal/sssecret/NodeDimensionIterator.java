@@ -2,17 +2,15 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 public interface NodeDimensionIterator {
 
-    public void moveNext();
+    void moveNext();
 
-    public GroupConnectionValue next();
+    GroupConnectionValue next();
 
+    void pageEnd();
 
-    public void PageEnd();
+    boolean hasPrevious();
 
+    boolean hasNext();
 
-    public boolean hasPrevious();
-
-    public boolean hasNext();
-
-    public int getPageIndex();
+    int getPageIndex();
 }

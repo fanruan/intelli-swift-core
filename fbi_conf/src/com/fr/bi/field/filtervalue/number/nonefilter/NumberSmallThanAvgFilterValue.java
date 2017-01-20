@@ -6,8 +6,8 @@ import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
 
 
 public class NumberSmallThanAvgFilterValue extends NumberNoneValueFilterValue implements NFilterValue {
@@ -28,8 +28,8 @@ public class NumberSmallThanAvgFilterValue extends NumberNoneValueFilterValue im
      * @return 是否显示
      */
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        LightNode parentNode = node.getParent();
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+        BINode parentNode = node.getParent();
         double nline = parentNode.getChildAVGValue(targetKey);
         //FIXME 不存在的值怎么处理呢
         Number targetValue = node.getSummaryValue(targetKey);

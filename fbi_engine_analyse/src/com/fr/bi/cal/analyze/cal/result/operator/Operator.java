@@ -1,24 +1,18 @@
 package com.fr.bi.cal.analyze.cal.result.operator;
 
 
-import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.IRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
 
-import java.util.concurrent.ExecutorService;
-
 public interface Operator {
 
-    public NodeDimensionIterator[] getPageIterator(IRootDimensionGroup[] roots, NodeExpander expander);
+    NodeDimensionIterator getPageIterator(IRootDimensionGroup root);
 
-    public boolean isPageEnd();
+    boolean isPageEnd();
 
-    public void addRow();
+    void addRow();
 
-    public void setStartCount(int count);
+    int getCount();
 
-    public int getCount();
-
-    public ExecutorService get();
 
 }

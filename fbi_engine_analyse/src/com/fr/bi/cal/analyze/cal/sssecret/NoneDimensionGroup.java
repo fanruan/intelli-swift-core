@@ -1,17 +1,19 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.cal.Executor.ExecutorPartner;
-import com.fr.bi.cal.analyze.cal.result.MemNode;
-import com.fr.bi.cal.analyze.cal.result.NewRootNodeChild;
+import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.common.inter.Release;
+import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.report.result.TargetCalculator;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -21,20 +23,17 @@ import com.fr.bi.stable.report.result.TargetCalculator;
  * @author Daniel
  *         分页机制，使用另外一个线程来判断计算当前已经计算了多少结果了 并取数
  */
-public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implements Release {
+public class NoneDimensionGroup implements Release {
 
     public final static NoneDimensionGroup NULL = new NoneDimensionGroup();
-    protected volatile Node node;
 
-    //当前计算的那个表的指标
-    protected BusinessTable tableKey;
-
-    protected ICubeDataLoader loader;
-
-    protected volatile boolean isPageFinished = false;
-
-    private  MemNode tempNode;
-
+    private BusinessTable[] metrics;
+    private List<TargetAndKey>[] summaryLists;
+    private GroupValueIndex[] gvis;
+    private ICubeTableService[] tis;
+    private Map summaryValue;
+    private ICubeDataLoader loader;
+    private List<Node> children;
 
     protected NoneDimensionGroup() {
     }
@@ -43,75 +42,41 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     /**
      * Group计算的构造函数
      */
-    protected NoneDimensionGroup(BusinessTable tableKey, GroupValueIndex gvi, ICubeDataLoader loader) {
+    protected NoneDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader, Map summaryValue) {
+        this(metrics, summaryLists, tis, gvis, loader);
+        this.summaryValue = summaryValue;
+    }
+
+    protected NoneDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader) {
+        this.metrics = metrics;
+        this.summaryLists = summaryLists;
+        this.tis = tis;
+        this.gvis = gvis;
         this.loader = loader;
-        this.tableKey = tableKey;
-        initRoot(gvi);
-    }
-
-    protected NoneDimensionGroup(BusinessTable tableKey, MemNode node, ICubeDataLoader loader) {
-        this.loader = loader;
-        this.tableKey = tableKey;
-        this.tempNode = node;
-        initRoot(node.getGroupValueIndex());
-    }
-
-    public static NoneDimensionGroup createDimensionGroup(final BusinessTable tableKey, final GroupValueIndex gvi, final ICubeDataLoader loader) {
-
-
-        return new NoneDimensionGroup(tableKey, gvi, loader);
-    }
-
-    public static NoneDimensionGroup createDimensionGroup(final BusinessTable tableKey, MemNode node, final ICubeDataLoader loader) {
-
-
-        return new NoneDimensionGroup(tableKey, node, loader);
     }
 
 
-    protected void initRoot(GroupValueIndex gvi) {
-        node = new Node(null, null);
-        node.setGroupValueIndex(gvi);
-        isPageFinished = true;
+
+    public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader) {
+        return new NoneDimensionGroup(metrics, summaryLists, tis, gvis, loader);
     }
 
-    /**
-     * 暂时去掉多线程
-     *
-     * @param key
-     * @return
-     */
-    public Number getSummaryValue(TargetCalculator key) {
-        return new NodeSummaryCalculator(getLoader()).getNodeSummary(node, key);
+    public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, GroupValueIndex[] gvis, Map summaryValue, ICubeDataLoader loader) {
+        return new NoneDimensionGroup(metrics, summaryLists, tis, gvis, loader, summaryValue);
     }
 
 
-    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, DimensionCalculator ck, Object[] data, int ckIndex, ICubeValueEntryGetter getter, boolean useRealData) {
-        if(ckIndex == 0){
-            pck = null;
-        }
-        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, getter, node.getGroupValueIndex(), loader, useRealData);
-    }
-
-    public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, DimensionCalculator ck, Object[] data, int ckIndex, ICubeValueEntryGetter getter, GroupValueIndex gvi, boolean useRealData) {
-        if(ckIndex == 0){
-            pck = null;
-        }
-        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, getter, gvi, loader, useRealData);
+    public SingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, MergeIteratorCreator mergeIteratorCreator, boolean useRealData) {
+        return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
     }
 
 
-    /**
-     * 计算根节点 第一个维度 用于分页
-     *
-     * @return 分页的node
-     */
-    public Node getRoot() {
-        return node;
+    public SingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, MergeIteratorCreator mergeIteratorCreator, GroupValueIndex[] gvis, boolean useRealData) {
+        return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
     }
 
-    public LightNode getLightNode() {
-        return node;
+    public ISingleDimensionGroup createNodeSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, MergeIteratorCreator mergeIteratorCreator, List<Node> metricMergeResultList, TargetAndKey sortTarget, int sortIndex, int sortType, DimensionFilter filter) {
+        return NodeSingleDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, metricMergeResultList, sortTarget, sortIndex, sortType, filter);
     }
 
     /**
@@ -122,22 +87,31 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 //        root.release();
     }
 
-    public int getCurrentTotalRow() {
-        return 1;
+    public List<TargetAndKey>[] getSummaryLists() {
+        return summaryLists;
     }
 
-    public BusinessTable getTableKey() {
-        return tableKey;
+    public GroupValueIndex[] getGvis() {
+        return gvis;
+    }
+
+    public ICubeTableService[] getTis() {
+        return tis;
     }
 
     public ICubeDataLoader getLoader() {
         return loader;
     }
 
-    public void releaseMemNode(){
-        if (this.tempNode != null){
-            tempNode.release();
-            tempNode = null;
-        }
+    public Map getSummaryValue() {
+        return summaryValue;
+    }
+
+    public List<Node> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Node> children) {
+        this.children = children;
     }
 }
