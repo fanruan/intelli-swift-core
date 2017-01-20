@@ -48,11 +48,79 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         this.vPage = 1;
         this.hPage = 1;
         var tableStyle = this.model.getTableForm();
+        var publicAttr = {
+            type: "bi.page_table",
+            isNeedFreeze: null,
+            summaryCellStyleGetter: function (isLast) {
+                return {
+                    backgroundColor: isLast ? "#1E90FF" : "#6495ED",
+                    color: "#ffffff"
+                }
+            },
+            sequenceCellStyleGetter: function (index) {
+                return {
+                    backgroundColor: index % 2 ? "#87CEFA" : "#E1FFFF",
+                    color: "#1a1a1a"
+                }
+            },
+            headerCellStyleGetter: function () {
+                return {
+                    backgroundColor: "#6A5ACD",
+                    color: "#ffffff"
+                }
+            },
+            mergeRule: function (col1, col2) {
+                if (col1.tag && col2.tag) {
+                    return col1.tag === col2.tag;
+                }
+                return col1 === col2;
+            },
+            itemsCreator: function (op, populate) {
+                var vPage = op.vpage, hPage = op.hpage;
+                var pageOperator = self.model.getPageOperatorByPages(vPage, hPage, self.vPage, self.hPage);
+                self.hPage = hPage;
+                self.vPage = vPage;
+                self.model.setPageOperator(pageOperator);
+                self._onPageChange(function (items, header, crossItems, crossHeader) {
+                    populate(items, header, crossItems, crossHeader);
+                })
+            },
+            pager: {
+                pages: false,
+                curr: 1,
+                firstPage: 1,
+                horizontal: {
+                    pages: false, //总页数
+                    curr: 1, //初始化当前页， pages为数字时可用
+                    hasPrev: function () {
+                        return self.model.getPage()[2] === 1;
+                    },
+                    hasNext: function () {
+                        return self.model.getPage()[3] === 1;
+                    },
+                    firstPage: 1,
+                    lastPage: BI.emptyFn
+                },
+                vertical: {
+                    pages: false, //总页数
+                    curr: 1, //初始化当前页， pages为数字时可用
+                    hasPrev: function () {
+                        return self.model.getPage()[0] === 1;
+                    },
+                    hasNext: function () {
+                        return self.model.getPage()[1] === 1;
+                    },
+                    firstPage: 1,
+                    lastPage: BI.emptyFn
+                }
+            },
+            isNeedMerge: true,
+            regionColumnSize: this.model.getStoredRegionColumnSize()
+        };
         switch (tableStyle) {
             case BICst.TABLE_FORM.OPEN_COL:
                 this.tableForm = BICst.TABLE_FORM.OPEN_COL;
-                this.table = BI.createWidget({
-                    type: "bi.page_table",
+                this.table = BI.createWidget(publicAttr, {
                     el: {
                         type: "bi.sequence_table",
                         el: {
@@ -70,68 +138,12 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                         sequence: {
                             type: "bi.sequence_table_tree_number"
                         }
-                    },
-                    isNeedFreeze: null,
-                    mergeRule: function (col1, col2) {
-                        if (col1.tag && col2.tag) {
-                            return col1.tag === col2.tag;
-                        }
-                        return col1 === col2;
-                    },
-                    itemsCreator: function (op, populate) {
-                        var vPage = op.vpage, hPage = op.hpage;
-                        var pageOperator = self.model.getPageOperatorByPages(vPage, hPage, self.vPage, self.hPage);
-                        self.hPage = hPage;
-                        self.vPage = vPage;
-                        self.model.setPageOperator(pageOperator);
-                        self._onPageChange(function (items, header, crossItems, crossHeader) {
-                            populate(items, header, crossItems, crossHeader);
-                        })
-                    },
-                    pager: {
-                        pages: false,
-                        curr: 1,
-                        firstPage: 1,
-                        horizontal: {
-                            pages: false, //总页数
-                            curr: 1, //初始化当前页， pages为数字时可用
-                            hasPrev: function () {
-                                return self.model.getPage()[2] === 1;
-                            },
-                            hasNext: function () {
-                                return self.model.getPage()[3] === 1;
-                            },
-                            firstPage: 1,
-                            lastPage: BI.emptyFn
-                        },
-                        vertical: {
-                            pages: false, //总页数
-                            curr: 1, //初始化当前页， pages为数字时可用
-                            hasPrev: function () {
-                                return self.model.getPage()[0] === 1;
-                            },
-                            hasNext: function () {
-                                return self.model.getPage()[1] === 1;
-                            },
-                            firstPage: 1,
-                            lastPage: BI.emptyFn
-                        }
-                    },
-                    isNeedMerge: true,
-                    regionColumnSize: this.model.getStoredRegionColumnSize()
+                    }
                 });
                 break;
             default :
                 this.tableForm = BICst.TABLE_FORM.OPEN_ROW;
-                this.table = BI.createWidget({
-                    type: "bi.page_table",
-                    isNeedFreeze: null,
-                    mergeRule: function (col1, col2) {
-                        if (col1.tag && col2.tag) {
-                            return col1.tag === col2.tag;
-                        }
-                        return col1 === col2;
-                    },
+                this.table = BI.createWidget(publicAttr, {
                     el: {
                         type: "bi.sequence_table",
                         el: {
@@ -149,60 +161,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                         sequence: {
                             type: "bi.sequence_table_dynamic_number"
                         }
-                    },
-                    itemsCreator: function (op, populate) {
-                        var vPage = op.vpage, hPage = op.hpage;
-                        var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                        if (vPage > self.vPage) {
-                            pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
-                        }
-                        if (vPage < self.vPage) {
-                            pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
-                        }
-                        if (hPage > self.hPage) {
-                            pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                        }
-                        if (hPage < self.hPage) {
-                            pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
-                        }
-                        self.hPage = hPage;
-                        self.vPage = vPage;
-                        self.model.setPageOperator(pageOperator);
-                        self._onPageChange(function (items, header, crossItems, crossHeader) {
-                            populate(items, header, crossItems, crossHeader);
-                        });
-                    },
-                    pager: {
-                        pages: false,
-                        curr: 1,
-                        firstPage: 1,
-                        horizontal: {
-                            pages: false, //总页数
-                            curr: 1, //初始化当前页， pages为数字时可用
-                            hasPrev: function () {
-                                return self.model.getPage()[2] === 1;
-                            },
-                            hasNext: function () {
-                                return self.model.getPage()[3] === 1;
-                            },
-                            firstPage: 1,
-                            lastPage: BI.emptyFn
-                        },
-                        vertical: {
-                            pages: false, //总页数
-                            curr: 1, //初始化当前页， pages为数字时可用
-                            hasPrev: function () {
-                                return self.model.getPage()[0] === 1;
-                            },
-                            hasNext: function () {
-                                return self.model.getPage()[1] === 1;
-                            },
-                            firstPage: 1,
-                            lastPage: BI.emptyFn
-                        }
-                    },
-                    isNeedMerge: true,
-                    regionColumnSize: this.model.getStoredRegionColumnSize()
+                    }
                 });
                 break;
         }
@@ -383,6 +342,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         this.table.setWidth(this.element.width());
         this.table.setHeight(this.element.height());
         this.table.attr("isNeedFreeze", true);
+        this.table.attr("showSequence", this.model.isShowNumber());
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());

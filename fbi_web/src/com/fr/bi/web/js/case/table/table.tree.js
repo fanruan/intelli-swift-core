@@ -20,9 +20,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
 
             isNeedMerge: true,//是否需要合并单元格
             mergeCols: [],
-            mergeRule: function (row1, row2) { //合并规则, 默认相等时合并
-                return row1 === row2;
-            },
+            mergeRule: BI.emptyFn,
 
             columnSize: [],
             minColumnSize: [],
@@ -31,6 +29,10 @@ BI.TableTree = BI.inherit(BI.Widget, {
             rowSize: 25,
 
             regionColumnSize: [],
+
+            headerCellStyleGetter: BI.emptyFn,
+            summaryCellStyleGetter: BI.emptyFn,
+            sequenceCellStyleGetter: BI.emptyFn,
 
             header: [],
             items: [],
@@ -53,10 +55,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
     _init: function () {
         BI.TableTree.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var deep = this._getHDeep();
-        var vDeep = this._getVDeep();
-        var header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
-        var items = BI.TableTree.formatItems(o.items, deep);
+        var data = this._digest();
         this.table = BI.createWidget(o.el, {
             type: "bi.resizable_table",
             element: this.element,
@@ -80,8 +79,12 @@ BI.TableTree = BI.inherit(BI.Widget, {
 
             regionColumnSize: o.regionColumnSize,
 
-            header: header,
-            items: items
+            headerCellStyleGetter: o.headerCellStyleGetter,
+            summaryCellStyleGetter: o.summaryCellStyleGetter,
+            sequenceCellStyleGetter: o.sequenceCellStyleGetter,
+
+            header: data.header,
+            items: data.items
         });
         this.table.on(BI.Table.EVENT_TABLE_SCROLL, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
@@ -96,6 +99,18 @@ BI.TableTree = BI.inherit(BI.Widget, {
             o.columnSize = this.getColumnSize();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
+    },
+
+    _digest: function () {
+        var self = this, o = this.options;
+        var deep = this._getHDeep();
+        var vDeep = this._getVDeep();
+        var header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep, o.headerCellStyleGetter);
+        var items = BI.TableTree.formatItems(o.items, deep, false, op.summaryCellStyleGetter);
+        return {
+            header: header,
+            items: items
+        }
     },
 
     setWidth: function (width) {
@@ -173,11 +188,8 @@ BI.TableTree = BI.inherit(BI.Widget, {
         if (crossHeader) {
             o.crossHeader = crossHeader;
         }
-        var deep = this._getHDeep();
-        var vDeep = this._getVDeep();
-        header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
-        items = BI.TableTree.formatItems(o.items, deep);
-        this.table.populate(items, header);
+        var data = this._digest();
+        this.table.populate(data.items, data.header);
     },
 
     destroy: function () {
@@ -187,8 +199,8 @@ BI.TableTree = BI.inherit(BI.Widget, {
 });
 
 BI.extend(BI.TableTree, {
-    formatHeader: function (header, crossHeader, crossItems, hDeep, vDeep) {
-        var items = BI.TableTree.formatCrossItems(crossItems, vDeep);
+    formatHeader: function (header, crossHeader, crossItems, hDeep, vDeep, styleGetter) {
+        var items = BI.TableTree.formatCrossItems(crossItems, vDeep, styleGetter);
         var result = [];
         BI.each(items, function (row, node) {
             var c = [];
@@ -203,7 +215,7 @@ BI.extend(BI.TableTree, {
         return result;
     },
 
-    formatItems: function (nodes, deep, isCross) {
+    formatItems: function (nodes, deep, isCross, styleGetter) {
         var self = this;
         var result = [];
 
@@ -227,8 +239,13 @@ BI.extend(BI.TableTree, {
                     next = [];
                 }
                 if (/**(store == -1 || node.children.length > 1) &&**/ BI.isNotEmptyArray(node.values)) {
-                    var cls = store === -1 ? " last" : "";
-                    var summary = {text: BI.i18nText("BI-Summary_Values"), cls: "summary-cell" + cls};
+                    var summary = {
+                        text: BI.i18nText("BI-Summary_Values"),
+                        type: "bi.table_style_cell",
+                        styleGetter: function () {
+                            return styleGetter(store === -1)
+                        }
+                    };
                     for (var i = next.length; i < deep; i++) {
                         next.push(summary);
                     }
@@ -284,8 +301,8 @@ BI.extend(BI.TableTree, {
         return result;
     },
 
-    formatCrossItems: function (nodes, deep) {
-        var items = BI.TableTree.formatItems(nodes, deep, true);
+    formatCrossItems: function (nodes, deep, styleGetter) {
+        var items = BI.TableTree.formatItems(nodes, deep, true, styleGetter);
         return BI.unzip(items);
     },
 

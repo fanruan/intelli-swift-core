@@ -22,16 +22,18 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
 
             isNeedMerge: true,//是否需要合并单元格
             mergeCols: [],
-            mergeRule: function (row1, row2) { //合并规则, 默认相等时合并
-                return row1 === row2;
-            },
+            mergeRule: BI.emptyFn,
 
             columnSize: [],
             headerRowSize: 25,
             footerRowSize: 25,
             rowSize: 25,
 
-            regionColumnSize: false,
+            regionColumnSize: [],
+
+            headerCellStyleGetter: BI.emptyFn,
+            summaryCellStyleGetter: BI.emptyFn,
+            sequenceCellStyleGetter: BI.emptyFn,
 
             header: [],
             footer: false,
@@ -77,6 +79,10 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
 
             regionColumnSize: o.regionColumnSize,
 
+            headerCellStyleGetter: o.headerCellStyleGetter,
+            summaryCellStyleGetter: o.summaryCellStyleGetter,
+            sequenceCellStyleGetter: o.sequenceCellStyleGetter,
+
             header: data.header,
             items: data.items
         });
@@ -99,8 +105,8 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
         var o = this.options;
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        var header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
-        var items = BI.DynamicSummaryTreeTable.formatHorizontalItems(o.items, deep);
+        var header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep, o.headerCellStyleGetter);
+        var items = BI.DynamicSummaryTreeTable.formatHorizontalItems(o.items, deep, false, o.summaryCellStyleGetter);
         var data = BI.DynamicSummaryTreeTable.formatSummaryItems(items, header, o.crossItems, deep);
         var columnSize = o.columnSize.slice();
         var minColumnSize = o.minColumnSize.slice();
@@ -129,7 +135,6 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
 
     setColumnSize: function (columnSize) {
         this.options.columnSize = columnSize;
-        // this.table.setColumnSize(columnSize);
     },
 
     getColumnSize: function () {
@@ -212,7 +217,7 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
 
 BI.extend(BI.DynamicSummaryTreeTable, {
 
-    formatHorizontalItems: function (nodes, deep, isCross) {
+    formatHorizontalItems: function (nodes, deep, isCross, styleGetter) {
         var result = [];
 
         function track(store, node) {
@@ -235,8 +240,13 @@ BI.extend(BI.DynamicSummaryTreeTable, {
                     next = [];
                 }
                 if ((store == -1 || node.children.length > 1) && BI.isNotEmptyArray(node.values)) {
-                    var cls = store === -1 ? " last" : "";
-                    var summary = {text: BI.i18nText("BI-Summary_Values"), cls: "summary-cell" + cls};
+                    var summary = {
+                        text: BI.i18nText("BI-Summary_Values"),
+                        type: "bi.table_style_cell",
+                        styleGetter: function () {
+                            return styleGetter(store === -1)
+                        }
+                    };
                     for (var i = next.length; i < deep; i++) {
                         next.push(summary);
                     }
