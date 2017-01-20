@@ -261,7 +261,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 BI.each(widgetValue, function (name, children) {
                     var childNodes = getChildrenNode(children);
                     text += name + (childNodes === "" ? "" : (":" + childNodes)) + "; ";
-                    if (childNodes === BICst.LIST_LABEL_TYPE.ALL) {
+                    if (childNodes === BICst.LIST_LABEL_TYPE.ALL || name === BICst.LIST_LABEL_TYPE.ALL) {
                         text = "";
                     }
                 });

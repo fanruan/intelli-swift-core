@@ -311,15 +311,14 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         for (var i = 0; i < items.length; i++) {
             BI.each(accumulations, function (idx, accumulation) {
                 BI.each(items[i], function (id, data) {
-                    data.isNew = true;
                     if (BI.contains(accumulation.items, data.name)) {
                         data.stack = accumulation.stack;
-                        data.isNew = false;
+                        data.isStack = true;
                     }
                 })
             })
             BI.each(items[i], function (id, data) {
-                if (data.isNew) {
+                if (!data.isStack) {
                     data.stack = accumulations[0].stack;
                 }
             })

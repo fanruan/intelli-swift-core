@@ -38,15 +38,24 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         var self = this, o = this.options;
-        var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId);
+        var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId),
+            titles = [],
+            data = {
+                floors: 0,
+                selectedValues: v,
+                parentValues: [{
+                    id: "",
+                    value: []
+                }]
+            };
         if (BI.isEmptyArray(dimensions)) {
-            return self.treeLabel.populate({
+            self.treeLabel.populate({
                 items: [],
-                titles: [],
-                selectedValue: v
+                titles: []
             });
+            self.treeLabel.setValue(v);
+            return;
         }
-        var titles = [];
         BI.each(dimensions, function (idx, dId) {
             var temp = BI.Utils.getDimensionNameByID(dId);
             titles.push({
@@ -54,20 +63,13 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
                 title: temp
             })
         });
-        var data = {};
-        data.floors = 0;
-        data.selectedValues = v;
-        data.parentValues = [{
-            id: "",
-            value: []
-        }];
         BI.Utils.getWidgetDataByID(o.wId, {
             success: function (jsonData) {
                 self.treeLabel.populate({
                     items: jsonData.items,
-                    titles: titles,
-                    selectedValue: v
+                    titles: titles
                 });
+                self.treeLabel.setValue(v);
             }
         }, {tree_options: data});
     },
