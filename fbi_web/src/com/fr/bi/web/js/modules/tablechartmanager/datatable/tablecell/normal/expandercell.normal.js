@@ -98,6 +98,10 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 bottom: 0
             }]
         });
+
+        if (BI.isNotNull(o.styles) && BI.isObject(o.styles)) {
+            this.element.css(o.styles);
+        }
     },
 
     /**
