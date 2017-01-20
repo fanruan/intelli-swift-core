@@ -20,9 +20,7 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
             rowSize: 25,
             isNeedMerge: true,//是否需要合并单元格
             mergeCols: [],
-            mergeRule: function (row1, row2) { //合并规则, 默认相等时合并
-                return row1 === row2;
-            },
+            mergeRule: BI.emptyFn,
             columnSize: [],
             freezeCols: [],
             header: [],
@@ -54,15 +52,7 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
             freezeCols: o.freezeCols,
             isNeedMerge: o.isNeedMerge,
             mergeCols: o.mergeCols,
-            mergeRule: function (row1, row2) {
-                if (row1.type === "bi.resizable_table_cell") {
-                    row1 = row1.cell;
-                }
-                if (row2.type === "bi.resizable_table_cell") {
-                    row2 = row2.cell;
-                }
-                return o.mergeRule(row1, row2);
-            },
+            mergeRule: BI.bind(this._mergeRule, this),
 
             header: this._formatHeader(o.header),
             items: o.items,
@@ -86,6 +76,17 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
             }]
         });
         this._populate();
+    },
+
+    _mergeRule: function (row1, row2) {
+        var o = this.options;
+        if (row1.type === "bi.resizable_table_cell") {
+            row1 = row1.cell;
+        }
+        if (row2.type === "bi.resizable_table_cell") {
+            row2 = row2.cell;
+        }
+        return o.mergeRule(row1, row2);
     },
 
     _createResizerHandler: function () {
@@ -209,9 +210,7 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
     _formatHeader: function (header) {
         var self = this, o = this.options;
         var result = [];
-        var startDrag = false;
         var resize = function (j, size) {
-            startDrag = true;
             self.resizer.setVisible(true);
             var height = o.headerRowSize + self._getRegionRowSize()[1];
             self.resizer.setHeight(height);
@@ -219,16 +218,12 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
             self._setResizerPosition(self._getResizerLeft(j) + size, (o.header.length - 1) * o.headerRowSize);
         };
         var stop = function (j, size) {
-            if (startDrag === true) {
-                self.resizer.setVisible(false);
-                o.columnSize[j] = size;
-                self.table.setColumnSize(o.columnSize);
-                // self.table.clear();
-                self.table.populate();
-                self._populate();
-                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
-                startDrag = false;
-            }
+            self.resizer.setVisible(false);
+            o.columnSize[j] = size;
+            self.table.setColumnSize(o.columnSize);
+            self.table.populate();
+            self._populate();
+            self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE);
         };
         BI.each(header, function (i, cols) {
             if (i === header.length - 1) {
@@ -242,6 +237,18 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
                             cell: col,
                             resize: BI.bind(resize, null, j),
                             stop: BI.bind(stop, null, j)
+                        };
+                        if (o.isNeedMerge) {
+                            var r = i;
+                            while (r > 0 && self._mergeRule(result[r][j], result[r - 1][j])) {
+                                result[r - 1][j] = {
+                                    type: "bi.resizable_table_cell",
+                                    cell: result[r - 1][j],
+                                    resize: BI.bind(resize, null, j),
+                                    stop: BI.bind(stop, null, j)
+                                };
+                                r--;
+                            }
                         }
                     }
                 });
