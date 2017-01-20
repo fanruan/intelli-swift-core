@@ -3584,7 +3584,6 @@
         return filter;
         //日期偏移值
         function getOffSetDateByDateAndValue(date, value) {
-            var tool = new BI.ParamPopupView();
             var type = value.type, value = value.value;
             var fPrevOrAfter = value.foffset === 0 ? -1 : 1;
             var sPrevOrAfter = value.soffset === 0 ? -1 : 1;
@@ -3598,8 +3597,8 @@
                     break;
                 case BICst.YEAR_QUARTER:
                     ydate = new Date().getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
-                    start = new Date().getQuarterStartDate(ydate);
-                    end = new Date().getQuarterEndDate(ydate);
+                    start = ydate.getQuarterStartDate();
+                    end = ydate.getQuarterEndDate();
                     break;
                 case BICst.YEAR_MONTH:
                     ydate = new Date().getOffsetMonth(ydate, sPrevOrAfter * value.svalue);

@@ -88,8 +88,8 @@ BI.ParamPopupView = BI.inherit(BI.Widget, {
                 break;
             case BICst.YEAR_QUARTER:
                 ydate = new Date().getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
-                start = new Date().getQuarterStartDate(ydate);
-                end = new Date().getQuarterEndDate(ydate);
+                start = ydate.getQuarterStartDate();
+                end = ydate.getQuarterEndDate();
                 break;
             case BICst.YEAR_MONTH:
                 ydate = new Date().getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
