@@ -437,7 +437,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
     },
 
     empty: function () {
-        BI.AbstractTable.superclass.empty.apply(this, arguments);
+        BI.GroupTable.superclass.empty.apply(this, arguments);
         if (BI.isNotNull(this.table)) {
             this.table.empty();
         }
