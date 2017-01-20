@@ -38,8 +38,8 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task"));
-        logger.info(BILogHelper.logCubeGeneratingTableSourceInfoByTableSourceID(tableSource.getSourceID()));
+        logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
+                BILogHelper.logCubeGeneratingTableSourceInfoByTableSourceID(tableSource.getSourceID())));
         tableEntityService.recordCurrentExecuteTime();
         long t = System.currentTimeMillis();
         try {

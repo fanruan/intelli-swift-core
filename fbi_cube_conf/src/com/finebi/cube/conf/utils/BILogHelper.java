@@ -145,7 +145,7 @@ public class BILogHelper {
 
     public static Map<String, Set<String>> getReadOnlyBusinessTablesOfTableSourceMap() {
         HashMap<String, Set<String>> sourceMap = new HashMap<String, Set<String>>();
-        for (BusinessTable businessTable : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
+        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(UserControl.getInstance().getSuperManagerID())) {
             String sourceId = businessTable.getTableSource().getSourceID();
             if (sourceMap.containsKey(sourceId)) {
                 sourceMap.get(sourceId).add(businessTable.getID().getIdentityValue());
