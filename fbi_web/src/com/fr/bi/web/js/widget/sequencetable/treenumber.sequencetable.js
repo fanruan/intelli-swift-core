@@ -206,8 +206,12 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         this._nextState();
     },
 
-    _getMaxScrollTop: function (numbersLength) {
-        return Math.max(0, numbersLength * this.options.rowSize - (this.options.height - this._getHeaderHeight()) + BI.DOM.getScrollWidth());
+    _getMaxScrollTop: function (numbers) {
+        var cnt = 0;
+        BI.each(numbers, function (i, number) {
+            cnt += number.cnt;
+        });
+        return Math.max(0, cnt * this.options.rowSize - (this.options.height - this._getHeaderHeight()) + BI.DOM.getScrollWidth());
     },
 
     _calculateChildrenToRender: function () {
@@ -219,7 +223,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         BI.each(numbers, function (i, number) {
             intervalTree.set(i, number.height);
         });
-        var scrollTop = BI.clamp(o.scrollTop, 0, this._getMaxScrollTop(numbers.length));
+        var scrollTop = BI.clamp(o.scrollTop, 0, this._getMaxScrollTop(numbers));
         var index = intervalTree.greatestLowerBound(scrollTop);
         var offsetTop = -(scrollTop - (index > 0 ? intervalTree.sumTo(index - 1) : 0));
         var height = offsetTop;
