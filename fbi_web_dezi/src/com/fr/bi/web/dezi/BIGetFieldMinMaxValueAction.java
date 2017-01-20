@@ -1,5 +1,6 @@
 package com.fr.bi.web.dezi;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BusinessField;
@@ -8,6 +9,9 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.utils.BICollectionUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ErrorHandlerHelper;
 import com.fr.web.core.SessionDealWith;
@@ -41,8 +45,9 @@ public class BIGetFieldMinMaxValueAction extends AbstractBIDeziAction {
         JSONObject jo = new JSONObject();
         if (field.getFieldType() == DBConstant.COLUMN.NUMBER) {
             ICubeTableService ti = loader.getTableIndex(field.getTableBelongTo().getTableSource());
-            jo.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, ti != null ? ti.getMAXValue(loader.getFieldIndex(field)) : 0);
-            jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? ti.getMINValue(loader.getFieldIndex(field)) : 0);
+            ICubeColumnIndexReader reader = ti.loadGroup(new IndexKey(field.getFieldName()));
+            jo.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, ti != null ?  GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(reader)) : 0);
+            jo.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? GeneralUtils.objectToNumber(BICollectionUtils.firstUnNullKey(reader)) : 0);
         }
         loader.releaseCurrentThread();
         WebUtils.printAsJSON(res, jo);
