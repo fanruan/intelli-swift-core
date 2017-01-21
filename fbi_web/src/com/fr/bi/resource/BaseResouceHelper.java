@@ -1450,8 +1450,6 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/widget/pagetable/pagetable.js",
 
                 //带序号表格
-                "com/fr/bi/web/js/widget/sequencetable/numbercell.sequencetable.js",
-                "com/fr/bi/web/js/widget/sequencetable/titlecell.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/dynamicnumber.sequencetable.js",
