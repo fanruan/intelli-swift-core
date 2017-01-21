@@ -98,7 +98,6 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
                     this.renderedCells[index].top = top;
                     this.renderedCells[index].el.element.css("top", top + "px");
                 }
-                this.renderedCells[index].el.setText(this.start + i);
                 renderedCells.push(this.renderedCells[index]);
             } else {
                 var child = BI.createWidget(BI.extend({

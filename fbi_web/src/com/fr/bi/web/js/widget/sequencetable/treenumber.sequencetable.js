@@ -247,7 +247,6 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                     self.renderedCells[index].top = numbers[key].top;
                     self.renderedCells[index].el.element.css("top", numbers[key].top + "px");
                 }
-                self.renderedCells[index].el.setText(numbers[key].text);
                 renderedCells.push(self.renderedCells[index]);
             } else {
                 var child = BI.createWidget(BI.extend({
