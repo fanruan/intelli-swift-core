@@ -18,11 +18,16 @@ BIDezi.YearMonthWidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.YearMonthWidgetView.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
+        this.broadcasts = [];
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
-        });
+        }));
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        }));
     },
-
 
     _render: function (vessel) {
         var self = this;
@@ -57,11 +62,6 @@ BIDezi.YearMonthWidgetView = BI.inherit(BI.View, {
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
-            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
-                self.tools.setVisible(false);
-            }
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
@@ -193,7 +193,7 @@ BIDezi.YearMonthWidgetView = BI.inherit(BI.View, {
             isLayer: true
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
-        })
+        });
         BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
@@ -241,5 +241,12 @@ BIDezi.YearMonthWidgetView = BI.inherit(BI.View, {
         this._refreshLayout();
         this._buildWidgetTitle();
         this.combo.setValue(this.model.get("value"));
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });

@@ -18,14 +18,20 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         BIDezi.TreeListView.superclass._init.apply(this, arguments);
 
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
+        this.broadcasts = [];
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
-        });
+        }));
 
-        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function () {
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function () {
             // self.treeList.setValue(self.model.get("value"));
             self.treeList.populate();
-        });
+        }));
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        }));
     },
 
     _render: function (vessel) {
@@ -64,11 +70,6 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
-            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
-                self.tools.setVisible(false);
-            }
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
@@ -274,5 +275,12 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._checkDataBind();
         this.treeList.populate();
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });

@@ -10,6 +10,13 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
 
     _init: function () {
         BIDezi.ImageWidgetView.superclass._init.apply(this, arguments);
+        var self = this;
+        this._broadcasts = [];
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.image.element.parent().parent().parent().hasClass("selected")) {
+                self.image.setToolbarVisible(false);
+            }
+        }));
     },
 
     change: function (changed) {
@@ -43,11 +50,6 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
                 self.image.setToolbarVisible(false);
             }
         });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
-            if (!self.image.element.parent().parent().parent().hasClass("selected")) {
-                self.image.setToolbarVisible(false);
-            }
-        });
     },
 
     local: function () {
@@ -69,5 +71,12 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
             size: this.model.get("size"),
             src: this.model.get("src")
         });
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });

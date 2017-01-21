@@ -18,15 +18,16 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.NumberWidgetView.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
+        this.broadcasts = [];
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
-        });
-        //全局样式
-        // BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
-        //     self._refreshGlobalStyle(globalStyle);
-        // });
+        }));
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        }));
     },
-
 
     _render: function (vessel) {
         var self = this;
@@ -61,11 +62,6 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
-            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
-                self.tools.setVisible(false);
-            }
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
@@ -113,10 +109,10 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT,
-            title: function(){
-                if(BI.size(self.model.get("dimensions")) > 0){
+            title: function () {
+                if (BI.size(self.model.get("dimensions")) > 0) {
                     return BI.i18nText("BI-Detailed_Setting");
-                }else{
+                } else {
                     return BI.i18nText("BI-Please_Do_Detail_Setting");
                 }
             },
@@ -161,17 +157,6 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
         this.tools.setVisible(false);
     },
 
-    // _refreshGlobalStyle: function () {
-    //     this._refreshTitlePosition();
-    // },
-    //
-    // _refreshTitlePosition: function () {
-    //     var pos = BI.Utils.getGSNamePos();
-    //     var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-    //         "dashboard-title-center" : "dashboard-title-left";
-    //     this.title.element.removeClass("dashboard-title-left")
-    //         .removeClass("dashboard-title-center").addClass(cls);
-    // },
     _refreshLayout: function () {
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
@@ -214,14 +199,14 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
             isLayer: true
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
-        })
+        });
         BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
     _checkDataBind: function () {
-        if(BI.size(this.model.get("dimensions")) > 0){
+        if (BI.size(this.model.get("dimensions")) > 0) {
             this.combo.setEnable(true);
-        }else{
+        } else {
             this.combo.setEnable(false);
         }
     },
@@ -249,7 +234,7 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "value")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
-        if(BI.has(changed, "dimensions")){
+        if (BI.has(changed, "dimensions")) {
             this._checkDataBind();
             BI.Utils.broadcastAllWidgets2Refresh();
         }
@@ -276,5 +261,12 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
         // this._refreshTitlePosition();
         // this._refreshGlobalStyle();
         this.combo.setValue(this.model.get("value"));
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });

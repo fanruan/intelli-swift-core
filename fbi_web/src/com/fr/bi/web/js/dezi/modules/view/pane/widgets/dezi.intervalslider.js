@@ -14,15 +14,21 @@ BIDezi.IntervalSliderWidgetView = BI.inherit(BI.View, {
     },
     _init: function () {
         BIDezi.IntervalSliderWidgetView.superclass._init.apply(this, arguments);
-        var self = this, wId=this.model.get("id");
-        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX +wId, function (wid) {
-            if (wId !== wid){
+        var self = this, wId = this.model.get("id");
+        this.broadcasts = [];
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function (wid) {
+            if (wId !== wid) {
                 self.combo.populate();
             }
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
+        }));
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self._resetValue();
-        });
+        }));
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        }));
     },
 
     _render: function (vessel) {
@@ -59,11 +65,6 @@ BIDezi.IntervalSliderWidgetView = BI.inherit(BI.View, {
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
-            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
-                self.tools.setVisible(false);
-            }
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
@@ -243,5 +244,12 @@ BIDezi.IntervalSliderWidgetView = BI.inherit(BI.View, {
         this._refreshLayout();
         this._buildWidgetTitle();
         this.combo.populate();
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });

@@ -16,9 +16,15 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.TreeWidgetView.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
+        this.broadcasts = [];
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
-        });
+        }));
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        }));
     },
 
     _render: function (vessel) {
@@ -55,11 +61,6 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
-            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
-                self.tools.setVisible(false);
-            }
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
@@ -107,10 +108,10 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT,
-            title: function(){
-                if(BI.size(self.model.get("dimensions")) > 0){
+            title: function () {
+                if (BI.size(self.model.get("dimensions")) > 0) {
                     return BI.i18nText("BI-Detailed_Setting");
-                }else{
+                } else {
                     return BI.i18nText("BI-Please_Do_Detail_Setting");
                 }
             },
@@ -219,16 +220,16 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "value")) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
-        if(BI.has(changed, "dimensions")){
+        if (BI.has(changed, "dimensions")) {
             this._checkDataBind();
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },
 
     _checkDataBind: function () {
-        if(BI.size(this.model.get("dimensions")) > 0){
+        if (BI.size(this.model.get("dimensions")) > 0) {
             this.combo.setEnable(true);
-        }else{
+        } else {
             this.combo.setEnable(false);
         }
     },
@@ -260,6 +261,12 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._checkDataBind();
         this.combo.setValue(this.model.get("value"));
-    }
+    },
 
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
+    }
 });

@@ -10,6 +10,13 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
 
     _init: function () {
         BIDezi.ContentWidgetView.superclass._init.apply(this, arguments);
+        var self = this;
+        this._broadcasts = [];
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.element.parent().parent().hasClass("selected")) {
+                self.del.setVisible(false);
+            }
+        }));
     },
 
     change: function (changed) {
@@ -51,11 +58,6 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
                 self.del.setVisible(false);
             }
         });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
-            if (!vessel.parent().parent().parent().hasClass("selected")) {
-                self.del.setVisible(false);
-            }
-        });
 
         BI.createWidget({
             type: "bi.absolute",
@@ -91,5 +93,12 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
             style: this.model.get("style"),
             content: this.model.get("content")
         });
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });
