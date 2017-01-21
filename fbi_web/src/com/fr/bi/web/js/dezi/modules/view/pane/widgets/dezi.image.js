@@ -14,7 +14,6 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
 
     change: function (changed) {
         if (BI.has(changed, "bounds")) {
-            this.image.resize();
         }
     },
 
@@ -54,6 +53,11 @@ BIDezi.ImageWidgetView = BI.inherit(BI.View, {
     local: function () {
         if (this.model.has("expand")) {
             this.model.get("expand");
+            return true;
+        }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            this.image.resize();
             return true;
         }
         return false;

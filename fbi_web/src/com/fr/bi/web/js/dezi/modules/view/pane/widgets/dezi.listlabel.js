@@ -21,7 +21,6 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
         });
     },
 
-
     _render: function (vessel) {
         var self = this;
         this._buildWidgetTitle();
@@ -219,7 +218,6 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
 
     change: function (changed, prev, context, options) {
         if (BI.has(changed, "bounds")) {
-            this._refreshLayout();
         }
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
@@ -231,6 +229,11 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
         if (this.model.has("expand")) {
             this.model.get("expand");
             this._expandWidget();
+            return true;
+        }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            this._refreshLayout();
             return true;
         }
         return false;

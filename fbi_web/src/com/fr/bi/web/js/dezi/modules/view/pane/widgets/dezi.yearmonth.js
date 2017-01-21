@@ -216,7 +216,6 @@ BIDezi.YearMonthWidgetView = BI.inherit(BI.View, {
 
     change: function (changed, prev, context, options) {
         if (BI.has(changed, "bounds")) {
-            this._refreshLayout();
         }
 
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
@@ -228,6 +227,11 @@ BIDezi.YearMonthWidgetView = BI.inherit(BI.View, {
         if (this.model.has("expand")) {
             this.model.get("expand");
             this._expandWidget();
+            return true;
+        }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            this._refreshLayout();
             return true;
         }
         return false;

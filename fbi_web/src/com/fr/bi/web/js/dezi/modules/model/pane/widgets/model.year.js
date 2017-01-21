@@ -48,6 +48,10 @@ BIDezi.YearWidgetModel = BI.inherit(BI.Model, {
             this.get("expand");
             return true;
         }
+        if (this.has("layout")) {
+            this.get("layout");
+            return true;
+        }
         return false;
     },
 

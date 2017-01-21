@@ -64,6 +64,14 @@ BIDezi.QueryView = BI.inherit(BI.View, {
     },
 
     local: function () {
+        if (this.model.has("expand")) {
+            this.model.get("expand");
+            return true;
+        }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            return true;
+        }
         return false;
     }
 });

@@ -204,12 +204,24 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         this._refreshButtons();
     },
 
+    _notifyChildrenThatLayoutHasChange: function () {
+        var self = this;
+        //通知子组件布局发生了变化
+        BI.each(this.cat("widgets"), function (id, widget) {
+            var type = self.model.get("childType", widget.type);
+            self.skipTo(id + "/" + type, id, {
+                layout: true
+            });
+        });
+    },
+
     local: function () {
         var self = this;
         if (this.model.has("dashboard")) {
             var dashboard = this.model.get("dashboard");
             //不刷新子组件
             this._refreshWidgets(false);
+            this._notifyChildrenThatLayoutHasChange();
             return true;
         }
         if (this.model.has("addWidget")) {

@@ -77,6 +77,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
         this.layout.attr("items", items);
         this.layout.resize();
         this.container.setHeight(o.items.length * o.rowSize);
+        this.scrollContainer.element.scrollTop(o.scrollTop);
     },
 
     _calculateChildrenToRender: function () {

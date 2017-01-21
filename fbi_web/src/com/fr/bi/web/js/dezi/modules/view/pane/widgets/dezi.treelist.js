@@ -226,8 +226,7 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
             this.treeList.populate();
         }
         if (BI.has(changed, "bounds")) {
-            this._refreshLayout();
-            this.treeList.resize();
+
         }
 
         if (BI.has(changed, "value")) {
@@ -259,6 +258,12 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
         if (this.model.has("expand")) {
             this.model.get("expand");
             this._expandWidget();
+            return true;
+        }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            this._refreshLayout();
+            this.treeList.resize();
             return true;
         }
         return false;

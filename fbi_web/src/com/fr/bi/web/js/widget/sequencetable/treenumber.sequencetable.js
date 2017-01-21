@@ -175,6 +175,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         }
         this.layout.attr("items", items);
         this.layout.resize();
+        this.scrollContainer.element.scrollTop(o.scrollTop);
     },
 
     _getHeaderHeight: function () {

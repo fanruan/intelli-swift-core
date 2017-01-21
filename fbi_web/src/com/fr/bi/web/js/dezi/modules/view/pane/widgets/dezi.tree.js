@@ -203,7 +203,7 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
             isLayer: true
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
-        })
+        });
         BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
@@ -214,7 +214,6 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
 
     change: function (changed, prev, context, options) {
         if (BI.has(changed, "bounds")) {
-            this._refreshLayout();
         }
 
         if (BI.has(changed, "value")) {
@@ -246,6 +245,11 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         if (this.model.has("expand")) {
             this.model.get("expand");
             this._expandWidget();
+            return true;
+        }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            this._refreshLayout();
             return true;
         }
         return false;

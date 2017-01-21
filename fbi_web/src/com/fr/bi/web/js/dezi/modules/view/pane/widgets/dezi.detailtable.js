@@ -381,7 +381,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             return;
         }
         if (BI.has(changed, "bounds")) {
-            this.tableResize();
+
         }
         if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
@@ -410,6 +410,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         if (this.model.has("expand")) {
             this.model.get("expand");
             this._expandWidget();
+            return true;
+        }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            this.tableResize();
             return true;
         }
         return false;
