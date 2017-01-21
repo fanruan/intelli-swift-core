@@ -30,22 +30,24 @@ import com.fr.report.cell.FloatElement;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.Constants;
+import com.fr.stable.StringUtils;
 import com.fr.stable.unit.FU;
 import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.awt.image.RenderedImage;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by AstronautOO7 on 2017/1/11.
@@ -62,6 +64,10 @@ public class BIReportExportExcel {
     private static int bytesLength = 256;
 
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
+
+    private String PhantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
+
+    private int PhantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
 
     public BIReportExportExcel(String sessionID) throws Exception {
         this.sessionID = sessionID;
@@ -140,20 +146,30 @@ public class BIReportExportExcel {
         Rectangle rect = widget.getRect();
         plotOptions.put("animation", false);
         chartOptions.put("plotOptions", plotOptions);
-        String postOptions = new JSONObject("{" + "options:" + chartOptions + ", width:" + rect.getWidth() + ", height:" + rect.getHeight() + "}").toString();
+        String postOptions = new JSONObject("{options:" + chartOptions + ", width:" + rect.getWidth() + ", height:" + rect.getHeight() + "}").toString();
         String base64 = null;
         try {
-            base64 = postMessage(PerformancePlugManager.getInstance().getPhantomServerIP(), PerformancePlugManager.getInstance().getPhantomServerPort(), postOptions);
+            base64 = postMessage(PhantomIp, PhantomPort, postOptions);
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return createFloatElement(base64Decoder(base64), rect);
     }
 
-    private FloatElement renderDefaultChartPic (BIWidget widget) {
+    private FloatElement renderDefaultChartPic (BIWidget widget) throws IOException, JSONException {
         String imageFolder = FRContext.getCurrentEnv().getPath() + "/classes/com/fr/bi/web/images/background/charts";
-        BufferedImage img = getDefaultImage(widget.getType(), imageFolder);
-        return createFloatElement(img, widget.getRect());
+        String base64 = getDefaultImage(widget.getType(), imageFolder);
+        JSONObject imgOptions = JSONObject.create();
+        imgOptions.put("base64", base64);
+        imgOptions.put("width", widget.getRect().getWidth());
+        imgOptions.put("height", widget.getRect().getHeight());
+        String getBase64 = null;
+        try {
+            getBase64 = postMessage(PhantomIp, PhantomPort, imgOptions.toString());
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return createFloatElement(base64Decoder(getBase64), widget.getRect());
     }
 
     private FloatElement createFloatElement (BufferedImage img, Rectangle rect) {
@@ -218,115 +234,60 @@ public class BIReportExportExcel {
         return (widget.getViewDimensions().length + widget.getViewTargets().length) != 0;
     }
 
-    private BufferedImage getDefaultImage (int type, String imageFolder) {
-        BufferedImage img = null;
-        switch (type) {
-            case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
-                img = IOUtils.readImage(imageFolder + "/axis_accu.png");
-                break;
-            case BIReportConstant.WIDGET.ACCUMULATE_AREA:
-                img = IOUtils.readImage(imageFolder + "/area_accu.png");
-                break;
-            case BIReportConstant.WIDGET.ACCUMULATE_RADAR:
-                img = IOUtils.readImage(imageFolder + "/radar_accu.png");
-                break;
-            case BIReportConstant.WIDGET.AXIS:
-                img = IOUtils.readImage(imageFolder + "/axis.png");
-                break;
-            case BIReportConstant.WIDGET.LINE:
-                img = IOUtils.readImage(imageFolder + "/line.png");
-                break;
-            case BIReportConstant.WIDGET.AREA:
-                img = IOUtils.readImage(imageFolder + "/area.png");
-                break;
-            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS:
-                img = IOUtils.readImage(imageFolder + "/axis_percent.png");
-                break;
-            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AREA:
-                img = IOUtils.readImage(imageFolder + "/area_percent.png");
-                break;
-            case BIReportConstant.WIDGET.COMPARE_AXIS:
-                img = IOUtils.readImage(imageFolder + "/axis_compare.png");
-                break;
-            case BIReportConstant.WIDGET.COMPARE_AREA:
-                img = IOUtils.readImage(imageFolder + "/area_compare.png");
-                break;
-            case BIReportConstant.WIDGET.FALL_AXIS:
-                img = IOUtils.readImage(imageFolder + "/axis_fall.png");
-                break;
-            case BIReportConstant.WIDGET.RANGE_AREA:
-                img = IOUtils.readImage(imageFolder + "/area_range.png");
-                break;
-            case BIReportConstant.WIDGET.BAR:
-                img = IOUtils.readImage(imageFolder + "/bar.png");
-                break;
-            case BIReportConstant.WIDGET.ACCUMULATE_BAR:
-                img = IOUtils.readImage(imageFolder + "/bar_accu.png");
-                break;
-            case BIReportConstant.WIDGET.COMPARE_BAR:
-                img = IOUtils.readImage(imageFolder + "/bar_compare.png");
-                break;
-            case BIReportConstant.WIDGET.COMBINE_CHART:
-                img = IOUtils.readImage(imageFolder + "/combine.png");
-                break;
-            case BIReportConstant.WIDGET.DONUT:
-                img = IOUtils.readImage(imageFolder + "/donut.png");
-                break;
-            case BIReportConstant.WIDGET.RADAR:
-                img = IOUtils.readImage(imageFolder + "/radar.png");
-                break;
-            case BIReportConstant.WIDGET.PIE:
-                img = IOUtils.readImage(imageFolder + "/pie.png");
-                break;
-            case BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                img = IOUtils.readImage(imageFolder + "/combine_m.png");
-                break;
-            case BIReportConstant.WIDGET.FORCE_BUBBLE:
-                img = IOUtils.readImage(imageFolder + "/bubble_force.png");
-                break;
-            case BIReportConstant.WIDGET.DASHBOARD:
-                img = IOUtils.readImage(imageFolder + "/dashboard.png");
-                break;
-            case BIReportConstant.WIDGET.BUBBLE:
-                img = IOUtils.readImage(imageFolder + "/bubble.png");
-                break;
-            case BIReportConstant.WIDGET.SCATTER:
-                img = IOUtils.readImage(imageFolder + "/scatter.png");
-                break;
-            case BIReportConstant.WIDGET.MAP:
-                img = IOUtils.readImage(imageFolder + "/map.png");
-                break;
-            case BIReportConstant.WIDGET.GIS_MAP:
-                img = IOUtils.readImage(imageFolder + "/map_gis.png");
-                break;
-            case BIReportConstant.WIDGET.TABLE:
-                img = IOUtils.readImage(imageFolder + "/table_group.png");
-                break;
-            case BIReportConstant.WIDGET.CROSS_TABLE:
-                img = IOUtils.readImage(imageFolder + "/table_cross.png");
-                break;
-            case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                img = IOUtils.readImage(imageFolder + "/table_complex.png");
-                break;
-            case BIReportConstant.WIDGET.FUNNEL:
-                img = IOUtils.readImage(imageFolder + "/funnel.png");
-                break;
-            case BIReportConstant.WIDGET.PARETO:
-                //todo 添加默认图片
-                img = IOUtils.readImage(imageFolder + "/map_gis.png");
-                break;
-            case BIReportConstant.WIDGET.HEAT_MAP:
-                //todo 添加默认图片
-                img = IOUtils.readImage(imageFolder + "/map_gis.png");
-                break;
-            case BIReportConstant.WIDGET.MULTI_PIE:
-                img = IOUtils.readImage(imageFolder + "/multi_pie.png");
-                break;
-            case BIReportConstant.WIDGET.RECT_TREE:
-                img = IOUtils.readImage(imageFolder + "/rect_tree.png");
-                break;
+    private String getDefaultImage (int type, String imageFolder) throws IOException {
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        map.put(BIReportConstant.WIDGET.ACCUMULATE_AXIS, "/axis_accu.png");
+        map.put(BIReportConstant.WIDGET.ACCUMULATE_AREA, "/area_accu.png");
+        map.put(BIReportConstant.WIDGET.ACCUMULATE_RADAR, "/radar_accu.png");
+        map.put(BIReportConstant.WIDGET.AXIS, "/axis.png");
+        map.put(BIReportConstant.WIDGET.LINE, "/line.png");
+        map.put(BIReportConstant.WIDGET.AREA, "/area.png");
+        map.put(BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS, "/axis_percent.png");
+        map.put(BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AREA, "/area_percent.png");
+        map.put(BIReportConstant.WIDGET.COMPARE_AXIS, "/axis_compare.png");
+        map.put(BIReportConstant.WIDGET.COMPARE_AREA, "/area_compare.png");
+        map.put(BIReportConstant.WIDGET.FALL_AXIS, "/axis_fall.png");
+        map.put(BIReportConstant.WIDGET.RANGE_AREA, "/area_range.png");
+        map.put(BIReportConstant.WIDGET.BAR, "/bar.png");
+        map.put(BIReportConstant.WIDGET.ACCUMULATE_BAR, "/bar_accu.png");
+        map.put(BIReportConstant.WIDGET.COMPARE_BAR, "/bar_compare.png");
+        map.put(BIReportConstant.WIDGET.COMBINE_CHART, "/combine.png");
+        map.put(BIReportConstant.WIDGET.DONUT, "/donut.png");
+        map.put(BIReportConstant.WIDGET.RADAR, "/radar.png");
+        map.put(BIReportConstant.WIDGET.PIE, "/pie.png");
+        map.put(BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART, "/combine_m.png");
+        map.put(BIReportConstant.WIDGET.FORCE_BUBBLE, "/bubble_force.png");
+        map.put(BIReportConstant.WIDGET.DASHBOARD, "/dashboard.png");
+        map.put(BIReportConstant.WIDGET.BUBBLE, "/bubble.png");
+        map.put(BIReportConstant.WIDGET.SCATTER, "/scatter.png");
+        map.put(BIReportConstant.WIDGET.MAP, "/map.png");
+        map.put(BIReportConstant.WIDGET.GIS_MAP, "/map_gis.png");
+        map.put(BIReportConstant.WIDGET.TABLE, "/table_group.png");
+        map.put(BIReportConstant.WIDGET.CROSS_TABLE, "/table_cross.png");
+        map.put(BIReportConstant.WIDGET.COMPLEX_TABLE, "/table_complex.png");
+        map.put(BIReportConstant.WIDGET.FUNNEL, "/funnel.png");
+        map.put(BIReportConstant.WIDGET.PARETO, "");
+        map.put(BIReportConstant.WIDGET.HEAT_MAP, "/funnel.png");
+        map.put(BIReportConstant.WIDGET.MULTI_PIE, "/multi_pie.png");
+        map.put(BIReportConstant.WIDGET.RECT_TREE, "/rect_tree.png");
+        return coderBase64(IOUtils.readImage(imageFolder + map.get(type)));
+    }
 
+     private String coderBase64(Image image) throws IOException {
+        if (image == null){
+            return StringUtils.EMPTY;
         }
-        return img;
+        byte[] data = null;
+        // 读取图片字节数组
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write((RenderedImage) image, "png", bos);
+        data = bos.toByteArray();
+        bos.close();
+
+        // 对字节数组Base64编码
+        BASE64Encoder encoder = new BASE64Encoder();
+        String result = encoder.encode(data);
+        result = result.replace("\r\n", "");
+        return result;// 返回Base64编码过的字节数组字符串
     }
 }

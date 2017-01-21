@@ -28,11 +28,9 @@ public class PhantomServer {
     private int STARTTIMES = 5;
 
     private static Map<String, String> osMap = new HashMap<String, String>();
-    private static String DefaultImgSrc = FRContext.getCurrentEnv().getPath() + "/classes/com/fr/bi/web/images/background/charts";
     private static String PhantomEnv = FRContext.getCurrentEnv().getPath() + BIBaseConstant.PHANTOM.PHANTOM_PATH;
     private static String PhantomLib = PhantomEnv + "/lib";
     private static String PhantomJequry = PhantomEnv + "/jquery";
-    private static String PhantomImageDir = PhantomEnv + "/image";
     private static String PhantomResources = FRContext.getCurrentEnv().getPath() + "/classes/com/fr/bi/web/js/third";
     private static String PhantomCss = FRContext.getCurrentEnv().getPath() + "/classes/com/fr/bi/web/css/base/third/leaflet.css";
 
@@ -145,6 +143,7 @@ public class PhantomServer {
             } else {
                 PerformancePlugManager.getInstance().setPhantomServerIP(IP);
                 PerformancePlugManager.getInstance().setPhantomServerPort(PORT);
+                BILoggerFactory.getLogger().info("Success to start phantom server.");
                 injectAllCss();
                 return;
             }
@@ -173,8 +172,6 @@ public class PhantomServer {
 
         getLibResource(SCRIPT_SOURCES);
 
-//        getPicResource();
-
         try {
             //写入格式文件
             File formatFile = new File(PhantomLib + File.separator + "format.js");
@@ -199,22 +196,6 @@ public class PhantomServer {
             }
         }
     }
-
-//    private void getPicResource () throws IOException {
-//        File destDir = reloadDir(PhantomImageDir);
-//
-//        File srcDir = new File(DefaultImgSrc);
-//
-//        for (String file : srcDir.list()) {
-//            File srcFile = new File(srcDir, file);
-//            File destFile = new File(destDir, file);
-//
-//            if(!srcFile.isDirectory()) {
-//                InputStream in = new FileInputStream(srcFile);
-//                inputStreamToFile(in, destFile);
-//            }
-//        }
-//    }
 
     private File reloadDir (String dirPath) {
         //delete old lib with dependence resources
