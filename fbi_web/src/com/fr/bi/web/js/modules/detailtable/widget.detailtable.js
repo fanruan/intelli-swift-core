@@ -151,15 +151,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     self.errorPane.setVisible(true);
                     return;
                 }
-                // //显示序号
-                // if (BI.Utils.getWSShowNumberByID(widgetId)) {
-                //     self.table.showSequence();
-                // } else {
-                //     self.table.hideSequence();
-                // }
-                //
-                // //设置样式和颜色
-                // self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(widgetId), BI.Utils.getWSThemeColorByID(widgetId));
             },
             done: function () {
                 self.loaded();

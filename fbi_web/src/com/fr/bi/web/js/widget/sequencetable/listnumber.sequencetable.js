@@ -81,7 +81,8 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
 
     _calculateChildrenToRender: function () {
         var self = this, o = this.options;
-        var start = Math.floor(o.scrollTop / o.rowSize);
+        var scrollTop = BI.clamp(o.scrollTop, 0, o.rowSize * o.items.length - (o.height - o.header.length * o.headerRowSize) + BI.DOM.getScrollWidth());
+        var start = Math.floor(scrollTop / o.rowSize);
         var end = start + Math.floor((o.height - o.header.length * o.headerRowSize) / o.rowSize);
         var renderedCells = [], renderedKeys = [];
         for (var i = start, cnt = 0; i <= end && i < o.items.length; i++, cnt++) {
