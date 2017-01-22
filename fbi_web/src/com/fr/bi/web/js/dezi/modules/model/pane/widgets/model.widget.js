@@ -93,7 +93,8 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
                 type: this.get("type"),
                 settings: this.get("settings"),
                 filter_value: this.get("filter_value"),
-                real_data: this.get("real_data")
+                real_data: this.get("real_data"),
+                scopes: this.get("scopes")
             }
         }, {
             silent: true
