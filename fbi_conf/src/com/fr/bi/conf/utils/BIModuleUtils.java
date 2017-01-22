@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BIAliasManagerProvider;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.field.BusinessField;
@@ -17,6 +18,7 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -182,5 +184,19 @@ public class BIModuleUtils {
                 BILoggerFactory.getLogger(BIModuleUtils.class).warn(e.getMessage(), e);
             }
         }
+    }
+
+
+    public static CubeTableSource getActualDBTableSource(CubeTableSource tableSource) {
+        for (BusinessTable table : BICubeConfigureCenter.getPackageManager().getAllTables(UserControl.getInstance().getSuperManagerID())) {
+            try {
+                if (table.getTableSource().equals(tableSource)) {
+                    return table.getTableSource();
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(BIModuleUtils.class).error(e.getMessage(), e);
+            }
+        }
+        return tableSource;
     }
 }
