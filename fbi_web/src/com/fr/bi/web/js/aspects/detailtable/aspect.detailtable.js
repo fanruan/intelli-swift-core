@@ -23,6 +23,7 @@ BI.DetailTableAspect = function () {
                 cls: "widget-tip-pane",
                 items: [{
                     type: "bi.vertical",
+                    width: "100%",
                     items: [self.tipPane, self.textLabel, self.contactAdmin]
                 }]
             });
