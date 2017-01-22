@@ -507,6 +507,7 @@ BI.CollectionTable = BI.inherit(BI.Widget, {
     },
 
     setRegionColumnSize: function (regionColumnSize) {
+        this._isNeedDigest = true;
         this.options.regionColumnSize = regionColumnSize;
     },
 

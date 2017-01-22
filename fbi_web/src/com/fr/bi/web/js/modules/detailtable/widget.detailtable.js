@@ -57,7 +57,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            var columnSize = this.getCalculateRegionColumnSize();
+            var columnSize = this.getRegionColumnSize();
             self.setStoredRegionColumnSize(columnSize[0]);
         });
         this.errorPane = BI.createWidget({
