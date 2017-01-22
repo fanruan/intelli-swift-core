@@ -57,7 +57,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 el: this.header,
-                height: o.headerRowSize * o.header.length
+                height: this._getHeaderHeight()
             }, {
                 el: this.scrollContainer
             }]
@@ -175,6 +175,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         }
         this.layout.attr("items", items);
         this.layout.resize();
+        this.scrollContainer.element.scrollTop(o.scrollTop);
     },
 
     _getHeaderHeight: function () {
@@ -206,6 +207,14 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         this._nextState();
     },
 
+    _getMaxScrollTop: function (numbers) {
+        var cnt = 0;
+        BI.each(numbers, function (i, number) {
+            cnt += number.cnt;
+        });
+        return Math.max(0, cnt * this.options.rowSize - (this.options.height - this._getHeaderHeight()) + BI.DOM.getScrollWidth());
+    },
+
     _calculateChildrenToRender: function () {
         var self = this, o = this.options;
 
@@ -215,8 +224,9 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         BI.each(numbers, function (i, number) {
             intervalTree.set(i, number.height);
         });
-        var index = intervalTree.greatestLowerBound(o.scrollTop);
-        var offsetTop = -(o.scrollTop - (index > 0 ? intervalTree.sumTo(index - 1) : 0));
+        var scrollTop = BI.clamp(o.scrollTop, 0, this._getMaxScrollTop(numbers));
+        var index = intervalTree.greatestLowerBound(scrollTop);
+        var offsetTop = -(scrollTop - (index > 0 ? intervalTree.sumTo(index - 1) : 0));
         var height = offsetTop;
         var bodyHeight = o.height - this._getHeaderHeight();
         while (height < bodyHeight && index < numbers.length) {
@@ -237,7 +247,6 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                     self.renderedCells[index].top = numbers[key].top;
                     self.renderedCells[index].el.element.css("top", numbers[key].top + "px");
                 }
-                self.renderedCells[index].el.setText(numbers[key].text);
                 renderedCells.push(self.renderedCells[index]);
             } else {
                 var child = BI.createWidget(BI.extend({

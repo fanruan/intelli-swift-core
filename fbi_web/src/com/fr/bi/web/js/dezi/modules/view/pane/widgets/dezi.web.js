@@ -10,6 +10,13 @@ BIDezi.WebWidgetView = BI.inherit(BI.View, {
 
     _init: function () {
         BIDezi.WebWidgetView.superclass._init.apply(this, arguments);
+        var self = this;
+        this._broadcasts = [];
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.web.element.parent().parent().parent().hasClass("selected")) {
+                self.web.setToolbarVisible(false);
+            }
+        }));
     },
 
     change: function () {
@@ -42,16 +49,15 @@ BIDezi.WebWidgetView = BI.inherit(BI.View, {
                 self.web.setToolbarVisible(false);
             }
         });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
-            if (!self.web.element.parent().parent().parent().hasClass("selected")) {
-                self.web.setToolbarVisible(false);
-            }
-        });
     },
 
     local: function () {
         if (this.model.has("expand")) {
             this.model.get("expand");
+            return true;
+        }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
             return true;
         }
         return false;
@@ -62,5 +68,12 @@ BIDezi.WebWidgetView = BI.inherit(BI.View, {
         BI.delay(function () {
             self.web.setValue(self.model.get("url"))
         }, 0);
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });

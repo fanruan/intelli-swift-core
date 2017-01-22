@@ -113,10 +113,12 @@ BI.Collection = BI.inherit(BI.Widget, {
 
     _calculateChildrenToRender: function () {
         var self = this, o = this.options;
-        var left = Math.max(0, o.scrollLeft - o.horizontalOverscanSize);
-        var top = Math.max(0, o.scrollTop - o.verticalOverscanSize);
-        var right = Math.min(this._width, o.scrollLeft + o.width + o.horizontalOverscanSize);
-        var bottom = Math.min(this._height, o.scrollTop + o.height + o.verticalOverscanSize);
+        var scrollLeft = BI.clamp(o.scrollLeft, 0, this._getMaxScrollLeft());
+        var scrollTop = BI.clamp(o.scrollTop, 0, this._getMaxScrollTop());
+        var left = Math.max(0, scrollLeft - o.horizontalOverscanSize);
+        var top = Math.max(0, scrollTop - o.verticalOverscanSize);
+        var right = Math.min(this._width, scrollLeft + o.width + o.horizontalOverscanSize);
+        var bottom = Math.min(this._height, scrollTop + o.height + o.verticalOverscanSize);
         var childrenToDisplay = this._cellRenderers(bottom - top, right - left, left, top);
         var renderedCells = [], renderedKeys = [];
         for (var i = 0, len = childrenToDisplay.length; i < len; i++) {

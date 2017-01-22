@@ -82,8 +82,13 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 right: 0
             }]
         });
+        this._resizeHandler = BI.debounce(function () {
+            self.table.setWidth(self.element.width());
+            self.table.setHeight(self.element.height());
+            self.table.populate();
+        }, 0);
         BI.ResizeDetector.addResizeListener(this.element[0], function () {
-            self.resize();
+            self._resizeHandler();
         });
     },
 
@@ -151,15 +156,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     self.errorPane.setVisible(true);
                     return;
                 }
-                // //显示序号
-                // if (BI.Utils.getWSShowNumberByID(widgetId)) {
-                //     self.table.showSequence();
-                // } else {
-                //     self.table.hideSequence();
-                // }
-                //
-                // //设置样式和颜色
-                // self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(widgetId), BI.Utils.getWSThemeColorByID(widgetId));
             },
             done: function () {
                 self.loaded();
@@ -284,14 +280,8 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     },
 
     resize: function () {
-        var self = this;
-        BI.nextTick(function () {
-            self.table.setWidth(self.element.width());
-            self.table.setHeight(self.element.height());
-            self.table.populate();
-        });
+        this._resizeHandler();
     }
-
 });
 BI.DetailTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.detail_table", BI.DetailTable);
