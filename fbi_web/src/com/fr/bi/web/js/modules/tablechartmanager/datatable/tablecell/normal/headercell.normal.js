@@ -41,9 +41,8 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
             name = name + "(" + st + ")";
         }
         BI.createWidget({
-            type: "bi.horizontal_adapt",
+            type: "bi.htape",
             element: this.element,
-            columnSize: ["", 25],
             items: [{
                 el: {
                     type: "bi.label",
@@ -63,8 +62,7 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
                     height: o.height,
                 },
                 width: 25
-            }],
-            height: o.height,
+            }]
         });
 
         //表格样式

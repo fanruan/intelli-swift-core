@@ -147,6 +147,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     self.table.setWidth(self.element.width());
                     self.table.setHeight(self.element.height());
                     self.table.attr("columnSize", self._getColumnSize(header));
+                    self.table.attr("minColumnSize", self._getMinColumnSize(header));
                     self.table.attr("isNeedFreeze", true);
                     self.table.attr("freezeCols", self._getFreezeCols());
                     self.table.attr("showSequence", BI.Utils.getWSShowNumberByID(widgetId));
@@ -161,6 +162,10 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 self.loaded();
             }
         }, ob);
+    },
+
+    _getMinColumnSize: function (header) {
+        return BI.makeArray(header.length, 80);
     },
 
     _getColumnSize: function (header) {

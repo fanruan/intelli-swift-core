@@ -337,11 +337,10 @@ BIDezi.DetailView = BI.inherit(BI.View, {
 
     refresh: function () {
         var self = this;
-
         this.dimensionsManager.populate();
         this._refreshDimensions();
         this.tableChartPopupulate();
-        this.tab.setSelect(BICst.DETAIL_TAB_TYPE_DATA)
+        this.tab.setSelect(BICst.DETAIL_TAB_TYPE_DATA);
     },
 
     destroyed: function () {
