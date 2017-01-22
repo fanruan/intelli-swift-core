@@ -101,55 +101,36 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.MVCWidget, {
         })
 
         BI.createWidget({
-            type: "bi.border",
+            type: "bi.htape",
             element: this.element,
-            items: {
-                west: {
-                    el: {
+            items: [{
+                el: {
+                    type: "bi.vtape",
+                    cls: o.extraCls + "-west",
+                    items: [{
+                        el: {
+                            type: "bi.center_adapt",
+                            items: [{
+                                type: "bi.layout",
+                                width: 10
+                            }, this.cancelButton, {
+                                type: "bi.layout",
+                                width: 10
+                            }, this.saveButton, {
+                                type: "bi.layout",
+                                width: 10
+                            }],
 
-                        type: "bi.vtape",
-                        cls: o.extraCls + "-west",
-                        items: [{
-                            el: {
-                                type: "bi.center_adapt",
-                                items: [{
-                                    type: "bi.layout",
-                                    width: 10
-                                }, this.cancelButton, {
-                                    type: "bi.layout",
-                                    width: 10
-                                }, this.saveButton, {
-                                    type: "bi.layout",
-                                    width: 10
-                                }],
-
-                            },
-                            height: 40
-                        }, {
-                            el: this.selectPane
-                        }]
-                    },
-                    left: 20,
-                    right: 20,
-                    width: 240
+                        },
+                        height: 40
+                    }, {
+                        el: this.selectPane
+                    }]
                 },
-
-                south: {
-                    el: {
-                        type: "bi.layout"
-                    },
-                    height: 10
-                },
-                east: {
-                    el: {
-                        type: "bi.layout"
-                    },
-                    width: 20
-                },
-                center: {
-                    el: this.center
-                }
-            }
+                width: 240
+            }, {
+                el: this.center
+            }]
         });
     }
 

@@ -29,25 +29,26 @@ BI.ETLExcel = BI.inherit(BI.ETL, {
             height: 26
         });
         reUploadExcel.on(BI.Button.EVENT_CHANGE, function(){
-            BI.Layers.remove(self._constant.EXCEL_LAYER);
-            var excelUpload = BI.createWidget({
-                type: "bi.excel_upload",
-                element: BI.Layers.create(self._constant.EXCEL_LAYER),
-                full_file_name: finalTable.full_file_name
-            });
-            BI.Layers.show(self._constant.EXCEL_LAYER);
-            excelUpload.on(BI.ExcelUpload.EVENT_CANCEL, function(){
-                BI.Layers.remove(self._constant.EXCEL_LAYER);
-            });
-            excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function(data){
-                BI.Layers.remove(self._constant.EXCEL_LAYER);
-                if(BI.isNull(data.table_name) || data.table_name === "") {
-                    data.table_name = finalTable.table_name;
-                }
-                self.model.setFields(data.fields);
-                self.model.saveTableById(finalTable.id, data);
-                self._populate();
-            });
+            self._modifyExcel(finalTable.id);
+            // BI.Layers.remove(self._constant.EXCEL_LAYER);
+            // var excelUpload = BI.createWidget({
+            //     type: "bi.excel_upload",
+            //     element: BI.Layers.create(self._constant.EXCEL_LAYER),
+            //     full_file_name: finalTable.full_file_name
+            // });
+            // BI.Layers.show(self._constant.EXCEL_LAYER);
+            // excelUpload.on(BI.ExcelUpload.EVENT_CANCEL, function(){
+            //     BI.Layers.remove(self._constant.EXCEL_LAYER);
+            // });
+            // excelUpload.on(BI.ExcelUpload.EVENT_SAVE, function(data){
+            //     BI.Layers.remove(self._constant.EXCEL_LAYER);
+            //     if(BI.isNull(data.table_name) || data.table_name === "") {
+            //         data.table_name = finalTable.table_name;
+            //     }
+            //     self.model.setFields(data.fields);
+            //     self.model.saveTableById(finalTable.id, data);
+            //     self._populate();
+            // });
         });
         this.tableNameWrapper.addItem({
             el: reUploadExcel,

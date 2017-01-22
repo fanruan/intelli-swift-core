@@ -44,7 +44,7 @@ BI.DimensionFilterItem = BI.inherit(BI.Widget, {
                 relation = BI.i18nText("BI-Last_N");
                 value = filter.filter_value;
                 break;
-            
+
             //string
             case BICst.DIMENSION_FILTER_STRING.BELONG_VALUE:
                 var v = filter.filter_value;

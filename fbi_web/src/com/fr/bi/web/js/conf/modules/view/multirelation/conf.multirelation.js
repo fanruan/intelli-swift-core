@@ -66,7 +66,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
                     BI.each(item, function (idx, pathItem) {
                         BI.find(pathItem, function (index, relation) {
                             var foreignId = relation.foreignKey.field_id;
-                            var fieldName = BI.Utils.getFieldNameByFieldId4Conf(foreignId);
+                            var fieldName = BI.Utils.getFieldNameById4Conf(foreignId);
                             var tableName = BI.Utils.getTableNameByFieldId4Conf(foreignId);
                             var result = BI.Func.getSearchResult([fieldName], op.keyword);
                             if (BI.size(result.finded) >= 1 || BI.size(result.matched) >= 1) {
@@ -86,7 +86,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
                             }
                             if (index === 0) {
                                 var primaryId = relation.primaryKey.field_id;
-                                fieldName = BI.Utils.getFieldNameByFieldId4Conf(primaryId);
+                                fieldName = BI.Utils.getFieldNameById4Conf(primaryId);
                                 tableName = BI.Utils.getTableNameByFieldId4Conf(primaryId);
                                 result = BI.Func.getSearchResult([fieldName], op.keyword);
                                 if (BI.size(result.finded) >= 1 || BI.size(result.matched) >= 1) {

@@ -11,3 +11,7 @@
   border: 1px solid #d3d9dc;
   background: #ffffff;
 }
+.bi-fit .no-widgets {
+  color: #808080;
+  font-size: 14px;
+}

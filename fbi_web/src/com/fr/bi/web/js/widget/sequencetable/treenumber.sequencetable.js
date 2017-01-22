@@ -11,12 +11,11 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             baseCls: "bi-sequence-table-tree-number",
             isNeedFreeze: false,
             startSequence: 1,//开始的序号
-            headerRowSize: 37,
-            footerRowSize: 37,
-            rowSize: 30,
+            scrollTop: 0,
+            headerRowSize: 25,
+            rowSize: 25,
 
             header: [],
-            footer: false,
             items: [], //二维数组
 
             //交叉表头
@@ -28,44 +27,50 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
     _init: function () {
         BI.SequenceTableTreeNumber.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var header = BI.createWidget({
-            type: "bi.label",
-            cls: "sequence-table-title",
-            textAlign: "left",
-            forceCenter: true,
-            text: BI.i18nText("BI-Number_Index"),
-            hgap: 5
+        this.vCurr = 1;
+        this.hCurr = 1;
+        this.tasks = [];
+        this.renderedCells = [];
+        this.renderedKeys = [];
+
+        this.header = BI.createWidget({
+            type: "bi.table_style_cell",
+            cls: "sequence-table-title-cell",
+            styleGetter: o.headerCellStyleGetter,
+            text: BI.i18nText("BI-Number_Index")
         });
-        this.buttonGroup = BI.createWidget({
-            type: "bi.button_group",
-            layouts: [{
-                type: "bi.vertical",
-                scrolly: false,
-                scrollx: false,
-                scrollable: false
-            }]
+        this.container = BI.createWidget({
+            type: "bi.absolute",
+            width: 60,
+            scrollable: false
+        });
+
+        this.scrollContainer = BI.createWidget({
+            type: "bi.vertical",
+            scrollable: false,
+            scrolly: false,
+            items: [this.container]
         });
 
         this.layout = BI.createWidget({
             type: "bi.vtape",
             element: this.element,
             items: [{
-                el: header,
-                height: o.headerRowSize + 1
+                el: this.header,
+                height: o.headerRowSize * o.header.length
             }, {
-                el: {type: "bi.layout"},
-                height: 0
-            }, {
-                el: this.buttonGroup
+                el: this.scrollContainer
             }]
         });
         //缓存第一行对应的序号
         this.start = this.options.startSequence;
         this.cache = {};
+        this._nextState();
+
         this._populate();
     },
 
-    _getStartSequence: function (nodes) {
+    _getNextSequence: function (nodes) {
         var self = this;
         var start = this.start;
         var cnt = this.start;
@@ -74,17 +79,12 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             self.cache[node.text || node.value] = cnt++;
         }
 
-        var finded = false;
         BI.each(nodes, function (i, node) {
             if (BI.isNotEmptyArray(node.children)) {
                 BI.each(node.children, function (index, child) {
                     if (index === 0) {
                         if (self.cache[child.text || child.value]) {
-                            cnt = self.cache[child.text || child.value];
-                            if (!finded) {
-                                start = cnt;
-                                finded = true;
-                            }
+                            start = cnt = self.cache[child.text || child.value];
                         }
                     }
                     track(child)
@@ -95,10 +95,27 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
         return start;
     },
 
+    _getStart: function (nodes) {
+        var self = this;
+        var start = this.start;
+        BI.each(nodes, function (i, node) {
+            if (BI.isNotEmptyArray(node.children)) {
+                BI.each(node.children, function (index, child) {
+                    if (index === 0) {
+                        if (self.cache[child.text || child.value]) {
+                            start = self.cache[child.text || child.value];
+                        }
+                    }
+                });
+            }
+        });
+        return start;
+    },
+
     _formatNumber: function (nodes) {
         var self = this, o = this.options;
         var result = [];
-        var count = this._getStartSequence(nodes);
+        var count = this._getStart(nodes);
 
         function getLeafCount(node) {
             var cnt = 0;
@@ -115,7 +132,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             return cnt;
         }
 
-        var start = 0;
+        var start = 0, top = 0;
         BI.each(nodes, function (i, node) {
             if (BI.isArray(node.children)) {
                 BI.each(node.children, function (index, child) {
@@ -123,106 +140,233 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                     result.push({
                         text: count++,
                         start: start,
+                        top: top,
                         cnt: cnt,
-                        cls: "sequence-table-number",
-                        height: cnt * o.rowSize + (cnt - 1)
+                        index: index,
+                        height: cnt * o.rowSize
                     });
                     start += cnt;
+                    top += cnt * o.rowSize;
                 });
                 if (BI.isNotEmptyArray(node.values)) {
                     result.push({
                         text: BI.i18nText("BI-Summary_Values"),
                         start: start++,
+                        top: top,
                         cnt: 1,
-                        cls: "sequence-table-number sequence-table-summary",
+                        isSummary: true,
                         height: o.rowSize
                     });
+                    top += o.rowSize;
                 }
             }
         });
         return result;
     },
 
-    _formatItems: function () {
-        var o = this.options;
-        var result = [];
-        if (o.isNeedFreeze === false) {
-            result.push({
-                type: "bi.label",
-                cls: "sequence-table-title",
-                textAlign: "left",
-                forceCenter: true,
-                height: (o.crossHeader.length + 1) * (o.headerRowSize || o.rowSize),
-                text: BI.i18nText("BI-Number_Index"),
-                hgap: 5
-            })
-        }
-        var numbers = this._formatNumber(o.items);
-        result = result.concat(BI.map(numbers, function (i, num) {
-            var cls = num.cls;
-            if (BI.isOdd(num.start)) {
-                cls += " even";
-            } else {
-                cls += " odd";
-            }
-            return BI.extend(num, {
-                type: "bi.label",
-                textAlign: "left",
-                hgap: 5,
-                cls: cls + (i === numbers.length - 1 ? " last" : "")
-            })
-        }));
-
-        return result;
-    },
-
     _layout: function () {
         var self = this, o = this.options;
-        var headerHeight = o.headerRowSize * (o.crossHeader.length + (o.header.length > 0 ? 1 : 0));
+        var headerHeight = this._getHeaderHeight();
         var items = this.layout.attr("items");
         if (o.isNeedFreeze === false) {
             items[0].height = 0;
-            items[1].height = 0;
         } else if (o.isNeedFreeze === true) {
-            items[0].height = headerHeight + 1 + o.crossHeader.length;
-            items[1].height = 1;
+            items[0].height = headerHeight;
         }
         this.layout.attr("items", items);
         this.layout.resize();
     },
 
-    _populate: function () {
-        this._layout();
-        this.buttonGroup.populate(this._formatItems());
+    _getHeaderHeight: function () {
+        var o = this.options;
+        return o.headerRowSize * (o.crossHeader.length + (o.header.length > 0 ? 1 : 0));
     },
 
-    setVerticalScroll: function (scroll) {
-        this.buttonGroup.element.scrollTop(scroll);
+    _nextState: function () {
+        var o = this.options;
+        this._getNextSequence(o.items);
+    },
+
+    _prevState: function () {
+        var self = this, o = this.options;
+        var firstChild;
+        BI.some(o.items, function (i, node) {
+            if (BI.isNotEmptyArray(node.children)) {
+                return BI.some(node.children, function (j, child) {
+                    firstChild = child;
+                    return true;
+                });
+            }
+        });
+        if (firstChild) {
+            this.start = this.cache[firstChild.text || firstChild.value];
+        } else {
+            this.start = 1;
+        }
+        this._nextState();
+    },
+
+    _calculateChildrenToRender: function () {
+        var self = this, o = this.options;
+
+        var renderedCells = [], renderedKeys = [];
+        var numbers = this._formatNumber(o.items);
+        var intervalTree = BI.PrefixIntervalTree.uniform(numbers.length, 0);
+        BI.each(numbers, function (i, number) {
+            intervalTree.set(i, number.height);
+        });
+        var index = intervalTree.greatestLowerBound(o.scrollTop);
+        var offsetTop = -(o.scrollTop - (index > 0 ? intervalTree.sumTo(index - 1) : 0));
+        var height = offsetTop;
+        var bodyHeight = o.height - this._getHeaderHeight();
+        while (height < bodyHeight && index < numbers.length) {
+            renderedKeys.push(index);
+            offsetTop += numbers[index].height;
+            height += numbers[index].height;
+            index++;
+        }
+
+        BI.each(renderedKeys, function (i, key) {
+            var index = BI.deepIndexOf(self.renderedKeys, key);
+            if (index > -1) {
+                if (numbers[key].height !== self.renderedCells[index]._height) {
+                    self.renderedCells[index]._height = numbers[key].height;
+                    self.renderedCells[index].el.setHeight(numbers[key].height);
+                }
+                if (numbers[key].top !== self.renderedCells[index].top) {
+                    self.renderedCells[index].top = numbers[key].top;
+                    self.renderedCells[index].el.element.css("top", numbers[key].top + "px");
+                }
+                self.renderedCells[index].el.setText(numbers[key].text);
+                renderedCells.push(self.renderedCells[index]);
+            } else {
+                var child = BI.createWidget(BI.extend({
+                    type: "bi.table_style_cell",
+                    cls: "sequence-table-number-cell",
+                    width: 60,
+                    styleGetter: numbers[key].isSummary === true ? function () {
+                        return o.summaryCellStyleGetter(true);
+                    } : function (key) {
+                        return function () {
+                            return o.sequenceCellStyleGetter(key);
+                        }
+                    }(numbers[key].index)
+                }, numbers[key]));
+                renderedCells.push({
+                    el: child,
+                    left: 0,
+                    top: numbers[key].top,
+                    _height: numbers[key].height
+                });
+            }
+        });
+
+        //已存在的， 需要添加的和需要删除的
+        var existSet = {}, addSet = {}, deleteArray = [];
+        BI.each(renderedKeys, function (i, key) {
+            if (BI.deepContains(self.renderedKeys, key)) {
+                existSet[i] = key;
+            } else {
+                addSet[i] = key;
+            }
+        });
+        BI.each(this.renderedKeys, function (i, key) {
+            if (BI.deepContains(existSet, key)) {
+                return;
+            }
+            if (BI.deepContains(addSet, key)) {
+                return;
+            }
+            deleteArray.push(i);
+        });
+        BI.each(deleteArray, function (i, index) {
+            self.renderedCells[index].el.destroy();
+        });
+        var addedItems = [];
+        BI.each(addSet, function (index) {
+            addedItems.push(renderedCells[index])
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.container,
+            items: addedItems
+        });
+        this.renderedCells = renderedCells;
+        this.renderedKeys = renderedKeys;
+
+        this.container.setHeight(intervalTree.sumUntil(numbers.length));
+    },
+
+    _restore: function () {
+        BI.each(this.renderedCells, function (i, cell) {
+            cell.el.destroy();
+        });
+        this.renderedCells = [];
+        this.renderedKeys = [];
+    },
+
+    _populate: function () {
+        var self = this;
+        BI.each(this.tasks, function (i, task) {
+            task.apply(self);
+        });
+        this.tasks = [];
+        this.header.populate();
+        this._layout();
+        this._calculateChildrenToRender();
+    },
+
+    setVerticalScroll: function (scrollTop) {
+        if (this.options.scrollTop !== scrollTop) {
+            this.options.scrollTop = scrollTop;
+            this.scrollContainer.element.scrollTop(scrollTop);
+        }
+    },
+
+    getVerticalScroll: function () {
+        return this.options.scrollTop;
     },
 
     setVPage: function (v) {
         if (v <= 1) {
             this.cache = {};
             this.start = this.options.startSequence;
+            this._restore();
+            this.tasks.push(this._nextState);
+        } else if (v === this.vCurr + 1) {
+            this.tasks.push(this._nextState);
+        } else if (v === this.vCurr - 1) {
+            this.tasks.push(this._prevState);
         }
+        this.vCurr = v;
     },
 
-    populate: function (items, header, crossItems, crossHeader, startSequence) {
-        var o = this.options;
-        if (items) {
-            o.items = items;
+    setHPage: function (v) {
+        if (v !== this.hCurr) {
+            this.tasks.push(this._prevState);
         }
-        if (header) {
+        this.hCurr = v;
+    },
+
+    restore: function () {
+        this._restore();
+    },
+
+    populate: function (items, header, crossItems, crossHeader) {
+        var o = this.options;
+        if (items && items !== this.options.items) {
+            o.items = items;
+            this._restore();
+            this.tasks.push(this._prevState);
+        }
+        if (header && header !== this.options.header) {
             o.header = header;
         }
-        if (crossItems) {
+        if (crossItems && crossItems !== this.options.crossItems) {
             o.crossItems = crossItems;
         }
-        if (crossHeader) {
+        if (crossHeader && crossHeader !== this.options.crossHeader) {
             o.crossHeader = crossHeader;
-        }
-        if (BI.isNotNull(startSequence)) {
-            o.startSequence = startSequence;
         }
         this._populate();
     }

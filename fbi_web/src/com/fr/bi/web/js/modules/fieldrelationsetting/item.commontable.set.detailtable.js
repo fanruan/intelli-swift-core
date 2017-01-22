@@ -88,7 +88,7 @@ BI.DetailTableCommonTableSet = BI.inherit(BI.Widget, {
                 }];
                 it.width = 80 + c.TABLE_LABEL_BORDER * 2;
                 it.height = 30 + c.TABLE_LABEL_BORDER * 2;
-            });
+            })
             item.title = item.text;
         });
         return itemsCp;

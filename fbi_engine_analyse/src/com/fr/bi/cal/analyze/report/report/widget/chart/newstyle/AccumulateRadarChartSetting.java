@@ -20,7 +20,7 @@ public class AccumulateRadarChartSetting extends BIAbstractRadarChartSetting {
         for(int i = 0; i < data.length(); i++){
             String uuid = UUID.randomUUID().toString();
             JSONArray item = data.getJSONArray(i);
-            for(int j = 0; j < items.length(); ){
+            for(int j = 0; j < items.length(); j++){
                 JSONObject it = item.getJSONObject(j);
                 item.put(it.put("stack", uuid));
             }

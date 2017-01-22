@@ -45,8 +45,7 @@ BI.PackageTablesMainPane = BI.inherit(BI.Widget, {
 
         this.tablesPane = BI.createWidget({
             type: "bi.package_table_pane",
-            packId: o.packId,
-            translations: o.translations
+            packId: o.packId
         });
         this.tablesPane.on(BI.PackageTablePane.EVENT_CHANGE, function () {
             self.fireEvent(BI.PackageTablesMainPane.EVENT_CHANGE);
@@ -58,16 +57,19 @@ BI.PackageTablesMainPane = BI.inherit(BI.Widget, {
         });
         BI.Utils.getTablesByPackId(o.packId, function (tables) {
             self.tables = [];
-            BI.each(tables, function (id, table) {
+            var tableIds = BI.Utils.getTablesIdByPackageId4Conf(o.packId);
+            BI.each(tableIds, function (i, id) {
+                var table = tables[id];
                 self.tables.push({
                     type: "bi.database_table",
-                    cls: "bi-table-ha-button",
-                    connName: table.connection_name,
                     text: self._getTableTranName(id, table),
                     value: BI.extend(table, {
                         id: id,
-                        temp_name: o.translations[id]
-                    })
+                        temp_name: BI.Utils.getTransNameById4Conf(id)
+                    }),
+                    linkNames: o.linkNames,
+                    connName: table.connection_name,
+                    needMark: true
                 })
             });
             self.tablesPane.populate(self.tables);
@@ -113,12 +115,12 @@ BI.PackageTablesMainPane = BI.inherit(BI.Widget, {
 
     _getTableTranName: function (id, table) {
         var tableNameText = table.table_name;
-        var translations = this.options.translations;
         //ETL 表
+        var tranName = BI.Utils.getTransNameById4Conf(id);
         if (table.connection_name === BICst.CONNECTION.ETL_CONNECTION) {
-            tableNameText = translations[id];
-        } else if (BI.isNotNull(translations[id]) && translations[id] !== tableNameText) {
-            tableNameText = translations[id] + "(" + tableNameText + ")";
+            tableNameText = tranName;
+        } else if (BI.isNotNull(tranName) && tranName !== tableNameText) {
+            tableNameText = tranName + "(" + tableNameText + ")";
         }
         return tableNameText;
     },

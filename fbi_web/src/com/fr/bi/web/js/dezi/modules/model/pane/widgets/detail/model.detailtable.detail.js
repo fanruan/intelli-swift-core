@@ -6,6 +6,7 @@
 BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailTableDetailModel.superclass._defaultConfig.apply(this, arguments), {
+            name: "",
             view: {
                 "10000": []
             },
@@ -30,7 +31,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 })
             });
             var dimensions = this.get("dimensions");
-            this._setDefaultRelation(dimensions);
+            //this._setDefaultRelation(dimensions, key2, old);
             var allIds = BI.keys(dimensions);
             var filterValue = this.get("filter_value");
             BI.each(filterValue, function (id, filter) {
@@ -99,7 +100,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 };
 
                 //设置所有纬度指标的target_relation
-                this._setDefaultRelation(dimensions);
+                this._setDefaultRelation(dimensions, dId);
                 view[BICst.REGION.DIMENSION1] || (view[BICst.REGION.DIMENSION1] = []);
                 if (!BI.contains(view[BICst.REGION.DIMENSION1], dId)) {
                     view[BICst.REGION.DIMENSION1].push(dId);
@@ -169,18 +170,37 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
     },
 
 
-    _setDefaultRelation: function (dimensions) {
+    _setDefaultRelation: function (dimensions, dId) {
         var self = this;
+        //除却当前参与计算的维度所在表
         var viewTableIds = [];
+        //包括当前参与计算的维度所在表
+        var allTableIds = [];
         BI.each(dimensions, function (did, dimension) {
             var tableId = BI.Utils.getTableIdByFieldID(dimension._src.field_id);
             if (BI.isNotNull(tableId)) {
-                (!BI.contains(viewTableIds, tableId)) && viewTableIds.push(tableId);
+                if(did !== dId){
+                    viewTableIds.pushDistinct(tableId);
+                    allTableIds.pushDistinct(tableId);
+                }else{
+                    allTableIds.pushDistinct(tableId);
+                }
             }
         });
-        BI.each(dimensions, function (did, dimension) {
-            dimension.dimension_map = self._getDefaultRelation(dimension, BI.firstObject(BI.Utils.getCommonForeignTablesByTableIDs(viewTableIds)));
-        });
+        var isFromSameTable = false;
+        if(BI.has(dimensions, dId)){
+            isFromSameTable = BI.isNotNull(BI.find(viewTableIds, function(idx, tableId){
+                return tableId === BI.Utils.getTableIdByFieldID(dimensions[dId]._src.field_id)
+            }));
+        }
+        var defaultCommonTable = BI.firstObject(BI.Utils.getCommonForeignTablesByTableIDs(allTableIds));
+        if(isFromSameTable === false){
+            BI.each(dimensions, function (did, dimension) {
+                dimension.dimension_map = self._getDefaultRelation(dimension, defaultCommonTable);
+            });
+        }else{
+            dimensions[dId].dimension_map = self._getDefaultRelation(dimensions[dId], defaultCommonTable)
+        }
     },
 
     refresh: function () {

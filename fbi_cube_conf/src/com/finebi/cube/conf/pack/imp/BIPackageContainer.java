@@ -196,6 +196,11 @@ public class BIPackageContainer extends BISetContainer<BIBusinessPackage> implem
         biBusinessPackage.removeBusinessTableByID(tableID);
     }
 
+    public void addTable(BIPackageID packageID, BIBusinessTable biBusinessTable) throws BIPackageAbsentException {
+        BIBusinessPackage biBusinessPackage = getPackageObj(packageID);
+        biBusinessPackage.addBusinessTable(biBusinessTable);
+    }
+
     @Override
     public void removeTable(Set<CubeTableSource> absent) {
         Set<String> id = new HashSet<String>();

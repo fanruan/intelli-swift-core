@@ -64,6 +64,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
             height: 25,
             value: o.text,
             textAlign: "center",
+            allowBlank: false,
             validationChecker: function (value) {
                 var packages = BI.Utils.getAllPackageIDs4Conf();
                 return !BI.some(packages, function (i, pID) {
@@ -72,7 +73,13 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
                     }
                 })
             },
-            errorText: BI.i18nText("BI-Busi_Package_Name_Not_Repeat")
+            errorText: function(v){
+                if(BI.isEmptyString(v)){
+                    return BI.i18nText("BI-Busi_Package_Name_Not_Empty");
+                }else{
+                    return BI.i18nText("BI-Busi_Package_Name_Not_Repeat")
+                }
+            }
         });
 
         this.packageNameEditor.on(BI.ShelterEditor.EVENT_CONFIRM, function () {

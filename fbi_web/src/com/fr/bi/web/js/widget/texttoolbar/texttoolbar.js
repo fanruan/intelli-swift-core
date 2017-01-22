@@ -19,13 +19,15 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.size = BI.createWidget({
             type: "bi.text_toolbar_size_chooser",
-            cls: "text-toolbar-size-chooser-trigger"
+            cls: "text-toolbar-size-chooser-trigger",
+            title: BI.i18nText("BI-Font_Size")
         });
         this.size.on(BI.TextToolbarSizeChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.TextToolbar.EVENT_CHANGE, arguments);
         });
         this.bold = BI.createWidget({
             type: "bi.icon_button",
+            title: BI.i18nText("BI-Bold"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-bold-font"
@@ -35,6 +37,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
         });
         this.italic = BI.createWidget({
             type: "bi.icon_button",
+            title: BI.i18nText("BI-Italic"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-italic-font"
@@ -44,6 +47,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
         });
         this.underline = BI.createWidget({
             type: "bi.icon_button",
+            title: BI.i18nText("BI-Underline"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-underline-font"
@@ -55,6 +59,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
             type: "bi.color_chooser",
             el: {
                 type: "bi.text_toolbar_color_chooser_trigger",
+                title: BI.i18nText("BI-Font_Colour"),
                 cls: "text-toolbar-button"
             }
         });
@@ -66,6 +71,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
             type: "bi.color_chooser",
             el: {
                 type: "bi.text_toolbar_background_chooser_trigger",
+                title: BI.i18nText("BI-Widget_Background_Colour"),
                 cls: "text-toolbar-button"
             }
         });
@@ -99,24 +105,24 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         v || (v = {});
-        this.size.setValue(v["font-size"] || 12);
-        this.bold.setSelected(v["font-weight"] === "bold");
-        this.italic.setSelected(v["font-style"] === "italic");
-        this.underline.setSelected(v["text-decoration"] === "underline");
+        this.size.setValue(v["fontSize"] || 14);
+        this.bold.setSelected(v["fontWeight"] === "bold");
+        this.italic.setSelected(v["fontStyle"] === "italic");
+        this.underline.setSelected(v["textDecoration"] === "underline");
         this.colorchooser.setValue(v["color"] || "#000000");
-        this.backgroundchooser.setValue(v["background-color"] || "#ffffff");
-        this.alignchooser.setValue(v["text-align"] || "left");
+        this.backgroundchooser.setValue(v["backgroundColor"] || "#ffffff");
+        this.alignchooser.setValue(v["textAlign"] || "left");
     },
 
     getValue: function () {
         return {
-            "font-size": this.size.getValue(),
-            "font-weight": this.bold.isSelected() ? "bold" : "normal",
-            "font-style": this.italic.isSelected() ? "italic" : "normal",
-            "text-decoration": this.underline.isSelected() ? "underline" : "initial",
+            "fontSize": this.size.getValue(),
+            "fontWeight": this.bold.isSelected() ? "bold" : "normal",
+            "fontStyle": this.italic.isSelected() ? "italic" : "normal",
+            "textDecoration": this.underline.isSelected() ? "underline" : "initial",
             "color": this.colorchooser.getValue(),
-            "background-color": this.backgroundchooser.getValue(),
-            "text-align": this.alignchooser.getValue()
+            "backgroundColor": this.backgroundchooser.getValue(),
+            "textAlign": this.alignchooser.getValue()
         }
     }
 });

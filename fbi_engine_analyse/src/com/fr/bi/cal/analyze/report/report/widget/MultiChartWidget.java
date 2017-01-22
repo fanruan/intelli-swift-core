@@ -29,6 +29,7 @@ public class MultiChartWidget extends TableWidget {
             JSONObject vjo = jo.optJSONObject("view");
             parseView(vjo);
             JSONArray ja = new JSONArray();
+            JSONArray rectJa = new JSONArray();
             Iterator it = vjo.keys();
             List<String> sorted = new ArrayList<String>();
             while (it.hasNext()) {
@@ -36,14 +37,29 @@ public class MultiChartWidget extends TableWidget {
             }
             Collections.sort(sorted, new ChinesePinyinComparator());
             for(String region : sorted){
-                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+//                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
+//                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+//                    continue;
+//                }
+                int regionValue = Integer.parseInt(region);
+                if(regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) &&
+                        regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
+                    if(jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE){
+                        JSONArray tmp =  vjo.getJSONArray(region);
+                        for(int j = 0; j < tmp.length(); j++){
+                            rectJa.put(tmp.getString(j));
+                        }
+                    }
                     continue;
                 }
                 JSONArray tmp =  vjo.getJSONArray(region);
                 for(int j = 0; j < tmp.length(); j++){
                     ja.put(tmp.getString(j));
                 }
+            }
+            if(jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE){
+                vjo.remove(BIReportConstant.REGION.DIMENSION2);
+                vjo.put(BIReportConstant.REGION.DIMENSION1, rectJa);
             }
             vjo.remove(BIReportConstant.REGION.TARGET2);
             vjo.remove(BIReportConstant.REGION.TARGET3);
@@ -52,8 +68,8 @@ public class MultiChartWidget extends TableWidget {
         if(jo.has("type")){
             type = jo.getInt("type");
         }
-        if(jo.has("sub_type")){
-            subType = jo.getString("sub_type");
+        if(jo.has("subType")){
+            subType = jo.getString("subType");
         }
         if(jo.has("clicked")){
             JSONObject c = jo.getJSONObject("clicked");
@@ -175,10 +191,6 @@ public class MultiChartWidget extends TableWidget {
         return dimensionsIdMap.get(id);
     }
 
-    public BISummaryTarget getSummaryTargetById(String targetId){
-        return targetsIdMap.get(targetId);
-    }
-
     public BIDimension getDimensionById(String id){
         for (BIDimension dimension : this.getDimensions()){
             if(ComparatorUtils.equals(dimension.getValue(), id)){
@@ -195,6 +207,29 @@ public class MultiChartWidget extends TableWidget {
             }
         }
         return null;
+    }
+
+    public boolean isDimensionUsable(String id){
+        BIDimension dimension = getDimensionById(id);
+        if(dimension != null){
+            return dimension.isUsed();
+        }
+        BISummaryTarget target = getTargetById(id);
+        if(target != null){
+            return target.isUsed();
+        }
+        return false;
+    }
+
+    public List<BISummaryTarget> getUsedTargets(){
+        List<BISummaryTarget> targets = new ArrayList<BISummaryTarget>();
+        BISummaryTarget[] sourceTarget = this.getTargets();
+        for(int i = 0; i < sourceTarget.length; i++){
+            if(sourceTarget[i].isUsed()){
+                targets.add(sourceTarget[i]);
+            }
+        }
+        return targets;
     }
 
     public Map<Integer, List<String>> getWidgetView(){

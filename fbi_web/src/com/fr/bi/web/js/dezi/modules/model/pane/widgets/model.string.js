@@ -17,6 +17,7 @@ BIDezi.StringWidgetModel = BI.inherit(BI.Model, {
         if (BI.has(changed, "value")) {
             this.tmp({
                 detail: {
+                    name: this.get("name"),
                     dimensions: this.get("dimensions"),
                     view: this.get("view"),
                     type: this.get("type"),
@@ -31,6 +32,7 @@ BIDezi.StringWidgetModel = BI.inherit(BI.Model, {
     refresh: function () {
         this.tmp({
             detail: {
+                name: this.get("name"),
                 dimensions: this.get("dimensions"),
                 view: this.get("view"),
                 type: this.get("type"),
@@ -52,9 +54,7 @@ BIDezi.StringWidgetModel = BI.inherit(BI.Model, {
             if (BI.isNotNull(key)) {
                 var sort = this.get("changeSort");
                 dimensions[key].sort = {type: sort.type, target_id: key};
-
-                var value = BI.Func.getSearchResult(this.get("value").value);
-                value = BI.concat(value.matched, value.finded);
+                var value = this.get("value").value || [];
                 if (sort.type === BICst.SORT.DESC) {
                     value = value.reverse();
                 }

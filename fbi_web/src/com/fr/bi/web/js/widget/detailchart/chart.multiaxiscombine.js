@@ -1,6 +1,6 @@
 /**
- * 图表控件
- * @class BI.MultiAxisChart
+ * 多值轴组合图
+ * @class BI.MultiAxisCombieChart
  * @extends BI.Widget
  * leftYxis 左值轴属性
  * rightYxis 右值轴属性
@@ -45,121 +45,70 @@ BI.MultiAxisCombineChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = this.formatChartStyle();
         this.formatCordon();
-        this.formatChartLegend(config, this.config.chart_legend);
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.plotOptions.connectNulls = this.config.null_continue;
-        config.dataSheet.enabled = this.config.show_data_table;
+        this.formatChartLegend(config, this.config.legend);
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
+        config.dataSheet.enabled = this.config.showDataTable;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
-        config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if (this.config.show_zoom === true) {
-            delete config.dataSheet;
-            delete config.zoom.zoomType;
-        }
+        this.formatZoom(config, this.config.showZoom);
 
         config.yAxis = this.yAxis;
+        config.plotOptions.connectNulls = this.config.nullContinuity;
         BI.each(config.yAxis, function (idx, axis) {
-            var title = "";
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
-                    title = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
-                    axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[0];
-                    BI.extend(axis, {
-                        lineWidth: self.config.line_width,
-                        showLabel: self.config.show_label,
-                        enableTick: self.config.enable_tick,
-                        reversed: self.config.left_y_axis_reversed,
-                        enableMinorTick: self.config.enable_minor_tick,
-                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
-                    });
-                    self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
+                    BI.extend(axis, self.leftAxisSetting(self.config));
+                    self.formatNumberLevelInYaxis(config, items, self.config.leftYNumberLevel, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    title = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
-                    axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[1];
-                    BI.extend(axis, {
-                        lineWidth: self.config.line_width,
-                        showLabel: self.config.show_label,
-                        enableTick: self.config.enable_tick,
-                        reversed: self.config.right_y_axis_reversed,
-                        enableMinorTick: self.config.enable_minor_tick,
-                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)
-                    });
-                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
+                    BI.extend(axis, self.rightAxisSetting(self.config));
+                    self.formatNumberLevelInYaxis(config, items, self.config.rightYNumberLevel, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS_SECOND:
-                    title = self.getXYAxisUnit(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
-                    axis.title.text = self.config.show_right_y_axis_second_title === true ? self.config.right_y_axis_second_title + title : title;
-                    axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[2];
-                    BI.extend(axis, {
-                        lineWidth: self.config.line_width,
-                        showLabel: self.config.show_label,
-                        enableTick: self.config.enable_tick,
-                        reversed: self.config.right_y_axis_second_reversed,
-                        enableMinorTick: self.config.enable_minor_tick,
-                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_second_style, self.config.right_y_axis_second_number_level, self.config.right2_num_separators)
-                    });
-                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_second_number_level, idx, axis.formatter);
+                    BI.extend(axis, self.right2AxisSetting(self.config));
+                    self.formatNumberLevelInYaxis(config, items, self.config.rightY2NumberLevel, idx, axis.formatter);
                     break;
                 default:
                     break;
             }
         });
-        config.xAxis[0].title.align = "center";
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
-        BI.extend(config.xAxis[0], {
-            lineWidth: this.config.line_width,
-            enableTick: this.config.enable_tick,
-            labelRotation: this.config.text_direction,
-            enableMinorTick: this.config.enable_minor_tick,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            maxHeight: '40%'
+
+        BI.extend(config.xAxis[0], self.catSetting(this.config));
+
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
         var lineItem = [];
         var otherItem = [];
         BI.each(items, function (idx, item) {
-            item.color = [config.yAxis[item.yAxis].labelStyle.color];
+            if(config.yAxis[item.yAxis]) {
+                config.yAxis[item.yAxis].lineColor = self.config.chartColor[0];
+                config.yAxis[item.yAxis].tickColor = self.config.chartColor[0];
+            }
+            item.color = [self.config.chartColor[0]];
             if (item.type === "line") {
-                config.chartType = "line";
                 lineItem.push(item);
-            } else if(item.type === "area") {
-                config.chartType = "area";
-                otherItem.push(item);
-            }else {
+            } else {
                 otherItem.push(item);
             }
         });
 
-        //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
+        self.formatDataLabelForAxis(items, config, this.config);
 
         //全局样式的图表文字
         if (config.dataSheet) {
-            config.dataSheet.style = this.config.chart_font;
+            config.dataSheet.style = this.config.chartFont;
         }
-        config.xAxis[0].title.style = config.xAxis[0].labelStyle = this.config.chart_font;
-        config.legend.style = this.config.chart_font;
-        config.plotOptions.dataLabels.style = this.config.chart_font;
-        BI.each(config.yAxis, function (idx, axis) {
-            axis.title.style = self.config.chart_font;
-        });
+        config.plotOptions.dataLabels.style = this.config.chartFont;
 
         return [BI.concat(otherItem, lineItem), config];
     },
 
     formatChartStyle: function () {
-        switch (this.config.chart_style) {
+        switch (this.config.chartStyle) {
             case BICst.CHART_STYLE.STYLE_GRADUAL:
                 return "gradual";
             case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -173,7 +122,7 @@ BI.MultiAxisCombineChart = BI.inherit(BI.AbstractChart, {
         var magnify = 1;
         BI.each(this.config.cordon, function (idx, cor) {
             if (idx === 0 && self.xAxis.length > 0) {
-                magnify = self.calcMagnify(self.config.x_axis_number_level);
+                magnify = self.calcMagnify(1);
                 self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                     return BI.extend(t, {
                         value: t.value.div(magnify),
@@ -195,13 +144,13 @@ BI.MultiAxisCombineChart = BI.inherit(BI.AbstractChart, {
                 magnify = 1;
                 switch (idx - 1) {
                     case self.constants.LEFT_AXIS:
-                        magnify = self.calcMagnify(self.config.left_y_axis_number_level);
+                        magnify = self.calcMagnify(self.config.leftYNumberLevel);
                         break;
                     case self.constants.RIGHT_AXIS:
-                        magnify = self.calcMagnify(self.config.right_y_axis_number_level);
+                        magnify = self.calcMagnify(self.config.rightYNumberLevel);
                         break;
                     case self.constants.RIGHT_AXIS_SECOND:
-                        magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
+                        magnify = self.calcMagnify(self.config.rightY2NumberLevel);
                         break;
                     default:
                         break;
@@ -226,84 +175,12 @@ BI.MultiAxisCombineChart = BI.inherit(BI.AbstractChart, {
         })
     },
 
-    getXYAxisUnit: function (numberLevelType, position) {
-        var unit = "";
-        switch (numberLevelType) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                unit = "";
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                unit = BI.i18nText("BI-Wan");
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                unit = BI.i18nText("BI-Million");
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                unit = BI.i18nText("BI-Yi");
-                break;
-            default:
-                break;
-        }
-        if (position === this.constants.X_AXIS) {
-            this.config.x_axis_unit !== "" && (unit = unit + this.config.x_axis_unit)
-        }
-        if (position === this.constants.LEFT_AXIS) {
-            this.config.left_y_axis_unit !== "" && (unit = unit + this.config.left_y_axis_unit)
-        }
-        if (position === this.constants.RIGHT_AXIS) {
-            this.config.right_y_axis_unit !== "" && (unit = unit + this.config.right_y_axis_unit)
-        }
-        if (position === this.constants.RIGHT_AXIS_SECOND) {
-            this.config.right_y_axis_second_unit !== "" && (unit = unit + this.config.right_y_axis_second_unit)
-        }
-        return unit === "" ? unit : "(" + unit + ")";
-    },
-
     populate: function (items, options, types) {
+        //按照系列分组堆积
+        //items = this.formatSeriesAccumulation(items, options.seriesAccumulation);
         var self = this, c = this.constants;
-        this.config = {
-            left_y_axis_title: options.left_y_axis_title || "",
-            right_y_axis_title: options.right_y_axis_title || "",
-            right_y_axis_second_title: options.right_y_axis_second_title || "",
-            chart_color: options.chart_color || ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
-            chart_style: options.chart_style || c.NORMAL,
-            left_y_axis_style: options.left_y_axis_style || c.NORMAL,
-            right_y_axis_style: options.right_y_axis_style || c.NORMAL,
-            right_y_axis_second_style: options.right_y_axis_second_style || c.NORMAL,
-            show_x_axis_title: options.show_x_axis_title || false,
-            show_left_y_axis_title: options.show_left_y_axis_title || false,
-            show_right_y_axis_title: options.show_right_y_axis_title || false,
-            show_right_y_axis_second_title: options.show_right_y_axis_second_title || false,
-            left_y_axis_reversed: options.left_y_axis_reversed || false,
-            right_y_axis_reversed: options.right_y_axis_reversed || false,
-            right_y_axis_second_reversed: options.right_y_axis_second_reversed || false,
-            left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
-            right_y_axis_number_level: options.right_y_axis_number_level || c.NORMAL,
-            right_y_axis_second_number_level: options.right_y_axis_second_number_level || c.NORMAL,
-            x_axis_unit: options.x_axis_unit || "",
-            left_y_axis_unit: options.left_y_axis_unit || "",
-            right_y_axis_unit: options.right_y_axis_unit || "",
-            right_y_axis_second_unit: options.right_y_axis_second_unit || "",
-            x_axis_title: options.x_axis_title || "",
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false,
-            show_data_table: options.show_data_table || false,
-            show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
-            show_zoom: options.show_zoom || false,
-            text_direction: options.text_direction || 0,
-            cordon: options.cordon || [],
-            line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
-            show_label: BI.isNull(options.show_label) ? true : options.show_label,
-            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
-            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-            num_separators: options.num_separators || false,
-            right_num_separators: options.right_num_separators || false,
-            right2_num_separators: options.right2_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE,
-            null_continue: options.null_continue || false
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
-
         this.yAxis = [];
         BI.each(types, function (idx, type) {
             if (BI.isEmptyArray(type)) {

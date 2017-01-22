@@ -385,7 +385,7 @@ public class BIReportConstant {
 
         public static final int PIE = 0x15;                //饼图
 
-        public static final int DONUT = 0x16;              //donut
+        public static final int DONUT = 0x16;              //圆环图
 
         public static final int MAP = 0x17;                //地图
         public static final int GIS_MAP = 0x18;           //GIS地图
@@ -402,10 +402,22 @@ public class BIReportConstant {
 
         public static final int FUNNEL = 0x1f;            //漏斗图
 
+        public static final int RECT_TREE = 0x27;       //矩形树图
+        public static final int MULTI_PIE = 0x28;       //多层饼图
+
+        public static final int HEAT_MAP = 0x41;             //热力地图
+        public static final int PARETO = 0x42;           //帕累托图
+
 
         public static final int STRING = 0x20;            //文本控件
         public static final int NUMBER = 0x21;            //数值控件
-        public static final int TREE = 0x22;              //树控件
+        public static final int TREE = 0x22;             //树控件
+        public static final int SINGLE_SLIDER = 0x23;      //单值滑块
+        public static final int INTERVAL_SLIDER = 0x24;     //区间滑块
+        public static final int LIST_LABEL = 0x25;        //文本标签
+        public static final int TREE_LABEL = 0x26;        //树标签
+        public static final int STRING_LIST = 0x3b;         //文本列表
+        public static final int TREE_LIST = 0x3c;       //树列表
 
         //仅前台使用的部分类型
         public static final int DATE = 0x30;
@@ -424,6 +436,11 @@ public class BIReportConstant {
         public static final int TABLE_SHOW = 0x40;
 
         public static final int NONE = -1;
+    }
+
+    public static final class EXPORT {
+        public static final int EXCEL = 0x1;
+        public static final int PDF = 0x2;
     }
 
     public static final class REGION {
@@ -511,6 +528,11 @@ public class BIReportConstant {
         public static final int TREE_ITEM_COUNT_PER_PAGE = 0x64;
     }
 
+    public static final class TREE_LABEL {
+
+        public static final int TREE_LABEL_ITEM_COUNT_NUM = 0x28;
+    }
+
     public static final class FIELD_ID {
         public static final String HEAD = "81c48028-1401-11e6-a148-3e1d05defe78";
     }
@@ -546,7 +568,7 @@ public class BIReportConstant {
         }
 
         @Override
-        public String toString(){
+        public String toString() {
             return String.valueOf(this.status);
         }
     }
@@ -558,6 +580,7 @@ public class BIReportConstant {
             public static final int ONE2POINT = 3;
             public static final int TWO2POINT = 4;
         }
+
         public static final class NUM_LEVEL {
             public static final int NORMAL = 1;
             public static final int TEN_THOUSAND = 2;
@@ -565,6 +588,7 @@ public class BIReportConstant {
             public static final int YI = 4;
             public static final int PERCENT = 5;
         }
+
         public static final class ICON_STYLE {
             public static final int NONE = 1;
             public static final int POINT = 2;

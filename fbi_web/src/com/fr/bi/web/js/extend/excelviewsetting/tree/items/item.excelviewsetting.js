@@ -12,7 +12,8 @@ BI.ExcelViewSettingItem = BI.inherit(BI.BasicButton, {
             baseCls: "bi-excel-view-setting-item",
             height: 25,
             field: "",
-            value: ""
+            value: "",
+            tableName: ""
         });
     },
 
@@ -24,6 +25,7 @@ BI.ExcelViewSettingItem = BI.inherit(BI.BasicButton, {
             type: "bi.label",
             textAlign: BI.HorizontalAlign.Left,
             hgap: 10,
+            title: o.tableName + "." + o.field,
             text: o.field,
             height: o.height
         });
@@ -42,14 +44,14 @@ BI.ExcelViewSettingItem = BI.inherit(BI.BasicButton, {
             height: 16,
             title: BI.i18nText("BI-Clear")
         });
-        removeButton.on(BI.IconButton.EVENT_CHANGE, function(){
+        removeButton.on(BI.IconButton.EVENT_CHANGE, function () {
             o.clearOneCell(o.value);
             removeButton.setVisible(false);
         });
         removeButton.setVisible(false);
-        this.element.hover(function(){
+        this.element.hover(function () {
             BI.isNotEmptyString(self._getShowText()) && removeButton.setVisible(true);
-        }, function(){
+        }, function () {
             removeButton.setVisible(false);
         });
         BI.createWidget({
@@ -80,12 +82,12 @@ BI.ExcelViewSettingItem = BI.inherit(BI.BasicButton, {
         return "";
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.options.value;
     },
 
-    getPosition: function(){
-        if(BI.isNotNull(this.row) && BI.isNotNull(this.col)) {
+    getPosition: function () {
+        if (BI.isNotNull(this.row) && BI.isNotNull(this.col)) {
             return {
                 row: this.row,
                 col: this.col

@@ -29,12 +29,22 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
             var paths = self._packageValueByValue(this.getValue());
             self.lpath = paths.lpath;
             self.rpath = paths.rpath;
+            self.fireEvent(BI.MultiMatchMultiPathChooser.EVENT_PATH_CHANGE, self.lpath.length !== 0 && self.rpath.length !== 0);
         });
         this.lpath = [];
         this.rpath = [];
         this.pathValueMap = {};
         this.pathRelationMap = {};
 
+        this.tipTab = BI.createWidget({
+            direction: "custom",
+            type: "bi.tab",
+            defaultShowIndex: false,
+            logic: {
+                dynamic: true
+            },
+            cardCreator: BI.bind(this._createTabs, this)
+        });
         BI.createWidget({
             type: "bi.vertical",
             hgap: 10,
@@ -44,8 +54,31 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                 type: "bi.horizontal",
                 scrollx: false,
                 items: [this.pathChooser]
-            }]
+            }, this.tipTab]
         });
+    },
+
+    _createTabs: function (v) {
+        switch (v) {
+            case this.constants.NoPath:
+                return BI.createWidget({
+                    type: "bi.label",
+                    textAlign: "left",
+                    lgap: 20,
+                    text: BI.i18nText("BI-Tip_Dimension_Target_No_Relation_May_Need_Change"),
+                    cls: "no-path-label"
+                });
+            case this.constants.OnePath:
+                return BI.createWidget({
+                    type: "bi.label",
+                    textAlign: "left",
+                    lgap: 20,
+                    text: BI.i18nText("BI-Tip_Only_One_Path_Between_Dimension_Target_And_Combine_Table"),
+                    cls: "one-path-label"
+                });
+            case this.constants.MorePath:
+                return BI.createWidget();
+        }
     },
 
     _checkPathOfOneTable: function(value){
@@ -100,13 +133,15 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                 }
             });
             //左右两侧路径上的value值可能相同，相同的话要改一下
-            var leftValues = BI.pluck(joinRegion[idx], "value");
-            BI.each(p, function(id, obj){
-                if(BI.contains(leftValues, obj.value) && obj.text !== BI.i18nText("BI-Primary_Key")){
-                    obj.value = BI.UUID();
-                    obj.region = BI.UUID();
-                }
-            });
+            BI.each(joinRegion, function(j, region){
+                var leftValues = BI.pluck(region, "value");
+                BI.each(p, function(id, obj){
+                    if(BI.contains(leftValues, obj.value) && obj.text !== BI.i18nText("BI-Primary_Key")){
+                        obj.value = BI.UUID();
+                        obj.region = BI.UUID();
+                    }
+                });
+            })
             self.pathValueMap[pId] = BI.pluck(p, "value");
             self.pathRelationMap[pId] = path;
             return p;
@@ -204,8 +239,8 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
             return BI.isNotNull(lkey) && BI.isNotNull(rkey);
         });
         var result = {};
-        result.lpath = this.pathRelationMap[lkey] || this.lpath;
-        result.rpath = this.pathRelationMap[rkey] || this.rpath;
+        result.lpath = this.pathRelationMap[lkey] || [];
+        result.rpath = this.pathRelationMap[rkey] || [];
         return result;
     },
 
@@ -229,23 +264,19 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         return v;
     },
 
-    _joinRegion: function(items){
-        BI.each(items, function(){
-
-        });
-    },
-
     populate: function (items) {
         this.path = [];
         this.pathRelationMap = {};
         this.pathValueMap = {};
         this.options.combineTableId = items.combineTableId;
         items = this._createRegionPathsByItems(items);
-        this._joinRegion(items);
         this.pathChooser.populate(items);
         if(items.length > 1){
             this.pathChooser.setValue();
         }
+        var pathCount = items.length;
+        this.fireEvent(BI.MultiMatchMultiPathChooser.EVENT_PATH_CHANGE, pathCount === 1);
+        this.tipTab.setSelect(pathCount > 1 ? this.constants.MorePath : (pathCount === 1 ? this.constants.OnePath : this.constants.NoPath));
     },
 
     _assertValue: function (v) {
@@ -266,4 +297,5 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
         return [this.lpath, this.rpath];
     }
 });
+BI.MultiMatchMultiPathChooser.EVENT_PATH_CHANGE = "EVENT_PATH_CHANGE";
 $.shortcut('bi.multi_match_multi_path_chooser', BI.MultiMatchMultiPathChooser);

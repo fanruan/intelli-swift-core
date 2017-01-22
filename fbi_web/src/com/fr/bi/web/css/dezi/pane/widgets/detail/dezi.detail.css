@@ -10,6 +10,10 @@
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
+.bi-widget-attribute-setter .widget-top-name {
+  font-size: 14px;
+  font-weight: bold;
+}
 .bi-widget-attribute-setter .widget-attr-center .widget-top-wrapper {
   background: #ffffff;
   -webkit-border-radius: 2px;

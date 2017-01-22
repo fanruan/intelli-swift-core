@@ -7,13 +7,83 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.GISMapSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-gis-map-chart-setting"
         })
     },
 
     _init: function(){
         BI.GISMapSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
+
+        //显示组件标题
+        this.showName = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Chart_Title"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
+        });
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
+            self.widgetTitle.setVisible(this.isSelected());
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
+        });
+
+        //组件标题
+        this.widgetName = BI.createWidget({
+            type: "bi.sign_editor",
+            cls: "title-input",
+            width: 120
+        });
+
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE)
+        });
+
+        //详细设置
+        this.widgetNameStyle = BI.createWidget({
+            type: "bi.show_title_detailed_setting_combo"
+        });
+
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE)
+        });
+
+        this.widgetTitle = BI.createWidget({
+            type: "bi.left",
+            items: [this.widgetName, this.widgetNameStyle],
+            hgap: constant.SIMPLE_H_GAP
+        });
+
+        //组件背景
+        this.widgetBG = BI.createWidget({
+            type: "bi.global_style_index_background"
+        });
+        this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
+        });
+
+        var widgetTitle = BI.createWidget({
+            type: "bi.left",
+            cls: "single-line-settings",
+            items: BI.createItems([{
+                type: "bi.vertical_adapt",
+                items: [this.showName]
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.widgetTitle]
+            }, {
+                type: "bi.label",
+                text: BI.i18nText("BI-Widget_Background_Colour"),
+                cls: "line-title",
+            },{
+                type: "bi.vertical_adapt",
+                items: [this.widgetBG]
+            }], {
+                height: constant.SINGLE_LINE_HEIGHT
+            }),
+            hgap: constant.SIMPLE_H_GAP
+        });
 
         //数据标签
         this.showDataLabel = BI.createWidget({
@@ -23,28 +93,17 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+            self.dataLabelSetting.setVisible(this.isSelected());
             self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
         });
 
-        //显示背景图层
-        this.isShowBackgroundLayer = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-SHOW_BACKGROUND_LAYER"),
-            width: 110
+        this.dataLabelSetting = BI.createWidget({
+            type: "bi.data_label_detailed_setting_combo",
+            wId: o.wId,
         });
 
-        this.isShowBackgroundLayer.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.selectLayerCombo.setVisible(true) : self.selectLayerCombo.setVisible(false);
-            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
-        });
-
-        this.selectLayerCombo = BI.createWidget({
-            type: "bi.text_value_combo",
-            width: constant.COMBO_WIDTH,
-            height: constant.EDITOR_HEIGHT
-        });
-        this.selectLayerCombo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
+        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
         });
 
         var showElement = BI.createWidget({
@@ -66,10 +125,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showDataLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.isShowBackgroundLayer]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.selectLayerCombo]
+                    items: [this.dataLabelSetting]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -77,14 +133,14 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        //联动传递指标过滤条件
+        //联动传递过滤条件
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({
@@ -104,51 +160,38 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [showElement, otherAttr],
+            items: [widgetTitle, showElement, otherAttr],
             hgap: 10
         })
     },
 
     populate: function(){
         var wId = this.options.wId;
+        this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
+        this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
+        this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+
+        this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
+
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.isShowBackgroundLayer.setSelected(BI.Utils.getWSShowBackgroundByID(wId));
-        this.isShowBackgroundLayer.isSelected() ? this.selectLayerCombo.setVisible(true) : this.selectLayerCombo.setVisible(false);
-        var items = BI.map(MapConst.WMS_INFO, function (name, obj) {
-            if (obj.type === BICst.TILELAYER_SERVER) {
-                return {
-                    text: name,
-                    title: name,
-                    value: name
-                }
-            }
-            if (obj.type === BICst.WMS_SERVER) {
-                return {
-                    text: name,
-                    title: name,
-                    value: name
-                }
-            }
-        });
-        this.selectLayerCombo.populate(items);
-        this.selectLayerCombo.setValue(BI.Utils.getWSBackgroundLayerInfoByID(wId));
     },
 
     getValue: function(){
         return {
-            transfer_filter: this.transferFilter.isSelected(),
-            show_data_label: this.showDataLabel.isSelected(),
-            show_background_layer: this.isShowBackgroundLayer.isSelected(),
-            background_layer_info: this.selectLayerCombo.getValue()[0]
-        }
-    },
+            showName: this.showName.isSelected(),
+            widgetName: this.widgetName.getValue(),
+            widgetNameStyle: this.widgetNameStyle.getValue(),
 
-    setValue: function(v){
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.showDataLabel.setSelected(v.show_data_label);
-        this.isShowBackgroundLayer.setSelected(v.show_background_layer);
-        this.selectLayerCombo.setValue(v.background_layer_info);
+            widgetBG: this.widgetBG.getValue(),
+            showDataLabel: this.showDataLabel.isSelected(),
+            dataLabelSetting: this.dataLabelSetting.setValue(),
+
+            transferFilter: this.transferFilter.isSelected(),
+        }
     }
 });
 BI.GISMapSetting.EVENT_CHANGE = "EVENT_CHANGE";

@@ -89,6 +89,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                 values: BI.concat([{
                     dId: dId,
                     value: [BI.Utils.getClickedValue4Group(value, dId)]
+
                 }], o.pValues)
             });
         }
@@ -99,13 +100,13 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
     _getFormatDateText: function(type, text){
         switch (type) {
             case BICst.GROUP.S:
-                text = BICst.FULL_QUARTER_NAMES[text - 1];
+                text = BICst.FULL_QUARTER_NAMES[text];
                 break;
             case BICst.GROUP.M:
-                text = BICst.FULL_MONTH_NAMES[text - 1];
+                text = BICst.FULL_MONTH_NAMES[text];
                 break;
             case BICst.GROUP.W:
-                text = BICst.FULL_WEEK_NAMES[text - 1];
+                text = BICst.FULL_WEEK_NAMES[text];
                 break;
             case BICst.GROUP.YMD:
                 var date = new Date(BI.parseInt(text));
@@ -121,20 +122,24 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             return v;
         }
         v = v || {};
-        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
         var value = v.xValue;
         switch (wType) {
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.SCATTER:
                 value = v.zValue;
                 break;
-            case BICst.WIDGET.TABLE:
+            case BICst.WIDGET.RECT_TREE:
+                var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
+                value = ((BI.Utils.isDimensionRegion1ByRegionType(regionType) || BI.isEmpty(v.parents)) ? v.xValue : v.parents[0].xValue);
+                break;
             case BICst.WIDGET.CROSS_TABLE:
             case BICst.WIDGET.COMPLEX_TABLE:
                 value = BI.has(v, "xValue") ? v.xValue : v.zValue;
                 break;
             default:
-                var drillMap = BI.Utils.getDrillByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+                var drillMap = BI.Utils.getDrillByID(wId);
                 var drillDid = o.dId;
                 BI.any(drillMap, function (drId, ds) {
                     if (ds.length > 0 && (o.dId === drId || ds[ds.length - 1].dId === o.dId)) {
@@ -142,8 +147,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                         return true;
                     }
                 });
-                var regionType = BI.Utils.getRegionTypeByDimensionID(drillDid);
-                value = ((regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) ? v.xValue : v.zValue);
+                value = ((BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(drillDid))) ? (v.xValue) : v.zValue);
                 break;
         }
         return value;

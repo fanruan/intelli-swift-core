@@ -7,6 +7,7 @@ BIShow.WidgetModel = BI.inherit(BI.Model, {
             type: BICst.WIDGET.TABLE,
             dimensions: {},
             view: {},
+            settings: {},
             _page_: {}  //一个只前台使用的当前page属性 不要随便拿了用
         })
     },
@@ -14,7 +15,7 @@ BIShow.WidgetModel = BI.inherit(BI.Model, {
     change: function (changed, pre) {
         if (BI.has(changed, "detail")) {
             this.set(this.get("detail"), {
-                notrefresh: true
+                // notrefresh: true
             });
         }
         //维度或指标改变时需要调节联动设置

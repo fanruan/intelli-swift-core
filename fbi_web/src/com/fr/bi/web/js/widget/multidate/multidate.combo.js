@@ -67,6 +67,11 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                     self.combo.hideView();
                 }
             });
+            this.trigger.on(BI.DateTrigger.EVENT_STOP, function(){
+                if(!self.combo.isViewVisible()){
+                    self.combo.showView();
+                }
+            });
             this.trigger.on(BI.DateTrigger.EVENT_TRIGGER_CLICK, function(){
                 self.combo.toggle();
             });
@@ -78,6 +83,11 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                 self.fireEvent(BI.MultiDateCombo.EVENT_FOCUS);
             });
             this.trigger.on(BI.DateTrigger.EVENT_ERROR, function () {
+                self.storeValue = {
+                    year: date.getFullYear(),
+                    month: date.getMonth()
+                };
+                self.popup.setValue();
                 self.fireEvent(BI.MultiDateCombo.EVENT_ERROR);
             });
             this.trigger.on(BI.DateTrigger.EVENT_VALID, function () {

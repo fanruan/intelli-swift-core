@@ -20,6 +20,7 @@ BI.RelationSettingTable = BI.inherit(BI.Widget, {
         });
         this.setGroup.on(BI.Controller.EVENT_CHANGE, function(){
             arguments[1] = BI.RelationSettingTable.CLICK_GROUP;
+            self.tableButton.setPrimaryKeyIconVisible(!(this.getValue()[0] === BICst.RELATION_TYPE.ONE_TO_N));
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         this.tableButton = BI.createWidget({
@@ -28,6 +29,7 @@ BI.RelationSettingTable = BI.inherit(BI.Widget, {
             field_name: model.getFieldNameByFieldId(o.fieldId),
             field_id: o.fieldId
         });
+        o.relationType && self.tableButton.setPrimaryKeyIconVisible(!(o.relationType === BICst.RELATION_TYPE.ONE_TO_N));
         this.tableButton.on(BI.Controller.EVENT_CHANGE, function(){
             arguments[1] = BI.RelationSettingTable.CLICK_TABLE;
             arguments[2] = o.fieldId;
@@ -36,6 +38,7 @@ BI.RelationSettingTable = BI.inherit(BI.Widget, {
         var removeButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "close-h-font",
+            invisible: true,
             height: 20,
             width: 20
         });
@@ -44,13 +47,20 @@ BI.RelationSettingTable = BI.inherit(BI.Widget, {
             arguments[1] = BI.RelationSettingTable.CLICK_REMOVE;
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+
         BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.vertical_adapt",
             element: this.element,
             items: [this.setGroup, this.tableButton, removeButton],
             hgap: 20,
             vgap: 5
-        })
+        });
+
+        this.element.hover(function(){
+            removeButton.setVisible(true);
+        },function(){
+            removeButton.setVisible(false);
+        });
     },
 
     getValue: function(){

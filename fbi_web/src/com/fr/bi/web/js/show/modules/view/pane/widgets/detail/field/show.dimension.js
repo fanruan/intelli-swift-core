@@ -30,6 +30,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             this.htape.attr("items")[this.constants.ICON_BUTTON_POS].width = (BI.isEmpty(changed.filter_value) ? 0 : this.constants.ICON_BUTTON_WIDTH);
             this.htape.resize();
         }
+        if (BI.has(changed, "used")) {
+            this.usedCheck.setSelected(changed.used);
+            this.usedRadio.setSelected(changed.used);
+        }
     },
 
     _render: function (vessel) {
@@ -152,13 +156,13 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             wType !== BICst.WIDGET.CROSS_TABLE &&
             wType !== BICst.WIDGET.COMPLEX_TABLE &&
             wType !== BICst.WIDGET.GIS_MAP)
-            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION2
+            && BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(this.model.get("id")))
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
             this.usedRadio.setEnable(false);
         }
         if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
-            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION1
+            && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(this.model.get("id")))
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
             this.usedRadio.setEnable(false);
@@ -216,6 +220,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                 case BICst.DIMENSION_STRING_COMBO.DT_RELATION:
                     self._buildMatchingRelationShipPane();
                     break;
+                case BICst.DIMENSION_STRING_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.DIMENSION_STRING_COMBO.COPY:
                     self._copyDimension();
                     break;
@@ -256,6 +264,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.DT_RELATION:
                     self._buildMatchingRelationShipPane();
+                    break;
+                case BICst.DIMENSION_NUMBER_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.COPY:
                     self._copyDimension();
@@ -303,6 +315,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_DATE_COMBO.DT_RELATION:
                     self._buildMatchingRelationShipPane();
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
                     break;
                 case BICst.DIMENSION_DATE_COMBO.COPY:
                     self._copyDimension();

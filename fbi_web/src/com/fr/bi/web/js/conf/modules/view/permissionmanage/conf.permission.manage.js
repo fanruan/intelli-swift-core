@@ -86,7 +86,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
 
         this.clearButton = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Clear"),
+            text: BI.i18nText("BI-Clears"),
             height: 30,
             cls: "select-field"
         });
@@ -145,7 +145,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         var loginField = BI.Utils.getAuthorityLoginField();
         var allFields = Data.SharingPool.get("fields");
         if(BI.isNotNull(loginField) && BI.isNotNull(allFields[loginField])) {
-            this.loginField.setText(BI.Utils.getTableNameByFieldId4Conf(loginField) + "." + BI.Utils.getFieldNameByFieldId4Conf(loginField));
+            this.loginField.setText(BI.Utils.getTableNameByFieldId4Conf(loginField) + "." + BI.Utils.getFieldNameById4Conf(loginField));
             this.loginField.setVisible(true);
             this.selectField.setVisible(false);
             this.setButton.setVisible(true);

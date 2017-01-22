@@ -299,11 +299,11 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     private void parseSettingMap(JSONObject jo) throws Exception {
         if (jo.has("settings")) {
             JSONObject settings = jo.getJSONObject("settings");
-            if (settings.has("max_row")) {
-                this.maxRow = settings.getInt("max_row");
+            if (settings.has("maxRow")) {
+                this.maxRow = settings.getInt("maxRow");
             }
-            if (settings.has("max_col")) {
-                this.maxCol = settings.getInt("max_col");
+            if (settings.has("maxCol")) {
+                this.maxCol = settings.getInt("maxCol");
             }
         }
     }

@@ -452,6 +452,9 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
+        this.table.attr("headerRowSize", this.model.getHeaderRowSize());
+        this.table.attr("footerRowSize", this.model.getFooterRowSize());
+        this.table.attr("rowSize", this.model.getRowSize());
         this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
         this._afterTablePopulate();
     },
@@ -462,6 +465,9 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
+        this.table.attr("headerRowSize", this.model.getHeaderRowSize());
+        this.table.attr("footerRowSize", this.model.getFooterRowSize());
+        this.table.attr("rowSize", this.model.getRowSize());
         this.table.refresh(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
         this._afterTablePopulate();
     },
@@ -493,10 +499,10 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
                 self.model.setDataAndPage(jsonData);
                 // try {
                 //考虑只有行表头情况
-                if (self.model._isColRegionExist()) {
-                    self._prepareData();
+                if (!self.model._isColRegionExist() || !self.model._isRowRegionExist()) {
+                    self._prepareGroupTableData();
                 } else {
-                    self._prepareGroupTableData()
+                    self._prepareData();
                 }
                 if (self.model.getTableForm() !== self.tableForm) {
                     self._createTable();

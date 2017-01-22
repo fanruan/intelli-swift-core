@@ -30,14 +30,14 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 el: {
                     text: BI.i18nText("BI-Ascend"),
                     value: BICst.DIMENSION_STRING_COMBO.ASCEND,
-                    iconCls1: ""
+                    iconCls1: "dot-e-font"
                 },
                 children: []
             }, {
                 el: {
                     text: BI.i18nText("BI-Descend"),
                     value: BICst.DIMENSION_STRING_COMBO.DESCEND,
-                    iconCls1: ""
+                    iconCls1: "dot-e-font"
                 },
                 children: []
             }, {
@@ -59,12 +59,22 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 text: BI.i18nText("BI-Show_Qualified_Result"),
                 title: BI.i18nText("BI-Dimension_Filter_Title"),
                 value: BICst.DIMENSION_STRING_COMBO.FILTER,
+                title: BI.i18nText("BI-Dimension_Filter_Tip"),
                 cls: "filter-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Math_Relationships"),
                 value: BICst.DIMENSION_STRING_COMBO.DT_RELATION,
                 cls: ""
+            }],
+            [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.DIMENSION_STRING_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+            }],
+            [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.DIMENSION_STRING_COMBO.RENAME
             }],
             [{
                 text: BI.i18nText("BI-Copy"),
@@ -97,7 +107,47 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
      return items;
      },*/
 
-    typeConfig: function () {
+    _rebuildItems: function () {
+        var chartTypes = [
+            BICst.WIDGET.ACCUMULATE_AREA,
+            BICst.WIDGET.ACCUMULATE_AXIS,
+            BICst.WIDGET.ACCUMULATE_BAR,
+            BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+            BICst.WIDGET.PERCENT_ACCUMULATE_AXIS
+        ];
+        var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
+        var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        if(BI.Utils.isDimensionRegion2ByRegionType(rType) && BI.contains(chartTypes, wType)) {
+            items.splice(2, 0, [{
+                text: BI.i18nText("BI-Series_Accumulation_Setting"),
+                cls: "",
+                value: BICst.DIMENSION_STRING_COMBO.SERIES_ACCUMULATION_ATTRIBUTE
+            }]);
+        }
+        if(BI.Utils.isDimensionRegion2ByRegionType(rType) && wType === BICst.WIDGET.COMBINE_CHART) {
+            items.splice(2, 0, [{
+                el: {
+                    text: BI.i18nText("BI-Series_Accumulation_Setting"),
+                    cls: "",
+                    value: BICst.DIMENSION_STRING_COMBO.SERIES_ACCUMULATION_ATTRIBUTE
+                },
+                children:[{
+                    text: BI.i18nText("BI-No_Accumulation"),
+                    value: BICst.DIMENSION_STRING_COMBO.NO_SERIES,
+                    cls: "dot-e-font"
+                },{
+                    text: BI.i18nText("BI-Series_Accumulation"),
+                    value: BICst.DIMENSION_STRING_COMBO.SERIES_ACCUMULATION,
+                    cls: "dot-e-font"
+                }]
+            }]);
+        }
+        return items
+    },
+
+
+    typeConfig: function(){
         return this.config;
     },
 

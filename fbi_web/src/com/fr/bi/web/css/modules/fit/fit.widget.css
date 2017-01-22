@@ -1,17 +1,23 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
+.bi-fit-widget {
+  -webkit-transition: left,top 200ms ease;
+  -moz-transition: left,top 200ms ease;
+  -o-transition: left,top 200ms ease;
+  transition: left,top 200ms ease;
+}
+.bi-fit-widget.selected {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
 .bi-fit-widget .fit-widget-draggable {
   cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_hand.cur'), auto;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
-  cursor: grab;
 }
 .bi-fit-widget .fit-widget-draggable:active {
   cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), auto;
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
-  cursor: grabbing;
 }
 .bi-fit-widget .fit-widget-drag-bar {
   background: #d4dadd;

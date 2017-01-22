@@ -115,7 +115,7 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 break;
             case BICst.FILTER_DATE.BELONG_WIDGET_VALUE:
             case BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE:
-                this._createWidgetTab([BICst.WIDGET.DATE, BICst.WIDGET.YEAR, BICst.WIDGET.QUARTER, BICst.WIDGET.MONTH, BICst.WIDGET.YMD], filterValue, false);
+                this._createWidgetTab([BICst.WIDGET.DATE, BICst.WIDGET.YEAR, BICst.WIDGET.QUARTER, BICst.WIDGET.MONTH, BICst.WIDGET.YMD, BICst.WIDGET.DATE_PANE], filterValue, false);
                 break;
             case BICst.FILTER_DATE.LATER_THAN:
             case BICst.FILTER_DATE.EARLY_THAN:

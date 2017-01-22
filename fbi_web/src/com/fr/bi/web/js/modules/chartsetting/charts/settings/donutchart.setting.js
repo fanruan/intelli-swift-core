@@ -5,28 +5,83 @@
  */
 BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.DonutChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-donut-chart-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.DonutChartSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
-        this.colorSelect = BI.createWidget({
+        //显示组件标题
+        this.showName = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Chart_Title"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
+        });
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
+            self.widgetTitle.setVisible(this.isSelected());
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
+        });
+
+        //组件标题
+        this.widgetName = BI.createWidget({
+            type: "bi.sign_editor",
+            cls: "title-input",
+            width: 120
+        });
+
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE)
+        });
+
+        //详细设置
+        this.widgetNameStyle = BI.createWidget({
+            type: "bi.show_title_detailed_setting_combo"
+        });
+
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE)
+        });
+
+        this.widgetTitle = BI.createWidget({
+            type: "bi.left",
+            items: [this.widgetName, this.widgetNameStyle],
+            hgap: constant.SIMPLE_H_GAP
+        });
+
+        var widgetTitle = BI.createWidget({
+            type: "bi.left",
+            cls: "single-line-settings",
+            items: BI.createItems([{
+                type: "bi.vertical_adapt",
+                items: [this.showName]
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.widgetTitle]
+            }], {
+                height: constant.SINGLE_LINE_HEIGHT
+            }),
+            hgap: constant.SIMPLE_H_GAP
+        });
+
+        this.chartColor = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
             width: 130
         });
-        this.colorSelect.populate();
+        this.chartColor.populate();
 
-        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
+        this.chartColor.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
         });
 
         //风格——1、2、3
-        this.chartStyleGroup = BI.createWidget({
+        this.chartStyle = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
                 type: "bi.icon_button",
@@ -41,17 +96,25 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 height: constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+        this.chartStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
+        });
+
+        //组件背景
+        this.widgetBG = BI.createWidget({
+            type: "bi.global_style_index_background"
+        });
+        this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Table_Sheet_Style"),
+                text: BI.i18nText("BI-Chart"),
                 lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
@@ -60,39 +123,30 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Chart_Color"),
+                    text: BI.i18nText("BI-Color_Setting"),
                     cls: "attr-names"
                 }, {
-                    el: {
-                        type: "bi.center_adapt",
-                        items: [this.colorSelect]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
+                    type: "bi.vertical_adapt",
+                    items: [this.chartColor]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
-                    cls: "attr-names",
-                    lgap: constant.SIMPLE_H_GAP
+                    cls: "attr-names"
                 }, {
-                    el: {
-                        type: "bi.center_adapt",
-                        items: [this.chartStyleGroup]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
+                    type: "bi.vertical_adapt",
+                    items: [this.chartStyle]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Widget_Background_Colour"),
+                    cls: "line-title",
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.widgetBG]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
-                })
+                }),
+                lgap: constant.SIMPLE_H_GAP
             }]
-        });
-
-        //联动传递指标过滤条件
-        this.transferFilter = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Bind_Target_Condition"),
-            width: 170
-        });
-        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
         //图例
@@ -103,8 +157,17 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.CHART_LEGEND
         });
 
-        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+        this.legend.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
+        });
+
+        //图例详细设置
+        this.legendStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.legendStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE)
         });
 
         //数据标签
@@ -114,8 +177,27 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.dataLabelSetting.setVisible(this.isSelected());
             self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
+        });
+
+        this.dataLabelSetting = BI.createWidget({
+            type: "bi.data_label_detailed_setting_combo",
+            wId: o.wId,
+        });
+
+        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
+        });
+
+        //数据点提示详细设置
+        this.tooltipStyle = BI.createWidget({
+            type: "bi.tooltip_detailed_setting_combo"
+        });
+
+        this.tooltipStyle.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE)
         });
 
         var showElement = BI.createWidget({
@@ -137,16 +219,50 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
+                    items: [this.legendStyle]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }], {
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.dataLabelSetting]
+                }/*, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Tooltip"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.tooltipStyle]
+                }*/], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP
             }]
+        });
+
+        //联动传递过滤条件
+        this.transferFilter = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Bind_Target_Condition"),
+            width: 170
+        });
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
+        });
+
+        //手动选择联动条件
+        this.linkageSelection = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Select_Linkage_Manually"),
+            width: 150
+        });
+
+        this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function() {
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE)
         });
 
         var otherAttr = BI.createWidget({
@@ -166,36 +282,46 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, showElement, otherAttr],
+            items: [widgetTitle, tableStyle, showElement, otherAttr],
             hgap: 10
         })
     },
 
-    populate: function(){
+    populate: function () {
         var wId = this.options.wId;
+        this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
+        this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
+        this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+
+        this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
-        this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
-        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
+        this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
+
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
-            transfer_filter: this.transferFilter.isSelected(),
-            chart_color: this.colorSelect.getValue()[0],
-            chart_style: this.chartStyleGroup.getValue()[0],
-            chart_legend: this.legend.getValue()[0],
-            show_data_label: this.showDataLabel.isSelected()
-        }
-    },
+            showName: this.showName.isSelected(),
+            widgetName: this.widgetName.getValue(),
+            widgetNameStyle: this.widgetNameStyle.getValue(),
 
-    setValue: function(v){
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.chartStyleGroup.setValue(v.chart_style);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
+            widgetBG: this.widgetBG.getValue(),
+            chartColor: this.chartColor.getValue()[0],
+            chartStyle: this.chartStyle.getValue()[0],
+            legend: this.legend.getValue()[0],
+            legendStyle: this.legendStyle.getValue(),
+            showDataLabel: this.showDataLabel.isSelected(),
+            dataLabelSetting: this.dataLabelSetting.getValue(),
+
+            transferFilter: this.transferFilter.isSelected(),
+        }
     }
 });
 BI.DonutChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

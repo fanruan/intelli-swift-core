@@ -474,22 +474,22 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         return new Date(currY, 11, 31).getTime();
 
                     case BICst.MULTI_DATE_MONTH_PREV:
-                        return date.getBeforeMultiMonth(value).getTime();
+                        return new Date().getBeforeMultiMonth(value).getTime();
                     case BICst.MULTI_DATE_MONTH_AFTER:
-                        return date.getAfterMultiMonth(value).getTime();
+                        return new Date().getAfterMultiMonth(value).getTime();
                     case BICst.MULTI_DATE_MONTH_BEGIN:
                         return new Date(currY, currM, 1).getTime();
                     case BICst.MULTI_DATE_MONTH_END:
                         return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
 
                     case BICst.MULTI_DATE_QUARTER_PREV:
-                        return date.getBeforeMulQuarter(value).getTime();
+                        return new Date().getBeforeMulQuarter(value).getTime();
                     case BICst.MULTI_DATE_QUARTER_AFTER:
-                        return date.getAfterMulQuarter(value).getTime();
+                        return new Date().getAfterMulQuarter(value).getTime();
                     case BICst.MULTI_DATE_QUARTER_BEGIN:
-                        return date.getQuarterStartDate().getTime();
+                        return new Date().getQuarterStartDate().getTime();
                     case BICst.MULTI_DATE_QUARTER_END:
-                        return date.getQuarterEndDate().getTime();
+                        return new Date().getQuarterEndDate().getTime();
 
                     case BICst.MULTI_DATE_WEEK_PREV:
                         return date.getOffsetDate(-7 * value).getTime();

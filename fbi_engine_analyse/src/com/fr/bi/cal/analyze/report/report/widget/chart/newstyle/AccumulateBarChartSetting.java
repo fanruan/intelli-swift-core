@@ -18,16 +18,9 @@ public class AccumulateBarChartSetting extends BIAbstractBarChartSetting {
         for(int i = 0; i < data.length(); i++){
             JSONArray item = data.getJSONArray(i);
             String stackId = UUID.randomUUID().toString();
-            for(int j = 0; j < data.length(); ){
+            for(int j = 0; j < item.length(); j++){
                 JSONObject it = item.getJSONObject(j);
                 it.put("stack", stackId);
-                JSONArray da = it.getJSONArray("data");
-                for(int k = 0; k < da.length(); k++){
-                    JSONObject t = da.getJSONObject(k);
-                    String tmp = t.getString("y");
-                    t.put("y", t.getString("x"));
-                    t.put("x", tmp);
-                }
             }
         }
         return super.formatItems(data, types, options);

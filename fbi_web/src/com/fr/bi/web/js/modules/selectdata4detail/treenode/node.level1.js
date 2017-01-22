@@ -23,7 +23,8 @@ BI.DetailDetailSelectDataLevel1Node = BI.inherit(BI.AbstractDetailDetailSelectDa
             open: o.open,
             text: o.text,
             value: o.value,
-            title: o.title
+            title: o.title,
+            warningTitle: o.warningTitle
         });
     }
 });

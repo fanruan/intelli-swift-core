@@ -60,6 +60,10 @@ BI.ChartGradientColorCombo = BI.inherit(BI.Widget, {
         });
     },
 
+    setEnable: function (v) {
+          this.comboFrom.setEnable(v)
+    },
+
     getValue: function () {
         return {
             from_color: this.comboFrom.getValue(),

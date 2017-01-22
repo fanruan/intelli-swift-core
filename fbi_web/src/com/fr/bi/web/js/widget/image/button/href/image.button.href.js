@@ -53,6 +53,18 @@ BI.ImageButtonHref = BI.inherit(BI.Single, {
         })
     },
 
+    isSelected: function(){
+        return this.combo.isViewVisible();
+    },
+
+    showView: function(){
+        this.combo.showView();
+    },
+
+    hideView: function () {
+        this.combo.hideView();
+    },
+
     getValue: function () {
         return this.input.getValue();
     },

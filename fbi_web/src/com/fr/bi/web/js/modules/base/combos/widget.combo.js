@@ -44,7 +44,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
     _rebuildItems: function () {
         var wId = this.options.wId;
         var isEdit = Data.SharingPool.get("edit");
-        if(!isEdit) {
+        if (!isEdit) {
             return this._createShowComboItems();
         }
         switch (BI.Utils.getWidgetTypeByID(wId)) {
@@ -68,6 +68,8 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -78,6 +80,8 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 return this._createWidgetComboItems();
             case BICst.WIDGET.DETAIL:
                 return this._createDetailWidgetComboItems();
@@ -87,15 +91,23 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.QUARTER :
             case BICst.WIDGET.MONTH:
             case BICst.WIDGET.YMD :
+            case BICst.WIDGET.DATE_PANE:
                 return BICst.TIME_CONTROL_SETCOMBO_ITEMS;
 
             case BICst.WIDGET.STRING:
+            case BICst.WIDGET.STRING_LIST:
                 return this._createStringTreeComboItems();
-            case BICst.WIDGET.TREE :
+            case BICst.WIDGET.TREE:
+            case BICst.WIDGET.TREE_LIST:
                 return this._createStringTreeComboItems();
+            case BICst.WIDGET.LIST_LABEL:
+            case BICst.WIDGET.TREE_LABEL:
+                return this._createLabelComboItems();
             case BICst.WIDGET.NUMBER :
+            case BICst.WIDGET.INTERVAL_SLIDER:
                 return BICst.NUMBER_CONTROL_SETCOMBO_ITEMS;
-
+            case BICst.WIDGET.SINGLE_SLIDER:
+                return BICst.SINGLE_SLIDER_CONTROL_SETCOMBO_ITEMS;
             case BICst.WIDGET.GENERAL_QUERY:
                 return BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS;
         }
@@ -259,6 +271,36 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Descend"),
                 selected: sort.type === BICst.SORT.DESC,
                 cls: "dot-e-font"
+            }],
+            [{
+                value: BICst.DASHBOARD_CONTROL_CLEAR,
+                text: BI.i18nText("BI-Clear_Selected_Value"),
+                cls: "widget-combo-clear-font"
+            }],
+            [{
+                value: BICst.DASHBOARD_WIDGET_RENAME,
+                text: BI.i18nText("BI-Rename"),
+                cls: "widget-combo-rename-edit-font"
+            }],
+            [{
+                value: BICst.DASHBOARD_WIDGET_COPY,
+                text: BI.i18nText("BI-Copy"),
+                cls: "widget-combo-copy"
+            }],
+            [{
+                value: BICst.DASHBOARD_WIDGET_DELETE,
+                text: BI.i18nText("BI-Delete_Control"),
+                cls: "widget-combo-delete"
+            }]
+        ]
+    },
+
+    _createLabelComboItems: function () {
+        return [
+            [{
+                value: BICst.DASHBOARD_WIDGET_EXPAND,
+                text: BI.i18nText("BI-Detailed_Setting"),
+                cls: "widget-combo-expand-font"
             }],
             [{
                 value: BICst.DASHBOARD_CONTROL_CLEAR,

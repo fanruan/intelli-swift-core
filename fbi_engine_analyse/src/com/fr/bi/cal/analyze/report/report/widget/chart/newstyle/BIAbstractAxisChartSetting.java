@@ -44,7 +44,7 @@ public abstract class BIAbstractAxisChartSetting extends BIAbstractChartSetting 
         this.config.put("color", options.getJSONArray("chart_color"));
         this.config.put("style", this.formatChartStyle(options.getInt("chart_style")));
         this.formatCordon(options.getJSONArray("cordon"), this.xAxis, this.yAxis, options.optInt("x_axis_number_level"), options.optInt("left_y_axis_number_level"), options.optInt("right_y_axis_number_level"), options.optInt("right_y_axis_second_number_level"));
-        this.formatChartLegend(options.optInt("chart_legend"));
+        this.formatChartLegend(this.config, options.optInt("chart_legend"));
         plotOptions.optJSONObject("dataLabels").put("enabled", options.optBoolean("show_data_label"));
         this.config.optJSONObject("dataSheet").put("enabled", options.optBoolean("show_data_table"));
         this.xAxis.getJSONObject(0).put("showLabel", !options.optBoolean("show_data_table"));

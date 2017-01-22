@@ -116,7 +116,7 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
                 })
             } else {
                 result.push({
-                    text: value,
+                    text:  value,
                     value: value,
                     title: value
                 })

@@ -26,7 +26,7 @@ BI.SelectDataTree = BI.inherit(BI.Widget, {
                 type: "bi.select_data_expander",
                 el: {},
                 popup: {
-                    type: "bi.custom_tree"
+                    type: "bi.select_data_tree"
                 }
             }, o.expander),
             items: o.items,
@@ -48,6 +48,22 @@ BI.SelectDataTree = BI.inherit(BI.Widget, {
     setEnable: function (v) {
         BI.SelectDataTree.superclass.setEnable.apply(this, arguments);
         this.tree.setEnable(v)
+    },
+
+    showView: function(b){
+        BI.each(this.tree.getAllButtons(),function(i, button){
+            button.showView && button.showView(b);
+        })
+    },
+
+    hideView: function(b){
+        BI.each(this.tree.getAllButtons(),function(i, button){
+            button.hideView && button.hideView(b);
+        })
+    },
+
+    getAllButtons: function(){
+        return this.tree.getAllButtons();
     },
 
     doBehavior: function () {

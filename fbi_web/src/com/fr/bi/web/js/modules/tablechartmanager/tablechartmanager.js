@@ -28,8 +28,9 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     _createChartTabs: function (v) {
         switch (v) {
             case BICst.WIDGET.TABLE:
+                return this._createGroupTable();
             case BICst.WIDGET.CROSS_TABLE:
-                return this._createTable();
+                return this._createCrossTable();
             case BICst.WIDGET.COMPLEX_TABLE:
                 return this._createComplexTable();
             case BICst.WIDGET.AXIS:
@@ -49,6 +50,8 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -59,6 +62,8 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 return this._createChart();
         }
     },
@@ -68,7 +73,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         var chart = BI.createWidget({
             type: "bi.chart_display",
             wId: o.wId,
-            status: o.status 
+            status: o.status
         });
         chart.on(BI.ChartDisplay.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableChartManager.EVENT_CHANGE, arguments);
@@ -76,20 +81,33 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         return chart;
     },
 
-    _createTable: function () {
+    _createGroupTable: function () {
         var self = this, o = this.options;
         this.table = BI.createWidget({
-            type: "bi.summary_table",
+            type: "bi.group_table",
             wId: o.wId,
             status: o.status
         });
-        this.table.on(BI.SummaryTable.EVENT_CHANGE, function (obs) {
+        this.table.on(BI.GroupTable.EVENT_CHANGE, function (obs) {
             self.fireEvent(BI.TableChartManager.EVENT_CHANGE, obs);
         });
         return this.table;
     },
-    
-    _createComplexTable: function() {
+
+    _createCrossTable: function() {
+        var self = this, o = this.options;
+        this.table = BI.createWidget({
+            type: "bi.cross_table",
+            wId: o.wId,
+            status: o.status
+        });
+        this.table.on(BI.CrossTable.EVENT_CHANGE, function (obs) {
+            self.fireEvent(BI.TableChartManager.EVENT_CHANGE, obs);
+        });
+        return this.table;
+    },
+
+    _createComplexTable: function () {
         var self = this, o = this.options;
         this.table = BI.createWidget({
             type: "bi.complex_table",
@@ -110,7 +128,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         return this.tableChartTab.getValue();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.tableChartTab.getSelectedTab().magnify();
     },
 

@@ -21,21 +21,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.WidgetView.superclass._init.apply(this, arguments);
         var self = this, wId = this.model.get("id");
-        BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
-            // var clicked = self.model.get("clicked") || {};
-            // var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-            // //这条链上所有的其他clicked都应当被清掉 钻取的东西也清掉
-            // BI.each(clicked, function (cid, click) {
-            //     if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
-            //         delete clicked[cid];
-            //     }
-            // });
-            // if (BI.isNull(v)) {
-            //     delete clicked[dId];
-            // } else {
-            //     clicked[dId] = v;
-            // }
-
+        this._broadcasts = [];
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
             // 2016.12.1 young 都清除掉，每次都是往上找到所有的联动条件
             var clicked = BI.Utils.getLinkageValuesByID(BI.Utils.getWidgetIDByDimensionID(dId));
             if (BI.isNotNull(v)) {
@@ -45,8 +32,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 notrefresh: true
             });
             self._refreshTableAndFilter();
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
+        }));
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             //检查一下是否有维度被删除（联动）
             var clicked = self.model.get("clicked");
             if (BI.isNotNull(clicked)) {
@@ -70,14 +57,14 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 notrefresh: true
             });
             self._refreshTableAndFilter();
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
+        }));
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
-        });
+        }));
         //全局样式的修改
-        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
             self._refreshGlobalStyle(globalStyle);
-        });
+        }));
     },
 
     _onClickLinkage: function () {
@@ -220,6 +207,47 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             self.tableChart.magnify();
         });
 
+        this.maximize = BI.createWidget({
+            type: "bi.maximization",
+            wId: wId,
+            status: BICst.WIDGET_STATUS.EDIT
+        });
+        this.maximize.on(BI.Maximization.EVENT_SET, function (widget) {
+            self.model.set(widget);
+        });
+        this.maximize.on(BI.Maximization.EVENT_SET_TITLE_NAME, function (name) {
+            self.model.set("name", name);
+            self.title.setValue(name);
+        });
+        this.maximize.on(BI.Maximization.EVENT_CHANGE, function (type) {
+            switch (type) {
+                case BICst.DASHBOARD_WIDGET_EXPAND:
+                    self._expandWidget();
+                    break;
+                case  BICst.DASHBOARD_WIDGET_LINKAGE:
+                    self._onClickLinkage();
+                    break;
+                case BICst.DASHBOARD_WIDGET_SHOW_NAME:
+                    self._onClickShowName();
+                    break;
+                // case BICst.DASHBOARD_WIDGET_RENAME:
+                //     // self.title.focus();
+                //     break;
+                case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
+                    self._onClickNamePosLeft();
+                    break;
+                case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
+                    self._onClickNamePosCenter();
+                    break;
+                case BICst.DASHBOARD_WIDGET_COPY:
+                    self.model.copy();
+                    break;
+                case BICst.DASHBOARD_WIDGET_DELETE:
+                    self._onClickDelete();
+                    break;
+            }
+        });
+
         var filter = BI.createWidget({
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
@@ -288,7 +316,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [this.refreshChartButton, filter, expand, combo],
+            items: [this.refreshChartButton, this.maximize, filter, expand, combo],
             lgap: 10
         });
         this.tools.setVisible(false);
@@ -383,6 +411,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "name")) {
             this.title.setValue(this.model.get("name"));
         }
+        if (BI.has(changed, "settings") && (changed.settings.widgetNameStyle !== prev.settings.widgetNameStyle)) {
+            this._refreshWidgetTitle();
+        }
+        if (BI.has(changed, "settings") && (changed.settings.widgetBG !== prev.settings.widgetBG)) {
+            this._refreshWidgetBG();
+        }
         if (BI.has(changed, "clicked")) {
             this._refreshTableAndFilter();
         }
@@ -392,6 +426,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
         this.chartDrill.populate();
+        this.maximize.populate();
     },
 
     _refreshLayout: function () {
@@ -415,6 +450,32 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             "dashboard-title-center" : "dashboard-title-left";
         this.title.element.removeClass("dashboard-title-left")
             .removeClass("dashboard-title-center").addClass(cls);
+    },
+
+    _refreshWidgetTitle: function () {
+        var id = this.model.get("id");
+        var titleSetting = this.model.get("settings").widgetNameStyle || {};
+        this.title.setTextStyle(titleSetting.titleWordStyle || {});
+
+        this.titleWrapper.element.css({"background": this._getBackground(titleSetting.titleBG)});
+    },
+
+    _refreshWidgetBG: function () {
+        var widgetBG = this.model.get("settings").widgetBG || {};
+        this.element.css({"background": this._getBackground(widgetBG)})
+    },
+
+    _getBackground: function (bg) {
+        if (!bg) {
+            return "";
+        }
+        switch (bg.type) {
+            case BICst.BACKGROUND_TYPE.COLOR:
+                return bg.value;
+            case BICst.BACKGROUND_TYPE.IMAGE:
+                return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
+        }
+        return "";
     },
 
     _refreshGlobalStyle: function () {
@@ -463,11 +524,20 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
+        this._refreshWidgetTitle();
+        this._refreshWidgetBG();
         this._refreshMagnifyButton();
         this._refreshTableAndFilter();
         this._refreshLayout();
         this._refreshTitlePosition();
 
         this._refreshGlobalStyle();
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });

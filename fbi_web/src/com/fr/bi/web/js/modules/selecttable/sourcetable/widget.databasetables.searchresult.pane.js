@@ -96,8 +96,7 @@ BI.DatabaseTablesSearchResultPane = BI.inherit(BI.Widget, {
             }]
         });
         var items = BI.createItems(this._formatGroup(group), {
-            type: "bi.database_table",
-            cls: "bi-table-ha-button"
+            type: "bi.database_table"
         });
         pageTables.populate(items, self.keyword);
         pageTables.setValue(self.selectedTables);

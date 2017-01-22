@@ -16,14 +16,14 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.ConfTargetNumberFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-target-number-field-item",
             afterValueChange: BI.emptyFn
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.ConfTargetNumberFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var left = this._buildConditions();
@@ -32,7 +32,7 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.icon_button",
             cls: "close-h-font"
         });
-        this.deleteButton.on(BI.Controller.EVENT_CHANGE, function(){
+        this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.DESTROY, o.id, self);
         });
 
@@ -40,7 +40,7 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.vertical",
             element: this.element,
             items: [{
-                el:{
+                el: {
                     type: "bi.left_right_vertical_adapt",
                     height: this._constant.CONTAINER_HEIGHT,
                     items: {
@@ -60,9 +60,9 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this._refreshFilterWidget(context.filter_type, context.filter_value);
     },
 
-    _buildConditions: function(){
+    _buildConditions: function () {
         var self = this, o = this.options;
-        if(BI.isNull(o.field_name)){
+        if (BI.isNull(o.field_name)) {
             return "";
         }
         var fieldName = o.field_name;
@@ -74,7 +74,7 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             textAlign: "left",
             hgap: this._constant.TEXT_BUTTON_H_GAP
         });
-        this.fieldButton.on(BI.Controller.EVENT_CHANGE, function(){
+        this.fieldButton.on(BI.Controller.EVENT_CHANGE, function () {
             arguments[2] = self;
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
@@ -90,10 +90,10 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             items: BICst.TARGET_FILTER_NUMBER_COMBO
         });
         this.filterType.setValue(o.filter_type);
-        this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function(){
+        this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
             self._setNodeData({
-                filter_type : self.filterType.getValue()[0]
+                filter_type: self.filterType.getValue()[0]
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -101,9 +101,9 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return [this.fieldButton, this.filterType, this.filterWidgetContainer];
     },
 
-    _refreshFilterWidget: function(filterType, initData){
+    _refreshFilterWidget: function (filterType, initData) {
         var w = BI.createWidget();
-        switch (filterType){
+        switch (filterType) {
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
             case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
                 w = this._createNumberInput(initData);
@@ -125,7 +125,7 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterWidgetContainer.addItem(w);
     },
 
-    _createNumberIntervalFilter: function(initData){
+    _createNumberIntervalFilter: function (initData) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.numerical_interval",
@@ -133,33 +133,33 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
-        this.filterWidget.on(BI.NumericalInterval.EVENT_CHANGE, function(){
+        this.filterWidget.on(BI.NumericalInterval.EVENT_CHANGE, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
         return this.filterWidget;
     },
 
-    _createNumberInput: function(initData){
+    _createNumberInput: function (initData) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.sign_editor",
             cls: "condition-operator-input",
-            validationChecker: function(){
-                if(!BI.isNumeric(self.filterWidget.getValue())){
+            validationChecker: function () {
+                if (!BI.isNumeric(self.filterWidget.getValue())) {
                     return false;
                 }
             },
             errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
             allowBlank: true,
-            height: this._constant.BUTTON_HEIGHT,
-            width: this._constant.INPUT_WIDTH
+            height: this._constant.BUTTON_HEIGHT - 2,
+            width: this._constant.INPUT_WIDTH - 2
         });
-        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -167,12 +167,12 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return this.filterWidget;
     },
 
-    _setNodeData: function(v){
+    _setNodeData: function (v) {
         var o = this.options;
         o.node.set("data", BI.extend(o.node.get("data"), v));
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             field_name: this.options.field_name,
             filter_type: this.filterType.getValue()[0],

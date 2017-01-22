@@ -15,71 +15,62 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         BI.ExcelViewSettingModel.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.excel = [];
+        this.mergeInfos = [];
         this.positions = {};
         this.excelName = "";
+        this.excelFullName = "";
         var table = o.table;
         var tableFields = table.fields;
         var tableId = table.id;
-        this.relations = table.relations;
-        this.translations = table.translations;
-        this.allFields = table.all_fields;
+        var translations = table.translations;
 
         var view = o.view;
-        if (BI.isNotNull(view)) {
+        if (BI.isNotNull(view) && BI.isNotNull(view.name)) {
             this.excelName = view.name;
-            this.excel = view.excel;
+            this.excelFullName = view.excelFullName;
             this.positions = view.positions;
         }
 
         this.tables = [];
-        var fields = [];
+        var fields = [], allPrimaryFields = [];
         BI.each(tableFields, function (i, fs) {
             BI.each(fs, function (j, field) {
+                var primaryFields = [];
                 fields.push({
-                    field: field.field_name,
+                    field: translations[field.id] || field.field_name,
                     value: field.id
                 });
+                BI.Utils.getPrimaryFieldsByFieldId4Conf(field.id, primaryFields);
+                allPrimaryFields = allPrimaryFields.concat(primaryFields);
             });
         });
         this.tables.push({
             open: true,
             value: tableId,
-            tableName: this.translations[tableId],
+            tableName: translations[tableId],
             fields: fields
         });
 
-        //这里找到所有主表 和 主表的主表
-        this._getALlPrimaryTables(tableId);
+        this._initPrimaryTableInfo(allPrimaryFields, tableId);
     },
 
-    _getALlPrimaryTables: function (tableId) {
+    _initPrimaryTableInfo: function (primaryFields, baseTableId) {
         var self = this;
-        var foreignKeyMap = this.relations.foreignKeyMap;
-        BI.each(foreignKeyMap, function (fieldId, maps) {
-            if (BI.isNotNull(self.allFields[fieldId]) && tableId === self.allFields[fieldId].table_id) {
-                BI.each(maps, function (i, map) {
-                    var pFieldId = map.primaryKey.field_id;
-                    var pTableId = self.allFields[pFieldId].table_id;
-                    var pFields = [];
-                    BI.each(self.allFields, function (fId, field) {
-                        if (field.table_id === pTableId && field.field_type !== BICst.COLUMN.COUNTER) {
-                            pFields.push({
-                                field: field.field_name,
-                                value: field.id
-                            });
-                        }
-                    });
-                    if (BI.contains(BI.pluck(self.tables, "value"), pTableId)) {
-                        return;
-                    }
-                    self.tables.push({
-                        value: pTableId,
-                        tableName: self.translations[pTableId],
-                        fields: pFields
-                    });
-                    self._getALlPrimaryTables(pTableId);
-                })
-            }
+        BI.each(primaryFields, function (i, pId) {
+            var tableId = BI.Utils.getTableIdByFieldId4Conf(pId);
+            var fieldIds = BI.Utils.getFieldIdsByTableId4Conf(tableId);
+            var fields = [];
+            BI.each(fieldIds, function (i, fId) {
+                fields.push({
+                    field: BI.Utils.getTransNameById4Conf(fId) || BI.Utils.getFieldNameById4Conf(fId),
+                    value: fId
+                });
+            });
+            tableId !== baseTableId && self.tables.push({
+                value: tableId,
+                tableName: BI.Utils.getTransNameById4Conf(tableId),
+                fields: fields
+            })
         });
     },
 
@@ -105,31 +96,21 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
     },
 
     setFile: function (file, callback) {
-        var self = this;
         this.file = file;
         this.excelName = file.filename;
+        this.excelFullName = file.attach_id + this.excelName;
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
             text: BI.i18nText("BI-Loading")
         });
         this.clearRowCol();
-        BI.Utils.saveFileGetExcelViewData(file.attach_id, function (data) {
-            self.excel = [];
-            var row = [];
-            BI.each(data.fields, function (i, fs) {
-                BI.each(fs, function (j, field) {
-                    row.push(field.field_name);
-                });
-            });
-            self.excel.push(row);
-            BI.each(data.data, function (i, d) {
-                self.excel.push(d);
-            });
-            callback();
+        BI.requestAsync("fr_bi_configure", "save_upload_excel", {
+            fileId: file.attach_id
         }, function () {
+            callback();
             mask.destroy();
-        })
+        }, BI.emptyFn);
     },
 
     setRowColOnField: function (field, row, col) {
@@ -140,28 +121,8 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         this.positions[field] = {row: row, col: col};
     },
 
-    _removeNoFieldPosition: function () {
-        var existFields = this._getAllFields();
-        var position = this.positions;
-        var newPosition = {};
-        BI.each(position, function (fieldId, ob) {
-            BI.some(existFields, function (i, id) {
-                if (fieldId === id) {
-                    newPosition[fieldId] = ob;
-                    return true;
-                }
-            })
-        });
-        this.positions = newPosition;
-    },
-
     getPositions: function () {
-        this._removeNoFieldPosition();
         return this.positions;
-    },
-
-    getExcelData: function () {
-        return this.excel;
     },
 
     getAllFields: function () {
@@ -192,12 +153,23 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         }
     },
 
+    getExcelFullName: function () {
+        return this.excelFullName || "";
+    },
+
+    setExcelFullName: function (name) {
+        this.excelFullName = name;
+    },
+
     getExcelName: function () {
         return this.excelName;
     },
 
+    setExcelName: function (name) {
+        this.excelName = name;
+    },
+
     clearRowCol: function () {
-        this.excelName = "";
         this.excel = [];
         this.positions = {};
     },

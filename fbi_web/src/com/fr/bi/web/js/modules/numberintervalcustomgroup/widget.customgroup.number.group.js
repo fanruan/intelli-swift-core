@@ -26,6 +26,7 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
 
         this.buttongroup = BI.createWidget({
             type: "bi.list_pane",
+            tipText: BI.i18nText("BI-Null"),
             element: this.element,
             el: {
                 type: "bi.button_group",
@@ -45,19 +46,19 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
     _setEventForButton: function (buttons) {
         var self = this;
         BI.each(buttons, function (idx, button) {
-            //button.on(BI.NumberIntervalCustomGroupItem.EVENT_VALID, function () {
-            //    if (self.isValid()) {
-            //        self.fireEvent(BI.NumberIntervalCustomItemGroup.EVENT_VALID);
-            //    }
-            //});
+            button.on(BI.NumberIntervalCustomGroupItem.EVENT_VALID, function () {
+                if (self.isValid()) {
+                    self.fireEvent(BI.NumberIntervalCustomItemGroup.EVENT_VALID);
+                }
+            });
 
             //button.on(BI.NumberIntervalCustomGroupItem.EVENT_CHANGE, function () {
             //    self._checkNextItemState(this.getValue());
             //});
 
-            //button.on(BI.NumberIntervalCustomGroupItem.EVENT_ERROR, function () {
-            //    self.fireEvent(BI.NumberIntervalCustomItemGroup.EVENT_ERROR);
-            //});
+            button.on(BI.NumberIntervalCustomGroupItem.EVENT_ERROR, function () {
+                self.fireEvent(BI.NumberIntervalCustomItemGroup.EVENT_ERROR);
+            });
 
             button.on(BI.NumberIntervalCustomGroupItem.EVENT_DESTROY, function () {
                 if (self.buttons.length === 0) {

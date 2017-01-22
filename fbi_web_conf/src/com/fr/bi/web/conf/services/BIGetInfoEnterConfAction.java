@@ -1,5 +1,6 @@
 package com.fr.bi.web.conf.services;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -7,9 +8,7 @@ import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -37,7 +36,6 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
         jo.put("relations", relations);
         jo.put("translations", translations);
         jo.put("fields", allFields);
-        jo.put("update_settings", BIConfigureManagerCenter.getUpdateFrequencyManager().createJSON(userId));
         WebUtils.printAsJSON(res, jo);
     }
 

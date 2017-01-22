@@ -29,6 +29,10 @@ BI.PageTableCell = BI.inherit(BI.Widget, {
             lgap: 5,
             rgap: 5
         });
+
+        if (BI.isNotNull(this.options.styles) && BI.isObject(this.options.styles)) {
+            this.element.css(this.options.styles);
+        }
     }
 });
 

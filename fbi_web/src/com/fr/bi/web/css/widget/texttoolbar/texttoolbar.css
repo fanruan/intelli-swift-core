@@ -9,6 +9,7 @@
 }
 .bi-text-toolbar .text-toolbar-size-chooser-trigger {
   background: #ffffff;
+  font-size: 12px;
 }
 .bi-text-toolbar .text-toolbar-size-chooser-trigger a {
   font-size: 12px;

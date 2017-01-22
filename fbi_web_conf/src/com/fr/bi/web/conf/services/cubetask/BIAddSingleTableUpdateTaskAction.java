@@ -25,8 +25,7 @@ public class BIAddSingleTableUpdateTaskAction extends AbstractBIConfigureAction 
 
 
     @Override
-    protected void actionCMDPrivilegePassed(HttpServletRequest req,
-                                            HttpServletResponse res) throws Exception {
+    protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String tableString = WebUtils.getHTTPRequestParameter(req, "table");
         boolean isAdd = WebUtils.getHTTPRequestBoolParameter(req, "add");
         long userId = ServiceUtils.getCurrentUserID(req);

@@ -10,7 +10,7 @@ $.extend(BI, {
 
         return {
             alert: function (title, message, callback) {
-                this._show(true, title, message, callback);
+                this._show(false, title, message, callback);
             },
             confirm: function (title, message, callback, min_width) {
                 this._show(true, title, message, callback);
@@ -55,7 +55,7 @@ $.extend(BI, {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    opacity: 0.1
+                    opacity: 0.5
                 }).appendTo('body');
                 $pop = $('<div class="bi-message-depend">').css({
                     position: 'absolute',

@@ -42,6 +42,17 @@ BI.ExcelUploadModel = BI.inherit(FR.OB, {
             text: BI.i18nText("BI-Loading")
         });
         BI.Utils.saveFileGetExcelData(file.attach_id, function(data){
+            var mergeInfos = data.mergeInfos;
+            //首行有合并单元格提示
+            if (BI.isNotNull(mergeInfos) && mergeInfos.length > 0) {
+                var firstRowHasMerge = BI.some(mergeInfos, function(i, info) {
+                    return info[0][1] === 0 && info[1][1] === 0
+                });
+                if (firstRowHasMerge) {
+                    callback(firstRowHasMerge);
+                    return;
+                }
+            }
             self.fullFileName = data.full_file_name;
             //对比前一次fields
             var fields = data.fields;

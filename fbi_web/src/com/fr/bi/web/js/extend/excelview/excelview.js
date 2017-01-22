@@ -11,7 +11,8 @@ BI.ExcelView = BI.inherit(BI.Single, {
         return BI.extend(BI.ExcelView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-excel-view",
             height: 25,
-            tableId: ""
+            tableId: "",
+            mergeInfos: []
         });
     },
 
@@ -31,7 +32,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
             text: BI.i18nText("BI-Close_Excel_View")
         });
         this.table = BI.createWidget({
-            type: "bi.excel_table"
+            type: "bi.excel_view_display_manager"
         });
         this.combo = BI.createWidget({
             type: "bi.combo",
@@ -84,9 +85,21 @@ BI.ExcelView = BI.inherit(BI.Single, {
 
     },
 
-    _createItems: function (items) {
+    _showOpen: function () {
+        this.open.setVisible(true);
+        this.close.setVisible(false);
+    },
+
+    _showClose: function () {
+        this.open.setVisible(false);
+        this.close.setVisible(true);
+    },
+
+    _setValue: function (positions) {
         var self = this;
+        var fieldIdMap = {};
         var store = [];
+        var dim = [];
         var draggable = {
             cursor: BICst.cursorUrl,
             cursorAt: {left: 5, top: 5},
@@ -94,14 +107,17 @@ BI.ExcelView = BI.inherit(BI.Single, {
             },
             start: function () {
                 self.combo.hideView();
-                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, store);
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, dim);
             },
             stop: function () {
                 self.combo.showView();
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);
             },
-            helper: function () {
+            helper: function (event) {
                 var text;
+                var id = event.target.id;
+                var cellId = id.split("-")[0];
+                store = [fieldIdMap[cellId]];
                 if (store.length > 1) {
                     text = BI.i18nText("BI-All_Field_Count", store.length);
                 } else {
@@ -136,6 +152,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
                     }
                     return data;
                 });
+                dim = data;
                 var help = BI.createWidget({
                     type: "bi.helper",
                     data: {data: data},
@@ -151,37 +168,13 @@ BI.ExcelView = BI.inherit(BI.Single, {
                 return help.element;
             }
         };
-        var result = [];
-        BI.each(items, function (i, row) {
-            var r = [];
-            BI.each(row, function (j, item) {
-                BI.isEmptyString(item.text) && (item.text = " ");
-                r.push(BI.extend(item.value ? {
-                    type: "bi.excel_view_cell",
-                    drag: draggable,
-                    title: BI.Utils.getFieldNameByID(item.value),
-                    handler: function () {
-                        if (this.isSelected()) {
-                            store.push(this.getValue());
-                        } else {
-                            BI.remove(store, this.getValue());
-                        }
-                    }
-                } : {}, item))
-            });
-            result.push(r);
+        BI.each(positions, function (fieldId, mark) {
+            var col = mark.col, row = mark.row;
+            var cellId = BI.int2Abc(BI.parseInt(col) + 1) + (BI.parseInt(row) + 1);
+            fieldIdMap[cellId] = fieldId;
+            self.table.setTdSelectById(true, cellId);
+            self.table.setTdDraggable(cellId, draggable);
         });
-        return result;
-    },
-
-    _showOpen: function () {
-        this.open.setVisible(true);
-        this.close.setVisible(false);
-    },
-
-    _showClose: function () {
-        this.open.setVisible(false);
-        this.close.setVisible(true);
     },
 
     isSelected: function () {
@@ -209,26 +202,15 @@ BI.ExcelView = BI.inherit(BI.Single, {
     },
 
     populate: function () {
-        var o = this.options;
+        var self = this, o = this.options;
         var tableId = o.tableId;
         var excelView = BI.Utils.getExcelViewByTableId(tableId);
         if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
-            var excel = excelView.excel;
+            var excelFullName = excelView.excelFullName;
             var positions = excelView.positions;
-            var items = [];
-            BI.each(excel, function (i, row) {
-                var item = [];
-                BI.each(row, function (j, cell) {
-                    item.push({text: cell})
-                });
-                items.push(item);
+            self.table.setExcel(excelFullName, function () {
+                self._setValue(positions);
             });
-            BI.each(positions, function (id, position) {
-                items[position.row][position.col].value = id;
-            });
-            items = this._createItems(items);
-            this.table.attr("columnSize", BI.makeArray(items[0].length, ""));
-            this.table.populate(items);
         }
     }
 });

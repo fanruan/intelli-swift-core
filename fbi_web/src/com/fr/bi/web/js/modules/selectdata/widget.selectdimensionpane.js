@@ -10,9 +10,22 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         TEMPLATE: 1,
         FOLDER: 2,
         CREATE_BY_ME_ID: "-1",
-        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
-            BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.GENERAL_QUERY,
-            BICst.WIDGET.QUERY, BICst.WIDGET.RESET]
+        SHARED_TO_ME_ID: "-2",
+        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.STRING_LIST, BICst.WIDGET.NUMBER, BICst.WIDGET.SINGLE_SLIDER, BICst.WIDGET.INTERVAL_SLIDER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
+            BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.TREE_LIST, BICst.WIDGET.LIST_LABEL, BICst.WIDGET.TREE_LABEL, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.DATE_PANE, BICst.WIDGET.GENERAL_QUERY,
+            BICst.WIDGET.QUERY, BICst.WIDGET.RESET],
+        CALCULATE_TARGET_TYPE: [BICst.TARGET_TYPE.FORMULA,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE,
+            BICst.TARGET_TYPE.RANK,
+            BICst.TARGET_TYPE.RANK_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ALL,
+            BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE
+        ]
     },
 
     _defaultConfig: function () {
@@ -85,6 +98,10 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 return "drag-combine-mult-small-icon";
             case BICst.WIDGET.FUNNEL:
                 return "drag-funnel-small-icon";
+            case BICst.WIDGET.PARETO:
+                return "drag-pareto-small-icon";
+            case BICst.WIDGET.HEAT_MAP:
+                return "drag-map-heat-small-icon";
             case BICst.WIDGET.IMAGE:
                 return "drag-image-small-icon";
             case BICst.WIDGET.WEB:
@@ -118,7 +135,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         return;
                     }
                     if (BI.isNotNull(op.node.isParent)) {
-                        if (op.node.nodeType === self.constants.FOLDER) {
+                        if (op.node.nodeType === self.constants.FOLDER && op.node.layer !== 0) {
                             populate(self._findChildItemsFromItems(op.node.id, op.node.layer + 1));
                         }
                         if (op.node.nodeType === self.constants.TEMPLATE) {
@@ -191,9 +208,43 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             layer: 0,
             nodeType: self.constants.FOLDER
         };
+        var sharedToMe = {
+            id: self.constants.SHARED_TO_ME_ID,
+            pId: BI.UUID(),
+            type: "bi.multilayer_icon_arrow_node",
+            iconCls: "folder-font",
+            text: BI.i18nText("BI-Share_With_My"),
+            title: BI.i18nText("BI-Share_With_My"),
+            isParent: true,
+            value: self.constants.SHARED_TO_ME_ID,
+            layer: 0,
+            nodeType: self.constants.FOLDER
+        };
         BI.Utils.getAllTemplates(function (res) {
-            self.templateItems = res;
+            self.templateItems = [];
+            self.sharedItems = [];
             self.templateItems.push(createByMe);
+            self.sharedItems.push(sharedToMe);
+            var sharedReports = [];
+            BI.each(res, function (idx, item) {
+                if (item.isMine === true || !BI.has(item, "buildUrl")) {
+                    self.templateItems.push(item);
+                } else {
+                    self.sharedItems.push(item);
+                    sharedReports.push({
+                        id: item.id,
+                        pId: self.constants.SHARED_TO_ME_ID,
+                        type: "bi.multilayer_icon_arrow_node",
+                        iconCls: "file-font",
+                        text: item.text,
+                        title: item.text,
+                        isParent: true,
+                        value: item.id,
+                        layer: 1,
+                        nodeType: BI.ReusePane.TEMPLATE
+                    });
+                }
+            });
             var currentTemplate = BI.find(self.templateItems, function (idx, item) {
                 return item.id === BI.Utils.getCurrentTemplateId();
             });
@@ -209,7 +260,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 layer: 0,
                 nodeType: self.constants.TEMPLATE
             };
-            callback(BI.concat([currentTemplateItem, createByMe], self._findChildItemsFromItems(-1, 1)));
+            callback(BI.concat(BI.concat([currentTemplateItem, createByMe, sharedToMe], self._findChildItemsFromItems(-1, 1)), sharedReports));
         });
     },
 
@@ -277,7 +328,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             var dims = [], tars = [], calcTars = [];
             var views = widget.view;
             BI.each(views, function (i, dim) {
-                if (i >= BI.parseInt(BICst.REGION.DIMENSION1) && i < (BI.parseInt(BICst.REGION.TARGET1))) {
+                if (BI.Utils.isDimensionRegionByRegionType(i)) {
                     BI.each(dim, function (idx, dimId) {
                         widget.dimensions[dimId].dId = dimId;
                         dims.push(widget.dimensions[dimId]);
@@ -414,9 +465,9 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     }
                 }
                 //维度公式过滤所用到的指标的话要删掉
-                if(BI.has(oldFilter, "formula_ids")){
+                if (BI.has(oldFilter, "formula_ids")) {
                     var ids = oldFilter.formula_ids || [];
-                    if(BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))){
+                    if (BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))) {
                         filter.filter_type = BICst.FILTER_TYPE.EMPTY_FORMULA;
                         delete filter.filter_value;
                         delete filter.formula_ids;
@@ -441,19 +492,26 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             cursorAt: {left: 5, top: 5},
             helper: function () {
                 var text = dimensionName;
-                var result = [];
+                var result = {};
                 var dims = self.searcher.getValue();
                 var targetIdMap = {};
                 BI.each(dims, function (idx, dim) {
                     var copy = self._createDimensionsAndTargets(dim, targetIdMap, dimensions);
-                    BI.each(copy, function (idx, obj) {
-                        if (!BI.deepContains(result, obj)) {
-                            result.push(obj);
+                    BI.each(copy, function (id, dimension) {
+                        if (copy.length > 1) {
+                            dimension.used = BI.contains(self.constants.CALCULATE_TARGET_TYPE, dimension.type);
+                        } else {
+                            dimension.used = true;
                         }
-                    });
+                        if (BI.has(result, dimension.dId) && result[dimension.dId].used === true) {
+                            result[dimension.dId].used = true;
+                        } else {
+                            result[dimension.dId] = dimension;
+                        }
+                    })
                 });
-                if (result.length > 1) {
-                    text = BI.i18nText("BI-All_Field_Count", result.length);
+                if (BI.size(result) > 1) {
+                    text = BI.i18nText("BI-All_Field_Count", BI.size(result));
                 }
                 var data = BI.map(result, function (id, dim) {
                     var type = dim.type;
@@ -462,7 +520,8 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                             dId: dim.dId,
                             type: dim.type,
                             name: dim.name,
-                            _src: dim._src
+                            _src: dim._src,
+                            used: dim.used
                         };
 
                         var sort = dim.sort;
@@ -503,6 +562,13 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     }]
                 });
                 return help.element;
+            },
+            start: function (event, ui) {
+                //通知region
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, ui.helper.data("data"));
+            },
+            stop: function (event, ui) {
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);
             }
         }
     },

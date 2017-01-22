@@ -190,7 +190,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     }
 
     private UpdateSettingSource getSingleSourceUpdateType(CubeTableSource source) {
-        UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), userId);
+        UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSetting(source.getSourceID(), userId);
         if (null == updateSettingSource) {
             updateSettingSource = new UpdateSettingSource();
             updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);

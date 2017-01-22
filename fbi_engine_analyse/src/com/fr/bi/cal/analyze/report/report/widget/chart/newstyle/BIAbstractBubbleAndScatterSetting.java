@@ -1,9 +1,13 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.newstyle;
 
 import com.fr.bi.stable.constant.BIChartSettingConstant;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by User on 2016/9/12.
@@ -52,8 +56,23 @@ public abstract class BIAbstractBubbleAndScatterSetting extends BIAbstractChartS
         this.config.put("color", options.getJSONArray("chart_color"));
         this.config.put("style", this.formatChartStyle(options.getInt("chart_style")));
         this.formatCordon(options.getJSONArray("cordon"), this.xAxis, this.yAxis, options.optInt("x_axis_number_level"), options.optInt("left_y_axis_number_level"), options.optInt("right_y_axis_number_level"), options.optInt("right_y_axis_second_number_level"));
-        this.formatChartLegend(options.optInt("chart_legend"));
+        this.formatChartLegend(this.config, options.optInt("chart_legend"));
 
+        if (options.optJSONArray("tooltip") != null) {
+            JSONArray tooltips = options.getJSONArray("tooltip");
+            String y = getFormatFunctionContent(formatTickInXYaxis(options.getInt("left_y_axis_style"), options.getInt("left_y_axis_number_level"), options.getBoolean("num_separators")), "this.y");
+            String x = getFormatFunctionContent(formatTickInXYaxis(options.getInt("x_axis_style"), options.getInt("x_axis_number_level"), options.getBoolean("right_num_separators")), "this.x");
+            String formatter;
+            if(tooltips.length() ==  3){
+                formatter = "function(){ return this.seriesName + '<div>(X)" + tooltips.getString(1) + ":' +" + x + "+ '</div><div>(Y)"
+                        + tooltips.getString(0) + ":' +" + y + "+ '</div><div>(" + Inter.getLocText("BI-Size") + ")" + tooltips.getString(2)
+                        + ":' + this.size + '</div>'}";
+            }else{
+                formatter = "function(){ return this.seriesName + '<div>(X)" + tooltips.getString(1) + ":' +" + x + "+ '</div><div>(Y)"
+                        + tooltips.getString(0) + ":' +" + y + "+ '</div>'}";
+            }
+            plotOptions.optJSONObject("tooltip").put("formatter", formatter);
+        }
         plotOptions.optJSONObject("dataLabels").put("enabled", options.optBoolean("show_data_label")).getJSONObject("formatter").put("identifier", "${X}${Y}${SIZE}");
         plotOptions.put("shadow", options.getInt("bubble_style") != BIChartSettingConstant.NO_PROJECT);
 
@@ -121,6 +140,15 @@ public abstract class BIAbstractBubbleAndScatterSetting extends BIAbstractChartS
             }
         }
 
+    }
+
+    private String getFormatFunctionContent(String functionString, String argument){
+        Pattern p = Pattern.compile("'.*'");
+        Matcher m = p.matcher(functionString);
+        if(m.find()){
+            return "(window.BH ? BH.contentFormat("+ argument +"," + m.group() + ") : " + argument + ")";
+        }
+        return "";
     }
 
     @Override

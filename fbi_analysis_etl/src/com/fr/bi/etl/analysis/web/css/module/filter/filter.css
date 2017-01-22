@@ -16,3 +16,6 @@
 .bi-filter-time-interval.time-error .sign-editor-text {
   color: #e85050;
 }
+.bi-filter-time-interval .date-range-link {
+  color: #808080;
+}

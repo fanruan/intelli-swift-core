@@ -106,38 +106,34 @@ TableTreeView = BI.inherit(BI.View, {
         }];
 
         BI.createWidget({
-            type: "bi.grid",
+            type: "bi.absolute",
             element: vessel,
-            columns: 2,
-            rows: 1,
             items: [{
-                column: 0,
-                row: 0,
                 el: {
                     type: "bi.table_tree",
+                    el: {
+                        type: "bi.resizable_table",
+                        el: {
+                            type: "bi.collection_table",
+                            mergeCols: [0, 1],
+                            mergeRule: function (col1, col2) {
+                                return BI.isEqual(col1, col2);
+                            }
+                        }
+                    },
+                    width: 600,
+                    height: 300,
                     isNeedResize: true,
                     isNeedMerge: true,
+                    freezeCols: [0, 1],
                     columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
                     header: header,
                     items: items,
                     crossHeader: crossHeader,
                     crossItems: crossItems
-                }
-            }, {
-                column: 1,
-                row: 0,
-                el: {
-                    type: "bi.table_tree",
-                    isNeedResize: true,
-                    isNeedMerge: true,
-                    isNeedFreeze: true,
-                    freezeCols: [0, 1, 2],
-                    columnSize: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
-                    header: header,
-                    items: items,
-                    crossHeader: crossHeader,
-                    crossItems: crossItems
-                }
+                },
+                left: 0,
+                top: 0
             }]
         })
     }

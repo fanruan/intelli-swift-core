@@ -46,7 +46,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                                     cls: "support-files",
                                     height: 25
                                 },
-                                top: 15,
+                                top: 10,
                                 left: 40
                             }],
                             width: 30,
@@ -128,7 +128,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
             var file = files[files.length - 1];
             self.attachId = file.attach_id;
             var fileName = file.filename;
-            BI.requestAsync("fr_bi_dezi", "save_upload_image", {
+            BI.requestAsync("fr_bi_base", "save_upload_image", {
                 attach_id: self.attachId
             }, function () {
                 self.tab.setSelect(BI.UploadImagePreview.UPLOADED);
@@ -149,6 +149,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
         //delete this.imageId;
         this.imageId = "";
         this.tab.setSelect(BI.UploadImagePreview.TO_UPLOAD);
+        this.fireEvent(BI.UploadImagePreview.EVENT_CHANGE)
     },
 
     getValue: function () {

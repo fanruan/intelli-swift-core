@@ -8,7 +8,7 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
         "/pane": "BIDezi.PaneView",
         "/pane/:id/:type": "getWidget",
         "/pane/:id/:type/detail": "getDetail",
-        "/pane/:id/:type/detail/:region/:dId": "getDimensionOrTarget",
+        "/pane/:id/:type/detail/:scope/:dId": "getDimensionOrTarget",
 
 
         "/detailtablepopup": "BI.DetailTablePopupView",
@@ -38,6 +38,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -48,6 +50,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 view = "BIDezi.DetailView";
                 break;
             case BICst.WIDGET.DETAIL:
@@ -56,11 +60,20 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.STRING:
                 view = "BIDezi.StringDetailView";
                 break;
+            case BICst.WIDGET.STRING_LIST:
+                view = "BIDezi.StringListDetailView";
+                break;
             case BICst.WIDGET.DATE:
                 view = "BIDezi.DateRangeDetailView";
                 break;
             case BICst.WIDGET.NUMBER:
                 view = "BIDezi.NumberDetailView";
+                break;
+            case BICst.WIDGET.SINGLE_SLIDER:
+                view = "BIDezi.SingleSliderDetailView";
+                break;
+            case BICst.WIDGET.INTERVAL_SLIDER:
+                view = "BIDezi.IntervalSliderDetailView";
                 break;
             case BICst.WIDGET.QUERY:
             case BICst.WIDGET.YEAR:
@@ -75,8 +88,20 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.YMD:
                 view = "BIDezi.DateDetailView";
                 break;
+            case BICst.WIDGET.DATE_PANE:
+                view = "BIDezi.DatePaneDetailView";
+                break;
             case BICst.WIDGET.TREE:
                 view = "BIDezi.TreeDetailView";
+                break;
+            case BICst.WIDGET.TREE_LIST:
+                view = "BIDezi.TreeListDetailView";
+                break;
+            case BICst.WIDGET.LIST_LABEL:
+                view = "BIDezi.ListLabelDetailView";
+                break;
+            case BICst.WIDGET.TREE_LABEL:
+                view = "BIDezi.TreeLabelDetailView";
                 break;
             default:
                 view = "BIDezi.DetailView";
@@ -108,6 +133,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -118,6 +145,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
                 view = "BIDezi.WidgetView";
                 break;
             case BICst.WIDGET.CONTENT:
@@ -135,8 +164,17 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.STRING:
                 view = "BIDezi.StringWidgetView";
                 break;
+            case  BICst.WIDGET.STRING_LIST:
+                view = "BIDezi.StringListView";
+                break;
             case BICst.WIDGET.NUMBER:
                 view = "BIDezi.NumberWidgetView";
+                break;
+            case BICst.WIDGET.SINGLE_SLIDER:
+                view = "BIDezi.SingleSliderWidgetView";
+                break;
+            case BICst.WIDGET.INTERVAL_SLIDER:
+                view = "BIDezi.IntervalSliderWidgetView";
                 break;
             case BICst.WIDGET.DATE:
                 view = "BIDezi.DateRangeView";
@@ -153,8 +191,20 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.YMD:
                 view = "BIDezi.DateWidgetView";
                 break;
+            case BICst.WIDGET.DATE_PANE:
+                view = "BIDezi.DatePaneView";
+                break;
             case BICst.WIDGET.TREE:
                 view = "BIDezi.TreeWidgetView";
+                break;
+            case  BICst.WIDGET.TREE_LIST:
+                view = "BIDezi.TreeListView";
+                break;
+            case BICst.WIDGET.LIST_LABEL:
+                view = "BIDezi.ListLabelView";
+                break;
+            case BICst.WIDGET.TREE_LABEL:
+                view = "BIDezi.TreeLabelView";
                 break;
             case BICst.WIDGET.GENERAL_QUERY:
                 view = "BIDezi.GeneralQueryView";
@@ -195,6 +245,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -205,8 +257,9 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
-                if (BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
-                    BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region)) {
+            case BICst.WIDGET.PARETO:
+            case BICst.WIDGET.HEAT_MAP:
+                if (BI.Utils.isDimensionRegionByRegionType(region)) {
                     view = "BIDezi.DimensionView";
                     break;
                 }
@@ -216,9 +269,12 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
                 view = "BIDezi.DetailDimensionView";
                 break;
             case BICst.WIDGET.STRING:
+            case BICst.WIDGET.STRING_LIST:
                 view = "BIDezi.StringDimensionView";
                 break;
             case BICst.WIDGET.NUMBER:
+            case BICst.WIDGET.SINGLE_SLIDER:
+            case BICst.WIDGET.INTERVAL_SLIDER:
                 view = "BIDezi.NumberDimensionView";
                 break;
             case BICst.WIDGET.DATE:
@@ -228,10 +284,18 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.QUARTER:
             case BICst.WIDGET.MONTH:
             case BICst.WIDGET.YMD:
+            case BICst.WIDGET.DATE_PANE:
                 view = "BIDezi.DateDimensionView";
                 break;
             case BICst.WIDGET.TREE:
+            case BICst.WIDGET.TREE_LIST:
                 view = "BIDezi.TreeDimensionView";
+                break;
+            case BICst.WIDGET.LIST_LABEL:
+                view = "BIDezi.ListLabelDimensionView";
+                break;
+            case BICst.WIDGET.TREE_LABEL:
+                view = "BIDezi.TreeLabelDimensionView";
                 break;
             case BICst.WIDGET.QUERY:
                 view = "";

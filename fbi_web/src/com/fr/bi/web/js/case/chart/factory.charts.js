@@ -28,6 +28,7 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.PARETO:
                 item = BI.extend({"type": "column"}, items);
                 break;
             case BICst.WIDGET.LINE:
@@ -50,6 +51,12 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.PIE:
                 item = BI.extend({"type": "pie"}, items);
                 break;
+            case BICst.WIDGET.MULTI_PIE:
+                item = BI.extend({"type": "multiPie"}, items);
+                break;
+            case BICst.WIDGET.RECT_TREE:
+                item = BI.extend({"type": "treeMap"}, items);
+                break;
             case BICst.WIDGET.DASHBOARD:
                 item = BI.extend({"type": "gauge"}, items);
                 break;
@@ -57,7 +64,11 @@ BI.ChartCombineFormatItemFactory = {
                 item = BI.extend({"type": "areaMap"}, items);
                 break;
             case BICst.WIDGET.GIS_MAP:
+            case BICst.WIDGET.HEAT_MAP:
                 item = BI.extend({"type": "pointMap"}, items);
+                break;
+            case BICst.WIDGET.FUNNEL:
+                item = BI.extend({"type": "funnel"}, items);
                 break;
             default:
                 item = BI.extend({"type": "column"}, items);

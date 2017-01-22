@@ -30,6 +30,9 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
         BI.MultiSelectTrigger.superclass._init.apply(this, arguments);
 
         var self = this, o = this.options;
+        if (o.height) {
+            this.setHeight(o.height - 2);
+        }
 
         this.searcher = BI.createWidget(o.searcher, {
             type: "bi.multi_select_searcher",
@@ -123,6 +126,10 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
     setValue: function (ob) {
         this.searcher.setValue(ob);
         this.numberCounter.setValue(ob);
+    },
+
+    setEnable: function (v) {
+        this.searcher.setEnable(v);
     },
 
     getKey: function () {

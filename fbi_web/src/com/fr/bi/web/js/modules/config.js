@@ -2,6 +2,7 @@
 
 //full week names
 BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Monday"),
+    BI.i18nText("BI-Monday"),
     BI.i18nText("BI-Tuesday"),
     BI.i18nText("BI-Wednesday"),
     BI.i18nText("BI-Thursday"),
@@ -11,6 +12,7 @@ BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Monday"),
 
 //full month names
 BICst.FULL_MONTH_NAMES = [
+    BI.i18nText("BI-January"),
     BI.i18nText("BI-January"),
     BI.i18nText("BI-February"),
     BI.i18nText("BI-March"),
@@ -26,6 +28,7 @@ BICst.FULL_MONTH_NAMES = [
 
 //full quarter names
 BICst.FULL_QUARTER_NAMES = [BI.i18nText("BI-Quarter_1"),
+    BI.i18nText("BI-Quarter_1"),
     BI.i18nText("BI-Quarter_2"),
     BI.i18nText("BI-Quarter_3"),
     BI.i18nText("BI-Quarter_4")];
@@ -36,6 +39,8 @@ BICst.DASHBOARD_LAYOUT_ARRAY = [{
     text: BI.i18nText("BI-Adaptive_Layout"), value: BICst.DASHBOARD_LAYOUT_ADAPT
 }, {
     text: BI.i18nText("BI-Free_Layout"), value: BICst.DASHBOARD_LAYOUT_FREE
+}, {
+    text: BI.i18nText("BI-Grid_Layout"), value: BICst.DASHBOARD_LAYOUT_GRID
 }];
 
 //类型&数据/样式tab
@@ -85,11 +90,11 @@ BICst.DASHBOARD_WIDGETS = [[{
         title: BI.i18nText("BI-Cross_Table"),
         value: BICst.WIDGET.CROSS_TABLE,
         cls: "drag-cross-icon"
-    // }, {
-    //     text: BI.i18nText("BI-Complex_Table"),
-    //     title: BI.i18nText("BI-Complex_Table"),
-    //     value: BICst.WIDGET.COMPLEX_TABLE,
-    //     cls: "drag-complex-icon"
+    }, {
+        text: BI.i18nText("BI-Complex_Table"),
+        title: BI.i18nText("BI-Complex_Table"),
+        value: BICst.WIDGET.COMPLEX_TABLE,
+        cls: "drag-complex-icon"
     }]
 }, {
     text: BI.i18nText("BI-Column_Chart"),
@@ -121,6 +126,11 @@ BICst.DASHBOARD_WIDGETS = [[{
         title: BI.i18nText("BI-Fall_Axis"),
         value: BICst.WIDGET.FALL_AXIS,
         cls: "drag-axis-fall-icon"
+    }, {
+        text: BI.i18nText("BI-Pareto"),
+        title: BI.i18nText("BI-Pareto"),
+        value: BICst.WIDGET.PARETO,
+        cls: "drag-pareto-icon"
     }]
 }, {
     text: BI.i18nText("BI-Bar_Chart"),
@@ -199,7 +209,18 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Pie_Chart"),
     title: BI.i18nText("BI-Pie_Chart"),
     value: BICst.WIDGET.PIE,
-    cls: "drag-pie-icon"
+    cls: "drag-pie-icon",
+    children: [{
+        text: BI.i18nText("BI-Pie_Chart"),
+        title: BI.i18nText("BI-Pie_Chart"),
+        value: BICst.WIDGET.PIE,
+        cls: "drag-pie-icon",
+    }, {
+        text: BI.i18nText("BI-Multi_Pie_Chart"),
+        title: BI.i18nText("BI-Multi_Pie_Chart"),
+        value: BICst.WIDGET.MULTI_PIE,
+        cls: "drag-multi-pie-icon",
+    }]
 }, {
     text: BI.i18nText("BI-Donut_Chart"),
     title: BI.i18nText("BI-Donut_Chart"),
@@ -215,6 +236,11 @@ BICst.DASHBOARD_WIDGETS = [[{
     title: BI.i18nText("BI-GIS_Map"),
     value: BICst.WIDGET.GIS_MAP,
     cls: "drag-map-gis-icon"
+}, {
+    text: BI.i18nText("BI-Heat_Map"),
+    title: BI.i18nText("BI-Heat_Map"),
+    value: BICst.WIDGET.HEAT_MAP,
+    cls: "drag-map-heat-icon"
 }, {
     text: BI.i18nText("BI-Dashboard_Chart"),
     title: BI.i18nText("BI-Dashboard_Chart"),
@@ -257,6 +283,16 @@ BICst.DASHBOARD_WIDGETS = [[{
     title: BI.i18nText("BI-Scatter"),
     value: BICst.WIDGET.SCATTER,
     cls: "drag-scatter-icon"
+}, {
+    text: BI.i18nText("BI-Funnel_Chart"),
+    title: BI.i18nText("BI-Funnel_Chart"),
+    value: BICst.WIDGET.FUNNEL,
+    cls: "drag-funnel-icon"
+}, {
+    text: BI.i18nText("BI-Rect_Tree_Chart"),
+    title: BI.i18nText("BI-Rect_Tree_Chart"),
+    value: BICst.WIDGET.RECT_TREE,
+    cls: "drag-rect-tree-icon"
 }], [{
     text: BI.i18nText("BI-Detail_Table"),
     title: BI.i18nText("BI-Detail_Table"),
@@ -281,22 +317,72 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Text_Control"),
     title: BI.i18nText("BI-Text_Control"),
     value: BICst.WIDGET.STRING,
-    cls: "drag-string-icon"
+    cls: "drag-string-icon",
+    children: [{
+        text: BI.i18nText("BI-Text_Control"),
+        title: BI.i18nText("BI-Text_Control"),
+        value: BICst.WIDGET.STRING,
+        cls: "drag-string-icon"
+    }, {
+        text: BI.i18nText("BI-List_Label_Con"),
+        title: BI.i18nText("BI-List_Label_Con"),
+        value: BICst.WIDGET.LIST_LABEL,
+        cls: "drag-list-label-icon"
+    }, {
+        text: BI.i18nText("BI-String_List"),
+        title: BI.i18nText("BI-String_List"),
+        value: BICst.WIDGET.STRING_LIST,
+        cls: "drag-string-list-icon"
+    }]
 }, {
     text: BI.i18nText("BI-Numeric_Control"),
     title: BI.i18nText("BI-Numeric_Control"),
     value: BICst.WIDGET.NUMBER,
-    cls: "drag-number-icon"
+    cls: "drag-number-icon",
+    children: [
+        {
+            text: BI.i18nText("BI-Numeric_Control"),
+            title: BI.i18nText("BI-Numeric_Control"),
+            value: BICst.WIDGET.NUMBER,
+            cls: "drag-number-icon"
+        }, {
+            text: BI.i18nText("BI-Single_Value_Slider"),
+            title: BI.i18nText("BI-Single_Value_Slider"),
+            value: BICst.WIDGET.SINGLE_SLIDER,
+            cls: "drag-single-slider-icon"
+        }, {
+            text: BI.i18nText("BI-Double_Value_Slider"),
+            title: BI.i18nText("BI-Double_Value_Slider"),
+            value: BICst.WIDGET.INTERVAL_SLIDER,
+            cls: "drag-interval-slider-icon"
+        }
+    ]
 }, {
     text: BI.i18nText("BI-Tree_Control"),
     title: BI.i18nText("BI-Tree_Control"),
     value: BICst.WIDGET.TREE,
-    cls: "drag-tree-icon"
+    cls: "drag-tree-icon",
+    children: [{
+        text: BI.i18nText("BI-Tree_Control"),
+        title: BI.i18nText("BI-Tree_Control"),
+        value: BICst.WIDGET.TREE,
+        cls: "drag-tree-icon"
+    }, {
+        text: BI.i18nText("BI-Tree_Label_Con"),
+        title: BI.i18nText("BI-Tree_Label_Con"),
+        value: BICst.WIDGET.TREE_LABEL,
+        cls: "drag-tree-label-icon"
+    }, {
+        text: BI.i18nText("BI-Tree_List"),
+        title: BI.i18nText("BI-Tree_List"),
+        value: BICst.WIDGET.TREE_LIST,
+        cls: "drag-tree-list-icon"
+    }]
 }, {
-    text: BI.i18nText("BI-Date_Control"),
-    title: BI.i18nText("BI-Date_Control"),
+    text: BI.i18nText("BI-Date_Range_Control"),
+    title: BI.i18nText("BI-Date_Range_Control"),
     value: BICst.WIDGET.DATE,
-    cls: "drag-date-icon",
+    cls: "drag-date-range-icon",
     children: [
         {
             text: BI.i18nText("BI-Year_Control"),
@@ -319,10 +405,15 @@ BICst.DASHBOARD_WIDGETS = [[{
             value: BICst.WIDGET.YMD,
             cls: "drag-ymd-icon"
         }, {
+            text: BI.i18nText("BI-Date_Pane_Control"),
+            title: BI.i18nText("BI-Date_Pane_Control"),
+            value: BICst.WIDGET.DATE_PANE,
+            cls: "drag-date-icon"
+        }, {
             text: BI.i18nText("BI-Date_Range_Control"),
             title: BI.i18nText("BI-Date_Range_Control"),
             value: BICst.WIDGET.DATE,
-            cls: "drag-date-icon"
+            cls: "drag-date-range-icon"
         }]
 }, {
     text: BI.i18nText("BI-General_Query"),
@@ -424,6 +515,35 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
         text: BI.i18nText("BI-Clear_Selected_Value"),
         cls: "widget-combo-clear-font"
     }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_RENAME,
+        text: BI.i18nText("BI-Rename"),
+        cls: "widget-combo-rename-edit-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_COPY,
+        text: BI.i18nText("BI-Copy"),
+        cls: "widget-combo-copy"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-combo-delete"
+    }]
+];
+
+//单值滑块的下拉选项
+BICst.SINGLE_SLIDER_CONTROL_SETCOMBO_ITEMS = [
+    [{
+        value: BICst.DASHBOARD_WIDGET_EXPAND,
+        text: BI.i18nText("BI-Detailed_Setting"),
+        cls: "widget-combo-expand-font"
+    }],
+    // [{
+    //     value: BICst.DASHBOARD_CONTROL_CLEAR,
+    //     text: BI.i18nText("BI-Clear_Selected_Value"),
+    //     cls: "widget-combo-clear-font"
+    // }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
         text: BI.i18nText("BI-Rename"),
@@ -1088,6 +1208,24 @@ BICst.AXIS_STYLE_GROUP = [{
     value: BICst.CHART_STYLE.STYLE_GRADUAL
 }];
 
+//多层饼图的层级渐变
+BICst.MULTI_PIE_GRADIENT_STYLE_GROUP = [{
+    cls: "multi-pie-gradient-lighter-icon",
+    value: BICst.MULTI_PIE_GRADIENT_STYLE.LIGHTER
+}, {
+    cls: "multi-pie-gradient-darker-icon",
+    value: BICst.MULTI_PIE_GRADIENT_STYLE.DARKER
+}]
+
+//漏斗图倾斜样式
+BICst.Funnel_SLANT_STYLE_GROUP = [{
+    cls: "multi-pie-gradient-lighter-icon",
+    value: BICst.FUNNEL_SLANT_STYLE.SAME
+}, {
+    cls: "multi-pie-gradient-darker-icon",
+    value: BICst.FUNNEL_SLANT_STYLE.DIFF
+}]
+
 //折线图和面积图线形
 BICst.LINE_CHART_STYLE_GROUP = [{
     cls: "line-chart-style-broken-icon",
@@ -1188,6 +1326,127 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
     cls: "bubble-with-projector",
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
+
+BICst.DATA_LABEL_POSITION = [{
+    title: BI.i18nText("BI-Inner"),
+    cls: "datalabel-position-inner",
+    value: BICst.DATA_LABEL.POSITION_INNER
+}, {
+    title: BI.i18nText("BI-Outer"),
+    cls: "datalabel-position-outer",
+    value: BICst.DATA_LABEL.POSITION_OUTER,
+}, {
+    title: BI.i18nText("BI-Center"),
+    cls: "datalabel-position-center",
+    value: BICst.DATA_LABEL.POSITION_CENTER
+}];
+
+BICst.PIE_DATA_LABEL_POSITION = [{
+    title: BI.i18nText("BI-Inner"),
+    cls: "datalabel-position-inner",
+    value: BICst.DATA_LABEL.POSITION_INNER
+}, {
+    title: BI.i18nText("BI-Outer"),
+    cls: "datalabel-position-outer",
+    value: BICst.DATA_LABEL.POSITION_OUTER,
+}];
+
+//数据标签过滤
+BICst.DATA_LABEL_FILTER_NUMBER_COMBO = [[{
+    text: BI.i18nText("BI-In"),
+    value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.DIMENSION_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Place"),
+    value: BICst.DIMENSION_FILTER_NUMBER.TOP_N,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Above_Average"),
+    value: BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Below_Average"),
+    value: BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE,
+    cls: "dot-e-font"
+}
+]];
+
+BICst.DATA_LABEL_FILTER_STRING_COMBO = [[{
+    text: BI.i18nText("BI-In"),
+    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Contain"),
+    value: BICst.DIMENSION_FILTER_STRING.CONTAIN,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Contain"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.DIMENSION_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Begin_With"),
+    value: BICst.DIMENSION_FILTER_STRING.BEGIN_WITH,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-End_With"),
+    value: BICst.DIMENSION_FILTER_STRING.END_WITH,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Not_Begin_With"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_BEGIN_WITH,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_End_With"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_END_WITH,
+    cls: "dot-e-font"
+}]];
+
+BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
+    text: BI.i18nText("BI-No_Range"),
+    value: BICst.DATA_LABEL_RANGE.ALL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-In_Classification"),
+    value: BICst.DATA_LABEL_RANGE.Classification,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-In_Series"),
+    value: BICst.DATA_LABEL_RANGE.Series,
+    cls: "dot-e-font"
+}]];
+
 
 BICst.CAL_TARGET_TYPE = [{
     text: BI.i18nText("BI-Formula"),
@@ -1475,10 +1734,11 @@ BICst.PERCENTAGE_SHOW = [{
     value: BICst.PERCENTAGE.NOT_SHOW
 }];
 
+
 BICst.INIT_CHART_MAP = {};
 BICst.INIT_CHART_MAP[BICst.WIDGET.AXIS] = {type: "bi.axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.COMBINE_CHART] = {type: "bi.multi_axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
-BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = {type: "bi.multi_axis_combine_chart", events: [BI.MultiAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = {type: "bi.multi_axis_combine_chart", events: [BI.MultiAxisCombineChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_AXIS] = {type: "bi.accumulate_axis_chart", events: [BI.AccumulateAxisChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.LINE] = {type: "bi.line_chart", events: [BI.LineChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.AREA] = {type: "bi.area_chart", events: [BI.AreaChart.EVENT_CHANGE]};
@@ -1502,3 +1762,53 @@ BICst.INIT_CHART_MAP[BICst.WIDGET.FORCE_BUBBLE] = {type: "bi.force_bubble_chart"
 BICst.INIT_CHART_MAP[BICst.WIDGET.SCATTER] = {type: "bi.scatter_chart", events: [BI.ScatterChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.HEAT_MAP] = {type: "bi.heat_map_chart", events: [BI.HeatMapChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_PIE] = {type: "bi.multi_pie_chart", events: [BI.MultiPieChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.RECT_TREE] = {type: "bi.rect_tree_chart", events: [BI.RectTreeChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.FUNNEL] = {type: "bi.funnel_chart", events: [BI.FunnelChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.PARETO] = {type: "bi.pareto_chart", events: [BI.ParetoChart.EVENT_CHANGE]};
+
+
+BICst.WIDGET_ICON_CLS_MAP = {};
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.TABLE] = "drag-group-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.CROSS_TABLE] = "drag-cross-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPLEX_TABLE] = "drag-complex-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DETAIL] = "drag-detail-icon";
+
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.AXIS] = "drag-axis-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_AXIS] = "drag-axis-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_AXIS] = "drag-axis-percent-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPARE_AXIS] = "drag-axis-compare-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FALL_AXIS] = "drag-axis-fall-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.BAR] = "drag-bar-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_BAR] = "drag-bar-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPARE_BAR] = "drag-bar-compare-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PIE] = "drag-pie-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MULTI_PIE] = "drag-multi-pie-icon";
+
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.RECT_TREE] = "drag-rect-tree-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MAP] = "drag-map-china-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.GIS_MAP] = "drag-map-gis-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.HEAT_MAP] = "drag-map-heat-icon";
+
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DASHBOARD] = "drag-dashboard-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DONUT] = "drag-donut-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.BUBBLE] = "drag-bubble-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FORCE_BUBBLE] = "drag-bubble-force-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.SCATTER] = "drag-scatter-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.RADAR] = "drag-radar-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_RADAR] = "drag-radar-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.LINE] = "drag-line-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.AREA] = "drag-area-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_AREA] = "drag-area-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_AREA] = "drag-area-percent-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPARE_AREA] = "drag-area-compare-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.RANGE_AREA] = "drag-area-range-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMBINE_CHART] = "drag-combine-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = "drag-combine-mult-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FUNNEL] = "drag-funnel-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PARETO] = "drag-pareto-icon";
+
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.IMAGE] = "drag-image-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.WEB] = "drag-web-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.CONTENT] = "drag-input-icon";

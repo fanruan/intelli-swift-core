@@ -25,8 +25,7 @@ public class BIGetCubeGenerateStatusAction extends AbstractBIConfigureAction {
     }
 
     @Override
-    protected void actionCMDPrivilegePassed(HttpServletRequest req,
-                                            HttpServletResponse res) throws Exception {
+    protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
         long useId = ServiceUtils.getCurrentUserID(req);
         BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();

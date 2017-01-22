@@ -18,8 +18,7 @@ public class BIGetCubeLogAction extends AbstractBIConfigureAction {
     }
 
     @Override
-    protected void actionCMDPrivilegePassed(HttpServletRequest req,
-                                            HttpServletResponse res) throws Exception {
+    protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject cubeLog = BIConfigureManagerCenter.getLogManager().createJSON(userId);
         cubeLog.put("hasTask", CubeGenerationManager.getCubeManager().hasTask(userId));

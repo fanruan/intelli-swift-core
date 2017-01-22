@@ -2,6 +2,10 @@
 .bi-charts-setting{
   & .single-line-settings{
     border-top: 1px solid @color-bi-border-line;
+    & .title-input{
+      border: 1px solid @color-bi-border-normal;
+      .border-radius(2px);
+    }
     & .chart-style-font{
       border: 1px solid @color-bi-border-default;
       .border-radius(@radius-2);
@@ -18,6 +22,7 @@
     }
     & .attr-names{
       font-size: @font-size-14;
+      color: @color-bi-text-black;
     }
     & .unit-input{
       border: 1px solid @color-bi-border-normal;

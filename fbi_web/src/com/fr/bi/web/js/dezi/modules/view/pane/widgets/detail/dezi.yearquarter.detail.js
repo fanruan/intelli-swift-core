@@ -30,6 +30,38 @@ BIDezi.YearQuarterDetailView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var mask = BI.createWidget();
         mask.element.__buildZIndexMask__(0);
+        var west = this._buildWest();
+        var items = [{
+            el: west,
+            width: this.constants.DETAIL_WEST_WIDTH
+        }, {
+            type: "bi.vtape",
+            items: [{
+                el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
+            }, {
+                el: this._buildCenter()
+            }]
+        }];
+        var htape = BI.createWidget({
+            type: "bi.htape",
+            cls: "widget-attribute-setter-container",
+            items: items
+        });
+        west.element.resizable({
+            handles: "e",
+            minWidth: 200,
+            maxWidth: 400,
+            autoHide: true,
+            helper: "bi-resizer",
+            start: function () {
+            },
+            resize: function (e, ui) {
+            },
+            stop: function (e, ui) {
+                items[0].width = ui.size.width;
+                htape.resize();
+            }
+        });
         BI.createWidget({
             type: "bi.absolute",
             element: vessel,
@@ -40,21 +72,7 @@ BIDezi.YearQuarterDetailView = BI.inherit(BI.View, {
                 top: 0,
                 bottom: 0
             }, {
-                el: {
-                    type: "bi.htape",
-                    cls: "widget-attribute-setter-container",
-                    items: [{
-                        el: this._buildWest(),
-                        width: this.constants.DETAIL_WEST_WIDTH
-                    }, {
-                        type: "bi.vtape",
-                        items: [{
-                            el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
-                        }, {
-                            el: this._buildCenter()
-                        }]
-                    }]
-                },
+                el: htape,
                 left: 20,
                 right: 20,
                 top: 20,
@@ -65,7 +83,13 @@ BIDezi.YearQuarterDetailView = BI.inherit(BI.View, {
 
     _buildNorth: function () {
         var self = this;
-
+        this.title = BI.createWidget({
+            type: "bi.label",
+            textAlign: "left",
+            cls: "widget-top-name",
+            height: 25,
+            text: this.model.get("name")
+        });
         var complete = BI.createWidget({
             type: "bi.button",
             height: 25,
@@ -80,6 +104,7 @@ BIDezi.YearQuarterDetailView = BI.inherit(BI.View, {
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             items: {
+                left: [this.title],
                 right: [complete]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
@@ -162,7 +187,7 @@ BIDezi.YearQuarterDetailView = BI.inherit(BI.View, {
                 },
                 left: 0,
                 right: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
-                top: this.constants.DETAIL_GAP_NORMAL,
+                top: 0,
                 bottom: this.constants.DETAIL_GAP_NORMAL
             }]
         });
@@ -172,7 +197,7 @@ BIDezi.YearQuarterDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager_control",
+            type: "bi.date_dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
                 if (!dimensionsVessel[dId]) {
@@ -193,10 +218,9 @@ BIDezi.YearQuarterDetailView = BI.inherit(BI.View, {
             }
         });
 
-        this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
+        this.dimensionsManager.on(BI.DateDimensionsManager.EVENT_CHANGE, function () {
             var values = this.getValue();
             self.model.set(values);
-            this.populate();
         });
         return this.dimensionsManager;
     },
@@ -228,7 +252,9 @@ BIDezi.YearQuarterDetailView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev) {
-
+        if (BI.has(changed, "dimensions") || BI.has(changed, "view")) {
+            this.dimensionsManager.populate();
+        }
     },
 
     refresh: function () {

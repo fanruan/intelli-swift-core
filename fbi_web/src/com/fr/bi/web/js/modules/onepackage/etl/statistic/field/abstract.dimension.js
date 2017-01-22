@@ -8,7 +8,8 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
     constants: {
         DIMENSION_BUTTON_HEIGHT: 25,
         COMBO_WIDTH: 25,
-        LABEL_GAP : 5
+        LABEL_GAP : 5,
+        INVALID_NAME: "INVALID_NAME_IN_SUM"
     },
 
     _defaultConfig: function () {
@@ -27,8 +28,9 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
             type: "bi.sign_style_editor",
             cls: "etl-dimension-name",
             height:25,
-            validationChecker:function(){
-                return self._checkDimensionName(self.nameEditor.getValue());
+            errorText: BI.i18nText("BI-Field_Name_Can_Not_Be_Same"),
+            validationChecker:function(v){
+                return self._checkDimensionName(v);
             }
         });
 

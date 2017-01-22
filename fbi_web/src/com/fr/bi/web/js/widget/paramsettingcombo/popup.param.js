@@ -52,54 +52,6 @@ BI.ParamPopupView = BI.inherit(BI.Widget, {
 
     },
 
-    _getQuarterStartMonth: function (date) {
-        var quarterStartMonth = 0;
-        var nowMonth = date.getMonth();
-        if (nowMonth < 3) {
-            quarterStartMonth = 0;
-        }
-        if (2 < nowMonth && nowMonth < 6) {
-            quarterStartMonth = 3;
-        }
-        if (5 < nowMonth && nowMonth < 9) {
-            quarterStartMonth = 6;
-        }
-        if (nowMonth > 8) {
-            quarterStartMonth = 9;
-        }
-        return quarterStartMonth;
-    },
-
-    //获得指定日期所在季度的起始日期
-    _getQuarterStartDate: function (date) {
-        return new Date(date.getFullYear(), this._getQuarterStartMonth(date), 1);
-    },
-
-    //获得指定日期所在季度的结束日期
-    _getQuarterEndDate: function (date) {
-        var quarterEndMonth = this._getQuarterStartMonth(date) + 2;
-        return new Date(date.getFullYear(), quarterEndMonth, date.getMonthDays(quarterEndMonth));
-    },
-
-    //指定日期n个月之前或之后的日期
-    _getOffsetMonth: function (date, n) {
-        var day = date.getDate();
-        var monthDay = new Date(date.getFullYear(), date.getMonth() + parseInt(n), 1).getMonthDays();
-        if(day > monthDay){
-            day = monthDay;
-        }
-        date.setDate(day);
-        date.setMonth(date.getMonth() + parseInt(n));
-        return date;
-    },
-
-    //指定日期n个季度之前或之后的日期
-    _getOffsetQuarter: function (date, n) {
-        var dt = new Date(date);
-        dt.setMonth(dt.getMonth() + n * 3);
-        return dt;
-    },
-
     setValue: function (v) {
         this.radioGroup.setValue(v.type);
         BI.each(this.radioGroup.getAllButtons(), function (i, button) {
@@ -135,12 +87,12 @@ BI.ParamPopupView = BI.inherit(BI.Widget, {
                 end = new Date(start.getFullYear(), 11, 31);
                 break;
             case BICst.YEAR_QUARTER:
-                ydate = this._getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
-                start = this._getQuarterStartDate(ydate);
-                end = this._getQuarterEndDate(ydate);
+                ydate = new Date().getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
+                start = new Date().getQuarterStartDate(ydate);
+                end = new Date().getQuarterEndDate(ydate);
                 break;
             case BICst.YEAR_MONTH:
-                ydate = this._getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
+                ydate = new Date().getOffsetMonth(ydate, sPrevOrAfter * value.svalue);
                 start = new Date(ydate.getFullYear(), ydate.getMonth(), 1);
                 end  = new Date(ydate.getFullYear(), ydate.getMonth(), (ydate.getLastDateOfMonth()).getDate());
                 break;
@@ -153,12 +105,12 @@ BI.ParamPopupView = BI.inherit(BI.Widget, {
                 end = start.getOffsetDate(1);
                 break;
             case BICst.MONTH_WEEK:
-                var mdate = this._getOffsetMonth(new Date(), fPrevOrAfter * value.fvalue);
+                var mdate = new Date().getOffsetMonth(new Date(), fPrevOrAfter * value.fvalue);
                 start = mdate.getOffsetDate(sPrevOrAfter * 7 * value.svalue);
                 end = start.getOffsetDate(7);
                 break;
             case BICst.MONTH_DAY:
-                var mdate = this._getOffsetMonth(new Date(), fPrevOrAfter * value.fvalue);
+                var mdate = new Date().getOffsetMonth(new Date(), fPrevOrAfter * value.fvalue);
                 start = mdate.getOffsetDate(sPrevOrAfter * value.svalue);
                 end = start.getOffsetDate(1);
                 break;

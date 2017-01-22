@@ -2,13 +2,13 @@
  * Created by Young's on 2016/4/7.
  */
 BI.ControlFilterItem = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.ControlFilterItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-control-filter-item"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.ControlFilterItem.superclass._init.apply(this, arguments);
         var wId = this.options.wId;
         var widgetType = BI.Utils.getWidgetTypeByID(wId);
@@ -18,8 +18,17 @@ BI.ControlFilterItem = BI.inherit(BI.Widget, {
             case BICst.WIDGET.STRING:
                 widgetIcon = "chart-string-font";
                 break;
+            case BICst.WIDGET.STRING_LIST:
+                widgetIcon = "chart-string-list-font";
+                break;
             case BICst.WIDGET.NUMBER:
                 widgetIcon = "chart-number-font";
+                break;
+            case BICst.WIDGET.SINGLE_SLIDER:
+                widgetIcon = "chart-single-slider-font";
+                break;
+            case BICst.WIDGET.INTERVAL_SLIDER:
+                widgetIcon = "chart-interval-slider-font";
                 break;
             case BICst.WIDGET.DATE:
                 widgetIcon = "chart-date-range-font";
@@ -36,8 +45,20 @@ BI.ControlFilterItem = BI.inherit(BI.Widget, {
             case BICst.WIDGET.YMD:
                 widgetIcon = "chart-ymd-font";
                 break;
+            case BICst.WIDGET.DATE_PANE:
+                widgetIcon = "chart-date-pane-font";
+                break;
             case BICst.WIDGET.TREE:
                 widgetIcon = "chart-tree-font";
+                break;
+            case BICst.WIDGET.TREE_LIST:
+                widgetIcon = "chart-tree-list-font";
+                break;
+            case BICst.WIDGET.LIST_LABEL:
+                widgetIcon = "chart-list-label-font";
+                break;
+            case BICst.WIDGET.TREE_LABEL:
+                widgetIcon = "chart-tree-label-font";
                 break;
         }
 

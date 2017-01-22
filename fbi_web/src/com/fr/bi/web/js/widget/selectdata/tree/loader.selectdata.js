@@ -97,6 +97,22 @@ BI.SelectDataLoader = BI.inherit(BI.Widget, {
         this.loader.populate.apply(this.loader, arguments);
     },
 
+    getAllButtons: function(){
+        return this.loader.getAllButtons();
+    },
+
+    showView: function(b){
+        BI.each(this.loader.getAllButtons(),function(i, button){
+            button.showView && button.showView(b);
+        })
+    },
+
+    hideView: function(b){
+        BI.each(this.loader.getAllButtons(),function(i, button){
+            button.hideView && button.hideView(b);
+        })
+    },
+
     setValue: function (v) {
         this.loader.setValue(v);
     },

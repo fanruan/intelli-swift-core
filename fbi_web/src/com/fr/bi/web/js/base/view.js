@@ -24,6 +24,10 @@ BI.View = BI.inherit(BI.V, {
             notLocal && !BI.isEmpty(changed) && this.change(changed, prev, context, options);
             this.model._changing_ = false;
             this.model.actionEnd() && this.actionEnd();
+        }).listenTo(this.model, "destroy", function () {
+            this.destroy();
+        }).listenTo(this.model, "unset", function () {
+            this.destroy();
         }).listenTo(this.model, "splice", function (arg) {
             this.splice.apply(this, arg);
         }).listenTo(this.model, "duplicate", function (arg) {
@@ -204,7 +208,6 @@ BI.View = BI.inherit(BI.V, {
         var action = options.action || new BI.ShowAction();
         var cardLayout = this._cardLayouts[layout];
         if (!cardLayout) {
-            throw new Error("没有创建子面板");
             return this;
         }
         cardLayout.setVisible(true);
@@ -214,7 +217,6 @@ BI.View = BI.inherit(BI.V, {
             view.listenTo(view.model, "destroy", function () {
                 delete self._cards[cardName];
                 cardLayout.deleteCardByName(cardName);
-                view.destroy();
                 if (cardLayout.isAllCardHide()) {
                     cardLayout.setVisible(false);
                     BI.Layers.hide(layout + self.cid);
@@ -222,7 +224,6 @@ BI.View = BI.inherit(BI.V, {
             }).listenTo(view.model, "unset", function () {
                 delete self._cards[cardName];
                 cardLayout.deleteCardByName(cardName);
-                view.destroy();
             });
             cardLayout.addCardByName(cardName, view);
             this._cards || (this._cards = {});
@@ -384,7 +385,7 @@ BI.View = BI.inherit(BI.V, {
     reading: function (options) {
         var self = this;
         var name = BI.UUID();
-        this.read(BI.extend({
+        this.read(BI.extend({}, options, {
             beforeSend: function () {
                 var loading = BI.createWidget({
                     type: 'bi.vertical',
@@ -401,13 +402,13 @@ BI.View = BI.inherit(BI.V, {
                 options.complete && options.complete(data);
                 BI.Maskers.remove(name);
             }
-        }, options));
+        }));
     },
 
     updating: function (options) {
         var self = this;
         var name = BI.UUID();
-        this.update(BI.extend({
+        this.update(BI.extend({}, options, {
             noset: true,
             beforeSend: function () {
                 var loading = BI.createWidget({
@@ -425,13 +426,13 @@ BI.View = BI.inherit(BI.V, {
                 options.complete && options.complete(data);
                 BI.Maskers.remove(name);
             }
-        }, options));
+        }));
     },
 
     patching: function (options) {
         var self = this;
         var name = BI.UUID();
-        this.patch(BI.extend({
+        this.patch(BI.extend({}, options, {
             noset: true,
             beforeSend: function () {
                 var loading = BI.createWidget({
@@ -449,7 +450,7 @@ BI.View = BI.inherit(BI.V, {
                 options.complete && options.complete(data);
                 BI.Maskers.remove(name);
             }
-        }, options));
+        }));
     },
 
     populate: function (modelData, options) {
@@ -508,5 +509,10 @@ BI.View = BI.inherit(BI.V, {
         delete this._cardLayouts;
         delete this._cards;
         this.remove();
+        this.destroyed();
+    },
+
+    destroyed: function () {
+
     }
 });

@@ -64,6 +64,11 @@ BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
                 disabled: true
             }],
             [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.TARGET_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+            }],
+            [{
                 text: BI.i18nText("BI-This_Target_From") + ": " + tableName + "." + fieldName,
                 tipType: "warning",
                 value: BICst.TARGET_COMBO.INFO,

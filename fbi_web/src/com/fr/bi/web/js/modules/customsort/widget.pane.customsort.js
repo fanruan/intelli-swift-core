@@ -48,7 +48,7 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
         this.loader.element.sortable({
             containment: this.element,
             items: ".bi-custom-sort-item",
-            cursor: "drag",
+            cursor: BICst.cursorUrl,
             tolerance: "intersect",
             placeholder: {
                 element: function ($currentItem) {

@@ -29,7 +29,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             self._debounce2Hide();
         });
         this.pushButton = BI.createWidget({
-            type: "bi.drill_push_button"
+            type: "bi.drill_push_button",
         });
         this.pushButton.on(BI.DrillPushButton.EVENT_CHANGE, function () {
             self._onClickPush(!self.wrapper.isVisible());
@@ -50,12 +50,12 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             var width = 0;
             BI.each(self.wrapper.getAllButtons(), function (idx, drill) {
                 //当前点击的要展示
-                if(BI.contains(obj.dimensionIds, drill.getDid())){
+                if (BI.isNotNull(obj.dimensionIds) && BI.contains(obj.dimensionIds, drill.getDid())) {
                     drill.setVisible(true);
                     drill.setValue(obj);
                     drill.populate();
                     width += 190;
-                }else{
+                } else {
                     drill.setVisible(false);
                 }
             });
@@ -76,7 +76,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     },
 
     _hideDrill: function () {
-        if (this._doHide && !this._hasUpDrill()) {
+        if (this._doHide && BI.Utils.isWidgetExistByID(this.options.wId) && !this._hasUpDrill()) {
             this.setVisible(false);
         }
     },
@@ -107,15 +107,18 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             case BICst.WIDGET.RANGE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.PARETO:
                 if (allDims.length > allUsableDims.length && allUsableDims.length > 0) {
                     showDrill = true;
                 }
                 break;
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:
@@ -136,27 +139,9 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
     _hasUpDrill: function () {
         var allUsedDims = BI.Utils.getAllUsableDimDimensionIDs(this.options.wId);
-        return BI.any(allUsedDims, function(idx, dId){
+        return BI.any(allUsedDims, function (idx, dId) {
             return BI.isNotNull(BI.Utils.getDrillUpDimensionIdByDimensionId(dId));
         })
-    },
-
-    /**
-     * 当前使用中的维度中有哪些是要显示钻取框的（下钻过的）
-     * @returns {Array}
-     * @private
-     */
-    _getVisibleDrillCellArray: function(){
-        var o = this.options;
-        var visibleArray = [];
-        var drillList = BI.Utils.getDrillList(o.wId);
-        BI.each(BI.Utils.getAllUsableDimDimensionIDs(o.wId), function (i, dim) {
-            if (BI.has(drillList, dim) && BI.isNotEmptyArray(drillList[dim])) {
-                var arr = drillList[dim];
-                visibleArray.push(arr[arr.length - 1]);
-            }
-        });
-        return visibleArray;
     },
 
     populate: function () {
@@ -172,9 +157,11 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         var currentDrilldIds = [];
         //看一下钻取
         var drillList = BI.Utils.getDrillList(wId);
+
         //哪些钻取框可以显示
         var visibleArray = [];
         BI.each(BI.Utils.getAllUsableDimDimensionIDs(wId), function (i, dim) {
+
             var dId = BI.Utils.getDrillUpDimensionIdByDimensionId(dim);
             if (BI.isNotNull(dId)) {
                 var arr = drillList[dim];
@@ -184,6 +171,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 currentDrilldIds.push(dim);
             }
         });
+
         var width = 0;
         var items = [];
         BI.each(currentDrilldIds, function (idx, dId) {
@@ -200,7 +188,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             });
             drill.populate();
             items.push(drill);
-            if(BI.contains(visibleArray, dId)){
+            if (BI.contains(visibleArray, dId)) {
                 width += 190;
             }
         });

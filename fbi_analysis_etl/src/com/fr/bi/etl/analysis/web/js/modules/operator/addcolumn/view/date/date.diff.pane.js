@@ -8,7 +8,7 @@ BI.AnalysisETLOperatorAddColumnDateDiffPane = BI.inherit(BI.MVCWidget, {
         RGAP : 5,
         HEIGHT : 30,
         LABEL_WIDTH : 45,
-        SMALL_LABEL_WIDTH : 20,
+        SMALL_LABEL_WIDTH : 30,
         SEGMENT_WIDTH : 480,
         COMBO_WIDTH : 225
     },

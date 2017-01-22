@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.newstyle;
 
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -22,6 +23,20 @@ public class FallAxisChartSetting extends BIAbstractAxisChartSetting {
         JSONObject config = super.formatConfig(options, data);
         config.getJSONObject("legend").put("enabled", false);
         return config;
+    }
+
+    @Override
+    public JSONArray formatTypes(JSONArray data, JSONArray types) throws JSONException {
+        JSONArray newTypes = new JSONArray();
+        for(int i = 0; i < data.length(); i++){
+            JSONArray type = new JSONArray();
+            JSONArray axisItems = data.getJSONArray(i);
+            for(int j = 0; j < axisItems.length(); j++){
+                type.put(BIReportConstant.WIDGET.AXIS);
+            }
+            newTypes.put(type);
+        }
+        return newTypes;
     }
 
     @Override
@@ -76,7 +91,8 @@ public class FallAxisChartSetting extends BIAbstractAxisChartSetting {
                 obj.put("data", da).put("stack", "stackedFall").put("name", "");
                 result.put(obj);
             }
-            return super.formatItems(new JSONArray().put(result), types, options);
+            JSONArray newItems = new JSONArray().put(result);
+            return super.formatItems(newItems, this.formatTypes(newItems, types), options);
         }
     }
 }

@@ -17,7 +17,20 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         gap: 30,
         combineComboPosition: 2,
         Multi_Path: 1,
-        Multi_Match_Multi: 2
+        Multi_Match_Multi: 2,
+        No_Select_Dimension: 3,
+
+        Multi_N_And_N: 2,
+        One_N_And_N: 3,
+        UnKnowNandN: 4,
+        Multi_Path_HEIGHT: 100,
+        Multi_N_And_N_HEIGHT: 185,
+        One_N_And_N_HEIGHT: 145,
+        UnKnowNandN_HEIGHT: 145,
+
+        NORMAL_COLOR: "#fff5c1",
+        TRIANGLE_WIDTH: 16,
+        TRIANGLE_HEIGHT: 10,
     },
 
     _defaultConfig: function () {
@@ -51,6 +64,14 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             });
         });
 
+        this.tipLabel = BI.createWidget({
+            type: "bi.label",
+            cls: "setting-tip-label",
+            text: BI.i18nText("BI-Please_Select_Path_Between_Target_And_Dimension"),
+            height: this.constants.labelHeight,
+            rgap: 15
+        });
+
         this.tab = BI.createWidget({
             type: "bi.tab",
             height: 200,
@@ -58,6 +79,15 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         });
 
         this.tab.setSelect(this.constants.Multi_Path);
+
+        this.tipTab = BI.createWidget({
+            type: "bi.tab",
+            height: this.constants.labelHeight,
+            width: 25,
+            cardCreator: BI.bind(this._createTipTabs, this)
+        });
+
+        this.tipTab.setSelect(this.constants.Multi_Path);
 
         this.emptyItem = BI.createWidget({
             type: "bi.default",
@@ -92,17 +122,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             }, {
                 el: {
                     type: "bi.left",
-                    items: [{
-                        type: "bi.label",
-                        cls: "setting-tip-label",
-                        text: BI.i18nText("BI-Please_Select_Path_Between_Target_And_Dimension"),
-                        height: this.constants.labelHeight,
-                        rgap: 15
-                    }, {
-                        type: "bi.icon_button",
-                        height: this.constants.labelHeight,
-                        cls: "path-set-doubt"
-                    }]
+                    items: [this.tipLabel, this.tipTab]
                 },
                 height: this.constants.labelHeight
             }, {
@@ -116,16 +136,102 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         });
     },
 
+    _createTipTabs: function(v){
+        var self = this;
+        switch (v) {
+            case this.constants.Multi_N_And_N:
+                return createComboObj("multi-n-and-n-background", this.constants.Multi_N_And_N_HEIGHT);
+            case this.constants.One_N_And_N:
+                return createComboObj("one-n-and-n-background", this.constants.One_N_And_N_HEIGHT);
+            case this.constants.Multi_Path:
+                return createComboObj("multi-path-background", this.constants.Multi_Path_HEIGHT);
+            case this.constants.UnKnowNandN:
+                return createComboObj("unknow-n-and-n-background", this.constants.UnKnowNandN_HEIGHT);
+        }
+
+        function createComboObj(cls, height){
+            var triangle = BI.createWidget({
+                type: "bi.svg",
+                width: self.constants.TRIANGLE_WIDTH,
+                height: self.constants.TRIANGLE_HEIGHT
+            });
+
+            triangle.path("M8,0L0,10L16,10").attr({
+                "stroke": self.constants.NORMAL_COLOR,
+                "fill": self.constants.NORMAL_COLOR
+            });
+            var popup = BI.createWidget({
+                type: "bi.layout",
+                cls: cls + " path-doubt",
+                width: 200,
+                height: height
+            });
+            return BI.createWidget({
+                type: "bi.combo",
+                cls: "tip-combo",
+                el: {
+                    type: "bi.icon_button",
+                    height: self.constants.labelHeight,
+                    cls: "path-set-doubt"
+                },
+                popup: {
+                    el: {
+                        type: "bi.absolute",
+                        element: popup,
+                        items: [{
+                            el: {
+                                type: "bi.horizontal_auto",
+                                items:[triangle]
+                            },
+                            left: 0,
+                            right: 0,
+                            top: -5
+                        }]
+                    },
+                    width: 202,
+                    height: height
+                },
+                isNeedAdjustHeight: false,
+                isNeedAdjustWidth: false,
+                offsetStyle:"center"
+            })
+        }
+    },
+
     _createTabs: function (v) {
+        var self = this;
         switch (v) {
             case this.constants.Multi_Path:
-                return BI.createWidget({
+                this.tipLabel.setText(BI.i18nText("BI-Please_Select_Dimenison_And_Target_Relation_Below"));
+                var multiPathChooser = BI.createWidget({
                     type: "bi.multi_path_chooser",
                     height: 200
                 });
+                multiPathChooser.on(BI.MultiPathChooser.EVENT_PATH_CHANGE, function(v){
+                    self.fireEvent(BI.SetRelationPane.EVENT_PATH_PANE_CHANGE, v);
+                });
+                return multiPathChooser;
             case this.constants.Multi_Match_Multi:
-                return BI.createWidget({
+                this.tipLabel.setText(BI.i18nText("BI-Please_Select_Path_Between_Target_And_Dimension"));
+                var multiMatchMultiPathChooser = BI.createWidget({
                     type: "bi.multi_match_multi_path_chooser",
+                    height: 200
+                });
+                multiMatchMultiPathChooser.on(BI.MultiMatchMultiPathChooser.EVENT_PATH_CHANGE, function(v){
+                    self.tipTab.setSelect(v ? self.constants.One_N_And_N : self.constants.Multi_N_And_N);
+                    self.fireEvent(BI.SetRelationPane.EVENT_PATH_PANE_CHANGE, v);
+                });
+                return multiMatchMultiPathChooser;
+            case this.constants.No_Select_Dimension:
+                return BI.createWidget({
+                    type: "bi.vertical",
+                    items: [{
+                        type: "bi.label",
+                        textAlign: "left",
+                        lgap:5,
+                        cls: "setting-dimension-tip",
+                        text: BI.i18nText("BI-Please_Select_Dimension_Field")
+                    }],
                     height: 200
                 });
         }
@@ -134,6 +240,10 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
     _checkDimensionAndTargetRelation: function (tId) {
         var o = this.options;
         var self = this;
+        if(BI.isNull(tId)){
+            this.tab.setSelect(this.constants.No_Select_Dimension);
+            return;
+        }
         var commonPrimaryTableIds = BI.Utils.getCommonPrimaryTablesByTableIDs([BI.Utils.getTableIDByDimensionID(o.targetIds[0]), tId]);
         var combineCombo = this.layout.attr("items")[this.constants.combineComboPosition];
         if(commonPrimaryTableIds.length !== 0 && BI.Utils.getPathsFromTableAToTableB(tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0])).length === 0
@@ -177,8 +287,10 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             this.selectCombineTableCombo.setValue();
             combineCombo.height = 35;
             this.tab.setSelect(this.constants.Multi_Match_Multi);
+            this.tipTab.setSelect(this.constants.UnKnowNandN);
         }else{
             combineCombo.height = 0;
+            this.tipTab.setSelect(this.constants.Multi_Path);
             this.tab.setSelect(this.constants.Multi_Path);
         }
         this.layout.resize();
@@ -225,6 +337,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         }
     }
 });
+BI.SetRelationPane.EVENT_PATH_PANE_CHANGE = "SetRelationPane.EVENT_PATH_PANE_CHANGE";
 BI.SetRelationPane.EVENT_DESTROY = "SetRelationPane.EVENT_DESTROY";
 BI.SetRelationPane.EVENT_SET_RELATION = "SetRelationPane.EVENT_SET_RELATION";
 $.shortcut('bi.set_relation_pane', BI.SetRelationPane);

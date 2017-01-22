@@ -14,6 +14,11 @@ BI.RelationTableFieldButton = BI.inherit(BI.BasicButton, {
     _init: function(){
         BI.RelationTableFieldButton.superclass._init.apply(this, arguments);
         var o = this.options;
+        this.primaryKeyIcon = BI.createWidget({
+            type: "bi.icon",
+            width: 20
+        });
+        this.primaryKeyIcon.setVisible(false);
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
@@ -24,13 +29,22 @@ BI.RelationTableFieldButton = BI.inherit(BI.BasicButton, {
                 cls: "relation-table-name",
                 height: 30
             }, {
-                type: "bi.label",
-                text: o.field_name,
-                title: o.field_name,
-                height: 30
+                type: "bi.float_center_adapt",
+                cls: "primary-key-font",
+                items: [this.primaryKeyIcon, {
+                    type: "bi.label",
+                    text: o.field_name,
+                    title: o.field_name,
+                    height: 30
+                }]
             }],
             width: 140
         })
+    },
+    
+    setPrimaryKeyIconVisible: function(v) {
+        this.primaryKeyIcon.setVisible(v);     
     }
+    
 });
 $.shortcut("bi.relation_table_field_button", BI.RelationTableFieldButton);

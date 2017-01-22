@@ -44,6 +44,9 @@ BIShow.TargetView = BI.inherit(BI.View, {
                 return self.editor.getValue();
             },
             cls: "bi-target-name",
+            title: function () {
+                return self.editor.getValue();
+            },
             validationChecker: function () {
                 return self._checkDimensionName(self.editor.getValue());
             }
@@ -136,6 +139,10 @@ BIShow.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
+                case BICst.TARGET_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.TARGET_COMBO.COPY:
                     self._copyTarget();
                     break;
@@ -158,7 +165,8 @@ BIShow.TargetView = BI.inherit(BI.View, {
             switch (v) {
                 case BICst.TARGET_COMBO.DEPEND_TYPE:
                     self.model.set("_src", {
-                        field_id: s
+                        field_id: s,
+                        table_id: BI.Utils.getTableIdByFieldID(s)
                     });
                     break;
                 case BICst.TARGET_COMBO.CHART_TYPE:
@@ -169,6 +177,10 @@ BIShow.TargetView = BI.inherit(BI.View, {
                     break;
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
+                    break;
+                case BICst.TARGET_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
                     break;
                 case BICst.TARGET_COMBO.COPY:
                     self._copyTarget();
@@ -200,6 +212,10 @@ BIShow.TargetView = BI.inherit(BI.View, {
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.DISPLAY:
                     self.model.set("used", true);
+                    break;
+                case BICst.TARGET_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.DELETE:
                     self._deleteTarget();
@@ -240,13 +256,13 @@ BIShow.TargetView = BI.inherit(BI.View, {
             wType !== BICst.WIDGET.CROSS_TABLE &&
             wType !== BICst.WIDGET.COMPLEX_TABLE &&
             wType !== BICst.WIDGET.GIS_MAP)
-            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION2
+            && BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(this.model.get("id")))
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
             this.usedRadio.setEnable(false);
         }
         if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
-            && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION1
+            && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(this.model.get("id")))
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
             this.usedRadio.setEnable(false);
@@ -273,7 +289,7 @@ BIShow.TargetView = BI.inherit(BI.View, {
         //特殊的地图 指标2一直为单选 若指标2中未选中 指标1为多选 否则单选
         if (wType === BICst.WIDGET.MAP) {
             var regionType = BI.Utils.getRegionTypeByDimensionID(tId);
-            if (regionType === BICst.REGION.TARGET2) {
+            if (BI.Utils.isTargetRegion2ByRegionType(regionType)) {
                 this.usedCheck.setVisible(false);
                 this.usedRadio.setVisible(true);
                 return;
@@ -281,12 +297,12 @@ BIShow.TargetView = BI.inherit(BI.View, {
                 var allTarIds = BI.Utils.getAllTargetDimensionIDs(wId);
                 var isTar2Checked = false;
                 BI.some(allTarIds, function (i, tarId) {
-                    if (BI.Utils.getRegionTypeByDimensionID(tarId) === BICst.REGION.TARGET2 &&
+                    if (BI.Utils.isTargetRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(tarId)) &&
                         BI.Utils.isDimensionUsable(tarId)) {
                         return isTar2Checked = true;
                     }
                 });
-                if(isTar2Checked === true) {
+                if (isTar2Checked === true) {
                     this.usedCheck.setVisible(false);
                     this.usedRadio.setVisible(true);
                     return;

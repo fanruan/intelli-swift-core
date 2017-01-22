@@ -50,10 +50,15 @@ BI.ConvertDisplayLabel = BI.inherit(BI.Widget, {
     },
 
     _assertArray: function (array) {
+        var newArray = [];
         if(BI.isEmpty(array[this.constants.newValuePos])){
-            array[this.constants.newValuePos] = array[0];
+            newArray[this.constants.initialValuePos] = array[0];
+            newArray[this.constants.newValuePos] = array[0];
+        }else{
+            newArray[this.constants.initialValuePos] = array[0];
+            newArray[this.constants.newValuePos] = array[this.constants.newValuePos] + "(" + array[0] + ")";
         }
-        return array;
+        return newArray;
     },
 
     setValue: function(v){

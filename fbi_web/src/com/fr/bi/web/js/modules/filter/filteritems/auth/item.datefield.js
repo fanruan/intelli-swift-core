@@ -67,7 +67,7 @@ BI.AuthorityDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             return [];
         }
         var fieldName = BI.Utils.getTableNameByFieldId4Conf(o._src.field_id) + "." +
-            BI.Utils.getFieldNameByFieldId4Conf(o._src.field_id);
+            BI.Utils.getFieldNameById4Conf(o._src.field_id);
 
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",

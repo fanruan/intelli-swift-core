@@ -73,7 +73,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Database_Connection_Name"),
                 textAlign: "left",
-                cls: "item-label",
+                cls: "first-item-label",
                 height: 30,
                 width: 100
             }, this.linkName],
@@ -224,7 +224,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Second_Step"),
                 textAlign: "left",
-                cls: "item-label",
+                cls: "first-item-label",
                 height: 30,
                 width: 170
             }, this.testButton],
@@ -295,7 +295,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.label",
                 text: name1,
                 textAlign: "left",
-                cls: "item-label",
+                cls: "first-item-label",
                 height: 30,
                 width: 100
             }, {

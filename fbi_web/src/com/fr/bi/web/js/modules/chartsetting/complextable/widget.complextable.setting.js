@@ -25,6 +25,77 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
     _init: function () {
         BI.ComplexTableSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+
+        //显示组件标题
+        this.showName = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Chart_Title"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
+        });
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
+            self.widgetTitle.setVisible(this.isSelected());
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
+        });
+
+        //组件标题
+        this.widgetName = BI.createWidget({
+            type: "bi.sign_editor",
+            cls: "title-input",
+            width: 120
+        });
+
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
+        //详细设置
+        this.widgetNameStyle = BI.createWidget({
+            type: "bi.show_title_detailed_setting_combo"
+        });
+
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
+        this.widgetTitle = BI.createWidget({
+            type: "bi.left",
+            items: [this.widgetName, this.widgetNameStyle],
+            hgap: this.constant.SIMPLE_H_GAP
+        });
+
+        //组件背景
+        this.widgetBG = BI.createWidget({
+            type: "bi.global_style_index_background"
+        });
+        this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
+        });
+
+        var widgetTitle = BI.createWidget({
+            type: "bi.left",
+            cls: "single-line-settings",
+            items: BI.createItems([{
+                type: "bi.vertical_adapt",
+                items: [this.showName]
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.widgetTitle]
+            }, {
+                type: "bi.label",
+                text: BI.i18nText("BI-Widget_Background_Colour"),
+                cls: "attr-names",
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.widgetBG]
+            }], {
+                height: 58
+            }),
+            hgap: 10
+        });
+
         //类型——横向、纵向展开
         this.tableFormGroup = BI.createWidget({
             type: "bi.button_group",
@@ -45,16 +116,16 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //主题颜色
-        this.colorSelector = BI.createWidget({
+        this.themeColor = BI.createWidget({
             type: "bi.color_chooser",
             width: this.constant.BUTTON_HEIGHT,
             height: this.constant.BUTTON_HEIGHT
         });
-        this.colorSelector.on(BI.ColorChooser.EVENT_CHANGE, function () {
+        this.themeColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //风格——1、2、3
-        this.tableSyleGroup = BI.createWidget({
+        this.tableStyleGroup = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.TABLE_STYLE_GROUP, {
                 type: "bi.icon_button",
@@ -69,9 +140,31 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.tableSyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+        this.tableStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
+
+        //自定义表格样式
+        this.isCustomTableStyle = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Custom_Table_Style"),
+            width: 135
+        });
+
+        this.isCustomTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
+            self.tableStyleSetting.setVisible(this.isSelected());
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
+        //表格样式设置
+        this.customTableStyle = BI.createWidget({
+            type: "bi.table_detailed_setting_combo"
+        });
+
+        this.customTableStyle.on(BI.TableDetailedSettingCombo.EVENT_CHANGE, function() {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
         var tableStyle = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
@@ -92,43 +185,72 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }, {
                 type: "bi.vertical_adapt",
-                items: [this.colorSelector],
+                items: [this.themeColor],
                 height: this.constant.SINGLE_LINE_HEIGHT
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Style"),
                 cls: "attr-names",
                 height: this.constant.SINGLE_LINE_HEIGHT
-            }, this.tableSyleGroup],
+            }, this.tableStyleGroup, /*{
+                type: "bi.vertical_adapt",
+                items: [this.isCustomTableStyle],
+                cls: "attr-names",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.customTableStyle],
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }*/],
             hgap: this.constant.SIMPLE_H_GAP
         });
 
         //显示行汇总
         this.showRowTotal = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Total_Row"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.showRowTotal.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.showRowTotal.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //显示列汇总
         this.showColTotal = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Total_Col"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.showColTotal.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.showColTotal.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //展开所有行表头节点
         this.openRowNode = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Open_All_Row_Header_Node"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.openRowNode.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.openRowNode.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //展开所有列表头节点
         this.openColNode = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Open_All_Col_Header_Node"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.openColNode.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.openColNode.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //单页最大行数
@@ -160,70 +282,42 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
         this.maxCol.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
+
+        //表格行高
+        this.rowHeight = BI.createWidget({
+            type: "bi.sign_editor",
+            width: this.constant.EDITOR_WIDTH,
+            height: this.constant.EDITOR_HEIGHT,
+            cls: "max-row-input",
+            errorText: BI.i18nText("BI-Please_Enter_Number_1_To_100"),
+            allowBlank: false,
+            validationChecker: function (v) {
+                return BI.isInteger(v) && v > 0 && v <= 100;
+            }
+        });
+        this.rowHeight.on(BI.SignEditor.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        });
+
         var show = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
-            items: [{
+            items: BI.createItems([{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                cls: "line-title",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                cls: "line-title"
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.showRowTotal],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Show_Total_Row"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.showRowTotal]
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.showColTotal],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Show_Total_Col"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.showColTotal]
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.openRowNode],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Open_All_Row_Header_Node"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.openRowNode]
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.openColNode],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Open_All_Col_Header_Node"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.openColNode]
             }, {
                 type: "bi.vertical_adapt",
                 items: [{
@@ -252,115 +346,126 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }],
                 lgap: 5
-            }],
+            }, {
+                type: "bi.vertical_adapt",
+                items: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Row_Height"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rowHeight],
+                    width: this.constant.EDITOR_WIDTH
+                }],
+                lgap: 5
+            }], {
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }),
             hgap: this.constant.SIMPLE_H_GAP
         });
 
         //冻结维度
         this.freezeDim = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Freeze_Table_Dimensions"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.freezeDim.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.freezeDim.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
-        //联动传递指标过滤条件
+        //联动传递过滤条件
         this.transferFilter = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Bind_Target_Condition"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.transferFilter.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         var otherAttr = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
-            items: [{
+            items: BI.createItems([{
                 type: "bi.label",
                 text: BI.i18nText("BI-Interactive_Attr"),
-                cls: "line-title",
+                cls: "line-title"
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.freezeDim]
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.transferFilter]
+            }], {
                 height: this.constant.SINGLE_LINE_HEIGHT
-            }, {
-                type: "bi.left",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.freezeDim],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Freeze_Table_Dimensions"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
-            }, {
-                type: "bi.left",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.transferFilter],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Bind_Target_Condition"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
-            }],
+            }),
             hgap: this.constant.SIMPLE_H_GAP
         });
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, show, otherAttr],
+            items: [widgetTitle, tableStyle, show, otherAttr],
             hgap: 10
         })
     },
 
     populate: function () {
         var wId = this.options.wId;
+        this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
+        this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+        this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
+        this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
+
         this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
-        this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
-        this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
+        this.themeColor.setValue(BI.Utils.getWSThemeColorByID(wId));
+        this.tableStyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
+        this.isCustomTableStyle.setSelected(BI.Utils.getWSIsCustomTableStyleByID(wId));
+        this.customTableStyle.setValue(BI.Utils.getWSCustomTableStyleByID(wId));
+        this.customTableStyle.setVisible(BI.Utils.getWSIsCustomTableStyleByID(wId));
+
         this.showRowTotal.setSelected(BI.Utils.getWSShowRowTotalByID(wId));
         this.showColTotal.setSelected(BI.Utils.getWSShowColTotalByID(wId));
         this.openRowNode.setSelected(BI.Utils.getWSOpenRowNodeByID(wId));
         this.openColNode.setSelected(BI.Utils.getWSOpenColNodeByID(wId));
         this.maxRow.setValue(BI.Utils.getWSMaxRowByID(wId));
         this.maxCol.setValue(BI.Utils.getWSMaxColByID(wId));
+        this.rowHeight.setValue(BI.Utils.getWSRowHeightByID(wId));
+
         this.freezeDim.setSelected(BI.Utils.getWSFreezeDimByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
 
     getValue: function () {
         return {
-            table_form: this.tableFormGroup.getValue()[0],
-            theme_color: this.colorSelector.getValue(),
-            table_style: this.tableSyleGroup.getValue()[0],
-            show_row_total: this.showRowTotal.isSelected(),
-            show_col_total: this.showColTotal.isSelected(),
-            open_row_node: this.openRowNode.isSelected(),
-            open_col_node: this.openColNode.isSelected(),
-            max_row: this.maxRow.getValue(),
-            max_col: this.maxCol.getValue(),
-            freeze_dim: this.freezeDim.isSelected(),
-            transfer_filter: this.transferFilter.isSelected()
+            showName: this.showName.isSelected(),
+            widgetName: this.widgetName.getValue(),
+            widgetNameStyle: this.widgetNameStyle.getValue(),
+            widgetBG: this.widgetBG.getValue(),
+
+            tableFormGroup: this.tableFormGroup.getValue()[0],
+            themeColor: this.themeColor.getValue(),
+            tableStyleGroup: this.tableStyleGroup.getValue()[0],
+            isCustomTableStyle: this.isCustomTableStyle.isSelected(),
+            customTableStyle: this.customTableStyle.getValue(),
+
+            showRowTotal: this.showRowTotal.isSelected(),
+            showColTotal: this.showColTotal.isSelected(),
+            openRowNode: this.openRowNode.isSelected(),
+            openColNode: this.openColNode.isSelected(),
+            maxRow: this.maxRow.getValue(),
+            maxCol: this.maxCol.getValue(),
+            rowHeight: BI.parseFloat(this.rowHeight.getValue()),
+
+            freezeDim: this.freezeDim.isSelected(),
+            transferFilter: this.transferFilter.isSelected()
         }
     },
-
-    setValue: function (v) {
-        this.tableFormGroup.setValue(v.table_form);
-        this.colorSelector.setValue(v.theme_color);
-        this.tableSyleGroup.setValue(v.table_style);
-        this.showRowTotal.setSelected(v.show_row_total);
-        this.showColTotal.setSelected(v.show_col_total);
-        this.openRowNode.setSelected(v.open_row_node);
-        this.openColNode.setSelected(v.open_col_node);
-        this.maxRow.setValue(v.max_row);
-        this.maxCol.setValue(v.max_col);
-        this.freezeDim.setSelected(v.freeze_dim);
-        this.transferFilter.setSelected(v.transfer_filter);
-    }
 });
 BI.ComplexTableSetting.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.complex_table_setting", BI.ComplexTableSetting);

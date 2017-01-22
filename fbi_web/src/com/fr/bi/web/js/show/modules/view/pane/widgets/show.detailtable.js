@@ -107,8 +107,8 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
                 textAlign: "left",
                 height: 25,
                 allowBlank: false,
-                errorText: function(v) {
-                    if(BI.isNotNull(v) && BI.trim(v) !== "") {
+                errorText: function (v) {
+                    if (BI.isNotNull(v) && BI.trim(v) !== "") {
                         return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
                     }
                     return BI.i18nText("BI-Widget_Name_Can_Not_Null");
@@ -137,17 +137,38 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
     },
 
     _createTools: function () {
-        var self = this;
+        var self = this, wId = this.model.get("id");
+
+        this.maximize = BI.createWidget({
+            type: "bi.maximization_4show",
+            wId: wId,
+            status: BICst.WIDGET_STATUS.SHOW
+        });
+        this.maximize.on(BI.Maximization4Show.EVENT_SET, function (widget) {
+            self.model.set(widget);
+        });
+
         var expand = BI.createWidget({
-            type: "bi.icon_button",
-            width: this._constants.TOOL_ICON_WIDTH,
-            height: this._constants.TOOL_ICON_HEIGHT,
-            title: BI.i18nText("BI-Detailed_Setting"),
-            cls: "widget-combo-detail-font dashboard-title-detail"
+            type: "bi.dimension_switch_show",
+            wId: wId,
+            popupCreator: function () {
+                var vessel = BI.createWidget({
+                    type: "bi.layout"
+                });
+                self.addSubVessel("detail", vessel).skipTo("detail", "detail", "detail", {}, {id: wId});
+                return vessel;
+            }
         });
-        expand.on(BI.IconButton.EVENT_CHANGE, function () {
-            self._expandWidget();
-        });
+        // var expand = BI.createWidget({
+        //     type: "bi.icon_button",
+        //     width: this._constants.TOOL_ICON_WIDTH,
+        //     height: this._constants.TOOL_ICON_HEIGHT,
+        //     title: BI.i18nText("BI-Detailed_Setting"),
+        //     cls: "widget-combo-detail-font dashboard-title-detail"
+        // });
+        // expand.on(BI.IconButton.EVENT_CHANGE, function () {
+        //     self._expandWidget();
+        // });
 
         var filterIcon = BI.createWidget({
             type: "bi.icon_button",
@@ -196,7 +217,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [filterIcon, expand, excel],
+            items: [this.maximize, filterIcon, expand, excel],
             hgap: 3
         });
         this.tools.setVisible(false);
@@ -229,6 +250,32 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
+    _refreshWidgetTitle: function () {
+        var id = this.model.get("id");
+        var titleSetting = this.model.get("settings").widgetNameStyle || {};
+        this.title.setTextStyle(titleSetting.titleWordStyle || {});
+
+        this.titleWrapper.element.css({"background": this._getBackgroundValue(titleSetting.titleBG)});
+    },
+
+    _refreshWidgetBG: function () {
+        var widgetBG = this.model.get("settings").widgetBG || {};
+        this.element.css({"background": this._getBackgroundValue(widgetBG)})
+    },
+
+    _getBackgroundValue: function (bg) {
+        if (!bg) {
+            return "";
+        }
+        switch (bg.type) {
+            case BICst.BACKGROUND_TYPE.COLOR:
+                return bg.value;
+            case BICst.BACKGROUND_TYPE.IMAGE:
+                return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
+        }
+        return "";
+    },
+
     _expandWidget: function () {
         var wId = this.model.get("id");
         BIShow.FloatBoxes.open("detail", "detail", {}, this, {
@@ -247,10 +294,18 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
+            this.maximize.populate();
         }
         if (BI.has(changed, "dimensions") ||
             BI.has(changed, "sort_sequence")) {
             this.tablePopulate();
+            this.maximize.populate();
+        }
+        if (BI.has(changed, "settings") && (changed.settings.widgetNameStyle !== prev.settings.widgetNameStyle)) {
+            this._refreshWidgetTitle()
+        }
+        if (BI.has(changed, "settings") && (changed.settings.widgetBG !== prev.settings.widgetBG)) {
+            this._refreshWidgetBG()
         }
     },
 
@@ -260,6 +315,8 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
+        this._refreshWidgetTitle();
+        this._refreshWidgetBG();
         this.tablePopulate();
         this._refreshLayout();
         this._refreshTitlePosition();

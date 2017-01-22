@@ -53,6 +53,9 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                 return self.editor.getValue();
             },
             cls: "bi-dimension-name",
+            title: function () {
+                return self.editor.getValue();
+            },
             allowBlank: false,
             validationChecker: function () {
                 return self._checkDimensionName(self.editor.getValue());
@@ -142,6 +145,13 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.DetailStringDimensionCombo.EVENT_CHANGE, function (v) {
             switch (v) {
+                case BICst.DETAIL_STRING_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
+                case BICst.DETAIL_STRING_COMBO.RENAME:
+                    self.editor.focus();
+                    break;
                 case BICst.DETAIL_STRING_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
@@ -166,6 +176,13 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.DetailNumberDimensionCombo.EVENT_CHANGE, function (v) {
             switch (v) {
+                case BICst.DETAIL_NUMBER_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
+                case BICst.DETAIL_NUMBER_COMBO.RENAME:
+                    self.editor.focus();
+                    break;
                 case BICst.DETAIL_NUMBER_COMBO.FORM_SETTING:
                     self._buildStyleSettingPane();
                     break;
@@ -211,6 +228,13 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                 case BICst.DETAIL_DATE_COMBO.WEEK:
                     self.model.set("group", {type: BICst.GROUP.W});
                     break;
+                case BICst.DETAIL_DATE_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
+                case BICst.DETAIL_DATE_COMBO.RENAME:
+                    self.editor.focus();
+                    break;
                 case BICst.DETAIL_DATE_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
@@ -244,11 +268,9 @@ BIDezi.DetailDimensionView = BI.inherit(BI.View, {
                 case BICst.DETAIL_FORMULA_COMBO.HYPERLINK:
                     self._buildHyperlinkPane();
                     break;
-                case BICst.DETAIL_FORMULA_COMBO.DISPLAY:
-                    self.model.set("used", true);
-                    break;
-                case BICst.DETAIL_FORMULA_COMBO.HIDDEN:
-                    self.model.set("used", false);
+                case BICst.DETAIL_FORMULA_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
                     break;
                 case BICst.DETAIL_FORMULA_COMBO.RENAME:
                     self.editor.focus();

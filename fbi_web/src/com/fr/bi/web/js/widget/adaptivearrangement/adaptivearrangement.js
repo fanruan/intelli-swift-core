@@ -128,11 +128,11 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             },
             resize: function (e, ui) {
                 // self._resize(item.attr("id"), ui.size);
-                var offset = self._getScrollOffset();
+                self._resize(item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_RESIZE, item.attr("id"), ui.size);
             },
             stop: function (e, ui) {
-                self._resize(item.attr("id"), ui.size);
+                self._stopResize(item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE, item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
             }
@@ -143,12 +143,28 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         var self = this;
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                this.setRegionSize(name, size);
+                break;
+        }
+    },
+
+    _stopResize: function (name, size) {
+        var self = this;
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 this.setRegionSize(name, {
                     width: size.width,
                     height: size.height
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                this.setRegionSize(name, size);
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
                 this.setRegionSize(name, size);
                 break;
         }
@@ -223,6 +239,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                 return newSize;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 return size;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                return size;
         }
     },
 
@@ -240,12 +258,23 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
                     $(">.ui-resizable-s", this.arrangement.container.element).css("zIndex", "-1");
                     break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
+                    $(">.ui-resizable-s", this.arrangement.container.element).css("zIndex", "-1");
+                    break;
             }
             this.arrangement.container.element.resizable("option", "disabled", type === BI.Arrangement.LAYOUT_TYPE.FREE);
             //});
         } catch (e) {
 
         }
+    },
+
+    getClientWidth: function () {
+        return this.arrangement.getClientWidth();
+    },
+
+    getClientHeight: function () {
+        return this.arrangement.getClientHeight();
     },
 
     getDirectRelativeRegions: function (name, direction) {
@@ -330,6 +359,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
                     break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
+                    break;
             }
             this.position = null;
         } else {
@@ -402,6 +433,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
                     break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
+                    break;
             }
         }
         return this.position || at;
@@ -470,6 +503,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
                 break;
         }
     }

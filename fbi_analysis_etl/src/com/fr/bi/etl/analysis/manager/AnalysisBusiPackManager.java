@@ -4,6 +4,7 @@ import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.BIBusinessGroup;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
@@ -243,6 +244,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public void removeTable(long userId, BIPackageID packageID, BITableID biTableID) throws BIPackageAbsentException, BITableAbsentException {
+
+    }
+
+    @Override
+    public void addTable(long userId, BIPackageID packageID, BIBusinessTable biBusinessTable) throws BIPackageAbsentException {
 
     }
 
