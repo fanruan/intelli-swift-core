@@ -6,7 +6,6 @@ import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.dezi.phantom.utils.PhantomServerUtils;
 import com.fr.general.IOUtils;
-import com.fr.general.RunTimeErorException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
@@ -25,7 +24,7 @@ import java.util.Map;
 public class PhantomServer {
 
     private String IP = PerformancePlugManager.getInstance().getPhantomServerIP();
-    private int PORT =  PerformancePlugManager.getInstance().getPhantomServerPort();
+    private int PORT = PerformancePlugManager.getInstance().getPhantomServerPort();
     private int STARTTIMES = 5;
 
     private static Map<String, String> osMap = new HashMap<String, String>();
@@ -120,11 +119,11 @@ public class PhantomServer {
             return;
         }
 
-        getResources(PhantomLib, SCRIPT_SOURCES);
+        getResources();
 
         String exe = PhantomServerUtils.getExe(PhantomEnv);
 
-        for(int i = 0; i < STARTTIMES; i ++) {
+        for (int i = 0; i < STARTTIMES; i++) {
             ArrayList<String> commands = new ArrayList<String>();
             commands.add(exe);
             commands.add(PhantomEnv + "/webserver.js");
@@ -138,12 +137,13 @@ public class PhantomServer {
             final String readLine = bufferedReader.readLine();
             if (readLine == null || !readLine.contains("true")) {
                 process.destroy();
-                if(i == STARTTIMES - 1) {
+                if (i == STARTTIMES - 1) {
                     BILoggerFactory.getLogger().info("Fail to start phantom server.");
                 }
             } else {
                 PerformancePlugManager.getInstance().setPhantomServerIP(IP);
                 PerformancePlugManager.getInstance().setPhantomServerPort(PORT);
+                BILoggerFactory.getLogger().info("Success to start phantom server.");
                 injectAllCss();
                 return;
             }
@@ -168,29 +168,13 @@ public class PhantomServer {
         }
     }
 
-    private static void getResources(String libDir, String[][] libFiles) throws FileNotFoundException {
-        //delete old lib with dependence resources
-        File serverLib = new File(libDir);
-        if (serverLib.exists() && serverLib.isDirectory()) {
-            deleteDir(serverLib);
-        }
+    private void getResources() throws IOException {
 
-        serverLib.mkdirs();
-
-        //build new phantom server lib
-        for (int i = 0; i < libFiles.length; i++) {
-            InputStream in = new FileInputStream(libFiles[i][0]);
-            File file = new File(libDir + File.separator + libFiles[i][1]);
-            try {
-                inputStreamToFile(in, file);
-            } catch (IOException e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
-            }
-        }
+        getLibResource(SCRIPT_SOURCES);
 
         try {
             //写入格式文件
-            File formatFile = new File(libDir + File.separator + "format.js");
+            File formatFile = new File(PhantomLib + File.separator + "format.js");
             ByteArrayInputStream is = new ByteArrayInputStream(FORMAT_JS.getBytes(StableUtils.RESOURCE_ENCODER));
             inputStreamToFile(is, formatFile);
         } catch (Exception e) {
@@ -198,7 +182,33 @@ public class PhantomServer {
         }
     }
 
-    private static boolean deleteDir(File dir) {
+    public void getLibResource(String[][] libFiles) throws FileNotFoundException {
+        reloadDir(PhantomLib);
+
+        //build new phantom server lib
+        for (int i = 0; i < libFiles.length; i++) {
+            InputStream in = new FileInputStream(libFiles[i][0]);
+            File file = new File(PhantomLib + File.separator + libFiles[i][1]);
+            try {
+                inputStreamToFile(in, file);
+            } catch (IOException e) {
+                BILoggerFactory.getLogger().error(e.getMessage());
+            }
+        }
+    }
+
+    private File reloadDir (String dirPath) {
+        //delete old lib with dependence resources
+        File serverLib = new File(dirPath);
+        if (serverLib.exists() && serverLib.isDirectory()) {
+            deleteDir(serverLib);
+        }
+
+        serverLib.mkdirs();
+        return serverLib;
+    }
+
+    private boolean deleteDir(File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             //recursion to delete sub directory
@@ -209,7 +219,7 @@ public class PhantomServer {
         return dir.delete();
     }
 
-    private static void inputStreamToFile(InputStream in, File file) throws IOException {
+    private void inputStreamToFile(InputStream in, File file) throws IOException {
         OutputStream outputStream = new FileOutputStream(file);
         int bytesRead = 0;
         byte[] buffer = new byte[BUFF_LENGTH];
@@ -220,5 +230,4 @@ public class PhantomServer {
         outputStream.close();
         in.close();
     }
-
 }
