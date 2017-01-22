@@ -75,7 +75,7 @@ BI.Maximization4Show = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-        if (BI.isNotNull(this.chartPane)) {
+        if (BI.isNotNull(this.chartPane) && BI.Layers.isVisible(BICst.MAXIMIZATION_LAYER)) {
             this.chartPane.populate();
         }
     }
