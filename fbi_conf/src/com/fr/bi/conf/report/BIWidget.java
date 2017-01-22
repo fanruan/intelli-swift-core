@@ -11,6 +11,7 @@ import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
 import com.fr.stable.FCloneable;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -84,4 +85,6 @@ public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService {
     void refreshSources();
 
     void reSetDetailTarget();
+
+    Rectangle getRect();
 }
