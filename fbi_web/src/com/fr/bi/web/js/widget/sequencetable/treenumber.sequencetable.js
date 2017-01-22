@@ -198,7 +198,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                 });
             }
         });
-        if (firstChild) {
+        if (firstChild && BI.isNotEmptyObject(this.cache)) {
             this.start = this.cache[firstChild.text || firstChild.value];
         } else {
             this.start = 1;
