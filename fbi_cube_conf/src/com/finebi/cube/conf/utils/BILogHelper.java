@@ -1,11 +1,13 @@
 package com.finebi.cube.conf.utils;
 
+import com.finebi.cube.common.log.BILogExceptionInfo;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -170,7 +172,7 @@ public class BILogHelper {
         return tableInfo;
     }
 
-    public static String logCubeGeneratingTableSourceInfoByTableSourceID(String tableSourceID) {
+    public static String logCubeLogTableSourceInfo(String tableSourceID) {
         Object cacheValue = BILoggerFactory.getLoggerCacheValue("Cube Generate Info", "ReadOnlyBusinessTablesOfTableSourceMap");
         String logInfo = StringUtils.EMPTY;
         if (cacheValue instanceof Map) {
@@ -195,6 +197,25 @@ public class BILogHelper {
             logger.info("the ReadOnlyBusinessTablesOfTableSourceMap is not instanceof Map");
         }
         return logInfo;
+    }
+
+    public static Vector<BILogExceptionInfo> getCubeLogExceptionList(String tableSourceID) {
+        try {
+            Object exceptionList = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, tableSourceID);
+            if (null == exceptionList) {
+                return new Vector<BILogExceptionInfo>();
+            }
+            if (exceptionList instanceof Vector) {
+                return (Vector<BILogExceptionInfo>) exceptionList;
+            } else {
+                BILoggerFactory.getLogger(BILogHelper.class).warn("The CubeLogExceptionList is not a Vector create a new Vector Instead");
+                return new Vector<BILogExceptionInfo>();
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BILogHelper.class).warn(e.getMessage(), e);
+            BILoggerFactory.getLogger(BILogHelper.class).warn("Get CubeLogExceptionList error create a new Vector Instead");
+            return new Vector<BILogExceptionInfo>();
+        }
     }
 
 

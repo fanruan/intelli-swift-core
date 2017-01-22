@@ -4,8 +4,8 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import junit.framework.TestCase;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by roy on 2017/1/13.
@@ -17,7 +17,7 @@ public class BILoggerTest extends TestCase {
             BILoggerFactory.cacheLoggerInfo("BILoggerTest", "logCacheStartTime", cacheContent);
             assertTrue(ComparatorUtils.equals(cacheContent, BILoggerFactory.getLoggerCacheValue("BILoggerTest", "logCacheStartTime")));
             BILoggerFactory.clearLoggerCacheValue("BILoggerTest");
-            assertTrue(ComparatorUtils.equals("\n" + "The LoggerInfoCache does not contains the cacheTag: " + "BILoggerTest", BILoggerFactory.getLoggerCacheValue("BILoggerTest", "logCacheStartTime")));
+            assertTrue(ComparatorUtils.equals(null, BILoggerFactory.getLoggerCacheValue("BILoggerTest", "logCacheStartTime")));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
@@ -28,8 +28,8 @@ public class BILoggerTest extends TestCase {
         int counter = 0;
         while (true) {
             counter++;
-            Map<String, Map<String, String>> outMap = new HashMap<String, Map<String, String>>();
-            Map<String, String> innerMap = new HashMap<String, String>();
+            Map<String, Map<String, String>> outMap = new ConcurrentHashMap<String, Map<String, String>>();
+            Map<String, String> innerMap = new ConcurrentHashMap<String, String>();
             innerMap.put("innerKey", "value");
             outMap.put("outerKey", innerMap);
             outMap.clear();

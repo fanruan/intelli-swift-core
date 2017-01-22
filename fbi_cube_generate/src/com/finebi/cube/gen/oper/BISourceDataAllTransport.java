@@ -1,7 +1,9 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.adapter.BIUserCubeManager;
+import com.finebi.cube.common.log.BILogExceptionInfo;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.utils.BILogCacheTagHelper;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.message.IMessage;
@@ -10,6 +12,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -24,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Vector;
 
 /**
  * Created by kary on 16/7/13.
@@ -39,8 +43,9 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
-                BILogHelper.logCubeGeneratingTableSourceInfoByTableSourceID(tableSource.getSourceID())));
+                BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
         tableEntityService.recordCurrentExecuteTime();
+        BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogCacheTagHelper.getCubeLogTransportTimeSubTag(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.START), System.currentTimeMillis());
         long t = System.currentTimeMillis();
         try {
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
@@ -60,6 +65,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             tableEntityService.forceReleaseWriter();
             long tableCostTime = System.currentTimeMillis() - t;
             System.out.println("tableName: " + tableSource.getTableName() + " tableSourceId: " + tableSource.getSourceID() + " table usage:" + DateUtils.timeCostFrom(t));
+            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogCacheTagHelper.getCubeLogTransportTimeSubTag(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.END), System.currentTimeMillis());
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
@@ -72,14 +78,17 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             } catch (Exception e1) {
                 BILoggerFactory.getLogger().error(e1.getMessage(), e1);
             }
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogCacheTagHelper.getCubeLogTransportTimeSubTag(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.END), System.currentTimeMillis());
+            BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "Transport Exception", e.getMessage());
+            Vector<BILogExceptionInfo> exceptionList = BILogHelper.getCubeLogExceptionList(tableSource.getSourceID());
+            exceptionList.add(exceptionInfo);
+            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, BILogCacheTagHelper.getCubeLogExceptionSubTag(tableSource.getSourceID()), exceptionList);
+            BILoggerFactory.getLogger(BISourceDataAllTransport.class).error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
-    private String fetchTableInfo() {
-        return BIStringUtils.append(tableSource.getTableName(), " ,", tableSource.getSourceID());
-    }
+
 
     private long transport() {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
