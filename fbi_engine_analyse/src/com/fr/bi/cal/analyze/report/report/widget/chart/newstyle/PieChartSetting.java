@@ -21,7 +21,7 @@ public class PieChartSetting extends BIAbstractChartSetting {
         this.config.put("color", options.getJSONArray("chart_color"));
         this.config.put("style", this.formatChartStyle(options.getInt("chart_style")));
         this.formatChartPieStyle(this.config, options.getInt("chart_pie_type"), options.getInt("chart_inner_radius"), options.getInt("chart_total_angle"));
-        this.formatChartLegend(options.optInt("chart_legend"));
+        this.formatChartLegend(this.config, options.optInt("chart_legend"));
         plotOptions.optJSONObject("dataLabels").put("enabled", options.optBoolean("show_data_label"));
 
         plotOptions.getJSONObject("tooltip").getJSONObject("formatter").put("identifier", "${CATEGORY}${SERIES}${VALUE}${PERCENT}");

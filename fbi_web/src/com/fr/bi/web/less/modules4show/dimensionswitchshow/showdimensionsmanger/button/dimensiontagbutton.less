@@ -1,0 +1,18 @@
+@import "../../../../bibase";
+
+.bi-dimension-tag-button {
+  &.active {
+    & .bi-text {
+      color: @font-color-highlight
+    }
+  }
+  &.high-light-background {
+    background: @background-color-light-blue;
+  }
+  &:hover {
+    background: @border-color-light-blue;
+    & .bi-text {
+      color: @font-color-highlight
+    }
+  }
+}

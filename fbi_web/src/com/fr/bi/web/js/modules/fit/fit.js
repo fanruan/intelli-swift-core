@@ -27,6 +27,21 @@ BI.Fit = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Fit.EVENT_CHANGE, arguments);
         });
 
+        this.noWidgetTip = BI.createWidget({
+            type: "bi.center_adapt",
+            items: [{
+                type: "bi.vertical",
+                items: [{
+                    //等视觉给图
+                    type: "bi.layout"
+                }, {
+                    type: "bi.label",
+                    cls: "no-widgets",
+                    text: BI.i18nText("BI-Please_Drag_Element_Left_To_Add")
+                }]
+            }]
+        });
+
         this.store = {};
 
         var nav = this._createNav();
@@ -36,6 +51,12 @@ BI.Fit = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 el: this.arrangement,
+                left: 140,
+                right: 0,
+                bottom: 0,
+                top: 0
+            }, {
+                el: this.noWidgetTip,
                 left: 140,
                 right: 0,
                 bottom: 0,
@@ -89,6 +110,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                     wi.element.draggable('option', 'cursorAt', {left: 0, top: 0});
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
                     wi.element.draggable('option', 'helper', 'original');
                     wi.element.draggable('option', 'cursorAt', false);
                     break;
@@ -112,7 +134,9 @@ BI.Fit = BI.inherit(BI.Widget, {
             });
             widget.element.draggable({
                 //cursorAt: {left: 0, top: 0},
+                cursor: BICst.cursorUrl,
                 handle: ".fit-widget-drag-bar",
+                cursor: BICst.cursorUrl,
                 start: function (e, ui) {
                     self._startDrag(id, ui.position, e);
                 },
@@ -123,6 +147,9 @@ BI.Fit = BI.inherit(BI.Widget, {
                             r = size || {};
                             break;
                         case BI.Arrangement.LAYOUT_TYPE.FREE:
+                            r = self.arrangement.getRegionByName(id);
+                            break;
+                        case BI.Arrangement.LAYOUT_TYPE.GRID:
                             r = self.arrangement.getRegionByName(id);
                             break;
                     }
@@ -172,6 +199,8 @@ BI.Fit = BI.inherit(BI.Widget, {
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                break;
         }
     },
 
@@ -193,6 +222,17 @@ BI.Fit = BI.inherit(BI.Widget, {
                     top: position.top - offset.top
                 };
                 this.arrangement.draw(position, size, id);
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
                 this.arrangement.setRegionPosition(id, {
                     left: position.left < 0 ? 0 : position.left,
                     top: position.top < 0 ? 0 : position.top
@@ -224,6 +264,19 @@ BI.Fit = BI.inherit(BI.Widget, {
                 });
                 flag = true;
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top,
+                    stop: true
+                });
+                flag = true;
+                break;
         }
         if (flag === true) {
             this.fireEvent(BI.Fit.EVENT_CHANGE);
@@ -235,6 +288,8 @@ BI.Fit = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
                 break;
         }
     },
@@ -259,6 +314,15 @@ BI.Fit = BI.inherit(BI.Widget, {
                     height: size.height
                 });
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                this.arrangement.setPosition({
+                    left: position.left,
+                    top: position.top
+                }, {
+                    width: size.width,
+                    height: size.height
+                });
+                break;
         }
     },
 
@@ -275,9 +339,15 @@ BI.Fit = BI.inherit(BI.Widget, {
                     el: this._createItem(BI.UUID(), size, position, opt)
                 });
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                flag = this.arrangement.addRegion({
+                    el: this._createItem(BI.UUID(), size, position, opt)
+                });
+                break;
         }
         if (flag === true) {
             this._changeLayoutType(this.getLayoutType());
+            this._checkWidgetsExist();
             this.fireEvent(BI.Fit.EVENT_CHANGE);
         }
     },
@@ -287,9 +357,17 @@ BI.Fit = BI.inherit(BI.Widget, {
         var dragGroup = BI.createWidget({
             type: "bi.drag_icon_group",
             drag: function (size, position, opt) {
+                var clientWidth = self.arrangement.getClientWidth();
+                var one = clientWidth / BI.Arrangement.PORTION;
+                size.width = size.width * one;
+                size.height = size.height * BI.Arrangement.GRID_HEIGHT;
                 self._dragIcon(size, position, opt);
             },
             stop: function (size, position, opt) {
+                var clientWidth = self.arrangement.getClientWidth();
+                var one = clientWidth / BI.Arrangement.PORTION;
+                size.width = size.width * one;
+                size.height = size.height * BI.Arrangement.GRID_HEIGHT;
                 if (self.arrangement.setPosition(position, size)) {
                     self._stopDragIcon(size, position, opt);
                 }
@@ -300,6 +378,11 @@ BI.Fit = BI.inherit(BI.Widget, {
             }
         });
         return dragGroup;
+    },
+
+    _checkWidgetsExist: function(){
+        var widgets = Data.SharingPool.cat("widgets");
+        this.noWidgetTip.setVisible(BI.size(widgets) === 0);
     },
 
     setLayoutType: function (type) {
@@ -370,6 +453,7 @@ BI.Fit = BI.inherit(BI.Widget, {
         }
         if (flag === true) {
             this._changeLayoutType(this.getLayoutType());
+            this._checkWidgetsExist();
             this.fireEvent(BI.Fit.EVENT_CHANGE);
         }
         return flag;
@@ -378,6 +462,7 @@ BI.Fit = BI.inherit(BI.Widget, {
     deleteRegion: function (id) {
         var flag = this.arrangement.deleteRegion(id);
         if (flag === true) {
+            this._checkWidgetsExist();
             this.fireEvent(BI.Fit.EVENT_CHANGE);
         }
         return flag;
@@ -385,13 +470,11 @@ BI.Fit = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this;
-        var layoutType = Data.SharingPool.get("layoutType");
-        var layoutRatio = Data.SharingPool.get("layoutRatio");
-        if (BI.isNull(layoutType)) {
-            layoutType = BI.Arrangement.LAYOUT_TYPE.FREE;
-        }
+        var layoutType = BI.Utils.getLayoutType();
+        var layoutRatio = BI.Utils.getLayoutRatio();
         var result = [];
         var widgets = Data.SharingPool.cat("widgets");
+        this._checkWidgetsExist();
         BI.each(widgets, function (id, widget) {
             var bounds = widget.bounds;
             var item = self._createItem(id, bounds);

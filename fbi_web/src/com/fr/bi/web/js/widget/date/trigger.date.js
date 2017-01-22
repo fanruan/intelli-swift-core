@@ -58,7 +58,7 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
             self.fireEvent(BI.DateTrigger.EVENT_ERROR);
         });
         this.editor.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            var value = self.editor.getState();
+            var value = self.editor.getValue();
             if (BI.isNotNull(value)) {
                 self.editor.setState(value);
             }
@@ -83,6 +83,9 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
         });
         this.editor.on(BI.SignEditor.EVENT_START, function () {
             self.fireEvent(BI.DateTrigger.EVENT_START);
+        });
+        this.editor.on(BI.SignEditor.EVENT_STOP, function () {
+            self.fireEvent(BI.DateTrigger.EVENT_STOP);
         });
         this.editor.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.DateTrigger.EVENT_CHANGE);
@@ -256,6 +259,7 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
 });
 BI.DateTrigger.EVENT_FOCUS = "EVENT_FOCUS";
 BI.DateTrigger.EVENT_START = "EVENT_START";
+BI.DateTrigger.EVENT_STOP = "EVENT_STOP";
 BI.DateTrigger.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.DateTrigger.EVENT_CHANGE = "EVENT_CHANGE";
 BI.DateTrigger.EVENT_VALID = "EVENT_VALID";

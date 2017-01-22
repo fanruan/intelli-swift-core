@@ -33,10 +33,16 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
                 return BI.i18nText("BI-Detail_Table");
             case BICst.WIDGET.STRING:
                 return BI.i18nText("BI-Text_Control");
+            case BICst.WIDGET.STRING_LIST:
+                return BI.i18nText("BI-String_List");
             case BICst.WIDGET.DATE:
                 return BI.i18nText("BI-Date_Range_Control");
             case BICst.WIDGET.NUMBER:
                 return BI.i18nText("BI-Number_Control");
+            case BICst.WIDGET.SINGLE_SLIDER:
+                return BI.i18nText("BI-Single_Value_Slider");
+            case BICst.WIDGET.INTERVAL_SLIDER:
+                return BI.i18nText("BI-Double_Value_Slider");
             case BICst.WIDGET.QUERY:
                 return BI.i18nText("BI-Query_Button");
             case BICst.WIDGET.YEAR:
@@ -47,8 +53,16 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
                 return BI.i18nText("BI-Year_Month_Con");
             case BICst.WIDGET.YMD:
                 return BI.i18nText("BI-Date_Control");
+            case BICst.WIDGET.DATE_PANE:
+                return BI.i18nText("BI-Date_Pane_Control");
             case BICst.WIDGET.TREE:
                 return BI.i18nText("BI-Tree_Control");
+            case BICst.WIDGET.TREE_LIST:
+                return BI.i18nText("BI-Tree_List");
+            case BICst.WIDGET.LIST_LABEL:
+                return BI.i18nText("BI-List_Label_Con");
+            case BICst.WIDGET.TREE_LABEL:
+                return BI.i18nText("BI-Tree_Label_Con");
             case BICst.WIDGET.RESET:
                 return BI.i18nText("BI-Reset_Button");
             case BICst.WIDGET.GENERAL_QUERY:

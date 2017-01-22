@@ -97,11 +97,9 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         });
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
-            self.widget.resize();
         }, function () {
-            if (!self.widget.element.parent().parent().hasClass("selected")) {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
-                self.widget.resize();
             }
         });
     },
@@ -118,8 +116,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                 textAlign: "left",
                 height: 25,
                 allowBlank: false,
-                errorText: function(v) {
-                    if(BI.isNotNull(v) && BI.trim(v) !== "") {
+                errorText: function (v) {
+                    if (BI.isNotNull(v) && BI.trim(v) !== "") {
                         return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
                     }
                     return BI.i18nText("BI-Widget_Name_Can_Not_Null");
@@ -169,7 +167,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
     },
 
     _createTools: function () {
-        var self = this;
+        var self = this, wId = this.model.get("id");
 
         this.refreshChartButton = BI.createWidget({
             type: "bi.icon_button",
@@ -181,15 +179,25 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             self.tableChart.magnify();
         });
 
-        var expand = BI.createWidget({
-            type: "bi.icon_button",
-            width: this._constants.TOOL_ICON_WIDTH,
-            height: this._constants.TOOL_ICON_HEIGHT,
-            title: BI.i18nText("BI-Detailed_Setting"),
-            cls: "widget-combo-detail-font dashboard-title-detail"
+        this.maximize = BI.createWidget({
+            type: "bi.maximization_4show",
+            wId: wId,
+            status: BICst.WIDGET_STATUS.SHOW
         });
-        expand.on(BI.IconButton.EVENT_CHANGE, function () {
-            self._expandWidget();
+        this.maximize.on(BI.Maximization4Show.EVENT_SET, function (widget) {
+            self.model.set(widget);
+        });
+
+        var expand = BI.createWidget({
+            type: "bi.dimension_switch_show",
+            wId: wId,
+            popupCreator: function () {
+                var vessel = BI.createWidget({
+                    type: "bi.layout"
+                });
+                self.addSubVessel("detail", vessel).skipTo("detail", "detail", "detail", {}, {id: wId});
+                return vessel;
+            }
         });
 
         var filterIcon = BI.createWidget({
@@ -203,7 +211,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             if (BI.isNull(self.filterPane)) {
                 self.filterPane = BI.createWidget({
                     type: "bi.widget_filter",
-                    wId: self.model.get("id")
+                    wId: wId
                 });
                 self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
                     self.model.set(widget);
@@ -239,7 +247,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [this.refreshChartButton, filterIcon, expand, excel],
+            items: [this.refreshChartButton, this.maximize, filterIcon, expand, excel],
             hgap: 3
         });
         this.tools.setVisible(false);
@@ -249,6 +257,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
         this.chartDrill.populate();
+        this.maximize.populate();
     },
 
     _refreshLayout: function () {
@@ -273,11 +282,30 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
-    _expandWidget: function () {
-        var wId = this.model.get("id");
-        BIShow.FloatBoxes.open("detail", "detail", {}, this, {
-            id: wId
-        })
+    _refreshWidgetTitle: function () {
+        var id = this.model.get("id");
+        var titleSetting = this.model.get("settings").widgetNameStyle || {};
+        this.title.setTextStyle(titleSetting.titleWordStyle || {});
+
+        this.titleWrapper.element.css({"background": this._getBackgroundValue(titleSetting.titleBG)});
+    },
+
+    _refreshWidgetBG: function () {
+        var widgetBG = this.model.get("settings").widgetBG || {};
+        this.element.css({"background": this._getBackgroundValue(widgetBG)})
+    },
+
+    _getBackgroundValue: function (bg) {
+        if (!bg) {
+            return "";
+        }
+        switch (bg.type) {
+            case BICst.BACKGROUND_TYPE.COLOR:
+                return bg.value;
+            case BICst.BACKGROUND_TYPE.IMAGE:
+                return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
+        }
+        return "";
     },
 
     _refreshMagnifyButton: function () {
@@ -322,6 +350,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             this.chartDrill.populate();
         }
         if (BI.has(changed, "dimensions") ||
+            BI.has(changed, "view") ||
             BI.has(changed, "sort") ||
             BI.has(changed, "linkages")) {
             this._refreshTableAndFilter();
@@ -333,6 +362,15 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             this.tableChart.resize();
             this._refreshMagnifyButton();
         }
+        if (BI.has(changed, "settings") && (changed.settings.widgetNameStyle !== prev.settings.widgetNameStyle)) {
+            this._refreshWidgetTitle()
+        }
+        if (BI.has(changed, "settings") && (changed.settings.widgetBG !== prev.settings.widgetBG)) {
+            this._refreshWidgetBG()
+        }
+        if (BI.has(changed, "scopes")) {
+            this.tableChartPopupulate();
+        }
     },
 
     local: function () {
@@ -341,6 +379,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
+        this._refreshWidgetTitle();
+        this._refreshWidgetBG();
         this._refreshMagnifyButton();
         this._refreshTableAndFilter();
         this._refreshLayout();

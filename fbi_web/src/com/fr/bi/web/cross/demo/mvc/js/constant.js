@@ -176,13 +176,17 @@ var _JS = [
 
     "widget/mvc.tableview.js",
 
-    "widget/mvc.fixtable.js",
+    "widget/mvc.gridtable.js",
 
     "widget/mvc.tabletree.js",
 
     "widget/mvc.layertree.table.js",
 
     "widget/mvc.tabler.js",
+
+    "widget/mvc.gridview.js",
+
+    "widget/mvc.collectionview.js",
 
     "widget/mvc.bubble.js",
 
@@ -233,6 +237,12 @@ var _JS = [
     "widget/mvc.colorpicker.editor.js",
 
     "widget/mvc.multifile.js",
+
+    "widget/mvc.zclip.js",
+
+    "widget/mvc.sortabletable.js",
+
+    "widget/mvc.dynamicgrouptab.js",
 
     <!--布局类控件-->
 
@@ -421,6 +431,8 @@ var _JS = [
 
     "detail/mvc.exceltable.js",
 
+    "detail/mvc.excelviewdisplaymanager.js",
+
     "detail/mvc.adaptivetable.js",
 
     "detail/mvc.adaptivetable2.js",
@@ -447,6 +459,10 @@ var _JS = [
 
     "detail/mvc.adaptivearrangement.js",
 
+    "detail/mvc.gridarrangement.js",
+
+    "detail/mvc.gridadaptivearrangement.js",
+
     "detail/mvc.detailcharts.js",
 
     "detail/mvc.columncharts.js",
@@ -456,6 +472,13 @@ var _JS = [
 
     "detail/mvc.selectcolorcombo.js",
 
+    "detail/mvc.listlabel.js",
+    "detail/mvc.treelabel.js",
+    "detail/mvc.singleslider.js",
+    "detail/mvc.intervalslider.js",
+    "detail/mvc.stringlist.js",
+    "detail/mvc.treelist.js",
+    "detail/mvc.datapane.js"
 ];
 
 
@@ -518,10 +541,12 @@ var _Routes = {
     "/message": "MessageView",
     "/button": "ButtonView",
     "/table_view": "Table_View",
-    "/fixtable": "FixTableView",
     "/tabletree": "TableTreeView",
     "/layer_tree_table": "LayerTreeTableView",
     "/tabler": "TablerView",
+    "/gridview": "Grid_View",
+    "/collectionview": "Collection_View",
+    "/gridtable": "GridTableView",
     "/bubble": "BubbleView",
     "/toast": "ToastView",
     "/tooltip": "TooltipView",
@@ -548,6 +573,9 @@ var _Routes = {
     "/color_picker": "ColorPickerView",
     "/color_picker_editor": "ColorPickerEditorView",
     "/multifile": "MultifileView",
+    "/zclip": "ZclipView",
+    "/sortable_table": "SortableTableView",
+    "/dynamic_group_tab": "DynamicGroupTabView",
 
     //布局
     "/table": "TableView",
@@ -558,7 +586,7 @@ var _Routes = {
     "/center_adapt": "CenterAdaptView",
     "/absolute_center_adapt": "AbsoluteCenterAdaptView",
     "/float_center_adapt": "CenterVerticalAdaptView",
-    "/flexbox_center_adapt": "FlexboxCenterAdaptView",
+    "/flex_center": "FlexboxCenterAdaptView",
     "/inline_center_adapt": "InlineCenterAdaptView",
     "/vertical_adapt": "VerticalAdaptView",
     "/inline_vertical_adapt": "InlineVerticalAdaptView",
@@ -651,6 +679,7 @@ var _Routes = {
     "/adaptive_table": "AdaptiveTableView",
     "/adaptive_table2": "AdaptiveTable2View",
     "/excel_table": "ExcelTableView",
+    "/excel_view_display_manager": "ExcelVDisplayManagerView",
     "/custom_scroll_table": "CustomScrollTableView",
     "/page_table": "PageTableView",
     "/page_table2": "PageTable2View",
@@ -663,13 +692,22 @@ var _Routes = {
     "/arrangement_droppable": "ArrangementDroppableView",
     "/arrangement": "ArrangementView",
     "/adaptive_arrangement": "AdaptiveArrangementView",
+    "/grid_arrangement": "GridArrangementView",
+    "/grid_adaptive_arrangement": "GridAdaptiveArrangementView",
 
     "/detail_chart": "DetailChartView",
     "/column_charts": "ColumnChartsView",
     "/bar_charts": "BarChartsView",
     "/area_charts": "AreaChartsView",
     "/other_charts": "OtherChartsView",
-    "/select_color_combo": "SelectColorComboView"
+    "/select_color_combo": "SelectColorComboView",
+    "/list_label": "ListLabelView",
+    "/tree_label": "TreeLabelView",
+    "/slider": "SliderView",
+    "/interval_slider": "IntervalSliderView",
+    "/string_list": "StringListView",
+    "/tree_list": "TreeListView",
+    "/data_pane": "DataPaneView"
 };
 
 var _Models = {};
@@ -905,10 +943,6 @@ _Models.widget = [{
     value: "table_view"
 }, {
     pId: 7,
-    text: "大数据表格",
-    value: "fixtable"
-}, {
-    pId: 7,
     text: "bi.table_tree",
     value: "tabletree"
 }, {
@@ -999,6 +1033,18 @@ _Models.widget = [{
     pId: 11,
     text: "bi.svg",
     value: "svg"
+}, {
+    text: "bi.zero_clip",
+    value: "zclip"
+}, {
+    text: "bi.grid_view",
+    value: "gridview"
+}, {
+    text: "bi.collection_view",
+    value: "collectionview"
+}, {
+    text: "bi.grid_table",
+    value: "gridtable"
 }];
 _Models.layout = [{
     text: "bi.center_adapt",
@@ -1010,8 +1056,8 @@ _Models.layout = [{
     text: "bi.absolute_center_adapt",
     value: "absolute_center_adapt"
 }, {
-    text: "bi.flexbox_center_adapt",
-    value: "flexbox_center_adapt"
+    text: "bi.flex_center",
+    value: "flex_center"
 }, {
     text: "bi.inline_center_adapt",
     value: "inline_center_adapt"
@@ -1181,6 +1227,27 @@ _Models.detail = [{
 }, {
     id: 31,
     text: "详细图表"
+}, {
+    id: 33,
+    text: "树标签"
+}, {
+    id: 34,
+    text: "单值滑块"
+}, {
+    id: 35,
+    text: "区间滑块"
+}, {
+    id: 36,
+    text: "文本列表"
+}, {
+    id: 37,
+    text: "树列表"
+}, {
+    id: 38,
+    text: "日期面板"
+}, {
+    id: 39,
+    text: "螺旋分析tab控件"
 },
 
 
@@ -1457,6 +1524,14 @@ _Models.detail = [{
         text: "bi.excel_table",
         value: "excel_table"
     }, {
+        pId: 27,
+        text: "bi.sortable_table",
+        value: "sortable_table"
+    }, {
+        pId: 27,
+        text: "bi.excel_view_display_manager",
+        value: "excel_view_display_manager"
+    }, {
         pId: 32,
         text: "bi.sequence_table",
         value: "sequence_table"
@@ -1485,6 +1560,14 @@ _Models.detail = [{
         text: "bi.adaptive_arrangement",
         value: "adaptive_arrangement"
     }, {
+        pId: 29,
+        text: "bi.arrangement(网格布局)",
+        value: "grid_arrangement"
+    }, {
+        pId: 29,
+        text: "bi.adaptive_arrangement(网格布局)",
+        value: "grid_adaptive_arrangement"
+    }, {
         pId: 30,
         text: "bi.simple_searcher",
         value: "simple_searcher"
@@ -1512,6 +1595,38 @@ _Models.detail = [{
         pId: 31,
         text: "其他",
         value: "other_charts"
+    }, {
+        pId: 33,
+        text: "文本标签",
+        value: "list_label"
+    }, {
+        pId: 33,
+        text: "树标签",
+        value: "tree_label"
+    }, {
+        pId: 34,
+        text: "滑块",
+        value: "slider"
+    }, {
+        pId: 35,
+        text: "区间双滑块",
+        value: "interval_slider"
+    }, {
+        pId: 36,
+        text: "文本列表",
+        value: "string_list"
+    }, {
+        pId: 37,
+        text: "树列表",
+        value: "tree_list"
+    }, {
+        pId: 38,
+        text: "日期面板",
+        value: "data_pane"
+    }, {
+        pId: 39,
+        text: "螺旋分析tab控件",
+        value: "dynamic_group_tab"
     }];
 _Models.component = [];
 _Models.module = [];

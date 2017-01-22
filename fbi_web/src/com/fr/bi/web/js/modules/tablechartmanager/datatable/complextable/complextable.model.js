@@ -124,6 +124,18 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         return this.tableStyle;
     },
 
+    getHeaderRowSize: function () {
+        return this.headerRowSize;
+    },
+
+    getFooterRowSize: function () {
+        return this.footerRowSize;
+    },
+
+    getRowSize: function () {
+        return this.rowSize;
+    },
+
     setPageOperator: function (pageOperator) {
         this.pageOperator = pageOperator;
     },
@@ -164,22 +176,21 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         var sortedRegions = BI.sortBy(regionIds);
         //行表头、列表头都只需要第一个分组中使用中的维度
         BI.some(sortedRegions, function (i, sRegion) {
-            if (BI.parseInt(sRegion) < BI.parseInt(BICst.REGION.DIMENSION2) &&
+            if (BI.Utils.isDimensionRegion1ByRegionType(sRegion) &&
                 view[sRegion].length > 0) {
                 BI.each(view[sRegion], function (j, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
                 });
-                return true;
+                return self.dimIds.length > 0;
             }
         });
         BI.some(sortedRegions, function (i, sRegion) {
-            if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(sRegion) &&
-                BI.parseInt(sRegion) < BI.parseInt(BICst.REGION.TARGET1) &&
+            if (BI.Utils.isDimensionRegion2ByRegionType(sRegion) &&
                 view[sRegion].length > 0) {
                 BI.each(view[sRegion], function (j, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
                 });
-                return true;
+                return self.crossDimIds.length > 0;
             }
         });
         //使用中的指标
@@ -194,9 +205,16 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         var rowRegions = {};
         var view = BI.Utils.getWidgetViewByID(this.wId);
         BI.each(view, function (regionId, dIds) {
-            if (BI.parseInt(regionId) < BI.parseInt(BICst.REGION.DIMENSION2) &&
+            if (BI.Utils.isDimensionRegion1ByRegionType(regionId) &&
                 dIds.length > 0) {
-                rowRegions[regionId] = dIds;
+                BI.each(dIds, function (i, dId) {
+                    if (BI.Utils.isDimensionUsable(dId)) {
+                        if (BI.isNull(rowRegions[regionId])) {
+                            rowRegions[regionId] = [];
+                        }
+                        rowRegions[regionId].push(dId);
+                    }
+                });
             }
         });
         return rowRegions;
@@ -207,10 +225,16 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         var colRegions = {};
         var view = BI.Utils.getWidgetViewByID(this.wId);
         BI.each(view, function (regionId, dIds) {
-            if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(regionId) &&
-                BI.parseInt(regionId) < BI.parseInt(BICst.REGION.TARGET1) &&
+            if (BI.Utils.isDimensionRegion2ByRegionType(regionId) &&
                 dIds.length > 0) {
-                colRegions[regionId] = dIds;
+                BI.each(dIds, function(i, dId) {
+                    if (BI.Utils.isDimensionUsable(dId)) {
+                        if (BI.isNull(colRegions[regionId])) {
+                            colRegions[regionId] = [];
+                        }
+                        colRegions[regionId].push(dId);
+                    }
+                });
             }
         });
         return colRegions;
@@ -239,6 +263,9 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         this.themeColor = BI.Utils.getWSThemeColorByID(wId);         //主题色
         this.tableForm = BI.Utils.getWSTableFormByID(wId);           //表格类型
         this.tableStyle = BI.Utils.getWSTableStyleByID(wId);         //表格风格
+        this.headerRowSize = BI.Utils.getWSRowHeightByID(wId);
+        this.footerRowSize = BI.Utils.getWSRowHeightByID(wId);
+        this.rowSize = BI.Utils.getWSRowHeightByID(wId);
 
         this.header = [];
         this.items = [];
@@ -434,7 +461,8 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                 (self._isColRegionExist() || self._isRowRegionExist())) {
                 children.push({
                     text: BI.i18nText("BI-Summary_Values"),
-                    values: tItem.values
+                    values: tItem.values,
+                    cls: "summary-cell last"
                 });
             }
         });
@@ -1027,7 +1055,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             this.data = [this.data];
         }
         BI.each(this.data, function (i, data) {
-            tempCrossItems.push(self._createCrossPartItems(data.c, 0, null, self._getDimsByDataPos(0, i)));
+            tempCrossItems.push({children: self._createCrossPartItems(data.c, 0, null, self._getDimsByDataPos(0, i))});
         });
         this._parseRowTableCrossItems(tempCrossItems);
     },

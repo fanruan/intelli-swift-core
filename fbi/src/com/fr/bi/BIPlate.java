@@ -23,25 +23,22 @@ import com.fr.bi.fs.entry.BIReportEntryDAO;
 import com.fr.bi.fs.entry.EntryConstants;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
-import com.fr.bi.resource.ResourceHelper;
+import com.fr.bi.resource.FsResouceHelper;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.bi.web.login.BILoginUIProcessor;
+import com.fr.bi.web.dezi.phantom.PhantomServer;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.tableObject.Column;
 import com.fr.data.core.db.tableObject.ColumnSize;
 import com.fr.data.dao.*;
-import com.fr.dav.LocalEnv;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
 import com.fr.fs.dao.EntryDAO;
 import com.fr.fs.dao.FSDAOManager;
-import com.fr.fs.fun.LoginUIProcessor;
-import com.fr.fs.plugin.ExtraPlatformClassManager;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.GeneralUtils;
@@ -68,10 +65,7 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public void initData() {
-        try{
-            ((LocalEnv) FRContext.getCurrentEnv()).setBuildFilePath("bibuild.txt");
-        } catch(Throwable e){
-        }
+        FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
         BILoggerFactory.getLogger().info("FINE BI :" + GeneralUtils.readBuildNO());
         initModules();
         super.initData();
@@ -97,6 +91,9 @@ public class BIPlate extends AbstractFSPlate {
         dropColumnBID();
         //兼容FR工程中可能存在PARENTID类型是整型的情况
         notifyColumnParentIdType();
+
+        //启动用于截图的phantom服务
+        initPhantomServer();
     }
 
     public void loadMemoryData() {
@@ -170,12 +167,12 @@ public class BIPlate extends AbstractFSPlate {
         String tableName = "FR_T_" + DAOUtils.getClassNameWithOutPath(BISharedReportNode.class);
         try {
             cn = PlatformDB.getDB().createConnection();
-            try{
+            try {
                 cn.setAutoCommit(false);
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
-            Dialect dialect = DialectFactory.generateDialect(cn,PlatformDB.getDB().getDriver());
+            Dialect dialect = DialectFactory.generateDialect(cn, PlatformDB.getDB().getDriver());
             FSDAOManager.addTableColumn(cn, dialect,
                     new Column("createByName", Types.VARCHAR, new ColumnSize(50)), tableName);
             FSDAOManager.addTableColumn(cn, dialect,
@@ -223,6 +220,16 @@ public class BIPlate extends AbstractFSPlate {
         } finally {
             DBUtils.closeConnection(cn);
         }
+    }
+
+    private static void initPhantomServer() {
+        try {
+            PhantomServer server = new PhantomServer();
+            server.start();
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
+
     }
 
     private void initOOMKillerForLinux() {
@@ -284,8 +291,6 @@ public class BIPlate extends AbstractFSPlate {
     private void initPlugin() {
         try {
             ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.ads"));
-
-            ExtraPlatformClassManager.getInstance().setImmutable(LoginUIProcessor.XML_TAG, new BILoginUIProcessor(), PluginSimplify.create("bi", "com.fr.bi.plugin.login"));
             ExtraClassManager.getInstance().addHackActionCMD("fs_load", "fs_signin", "com.fr.bi.plugin.login", "com.fr.bi.web.base.services.BISignInAction");
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
@@ -295,7 +300,7 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public String[] getPlateStyleFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(ResourceHelper.getFoundationCss(), new String[]{
+        return (String[]) ArrayUtils.addAll(FsResouceHelper.getFsCss(), new String[]{
                 "/com/fr/bi/web/cross/css/bi.toolbar.add.css",
                 "/com/fr/bi/web/cross/css/bi.shared.table.css",
 
@@ -315,6 +320,7 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/css/reporthangout/hangoutreport.plate.css",
 
                 "/com/fr/bi/web/cross/css/bi.text.css",
+
         });
     }
 
@@ -325,7 +331,7 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public String[] getPlateJavaScriptFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(ResourceHelper.getFsJs(), new String[]{
+        return (String[]) ArrayUtils.addAll(FsResouceHelper.getFsJs(), new String[]{
                 "/com/fr/bi/web/cross/js/bi.user.manager.js",
                 "/com/fr/bi/web/cross/js/effect/create.by.me.js",
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",
@@ -338,8 +344,7 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/bi.toolbar.add.js",
                 "/com/fr/bi/web/cross/js/bi.directory.edit.js",
                 "/com/fr/bi/web/cross/js/reporthangout/hangoutreport.plate.js",
-                "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js"
-
+                "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js",
         });
     }
 
@@ -386,6 +391,7 @@ public class BIPlate extends AbstractFSPlate {
                 BITableMapper.BI_SHARED_REPORT_NODE.TABLE_MAPPER,
                 BITableMapper.BI_CREATED_TEMPLATE_FOLDER.TABLE_MAPPER,
                 BITableMapper.BI_REPORT_NODE_LOCK.TABLE_MAPPER,
+                BITableMapper.BI_CONF_TABLE_LOCK.TABLE_MAPPER,
                 BIReportEntry.TABLE_MAPPER
         };
     }

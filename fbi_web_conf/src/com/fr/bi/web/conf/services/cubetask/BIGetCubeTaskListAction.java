@@ -26,8 +26,7 @@ public class BIGetCubeTaskListAction extends AbstractBIConfigureAction {
 
 
     @Override
-    protected void actionCMDPrivilegePassed(HttpServletRequest req,
-                                            HttpServletResponse res) throws Exception {
+    protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject jo = new JSONObject();
         CubeTask generated =  CubeGenerationManager.getCubeManager().getGeneratedTask(userId);

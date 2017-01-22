@@ -32,6 +32,9 @@ BIDezi.NumberDimensionView = BI.inherit(BI.View, {
                 return self.editor.getValue();
             },
             cls: "bi-dimension-name",
+            title: function () {
+                return self.editor.getValue();
+            },
             allowBlank: false,
             validationChecker: function () {
                 return self._checkDimensionName(self.editor.getValue());
@@ -51,8 +54,6 @@ BIDezi.NumberDimensionView = BI.inherit(BI.View, {
                 center: {el: this.editor}
             }
         });
-        var tableId = BI.Utils.getTableIdByFieldID(this.model.get("_src").field_id);
-        this.editor.setValue(BI.Utils.getTableNameByID(tableId) + "." + this.model.get("name"));
     },
 
     _createCombo: function () {

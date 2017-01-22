@@ -37,7 +37,7 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
         });
 
         this.del.on(BI.IconButton.EVENT_CHANGE, function () {
-            BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete"), function (v) {
+            BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete_Current_Component"), function (v) {
                 if (v === true) {
                     self.model.destroy();
                 }

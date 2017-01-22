@@ -19,7 +19,8 @@ BI.GeneralQuerySelectDataPane = BI.inherit(BI.Widget, {
                 var ids = BI.Utils.getTableIDsOfPackageID(packageId);
                 return BI.map(ids, function (i, id) {
                     return {
-                        id: id
+                        id: id,
+                        open: ids.length === 1
                     }
                 })
             },

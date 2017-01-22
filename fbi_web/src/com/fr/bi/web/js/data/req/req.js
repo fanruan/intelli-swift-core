@@ -12,6 +12,22 @@ Data.Req = BIReq = {
         }, complete)
     },
 
+    reqSimpleTablesByPackId: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_simple_tables_of_one_package", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqTableInfoByTableId: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_table_info", data, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    reqReleaseTableLock: function (data) {
+        BI.requestAsync("fr_bi_configure", "cancel_edit_table", data, BI.emptyFn, BI.emptyFn);
+    },
+
     reqTablesDetailInfoByPackId: function (packName, callback, complete) {
         BI.requestAsync("fr_bi_configure", "get_detail_tables_of_one_package", {name: packName}, function (res) {
             callback(res);
@@ -65,24 +81,6 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqRelationsByTableIds: function (data, callback) {
-        BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
-            callback(res);
-        })
-    },
-
-    reqTransByTableIds: function (tableIds, callback) {
-        BI.requestAsync("fr_bi_configure", "get_trans_from_db", {tables: tableIds}, function (res) {
-            callback(res);
-        })
-    },
-
-    reqRelationAndTransByTables: function (data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "import_db_table_connection", data, function (res) {
-            callback(res);
-        }, complete)
-    },
-
     reqFieldsDataByData: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "get_field_value", data, function (res) {
             callback(res);
@@ -96,7 +94,7 @@ Data.Req = BIReq = {
     },
 
     reqCubeStatusCheck: function (table, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "check_cube_table_status", {table:table}, function (res) {
+        BI.requestAsync("fr_bi_configure", "check_cube_table_status", {table: table}, function (res) {
             callback(res);
         }, complete)
     },
@@ -168,8 +166,32 @@ Data.Req = BIReq = {
         }, complete)
     },
 
+    reqUpdateRelation: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "update_relation", data, function () {
+            callback();
+        }, complete);
+    },
+
     reqUpdateTablesOfOnePackage: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "update_tables_in_package", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqUpdateExcelTableCube: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_dezi", "update_excel_table_cube_by_table_id", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqGetExcelHTMLView: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_excel_html_view", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqSaveFileGetExcelViewData: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "save_file_get_excel_view_data", data, function (res) {
             callback(res);
         }, complete)
     },
@@ -196,6 +218,24 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "modify_data_link", data, function () {
             callback();
         }, complete)
+    },
+
+    reqAddNewTables: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "add_new_tables", data, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    reqRemoveTable: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "remove_table", data, function (res) {
+            callback();
+        }, complete);
+    },
+
+    reqUpdateOneTable: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "update_one_table", data, function (res) {
+            callback();
+        }, complete);
     },
 
     reqCubePath: function (callback, complete) {
@@ -258,8 +298,14 @@ Data.Req = BIReq = {
         }, complete)
     },
 
-    reqModifyGlobalUpdateSetting: function (data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "modify_global_update_setting_action", data, function (res) {
+    reqUpdateSettingById: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_update_setting", data, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    reqModifyUpdateSetting: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "modify_update_setting", data, function (res) {
             callback(res);
         }, complete)
     },

@@ -14,6 +14,8 @@ public class ChartSetting implements JSONParser {
     private JSONObject settings = new JSONObject();
     private JSONObject styleOfChart = new JSONObject();
     private JSONObject position = new JSONObject();
+    private JSONArray dataLabels = new JSONArray();
+    private JSONObject dataImage = new JSONObject();
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
@@ -28,6 +30,9 @@ public class ChartSetting implements JSONParser {
         }
         if(jo.has("position")){
             position = jo.getJSONObject("position");
+        }
+        if(jo.has("data_label")){
+            dataLabels = jo.getJSONArray("data_label");
         }
     }
 
@@ -45,5 +50,13 @@ public class ChartSetting implements JSONParser {
 
     public JSONObject getPosition(){
         return position;
+    }
+
+    public JSONArray getDataLabels() {
+        return dataLabels;
+    }
+
+    public JSONObject getDataImage() {
+        return dataImage;
     }
 }

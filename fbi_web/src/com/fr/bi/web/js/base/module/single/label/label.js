@@ -452,6 +452,10 @@ BI.Label = BI.inherit(BI.Single, {
         return this.options.text;
     },
 
+    setStyle: function (css) {
+        this.text.setStyle(css)
+    },
+
     setValue: function (v) {
         BI.Label.superclass.setValue.apply(this, arguments);
         if (!this.isReadOnly()) {

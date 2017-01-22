@@ -33,7 +33,7 @@ public abstract class BIAbstractRadarChartSetting extends BIAbstractChartSetting
         JSONObject plotOptions = this.config.getJSONObject("plotOptions");
         this.config.put("color", options.getJSONArray("chart_color"));
         this.config.put("style", this.formatChartStyle(options.getInt("chart_style")));
-        this.formatChartLegend(options.optInt("chart_legend"));
+        this.formatChartLegend(this.config, options.optInt("chart_legend"));
         plotOptions.optJSONObject("dataLabels").put("enabled", options.optBoolean("show_data_label"));
         this.config.put("radiusAxis", this.radiusAxis);
 

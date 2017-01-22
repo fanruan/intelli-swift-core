@@ -84,35 +84,35 @@ public class BIGetImportedExcelViewData {
             return jo;
         }
 
-//        //合并规则
-//        Map<ColumnRow, ColumnRow> mergeInfo = excelViewDataModel.getMergeInfos();
-//        JSONArray mergeInfoJa = new JSONArray();
-//        if (mergeInfo != null) {
-//            for (Map.Entry<ColumnRow, ColumnRow> m : mergeInfo.entrySet()) {
-//                JSONArray tempJa = new JSONArray();
-//
-//                ColumnRow s = m.getKey();
-//                JSONArray startJa = new JSONArray();
-//                startJa.put(s.getColumn());
-//                startJa.put(s.getRow());
-//
-//                ColumnRow e = m.getValue();
-//                JSONArray endJa = new JSONArray();
-//                endJa.put(e.getColumn());
-//                endJa.put(e.getRow());
-//
-//                tempJa.put(startJa);
-//                tempJa.put(endJa);
-//                mergeInfoJa.put(tempJa);
-//            }
-//        }
+        //合并规则
+        Map<ColumnRow, ColumnRow> mergeInfo = excelViewDataModel.getMergeInfos();
+        JSONArray mergeInfoJa = new JSONArray();
+        if (mergeInfo != null) {
+            for (Map.Entry<ColumnRow, ColumnRow> m : mergeInfo.entrySet()) {
+                JSONArray tempJa = new JSONArray();
+
+                ColumnRow s = m.getKey();
+                JSONArray startJa = new JSONArray();
+                startJa.put(s.getColumn());
+                startJa.put(s.getRow());
+
+                ColumnRow e = m.getValue();
+                JSONArray endJa = new JSONArray();
+                endJa.put(e.getColumn());
+                endJa.put(e.getRow());
+
+                tempJa.put(startJa);
+                tempJa.put(endJa);
+                mergeInfoJa.put(tempJa);
+            }
+        }
 
         //文件名
         String fileName = this.fullFileName.substring(UUID.randomUUID().toString().length());
         jo.put("fileName", fileName);
         jo.put("fields", fieldsJa);
         jo.put("data", dataJa);
-//        jo.put("mergeInfos", mergeInfoJa);
+        jo.put("mergeInfos", mergeInfoJa);
         return jo;
     }
 }

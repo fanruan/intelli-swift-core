@@ -67,7 +67,7 @@ Data.Utils = {
             });
         });
         if (type === BICst.WIDGET.MAP) {
-            var subType = widget.sub_type;
+            var subType = widget.subType;
             if (BI.isNull(subType)) {
                 BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
                     if (layer === 0) {
@@ -174,15 +174,14 @@ Data.Utils = {
                     return true;
                 }
             });
-            return BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
-                BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region);
+            return BI.Utils.isDimensionRegionByRegionType(region);
         }
 
         function getShowTarget() {
             var view = widget.view;
             var targetIds = [];
             BI.each(view, function (regionType, arr) {
-                if (regionType >= BICst.REGION.TARGET1) {
+                if (BI.Utils.isTargetRegionByRegionType(regionType)) {
                     targetIds = BI.concat(targetIds, arr);
                 }
             });
@@ -266,7 +265,8 @@ Data.Utils = {
                     BI.each(drArray, function (i, dr) {
                         var tempDrId = dr.dId;
                         if (i === drArray.length - 1) {
-                            if (getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
+                            var regionType = getRegionTypeByDimensionID(drId);
+                            if (BI.Utils.isDimensionRegion1ByRegionType(regionType)) {
                                 dimIds.splice(dIndex, 0, tempDrId);
                             } else {
                                 crossDimIds.splice(cIndex, 0, tempDrId);
@@ -306,38 +306,24 @@ Data.Utils = {
                     if(BI.has(left, "c")){
                         data = BI.map(left.c, function (idx, obj) {
                             var value = obj.n, x = obj.n;
-                            var seriesValue = obj.s.c[id].s[0];
                             if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
                                 var date = new Date(BI.parseInt(x));
                                 x = date.print("%Y-%X-%d");
                             }
-                            var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
                             return {
                                 "x": x,
-                                "xValue": value,
-                                "y": y,
-                                "yValue": y,
-                                "z": name,
-                                "zValue": seriesName,
+                                "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
                                 "value": value,
                                 seriesName: seriesName,
-                                dimensionIds: [drillcataDimId || cataDid, drillseriDimId || seriesDid],
                                 targetIds: [targetIds[0]]
                             };
                         });
                     }else{
-                        var leftSeriesValue = left.s.c[id].s[0];
-                        var y = (BI.isNull(leftSeriesValue) || BI.isFinite(leftSeriesValue)) ? leftSeriesValue : 0;
                         data = [{
                             "x": "",
-                            "xValue": "",
-                            "y": y,
-                            "yValue": y,
-                            "z": name,
-                            "zValue": seriesName,
+                            "y": (BI.isFinite(left.s.c[id].s[0]) ? left.s.c[id].s[0] : 0),
                             "value": "",
                             seriesName: seriesName,
-                            dimensionIds: [drillseriDimId || seriesDid],
                             targetIds: [targetIds[0]]
                         }]
                     }
@@ -353,22 +339,14 @@ Data.Utils = {
                 return BI.map(columnSizeArray, function (idx, value) {
                     var adjustData = BI.map(data.c, function (id, item) {
                         var value = item.n, x = item.n;
-                        var seriesValue = item.s[idx];
                         if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
                             var date = new Date(BI.parseInt(x));
                             x = date.print("%Y-%X-%d");
                         }
-                        var y = (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0;
-
                         return {
                             x: x,
-                            xValue: value,
-                            y: y,
-                            yValue: y,
-                            z: widget.dimensions[targetIds[idx]].name,
-                            zValue: widget.dimensions[targetIds[idx]].name,
-                            dimensionIds: [drillcataDimId || cataDid],
-                            value: value,
+                            y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                            initialX: value,
                             seriesName: widget.dimensions[targetIds[idx]].name,
                             targetIds: [targetIds[idx]]
                         };
@@ -381,15 +359,11 @@ Data.Utils = {
             }
             if (BI.has(data, "s")) {
                 return BI.map(data.s, function (idx, value) {
-                    var y = (BI.isFinite(value) ? value : 0);
                     return {
                         name: widget.dimensions[targetIds[idx]].name,
                         data: [{
                             x: "",
-                            xValue: "",
-                            dimensionIds: [],
-                            y: y,
-                            yValue: y,
+                            y: (BI.isFinite(value) ? value : 0),
                             targetIds: [targetIds[idx]]
                         }]
                     };
@@ -450,19 +424,11 @@ Data.Utils = {
                     var date = new Date(BI.parseInt(name));
                     name = date.print("%Y-%X-%d");
                 }
-
-                var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
-                var y = (BI.isFinite(item.s[0]) ? item.s[0] : 0);
                 obj.data = [{
-                    x: x,
-                    xValue: x,
-                    y: y,
-                    yValue: y,
-                    size: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
-                    dimensionIds: BI.isNull(drillcataDimId) ? [cataDid] : [drillcataDimId],
+                    x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
+                    y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
+                    z: (BI.isFinite(item.s[2]) ? item.s[2] : 0),
                     seriesName: seriesName,
-                    z: seriesName,
-                    zValue: seriesName,
                     targetIds: [targetIds[0], targetIds[1], targetIds[2]]
                 }];
                 obj.name = name;
@@ -486,20 +452,13 @@ Data.Utils = {
                     var date = new Date(BI.parseInt(name));
                     name = date.print("%Y-%X-%d");
                 }
-                var x = (BI.isFinite(item.s[1]) ? item.s[1] : 0);
-                var y = (BI.isFinite(item.s[0]) ? item.s[0] : 0);
+                obj.name = name;
                 obj.data = [{
-                    x: x,
-                    xValue: x,
-                    y: y,
-                    yValue: y,
-                    z: name,
-                    zValue: seriesName,
+                    x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
+                    y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
                     seriesName: seriesName,
-                    dimensionIds: BI.isNull(drillcataDimId) ? [cataDid] : [drillcataDimId],
                     targetIds: [targetIds[0], targetIds[1]]
                 }];
-                obj.name = name;
                 return obj;
             })];
         }
@@ -518,7 +477,6 @@ Data.Utils = {
                     }
                     var adjustData = BI.map(data.c, function (id, item) {
                         var res = {};
-                        var y = (BI.isFinite(item.s[idx]) ? item.s[idx] : 0);
                         if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                             switch (type) {
                                 case BICst.WIDGET.BUBBLE:
@@ -527,9 +485,7 @@ Data.Utils = {
                                 default:
                                     res = {
                                         x: item.n,
-                                        xValue: item.n,
-                                        y: y,
-                                        yValue: y,
+                                        y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                                         targetIds: [targetIds[idx]],
                                         dId: dimIds[currentLayer - 1],
                                         drillDid: dimIds[currentLayer]
@@ -538,9 +494,7 @@ Data.Utils = {
                         } else {
                             res = {
                                 x: item.n,
-                                xValue: item.n,
-                                y: y,
-                                yValue: y,
+                                y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
                                 targetIds: [targetIds[idx]],
                                 dId: dimIds[currentLayer - 1],
                                 drillDid: dimIds[currentLayer]
@@ -577,12 +531,9 @@ Data.Utils = {
                             if (BI.isNotNull(o) && BI.isNotNull(x)) {
                                 data.push({
                                     "x": x,
-                                    "xValue": x,
                                     "z": tObj.n,
-                                    "zValue": tObj.n,
                                     "y": o,
-                                    "yValue": o,
-                                    "targetIds": [targetIds[i]]
+                                    targetIds: [targetIds[i]]
                                 });
                             }
                         });
@@ -615,9 +566,7 @@ Data.Utils = {
                         var x = item.n;
                         return {
                             x: x,
-                            xValue: x,
                             y: item.s[idx],
-                            yValue: item.s[idx],
                             targetIds: [targetIds[idx]]
                         };
                     });
@@ -656,7 +605,7 @@ Data.Utils = {
                     dId = obj.targetIds;
                     clicked = [{
                         dId: obj.dId || dimIds[0],
-                        value: [obj.value || obj.x]
+                        value: [obj.initialX || obj.x]
                     }];
                     if (BI.isNotNull(seriesDid)) {
                         clicked.push({
@@ -1280,13 +1229,13 @@ Data.Utils = {
                 var opts = formatItems(items, t);
                 return formatConfigForDashboard(opts[1], opts[0]);
             case BICst.WIDGET.BUBBLE:
-                //BI.each(data, function (idx, item) {
-                //    BI.each(item, function (id, it) {
-                //        BI.each(it.data, function (i, da) {
-                //            da.size = da.z;
-                //        })
-                //    })
-                //});
+                BI.each(data, function (idx, item) {
+                    BI.each(item, function (id, it) {
+                        BI.each(it.data, function (i, da) {
+                            da.size = da.z;
+                        })
+                    })
+                });
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
                     var type = [];
@@ -1707,27 +1656,17 @@ Data.Utils = {
                         return defaultStyle;
                     case BICst.SCALE_SETTING.CUSTOM:
                         if (styles.length !== 0) {
-                            var maxScale = _calculateValueNiceDomain(0, max)[1];
                             BI.each(styles, function (idx, style) {
-                                if(style.range.max) {
-                                    range.push({
-                                        color: style.color,
-                                        from: style.range.min,
-                                        to: style.range.max
-                                    });
-                                } else {
-                                    var to = style.range.min < maxScale ? maxScale : 266396;
-                                    range.push({
-                                        color: style.color,
-                                        from: style.range.min,
-                                        to: to,
-                                    });
-                                }
+                                range.push({
+                                    color: style.color,
+                                    from: style.range.min,
+                                    to: style.range.max
+                                });
                                 color = style.color;
-                                conditionMax = style.range.max;
+                                conditionMax = style.range.max
                             });
 
-                            conditionMin = BI.parseFloat(styles[0].range.min);
+                            conditionMin = BI.parseInt(styles[0].range.min);
                             if (conditionMin !== 0) {
                                 range.push({
                                     color: "#808080",
@@ -1736,7 +1675,9 @@ Data.Utils = {
                                 });
                             }
 
-                            if (conditionMax && conditionMax < maxScale) {
+                            var maxScale = _calculateValueNiceDomain(0, max)[1];
+
+                            if (conditionMax < maxScale) {
                                 range.push({
                                     color: color,
                                     from: conditionMax,
@@ -2297,7 +2238,7 @@ Data.Utils = {
                                     getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
                             }
                             return label
-                        } else if (isDashboard && BI.isNull(items[0].data[0].z)) {
+                        } else if (isDashboard && BI.isNull(items[0].data[0].seriesName)) {
                             return label
                         }
                         return '<div style="text-align: center">' + this.category + '</div>' + label;
@@ -2371,8 +2312,8 @@ Data.Utils = {
             }
 
             function changeMaxMinScale() {
-                gaugeAxis[0].max = BI.parseFloat(config.max_scale) || null;
-                gaugeAxis[0].min = BI.parseFloat(config.min_scale) || null;
+                gaugeAxis[0].max = config.max_scale || null;
+                gaugeAxis[0].min = config.min_scale || null;
             }
 
             function formatNumberLevelInYaxis(type, position) {
@@ -4597,6 +4538,70 @@ Data.Utils = {
                         configs.plotOptions.step = false;
                         break;
                 }
+            }
+
+            function formatNumberLevelInYaxis(type, position) {
+                var magnify = calcMagnify(type);
+                if (magnify > 1) {
+                    BI.each(items, function (idx, item) {
+                        BI.each(item.data, function (id, da) {
+                            if (position === item.yAxis) {
+                                if (!BI.isNumber(da.y)) {
+                                    da.y = BI.parseFloat(da.y);
+                                }
+                                da.y = da.y || 0;
+                                da.y = da.y.div(magnify);
+                                da.y = da.y.toFixed(constants.FIX_COUNT);
+                                if (constants.MINLIMIT.sub(da.y) > 0) {
+                                    da.y = 0;
+                                }
+                            }
+                        })
+                    })
+                }
+                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
+                    };
+                }
+            }
+
+            function formatChartLineStyle() {
+                switch (config.chart_line_type) {
+                    case BICst.CHART_SHAPE.RIGHT_ANGLE:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = true;
+                        break;
+                    case BICst.CHART_SHAPE.CURVE:
+                        configs.plotOptions.curve = true;
+                        configs.plotOptions.step = false;
+                        break;
+                    case BICst.CHART_SHAPE.NORMAL:
+                    default:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = false;
+                        break;
+                }
+            }
+
+            function calcMagnify(type) {
+                var magnify = 1;
+                switch (type) {
+                    case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                    case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                        magnify = 1;
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                        magnify = 10000;
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                        magnify = 1000000;
+                        break;
+                    case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                        magnify = 100000000;
+                        break;
+                }
+                return magnify;
             }
 
             function getXYAxisUnit(numberLevelType, position) {

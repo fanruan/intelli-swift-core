@@ -36,12 +36,6 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         var self = this, o = this.options;
         var dId = o.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        if(BI.isEmptyObject(styleSettings)) {
-            styleSettings = {
-                format: BICst.TARGET_STYLE.FORMAT.NORMAL,
-                num_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
-            }
-        }
 
         this.format = BI.createWidget({
             type: "bi.segment",
@@ -50,19 +44,34 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         });
         this.format.setValue(styleSettings.format);
 
+        this.format.on(BI.Segment.EVENT_CHANGE, function () {
+            example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
+        });
+
         this.separators = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Separators"),
             width: 80
         });
-        this.separators.setSelected(styleSettings.num_separators);
+
+        this.separators.setSelected(styleSettings.numSeparators);
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+            example.setText(self._switchLabel());
+        });
 
         this.numLevel = BI.createWidget({
             type: "bi.segment",
             items: BICst.TARGET_STYLE_LEVEL_SHORT,
             width: 230
         });
-        this.numLevel.setValue(styleSettings.num_level);
+        this.numLevel.setValue(styleSettings.numLevel);
+
+        this.numLevel.on(BI.Segment.EVENT_CHANGE, function(){
+            example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
+        });
 
         this.unit = BI.createWidget({
             type: "bi.sign_editor",
@@ -72,21 +81,25 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         });
         this.unit.setValue(styleSettings.unit);
 
+        this.unit.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
+        });
+
+        var example = BI.createWidget({
+            type: "bi.label",
+            height: 25,
+            width: 100
+        });
+
+        example.setText(this._switchLabel());
+        example.setTitle(this._switchLabel());
+
         BI.createWidget({
             type: "bi.left",
             element: center,
             cls: "bi-target-style-setting",
             items: [{
-                type: "bi.left",
-                items: [{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
-                    cls: "style-name",
-                    height: this.constants.LABEL_HEIGHT,
-                    textAlign: "left"
-                }, this.format, this.separators],
-                hgap: 5
-            }, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
@@ -102,10 +115,25 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
                     cls: "style-name"
                 }, this.unit],
                 hgap: 5
+            }, {
+                type: "bi.left",
+                items: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "style-name",
+                    height: this.constants.LABEL_HEIGHT,
+                    textAlign: "left"
+                }, this.format, this.separators, example],
+                hgap: 5
             }],
             hgap: 10,
             vgap: 10
         })
+    },
+
+    _switchLabel: function() {
+        return BI.TargetStyleSetting.formatNumber(this.numLevel.getValue()[0], this.format.getValue()[0],
+            this.separators.isSelected(), this.unit.getValue());
     },
 
     end: function(){
@@ -115,8 +143,8 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
     getValue: function(){
         return {
             format: this.format.getValue()[0],
-            num_level: this.numLevel.getValue()[0],
-            num_separators: this.separators.isSelected(),
+            numLevel: this.numLevel.getValue()[0],
+            numSeparators: this.separators.isSelected(),
             unit: this.unit.getValue()
         }
     }

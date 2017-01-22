@@ -28,6 +28,7 @@ AdaptiveArrangementView = BI.inherit(BI.View, {
         var self = this;
         this.arrangement = BI.createWidget({
             type: "bi.adaptive_arrangement",
+            layoutType: BI.Arrangement.LAYOUT_TYPE.ADAPTIVE,
             cls: "mvc-border",
             width: 800,
             height: 400,
@@ -48,6 +49,9 @@ AdaptiveArrangementView = BI.inherit(BI.View, {
                 self.arrangement.setPosition({
                     left: ui.position.left,
                     top: ui.position.top
+                }, {
+                    width: 300,
+                    height: 200
                 })
             },
             stop: function (e, ui) {

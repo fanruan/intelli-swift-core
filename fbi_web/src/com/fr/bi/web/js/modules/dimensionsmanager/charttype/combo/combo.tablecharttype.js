@@ -44,7 +44,7 @@ BI.TableChartCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    _switchIcon: function(v){
+    _switchIcon: function (v) {
         var o = this.options;
         var iconClass = o.items[0].cls || "";
         v = BI.isArray(v) ? v[0] : v;
@@ -73,7 +73,7 @@ BI.TableChartCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.combo.getValue()[0].value;
+        return {type: this.combo.getValue()[0].value};
     },
 
     setSelected: function (v) {

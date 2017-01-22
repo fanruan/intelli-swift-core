@@ -9,6 +9,8 @@ import com.fr.json.JSONObject;
  */
 public interface BIChartSetting{
 
+    JSONArray formatTypes(JSONArray data, JSONArray types) throws JSONException;
+
     JSONObject formatItems(JSONArray data, JSONArray types, JSONObject options) throws JSONException;
 
     JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException;

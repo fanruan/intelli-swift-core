@@ -4,10 +4,14 @@ package com.fr.bi.web.conf;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.conf.services.*;
 import com.fr.bi.web.conf.services.cubeconf.*;
+import com.fr.bi.web.conf.services.cubeconf.updatesetting.BIGetUpdateSettingAction;
+import com.fr.bi.web.conf.services.cubeconf.updatesetting.BIModifyUpdateSettingAction;
 import com.fr.bi.web.conf.services.cubetask.*;
 import com.fr.bi.web.conf.services.datalink.*;
 import com.fr.bi.web.conf.services.dbconnection.*;
 import com.fr.bi.web.conf.services.packs.*;
+import com.fr.bi.web.conf.services.session.BIConfUpdateSession;
+import com.fr.bi.web.conf.services.tables.*;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
 import com.fr.fs.control.UserControl;
@@ -18,7 +22,7 @@ import com.fr.fs.web.service.AbstractFSAuthService;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.privilege.base.PrivilegeVote;
-import com.fr.stable.fun.impl.NoSessionIDService;
+import com.fr.stable.fun.Service;
 import com.fr.web.core.WebActionsDispatcher;
 import com.fr.web.utils.WebUtils;
 
@@ -30,9 +34,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Daniel-pc
  */
-public class Service4BIConfigure extends NoSessionIDService {
+public class Service4BIConfigure implements Service {
 
-    private static AbstractBIConfigureAction[] actions = new AbstractBIConfigureAction[]{
+    private static AbstractBIConfigureAction[] actions = {
             new BIInitConfigurePaneAction(),
 
             new BIGetPackageGroupAction(),
@@ -62,9 +66,8 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetPreviewTableDataConfAction(),
             new BIImportDBTableConnectionAction(),
 
-            new BIGetTransFromDBAction(),
-
-            new BIModifyGlobalUpdateSettingAction(),
+            new BIModifyUpdateSettingAction(),
+            new BIGetUpdateSettingAction(),
             new BIGetCubeGenerateStatusAction(),
             new BISetCubeGenerateAction(),
             new BIGetCubeTaskListAction(),
@@ -75,6 +78,8 @@ public class Service4BIConfigure extends NoSessionIDService {
 
             new BISaveFileGetExcelDataAction(),
             new BISaveFileGetExcelViewDataAction(),
+            new BIGetExcelHTMLViewAction(),
+            new BISaveUploadExcelFileAction(),
 
             new BICheckCubeTableStatusAction(),
             new BICheckCubeTableAction(),
@@ -107,6 +112,17 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetAllTableNamesOfAllPackageAction(),
             new BIGetFieldValueByFieldIdAction(),
             new BISaveLoginFieldAction(),
+
+            new BIConfUpdateSession(),
+            new BIGetSimpleTablesOfOnePackageAction(),
+            new BIGetTableInfoAction(),
+            new BIAddNewTablesAction(),
+            new BIRemoveTableAction(),
+            new BIUpdateOneTableAction(),
+            new BICancelEditTableAction(),
+            new BIUpdateRelationAction(),
+
+            // 后门
             new BICacheClearAction(),
             new BIUserMapCacheClearAction(),
             new BIChildMapClearAction(),
@@ -134,22 +150,13 @@ public class Service4BIConfigure extends NoSessionIDService {
         return "fr_bi_configure";
     }
 
-    /**
-     * 处理HTTP请求
-     *
-     * @param req HTTP请求
-     * @param res HTTP响应
-     * @param op  op参数值
-     * @throws Exception
-     */
     @Override
-    public void process(HttpServletRequest req, HttpServletResponse res,
-                        String op) throws Exception {
+    public void process(HttpServletRequest req, HttpServletResponse res, String op, String sessionID) throws Exception {
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
         res.setDateHeader("Expires", -10);
-        dealServletPriviousUrl(req);
+        dealServletPreviousUrl(req);
         PrivilegeVote vote = getFSVote(req, res);
         FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
         if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
@@ -158,11 +165,11 @@ public class Service4BIConfigure extends NoSessionIDService {
         }
         long userId = ServiceUtils.getCurrentUserID(req);
         if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.BI)) {
-            WebActionsDispatcher.dealForActionNoSessionIDCMD(req, res, actions);
+            WebActionsDispatcher.dealForActionCMD(req, res, sessionID, actions);
         }
     }
 
-    private void dealServletPriviousUrl(HttpServletRequest req) {
+    private void dealServletPreviousUrl(HttpServletRequest req) {
         String cmd = WebUtils.getHTTPRequestParameter(req, "cmd");
         if (ComparatorUtils.equals(cmd, BIInitConfigurePaneAction.CMD)) {
             BIServiceUtil.setPreviousUrl(req);

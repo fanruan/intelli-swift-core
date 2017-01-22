@@ -5,7 +5,7 @@ import com.fr.json.JSONException;
 /**
  * Created by User on 2016/8/31.
  */
-public class BarChartSetting extends BIAbstractAxisChartSetting {
+public class BarChartSetting extends BIAbstractBarChartSetting {
 
     public BarChartSetting() throws JSONException {
 

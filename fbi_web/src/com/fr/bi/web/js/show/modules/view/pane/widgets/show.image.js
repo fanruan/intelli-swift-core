@@ -55,10 +55,10 @@ BIShow.ImageWidgetView = BI.inherit(BI.View, {
     _sizeChange: function (size) {
         var self = this, o = this.options;
         switch (size) {
-            case BI.ImageButtonSize.ORIGINAL:
+            case BICst.IMAGE_RESIZE_MODE.ORIGINAL:
                 self._setSize("auto", "auto");
                 break;
-            case BI.ImageButtonSize.EQUAL:
+            case BICst.IMAGE_RESIZE_MODE.EQUAL:
                 self._setSize("auto", "auto");
                 var width = this.img.getImageWidth(), height = this.img.getImageHeight();
                 var W = this.element.width(), H = this.element.height();
@@ -68,9 +68,11 @@ BIShow.ImageWidgetView = BI.inherit(BI.View, {
                     self._setSize("100%", "auto");
                 }
                 break;
-            case BI.ImageButtonSize.WIDGET_SIZE:
+            case BICst.IMAGE_RESIZE_MODE.STRETCH:
                 self._setSize("100%", "100%");
                 break;
+            default :
+                self._setSize("auto", "auto");
         }
     },
 
@@ -79,7 +81,10 @@ BIShow.ImageWidgetView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
-        this.img.setSrc(this.model.get("src"));
+        var src = this.model.get("src");
+        if (BI.isNotEmptyString(src)) {
+            this.img.setSrc(BI.UploadImage.getImageSrc(src))
+        }
         this._sizeChange(this.model.get("size"));
         if (BI.isNotEmptyString(this.model.get("href"))) {
             this.img.setValid(true)

@@ -14,7 +14,6 @@ import com.fr.third.v2.org.apache.poi.hssf.model.HSSFFormulaParser;
 import com.fr.third.v2.org.apache.poi.hssf.record.*;
 import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import com.fr.third.v2.org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import com.fr.third.v2.org.apache.poi.ss.util.NumberToTextConverter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,7 +44,6 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
     private boolean outputNextStringRecord;
     private int thisRow = -1, thisColumn = -1;
     private String thisStr = null;
-    private static final int SCINOTATION = 0;
 
     public AbstractExcel2003Util(String filename) throws IOException {
         this.fs = new POIFSFileSystem(new FileInputStream(filename));
@@ -284,8 +282,6 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
             thisStr = String.valueOf(numberRecord.getValue());
         } else if (formatListener.formatNumberDateCell(numberRecord).contains("%")) {
             thisStr = String.valueOf(numberRecord.getValue());
-        } else if (formatListener.getFormatIndex(numberRecord) == SCINOTATION) {
-            thisStr = NumberToTextConverter.toText(numberRecord.getValue());
         } else {
             thisStr = formatListener.formatNumberDateCell(numberRecord);
         }

@@ -3,6 +3,6 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.bi-analysis-tab {
-  background: #f4f4f4;
+.bi-sheet-tab-dynamic .tab-dynamic-center {
+  background-color: #ffffff;
 }

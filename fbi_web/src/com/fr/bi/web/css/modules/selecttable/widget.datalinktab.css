@@ -12,14 +12,113 @@
   font-size: 14px;
   color: #808080;
 }
-.bi-data-link-tab .data-link-groups .nav-button {
+.bi-data-link-tab .data-link-groups .nav-button1 {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
   font-size: 14px;
 }
-.bi-data-link-tab .data-link-groups .nav-button:hover,
-.bi-data-link-tab .data-link-groups .nav-button.active {
+.bi-data-link-tab .data-link-groups .nav-button1:hover,
+.bi-data-link-tab .data-link-groups .nav-button1.active {
   color: #ffffff;
   background: #009de3;
+}
+.bi-data-link-tab .data-link-groups .nav-button2 {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-data-link-tab .data-link-groups .nav-button2:hover,
+.bi-data-link-tab .data-link-groups .nav-button2.active {
+  color: #ffffff;
+  background: #4fc1e9;
+}
+.bi-data-link-tab .data-link-groups .nav-button3 {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-data-link-tab .data-link-groups .nav-button3:hover,
+.bi-data-link-tab .data-link-groups .nav-button3.active {
+  color: #ffffff;
+  background: #48cfad;
+}
+.bi-data-link-tab .data-link-groups .nav-button4 {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-data-link-tab .data-link-groups .nav-button4:hover,
+.bi-data-link-tab .data-link-groups .nav-button4.active {
+  color: #ffffff;
+  background: #57cb7c;
+}
+.bi-data-link-tab .data-link-groups .nav-button5 {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-data-link-tab .data-link-groups .nav-button5:hover,
+.bi-data-link-tab .data-link-groups .nav-button5.active {
+  color: #ffffff;
+  background: #a0d468;
+}
+.bi-data-link-tab .data-link-groups .nav-button6 {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-data-link-tab .data-link-groups .nav-button6:hover,
+.bi-data-link-tab .data-link-groups .nav-button6.active {
+  color: #ffffff;
+  background: #fbaf4f;
+}
+.bi-data-link-tab .data-link-groups .nav-button7 {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-data-link-tab .data-link-groups .nav-button7:hover,
+.bi-data-link-tab .data-link-groups .nav-button7.active {
+  color: #ffffff;
+  background: #fc6e51;
+}
+.bi-data-link-tab .data-link-groups .nav-button8 {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-data-link-tab .data-link-groups .nav-button8:hover,
+.bi-data-link-tab .data-link-groups .nav-button8.active {
+  color: #ffffff;
+  background: #ed5565;
+}
+.bi-data-link-tab .data-link-groups .nav-button9 {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-data-link-tab .data-link-groups .nav-button9:hover,
+.bi-data-link-tab .data-link-groups .nav-button9.active {
+  color: #ffffff;
+  background: #ac92ec;
+}
+.bi-data-link-tab .data-link-groups .nav-button10 {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 14px;
+}
+.bi-data-link-tab .data-link-groups .nav-button10:hover,
+.bi-data-link-tab .data-link-groups .nav-button10.active {
+  color: #ffffff;
+  background: #5d9cec;
 }

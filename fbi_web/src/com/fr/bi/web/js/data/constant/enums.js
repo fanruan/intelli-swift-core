@@ -38,101 +38,125 @@ BICst.LAST_SAME_PERIOD = 28;
 //dashboard toolbar right layout textcombo
 BICst.DASHBOARD_LAYOUT_ADAPT = 0;
 BICst.DASHBOARD_LAYOUT_FREE = 1;
+BICst.DASHBOARD_LAYOUT_GRID = 2;
 
 BICst.WIDGET.Widths = {};
-BICst.WIDGET.Widths[BICst.WIDGET.TABLE] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.CROSS_TABLE] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.COMPLEX_TABLE] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.AXIS] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.ACCUMULATE_AXIS] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.PERCENT_ACCUMULATE_AXIS] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.COMPARE_AXIS] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.FALL_AXIS] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.BAR] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.ACCUMULATE_BAR] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.COMPARE_BAR] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.LINE] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.AREA] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.COMPARE_AREA] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.PERCENT_ACCUMULATE_AREA] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.ACCUMULATE_AREA] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.RANGE_AREA] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.COMBINE_CHART] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.PIE] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.DONUT] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.DASHBOARD] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.MAP] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.GIS_MAP] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.BUBBLE] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.FORCE_BUBBLE] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.RADAR] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.ACCUMULATE_RADAR] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.SCATTER] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.DETAIL] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.CONTENT] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.IMAGE] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.WEB] = 450;
+BICst.WIDGET.Widths[BICst.WIDGET.TABLE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.CROSS_TABLE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.COMPLEX_TABLE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.AXIS] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.ACCUMULATE_AXIS] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.PERCENT_ACCUMULATE_AXIS] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.COMPARE_AXIS] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.FALL_AXIS] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.BAR] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.ACCUMULATE_BAR] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.COMPARE_BAR] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.LINE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.AREA] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.COMPARE_AREA] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.PERCENT_ACCUMULATE_AREA] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.ACCUMULATE_AREA] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.RANGE_AREA] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.COMBINE_CHART] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.PIE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.MULTI_PIE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.RECT_TREE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.DONUT] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.DASHBOARD] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.MAP] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.GIS_MAP] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.BUBBLE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.FORCE_BUBBLE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.RADAR] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.ACCUMULATE_RADAR] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.SCATTER] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.FUNNEL] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.HEAT_MAP] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.PARETO] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.DETAIL] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.CONTENT] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.IMAGE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.WEB] = 6;
 
-BICst.WIDGET.Widths[BICst.WIDGET.STRING] = 250;
-BICst.WIDGET.Widths[BICst.WIDGET.NUMBER] = 300;
-BICst.WIDGET.Widths[BICst.WIDGET.DATE] = 320;
-BICst.WIDGET.Widths[BICst.WIDGET.YEAR] = 250;
-BICst.WIDGET.Widths[BICst.WIDGET.QUARTER] = 250;
-BICst.WIDGET.Widths[BICst.WIDGET.MONTH] = 250;
-BICst.WIDGET.Widths[BICst.WIDGET.YMD] = 250;
-BICst.WIDGET.Widths[BICst.WIDGET.TREE] = 250;
-BICst.WIDGET.Widths[BICst.WIDGET.GENERAL_QUERY] = 450;
-BICst.WIDGET.Widths[BICst.WIDGET.QUERY] = 250;
-BICst.WIDGET.Widths[BICst.WIDGET.RESET] = 250;
+BICst.WIDGET.Widths[BICst.WIDGET.STRING] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.STRING_LIST] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.NUMBER] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.SINGLE_SLIDER] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.INTERVAL_SLIDER] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.DATE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.YEAR] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.QUARTER] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.MONTH] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.YMD] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.DATE_PANE] = 4;
+BICst.WIDGET.Widths[BICst.WIDGET.TREE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.TREE_LIST] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.LIST_LABEL] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.TREE_LABEL] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.GENERAL_QUERY] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.QUERY] = 2;
+BICst.WIDGET.Widths[BICst.WIDGET.RESET] = 2;
 
 BICst.WIDGET.Heights = {};
-BICst.WIDGET.Heights[BICst.WIDGET.TABLE] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.CROSS_TABLE] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.COMPLEX_TABLE] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.AXIS] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.ACCUMULATE_AXIS] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.PERCENT_ACCUMULATE_AXIS] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.COMPARE_AXIS] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.FALL_AXIS] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.BAR] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.ACCUMULATE_BAR] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.COMPARE_BAR] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.LINE] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.AREA] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.COMPARE_AREA] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.PERCENT_ACCUMULATE_AREA] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.ACCUMULATE_AREA] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.RANGE_AREA] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.COMBINE_CHART] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.PIE] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.DONUT] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.DASHBOARD] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.MAP] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.GIS_MAP] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.BUBBLE] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.FORCE_BUBBLE] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.RADAR] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.ACCUMULATE_RADAR] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.SCATTER] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.DETAIL] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.CONTENT] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.IMAGE] = 380;
-BICst.WIDGET.Heights[BICst.WIDGET.WEB] = 380;
+BICst.WIDGET.Heights[BICst.WIDGET.TABLE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.CROSS_TABLE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.COMPLEX_TABLE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.AXIS] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.ACCUMULATE_AXIS] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.PERCENT_ACCUMULATE_AXIS] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.COMPARE_AXIS] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.FALL_AXIS] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.BAR] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.ACCUMULATE_BAR] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.COMPARE_BAR] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.LINE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.AREA] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.COMPARE_AREA] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.PERCENT_ACCUMULATE_AREA] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.ACCUMULATE_AREA] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.RANGE_AREA] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.COMBINE_CHART] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.PIE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.MULTI_PIE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.RECT_TREE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.FUNNEL] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.HEAT_MAP] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.PARETO] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.DONUT] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.DASHBOARD] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.MAP] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.GIS_MAP] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.BUBBLE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.FORCE_BUBBLE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.RADAR] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.ACCUMULATE_RADAR] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.SCATTER] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.DETAIL] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.CONTENT] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.IMAGE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.WEB] = 4;
 
-BICst.WIDGET.Heights[BICst.WIDGET.STRING] = 110;
-BICst.WIDGET.Heights[BICst.WIDGET.NUMBER] = 110;
-BICst.WIDGET.Heights[BICst.WIDGET.DATE] = 110;
-BICst.WIDGET.Heights[BICst.WIDGET.YEAR] = 110;
-BICst.WIDGET.Heights[BICst.WIDGET.QUARTER] = 110;
-BICst.WIDGET.Heights[BICst.WIDGET.MONTH] = 110;
-BICst.WIDGET.Heights[BICst.WIDGET.YMD] = 110;
-BICst.WIDGET.Heights[BICst.WIDGET.TREE] = 110;
-BICst.WIDGET.Heights[BICst.WIDGET.GENERAL_QUERY] = 250;
-BICst.WIDGET.Heights[BICst.WIDGET.QUERY] = 40;
-BICst.WIDGET.Heights[BICst.WIDGET.RESET] = 40;
-
+BICst.WIDGET.Heights[BICst.WIDGET.STRING] = 1;
+BICst.WIDGET.Heights[BICst.WIDGET.STRING_LIST] = 6;
+BICst.WIDGET.Heights[BICst.WIDGET.NUMBER] = 1;
+BICst.WIDGET.Heights[BICst.WIDGET.SINGLE_SLIDER] = 3;
+BICst.WIDGET.Heights[BICst.WIDGET.INTERVAL_SLIDER] = 3;
+BICst.WIDGET.Heights[BICst.WIDGET.DATE] = 1;
+BICst.WIDGET.Heights[BICst.WIDGET.YEAR] = 6;
+BICst.WIDGET.Heights[BICst.WIDGET.QUARTER] = 6;
+BICst.WIDGET.Heights[BICst.WIDGET.MONTH] = 6;
+BICst.WIDGET.Heights[BICst.WIDGET.YMD] = 6;
+BICst.WIDGET.Heights[BICst.WIDGET.DATE_PANE] = 5;
+BICst.WIDGET.Heights[BICst.WIDGET.TREE] = 1;
+BICst.WIDGET.Heights[BICst.WIDGET.TREE_LIST] = 6;
+BICst.WIDGET.Heights[BICst.WIDGET.LIST_LABEL] = 2;
+BICst.WIDGET.Heights[BICst.WIDGET.TREE_LABEL] = 2;
+BICst.WIDGET.Heights[BICst.WIDGET.GENERAL_QUERY] = 2;
+BICst.WIDGET.Heights[BICst.WIDGET.QUERY] = 1;
+BICst.WIDGET.Heights[BICst.WIDGET.RESET] = 1;
 
 
 /*
@@ -254,6 +278,19 @@ BICst.CHART_SHAPE = {
     PROJECTOR: 17       //有投影的气泡
 };
 
+BICst.DATA_LABEL = {
+    POSITION_INNER: 1,
+    POSITION_OUTER: 2,
+    POSITION_CENTER: 3,
+};
+
+BICst.ACCUMULATE_TYPE = {
+    COLUMN: 1,
+    AREA_NORMAL: 2,
+    AREA_CURVE: 3,
+    AREA_RIGHT_ANGLE: 4
+};
+
 BICst.CHART_STYLE = {
     //风格
     STYLE_NORMAL: 1,       //普通风格
@@ -277,6 +314,16 @@ BICst.PIE_ANGLES = {
     HALF: 180,
     TOTAL: 360
 };
+
+BICst.MULTI_PIE_GRADIENT_STYLE = {
+    LIGHTER: 1,
+    DARKER: 2
+}
+
+BICst.FUNNEL_SLANT_STYLE = {
+    SAME: 1,
+    DIFF: 2
+}
 
 BICst.CHART_LEGENDS = {
     NOT_SHOW: 1,
@@ -316,7 +363,7 @@ BICst.DASHBOARD_CHART_STYLE_AUTO = {
     }
 };
 
-//单个指标、多个指标
+//单指针、多指针
 BICst.POINTER = {
     ONE: 1,
     SOME: 2
@@ -368,6 +415,12 @@ BICst.BACKGROUND_TYPE = {
     IMAGE: 2
 };
 
+//两种系列堆积
+BICst.SERIES_ACCUMULATION = {
+    NONE: 1,
+    EXIST: 2
+};
+
 //临时解决方案
 BICst.GLOBAL_DEFAULT_CHART_COLOR = ["#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed"];
 BICst.GLOBAL_PREDICTION_STYLE = {
@@ -412,86 +465,121 @@ BICst.GLOBAL_PREDICTION_STYLE = {
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
-    table_form: BICst.TABLE_FORM.OPEN_ROW,
-    theme_color: "#65bce7",
-    table_style: BICst.TABLE_STYLE.STYLE1,
-    show_number: false,
-    show_row_total: true,
-    show_col_total: true,
-    open_row_node: false,
-    open_col_node: false,
-    max_row: BICst.TABLE_MAX_ROW,
-    max_col: BICst.TABLE_MAX_COL,
+    tableFormGroup: BICst.TABLE_FORM.OPEN_ROW,
+    themeColor: "#65bce7",
+    tableStyleGroup: BICst.TABLE_STYLE.STYLE1,
+    isCustomTableStyle: false,
+    showNumber: false,
+    showRowTotal: true,
+    showColTotal: true,
+    openRowNode: false,
+    openColNode: false,
+    maxRow: BICst.TABLE_MAX_ROW,
+    maxCol: BICst.TABLE_MAX_COL,
+    rowHeight: 25,
     freeze_dim: true,
-    freeze_first_column: false,
-    transfer_filter: true,
-    show_name: true,
+    freezeFirstColumn: false,
+    transferFilter: true,
+    clickZoom: true,
+    showName: true,
     name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
 
     //图
-    chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
-    chart_style: BICst.CHART_STYLE.STYLE_NORMAL,
-    chart_line_type: BICst.CHART_SHAPE.NORMAL,
-    chart_pie_type: BICst.CHART_SHAPE.NORMAL,
-    chart_radar_type: BICst.CHART_SHAPE.POLYGON,
-    chart_dashboard_type: BICst.CHART_SHAPE.NORMAL,
-    chart_inner_radius: 0,
-    chart_total_angle: BICst.PIE_ANGLES.TOTAL,
-    left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    x_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    number_of_pointer: BICst.POINTER.ONE,
-    dashboard_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    right_y_axis_second_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    left_y_axis_unit: "",
+    chartColor: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+    chartStyle: BICst.CHART_STYLE.STYLE_NORMAL,
+    gradientStyle: BICst.MULTI_PIE_GRADIENT_STYLE.LIGHTER,
+    slantStyle: BICst.FUNNEL_SLANT_STYLE.SAME,
+    lineAreaChartType: BICst.CHART_SHAPE.NORMAL,
+    pieChartType: BICst.CHART_SHAPE.NORMAL,
+    radarChartType: BICst.CHART_SHAPE.POLYGON,
+    dashboardChartType: BICst.CHART_SHAPE.NORMAL,
+    innerRadius: 0,
+    totalAngle: BICst.PIE_ANGLES.TOTAL,
+    leftYNumberFormat: BICst.TARGET_STYLE.FORMAT.NORMAL,
+    rightYNumberFormat: BICst.TARGET_STYLE.FORMAT.NORMAL,
+    rightY2NumberFormat: BICst.TARGET_STYLE.FORMAT.NORMAL,
+    leftYNumberLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    dashboardPointer: BICst.POINTER.ONE,
+    rightYNumberLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    rightY2NumberLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+    leftYUnit: "",
     dashboard_unit: "",
-    x_axis_unit: "",
-    right_y_axis_unit: "",
-    right_y_axis_second_unit: "",
-    show_left_y_axis_title: false,
-    show_right_y_axis_title: false,
-    show_right_y_axis_second_title: false,
-    left_y_axis_title: "",
-    right_y_axis_title: "",
-    right_y_axis_second_title: "",
-    left_y_axis_reversed: false,
-    right_y_axis_reversed: false,
-    right_y_axis_second_reversed: false,
-    show_x_axis_title: false,
-    x_axis_title: "",
-    text_direction: "0",
-    chart_legend: BICst.CHART_LEGENDS.BOTTOM,
-    mini_chart_legend: BICst.CHART_LEGENDS.NOT_SHOW,
-    show_data_label: false,
-    mini_show_data_label: true,
-    show_data_table: false,
-    show_grid_line: true,
-    num_separators: false,
-    right_num_separators: false,
-    mini_show_grid_line: false,
-    minimalist_model: false,
-    line_width: BICst.LINE_WIDTH.ONE,
-    mini_line_width: BICst.LINE_WIDTH.ZERO,
-    show_label: true,
-    mini_show_label: false,
+    rightYUnit: "",
+    rightY2Unit: "",
+    leftYShowTitle: false,
+    rightYShowTitle: false,
+    rightY2ShowTitle: false,
+    leftYTitle: "",
+    rightYTitle: "",
+    rightY2Title: "",
+    leftYReverse: false,
+    rightYReverse: false,
+    rightY2Reverse: false,
+    catShowTitle: false,
+    catTitle: "",
+    textDirection: "0",
+    legend: BICst.CHART_LEGENDS.BOTTOM,
+    miniChartLegend: BICst.CHART_LEGENDS.NOT_SHOW,
+    showDataLabel: false,
+    miniShowDataLabel: true,
+    showDataTable: false,
+    leftYSeparator: true,
+    rightYSeparator: true,
+    rightY2Separator: true,
+    leftYShowLabel: true,
+    rightYShowLabel: true,
+    right2YShowLabel: true,
+    catShowLabel: true,
+    vShowGridLine: true,
+    hShowGridLine: true,
+    linkageSelection: false,
+    miniShowGridLine: false,
+    miniModel: false,
+    bigDataMode: false,
+    rightYShowCustomScale: false,
+    leftYShowCustomScale: false,
+    rightY2ShowCustomScale: false,
+    miniLineWidth: BICst.LINE_WIDTH.ZERO,
+    showLabel: true,
+    miniShowLabel: false,
+    labelStyle: {
+        textDirection: 0,
+        textStyle: {}
+    },
+    lineColor: "#dddddd",
+    labelColor: "#666",
     enable_tick: true,
-    mini_enable_tick: false,
-    enable_minor_tick: true,
-    mini_enable_minor_tick: false,
-    show_custom_scale: false,
-    show_zoom: false,
-    null_continue: true,
-    min_scale: "",
-    max_scale: "",
+    miniEnableTick: false,
+    enableMinorTick: true,
+    miniEnableMinorTick: false,
+    showCustomScale: false,
+    shoZoom: false,
+    nullContinuity: true,
+    minScale: "",
+    maxScale: "",
     percentage_not_show: BICst.PERCENTAGE.NOT_SHOW,
-    bubble_display: BICst.DISPLAY_RULES.DIMENSION,
-    bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
-    show_background_layer: true,
-    background_layer_info: '高德地图'
+    displayRules: BICst.DISPLAY_RULES.DIMENSION,
+    bubbleStyle: BICst.CHART_SHAPE.NO_PROJECTOR,
+    isShowBackgroundLayer: true,
+    backgroundLayerInfo: '高德地图',
+    bubbleSizeFrom: 15,
+    bubbleSizeTo: 80,
+    customScale: {
+        minScale: {},
+        maxScale: {},
+        interval: {}
+    },
+    DataLabelSetting: {
+        showBlockName: true,
+        showCategoryName: true,
+        showSeriesName: true,
+        showSize: true,
+        showValue: true,
+        showPercentage: false,
+        showTractionLine: true,
+        position: BICst.DATA_LABEL.POSITION_OUTER,
+        textStyle: {}
+    }
 };
 
 BICst.DASHBOARD_STYLE_CONDITIONS = [{
@@ -561,3 +649,100 @@ BICst.MAP_STYLE_CONDITIONS = [{
     },
     color: "#a484b9"
 }];
+
+BICst.BUBBLE_GRADIENT_COLOR = [{
+    range: {
+        min: 0,
+        max: 100,
+        closemin: true,
+        closemax: true
+    },
+    color_range: {
+        from_color: "#65B3EE",
+        to_color: "#95E1AA"
+    }
+}];
+
+BICst.FONT_FAMILY_COMBO = [{
+    text: "微软雅黑",
+    value: "Microsoft YaHei"
+}, {
+    text: "黑体",
+    value: "SimHei"
+}, {
+    text: "幼圆",
+    value: "YouYuan"
+}, {
+    text: "宋体",
+    value: "SimSun"
+}, {
+    text: "楷体",
+    value: "KaiTi"
+}, {
+    text: "华文细黑",
+    value: "STXihei"
+}, {
+    text: "华文黑体",
+    value: "STHeiti"
+}, {
+    text: "华文楷体",
+    value: "STKaiti"
+}, {
+    text: "华文宋体",
+    value: "STSong"
+}, {
+    text: "冬青黑体简体中文",
+    value: "Hiragino Sans GB W3"
+}, {
+    text: "Arial",
+    value: "Arial"
+}, {
+    text: "Microsoft Tai Le",
+    value: "Microsoft Tai Le"
+}, {
+    text: "Tahoma",
+    value: "Tahoma"
+}, {
+    text: "Helvetica",
+    value: "Helvetica"
+}, {
+    text: "Verdana",
+    value: "Verdana"
+}, {
+    text: "Times New Roman",
+    value: "Times New Roman"
+}];
+
+BICst.DATA_LABEL_RANGE = {};
+BICst.DATA_LABEL_RANGE.ALL = 140;
+BICst.DATA_LABEL_RANGE.Classification = 141;
+BICst.DATA_LABEL_RANGE.Series = 142;
+BICst.DATA_LABEL_STYLE_TYPE = {};
+BICst.DATA_LABEL_STYLE_TYPE.TEXT = 143;
+BICst.DATA_LABEL_STYLE_TYPE.IMG = 144;
+
+//数据标签filter类型
+BICst.DATACOLUMN = {};
+BICst.DATACOLUMN.X = 96;
+BICst.DATACOLUMN.Y = 112;
+BICst.DATACOLUMN.Z = 128;
+BICst.DATACOLUMN.XANDY = 144;
+BICst.DATACOLUMN.XANDYANDSIZE = 160;
+
+BICst.IMAGE_RESIZE_MODE = {
+    ORIGINAL: 1,
+    EQUAL: 2,
+    STRETCH: 3
+};
+
+BICst.LIST_LABEL_TYPE = {
+    ALL: "_*_"
+};
+//show面板维度切换
+BICst.REGION_TYPE = {
+    REGION_DIMENSION: 1,
+    REGION_TARGET: 2,
+    REGION_WRAPPER_DIMENSION: 3,
+    REGION_WRAPPER_TARGET: 4,
+    REGION_WRAPPER_TARGET_SETTING: 5
+};

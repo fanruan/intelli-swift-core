@@ -3,7 +3,14 @@ package com.fr.bi.web.base;
 
 import com.fr.bi.web.base.fs.BIFSGetConfigAction;
 import com.fr.bi.web.base.fs.BIFSSetConfigAction;
-import com.fr.bi.web.base.services.*;
+import com.fr.bi.web.base.image.BIFSGetImageSizeAction;
+import com.fr.bi.web.base.image.BIFSSaveUploadImageAction;
+import com.fr.bi.web.base.services.BICheckValidationOfExpressionAction;
+import com.fr.bi.web.base.services.BIGetMapJsonAction;
+import com.fr.bi.web.base.services.BIGetPyAction;
+import com.fr.bi.web.base.services.BIGetTableAction;
+import com.fr.bi.web.base.services.dataconfigauth.BIGetDataConfigAuthoritiesAction;
+import com.fr.bi.web.base.services.dataconfigauth.BISaveDataConfigAuthoritiesAction;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
 import com.fr.fs.privilege.auth.FSAuthentication;
@@ -23,8 +30,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Service4BIBase extends NoSessionIDService {
 
-    private static final int DATA_HEADER = -10;
-
     private static AbstractBIBaseAction[] actions = {
         new BIGetPyAction(),
         new BIGetTableAction(),
@@ -34,6 +39,17 @@ public class Service4BIBase extends NoSessionIDService {
         new BICheckValidationOfExpressionAction(),
         new BIGetMapJsonAction(),
         new BIGetBuildNoAction()
+            new BIGetPyAction(),
+            new BIGetTableAction(),
+            new BIFSGetConfigAction(),
+            new BIFSSetConfigAction(),
+            new BICheckValidationOfExpressionAction(),
+            new BIFSSaveUploadImageAction(),
+            new BIFSGetImageSizeAction(),
+            new BIGetMapJsonAction(),
+
+            new BIGetDataConfigAuthoritiesAction(),
+            new BISaveDataConfigAuthoritiesAction()
     };
 
     /**
@@ -60,7 +76,7 @@ public class Service4BIBase extends NoSessionIDService {
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
-        res.setDateHeader("Expires", DATA_HEADER);
+        res.setDateHeader("Expires", -10);
 //
 //        PrivilegeVote vote = getFSVote(req, res);
 //        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);

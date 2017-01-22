@@ -13,11 +13,12 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var dId = o.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
+        var tableValueStyle = BI.Utils.getWSTableValueStyleByID(BI.Utils.getWidgetIDByDimensionID(dId));
         var text = o.text;
         var iconCls = "", color = "";
-        var format = styleSettings.format, numLevel = styleSettings.num_level, num_separators = styleSettings.num_separators;
+        var format = styleSettings.format, numLevel = styleSettings.numLevel, num_separators = styleSettings.numSeparators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
-        var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
+        var iconStyle = styleSettings.iconStyle, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
         BI.some(conditions, function (i, co) {
@@ -37,8 +38,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         });
         text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
         var textLabel = this._createTargetText(text);
+        // textLabel.setStyle(BI.extend(tableValueStyle, {"background": "black"}));
         if (BI.isNotEmptyString(color)) {
-            textLabel.element.css("color", color);
+            textLabel.setStyle({"color": color});
         }
         if (BI.isNotEmptyString(iconCls)) {
 
@@ -64,6 +66,10 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 element: this.element,
                 items: [textLabel]
             })
+        }
+
+        if (BI.isNotNull(o.styles) && BI.isObject(o.styles)) {
+            this.element.css(o.styles);
         }
     },
 
@@ -121,7 +127,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: text,
                 title: text,
-                height: 25,
+                height: o.height,
                 cls: "target-cell-text",
                 textAlign: "right",
                 rgap: 5
@@ -131,7 +137,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 type: "bi.text_button",
                 text: text,
                 title: text,
-                height: 25,
+                height: o.height,
                 textAlign: "right",
                 cls: "target-linkage-label",
                 rgap: 5
@@ -182,7 +188,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                         items: BI.createItems(linkages, {
                             type: "bi.text_button",
                             cls: "bi-linkage-list-item",
-                            height: 30,
+                            height: o.height,
                             textAlign: "left",
                             handler: function () {
                                 var link = this.options;
@@ -199,27 +205,26 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 }
             });
             return combo;
-        }
 
-        //这两个function放在条件语句块内函数声明没有提升。
-        function containsLinkage(list, item) {
-            for (var i = 0; i < list.length; i++) {
-                if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
-                    return list[i];
-                }
-            }
-            return {};
-        }
-
-        function isContainsDiffLinkages(linkages) {
-            for(var i = 0; i < linkages.length; i++) {
-                for(var j = i + 1; j < linkages.length; j++) {
-                    if(!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
-                        return true;
+            function containsLinkage(list, item) {
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
+                        return list[i];
                     }
                 }
+                return {};
             }
-            return false;
+
+            function isContainsDiffLinkages(linkages) {
+                for (var i = 0; i < linkages.length; i++) {
+                    for (var j = i + 1; j < linkages.length; j++) {
+                        if (!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
         }
     },
 

@@ -194,6 +194,15 @@ if (!window.BI) {
         BI[name] = _applyFunc(name)
     });
     _.extend(BI, {
+        clamp: function (value, minValue, maxValue) {
+            if (value < minValue) {
+                value = minValue;
+            }
+            if (value > maxValue) {
+                value = maxValue;
+            }
+            return value;
+        },
         //数数
         count: function (from, to, predicate) {
             var t;
@@ -1054,6 +1063,7 @@ if (!window.BI) {
             var loading;
             return function (option) {
                 option || (option = {});
+                option.data = BI.extend({}, Data.SharingPool.cat("urlParameters"), option.data);
                 //encode
                 encodeBIParam(option.data);
 
@@ -1157,7 +1167,7 @@ if (!window.BI) {
             if (!BI.isKey(op)) {
                 op = 'fr_bi_dezi';
             }
-            if (op === "fr_bi_dezi") {
+            if (op === "fr_bi_dezi" || op === "fr_bi_configure") {
                 data.sessionID = Data.SharingPool.get("sessionID");
             }
             var url = FR.servletURL + '?op=' + op + '&cmd=' + cmd + "&_=" + Math.random();

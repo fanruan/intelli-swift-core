@@ -51,6 +51,8 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.MAP:
             case BIReportConstant.WIDGET.ACCUMULATE_BAR:
             case BIReportConstant.WIDGET.PIE:
+            case BIReportConstant.WIDGET.MULTI_PIE:
+            case BIReportConstant.WIDGET.RECT_TREE:
             case BIReportConstant.WIDGET.DASHBOARD:
             case BIReportConstant.WIDGET.DONUT:
             case BIReportConstant.WIDGET.RADAR:
@@ -64,9 +66,15 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.DETAIL:
                 return new BIDetailWidget();
             case BIReportConstant.WIDGET.STRING:
+            case BIReportConstant.WIDGET.STRING_LIST:
                 return new StringControlWidget();
+            case BIReportConstant.WIDGET.LIST_LABEL:
+                return new ListLabelWidget();
             case BIReportConstant.WIDGET.TREE:
+            case BIReportConstant.WIDGET.TREE_LIST:
                 return new TreeWidget();
+            case BIReportConstant.WIDGET.TREE_LABEL:
+                return new TreeLabelWidget();
             default:
                 return new MultiChartWidget();
         }

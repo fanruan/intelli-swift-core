@@ -475,7 +475,7 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
     _refreshNavTreeData: function () {
         this.nav.refreshTreeData(this.model.getAllItems());
     },
-    
+
     resetModel: function(items) {
         this.model.resetAllItems(items);
         this._refreshNavTreeData();

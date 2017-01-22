@@ -82,7 +82,7 @@ BI.DetailSelectDimensionLevel0Item = BI.inherit(BI.Single, {
         });
         this.topLine.invisible();
         this.bottomLine.invisible();
-        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
+        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DROP_PREFIX, function (v) {
             self.setSelected(false);
         });
     },

@@ -6,7 +6,7 @@
 BI.CountTargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
 
     constants: {
-        CHART_TYPE_POSITION: 1
+        CHART_TYPE_POSITION: 2
     },
 
     defaultItem: function(){
@@ -22,6 +22,11 @@ BI.CountTargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
                     iconCls1: ""
                 },
                 children: []
+            }],
+            [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.TARGET_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
             }],
             [{
                 text: fromText,

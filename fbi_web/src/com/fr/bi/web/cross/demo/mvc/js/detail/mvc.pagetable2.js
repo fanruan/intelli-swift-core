@@ -372,9 +372,7 @@ PageTable2View = BI.inherit(BI.View, {
                 BI.each(header, function (i, h) {
                     h.text = h.text + "V" + vpage + "H" + hpage;
                 });
-                BI.delay(function () {
-                    populate(items, header, crossItems, crossHeader);
-                }, 1000);
+                populate(items, header, crossItems, crossHeader);
             },
             columnSize: ["", "", "", "", "", "", "", "", "", ""],
             isNeedMerge: true,

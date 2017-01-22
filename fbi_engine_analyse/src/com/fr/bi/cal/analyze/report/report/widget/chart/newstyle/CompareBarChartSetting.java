@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.newstyle;
 
 import com.fr.bi.stable.constant.BIChartSettingConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -33,21 +34,40 @@ public class CompareBarChartSetting extends BIAbstractBarChartSetting {
         String uuid = UUID.randomUUID().toString();
         for(int i = 0; i < data.length(); i++){
             JSONArray item = data.getJSONArray(i);
-            for(int j = 0; j < data.length(); ){
+            for(int j = 0; j < item.length(); j++){
                 JSONObject it = item.getJSONObject(j);
                 JSONArray da = it.getJSONArray("data");
                 for(int k = 0; k < da.length(); k++){
                     JSONObject t = da.getJSONObject(k);
-                    String tmp = t.getString("y");
-                    t.put("y", t.getString("x"));
-                    t.put("x", tmp);
                     if (i == 0) {
-                        t.put("x", -t.getDouble("x"));
+                        t.put("y", -t.getDouble("y"));
                     }
                 }
                 it.put("stack", uuid);
             }
         }
-        return super.formatItems(data, types, options);
+        JSONArray result = new JSONArray();
+        for(int i = 0; i < data.length(); i++){
+            JSONArray item = data.getJSONArray(i);
+            for(int j = 0; j < item.length(); j++){
+                result.put(item.getJSONObject(j));
+            }
+        }
+        JSONArray newItems = new JSONArray().put(result);
+        return super.formatItems(newItems, this.formatTypes(newItems, types), options);
+    }
+
+    @Override
+    public JSONArray formatTypes(JSONArray data, JSONArray types) throws JSONException {
+        JSONArray newTypes = new JSONArray();
+        for(int i = 0; i < data.length(); i++){
+            JSONArray type = new JSONArray();
+            JSONArray axisItems = data.getJSONArray(i);
+            for(int j = 0; j < axisItems.length(); j++){
+                type.put(BIReportConstant.WIDGET.BAR);
+            }
+            newTypes.put(type);
+        }
+        return newTypes;
     }
 }

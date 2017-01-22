@@ -40,7 +40,7 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
         //可能设置了，但是这个字段又已经不存在了
         if (BI.isNotNull(loginField) && BI.isNotNull(tableId)) {
             var primaryFields = [];
-            this._getPrimaryFieldsByFieldId(loginField, primaryFields);
+            BI.Utils.getPrimaryFieldsByFieldId4Conf(loginField, primaryFields);
             BI.remove(primaryFields, loginField);
             primaryFields.splice(0, 0, loginField);
             var comboValue = this.combo.getValue();
@@ -96,12 +96,12 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
         return fields;
     },
 
-    _getPrimaryFieldsByFieldId: function (fieldId, primaryFields) {
+    _getPrimaryFieldsByFieldId: function (fieldId) {
         var self = this;
         var relations = Data.SharingPool.cat("relations");
         var translations = Data.SharingPool.cat("translations");
         var fields = Data.SharingPool.cat("fields");
-        var tableId = "";
+        var primaryFields = [], tableId = "";
         if (BI.isNotNull(fields[fieldId])) {
             tableId = fields[fieldId].table_id;
         }
@@ -110,7 +110,7 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
             var pFId = cs.primaryKey.field_id;
             if (cs.foreignKey.table_id === tableId && !primaryFields.contains(pFId)) {
                 primaryFields.push(pFId);
-                self._getPrimaryFieldsByFieldId(pFId, primaryFields);
+                primaryFields = primaryFields.concat(self._getPrimaryFieldsByFieldId(pFId));
             }
         });
         return primaryFields;

@@ -31,8 +31,9 @@ BI.ExcelViewSettingExpander = BI.inherit(BI.Widget, {
         });
         this.table = BI.createWidget({
             type: "bi.excel_view_setting_table",
+            tableName: o.tableName,
             fields: o.fields,
-            clearOneCell: function(fieldId){
+            clearOneCell: function (fieldId) {
                 o.clearOneCell(fieldId);
             }
         });
@@ -59,7 +60,7 @@ BI.ExcelViewSettingExpander = BI.inherit(BI.Widget, {
         return this.table.getValue();
     },
 
-    getMarkedFields: function() {
+    getMarkedFields: function () {
         return this.table.getMarkedFields();
     },
 

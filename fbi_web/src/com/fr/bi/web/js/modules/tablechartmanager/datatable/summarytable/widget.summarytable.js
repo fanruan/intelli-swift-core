@@ -34,7 +34,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 bottom: 0,
                 right: 0
             }]
-        })
+        });
+        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+            self.resize();
+        });
     },
 
     _createTable: function () {
@@ -47,178 +50,179 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             case BICst.TABLE_FORM.OPEN_COL:
                 this.tableForm = BICst.TABLE_FORM.OPEN_COL;
                 this.table = BI.createWidget({
-                    type: "bi.style_table",
+                    type: "bi.page_table",
                     el: {
-                        type: "bi.page_table",
-                        isNeedFreeze: null,
-                        mergeRule: function (col1, col2) {
-                            if (col1.tag && col2.tag) {
-                                return col1.tag === col2.tag;
-                            }
-                            return col1 === col2;
-                        },
+                        type: "bi.sequence_table",
                         el: {
+                            type: "bi.dynamic_summary_layer_tree_table",
                             el: {
+                                type: "bi.adaptive_table",
                                 el: {
+                                    type: "bi.resizable_table",
                                     el: {
-                                        type: "bi.dynamic_summary_layer_tree_table"
+                                        type: "bi.collection_table"
                                     }
                                 }
                             },
-                            sequence: {
-                                type: "bi.sequence_table_tree_number"
-                            }
                         },
-                        itemsCreator: function (op, populate) {
-                            var vPage = op.vpage, hPage = op.hpage;
-                            var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            if (vPage > self.vPage) {
-                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
-                            }
-                            if (vPage < self.vPage) {
-                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
-                            }
-                            if (hPage > self.hPage) {
-                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            }
-                            if (hPage < self.hPage) {
-                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
-                            }
-                            self.hPage = hPage;
-                            self.vPage = vPage;
-                            self.model.setPageOperator(pageOperator);
-                            self._onPageChange(function (items, header, crossItems, crossHeader) {
-                                populate.apply(self.table, arguments);
-                                self._afterTablePopulate();
-                            })
-                        },
-                        pager: {
-                            pages: false,
-                            curr: 1,
-                            firstPage: 1,
-                            horizontal: {
-                                pages: false, //总页数
-                                curr: 1, //初始化当前页， pages为数字时可用
-                                hasPrev: function () {
-                                    return self.model.getPage()[2] === 1;
-                                },
-                                hasNext: function () {
-                                    return self.model.getPage()[3] === 1;
-                                },
-                                firstPage: 1,
-                                lastPage: BI.emptyFn
+                        sequence: {
+                            type: "bi.sequence_table_tree_number"
+                        }
+                    },
+                    isNeedFreeze: null,
+                    mergeRule: function (col1, col2) {
+                        if (col1.tag && col2.tag) {
+                            return col1.tag === col2.tag;
+                        }
+                        return col1 === col2;
+                    },
+                    itemsCreator: function (op, populate) {
+                        var vPage = op.vpage, hPage = op.hpage;
+                        var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                        if (vPage > self.vPage) {
+                            pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
+                        }
+                        if (vPage < self.vPage) {
+                            pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                        }
+                        if (hPage > self.hPage) {
+                            pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                        }
+                        if (hPage < self.hPage) {
+                            pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
+                        }
+                        self.hPage = hPage;
+                        self.vPage = vPage;
+                        self.model.setPageOperator(pageOperator);
+                        self._onPageChange(function (items, header, crossItems, crossHeader) {
+                            populate(items, header, crossItems, crossHeader);
+                        })
+                    },
+                    pager: {
+                        pages: false,
+                        curr: 1,
+                        firstPage: 1,
+                        horizontal: {
+                            pages: false, //总页数
+                            curr: 1, //初始化当前页， pages为数字时可用
+                            hasPrev: function () {
+                                return self.model.getPage()[2] === 1;
                             },
-                            vertical: {
-                                pages: false, //总页数
-                                curr: 1, //初始化当前页， pages为数字时可用
-                                hasPrev: function () {
-                                    return self.model.getPage()[0] === 1;
-                                },
-                                hasNext: function () {
-                                    return self.model.getPage()[1] === 1;
-                                },
-                                firstPage: 1,
-                                lastPage: BI.emptyFn
-                            }
+                            hasNext: function () {
+                                return self.model.getPage()[3] === 1;
+                            },
+                            firstPage: 1,
+                            lastPage: BI.emptyFn
                         },
-                        isNeedMerge: true,
-                        regionColumnSize: this.model.getStoredRegionColumnSize()
-                    }
+                        vertical: {
+                            pages: false, //总页数
+                            curr: 1, //初始化当前页， pages为数字时可用
+                            hasPrev: function () {
+                                return self.model.getPage()[0] === 1;
+                            },
+                            hasNext: function () {
+                                return self.model.getPage()[1] === 1;
+                            },
+                            firstPage: 1,
+                            lastPage: BI.emptyFn
+                        }
+                    },
+                    isNeedMerge: true,
+                    regionColumnSize: this.model.getStoredRegionColumnSize()
                 });
                 break;
             default :
                 this.tableForm = BICst.TABLE_FORM.OPEN_ROW;
                 this.table = BI.createWidget({
-                    type: "bi.style_table",
+                    type: "bi.page_table",
+                    isNeedFreeze: null,
+                    mergeRule: function (col1, col2) {
+                        if (col1.tag && col2.tag) {
+                            return col1.tag === col2.tag;
+                        }
+                        return col1 === col2;
+                    },
                     el: {
-                        type: "bi.page_table",
-                        isNeedFreeze: null,
-                        mergeRule: function (col1, col2) {
-                            if (col1.tag && col2.tag) {
-                                return col1.tag === col2.tag;
-                            }
-                            return col1 === col2;
-                        },
+                        type: "bi.sequence_table",
                         el: {
+                            type: "bi.dynamic_summary_tree_table",
                             el: {
+                                type: "bi.adaptive_table",
                                 el: {
+                                    type: "bi.resizable_table",
                                     el: {
-                                        type: "bi.dynamic_summary_tree_table"
+                                        type: "bi.collection_table"
                                     }
                                 }
                             },
-                            sequence: {
-                                type: "bi.sequence_table_dynamic_number"
-                            }
                         },
-                        itemsCreator: function (op, populate) {
-                            var vPage = op.vpage, hPage = op.hpage;
-                            var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            if (vPage > self.vPage) {
-                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
-                            }
-                            if (vPage < self.vPage) {
-                                pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
-                            }
-                            if (hPage > self.hPage) {
-                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
-                            }
-                            if (hPage < self.hPage) {
-                                pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
-                            }
-                            self.hPage = hPage;
-                            self.vPage = vPage;
-                            self.model.setPageOperator(pageOperator);
-                            self._onPageChange(function (items, header, crossItems, crossHeader) {
-                                populate.apply(self.table, arguments);
-                                self._afterTablePopulate();
-                            });
-                        },
-                        pager: {
-                            pages: false,
-                            curr: 1,
-                            firstPage: 1,
-                            horizontal: {
-                                pages: false, //总页数
-                                curr: 1, //初始化当前页， pages为数字时可用
-                                hasPrev: function () {
-                                    return self.model.getPage()[2] === 1;
-                                },
-                                hasNext: function () {
-                                    return self.model.getPage()[3] === 1;
-                                },
-                                firstPage: 1,
-                                lastPage: BI.emptyFn
+                        sequence: {
+                            type: "bi.sequence_table_dynamic_number"
+                        }
+                    },
+                    itemsCreator: function (op, populate) {
+                        var vPage = op.vpage, hPage = op.hpage;
+                        var pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                        if (vPage > self.vPage) {
+                            pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_NEXT;
+                        }
+                        if (vPage < self.vPage) {
+                            pageOperator = BICst.TABLE_PAGE_OPERATOR.ROW_PRE;
+                        }
+                        if (hPage > self.hPage) {
+                            pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_NEXT;
+                        }
+                        if (hPage < self.hPage) {
+                            pageOperator = BICst.TABLE_PAGE_OPERATOR.COLUMN_PRE;
+                        }
+                        self.hPage = hPage;
+                        self.vPage = vPage;
+                        self.model.setPageOperator(pageOperator);
+                        self._onPageChange(function (items, header, crossItems, crossHeader) {
+                            populate(items, header, crossItems, crossHeader);
+                        });
+                    },
+                    pager: {
+                        pages: false,
+                        curr: 1,
+                        firstPage: 1,
+                        horizontal: {
+                            pages: false, //总页数
+                            curr: 1, //初始化当前页， pages为数字时可用
+                            hasPrev: function () {
+                                return self.model.getPage()[2] === 1;
                             },
-                            vertical: {
-                                pages: false, //总页数
-                                curr: 1, //初始化当前页， pages为数字时可用
-                                hasPrev: function () {
-                                    return self.model.getPage()[0] === 1;
-                                },
-                                hasNext: function () {
-                                    return self.model.getPage()[1] === 1;
-                                },
-                                firstPage: 1,
-                                lastPage: BI.emptyFn
-                            }
+                            hasNext: function () {
+                                return self.model.getPage()[3] === 1;
+                            },
+                            firstPage: 1,
+                            lastPage: BI.emptyFn
                         },
-                        isNeedMerge: true,
-                        regionColumnSize: this.model.getStoredRegionColumnSize()
-                    }
+                        vertical: {
+                            pages: false, //总页数
+                            curr: 1, //初始化当前页， pages为数字时可用
+                            hasPrev: function () {
+                                return self.model.getPage()[0] === 1;
+                            },
+                            hasNext: function () {
+                                return self.model.getPage()[1] === 1;
+                            },
+                            firstPage: 1,
+                            lastPage: BI.emptyFn
+                        }
+                    },
+                    isNeedMerge: true,
+                    regionColumnSize: this.model.getStoredRegionColumnSize()
                 });
                 break;
         }
-        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             var columnSize = this.getCalculateRegionColumnSize();
             self.model.setStoredRegionColumnSize(columnSize[0]);
         });
-        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             var columnSize = BI.clone(this.getColumnSize());
             self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: columnSize})});
-        });
-        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_INIT, function () {
-            self._resizeTableColumnSize();
         });
         if (this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_NEXT || this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_PRE) {
             this.table.setVPage(this.model.getPage()[4]);
@@ -235,66 +239,6 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 bottom: 0
             }]
         })
-    },
-
-    _resizeTableColumnSize: function () {
-        var cs = this.table.getColumnSize();
-        var isValid = true;
-        BI.some(cs, function (i, size) {
-            if (!BI.isNumeric(size)) {
-                isValid = false;
-                return true;
-            }
-        });
-        if (!isValid) {
-            var columnSize = this.table.getCalculateColumnSize();
-            if (this.model.isNeed2Freeze()) {
-                var regionColumnSize = this.table.getCalculateRegionColumnSize();
-                this.model.setStoredRegionColumnSize(regionColumnSize[0]);
-                var freezeCols = this.model.getFreezeCols();
-                var freezeColumnSize = columnSize.slice(0, freezeCols.length);
-                var otherSize = columnSize.slice(freezeCols.length);
-                var fl = freezeColumnSize.length, ol = otherSize.length;
-                BI.each(freezeColumnSize, function (i, size) {
-                    if (size > 200 && i < fl - 1) {
-                        freezeColumnSize[fl - 1] = freezeColumnSize[fl - 1] + freezeColumnSize[i] - 200;
-                        freezeColumnSize[i] = 200;
-                    }
-                    if (size < 80 && i < fl - 1) {
-                        var tempSize = freezeColumnSize[fl - 1] - (80 - freezeColumnSize[i]);
-                        freezeColumnSize[fl - 1] = tempSize < 80 ? 80 : tempSize;
-                        freezeColumnSize [i] = 80;
-                    }
-                });
-                BI.each(otherSize, function (i, size) {
-                    if (size > 200 && i < ol - 1) {
-                        otherSize[ol - 1] = otherSize[ol - 1] + otherSize[i] - 200;
-                        otherSize[i] = 200;
-                    }
-                    if (size < 80 && i < ol - 1) {
-                        var tempSize = otherSize[ol - 1] - (80 - otherSize[i]);
-                        otherSize[ol - 1] = tempSize < 80 ? 80 : tempSize;
-                        otherSize [i] = 80;
-                    }
-                });
-                columnSize = freezeColumnSize.concat(otherSize);
-            } else {
-                var cl = columnSize.length;
-                BI.each(columnSize, function (i, size) {
-                    if (size > 200 && i < cl - 1) {
-                        columnSize[cl - 1] = columnSize[cl - 1] + columnSize[i] - 200;
-                        columnSize[i] = 200;
-                    }
-                    if (size < 80 && i < cl - 1) {
-                        var tempSize = columnSize[cl - 1] - (80 - columnSize[i]);
-                        columnSize[cl - 1] = tempSize < 80 ? 80 : tempSize;
-                        columnSize [i] = 80;
-                    }
-                })
-            }
-            this.table.setColumnSize(columnSize);
-            this.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(this.model.getWidgetId()), {column_size: columnSize})});
-        }
     },
 
     /**
@@ -499,33 +443,22 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     },
 
     _populateTable: function () {
-        this.errorPane.setVisible(false);
-        this.table.attr("isNeedFreeze", true);
-        this.table.attr("freezeCols", this.model.getFreezeCols());
-        this.table.attr("mergeCols", this.model.getMergeCols());
-        this.table.attr("columnSize", this.model.getColumnSize());
-        this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
-        this._afterTablePopulate();
+        this.table.restore();
+        this._refreshTable();
     },
 
     _refreshTable: function () {
         this.errorPane.setVisible(false);
+        this.table.setWidth(this.element.width());
+        this.table.setHeight(this.element.height());
         this.table.attr("isNeedFreeze", true);
+        this.table.attr("showSequence", this.model.isShowNumber());
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
-        this.table.refresh(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
-        this._afterTablePopulate();
-    },
-
-    _afterTablePopulate: function () {
-        if (this.model.isShowNumber()) {
-            this.table.showSequence();
-        } else {
-            this.table.hideSequence();
-        }
-        //css
-        this.table.setStyleAndColor(this.model.getTableStyle(), this.model.getThemeColor());
+        this.table.attr("headerRowSize", this.model.getHeaderRowSize());
+        this.table.attr("rowSize", this.model.getRowSize());
+        this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
     },
 
     populate: function () {
@@ -585,18 +518,16 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     },
 
     resize: function () {
-        this.table.resize();
+        var self = this;
+        BI.nextTick(function () {
+            self.table.setWidth(self.element.width());
+            self.table.setHeight(self.element.height());
+            self.table.populate();
+        });
     },
 
     magnify: function () {
 
-    },
-
-    empty: function () {
-        BI.SummaryTable.superclass.empty.apply(this, arguments);
-        if (BI.isNotNull(this.table)) {
-            this.table.empty();
-        }
     }
 });
 BI.SummaryTable.EVENT_CHANGE = "EVENT_CHANGE";

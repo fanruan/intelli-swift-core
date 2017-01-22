@@ -7,6 +7,7 @@ import com.finebi.cube.conf.pack.BIStatusChaosException;
 import com.finebi.cube.conf.pack.IPackagesManagerService;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.IGroupTagsManagerService;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -366,6 +367,10 @@ public class BIPackageConfigManager implements Release {
 
     public void removeBusinessTableByID(BIPackageID packageID, BITableID tableID) throws BIPackageAbsentException, BITableAbsentException {
         currentPackageManager.removeTable(packageID, tableID);
+    }
+
+    public void addBusinessTable(BIPackageID packageID, BIBusinessTable biBusinessTable) throws BIPackageAbsentException {
+        currentPackageManager.addTable(packageID, biBusinessTable);
     }
 
     public Set<BusinessTable> getAllTables() {

@@ -17,12 +17,13 @@ BI.LinkageFilterItem = BI.inherit(BI.Widget, {
         BI.each(linkFilter, function (i, value) {
             items.push(self._createSingleLinkageFilter(value.dId, value.value[0]));
         });
+        var widgetType = BI.Utils.getWidgetTypeByID(wId);
         var wrapper = BI.createWidget({
             type: "bi.left",
             element: this.element,
             items: [{
                 type: "bi.center_adapt",
-                cls: BI.Utils.getWidgetIconClsByWidgetId(wId),
+                cls: BICst.WIDGET_ICON_CLS_MAP[widgetType],
                 items: [{
                     type: "bi.icon",
                     width: 20,
@@ -55,7 +56,7 @@ BI.LinkageFilterItem = BI.inherit(BI.Widget, {
         var clicked = v;
 
         if (BI.isNotNull(group)) {
-            if(fieldType === BICst.COLUMN.STRING) {
+            if (fieldType === BICst.COLUMN.STRING) {
                 var details = group.details,
                     ungroup2Other = group.ungroup2Other,
                     ungroup2OtherName = group.ungroup2OtherName;
@@ -69,15 +70,15 @@ BI.LinkageFilterItem = BI.inherit(BI.Widget, {
                         return true;
                     }
                 });
-            } else if(fieldType === BICst.COLUMN.NUMBER) {
+            } else if (fieldType === BICst.COLUMN.NUMBER) {
                 var groupValue = group.group_value, groupType = group.type;
-                if(groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
+                if (groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
                     var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
-                    if(v === BICst.UNGROUP_TO_OTHER) {
+                    if (v === BICst.UNGROUP_TO_OTHER) {
                         clicked = useOther;
                     }
                     BI.some(groupNodes, function (i, node) {
-                        if(node.id === v) {
+                        if (node.id === v) {
                             clicked = node.group_name;
                             return true;
                         }

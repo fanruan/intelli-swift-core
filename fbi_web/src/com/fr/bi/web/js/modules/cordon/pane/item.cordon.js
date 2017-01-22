@@ -36,7 +36,7 @@ BI.CordonItem = BI.inherit(BI.Single,{
             type: "bi.sign_editor",
             cls: "condition-operator-input",
             value: o.cordon_name,
-            height: 30,
+            height: 28,
             hgap: this.constants.hgap
         });
 
@@ -75,7 +75,7 @@ BI.CordonItem = BI.inherit(BI.Single,{
             value: o.cordon_value,
             watermark: "=",
             errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
-            height: 30,
+            height: 28,
             width: 230
         });
 

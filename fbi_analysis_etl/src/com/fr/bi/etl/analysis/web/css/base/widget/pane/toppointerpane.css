@@ -3,10 +3,20 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
+.bi-analysis-etl-top-pointer-pane {
+  background-color: #ffffff;
+  border-left: 1px solid #eaeaea;
+}
 .bi-analysis-etl-top-pointer-pane .bi-analysis-etl-top-pointer-pane-item {
   top: -1px;
-  border: 1px solid #eaeaea;
-  background: #ffffff;
+  border-left: 1px solid #eaeaea;
+  border-right: 1px solid #eaeaea;
+  border-top: 1px solid #eaeaea;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #ffffff;
+}
+.bi-analysis-etl-top-pointer-pane .top-pointer {
+  background-color: #ffffff;
 }
 .bi-analysis-etl-top-pointer-pane .x-pointer-top {
   z-index: 1;

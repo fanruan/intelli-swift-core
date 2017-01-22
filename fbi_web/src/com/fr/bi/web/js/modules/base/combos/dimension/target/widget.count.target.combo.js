@@ -10,11 +10,11 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         CordonPos: 2
     },
 
-    defaultItem: function(){
+    defaultItem: function () {
         var o = this.options;
         var fieldName = BI.Utils.getFieldNameByID(this.field_id);
         var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(this.field_id));
-        var fromText = BI.i18nText("BI-This_Target_From") + ": " + tableName + "."  + fieldName;
+        var fromText = BI.i18nText("BI-This_Target_From") + ": " + tableName + "." + fieldName;
         return [
             [{
                 el: {
@@ -56,23 +56,24 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.TARGET_COMBO.STYLE_SETTING,
+                warningTitle: BI.i18nText("BI-Unmodified_in_Mini_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
                 text: BI.i18nText("BI-Filter_Number_Summary"),
-                title: BI.i18nText("BI-Target_Summary_Filter_Title"),
+                title: BI.i18nText("BI-Target_Filter_Tip"),
                 value: BICst.TARGET_COMBO.FILTER,
                 cls: "filter-h-font"
             }],
-            //[{
-            //    text: BI.i18nText("BI-Display"),
-            //    value: BICst.TARGET_COMBO.DISPLAY,
-            //    cls: "dot-ha-font"
-            //}, {
-            //    text: BI.i18nText("BI-Hidden"),
-            //    value: BICst.TARGET_COMBO.HIDDEN,
-            //    cls: "dot-ha-font"
-            //}],
+            [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.TARGET_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+            }],
+            [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.TARGET_COMBO.RENAME
+            }],
             [{
                 text: BI.i18nText("BI-Copy"),
                 value: BICst.TARGET_COMBO.COPY,
@@ -94,29 +95,32 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         ]
     },
 
-    _defaultConfig: function(){
-        return BI.extend(BI.CountTargetCombo.superclass._defaultConfig.apply(this, arguments), {
-
-        })
+    _defaultConfig: function () {
+        return BI.extend(BI.CountTargetCombo.superclass._defaultConfig.apply(this, arguments), {})
     },
 
-    _init: function(){
+    _init: function () {
         BI.CountTargetCombo.superclass._init.apply(this, arguments);
         this.field_id = BI.Utils.getFieldIDByDimensionID(this.options.dId);
     },
 
-    _rebuildItems: function(){
+    _rebuildItems: function () {
         var o = this.options;
         var tableId = BI.Utils.getTableIDByDimensionID(o.dId);
-        var fieldIds = BI.Utils.getStringFieldIDsOfTableID(tableId).concat(BI.Utils.getNumberFieldIDsOfTableID(tableId));
+        var fieldIds = BI.filter(BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId), function (idx, fId) {
+            return BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.STRING || BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.NUMBER;
+        });
         var children = [];
-        var minimalist = BI.Utils.getWSMinimalistByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        var dataLable = BI.Utils.getWSChartShowDataLabelByID(wId);
+        var minimalist = BI.Utils.getWSMinimalistByID(wId);
+        var bigDataMode = BI.Utils.getWSChartBigDataModeByID(wId);
         children.push({
             text: BI.i18nText("BI-Total_Row_Count"),
             value: BI.Utils.getCountFieldIDsOfTableID(tableId)[0],
             cls: "dot-e-font"
         });
-        BI.each(fieldIds, function(idx, fieldId){
+        BI.each(fieldIds, function (idx, fieldId) {
             children.push({
                 text: BI.Utils.getFieldNameByID(fieldId),
                 value: fieldId,
@@ -138,6 +142,30 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.FALL_AXIS:
+                items[this.constants.CordonPos][0].cls = "";
+                items[this.constants.CordonPos][0] = {
+                    el: items[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    }, {
+                        text: BI.i18nText("BI-Data_Label"),
+                        value: BICst.TARGET_COMBO.DATA_LABEL,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                    }, {
+                        text: BI.i18nText("BI-Data_Image"),
+                        value: BICst.TARGET_COMBO.DATA_IMAGE,
+                        warningTitle: BI.i18nText("BI-Data_Image_Donnot_Show")
+                    }]
+                };
+                if (minimalist) {
+                    items[this.constants.CordonPos][0].disabled = true
+                }
+                if (!dataLable) {
+                    items[this.constants.CordonPos][0].children[1].disabled = true
+                }
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
+                break;
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AREA:
@@ -150,10 +178,17 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
+                    }, {
+                        text: BI.i18nText("BI-Data_Label"),
+                        value: BICst.TARGET_COMBO.DATA_LABEL,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
                     }]
                 };
-                if(minimalist) {
+                if (minimalist) {
                     items[this.constants.CordonPos][0].disabled = true
+                }
+                if (!dataLable) {
+                    items[this.constants.CordonPos][0].children[1].disabled = true
                 }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
@@ -166,10 +201,21 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Vertical") + ")",
                         value: BICst.TARGET_COMBO.CORDON
+                    }, {
+                        text: BI.i18nText("BI-Data_Label"),
+                        value: BICst.TARGET_COMBO.DATA_LABEL,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                    }, {
+                        text: BI.i18nText("BI-Data_Image"),
+                        value: BICst.TARGET_COMBO.DATA_IMAGE,
+                        warningTitle: BI.i18nText("BI-Data_Image_Donnot_Show")
                     }]
                 };
-                if(minimalist) {
+                if (minimalist) {
                     items[this.constants.CordonPos][0].disabled = true
+                }
+                if (!dataLable) {
+                    items[this.constants.CordonPos][0].children[1].disabled = true
                 }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
@@ -180,10 +226,21 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
+                    }, {
+                        text: BI.i18nText("BI-Data_Label"),
+                        value: BICst.TARGET_COMBO.DATA_LABEL,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                    }, {
+                        text: BI.i18nText("BI-Data_Image"),
+                        value: BICst.TARGET_COMBO.DATA_IMAGE,
+                        warningTitle: BI.i18nText("BI-Data_Image_Donnot_Show")
                     }]
                 };
-                if(minimalist) {
+                if (minimalist) {
                     items[this.constants.CordonPos][0].disabled = true
+                }
+                if (!dataLable) {
+                    items[this.constants.CordonPos][0].children[1].disabled = true
                 }
                 items[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
@@ -235,7 +292,21 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        BI.removeAt(items, this.constants.CordonPos);
+                        items[this.constants.CordonPos][0].cls = "";
+                        items[this.constants.CordonPos][0] = {
+                            el: items[this.constants.CordonPos][0],
+                            children: [{
+                                text: BI.i18nText("BI-Style_And_NumberLevel"),
+                                value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                            }, {
+                                text: BI.i18nText("BI-Data_Label"),
+                                value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
+                                warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                            }]
+                        };
+                        if (!dataLable) {
+                            items[this.constants.CordonPos][0].children.disabled = true
+                        }
                         BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                         return addDependency();
                 }
@@ -245,13 +316,37 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + text + ")",
                         value: BICst.TARGET_COMBO.CORDON
+                    }, {
+                        text: BI.i18nText("BI-Data_Label"),
+                        value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
                     }]
                 };
+                if (bigDataMode) {
+                    items[this.constants.CordonPos][0] = {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
+                        warningTitle: BI.i18nText("BI-Unmodified_in_BigData_Mode"),
+                        cls: "style-set-h-font"
+                    };
+                    items[this.constants.CordonPos][0].disabled = true;
+                }
+                if (!dataLable) {
+                    items[this.constants.CordonPos][0].children[1].disabled = true
+                }
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 break;
-            case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
+                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
+                items[1][0] = {
+                        text: BI.i18nText("BI-Style_And_NumberLevel"),
+                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                };
+                break;
+            case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.FORCE_BUBBLE:
@@ -267,15 +362,15 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         return addDependency();
 
         function addDependency() {
-            BI.find(items, function(idx, item){
-                dependItem = BI.find(item, function(id, it){
+            BI.find(items, function (idx, item) {
+                dependItem = BI.find(item, function (id, it) {
                     var itE = BI.stripEL(it);
                     return itE.value === BICst.TARGET_COMBO.DEPEND_TYPE;
                 });
                 return BI.isNotNull(dependItem);
             });
 
-            dependItem.el.text = BI.i18nText("BI-Count_Depend") + "(" + selectedValue +")";
+            dependItem.el.text = BI.i18nText("BI-Count_Depend") + "(" + selectedValue + ")";
             dependItem.children = children;
 
             return items;
@@ -284,7 +379,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _assertChartType: function (val) {
         val || (val = {});
-        if(BI.isNull(val.type)){
+        if (BI.isNull(val.type)) {
             val.type = BICst.WIDGET.AXIS;
         }
         return val;

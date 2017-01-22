@@ -5,9 +5,9 @@
  */
 BI.RelationSetPane = BI.inherit(BI.BarPopoverSection, {
     _defaultConfig: function(){
-        return BI.RelationSetPane.superclass._defaultConfig.apply(this, arguments, {
-
-        })
+        return BI.extend(BI.RelationSetPane.superclass._defaultConfig.apply(this, arguments), {
+            warningTitle: BI.i18nText("BI-Please_Select_Relation_Between_Tables")
+        });
     },
 
     _init: function(){
@@ -31,21 +31,24 @@ BI.RelationSetPane = BI.inherit(BI.BarPopoverSection, {
     },
 
     rebuildCenter: function(center){
-        var o = this.options;
+        var self = this, o = this.options;
         this.relationPane = BI.createWidget({
             type: "bi.relation_pane",
             element: center,
-            field_id: o.field_id,
-            relations: o.relations,
-            translations: o.translations,
-            all_fields: o.all_fields
+            field: o.field
+        });
+        this.relationPane.on(BI.RelationPane.EVENT_VALID, function(){
+            self.setConfirmButtonEnable(true);
+        });
+        this.relationPane.on(BI.RelationPane.EVENT_ERROR, function(){
+            self.setConfirmButtonEnable(false);
         });
     },
 
     getFieldNameByFieldId: function(){
         var o = this.options;
-        var allFields = o.all_fields, fieldId = o.field_id, translations = o.translations;
-        return translations[fieldId] || allFields[fieldId].field_name;
+        var field = o.field;
+        return BI.Utils.getTransNameById4Conf(field.id) || field.field_name;
     }
 });
 BI.RelationSetPane.EVENT_CHANGE = "EVENT_CHANGE";

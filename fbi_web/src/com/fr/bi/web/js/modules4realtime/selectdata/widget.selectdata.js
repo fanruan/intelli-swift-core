@@ -48,9 +48,13 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
                 var result = [];
                 BI.each(ids, function (i, fid) {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
-                        result.push({
-                            id: fid
-                        })
+                        var res = BI.Func.getSearchResult(fieldname, opt.keyword);
+                        if(BI.contains(res.matched, BI.Utils.getFieldNameByID(fid)) && opt.isSearching === true){
+                            result.push({
+                                id: fid,
+                                type: "bi.detail_select_data_level0_item"
+                            });
+                        }
                     }
                 });
                 return result;

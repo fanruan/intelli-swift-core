@@ -1,19 +1,20 @@
 @import "../../bibase";
 
-.bi-fit-widget{
-  & .fit-widget-draggable{
-    cursor: url('@{cursor}'), auto;
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-    cursor: grab;
-    &:active{
-      cursor: url('@{dragCursor}'), auto;
-      cursor: -webkit-grabbing;
-      cursor: -moz-grabbing;
-      cursor: grabbing;
+.bi-fit-widget {
+  -webkit-transition: left,top 200ms ease;
+  -moz-transition: left,top 200ms ease;
+  -o-transition: left,top 200ms ease;
+  transition: left,top 200ms ease;
+  &.selected {
+    .transition(none);
+  }
+  & .fit-widget-draggable {
+    cursor: url(@cursor), auto;
+    &:active {
+      cursor: url(@dragCursor), auto;
     }
   }
-  & .fit-widget-drag-bar{
+  & .fit-widget-drag-bar {
     background: @color-bi-background-dark;
   }
 }

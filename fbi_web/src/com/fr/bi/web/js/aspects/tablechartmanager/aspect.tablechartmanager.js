@@ -23,6 +23,7 @@ BI.TableChartManagerAspect = function () {
                 cls: "widget-tip-pane",
                 items: [{
                     type: "bi.vertical",
+                    width: "100%",
                     items: [self.tipPane, self.textLabel, self.contactAdmin]
                 }]
             });
@@ -55,32 +56,26 @@ BI.TableChartManagerAspect = function () {
         var cls = true;
         var dim1Size = 0, dim2Size = 0, tar1Size = 0, tar2Size = 0, tar3Size = 0;
         BI.each(view, function (vId, v) {
-            switch (vId) {
-                case BICst.REGION.DIMENSION1:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && _checkDimensionValid(dId) && dim1Size++;
-                    });
-                    break;
-                case BICst.REGION.DIMENSION2:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && dim2Size++;
-                    });
-                    break;
-                case BICst.REGION.TARGET1:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && tar1Size++;
-                    });
-                    break;
-                case BICst.REGION.TARGET2:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && tar2Size++;
-                    });
-                    break;
-                case BICst.REGION.TARGET3:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && tar3Size++;
-                    });
-                    break;
+            if (BI.Utils.isDimensionRegion1ByRegionType(vId)) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && BI.Utils.isDimensionValidByDimensionID(dId) && dim1Size++;
+                });
+            } else if (BI.Utils.isDimensionRegion2ByRegionType(vId)) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && dim2Size++;
+                });
+            } else if (BI.Utils.isTargetRegion1ByRegionType(vId)) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && tar1Size++;
+                });
+            } else if (BI.Utils.isTargetRegion2ByRegionType(vId)) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && tar2Size++;
+                });
+            } else if (BI.Utils.isTargetRegion3ByRegionType(vId)) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && tar3Size++;
+                });
             }
         });
         switch (BI.Utils.getWidgetTypeByID(wId)) {
@@ -162,29 +157,32 @@ BI.TableChartManagerAspect = function () {
             case BICst.WIDGET.FUNNEL:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "funnel-tip-background");
                 break;
+            case BICst.WIDGET.PARETO:
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "pareto-tip-background");
+                break;
             case BICst.WIDGET.MAP:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "map-tip-background");
                 break;
             case BICst.WIDGET.GIS_MAP:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "map-gis-tip-background");
                 break;
+            case BICst.WIDGET.HEAT_MAP:
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "map-heat-tip-background");
+                break;
             case BICst.WIDGET.PIE:
                 tar1Size === 0 && (cls = "pie-tip-background");
+                break;
+            case BICst.WIDGET.MULTI_PIE:
+                tar1Size === 0 && (cls = "multi-pie-tip-background");
+                break;
+            case BICst.WIDGET.RECT_TREE:
+                tar1Size === 0 && (cls = "rect-tree-tip-background");
                 break;
             case BICst.WIDGET.DASHBOARD:
                 tar1Size === 0 && (cls = "dashboard-tip-background");
                 break;
         }
         return cls;
-
-        function _checkDimensionValid(dId){
-            var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
-            var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(dId));
-            var res = BI.find(tIds, function(idx, tId){
-                return !BI.has(dimensionMap, tId) && !BI.Utils.isCalculateTargetByDimensionID(tId);
-            });
-            return BI.isNull(res);
-        }
     };
 
 

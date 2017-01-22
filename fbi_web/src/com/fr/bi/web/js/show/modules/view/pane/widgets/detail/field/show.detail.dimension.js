@@ -52,6 +52,9 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
                 return self.editor.getValue();
             },
             cls: "bi-dimension-name",
+            title: function () {
+                return self.editor.getValue();
+            },
             validationChecker: function () {
                 return self._checkDimensionName(self.editor.getValue());
             }

@@ -24,8 +24,8 @@ BI.IconMarkStyleSetting = BI.inherit(BI.Widget, {
         BI.IconMarkStyleSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var mark = o.mark || 0;
-        var level = o.num_level || "";
-        var iconStyle = o.icon_style;
+        var level = o.numLevel || "";
+        var iconStyle = o.iconStyle;
         BI.each(BICst.TARGET_STYLE_LEVEL, function(i, ob){
             if(ob.value === level){
                 self.level = ob.text;

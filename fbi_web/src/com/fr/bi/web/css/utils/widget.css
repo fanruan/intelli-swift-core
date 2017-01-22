@@ -107,7 +107,7 @@ i {
 div::-webkit-scrollbar,
 textarea::-webkit-scrollbar {
   -webkit-appearance: none;
-  background-color: #f4f4f4;
+  background-color: transparent;
   width: 6px;
   height: 6px;
 }
@@ -116,5 +116,13 @@ textarea::-webkit-scrollbar-thumb {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
+  background-color: transparent;
+}
+div:hover::-webkit-scrollbar,
+textarea:hover::-webkit-scrollbar {
+  background-color: #f4f4f4;
+}
+div:hover::-webkit-scrollbar-thumb,
+textarea:hover::-webkit-scrollbar-thumb {
   background-color: #e2e2e2;
 }

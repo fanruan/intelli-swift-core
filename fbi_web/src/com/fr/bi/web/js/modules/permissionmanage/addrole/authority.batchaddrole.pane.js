@@ -14,7 +14,8 @@ BI.AuthorityBatchAddRolePane = BI.inherit(BI.Widget, {
         this.addRoleButton = BI.createWidget({
             type: "bi.button",
             text: BI.i18nText("BI-Batch_Package_Add_Role", 0),
-            height: 30
+            height: 30,
+            warningTitle: BI.i18nText("BI-Please_Select_Package")
         });
         this.addRoleButton.setEnable(false);
         this.addRoleButton.on(BI.Button.EVENT_CHANGE, function () {

@@ -8,6 +8,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.index.NumberIndexCreater;
@@ -43,6 +44,10 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
     private static final int CLOSE = 1;
     @BICoreField
     protected Operator t;
+    /**
+     * getter对象属性从@BIIgnoreField改成@BICoreField
+     * 详见bug BI-2350
+     */
 	@BICoreField
 	protected CalLineGetter getter = AvgLine.INSTANCE;
 	@BICoreField

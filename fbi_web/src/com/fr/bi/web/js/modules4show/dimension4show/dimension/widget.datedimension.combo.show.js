@@ -54,6 +54,11 @@ BI.DimensionDateComboShow = BI.inherit(BI.AbstractDimensionComboShow, {
                 children:[]
             }],
             [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.DIMENSION_DATE_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+            }],
+            [{
                 text: BI.i18nText("BI-Dimension_From"),
                 value: BICst.DIMENSION_DATE_COMBO.INFO,
                 cls: "",

@@ -117,6 +117,7 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
         this.tableNameLabel = BI.createWidget({
             type: "bi.label",
             textAlign: "left",
+            title: BI.i18nText("BI-Cannot_Change_Table_Name_Here"),
             hgap: this.constants.ADD_FIELD_GAP_FIVE,
             height: this.constants.ADD_FIELD_EDITOR_HEIGHT
         });

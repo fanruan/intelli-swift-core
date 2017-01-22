@@ -1,21 +1,77 @@
 /**
+ * 由于x轴是值轴，跟坐标轴图的右1值轴共用属性
  * @class BI.BubbleChartSetting
  * @extends BI.Widget
  * 气泡图样式
  */
 BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.BubbleChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-bubble-chart-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.BubbleChartSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
-        this.rulesDisplay = BI.createWidget({
+        //显示组件标题
+        this.showName = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Chart_Title"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
+        });
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
+            self.widgetTitle.setVisible(this.isSelected());
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        //组件标题
+        this.widgetName = BI.createWidget({
+            type: "bi.sign_editor",
+            cls: "title-input",
+            width: 120
+        });
+
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        //详细设置
+        this.widgetNameStyle = BI.createWidget({
+            type: "bi.show_title_detailed_setting_combo"
+        });
+
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.widgetTitle = BI.createWidget({
+            type: "bi.left",
+            items: [this.widgetName, this.widgetNameStyle],
+            hgap: constant.SIMPLE_H_GAP
+        });
+
+        var widgetTitle = BI.createWidget({
+            type: "bi.left",
+            cls: "single-line-settings",
+            items: BI.createItems([{
+                type: "bi.vertical_adapt",
+                items: [this.showName]
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.widgetTitle]
+            }], {
+                height: constant.SINGLE_LINE_HEIGHT
+            }),
+            hgap: constant.SIMPLE_H_GAP
+        });
+
+        this.displayRules = BI.createWidget({
             type: "bi.segment",
             whiteSpace: "normal",
             height: 40,
@@ -23,16 +79,16 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.BUBBLE_DISPLAY_RULES
         });
 
-        this.rulesDisplay.on(BI.Segment.EVENT_CHANGE, function (v) {
+        this.displayRules.on(BI.Segment.EVENT_CHANGE, function (v) {
             self._colorSettingChange(v);
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
-        this.fixedConditions = BI.createWidget({
+        this.fixedStyle = BI.createWidget({
             type: "bi.chart_add_condition_group"
         });
 
-        this.fixedConditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
+        this.fixedStyle.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -41,7 +97,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "attr-names",
             textAlign: "left",
             text: BI.i18nText("BI-Color_Setting"),
-            height: 20
+            height: 30
         });
 
         this.fixedColorSetting = BI.createWidget({
@@ -50,15 +106,15 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             tgap: 10,
             bgap: 10,
             hgap: 5,
-            items: [this.colorSetting, this.fixedConditions],
+            items: [this.colorSetting, this.fixedStyle],
             width: "100%"
         });
 
-        this.gradientConditions = BI.createWidget({
+        this.gradientStyle = BI.createWidget({
             type: "bi.chart_add_gradient_condition_group"
         });
 
-        this.gradientConditions.on(BI.ChartAddGradientConditionGroup.EVENT_CHANGE, function() {
+        this.gradientStyle.on(BI.ChartAddGradientConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -68,8 +124,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.BUTTON_HEIGHT
         });
 
-        this.addGradientButton.on(BI.Button.EVENT_CHANGE, function() {
-            self.gradientConditions.addItem();
+        this.addGradientButton.on(BI.Button.EVENT_CHANGE, function () {
+            self.gradientStyle.addItem();
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -78,7 +134,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "attr-names",
             textAlign: "left",
             text: BI.i18nText("BI-Color_Setting"),
-            height: 20
+            height: 30
         });
 
         this.gradientColorSetting = BI.createWidget({
@@ -87,7 +143,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             tgap: 10,
             bgap: 10,
             hgap: 5,
-            items: [this.gradientSetting, this.gradientConditions],
+            items: [this.gradientSetting, this.gradientStyle],
             width: "100%"
         });
 
@@ -97,8 +153,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.BUTTON_HEIGHT
         });
 
-        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function() {
-            self.fixedConditions.addItem();
+        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function () {
+            self.fixedStyle.addItem();
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -107,17 +163,17 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: "100%"
         });
 
-        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function() {
+        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
-        this.colorSelect = BI.createWidget({
+        this.chartColor = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
             width: 130
         });
-        this.colorSelect.populate();
+        this.chartColor.populate();
 
-        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
+        this.chartColor.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -129,13 +185,13 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 textHeight: constant.BUTTON_HEIGHT,
                 cls: "attr-names"
             }, {
-                type: "bi.center_adapt",
-                items: [this.colorSelect],
+                type: "bi.vertical_adapt",
+                items: [this.chartColor],
                 lgap: constant.SIMPLE_H_GAP
             }])
         });
 
-        this.bubbleStyleGroup = BI.createWidget({
+        this.bubbleStyle = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.BUBBLE_CHART_STYLE_GROUP, {
                 type: "bi.icon_button",
@@ -151,272 +207,243 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        this.bubbleStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        this.bubbleStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        //组件背景
+        this.widgetBG = BI.createWidget({
+            type: "bi.global_style_index_background"
+        });
+        this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        //气泡大小
+        this.bubbleSizeFrom = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            errorText: BI.i18nText("BI-Please_Input_Positive_Integer"),
+            cls: "unit-input",
+            validationChecker: function (v) {
+                return BI.parseInt(v) > 0 && BI.parseInt(v) <= BI.parseInt(self.bubbleSizeTo.getValue())
+            }
+        });
+
+        this.bubbleSizeFrom.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.bubbleSizeTo = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            errorText: BI.i18nText("BI-Please_Input_Integer_Greater_Than_Minimum"),
+            cls: "unit-input",
+            validationChecker: function (v) {
+                return BI.parseFloat(v) >= BI.parseFloat(self.bubbleSizeFrom.getValue())
+            }
+        });
+
+        this.bubbleSizeTo.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         var tableStyle = BI.createWidget({
-            type: "bi.horizontal_adapt",
-            columnSize: [100],
-            verticalAlign: "top",
-            cls: "single-line-settings",
-            items: [{
-                type: "bi.label",
-                text: BI.i18nText("BI-Table_Sheet_Style"),
-                textHeight: constant.SINGLE_LINE_HEIGHT,
-                lgap: constant.SIMPLE_H_LGAP,
-                textAlign: "left",
-                cls: "line-title"
-            }, {
-                type: "bi.left",
-                cls: "detail-style",
-                items: BI.createItems([/*{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Display_Rules"),
-                    cls: "attr-names"
-                },  {
-                    el: {
-                        type: "bi.center_adapt",
-                        items: [this.rulesDisplay]
-                    },
-                   lgap: constant.SIMPLE_H_GAP
-                }, */{
-                    type: "bi.center_adapt",
-                    items: [this.dimensionColor]
-                }, /*{
-                    type: "bi.center_adapt",
-                    items: [this.addGradientButton],
-                    lgap:15
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.addConditionButton],
-                    lgap: 15
-                }, */{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Total_Style"),
-                    cls: "attr-names",
-                    lgap: 15
-                }, {
-                    el: {
-                        type: "bi.center_adapt",
-                        items: [this.bubbleStyleGroup]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
-                }/*, this.fixedColorSetting, this.gradientColorSetting*/], {
-                    height: constant.SINGLE_LINE_HEIGHT
-                })
-            }]
-        });
-
-        //格式和数量级
-        this.lYAxisStyle = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.numberLevellY = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.XAxisStyle = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.XAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.numberLevelX = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.numberLevelX.on(BI.Segment.EVENT_CHANGE, function(){
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        //单位
-        this.LYUnit = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            cls: "unit-input",
-            watermark: BI.i18nText("BI-Custom_Input")
-        });
-
-        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.XUnit = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            cls: "unit-input",
-            watermark: BI.i18nText("BI-Custom_Input")
-        });
-
-        this.XUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        //显示标题
-        this.isShowTitleLY = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Title"),
-            width: 90
-        });
-
-        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
-            this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.editTitleLY = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            cls: "unit-input"
-        });
-        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.isShowTitleX = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Title"),
-            width: 90
-        });
-
-        this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function(){
-            this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.editTitleX = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            cls: "unit-input"
-        });
-
-        this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        //轴刻度自定义
-        this.YScale = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Scale_Customize"),
-            width: 120
-        });
-
-        this.YScale.on(BI.Controller.EVENT_CHANGE, function() {
-
-        });
-
-        this.XScale = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Scale_Customize"),
-            width: 120
-        });
-
-        this.XScale.on(BI.Controller.EVENT_CHANGE, function () {
-
-        });
-
-        //千分符
-        this.YSeparators = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
-            width: 80
-        });
-
-        this.YSeparators.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.XSeparators = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
-            width: 80
-        });
-
-        this.XSeparators.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        var YAxis = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
             verticalAlign: "top",
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                height: "100%",
+                text: BI.i18nText("BI-Chart"),
                 textHeight: constant.SINGLE_LINE_HEIGHT,
-                textAlign: "left",
                 lgap: constant.SIMPLE_H_LGAP,
-                text: BI.i18nText("BI-Uppercase_Y_Axis"),
+                textAlign: "left",
                 cls: "line-title"
             }, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
+                    text: BI.i18nText("BI-Display_Rules"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.lYAxisStyle]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Num_Level"),
-                    lgap: constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.numberLevellY]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Unit_Normal"),
-                    lgap: constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.LYUnit]
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.YSeparators]
-                }/*, {
-                    type: "bi.center_adapt",
-                    items: [this.YScale]
-                }*/], {
-                    height: constant.SINGLE_LINE_HEIGHT
-                }),
-                lgap: constant.SIMPLE_H_GAP
+                    items: [this.displayRules]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.dimensionColor]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.addGradientButton]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.addConditionButton]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Total_Style"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.bubbleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Bubble_Size")
+                    }, this.bubbleSizeFrom, {
+                        type: "bi.label",
+                        text: "px <" + BI.i18nText("BI-Diameter") + "≤"
+                    }, this.bubbleSizeTo, {
+                        type: "bi.label",
+                        text: "px"
+                    }],
+                    hgap: 3
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Widget_Background_Colour"),
+                    cls: "attr-names",
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.widgetBG],
+                    cls: "attr-names"
+                }, this.fixedColorSetting, this.gradientColorSetting], {
+                    height: constant.SINGLE_LINE_HEIGHT,
+                    lgap: constant.SIMPLE_H_GAP
+                })
             }]
+        });
+
+        this.rightYNumberLevel = BI.createWidget({
+            type: "bi.segment",
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_LEVEL
+        });
+
+        this.rightYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.rightYUnit = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            watermark: BI.i18nText("BI-Custom_Input")
+        });
+
+        this.rightYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.rightYNumberFormat = BI.createWidget({
+            type: "bi.segment",
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_FORMAT
+        });
+
+        this.rightYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.rightYSeparator = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.rightYSeparator.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.rightYShowTitle = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        this.rightYShowTitle.on(BI.Controller.EVENT_CHANGE, function () {
+            self.rightYTitle.setVisible(this.isSelected());
+            self.rightYTitleStyle.setVisible(this.isSelected());
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.rightYTitle = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input"
+        });
+
+        this.rightYTitle.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.rightYTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.rightYTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        //右轴标签
+        this.rightYShowLabel = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Label"),
+            width: 100
+        });
+
+        this.rightYShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.rightYLabelStyle.setVisible(this.isSelected());
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.rightYLabelStyle = BI.createWidget({
+            type: "bi.chart_label_detailed_setting_combo"
+        });
+
+        this.rightYLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        //右轴线颜色
+        this.rightYLineColor = BI.createWidget({
+            type: "bi.color_chooser",
+            width: 30,
+            height: 30
+        });
+
+        this.rightYLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        //x轴刻度自定义
+        this.rightYShowCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.rightYShowCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.rightYCustomScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.rightYCustomScale.setValue({})
+            }
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.rightYCustomScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.rightYCustomScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
         var XAxis = BI.createWidget({
@@ -437,40 +464,266 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.center_adapt",
-                    items: [this.XAxisStyle]
-                }, {
-                    type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
-                    items: [this.numberLevelX]
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYNumberLevel]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
-                    items: [this.XUnit]
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYUnit]
                 }, {
-                    type: "bi.center_adapt",
-                    items: [this.isShowTitleX, this.editTitleX]
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.XSeparators]
-                }/*, {
-                    type: "bi.center_adapt",
-                    items: [this.XScale]
-                }*/], {
+                    items: [this.rightYNumberFormat]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYSeparator]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYShowTitle, this.rightYTitle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYTitleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYShowLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYLabelStyle]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Axis_Line_Color"),
+                    cls: "attr-name"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYLineColor]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYShowCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYCustomScale]
+                }], {
+                    height: constant.SINGLE_LINE_HEIGHT,
+                    lgap: constant.SIMPLE_H_GAP
+                })
+            }]
+        });
+
+        //数量级
+        this.leftYNumberLevel = BI.createWidget({
+            type: "bi.segment",
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_LEVEL
+        });
+
+        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        //单位
+        this.leftYUnit = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            watermark: BI.i18nText("BI-Custom_Input")
+        });
+
+        this.leftYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.leftYNumberFormat = BI.createWidget({
+            type: "bi.segment",
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_FORMAT
+        });
+
+        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        //千分符
+        this.leftYSeparator = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.leftYSeparator.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        //显示标题
+        this.leftYShowTitle = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        this.leftYShowTitle.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftYTitle.setVisible(this.isSelected());
+            self.leftYTitleStyle.setVisible(this.isSelected());
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.leftYTitle = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input"
+        });
+        this.leftYTitle.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.leftYTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.leftYTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function() {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        //左轴标签
+        this.leftYShowLabel = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Label"),
+            width: 100
+        });
+
+        this.leftYShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftYLabelStyle.setVisible(this.isSelected());
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.leftYLabelStyle = BI.createWidget({
+            type: "bi.chart_label_detailed_setting_combo"
+        });
+
+        this.leftYLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        //左轴线颜色
+        this.leftYLineColor = BI.createWidget({
+            type: "bi.color_chooser",
+            width: 30,
+            height: 30
+        });
+
+        this.leftYLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        //y轴刻度自定义
+        this.leftYShowCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.leftYShowCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftYCustomScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.leftYCustomScale.setValue({})
+            }
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.leftYCustomScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.leftYCustomScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        var YAxis = BI.createWidget({
+            type: "bi.horizontal_adapt",
+            columnSize: [80],
+            verticalAlign: "top",
+            cls: "single-line-settings",
+            items: [{
+                type: "bi.label",
+                height: "100%",
+                textHeight: constant.SINGLE_LINE_HEIGHT,
+                textAlign: "left",
+                lgap: constant.SIMPLE_H_LGAP,
+                text: BI.i18nText("BI-Uppercase_Y_Axis"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Num_Level"),
+                    lgap: constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYNumberLevel]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Unit_Normal"),
+                    lgap: constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYUnit]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYNumberFormat]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYSeparator]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYShowTitle, this.leftYTitle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYTitleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYShowLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYLabelStyle]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Axis_Line_Color"),
+                    cls: "attr-name"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYLineColor]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYShowCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYCustomScale]
+                }], {
+                    lgap: constant.SIMPLE_H_GAP,
                     height: constant.SINGLE_LINE_HEIGHT
-                }),
-                lgap: constant.SIMPLE_H_GAP
+                })
             }]
         });
 
@@ -482,8 +735,59 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.CHART_LEGEND
         });
 
-        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+        this.legend.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
+        });
+
+        this.legendStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.legendStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        //网格线设置
+        this.hShowGridLine = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Horizontal"),
+            width: 65
+        });
+
+        this.hShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.hGridLineColor.setVisible(this.isSelected());
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.hGridLineColor = BI.createWidget({
+            type: "bi.color_chooser",
+            width: 30,
+            height: 30
+        });
+
+        this.hGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.vShowGridLine = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Vertical"),
+            width: 65
+        });
+
+        this.vShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.vGridLineColor.setVisible(this.isSelected());
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        this.vGridLineColor = BI.createWidget({
+            type: "bi.color_chooser",
+            width: 30,
+            height: 30
+        });
+
+        this.vGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
         //数据标签
@@ -493,42 +797,27 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.dataLabelSetting.setVisible(this.isSelected());
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
-        //网格线
-        this.gridLine = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Grid_Line"),
-            width: 115
+        this.dataLabelSetting = BI.createWidget({
+            type: "bi.data_label_detailed_setting_combo",
+            wId: o.wId,
         });
 
-        this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
+        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
-        //气泡大小
-        this.bubbleSizeFrom = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            cls: "unit-input"
+        //数据点提示详细设置
+        this.tooltipStyle = BI.createWidget({
+            type: "bi.tooltip_detailed_setting_combo"
         });
 
-        this.bubbleSizeFrom.on(BI.SignEditor.EVENT_CONFIRM, function () {
-
-        });
-
-        this.bubbleSizeTo = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            cls: "unit-input"
-        });
-
-        this.bubbleSizeTo.on(BI.SignEditor.EVENT_CONFIRM, function () {
-
+        this.tooltipStyle.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
         var showElement = BI.createWidget({
@@ -551,27 +840,40 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
+                    items: [this.legendStyle]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Grid_Line"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.hShowGridLine]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.hGridLineColor]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.vShowGridLine]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.vGridLineColor]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.center_adapt",
-                    items: [this.gridLine]
+                    type: "bi.vertical_adapt",
+                    items: [this.dataLabelSetting]
                 }/*, {
-                    type: "bi.center_adapt",
-                    items: [{
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Bubble_Size")
-                    }, this.bubbleSizeFrom, {
-                        type: "bi.label",
-                        text: "px <" + BI.i18nText("BI-Diameter") + "≤"
-                    }, this.bubbleSizeTo, {
-                        type: "bi.label",
-                        text: "px"
-                    }],
-                    hgap: 3
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Tooltip"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.tooltipStyle]
                 }*/], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -579,14 +881,14 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        //联动传递指标过滤条件
+        //联动传递过滤条件
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
             width: 170
         });
-        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({
@@ -610,12 +912,17 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 120
         });
 
-        this.bigDataMode.on(BI.Controller.EVENT_CHANGE, function() {
-
+        this.bigDataMode.on(BI.Controller.EVENT_CHANGE, function () {
+            self._bigDataMode(!this.isSelected());
+            if (this.isSelected()) {
+                self.displayRules.setValue(BICst.DISPLAY_RULES.GRADIENT);
+                self._colorSettingChange(BICst.DISPLAY_RULES.GRADIENT)
+            }
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
         var modeChange = BI.createWidget({
-            type:"bi.left_right_vertical_adapt",
+            type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
             items: {
                 left: [{
@@ -631,29 +938,29 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, YAxis, XAxis, showElement, otherAttr/*, modeChange*/],
+            items: [widgetTitle, tableStyle, XAxis, YAxis, showElement, otherAttr, modeChange],
             hgap: 10
         })
     },
 
     _colorSettingChange: function (v) {
-        switch(v) {
+        switch (v) {
             case BICst.DISPLAY_RULES.DIMENSION:
-                //this.dimensionColor.setVisible(true);
+                this.dimensionColor.setVisible(true);
                 this.addConditionButton.setVisible(false);
                 this.fixedColorSetting.setVisible(false);
                 this.addGradientButton.setVisible(false);
                 this.gradientColorSetting.setVisible(false);
                 break;
             case BICst.DISPLAY_RULES.FIXED:
-                //this.dimensionColor.setVisible(false);
+                this.dimensionColor.setVisible(false);
                 this.addConditionButton.setVisible(true);
                 this.fixedColorSetting.setVisible(true);
                 this.addGradientButton.setVisible(false);
                 this.gradientColorSetting.setVisible(false);
                 break;
             case BICst.DISPLAY_RULES.GRADIENT:
-                //this.dimensionColor.setVisible(false);
+                this.dimensionColor.setVisible(false);
                 this.addConditionButton.setVisible(false);
                 this.fixedColorSetting.setVisible(false);
                 this.addGradientButton.setVisible(true);
@@ -662,97 +969,157 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    populate: function(){
+    _bigDataMode: function (v) {
+        this.showDataLabel.setEnable(v);
+        this.transferFilter.setEnable(v);
+        this.dataLabelSetting.setVisible(v && this.showDataLabel.isSelected());
+    },
+
+    populate: function () {
         var wId = this.options.wId;
         var view = BI.Utils.getWidgetViewByID(wId);
-        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId), titleX = BI.Utils.getWSXAxisTitleByID(wId);
-        if(titleLY === ""){
-            BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
-                if(BI.Utils.isDimensionUsable(dId)){
+        var titleLY = BI.Utils.getWSChartLeftYTitleByID(wId), titleX = BI.Utils.getWSChartRightY2TitleByID(wId);
+        if (titleLY === "") {
+            BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
+                if (BI.Utils.isDimensionUsable(dId)) {
                     titleLY = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
                 return false;
             });
         }
-        if(titleX === ""){
-            BI.any(view[BICst.REGION.TARGET2], function(idx, dId){
-                if(BI.Utils.isDimensionUsable(dId)){
+        if (titleX === "") {
+            BI.any(view[BICst.REGION.DIMENSION1], function (idx, dId) {
+                if (BI.Utils.isDimensionUsable(dId)) {
                     titleX = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
                 return false;
             });
         }
-        this.rulesDisplay.setValue(BI.Utils.getWSShowRulesByID(wId));
-        this._colorSettingChange(BI.Utils.getWSShowRulesByID(wId));
-        this.bubbleStyleGroup.setValue(BI.Utils.getWSBubbleStyleByID(wId));
-        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
-        this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
-        this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.XAxisStyle.setValue(BI.Utils.getWSXAxisStyleByID(wId));
-        this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
-        this.numberLevelX.setValue(BI.Utils.getWSXAxisNumLevelByID(wId));
-        this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.XUnit.setValue(BI.Utils.getWSXAxisUnitByID(wId));
-        this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
-        this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
-        this.editTitleLY.setValue(titleLY);
-        this.editTitleX.setValue(titleX);
+        this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
+        this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
+        this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+
+        this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
+        this.displayRules.setValue(BI.Utils.getWSChartDisplayRulesByID(wId));
+        this._colorSettingChange(BI.Utils.getWSChartDisplayRulesByID(wId));
+        this.fixedStyle.setValue(BI.Utils.getWSChartBubbleFixedStyleByID(wId));
+        this.gradientStyle.setValue(BI.Utils.getWSChartBubbleGradientStyleByID(wId));
+        this.bubbleStyle.setValue(BI.Utils.getWSChartBubbleStyleByID(wId));
+        this.bubbleSizeFrom.setValue(BI.Utils.getWSChartBubbleSizeFromByID(wId));
+        this.bubbleSizeTo.setValue(BI.Utils.getWSChartBubbleSizeToByID(wId));
+
+        //x轴
+        this.rightYNumberFormat.setValue(BI.Utils.getWSChartRightYNumberFormatByID(wId));
+        this.rightYNumberLevel.setValue(BI.Utils.getWSChartRightYNumberLevelByID(wId));
+        this.rightYUnit.setValue(BI.Utils.getWSChartRightYUnitByID(wId));
+        this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
+        this.rightYTitle.setValue(titleX);
+        this.rightYShowCustomScale.setSelected(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
+        this.rightYCustomScale.setValue(BI.Utils.getWSChartRightYCustomScaleByID(wId));
+        this.rightYCustomScale.setVisible(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
+        this.rightYSeparator.setSelected(BI.Utils.getWSRightYNumberSeparatorByID(wId));
+        this.rightYShowLabel.setSelected(BI.Utils.getWSRightYShowLabelByID(wId));
+        this.rightYLabelStyle.setValue(BI.Utils.getWSRightYLabelStyleByID(wId));
+        this.rightYLineColor.setValue(BI.Utils.getWSRightYLineColorByID(wId));
+        this.rightYTitleStyle.setValue(BI.Utils.getWSChartRightYTitleStyleByID(wId));
+        this.rightYTitle.setVisible(this.rightYShowTitle.isSelected());
+        this.rightYTitleStyle.setVisible(this.rightYShowTitle.isSelected());
+
+        //y轴
+        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
+        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
+        this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
+        this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
+        this.leftYTitle.setValue(titleLY);
+        this.leftYShowCustomScale.setSelected(BI.Utils.getWSChartLeftYShowCustomScaleByID(wId));
+        this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
+        this.leftYCustomScale.setVisible(BI.Utils.getWSChartLeftYShowCustomScaleByID(wId));
+        this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
+        this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
+        this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
+        this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
+        this.leftYTitleStyle.setValue(BI.Utils.getWSChartLeftYTitleStyleByID(wId));
+        this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
+        this.leftYTitleStyle.setVisible(this.leftYShowTitle.isSelected());
+
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
-        this.YSeparators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
-        this.XSeparators.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
+        this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
+        this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSChartVGridLineColorByID(wId));
+        this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
+        this.hGridLineColor.setVisible(this.hShowGridLine.isSelected());
+        this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
 
-        this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
-        this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+
+        this.bigDataMode.setSelected(BI.Utils.getWSChartBigDataModeByID(wId));
+        this._bigDataMode(!BI.Utils.getWSChartBigDataModeByID(wId));
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
-            rules_display: this.rulesDisplay.getValue()[0],
-            bubble_style: this.bubbleStyleGroup.getValue()[0],
-            transfer_filter: this.transferFilter.isSelected(),
-            chart_color: this.colorSelect.getValue()[0],
-            left_y_axis_style: this.lYAxisStyle.getValue()[0],
-            x_axis_style: this.XAxisStyle.getValue()[0],
-            left_y_axis_number_level: this.numberLevellY.getValue()[0],
-            x_axis_number_level: this.numberLevelX.getValue()[0],
-            left_y_axis_unit: this.LYUnit.getValue(),
-            x_axis_unit: this.XUnit.getValue(),
-            show_left_y_axis_title: this.isShowTitleLY.isSelected(),
-            show_x_axis_title: this.isShowTitleX.isSelected(),
-            left_y_axis_title: this.editTitleLY.getValue(),
-            x_axis_title: this.editTitleX.getValue(),
-            chart_legend: this.legend.getValue()[0],
-            show_data_label: this.showDataLabel.isSelected(),
-            show_grid_line: this.gridLine.isSelected(),
-            num_separators: this.YSeparators.isSelected(),
-            right_num_separators: this.XSeparators.isSelected()
-        }
-    },
+            showName: this.showName.isSelected(),
+            widgetName: this.widgetName.getValue(),
+            widgetNameStyle: this.widgetNameStyle.getValue(),
 
-    setValue: function(v){
-        this.rulesDisplay.setValue(v.rules_display);
-        this.bubbleStyleGroup.setValue(v.bubble_style);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.lYAxisStyle.setValue(v.left_y_axis_style);
-        this.XAxisStyle.setValue(v.x_axis_style);
-        this.numberLevellY.setValue(v.left_y_axis_number_level);
-        this.numberLevelX.setValue(v.x_axis_number_level);
-        this.LYUnit.setValue(v.left_y_axis_unit);
-        this.XUnit.setValue(v.x_axis_unit);
-        this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
-        this.isShowTitleX.setSelected(v.x_axis_title);
-        this.editTitleLY.setValue(v.left_y_axis_title);
-        this.editTitleX.setValue(v.x_axis_title);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
-        this.gridLine.setSelected(v.show_grid_line);
-        this.YSeparators.setSelected(v.num_separators);
-        this.XSeparators.setSelected(v.right_num_separators)
+            chartColor: this.chartColor.getValue()[0],
+            widgetBG: this.widgetBG.getValue(),
+            displayRules: this.displayRules.getValue()[0],
+            bubbleStyle: this.bubbleStyle.getValue()[0],
+            fixedStyle: this.fixedStyle.getValue(),
+            gradientStyle: this.gradientStyle.getValue(),
+            bubbleSizeFrom: this.bubbleSizeFrom.getValue(),
+            bubbleSizeTo: this.bubbleSizeTo.getValue(),
+
+            rightYNumberFormat: this.rightYNumberFormat.getValue()[0],
+            rightYNumberLevel: this.rightYNumberLevel.getValue()[0],
+            rightYUnit: this.rightYUnit.getValue(),
+            rightYShowTitle: this.rightYShowTitle.isSelected(),
+            rightYTitle: this.rightYTitle.getValue(),
+            rightYShowCustomScale: this.rightYShowCustomScale.isSelected(),
+            rightYCustomScale: this.rightYCustomScale.getValue(),
+            rightYSeparator: this.rightYSeparator.isSelected(),
+            rightYShowLabel: this.rightYShowLabel.isSelected(),
+            rightYLabelStyle: this.rightYLabelStyle.getValue(),
+            rightYLineColor: this.rightYLineColor.getValue(),
+            rightYTitleStyle: this.rightYTitleStyle.getValue(),
+
+            leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
+            leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
+            leftYUnit: this.leftYUnit.getValue(),
+            leftYShowTitle: this.leftYShowTitle.isSelected(),
+            leftYTitle: this.leftYTitle.getValue(),
+            leftYShowCustomScale: this.leftYShowCustomScale.isSelected(),
+            leftYSeparator: this.leftYSeparator.isSelected(),
+            leftYCustomScale: this.leftYCustomScale.getValue(),
+            leftYShowLabel: this.leftYShowLabel.isSelected(),
+            leftYLabelStyle: this.leftYLabelStyle.getValue(),
+            leftYLineColor: this.leftYLineColor.getValue(),
+            leftYTitleStyle: this.leftYTitleStyle.getValue(),
+
+            legend: this.legend.getValue()[0],
+            showDataLabel: this.showDataLabel.isSelected(),
+            dataLabelSetting: this.dataLabelSetting.getValue(),
+            legendStyle: this.legendStyle.getValue(),
+            hShowGridLine: this.hShowGridLine.isSelected(),
+            hGridLineColor: this.hGridLineColor.getValue(),
+            vShowGridLine: this.vShowGridLine.isSelected(),
+            vGridLineColor: this.vGridLineColor.getValue(),
+            tooltipStyle: this.tooltipStyle.getValue(),
+
+            transferFilter: this.transferFilter.isSelected(),
+
+            bigDataMode: this.bigDataMode.isSelected(),
+        }
     }
 });
 BI.BubbleChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

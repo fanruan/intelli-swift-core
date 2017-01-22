@@ -26,7 +26,8 @@ BI.NumberIntervalCustomGroupPanel = BI.inherit(BI.Widget,{
             cls:"group-add-font group-tab-button-text",
             height:this.constants.addButtonHeight,
             width:this.constants.iconTextButtonWidth,
-            text:BI.i18nText("BI-Add_Grouping")
+            text:BI.i18nText("BI-Add_Grouping"),
+            warningTitle: BI.i18nText("BI-Correct_The_Errors_Red")
         });
 
         this.button_group = BI.createWidget({
@@ -42,6 +43,7 @@ BI.NumberIntervalCustomGroupPanel = BI.inherit(BI.Widget,{
         });
 
         this.button_group.on(BI.NumberIntervalCustomItemGroup.EVENT_ERROR,function(){
+            self.button.setEnable(false);
             self.fireEvent(BI.NumberIntervalCustomGroupPanel.EVENT_ERROR);
         });
 
@@ -50,6 +52,7 @@ BI.NumberIntervalCustomGroupPanel = BI.inherit(BI.Widget,{
         });
 
         this.button_group.on(BI.NumberIntervalCustomItemGroup.EVENT_VALID,function(){
+            self.button.setEnable(true);
             self.fireEvent(BI.NumberIntervalCustomGroupPanel.EVENT_VALID);
         });
 

@@ -13,3 +13,6 @@
 .bi-select-data-with-mask .select-data-wrapper .select-data-button-group {
   border-top: 1px solid #d4dadd;
 }
+.bi-select-data-with-mask .select-data-wrapper .ui-resizable-e {
+  width: 10px;
+}

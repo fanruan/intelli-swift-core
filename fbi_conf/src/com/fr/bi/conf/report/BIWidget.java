@@ -2,6 +2,7 @@ package com.fr.bi.conf.report;
 
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -61,6 +62,8 @@ public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService {
      * @return 注释
      */
     WorkBook createWorkBook(BISessionProvider session);
+
+    BIPolyWorkSheet createWorkSheet(BISessionProvider session);
 
     int getType();
 

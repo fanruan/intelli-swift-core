@@ -17,9 +17,20 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
         BI.MultiDateParamPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
+        var items = self._getDateWidgetStructure();
+        var triggerItems = BI.deepClone(items);
+        BI.each(triggerItems, function(idx, item){
+            if(BI.has(item, "pId")){
+                item.text = item.title = BI.Utils.getWidgetNameByID(item.pId) + "(" + item.text +")"
+            }
+        });
         this.tree = BI.createWidget({
             type: "bi.single_tree_combo",
-            items: self._getDateWidgetStructure(),
+            trigger: {
+                type: "bi.single_tree_trigger",
+                items: triggerItems
+            },
+            items: items,
             width: 200
         });
 
@@ -56,7 +67,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
     },
 
     _getDateWidgetStructure: function(){
-        var targetWidgetType = [BICst.WIDGET.DATE, BICst.WIDGET.YMD];
+        var targetWidgetType = [BICst.WIDGET.DATE, BICst.WIDGET.YMD, BICst.WIDGET.DATE_PANE];
         var targetWidgetIds = BI.filter(BI.Utils.getAllWidgetIDs(), function(i, id){
             return BI.contains(targetWidgetType, BI.Utils.getWidgetTypeByID(id));
         });
@@ -77,8 +88,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                 widgetItems.push({
                     id: BI.UUID(),
                     pId: w,
-                    text: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-Start_Time"),
-                    title: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-Start_Time"),
+                    text: BI.i18nText("BI-Start_Time"),
+                    title: BI.i18nText("BI-Start_Time"),
                     value: {
                         wId: w,
                         startOrEnd: BI.MultiDateParamPane.start
@@ -87,8 +98,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                 widgetItems.push({
                     id: BI.UUID(),
                     pId: w,
-                    text: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-End_Time"),
-                    title: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-End_Time"),
+                    text: BI.i18nText("BI-End_Time"),
+                    title: BI.i18nText("BI-End_Time"),
                     value: {
                         wId: w,
                         startOrEnd: BI.MultiDateParamPane.end
@@ -105,7 +116,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
         if (BI.isNull(widgetInfo) || BI.isNull(offset)) {
             return;
         }
-        var paramdate = new Date();
+        var paramdate;
         var wWid = widgetInfo.wId, se = widgetInfo.startOrEnd;
         if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
             var wWValue = BI.Utils.getWidgetValueByID(wWid);
@@ -114,7 +125,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
             }
             if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
                 paramdate = this.parseComplexDateCommon(wWValue.start);
-            } else {
+            }
+            if (se === BI.MultiDateParamPane.end && BI.isNotNull(wWValue.end)) {
                 paramdate = this.parseComplexDateCommon(wWValue.end);
             }
         } else {

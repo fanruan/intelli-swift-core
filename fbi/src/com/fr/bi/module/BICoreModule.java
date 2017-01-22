@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
@@ -25,14 +26,13 @@ import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
 import com.fr.bi.conf.records.BICubeTaskRecordManager;
+import com.fr.bi.conf.tablelock.BIConfTableLock;
+import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
 import com.fr.bi.fs.*;
-import com.fr.bi.resource.ResourceConstants;
-import com.fr.bi.resource.ResourceHelper;
+import com.fr.bi.resource.*;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
-import com.fr.bi.web.dezi.mobile.Service4BIMobile;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
 import com.fr.bi.web.report.Service4BIReport;
 import com.fr.bi.web.report.services.finecube.Service4FineCube;
@@ -52,9 +52,6 @@ import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
 import com.fr.stable.bridge.StableFactory;
-import com.fr.stable.bridge.event.StableFactoryMessageTransponder;
-import com.fr.stable.bridge.event.StableFactoryProducer;
-import com.fr.stable.bridge.event.StableFactoryResourceType;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
@@ -73,7 +70,7 @@ public class BICoreModule extends AbstractModule {
         initDataSourcePool();
         registerClusterIfNeed();
         registerSystemManager();
-        registDAO();
+        registerDAO();
         registerResources();
         registerTableAddColumn();
     }
@@ -328,17 +325,18 @@ public class BICoreModule extends AbstractModule {
         }
     }
 
-    private void registDAO() {
-        dropBIReportNodeLockDAOTable();
+    private void registerDAO() {
+        dropLocksTable(ObjectTableMapper.PREFIX_NAME + BIReportNodeLock.class.getSimpleName());
+        dropLocksTable(ObjectTableMapper.PREFIX_NAME + BIConfTableLock.class.getSimpleName());
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(TableDataDAOControl.class.getName(), TableDataBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.getInstance());
+        StableFactory.registerMarkedObject(BIConfTableLockDAO.class.getName(), BIConfTableLockDAO.getInstance());
     }
 
-    private void dropBIReportNodeLockDAOTable() {
+    private void dropLocksTable(String tableName) {
         Connection cn = null;
         PreparedStatement ps = null;
-        String tableName = ObjectTableMapper.PREFIX_NAME + BIReportNodeLock.class.getSimpleName();
         try {
             cn = PlatformDB.getDB().createConnection();
             ps = cn.prepareStatement("DROP TABLE " + DialectFactory.generateDialect(cn).column2SQL(tableName));
@@ -354,56 +352,30 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registerResources() {
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, BaseResouceHelper.getThirdJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MAP_JS, BaseResouceHelper.getMapJS(), BaseResouceHelper.MapTransmitter);
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, BaseResouceHelper.getBaseJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, BaseResouceHelper.getThirdCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, BaseResouceHelper.getBaseCss());
 
-        StableFactoryMessageTransponder.getInstance().addProducer(new StableFactoryProducer() {
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, BaseResouceHelper.getDataJS(), BaseResouceHelper.DataTransmitter);
 
-            @Override
-            public void reInject(StableFactoryResourceType resourceType) {
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_CONF_JS, ConfResouceHelper.getConfJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ConfResouceHelper.getConfCss());
 
-                if (StableFactoryResourceType.TYPE_JS.equals(resourceType)) {
-                    registerJavaScriptFiles();
-                } else if (StableFactoryResourceType.TYPE_CSS.equals(resourceType)) {
-                    registerStyleFiles();
-                }
-            }
-        }, new StableFactoryResourceType[]{StableFactoryResourceType.TYPE_CSS, StableFactoryResourceType.TYPE_JS});
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, DeziResourceHelper.getDeziJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, DeziResourceHelper.getDeziCss());
 
-        registerJavaScriptFiles();
-        registerStyleFiles();
-        registerJavaScriptAggregates();
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ShowResourceHelper.getShowJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ShowResourceHelper.getShowCss());
 
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MODULE_JS, CommonResourceHelper.getCommonJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_MODULE_CSS, CommonResourceHelper.getCommonCss());
 
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, BaseResouceHelper.getFormulaCollectionJS(), BaseResouceHelper.FormulaTransmitter);
     }
 
-    private void registerJavaScriptAggregates() {
-
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MAP_JS, ResourceHelper.getMapJS(), ResourceHelper.MapTransmitter);
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, ResourceHelper.getDataJS(), ResourceHelper.DataTransmitter);
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, ResourceHelper.getFormulaCollectionJS(), ResourceHelper.FormulaTransmitter);
-
-    }
-
-    private void registerStyleFiles() {
-
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, ResourceHelper.getThirdCss());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, ResourceHelper.getBaseCss());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ResourceHelper.getConfCss());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ResourceHelper.getDeziCss());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ResourceHelper.getShowCss());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_MODULE_CSS, ResourceHelper.getCommonCss());
-    }
-
-    private void registerJavaScriptFiles() {
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, ResourceHelper.getThirdJs());
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, ResourceHelper.getBaseJs());
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_CONF_JS, ResourceHelper.getConfJs());
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ResourceHelper.getDeziJs());
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ResourceHelper.getShowJs());
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MODULE_JS, ResourceHelper.getCommonJs());
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MOBILE_JS, ResourceHelper.getMobileJs());
-    }
-
-    public void loadResources (Locale[] locales) {
+    public void loadResources(Locale[] locales) {
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_THIRD_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
@@ -411,7 +383,7 @@ public class BICoreModule extends AbstractModule {
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_SHOW_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS);
-        ResourceHelper.FormulaTransmitter.transmit(ResourceHelper.getFormulaCollectionJS());
+        BaseResouceHelper.FormulaTransmitter.transmit(BaseResouceHelper.getFormulaCollectionJS());
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_THIRD_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
@@ -440,10 +412,9 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIConfigure(),
                 new Service4BIReport(),
                 new Service4BIDezi(),
-                new Service4BIMobile(),
                 new Service4BIBase(),
 
-                new Service4FineCube()
+                new Service4FineCube(),
         };
     }
 

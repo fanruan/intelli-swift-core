@@ -28,22 +28,24 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this;
         delete config.zoom;
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
 
-        this.formatChartLegend(config, this.config.chart_legend);
+        this.formatChartLegend(config, this.config.legend);
 
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
 
         config.plotOptions.innerRadius = "50.0%";
         config.chartType = "pie";
-        config.plotOptions.dataLabels.align = "outside";
-        config.plotOptions.dataLabels.connectorWidth = "outside";
-        config.plotOptions.dataLabels.style = this.config.chart_font;
-        config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+        BI.extend(config.plotOptions.dataLabels, {
+            align: self.setDataLabelPosition(this.config),
+            style: this.config.dataLabelSetting.textStyle,
+            connectorWidth: this.config.dataLabelSetting.showTractionLine,
+        });
+        config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
         delete config.xAxis;
         delete config.yAxis;
         BI.each(items, function (idx, item) {
@@ -52,11 +54,14 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
             })
         });
 
-        config.legend.style = this.config.chart_font;
+        config.legend.style = BI.extend({}, this.config.legendStyle, {
+            fontSize: this.config.legendStyle && this.config.legendStyle.fontSize + "px"
+        });
+
         return [items, config];
 
-        function formatChartStyle(){
-            switch (self.config.chart_style) {
+        function formatChartStyle() {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -70,19 +75,13 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            chart_color: options.chart_color || [],
-            chart_style: options.chart_style || c.NORMAL,
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false,
-            chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
 
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.DONUT);
             });
             types.push(type);
@@ -95,7 +94,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

@@ -25,6 +25,7 @@ public abstract class BIAbstractTableSetting implements BITableSetting {
         while (it.hasNext()) {
             addDimTar(it.next(), view);
         }
+        checkDimensionCompleteness();
     }
 
     private void addDimTar(String type, JSONObject view) throws Exception {
@@ -35,6 +36,12 @@ public abstract class BIAbstractTableSetting implements BITableSetting {
             return;
         }
         groups_of_targets.put(type, BIJsonUtils.jsonArray2StringArray(ja));
+    }
+
+    private void checkDimensionCompleteness(){
+        if(!groups_of_dimensions.containsKey(BIReportConstant.REGION.DIMENSION1)){
+            groups_of_dimensions.put(BIReportConstant.REGION.DIMENSION1, new String[0]);
+        }
     }
 
     @Override

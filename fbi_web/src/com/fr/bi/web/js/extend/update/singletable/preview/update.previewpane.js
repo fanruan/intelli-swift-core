@@ -188,11 +188,38 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                 var lackFields = self.model.getLackFields(fieldNames);
                 var extraFields = self.model.getExtraFields(fieldNames);
                 var warningHeight = 29;
-                if (lackFields.length > 0) {
+
+                //增加 删除、修改
+                if (type === BI.UpdateSingleTableSetting.PART_ADD) {
+                    if (lackFields.length > 0) {
+                        self.warningContainer.addItem({
+                            type: "bi.label",
+                            text: "1." + BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
+                            title: BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
+                            cls: "warning-comment",
+                            textAlign: "left",
+                            textHeight: 20,
+                            hgap: 10
+                        });
+                        warningHeight += 30;
+                    }
+                    if (extraFields.length > 0) {
+                        self.warningContainer.addItem({
+                            type: "bi.label",
+                            text: (lackFields.length > 0 ? "2." : "1.") + BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
+                            title: BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
+                            cls: "warning-comment",
+                            textAlign: "left",
+                            textHeight: 20,
+                            hgap: 10
+                        });
+                        warningHeight += 30;
+                    }
+                } else if(extraFields.length > 0) {
                     self.warningContainer.addItem({
                         type: "bi.label",
-                        text: "1." + BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
-                        title: BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
+                        text: BI.i18nText("BI-Sql_Result_Not_Match_FineIndex_Fields") + extraFields,
+                        title: BI.i18nText("BI-Sql_Result_Not_Match_FineIndex_Fields") + extraFields,
                         cls: "warning-comment",
                         textAlign: "left",
                         textHeight: 20,
@@ -200,18 +227,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                     });
                     warningHeight += 30;
                 }
-                if (extraFields.length > 0) {
-                    self.warningContainer.addItem({
-                        type: "bi.label",
-                        text: (lackFields.length > 0 ? "2." : "1.") + BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
-                        title: BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
-                        cls: "warning-comment",
-                        textAlign: "left",
-                        textHeight: 20,
-                        hgap: 10
-                    });
-                    warningHeight += 30;
-                }
+
                 var header = [], items = [];
                 BI.each(fieldNames, function (i, fieldName) {
                     header.push({

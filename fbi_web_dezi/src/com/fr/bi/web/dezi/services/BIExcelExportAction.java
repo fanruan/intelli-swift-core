@@ -62,7 +62,7 @@ public class BIExcelExportAction extends AbstractBIDeziAction {
         //     sessionIDInfor.removeExcelWidget(((BIReport)(resultBook.getReport(0))).getWidgetName(0));
     }
 
-    // b:TODO 现在只考虑原样导出，但是有可能存在超大数据量的表格，那是就必须考虑多页多文件导出
+    // b:TODO 现在只考虑原样导出，但是有可能存在超大数据量的表格，那时就必须考虑多页多文件导出
     private void export(HttpServletRequest req, HttpServletResponse res, ResultWorkBook resultBook, long t) throws Exception {
         // b:papersetting 无用，这里的exporter是针对BI的特殊的
         AppExporter exporter = new BIExcel2007Exporter(ReportUtils.getPaperSettingListFromWorkBook(resultBook));

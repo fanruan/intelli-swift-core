@@ -152,8 +152,8 @@ BI.TargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.sign_editor",
             cls: "condition-operator-input",
             allowBlank: true,
-            height: this._constant.BUTTON_HEIGHT,
-            width: this._constant.INPUT_WIDTH
+            height: this._constant.BUTTON_HEIGHT - 2,
+            width: this._constant.INPUT_WIDTH - 2
         });
         this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self._setNodeData({

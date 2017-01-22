@@ -28,37 +28,41 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this, o = this.options;
         delete config.zoom;
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         formatChartPieStyle();
 
-        this.formatChartLegend(config, this.config.chart_legend);
+        this.formatChartLegend(config, this.config.legend);
 
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
-
         config.chartType = "pie";
         delete config.xAxis;
         delete config.yAxis;
-        config.plotOptions.dataLabels.align = "outside";
-        config.plotOptions.dataLabels.connectorWidth = "outside";
-        config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
-        config.plotOptions.dataLabels.style = this.config.chart_font;
+
+        BI.extend(config.plotOptions.dataLabels, {
+            enabled: this.config.showDataLabel,
+            align: self.setDataLabelPosition(this.config),
+            style: this.config.dataLabelSetting.textStyle,
+            connectorWidth: this.config.dataLabelSetting.showTractionLine,
+        });
+        config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
             })
         });
 
-        config.legend.style = this.config.chart_font;
+        config.legend.style = BI.extend({}, this.config.legendStyle, {
+            fontSize: this.config.legendStyle && this.config.legendStyle.fontSize + "px"
+        });
 
         return [items, config];
 
-        function formatChartStyle(){
-            switch (self.config.chart_style) {
+        function formatChartStyle() {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -67,8 +71,8 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function formatChartPieStyle(){
-            switch (self.config.chart_pie_type){
+        function formatChartPieStyle() {
+            switch (self.config.pieChartType) {
                 case BICst.CHART_SHAPE.EQUAL_ARC_ROSE:
                     config.plotOptions.roseType = "sameArc";
                     break;
@@ -80,35 +84,36 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
                     delete config.plotOptions.roseType;
                     break;
             }
-            config.plotOptions.innerRadius = self.config.chart_inner_radius + "%";
-            config.plotOptions.endAngle = self.config.chart_total_angle;
+            config.plotOptions.innerRadius = self.config.innerRadius + "%";
+            config.plotOptions.startAngle = 270;
+            config.plotOptions.endAngle = (270 + self.config.totalAngle) % 360;
         }
 
     },
 
     //目前饼图不会有多个系列，如果有多个就要把它们合并在一起
-    _isNeedConvert: function(items){
-        var result = BI.find(items, function(idx, item){
+    _isNeedConvert: function (items) {
+        var result = BI.find(items, function (idx, item) {
             return item.length > 1;
         });
         return BI.isNotNull(result);
     },
 
-    _formatItems: function(items){
-        if(this._isNeedConvert(items)){
+    _formatItems: function (items) {
+        if (this._isNeedConvert(items)) {
             //把每个坐标轴所有的多个系列合并成一个系列
-            return BI.map(items, function(idx, item){
+            return BI.map(items, function (idx, item) {
                 var seriesItem = [];
                 var obj = {data: [], name: ""};
                 seriesItem.push(obj);
-                BI.each(item, function(id, series){
-                    BI.each(series.data, function(i, da){
+                BI.each(item, function (id, series) {
+                    BI.each(series.data, function (i, da) {
                         obj.data.push(BI.extend({}, da, {x: series.name}));
                     });
                 });
                 return seriesItem;
             })
-        }else{
+        } else {
             return items;
         }
     },
@@ -116,22 +121,13 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            chart_color: options.chart_color || [],
-            chart_style: options.chart_style || c.NORMAL,
-            chart_pie_type: options.chart_pie_type || c.NORMAL,
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false,
-            chart_inner_radius: options.chart_inner_radius || 0,
-            chart_total_angle: options.chart_total_angle || BICst.PIE_ANGLES.TOTAL,
-            chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
 
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.PIE);
             });
             types.push(type);
@@ -144,7 +140,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

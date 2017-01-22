@@ -44,7 +44,7 @@ BI.DimensionNumberComboShow = BI.inherit(BI.AbstractDimensionComboShow, {
     },
 
     _rebuildItems :function(){
-        var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
+        var items = BI.DimensionNumberComboShow.superclass._rebuildItems.apply(this, arguments), o = this.options;
         var group = this._assertGroup(BI.Utils.getDimensionGroupByID(o.dId));
         var customSort = items[0][this.constants.customSortPos];
         group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
@@ -80,6 +80,11 @@ BI.DimensionNumberComboShow = BI.inherit(BI.AbstractDimensionComboShow, {
                 text: BI.i18nText("BI-Grouping_Setting"),
                 value: BICst.DIMENSION_NUMBER_COMBO.GROUP_SETTING,
                 cls: "dot-e-font"
+            }],
+            [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.DIMENSION_NUMBER_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
             }],
             [{
                 text: BI.i18nText("BI-Dimension_From"),

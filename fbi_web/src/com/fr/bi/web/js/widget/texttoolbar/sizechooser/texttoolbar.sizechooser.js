@@ -75,7 +75,8 @@ BI.TextToolbarSizeChooser = BI.inherit(BI.Widget, {
             el: this.trigger,
             adjustLength: 1,
             popup: {
-                minWidth: 50,
+                maxWidth: o.width,
+                minWidth: o.width,
                 el: {
                     type: "bi.button_group",
                     items: BI.createItems(this._items, {

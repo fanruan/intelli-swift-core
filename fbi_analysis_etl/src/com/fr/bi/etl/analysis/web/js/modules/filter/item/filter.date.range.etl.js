@@ -18,59 +18,31 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
         BI.ETLDateRangePane.superclass._init.apply(this, arguments);
         this.up = this._createCombo();
         this.down = this._createCombo();
-        this.uplabel = BI.createWidget({
-            type: 'bi.label',
-            height: this._constants.height,
-            width: this._constants.width,
-            text: BI.i18nText("BI-Later_Than")
-        });
-        this.dowmlabel = BI.createWidget({
-            type: 'bi.label',
-            height: this._constants.height,
-            width: this._constants.width,
-            text:  BI.i18nText("BI-Sooner_Than")
-        });
         BI.createWidget({
-            element: self.element,
+            element: this.element,
             type: "bi.vertical",
             scrolly : false,
-            tgap : self._constants.gap,
             items: [{
-                        type: "bi.htape",
-                        height:this._constants.height,
-                        items:[
-                                {
-                                    el : self.uplabel,
-                                    width : this._constants.width
-                                },
-                                {
-                                    el : self.up,
-                                    width : 'fill'
-                                }
-                        ]
-                     },
-                    {
-                        type: "bi.htape",
-                        height:this._constants.height,
-                        items:[
-                            {
-                                el : self.dowmlabel,
-                                width : this._constants.width
-                            },
-                            {
-                                el : self.down,
-                                width : 'fill'
-                            }
-                        ]
-                    }
-                    ]
+                el: this.up,
+                tgap : this._constants.gap
+            }, {
+                type: "bi.label",
+                text: "|",
+                cls: "date-range-link",
+                textAlign: "center",
+                height: this._constants.gap
+            }, {
+                el: this.down,
+                tgap : 5
+            }]
         });
     },
 
     _createCombo: function () {
         var self = this;
         var combo = BI.createWidget({
-            type: 'bi.date_filter_combo_etl'
+            type: 'bi.date_filter_combo_etl',
+            height: this._constants.height
         });
         combo.on(BI.ETLDateFilterCombo.EVENT_ERROR, function () {
             self._clearTitle();

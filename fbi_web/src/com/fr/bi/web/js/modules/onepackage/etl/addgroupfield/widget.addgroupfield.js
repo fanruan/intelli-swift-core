@@ -68,6 +68,7 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
         this.tableNameLabel = BI.createWidget({
             type: "bi.label",
             textAlign: "left",
+            title: BI.i18nText("BI-Cannot_Change_Table_Name_Here"),
             hgap: 5,
             height: this.constants.ADD_GROUP_FIELD_EDITOR_HEIGHT
         });
@@ -479,7 +480,6 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
     _refreshPane: function () {
         var tableName = this.model.getDefaultTableName();
         this.tableNameLabel.setValue(tableName);
-        this._populatePreview();
         var groups = [];
         var newGroupsData = this.model.getNewGroupsData();
         BI.each(newGroupsData, function (id, groupObj) {

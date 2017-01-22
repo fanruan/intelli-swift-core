@@ -7,6 +7,7 @@ BI.SingleTreeCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.SingleTreeCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-single-tree-combo",
+            trigger: {},
             height: 30,
             text: "",
             items: []
@@ -17,12 +18,12 @@ BI.SingleTreeCombo = BI.inherit(BI.Widget, {
         BI.SingleTreeCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
-        this.trigger = BI.createWidget({
+        this.trigger = BI.createWidget(BI.extend({
             type: "bi.single_tree_trigger",
             text: o.text,
             height: o.height,
             items: o.items
-        });
+        }, o.trigger));
 
         this.popup = BI.createWidget({
             type: "bi.single_tree_popup",

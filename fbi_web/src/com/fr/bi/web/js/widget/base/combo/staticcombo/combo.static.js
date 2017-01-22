@@ -29,6 +29,7 @@ BI.StaticCombo = BI.inherit(BI.Widget, {
         });
         this.popup = BI.createWidget({
             type: "bi.text_value_combo_popup",
+            textAlign: o.textAlign,
             chooseType: o.chooseType,
             items: o.items
         });

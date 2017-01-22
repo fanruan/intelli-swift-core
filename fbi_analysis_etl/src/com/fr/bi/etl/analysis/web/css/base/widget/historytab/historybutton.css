@@ -5,10 +5,11 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-history-tab-button {
   font-size: 13px;
+  background: #f4f4f4;
 }
 .bi-history-tab-button.active,
 .bi-history-tab-button:active {
-  background: #f4f4f4;
+  background: #ffffff;
   color: #009de3;
 }
 .bi-history-tab-button.active .select_tag,
@@ -17,7 +18,7 @@
 }
 .bi-history-tab-button-temp {
   overflow: hidden;
-  background: #f4f4f4;
+  background: #ffffff;
   color: #009de3;
 }
 .bi-history-tab-button-temp .select_tag {

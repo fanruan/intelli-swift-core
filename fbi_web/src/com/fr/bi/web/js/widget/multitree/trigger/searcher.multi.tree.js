@@ -115,6 +115,10 @@ BI.MultiTreeSearcher = BI.inherit(BI.Widget, {
         return this.editor.getValue();
     },
 
+    setEnable: function(v){
+        this.editor.setEnable(v);
+    },
+
     getValue: function () {
         return this.searcher.getValue();
     },

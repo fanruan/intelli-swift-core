@@ -40,8 +40,7 @@ BI.PackageTablesSearchResultPane = BI.inherit(BI.Widget, {
             }]
         });
         var items = BI.createItems(matchResult.concat(searchResult), {
-            type: "bi.database_table",
-            cls: "bi-table-ha-button"
+            type: "bi.database_table"
         });
         tables.populate(items, keyword);
         tables.setValue(selectedTables);

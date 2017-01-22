@@ -2,6 +2,13 @@
  * Created by roy on 16/3/9.
  */
 BI.FieldRelationSettingPopup = BI.inherit(BI.BarPopoverSection, {
+
+    constants:{
+        NORMAL_COLOR: "#fff5c1",
+        TRIANGLE_WIDTH: 16,
+        TRIANGLE_HEIGHT: 10,
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.FieldRelationSettingPopup.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "field-relation-setting-popup",
@@ -54,7 +61,8 @@ BI.FieldRelationSettingPopup = BI.inherit(BI.BarPopoverSection, {
             textHeight: 35,
             textAlign: "left",
             cls: "detail-table-path-setting-tip-label",
-            value: BI.i18nText("BI-Detail_Setting_Path")
+            value: BI.i18nText("BI-Detail_Setting_Path"),
+            title: BI.i18nText("BI-Detail_Setting_Path")
         });
 
 
@@ -74,12 +82,30 @@ BI.FieldRelationSettingPopup = BI.inherit(BI.BarPopoverSection, {
             textHeight: 35,
             textAlign: "left",
             cls: "detail-table-path-setting-tip-label",
-            value: BI.i18nText("BI-Detail_Setting_Path_Multi_Path_Exist")
+            value: BI.i18nText("BI-Check_If_The_Relation_Below_Is_You_Need"),
+            title: BI.i18nText("BI-Check_If_The_Relation_Below_Is_You_Need")
         });
 
         this.tabPane = BI.createWidget({
             type: "bi.vertical",
             vgap: 10
+        });
+
+        var triangle = BI.createWidget({
+            type: "bi.svg",
+            width: self.constants.TRIANGLE_WIDTH,
+            height: self.constants.TRIANGLE_HEIGHT
+        });
+
+        triangle.path("M8,0L0,10L16,10").attr({
+            "stroke": self.constants.NORMAL_COLOR,
+            "fill": self.constants.NORMAL_COLOR
+        });
+        var popup = BI.createWidget({
+            type: "bi.layout",
+            cls: "tree-n-and-n-background path-doubt",
+            width: 200,
+            height: 145
         });
 
         this.popup = BI.createWidget({
@@ -88,7 +114,49 @@ BI.FieldRelationSettingPopup = BI.inherit(BI.BarPopoverSection, {
             vgap: 10,
             items: [
                 fieldLabel,
-                tipLabel,
+                {
+                    type: "bi.inline",
+                    items: [tipLabel, {
+                        el: {
+                            type: "bi.vertical_adapt",
+                            items: [{
+                                el: {
+                                    type: "bi.combo",
+                                    adjustLength: 5,
+                                    el: {
+                                        type: "bi.icon_button",
+                                        height: this.constants.labelHeight,
+                                        cls: "path-set-doubt"
+                                    },
+                                    popup: {
+                                        el: {
+                                            type: "bi.absolute",
+                                            element: popup,
+                                            items: [{
+                                                el: {
+                                                    type: "bi.horizontal_auto",
+                                                    items:[triangle]
+                                                },
+                                                left: 0,
+                                                right: 0,
+                                                top: -5
+                                            }]
+                                        },
+                                        width: 202,
+                                        height: 145
+                                    },
+                                    isNeedAdjustHeight: false,
+                                    isNeedAdjustWidth: false,
+                                    offsetStyle:"center"
+                                }
+                            }],
+                            width: 25,
+                            height: 35,
+                            lgap: 5
+                        }
+                    }],
+                    height: 35
+                },
                 this.combo,
                 tipMultiPathLabel,
                 this.tabPane

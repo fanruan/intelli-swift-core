@@ -15,7 +15,6 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
     _init: function () {
         BI.NormalExpanderCell.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-
         var needExpand = o.needExpand, isExpanded = o.isExpanded;
         var items = [];
         if (needExpand === true) {
@@ -30,7 +29,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                     }
                 },
                 width: 25,
-                height: 25
+                height: o.height,
             })
         }
 
@@ -47,13 +46,13 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 text = date.print("%Y-%X-%d  %H:%M:%S");
             }
             if (dGroup.type === BICst.GROUP.S) {
-                text = BICst.FULL_QUARTER_NAMES[text - 1];
+                text = BICst.FULL_QUARTER_NAMES[text];
             }
             if (dGroup.type === BICst.GROUP.M) {
-                text = BICst.FULL_MONTH_NAMES[text - 1];
+                text = BICst.FULL_MONTH_NAMES[text];
             }
             if (dGroup.type === BICst.GROUP.W) {
-                text = BICst.FULL_WEEK_NAMES[text - 1];
+                text = BICst.FULL_WEEK_NAMES[text];
             }
         }
 
@@ -61,7 +60,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         var cls = "expander-cell-text";
         //交叉表的item
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
-        if (regionType === BICst.REGION.DIMENSION2) {
+        if (BI.Utils.isDimensionRegion2ByRegionType(regionType)) {
             cls += " cross-item-cell"
         }
         items.push({
@@ -70,7 +69,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 cls: cls,
-                height: 25,
+                height: o.height,
                 whiteSpace: "nowrap",
                 textAlign: "left",
                 lgap: 5
@@ -99,6 +98,10 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 bottom: 0
             }]
         });
+
+        if (BI.isNotNull(o.styles) && BI.isObject(o.styles)) {
+            this.element.css(o.styles);
+        }
     },
 
     /**

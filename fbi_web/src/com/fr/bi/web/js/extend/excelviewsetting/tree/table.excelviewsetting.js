@@ -10,7 +10,8 @@ BI.ExcelViewSettingTable = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ExcelViewSettingTable.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-excel-view-setting-table",
-            fields: []
+            fields: [],
+            tableName: ""
         });
     },
 
@@ -41,17 +42,18 @@ BI.ExcelViewSettingTable = BI.inherit(BI.Widget, {
     },
 
     _formatItems: function (items) {
-        var self = this;
+        var self = this, o = this.options;
         return BI.map(items, function (i, item) {
             return BI.extend({
                 type: "bi.excel_view_setting_item",
-                clearOneCell: function(fieldId) {
+                tableName: o.tableName,
+                clearOneCell: function (fieldId) {
                     self.options.clearOneCell(fieldId);
                 }
             }, item);
         });
     },
-    
+
     setValue: function (v) {
         this.button_group.setValue(v);
     },
@@ -60,12 +62,12 @@ BI.ExcelViewSettingTable = BI.inherit(BI.Widget, {
         return this.button_group.getValue();
     },
 
-    getMarkedFields: function(){
+    getMarkedFields: function () {
         var allButtons = this.button_group.getAllButtons();
         var fields = {};
-        BI.each(allButtons, function(i, button) {
+        BI.each(allButtons, function (i, button) {
             var position = button.getPosition();
-            if(BI.isNotNull(position)) {
+            if (BI.isNotNull(position)) {
                 fields[button.getValue()] = position;
             }
         });

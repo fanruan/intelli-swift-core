@@ -57,6 +57,13 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
     },
 
     _rebuildItems :function(){
+        var chartTypes = [
+            BICst.WIDGET.ACCUMULATE_AREA,
+            BICst.WIDGET.ACCUMULATE_AXIS,
+            BICst.WIDGET.ACCUMULATE_BAR,
+            BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+            BICst.WIDGET.PERCENT_ACCUMULATE_AXIS
+        ];
         var items = BI.DimensionNumberCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
         if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
         }else{
@@ -64,7 +71,9 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             var customSort = items[0][this.constants.customSortPos];
             group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
         }
-        switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
+        var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        switch (wType) {
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -78,7 +87,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
+                if(BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(o.dId))){
                     BI.removeAt(items, this.constants.CordonPos);
                 }
                 break;
@@ -86,7 +95,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
                 items[this.constants.CordonPos][0].text = BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") +")";
-                if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
+                if(BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(o.dId))){
                     BI.removeAt(items, this.constants.CordonPos);
                 }
                 break;
@@ -94,6 +103,31 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 BI.removeAt(items, this.constants.CordonPos);
                 break;
 
+        }
+        if(BI.Utils.isDimensionRegion2ByRegionType(rType) && BI.contains(chartTypes, wType)) {
+            items.splice(2, 0, [{
+                text: BI.i18nText("BI-Series_Accumulation_Setting"),
+                cls: "",
+                value: BICst.DIMENSION_NUMBER_COMBO.SERIES_ACCUMULATION_ATTRIBUTE
+            }]);
+        }
+        if(BI.Utils.isDimensionRegion2ByRegionType(rType) && wType === BICst.WIDGET.COMBINE_CHART) {
+            items.splice(2, 0, [{
+                el: {
+                    text: BI.i18nText("BI-Series_Accumulation_Setting"),
+                    cls: "",
+                    value: BICst.DIMENSION_NUMBER_COMBO.SERIES_ACCUMULATION_ATTRIBUTE
+                },
+                children:[{
+                    text: BI.i18nText("BI-No_Accumulation"),
+                    value: BICst.DIMENSION_NUMBER_COMBO.NO_SERIES,
+                    cls: "dot-e-font"
+                },{
+                    text: BI.i18nText("BI-Series_Accumulation"),
+                    value: BICst.DIMENSION_NUMBER_COMBO.SERIES_ACCUMULATION,
+                    cls: "dot-e-font"
+                }]
+            }]);
         }
         return items;
     },
@@ -104,14 +138,14 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 el: {
                     text: BI.i18nText("BI-Ascend"),
                     value: BICst.DIMENSION_NUMBER_COMBO.ASCEND,
-                    iconCls1: ""
+                    iconCls1: "dot-e-font"
                 },
                 children: []
             }, {
                 el: {
                     text: BI.i18nText("BI-Descend"),
                     value: BICst.DIMENSION_NUMBER_COMBO.DESCEND,
-                    iconCls1: ""
+                    iconCls1: "dot-e-font"
                 },
                 children: []
             }, {
@@ -136,7 +170,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }],
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),
-                title: BI.i18nText("BI-Dimension_Filter_Title"),
+                title: BI.i18nText("BI-Dimension_Filter_Tip"),
                 value: BICst.DIMENSION_NUMBER_COMBO.FILTER,
                 cls: "filter-h-font"
             }],
@@ -144,6 +178,11 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 text: BI.i18nText("BI-Math_Relationships"),
                 value: BICst.DIMENSION_NUMBER_COMBO.DT_RELATION,
                 cls: ""
+            }],
+            [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.DIMENSION_NUMBER_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
             }],
             [{
                 text: BI.i18nText("BI-Copy"),

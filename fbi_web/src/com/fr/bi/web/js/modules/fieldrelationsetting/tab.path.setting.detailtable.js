@@ -31,7 +31,11 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Detail_Set_Complete"),
                 value: c.SAVE_VALUE,
                 height: 30
-            }]
+            }],
+            tipType: "warning",
+            title: function(){
+                return self.tab.isEnabled() ? "" : BI.i18nText("BI-Relation_Only_Between_Fields")
+            }
         });
 
 
@@ -151,7 +155,8 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
                     type: "bi.path_chooser",
                     items: items
                 });
-                if(items.length > 1){
+                this.tab.setEnable(items.length > 1);
+                if (items.length > 1) {
                     this.pathChooser.setValue(self._getPathValue(o.choosePath));
                 }
                 return BI.createWidget({

@@ -24,6 +24,16 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
         return "";
     },
 
+    _formatTitleFont: function (titleFont) {
+        var tFont = titleFont || {};
+        return {
+            "color": tFont.color,
+            "font-style": tFont.fontStyle,
+            "font-weight": tFont.fontWeight,
+            "text-align": tFont.textAlign
+        }
+    },
+
     setStyle: function (id, objects) {
         var result = "";
         BI.each(objects, function (cls, object) {
@@ -57,10 +67,10 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
         var mainBackground = this._getBackgroundValue(globalStyle, "mainBackground");
         var widgetBackground = this._getBackgroundValue(globalStyle, "widgetBackground");
         var titleBackground = this._getBackgroundValue(globalStyle, "titleBackground");
-        var titleFont = globalStyle.titleFont;
+        var titleFont = this._formatTitleFont(globalStyle.titleFont);
 
         var color = globalStyle.controlTheme || "";
-        if(color) {
+        if (color) {
             var border = " 1px solid " + color;
             var rgb = BI.DOM.hex2rgb(color);
             var json = BI.DOM.rgb2json(rgb);

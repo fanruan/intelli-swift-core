@@ -2,6 +2,7 @@
 BIDezi.StringDetailModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.StringDetailModel.superclass._defaultConfig.apply(this, arguments), {
+            name: "",
             dimensions: {},
             view: {},
             type: BICst.WIDGET.STRING,
@@ -19,22 +20,13 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
             }
-            if (BI.size(changed.dimensions) >= BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
-                    return !BI.has(prev.dimensions, did);
-                });
-                if (BI.isNotNull(result)) {
-                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
-                }
+            var changedDimensions = changed.dimensions;
+            var prevDimensions = prev.dimensions;
+            if(BI.isNotEmptyObject(changedDimensions)){
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + BI.firstObject(changedDimensions)._src.id);
             }
-            if (BI.size(changed.dimensions) < BI.size(prev.dimensions)) {
-                var res = BI.find(prev.dimensions, function (did, dimension) {
-                    return !BI.has(changed.dimensions, did);
-                });
-                if (BI.isNotNull(res)) {
-                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + res._src.id);
-                }
-
+            if(BI.isNotEmptyObject(prevDimensions)){
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + BI.firstObject(prevDimensions)._src.id);
             }
             this.set("value", {});
         }
@@ -63,14 +55,14 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
             var view = this.get("view");
             //维度指标基本属性
             if (!dimensions[dId]) {
+                dimensions = {};
                 dimensions[dId] = {
                     name: src.name,
                     _src: src._src,
                     type: src.type,
                     sort: {type: BICst.SORT.ASC, target_id: dId}
                 };
-                view[BICst.REGION.DIMENSION1] = view[BICst.REGION.DIMENSION1] || [];
-                view[BICst.REGION.DIMENSION1].push(dId);
+                view[BICst.REGION.DIMENSION1] = [dId];
                 this.set({
                     "dimensions": dimensions,
                     "view": view

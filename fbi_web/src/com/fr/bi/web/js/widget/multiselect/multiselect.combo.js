@@ -324,6 +324,11 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
         this.popup.setStartValue(value);
     },
 
+    setEnable: function(v){
+        this.trigger.setEnable(v);
+        this.combo.setEnable(v);
+    },
+
     setValue: function (v) {
         this.storeValue = v || {};
         this._assertValue(this.storeValue);

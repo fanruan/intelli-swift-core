@@ -20,6 +20,9 @@
 .bi-update-cube-pane .bi-cube-update-time-setting .setting-body {
   min-height: 20px;
 }
+.bi-update-cube-pane .table-self-update-tip {
+  color: #e85050;
+}
 .bi-update-cube-pane .bi-cube-log-accordion {
   border: 1px solid #d4dadd;
 }

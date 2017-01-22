@@ -29,6 +29,12 @@
   @opa-ie:@opa*100;
   filter: ~'alpha(opacity=@{opa-ie})';
 }
+.transition(@transition) {
+  -webkit-transition: @transition;
+  -moz-transition: @transition;
+  -o-transition: @transition;
+  transition: @transition;
+}
 //渐变
 .gradient(@start, @end){
   background: @start;        //不支持的用这个

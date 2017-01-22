@@ -30,16 +30,15 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, c = this.constants;
+        delete config.zoom;
         formatRangeLegend();
         delete config.legend;
-        delete config.zoom;
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];
         BI.each(items, function (idx, item) {
             if (BI.has(item, "settings")) {
-                formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
-                    item.settings.unit || "", item.settings.num_separators || c.NUM_SEPARATORS));
+                formatterArray.push(self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.numLevel || c.NORMAL,
+                    item.settings.unit || "", item.settings.numSeparators || c.NUM_SEPARATORS));
             }
         });
         config.plotOptions.tooltip.formatter = function () {
@@ -50,24 +49,27 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             });
             return tip;
         };
+
+        //datalabel
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.dataLabels.formatter.valueFormat = function () {
             return BI.contentFormat(arguments[0], formatterArray[0]);
         };
-        config.plotOptions.dataLabels.style = this.config.chart_font;
-
+        config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
+        config.plotOptions.dataLabels.style = this.config.dataLabelSetting.textStyle;
         config.plotOptions.bubble.dataLabels = config.plotOptions.dataLabels;
-        config.plotOptions.bubble.dataLabels.formatter.identifier = "${SIZE}";
+        config.plotOptions.bubble.dataLabels.formatter.identifier =  self.setDataLabelContent(this.config);
 
         config.plotOptions.bubble.tooltip = config.plotOptions.tooltip;
 
         config.geo = this.config.geo;
-        if (this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)) {
-            if (this.config.background_layer_info.type === BICst.WMS_SERVER) {
+        if (this.config.isShowBackgroundLayer === true && BI.isNotNull(this.config.backgroundLayerInfo)) {
+            if (this.config.backgroundLayerInfo.type === BICst.WMS_SERVER) {
                 config.geo.tileLayer = false;
-                config.geo.wmsUrl = this.config.background_layer_info.url;
-                config.geo.wmsLayer = this.config.background_layer_info.wmsLayer
+                config.geo.wmsUrl = this.config.backgroundLayerInfo.url;
+                config.geo.wmsLayer = this.config.backgroundLayerInfo.wmsLayer
             } else {
-                config.geo.tileLayer = this.config.background_layer_info.url;
+                config.geo.tileLayer = this.config.backgroundLayerInfo.url;
             }
         }
         if (this.config.initDrillPath.length > 1) {
@@ -97,7 +99,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
         function formatRangeLegend() {
             config.rangeLegend.enabled = true;
-            switch (self.config.chart_legend) {
+            switch (self.config.legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.visible = true;
                     config.rangeLegend.position = "bottom";
@@ -111,59 +113,17 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     break;
             }
             config.rangeLegend.continuous = false;
-            config.rangeLegend.range = getRangeStyle(self.config.map_styles, self.config.auto_custom, self.config.theme_color);
+            config.rangeLegend.range = getRangeStyle(self.config.mapStyles, self.config.styleRadio, self.config.themeColor);
             config.rangeLegend.formatter = function () {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
                     var settings = items[0].settings;
-                    var legendFormat = formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.num_level || c.NORMAL,
-                        settings.unit || "",settings.num_separators || c.NUM_SEPARATORS);
+                    var legendFormat = self.formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.numLevel || c.NORMAL,
+                        settings.unit || "", settings.numSeparators || c.NUM_SEPARATORS);
                     to = BI.contentFormat(to, legendFormat)
                 }
                 return to
             };
-        }
-
-        function formatToolTipAndDataLabel(format, numberLevel, unit, num_separators) {
-            var formatter = '#.##';
-            switch (format) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    if (num_separators) formatter = '#,###.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    if (num_separators) formatter = '#,###';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    if (num_separators) formatter = '#,###.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    if (num_separators) formatter = '#,###.00';
-                    break;
-            }
-
-            switch (numberLevel) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    formatter += '';
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    formatter += BI.i18nText("BI-Wan");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    formatter += BI.i18nText("BI-Million");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    formatter += BI.i18nText("BI-Yi");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    formatter += '%';
-                    break;
-            }
-
-            return formatter + unit;
         }
 
         function getRangeStyle(styles, change, defaultColor) {
@@ -241,7 +201,13 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
             var err = m / span * step;
 
-            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+            if (err <= .15) {
+                step *= 10;
+            } else if (err <= .35) {
+                step *= 5;
+            } else if (err <= .75) {
+                step *= 2;
+            }
 
             return step;
         }
@@ -261,7 +227,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             BI.each(da.data, function (idx, data) {
                 data.y = self.formatXYDataWithMagnify(data.y, 1);
                 if (BI.has(da, "settings")) {
-                    data.y = self._formatNumberLevel(da.settings.num_level || self.constants.NORMAL, data.y);
+                    data.y = self._formatNumberLevel(da.settings.numLevel || self.constants.NORMAL, data.y);
                 }
                 if (BI.has(da, "type") && da.type == "bubble") {
                     data.name = data.x;
@@ -270,14 +236,14 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     data.name = data.x;
                     data.value = data.y;
                 }
-                if(BI.has(da, "type") && da.type === "areaMap"){
+                if (BI.has(da, "type") && da.type === "areaMap") {
                     hasArea = true;
                 }
                 if (BI.has(data, "drilldown")) {
                     self._formatDrillItems(data.drilldown);
                 }
             });
-            if(hasArea === false){
+            if (hasArea === false) {
                 items.series.push({
                     type: "areaMap",
                     data: []
@@ -295,7 +261,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 BI.each(it.data, function (i, da) {
                     da.y = self.formatXYDataWithMagnify(da.y, 1);
                     if (BI.has(it, "settings")) {
-                        da.y = self._formatNumberLevel(it.settings.num_level || self.constants.NORMAL, da.y);
+                        da.y = self._formatNumberLevel(it.settings.numLevel || self.constants.NORMAL, da.y);
                     }
                     if ((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0) {
 
@@ -329,19 +295,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false,
-            geo: options.geo,
-            initDrillPath: options.initDrillPath || [],
-            tooltip: options.tooltip || "",
-            theme_color: options.theme_color || "#65bce7",
-            map_styles: options.map_styles || [],
-            auto_custom: options.auto_custom || c.AUTO_CUSTOM,
-            show_background_layer: options.show_background_layer || false,
-            background_layer_info: options.background_layer_info,
-            chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
 
         var types = [];

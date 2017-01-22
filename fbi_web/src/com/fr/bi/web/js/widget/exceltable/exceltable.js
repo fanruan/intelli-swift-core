@@ -48,8 +48,7 @@ BI.ExcelTable = BI.inherit(BI.Widget, {
             isNeedResize: o.isNeedResize,
             isResizeAdapt: o.isResizeAdapt,
 
-            isNeedFreeze: true,
-            freezeCols: [0],
+            isNeedFreeze: false,
 
             isNeedMerge: o.isNeedMerge,
             mergeCols: mergeCols,
@@ -155,8 +154,24 @@ BI.ExcelTable = BI.inherit(BI.Widget, {
         this.table._resizeHeader && this.table._resizeHeader();
     },
 
-    attr: function () {
+    attr: function (key,value) {
+        var self = this;
+        if (BI.isObject(key)) {
+            BI.each(key, function (k, v) {
+                self.attr(k, v);
+            });
+            return;
+        }
         BI.ExcelTable.superclass.attr.apply(this, arguments);
+        switch (key){
+            case "mergeCols":
+                var mCols = [];
+                BI.each(value, function (i, col) {
+                    mCols.push(col + 1);
+                });
+                value=mCols;
+                break;
+        }
         this.table.attr.apply(this.table, arguments);
     },
 

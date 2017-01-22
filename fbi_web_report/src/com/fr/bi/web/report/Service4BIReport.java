@@ -64,6 +64,8 @@ public class Service4BIReport implements Service {
             new BIInitAllReportAction(),
             new BIInitSharedToMeAction(),
 
+            new BICheckReportEditAction()
+
     };
 
     @Override

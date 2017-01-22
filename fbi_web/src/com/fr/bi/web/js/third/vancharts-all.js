@@ -11287,6 +11287,18 @@ define('VanChartMap',['require','./VanChart','./VanChartLayout','./utils/BaseUti
                         BaseUtils.extend(point, map.calculateMapLabel(point, point.dataLabels, point.series.type));
                     }
                 });
+
+                //客户bug临时处理下
+                var drilldown, j;
+                for(j = points.length - 1; j >=0 && !drilldown; j--){
+                    drilldown = points[j].drilldown;
+                }
+
+                if(drilldown){
+                    for(j = points.length - 1; j >=0; j--){
+                        points[j].drilldown = drilldown;
+                    }
+                }
             }
         },
 
@@ -17235,12 +17247,16 @@ define('chart/Bar',['require','../utils/BaseUtils','../utils/ColorUtils','../Con
                     if(otherSeries.stack && !stackedMap[otherSeries.stack]){
                         columnCount++;
                         stackedMap[otherSeries.stack] = true;
+
+                        if(series.stack && series.stack == otherSeries.stack){
+                            columnIndex = columnCount - 1;
+                        }
+
                     }else if(!otherSeries.stack){
                         columnCount++;
-                    }
-
-                    if(series == otherSeries){
-                        columnIndex = columnCount - 1;
+                        if(series == otherSeries){
+                            columnIndex = columnCount - 1;
+                        }
                     }
                 }
 
@@ -25829,7 +25845,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                             var right = scale(axis.getAxisValue(points[points.length - 1][key], points[points.length - 1]));
                             var space = item.getSeriesOffsetAndWidth().width / 2;
                             downBound = Math.min(downBound, left - space);
-                            upBound = Math.max(upBound, right - space);
+                            upBound = Math.max(upBound, right + space);
                         }
                     });
 
@@ -26291,6 +26307,10 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 step *= 5;
             } else if (err <= .75) {
                 step *= 2;
+            }
+
+            if (this.type === ComponentLibrary.DATE_AXIS_COMPONENT) {
+                step = Math.max(step, 1000); // min date step = 1 second
             }
 
             return step;
@@ -27973,6 +27993,12 @@ define('component/GaugeAxis',['require','../Constants','./Axis','../ComponentLib
                 axis.calculateDomainFromData();
                 axis.scale.domain(axis._domain);
                 axis._updateOriginTickData();
+
+                if(!axis.options.showLabel){
+                    axis.tickData.forEach(function(t){
+                        t.tickContent = '';
+                    });
+                }
             }
         },
 

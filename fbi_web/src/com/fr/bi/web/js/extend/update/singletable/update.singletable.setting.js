@@ -2,13 +2,6 @@
  * Created by Young's on 2016/4/22.
  */
 BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
-
-    _constants: {
-        PART_ADD: 1,
-        PART_DELETE: 2,
-        PART_MODIFY: 3
-    },
-
     _defaultConfig: function () {
         return BI.extend(BI.UpdateSingleTableSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-update-single-table-setting"
@@ -152,19 +145,19 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
     _createPartUpdateTab: function () {
         var self = this;
         //增量增加、增量删除、增量修改
-        var buttons = BI.createWidget({
+        this.buttons = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems([{
                 text: BI.i18nText("BI-Incremental_Increase"),
-                value: this._constants.PART_ADD
+                value: BI.UpdateSingleTableSetting.PART_ADD
             }, {
                 text: BI.i18nText("BI-Incremental_Deletion"),
-                value: this._constants.PART_DELETE
+                value: BI.UpdateSingleTableSetting.PART_DELETE
             }, {
                 text: BI.i18nText("BI-Incremental_Updates"),
-                value: this._constants.PART_MODIFY
+                value: BI.UpdateSingleTableSetting.PART_MODIFY
             }], {
-                type: "bi.text_button",
+                type: "bi.update_type_button",
                 cls: "part-update-type-button",
                 height: 28,
                 width: 100
@@ -174,10 +167,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 rgap: 2
             }]
         });
-        buttons.setValue(this._constants.PART_ADD);
-        buttons.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+        this.buttons.setValue(BI.UpdateSingleTableSetting.PART_ADD);
+        this.buttons.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.tab.setSelect(this.getValue()[0]);
         });
+        this._showOrHideIcon();
 
         //上次更新时间参数
         var param = BI.i18nText("BI-Last_Updated");
@@ -190,13 +184,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         lastUpdateParam.on(BI.TextButton.EVENT_CHANGE, function () {
             var v = self.tab.getSelect();
             switch (v) {
-                case self._constants.PART_ADD:
+                case BI.UpdateSingleTableSetting.PART_ADD:
                     self.partAddSql.insertParam(param);
                     break;
-                case self._constants.PART_DELETE:
+                case BI.UpdateSingleTableSetting.PART_DELETE:
                     self.partDeleteSql.insertParam(param);
                     break;
-                case self._constants.PART_MODIFY:
+                case BI.UpdateSingleTableSetting.PART_MODIFY:
                     self.partModifySql.insertParam(param);
                     break;
             }
@@ -213,13 +207,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         currentUpdateParam.on(BI.TextButton.EVENT_CHANGE, function () {
             var v = self.tab.getSelect();
             switch (v) {
-                case self._constants.PART_ADD:
+                case BI.UpdateSingleTableSetting.PART_ADD:
                     self.partAddSql.insertParam(currParam);
                     break;
-                case self._constants.PART_DELETE:
+                case BI.UpdateSingleTableSetting.PART_DELETE:
                     self.partDeleteSql.insertParam(currParam);
                     break;
-                case self._constants.PART_MODIFY:
+                case BI.UpdateSingleTableSetting.PART_MODIFY:
                     self.partModifySql.insertParam(currParam);
                     break;
             }
@@ -241,11 +235,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         this.tab = BI.createWidget({
             type: "bi.tab",
             direction: "custom",
-            tab: buttons,
+            tab: this.buttons,
             cardCreator: BI.bind(this._createPartUpdateCard, this),
             height: 200
         });
-        this.tab.setSelect(this._constants.PART_ADD);
+        this.tab.setSelect(BI.UpdateSingleTableSetting.PART_ADD);
 
         return BI.createWidget({
             type: "bi.absolute",
@@ -272,7 +266,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 left: 0,
                 right: 0
             }, {
-                el: buttons,
+                el: this.buttons,
                 top: 30,
                 left: 0
             }, {
@@ -302,13 +296,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         BI.Popovers.create(this.model.getId() + "preview", previewPane);
         var sql = "", type = this.tab.getSelect();
         switch (type) {
-            case this._constants.PART_ADD:
+            case BI.UpdateSingleTableSetting.PART_ADD:
                 sql = this.model.getAddSql();
                 break;
-            case this._constants.PART_DELETE:
+            case BI.UpdateSingleTableSetting.PART_DELETE:
                 sql = this.model.getDeleteSql();
                 break;
-            case this._constants.PART_MODIFY:
+            case BI.UpdateSingleTableSetting.PART_MODIFY:
                 sql = this.model.getModifySql();
                 break;
         }
@@ -320,7 +314,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
     _createPartUpdateCard: function (v) {
         var self = this;
         switch (v) {
-            case this._constants.PART_ADD:
+            case BI.UpdateSingleTableSetting.PART_ADD:
                 this.partAddSql = BI.createWidget({
                     type: "bi.code_editor",
                     cls: "sql-container"
@@ -328,10 +322,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 this.partAddSql.setValue(this.model.getAddSql()
                     .replaceAll(BICst.LAST_UPDATE_TIME, BI.i18nText("BI-Last_Updated"))
                     .replaceAll(BICst.CURRENT_UPDATE_TIME, BI.i18nText("BI-Current_Update_Time")));
-                this.partAddSql.on(BI.CodeEditor.EVENT_BLUR, function () {
+                this.partAddSql.on(BI.CodeEditor.EVENT_CHANGE, function () {
                     self.model.setAddSql(self.partAddSql.getValue()
                         .replaceAll(BI.i18nText("BI-Last_Updated"), BICst.LAST_UPDATE_TIME)
                         .replaceAll(BI.i18nText("BI-Current_Update_Time"), BICst.CURRENT_UPDATE_TIME));
+                    self._showOrHideIcon(v);
                 });
                 return BI.createWidget({
                     type: "bi.absolute",
@@ -343,7 +338,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                         right: 0
                     }]
                 });
-            case this._constants.PART_DELETE:
+            case BI.UpdateSingleTableSetting.PART_DELETE:
                 this.partDeleteSql = BI.createWidget({
                     type: "bi.code_editor",
                     cls: "sql-container"
@@ -351,10 +346,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 this.partDeleteSql.setValue(this.model.getDeleteSql()
                     .replaceAll(BICst.LAST_UPDATE_TIME, BI.i18nText("BI-Last_Updated"))
                     .replaceAll(BICst.CURRENT_UPDATE_TIME, BI.i18nText("BI-Current_Update_Time")));
-                this.partDeleteSql.on(BI.CodeEditor.EVENT_BLUR, function () {
+                this.partDeleteSql.on(BI.CodeEditor.EVENT_CHANGE, function () {
                     self.model.setDeleteSql(self.partDeleteSql.getValue()
                         .replaceAll(BI.i18nText("BI-Last_Updated"), BICst.LAST_UPDATE_TIME)
                         .replaceAll(BI.i18nText("BI-Current_Update_Time"), BICst.CURRENT_UPDATE_TIME));
+                    self._showOrHideIcon(v);
                 });
                 return BI.createWidget({
                     type: "bi.absolute",
@@ -366,7 +362,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                         right: 0
                     }]
                 });
-            case this._constants.PART_MODIFY:
+            case BI.UpdateSingleTableSetting.PART_MODIFY:
                 this.partModifySql = BI.createWidget({
                     type: "bi.code_editor",
                     cls: "sql-container"
@@ -374,10 +370,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 this.partModifySql.setValue(this.model.getModifySql()
                     .replaceAll(BICst.LAST_UPDATE_TIME, BI.i18nText("BI-Last_Updated"))
                     .replaceAll(BICst.CURRENT_UPDATE_TIME, BI.i18nText("BI-Current_Update_Time")));
-                this.partModifySql.on(BI.CodeEditor.EVENT_BLUR, function () {
+                this.partModifySql.on(BI.CodeEditor.EVENT_CHANGE, function () {
                     self.model.setModifySql(self.partModifySql.getValue()
                         .replaceAll(BI.i18nText("BI-Last_Updated"), BICst.LAST_UPDATE_TIME)
                         .replaceAll(BI.i18nText("BI-Current_Update_Time"), BICst.CURRENT_UPDATE_TIME));
+                    self._showOrHideIcon(v);
                 });
                 return BI.createWidget({
                     type: "bi.absolute",
@@ -390,6 +387,12 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     }]
                 });
         }
+    },
+
+    _showOrHideIcon: function () {
+        this.buttons.getAllButtons()[0].toggleIcon(BI.isNotNull(this.model.getAddSql()) && BI.isNotEmptyString(this.model.getAddSql()));
+        this.buttons.getAllButtons()[1].toggleIcon(BI.isNotNull(this.model.getDeleteSql()) && BI.isNotEmptyString(this.model.getDeleteSql()));
+        this.buttons.getAllButtons()[2].toggleIcon(BI.isNotNull(this.model.getModifySql()) && BI.isNotEmptyString(this.model.getModifySql()));
     },
 
     _createTimeSetting: function () {
@@ -442,7 +445,8 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 height: 30
             }, this.timeSettingGroup]
         })
-    },
+    }
+    ,
 
     _removeSettingById: function (id) {
         var allButtons = this.timeSettingGroup.getAllButtons();
@@ -454,11 +458,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             }
         });
         this.timeSettingGroup.removeItemAt(index);
-    },
+    }
+    ,
 
     getValue: function () {
         return this.model.getValue();
-    },
+    }
+    ,
 
     _createTimeSettingListItems: function () {
         var self = this;
@@ -479,7 +485,8 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             items.push(item);
         });
         return items;
-    },
+    }
+    ,
 
     _createCheckInterval: function () {
         var self = this;
@@ -551,6 +558,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         }
     }
 
+});
+BI.extend(BI.UpdateSingleTableSetting, {
+    PART_ADD: 1,
+    PART_DELETE: 2,
+    PART_MODIFY: 3
 });
 BI.UpdateSingleTableSetting.EVENT_CHANGE = "EVENT_CHANGE";
 BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";

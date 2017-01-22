@@ -9,3 +9,12 @@
   border: 1px solid #d4dadd;
   min-height: 240px;
 }
+.bi-set-relation-pane .setting-dimension-tip {
+  color: #e85050;
+}
+.bi-set-relation-pane .tip-combo {
+  z-index: 101;
+}
+.bi-set-relation-pane .path-doubt {
+  background-color: #fff5c1;
+}

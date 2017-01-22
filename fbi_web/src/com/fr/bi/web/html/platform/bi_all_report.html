@@ -17,8 +17,6 @@
     <![endif]-->
 
     <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}&__v__=${__v__}"></script>
-    <script type="text/javascript" src="${Baidu}"></script>
-    <script type="text/javascript" src="${Google}"></script>
 
     <script type="text/javascript" src="${servletURL}?op=emb&resource=third.js&__v__=${__v__}"></script>
     <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&__v__=${__v__}"></script>
@@ -42,7 +40,11 @@
                     text: data.text
                 };
                 BI.requestAsync("fr_bi", "hangout_report_to_plate", {report: bi}, function (res) {
-                    BI.Msg.toast(BI.i18nText("BI-Report_Hangout_Success"));
+                    if (BI.isNotNull(res.error)) {
+                        BI.Msg.toast(BI.i18nText("BI-Report_Hangout_Error"), "warning");
+                    } else {
+                        BI.Msg.toast(BI.i18nText("BI-Report_Hangout_Success"));
+                    }
                 });
             });
         });

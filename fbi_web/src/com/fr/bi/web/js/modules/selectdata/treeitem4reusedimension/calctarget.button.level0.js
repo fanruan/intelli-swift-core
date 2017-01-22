@@ -68,6 +68,9 @@ BI.DetailSelectCalculationTargetLevel0Button = BI.inherit(BI.BasicButton, {
             element: this.element,
             items: items
         });
+        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DROP_PREFIX, function (v) {
+            self.setSelected(false);
+        });
     },
 
     _createSubItems: function (dim, items) {

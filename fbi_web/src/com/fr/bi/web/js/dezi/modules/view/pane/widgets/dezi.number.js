@@ -113,7 +113,13 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT,
-            title: BI.i18nText("BI-Detailed_Setting"),
+            title: function(){
+                if(BI.size(self.model.get("dimensions")) > 0){
+                    return BI.i18nText("BI-Detailed_Setting");
+                }else{
+                    return BI.i18nText("BI-Please_Do_Detail_Setting");
+                }
+            },
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -138,7 +144,7 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE:
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
+                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete_Current_Component") + self.model.get("name") + "?", function (v) {
                         if (v === true) {
                             self.model.destroy();
                         }
@@ -212,6 +218,14 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
+    _checkDataBind: function () {
+        if(BI.size(this.model.get("dimensions")) > 0){
+            this.combo.setEnable(true);
+        }else{
+            this.combo.setEnable(false);
+        }
+    },
+
     _resetValue: function () {
         this.model.set("value");
         this.refresh();
@@ -235,7 +249,11 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
         }
 
 
-        if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
+        if (BI.has(changed, "value")) {
+            BI.Utils.broadcastAllWidgets2Refresh();
+        }
+        if(BI.has(changed, "dimensions")){
+            this._checkDataBind();
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },
@@ -252,6 +270,7 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
+        this._checkDataBind();
         // this._refreshTitlePosition();
         // this._refreshGlobalStyle();
         this.combo.setValue(this.model.get("value"));
