@@ -50,7 +50,7 @@ BI.CrossTable = BI.inherit(BI.GroupTable, {
         }, this.model.getExtraInfo());
     },
 
-    _refreshTable: function () {
+    _populateTable: function () {
         this.errorPane.setVisible(false);
         this._refreshAttrs();
         this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
