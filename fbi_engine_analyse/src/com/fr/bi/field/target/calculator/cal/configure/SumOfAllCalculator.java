@@ -5,8 +5,8 @@ import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
-import com.fr.bi.stable.report.result.LightNode;
 
 import java.util.concurrent.Callable;
 
@@ -23,7 +23,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
 
 
     @Override
-    public Callable createNodeDealWith(LightNode node) {
+    public Callable createNodeDealWith(BINode node) {
         return new RankDealWith(node);
     }
 
@@ -38,9 +38,9 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
     }
 
     private class RankDealWith implements Callable {
-        private LightNode rank_node;
+        private BINode rank_node;
 
-        private RankDealWith(LightNode rank_node) {
+        private RankDealWith(BINode rank_node) {
             this.rank_node = rank_node;
         }
 
@@ -51,9 +51,9 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
             String targetName = ((TargetGettingKey) key).getTargetName();
             BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
             int deep = getCalDeep(rank_node);
-            LightNode temp_node = getDeepCalNode(rank_node);
-            LightNode cursor_node = temp_node;
-            Double sum = null;
+            BINode temp_node = getDeepCalNode(rank_node);
+            BINode cursor_node = temp_node;
+            double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
                 Number value;
                 if (targetKey instanceof AvgKey) {
@@ -62,26 +62,26 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
                     value = cursor_node.getSummaryValue(key);
                 }
                 if (value != null) {
-                    if(sum == null){
-                        sum = new Double(0.0f);
-                    }
                     sum += value.doubleValue();
                 }
                 cursor_node = cursor_node.getSibling();
+
+
             }
             cursor_node = temp_node;
+            Object value = new Double(sum);
             while (isNotEnd(cursor_node, deep)) {
-                cursor_node.setSummaryValue(createTargetGettingKey(), sum);
+                cursor_node.setSummaryValue(createTargetGettingKey(), value);
                 cursor_node = cursor_node.getSibling();
             }
             return null;
         }
 
-        private boolean isNotEnd(LightNode node, int deep) {
+        private boolean isNotEnd(BINode node, int deep) {
             if (node == null) {
                 return false;
             }
-            LightNode temp = node;
+            BINode temp = node;
             for (int i = 0; i < deep; i++) {
                 temp = temp.getParent();
             }

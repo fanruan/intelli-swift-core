@@ -9,6 +9,13 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 public class TargetAndKey {
     private TargetCalculator calculator;
     private TargetGettingKey targetGettingKey;
+    private String targetId;
+
+    public TargetAndKey(String targetId, TargetCalculator calculator, TargetGettingKey targetGettingKey) {
+        this.calculator = calculator;
+        this.targetGettingKey = targetGettingKey;
+        this.targetId = targetId;
+    }
 
     public TargetCalculator getCalculator() {
         return calculator;
@@ -18,8 +25,7 @@ public class TargetAndKey {
         return targetGettingKey;
     }
 
-    public TargetAndKey(TargetCalculator calculator, TargetGettingKey targetGettingKey) {
-        this.calculator = calculator;
-        this.targetGettingKey = targetGettingKey;
+    public String getTargetId() {
+        return targetId;
     }
 }

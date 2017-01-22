@@ -6,8 +6,9 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
+import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.stable.report.result.SummaryContainer;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -43,7 +44,7 @@ public class MinCalculator extends AbstractSummaryCalculator {
      * @return double值
      */
     @Override
-    public <T extends BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
+    public <T extends SummaryContainer & BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
         return calculateNodes(key, c);
     }
 
@@ -96,7 +97,7 @@ public class MinCalculator extends AbstractSummaryCalculator {
         double v = 0;
         boolean firstValue = true;
         while (iter.hasNext()) {
-            BINode n = (BINode) iter.next();
+            BINode n = iter.next();
             Number number = (Number) n.getSummaryValue(key);
             if (number != null) {
                 double value = number.doubleValue();

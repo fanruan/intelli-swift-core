@@ -130,6 +130,8 @@ class ValueIterator {
         return map.entrySet().iterator();
     }
 
+
+
     private boolean isCustomGroup(IGroup group) {
         if (group == null) {
             return false;

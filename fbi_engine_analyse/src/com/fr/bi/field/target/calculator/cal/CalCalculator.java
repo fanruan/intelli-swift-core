@@ -1,10 +1,10 @@
 package com.fr.bi.field.target.calculator.cal;
 
-import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.stable.report.key.SummaryCalculator;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.field.target.target.cal.BICalculateTarget;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.*;
 
@@ -45,11 +45,11 @@ public abstract class CalCalculator implements TargetCalculator {
      *
      * @param node node节点
      */
-    public abstract void calCalculateTarget(LightNode node);
+    public abstract void calCalculateTarget(BINode node);
 
     /**
-     * 计算
      *
+     * 计算
      * @param node 节点
      * @param key  关键字
      */
@@ -62,22 +62,12 @@ public abstract class CalCalculator implements TargetCalculator {
      * @param node node节点
      */
     @Override
-    public void doCalculator(ICubeTableService cr, SummaryContainer node) {
+    public void doCalculator(ICubeTableService cr, SummaryContainer node, GroupValueIndex gvi, TargetGettingKey key) {
         if (node instanceof BINode) {
             calCalculateTarget((BINode) node);
         } else {
-            calCalculateTarget((BICrossNode) node, createTargetGettingKey());
+            calCalculateTarget((BICrossNode) node, key);
         }
-    }
-
-    /**
-     * 计算
-     *
-     * @param cr   索引
-     * @param node node节点
-     */
-    @Override
-    public void doCalculator(ICubeTableService cr, SummaryContainer node, TargetGettingKey key) {
     }
 
     @Override
@@ -87,22 +77,6 @@ public abstract class CalCalculator implements TargetCalculator {
         }
         return targetGettingKey;
     }
-
-    /**
-     * @deprecated no use
-     */
-    /**
-     * 创建计算
-     *
-     * @param cr   索引
-     * @param node node节点
-     * @return SummaryCalculator
-     */
-    @Override
-    public SummaryCalculator createSummaryCalculator(ICubeTableService cr, SummaryContainer node) {
-        return null;
-    }
-
 
     /**
      * @return 指标数组

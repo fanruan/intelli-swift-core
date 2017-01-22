@@ -1,297 +1,92 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
+import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.SummaryIndexCal;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.result.NodeUtils;
 import com.fr.bi.cal.analyze.cal.result.operator.Operator;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.report.result.TargetCalculator;
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.general.ComparatorUtils;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.List;
-import java.util.Map;
 
 public class GroupUtils {
 
 
-    public static NodeAndPageInfo createNextPageMergeNode(IRootDimensionGroup[] roots, List<TargetCalculator[]> calculators, NodeExpander expander, Operator op) {
-        NodeDimensionIterator[] iters = op.getPageIterator(roots, expander);
-        return createMergePageNode(iters, calculators, op, roots);
+    public static NodeAndPageInfo createNextPageMergeNode(IRootDimensionGroup root, Operator op, NodeExpander expander, boolean showSum, boolean shouldSetIndex) {
+        root.setExpander(expander);
+        NodeDimensionIterator iterator = op.getPageIterator(root);
+        return createMergePageNode(iterator, op, showSum, shouldSetIndex);
     }
 
-    /**
-     * Connery:依据iters获得child节点，并添加到node对象的child属性中
-     *
-     * @param gc
-     * @param node
-     * @param iters
-     * @param op
-     */
-    protected static void merge(GroupConnectionValue[] gc, Node node, NodeDimensionIterator[] iters, List<TargetCalculator[]> calculators, Operator op, IRootDimensionGroup[] roots) {
-        GroupConnectionValue[] gcvsChild = getGroupConnectionValueChildren(gc);
-        gcvsChild = getMinChildGroups(gcvsChild);
-        if (isAllEmpty(gcvsChild)) {
-            moveNext(gc, iters);
-            op.addRow();
-            return;
-        } else {
-            for (int i = 0; i < gcvsChild.length; i++) {
-                if (gcvsChild[i] != null) {
-                    Object data = gcvsChild[i].getData();
-                    Node n;
-                    if (data instanceof ComparableLinkedHashSet) {
-                        n = getNode(node, calculators, roots[i], gcvsChild, i, data);
-                    } else {
-                        n = node.getChild(data);
-                        if (n == null) {
-                            //FIXME 交叉表需要传index这里需要考虑改变数据结构
-                            n = new Node(gcvsChild[i].getCk(), data);
-                            int deep = 0;
-                            Node t = node;
-                            while (t.getParent() != null) {
-                                t = t.getParent();
-                                deep++;
-                            }
-                            if (n.getShowValue() != BIBaseConstant.EMPTY_NODE_DATA || deep != 0) {
-                                node.addChild(n);
-                                addSummaryValue(n, gcvsChild, calculators);
-                            }
-                        }
-                    }
-                    merge(gcvsChild, n, iters, calculators, op, roots);
-                    break;
-                }
-            }
-        }
-    }
-
-    private static Node getNode(Node node, List<TargetCalculator[]> calculators, IRootDimensionGroup root, GroupConnectionValue[] gcvsChild, int i, Object data) {
-        Node n;
-        if (node.getChildLength() > 0) {
-            n = node.getChild(0).createCloneNodeWithValue();
-            ((ComparableLinkedHashSet) n.getData()).addAll((ComparableLinkedHashSet) data);
-        } else {
-            ComparableLinkedHashSet set = new ComparableLinkedHashSet();
-            set.addAll((ComparableLinkedHashSet) data);
-            n = new Node(gcvsChild[i].getCk(), set);
-        }
-        data = n.getData();
-        int deep = 0;
-        Node t = node;
-        while (t.getParent() != null) {
-            t = t.getParent();
-            deep++;
-        }
-        String dataString = data.toString();
-        n.setShowValue(dataString);
-        node.getChilds().clear();
-        node.addChild(n);
-        addSummaryValue(n, gcvsChild, calculators);
-        return n;
-    }
-
-    public static void moveNext(GroupConnectionValue[] gc, NodeDimensionIterator[] iters) {
-        for (int i = 0; i < gc.length; i++) {
-            if (gc[i] != null) {
-                iters[i].moveNext();
-            }
-        }
-    }
-
-    public static GroupConnectionValue[] getGroupConnectionValueChildren(GroupConnectionValue[] gc) {
-        GroupConnectionValue[] gcvsChild = new GroupConnectionValue[gc.length];
-        for (int i = 0; i < gc.length; i++) {
-            if (gc[i] != null) {
-                gcvsChild[i] = gc[i].getChild();
-            }
-        }
-        return gcvsChild;
-    }
-
-    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator[] iters, List<TargetCalculator[]> calculators, Operator op, IRootDimensionGroup[] roots) {
-        Node node = new Node(null, null);
-        GroupConnectionValue[] gc = null;
-        try {
-            gc = getNextGC(iters);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
+    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex) {
+        Node node = new Node();
+        GroupConnectionValue gc = iterator.next();
         if (gc == null) {
             return new NodeAndPageInfo(node, false, false, 0);
         }
-        addSummaryValue(node, gc, calculators);
-        GroupConnectionValue[] gcvsChild = new GroupConnectionValue[iters.length];
-        for (int i = 0; i < gc.length; i++) {
-            if (gc[i] != null) {
-                gcvsChild[i] = gc[i].getChild();
-            }
-        }
-        if (!isAllEmpty(gcvsChild)) {
-            merge(gc, node, iters, calculators, op, roots);
-            while (!op.isPageEnd()) {
-                while (node.getParent() != null) {
-                    node = node.getParent();
+        addSummaryValue(node, gc, showSum, shouldSetIndex);
+        while (!op.isPageEnd() && gc != null && gc.getChild() != null) {
+            GroupConnectionValue gcvChild = gc.getChild();
+            Node parent = node;
+            int deep = 0;
+            while (gcvChild != null) {
+                Object data = gcvChild.getData();
+                Node child = parent.getChild(data);
+                if (child == null) {
+                    child = new Node(data);
+                    if (data != BIBaseConstant.EMPTY_NODE_DATA || deep != 0) {
+                        parent.addChild(child);
+                    }
                 }
-                GroupConnectionValue[] gcv = getNextGC(iters);
-                if (isAllEmpty(gcv)) {
-                    break;
-                }
-                merge(gcv, node, iters, calculators, op, roots);
+                parent = child;
+                addSummaryValue(child, gcvChild, showSum, shouldSetIndex);
+                gcvChild = gcvChild.getChild();
+                deep++;
             }
+            op.addRow();
+            iterator.moveNext();
+            gc = iterator.next();
         }
-        try {
-            PageEnd(iters);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-
+        iterator.pageEnd();
         NodeUtils.setSiblingBetweenFirstAndLastChild(node);
-        return new NodeAndPageInfo(node, hasPrevious(iters), hasNext(iters), getPage(iters));
+        return new NodeAndPageInfo(node, iterator.hasPrevious(), iterator.hasNext(), getPage(iterator));
     }
 
-    private static boolean hasPrevious(NodeDimensionIterator[] iters) {
-        for (int i = 0; i < iters.length; i++) {
-            if (iters[i].hasPrevious()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    private static boolean hasNext(NodeDimensionIterator[] iters) {
-        for (int i = 0; i < iters.length; i++) {
-            if (iters[i].hasNext()) {
-                return true;
-            }
-        }
-        return false;
+    private static int getPage(NodeDimensionIterator iterator) {
+        return iterator == null ? 0 : iterator.getPageIndex();
     }
-
-    private static int getPage(NodeDimensionIterator[] iters) {
-        if (iters == null || iters.length == 0) {
-            return 0;
-        } else {
-            return iters[0].getPageIndex();
-        }
-    }
-
-    private static GroupConnectionValue[] getNextGC(NodeDimensionIterator[] iters) {
-        GroupConnectionValue[] gcvs = new GroupConnectionValue[iters.length];
-        for (int i = 0; i < iters.length; i++) {
-            if (iters[i] != null) {
-                gcvs[i] = iters[i].next();
-            }
-        }
-        return gcvs;
-    }
-
-    public static boolean isAllEmpty(GroupConnectionValue[] gcvs) {
-        for (GroupConnectionValue v : gcvs) {
-            if (v != null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static void PageEnd(NodeDimensionIterator[] iters) {
-        for (NodeDimensionIterator v : iters) {
-            if (v != null) {
-                v.PageEnd();
-            }
-        }
-    }
-
-    public static GroupConnectionValue[] getMinChildGroups(GroupConnectionValue[] gcvs) {
-        Object minValue = null;
-        GroupConnectionValue[] result = new GroupConnectionValue[gcvs.length];
-        for (int i = 0; i < gcvs.length; i++) {
-            GroupConnectionValue gcv = gcvs[i];
-            if (gcv != null) {
-                Object currentValue = gcv.getKey();
-                if (minValue == null) {
-                    minValue = currentValue;
-                } else {
-                    int c;
-                    if(currentValue == null){
-                        c = 0;
-                    }else{
-                        if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
-                            c = gcv.getComparator().compare(minValue, currentValue);
-                        } else {
-                            c = 1;
-                        }
-                    }
-                    if (c > 0) {
-                        minValue = currentValue;
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < gcvs.length; i++) {
-            GroupConnectionValue gcv = gcvs[i];
-            if (gcv != null) {
-                Object currentValue = gcv.getKey();
-                int c;
-                if(currentValue == null && minValue == null){
-                    c = 0;
-                }else{
-                    if (ComparatorUtils.equals(minValue.getClass(), currentValue.getClass())) {
-                        c = gcv.getComparator().compare(minValue, currentValue);
-                    } else {
-                        c = 1;
-                    }
-                }
-                if (c == 0) {
-                    result[i] = gcvs[i];
-                }
-            }
-        }
-        return result;
-    }
-
 
     /**
      * 获取维度对应指标的汇总值
      *
      * @param node
-     * @param gcvs
+     * @param shouldSetIndex
      */
-    private static void addSummaryValue(Node node, GroupConnectionValue[] gcvs, List<TargetCalculator[]> calculators) {
-        NoneDimensionGroup[] groups = new NoneDimensionGroup[gcvs.length];
-        for (int i = 0; i < gcvs.length; i++) {
-            if (gcvs[i] != null) {
-                groups[i] = gcvs[i].getCurrentValue();
-            }
-        }
-        for (int i = 0; i < groups.length; i++) {
-            if (groups[i] != null && !ComparatorUtils.equals(groups[i].getTableKey(), BIBusinessTable.createEmptyTable())) {
-                if (groups[i] instanceof TreeNoneDimensionGroup) {
-                    setSummaryValueMap(node, (TreeNoneDimensionGroup) groups[i]);
-                    LightNode root = groups[i].getLightNode();
-                    NodeUtils.copyIndexMap(node, root);
-                    break;
-                }
-                if (MultiThreadManagerImpl.isMultiCall()) {
-                    TargetCalculator[] cs = calculators.get(i);
-                    if (cs != null){
-                        for (TargetCalculator c : cs){
-                            MultiThreadManagerImpl.getInstance().getExecutorService().add(new SummaryCall(node, groups[i],c));
-                        }
-                    }
-                } else {
-                    for (TargetCalculator calculator : calculators.get(i)){
-                        Number v = groups[i].getSummaryValue(calculator);
-                        if (v != null) {
-                            node.setTargetGetter(calculator.createTargetGettingKey(), groups[i].getRoot().getGroupValueIndex());
-                            node.setTargetIndex(calculator.createTargetGettingKey(), groups[i].getRoot().getGroupValueIndex());
-                            node.setSummaryValue(calculator.createTargetGettingKey(), v);
+    private static void addSummaryValue(Node node, GroupConnectionValue gcv, boolean showSum, boolean shouldSetIndex) {
+        if (showSum || gcv.getChild() == null) {
+            NoneDimensionGroup group = gcv.getCurrentValue();
+            if (group != null) {
+                List<TargetAndKey>[] summaryLists = group.getSummaryLists();
+                GroupValueIndex[] gvis = group.getGvis();
+                node.setSummaryValue(group.getSummaryValue());
+                ICubeTableService[] tis = group.getTis();
+                for (int i = 0; i < summaryLists.length; i++) {
+                    List<TargetAndKey> targetAndKeys = summaryLists[i];
+                    for (TargetAndKey targetAndKey : targetAndKeys) {
+                        BISingleThreadCal singleThreadCal = createSinlgeThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex);
+                        if (MultiThreadManagerImpl.isMultiCall()) {
+                            MultiThreadManagerImpl.getInstance().getExecutorService().add(singleThreadCal);
+                        } else {
+                            singleThreadCal.cal();
                         }
                     }
                 }
@@ -299,8 +94,12 @@ public class GroupUtils {
         }
     }
 
-    private static void setSummaryValueMap(Node node, TreeNoneDimensionGroup group) {
-        Map summaryValueMap = group.getTargetGettingKeyRoot().getSummaryValueMap();
-        node.setSummaryValueMap(summaryValueMap);
+    private static BISingleThreadCal createSinlgeThreadCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean shouldSetIndex) {
+        if (shouldSetIndex) {
+            return new SummaryIndexCal(ti, node, targetAndKey, gvi, loader);
+        } else {
+            return new SummaryCall(ti, node, targetAndKey, gvi, loader);
+        }
     }
+
 }

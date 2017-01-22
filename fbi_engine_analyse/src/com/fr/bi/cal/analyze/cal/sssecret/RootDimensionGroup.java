@@ -1,39 +1,27 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
+import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
-import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
-import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
-import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
-import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
-import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
-import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.key.date.BIDateValue;
-import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.util.BIConfUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * 根，用于保存游标等其他信息，感觉可以优化成一个游标就完了
@@ -42,59 +30,75 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RootDimensionGroup implements IRootDimensionGroup {
 
-    protected NoneDimensionGroup root;
-    protected DimensionCalculator[] cks;
-
-    protected ICubeValueEntryGetter[] getters;
-
+    protected List<MetricGroupInfo> metricGroupInfoList;
+    protected MergeIteratorCreator[] mergeIteratorCreators;
     protected BISession session;
-    protected BIWidget widget;
-    ISingleDimensionGroup[] singleDimensionGroupCache;
-    private NodeExpander expander;
+    protected boolean useRealData;
+
     private TreeIterator iter;
-    private boolean useRealData;
+    protected ICubeValueEntryGetter[][] getters;
+    protected DimensionCalculator[][] columns;
+    protected ICubeTableService[] tis;
+    private ISingleDimensionGroup[] singleDimensionGroupCache;
+    protected BusinessTable[] metrics;
+    protected List<TargetAndKey>[] summaryLists;
+    protected NoneDimensionGroup root;
+    protected int rowSize;
+    private NodeExpander expander;
 
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, ICubeValueEntryGetter[] getters, BIWidget widget) {
-        setRoot(root);
-        this.cks = cks;
-        this.expander = expander;
+    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, BISession session, boolean useRealData) {
+        this.metricGroupInfoList = metricGroupInfoList;
+        this.mergeIteratorCreators = mergeIteratorCreators;
         this.session = session;
-        this.iter = new TreeIterator(cks.length);
-        this.widget = widget;
         this.useRealData = useRealData;
-        this.getters = getters;
-        this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
         init();
     }
 
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, BIWidget widget) {
-        setRoot(root);
-        this.cks = cks;
-        this.expander = expander;
-        this.session = session;
-        this.widget = widget;
-        this.iter = new TreeIterator(cks.length);
-        this.useRealData = useRealData;
-        this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
-        init();
+    protected void init() {
+        initIterator();
+        initGetterAndRows();
+        initRoot();
     }
 
-    private void init() {
-        initGetters();
+    private void initIterator() {
+        if (metricGroupInfoList == null || metricGroupInfoList.isEmpty()) {
+            BINonValueUtils.beyondControl("invalid parameters");
+        }
+        rowSize = metricGroupInfoList.get(0).getRows().length;
+        for (MetricGroupInfo info : metricGroupInfoList) {
+            if (info.getRows().length != rowSize) {
+                throw new RuntimeException("invalid parameters");
+            }
+        }
+        this.singleDimensionGroupCache = new ISingleDimensionGroup[rowSize];
+        this.iter = new TreeIterator(rowSize);
     }
 
-    private void initGetters() {
-        if (null == getters) {
-            getters = new ICubeValueEntryGetter[cks.length];
-            for (int i = 0; i < cks.length; i++) {
-                ICubeTableService ti = session.getLoader().getTableIndex(getSource(cks[i]));
-                getters[i] = ti.getValueEntryGetter(createKey(cks[i]), cks[i].getRelationList());
+    protected void initGetterAndRows() {
+        getters = new ICubeValueEntryGetter[rowSize][metricGroupInfoList.size()];
+        columns = new DimensionCalculator[rowSize][metricGroupInfoList.size()];
+        tis = new ICubeTableService[metricGroupInfoList.size()];
+        for (int i = 0; i < metricGroupInfoList.size(); i++) {
+            DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
+            for (int j = 0; j < rs.length; j++) {
+                ICubeTableService ti = session.getLoader().getTableIndex(getSource(rs[j]));
+                columns[j][i] = rs[j];
+                getters[j][i] = ti.getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
+                tis[i] = ti;
             }
         }
     }
 
-    public ICubeValueEntryGetter[] getGetters() {
-        return getters;
+    protected void initRoot() {
+        metrics = new BusinessTable[metricGroupInfoList.size()];
+        summaryLists = new ArrayList[metricGroupInfoList.size()];
+        GroupValueIndex[] gvis = new GroupValueIndex[metricGroupInfoList.size()];
+        for (int i = 0; i < metricGroupInfoList.size(); i++) {
+            metrics[i] = metricGroupInfoList.get(i).getMetric();
+            summaryLists[i] = metricGroupInfoList.get(i).getSummaryList();
+            gvis[i] = metricGroupInfoList.get(i).getFilterIndex();
+        }
+        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, gvis, session.getLoader());
     }
 
     private CubeTableSource getSource(DimensionCalculator column) {
@@ -113,14 +117,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             return new IndexKey(primaryField.getFieldName());
         }
         return column.createKey();
-    }
-
-    protected void setRoot(NoneDimensionGroup root) {
-        this.root = root;
-    }
-
-    public NoneDimensionGroup getRoot() {
-        return root;
     }
 
     public static int findPageIndexDichotomy(int[] shrinkPos, List<int[]> pageIndex, int start, int end) throws ArrayIndexOutOfBoundsException {
@@ -154,15 +150,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
     }
 
-    public boolean isUseRealData() {
-        return useRealData;
-    }
-
-    @Override
-    public void setExpander(NodeExpander expander) {
-        this.expander = expander;
-    }
-
     /**
      * TODO 这里可以改成可以前后移动的游标提高性能先这样
      */
@@ -189,20 +176,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     @Override
-    public TreeIterator moveToStart() {
-        iter.reset();
-        return iter;
-    }
-
-    @Override
-    public void clearCache() {
-        singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
+    public void setExpander(NodeExpander expander) {
+        this.expander = expander;
     }
 
     private int[] getValueStartRow(Object[] value) {
         IntList result = new IntList();
         getValueStartRow(root, value, 0, result);
-        for (int i = value.length; i < cks.length; i++) {
+        for (int i = value.length; i < rowSize; i++) {
             result.add(-1);
         }
         return result.toArray();
@@ -212,240 +193,94 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if (deep >= value.length) {
             return;
         }
-        ISingleDimensionGroup sg = (ComparatorUtils.equals(root.getTableKey(), BIBusinessTable.createEmptyTable()) && deep > 0) ? ng.createNoneTargetSingleDimensionGroup(cks, cks[deep], value, deep, getters[deep], getCKGvigetter(value, deep), useRealData) : getSingleDimensionGroupCache(value, ng, deep);
+        ISingleDimensionGroup sg = getSingleDimensionGroupCache(value, ng, deep);
         int i = sg.getChildIndexByValue(value[deep]);
         if (i == -1) {
             return;
         }
         list.add(i);
-        try {
-            NoneDimensionGroup currentNg = sg.getChildDimensionGroup(i);
-            if (currentNg.node == null) {
-                return;
-            }
-            getValueStartRow(currentNg, value, deep + 1, list);
-        } catch (GroupOutOfBoundsException e) {
+        NoneDimensionGroup currentNg = sg.getChildDimensionGroup(i);
+        if (currentNg == NoneDimensionGroup.NULL) {
             return;
         }
+        getValueStartRow(currentNg, value, deep + 1, list);
     }
 
     private ISingleDimensionGroup getSingleDimensionGroupCache(Object[] value, NoneDimensionGroup ng, int deep) {
-        if (ng instanceof TreeNoneDimensionGroup) {
-            return ((TreeNoneDimensionGroup) ng).getSingleDimensionGroup();
-        }
-        if (singleDimensionGroupCache[deep] != null) {
-            return singleDimensionGroupCache[deep];
-        }
         return createSingleDimensionGroup(value, ng, deep);
     }
 
     /**
-     * 获得下一个值，可能是下一个child，也可能下一个brother。
-     * 如果是结点展开，同时深度没有到底。那么就是下一个child。（深度是指维度间的上下级关系）
-     * 否则是当前结点下一个brother。
-     *
-     * @param gv
-     * @param ng
-     * @param index
-     * @param deep
-     * @param expander
-     * @param list
-     */
-    private ReturnStatus getNext(GroupConnectionValue gv, NoneDimensionGroup ng, int[] index, int deep, NodeExpander expander, IntList list) {
-        return getNext(gv, ng, index, deep, expander, list, null);
-    }
-
-    /**
-     * 加了一位nextBrother。
-     * 当从nextParent进入到GetNext里面时，直接进入nextBrother方法。
-     *
-     * @param gv
-     * @param ng
-     * @param index
-     * @param deep
-     * @param expander
-     * @param list
-     * @param nextBrother
+     * @param gv       表示一行的值
+     * @param index    上一次游标的位置
+     * @param deep     维度的层级
+     * @param expander 展开信息
+     * @param list     当前的游标
      */
     private ReturnStatus getNext(GroupConnectionValue gv,
-                                 NoneDimensionGroup ng,
                                  int[] index,
                                  int deep,
                                  NodeExpander expander,
-                                 IntList list,
-                                 Object nextBrother) {
+                                 IntList list) {
         if (expander == null) {
-            return groupEnd();
+            return ReturnStatus.GroupEnd;
         }
-        if (cks.length == 0) {
-            return ReturnStatus.NULL;
+        if (rowSize == 0) {
+            return ReturnStatus.Success;
         }
-        ISingleDimensionGroup sg;
-        sg = getSingleDimensionGroup(gv, ng, deep);
-        String currentValueShowName = null;
-        //如果不是-1说明是从child搞上来的有可能是没有的
-        if (index[deep] != -1) {
-            try {
-                currentValueShowName = sg.getChildShowName(index[deep]);
-            } catch (GroupOutOfBoundsException e) {
-                if (ReturnStatus.GroupEnd == gotoNextParent(gv, index, deep, expander, list)) {
-                    return groupEnd();
-                }
+        ISingleDimensionGroup sg = getCacheDimensionGroup(gv, deep);
+        //如果往下移动，行数就加1
+        if (notNextChild(index, deep, expander, sg)) {
+            index[deep]++;
+        }
+        ReturnStatus returnStatus = findCurrentValue(sg, gv, list, index[deep]);
+        //如果越界，就一直往上移，直到不越界或者结束。
+        while (returnStatus == ReturnStatus.GroupOutOfBounds) {
+            //如果找到根节点还是越界，说明结束了。
+            if (deep == 0) {
+                return ReturnStatus.GroupEnd;
             }
+            //把index数组deep位置后面的都清了，下移一位开始找，每次seek的时候这个while循环至多执行一次。
+            Arrays.fill(index, deep, index.length, -1);
+            list.remove(list.size() - 1);
+            deep -= 1;
+            gv = gv.getParent();
+            sg = getCacheDimensionGroup(gv, deep);
+            expander = expander.getParent();
+            returnStatus = findCurrentValue(sg, gv, list, ++index[deep]);
         }
-        if (notNextChild(index, deep, expander, nextBrother, currentValueShowName)) {
-            try {
-                ReturnStatus returnStatus = gotoNextBrother(sg, gv, index, deep, expander, list);
-                if (returnStatus == ReturnStatus.GroupOutOfBounds) {
-                    if (ReturnStatus.GroupEnd == gotoNextParent(gv, index, deep, expander, list)) {
-                        return groupEnd();
-                    }
-                } else if (returnStatus == ReturnStatus.GroupOutOfBounds) {
-                    return catchGroupOutOfBounds(gv, index, deep, expander, list);
-                } else if (returnStatus == ReturnStatus.GroupEnd) {
-                    return groupEnd();
-                }
-            } catch (GroupOutOfBoundsException e) {
-                return catchGroupOutOfBounds(gv, index, deep, expander, list);
-            }
-        } else {
-            if (ReturnStatus.GroupEnd == gotoNextChildValue(sg, gv, index, deep, expander, list)) {
-                return groupEnd();
+        //如果往下展开，就继续往下
+        NodeExpander ex = expander.getChildExpander(sg.getChildShowName(index[deep]));
+        if (ex != null && deep + 1 < index.length) {
+            if (ReturnStatus.GroupEnd == getNext(gv.getChild(), index, deep + 1, ex, list)){
+                return ReturnStatus.GroupEnd;
             }
         }
         return ReturnStatus.Success;
     }
 
-    private ReturnStatus catchGroupOutOfBounds(GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list) {
-        ReturnStatus gotoNextParentStatus = gotoNextParent(gv, index, deep, expander, list);
-        if (ReturnStatus.GroupEnd == gotoNextParentStatus) {
-            return groupEnd();
+    //最后一个维度或者初始化的情况或者没有展开的情况必定是往下的
+    private boolean notNextChild(int[] index, int deep, NodeExpander expander, ISingleDimensionGroup sg) {
+        if (index.length == deep + 1 || index[deep] == -1) {
+            return true;
         }
-        return ReturnStatus.Success;
+        String showValue = sg.getChildShowName(index[deep]);
+        return showValue != null && expander.getChildExpander(showValue) == null;
     }
 
-    private boolean notNextChild(int[] index, int deep, NodeExpander expander, Object nextBrother, String currentValueShowName) {
-        return index.length == deep + 1 || (currentValueShowName != null && expander.getChildExpander(currentValueShowName) == null || nextBrother != null);
-    }
-
-    private ReturnStatus groupEnd() {
-//		throw new GroupEndException();
-        return ReturnStatus.GroupEnd;
-    }
-
-    protected ISingleDimensionGroup getSingleDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
-        return getCacheDimensionGroup(gv, ng, deep);
-
-    }
-
-    private ISingleDimensionGroup getCacheDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
+    private ISingleDimensionGroup getCacheDimensionGroup(GroupConnectionValue gv, int deep) {
         if (singleDimensionGroupCache[deep] == null || !ComparatorUtils.equals(singleDimensionGroupCache[deep].getData(), getParentsValuesByGv(gv, deep))) {
-            singleDimensionGroupCache[deep] = createSingleDimensionGroup(gv, ng, deep);
+            singleDimensionGroupCache[deep] = createSingleDimensionGroup(gv, deep);
         }
         return singleDimensionGroupCache[deep];
     }
 
-    protected ISingleDimensionGroup createSingleDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
-        ISingleDimensionGroup sg;
-        if ((ComparatorUtils.equals(root.getTableKey(), BIBusinessTable.createEmptyTable()) && deep > 0)) {
-            sg = ng.createNoneTargetSingleDimensionGroup(cks, cks[deep], getParentsValuesByGv(gv, deep), deep, getters[deep], getCKGvigetter(gv, deep), useRealData);
-        } else {
-            sg = ng.createSingleDimensionGroup(cks, cks[deep], getParentsValuesByGv(gv, deep), deep, getters[deep], useRealData);
-        }
-        return sg;
+    protected ISingleDimensionGroup createSingleDimensionGroup(GroupConnectionValue gv, int deep) {
+        return createSingleDimensionGroup(getParentsValuesByGv(gv, deep), gv.getCurrentValue(), deep);
     }
 
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
-        ISingleDimensionGroup sg;
-        if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
-            sg = ng.createNoneTargetSingleDimensionGroup(cks, cks[deep], data, deep, getters[deep], getCKGvigetter(data, deep), useRealData);
-        } else {
-            sg = ng.createSingleDimensionGroup(cks, cks[deep], data, deep, getters[deep], useRealData);
-        }
-        return sg;
-    }
-
-    protected GroupValueIndex getCKGvigetter(GroupConnectionValue gv, int deep) {
-        DimensionCalculator ck = cks[deep];
-        GroupValueIndex gvi = iter.createFilterGvi(ck);
-        int i = deep;
-        GroupConnectionValue v = gv;
-        while (i != 0) {
-            i--;
-            DimensionCalculator ckp = cks[i];
-            Object value = v.getData();
-            if (value == null || ckp.getRelationList() == null) {
-                v = v.getParent();
-                continue;
-            }
-            if (ckp instanceof DateDimensionCalculator) {
-                Set<BIDateValue> currentSet = new HashSet<BIDateValue>();
-                /**
-                 * 螺旋分析这里会出现空字符串
-                 */
-                if (value instanceof Number) {
-                    currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
-                } else {
-                    currentSet.add(null);
-                }
-
-                DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
-                GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
-                if (pgvi != null) {
-                    gvi = gvi.AND(pgvi);
-                }
-            } else if (ckp instanceof StringDimensionCalculator) {
-                if (value == BIBaseConstant.EMPTY_NODE_DATA) {
-                    v = v.getParent();
-                    continue;
-                }
-                Set currentSet = ((StringDimensionCalculator) ckp).createFilterValueSet((String) value, session.getLoader());
-                StringINFilterValue stf = new StringINFilterValue(currentSet);
-                BITableRelationPath firstPath = null;
-                try {
-                    firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
-                } catch (BITableUnreachableException e) {
-                    continue;
-                }
-                if (ComparatorUtils.equals(ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo())) {
-                    firstPath = new BITableRelationPath();
-                }
-                if (firstPath == null) {
-                    continue;
-                }
-                GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
-                        ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
-                gvi = gvi.AND(pgvi);
-            } else if (ckp instanceof NumberDimensionCalculator) {
-                if (value == BIBaseConstant.EMPTY_NODE_DATA) {
-                    v = v.getParent();
-                    continue;
-                }
-                BITableRelationPath firstPath = null;
-                try {
-                    firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
-                } catch (BITableUnreachableException e) {
-                    continue;
-                }
-                if (ComparatorUtils.equals(ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo())) {
-                    firstPath = new BITableRelationPath();
-                }
-                if (firstPath == null) {
-                    continue;
-                }
-                ckp.setRelationList(BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
-                GroupValueIndex pgvi = ckp.createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
-                gvi = gvi.AND(pgvi);
-            }
-            if (widget instanceof TableWidget) {
-                GroupValueIndex filterGvi = ((TableWidget) widget).getFilter().createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
-                if (filterGvi != null) {
-                    gvi = filterGvi.AND(gvi);
-                }
-            }
-            v = v.getParent();
-        }
-        return gvi;
+        return ng.createSingleDimensionGroup(columns[deep], getters[deep], data, mergeIteratorCreators[deep], useRealData);
     }
 
     protected Object[] getParentsValuesByGv(GroupConnectionValue groupConnectionValue, int deep) {
@@ -463,106 +298,20 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         return obs;
     }
 
-    private GroupValueIndex getCKGvigetter(Object[] values, int deep) {
-        DimensionCalculator ck = cks[deep];
-        GroupValueIndex gvi = iter.createFilterGvi(ck);
-        int i = deep;
-        while (i != 0) {
-            i--;
-            DimensionCalculator ckp = cks[i];
-            Object value = values[i];
-            if (value == null || ckp.getRelationList() == null) {
-                continue;
-            }
-            if (ckp instanceof DateDimensionCalculator) {
-                Set<BIDateValue> currentSet = new HashSet<BIDateValue>();
-                currentSet.add((BIDateValue) value);
-                DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
-
-                GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
-                gvi = gvi.AND(pgvi);
-            } else if (ckp instanceof StringDimensionCalculator) {
-                if (value == BIBaseConstant.EMPTY_NODE_DATA) {
-                    continue;
-                }
-                Set currentSet = ((StringDimensionCalculator) ckp).createFilterValueSet((String) value, session.getLoader());
-                StringINFilterValue stf = new StringINFilterValue(currentSet);
-                GroupValueIndex pgvi = stf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
-                gvi = gvi.AND(pgvi);
-            }
+    private ReturnStatus findCurrentValue(ISingleDimensionGroup sg, GroupConnectionValue gv, IntList list, int row) {
+        NoneDimensionGroup nds = sg.getChildDimensionGroup(row);
+        if (nds == NoneDimensionGroup.NULL) {
+            return ReturnStatus.GroupOutOfBounds;
         }
-        return gvi;
-    }
-
-    private ReturnStatus gotoNextChildValue(ISingleDimensionGroup sg, GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list) {
-        if (index[deep] == -1) {
-            index[deep] += 1;
-        }
-        return findCurrentValue(sg, gv, index, deep, expander, list, index[deep]);
-    }
-
-    private ReturnStatus findCurrentValue(ISingleDimensionGroup sg, GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list, int row) {
-        NoneDimensionGroup nds;
-        if (row == 0) {
-            try {
-                nds = sg.getChildDimensionGroup(row);
-                if (NoneDimensionGroup.NULL == nds) {
-                    if (deep == 0) {
-                        return ReturnStatus.GroupEnd;
-                    }
-                    index[deep - 1] = index[deep - 1] + 1;
-                    list.set(deep - 1, index[deep - 1] + 1);
-                    return ReturnStatus.GroupOutOfBounds;
-                }
-            } catch (GroupOutOfBoundsException e) {
-                if (deep == 0) {
-                    return ReturnStatus.GroupEnd;
-                }
-                index[deep - 1] = index[deep - 1] + 1;
-                throw e;
-            }
-        } else {
-            nds = sg.getChildDimensionGroup(row);
-            if (nds == NoneDimensionGroup.NULL) {
-                return ReturnStatus.GroupOutOfBounds;
-            }
-        }
-        GroupConnectionValue ngv = createGroupConnectionValue(sg, deep, row, nds);
-        NodeExpander ex = expander.getChildExpander(sg.getChildShowName(row));
+        GroupConnectionValue ngv = createGroupConnectionValue(sg, row, nds);
         list.add(row);
         ngv.setParent(gv);
-        if (ex != null && deep + 1 < index.length) {
-            ReturnStatus returnStatus = getNext(ngv, nds, index, deep + 1, ex, list);
-            if (ReturnStatus.GroupEnd == returnStatus) {
-                return groupEnd();
-            }
-        }
         return ReturnStatus.Success;
     }
 
-    protected GroupConnectionValue createGroupConnectionValue(ISingleDimensionGroup sg, int deep, int row, NoneDimensionGroup nds) {
-        GroupConnectionValue ngv = new GroupConnectionValue(cks[deep], sg.getChildData(row), sg.getChildNode(row).getComparator(), nds);
-        ngv.setGroupRow(row);
+    protected GroupConnectionValue createGroupConnectionValue(ISingleDimensionGroup sg, int row, NoneDimensionGroup nds) {
+        GroupConnectionValue ngv = new GroupConnectionValue(sg.getChildData(row), nds);
         return ngv;
-    }
-
-    private ReturnStatus gotoNextBrother(ISingleDimensionGroup sg, GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list) {
-        return findCurrentValue(sg, gv, index, deep, expander, list, index[deep] + 1);
-    }
-
-    private ReturnStatus gotoNextParent(GroupConnectionValue gv, int[] index, int deep, NodeExpander expander, IntList list) {
-        if (deep == 0) {
-            return groupEnd();
-        }
-        int[] newIndex = index.clone();
-        //Connery:这里移动下一位置，但是在getNext方法里面，调用了nextBrother，又在parent的向下移动了一个位置。
-        newIndex[deep - 1] = list.get(deep - 1);
-        Arrays.fill(newIndex, deep, newIndex.length, -1);
-        list.remove(list.size() - 1);
-        if (ReturnStatus.GroupEnd == getNext(gv.getParent(), gv.getParent().getCurrentValue(), newIndex, deep - 1, expander.getParent(), list, new Object())) {
-            return groupEnd();
-        }
-        return ReturnStatus.Success;
     }
 
     private static class TreePageComparator implements Comparator<int[]> {
@@ -597,10 +346,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     }
 
+    /**
+     * 类似n位进制不定的整数的加法，每次next就加1。
+     * 比如有三个维度，数组初始位置是{-1, -1, -1}, 从末尾依次往上加1，一旦越界，比如加到了{0, 0, 6}越界了，就进位加1，变成{0, 1, 0}再继续。
+     * 初始化为{-1, -1, -1}而不是{0, 0, -1}是因为可能没有展开倒最后一个维度，要是没有展开的情况会直接略过分组的第一个值。
+     */
     private class TreeIterator implements NodeDimensionIterator {
         private int[] index;
         private int[] tempIndex;
-        private Map<BusinessTable, GroupValueIndex> controlFilters = new ConcurrentHashMap<BusinessTable, GroupValueIndex>();
 
         /**
          * TODO 先放内存看看再说
@@ -610,32 +363,17 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         private TreeIterator(int len) {
             this.index = new int[len];
             Arrays.fill(this.index, -1);
-            PageEnd();
+            pageEnd();
         }
 
         private void moveLast() {
             int pos = pageIndex.size() - 3;
-            if (pos < 0) {
-                throw new GroupEndException();
-            }
             this.index = pageIndex.get(pos);
             this.pageIndex = this.pageIndex.subList(0, pos + 1);
         }
 
-        private GroupValueIndex createFilterGvi(DimensionCalculator ck) {
-            GroupValueIndex gvi = controlFilters.get(ck.getField().getTableBelongTo());
-            if (gvi == null) {
-                gvi = session.createFilterGvi(ck.getField().getTableBelongTo());
-                controlFilters.put(ck.getField().getTableBelongTo(), gvi);
-            }
-            return gvi;
-        }
-
         private void moveCurrentStart() {
             int pos = pageIndex.size() - 2;
-            if (pos < 0) {
-                throw new GroupEndException();
-            }
             this.index = pageIndex.get(pos);
             this.pageIndex = this.pageIndex.subList(0, pos + 1);
         }
@@ -657,23 +395,19 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
 
         private GroupConnectionValue seek(int[] index) {
-            try {
-                GroupConnectionValue gv = new GroupConnectionValue(null, null, null, root);
-                IntList list = new IntList();
-                int indexCopy[] = Arrays.copyOf(index, index.length);
-                if (ReturnStatus.GroupEnd == getNext(gv, root, indexCopy, 0, expander, list)) {
-                    this.tempIndex = null;
-                    return null;
-                }
-                for (int i = list.size(); i < cks.length; i++) {
-                    list.add(-1);
-                }
-                this.tempIndex = list.toArray();
-                return gv;
-            } catch (GroupEndException e) {
+            GroupConnectionValue gv = new GroupConnectionValue(null, root);
+            IntList list = new IntList();
+            int indexCopy[] = Arrays.copyOf(index, index.length);
+            if (ReturnStatus.GroupEnd == getNext(gv, indexCopy, 0, expander, list)) {
                 this.tempIndex = null;
                 return null;
             }
+            //没有展开的情况list的size会小于维度的数量，要补齐。主要是怕越界。。。
+            for (int i = list.size(); i < rowSize; i++) {
+                list.add(-1);
+            }
+            this.tempIndex = list.toArray();
+            return gv;
         }
 
         @Override
@@ -699,18 +433,8 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
 
         @Override
-        public void PageEnd() {
+        public void pageEnd() {
             pageIndex.add(this.index.clone());
         }
-
-        private void fillEndEmpty(int deep) {
-            Arrays.fill(this.index, deep, this.index.length, -1);
-        }
-
-        private void reset() {
-            fillEndEmpty(0);
-            this.pageIndex = this.pageIndex.subList(0, 0);
-        }
-
     }
 }
