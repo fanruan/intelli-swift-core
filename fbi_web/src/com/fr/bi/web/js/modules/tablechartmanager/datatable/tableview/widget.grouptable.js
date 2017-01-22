@@ -351,8 +351,6 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         this.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
         this.model.resetETree();
         this.loading();
-        this.table.setVPage(1); //回到首页
-        this.table.setHPage(1);
         BI.Utils.getWidgetDataByID(widgetId, {
             success: function (jsonData) {
                 if (!self._isJSONDataValid(jsonData)) {
@@ -363,6 +361,9 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 if (self.model.getTableForm() !== self.tableForm) {
                     self._createTable();
                 }
+                //回到首页
+                self.table.setVPage(1);
+                self.table.setHPage(1);
                 self._populateTable();
             },
             done: function () {
@@ -382,15 +383,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
 
     magnify: function () {
 
-    },
-
-    empty: function () {
-        BI.GroupTable.superclass.empty.apply(this, arguments);
-        if (BI.isNotNull(this.table)) {
-            this.table.empty();
-        }
     }
-
 });
 BI.GroupTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.group_table", BI.GroupTable);
