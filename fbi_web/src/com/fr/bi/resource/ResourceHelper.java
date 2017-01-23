@@ -778,13 +778,7 @@ public class ResourceHelper {
 
                 //excelview
                 "com/fr/bi/web/js/extend/excelview/excelview.cell.js",
-                "com/fr/bi/web/js/extend/excelview/excelview.js",
-
-
-                //react明细表
-//                "com/fr/bi/web/js/modules/detailtablereact/widget.detailtablereact.js",
-                //react汇总表
-//                "com/fr/bi/web/js/modules/summarytablereact/widget.summarytablereact.js",
+                "com/fr/bi/web/js/extend/excelview/excelview.js"
         };
     }
 
@@ -946,10 +940,7 @@ public class ResourceHelper {
 
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
-                "com/fr/bi/web/css/extend/excelview/excelview.css",
-
-                //react明细表
-//                "com/fr/bi/web/css/modules/detailtablereact/widget.detailtablereact.css",
+                "com/fr/bi/web/css/extend/excelview/excelview.css"
         };
     }
 
@@ -2098,11 +2089,7 @@ public class ResourceHelper {
 
                 //分享给我的
                 "com/fr/bi/web/css/components/share/sharetome.css",
-                "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
-
-
-                //react控件
-//                "com/fr/bi/web/css/components/components.react.css",
+                "com/fr/bi/web/css/components/share/sharetome.singleuser.css"
 
         };
     }
@@ -2873,10 +2860,7 @@ public class ResourceHelper {
 
                 //分享给我
                 "com/fr/bi/web/js/components/share/sharetome.js",
-                "com/fr/bi/web/js/components/share/sharetome.singleuser.js",
-
-
-                //react控件
+                "com/fr/bi/web/js/components/share/sharetome.singleuser.js"
         };
     }
 
