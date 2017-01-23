@@ -45,7 +45,7 @@ BI.PathChooser = BI.inherit(BI.Widget, {
             items: this.regions
         });
         BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.vertical_adapt",
             element: this.element,
             scrollable: true,
             hgap: 10,

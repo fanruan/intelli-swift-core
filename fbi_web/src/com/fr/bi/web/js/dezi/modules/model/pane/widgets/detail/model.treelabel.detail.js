@@ -56,11 +56,13 @@ BIDezi.TreeLabelDetailModel = BI.inherit(BI.Model, {
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
             }
             if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
+                var result = BI.filter(changed.dimensions, function (did, dimension) {
                     return !BI.has(prev.dimensions, did);
                 });
-                if (BI.isNotNull(result)) {
-                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                if (BI.isNotEmptyArray(result)) {
+                    BI.each(result, function(idx, dimension){
+                        BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + dimension._src.id, true);
+                    });
                 }
 
             }
@@ -75,45 +77,50 @@ BIDezi.TreeLabelDetailModel = BI.inherit(BI.Model, {
     },
 
     local: function () {
+        var self = this;
         if (this.has("addDimension")) {
-            var dimension = this.get("addDimension");
-            var view = this.get("view");
-            var src = dimension.src;
-            var dId = dimension.dId;
+            var addDimensions = this.get("addDimension");
             var dimensions = this.get("dimensions");
-            if (!dimensions[dId]) {
-                //维度指标基本属性
-                dimensions[dId] = {
-                    name: this._createDimName(src.name),
-                    _src: src._src,
-                    type: src.type,
-                    sort: {type: BICst.SORT.ASC, target_id: dId},
-                    group: {type: BICst.GROUP.ID_GROUP},
-                    used: true
-                };
+            var view = this.get("view");
+            var srcs = BI.isArray(addDimensions.src) ? addDimensions.src : [addDimensions.src];
+            var dIds = BI.isArray(addDimensions.dId) ? addDimensions.dId : [addDimensions.dId];
 
-                //设置所有纬度指标的target_relation
-                this._setDefaultRelation(dimensions);
-                view[BICst.REGION.DIMENSION1] || (view[BICst.REGION.DIMENSION1] = []);
-                if (!BI.contains(view[BICst.REGION.DIMENSION1], dId)) {
-                    view[BICst.REGION.DIMENSION1].push(dId);
-                }
+            BI.each(dIds, function(idx, dId){
+                if (!dimensions[dId]) {
+                    var src = srcs[idx];
+                    //维度指标基本属性
+                    dimensions[dId] = {
+                        name: self._createDimName(src.name),
+                        _src: src._src,
+                        type: src.type,
+                        sort: {type: BICst.SORT.ASC, target_id: dId},
+                        group: {type: BICst.GROUP.ID_GROUP},
+                        used: true
+                    };
 
-                //维度复用时所带信息
-                if (BI.has(src, "group")) {
-                    dimensions[dId].group = src.group;
+                    //设置所有纬度指标的target_relation
+                    self._setDefaultRelation(dimensions);
+                    view[BICst.REGION.DIMENSION1] || (view[BICst.REGION.DIMENSION1] = []);
+                    if (!BI.contains(view[BICst.REGION.DIMENSION1], dId)) {
+                        view[BICst.REGION.DIMENSION1].push(dId);
+                    }
+
+                    //维度复用时所带信息
+                    if (BI.has(src, "group")) {
+                        dimensions[dId].group = src.group;
+                    }
+                    if (BI.has(src, "sort")) {
+                        dimensions[dId].sort = src.sort;
+                    }
+                    if (BI.has(src, "filter_value")) {
+                        dimensions[dId].filter_value = src.filter_value;
+                    }
                 }
-                if (BI.has(src, "sort")) {
-                    dimensions[dId].sort = src.sort;
-                }
-                if (BI.has(src, "filter_value")) {
-                    dimensions[dId].filter_value = src.filter_value;
-                }
-                this.set({
-                    "dimensions": dimensions,
-                    "view": view
-                });
-            }
+            });
+            this.set({
+                "dimensions": dimensions,
+                "view": view
+            });
             return true;
         }
 

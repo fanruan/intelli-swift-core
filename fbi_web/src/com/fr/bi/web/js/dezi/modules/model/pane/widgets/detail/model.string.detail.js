@@ -48,26 +48,28 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
 
     local: function () {
         if (this.has("addDimension")) {
-            var dimension = this.get("addDimension");
-            var src = dimension.src;
-            var dId = dimension.dId;
+            var addDimensions = this.get("addDimension");
             var dimensions = this.get("dimensions");
             var view = this.get("view");
-            //维度指标基本属性
-            if (!dimensions[dId]) {
-                dimensions = {};
-                dimensions[dId] = {
-                    name: src.name,
-                    _src: src._src,
-                    type: src.type,
-                    sort: {type: BICst.SORT.ASC, target_id: dId}
-                };
-                view[BICst.REGION.DIMENSION1] = [dId];
-                this.set({
-                    "dimensions": dimensions,
-                    "view": view
-                });
-            }
+            var srcs = BI.isArray(addDimensions.src) ? addDimensions.src : [addDimensions.src];
+            var dIds = BI.isArray(addDimensions.dId) ? addDimensions.dId : [addDimensions.dId];
+            BI.each(dIds, function (idx, dId) {
+                if (!dimensions[dId]) {
+                    var src = srcs[idx];
+                    dimensions = {};
+                    dimensions[dId] = {
+                        name: src.name,
+                        _src: src._src,
+                        type: src.type,
+                        sort: {type: BICst.SORT.ASC, target_id: dId}
+                    };
+                    view[BICst.REGION.DIMENSION1] = [dId];
+                }
+            });
+            this.set({
+                "dimensions": dimensions,
+                "view": view
+            });
             return true;
         }
         return false;
