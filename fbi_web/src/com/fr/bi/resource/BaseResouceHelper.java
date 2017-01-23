@@ -319,6 +319,23 @@ public class BaseResouceHelper {
 
     public static String[] getThirdJs() {
         return new String[]{
+                "/com/fr/bi/web/js/report/jquery.js",
+                "/com/fr/bi/web/js/report/jquery-migrate.js",
+                "/com/fr/bi/web/js/report/jquery.hotkeys.js",
+
+                //report
+                "/com/fr/bi/web/js/report/load.js",
+                "/com/fr/bi/web/js/report/events.js",
+                "/com/fr/bi/web/js/report/jquery.base.js",
+                "/com/fr/bi/web/js/report/jquery.format.js",
+                "/com/fr/bi/web/js/report/jquery.observer.js",
+                "/com/fr/bi/web/js/report/jquery.widget.js",
+                "/com/fr/bi/web/js/report/jLayout.js",
+                "/com/fr/bi/web/js/report/jquery.sizes.js",
+                "/com/fr/bi/web/js/report/jquery.jlayout.js",
+                "/com/fr/bi/web/js/report/jquery.caretInsert.js",
+                "/com/fr/bi/web/js/report/jquery.date.js",
+
                 "com/fr/bi/web/js/third/jquery.mousewheel.js",
                 "com/fr/bi/web/js/third/jquery.ui.core.js",
                 "com/fr/bi/web/js/third/jquery.ui.widget.js",
@@ -717,7 +734,6 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/core/mvc/fbi.js",
                 "com/fr/bi/web/js/core/mvc/factory/factory.js",
                 "com/fr/bi/web/js/core/mvc/router/rooter.js",
-
 
                 //const
                 "com/fr/bi/web/js/data/data.js",
