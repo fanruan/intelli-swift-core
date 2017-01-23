@@ -54,7 +54,6 @@ import com.fr.fs.dao.FSDAOManager;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
-import org.apache.log4j.lf5.util.Resource;
 
 import java.sql.*;
 import java.util.Collection;

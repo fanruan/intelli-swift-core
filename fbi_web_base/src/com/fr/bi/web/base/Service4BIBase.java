@@ -36,7 +36,6 @@ public class Service4BIBase extends NoSessionIDService {
             new BIFSSaveUploadImageAction(),
             new BIFSGetImageSizeAction(),
             new BIGetMapJsonAction(),
-            new BIEmbResourceAction(),
 
             new BIGetDataConfigAuthoritiesAction(),
             new BISaveDataConfigAuthoritiesAction()
