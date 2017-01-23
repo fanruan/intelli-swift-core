@@ -118,9 +118,9 @@ BI.TableTree = BI.inherit(BI.Widget, {
         this.table.setWidth(width);
     },
 
-    setHeight: function (width) {
+    setHeight: function (height) {
         BI.TableTree.superclass.setHeight.apply(this, arguments);
-        this.table.setHeight(width);
+        this.table.setHeight(height);
     },
 
     setColumnSize: function (columnSize) {

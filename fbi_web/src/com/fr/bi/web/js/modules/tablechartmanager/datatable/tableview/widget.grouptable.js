@@ -158,7 +158,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 break;
         }
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            var columnSize = this.getCalculateRegionColumnSize();
+            var columnSize = this.getRegionColumnSize();
             self.model.setStoredRegionColumnSize(columnSize[0]);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
