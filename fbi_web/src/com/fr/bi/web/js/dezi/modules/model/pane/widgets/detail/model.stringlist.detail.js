@@ -23,22 +23,13 @@ BIDezi.StringListDetailModel = BI.inherit(BI.Model, {
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
             }
-            if (BI.size(changed.dimensions) >= BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
-                    return !BI.has(prev.dimensions, did);
-                });
-                if (BI.isNotNull(result)) {
-                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
-                }
+            var changedDimensions = changed.dimensions;
+            var prevDimensions = prev.dimensions;
+            if(BI.isNotEmptyObject(changedDimensions)){
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + BI.firstObject(changedDimensions)._src.id);
             }
-            if (BI.size(changed.dimensions) < BI.size(prev.dimensions)) {
-                var res = BI.find(prev.dimensions, function (did, dimension) {
-                    return !BI.has(changed.dimensions, did);
-                });
-                if (BI.isNotNull(res)) {
-                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + res._src.id);
-                }
-
+            if(BI.isNotEmptyObject(prevDimensions)){
+                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + BI.firstObject(prevDimensions)._src.id);
             }
             this.set("value", {});
         }
@@ -60,26 +51,28 @@ BIDezi.StringListDetailModel = BI.inherit(BI.Model, {
 
     local: function () {
         if (this.has("addDimension")) {
-            var dimension = this.get("addDimension");
-            var src = dimension.src;
-            var dId = dimension.dId;
+            var addDimensions = this.get("addDimension");
             var dimensions = this.get("dimensions");
             var view = this.get("view");
-            //维度指标基本属性
-            if (!dimensions[dId]) {
-                dimensions = {};
-                dimensions[dId] = {
-                    name: src.name,
-                    _src: src._src,
-                    type: src.type,
-                    sort: {type: BICst.SORT.ASC, target_id: dId}
-                };
-                view[BICst.REGION.DIMENSION1] = [dId];
-                this.set({
-                    "dimensions": dimensions,
-                    "view": view
-                });
-            }
+            var srcs = BI.isArray(addDimensions.src) ? addDimensions.src : [addDimensions.src];
+            var dIds = BI.isArray(addDimensions.dId) ? addDimensions.dId : [addDimensions.dId];
+            BI.each(dIds, function (idx, dId) {
+                if (!dimensions[dId]) {
+                    var src = srcs[idx];
+                    dimensions = {};
+                    dimensions[dId] = {
+                        name: src.name,
+                        _src: src._src,
+                        type: src.type,
+                        sort: {type: BICst.SORT.ASC, target_id: dId}
+                    };
+                    view[BICst.REGION.DIMENSION1] = [dId];
+                }
+            });
+            this.set({
+                "dimensions": dimensions,
+                "view": view
+            });
             return true;
         }
         return false;

@@ -80,7 +80,10 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         var drillCombo = this._createDrillItems();
         if (BI.isNotNull(drillCombo)) {
             items.push({
-                el: drillCombo,
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [drillCombo]
+                },
                 width: 25
             });
         }

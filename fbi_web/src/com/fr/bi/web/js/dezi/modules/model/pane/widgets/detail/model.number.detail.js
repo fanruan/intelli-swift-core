@@ -21,11 +21,13 @@ BIDezi.NumberDetailModel = BI.inherit(BI.Model, {
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
             }
             if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
+                var result = BI.filter(changed.dimensions, function (did, dimension) {
                     return !BI.has(prev.dimensions, did);
                 });
-                if (BI.isNotNull(result)) {
-                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                if (BI.isNotEmptyArray(result)) {
+                    BI.each(result, function(idx, dimension){
+                        BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + dimension._src.id, true);
+                    });
                 }
 
             }
@@ -52,29 +54,32 @@ BIDezi.NumberDetailModel = BI.inherit(BI.Model, {
 
     local: function () {
         if (this.has("addDimension")) {
-            var dimension = this.get("addDimension");
-            var view = this.get("view");
-            var src = dimension.src;
-            var dId = dimension.dId;
+            var addDimensions = this.get("addDimension");
             var dimensions = this.get("dimensions");
+            var view = this.get("view");
+            var srcs = BI.isArray(addDimensions.src) ? addDimensions.src : [addDimensions.src];
+            var dIds = BI.isArray(addDimensions.dId) ? addDimensions.dId : [addDimensions.dId];
             //只能拖入一种类型的字段且只能拖入一次
             var srcIds = [];
             BI.each(dimensions, function (dId, dim) {
                 srcIds.push(dim._src.id);
             });
-            if (!dimensions[dId] && !srcIds.contains(src._src.id)) {
-                //维度指标基本属性
-                dimensions[dId] = {
-                    name: src.name,
-                    _src: src._src,
-                    type: src.type
-                };
-                if (!view[BICst.REGION.DIMENSION1]) {
-                    view[BICst.REGION.DIMENSION1] = [];
+            BI.each(dIds, function (idx, dId) {
+                var src = srcs[idx];
+                if (!dimensions[dId] && !srcIds.contains(src._src.id)) {
+                    //维度指标基本属性
+                    dimensions[dId] = {
+                        name: src.name,
+                        _src: src._src,
+                        type: src.type
+                    };
+                    if (!view[BICst.REGION.DIMENSION1]) {
+                        view[BICst.REGION.DIMENSION1] = [];
+                    }
+                    view[BICst.REGION.DIMENSION1].push(dId);
                 }
-                view[BICst.REGION.DIMENSION1].push(dId);
-                this.set({"dimensions": dimensions, view: view});
-            }
+            });
+            this.set({"dimensions": dimensions, view: view});
             return true;
         }
         return false;

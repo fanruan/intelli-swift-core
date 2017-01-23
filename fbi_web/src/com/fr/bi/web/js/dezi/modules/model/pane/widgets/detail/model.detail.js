@@ -535,88 +535,103 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
         return BI.Func.createDistinctName(this.get("dimensions"), fieldName);
     },
 
+    isDimensionByDimensionID: function (dId) {
+        var views = this.cat("view");
+        var region = 0;
+        BI.some(views, function (reg, view) {
+            if (view.contains(dId)) {
+                region = reg;
+                return true;
+            }
+        });
+        return BI.parseInt(region) < BI.parseInt(BICst.REGION.TARGET1);
+    },
+
 
     local: function () {
         var self = this;
         if (this.has("addDimension")) {
-            var dimension = this.get("addDimension");
+            var addDimensions = this.get("addDimension");
             var dimensions = this.get("dimensions");
             var view = this.get("view");
-            var src = dimension.src;
-            var dId = dimension.dId;
-            var regionType = dimension.regionType;
-            if (!dimensions[dId]) {
-                //维度指标基本属性
-                dimensions[dId] = src;
-                dimensions[dId].name = this._createDimName(src.name);
-                dimensions[dId].used = src.used;
-                //构造dimension_map
-                var fId = src._src.field_id;
+            var srcs = BI.isArray(addDimensions.src) ? addDimensions.src : [addDimensions.src];
+            var dIds = BI.isArray(addDimensions.dId) ? addDimensions.dId : [addDimensions.dId];
+            var regionType = addDimensions.regionType;
+            BI.each(dIds, function(idx, dId){
+                if (!dimensions[dId]) {
+                    var src = srcs[idx];
+                    //维度指标基本属性
+                    dimensions[dId] = src;
+                    dimensions[dId].name = self._createDimName(src.name);
+                    dimensions[dId].used = src.used;
+                    //构造dimension_map
+                    var fId = src._src.field_id;
 
-                //view中添加dimension
-                view[regionType] || (view[regionType] = []);
-                if (!BI.contains(view[regionType], dId)) {
-                    view[regionType].push(dId);
-                }
-                if (BI.Utils.isTargetRegionByRegionType(regionType)) {//拖的是指标
-                    BI.each(dimensions, function (idx, dimension) {
-                        if (idx === dId) {
-                            return;
-                        }
-                        if (BI.Utils.isDimensionByDimensionID(idx)) {
-                            dimension.dimension_map = dimension.dimension_map || {};
-                            var dimFieldId = BI.Utils.getFieldIDByDimensionID(idx);
-                            //var dimSrc = BI.Utils.getDimensionSrcByID(idx);
-                            //if(BI.has(dimSrc, "relation")){
-                            //    dimFieldId = BI.Utils.getForeignIdFromRelation(dimSrc.relation);
-                            //}
-                            //if(BI.has(src._src, "relation")){
-                            //    fId = BI.Utils.getForeignIdFromRelation(src._src.relation);
-                            //}
-                            var path = BI.Utils.getPathsFromFieldAToFieldB(dimFieldId, fId);
-                            if (path.length === 1) {
-                                var target_relation = path[0];
-                                dimension.dimension_map[dId] = {
-                                    _src: dimension._src,
-                                    target_relation: [target_relation]
-                                };
-                            }
-                        }
-                    });
-                }
-                if (BI.Utils.isDimensionRegionByRegionType(regionType)) {//拖的是维度
-                    dimensions[dId].dimension_map = {};
-                    if (BI.isNotEmptyString(fId)) {
+                    //view中添加dimension
+                    view[regionType] || (view[regionType] = []);
+                    if (!BI.contains(view[regionType], dId)) {
+                        view[regionType].push(dId);
+                    }
+                    if (BI.Utils.isTargetRegionByRegionType(regionType)) {//拖的是指标
                         BI.each(dimensions, function (idx, dimension) {
                             if (idx === dId) {
                                 return;
                             }
-                            if (!BI.Utils.isDimensionByDimensionID(idx)) {
-                                var tarFieldId = BI.Utils.getFieldIDByDimensionID(idx);
-                                //var tarSrc = BI.Utils.getDimensionSrcByID(idx);
-                                //if(BI.has(tarSrc, "relation")){
-                                //    tarFieldId = BI.Utils.getForeignIdFromRelation(tarSrc.relation);
+                            if (self.isDimensionByDimensionID(idx)) {
+                                dimension.dimension_map = dimension.dimension_map || {};
+                                var dimFieldId = dimension._src.field_id;
+                                //var dimSrc = BI.Utils.getDimensionSrcByID(idx);
+                                //if(BI.has(dimSrc, "relation")){
+                                //    dimFieldId = BI.Utils.getForeignIdFromRelation(dimSrc.relation);
                                 //}
                                 //if(BI.has(src._src, "relation")){
                                 //    fId = BI.Utils.getForeignIdFromRelation(src._src.relation);
                                 //}
-                                var path = BI.Utils.getPathsFromFieldAToFieldB(fId, tarFieldId);
+                                var path = BI.Utils.getPathsFromFieldAToFieldB(dimFieldId, fId);
                                 if (path.length === 1) {
                                     var target_relation = path[0];
-                                    dimensions[dId].dimension_map[idx] = {
-                                        _src: src._src,
+                                    dimension.dimension_map[dId] = {
+                                        _src: dimension._src,
                                         target_relation: [target_relation]
                                     };
                                 }
                             }
                         });
                     }
+                    if (BI.Utils.isDimensionRegionByRegionType(regionType)) {//拖的是维度
+                        dimensions[dId].dimension_map = {};
+                        if (BI.isNotEmptyString(fId)) {
+                            BI.each(dimensions, function (idx, dimension) {
+                                if (idx === dId) {
+                                    return;
+                                }
+                                if (!self.isDimensionByDimensionID(idx)) {
+                                    var tarFieldId = dimension._src.field_id;
+                                    //var tarSrc = BI.Utils.getDimensionSrcByID(idx);
+                                    //if(BI.has(tarSrc, "relation")){
+                                    //    tarFieldId = BI.Utils.getForeignIdFromRelation(tarSrc.relation);
+                                    //}
+                                    //if(BI.has(src._src, "relation")){
+                                    //    fId = BI.Utils.getForeignIdFromRelation(src._src.relation);
+                                    //}
+                                    var path = BI.Utils.getPathsFromFieldAToFieldB(fId, tarFieldId);
+                                    if (path.length === 1) {
+                                        var target_relation = path[0];
+                                        dimensions[dId].dimension_map[idx] = {
+                                            _src: src._src,
+                                            target_relation: [target_relation]
+                                        };
+                                    }
+                                }
+                            });
+                        }
+                    }
                 }
-                this.set({
-                    dimensions: dimensions,
-                    view: view
-                });
-            }
+            });
+            this.set({
+                dimensions: dimensions,
+                view: view
+            });
             return true;
         }
         return false;

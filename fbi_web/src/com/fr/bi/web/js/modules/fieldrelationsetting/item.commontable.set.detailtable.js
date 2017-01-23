@@ -52,7 +52,7 @@ BI.DetailTableCommonTableSet = BI.inherit(BI.Widget, {
 
 
         this.container = BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.vertical_adapt",
             element: this.element,
             scrollable: true,
             items: [{
