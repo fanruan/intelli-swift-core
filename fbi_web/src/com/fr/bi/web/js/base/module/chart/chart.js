@@ -26,14 +26,12 @@ BI.Chart = BI.inherit(BI.Pane, {
                 self.vanCharts.resize();
             }
         }, 30);
-        BI.Resizers.add(this.getName(), function (e) {
-            if (BI.isWindow(e.target) && self.element.is(":visible")) {
-                var newW = self.element.width(), newH = self.element.height();
-                if (newW > 0 && newH > 0 && (width !== newW || height !== newH)) {
-                    self._resizer();
-                    width = newW;
-                    height = newH;
-                }
+        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+            var newW = self.element.width(), newH = self.element.height();
+            if (newW > 0 && newH > 0 && (width !== newW || height !== newH)) {
+                self._resizer();
+                width = newW;
+                height = newH;
             }
         });
     },

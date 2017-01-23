@@ -24,9 +24,7 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
 
             isNeedMerge: false,//是否需要合并单元格
             mergeCols: [], //合并的单元格列号
-            mergeRule: function (row1, row2) { //合并规则, 默认相等时合并
-                return row1 === row2;
-            },
+            mergeRule: BI.emptyFn,
 
             columnSize: [],
             minColumnSize: [],
@@ -35,6 +33,10 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             rowSize: 25,
 
             regionColumnSize: [],
+
+            headerCellStyleGetter: BI.emptyFn,
+            summaryCellStyleGetter: BI.emptyFn,
+            sequenceCellStyleGetter: BI.emptyFn,
 
             header: [],
             items: [], //二维数组
@@ -64,7 +66,11 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             headerRowSize: o.headerRowSize,
             rowSize: o.rowSize,
             width: 60,
-            height: o.height - BI.GridTableScrollbar.SIZE
+            height: o.height - BI.GridTableScrollbar.SIZE,
+
+            headerCellStyleGetter: o.headerCellStyleGetter,
+            summaryCellStyleGetter: o.summaryCellStyleGetter,
+            sequenceCellStyleGetter: o.sequenceCellStyleGetter
         });
         this.table = BI.createWidget(o.el, {
             type: "bi.adaptive_table",
@@ -87,6 +93,10 @@ BI.SequenceTable = BI.inherit(BI.Widget, {
             rowSize: o.rowSize,
 
             regionColumnSize: o.regionColumnSize,
+
+            headerCellStyleGetter: o.headerCellStyleGetter,
+            summaryCellStyleGetter: o.summaryCellStyleGetter,
+            sequenceCellStyleGetter: o.sequenceCellStyleGetter,
 
             header: o.header,
             items: o.items,

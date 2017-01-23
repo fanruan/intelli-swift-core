@@ -45,20 +45,24 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         if (BI.isNotEmptyString(iconCls)) {
 
             BI.createWidget({
-                type: "bi.horizontal_adapt",
+                type: "bi.htape",
                 element: this.element,
-                items: [textLabel, {
-                    type: "bi.default",
-                    cls: iconCls,
-                    items: [{
-                        type: "bi.icon",
+                items: [{
+                    el: textLabel
+                }, {
+                    el: {
+                        type: "bi.default",
+                        cls: iconCls,
+                        items: [{
+                            type: "bi.icon",
+                            width: 16,
+                            height: 16
+                        }],
                         width: 16,
                         height: 16
-                    }],
-                    width: 16,
-                    height: 16
-                }],
-                columnSize: ["", 25]
+                    },
+                    width: 25
+                }]
             });
         } else {
             BI.createWidget({
@@ -66,6 +70,10 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 element: this.element,
                 items: [textLabel]
             })
+        }
+
+        if (BI.isNotNull(o.styles) && BI.isObject(o.styles)) {
+            this.element.css(o.styles);
         }
     },
 
@@ -210,11 +218,11 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 }
                 return {};
             }
-            
+
             function isContainsDiffLinkages(linkages) {
-                for(var i = 0; i < linkages.length; i++) {
-                    for(var j = i + 1; j < linkages.length; j++) {
-                        if(!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
+                for (var i = 0; i < linkages.length; i++) {
+                    for (var j = i + 1; j < linkages.length; j++) {
+                        if (!(BI.isEqual(linkages[i].from, linkages[j].from) && BI.isEqual(linkages[i].cids, linkages[j].cids))) {
                             return true;
                         }
                     }

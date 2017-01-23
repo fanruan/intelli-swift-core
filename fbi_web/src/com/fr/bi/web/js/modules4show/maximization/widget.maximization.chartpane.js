@@ -26,8 +26,6 @@ BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
         this._createTableChart(type);
         this._buildWidgetTitle();
 
-        this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
-
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -253,7 +251,7 @@ BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
     },
     _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
-        this.tableChartPopupulate();
+        this.tableChart.populate();
         this.chartDrill.populate();
     },
 

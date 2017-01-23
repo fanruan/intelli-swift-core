@@ -36,7 +36,8 @@ BIShow.WidgetModel = BI.inherit(BI.Model, {
                 view: this.get("view"),
                 type: this.get("type"),
                 settings: this.get("settings"),
-                filter_value: this.get("filter_value")
+                filter_value: this.get("filter_value"),
+                scopes: this.get("scopes")
             }
         }, {
             silent: true

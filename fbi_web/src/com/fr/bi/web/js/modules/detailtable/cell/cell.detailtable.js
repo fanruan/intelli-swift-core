@@ -153,20 +153,24 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         }
         if (BI.isNotEmptyString(iconCls)) {
             BI.createWidget({
-                type: "bi.horizontal_adapt",
+                type: "bi.htape",
                 element: this.element,
-                items: [item, {
-                    type: "bi.default",
-                    cls: iconCls,
-                    items: [{
-                        type: "bi.icon",
+                items: [{
+                    el: item
+                }, {
+                    el: {
+                        type: "bi.default",
+                        cls: iconCls,
+                        items: [{
+                            type: "bi.icon",
+                            width: 16,
+                            height: 16
+                        }],
                         width: 16,
                         height: 16
-                    }],
-                    width: 16,
-                    height: 16
-                }],
-                columnSize: ["", 30]
+                    },
+                    width: 25
+                }]
             });
         } else {
             BI.createWidget({

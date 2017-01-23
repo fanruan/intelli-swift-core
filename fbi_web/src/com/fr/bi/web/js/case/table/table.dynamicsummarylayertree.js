@@ -22,16 +22,18 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
 
             isNeedMerge: true,//是否需要合并单元格
             mergeCols: [],
-            mergeRule: function (row1, row2) { //合并规则, 默认相等时合并
-                return row1 === row2;
-            },
+            mergeRule: BI.emptyFn,
 
             columnSize: [],
             headerRowSize: 25,
             footerRowSize: 25,
             rowSize: 25,
 
-            regionColumnSize: false,
+            regionColumnSize: [],
+
+            headerCellStyleGetter: BI.emptyFn,
+            summaryCellStyleGetter: BI.emptyFn,
+            sequenceCellStyleGetter: BI.emptyFn,
 
             header: [],
             footer: false,
@@ -55,7 +57,7 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
     _createHeader: function (vDeep) {
         var self = this, o = this.options;
         var header = o.header || [], crossHeader = o.crossHeader || [];
-        var items = BI.TableTree.formatCrossItems(o.crossItems, vDeep);
+        var items = BI.TableTree.formatCrossItems(o.crossItems, vDeep, o.headerCellStyleGetter);
         var result = [];
         BI.each(items, function (row, node) {
             var c = [crossHeader[row]];
@@ -66,13 +68,15 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
             var deep = this._getHDeep();
             if (deep <= 0) {
                 newHeader.unshift({
-                    cls: "layer-tree-table-title",
-                    text: BI.i18nText("BI-Row_Header")
+                    type: "bi.table_style_cell",
+                    text: BI.i18nText("BI-Row_Header"),
+                    styleGetter: o.headerCellStyleGetter
                 });
             } else {
                 newHeader[0] = {
-                    cls: "layer-tree-table-title",
-                    text: BI.i18nText("BI-Row_Header")
+                    type: "bi.table_style_cell",
+                    text: BI.i18nText("BI-Row_Header"),
+                    styleGetter: o.headerCellStyleGetter
                 };
             }
             result.push(newHeader);
@@ -104,7 +108,13 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
                 track(c, 0);
             });
             if (BI.isArray(node.values)) {
-                var next = [{cls: "summary-cell last", text: BI.i18nText("BI-Summary_Values")}].concat(node.values);
+                var next = [{
+                    type: "bi.table_style_cell",
+                    text: BI.i18nText("BI-Summary_Values"),
+                    styleGetter: function () {
+                        return o.summaryCellStyleGetter(true);
+                    }
+                }].concat(node.values);
                 result.push(next)
             }
         });
@@ -186,6 +196,9 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
             headerRowSize: o.headerRowSize,
             rowSize: o.rowSize,
             regionColumnSize: o.regionColumnSize,
+            headerCellStyleGetter: o.headerCellStyleGetter,
+            summaryCellStyleGetter: o.summaryCellStyleGetter,
+            sequenceCellStyleGetter: o.sequenceCellStyleGetter,
             header: data.header,
             items: data.items
         });

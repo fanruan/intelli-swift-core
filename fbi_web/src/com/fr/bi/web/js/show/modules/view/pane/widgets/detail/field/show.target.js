@@ -165,7 +165,8 @@ BIShow.TargetView = BI.inherit(BI.View, {
             switch (v) {
                 case BICst.TARGET_COMBO.DEPEND_TYPE:
                     self.model.set("_src", {
-                        field_id: s
+                        field_id: s,
+                        table_id: BI.Utils.getTableIdByFieldID(s)
                     });
                     break;
                 case BICst.TARGET_COMBO.CHART_TYPE:
@@ -301,7 +302,7 @@ BIShow.TargetView = BI.inherit(BI.View, {
                         return isTar2Checked = true;
                     }
                 });
-                if(isTar2Checked === true) {
+                if (isTar2Checked === true) {
                     this.usedCheck.setVisible(false);
                     this.usedRadio.setVisible(true);
                     return;

@@ -1079,8 +1079,8 @@ public class BaseResouceHelper {
 
                 //各种表格
                 "com/fr/bi/web/js/case/table/table.adaptive.js",
+                "com/fr/bi/web/js/case/table/table.style.cell.js",
                 "com/fr/bi/web/js/case/table/table.tree.js",
-                "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",
                 "com/fr/bi/web/js/case/table/table.dynamicsummarytree.js",
                 "com/fr/bi/web/js/case/table/table.dynamicsummarylayertree.js",
@@ -1465,7 +1465,6 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/widget/pagetable/pagetable.js",
 
                 //带序号表格
-                "com/fr/bi/web/js/widget/sequencetable/numbercell.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/listnumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/treenumber.sequencetable.js",
                 "com/fr/bi/web/js/widget/sequencetable/dynamicnumber.sequencetable.js",

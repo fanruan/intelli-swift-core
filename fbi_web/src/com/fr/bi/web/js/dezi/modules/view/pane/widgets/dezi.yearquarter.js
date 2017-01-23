@@ -19,11 +19,16 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.YearQuarterWidgetView.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
+        this.broadcasts = [];
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
-        });
+        }));
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        }));
     },
-
 
     _render: function (vessel) {
         var self = this;
@@ -58,11 +63,6 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
-            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
-                self.tools.setVisible(false);
-            }
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
@@ -194,7 +194,7 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
             isLayer: true
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
-        })
+        });
         BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
@@ -217,7 +217,7 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
 
     change: function (changed, prev, context, options) {
         if (BI.has(changed, "bounds")) {
-            this._refreshLayout();
+
         }
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
             BI.Utils.broadcastAllWidgets2Refresh();
@@ -230,6 +230,11 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
             this._expandWidget();
             return true;
         }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            this._refreshLayout();
+            return true;
+        }
         return false;
     },
 
@@ -237,5 +242,12 @@ BIDezi.YearQuarterWidgetView = BI.inherit(BI.View, {
         this._refreshLayout();
         this._buildWidgetTitle();
         this.combo.setValue(this.model.get("value"));
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });

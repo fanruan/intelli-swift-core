@@ -52,15 +52,17 @@ BIDezi.StringListModel=BI.inherit(BI.Model,{
             this.get("expand");
             return true;
         }
+        if (this.has("layout")) {
+            this.get("layout");
+            return true;
+        }
         if (this.has("changeSort")) {
             var dimensions = this.get("dimensions");
             var key = BI.keys(dimensions)[0];
             if (BI.isNotNull(key)) {
                 var sort = this.get("changeSort");
                 dimensions[key].sort = {type: sort.type, target_id: key};
-
-                var value = BI.Func.getSearchResult(this.get("value").value);
-                value = BI.concat(value.matched, value.finded);
+                var value = this.get("value").value || [];
                 if (sort.type === BICst.SORT.DESC) {
                     value = value.reverse();
                 }

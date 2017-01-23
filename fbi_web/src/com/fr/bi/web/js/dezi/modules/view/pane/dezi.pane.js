@@ -204,12 +204,26 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         this._refreshButtons();
     },
 
+    //fit change事件并不一定会改变bounds，但是子节点一定要执行resize操作
+    //比如在自适应布局中拖动组件并放回原处，这个时候dom结构发生了变化，但是数据并没有发生变化
+    _notifyChildrenThatLayoutHasChanged: function () {
+        var self = this;
+        //通知子组件布局发生了变化
+        BI.each(this.cat("widgets"), function (id, widget) {
+            var type = self.model.get("childType", widget.type);
+            self.skipTo(id + "/" + type, id, {
+                layout: true
+            });
+        });
+    },
+
     local: function () {
         var self = this;
         if (this.model.has("dashboard")) {
             var dashboard = this.model.get("dashboard");
             //不刷新子组件
             this._refreshWidgets(false);
+            this._notifyChildrenThatLayoutHasChanged();
             return true;
         }
         if (this.model.has("addWidget")) {
