@@ -23,4 +23,6 @@ public interface AnalysisCubeTableSource extends CubeTableSource {
     Set<BIWidget> getWidgets();
 
     void reSetWidgetDetailGetter();
+
+    void getParentAnalysisBaseTableIds(Set<String> set);
 }

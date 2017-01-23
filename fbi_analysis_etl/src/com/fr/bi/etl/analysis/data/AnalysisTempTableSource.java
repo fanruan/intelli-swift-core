@@ -67,6 +67,10 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
+    public void getParentAnalysisBaseTableIds(Set<String> set) {
+    }
+
+    @Override
     public IPersistentTable getPersistentTable() {
         return new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }

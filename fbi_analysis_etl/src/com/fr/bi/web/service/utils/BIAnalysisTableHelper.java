@@ -38,4 +38,25 @@ public class BIAnalysisTableHelper {
         }
         return percent;
     }
+
+
+    public static boolean getTableHealthById(String tableId, long userId){
+        BusinessTable table = null;
+        try {
+            table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+            return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) table.getTableSource(), new BIUser(userId));
+        } catch (BITableAbsentException e) {
+        }
+        return  false;
+    }
+
+    public static int getTableCubeCount(String tableId, long userId){
+        BusinessTable table = null;
+        try {
+            table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+            return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getThreadPoolCubeCount((AnalysisCubeTableSource) table.getTableSource(), new BIUser(userId));
+        } catch (BITableAbsentException e) {
+        }
+        return  0;
+    }
 }
