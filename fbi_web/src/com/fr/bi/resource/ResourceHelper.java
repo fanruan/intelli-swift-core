@@ -2877,7 +2877,6 @@ public class ResourceHelper {
 
 
                 //react控件
-//                "com/fr/bi/web/js/components/components.react.js",
         };
     }
 
