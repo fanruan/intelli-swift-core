@@ -20,6 +20,8 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
         this.clickValue = "";               //点击的值
         this.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;  //翻页操作
 
+        this.columnContentCache = [];
+
         //当当前组件删除的时候删除存储的区域columnSize缓存
         BI.Broadcasts.on(BICst.BROADCAST.WIDGETS_PREFIX + this.wId, function () {
             self.deleteStoredRegionColumnSize();
@@ -290,6 +292,10 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                 tempNodeId = self.tree.search(tempNodeId).getParent().get("id");
                 tempLayer--;
             }
+            if (BI.isNull(self.columnContentCache[currentLayer - 1])) {
+                self.columnContentCache[currentLayer - 1] = [];
+            }
+            self.columnContentCache[currentLayer - 1].push(child.n);
             var item = {
                 type: "bi.normal_expander_cell",
                 text: child.n,
@@ -341,15 +347,21 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                     var vs = [];
                     var summary = self._getOneRowSummary(child.s);
                     var tarSize = self.targetIds.length;
-                    BI.each(summary, function (i, sum) {
+                    BI.each(summary, function (j, sum) {
                         vs.push({
                             type: "bi.target_body_normal_cell",
                             text: sum,
-                            dId: self.targetIds[i % tarSize],
+                            dId: self.targetIds[j % tarSize],
                             clicked: pValues,
                             cls: "summary-cell",
-                            styles: BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle)
+                            styles: self.tableForm === BICst.TABLE_FORM.OPEN_ROW ?
+                                BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle) :
+                                BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i)
                         });
+                        if (BI.isNull(self.columnContentCache[currentLayer + j])) {
+                            self.columnContentCache[currentLayer + j] = [];
+                        }
+                        self.columnContentCache[currentLayer + j].push(sum);
                     });
                     item.values = vs;
                 }
@@ -374,7 +386,11 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                             dId: tId,
                             clicked: pValues,
                             styles: BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i)
-                        })
+                        });
+                        if (BI.isNull(self.columnContentCache[currentLayer + j])) {
+                            self.columnContentCache[currentLayer + j] = [];
+                        }
+                        self.columnContentCache[currentLayer + j].push(sum);
                     });
                 }
                 item.values = values;
@@ -476,6 +492,10 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                     self.headerOperatorCallback(v, dId);
                 }
             });
+            if (BI.isNull(self.columnContentCache[i])) {
+                self.columnContentCache[i] = [];
+            }
+            self.columnContentCache[i].push(BI.Utils.getDimensionNameByID(dId));
         });
     },
 
@@ -548,10 +568,28 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
         if (this.columnSize.length !== dtIds.length) {
             //重置列宽
             this.columnSize = [];
-            BI.each(dtIds, function (i, id) {
-                self.columnSize.push("");
+            // BI.each(dtIds, function(i, id) {
+            //     self.columnSize.push("");
+            // });
+            //根据表格内容算出一个大概合适的列宽
+            //中文字体大小x1.2 最小80初始化宽度
+            var maxInitSize = 200, minInitSize = 80;
+            BI.each(this.columnContentCache, function (i, singleColumn) {
+                var totalSize = 0;
+                BI.each(singleColumn, function (j, content) {
+                    totalSize += content.toString().length * 12 * 1.2;
+                });
+                var calculateSize = BI.parseInt(totalSize / singleColumn.length);
+                if (calculateSize < minInitSize) {
+                    self.columnSize[i] = minInitSize;
+                } else if (calculateSize > maxInitSize) {
+                    self.columnSize[i] = maxInitSize;
+                } else {
+                    self.columnSize[i] = calculateSize;
+                }
             });
         }
+        this.columnContentCache = [];
     },
 
     createTableAttrs: function () {
