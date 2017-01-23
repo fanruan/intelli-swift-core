@@ -28,4 +28,21 @@ public class BILogConstant {
 
     }
 
+    public static final class LOG_CACHE_TAG {
+        public static final String CUBE_GENERATE_INFO = "CUBE_GENERATE_INFO";
+        public static final String CUBE_GENERATE_EXCEPTION_INFO = "CUBE_GENERATE_EXCEPTION_INFO";
+    }
+
+    public static final class LOG_CACHE_TIME_TYPE {
+        public static final String START = "START";
+        public static final String END = "END";
+    }
+
+
+    public static final class LOG_CACHE_SUB_TAG {
+        public static final String TRANSPORT_EXECUTE_TIME = "TRANSPORT_EXECUTE_TIME";
+        public static final String FIELD_INDEX_EXECUTE_TIME = "FIELD_INDEX_EXECUTE_TIME";
+        public static final String RELATION_INDEX_EXECUTE_TIME = "RELATION_INDEX_EXECUTE_TIME";
+    }
+
 }

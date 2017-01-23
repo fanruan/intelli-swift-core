@@ -8,6 +8,7 @@ import com.finebi.cube.calculator.bidouble.MaxCalculator;
 import com.finebi.cube.calculator.bidouble.MinCalculator;
 import com.finebi.cube.calculator.bidouble.SumCalculator;
 import com.finebi.cube.calculator.biint.GroupSizeCalculator;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
@@ -355,6 +356,7 @@ public class BICubeTableAdapter implements ICubeTableService {
                 return BIColumnKey.covertColumnKey(field);
             }
         } catch (BIKeyAbsentException e) {
+            BILoggerFactory.getLogger(BICubeTableAdapter.class).error("Get Column Key error, the error Column is: " + biKey.getKey() + "the error table source ID is: " + this.getId());
             throw BINonValueUtils.beyondControl(e);
         }
     }

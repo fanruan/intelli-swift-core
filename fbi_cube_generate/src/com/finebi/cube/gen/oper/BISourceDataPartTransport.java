@@ -4,8 +4,10 @@ import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILogExceptionInfo;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.utils.BILogCacheTagHelper;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
@@ -26,6 +28,7 @@ import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SqlSettedStatement;
@@ -71,7 +74,9 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task"));
+        logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
+                BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
+        BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogCacheTagHelper.getCubeLogTransportTimeSubTag(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.START), System.currentTimeMillis());
         long t = System.currentTimeMillis();
         try {
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " copy old cube files"));
@@ -94,6 +99,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
             System.out.println("table usage:" + tableCostTime);
+            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogCacheTagHelper.getCubeLogTransportTimeSubTag(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.END), System.currentTimeMillis());
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
@@ -106,7 +112,12 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             } catch (Exception e1) {
                 BILoggerFactory.getLogger().error(e1.getMessage(), e1);
             }
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogCacheTagHelper.getCubeLogTransportTimeSubTag(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.END), System.currentTimeMillis());
+            BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "Transport Exception", e.getMessage());
+            Vector<BILogExceptionInfo> exceptionList = BILogHelper.getCubeLogExceptionList(tableSource.getSourceID());
+            exceptionList.add(exceptionInfo);
+            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, BILogCacheTagHelper.getCubeLogExceptionSubTag(tableSource.getSourceID()), exceptionList);
+            BILoggerFactory.getLogger(BISourceDataPartTransport.class).error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
@@ -292,9 +303,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         return finalSql;
     }
 
-    private String fetchTableInfo() {
-        return BILogHelper.logTableSource(tableSource, " ");
-    }
 
     private boolean isLegalSQL(String sql) {
         BINonValueUtils.checkNull(sql);

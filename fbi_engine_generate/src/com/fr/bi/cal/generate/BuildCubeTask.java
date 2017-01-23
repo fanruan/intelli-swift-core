@@ -41,6 +41,7 @@ import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.manager.PerformancePlugManager;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -146,6 +147,8 @@ public class BuildCubeTask implements CubeTask {
                     message = "Cube replace failed ,the Cube files will not be replaced ";
                     BILoggerFactory.getLogger().error(message);
                 }
+                BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
+                BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
             } else {
                 try {
                     BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
@@ -155,7 +158,8 @@ public class BuildCubeTask implements CubeTask {
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
-                    BILoggerFactory.clearLoggerCacheValue("Cube Generate Info");
+                    BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
+                    BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
                     BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 }
             }

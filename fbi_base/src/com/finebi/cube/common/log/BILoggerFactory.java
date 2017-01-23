@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * BI日志输出
@@ -29,7 +30,7 @@ public class BILoggerFactory {
     }
 
     public static Map<Class, BILogger> loggerMap = new HashMap<Class, BILogger>();
-    public static Map<String, Map<String, Object>> loggerCacheMap = new HashMap<String, Map<String, Object>>();
+    public static Map<String, Map<String, Object>> loggerCacheMap = new ConcurrentHashMap<String, Map<String, Object>>();
 
     public static BILogger getLogger(Class clazz) {
         if (loggerMap.containsKey(clazz)) {
@@ -94,12 +95,14 @@ public class BILoggerFactory {
 
     public static Object getLoggerCacheValue(String cacheTag, String cacheSubTag) {
         if (!loggerCacheMap.containsKey(cacheTag)) {
-            return "\n" + "The LoggerInfoCache does not contains the cacheTag: " + cacheTag;
+            getLogger(BILoggerFactory.class).error("\n" + "The LoggerInfoCache does not contains the cacheTag: " + cacheTag);
+            return null;
         }
 
         Map specificCacheMap = getSpecificCacheMap(cacheTag);
         if (!specificCacheMap.containsKey(cacheSubTag)) {
-            return "\n" + "The LoggerInfoCache contains the cacheTag: " + cacheTag + "but does not contains the subTag: " + cacheSubTag;
+            getLogger(BILoggerFactory.class).error("\n" + "The LoggerInfoCache contains the cacheTag: " + cacheTag + "but does not contains the subTag: " + cacheSubTag);
+            return null;
         }
         return specificCacheMap.get(cacheSubTag);
     }
