@@ -164,9 +164,9 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         this.table.setWidth(width);
     },
 
-    setHeight: function (width) {
+    setHeight: function (height) {
         BI.AdaptiveTable.superclass.setHeight.apply(this, arguments);
-        this.table.setHeight(width);
+        this.table.setHeight(height);
     },
 
     setColumnSize: function (columnSize) {
