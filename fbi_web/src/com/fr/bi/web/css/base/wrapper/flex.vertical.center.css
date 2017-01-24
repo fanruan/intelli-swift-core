@@ -1,4 +1,4 @@
-.bi-flex-vertical-center .flex-vertical-center-wrapper {
+.bi-flex-vertical-center {
   display: box;
   /* OLD - Android 4.4- */
   display: -webkit-box;
@@ -43,6 +43,4 @@
   -ms-flex-wrap: nowrap;
   -o-flex-wrap: nowrap;
   flex-wrap: nowrap;
-  min-height: 100%;
-  float: left;
 }
