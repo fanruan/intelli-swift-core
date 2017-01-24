@@ -704,7 +704,7 @@ if (!window.BI) {
 
             if (typeof Promise !== 'undefined') {
                 var p = Promise.resolve();
-                var logError = err => {
+                var logError = function (err) {
                     console.error(err);
                 };
                 timerFunc = function () {
@@ -745,7 +745,7 @@ if (!window.BI) {
                     timerFunc();
                 }
                 if (!cb && typeof Promise !== 'undefined') {
-                    return new Promise(resolve => {
+                    return new Promise(function (resolve) {
                         _resolve = resolve
                     })
                 }
