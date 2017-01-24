@@ -75,6 +75,9 @@ public class BIWidgetFactory {
                 return new TreeWidget();
             case BIReportConstant.WIDGET.TREE_LABEL:
                 return new TreeLabelWidget();
+            case BIReportConstant.WIDGET.SINGLE_SLIDER:
+            case BIReportConstant.WIDGET.INTERVAL_SLIDER:
+                return new SingleSliderWidget();
             default:
                 return new MultiChartWidget();
         }

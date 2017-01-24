@@ -8,6 +8,7 @@ BI.SelectDataSingleSlider = BI.inherit(BI.Widget, {
             wId: ""
         });
     },
+
     _init: function () {
         BI.SelectDataSingleSlider.superclass._init.apply(this, arguments);
         var self = this;
@@ -20,14 +21,7 @@ BI.SelectDataSingleSlider = BI.inherit(BI.Widget, {
             self.fireEvent(BI.SelectDataSingleSlider.ENENT_CHANGE)
         })
     },
-    _getMinAndMaxFromData: function (jsonData) {
-        var dataArray = jsonData.data.c;
-        var minString = dataArray[0].n;
-        var maxString = dataArray[dataArray.length - 1].n;
-        var min = BI.parseFloat(minString);
-        var max = BI.parseFloat(maxString);
-        return [min, max];
-    },
+
     getValue: function () {
         var value = this.widget.getValue();
         return {
@@ -37,11 +31,13 @@ BI.SelectDataSingleSlider = BI.inherit(BI.Widget, {
             min: ""
         }
     },
+
     setValue: function () {
         var o = this.options;
         var widgetValue = BI.Utils.getWidgetValueByID(o.wId) || {};
         this.widget.setValue(widgetValue.max);
     },
+
     populate: function () {
         var self = this, o = this.options;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId);
@@ -52,10 +48,11 @@ BI.SelectDataSingleSlider = BI.inherit(BI.Widget, {
         } else {
             BI.Utils.getWidgetDataByID(o.wId, {
                 success: function (jsonData) {
-                    var minAndMax = self._getMinAndMaxFromData(jsonData);
-                    self.widget.populate(minAndMax[0], minAndMax[1], value);
+                    if (BI.isNotEmptyObject(jsonData)) {
+                        self.widget.populate(jsonData.min, jsonData.max, value);
+                    }
                 }
-            },{page: -1})
+            })
         }
     }
 });
