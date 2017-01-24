@@ -92,7 +92,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                 }
             });
         });
-        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+        BI.ResizeDetector.addResizeListener(this, function () {
             self.arrangement.resize();
             self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
         });

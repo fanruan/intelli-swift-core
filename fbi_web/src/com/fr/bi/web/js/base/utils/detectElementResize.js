@@ -164,7 +164,11 @@
     }
 
     BI.ResizeDetector = {
-        addResizeListener: addResizeListener,
-        removeResizeListener: removeResizeListener
+        addResizeListener: function (widget, fn) {
+            addResizeListener(widget.element[0], fn);
+        },
+        removeResizeListener: function (widget, fn) {
+            removeResizeListener(widget.element[0], fn);
+        }
     };
 }());
