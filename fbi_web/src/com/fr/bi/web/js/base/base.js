@@ -716,13 +716,13 @@ if (!window.BI) {
             if (typeof MutationObserver !== 'undefined') {
                 var counter = 1;
                 var observer = new MutationObserver(nextTickHandler);
-                var textNode = document.createTextNode(String(counter));
+                var textNode = document.createTextNode(counter + "");
                 observer.observe(textNode, {
                     characterData: true
                 });
                 timerFunc = function () {
                     counter = (counter + 1) % 2;
-                    textNode.data = String(counter)
+                    textNode.data = counter + "";
                 }
             } else {
                 timerFunc = function () {
