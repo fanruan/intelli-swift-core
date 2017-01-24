@@ -737,7 +737,7 @@ if (!window.BI) {
                         cb.apply(null, args);
                     }
                     if (_resolve) {
-                        _resolve.apply(null, args)
+                        _resolve.apply(null, args);
                     }
                 });
                 if (!pending) {
