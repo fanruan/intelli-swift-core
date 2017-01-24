@@ -200,11 +200,21 @@ BIDezi.DateRangeDetailView = BI.inherit(BI.View, {
             type: "bi.date_dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
-                if (!dimensionsVessel[dId]) {
-                    dimensionsVessel[dId] = BI.createWidget({
-                        type: "bi.layout"
+                var dimensions = self.model.cat("dimensions");
+                if(BI.isArray(dId)){
+                    BI.each(dId, function(idx, d){
+                        createSubVessel(d);
                     });
-                    var dimensions = self.model.cat("dimensions");
+                    if (BI.isNotEmptyArray(BI.difference(dId, BI.keys(dimensions)))) {
+                        self.model.set("addDimension", {
+                            dId: dId,
+                            regionType: regionType,
+                            src: op
+                        });
+                    }
+                    return null;
+                }else{
+                    createSubVessel(dId);
                     if (!BI.has(dimensions, dId)) {
                         self.model.set("addDimension", {
                             dId: dId,
@@ -212,9 +222,17 @@ BIDezi.DateRangeDetailView = BI.inherit(BI.View, {
                             src: op
                         });
                     }
-                    self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
+                    return dimensionsVessel[dId];
                 }
-                return dimensionsVessel[dId];
+
+                function createSubVessel(dimensionId){
+                    if (!dimensionsVessel[dimensionId]) {
+                        dimensionsVessel[dimensionId] = BI.createWidget({
+                            type: "bi.layout"
+                        });
+                        self.addSubVessel(dimensionId, dimensionsVessel[dimensionId]);
+                    }
+                }
             }
         });
 
@@ -253,12 +271,23 @@ BIDezi.DateRangeDetailView = BI.inherit(BI.View, {
     change: function (changed, prev) {
         if (BI.has(changed, "dimensions") || BI.has(changed, "view")) {
             this.dimensionsManager.populate();
+            this._refreshDimensions();
         }
+    },
+
+    _refreshDimensions: function () {
+        var self = this;
+        BI.each(self.model.cat("view"), function (regionType, dids) {
+            BI.each(dids, function (i, dId) {
+                self.skipTo(regionType + "/" + dId, dId, "dimensions." + dId, {}, {force: true});
+            });
+        });
     },
 
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
+        this._refreshDimensions();
         this.combo.setValue(this.model.get("value"));
     }
 });

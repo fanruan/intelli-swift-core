@@ -92,13 +92,9 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                 }
             });
         });
-
-        BI.Resizers.add(this.getName(), function (e) {
-            //只有window resize的时候才会触发事件
-            if (BI.isWindow(e.target) && self.element.is(":visible")) {
-                self.arrangement.resize();
-                self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
-            }
+        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+            self.arrangement.resize();
+            self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
         });
     },
 

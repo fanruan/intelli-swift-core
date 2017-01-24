@@ -145,25 +145,27 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         return ids;
     },
 
-    populate: function (v) {
-        if(v.title) {
-            this.title.setText(v.title + BI.i18nText("BI-Colon"));
-            this.title.setTitle(v.title);
-        } else {
-            this.title.setText(BI.i18nText("BI-List_Label_Con") + BI.i18nText("BI-Colon"));
-            this.title.setTitle(BI.i18nText("BI-List_Label_Con"))
-        }
+    setTitle: function (title) {
+        this.title.setText(title + BI.i18nText("BI-Colon"));
+        this.title.setTitle(title);
+    },
+
+    setItems: function (items) {
         this.removeAllItems();
-        this.addItems(BI.createItems(v.items, {
+        this.addItems(BI.createItems(items, {
             type: "bi.text_button",
             height: this.options.height,
             rgap: this._constant.DEFAULT_RIGHT_GAP
         }));
     },
 
-
     setValue: function (v) {
         this.container.setValue(v);
+    },
+
+    populate: function (v) {
+        this.setTitle(v.title || BI.i18nText("BI-List_Label_Con"));
+        this.setItems(v.items || []);
     },
 
     getValue: function () {

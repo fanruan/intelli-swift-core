@@ -1065,7 +1065,6 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/case/table/table.adaptive.js",
                 "com/fr/bi/web/js/case/table/table.style.cell.js",
                 "com/fr/bi/web/js/case/table/table.tree.js",
-                "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",
                 "com/fr/bi/web/js/case/table/table.dynamicsummarytree.js",
                 "com/fr/bi/web/js/case/table/table.dynamicsummarylayertree.js",

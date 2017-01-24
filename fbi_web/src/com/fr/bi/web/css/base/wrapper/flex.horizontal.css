@@ -1,4 +1,4 @@
-.bi-flex-horizontal-layout .flex-horizontal-layout-wrapper {
+.bi-flex-horizontal-layout {
   display: box;
   /* OLD - Android 4.4- */
   display: -webkit-box;
@@ -43,9 +43,8 @@
   -ms-flex-wrap: nowrap;
   -o-flex-wrap: nowrap;
   flex-wrap: nowrap;
-  min-height: 100%;
 }
-.bi-flex-horizontal-layout .flex-horizontal-layout-wrapper.middle {
+.bi-flex-horizontal-layout.middle {
   /* 09版 */
   -webkit-box-align: center;
   /* 12版 */
@@ -55,7 +54,7 @@
   -o-align-items: center;
   align-items: center;
 }
-.bi-flex-horizontal-layout .flex-horizontal-layout-wrapper.bottom {
+.bi-flex-horizontal-layout.bottom {
   /* 09版 */
   -webkit-box-align: flex-end;
   /* 12版 */

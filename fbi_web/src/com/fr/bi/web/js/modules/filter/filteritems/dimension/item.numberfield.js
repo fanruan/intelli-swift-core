@@ -70,9 +70,19 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this._refreshFilterWidget(context.filter_type, context.filter_value);
     },
 
+    _checkFilterType: function(){
+        var o = this.options;
+        var stringValues = BI.pluck(BI.flatten(BICst.DIMENSION_FILTER_STRING_COMBO), "value");
+        if(this.isDimension === false){
+            return o.filter_type
+        }else{
+            return BI.contains(stringValues, o.filter_type) ? o.filter_type : BICst.DIMENSION_FILTER_STRING.BELONG_VALUE
+        }
+    },
+
     _buildConditions: function () {
         var self = this, o = this.options;
-        o.filter_type = this.isDimension === false ? o.filter_type : BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
+        o.filter_type = this._checkFilterType();
         if (BI.isNull(o.dId)) {
             return [];
         }

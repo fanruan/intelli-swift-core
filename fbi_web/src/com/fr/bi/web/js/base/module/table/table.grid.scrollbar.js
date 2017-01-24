@@ -164,8 +164,8 @@ BI.GridTableScrollbar = BI.inherit(BI.Widget, {
     },
 
     _onMouseMoveEnd: function (event) {
+        this._mouseMoveTracker.releaseMouseMoves();
         if (this.isDragging === true) {
-            this._mouseMoveTracker.releaseMouseMoves();
             this.isDragging = false;
             this._populate();
         }

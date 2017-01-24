@@ -206,8 +206,8 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                     if (extraFields.length > 0) {
                         self.warningContainer.addItem({
                             type: "bi.label",
-                            text: (lackFields.length > 0 ? "2." : "1.") + BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
-                            title: BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
+                            text: (lackFields.length > 0 ? "2." : "1.") + BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + ", " + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
+                            title: BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + ", " + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
                             cls: "warning-comment",
                             textAlign: "left",
                             textHeight: 20,

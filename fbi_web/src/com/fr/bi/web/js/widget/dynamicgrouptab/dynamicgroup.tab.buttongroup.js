@@ -10,9 +10,9 @@ BI.DynamicGroupTabButtonGroup = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DynamicGroupTabButtonGroup.superclass._defaultConfig.apply(this, arguments), {
             cls: "bi-dynamic-group-tab-button-group",
-            items:[],
+            items: [],
             frozenButtons: [],
-            height:30
+            height: 30
         })
     },
 
@@ -25,61 +25,60 @@ BI.DynamicGroupTabButtonGroup = BI.inherit(BI.Widget, {
             items: [],
             layouts: [{
                 type: "bi.horizontal",
-                scrollable : false,
+                scrollable: false,
                 scrollx: false
             }]
-        })
+        });
 
-        this.tab.on(BI.ButtonGroup.EVENT_CHANGE, function(value, obj){
+        this.tab.on(BI.ButtonGroup.EVENT_CHANGE, function (value, obj) {
             self.fireEvent(BI.DynamicGroupTabButtonGroup.EVENT_CHANGE, arguments);
         });
 
         var self = this;
 
         this.scrollLeft = BI.createWidget({
-            type:"bi.icon_button",
-            cls:"pre-page-font bi-icon-button-scroll",
-            invisible:true
-        })
+            type: "bi.icon_button",
+            cls: "pre-page-font bi-icon-button-scroll",
+            invisible: true
+        });
 
-        this.scrollLeft.on(BI.IconButton.EVENT_CHANGE, function(){
+        this.scrollLeft.on(BI.IconButton.EVENT_CHANGE, function () {
             self._scrollLeft();
-        })
+        });
         this.scrollRight = BI.createWidget({
-            type:"bi.icon_button",
-            cls:"next-page-font bi-icon-button-scroll",
-            invisible:true
-        })
-        this.scrollRight.on(BI.IconButton.EVENT_CHANGE, function(){
+            type: "bi.icon_button",
+            cls: "next-page-font bi-icon-button-scroll",
+            invisible: true
+        });
+        this.scrollRight.on(BI.IconButton.EVENT_CHANGE, function () {
             self._scrollRight();
-        })
-
-        BI.Resizers.add(this.getName(), function(e){
+        });
+        BI.ResizeDetector.addResizeListener(this.element[0], function () {
             self.resize();
-        })
+        });
 
         BI.createWidget({
-            type:"bi.left",
-            element:this.element,
-            items:[{
-                type:"bi.horizontal",
+            type: "bi.left",
+            element: this.element,
+            items: [{
+                type: "bi.horizontal",
                 tgap: -1,
                 height: o.height,
-                scrollx:false,
-                cls:"bi-sheet-tab-dynamic-horizontal",
-                items:[this.tab,
+                scrollx: false,
+                cls: "bi-sheet-tab-dynamic-horizontal",
+                items: [this.tab,
                     {
-                        type:"bi.vertical_adapt",
-                        items:[this.scrollLeft],
+                        type: "bi.vertical_adapt",
+                        items: [this.scrollLeft],
                         height: o.height
                     },
                     {
-                        type:"bi.vertical_adapt",
-                        items:[this.scrollRight],
+                        type: "bi.vertical_adapt",
+                        items: [this.scrollRight],
                         height: o.height
                     },
                     {
-                        type:"bi.vertical_adapt",
+                        type: "bi.vertical_adapt",
                         items: o.frozenButtons,
                         height: o.height,
                         lgap: 10
@@ -89,42 +88,42 @@ BI.DynamicGroupTabButtonGroup = BI.inherit(BI.Widget, {
         })
     },
 
-    _scrollLeft : function() {
+    _scrollLeft: function () {
         this._scrollTo(this.tab.element[0].scrollLeft - this.scrollSection)
     },
 
-    _scrollRight : function() {
+    _scrollRight: function () {
         this._scrollTo(this.tab.element[0].scrollLeft + this.scrollSection)
     },
 
-    _getTotalWidth : function () {
+    _getTotalWidth: function () {
         var totalWidth = this.element.outerWidth();
         totalWidth -= this._const.MERGE_ADD_WIDTH;
-        BI.each(this.options.frozenButtons, function(idx, button){
-            if(BI.isWidget(button)){
+        BI.each(this.options.frozenButtons, function (idx, button) {
+            if (BI.isWidget(button)) {
                 totalWidth -= button.getWidth();
-            }else{
+            } else {
                 totalWidth -= button.width;
             }
         })
         return totalWidth;
     },
 
-    _calculateButtonsWith : function(fn) {
+    _calculateButtonsWith: function (fn) {
         var buttonWidth = 0;
         var self = this;
-        BI.some(this.tab.getAllButtons(), function(idx, item){
+        BI.some(this.tab.getAllButtons(), function (idx, item) {
             buttonWidth += item.element.outerWidth();
-            if(BI.isNotNull(fn) && fn.apply(self, [item])){
+            if (BI.isNotNull(fn) && fn.apply(self, [item])) {
                 return true;
             }
         })
         return buttonWidth;
     },
 
-    _dealWithScrollButtonState:function (){
+    _dealWithScrollButtonState: function () {
         var buttonWidth = this._calculateButtonsWith();
-        if(this.tab.element[0].scrollLeft === 0){
+        if (this.tab.element[0].scrollLeft === 0) {
             this.scrollLeft.setEnable(false);
         } else {
             this.scrollLeft.setEnable(true);
@@ -132,20 +131,20 @@ BI.DynamicGroupTabButtonGroup = BI.inherit(BI.Widget, {
         var ulWidth = this.tab.element.outerWidth();
         //可以滚动的最大距离
         var maxLeft = buttonWidth - ulWidth;
-        if(this.tab.element[0].scrollLeft === maxLeft){
+        if (this.tab.element[0].scrollLeft === maxLeft) {
             this.scrollRight.setEnable(false);
         } else {
             this.scrollRight.setEnable(true);
         }
     },
 
-    _needScroll : function (visibleWidth, buttonWidth) {
+    _needScroll: function (visibleWidth, buttonWidth) {
         var currentLeft = this.tab.element[0].scrollLeft;
         return (visibleWidth > currentLeft && visibleWidth - currentLeft > buttonWidth) ||
             (visibleWidth < currentLeft)
     },
 
-    _scrollTo : function (value) {
+    _scrollTo: function (value) {
         var self = this;
         BI.delay(function () {
             self.tab.element.scrollLeft(value);
@@ -153,18 +152,18 @@ BI.DynamicGroupTabButtonGroup = BI.inherit(BI.Widget, {
         }, 30);
     },
 
-    _scrollToEnd : function (){
+    _scrollToEnd: function () {
         this._scrollTo(this._calculateButtonsWith())
     },
 
-    resize : function (){
+    resize: function () {
         //获取当前所有可使用的宽度，不包含添加和合并和导航按钮以及之间的空隙
         var totalWidth = this._getTotalWidth();
         //所有button的宽度
         var buttonWidth = this._calculateButtonsWith();
         var width = buttonWidth;
         var showScrollButton = false;
-        if(buttonWidth > totalWidth){
+        if (buttonWidth > totalWidth) {
             width = totalWidth;
             showScrollButton = true;
         }
@@ -173,44 +172,44 @@ BI.DynamicGroupTabButtonGroup = BI.inherit(BI.Widget, {
         //这边动态改变buttongroup的宽度，因为最大宽度是变的
         this.tab.element.width(width);
         this._dealWithScrollButtonState();
-        this.scrollSection = width * 2/3;
+        this.scrollSection = width * 2 / 3;
         this.scrollSelectedVisible();
     },
 
     scrollSelectedVisible: function () {
         var value = this.tab.getValue()[0];
         //从index 0到当前选中的tab的所有button的宽度
-        var visibleWidth = this._calculateButtonsWith(function(item){
-            if(item.getValue() === value){
+        var visibleWidth = this._calculateButtonsWith(function (item) {
+            if (item.getValue() === value) {
                 return true;
             }
         })
         var buttonWidth = this._getTotalWidth();
-        var scrollWidth = visibleWidth - buttonWidth/2;
-        if(this._needScroll(visibleWidth, buttonWidth)) {
+        var scrollWidth = visibleWidth - buttonWidth / 2;
+        if (this._needScroll(visibleWidth, buttonWidth)) {
             this._scrollTo(scrollWidth)
         }
     },
 
-    getAllButtons: function(){
+    getAllButtons: function () {
         return this.tab.getAllButtons.apply(this.tab, arguments);
     },
 
-    addItems: function(items){
+    addItems: function (items) {
         this.tab.addItems.apply(this.tab, arguments);
         this.resize();
         this._scrollToEnd();
     },
 
-    getValue: function(){
+    getValue: function () {
         this.tab.getValue.apply(this.tab, arguments);
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.tab.setValue.apply(this.tab, arguments);
     },
 
-    populate: function(){
+    populate: function () {
         this.tab.populate.apply(this.tab, arguments);
         this.resize();
     }

@@ -45,20 +45,24 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         if (BI.isNotEmptyString(iconCls)) {
 
             BI.createWidget({
-                type: "bi.horizontal_adapt",
+                type: "bi.htape",
                 element: this.element,
-                items: [textLabel, {
-                    type: "bi.default",
-                    cls: iconCls,
-                    items: [{
-                        type: "bi.icon",
+                items: [{
+                    el: textLabel
+                }, {
+                    el: {
+                        type: "bi.default",
+                        cls: iconCls,
+                        items: [{
+                            type: "bi.icon",
+                            width: 16,
+                            height: 16
+                        }],
                         width: 16,
                         height: 16
-                    }],
-                    width: 16,
-                    height: 16
-                }],
-                columnSize: ["", 25]
+                    },
+                    width: 25
+                }]
             });
         } else {
             BI.createWidget({

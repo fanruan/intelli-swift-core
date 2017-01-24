@@ -80,7 +80,10 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         var drillCombo = this._createDrillItems();
         if (BI.isNotNull(drillCombo)) {
             items.push({
-                el: drillCombo,
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [drillCombo]
+                },
                 width: 25
             });
         }
@@ -120,13 +123,16 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         if (BI.isNotEmptyArray(BI.Utils.getDrillDownDIdsByWidgetId(BI.Utils.getWidgetIDByDimensionID(dId)))
             || BI.isNotNull(BI.Utils.getDrillUpDimensionIdByDimensionId(dId))) {
             var button = BI.createWidget({
-                type: "bi.icon_button",
+                type: "bi.center_adapt",
                 invisible: true,
-                cls: "table-drill-up-down",
-                height: 25,
-                handler: function () {
-                    o.drillCallback()
-                }
+                items: [{
+                    type: "bi.icon_button",
+                    cls: "table-drill-up-down",
+                    height: 25,
+                    handler: function () {
+                        o.drillCallback()
+                    }
+                }]
             });
             this.element.hover(function () {
                 button.setVisible(true);

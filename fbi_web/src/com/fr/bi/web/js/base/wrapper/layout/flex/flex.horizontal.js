@@ -8,7 +8,7 @@
 BI.FlexHorizontalLayout = BI.inherit(BI.Layout, {
     _defaultConfig: function () {
         return BI.extend(BI.FlexHorizontalLayout.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-flex-horizontal-layout clearfix",
+            baseCls: "bi-flex-horizontal-layout",
             verticalAlign: "middle",
             columnSize: [],
             scrollx: true,
@@ -23,14 +23,14 @@ BI.FlexHorizontalLayout = BI.inherit(BI.Layout, {
     _init: function () {
         BI.FlexHorizontalLayout.superclass._init.apply(this, arguments);
         var o = this.options;
-        this.wrapper = $("<div>").addClass("flex-horizontal-layout-wrapper " + o.verticalAlign).appendTo(this.element);
+        this.element.addClass(o.verticalAlign);
         this.populate(this.options.items);
     },
 
     _addElement: function (i, item) {
         var o = this.options;
         var w = BI.FlexHorizontalLayout.superclass._addElement.apply(this, arguments);
-        w.element.css({"position": "relative"}).appendTo(this.wrapper);
+        w.element.css({"position": "relative", "flex-shrink": "0"});
         if (o.hgap + o.lgap + (item.lgap || 0) > 0) {
             w.element.css({
                 "margin-left": o.hgap + o.lgap + (item.lgap || 0) + "px"
@@ -54,19 +54,13 @@ BI.FlexHorizontalLayout = BI.inherit(BI.Layout, {
         return w;
     },
 
-    addItem: function (item) {
-        var w = this._addElement(this.options.items.length, item);
-        this.options.items.push(item);
-        w.element.appendTo(this.wrapper);
-        return w;
-    },
-
     resize: function () {
         // console.log("flex_horizontal布局不需要resize");
     },
 
     populate: function (items) {
         BI.FlexHorizontalLayout.superclass.populate.apply(this, arguments);
+        this.render();
     }
 });
 $.shortcut('bi.flex_horizontal', BI.FlexHorizontalLayout);

@@ -52,22 +52,14 @@ BI.GroupTable = BI.inherit(BI.Pane, {
             type: "bi.page_table",
             isNeedFreeze: null,
             summaryCellStyleGetter: function (isLast) {
-                return {
-                    backgroundColor: isLast ? "#1E90FF" : "#6495ED",
-                    color: "#ffffff"
-                }
+                return isLast ? BI.SummaryTableHelper.getLastSummaryStyles(self.model.getThemeColor(), self.model.getTableStyle()) :
+                    BI.SummaryTableHelper.getSummaryStyles(self.model.getThemeColor(), self.model.getTableStyle())
             },
             sequenceCellStyleGetter: function (index) {
-                return {
-                    backgroundColor: index % 2 ? "#87CEFA" : "#E1FFFF",
-                    color: "#1a1a1a"
-                }
+                return BI.SummaryTableHelper.getBodyStyles(self.model.getThemeColor(), self.model.getTableStyle(), index);
             },
             headerCellStyleGetter: function () {
-                return {
-                    backgroundColor: "#6A5ACD",
-                    color: "#ffffff"
-                }
+                return BI.SummaryTableHelper.getHeaderStyles(self.model.getThemeColor(), self.model.getTableStyle());
             },
             mergeRule: function (col1, col2) {
                 if (col1.tag && col2.tag) {
@@ -166,7 +158,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 break;
         }
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            var columnSize = this.getCalculateRegionColumnSize();
+            var columnSize = this.getRegionColumnSize();
             self.model.setStoredRegionColumnSize(columnSize[0]);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
@@ -321,7 +313,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 self.model.setDataAndPage(jsonData);
                 try {
                     self.model.createTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self));
-                    self._refreshTable();
+                    self._populateTable();
                 } catch (e) {
                     self.errorPane.setErrorInfo("error happens during populate table: " + e);
                     self.errorPane.setVisible(true);
@@ -331,11 +323,6 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 self.loaded();
             }
         }, this.model.getExtraInfo());
-    },
-
-    _populateTable: function () {
-        this.table.restore();
-        this._refreshTable();
     },
 
     _refreshAttrs: function () {
@@ -350,7 +337,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         this.table.attr("rowSize", this.model.getRowSize());
     },
 
-    _refreshTable: function () {
+    _populateTable: function () {
         this.errorPane.setVisible(false);
         this._refreshAttrs();
         this.table.populate(this.model.getItems(), this.model.getHeader());
@@ -374,7 +361,9 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 if (self.model.getTableForm() !== self.tableForm) {
                     self._createTable();
                 }
+                //回到首页
                 self.table.setVPage(1);
+                self.table.setHPage(1);
                 self._populateTable();
             },
             done: function () {
@@ -394,15 +383,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
 
     magnify: function () {
 
-    },
-
-    empty: function () {
-        BI.AbstractTable.superclass.empty.apply(this, arguments);
-        if (BI.isNotNull(this.table)) {
-            this.table.empty();
-        }
     }
-
 });
 BI.GroupTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.group_table", BI.GroupTable);
