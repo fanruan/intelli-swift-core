@@ -158,16 +158,27 @@ BI.LoginTimeOut = BI.inherit(BI.BarPopoverSection, {
             });
         });
 
+        var logo;
+        if (BI.isNotNull(window.top.FS)) {
+            logo = window.top.FS.config.logoImageID4FS;
+        }
         BI.createWidget({
             type: "bi.absolute",
             element: center,
             cls: "bi-login-timeout-center",
             items: [{
                 el: {
-                    type: "bi.layout",
-                    cls: "login-logo-background",
+                    type: "bi.center_adapt",
+                    items: [{
+                        type: "bi.img",
+                        src: FR.servletURL + (logo ?
+                            '?op=fr_attach&cmd=ah_image&id=' + logo + '&isAdjust=false' :
+                            '?op=resource&resource=/com/fr/bi/web/images/login/bi_logo.png'),
+                        width: 120,
+                        height: 120
+                    }],
                     width: 200,
-                    height: 270
+                    height: 300
                 },
                 left: 0,
                 top: 0
@@ -225,7 +236,7 @@ BI.LoginTimeOut = BI.inherit(BI.BarPopoverSection, {
     }
 });
 BI.extend(BI.LoginTimeOut, {
-     POPOVER_ID: "___popover__id___"
+    POPOVER_ID: "___popover__id___"
 });
 BI.LoginTimeOut.EVENT_LOGIN = "EVENT_LOGIN";
 $.shortcut("bi.login_timeout", BI.LoginTimeOut);
