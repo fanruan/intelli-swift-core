@@ -734,7 +734,7 @@ if (!window.BI) {
                 var args = [].slice.call(arguments, 1);
                 callbacks.push(function () {
                     if (cb) {
-                        cb.call(null);
+                        cb.apply(null, args);
                     }
                     if (_resolve) {
                         _resolve.apply(null, args)
