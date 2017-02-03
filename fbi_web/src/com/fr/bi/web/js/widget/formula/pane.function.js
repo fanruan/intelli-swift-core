@@ -30,7 +30,8 @@ BI.FunctionPane = BI.inherit(BI.Widget, {
         this.desLabel = BI.createWidget({
             type: "bi.label",
             textAlign: "left",
-            whiteSpace: "normal"
+            whiteSpace: "normal",
+            textWidth: 180
         });
 
         this.searchFunctionTree = BI.createWidget({
