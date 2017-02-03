@@ -200,7 +200,11 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         if (time < 1000) {
             return BI.parseInt(time) + BI.i18nText("BI-Millisecond");
         }
-        return BI.parseInt(time / 1000) + BI.i18nText("BI-Seconds");
+        var seconds = BI.parseInt(time / 1000);
+        if (seconds > 60) {
+            return BI.parseInt(seconds / 60) + BI.i18nText("BI-Minute") + seconds % 60 + BI.i18nText("BI-Seconds");
+        }
+        return seconds + BI.i18nText("BI-Seconds");
     },
 
     _formatItems: function (data) {
