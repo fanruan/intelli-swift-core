@@ -53,7 +53,7 @@ BI.DynamicGroupTabButtonGroup = BI.inherit(BI.Widget, {
         this.scrollRight.on(BI.IconButton.EVENT_CHANGE, function () {
             self._scrollRight();
         });
-        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+        BI.ResizeDetector.addResizeListener(this, function () {
             self.resize();
         });
 

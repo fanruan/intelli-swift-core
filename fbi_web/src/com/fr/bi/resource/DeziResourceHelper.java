@@ -495,9 +495,6 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.target.combo.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.detail.combo.js",
 
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/widget.summarytable.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/summarytable/summarytable.model.js",
-
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/helper/summarytable.helper.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.grouptable.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.crosstable.js",
@@ -505,9 +502,6 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/grouptable.model.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/crosstable.model.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/complextable.model.js",
-
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/widget.complextable.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/complextable/complextable.model.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.model.js",

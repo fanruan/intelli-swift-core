@@ -87,7 +87,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             self.table.setHeight(self.element.height());
             self.table.populate();
         }, 0);
-        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+        BI.ResizeDetector.addResizeListener(this, function () {
             self._resizeHandler();
         });
     },

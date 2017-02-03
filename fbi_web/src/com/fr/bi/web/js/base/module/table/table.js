@@ -471,7 +471,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
             }
         });
-        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+        BI.ResizeDetector.addResizeListener(this, function () {
             self._resize();
             self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
         });
@@ -1061,7 +1061,7 @@ BI.Table = BI.inherit(BI.Widget, {
         };
 
         this._initNormalScroll();
-        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+        BI.ResizeDetector.addResizeListener(this, function () {
             self._resize();
             self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
         });
