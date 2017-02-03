@@ -119,7 +119,7 @@ BI.RecordEditor = BI.inherit(BI.Single, {
             element: this.element,
             items: [this.textContainer, this.editor]
         });
-        BI.ResizeDetector.addResizeListener(this.element[0], BI.bind(this._adjustInputWidth, this));
+        BI.ResizeDetector.addResizeListener(this, BI.bind(this._adjustInputWidth, this));
         this._adjustInputWidth();
     },
 

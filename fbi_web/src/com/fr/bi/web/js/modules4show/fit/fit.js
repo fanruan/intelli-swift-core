@@ -30,7 +30,7 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
                 }
             });
         });
-        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+        BI.ResizeDetector.addResizeListener(this, function () {
             self.populate();
         });
     },
