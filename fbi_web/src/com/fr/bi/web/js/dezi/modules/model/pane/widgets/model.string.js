@@ -48,6 +48,10 @@ BIDezi.StringWidgetModel = BI.inherit(BI.Model, {
             this.get("expand");
             return true;
         }
+        if (this.has("layout")) {
+            this.get("layout");
+            return true;
+        }
         if (this.has("changeSort")) {
             var dimensions = this.get("dimensions");
             var key = BI.keys(dimensions)[0];

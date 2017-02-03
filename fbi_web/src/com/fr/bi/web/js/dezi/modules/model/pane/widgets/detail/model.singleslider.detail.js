@@ -18,21 +18,14 @@ BIDezi.SingleSliderDetailModel = BI.inherit(BI.Model, {
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
             }
             if (BI.size(changed.dimensions) >= BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
+                var result = BI.filter(changed.dimensions, function (did, dimension) {
                     return !BI.has(prev.dimensions, did);
                 });
                 if (BI.isNotNull(result)) {
-                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                    BI.each(result, function(idx, dimension){
+                        BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + dimension._src.id, true);
+                    });
                 }
-            }
-            if (BI.size(changed.dimensions) < BI.size(prev.dimensions)) {
-                var res = BI.find(prev.dimensions, function (did, dimension) {
-                    return !BI.has(changed.dimensions, did);
-                });
-                if (BI.isNotNull(res)) {
-                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + res._src.id);
-                }
-
             }
             this.set("value", {});
         }
@@ -41,7 +34,11 @@ BIDezi.SingleSliderDetailModel = BI.inherit(BI.Model, {
     splice: function (old, key1, key2) {
         if (key1 === "dimensions") {
             var views = this.get("view");
-            views[BICst.REGION.DIMENSION1] = [];
+            BI.each(views, function (region, arr) {
+                BI.remove(arr, function (i, id) {
+                    return key2 === id;
+                })
+            });
             this.set("view", views);
         }
         if (key1 === "dimensions") {
@@ -54,27 +51,30 @@ BIDezi.SingleSliderDetailModel = BI.inherit(BI.Model, {
 
     local: function () {
         if (this.has("addDimension")) {
-            var dimension = this.get("addDimension");
-            var src = dimension.src;
-            var dId = dimension.dId;
+            var addDimensions = this.get("addDimension");
             var dimensions = this.get("dimensions");
             var view = this.get("view");
-            if (!dimensions[dId]) {
-                dimensions[dId] = {
-                    name: src.name,
-                    _src: src._src,
-                    type: src.type,
-                    group: {
-                        type: BICst.GROUP.ID_GROUP
-                    }
-                };
-                view[BICst.REGION.DIMENSION1] = view[BICst.REGION.DIMENSION1] || [];
-                view[BICst.REGION.DIMENSION1].push(dId);
-                this.set({
-                    "dimensions": dimensions,
-                    "view": view
-                });
-            }
+            var srcs = BI.isArray(addDimensions.src) ? addDimensions.src : [addDimensions.src];
+            var dIds = BI.isArray(addDimensions.dId) ? addDimensions.dId : [addDimensions.dId];
+            BI.each(dIds, function (idx, dId) {
+                if (!dimensions[dId]) {
+                    var src = srcs[idx];
+                    dimensions[dId] = {
+                        name: src.name,
+                        _src: src._src,
+                        type: src.type,
+                        group: {
+                            type: BICst.GROUP.ID_GROUP
+                        }
+                    };
+                    view[BICst.REGION.DIMENSION1] = view[BICst.REGION.DIMENSION1] || [];
+                    view[BICst.REGION.DIMENSION1].push(dId);
+                }
+            });
+            this.set({
+                "dimensions": dimensions,
+                "view": view
+            });
             return true;
         }
         return false;

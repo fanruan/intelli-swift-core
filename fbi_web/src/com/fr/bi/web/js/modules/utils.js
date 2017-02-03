@@ -3074,15 +3074,23 @@
                     };
                 }
                 if (groupType === BICst.GROUP.ID_GROUP) {
-                    return {
-                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                        filter_value: {
-                            min: BI.parseFloat(value),
-                            max: BI.parseFloat(value),
-                            closemin: true,
-                            closemax: true
-                        },
-                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    if(BI.isNull(value) || BI.isEmptyString(value)){
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                            filter_value: {},
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        };
+                    }else{
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                            filter_value: {
+                                min: BI.parseFloat(value),
+                                max: BI.parseFloat(value),
+                                closemin: true,
+                                closemax: true
+                            },
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        }
                     }
                 }
                 var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
@@ -3117,6 +3125,18 @@
                         filter_type: BICst.FILTER_TYPE.AND,
                         filter_value: vs
                     };
+                } else if(BI.isNumeric(value)){
+                    //自定义分组后不勾选剩余值分组到其他
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                        filter_value: {
+                            min: BI.parseFloat(value),
+                            max: BI.parseFloat(value),
+                            closemin: true,
+                            closemax: true
+                        },
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    }
                 }
             }
 
@@ -3664,7 +3684,6 @@
         return filter;
         //日期偏移值
         function getOffSetDateByDateAndValue(date, value) {
-            var tool = new BI.ParamPopupView();
             var type = value.type, value = value.value;
             var fPrevOrAfter = value.foffset === 0 ? -1 : 1;
             var sPrevOrAfter = value.soffset === 0 ? -1 : 1;
@@ -3678,8 +3697,8 @@
                     break;
                 case BICst.YEAR_QUARTER:
                     ydate = new Date().getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
-                    start = new Date().getQuarterStartDate(ydate);
-                    end = new Date().getQuarterEndDate(ydate);
+                    start = ydate.getQuarterStartDate();
+                    end = ydate.getQuarterEndDate();
                     break;
                 case BICst.YEAR_MONTH:
                     ydate = new Date().getOffsetMonth(ydate, sPrevOrAfter * value.svalue);

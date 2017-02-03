@@ -152,18 +152,30 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         return result;
     },
 
+    _recomputeColumnSize: function () {
+        var o = this.options;
+        o.regionColumnSize = this.table.getRegionColumnSize();
+        var columnSize = this.table.getColumnSize();
+        if (o.freezeCols.length > 1) {
+            for (var i = 0; i < o.freezeCols.length - 1; i++) {
+                columnSize.splice(1, 0, 0);
+            }
+        }
+        o.columnSize = columnSize;
+    },
+
     _digest: function () {
         var o = this.options;
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
         var header = this._createHeader(vDeep);
         var data = this._formatItems(o.items, header, deep);
-        var columnSize = o.columnSize.slice();
-        var minColumnSize = o.minColumnSize.slice();
-        var maxColumnSize = o.maxColumnSize.slice();
-        BI.removeAt(columnSize, data.deletedCols);
-        BI.removeAt(minColumnSize, data.deletedCols);
-        BI.removeAt(maxColumnSize, data.deletedCols);
+        // var columnSize = o.columnSize.slice();
+        // var minColumnSize = o.minColumnSize.slice();
+        // var maxColumnSize = o.maxColumnSize.slice();
+        // BI.removeAt(columnSize, data.deletedCols);
+        // BI.removeAt(minColumnSize, data.deletedCols);
+        // BI.removeAt(maxColumnSize, data.deletedCols);
         return {
             header: data.header,
             items: data.items,
@@ -206,13 +218,11 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
             self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            o.regionColumnSize = this.getRegionColumnSize();
-            o.columnSize = this.getColumnSize();
+            self._recomputeColumnSize();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, arguments);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
-            o.regionColumnSize = this.getRegionColumnSize();
-            o.columnSize = this.getColumnSize();
+            self._recomputeColumnSize();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, arguments);
         });
     },
@@ -222,9 +232,9 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         this.table.setWidth(width);
     },
 
-    setHeight: function (width) {
+    setHeight: function (height) {
         BI.DynamicSummaryLayerTreeTable.superclass.setHeight.apply(this, arguments);
-        this.table.setHeight(width);
+        this.table.setHeight(height);
     },
 
     setColumnSize: function (columnSize) {
@@ -232,13 +242,7 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
     },
 
     getColumnSize: function () {
-        var columnSize = this.table.getColumnSize();
-        var deep = this._getHDeep();
-        var pre = [];
-        if (deep > 0) {
-            pre = BI.makeArray(deep, columnSize[0] / deep);
-        }
-        return pre.concat(columnSize.slice(1));
+        return this.options.columnSize;
     },
 
     setRegionColumnSize: function (columnSize) {

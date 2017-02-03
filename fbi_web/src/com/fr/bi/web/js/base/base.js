@@ -698,31 +698,57 @@ if (!window.BI) {
                 var copies = callbacks.slice(0);
                 callbacks = [];
                 for (var i = 0; i < copies.length; i++) {
-                    copies[i].func.apply(null, copies[i].args);
+                    copies[i]();
                 }
             }
+
+            if (typeof Promise !== 'undefined') {
+                var p = Promise.resolve();
+                var logError = function (err) {
+                    console.error(err);
+                };
+                timerFunc = function () {
+                    p.then(nextTickHandler).catch(logError);
+                }
+            } else
 
             /* istanbul ignore if */
             if (typeof MutationObserver !== 'undefined') {
                 var counter = 1;
                 var observer = new MutationObserver(nextTickHandler);
-                var textNode = document.createTextNode(counter);
+                var textNode = document.createTextNode(counter + "");
                 observer.observe(textNode, {
                     characterData: true
                 });
                 timerFunc = function () {
                     counter = (counter + 1) % 2;
-                    textNode.data = counter;
+                    textNode.data = counter + "";
                 }
             } else {
-                timerFunc = setTimeout
+                timerFunc = function () {
+                    setTimeout(nextTickHandler, 0)
+                }
             }
-            return function (cb) {
+            return function queueNextTick(cb) {
+                var _resolve;
                 var args = [].slice.call(arguments, 1);
-                callbacks.push({func: cb, args: args});
-                if (pending) return;
-                pending = true;
-                timerFunc(nextTickHandler, 0);
+                callbacks.push(function () {
+                    if (cb) {
+                        cb.apply(null, args);
+                    }
+                    if (_resolve) {
+                        _resolve.apply(null, args);
+                    }
+                });
+                if (!pending) {
+                    pending = true;
+                    timerFunc();
+                }
+                if (!cb && typeof Promise !== 'undefined') {
+                    return new Promise(function (resolve) {
+                        _resolve = resolve
+                    })
+                }
             }
         })()
     });

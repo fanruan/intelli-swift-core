@@ -386,6 +386,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             this._expandWidget();
             return true;
         }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            this.tableChartResize();
+            this.chartDrill.populate();
+            return true;
+        }
         return false;
     },
 
@@ -394,8 +400,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             return;
         }
         if (BI.has(changed, "bounds")) {
-            this.tableChartResize();
-            this.chartDrill.populate();
+
         }
         if (BI.has(changed, "dimensions") ||
             BI.has(changed, "sort") ||

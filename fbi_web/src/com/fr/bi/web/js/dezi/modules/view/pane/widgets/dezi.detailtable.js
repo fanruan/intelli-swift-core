@@ -20,10 +20,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.DetailTableView.superclass._init.apply(this, arguments);
         var self = this, wId = this.model.get("id");
-        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
+        this.broadcasts = [];
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             self._refreshTableAndFilter();
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
+        }));
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
             // 2016.12.1 young 都清除掉，每次都是往上找到所有的联动条件
             var clicked = BI.Utils.getLinkageValuesByID(BI.Utils.getWidgetIDByDimensionID(dId));
             if (BI.isNotNull(v)) {
@@ -33,15 +34,21 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 notrefresh: true
             });
             self._refreshTableAndFilter();
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
+        }));
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
-        });
+        }));
 
         //全局样式的修改
-        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
             self._refreshGlobalStyle(globalStyle);
-        });
+        }));
+
+        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
+                self.tools.setVisible(false);
+            }
+        }));
     },
 
 
@@ -83,11 +90,6 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
-            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
-                self.tools.setVisible(false);
-            }
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
@@ -206,6 +208,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
                     self._expandWidget();
+                    break;
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
                     self._onClickShowName();
                     break;
@@ -367,7 +370,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             isLayer: true
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
-        })
+        });
         BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 
@@ -381,7 +384,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             return;
         }
         if (BI.has(changed, "bounds")) {
-            this.tableResize();
+
         }
         if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
@@ -412,6 +415,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             this._expandWidget();
             return true;
         }
+        if (this.model.has("layout")) {
+            this.model.get("layout");
+            this.tableResize();
+            return true;
+        }
         return false;
     },
 
@@ -424,5 +432,12 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this._refreshTitlePosition();
 
         this._refreshGlobalStyle();
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (I, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });

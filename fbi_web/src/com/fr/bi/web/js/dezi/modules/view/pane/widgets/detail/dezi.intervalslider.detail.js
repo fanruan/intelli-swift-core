@@ -209,12 +209,21 @@ BIDezi.IntervalSliderDetailView = BI.inherit(BI.View, {
             type: "bi.number_dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
-                if (!dimensionsVessel[dId]) {
-                    dimensionsVessel[dId] = BI.createWidget({
-                        type: "bi.layout"
+                var dimensions = self.model.cat("dimensions");
+                if(BI.isArray(dId)){
+                    BI.each(dId, function(idx, d){
+                        createSubVessel(d);
                     });
-                    self.addSubVessel(dId, dimensionsVessel[dId]);
-                    var dimensions = self.model.cat("dimensions");
+                    if (BI.isNotEmptyArray(BI.difference(dId, BI.keys(dimensions)))) {
+                        self.model.set("addDimension", {
+                            dId: dId,
+                            regionType: regionType,
+                            src: op
+                        });
+                    }
+                    return null;
+                }else{
+                    createSubVessel(dId);
                     if (!BI.has(dimensions, dId)) {
                         self.model.set("addDimension", {
                             dId: dId,
@@ -222,8 +231,17 @@ BIDezi.IntervalSliderDetailView = BI.inherit(BI.View, {
                             src: op
                         });
                     }
+                    return dimensionsVessel[dId];
                 }
-                return dimensionsVessel[dId];
+
+                function createSubVessel(dimensionId){
+                    if (!dimensionsVessel[dimensionId]) {
+                        dimensionsVessel[dimensionId] = BI.createWidget({
+                            type: "bi.layout"
+                        });
+                        self.addSubVessel(dimensionId, dimensionsVessel[dimensionId]);
+                    }
+                }
             }
         });
 

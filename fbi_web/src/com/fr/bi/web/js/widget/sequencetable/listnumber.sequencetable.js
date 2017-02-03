@@ -77,11 +77,13 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
         this.layout.attr("items", items);
         this.layout.resize();
         this.container.setHeight(o.items.length * o.rowSize);
+        this.scrollContainer.element.scrollTop(o.scrollTop);
     },
 
     _calculateChildrenToRender: function () {
         var self = this, o = this.options;
-        var start = Math.floor(o.scrollTop / o.rowSize);
+        var scrollTop = BI.clamp(o.scrollTop, 0, o.rowSize * o.items.length - (o.height - o.header.length * o.headerRowSize) + BI.DOM.getScrollWidth());
+        var start = Math.floor(scrollTop / o.rowSize);
         var end = start + Math.floor((o.height - o.header.length * o.headerRowSize) / o.rowSize);
         var renderedCells = [], renderedKeys = [];
         for (var i = start, cnt = 0; i <= end && i < o.items.length; i++, cnt++) {
@@ -96,7 +98,6 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
                     this.renderedCells[index].top = top;
                     this.renderedCells[index].el.element.css("top", top + "px");
                 }
-                this.renderedCells[index].el.setText(this.start + i);
                 renderedCells.push(this.renderedCells[index]);
             } else {
                 var child = BI.createWidget(BI.extend({

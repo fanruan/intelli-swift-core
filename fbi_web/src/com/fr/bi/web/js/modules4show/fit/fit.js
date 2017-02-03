@@ -30,12 +30,8 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
                 }
             });
         });
-
-        BI.Resizers.add(this.getName(), function (e) {
-            //只有window resize的时候才会触发事件
-            if (BI.isWindow(e.target) && self.element.is(":visible")) {
-                self.populate();
-            }
+        BI.ResizeDetector.addResizeListener(this, function () {
+            self.populate();
         });
     },
 

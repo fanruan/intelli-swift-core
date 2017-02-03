@@ -35,8 +35,13 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 right: 0
             }]
         });
-        BI.ResizeDetector.addResizeListener(this.element[0], function () {
-            self.resize();
+        this._resizeHandler = BI.debounce(function () {
+            self.table.setWidth(self.element.width());
+            self.table.setHeight(self.element.height());
+            self.table.populate();
+        }, 0);
+        BI.ResizeDetector.addResizeListener(this, function () {
+            self._resizeHandler();
         });
     },
 
@@ -217,7 +222,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 break;
         }
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            var columnSize = this.getCalculateRegionColumnSize();
+            var columnSize = this.getRegionColumnSize();
             self.model.setStoredRegionColumnSize(columnSize[0]);
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
@@ -518,12 +523,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     },
 
     resize: function () {
-        var self = this;
-        BI.nextTick(function () {
-            self.table.setWidth(self.element.width());
-            self.table.setHeight(self.element.height());
-            self.table.populate();
-        });
+        this._resizeHandler();
     },
 
     magnify: function () {

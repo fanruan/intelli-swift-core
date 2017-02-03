@@ -113,7 +113,7 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         var freezeCols = o.freezeCols.slice();
         var regionSize = o.regionColumnSize[0];
         var freezeColLength = this._getFreezeColLength();
-        if (!regionSize || regionSize >= o.width - 10 || regionSize <= 10) {
+        if (!regionSize || regionSize > o.width - 10 || regionSize < 10) {
             regionSize = (freezeColLength > o.columnSize.length / 2 ? 2 / 3 : 1 / 3) * o.width;
         }
         if (freezeColLength === 0) {
@@ -164,9 +164,9 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
         this.table.setWidth(width);
     },
 
-    setHeight: function (width) {
+    setHeight: function (height) {
         BI.AdaptiveTable.superclass.setHeight.apply(this, arguments);
-        this.table.setHeight(width);
+        this.table.setHeight(height);
     },
 
     setColumnSize: function (columnSize) {
@@ -210,11 +210,11 @@ BI.AdaptiveTable = BI.inherit(BI.Widget, {
     },
 
     attr: function (key, value) {
-        BI.AdaptiveTable.superclass.attr.apply(this, arguments);
+        var v = BI.AdaptiveTable.superclass.attr.apply(this, arguments);
         if (key === "freezeCols") {
-            return;
+            return v;
         }
-        this.table.attr.apply(this.table, arguments);
+        return this.table.attr.apply(this.table, arguments);
     },
 
     restore: function () {

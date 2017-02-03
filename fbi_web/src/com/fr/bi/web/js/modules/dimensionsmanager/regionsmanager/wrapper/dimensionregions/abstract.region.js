@@ -85,13 +85,13 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 var helper = ui.helper;
                 var data = helper.data("data");
                 data = self._dropDataFilter(data);
-                BI.each(data, function (i, dimension) {
+                var dIds = BI.map(data, function (i, dimension) {
                     if (!BI.has(dimension, "used")) {
                         dimension.used = true;
                     }
-                    var dId = BI.UUID();
-                    o.dimensionCreator(dId, dimension);
+                    return dimension.dId || BI.UUID();
                 });
+                o.dimensionCreator(dIds, data);
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
                 //滚到最下面
                 BI.nextTick(function () {

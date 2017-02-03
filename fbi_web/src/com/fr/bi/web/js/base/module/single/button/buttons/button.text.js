@@ -9,8 +9,7 @@ BI.TextButton = BI.inherit(BI.BasicButton, {
     _defaultConfig: function () {
         var conf = BI.TextButton.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            tagName: "a",
-            baseCls: (conf.baseCls || "") + " bi-text-button display-block",
+            baseCls: (conf.baseCls || "") + " bi-text-button",
             textAlign: "center",
             whiteSpace: "nowrap",
             forceCenter: false,

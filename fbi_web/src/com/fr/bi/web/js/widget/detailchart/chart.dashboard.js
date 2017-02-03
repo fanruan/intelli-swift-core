@@ -328,7 +328,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             }
         } else {
             var others = [];
-            if (BI.isNotNull(items[0][0].data[0].seriesName)) {
+            if (BI.isNotNull(items[0][0].data[0].xValue)) {
                 BI.each(items[0], function (idx, item) {
                     BI.each(item.data, function (id, da) {
                         others.push({
