@@ -3659,12 +3659,12 @@
   color: #009de3;
 }
 .widget-combo-pull-down-font .b-font:before {
-  content: "\e6ab";
+  content: "\e6e0";
   color: #009de3;
 }
 .widget-combo-pull-down-font.native .b-font:before,
 .widget-combo-pull-down-font.disabled .b-font:before {
-  content: "\e6ab";
+  content: "\e6e0";
   color: #009de3;
 }
 .widget-tools-maximization-font .b-font:before {
