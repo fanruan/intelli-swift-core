@@ -142,9 +142,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         xValue: value,
                         y: y,
                         yValue: y,
-                        parents: parents,
+                        pValues: parents,
                         dimensionIds: [self.allDimIds[currentLayer]],
-                        targetIds: [targetIds[0]]
+                        targetIds: [targetIds[0]],
+                        dId: self.allDimIds[currentLayer],
+                        value: [value]
                     };
                     if (BI.has(item, "c")) {
                         res.children = _formatChildren(item, currentLayer + 1, BI.concat(parents, [{
@@ -152,9 +154,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             xValue: value,
                             y: y,
                             yValue: y,
-                            parents: parents,
+                            pValues: parents,
                             dimensionIds: [self.allDimIds[currentLayer]],
-                            targetIds: [targetIds[0]]
+                            targetIds: [targetIds[0]],
+                            dId: self.allDimIds[currentLayer],
+                            value: [value]
                         }]));
                     }
                     adjustData.push(res);
