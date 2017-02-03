@@ -36,13 +36,14 @@ import com.fr.stable.StringUtils;
 
 import java.util.*;
 
-public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
+public class HorGroupExecutor extends GroupExecutor {
 
     private BIDimension[] colDimension;
 
-    public HorGroupExecutor(TableWidget widget, BIDimension[] usedColumn, Paging paging, BISession session, CrossExpander expander) {
+    public HorGroupExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
         super(widget, paging, session, expander);
-        colDimension = usedColumn;
+        usedDimensions = widget.getViewTopDimensions();
+        colDimension = usedDimensions;
     }
 
     //
@@ -766,46 +767,6 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
         return new JSONArray(currentIndex).toString();
     }
 
-    /* (non-Javadoc)
-     * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
-     */
-    @Override
-    public NewCrossRoot getCubeNode() {
-//        if (getSession() == null) {
-//            return null;
-//        }
-//        long start = System.currentTimeMillis();
-//        Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageGroup(true, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, paging.getOprator(), widget.useRealData(), session, expander.getXExpander());
-//        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
-//        return tree;
-        long start = System.currentTimeMillis();
-        if (getSession() == null) {
-            return null;
-        }
-        int len = usedSumTarget.length;
-        Map<String, TargetGettingKey> targetsMap = new HashMap<String, TargetGettingKey>();
-        TargetGettingKey[] keys = new TargetGettingKey[len];
-        for (int i = 0; i < len; i++) {
-            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
-            targetsMap.put(usedSumTarget[i].getValue(), keys[i]);
-        }
-        int calpage = paging.getOprator();
-
-        NewCrossRoot node = CubeIndexLoader.getInstance(session.getUserId()).loadPageCrossGroup(createTarget4Calculate(), new BIDimension[0], colDimension, allSumTarget, calpage, widget.useRealData(), session, expander, widget);
-
-        clearNullSummary(node.getLeft(), keys);
-        clearNullSummary(node.getTop(), keys);
-
-
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
-        return node;
-    }
-
-    @Override
-    public JSONObject createJSONObject() throws Exception {
-        return getCubeNode().toJSONObject(new BIDimension[0], colDimension, widget.getTargetsKey());
-    }
-
     private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {
         for (TargetGettingKey key : keys) {
             if (left.getSummaryValue(key) == null) {
@@ -817,6 +778,29 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
         }
     }
 
+    @Override
+    public Node getCubeNode() {
+        if (session == null) {
+            return null;
+        }
+        int rowLength = usedDimensions.length;
+        int summaryLength = usedSumTarget.length;
+        int columnLen = rowLength + summaryLength;
+        if (columnLen == 0) {
+            return null;
+        }
+        long start = System.currentTimeMillis();
+
+        int calpage = paging.getOprator();
+        CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
+        Node tree = cubeIndexLoader.loadPageGroup(true, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getXExpander());
+        if (tree == null) {
+            tree = new Node(null, null);
+        }
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
+        return tree;
+    }
+
     /**
      * 创建cell
      *
@@ -825,7 +809,25 @@ public class HorGroupExecutor extends BITableExecutor<NewCrossRoot> {
      */
     @Override
     public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
-        NewCrossRoot tree = getCubeNode();
+        long start = System.currentTimeMillis();
+        if (getSession() == null) {
+            return null;
+        }
+        int len = usedSumTarget.length;
+        Map<String, TargetGettingKey> targetsMap = new HashMap<String, TargetGettingKey>();
+        TargetGettingKey[] usedSumTargetKeys = new TargetGettingKey[len];
+        for (int i = 0; i < len; i++) {
+            usedSumTargetKeys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
+            targetsMap.put(usedSumTarget[i].getValue(), usedSumTargetKeys[i]);
+        }
+        int calpage = paging.getOprator();
+
+        NewCrossRoot tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageCrossGroup(createTarget4Calculate(), new BIDimension[0], colDimension, allSumTarget, calpage, widget.useRealData(), session, expander, widget);
+
+        clearNullSummary(tree.getLeft(), usedSumTargetKeys);
+        clearNullSummary(tree.getTop(), usedSumTargetKeys);
+
+        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
         if (tree == null) {
             return new CBCell[0][0];
         }
