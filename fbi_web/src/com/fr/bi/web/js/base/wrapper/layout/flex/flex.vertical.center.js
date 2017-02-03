@@ -8,7 +8,7 @@
 BI.FlexVerticalCenter = BI.inherit(BI.Layout, {
     _defaultConfig: function () {
         return BI.extend(BI.FlexVerticalCenter.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-flex-vertical-center",
+            baseCls: "bi-flex-vertical-center clearfix",
             columnSize: [],
             hgap: 0,
             vgap: 0,
@@ -21,13 +21,14 @@ BI.FlexVerticalCenter = BI.inherit(BI.Layout, {
     _init: function () {
         BI.FlexVerticalCenter.superclass._init.apply(this, arguments);
         var o = this.options;
+        this.wrapper = $("<div>").addClass("flex-vertical-center-wrapper").appendTo(this.element);
         this.populate(this.options.items);
     },
 
     _addElement: function (i, item) {
         var o = this.options;
         var w = BI.FlexVerticalCenter.superclass._addElement.apply(this, arguments);
-        w.element.css({"position": "relative", "flex-shrink": "0"});
+        w.element.css({"position": "relative"}).appendTo(this.wrapper);
         if (o.hgap + o.lgap + (item.lgap || 0) > 0) {
             w.element.css({
                 "margin-left": o.hgap + o.lgap + (item.lgap || 0) + "px"
@@ -51,13 +52,19 @@ BI.FlexVerticalCenter = BI.inherit(BI.Layout, {
         return w;
     },
 
+    addItem: function (item) {
+        var w = this._addElement(this.options.items.length, item);
+        this.options.items.push(item);
+        w.element.appendTo(this.wrapper);
+        return w;
+    },
+
     resize: function () {
         // console.log("flex_vertical_center布局不需要resize");
     },
 
     populate: function (items) {
         BI.FlexVerticalCenter.superclass.populate.apply(this, arguments);
-        this.render();
     }
 });
 $.shortcut('bi.flex_vertical_center', BI.FlexVerticalCenter);
