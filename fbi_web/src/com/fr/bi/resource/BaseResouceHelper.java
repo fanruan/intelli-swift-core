@@ -309,7 +309,6 @@ public class BaseResouceHelper {
         return buffer.toString();
     }
 
-
     public static String[] getThirdCss() {
         return new String[]{
                 "com/fr/bi/web/css/base/third/jquery-ui.custom.css",
@@ -717,7 +716,6 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/core/mvc/fbi.js",
                 "com/fr/bi/web/js/core/mvc/factory/factory.js",
                 "com/fr/bi/web/js/core/mvc/router/rooter.js",
-
 
                 //const
                 "com/fr/bi/web/js/data/data.js",

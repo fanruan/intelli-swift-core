@@ -10,9 +10,10 @@ Pool = {
     excel_views: ${excel_views}
 };
 Pool.foreignRelations = {};
-$.each(Pool.relations, function (p, item) {
-    $.each(item, function (f, relation) {
-        Pool.foreignRelations[f] = Pool.foreignRelations[f] || {};
-        Pool.foreignRelations[f][p] = relation;
-    })
-});
+
+for (var i in Pool.relations) {
+    for(var j in Pool.relations[i]) {
+        Pool.foreignRelations[j] = Pool.foreignRelations[j] || {};
+        Pool.foreignRelations[j][i] = Pool.relations[i][j];
+    }
+}
