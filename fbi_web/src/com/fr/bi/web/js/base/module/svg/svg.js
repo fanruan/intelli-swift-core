@@ -15,7 +15,6 @@ BI.Svg = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.Svg.superclass._init.apply(this, arguments);
-        FR.$defaultImport('/com/fr/bi/web/js/third/raphael.js', 'js');
         this.paper = Raphael(this.element[0]);
 
         $(this.paper.canvas).width("100%").height("100%").css({"left": "0", "top": "0"}).appendTo(this.element);
