@@ -246,6 +246,10 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                 }
             }
             crossHeaderItems.push(item);
+            if (BI.isNull(self.columnContentCache[self.dimIds.length + currentLayer - 1])) {
+                self.columnContentCache[self.dimIds.length + currentLayer - 1] = [];
+            }
+            self.columnContentCache[self.dimIds.length + currentLayer - 1].push(item);
         });
         return crossHeaderItems;
     },

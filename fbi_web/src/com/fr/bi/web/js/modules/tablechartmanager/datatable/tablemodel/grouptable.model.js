@@ -20,7 +20,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
         this.clickValue = "";               //点击的值
         this.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;  //翻页操作
 
-        this.columnContentCache = [];
+        this.columnContentCache = [];       //以列的形式临时存放 用以计算宽度
 
         //当当前组件删除的时候删除存储的区域columnSize缓存
         BI.Broadcasts.on(BICst.BROADCAST.WIDGETS_PREFIX + this.wId, function () {
@@ -292,10 +292,6 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                 tempNodeId = self.tree.search(tempNodeId).getParent().get("id");
                 tempLayer--;
             }
-            if (BI.isNull(self.columnContentCache[currentLayer - 1])) {
-                self.columnContentCache[currentLayer - 1] = [];
-            }
-            self.columnContentCache[currentLayer - 1].push(child.n);
             var item = {
                 type: "bi.normal_expander_cell",
                 text: child.n,
@@ -339,6 +335,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                 item.needExpand = true;
                 item.isExpanded = false;
             }
+
             //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
             if (BI.isNotNull(child.c)) {
                 item.children = self._createCommonTableItems(child.c, currentLayer, node, self.dimIds) || [];
@@ -348,7 +345,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                     var summary = self._getOneRowSummary(child.s);
                     var tarSize = self.targetIds.length;
                     BI.each(summary, function (j, sum) {
-                        vs.push({
+                        var tarItem = {
                             type: "bi.target_body_normal_cell",
                             text: sum,
                             dId: self.targetIds[j % tarSize],
@@ -357,11 +354,12 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                             styles: self.tableForm === BICst.TABLE_FORM.OPEN_ROW ?
                                 BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle) :
                                 BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i)
-                        });
-                        if (BI.isNull(self.columnContentCache[currentLayer + j])) {
-                            self.columnContentCache[currentLayer + j] = [];
+                        };
+                        vs.push(tarItem);
+                        if (BI.isNull(self.columnContentCache[currentLayer + (j % tarSize + 1)])) {
+                            self.columnContentCache[currentLayer + (j % tarSize + 1)] = [];
                         }
-                        self.columnContentCache[currentLayer + j].push(sum);
+                        self.columnContentCache[currentLayer + (j % tarSize + 1)].push(BI.deepClone(tarItem));
                     });
                     item.values = vs;
                 }
@@ -380,21 +378,28 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
                 } else {
                     BI.each(child.s, function (j, sum) {
                         var tId = self.targetIds[j];
-                        values.push({
+                        var tarItem = {
                             type: "bi.target_body_normal_cell",
                             text: sum,
                             dId: tId,
                             clicked: pValues,
                             styles: BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i)
-                        });
-                        if (BI.isNull(self.columnContentCache[currentLayer + j])) {
-                            self.columnContentCache[currentLayer + j] = [];
+                        };
+                        values.push(tarItem);
+                        if (BI.isNull(self.columnContentCache[self.dimIds.length + j])) {
+                            self.columnContentCache[self.dimIds.length + j] = [];
                         }
-                        self.columnContentCache[currentLayer + j].push(sum);
+                        self.columnContentCache[self.dimIds.length + j].push(BI.deepClone(tarItem));
                     });
                 }
                 item.values = values;
             }
+
+            if (BI.isNull(self.columnContentCache[currentLayer - 1])) {
+                self.columnContentCache[currentLayer - 1] = [];
+            }
+            self.columnContentCache[currentLayer - 1].push(BI.deepClone(item));
+
             items.push(item);
         });
         return items;
@@ -480,22 +485,24 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
     _createTableHeader: function () {
         var self = this;
         BI.each(this.dimIds.concat(this.targetIds), function (i, dId) {
-            BI.isNotNull(dId) &&
-            self.header.push({
-                type: "bi.normal_header_cell",
-                dId: dId,
-                text: BI.Utils.getDimensionNameByID(dId),
-                styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
-                sortFilterChange: function (v) {
-                    self.resetETree();
-                    self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-                    self.headerOperatorCallback(v, dId);
+            if (BI.isNotNull(dId)) {
+                var header = {
+                    type: "bi.normal_header_cell",
+                    dId: dId,
+                    text: BI.Utils.getDimensionNameByID(dId),
+                    styles: BI.SummaryTableHelper.getHeaderStyles(self.themeColor, self.tableStyle),
+                    sortFilterChange: function (v) {
+                        self.resetETree();
+                        self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
+                        self.headerOperatorCallback(v, dId);
+                    }
+                };
+                self.header.push(header);
+                if (BI.isNull(self.columnContentCache[i])) {
+                    self.columnContentCache[i] = [];
                 }
-            });
-            if (BI.isNull(self.columnContentCache[i])) {
-                self.columnContentCache[i] = [];
+                self.columnContentCache[i].push(BI.deepClone(header));
             }
-            self.columnContentCache[i].push(BI.Utils.getDimensionNameByID(dId));
         });
     },
 
@@ -567,27 +574,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
         var dtIds = this.dimIds.concat(this.targetIds);
         if (this.columnSize.length !== dtIds.length) {
             //重置列宽
-            this.columnSize = [];
-            // BI.each(dtIds, function(i, id) {
-            //     self.columnSize.push("");
-            // });
-            //根据表格内容算出一个大概合适的列宽
-            //中文字体大小x1.2 最小80初始化宽度
-            var maxInitSize = 200, minInitSize = 80;
-            BI.each(this.columnContentCache, function (i, singleColumn) {
-                var totalSize = 0;
-                BI.each(singleColumn, function (j, content) {
-                    totalSize += content.toString().length * 12 * 1.2;
-                });
-                var calculateSize = BI.parseInt(totalSize / singleColumn.length);
-                if (calculateSize < minInitSize) {
-                    self.columnSize[i] = minInitSize;
-                } else if (calculateSize > maxInitSize) {
-                    self.columnSize[i] = maxInitSize;
-                } else {
-                    self.columnSize[i] = calculateSize;
-                }
-            });
+            this.columnSize = BI.SummaryTableHelper.getColumnWidthByColumns(this.columnContentCache);
         }
         this.columnContentCache = [];
     },
