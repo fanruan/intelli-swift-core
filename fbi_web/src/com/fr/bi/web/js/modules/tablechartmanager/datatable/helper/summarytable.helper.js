@@ -91,18 +91,22 @@
                 case BICst.TABLE_STYLE.STYLE1:
                     return {
                         background: themeColor,
-                        color: "#ffffff"
+                        color: "#ffffff",
+                        fontWeight: "bold"
                     };
                     break;
                 case BICst.TABLE_STYLE.STYLE2:
                     return {
                         background: themeColor,
-                        color: "#ffffff"
+                        color: "#ffffff",
+                        fontWeight: "bold"
                     };
                     break;
                 case BICst.TABLE_STYLE.STYLE3:
                     return {
-                        color: "#808080"
+                        background: "none",
+                        color: "#808080",
+                        fontWeight: "bold"
                     };
                     break;
                 default :
