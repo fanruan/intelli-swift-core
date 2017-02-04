@@ -850,9 +850,9 @@ if (!window.BI) {
             var sum = 0;
             BI.each(array, function (i, item) {
                 if (iteratee) {
-                    sum += new Number(iteratee.apply(context, [i, item]));
+                    sum += Number(iteratee.apply(context, [i, item]));
                 } else {
-                    sum += new Number(item);
+                    sum += Number(item);
                 }
             });
             return sum;
