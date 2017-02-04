@@ -29,7 +29,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 right: 0
             }]
         });
-        BI.ResizeDetector.addResizeListener(this.element[0], function () {
+        BI.ResizeDetector.addResizeListener(this, function () {
             self.resize();
         });
     },
