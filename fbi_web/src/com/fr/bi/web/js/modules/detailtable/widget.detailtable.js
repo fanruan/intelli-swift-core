@@ -26,7 +26,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             type: "bi.page_table",
             isNeedFreeze: null,
             isNeedMerge: false,
-            regionColumnSize: this.getStoredRegionColumnSize(),
             el: {
                 type: "bi.sequence_table",
                 el: {
@@ -147,6 +146,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     self.table.setWidth(self.element.width());
                     self.table.setHeight(self.element.height());
                     self.table.attr("columnSize", self._getColumnSize(header));
+                    self.table.attr("regionColumnSize", self.getStoredRegionColumnSize());
                     self.table.attr("minColumnSize", self._getMinColumnSize(header));
                     self.table.attr("isNeedFreeze", true);
                     self.table.attr("freezeCols", self._getFreezeCols());
