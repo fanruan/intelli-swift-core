@@ -188,6 +188,32 @@ public class HorGroupExecutor extends GroupExecutor {
         }
     }
 
+    static private void createCellWhileNoSumColumnLength(int maxColumnLength, int tempCol, boolean isSortTitle, boolean isTargetSort, BIDimension sortDimension, CBCell[][] cbcells){
+        CBCell cell = new CBCell(StringUtils.EMPTY);
+        cell.setRow(maxColumnLength);
+        cell.setColumn(tempCol);
+        cell.setRowSpan(1);
+        cell.setColumnSpan(1);
+        cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(maxColumnLength));
+        List<CBCell> cellList = new ArrayList<CBCell>();
+        cellList.add(cell);
+        //TODO CBBoxElement需要整合减少内存
+        CBBoxElement cbox = new CBBoxElement(cellList);
+        cbox.setName(StringUtils.EMPTY);
+        if (isSortTitle) {
+            cbox.setType(CellConstant.CBCELL.TARGETTITLE_Y);
+            cbox.setSortTargetName(StringUtils.EMPTY);
+            cbox.setSortTargetValue("[]");
+            if (isTargetSort && sortDimension != null && ComparatorUtils.equals(sortDimension.getSortTarget(), StringUtils.EMPTY)) {
+                cbox.setSortType(sortDimension.getSortType());
+            } else {
+                cbox.setSortType(BIReportConstant.SORT.NONE);
+            }
+        }
+        cell.setBoxElement(cbox);
+        cbcells[cell.getColumn()][cell.getRow()] = cell;
+    }
+
     static void dealWithNodeNoExpanderIsCross(Node node, CBCell[][] cbcells, int row, int column,
                                               BIDimension[] colColumn,
                                               BITarget[] sumColumn, TargetGettingKey[] keys,
@@ -197,29 +223,7 @@ public class HorGroupExecutor extends GroupExecutor {
         CBCell cell = null;
         int maxColumnLength = rowData.getMaxArrayLength();
         if (sumColumn.length == 0) {
-            cell = new CBCell(StringUtils.EMPTY);
-            cell.setRow(maxColumnLength);
-            cell.setColumn(tempCol);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(maxColumnLength));
-            List<CBCell> cellList = new ArrayList<CBCell>();
-            cellList.add(cell);
-            //TODO CBBoxElement需要整合减少内存
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(StringUtils.EMPTY);
-            if (isSortTitle) {
-                cbox.setType(CellConstant.CBCELL.TARGETTITLE_Y);
-                cbox.setSortTargetName(StringUtils.EMPTY);
-                cbox.setSortTargetValue("[]");
-                if (isTargetSort && sortDimension != null && ComparatorUtils.equals(sortDimension.getSortTarget(), StringUtils.EMPTY)) {
-                    cbox.setSortType(sortDimension.getSortType());
-                } else {
-                    cbox.setSortType(BIReportConstant.SORT.NONE);
-                }
-            }
-            cell.setBoxElement(cbox);
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
+            createCellWhileNoSumColumnLength(maxColumnLength, tempCol, isSortTitle, isTargetSort, sortDimension, cbcells);
         } else {
             for (int i = 0; i < sumColumn.length; i++) {
                 cell = new CBCell(sumColumn[i].getValue());
@@ -250,6 +254,46 @@ public class HorGroupExecutor extends GroupExecutor {
         }
     }
 
+    static private void createCellForNodeExpander(String name, int row, int tempCol, int rowSpan, int colSpan,
+                                                    int columnLength, ArrayList<String> currentIndex, BIDimension[] colColumn,
+                                                    int dimensionIndex, NodeExpander expander, BIComplexExecutData rowData,
+                                                    Node tempNode, CBCell[][] cbcells){
+        CBCell cell = new CBCell(name);
+        currentIndex.add(name == null ? StringUtils.EMPTY : name);
+        cell.setRow(row);
+        cell.setColumn(tempCol);
+        cell.setColumnSpan(colSpan);
+        cell.setRowSpan(rowSpan);
+        cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
+        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+        List<CBCell> cellList = new ArrayList<CBCell>();
+        cellList.add(cell);
+        //TODO CBBoxElement需要整合减少内存
+        CBBoxElement cbox = new CBBoxElement(cellList);
+        BITargetAndDimension rowCol = colColumn[dimensionIndex];
+        cbox.setName(rowCol.getValue());
+        if (dimensionIndex != columnLength - 1) {
+            cbox.setIndexString_x(trunToIndexString(currentIndex));
+            cbox.setExpand(expander.isChildExpand(name));
+            cbox.setDimensionRegionIndex(rowData.getDimensionRegionFromDimension(colColumn));
+        }
+        cbox.setType(CellConstant.CBCELL.ROWFIELD);
+        cell.setBoxElement(cbox);
+        Node t = tempNode;
+        JSONArray ja = new JSONArray();
+        int k = dimensionIndex;
+        while (k != -1 && t != null) {
+            try {
+                ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
+            } catch (Exception e) {
+            }
+            t = t.getParent();
+            k--;
+        }
+        cbox.setDimensionJSON(ja.toString());
+        cbcells[cell.getColumn()][cell.getRow()] = cell;
+    }
+
     static int dealWithNodeExpander(Node node, NodeExpander expander, CBCell[][] cbcells, int row, int column,
                                     BIDimension[] colColumn,
                                     BITarget[] sumColumn, TargetGettingKey[] keys,
@@ -273,45 +317,12 @@ public class HorGroupExecutor extends GroupExecutor {
             if (isCross) {
                 colSpan = colSpan * Math.max(sumColumn.length, 1);
             }
-            cell = new CBCell(name);
-            currentIndex.add(name == null ? StringUtils.EMPTY : name);
-            cell.setRow(row);
-            cell.setColumn(tempCol);
-            cell.setColumnSpan(colSpan);
-
             int rowSpan = rowData.getColumnRowSpan(row, columnLength);
             if (childEx == null) {
                 rowSpan = rowData.getNoneChildSpan(row, columnLength);
             }
-            cell.setRowSpan(rowSpan);
-            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            List<CBCell> cellList = new ArrayList<CBCell>();
-            cellList.add(cell);
-            //TODO CBBoxElement需要整合减少内存
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            BITargetAndDimension rowCol = colColumn[dimensionIndex];
-            cbox.setName(rowCol.getValue());
-            if (dimensionIndex != columnLength - 1) {
-                cbox.setIndexString_x(trunToIndexString(currentIndex));
-                cbox.setExpand(expander.isChildExpand(name));
-                cbox.setDimensionRegionIndex(rowData.getDimensionRegionFromDimension(colColumn));
-            }
-            cbox.setType(CellConstant.CBCELL.ROWFIELD);
-            cell.setBoxElement(cbox);
-            Node t = tempNode;
-            JSONArray ja = new JSONArray();
-            int k = dimensionIndex;
-            while (k != -1 && t != null) {
-                try {
-                    ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
-                } catch (Exception e) {
-                }
-                t = t.getParent();
-                k--;
-            }
-            cbox.setDimensionJSON(ja.toString());
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
+            createCellForNodeExpander(name, row, tempCol, rowSpan, colSpan,
+            columnLength, currentIndex, colColumn, dimensionIndex, expander, rowData, tempNode, cbcells);
             IntList list = null;
             try {
                 list = (IntList) deepList.clone();
@@ -325,55 +336,63 @@ public class HorGroupExecutor extends GroupExecutor {
         return tempCol;
     }
 
+    static private void addCellToCellList(BITarget[] sumColumn, int p, DetailChartSetting chartSetting, CBCell cell, int row,
+                                          int tempCol, BIComplexExecutData columnData, int columnLength, int total, BIDimension[] colColumn,
+                                          boolean isSortTitle, TableWidget widget, Node node, CBCell[][] cbcells){
+        BIAbstractTarget target = (BIAbstractTarget) sumColumn[p];
+        String dimensionName = target.getText();
+        String dId = target.getValue();
+        String levelAndUnit = ExecutorUtils.formatLevelAndUnit(chartSetting.getNumberLevelByTargetId(dId), chartSetting.getUnitByTargetId(dId));
+        if (!ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY)) {
+            dimensionName = dimensionName + "(" + levelAndUnit + ")";
+        }
+        cell = new CBCell(Inter.getLocText("BI-Summary_Values") + ":" + dimensionName);
+        cell.setRow(row);
+        cell.setColumn(tempCol + p);
+        int dimensionIndex = columnData.getDimensionIndexFromRow(row, columnLength);
+        cell.setRowSpan(columnData.getNoneChildRowSpan(row, columnLength) + 1);
+        cell.setColumnSpan(1);
+        cell.setStyle(BITableStyle.getInstance().getXSumStringCellStyle(total));
+        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+        List<CBCell> cellList = new ArrayList<CBCell>();
+        cellList.add(cell);
+        CBBoxElement cbox = new CBBoxElement(cellList);//TODO CBBoxElement需要整合减少内存
+        cbox.setName(colColumn[dimensionIndex].getValue());
+        if (isSortTitle) {
+            cbox.setType(CellConstant.CBCELL.TARGETTITLE_Y);
+            cbox.setSortTargetName(sumColumn[p].getValue());
+            cbox.setSortTargetValue("[]");
+            if (widget.getTargetSort() != null && ComparatorUtils.equals(widget.getTargetSort().getName(), sumColumn[p].getValue())) {
+                cbox.setSortType((Integer) widget.getTargetSort().getObject());
+            } else {
+                cbox.setSortType(BIReportConstant.SORT.NONE);
+            }
+        }
+        cell.setBoxElement(cbox);
+        Node t = node;
+        JSONArray ja = new JSONArray();
+        int k = dimensionIndex - 1;
+        while (k != -1 && t != null) {
+            try {
+                ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
+            } catch (Exception e) {
+            }
+            t = t.getParent();
+            k--;
+        }
+        cbox.setDimensionJSON(ja.toString());
+        cbcells[cell.getColumn()][cell.getRow()] = cell;
+    }
+
     static void dealWithNodeExpanderIsCross(Node node, CBCell[][] cbcells, int row, int column, BIDimension[] colColumn, BITarget[] sumColumn, TargetGettingKey[] keys,
                                             int total, TableWidget widget, int tempCol, BIComplexExecutData columnData, DetailChartSetting chartSetting) {
         int columnLength = colColumn.length;
         CBCell cell = null;
         boolean isSortTitle = row == 0;
         for (int p = 0; p < sumColumn.length; p++) {
-            BIAbstractTarget target = (BIAbstractTarget) sumColumn[p];
-            String dimensionName = target.getText();
-            String dId = target.getValue();
-            String levelAndUnit = ExecutorUtils.formatLevelAndUnit(chartSetting.getNumberLevelByTargetId(dId), chartSetting.getUnitByTargetId(dId));
-            if (!ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY)) {
-                dimensionName = dimensionName + "(" + levelAndUnit + ")";
-            }
-            cell = new CBCell(Inter.getLocText("BI-Summary") + ":" + dimensionName);
-            cell.setRow(row);
-            cell.setColumn(tempCol + p);
-            int dimensionIndex = columnData.getDimensionIndexFromRow(row, columnLength);
-            cell.setRowSpan(columnData.getNoneChildRowSpan(row, columnLength) + 1);
-            cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getXSumStringCellStyle(total));
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            List<CBCell> cellList = new ArrayList<CBCell>();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);//TODO CBBoxElement需要整合减少内存
-            cbox.setName(colColumn[dimensionIndex].getValue());
-            if (isSortTitle) {
-                cbox.setType(CellConstant.CBCELL.TARGETTITLE_Y);
-                cbox.setSortTargetName(sumColumn[p].getValue());
-                cbox.setSortTargetValue("[]");
-                if (widget.getTargetSort() != null && ComparatorUtils.equals(widget.getTargetSort().getName(), sumColumn[p].getValue())) {
-                    cbox.setSortType((Integer) widget.getTargetSort().getObject());
-                } else {
-                    cbox.setSortType(BIReportConstant.SORT.NONE);
-                }
-            }
-            cell.setBoxElement(cbox);
-            Node t = node;
-            JSONArray ja = new JSONArray();
-            int k = dimensionIndex - 1;
-            while (k != -1 && t != null) {
-                try {
-                    ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
-                } catch (Exception e) {
-                }
-                t = t.getParent();
-                k--;
-            }
-            cbox.setDimensionJSON(ja.toString());
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
+            addCellToCellList(sumColumn, p, chartSetting, cell, row,
+            tempCol, columnData, columnLength, total, colColumn,
+            isSortTitle, widget, node, cbcells);
             for (int i = 0, len = keys.length; i < len; i++) {
                 int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
                 Object v = node.getSummaryValue(keys[i]);
@@ -385,37 +404,79 @@ public class HorGroupExecutor extends GroupExecutor {
                 cell.setColumnSpan(1);
                 cell.setStyle(BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
                 cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-                cellList = new ArrayList<CBCell>();
+                List<CBCell> cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
-                cbox = new CBBoxElement(cellList);//TODO CBBoxElement需要整合减少内存
+                CBBoxElement cbox = new CBBoxElement(cellList);//TODO CBBoxElement需要整合减少内存
                 BITarget sumCol = sumColumn[i];
                 TargetStyle style = sumCol.getStyle();
-                if (style != null) {
-                    style.changeCellStyle(cell);
-                }
+                if (style != null) {style.changeCellStyle(cell);}
                 cbox.setName(sumCol.getValue());
                 cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
-                t = node;
-                ja = new JSONArray();
-                k = 0;
+                Node t = node;
+                JSONArray ja = new JSONArray();
+                int k = 0;
                 while (t.getParent() != null) {
                     t = t.getParent();
-                    k++;
-                }
+                    k++;}
                 k--;
                 t = node;
                 while (k != -1 && t != null) {
-                    try {
-                        ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
-                    } catch (JSONException e) {
-                    }
+                    try {ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
+                    } catch (JSONException e) {}
                     t = t.getParent();
-                    k--;
-                }
+                    k--;}
                 cbox.setDimensionJSON(ja.toString());
                 cell.setBoxElement(cbox);
                 cbcells[cell.getColumn()][cell.getRow()] = cell;
             }
+        }
+    }
+
+    static private void addCellToCBCell(TargetGettingKey[] keys, DetailChartSetting chartSetting, Node node, CBCell cell, BIComplexExecutData columnData,
+                                        int tempCol, int total, List<CBCell> cellList, CBBoxElement cbox, BITarget[] sumColumn, BIDimension[] colColumn,
+                                        CBCell[][] cbcells){
+        for (int i = 0, len = keys.length; i < len; i++) {
+            int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
+            Object v = node.getSummaryValue(keys[i]);
+            v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
+            cell = new CBCell(v);
+            cell.setRow(columnData.getMaxArrayLength() + i);
+            cell.setColumn(tempCol);
+            cell.setRowSpan(1);
+            cell.setColumnSpan(1);
+            cell.setStyle(BITableStyle.getInstance().getXTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
+            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+            cellList = new ArrayList<CBCell>();
+            cellList.add(cell);
+            //TODO CBBoxElement需要整合减少内存
+            cbox = new CBBoxElement(cellList);
+            BITarget sumCol = sumColumn[i];
+            TargetStyle style = sumCol.getStyle();
+            if (style != null) {
+                style.changeCellStyle(cell);
+            }
+            cbox.setName(sumCol.getValue());
+            cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
+            Node t = node;
+            JSONArray ja = new JSONArray();
+            int k = 0;
+            while (t.getParent() != null) {
+                t = t.getParent();
+                k++;
+            }
+            k--;
+            t = node;
+            while (k != -1 && t != null) {
+                try {
+                    ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
+                } catch (JSONException e) {
+                }
+                t = t.getParent();
+                k--;
+            }
+            cbox.setDimensionJSON(ja.toString());
+            cell.setBoxElement(cbox);
+            cbcells[cell.getColumn()][cell.getRow()] = cell;
         }
     }
 
@@ -452,49 +513,7 @@ public class HorGroupExecutor extends GroupExecutor {
         }
         cbox.setDimensionJSON(ja.toString());
         cbcells[cell.getColumn()][cell.getRow()] = cell;
-        for (int i = 0, len = keys.length; i < len; i++) {
-            int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
-            Object v = node.getSummaryValue(keys[i]);
-            v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
-            cell = new CBCell(v);
-            cell.setRow(columnData.getMaxArrayLength() + i);
-            cell.setColumn(tempCol);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getXTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            cellList = new ArrayList<CBCell>();
-            cellList.add(cell);
-            //TODO CBBoxElement需要整合减少内存
-            cbox = new CBBoxElement(cellList);
-            BITarget sumCol = sumColumn[i];
-            TargetStyle style = sumCol.getStyle();
-            if (style != null) {
-                style.changeCellStyle(cell);
-            }
-            cbox.setName(sumCol.getValue());
-            cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
-            t = node;
-            ja = new JSONArray();
-            k = 0;
-            while (t.getParent() != null) {
-                t = t.getParent();
-                k++;
-            }
-            k--;
-            t = node;
-            while (k != -1 && t != null) {
-                try {
-                    ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
-                } catch (JSONException e) {
-                }
-                t = t.getParent();
-                k--;
-            }
-            cbox.setDimensionJSON(ja.toString());
-            cell.setBoxElement(cbox);
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
-        }
+        addCellToCBCell(keys, chartSetting, node, cell, columnData, tempCol, total, cellList, cbox, sumColumn, colColumn, cbcells);
     }
 
     /**
@@ -542,7 +561,8 @@ public class HorGroupExecutor extends GroupExecutor {
         //展开情况
         tempCol = dealWithNodeExpander(node, expander, cbcells, row, column, colColumn, sumColumn, keys, indexList, total, isCross, deepList, isTargetSort, sortDimension, widget, tempCol, rowData, chartSetting);
         if (isCross) {
-            if (chartSetting.showColTotal() && (node.needSummary() || (node.getChildLength() == 0))) {
+            boolean nodeInfo = node.needSummary() || (node.getChildLength() == 0);
+            if (chartSetting.showColTotal() && nodeInfo) {
                 dealWithNodeExpanderIsCross(node, cbcells, row, column, colColumn, sumColumn, keys, total, widget, tempCol, rowData, chartSetting);
             }
         } else {
@@ -654,9 +674,8 @@ public class HorGroupExecutor extends GroupExecutor {
         return tempCol;
     }
 
-    private static int dealWithNodeChildrenLenDY1(Node node, CBCell[][] cbcells, int row, int column,
-                                                  BIDimension[] colColumn,
-                                                  BITarget[] sumColumn, TargetGettingKey[] keys, int total, int tempCol, BIComplexExecutData rowData, DetailChartSetting chartSetting) {
+    private static void prepare4dealWithNodeChildrenLenDY1(BIDimension[] colColumn, int row, int tempCol, BIComplexExecutData rowData,
+                                                           int total, Node node, CBCell[][] cbcells){
         int columnLength = colColumn.length;
         CBCell cell = new CBCell(Inter.getLocText("BI-Summary"));
         cell.setRow(row);
@@ -687,21 +706,27 @@ public class HorGroupExecutor extends GroupExecutor {
         }
         cbox.setDimensionJSON(ja.toString());
         cbcells[cell.getColumn()][cell.getRow()] = cell;
+    }
+
+    private static int dealWithNodeChildrenLenDY1(Node node, CBCell[][] cbcells, int row, int column,
+                                                  BIDimension[] colColumn,
+                                                  BITarget[] sumColumn, TargetGettingKey[] keys, int total, int tempCol, BIComplexExecutData rowData, DetailChartSetting chartSetting) {
+        prepare4dealWithNodeChildrenLenDY1(colColumn, row, tempCol, rowData, total, node, cbcells);
         for (int i = 0, len = keys.length; i < len; i++) {
             int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
             Object v = node.getSummaryValue(keys[i]);
             v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
-            cell = new CBCell(v);
+            CBCell cell = new CBCell(v);
             cell.setRow(rowData.getMaxArrayLength() + i);
             cell.setColumn(tempCol);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
             cell.setStyle(BITableStyle.getInstance().getXTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            cellList = new ArrayList<CBCell>();
+            List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
             //TODO CBBoxElement需要整合减少内存
-            cbox = new CBBoxElement(cellList);
+            CBBoxElement cbox = new CBBoxElement(cellList);
             BITarget sumCol = sumColumn[i];
             TargetStyle style = sumCol.getStyle();
             if (style != null) {
@@ -709,9 +734,9 @@ public class HorGroupExecutor extends GroupExecutor {
             }
             cbox.setName(sumCol.getValue());
             cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
-            t = node;
-            ja = new JSONArray();
-            k = 0;
+            Node t = node;
+            JSONArray ja = new JSONArray();
+            int k = 0;
             while (t.getParent() != null) {
                 t = t.getParent();
                 k++;
@@ -801,6 +826,52 @@ public class HorGroupExecutor extends GroupExecutor {
         return tree;
     }
 
+    private CBCell[][] createCBCells(NewCrossRoot tree, int rowLength, int colLength, int summaryLength){
+        int collen = tree.getTop().getTotalLengthWithSummary();
+        CBCell[][] cbcells = new CBCell[collen + Math.min(tree.getTop().getChildLength(), 1) + widget.isOrder()][rowLength];
+        boolean isTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
+        for (int i = 0; i < colLength; i++) {
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) colDimension[i]).getText());
+            cell.setColumn(0);
+            cell.setRow(i);
+            cell.setRowSpan(1);
+            cell.setColumnSpan(1);
+            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(i));
+            List<CBCell> cellList = new ArrayList<CBCell>();
+            cellList.add(cell);
+            CBBoxElement cbox = new CBBoxElement(cellList);
+            BITargetAndDimension rowCol = colDimension[i];
+            cbox.setName(rowCol.getValue());
+            cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_X);
+            if (!isTargetSort) {cbox.setSortType(colDimension[i].getSortType());
+            } else {cbox.setSortType(BIReportConstant.SORT.NONE);}
+            cell.setBoxElement(cbox);
+            cbcells[cell.getColumn()][cell.getRow()] = cell;
+        }
+        for (int i = 0; i < summaryLength; i++) {
+            CBCell cell = new CBCell(usedSumTarget[i].getText());
+            cell.setColumn(0);
+            cell.setRow(colLength + i);
+            cell.setRowSpan(1);
+            cell.setColumnSpan(1);
+            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(i));
+            List<CBCell> cellList = new ArrayList<CBCell>();
+            cellList.add(cell);
+            CBBoxElement cbox = new CBBoxElement(cellList);
+            BITargetAndDimension rowCol = usedSumTarget[i];
+            cbox.setName(rowCol.getValue());
+            cbox.setType(CellConstant.CBCELL.TARGETTITLE_X);
+            cbox.setSortTargetName(rowCol.getValue());
+            cbox.setSortTargetValue("[]");
+            if (widget.getTargetSort() != null && ComparatorUtils.equals(widget.getTargetSort().getName(), usedSumTarget[i].getText())) {
+                cbox.setSortType((Integer) widget.getTargetSort().getObject());
+            } else {cbox.setSortType(BIReportConstant.SORT.NONE);}
+            cell.setBoxElement(cbox);
+            cbcells[cell.getColumn()][cell.getRow()] = cell;
+        }
+        return cbcells;
+    }
+
     /**
      * 创建cell
      *
@@ -827,7 +898,7 @@ public class HorGroupExecutor extends GroupExecutor {
         clearNullSummary(tree.getLeft(), usedSumTargetKeys);
         clearNullSummary(tree.getTop(), usedSumTargetKeys);
 
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         if (tree == null) {
             return new CBCell[0][0];
         }
@@ -838,55 +909,7 @@ public class HorGroupExecutor extends GroupExecutor {
         for (int i = 0; i < summaryLength; i++) {
             keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
         }
-        int collen = tree.getTop().getTotalLengthWithSummary();
-
-        CBCell[][] cbcells = new CBCell[collen + Math.min(tree.getTop().getChildLength(), 1) + widget.isOrder()][rowLength];
-        boolean isTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
-
-        for (int i = 0; i < colLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) colDimension[i]).getText());
-            cell.setColumn(0);
-            cell.setRow(i);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(i));
-            List<CBCell> cellList = new ArrayList<CBCell>();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            BITargetAndDimension rowCol = colDimension[i];
-            cbox.setName(rowCol.getValue());
-            cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_X);
-            if (!isTargetSort) {
-                cbox.setSortType(colDimension[i].getSortType());
-            } else {
-                cbox.setSortType(BIReportConstant.SORT.NONE);
-            }
-            cell.setBoxElement(cbox);
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
-        }
-        for (int i = 0; i < summaryLength; i++) {
-            CBCell cell = new CBCell(usedSumTarget[i].getText());
-            cell.setColumn(0);
-            cell.setRow(colLength + i);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(i));
-            List<CBCell> cellList = new ArrayList<CBCell>();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            BITargetAndDimension rowCol = usedSumTarget[i];
-            cbox.setName(rowCol.getValue());
-            cbox.setType(CellConstant.CBCELL.TARGETTITLE_X);
-            cbox.setSortTargetName(rowCol.getValue());
-            cbox.setSortTargetValue("[]");
-            if (widget.getTargetSort() != null && ComparatorUtils.equals(widget.getTargetSort().getName(), usedSumTarget[i].getText())) {
-                cbox.setSortType((Integer) widget.getTargetSort().getObject());
-            } else {
-                cbox.setSortType(BIReportConstant.SORT.NONE);
-            }
-            cell.setBoxElement(cbox);
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
-        }
+        CBCell[][] cbcells = createCBCells(tree, rowLength, colLength, summaryLength);
         if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
             dealWithNode(tree.getTop(), cbcells, 0, 1, colDimension, usedSumTarget, keys, colDimension.length - 1, new BIComplexExecutData(colDimension), widget.getChartSetting());
         } else {
