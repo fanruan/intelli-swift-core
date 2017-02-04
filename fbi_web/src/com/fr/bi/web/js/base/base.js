@@ -50,7 +50,7 @@ if (!window.BI) {
         assert: function (v, is) {
             if (this.isFunction(is)) {
                 if (!is(v)) {
-                    throw new Error(v + "值不合法");
+                    throw new Error(v + " error");
                 } else {
                     return true;
                 }
@@ -59,7 +59,7 @@ if (!window.BI) {
                 is = [is];
             }
             if (!this.deepContains(is, v)) {
-                throw new Error(v + "值不合法");
+                throw new Error(v + " error");
             }
         },
 
@@ -107,7 +107,7 @@ if (!window.BI) {
 
         createWidgets: function (items, options) {
             if (!BI.isArray(items)) {
-                throw new Error("无法根据items创建组件?")
+                throw new Error("cannot create Widgets")
             }
             return BI.map(BI.flatten(items), function (i, item) {
                 return BI.createWidget(item, BI.deepClone(options));
@@ -789,7 +789,7 @@ if (!window.BI) {
             try {
                 return parseInt(number, radix);
             } catch (e) {
-                throw new Error(number + "转成int类型失败");
+                throw new Error(number + "parse int error");
                 return NaN;
             }
         },
@@ -798,7 +798,7 @@ if (!window.BI) {
             try {
                 return parseFloat(number);
             } catch (e) {
-                throw new Error(number + "转成float类型失败");
+                throw new Error(number + "parse float error");
                 return NaN;
             }
         },
