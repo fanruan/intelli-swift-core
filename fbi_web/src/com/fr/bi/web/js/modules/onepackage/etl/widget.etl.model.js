@@ -36,14 +36,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
             var tableName = BI.Utils.getTransNameById4Conf(this.id);
             var connectionName = this.table.connection_name;
             if (BI.isNull(tableName)) {
-                switch (connectionName) {
-                    case BICst.CONNECTION.EXCEL_CONNECTION:
-                        tableName = this.createDistinctTableTranName(this.id, BI.i18nText("BI-Excel_Dataset"));
-                        break;
-                    case BICst.CONNECTION.SQL_CONNECTION:
-                        tableName = this.createDistinctTableTranName(this.id, BI.i18nText("BI-Sql_DataSet"));
-                        break;
-                }
+                tableName = this._createDistinctNameByConnection(connectionName);
             }
             this.translations[this.id] = tableName;
             BI.each(this.fields, function (i, fs) {
@@ -55,7 +48,18 @@ BI.ETLModel = BI.inherit(FR.OB, {
                 });
             });
         } else {
-            this.translations[this.id] = this.createDistinctTableTranName(this.id, "ETL");
+            this.translations[this.id] = this._createDistinctNameByConnection(BI.isNotNull(this.table) ? this.table.connection_name : BICst.CONNECTION.ETL_CONNECTION);
+        }
+    },
+
+    _createDistinctNameByConnection: function (connectionName) {
+        switch (connectionName) {
+            case BICst.CONNECTION.EXCEL_CONNECTION:
+                return this.createDistinctTableTranName(this.id, BI.i18nText("BI-Excel_Dataset"));
+            case BICst.CONNECTION.SQL_CONNECTION:
+                return this.createDistinctTableTranName(this.id, BI.i18nText("BI-Sql_DataSet"));
+            default:
+                return this.createDistinctTableTranName(this.id, "ETL");
         }
     },
 
