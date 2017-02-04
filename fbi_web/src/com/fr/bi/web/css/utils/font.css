@@ -3944,12 +3944,12 @@
   color: #e85050;
 }
 .rename-font-package .b-font:before {
-  content: "\e687";
+  content: "\e6e1";
   color: #009de3;
 }
 .rename-font-package.native .b-font:before,
 .rename-font-package.disabled .b-font:before {
-  content: "\e687";
+  content: "\e6e1";
   color: #009de3;
 }
 .package-selected-font .b-font:before {
