@@ -155,6 +155,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
             var nodeId = BI.isNotNull(parent) ? parent.get("id") + cId : cId;
             var node = new BI.Node(nodeId);
             node.set("name", child.n);
+            node.set("dId", currDid);
             self.crossTree.addNode(parent, node);
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
@@ -249,7 +250,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
             if (BI.isNull(self.columnContentCache[self.dimIds.length + currentLayer - 1])) {
                 self.columnContentCache[self.dimIds.length + currentLayer - 1] = [];
             }
-            self.columnContentCache[self.dimIds.length + currentLayer - 1].push(item);
+            se.columnContentCache[self.dimIds.length + currentLayer - 1].push(item);
         });
         return crossHeaderItems;
     },

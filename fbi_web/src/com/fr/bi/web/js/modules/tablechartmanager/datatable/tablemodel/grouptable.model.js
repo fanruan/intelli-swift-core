@@ -251,6 +251,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
         BI.each(eTree, function (i, t) {
             var item = {};
             item.name = t.node.name;
+            item.dId = t.node.dId;
             if (BI.isNotNull(t.children)) {
                 item.children = self._formatExpanderTree(t.children);
             }
@@ -280,6 +281,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
             var node = new BI.Node(nodeId);
             var currDid = dimIds[currentLayer - 1], currValue = child.n;
             node.set("name", currValue);
+            node.set("dId", currDid);
             self.tree.addNode(parent, node);
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
@@ -338,7 +340,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
 
             //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
             if (BI.isNotNull(child.c)) {
-                item.children = self._createCommonTableItems(child.c, currentLayer, node, self.dimIds) || [];
+                item.children = self._createCommonTableItems(child.c, currentLayer, node, dimIds, crossPV) || [];
                 //在tableForm为 行展开模式 的时候 如果不显示汇总行 只是最后一行不显示汇总
                 if (self.showRowTotal === true || self.getTableForm() === BICst.TABLE_FORM.OPEN_COL) {
                     var vs = [];
