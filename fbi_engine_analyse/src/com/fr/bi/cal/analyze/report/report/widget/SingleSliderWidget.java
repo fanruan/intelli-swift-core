@@ -22,8 +22,8 @@ import java.util.*;
  */
 public class SingleSliderWidget extends TableWidget {
     private int type;
-    private Double minMin;
-    private Double maxMax;
+    private double minMin;
+    private double maxMax;
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
@@ -129,19 +129,19 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     private class MaxAndMin {
-        Double min;
-        Double max;
+        double min;
+        double max;
 
-        MaxAndMin(Double max, Double min) {
+        MaxAndMin(double max, double min) {
             this.max = max;
             this.min = min;
         }
 
-        public Double getMin() {
+        public double getMin() {
             return this.min;
         }
 
-        public Double getMax() {
+        public double getMax() {
             return this.max;
         }
     }
