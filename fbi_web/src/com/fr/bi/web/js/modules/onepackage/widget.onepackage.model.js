@@ -69,7 +69,12 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     },
 
     setName: function (name) {
+        var self = this;
         this.name = name;
+        BI.Utils.updatePackageName4Conf({
+            id: self.id,
+            name: name
+        }, BI.emptyFn);
     },
 
     getGroupId: function () {
@@ -228,7 +233,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
                 var copyRelations = BI.Utils.copyRelation4Conf(oFields, fieldIds, id);
                 exRelations = exRelations.concat(copyRelations.connectionSet);
             }
-            exTranslations[id] = tranName;
             BI.Utils.updateTranName4Conf(id, tranName);
             table.id = id;
             newTables.push(table);
