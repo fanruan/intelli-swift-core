@@ -704,11 +704,8 @@ if (!window.BI) {
 
             if (typeof Promise !== 'undefined') {
                 var p = Promise.resolve();
-                var logError = function (err) {
-                    console.error(err);
-                };
                 timerFunc = function () {
-                    p.then(nextTickHandler).catch(logError);
+                    p.then(nextTickHandler);
                 }
             } else
 
