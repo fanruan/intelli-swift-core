@@ -43,8 +43,7 @@ BI.extend(BI.Monitor, {
                 height: BI.Monitor.constants.TABLE_HEIGHT
             });
             button.on(BI.Button.EVENT_CHANGE, function(){
-                BI.Layers.hide(BI.Monitor.constants.SINGLE_LAYER)
-                BI.Layers.remove(BI.Monitor.constants.SINGLE_LAYER);
+                window.location.href = window.location.href;
             });
             var titleArray = self.createTitleArray();
             titleArray.unshift({
