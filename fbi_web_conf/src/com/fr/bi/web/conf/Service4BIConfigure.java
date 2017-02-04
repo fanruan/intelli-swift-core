@@ -121,6 +121,7 @@ public class Service4BIConfigure implements Service {
             new BIUpdateOneTableAction(),
             new BICancelEditTableAction(),
             new BIUpdateRelationAction(),
+            new BIUpdatePackageNameAction(),
 
             // 后门
             new BICacheClearAction(),
