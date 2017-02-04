@@ -82,40 +82,44 @@ public class SingleSliderWidget extends TableWidget {
                 }
             };
         } else {
-            final int[] groupIndex = new int[getter.getGroupSize()];
-            Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
-            gvi.Traversal(new SingleRowTraversalAction() {
-                @Override
-                public void actionPerformed(int row) {
-                    int groupRow = getter.getPositionOfGroupByRow(row);
-                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
-                        groupIndex[groupRow] = groupRow;
-                    }
-                }
-            });
-            final IntArray array = new IntArray();
-            if (start != -1) {
-                for (int i = start; i < end; i++) {
-                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE) {
-                        array.add(i);
-                    }
-                }
-            }
-            groupArray = new SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    return array.get(index);
-                }
-
-                @Override
-                public int size() {
-                    return array.size;
-                }
-            };
+            groupArray = createGroupArray(start, end, getter, gvi);
         }
         Object min = reader.getGroupValue(groupArray.get(groupArray.get(0)));
         Object max = reader.getGroupValue(groupArray.get(groupArray.get(groupArray.size() - 1)));
         return new MaxAndMin(Double.valueOf(max.toString()), Double.valueOf(min.toString()));
+    }
+
+    private SimpleIntArray createGroupArray(int start, int end, final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+        final int[] groupIndex = new int[getter.getGroupSize()];
+        Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
+        gvi.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                int groupRow = getter.getPositionOfGroupByRow(row);
+                if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                    groupIndex[groupRow] = groupRow;
+                }
+            }
+        });
+        final IntArray array = new IntArray();
+        if (start != -1) {
+            for (int i = start; i < end; i++) {
+                if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE) {
+                    array.add(i);
+                }
+            }
+        }
+        return new SimpleIntArray() {
+            @Override
+            public int get(int index) {
+                return array.get(index);
+            }
+
+            @Override
+            public int size() {
+                return array.size;
+            }
+        };
     }
 
     @Override
