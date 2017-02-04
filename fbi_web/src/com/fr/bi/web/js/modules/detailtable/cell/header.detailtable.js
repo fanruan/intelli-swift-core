@@ -52,6 +52,11 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
                 width: 25
             }]
         });
+
+        //表格样式
+        if (BI.isNotNull(o.styles) && BI.isObject(o.styles)) {
+            this.element.css(o.styles);
+        }
     },
 
     _getNumLevelByLevel: function (level) {

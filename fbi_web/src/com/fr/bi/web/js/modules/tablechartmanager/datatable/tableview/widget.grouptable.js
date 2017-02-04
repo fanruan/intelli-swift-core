@@ -163,7 +163,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             var columnSize = BI.clone(this.getColumnSize());
-            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: columnSize})});
+            self.fireEvent(BI.GroupTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: columnSize})});
         });
         if (this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_NEXT || this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_PRE) {
             this.table.setVPage(this.model.getPage()[4]);

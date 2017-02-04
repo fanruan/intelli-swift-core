@@ -18,13 +18,18 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.cubeTree = BI.createWidget({
             type: "bi.cube_log_tree"
-
         });
         this.processBar = BI.createWidget({
-            type: "bi.progress_bar",
-            width: "100%"
+            type: "bi.progress_bar"
         });
         this.processBar.setValue(1);
+
+        this.remainingTimeLabel = BI.createWidget({
+            type: "bi.label",
+            width: 130,
+            textAlign: "left",
+            cls: "remaining-time"
+        });
 
         this.finishLable = BI.createWidget({
             type: "bi.label",
@@ -80,6 +85,10 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                         items: [{
                             el: this.processBar,
                             left: 0,
+                            right: 130,
+                            top: 0
+                        }, {
+                            el: this.remainingTimeLabel,
                             right: 0,
                             top: 0
                         }, {
@@ -97,26 +106,34 @@ BI.CubeLog = BI.inherit(BI.Widget, {
 
     _showBar: function () {
         this.processBar.setVisible(true);
+        this.remainingTimeLabel.setVisible(true);
         this.finishLable.setVisible(false);
     },
 
     _showFinish: function () {
         this.processBar.setVisible(false);
         this.processBar.setValue(1);
+        this.remainingTimeLabel.setVisible(false);
         this.finishLable.setVisible(true);
     },
 
     setStart: function () {
         this._showBar();
         this.processBar.setValue(1);
+        this.remainingTimeLabel.setText(BI.i18nText("BI-Evaluating_Cube_Time"));
+        //预估时间 使用开始时间和开始时候已生成数量
+        this.startTime = new Date().getTime();
+        this.generated = null;
     },
 
     setEnd: function () {
         var self = this;
         this.processBar.setValue(100);
-        BI.delay(function() {
+        BI.delay(function () {
             self._showFinish();
         }, 300);
+        this.startTime = null;
+        this.generated = null;
     },
 
     //刷新按钮不要去改状态，因为很有可能立即更新的时候，后台请求到的状态cube还没有开始更新
@@ -165,14 +182,29 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                     self._showFinish();
                 }, 300);
             }
+            if (BI.isNull(this.startTime) || BI.isNull(this.generated)) {
+                this.startTime = new Date().getTime();
+                this.generated = generated;
+                this.remainingTimeLabel.setText(BI.i18nText("BI-Evaluating_Cube_Time"));
+            } else {
+                if (this.generated === generated || generated >= allFields) {
+                    return;
+                }
+                var seconds = this._formatSecond((allFields - generated) / ((generated - this.generated) / (new Date().getTime() - this.startTime)));
+                this.remainingTimeLabel.setText(BI.i18nText("BI-Cube_Time_Remaining", seconds));
+            }
         }
     },
 
     _formatSecond: function (time) {
         if (time < 1000) {
-            return time + BI.i18nText("BI-Millisecond");
+            return BI.parseInt(time) + BI.i18nText("BI-Millisecond");
         }
-        return time / 1000 + BI.i18nText("BI-Seconds");
+        var seconds = BI.parseInt(time / 1000);
+        if (seconds > 60) {
+            return BI.parseInt(seconds / 60) + BI.i18nText("BI-Minute") + seconds % 60 + BI.i18nText("BI-Seconds");
+        }
+        return seconds + BI.i18nText("BI-Seconds");
     },
 
     _formatItems: function (data) {

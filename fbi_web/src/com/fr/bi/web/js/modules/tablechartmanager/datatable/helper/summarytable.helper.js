@@ -5,6 +5,64 @@
 !(function () {
     BI.SummaryTableHelper = {};
     BI.extend(BI.SummaryTableHelper, {
+
+        MIN_COLUMN_INIT_WIDTH: 80,
+        MAX_COLUMN_INIT_WIDTH: 200,
+
+        //获取字符宽度
+        getGBWidth: function (str) {
+            str = str + "";
+            str = str.replace(/[^\x00-\xff]/g, 'xx');
+            return Math.ceil(str.length / 2);
+        },
+
+        fit: function (widths) {
+            function sumBy(array, it) {
+                var res = 0;
+                BI.each(array, (width, i) => {
+                    res += it(width, i);
+                });
+                return res;
+            }
+
+            if (widths.length < 2) {
+                return {a: widths[0], b: 0};
+            }
+            var w11 = widths.length;
+            var w12 = (1 + widths.length) * widths.length / 2;
+            var w21 = w12;
+            var w22 = sumBy(widths, (width, i) => {
+                return (i + 1) * (i + 1);
+            });
+            var f1 = BI.sum(widths);
+            var f2 = sumBy(widths, (width, i) => {
+                return (i + 1) * width;
+            });
+            return {
+                a: (f2 * w12 - f1 * w22) / (w12 * w21 - w11 * w22),
+                b: (f2 * w11 - f1 * w21) / (w11 * w22 - w21 * w12)
+            }
+        },
+
+        getWidthsByItems: function (items) {
+            var self = this;
+            var widths = [];
+            BI.each(items, function (i, item) {
+                widths.push(self.getGBWidth(item.text) * 12 * 1.2 + (item.needExpand ? 25 : 0) + (item.iconClass ? 25 : 0) + (item.list ? 25 : 0));
+            });
+            return widths;
+        },
+
+        getColumnWidthByColumns: function (columns) {
+            var self = this;
+            var widths = [];
+            BI.each(columns, function (i, items) {
+                var fx = self.fit(self.getWidthsByItems(items));
+                widths.push(BI.clamp(Math.ceil((fx.a + fx.b * Math.ceil((1 + items.length) / 2))) + 20, self.MIN_COLUMN_INIT_WIDTH, self.MAX_COLUMN_INIT_WIDTH));
+            });
+            return widths;
+        },
+
         parseHEXAlpha2HEX: function (hex, alpha) {
             var rgb = BI.DOM.hex2rgb(hex);
             var rgbJSON = BI.DOM.rgb2json(rgb);
@@ -33,18 +91,22 @@
                 case BICst.TABLE_STYLE.STYLE1:
                     return {
                         background: themeColor,
-                        color: "#ffffff"
+                        color: "#ffffff",
+                        fontWeight: "bold"
                     };
                     break;
                 case BICst.TABLE_STYLE.STYLE2:
                     return {
                         background: themeColor,
-                        color: "#ffffff"
+                        color: "#ffffff",
+                        fontWeight: "bold"
                     };
                     break;
                 case BICst.TABLE_STYLE.STYLE3:
                     return {
-                        color: "#808080"
+                        background: "none",
+                        color: "#808080",
+                        fontWeight: "bold"
                     };
                     break;
                 default :

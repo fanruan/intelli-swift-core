@@ -27,6 +27,16 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             isNeedFreeze: null,
             isNeedMerge: false,
             regionColumnSize: this.getStoredRegionColumnSize(),
+            summaryCellStyleGetter: function (isLast) {
+                return isLast ? BI.SummaryTableHelper.getLastSummaryStyles(self._getThemeColor(), self._getTableStyle()) :
+                    BI.SummaryTableHelper.getSummaryStyles(self._getThemeColor(), self._getTableStyle())
+            },
+            sequenceCellStyleGetter: function (index) {
+                return BI.SummaryTableHelper.getBodyStyles(self._getThemeColor(), self._getTableStyle(), index);
+            },
+            headerCellStyleGetter: function () {
+                return BI.SummaryTableHelper.getHeaderStyles(self._getThemeColor(), self._getTableStyle());
+            },
             el: {
                 type: "bi.sequence_table",
                 el: {
@@ -92,6 +102,16 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         });
     },
 
+    _getThemeColor: function () {
+        var widgetId = this.options.wId;
+        return BI.Utils.getWSThemeColorByID(widgetId);
+    },
+
+    _getTableStyle: function () {
+        var widgetId = this.options.wId;
+        return BI.Utils.getWSTableStyleByID(widgetId);
+    },
+
     _onPageChange: function (vPage, callback) {
         var self = this;
         var widgetId = this.options.wId;
@@ -132,6 +152,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                             type: "bi.detail_table_header",
                             dId: dId,
                             text: BI.Utils.getDimensionNameByID(dId),
+                            styles: BI.SummaryTableHelper.getHeaderStyles(self._getThemeColor(), self._getTableStyle()),
                             sortFilterChange: function (v) {
                                 self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
                                 self._headerOperatorChange(v, dId);
@@ -237,20 +258,22 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _createTableItems: function (values) {
         var tableItems = [], self = this;
         BI.each(values, function (i, row) {
-            tableItems.push(self._createRowItem(row));
+            tableItems.push(self._createRowItem(row, i));
         });
         return tableItems
     },
 
-    _createRowItem: function (rowValues, dId) {
+    _createRowItem: function (rowValues, index) {
+        var self = this;
         var dimensionIds = BI.Utils.getWidgetViewByID(this.options.wId)[BICst.REGION.DIMENSION1];
         var rowItems = [];
         BI.each(rowValues, function (i, rowValue) {
             if (BI.Utils.isDimensionUsable(dimensionIds[i])) {
                 rowItems.push({
-                    text: BI.isNull(rowValue) ? "" : rowValue,
                     type: "bi.detail_table_cell",
-                    dId: dimensionIds[i]
+                    dId: dimensionIds[i],
+                    text: BI.isNull(rowValue) ? "" : rowValue,
+                    styles: BI.SummaryTableHelper.getBodyStyles(self._getThemeColor(), self._getTableStyle(), index)
                 })
             }
         });
