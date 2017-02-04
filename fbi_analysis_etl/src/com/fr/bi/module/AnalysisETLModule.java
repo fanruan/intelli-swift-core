@@ -13,6 +13,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisBaseTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLTableSource;
 import com.fr.bi.etl.analysis.manager.*;
+import com.fr.bi.etl.analysis.monitor.web.Service4AnalysisETLMonitor;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBottomNFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmallOrEqualsCLFilter;
@@ -55,6 +56,9 @@ public class AnalysisETLModule extends AbstractModule {
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ETLResourcesHelper.getAnimateCss());
+        StableFactory.registerJavaScriptFiles(ETLResourcesHelper.MONITOR_JS, ETLResourcesHelper.getMonitorJS());
+        StableFactory.registerStyleFiles(ETLResourcesHelper.MONITOR_CSS, ETLResourcesHelper.getMonitorCss());
+        StableFactory.registerStyleFiles(ETLResourcesHelper.MONITOR_CSS, ETLResourcesHelper.getAnimateCss());
     }
 
     public void loadResources(Locale[] locales) {
@@ -188,7 +192,8 @@ public class AnalysisETLModule extends AbstractModule {
     @Override
     public Service[] service4Register() {
         return new Service[]{
-                new Service4AnalysisETL()
+                new Service4AnalysisETL(),
+                new Service4AnalysisETLMonitor()
         };
     }
 }

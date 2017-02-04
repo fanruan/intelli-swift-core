@@ -222,27 +222,28 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
 
-    @Override
     public void reSetWidgetDetailGetter() {
         widget.reSetDetailTarget();
     }
 
-    @Override
     public void getParentAnalysisBaseTableIds(Set<String> set) {
         for (BITargetAndDimension dim : widget.getViewDimensions()) {
-            if (dim.getStatisticElement() != null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
-                CubeTableSource source = dim.createTableKey().getTableSource();
-                if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
-                    set.add(dim.getValue());
-                }
-            }
+            calcualteImport(set, dim);
         }
         for (BITargetAndDimension target : widget.getViewTargets()) {
-            if (target.getStatisticElement() != null && target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
-                CubeTableSource source = target.createTableKey().getTableSource();
+            calcualteImport(set, target);
+        }
+    }
+
+    private void calcualteImport(Set<String> set, BITargetAndDimension dim) {
+        if (dim.getStatisticElement() != null) {
+            if(dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
+                CubeTableSource source = dim.createTableKey().getTableSource();
                 if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
-                    set.add(target.getValue());
+                    set.add(dim.getStatisticElement().getTableBelongTo().getID().getIdentity());
                 }
+            } else {
+                set.add(dim.getStatisticElement().getTableBelongTo().getID().getIdentity());
             }
         }
     }

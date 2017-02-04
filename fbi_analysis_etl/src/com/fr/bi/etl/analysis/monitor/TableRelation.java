@@ -1,11 +1,15 @@
 package com.fr.bi.etl.analysis.monitor;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.json.JSONCreator;
+import com.fr.json.JSONObject;
+
+import java.util.Set;
 
 /**
  * Created by daniel on 2017/1/22.
  */
-public class TableRelation {
+public class TableRelation implements JSONCreator{
     private SimpleTable table;
     private TableRelation next;
 
@@ -27,7 +31,7 @@ public class TableRelation {
     }
 
     public int getDeep(){
-        int deep = 0;
+        int deep = -1;
         if(next != null){
             deep =  next.getDeep();
         }
@@ -36,6 +40,10 @@ public class TableRelation {
 
     public TableRelation getNext() {
         return next;
+    }
+
+    public SimpleTable getTop() {
+        return  next == null ? table : next.getTop();
     }
 
     public SimpleTable getTable() {
@@ -67,6 +75,24 @@ public class TableRelation {
             return (TableRelation) super.clone();
         } catch (CloneNotSupportedException e) {
             return new TableRelation(table);
+        }
+    }
+
+    public JSONObject createJSON() throws Exception {
+        JSONObject json = JSONObject.create();
+        json.put("id", table.getId());
+        if(next != null) {
+            json.put("pid", next.getTable().getId());
+        }
+        return json;
+    }
+
+    public void checkDelete (Set<SimpleTable> all, Set<SimpleTable> delete) {
+        if(!all.contains(table)){
+            delete.add(table);
+        }
+        if(next != null){
+            next.checkDelete(all, delete);
         }
     }
 }

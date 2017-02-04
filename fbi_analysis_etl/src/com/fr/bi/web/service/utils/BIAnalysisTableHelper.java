@@ -25,7 +25,7 @@ public class BIAnalysisTableHelper {
             ((AnalysisCubeTableSource) table.getTableSource()).getSourceNeedCheckSource(sources);
             int generated = 0;
             for (AnalysisCubeTableSource s : sources) {
-                BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of " + s.createUserTableSource(userId).fetchObjectCore().getIDValue());
+                //BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of " + s.createUserTableSource(userId).fetchObjectCore().getIDValue());
                 if (BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkVersion(s, new BIUser(userId))) {
                     generated++;
                 } else {
