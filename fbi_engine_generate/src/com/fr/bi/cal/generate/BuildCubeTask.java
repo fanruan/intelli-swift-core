@@ -103,7 +103,10 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
-        BILoggerFactory.cacheLoggerInfo("Cube Generate Info", "ReadOnlyBusinessTablesOfTableSourceMap", BILogHelper.getReadOnlyBusinessTablesOfTableSourceMap());
+        BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
+        BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
+        BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_START, System.currentTimeMillis());
+        BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.READ_ONLY_BUSINESS_TABLES_OF_TABLE_SOURCE_MAP, BILogHelper.getReadOnlyBusinessTablesOfTableSourceMap());
         PerformancePlugManager.getInstance().printSystemParameters();
         logCubeTaskType();
         logBusinessTable();
@@ -147,8 +150,7 @@ public class BuildCubeTask implements CubeTask {
                     message = "Cube replace failed ,the Cube files will not be replaced ";
                     BILoggerFactory.getLogger().error(message);
                 }
-                BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
-                BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
+                BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_END, System.currentTimeMillis());
             } else {
                 try {
                     BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
@@ -158,8 +160,6 @@ public class BuildCubeTask implements CubeTask {
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
-                    BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
-                    BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
                     BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 }
             }

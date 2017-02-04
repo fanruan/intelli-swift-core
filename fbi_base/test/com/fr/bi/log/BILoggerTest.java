@@ -44,4 +44,17 @@ public class BILoggerTest extends TestCase {
     }
 
 
+    public void testVariable() {
+        Map<String, Object> mapIn = new ConcurrentHashMap<String, Object>();
+        Map<String, Map<String, Object>> mapOut = new ConcurrentHashMap<String, Map<String, Object>>();
+        mapOut.put("in", mapIn);
+        mapOut.get("in").put("number", 1);
+        System.out.println(mapOut.get("in").get("number"));
+        Map<String, Map<String, Object>> mapOutCopy = mapOut;
+        mapOutCopy.get("in").put("number", 2);
+        System.out.println(mapOut.get("in").get("number"));
+
+
+    }
+
 }
