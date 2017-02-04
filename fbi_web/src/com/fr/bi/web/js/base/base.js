@@ -278,7 +278,9 @@ if (!window.BI) {
         backAny: function (obj, predicate, context) {
             predicate = BI.iteratee(predicate, context);
             for (var index = obj.length - 1; index >= 0; index--) {
-                if (predicate(index, obj[index], obj)) return true;
+                if (predicate(index, obj[index], obj)) {
+                    return true;
+                }
             }
             return false;
         },
@@ -286,7 +288,9 @@ if (!window.BI) {
         backEvery: function (obj, predicate, context) {
             predicate = BI.iteratee(predicate, context);
             for (var index = obj.length - 1; index >= 0; index--) {
-                if (!predicate(index, obj[index], obj)) return false;
+                if (!predicate(index, obj[index], obj)) {
+                    return false;
+                }
             }
             return true;
         },
@@ -412,7 +416,9 @@ if (!window.BI) {
         },
 
         uniq: function (array, isSorted, iteratee, context) {
-            if (array == null) return [];
+            if (array == null) {
+                return [];
+            }
             if (!_.isBoolean(isSorted)) {
                 context = iteratee;
                 iteratee = isSorted;
@@ -570,11 +576,15 @@ if (!window.BI) {
 
         isDeepMatch: function (object, attrs) {
             var keys = BI.keys(attrs), length = keys.length;
-            if (object == null) return !length;
+            if (object == null) {
+                return !length;
+            }
             var obj = Object(object);
             for (var i = 0; i < length; i++) {
                 var key = keys[i];
-                if (!BI.isEqual(attrs[key], obj[key]) || !(key in obj)) return false;
+                if (!BI.isEqual(attrs[key], obj[key]) || !(key in obj)) {
+                    return false;
+                }
             }
             return true;
         },
