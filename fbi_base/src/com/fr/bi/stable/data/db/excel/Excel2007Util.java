@@ -63,13 +63,23 @@ public class Excel2007Util extends AbstractExcel2007Util {
     protected void dealWithSomething() {
         for (int i = 0; i < tempRowDataList.size(); i++) {
             Object[] oneRow = tempRowDataList.get(i);
+            if (oneRow.length > columnCount) {
+                columnCount = oneRow.length;
+            }
+        }
+        for (int i = 0; i < tempRowDataList.size(); i++) {
+            Object[] oneRow = tempRowDataList.get(i);
             currentRowData = new ArrayList<Object>();
             //首行 确定字段名
             if (i == 0) {
-                columnCount = oneRow.length;
                 columnNames = new String[columnCount];
-                for (int j = 0; j < oneRow.length; j++) {
-                    String cName = oneRow[j].toString();
+                for (int j = 0; j < columnCount; j++) {
+                    String cName;
+                    try {
+                        cName = oneRow[j].toString();
+                    } catch (Exception e) {
+                        cName = StringUtils.EMPTY;
+                    }
                     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
                     Pattern p = Pattern.compile(regEx);
                     Matcher m = p.matcher(cName);
