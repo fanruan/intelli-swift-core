@@ -159,7 +159,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                         });
                     });
                     var items = self._createTableItems(json.value);
-
+                    var rowSize = BI.Utils.getWSRowHeightByID(widgetId);
                     self.pager.setCount(row);
                     self.pager.setAllPages(Math.ceil(row / size));
                     self.pager.setValue(vPage);
@@ -172,6 +172,8 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     self.table.attr("isNeedFreeze", true);
                     self.table.attr("freezeCols", self._getFreezeCols());
                     self.table.attr("showSequence", BI.Utils.getWSShowNumberByID(widgetId));
+                    self.table.attr("headerRowSize", rowSize);
+                    self.table.attr("rowSize", rowSize);
                     callback(items, [header]);
                 } catch (e) {
                     self.errorPane.setErrorInfo("error happens during populate chart: " + e);
