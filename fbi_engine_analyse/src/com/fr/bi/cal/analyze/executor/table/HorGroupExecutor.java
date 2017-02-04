@@ -485,7 +485,7 @@ public class HorGroupExecutor extends GroupExecutor {
                                               int total, TableWidget widget, int tempCol, BIComplexExecutData columnData, DetailChartSetting chartSetting) {
         int columnLength = colColumn.length;
         CBCell cell = null;
-        cell = new CBCell(Inter.getLocText("BI-Summary"));
+        cell = new CBCell(Inter.getLocText("BI-Summary_Values"));
         cell.setRow(row);
         cell.setColumn(tempCol);
         int dimensionIndex = columnData.getDimensionIndexFromRow(row, columnLength);
@@ -677,7 +677,7 @@ public class HorGroupExecutor extends GroupExecutor {
     private static void prepare4dealWithNodeChildrenLenDY1(BIDimension[] colColumn, int row, int tempCol, BIComplexExecutData rowData,
                                                            int total, Node node, CBCell[][] cbcells){
         int columnLength = colColumn.length;
-        CBCell cell = new CBCell(Inter.getLocText("BI-Summary"));
+        CBCell cell = new CBCell(Inter.getLocText("BI-Summary_Values"));
         cell.setRow(row);
         cell.setColumn(tempCol);
         int dimensionIndex = rowData.getDimensionIndexFromRow(row, columnLength);
