@@ -49,7 +49,9 @@ BI.SelectDataSingleSlider = BI.inherit(BI.Widget, {
             BI.Utils.getWidgetDataByID(o.wId, {
                 success: function (jsonData) {
                     if (BI.isNotEmptyObject(jsonData)) {
-                        self.widget.populate(jsonData.min, jsonData.max, value);
+                        self.widget.setMinAndMax(jsonData);
+                        self.widget.setValue(value);
+                        self.widget.populate();
                     }
                 }
             })

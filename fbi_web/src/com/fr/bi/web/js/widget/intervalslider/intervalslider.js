@@ -11,17 +11,21 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         SLIDER_HEIGHT: 30,
         TRACK_HEIGHT: 24
     },
+
     _defaultConfig: function () {
         return BI.extend(BI.IntervalSlider.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-single-slider bi-slider-track"
         })
     },
+
     _init: function () {
         BI.IntervalSlider.superclass._init.apply(this, arguments);
 
         var self = this;
         var c = this._constant;
         this.enable = false;
+        this.valueOne = "";
+        this.valueTwo = "";
 
         this.backgroundTrack = BI.createWidget({
             type: "bi.layout",
@@ -94,7 +98,9 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             drag: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
                 self._setLabelOnePosition(percent);
-                self.labelOne.setValue(self._getValueByPercent(percent));
+                var v = self._getValueByPercent(percent);
+                self.labelOne.setValue(v);
+                self.valueOne = v;
                 self._setBlueTrack();
             },
             stop: function (e, ui) {
@@ -114,7 +120,9 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             drag: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
                 self._setLabelTwoPosition(percent);
-                self.labelTwo.setValue(self._getValueByPercent(percent));
+                var v = self._getValueByPercent(percent);
+                self.labelTwo.setValue(v);
+                self.valueTwo = v;
                 self._setBlueTrack();
             },
             stop: function (e, ui) {
@@ -151,6 +159,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             ]
         })
     },
+
     _createLabelWrapper: function () {
         var c = this._constant;
         return {
@@ -179,6 +188,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             width: "100%"
         }
     },
+
     _createSliderWrapper: function () {
         var c = this._constant;
         return {
@@ -207,6 +217,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             width: "100%"
         }
     },
+
     _createTrackWrapper: function () {
         return BI.createWidget({
             type: "bi.absolute",
@@ -239,9 +250,11 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             }]
         })
     },
+
     _checkValidation: function (v) {
         return !(BI.isNull(v) || v < this.min || v > this.max)
     },
+
     _checkOverlap: function () {
         var labelOneLeft = this.labelOne.element[0].offsetLeft;
         var labelTwoLeft = this.labelTwo.element[0].offsetLeft;
@@ -259,26 +272,33 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             }
         }
     },
+
     _setLabelOnePosition: function (percent) {
         this.labelOne.element.css({"left": percent + "%"});
         this._checkOverlap();
     },
+
     _setLabelTwoPosition: function (percent) {
         this.labelTwo.element.css({"left": percent + "%"});
         this._checkOverlap();
     },
+
     _setSliderOnePosition: function (percent) {
         this.sliderOne.element.css({"left": percent + "%"});
     },
+
     _setSliderTwoPosition: function (percent) {
         this.sliderTwo.element.css({"left": percent + "%"});
     },
+
     _setBlueTrackLeft: function (percent) {
         this.blueTrack.element.css({"left": percent + "%"});
     },
+
     _setBlueTrackWidth: function (percent) {
         this.blueTrack.element.css({"width": percent + "%"});
     },
+
     _setBlueTrack: function () {
         var percentOne = this._getPercentByValue(this.labelOne.getValue());
         var percentTwo = this._getPercentByValue(this.labelTwo.getValue());
@@ -290,6 +310,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             this._setBlueTrackWidth(percentOne - percentTwo);
         }
     },
+
     _setAllPosition: function (one, two) {
         this._setSliderOnePosition(one);
         this._setLabelOnePosition(one);
@@ -297,44 +318,55 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         this._setLabelTwoPosition(two);
         this._setBlueTrack();
     },
+
     _setVisible: function (visible) {
         this.sliderOne.setVisible(visible);
         this.sliderTwo.setVisible(visible);
         this.labelOne.setVisible(visible);
         this.labelTwo.setVisible(visible);
     },
+
     _setErrorText: function () {
         var errorText = BI.i18nText("BI-Please_Enter") + this.min + "-" + this.max + BI.i18nText("BI-De") + BI.i18nText("BI-Number");
         this.labelOne.setErrorText(errorText);
         this.labelTwo.setErrorText(errorText);
     },
+
     _getGrayTrackLength: function () {
         return this.grayTrack.element[0].scrollWidth
     },
+
     _getValueByPercent: function (percent) {
         return (((this.max - this.min) * percent) / 100 + this.min);
     },
+
     _getPercentByValue: function (v) {
         return (v - this.min) * 100 / (this.max - this.min);
     },
 
     getValue: function () {
-        var valueOne = BI.parseFloat(this.labelOne.getValue());
-        var valueTwo = BI.parseFloat(this.labelTwo.getValue());
-        if (valueOne <= valueTwo) {
-            return [valueOne, valueTwo]
+        if (this.valueOne <= this.valueTwo) {
+            return {min: this.valueOne, max: this.valueTwo}
         } else {
-            return [valueTwo, valueOne]
+            return {min: this.valueTwo, max: this.valueOne}
+        }
+    },
+
+    setMinAndMax: function (v) {
+        var minNumber = BI.parseFloat(v.min);
+        var maxNumber = BI.parseFloat(v.max);
+        if ((!isNaN(minNumber)) && (!isNaN(maxNumber)) && (maxNumber > minNumber )) {
+            this.min = minNumber;
+            this.max = maxNumber;
         }
     },
 
     setValue: function (v) {
-        var valueOne = BI.parseFloat(v[0]);
-        var valueTwo = BI.parseFloat(v[1]);
-        if (this.enable && (!isNaN(valueOne)) && (!isNaN(valueTwo)) && this._checkValidation(valueOne) && this._checkValidation(valueTwo)) {
-            this.labelOne.setValue(valueOne);
-            this.labelTwo.setValue(valueTwo);
-            this._setAllPosition(this._getPercentByValue(valueOne), this._getPercentByValue(valueTwo));
+        var valueOne = BI.parseFloat(v.min);
+        var valueTwo = BI.parseFloat(v.max);
+        if (!isNaN(valueOne) && !isNaN(valueTwo) && this._checkValidation(valueOne) && this._checkValidation(valueTwo)) {
+            this.valueOne = valueOne;
+            this.valueTwo = valueTwo;
         }
     },
 
@@ -344,20 +376,18 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         this._setBlueTrackWidth(0);
     },
 
-    populate: function (min, max, value) {
-        var minNumber = BI.parseFloat(min);
-        var maxNumber = BI.parseFloat(max);
-        if ((!isNaN(minNumber)) && (!isNaN(maxNumber)) && (maxNumber > minNumber )) {
-            this.min = minNumber;
-            this.max = maxNumber;
+    populate: function () {
+        if (!isNaN(this.min) && !isNaN(this.max)) {
             this.enable = true;
             this._setVisible(true);
             this._setErrorText();
-            if (BI.isNotEmptyArray(value) && BI.isNotNull(value[0])) {
-                this.setValue(value)
+            if ((BI.isNumeric(this.valueOne) || BI.isNotEmptyString(this.valueOne)) && (BI.isNumeric(this.valueTwo) || BI.isNotEmptyString(this.valueTwo))) {
+                this.labelOne.setValue(this.valueOne);
+                this.labelTwo.setValue(this.valueTwo);
+                this._setAllPosition(this._getPercentByValue(this.valueOne), this._getPercentByValue(this.valueTwo));
             } else {
-                this.labelOne.setValue(minNumber);
-                this.labelTwo.setValue(maxNumber);
+                this.labelOne.setValue(this.min);
+                this.labelTwo.setValue(this.max);
                 this._setAllPosition(0, 100)
             }
         }

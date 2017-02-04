@@ -26,29 +26,31 @@ BI.SelectDataIntervalSlider = BI.inherit(BI.Widget, {
         return {
             closemax: false,
             closemin: false,
-            max: value[1],
-            min: value[0]
+            max: value.max,
+            min: value.min
         }
     },
 
     setValue: function () {
         var o = this.options;
         var widgetValue = BI.Utils.getWidgetValueByID(o.wId) || {};
-        this.widget.setValue([widgetValue.min, widgetValue.max]);
+        this.widget.setValue({min: widgetValue.min, max: widgetValue.max});
     },
 
     populate: function () {
         var self = this, o = this.options;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId);
         var widgetValue = BI.Utils.getWidgetValueByID(o.wId) || {};
-        var value = [widgetValue.min, widgetValue.max];
+        var value = {min: widgetValue.min, max: widgetValue.max};
         if (dimensions.length == 0) {
             this.widget.reset()
         } else {
             BI.Utils.getWidgetDataByID(o.wId, {
                 success: function (jsonData) {
                     if (BI.isNotEmptyObject(jsonData)) {
-                        self.widget.populate(jsonData.min, jsonData.max, value);
+                        self.widget.setMinAndMax(jsonData);
+                        self.widget.setValue(value);
+                        self.widget.populate();
                     }
                 }
             })
