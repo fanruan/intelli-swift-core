@@ -5081,6 +5081,8 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         if (size.indexOf('pt') != -1){
             return parseFloat(size) * 4 / 3;
         }
+
+        return 16;
     }
 
     //浏览器默认1em(一倍字体行高)=16px。以此为基准，对传递到前台的字体统一进行换算.如设计器中设置的10px字体则自动转化为0.625rem
