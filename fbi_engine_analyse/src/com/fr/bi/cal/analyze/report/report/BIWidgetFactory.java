@@ -35,6 +35,7 @@ public class BIWidgetFactory {
     }
 
     public static BIWidget newWidgetByType(int type, JSONArray viewTargets) throws Exception {
+        BIWidget biWidget;
         switch (type) {
             case BIReportConstant.WIDGET.BAR:
             case BIReportConstant.WIDGET.AXIS:
@@ -58,29 +59,38 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.RADAR:
             case BIReportConstant.WIDGET.SCATTER:
             case BIReportConstant.WIDGET.BUBBLE:
-                return new MultiChartWidget();
+                biWidget = new MultiChartWidget();
+                break;
             case BIReportConstant.WIDGET.TABLE:
             case BIReportConstant.WIDGET.CROSS_TABLE:
             case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                return new TableWidget();
+                biWidget = new TableWidget();
+                break;
             case BIReportConstant.WIDGET.DETAIL:
-                return new BIDetailWidget();
+                biWidget = new BIDetailWidget();
+                break;
             case BIReportConstant.WIDGET.STRING:
             case BIReportConstant.WIDGET.STRING_LIST:
-                return new StringControlWidget();
+                biWidget = new StringControlWidget();
+                break;
             case BIReportConstant.WIDGET.LIST_LABEL:
-                return new ListLabelWidget();
+                biWidget = new ListLabelWidget();
+                break;
             case BIReportConstant.WIDGET.TREE:
             case BIReportConstant.WIDGET.TREE_LIST:
-                return new TreeWidget();
+                biWidget = new TreeWidget();
+                break;
             case BIReportConstant.WIDGET.TREE_LABEL:
-                return new TreeLabelWidget();
+                biWidget = new TreeLabelWidget();
+                break;
             case BIReportConstant.WIDGET.SINGLE_SLIDER:
             case BIReportConstant.WIDGET.INTERVAL_SLIDER:
-                return new SingleSliderWidget();
+                biWidget = new SingleSliderWidget();
+                break;
             default:
-                return new MultiChartWidget();
+                biWidget = new MultiChartWidget();
         }
+        return biWidget;
     }
 
     public static JSONArray getViewTarget(JSONObject view) throws Exception {
