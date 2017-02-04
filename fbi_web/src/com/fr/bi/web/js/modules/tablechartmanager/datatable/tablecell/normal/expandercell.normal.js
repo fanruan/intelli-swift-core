@@ -20,13 +20,18 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         if (needExpand === true) {
             items.push({
                 el: {
-                    type: "bi.icon_button",
-                    cls: isExpanded === true ? "tree-expand-icon-type1" : "tree-collapse-icon-type1",
-                    iconHeight: 25,
-                    iconWidth: 25,
-                    handler: function () {
-                        o.expandCallback();
-                    }
+                    type: "bi.center_adapt",
+                    items: [{
+                        type: "bi.icon_button",
+                        width: 25,
+                        height: 25,
+                        iconHeight: 25,
+                        iconWidth: 25,
+                        cls: isExpanded === true ? "tree-expand-icon-type1" : "tree-collapse-icon-type1",
+                        handler: function () {
+                            o.expandCallback();
+                        }
+                    }]
                 },
                 width: 25,
                 height: o.height,
