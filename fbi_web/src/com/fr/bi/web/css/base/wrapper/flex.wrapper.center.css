@@ -1,4 +1,4 @@
-.bi-flex-center-layout {
+.bi-flex-wrapper-center-layout .flex-wrapper-center-layout-wrapper {
   display: box;
   /* OLD - Android 4.4- */
   display: -webkit-box;
@@ -35,4 +35,7 @@
   -ms-align-items: center;
   -o-align-items: center;
   align-items: center;
+  min-width: 100%;
+  min-height: 100%;
+  float: left;
 }

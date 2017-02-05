@@ -19,8 +19,8 @@
         fit: function (widths) {
             function sumBy(array, it) {
                 var res = 0;
-                BI.each(array, (width, i) => {
-                    res += it(width, i);
+                BI.each(array, function (i, width) {
+                    res += it(i, width);
                 });
                 return res;
             }
@@ -31,11 +31,11 @@
             var w11 = widths.length;
             var w12 = (1 + widths.length) * widths.length / 2;
             var w21 = w12;
-            var w22 = sumBy(widths, (width, i) => {
+            var w22 = sumBy(widths, function (i, width) {
                 return (i + 1) * (i + 1);
             });
             var f1 = BI.sum(widths);
-            var f2 = sumBy(widths, (width, i) => {
+            var f2 = sumBy(widths, function (i, width) {
                 return (i + 1) * width;
             });
             return {
