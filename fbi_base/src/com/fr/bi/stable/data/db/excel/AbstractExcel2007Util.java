@@ -482,7 +482,11 @@ public abstract class AbstractExcel2007Util {
             } else if (this.formatIndex == SCINOTATION) {
                 cellValue = n;
             } else {
-                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
+                try {
+                    cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
+                } catch (Exception e) {
+                    cellValue = n;
+                }
             }
         }
 

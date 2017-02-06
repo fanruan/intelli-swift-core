@@ -32,6 +32,7 @@ import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.structure.queue.AV;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -132,7 +133,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
             if (!BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) source, biUser)){
                 return -1L;
             } else {
-                return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getTableIndex((AnalysisCubeTableSource) source, biUser).getTableVersion(new IndexKey(StringUtils.EMPTY));
+                return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getTableVersion((AnalysisCubeTableSource) source, biUser);
             }
         }
         ICubeTableService service = CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source);
@@ -240,5 +241,16 @@ public class UserETLUpdateTask implements CubeTask, AV {
 
     public BICore getKey() {
         return source.fetchObjectCore();
+    }
+
+    public void rollback() {
+        if(this.cube != null) {
+            try {
+                this.cube.clear();
+            } catch (Throwable e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+        }
+        BIFileUtils.delete(new File(this.path).getParentFile());
     }
 }

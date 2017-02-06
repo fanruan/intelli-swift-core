@@ -10,7 +10,7 @@ import com.fr.bi.common.inter.Release;
  *
  */
 public class ConcurrentCounterObject<T> implements Release {
-	private int count = 0;
+	private volatile int count = 0;
 	private T t;
 	private volatile boolean isClear = false;
 	
@@ -41,7 +41,7 @@ public class ConcurrentCounterObject<T> implements Release {
 	}
 	
 	public boolean isZeroCount(){
-		return count == 0;
+		return count <= 0;
 	}
 	
 

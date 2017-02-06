@@ -2,7 +2,7 @@ package com.fr.bi.stable.utils.file;
 
 import com.finebi.cube.relation.BIBasicRelation;
 import com.fr.base.FRContext;
-import com.fr.bi.stable.conf.cubeconf.CubeConfManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BIField;
 import com.fr.bi.stable.structure.array.ArrayKey;
@@ -68,11 +68,11 @@ public class BIPathUtils {
      * @return base路径
      */
     public static String createBasePath() {
-        return StringUtils.isEmpty(CubeConfManager.getInstance().getCubePath()) ? FRContext.getCurrentEnv().getPath()
-                + BASEPATH : CubeConfManager.getInstance().getCubePath();
+        return StringUtils.isEmpty(BIConfigureManagerCenter.getCubeConfManager().getCubePath()) ? FRContext.getCurrentEnv().getPath()
+                + BASEPATH : BIConfigureManagerCenter.getCubeConfManager().getCubePath();
     }
 
-    private static String createUserETLBasePath() {
+    public static String createUserETLBasePath() {
         return new File(new File(createBasePath()).getParentFile(), USERETL
                 + File.separator
                 + File.separator + CUBE).getAbsolutePath();
@@ -87,7 +87,7 @@ public class BIPathUtils {
     }
 
     public static String createUserETLCubePath(String md5, String path) {
-        return createUserETLTableBasePath(md5) + File.separator + path + File.separator + md5;
+        return createUserETLTablePath(md5, path) + File.separator + md5;
     }
 
     public static String createUserTotalPath(long userId) {
