@@ -26,7 +26,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
             type: "bi.page_table",
             isNeedFreeze: null,
             isNeedMerge: false,
-            regionColumnSize: this.getStoredRegionColumnSize(),
             summaryCellStyleGetter: function (isLast) {
                 return isLast ? BI.SummaryTableHelper.getLastSummaryStyles(self._getThemeColor(), self._getTableStyle()) :
                     BI.SummaryTableHelper.getSummaryStyles(self._getThemeColor(), self._getTableStyle())
@@ -68,7 +67,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
             var columnSize = this.getRegionColumnSize();
-            self.setStoredRegionColumnSize(columnSize[0]);
+            self._setStoredRegionColumnSize(columnSize[0]);
         });
         this.errorPane = BI.createWidget({
             type: "bi.table_chart_error_pane",
@@ -160,7 +159,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                         });
                     });
                     var items = self._createTableItems(json.value);
-
+                    var rowSize = BI.Utils.getWSRowHeightByID(widgetId);
                     self.pager.setCount(row);
                     self.pager.setAllPages(Math.ceil(row / size));
                     self.pager.setValue(vPage);
@@ -168,10 +167,13 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     self.table.setWidth(self.element.width());
                     self.table.setHeight(self.element.height());
                     self.table.attr("columnSize", self._getColumnSize(header));
+                    self.table.attr("regionColumnSize", self._getStoredRegionColumnSize());
                     self.table.attr("minColumnSize", self._getMinColumnSize(header));
                     self.table.attr("isNeedFreeze", true);
                     self.table.attr("freezeCols", self._getFreezeCols());
                     self.table.attr("showSequence", BI.Utils.getWSShowNumberByID(widgetId));
+                    self.table.attr("headerRowSize", rowSize);
+                    self.table.attr("rowSize", rowSize);
                     callback(items, [header]);
                 } catch (e) {
                     self.errorPane.setErrorInfo("error happens during populate chart: " + e);
@@ -284,7 +286,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         return BI.Utils.getWSFreezeFirstColumnById(wId) ? [0] : [];
     },
 
-    getStoredRegionColumnSize: function () {
+    _getStoredRegionColumnSize: function () {
         var columnSize = BI.Cache.getItem(BICst.CACHE.REGION_COLUMN_SIZE_PREFIX + this.options.wId);
         if (BI.isKey(columnSize)) {
             return [BI.parseInt(columnSize), ""];
@@ -292,7 +294,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         return [];
     },
 
-    setStoredRegionColumnSize: function (columnSize) {
+    _setStoredRegionColumnSize: function (columnSize) {
         if (BI.isKey(columnSize)) {
             BI.Cache.setItem(BICst.CACHE.REGION_COLUMN_SIZE_PREFIX + this.options.wId, columnSize);
         }

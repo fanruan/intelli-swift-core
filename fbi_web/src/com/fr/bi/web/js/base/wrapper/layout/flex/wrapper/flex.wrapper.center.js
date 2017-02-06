@@ -8,18 +8,26 @@
 BI.FlexCenterLayout = BI.inherit(BI.Layout, {
     _defaultConfig: function () {
         return BI.extend(BI.FlexCenterLayout.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-flex-center-layout"
+            baseCls: "bi-flex-wrapper-center-layout clearfix"
         });
     },
     _init: function () {
         BI.FlexCenterLayout.superclass._init.apply(this, arguments);
+        this.wrapper = $("<div>").addClass("flex-wrapper-center-layout-wrapper").appendTo(this.element);
         this.populate(this.options.items);
     },
 
     _addElement: function (i, item) {
         var o = this.options;
         var w = BI.FlexCenterLayout.superclass._addElement.apply(this, arguments);
-        w.element.css({"position": "relative", "flex-shrink": "0"});
+        w.element.css({"position": "relative"}).appendTo(this.wrapper);
+        return w;
+    },
+
+    addItem: function (item) {
+        var w = this._addElement(this.options.items.length, item);
+        this.options.items.push(item);
+        w.element.appendTo(this.wrapper);
         return w;
     },
 
@@ -29,7 +37,6 @@ BI.FlexCenterLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.FlexCenterLayout.superclass.populate.apply(this, arguments);
-        this.render();
     }
 });
-$.shortcut('bi.flex_center', BI.FlexCenterLayout);
+$.shortcut('bi.flex_wrapper_center', BI.FlexCenterLayout);

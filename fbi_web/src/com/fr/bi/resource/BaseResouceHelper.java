@@ -369,6 +369,9 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/css/base/wrapper/flex.center.css",
                 "com/fr/bi/web/css/base/wrapper/flex.horizontal.css",
                 "com/fr/bi/web/css/base/wrapper/flex.vertical.center.css",
+                "com/fr/bi/web/css/base/wrapper/flex.wrapper.center.css",
+                "com/fr/bi/web/css/base/wrapper/flex.wrapper.horizontal.css",
+                "com/fr/bi/web/css/base/wrapper/flex.wrapper.vertical.center.css",
 
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
@@ -942,6 +945,9 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/flex/flex.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/flex/flex.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/flex/flex.vertical.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/flex/wrapper/flex.wrapper.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/flex/wrapper/flex.wrapper.horizontal.js",
+                "com/fr/bi/web/js/base/wrapper/layout/flex/wrapper/flex.wrapper.vertical.center.js",
 
                 "com/fr/bi/web/js/data/utils.js",
                 //filter

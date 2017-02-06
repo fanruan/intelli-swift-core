@@ -86,7 +86,7 @@ BI.DimensionFormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
             popup: {
                 el: {
                     type: "bi.absolute",
-                    height: this._constant.HEIGHT_MAX,
+                    height: this._constant.MAX_HEIGHT,
                     width: this._constant.ADD_FORMULA_POPUP_WIDTH,
                     items: [{
                         el: formulaPopup,
