@@ -29,7 +29,7 @@ BI.TimeoutToast = BI.inherit(BI.Tip, {
                 handler: function () {
                     self.toast.element.slideUp(500);
                     BI.each(self.requests, function (i, reqArgs) {
-                        var callbacks = reqArgs[1];
+                        var callbacks = reqArgs.callbacks;
                         if (BI.isNotNull(callbacks) && BI.isFunction(callbacks.done)) {
                             callbacks.done();
                         }
