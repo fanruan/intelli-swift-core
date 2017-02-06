@@ -18,8 +18,8 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
             type: "bi.tab",
             cardCreator: BI.bind(this._cardCreator, this),
             defaultShowIndex: BI.RequstLoading.ERROR,
-            width: 220,
-            height: 220
+            width: 400,
+            height: 300
         });
         var tempIcon = BI.createWidget({
             type: "bi.icon_button",
@@ -90,19 +90,21 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                 var cancel = BI.createWidget({
                     type: "bi.button",
                     text: BI.i18nText("BI-Cancel"),
+                    title: BI.i18nText("BI-Cancel"),
                     level: "ignore",
-                    width: 90,
                     height: 28,
+                    width: 90,
                     handler: function(){
                         BI.Maskers.hide(BI.RequstLoading.MASK_ID);
                     }
                 });
                 var retry = BI.createWidget({
                     type: "bi.button",
-                    text: BI.i18nText("BI-Reload"),
-                    level: "ignore",
-                    width: 90,
+                    text: BI.i18nText("BI-Retry"),
+                    title: BI.i18nText("BI-Retry"),
+                    level: "common",
                     height: 28,
+                    width: 90,
                     handler: function(){
                         self.paneTab.setSelect(BI.RequstLoading.LOADING);
                         self.callback();
@@ -120,7 +122,7 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                         }]
                     }, {
                         type: "bi.label",
-                        text: BI.i18nText("BI-Load_Failed"),
+                        text: BI.i18nText("BI-Connection_Lost"),
                         cls: "load-fail-comment"
                     }, {
                         type: "bi.left_right_vertical_adapt",
@@ -128,11 +130,13 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                             left: [cancel],
                             right: [retry]
                         },
-                        height: 30
+                        height: 30,
+                        llgap: 100,
+                        rrgap: 100
                     }],
                     width: 208,
                     height: 200,
-                    vgap: 10
+                    vgap: 20
                 });
         }
     },
