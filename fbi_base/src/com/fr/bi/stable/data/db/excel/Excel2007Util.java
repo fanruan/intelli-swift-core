@@ -35,6 +35,9 @@ public class Excel2007Util extends AbstractExcel2007Util {
         if (tempRowDataList.size() == 0) {
             processFirstSheetFromBI();
         }
+        //读取完后关闭文件
+        this.xlsxPackage.close();
+
         // 处理一下单元格合并
         mergeCell();
 

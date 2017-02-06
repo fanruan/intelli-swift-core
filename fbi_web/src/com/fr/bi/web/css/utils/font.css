@@ -2493,12 +2493,21 @@
   content: "\e649";
   color: #009de3;
 }
-.excel-complete-font .b-font:before {
+.excel-fail-font .b-font:before {
+  content: "\e6e6";
+  color: #fcc550;
+}
+.excel-fail-font.native .b-font:before,
+.excel-fail-font.disabled .b-font:before {
+  content: "\e6e6";
+  color: #fcc550;
+}
+.excel-success-font .b-font:before {
   content: "\e6e5";
   color: #009de3;
 }
-.excel-complete-font.native .b-font:before,
-.excel-complete-font.disabled .b-font:before {
+.excel-success-font.native .b-font:before,
+.excel-success-font.disabled .b-font:before {
   content: "\e6e5";
   color: #009de3;
 }
