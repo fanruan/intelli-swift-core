@@ -29,11 +29,13 @@ BI.DetailFormulaDimensionCombo = BI.inherit(BI.Widget, {
                 }],
                 [{
                     text: BI.i18nText("BI-Hyperlink"),
-                    value: BICst.DETAIL_FORMULA_COMBO.HYPERLINK
+                    value: BICst.DETAIL_FORMULA_COMBO.HYPERLINK,
+                    cls: "hyper-link-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Remove"),
-                    value: BICst.DETAIL_FORMULA_COMBO.DELETE
+                    value: BICst.DETAIL_FORMULA_COMBO.DELETE,
+                    cls: "delete-h-font"
                 }]
             ]
         });
