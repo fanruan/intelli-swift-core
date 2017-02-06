@@ -12,11 +12,13 @@ public class BILogExceptionInfo {
     private long occurTime;
     private String exceptionMessage;
     private String operation;
+    private Exception exception;
 
-    public BILogExceptionInfo(long occurTime, String operation, String exceptionMessage) {
+    public BILogExceptionInfo(long occurTime, String operation, String exceptionMessage, Exception exception) {
         this.occurTime = occurTime;
         this.exceptionMessage = exceptionMessage;
         this.operation = operation;
+        this.exception = exception;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class BILogExceptionInfo {
             sb.append("\n" + "The Exception Occur Time: " + simpleDateFormat.format(date));
             sb.append("\n" + "The Exception Operation: " + operation);
             sb.append("\n" + "The Exception Message: " + exceptionMessage);
+            sb.append("\n" + "The Exception: " + exception);
             exceptionLogString = sb.toString();
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
