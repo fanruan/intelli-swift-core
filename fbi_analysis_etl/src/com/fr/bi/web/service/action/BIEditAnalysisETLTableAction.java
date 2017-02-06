@@ -50,8 +50,8 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
                 Set<BusinessTable> usedTables = ((AnalysisBusiTable) anaTable).getUsedTables();
                 if (usedTables.contains(new BIBusinessTable(new BITableID(tableId)))) {
                     jo.put("used", true);
+                    allUsedTables.put(anaTable.getID().getIdentityValue());
                 }
-                allUsedTables.put(anaTable.getID().getIdentityValue());
             }
         }
         jo.put("usedTables", allUsedTables);

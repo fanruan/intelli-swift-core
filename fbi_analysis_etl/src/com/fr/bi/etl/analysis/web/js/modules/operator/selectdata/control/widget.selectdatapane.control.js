@@ -14,10 +14,9 @@ BI.AnalysisETLSelectDataPaneController = BI.inherit(BI.MVCController, {
     },
 
     isEnable: function (tableId) {
-        //todo 这边不能这么改 如果有两个螺旋分析A和B, 且B使用了A, 那么编辑B的时候此时总是return false
-        //if (BI.isNotNull(Pool.current_edit_etl_used) && Pool.current_edit_etl_used.contains(tableId)) {
-        //    return false;
-        //}
+        if (BI.isNotNull(Pool.current_edit_etl_used) && Pool.current_edit_etl_used.contains(tableId)) {
+            return false;
+        }
         return BI.isNull(this.tables) || BI.isEmptyArray(this.tables) || BI.deepContains(this.tables, tableId);
     },
 
