@@ -46,6 +46,7 @@ BI.DetailNumberDimensionCombo = BI.inherit(BI.Widget, {
                     title: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
                     tipType: "success",
                     cls: "dimension-from-font",
+                    value: BICst.DETAIL_NUMBER_COMBO.INFO,
                     disabled: true
                 }]
             ]
