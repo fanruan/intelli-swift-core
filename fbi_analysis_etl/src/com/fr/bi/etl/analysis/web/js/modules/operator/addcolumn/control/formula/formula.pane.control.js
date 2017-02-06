@@ -8,8 +8,35 @@ BI.AnalysisETLOperatorAddColumnFormulaPaneController = BI.inherit(BI.MVCControll
             widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
         }
     },
+
+    _formatFormulaItems: function(){
+        var fields = model.get(ETLCst.FIELDS);
+        var fieldItems = [[], [], []];
+        BI.each(fields, function (i, item) {
+            var index = 0;
+            switch (item.field_type){
+                case BICst.COLUMN.STRING:
+                    index = 1;
+                    break;
+                case BICst.COLUMN.NUMBER:
+                case BICst.COLUMN.COUNTER:
+                    index = 0;
+                    break;
+                case BICst.COLUMN.DATE:
+                    index = 2;
+                    break;
+            }
+            fieldItems[index].push({
+                text : item.field_name,
+                value : item.field_name,
+                fieldType : item.field_type
+            })
+        });
+        return fieldItems;
+    },
+
     populate : function (widget, model) {
-        widget.formula.populate(model.get(ETLCst.FIELDS))
+        widget.formula.populate(this._formatFormulaItems())
         widget.formula.setValue(model.get("formula") || "")
         this._checkCanSave(widget, model);
     },
