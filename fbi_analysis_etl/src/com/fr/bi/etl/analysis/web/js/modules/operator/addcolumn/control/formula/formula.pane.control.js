@@ -9,12 +9,11 @@ BI.AnalysisETLOperatorAddColumnFormulaPaneController = BI.inherit(BI.MVCControll
         }
     },
 
-    _formatFormulaItems: function(){
-        var fields = model.get(ETLCst.FIELDS);
+    _formatFormulaItems: function(fields){
         var fieldItems = [[], [], []];
         BI.each(fields, function (i, item) {
             var index = 0;
-            switch (item.field_type){
+            switch (item.fieldType){
                 case BICst.COLUMN.STRING:
                     index = 1;
                     break;
@@ -26,17 +25,13 @@ BI.AnalysisETLOperatorAddColumnFormulaPaneController = BI.inherit(BI.MVCControll
                     index = 2;
                     break;
             }
-            fieldItems[index].push({
-                text : item.field_name,
-                value : item.field_name,
-                fieldType : item.field_type
-            })
+            fieldItems[index].push(item);
         });
         return fieldItems;
     },
 
     populate : function (widget, model) {
-        widget.formula.populate(this._formatFormulaItems())
+        widget.formula.populate(this._formatFormulaItems(model.get(ETLCst.FIELDS)))
         widget.formula.setValue(model.get("formula") || "")
         this._checkCanSave(widget, model);
     },
