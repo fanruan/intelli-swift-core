@@ -190,7 +190,7 @@ public class TableWidget extends BISummaryWidget {
         boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
         boolean b3 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen == 0;
         if (b0) {
-            executor = new HorGroupExecutor(this, usedColumn, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
+            executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b1) {
             executor = new HorGroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b2) {
@@ -302,7 +302,7 @@ public class TableWidget extends BISummaryWidget {
     private void changeCalculateTargetStartGroup() {
         boolean changed = false;
         BISummaryTarget[] targets = getTargets();
-        if (this.getViewDimensions().length <= 1) {
+        if (this.getViewDimensions().length <= 1 && this.getViewDimensions().length != 0) {
             for (int i = 0; i < targets.length; i++) {
                 BISummaryTarget target = targets[i];
                 if (target instanceof BIConfiguredCalculateTarget && !(target instanceof BIPeriodConfiguredCalculateTarget)) {

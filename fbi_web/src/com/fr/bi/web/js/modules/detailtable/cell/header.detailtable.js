@@ -40,18 +40,23 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
                     whiteSpace: "nowrap",
                     textAlign: "center",
                     lgap: 5,
-                    height: 25
+                    height: o.height
                 }
             }, {
                 el: {
                     type: "bi.center_adapt",
                     items: [combo],
                     width: 25,
-                    height: 25
+                    height: o.height
                 },
                 width: 25
             }]
         });
+
+        //表格样式
+        if (BI.isNotNull(o.styles) && BI.isObject(o.styles)) {
+            this.element.css(o.styles);
+        }
     },
 
     _getNumLevelByLevel: function (level) {
