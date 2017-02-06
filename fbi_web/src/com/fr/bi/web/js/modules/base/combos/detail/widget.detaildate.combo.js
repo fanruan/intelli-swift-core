@@ -84,7 +84,7 @@ BI.DetailDateDimensionCombo = BI.inherit(BI.Widget, {
                 [{
                     text: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
                     title: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
-                    tipType: "warning",
+                    tipType: "success",
                     cls: "dimension-from-font",
                     value: BICst.DETAIL_DATE_COMBO.INFO,
                     disabled: true

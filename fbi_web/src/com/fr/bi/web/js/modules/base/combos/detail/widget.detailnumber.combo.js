@@ -28,11 +28,13 @@ BI.DetailNumberDimensionCombo = BI.inherit(BI.Widget, {
                 }],
                 [{
                     text: BI.i18nText("BI-Filter_Setting"),
-                    value: BICst.DETAIL_NUMBER_COMBO.FILTER
+                    value: BICst.DETAIL_NUMBER_COMBO.FILTER,
+                    cls: "filter-h-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Hyperlink"),
-                    value: BICst.DETAIL_NUMBER_COMBO.HYPERLINK
+                    value: BICst.DETAIL_NUMBER_COMBO.HYPERLINK,
+                    cls: "hyper-link-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Show_Field"),
@@ -45,12 +47,14 @@ BI.DetailNumberDimensionCombo = BI.inherit(BI.Widget, {
                 }],
                 [{
                     text: BI.i18nText("BI-Remove"),
+                    cls: "delete-h-font",
                     value: BICst.DETAIL_NUMBER_COMBO.DELETE
                 }],
                 [{
                     text: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
                     title: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
-                    tipType: "warning",
+                    tipType: "success",
+                    cls: "dimension-from-font",
                     value: BICst.DETAIL_NUMBER_COMBO.INFO,
                     disabled: true
                 }]
