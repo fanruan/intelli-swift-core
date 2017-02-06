@@ -43,7 +43,7 @@ BI.DetailTableRegionsManager = BI.inherit(BI.RegionsManager, {
 
     _createDimensionRegionHeader: function () {
         var self = this, o = this.options;
-        var header = BI.createWidget({
+        this.header = BI.createWidget({
             type: "bi.detail_region_header",
             height: 26,
             titleName: BI.i18nText("BI-Data"),
@@ -51,7 +51,7 @@ BI.DetailTableRegionsManager = BI.inherit(BI.RegionsManager, {
             wId: o.wId,
             viewType: BICst.REGION.DIMENSION1
         });
-        return header;
+        return this.header;
     },
 
     _createDimensionRegionWrapper: function () {
@@ -71,6 +71,11 @@ BI.DetailTableRegionsManager = BI.inherit(BI.RegionsManager, {
             self.fireEvent(BI.RegionsManager.EVENT_CHANGE, arguments);
         });
         return region;
+    },
+
+    populate: function(){
+        BI.DetailTableRegionsManager.superclass.populate.apply(this, arguments);
+        this.header.populate();
     }
 });
 
