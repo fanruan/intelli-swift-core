@@ -3074,13 +3074,13 @@
                     };
                 }
                 if (groupType === BICst.GROUP.ID_GROUP) {
-                    if(BI.isNull(value) || BI.isEmptyString(value)){
+                    if (BI.isNull(value) || BI.isEmptyString(value)) {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
                             filter_value: {},
                             _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                         };
-                    }else{
+                    } else {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
                             filter_value: {
@@ -3125,7 +3125,7 @@
                         filter_type: BICst.FILTER_TYPE.AND,
                         filter_value: vs
                     };
-                } else if(BI.isNumeric(value)){
+                } else if (BI.isNumeric(value)) {
                     //自定义分组后不勾选剩余值分组到其他
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
@@ -3369,7 +3369,7 @@
         },
 
         getWidgetDataByID: (function () {
-            var cache = {};
+            var cache = {}, timeoutToast;
             return function (wid, callbacks, options) {
                 options || (options = {});
                 var key = BI.UUID();
@@ -3377,14 +3377,27 @@
                     key = wid;
                 }
                 cache[key] = callbacks;
+                if (BI.isNull(timeoutToast)) {
+                    timeoutToast = BI.createWidget({
+                        type: "bi.timeout_toast"
+                    });
+                }
+                timeoutToast.addReq(key, wid, callbacks, options);
                 Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
+                    if (BI.isNull(timeoutToast.getReq(key))) {
+                        return;
+                    }
                     if (cache[key] === callbacks) {
                         callbacks.success(data);
                         delete cache[key];
                     } else {
                         callbacks.error && callbacks.error(data);
                     }
-                    callbacks.done && callbacks.done(data);
+                }, function () {
+                    if (BI.isNotNull(timeoutToast.getReq(key))) {
+                        callbacks.done && callbacks.done();
+                        timeoutToast.removeReq(key);
+                    }
                 });
             }
         })(),

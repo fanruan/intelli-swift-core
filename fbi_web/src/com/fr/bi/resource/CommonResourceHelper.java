@@ -43,6 +43,9 @@ public class CommonResourceHelper {
 
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
+
+                //组件加载超时
+                "com/fr/bi/web/css/modules/timeouttoast/widget.timeouttoast.css"
         };
     }
 
@@ -147,6 +150,8 @@ public class CommonResourceHelper {
                 "com/fr/bi/web/js/modules/copylinks/copylink.item.js",
                 "com/fr/bi/web/js/modules/copylinks/copylink.iconbutton.js",
 
+                //组件加载超时
+                "com/fr/bi/web/js/modules/timeouttoast/widget.timeouttoast.js",
 
                 /**
                  * 切片
