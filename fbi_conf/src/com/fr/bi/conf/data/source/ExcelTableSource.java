@@ -1,6 +1,7 @@
 package com.fr.bi.conf.data.source;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.base.TableData;
 import com.fr.bi.base.annotation.BICoreField;
@@ -8,12 +9,14 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.*;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.excel.BIExcelDataModel;
 import com.fr.bi.stable.data.db.excel.BIExcelTableData;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIExcelUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
@@ -28,10 +31,10 @@ import java.util.*;
 public class ExcelTableSource extends AbstractTableSource {
 
     public static final String XML_TAG = "ExcelTableSource";
-    /**
-     *
-     */
     private static final long serialVersionUID = -6619167463608584606L;
+    private static final int HOUR_TO_SECOND = 3600;
+    private static final int MINUTE_TO_SECOND = 60;
+
     private String fileName;
     @BICoreField
     private String fullFileName;
@@ -92,8 +95,7 @@ public class ExcelTableSource extends AbstractTableSource {
             @Override
             public void actionPerformed(BIDataValue v) {
                 Object resValue = null;
-                int i = v.getRow();
-                int j = v.getCol();
+                int i = v.getRow(), j = v.getCol();
                 Object value = v.getValue();
                 switch (columns[j].getFieldType()) {
                     case DBConstant.COLUMN.STRING:
@@ -105,7 +107,7 @@ public class ExcelTableSource extends AbstractTableSource {
                         } else if (value instanceof Date) {
                             Calendar c = Calendar.getInstance();
                             c.setTimeInMillis(((Date) value).getTime());
-                            resValue = (double) (c.get(Calendar.HOUR) * 3600 + c.get(Calendar.MINUTE) * 60 + c.get(Calendar.SECOND));
+                            resValue = (double) (c.get(Calendar.HOUR) * HOUR_TO_SECOND + c.get(Calendar.MINUTE) * MINUTE_TO_SECOND + c.get(Calendar.SECOND));
                         } else if (StringUtils.EMPTY.equals(value)) {
                             resValue = null;
                         } else {
@@ -118,19 +120,18 @@ public class ExcelTableSource extends AbstractTableSource {
                         }
                         break;
                     default:
-                        if (value == null) {
-                            break;
-                        }
-                        if (value instanceof Date) {
-                            try {
-                                resValue = ((Date) value).getTime();
-                            } catch (Exception e) {
-                                resValue = null;
+                        if (value != null) {
+                            if (value instanceof Date) {
+                                try {
+                                    resValue = ((Date) value).getTime();
+                                } catch (Exception e) {
+                                    resValue = null;
+                                }
+                                break;
                             }
-                            break;
+                            Date date = DateUtils.string2Date(value.toString(), true);
+                            resValue = date == null ? null : date.getTime();
                         }
-                        Date date = DateUtils.string2Date(value.toString(), true);
-                        resValue = date == null ? null : date.getTime();
                         break;
                 }
                 if (travel != null) {
@@ -167,19 +168,24 @@ public class ExcelTableSource extends AbstractTableSource {
         JSONObject jo = new JSONObject();
         JSONArray fieldNames = new JSONArray();
         JSONArray values = new JSONArray();
+        JSONArray types = new JSONArray();
         jo.put(BIJSONConstant.JSON_KEYS.FIELDS, fieldNames);
         jo.put(BIJSONConstant.JSON_KEYS.VALUE, values);
+        jo.put(BIJSONConstant.JSON_KEYS.TYPE, types);
         BIExcelDataModel tableData = null;
         try {
             tableData = createExcelTableData().createDataModel();
             String[] columnNames = tableData.onlyGetColumnNames();
+            int[] columnTypes = tableData.onlyGetColumnTypes();
             int previewRowCount = Math.min(BIBaseConstant.PREVIEW_COUNT, tableData.getDataList().size());
             for (int col = 0; col < columnNames.length; col++) {
                 String name = columnNames[col];
+                int type = columnTypes[col];
                 if (!fields.isEmpty() && !fields.contains(name)) {
                     continue;
                 }
                 fieldNames.put(name);
+                types.put(type);
                 JSONArray value = new JSONArray();
                 values.put(value);
                 for (int row = 0; row < previewRowCount; row++) {

@@ -1,4 +1,4 @@
-.bi-flex-horizontal-layout {
+.bi-flex-wrapper-vertical-center .flex-wrapper-vertical-center-wrapper {
   display: box;
   /* OLD - Android 4.4- */
   display: -webkit-box;
@@ -28,13 +28,13 @@
   -o-justify-content: flex-start;
   justify-content: flex-start;
   /* 09版 */
-  -webkit-box-align: flex-start;
+  -webkit-box-align: center;
   /* 12版 */
-  -webkit-align-items: flex-start;
-  -moz-align-items: flex-start;
-  -ms-align-items: flex-start;
-  -o-align-items: flex-start;
-  align-items: flex-start;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  -o-align-items: center;
+  align-items: center;
   /* 09版 */
   /*-webkit-box-lines: multiple;*/
   /* 12版 */
@@ -43,24 +43,6 @@
   -ms-flex-wrap: nowrap;
   -o-flex-wrap: nowrap;
   flex-wrap: nowrap;
-}
-.bi-flex-horizontal-layout.middle {
-  /* 09版 */
-  -webkit-box-align: center;
-  /* 12版 */
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  -o-align-items: center;
-  align-items: center;
-}
-.bi-flex-horizontal-layout.bottom {
-  /* 09版 */
-  -webkit-box-align: flex-end;
-  /* 12版 */
-  -webkit-align-items: flex-end;
-  -moz-align-items: flex-end;
-  -ms-align-items: flex-end;
-  -o-align-items: flex-end;
-  align-items: flex-end;
+  min-height: 100%;
+  float: left;
 }

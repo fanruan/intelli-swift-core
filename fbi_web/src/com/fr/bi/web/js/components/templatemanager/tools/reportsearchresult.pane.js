@@ -99,13 +99,13 @@ BI.ReportSearchResultPane = BI.inherit(BI.Widget, {
                 type: viewType === BI.TemplateManager.LIST_VIEW ? "bi.report_list_view_item" : "bi.report_card_view_item",
                 isAdmin: o.isAdmin,
                 onClickReport: function () {
-                    try {
+                    if (BI.isNotNull(window.top.FS) && BI.isNotNull(window.top.FS.tabPane)) {
                         window.top.FS.tabPane.addItem({
                             id: item.id,
                             title: item.text,
                             src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
                         });
-                    } catch (e) {
+                    } else {
                         window.open(FR.servletURL + item.buildUrl + "&edit=_bi_edit_", "_blank");
                     }
                 },

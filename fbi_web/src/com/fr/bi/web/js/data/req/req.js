@@ -232,6 +232,12 @@ Data.Req = BIReq = {
         }, complete);
     },
 
+    reqUpdatePackageName: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "update_package_name", data, function (res) {
+            callback(res);
+        }, complete);
+    },
+
     reqCubePath: function (callback, complete) {
         BI.requestAsync("fr_bi_configure", "get_cube_path", {}, function (res) {
             callback(res.cubePath);

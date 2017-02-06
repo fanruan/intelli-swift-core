@@ -34,7 +34,6 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         var fieldsMap = this.model.getFieldsMap();
         var relations = this.model.getRelations();
         var connectSet = relations.connectionSet;
-        var allFields = this.model.getAllFields();
         var regionHandler = function () {
             self.fireEvent(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, this.options.value);
         };
@@ -57,10 +56,9 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                 BI.each(connectSet, function (idx, obj) {
                     var primaryId = obj.primaryKey.field_id;
                     var foreignId = obj.foreignKey.field_id;
-                    if (BI.isNotNull(allFields[primaryId]) &&
-                        BI.isNotNull(allFields[foreignId])) {
-                        var primTableId = allFields[primaryId].table_id;
-                        var foreignTableId = allFields[foreignId].table_id;
+                    var primTableId = BI.Utils.getTableIdByFieldId4Conf(primaryId);
+                    var foreignTableId = BI.Utils.getTableIdByFieldId4Conf(foreignId);
+                    if (BI.isNotNull(primTableId) && BI.isNotNull(foreignTableId)) {
                         if (tId === primTableId && BI.contains(tableIds, foreignTableId)) {
                             items.push({
                                 primary: {
@@ -72,9 +70,9 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                                     title: self.model.getFieldTranName(primaryId)
                                 },
                                 foreign: {
-                                    region: allFields[foreignId].table_id,
-                                    regionText: self.model.getTableTranName(allFields[foreignId].table_id),
-                                    regionTitle: self.model.getTableTranName(allFields[foreignId].table_id),
+                                    region: foreignTableId,
+                                    regionText: self.model.getTableTranName(foreignTableId),
+                                    regionTitle: self.model.getTableTranName(foreignTableId),
                                     value: foreignId,
                                     text: self.model.getFieldTranName(foreignId),
                                     title: self.model.getFieldTranName(foreignId),
@@ -109,8 +107,9 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             });
             BI.each(connectSet, function (idx, obj) {
                 var foreignId = obj.foreignKey.field_id;
-                if (BI.has(allFields, foreignId)) {
-                    var tableId = allFields[foreignId].table_id;
+                var foreignTableId = BI.Utils.getTableIdByFieldId4Conf(foreignId);
+                if (BI.isNotNull(foreignTableId)) {
+                    var tableId = foreignTableId;
                     if (!BI.has(degree, tableId)) {
                         degree[tableId] = 0;
                     }
@@ -125,17 +124,18 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
             var items = [];
             BI.each(rels, function (idx, rel) {
                 var primaryId = rel.primaryKey.field_id, foreignId = rel.foreignKey.field_id;
-                if (BI.isNotNull(allFields[primaryId]) && BI.isNotNull(allFields[foreignId])) {
-                    var foreignTableId = allFields[foreignId].table_id;
+                var primaryTableId = BI.Utils.getTableIdByFieldId4Conf(primaryId);
+                var foreignTableId = BI.Utils.getTableIdByFieldId4Conf(foreignId);
+                if (BI.isNotNull(primaryTableId) && BI.isNotNull(foreignTableId)) {
                     //是未访问过的节点且入度未满
                     if (!BI.contains(visitSet, foreignTableId) && !BI.contains(distinctTableIds, tId) && calcDegree[foreignTableId] !== degrees[foreignTableId]) {
                         //自循环
-                        if (allFields[primaryId].table_id === allFields[foreignId].table_id) {
+                        if (primaryTableId === foreignTableId) {
                             items.push({
                                 primary: {
-                                    region: allFields[primaryId].table_id,
-                                    regionText: self.model.getTableTranName(allFields[primaryId].table_id),
-                                    regionTitle: self.model.getTableTranName(allFields[primaryId].table_id),
+                                    region: primaryTableId,
+                                    regionText: self.model.getTableTranName(primaryTableId),
+                                    regionTitle: self.model.getTableTranName(primaryTableId),
                                     value: primaryId,
                                     text: self.model.getFieldTranName(primaryId),
                                     title: self.model.getFieldTranName(primaryId),
@@ -143,8 +143,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                                 },
                                 foreign: {
                                     region: BI.UUID(),
-                                    regionText: self.model.getTableTranName(allFields[foreignId].table_id),
-                                    regionTitle: self.model.getTableTranName(allFields[foreignId].table_id),
+                                    regionText: self.model.getTableTranName(foreignTableId),
+                                    regionTitle: self.model.getTableTranName(foreignTableId),
                                     value: foreignId,
                                     text: self.model.getFieldTranName(foreignId),
                                     title: self.model.getFieldTranName(foreignId)
@@ -152,24 +152,24 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                             });
                         } else {
                             var primaryItem = {
-                                region: allFields[primaryId].table_id,
-                                regionText: self.model.getTableTranName(allFields[primaryId].table_id),
-                                regionTitle: self.model.getTableTranName(allFields[primaryId].table_id),
+                                region: primaryTableId,
+                                regionText: self.model.getTableTranName(primaryTableId),
+                                regionTitle: self.model.getTableTranName(primaryTableId),
                                 value: primaryId,
                                 text: self.model.getFieldTranName(primaryId),
                                 title: self.model.getFieldTranName(primaryId),
                                 regionHandler: regionHandler
                             };
                             var foreignItem = {
-                                region: allFields[foreignId].table_id,
-                                regionText: self.model.getTableTranName(allFields[foreignId].table_id),
-                                regionTitle: self.model.getTableTranName(allFields[foreignId].table_id),
+                                region: foreignTableId,
+                                regionText: self.model.getTableTranName(foreignTableId),
+                                regionTitle: self.model.getTableTranName(foreignTableId),
                                 value: foreignId,
                                 text: self.model.getFieldTranName(foreignId),
                                 title: self.model.getFieldTranName(foreignId),
                                 regionHandler: regionHandler
                             };
-                            if (!BI.contains(self.model.getTableIds(), allFields[foreignId].table_id)) {
+                            if (!BI.contains(self.model.getTableIds(), foreignTableId)) {
                                 delete foreignItem.regionHandler;
                             }
                             items.push({
@@ -220,7 +220,6 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
 
     _getAllRelationTablesByTables: function (tableIds, resultTables) {
         var self = this;
-        var allFields = this.model.getAllFields();
         var relations = this.model.getRelations();
         var primKeyMap = relations.primKeyMap;
         var foreignKeyMap = relations.foreignKeyMap;
@@ -238,7 +237,7 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                     rels = primKeyMap[fieldId];
                     BI.each(rels, function (i, rel) {
                         if (!BI.contains(resultTables, rel.foreignKey.field_id)) {
-                            var tId = allFields[rel.foreignKey.field_id].table_id;
+                            var tId = BI.Utils.getTableIdByFieldId4Conf(rel.foreignKey.field_id);
                             self._getAllRelationTablesByTables([tId], resultTables);
                         }
                     })
@@ -247,7 +246,7 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                     rels = foreignKeyMap[fieldId];
                     BI.each(rels, function (i, rel) {
                         if (!BI.contains(resultTables, rel.primaryKey.field_id)) {
-                            var tId = allFields[rel.primaryKey.field_id].table_id;
+                            var tId = BI.Utils.getTableIdByFieldId4Conf(rel.primaryKey.field_id);
                             self._getAllRelationTablesByTables([tId], resultTables);
                         }
                     })
