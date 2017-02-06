@@ -226,7 +226,7 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
                 self.copy2group.setEnable(false);
                 self.copy2group.setTitle(BI.i18nText("BI-Ungrouped_Package_Can_Move"));
                 self.removeFieldButton.setEnable(false);
-                self.removeFieldButton.setTitle(BI.i18nText("BI-Ungrouped_Package_Can_Not_Move_Out"));
+                self.removeFieldButton.setTitle(BI.i18nText("BI-Ungrouped_Package_Can_Move"));
             } else {
                 self.copy2group.setEnable(true);
                 self.copy2group.setTitle("");
