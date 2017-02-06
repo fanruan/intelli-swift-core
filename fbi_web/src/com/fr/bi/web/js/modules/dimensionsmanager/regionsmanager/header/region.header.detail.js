@@ -20,7 +20,8 @@ BI.DetailRegionHeader = BI.inherit(BI.RegionHeader, {
         this.relationButton = BI.createWidget({
             type: "bi.text_button",
             textHeight: 30,
-            value: BI.i18nText("BI-Field_Relation_Setting")
+            value: BI.i18nText("BI-Field_Relation_Setting"),
+            tipType: "success"
         });
 
         this.relationButton.on(BI.TextButton.EVENT_CHANGE, function () {
@@ -105,10 +106,10 @@ BI.DetailRegionHeader = BI.inherit(BI.RegionHeader, {
 
         if(!checkAddCalcTargetValid()){
             this.calculateAddButton.setEnable(false);
-            this.calculateAddButton.setTitle(BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Number_Target"));
+            this.calculateAddButton.setWarningTitle(BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Number_Target"));
         }else{
             this.calculateAddButton.setEnable(true);
-            this.calculateAddButton.setTitle("");
+            this.calculateAddButton.setWarningTitle("");
         }
 
         //动画，先保留
