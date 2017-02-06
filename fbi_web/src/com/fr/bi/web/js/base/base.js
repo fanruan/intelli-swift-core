@@ -50,7 +50,7 @@ if (!window.BI) {
         assert: function (v, is) {
             if (this.isFunction(is)) {
                 if (!is(v)) {
-                    throw new Error(v + "值不合法");
+                    throw new Error(v + " error");
                 } else {
                     return true;
                 }
@@ -59,7 +59,7 @@ if (!window.BI) {
                 is = [is];
             }
             if (!this.deepContains(is, v)) {
-                throw new Error(v + "值不合法");
+                throw new Error(v + " error");
             }
         },
 
@@ -107,7 +107,7 @@ if (!window.BI) {
 
         createWidgets: function (items, options) {
             if (!BI.isArray(items)) {
-                throw new Error("无法根据items创建组件?")
+                throw new Error("cannot create Widgets")
             }
             return BI.map(BI.flatten(items), function (i, item) {
                 return BI.createWidget(item, BI.deepClone(options));
@@ -278,7 +278,9 @@ if (!window.BI) {
         backAny: function (obj, predicate, context) {
             predicate = BI.iteratee(predicate, context);
             for (var index = obj.length - 1; index >= 0; index--) {
-                if (predicate(index, obj[index], obj)) return true;
+                if (predicate(index, obj[index], obj)) {
+                    return true;
+                }
             }
             return false;
         },
@@ -286,7 +288,9 @@ if (!window.BI) {
         backEvery: function (obj, predicate, context) {
             predicate = BI.iteratee(predicate, context);
             for (var index = obj.length - 1; index >= 0; index--) {
-                if (!predicate(index, obj[index], obj)) return false;
+                if (!predicate(index, obj[index], obj)) {
+                    return false;
+                }
             }
             return true;
         },
@@ -412,7 +416,9 @@ if (!window.BI) {
         },
 
         uniq: function (array, isSorted, iteratee, context) {
-            if (array == null) return [];
+            if (array == null) {
+                return [];
+            }
             if (!_.isBoolean(isSorted)) {
                 context = iteratee;
                 iteratee = isSorted;
@@ -570,11 +576,15 @@ if (!window.BI) {
 
         isDeepMatch: function (object, attrs) {
             var keys = BI.keys(attrs), length = keys.length;
-            if (object == null) return !length;
+            if (object == null) {
+                return !length;
+            }
             var obj = Object(object);
             for (var i = 0; i < length; i++) {
                 var key = keys[i];
-                if (!BI.isEqual(attrs[key], obj[key]) || !(key in obj)) return false;
+                if (!BI.isEqual(attrs[key], obj[key]) || !(key in obj)) {
+                    return false;
+                }
             }
             return true;
         },
@@ -704,11 +714,8 @@ if (!window.BI) {
 
             if (typeof Promise !== 'undefined') {
                 var p = Promise.resolve();
-                var logError = function (err) {
-                    console.error(err);
-                };
                 timerFunc = function () {
-                    p.then(nextTickHandler).catch(logError);
+                    p.then(nextTickHandler);
                 }
             } else
 
@@ -782,7 +789,7 @@ if (!window.BI) {
             try {
                 return parseInt(number, radix);
             } catch (e) {
-                throw new Error(number + "转成int类型失败");
+                throw new Error(number + "parse int error");
                 return NaN;
             }
         },
@@ -791,7 +798,7 @@ if (!window.BI) {
             try {
                 return parseFloat(number);
             } catch (e) {
-                throw new Error(number + "转成float类型失败");
+                throw new Error(number + "parse float error");
                 return NaN;
             }
         },
@@ -853,9 +860,9 @@ if (!window.BI) {
             var sum = 0;
             BI.each(array, function (i, item) {
                 if (iteratee) {
-                    sum += new Number(iteratee.apply(context, [i, item]));
+                    sum += Number(iteratee.apply(context, [i, item]));
                 } else {
-                    sum += new Number(item);
+                    sum += Number(item);
                 }
             });
             return sum;

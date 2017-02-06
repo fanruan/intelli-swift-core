@@ -44,6 +44,58 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         });
     },
 
+    getExtraInfo: function () {
+        var op = {};
+        var crossExpanderNodes = this._formatExpanderTree(this.crossETree.toJSONWithNode());
+        var expanderNodes = this._formatExpanderTree(this.eTree.toJSONWithNode());
+        var crossEValues = [], eValues = [];
+        var rowRegions = this._getRowRegions(), colRegions = this._getColRegions();
+
+        function searchIndexOfRegion(dId, regions) {
+            var index = 0;
+            var regionIds = BI.sortBy(BI.keys(regions));
+            BI.some(regions, function (id, region) {
+                if (region.contains(dId)) {
+                    index = regionIds.indexOf(id);
+                    return true;
+                }
+            });
+            return index;
+        }
+
+        BI.each(rowRegions, function (i, rRegion) {
+            eValues.push([]);
+        });
+        BI.each(colRegions, function (i, cRegion) {
+            crossEValues.push([]);
+        });
+        BI.each(crossExpanderNodes, function (i, node) {
+            crossEValues[searchIndexOfRegion(node.dId, colRegions)].push(node);
+        });
+        BI.each(expanderNodes, function (i, node) {
+            eValues[searchIndexOfRegion(node.dId, rowRegions)].push(node);
+        });
+
+        op.expander = {
+            x: {
+                type: BI.Utils.getWSOpenColNodeByID(this.wId),
+                value: crossEValues
+            },
+            y: {
+                type: BI.Utils.getWSOpenRowNodeByID(this.wId),
+                value: eValues
+            }
+        };
+        op.clickvalue = this.clickValue;
+        op.page = this.pageOperator;
+        op.status = this.status;
+        op.real_data = true;
+        if (this.status === BICst.WIDGET_STATUS.DETAIL) {
+            op.real_data = BI.Utils.isShowWidgetRealDataByID(this.wId) || false;
+        }
+        return op;
+    },
+
     //获取有效的行表头区域
     _getRowRegions: function () {
         var rowRegions = {};
@@ -270,6 +322,7 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
             var nodeId = BI.isNotNull(parent) ? parent.get("id") + cId : cId;
             var node = new BI.Node(nodeId);
             node.set("name", child.n);
+            node.set("dId", currDid);
             self.crossTree.addNode(parent, node);
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
