@@ -3776,6 +3776,7 @@
                         var v = parseComplexDate(wValue);
                         if (BI.isNotNull(v)) {
                             date = new Date(v);
+                            date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
                         }
                     }
                     break;
