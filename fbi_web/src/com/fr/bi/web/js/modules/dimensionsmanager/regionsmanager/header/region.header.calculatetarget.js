@@ -64,10 +64,6 @@ BI.CalculateTargetRegionHeader = BI.inherit(BI.RegionHeader, {
     _setCalculateTarget: function (dId, options) {
         var o = this.options;
         o.dimensionCreator(dId, this.options.viewType, options);
-    },
-
-    populate: function(){
-
     }
 });
 $.shortcut("bi.calculate_target_region_header", BI.CalculateTargetRegionHeader);
