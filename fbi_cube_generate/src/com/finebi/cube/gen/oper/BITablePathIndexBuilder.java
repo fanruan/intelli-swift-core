@@ -28,6 +28,7 @@ import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -154,6 +155,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 }
                 BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), BIStringUtils.append("TablePathIndex Error", getTablePathInfo()), e.getMessage(), e);
                 BILogHelper.cacheCubeLogRelationException(relationPath.getSourceID(), exceptionInfo);
+                throw BINonValueUtils.beyondControl(e.getMessage(), e);
             } finally {
 
                 if (lastRelationEntity != null) {
