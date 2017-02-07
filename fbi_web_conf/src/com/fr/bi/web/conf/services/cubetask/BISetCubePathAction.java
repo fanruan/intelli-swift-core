@@ -1,8 +1,8 @@
 package com.fr.bi.web.conf.services.cubetask;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -35,7 +35,7 @@ public class BISetCubePathAction extends AbstractBIConfigureAction {
         if (StringUtils.isEmpty(fileName)) {
             return;
         }
-        String oPath = BIConfigureManagerCenter.getCubeConfManager().getCubePath();
+        String oPath = BIConfigurePathUtils.createBasePath();
         String path = BIConfigurePathUtils.checkCubePath(fileName);
         if (StringUtils.isNotEmpty(path)) {
             BIConfigureManagerCenter.getCubeConfManager().saveCubePath(fileName);
