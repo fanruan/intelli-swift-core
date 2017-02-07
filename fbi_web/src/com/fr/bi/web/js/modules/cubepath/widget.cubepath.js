@@ -61,7 +61,7 @@ BI.CubePath = BI.inherit(BI.Widget, {
                             type: "bi.cube_path_confirm",
                             is_warning: res === "warning"
                         });
-                        BI.Popovers.create(id, confirm, {width: 430, height: 300}).open(id);
+                        BI.Popovers.create(id, confirm, {width: 470, height: 300}).open(id);
                         confirm.on(BI.CubePathConfirm.EVENT_SAVE, function () {
                             BI.Utils.saveCubePath(pathInput.getValue(), function () {
                                 BI.Msg.toast(BI.i18nText("BI-Modify_Success"));
