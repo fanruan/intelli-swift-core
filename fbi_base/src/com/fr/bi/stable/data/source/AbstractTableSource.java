@@ -44,7 +44,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     private transient BICore core;
 
     //用来存中间表产生的名字
-    protected String tempName;
+    private String tempName;
 
     protected AbstractTableSource() {
 
@@ -452,4 +452,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         return false;
     }
 
+    protected String getTempName() {
+        return tempName;
+    }
 }

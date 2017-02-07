@@ -109,9 +109,6 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
         return set;
     }
 
-    private String getTempName() {
-        return tempName;
-    }
 
     private String getOperatorParentTableInfo(List<? extends CubeTableSource> parents) {
         StringBuffer sb = new StringBuffer();
