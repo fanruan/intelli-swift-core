@@ -141,6 +141,10 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.DetailStringDimensionComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
+                case BICst.DETAIL_STRING_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.DETAIL_STRING_COMBO.FILTER:
                     self._buildFilterPane();
                     break;

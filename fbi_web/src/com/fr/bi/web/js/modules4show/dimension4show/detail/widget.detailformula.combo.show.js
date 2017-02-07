@@ -22,7 +22,21 @@ BI.DetailFormulaDimensionComboShow = BI.inherit(BI.Widget, {
         });
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.DetailFormulaDimensionComboShow.EVENT_CHANGE, v);
+        });
+        this.combo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
+            this.populate(self._rebuildItems());
         })
+    },
+
+    _rebuildItems: function () {
+        var self = this, o = this.options;
+        return [
+            [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.DETAIL_STRING_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+            }]
+        ]
     },
 
     getValue: function () {
