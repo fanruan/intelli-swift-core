@@ -33,8 +33,8 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.structure.queue.AV;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.core.UUID;
@@ -79,7 +79,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
             @Override
             public URI getRootURI() {
                 try {
-                    File file = new File(new BICubeLocation(BIPathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()), path).getAbsolutePath());
+                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()), path).getAbsolutePath());
                     return URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
                     throw BINonValueUtils.beyondControl(e);
@@ -109,7 +109,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
                     e.printStackTrace();
-                }
+            }
             }
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
         tableEntityService.addVersion(getTableVersion());

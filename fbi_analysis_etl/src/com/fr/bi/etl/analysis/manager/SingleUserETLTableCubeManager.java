@@ -14,7 +14,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.structure.queue.FixedQueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 
@@ -38,6 +38,12 @@ public class SingleUserETLTableCubeManager implements Release {
         return source;
     }
 
+
+	public int getThreadPoolCubeCount() {
+		return tq.size();
+	}
+
+
 	private String getSavedPath(){
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
     	if(manager != null){
@@ -58,7 +64,7 @@ public class SingleUserETLTableCubeManager implements Release {
 		this.source = source;
 		String path = getSavedPath();
 		if(path != null){
-			File file = new File(BIPathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), path));
+			File file = new File(BIConfigurePathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), path));
 			if(file.exists()) {
 				tq.add(new ETLTableObject(source, path));
 			}
@@ -70,7 +76,7 @@ public class SingleUserETLTableCubeManager implements Release {
 	}
 
 	private void clearAllPath(String idValue) {
-		BIFileUtils.delete(new File(BIPathUtils.createUserETLTableBasePath(idValue)));
+		BIFileUtils.delete(new File(BIConfigurePathUtils.createUserETLTableBasePath(idValue)));
 	}
 
 
@@ -150,7 +156,7 @@ public class SingleUserETLTableCubeManager implements Release {
 	
 	
     private boolean checkCubePath() {
-        return BIFileUtils.checkDir(new File(BIPathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue())));
+        return BIFileUtils.checkDir(new File(BIConfigurePathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue())));
     }
 	
 	protected boolean checkVersion(){

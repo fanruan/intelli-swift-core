@@ -19,7 +19,7 @@ import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public abstract class AbstractSingleColumnFile<T> extends LinkIndexFile implemen
     protected abstract Comparator<T> getComparator();
 
     protected GroupLengthFile createLengthFile() {
-        return BIFileUtils.createFile(this, LENGTH_NAME, GroupLengthFile.class, BIPathUtils.createGroupLengthPath(path));
+        return BIFileUtils.createFile(this, LENGTH_NAME, GroupLengthFile.class, BIConfigurePathUtils.createGroupLengthPath(path));
     }
 
 
@@ -154,7 +154,7 @@ public abstract class AbstractSingleColumnFile<T> extends LinkIndexFile implemen
         synchronized (relationMap) {
             ifile = relationMap.get(key);
             if (ifile == null) {
-                ifile = new LinkIndexFile(BIPathUtils.createColumnLinkIndexPath(path, key));
+                ifile = new LinkIndexFile(BIConfigurePathUtils.createColumnLinkIndexPath(path, key));
                 relationMap.put(key, ifile);
             }
             return ifile;
@@ -197,8 +197,8 @@ public abstract class AbstractSingleColumnFile<T> extends LinkIndexFile implemen
     public void copyDetailValue(String path, ColumnFile columnFile, SingleUserNIOReadManager manager, long rowCount) {
         File newFile = new File(path);
         File oldFile = new File(this.path);
-        String field = BIPathUtils.createSingleFieldDetailPath(this.path);
-        BIFileUtils.copyFile(BIPathUtils.createDetailPath(field), oldFile, newFile);
+        String field = BIConfigurePathUtils.createSingleFieldDetailPath(this.path);
+        BIFileUtils.copyFile(BIConfigurePathUtils.createDetailPath(field), oldFile, newFile);
     }
 
     @Override

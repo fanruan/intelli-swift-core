@@ -108,4 +108,7 @@ public class ThreadUnitedQueue<T extends Delete> implements Release {
 		}
 	}
 
+    public int size() {
+    	return queue.size();
+    }
 }

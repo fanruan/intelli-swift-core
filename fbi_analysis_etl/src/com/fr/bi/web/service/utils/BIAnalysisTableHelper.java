@@ -25,7 +25,7 @@ public class BIAnalysisTableHelper {
             ((AnalysisCubeTableSource) table.getTableSource()).getSourceNeedCheckSource(sources);
             int generated = 0;
             for (AnalysisCubeTableSource s : sources) {
-                BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of " + s.createUserTableSource(userId).fetchObjectCore().getIDValue());
+                //BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of " + s.createUserTableSource(userId).fetchObjectCore().getIDValue());
                 if (BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkVersion(s, new BIUser(userId))) {
                     generated++;
                 } else {
@@ -37,5 +37,26 @@ public class BIAnalysisTableHelper {
             percent = 0.1;
         }
         return percent;
+    }
+
+
+    public static boolean getTableHealthById(String tableId, long userId){
+        BusinessTable table = null;
+        try {
+            table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+            return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) table.getTableSource(), new BIUser(userId));
+        } catch (BITableAbsentException e) {
+        }
+        return  false;
+    }
+
+    public static int getTableCubeCount(String tableId, long userId){
+        BusinessTable table = null;
+        try {
+            table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+            return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getThreadPoolCubeCount((AnalysisCubeTableSource) table.getTableSource(), new BIUser(userId));
+        } catch (BITableAbsentException e) {
+        }
+        return  0;
     }
 }

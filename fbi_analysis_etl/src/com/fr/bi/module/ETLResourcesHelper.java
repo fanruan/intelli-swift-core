@@ -11,6 +11,8 @@ public class ETLResourcesHelper {
 
 	public static final String DEFAULT_JS = "analysis_etl.js";
 	public static final String DEFAULT_CSS = "analysis_etl.css";
+	public static final String MONITOR_JS = "sppa_monitor.js";
+	public static final String MONITOR_CSS = "sppa_monitor.css";
 
 	/**
 	 * @return
@@ -334,4 +336,19 @@ public class ETLResourcesHelper {
 		};
 	}
 
+
+	public static String[] getMonitorJS(){
+		return new String[]{
+				"com/fr/bi/etl/analysis/monitor/web/js/main.js",
+                "com/fr/bi/etl/analysis/monitor/web/js/line.js",
+                "com/fr/bi/etl/analysis/monitor/web/js/table.js",
+		};
+	}
+
+
+	public static String[] getMonitorCss(){
+		return new String[]{
+				"com/fr/bi/etl/analysis/web/css/monitor/main.css",
+		};
+	}
 }

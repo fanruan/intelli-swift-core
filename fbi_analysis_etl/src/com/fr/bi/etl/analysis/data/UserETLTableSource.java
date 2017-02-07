@@ -38,6 +38,13 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     }
 
     @Override
+    public void getParentAnalysisBaseTableIds(Set<String> set) {
+        if(parent != null){
+            parent.getParentAnalysisBaseTableIds(set);
+        }
+    }
+
+    @Override
     public int getType() {
         return BIBaseConstant.TABLE_TYPE.USER_ETL;
     }

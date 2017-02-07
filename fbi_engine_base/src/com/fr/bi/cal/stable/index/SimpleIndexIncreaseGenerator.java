@@ -21,7 +21,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -188,7 +188,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
 
     protected int loadOldValue() {
         BILoggerFactory.getLogger().info("now loading：" + dataSource.fetchObjectCore() + " old cube");
-        new TableCubeFile(BIPathUtils.createTableTempPath(dataSource.fetchObjectCore().getID().getIdentityValue(), loader.getUserId())).copyDetailValue(cube, loader.getNIOReaderManager(), oldTi.getRowCount());
+        new TableCubeFile(BIConfigurePathUtils.createTableTempPath(dataSource.fetchObjectCore().getID().getIdentityValue(), loader.getUserId())).copyDetailValue(cube, loader.getNIOReaderManager(), oldTi.getRowCount());
         BILoggerFactory.getLogger().info("loading：" + dataSource.fetchObjectCore() + " old cube finished");
         return oldTi.getRowCount();
     }
