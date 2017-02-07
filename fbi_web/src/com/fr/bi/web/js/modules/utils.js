@@ -2459,6 +2459,81 @@
                 }
             }
 
+            //计算数值自动分组时候的最大最小值
+            function calculateMinMax4Auto(min, max) {
+                var min = Math.abs(min) + "";
+                var max = Math.abs(max) + "";
+                var minCount = min.split(".")[0].length;
+                var maxCount = max.split(".")[0].length;
+                var count = minCount > maxCount ? minCount : maxCount;
+                var magnify = 1;
+                //缩小补零
+                var s = "0.";
+                while (count - minCount > 0) {
+                    s += "0";
+                    minCount++;
+                }
+                min = min.replace(".", "");
+                min = s + min;
+                s = "0.";
+                while (count - maxCount > 0) {
+                    s += "0";
+                    maxCount++;
+                }
+                max = max.replace(".", "");
+                max = s + max;
+
+                //后面补零对齐
+                var zeros = max.length - min.length;
+                if (zeros > 0) {
+                    while (zeros-- > 0) {
+                        min += "0";
+                    }
+                } else {
+                    while (zeros++ < 0) {
+                        max += "0";
+                    }
+                }
+                //截零
+                var i = max.length - 1, add = "0.";
+                while (min[i] === "0" && max[i] === "0" && this.min != 0 && this.max != 0) {
+                    i--;
+                }
+
+                //截位/截位+1
+                min = this.min < 0 ? -(cutBig(min)) : cutSmall(min);
+                max = this.max < 0 ? -(cutSmall(max)) : cutBig(max);
+
+                while (count-- > 0) {
+                    magnify *= 10;
+                }
+
+                return {
+                    max: max.mul(magnify),
+                    min: min.mul(magnify)
+                }
+
+                function cutSmall(val) {
+                    return BI.parseFloat(val.substring(0, i));
+                }
+
+                function cutBig(val) {
+                    if (val[i] === "0") {
+                        return BI.parseFloat(val);
+                    }
+                    val = val.substring(0, i);
+                    var length = val.length - 2;
+                    while (--length > 0) {
+                        add += "0";
+                    }
+                    add += "1";
+                    if (val[i - 1] === ".") {
+                        return BI.parseFloat(val) + 1;
+                    }
+                    return BI.parseFloat(val) + BI.parseFloat(add);
+                }
+            }
+
             function parseNumberFilter4Group(dId, v) {
                 var value = v[0];
                 var group = BI.Utils.getDimensionGroupByID(dId);
@@ -2481,9 +2556,11 @@
                 }
                 if (groupType === BICst.GROUP.AUTO_GROUP) {
                     //坑爹，要自己算分组名称出来
-                    var groupInterval = groupValue.group_interval, max = groupValue.max, min = groupValue.min;
+                    var groupInterval = groupValue.group_interval;
+                    var maxMin = calculateMinMax4Auto(groupValue.min, groupValue.max);
+                    var max = maxMin.max, min = maxMin.min;
                     while (min < max) {
-                        var newMin = BI.parseInt(min) + BI.parseInt(groupInterval);
+                        var newMin = min + BI.parseFloat(groupInterval);
                         groupMap[min + "-" + newMin] = {
                             min: min,
                             max: newMin,
@@ -2537,15 +2614,18 @@
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
                 } else if (value === BICst.UNGROUP_TO_OTHER) {
+                    //反选数值区间，使用多个反条件并集
+                    var vs = [];
+                    BI.each(groupMap, function (id, v) {
+                        vs.push({
+                            filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+                            filter_value: v,
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        });
+                    });
                     return {
-                        filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
-                        filter_value: {
-                            min: oMin,
-                            max: oMax,
-                            closemin: true,
-                            closemax: true
-                        },
-                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        filter_type: BICst.FILTER_TYPE.AND,
+                        filter_value: vs
                     };
                 } else if(BI.isNumeric(value)){
                     //自定义分组后不勾选剩余值分组到其他

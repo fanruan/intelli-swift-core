@@ -2,7 +2,7 @@ package com.fr.bi.cal.stable.io;
 
 
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.io.File;
 
@@ -13,6 +13,6 @@ import java.io.File;
 public class CubeFileManger {
 
     public static void deleteTempFile(long userId) {
-        BIFileUtils.delete(new File(BIPathUtils.createUserTotalTempPath(userId)));
+        BIFileUtils.delete(new File(BIConfigurePathUtils.createUserTotalTempPath(userId)));
     }
 }

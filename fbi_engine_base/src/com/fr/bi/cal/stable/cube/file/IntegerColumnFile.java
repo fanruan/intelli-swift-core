@@ -10,7 +10,7 @@ import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.io.sortlist.SortNIOReadIntList;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.util.Comparator;
 
@@ -24,14 +24,14 @@ public class IntegerColumnFile extends AbstractSingleColumnFile<Integer> {
     @Override
     protected AbstractNIOCubeFile<Integer> createDetailFile() {
 
-        return BIFileUtils.createFile(this, getDetailFieldName(), CubeIntegerFile.class, BIPathUtils.createSingleFieldDetailPath(path));
+        return BIFileUtils.createFile(this, getDetailFieldName(), CubeIntegerFile.class, BIConfigurePathUtils.createSingleFieldDetailPath(path));
     }
 
 
     @Override
     protected AbstractNIOCubeFile<Integer> createGroupFile() {
 
-        return BIFileUtils.createFile(this, getGroupFieldName(), CubeIntegerFile.class, BIPathUtils.createSingleFieldGroupPath(path));
+        return BIFileUtils.createFile(this, getGroupFieldName(), CubeIntegerFile.class, BIConfigurePathUtils.createSingleFieldGroupPath(path));
 
     }
 

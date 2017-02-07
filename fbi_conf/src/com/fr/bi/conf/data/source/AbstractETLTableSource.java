@@ -370,6 +370,4 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
     private boolean reuseTableSource(CubeTableSource tableSource) {
         return tableSource instanceof DBTableSource && !(tableSource instanceof ServerTableSource);
     }
-
-
 }
