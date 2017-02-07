@@ -415,6 +415,8 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/css/base/layer/layer.panel.css",
                 "com/fr/bi/web/css/base/reqloading/loading.request.css",
                 "com/fr/bi/web/css/base/logintimeout/login.timeout.css",
+                //加载超时
+                "com/fr/bi/web/css/base/timeouttoast/widget.timeouttoast.css",
 
                 "com/fr/bi/web/css/utils/widget.css",
                 "com/fr/bi/web/css/utils/common.css",

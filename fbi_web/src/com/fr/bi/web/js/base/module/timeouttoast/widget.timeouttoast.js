@@ -98,7 +98,7 @@ BI.TimeoutToast = BI.inherit(BI.Tip, {
                 if (self.requests.contains(options)) {
                     self.toast.element.slideDown(500);
                 }
-            }, 5 * 1000);  //5 min
+            }, 5 * 60 * 1000);  //5 min
         }
         this.requests.push(options);
     },

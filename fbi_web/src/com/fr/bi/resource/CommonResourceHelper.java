@@ -44,8 +44,6 @@ public class CommonResourceHelper {
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
 
-                //组件加载超时
-                "com/fr/bi/web/css/modules/timeouttoast/widget.timeouttoast.css"
         };
     }
 

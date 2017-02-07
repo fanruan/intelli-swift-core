@@ -4,9 +4,7 @@
  */
 BI.RequstLoading = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.RequstLoading.superclass._defaultConfig.apply(this, arguments), {
-
-        });
+        return BI.extend(BI.RequstLoading.superclass._defaultConfig.apply(this, arguments), {});
     },
 
     _init: function () {
@@ -71,7 +69,7 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
             level: "ignore",
             height: 28,
             width: 90,
-            handler: function(){
+            handler: function () {
                 BI.Maskers.hide(BI.RequstLoading.MASK_ID);
             }
         });
@@ -82,7 +80,7 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
             level: "common",
             height: 28,
             width: 90,
-            handler: function(){
+            handler: function () {
                 self.paneTab.setSelect(BI.RequstLoading.LOADING);
                 self.callback();
             }
@@ -172,20 +170,16 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
     },
 
     showLoading: function () {
-        var self = this;
         BI.Maskers.show(BI.RequstLoading.MASK_ID);
         this.paneTab.setSelect(BI.RequstLoading.LOADING);
-        setTimeout(function() {
-
-        }, 5 * 60 * 1000); // 5 min
     },
 
     showError: function () {
         BI.Maskers.show(BI.RequstLoading.MASK_ID);
         this.paneTab.setSelect(BI.RequstLoading.ERROR);
     },
-    
-    setCallback: function(callback) {
+
+    setCallback: function (callback) {
         this.callback = callback;
     }
 });

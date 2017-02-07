@@ -13,7 +13,10 @@ public class FsResouceHelper {
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.css",
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.css",
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.css",
-                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.css"
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.css",
+
+                //加载超时
+                "com/fr/bi/web/css/base/timeouttoast/widget.timeouttoast.css"
         };
         return (String[]) ArrayUtils.addAll(base, fs);
     }
