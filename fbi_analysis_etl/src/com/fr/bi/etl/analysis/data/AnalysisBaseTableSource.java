@@ -23,6 +23,7 @@ import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Types;
 import java.util.HashSet;
 import java.util.List;
@@ -221,10 +222,32 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
 
-    @Override
     public void reSetWidgetDetailGetter() {
         widget.reSetDetailTarget();
     }
+
+    public void getParentAnalysisBaseTableIds(Set<String> set) {
+        for (BITargetAndDimension dim : widget.getViewDimensions()) {
+            calcualteImport(set, dim);
+        }
+        for (BITargetAndDimension target : widget.getViewTargets()) {
+            calcualteImport(set, target);
+        }
+    }
+
+    private void calcualteImport(Set<String> set, BITargetAndDimension dim) {
+        if (dim.getStatisticElement() != null) {
+            if(dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
+                CubeTableSource source = dim.createTableKey().getTableSource();
+                if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
+                    set.add(dim.getStatisticElement().getTableBelongTo().getID().getIdentity());
+                }
+            } else {
+                set.add(dim.getStatisticElement().getTableBelongTo().getID().getIdentity());
+            }
+        }
+    }
+
 
     @Override
     public JSONObject createJSON() throws Exception {
@@ -245,7 +268,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         jo.put("operator", widget);
         return jo;
     }
-
     /**
      * @return
      */

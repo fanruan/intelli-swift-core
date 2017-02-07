@@ -1,0 +1,87 @@
+@import "../bibase";
+@import "../animate";
+.single-table-layer {
+  background: @background-color-active;
+}
+.monitor-content {
+  position:relative;
+  background: @background-color-active;
+  width:100%;
+  height:100%;
+
+  & .bi-monitor-table {
+    .border-radius(4px);
+    z-index: 100;
+
+  }
+
+  & .bi-monitor-table-hover {
+    .box-shadow(0px 0px 4px 4px, @background-color-highlight);
+  }
+
+
+  & .bi-monitor-table-1 {
+    background:@background-color-dark-success;
+  }
+
+  & .bi-monitor-table-0 {
+    background:@background-color-negative;
+  }
+
+  & .bi-monitor-table-2 {
+    background:@background-color-warning;
+  }
+
+  & .bi-monitor-table-3 {
+    background:@border-color-light-green;
+  }
+
+
+  & .bi-monitor-svg-line {
+    z-index: 99;
+    & svg path {
+      stroke-dasharray: 1000;
+      stroke-width:2px;
+      stroke-opacity: 0.5;
+    }
+  }
+
+
+
+  & .bi-monitor-svg-line-1 {
+    & svg path {
+      stroke: @background-color-dark-success;
+    }
+  }
+
+  & .bi-monitor-svg-line-0{
+    & svg path {
+      stroke: @background-color-negative;
+    }
+  }
+
+  & .bi-monitor-svg-line-2 {
+    & svg path {
+      stroke: @background-color-warning;
+    }
+  }
+
+  & .bi-monitor-svg-line-3 {
+    & svg path {
+      stroke: @border-color-light-green;
+    }
+  }
+
+  & .bi-monitor-svg-line-hover {
+    & svg path {
+      stroke-width:2;
+      stroke-opacity: 1;
+      stroke: @background-color-highlight ;
+    }
+  }
+}
+
+.bi-animate(bi-monitor-svg-line svg path,svg-change,'{stroke-dashoffset:1000}','{stroke-dashoffset:0}',2s, ease);
+.bi-animate(bi-monitor-svg-line-generate svg path,svg-change,'{stroke-dashoffset:1000}','{stroke-dashoffset:0}',2s, linear infinite);
+.bi-animate(bi-monitor-svg-line-hover svg path,svg-change,'{stroke-dashoffset:1000}','{stroke-dashoffset:0}',2s, linear infinite);
+

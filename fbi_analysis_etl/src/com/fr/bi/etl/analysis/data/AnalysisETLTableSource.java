@@ -7,10 +7,12 @@ import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -35,6 +37,14 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     public List<AnalysisETLSourceField> getFieldsList() {
         return fieldList;
     }
+
+    @Override
+    public void getParentAnalysisBaseTableIds(Set<String> set) {
+        for(AnalysisCubeTableSource source : getParents()) {
+            source.getParentAnalysisBaseTableIds(set);
+        }
+    }
+
 
     @Override
     public Set<BIWidget> getWidgets() {

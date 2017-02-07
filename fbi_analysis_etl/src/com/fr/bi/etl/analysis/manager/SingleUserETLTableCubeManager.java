@@ -38,6 +38,12 @@ public class SingleUserETLTableCubeManager implements Release {
         return source;
     }
 
+
+	public int getThreadPoolCubeCount() {
+		return tq.size();
+	}
+
+
 	private String getSavedPath(){
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
     	if(manager != null){
