@@ -26,8 +26,8 @@ import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.structure.collection.map.TimeDeleteHashMap;
 import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.fs.control.UserControl;
 
 import java.io.File;
@@ -242,7 +242,7 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
         String md5 = task.getMd5();
         BICubeLocation cubeLocation;
         try {
-            cubeLocation = new BICubeLocation(BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(md5), File.separator + pathSuffix);
+            cubeLocation = new BICubeLocation(BIBaseConstant.CACHE.getCacheDirectory() + BIConfigurePathUtils.tablePath(md5), File.separator + pathSuffix);
         } catch (URISyntaxException e) {
             throw BINonValueUtils.beyondControl(e);
         }

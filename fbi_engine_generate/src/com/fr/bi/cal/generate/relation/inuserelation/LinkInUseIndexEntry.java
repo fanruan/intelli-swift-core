@@ -26,8 +26,8 @@ import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 
@@ -69,7 +69,7 @@ public class LinkInUseIndexEntry implements CubeGenerator {
             fieldsSet.add(field.getFieldName());
         }
         for (Map.Entry<CubeTableSource, Set<String>> entry : usedFiledsMap.entrySet()) {
-            creatLoader(threadList, new TableCubeFile(BIPathUtils.createTableTempPath(entry.getKey().getSourceID(),
+            creatLoader(threadList, new TableCubeFile(BIConfigurePathUtils.createTableTempPath(entry.getKey().getSourceID(),
                     user.getUserId())), entry.getValue(),
                     /**
                      * TODO

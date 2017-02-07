@@ -24,7 +24,7 @@ import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,31 +60,31 @@ public class DateColumnFile implements ColumnFile<Long> {
     }
 
     public LongColumnFile createBaseFile() {
-        return BIFileUtils.createFile(this, "base", LongColumnFile.class, BIPathUtils.createSingleFieldDetailPath(path));
+        return BIFileUtils.createFile(this, "base", LongColumnFile.class, BIConfigurePathUtils.createSingleFieldDetailPath(path));
     }
 
     public IntegerColumnFile createYearGroupFile() {
-        return BIFileUtils.createFile(this, "year", IntegerColumnFile.class, BIPathUtils.createSingleFieldGroupPath(path + "_year"));
+        return BIFileUtils.createFile(this, "year", IntegerColumnFile.class, BIConfigurePathUtils.createSingleFieldGroupPath(path + "_year"));
     }
 
     public IntegerColumnFile createSeasonGroupFile() {
-        return BIFileUtils.createFile(this, "season", IntegerColumnFile.class, BIPathUtils.createSingleFieldDetailPath(path + "_season"));
+        return BIFileUtils.createFile(this, "season", IntegerColumnFile.class, BIConfigurePathUtils.createSingleFieldDetailPath(path + "_season"));
     }
 
     public IntegerColumnFile createMonthGroupFile() {
-        return BIFileUtils.createFile(this, "month", IntegerColumnFile.class, BIPathUtils.createSingleFieldDetailPath(path + "_month"));
+        return BIFileUtils.createFile(this, "month", IntegerColumnFile.class, BIConfigurePathUtils.createSingleFieldDetailPath(path + "_month"));
     }
 
     public IntegerColumnFile createDayGroupFile() {
-        return BIFileUtils.createFile(this, "day", IntegerColumnFile.class, BIPathUtils.createSingleFieldDetailPath(path + "_day"));
+        return BIFileUtils.createFile(this, "day", IntegerColumnFile.class, BIConfigurePathUtils.createSingleFieldDetailPath(path + "_day"));
     }
 
     public IntegerColumnFile createWeekGroupFile() {
-        return BIFileUtils.createFile(this, "week", IntegerColumnFile.class, BIPathUtils.createSingleFieldDetailPath(path + "_week"));
+        return BIFileUtils.createFile(this, "week", IntegerColumnFile.class, BIConfigurePathUtils.createSingleFieldDetailPath(path + "_week"));
     }
 
     public LongColumnFile createYMDGroupFile() {
-        return BIFileUtils.createFile(this, "ymd", LongColumnFile.class, BIPathUtils.createSingleFieldDetailPath(path + "_ymd"));
+        return BIFileUtils.createFile(this, "ymd", LongColumnFile.class, BIConfigurePathUtils.createSingleFieldDetailPath(path + "_ymd"));
     }
 
     @Override

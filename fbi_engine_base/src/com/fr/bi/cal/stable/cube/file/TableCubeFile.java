@@ -31,7 +31,7 @@ import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
 import com.fr.stable.collections.array.IntArray;
@@ -111,32 +111,32 @@ public class TableCubeFile extends AbstractCubeFile {
         TableCubeFile cube = (TableCubeFile) oldCube;
         ICubeFieldSource[] fields = getBIField();
         for (int i = 0; i < fields.length; i++) {
-            columns.getColumnFile(i).copyDetailValue(BIPathUtils.createSingleFieldBasePath(cube.path, fields[i].getFieldName()), cube.getColumnFile(fields[i].getFieldName()), manager, rowCount);
+            columns.getColumnFile(i).copyDetailValue(BIConfigurePathUtils.createSingleFieldBasePath(cube.path, fields[i].getFieldName()), cube.getColumnFile(fields[i].getFieldName()), manager, rowCount);
         }
     }
 
     private CubeMainFile getCubeMainFile() {
-        return BIFileUtils.createFile(this, "mainFile", CubeMainFile.class, BIPathUtils.createMainPath(path));
+        return BIFileUtils.createFile(this, "mainFile", CubeMainFile.class, BIConfigurePathUtils.createMainPath(path));
     }
 
     private VersionFile getCubeVersionFile() {
-        return BIFileUtils.createFile(this, "cubeVersion", VersionFile.class, BIPathUtils.createVersionCubePath(path));
+        return BIFileUtils.createFile(this, "cubeVersion", VersionFile.class, BIConfigurePathUtils.createVersionCubePath(path));
     }
 
     private VersionFile getTableVersionFile() {
-        return BIFileUtils.createFile(this, "currentVersion", VersionFile.class, BIPathUtils.createVersionTablePath(path));
+        return BIFileUtils.createFile(this, "currentVersion", VersionFile.class, BIConfigurePathUtils.createVersionTablePath(path));
     }
 
     private CubeOtherFile getRowCountFile() {
-        return BIFileUtils.createFile(this, "rowCountFile", CubeOtherFile.class, BIPathUtils.createOtherPath(path));
+        return BIFileUtils.createFile(this, "rowCountFile", CubeOtherFile.class, BIConfigurePathUtils.createOtherPath(path));
     }
 
     private CubeLastTimeFile getLastTimeFile() {
-        return BIFileUtils.createFile(this, "lastTimeFile", CubeLastTimeFile.class, BIPathUtils.createOtherPath(path));
+        return BIFileUtils.createFile(this, "lastTimeFile", CubeLastTimeFile.class, BIConfigurePathUtils.createOtherPath(path));
     }
 
     private IntegerColumnFile getRemoveFile() {
-        return BIFileUtils.createFile(this, "removeFile", IntegerColumnFile.class, BIPathUtils.createRemovePath(path));
+        return BIFileUtils.createFile(this, "removeFile", IntegerColumnFile.class, BIConfigurePathUtils.createRemovePath(path));
     }
 
 
@@ -196,7 +196,7 @@ public class TableCubeFile extends AbstractCubeFile {
                 for (int i = 0, ilen = fields.length; i < ilen; i++) {
                     ICubeFieldSource field = fields[i];
                     colIndexMap.put(field.getFieldName(), i);
-                    String fieldPath = BIPathUtils.createSingleFieldBasePath(path, field.getFieldName());
+                    String fieldPath = BIConfigurePathUtils.createSingleFieldBasePath(path, field.getFieldName());
                     switch (field.getFieldType()) {
                         case DBConstant.COLUMN.DATE:
                             columns[i] = new DateColumnFile(fieldPath);
@@ -306,7 +306,7 @@ public class TableCubeFile extends AbstractCubeFile {
         synchronized (basicRelationMap) {
             ifile = basicRelationMap.get(key);
             if (ifile == null) {
-                ifile = new LinkIndexFile(BIPathUtils.createRowIndexPath(path, key));
+                ifile = new LinkIndexFile(BIConfigurePathUtils.createRowIndexPath(path, key));
                 basicRelationMap.put(key, ifile);
             }
             return ifile;

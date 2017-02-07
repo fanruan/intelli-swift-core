@@ -9,10 +9,10 @@ import com.fr.bi.stable.file.IndexFile;
 import com.fr.bi.stable.gvi.array.GroupValueIndexArrayReader;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 public class LinkIndexFile implements IndexFile {
 
@@ -43,15 +43,15 @@ public class LinkIndexFile implements IndexFile {
     }
 
     protected VersionFile getCurrentVersionFile() {
-        return BIFileUtils.createFile(this, "currentVersion", VersionFile.class, BIPathUtils.createVersionColumnPath(path));
+        return BIFileUtils.createFile(this, "currentVersion", VersionFile.class, BIConfigurePathUtils.createVersionColumnPath(path));
     }
     
     protected GroupLengthFile getCurrentLengthFile(){
-    	 return BIFileUtils.createFile(this, "lengthFile", GroupLengthFile.class, BIPathUtils.createGroupLengthPath(path));
+    	 return BIFileUtils.createFile(this, "lengthFile", GroupLengthFile.class, BIConfigurePathUtils.createGroupLengthPath(path));
     }
 
     private VersionFile getIndexVersionFile() {
-        return BIFileUtils.createFile(this, "IndexVersion", VersionFile.class, BIPathUtils.createVersionColumnCubePath(path));
+        return BIFileUtils.createFile(this, "IndexVersion", VersionFile.class, BIConfigurePathUtils.createVersionColumnCubePath(path));
     }
     
     @Override
@@ -92,11 +92,11 @@ public class LinkIndexFile implements IndexFile {
     }
 
     protected GroupValueIndexFile createIndexFile() {
-        return BIFileUtils.createFile(this, "index", GroupValueIndexFile.class, BIPathUtils.createSingleFieldIndexPath(path));
+        return BIFileUtils.createFile(this, "index", GroupValueIndexFile.class, BIConfigurePathUtils.createSingleFieldIndexPath(path));
     }
 
     protected GroupValueIndexFile createNullIndexFile() {
-        return BIFileUtils.createFile(this, "nullIndex", GroupValueIndexFile.class, BIPathUtils.createSingleFieldNullIndexPath(path));
+        return BIFileUtils.createFile(this, "nullIndex", GroupValueIndexFile.class, BIConfigurePathUtils.createSingleFieldNullIndexPath(path));
     }
 
     @Override
