@@ -288,6 +288,9 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             }
         }
         if (writeLeft) {
+            if (!rValuesAndGVI.gvi.isAllEmpty()) {
+                rTotalGvi.or(rValuesAndGVI.gvi);
+            }
             while (rValueIterator.hasNext()) {
                 rTotalGvi.or(rValueIterator.next().gvi);
             }
