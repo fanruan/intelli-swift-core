@@ -1,15 +1,12 @@
 package com.fr.bi.etl.analysis.monitor;
 
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.web.service.utils.BIAnalysisTableHelper;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.*;
@@ -20,17 +17,17 @@ import java.util.*;
 public class MonitorUtils {
 
 
-    public static List<TableRelation> getTableRelations(String tableId, long userId){
+    public static List<TableRelation> getTableRelations(SimpleTable st, long userId){
         List<TableRelation> list = new ArrayList<TableRelation>();
-        Set<String> set = new HashSet<String>();
+        Set<SimpleTable> set = new HashSet<SimpleTable>();
         BusinessTable table = null;
         try {
-            table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+            table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(st.getId(), userId);
             ((AnalysisCubeTableSource)table.getTableSource()).getParentAnalysisBaseTableIds(set);
-            for(String id : set) {
-                TableRelation relation = new TableRelation(tableId).setNext(new TableRelation(id));
+            for(SimpleTable simpleTable : set) {
+                TableRelation relation = new TableRelation(st).setNext(new TableRelation(simpleTable));
                 list.add(relation);
-                List<TableRelation> parentRelations = getTableRelations(id, userId);
+                List<TableRelation> parentRelations = getTableRelations(simpleTable, userId);
                 for(TableRelation r : parentRelations) {
                     TableRelation cloneRelation = relation.clone().setNext(r);
                     list.add(cloneRelation);
@@ -45,9 +42,43 @@ public class MonitorUtils {
     public static JSONObject calculateTablePosition(String id, long userId) throws Exception {
         BusinessTable bt = BIModuleUtils.getBusinessTableById(new BITableID(id));
         if(bt != null && bt.getTableSource() != null){
-            return bt.getTableSource().createJSON();
+            TableRelationTree relations = ((AnalysisCubeTableSource)bt.getTableSource()).getAllProcessAnalysisTablesWithRelation();
+            Map<SimpleTable, List<TableRelation>> relationMap = new LinkedHashMap<SimpleTable, List<TableRelation>>();
+            relations.createTableRelations(relationMap);
+            List<BITablePosition> res = new ArrayList<BITablePosition>();
+            Map<Integer, List<BITablePosition>> levelHelper = new HashMap<Integer, List<BITablePosition>>();
+            Map<SimpleTable, BITablePosition> positionHelper = new HashMap<SimpleTable, BITablePosition>();
+            int maxLevel = extraRelation(res, positionHelper, levelHelper, relationMap);
+            PositionCalculator calculator = new PositionCalculator(positionHelper, relationMap,  levelHelper, maxLevel);
+            calculator.sort();
+            JSONObject jo = JSONObject.create();
+            JSONArray jsonArray = getJsonArray(userId, res, relationMap);
+            JSONArray relationArray = getRelationArray(relationMap);
+            jo.put("data", jsonArray);
+            jo.put("relation", relationArray);
+            return jo;
         }
         return JSONObject.create();
+    }
+
+    private static int extraRelation(List<BITablePosition> res, Map<SimpleTable, BITablePosition> positionHelper,  Map<Integer, List<BITablePosition>> levelHelper, Map<SimpleTable, List<TableRelation>> relationMap) {
+        int maxLevel = 0;
+        for(Map.Entry<SimpleTable, List<TableRelation>> entry : relationMap.entrySet()){
+            BITablePosition tp = new BITablePosition(entry.getKey());
+            res.add(tp);
+            positionHelper.put(tp.getTable(), tp);
+            for(TableRelation relation : entry.getValue()){
+                tp.setColumn(Math.max(tp.getColumn(), relation.getDeep()));
+            }
+            List<BITablePosition> helper = levelHelper.get(tp.getColumn());
+            if(helper == null){
+                helper = new ArrayList<BITablePosition>();
+                levelHelper.put(tp.getColumn(), helper);
+            }
+            helper.add(tp);
+            maxLevel = Math.max(maxLevel, tp.getColumn());
+        }
+        return maxLevel;
     }
 
     public static JSONObject calculateTablePosition(long userId) throws Exception {
@@ -79,7 +110,7 @@ public class MonitorUtils {
             BITablePosition tp = new BITablePosition(table);
             res.add(tp);
             positionHelper.put(tp.getTable(), tp);
-            List<TableRelation> relation = getTableRelations(tp.getTable().getId(), userId);
+            List<TableRelation> relation = getTableRelations(tp.getTable(), userId);
             for(TableRelation r : relation){
                 int deep = r.getDeep();
                 maxLevel = Math.max(maxLevel, deep);
@@ -101,7 +132,7 @@ public class MonitorUtils {
             BITablePosition tp = new BITablePosition(new SimpleTable( table.getID().getIdentityValue()));
             res.add(tp);
             positionHelper.put(tp.getTable(), tp);
-            List<TableRelation> relation = getTableRelations(tp.getTable().getId(), userId);
+            List<TableRelation> relation = getTableRelations(tp.getTable(), userId);
             for(TableRelation r : relation){
                 r.checkDelete(totalTables, deletedTables);
                 int deep = r.getDeep();
@@ -130,32 +161,11 @@ public class MonitorUtils {
         return relationArray;
     }
 
-    private static final int ERROR = 0;
-    private static final int GOOD = 1;
-    private static final int WARNING = 2;
-    private static final int GENERATING = 3;
-
-    private static JSONArray getJsonArray(long userId, List<BITablePosition> res, Map<SimpleTable, List<TableRelation>> relationMap) throws JSONException {
+    private static JSONArray getJsonArray(long userId, List<BITablePosition> res, Map<SimpleTable, List<TableRelation>> relationMap) throws Exception {
         JSONArray jsonArray = JSONArray.create();
         for(BITablePosition p : res){
             JSONObject j = p.createJSON(userId);
-            boolean health = BIAnalysisTableHelper.getTableHealthById(p.getTable().getId(), userId);
-            int h = GOOD;
-            List<TableRelation> relations = relationMap.get(p.getTable());
-            if(relations.isEmpty()){
-                h = health ? GOOD : ERROR;
-            } else {
-                for (TableRelation r : relations) {
-                    BusinessTable bt = BIModuleUtils.getBusinessTableById(new BITableID(r.getTop().getId()));
-                    if (bt == null) {
-                        h = health ? WARNING : ERROR;
-                        break;
-                    } else {
-                        h = health ? GOOD : GENERATING;
-                    }
-                }
-            }
-            j.put("h", h);
+            j.put("h", p.getTable().getHealth(relationMap, userId));
             jsonArray.put(j);
         }
         return jsonArray;

@@ -58,6 +58,66 @@ BI.extend(BI.Monitor, {
                 type:"bi.layout",
                 width:BI.Monitor.constants.ROW_GAP
             });
+            var tables = data["data"];
+            var relation = data["relation"]
+            var id_table = {};
+            var monitorTables = [];
+            BI.each(tables, function (idx, item) {
+                var name = BI.isNull(item["name"]) ?  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[item[ETLCst.TYPE]].text : item["name"];
+                var monitorTable = BI.createWidget({
+                    type:"bi.monitor_table",
+                    name:name,
+                    value:item.id,
+                    column:item.r,
+                    row:item.c*2,
+                    status:item.h,
+                    count:item.count,
+                    percent:item.p,
+                    createChild:false
+                })
+                id_table[item["id"]] = monitorTable;
+                monitorTables.push(monitorTable)
+            })
+            var res = [];
+            BI.each(monitorTables, function (idx, item) {
+                res.push({
+                    el : item,
+                    top : item.getY(),
+                    left: item.getX()
+                })
+            })
+            BI.each(relation, function (idx, item) {
+                var pid = item["pid"];
+                var id = item["id"];
+                var end = id_table[id].getTopPointer();
+                var start =  id_table[pid].getBottomPointer();
+                var width = end.x- start.x;
+                var height = end.y - start.y;
+                var x_move = width < 0 ? (0-width) : 0;
+                var y_move = height < 0 ? (0-height) : 0;
+                var line = BI.createWidget({
+                    type:"bi.monitor_line",
+                    status:id_table[id].getStatus(),
+                    generating : id_table[id].isGenerating(),
+                    direction:1,
+                    x:x_move,
+                    y:y_move,
+                    w: width + x_move,
+                    h: height + y_move,
+                    width: Math.abs(width),
+                    height: Math.abs(height),
+                    tables:[id_table[id], id_table[pid]]
+                })
+                id_table[id].pushRelation(line);
+                id_table[pid].pushRelation(line);
+                res.push({
+                    el: line,
+                    top:start.y - y_move,
+                    left:start.x - x_move,
+                    bottom:0,
+                    right:0
+                })
+            })
             BI.createWidget({
                 type:"bi.vtape",
                 cls:"single-table-layer",
@@ -67,6 +127,14 @@ BI.extend(BI.Monitor, {
                     cls:"monitor-content",
                     height:50,
                     items:titleArray
+                },{
+                    type:"bi.center_adapt",
+                    items:[{
+                        type:"bi.absolute",
+                        cls:"monitor-content",
+                        scrollable:true,
+                        items:res
+                    }]
                 }]
             })
         })

@@ -1,6 +1,9 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.etl.analysis.monitor.SimpleTable;
+import com.fr.bi.etl.analysis.monitor.TableRelation;
+import com.fr.bi.etl.analysis.monitor.TableRelationTree;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.List;
@@ -24,5 +27,7 @@ public interface AnalysisCubeTableSource extends CubeTableSource {
 
     void reSetWidgetDetailGetter();
 
-    void getParentAnalysisBaseTableIds(Set<String> set);
+    void getParentAnalysisBaseTableIds(Set<SimpleTable> set);
+
+    TableRelationTree getAllProcessAnalysisTablesWithRelation();
 }

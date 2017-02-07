@@ -4,6 +4,7 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Release;
@@ -16,6 +17,7 @@ import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.FRLogger;
 import com.fr.stable.StringUtils;
 
 import java.io.File;
@@ -66,7 +68,11 @@ public class SingleUserETLTableCubeManager implements Release {
 		if(path != null){
 			File file = new File(BIPathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), path));
 			if(file.exists()) {
-				tq.add(new ETLTableObject(source, path));
+				try {
+					tq.add(new ETLTableObject(source, path));
+				} catch (Exception e){
+					BILoggerFactory.getLogger().error(e.getMessage(), e);
+				}
 			}
 			removeOtherPath(file);
 		} else{

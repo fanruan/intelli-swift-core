@@ -7,6 +7,7 @@ BI.MonitorTable = BI.inherit(BI.Widget, {
             column:0,
             row:2.1,
             name:"table",
+            createChild:true,
             count:1,
             height:BI.Monitor.constants.TABLE_HEIGHT,
             width:BI.Monitor.constants.TABLE_WIDTH
@@ -67,11 +68,13 @@ BI.MonitorTable = BI.inherit(BI.Widget, {
             height:this.getHeight(),
             width:this.getWidth()
         })
-        label.on(BI.Button.EVENT_CHANGE, function(){
-            if(self.getStatus() !== BI.Monitor.constants.ERROR){
-                BI.Monitor.createSingleTableView(o.value)
-            }
-        });
+        if(o.createChild){
+            label.on(BI.Button.EVENT_CHANGE, function(){
+                if(self.getStatus() !== BI.Monitor.constants.ERROR){
+                    BI.Monitor.createSingleTableView(o.value)
+                }
+            });
+        }
         var self = this;
         this.element.hover(function () {
             BI.each(self.relations, function (idx, item) {
@@ -117,6 +120,20 @@ BI.MonitorTable = BI.inherit(BI.Widget, {
         return {
             x: this.getX(),
             y: this.getY() + (this.getHeight()/2)
+        }
+    },
+
+    getTopPointer: function () {
+        return {
+            x: this.getX() + this.getWidth()/2,
+            y: this.getY()
+        }
+    },
+
+    getBottomPointer: function () {
+        return {
+            x: this.getX()+ this.getWidth()/2,
+            y: this.getY() + this.getHeight()
         }
     }
 

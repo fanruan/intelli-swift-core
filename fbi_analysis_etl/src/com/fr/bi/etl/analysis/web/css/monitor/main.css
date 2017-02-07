@@ -1,0 +1,125 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.single-table-layer {
+  background: #f4f4f4;
+}
+.monitor-content {
+  position: relative;
+  background: #f4f4f4;
+  width: 100%;
+  height: 100%;
+}
+.monitor-content .bi-monitor-table {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  z-index: 100;
+}
+.monitor-content .bi-monitor-table-hover {
+  -webkit-box-shadow: 0px 0px 4px 4px #009de3;
+  -moz-box-shadow: 0px 0px 4px 4px #009de3;
+  box-shadow: 0px 0px 4px 4px #009de3;
+}
+.monitor-content .bi-monitor-table-1 {
+  background: #58cc7d;
+}
+.monitor-content .bi-monitor-table-0 {
+  background: #e85050;
+}
+.monitor-content .bi-monitor-table-2 {
+  background: #fbb03b;
+}
+.monitor-content .bi-monitor-table-3 {
+  background: #9fd3ae;
+}
+.monitor-content .bi-monitor-svg-line {
+  z-index: 99;
+}
+.monitor-content .bi-monitor-svg-line svg path {
+  stroke-dasharray: 1000;
+  stroke-width: 2px;
+  stroke-opacity: 0.5;
+}
+.monitor-content .bi-monitor-svg-line-1 svg path {
+  stroke: #58cc7d;
+}
+.monitor-content .bi-monitor-svg-line-0 svg path {
+  stroke: #e85050;
+}
+.monitor-content .bi-monitor-svg-line-2 svg path {
+  stroke: #fbb03b;
+}
+.monitor-content .bi-monitor-svg-line-3 svg path {
+  stroke: #9fd3ae;
+}
+.monitor-content .bi-monitor-svg-line-hover svg path {
+  stroke-width: 2;
+  stroke-opacity: 1;
+  stroke: #009de3;
+}
+.bi-monitor-svg-line svg path {
+  -webkit-animation: svg-change 2s ease;
+  -moz-animation: svg-change 2s ease;
+  -o-animation: svg-change 2s ease;
+  animation: svg-change 2s ease;
+}
+@keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } @-webkit-keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } @-moz-keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } @-o-keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } .useless-css-name-abcdefg-123456-just-comment {
+  transition: all 0.5s;
+}
+.bi-monitor-svg-line-generate svg path {
+  -webkit-animation: svg-change 2s linear infinite;
+  -moz-animation: svg-change 2s linear infinite;
+  -o-animation: svg-change 2s linear infinite;
+  animation: svg-change 2s linear infinite;
+}
+@keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } @-webkit-keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } @-moz-keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } @-o-keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } .useless-css-name-abcdefg-123456-just-comment {
+  transition: all 0.5s;
+}
+.bi-monitor-svg-line-hover svg path {
+  -webkit-animation: svg-change 2s linear infinite;
+  -moz-animation: svg-change 2s linear infinite;
+  -o-animation: svg-change 2s linear infinite;
+  animation: svg-change 2s linear infinite;
+}
+@keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } @-webkit-keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } @-moz-keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } @-o-keyframes svg-change {
+  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+}
+**/ } .useless-css-name-abcdefg-123456-just-comment {
+  transition: all 0.5s;
+}
