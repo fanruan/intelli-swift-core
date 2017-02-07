@@ -150,9 +150,6 @@ public class CommonResourceHelper {
                 "com/fr/bi/web/js/modules/copylinks/copylink.item.js",
                 "com/fr/bi/web/js/modules/copylinks/copylink.iconbutton.js",
 
-                //组件加载超时
-                "com/fr/bi/web/js/modules/timeouttoast/widget.timeouttoast.js",
-
                 /**
                  * 切片
                 */

@@ -181,7 +181,8 @@ public class FsResouceHelper {
                 "com/fr/bi/web/js/base/module/layer/layer.searcher.js",
 
                 "com/fr/bi/web/js/base/module/reqloading/loading.request.js",
-
+                //加载超时
+                "com/fr/bi/web/js/base/module/timeouttoast/widget.timeouttoast.js",
 
                 /**公式编辑器*/
                 "com/fr/bi/web/js/base/module/formula/formulaeditor.js",

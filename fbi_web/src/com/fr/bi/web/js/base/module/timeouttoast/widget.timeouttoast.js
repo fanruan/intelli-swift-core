@@ -12,7 +12,7 @@ BI.TimeoutToast = BI.inherit(BI.Tip, {
     _init: function () {
         BI.TimeoutToast.superclass._init.apply(this, arguments);
         var self = this;
-        this.requests = {};
+        this.requests = [];
         this.toast = BI.createWidget({
             type: "bi.vertical_adapt",
             element: this.element,
@@ -27,14 +27,7 @@ BI.TimeoutToast = BI.inherit(BI.Tip, {
                 text: BI.i18nText("BI-Cancel"),
                 title: BI.i18nText("BI-Cancel"),
                 handler: function () {
-                    self.toast.element.slideUp(500);
-                    BI.each(self.requests, function (i, reqArgs) {
-                        var callbacks = reqArgs.callbacks;
-                        if (BI.isNotNull(callbacks) && BI.isFunction(callbacks.done)) {
-                            callbacks.done();
-                        }
-                    });
-                    self.requests = {};
+                    self.cancelAllRequests();
                 }
             }, {
                 type: "bi.text_button",
@@ -76,40 +69,49 @@ BI.TimeoutToast = BI.inherit(BI.Tip, {
     },
 
     _retryAll: function () {
+        var self = this;
         var clonedRequests = BI.deepClone(this.requests);
-        this.requests = {};
-        BI.each(clonedRequests, function (i, reqArgs) {
-            BI.Utils.getWidgetDataByID(reqArgs.wid, reqArgs.callbacks, reqArgs.options);
+        this.requests = [];
+        BI.each(clonedRequests, function (i, options) {
+            BI.isFunction(self.callback) && self.callback(options);
         });
     },
 
-    addReq: function (id, wid, callbacks, options) {
-        var self = this;
-        if (BI.size(this.requests) === 0) {
-            setTimeout(function () {
-                if (BI.isNotNull(self.requests[id])) {
-                    self.toast.element.slideDown(500);
-                }
-            }, 5 * 60 * 1000);  //5 min
-        }
-        this.requests[id] = {
-            wid: wid,
-            callbacks: callbacks,
-            options: options
-        };
+    cancelAllRequests: function () {
+        this.toast.element.slideUp(500);
+        BI.each(this.requests, function (i, reqArgs) {
+            if (BI.isNotNull(reqArgs) && BI.isFunction(reqArgs.complete)) {
+                reqArgs.complete();
+            }
+        });
+        this.requests = [];
     },
 
-    removeReq: function (id) {
-        if (BI.isNotNull(this.requests[id])) {
-            delete this.requests[id];
+    setCallback: function (callback) {
+        this.callback = callback;
+    },
+
+    addReq: function (options) {
+        var self = this;
+        if (this.requests.length === 0) {
+            setTimeout(function () {
+                if (self.requests.contains(options)) {
+                    self.toast.element.slideDown(500);
+                }
+            }, 5 * 1000);  //5 min
         }
-        if (BI.size(this.requests) === 0) {
+        this.requests.push(options);
+    },
+
+    removeReq: function (options) {
+        BI.remove(this.requests, options);
+        if (this.requests.length === 0) {
             this.toast.element.slideUp(500);
         }
     },
 
-    getReq: function (id) {
-        return this.requests[id];
+    hasReq: function (options) {
+        return this.requests.contains(options);
     }
 });
 $.shortcut("bi.timeout_toast", BI.TimeoutToast);

@@ -64,6 +64,29 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
 
     _cardCreator: function (v) {
         var self = this;
+        var cancel = BI.createWidget({
+            type: "bi.button",
+            text: BI.i18nText("BI-Cancel"),
+            title: BI.i18nText("BI-Cancel"),
+            level: "ignore",
+            height: 28,
+            width: 90,
+            handler: function(){
+                BI.Maskers.hide(BI.RequstLoading.MASK_ID);
+            }
+        });
+        var retry = BI.createWidget({
+            type: "bi.button",
+            text: BI.i18nText("BI-Retry"),
+            title: BI.i18nText("BI-Retry"),
+            level: "common",
+            height: 28,
+            width: 90,
+            handler: function(){
+                self.paneTab.setSelect(BI.RequstLoading.LOADING);
+                self.callback();
+            }
+        });
         switch (v) {
             case BI.RequstLoading.LOADING:
                 return BI.createWidget({
@@ -86,30 +109,39 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                     height: 200,
                     vgap: 10
                 });
+            case BI.RequstLoading.LOADING_TIMEOUT:
+                return BI.createWidget({
+                    type: "bi.vertical",
+                    items: [{
+                        type: "bi.center_adapt",
+                        cls: "loading-bar-icon",
+                        items: [{
+                            type: "bi.icon",
+                            width: 208,
+                            height: 15
+                        }]
+                    }, {
+                        type: "bi.label",
+                        cls: "loading-comment",
+                        text: BI.i18nText("BI-Loading"),
+                        height: 30
+                    }, {
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Request_Time_Out_Toast_Tip"),
+                        cls: "load-timeout-warning"
+                    }, {
+                        type: "bi.left_right_vertical_adapt",
+                        items: {
+                            left: [cancel],
+                            right: [retry]
+                        },
+                        height: 30,
+                        llgap: 100,
+                        rrgap: 100
+                    }],
+                    vgap: 10
+                });
             case BI.RequstLoading.ERROR:
-                var cancel = BI.createWidget({
-                    type: "bi.button",
-                    text: BI.i18nText("BI-Cancel"),
-                    title: BI.i18nText("BI-Cancel"),
-                    level: "ignore",
-                    height: 28,
-                    width: 90,
-                    handler: function(){
-                        BI.Maskers.hide(BI.RequstLoading.MASK_ID);
-                    }
-                });
-                var retry = BI.createWidget({
-                    type: "bi.button",
-                    text: BI.i18nText("BI-Retry"),
-                    title: BI.i18nText("BI-Retry"),
-                    level: "common",
-                    height: 28,
-                    width: 90,
-                    handler: function(){
-                        self.paneTab.setSelect(BI.RequstLoading.LOADING);
-                        self.callback();
-                    }
-                });
                 return BI.createWidget({
                     type: "bi.vertical",
                     items: [{
@@ -134,16 +166,18 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                         llgap: 100,
                         rrgap: 100
                     }],
-                    width: 208,
-                    height: 200,
                     vgap: 20
                 });
         }
     },
 
     showLoading: function () {
+        var self = this;
         BI.Maskers.show(BI.RequstLoading.MASK_ID);
         this.paneTab.setSelect(BI.RequstLoading.LOADING);
+        setTimeout(function() {
+
+        }, 5 * 60 * 1000); // 5 min
     },
 
     showError: function () {
@@ -158,6 +192,7 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
 BI.extend(BI.RequstLoading, {
     MASK_ID: "___request__loading___",
     LOADING: 1,
-    ERROR: 2
+    LOADING_TIMEOUT: 2,
+    ERROR: 3
 });
 $.shortcut("bi.request_loading", BI.RequstLoading);

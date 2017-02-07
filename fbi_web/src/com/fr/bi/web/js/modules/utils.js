@@ -3369,7 +3369,7 @@
         },
 
         getWidgetDataByID: (function () {
-            var cache = {}, timeoutToast;
+            var cache = {};
             return function (wid, callbacks, options) {
                 options || (options = {});
                 var key = BI.UUID();
@@ -3377,16 +3377,7 @@
                     key = wid;
                 }
                 cache[key] = callbacks;
-                if (BI.isNull(timeoutToast)) {
-                    timeoutToast = BI.createWidget({
-                        type: "bi.timeout_toast"
-                    });
-                }
-                timeoutToast.addReq(key, wid, callbacks, options);
                 Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
-                    if (BI.isNull(timeoutToast.getReq(key))) {
-                        return;
-                    }
                     if (cache[key] === callbacks) {
                         callbacks.success(data);
                         delete cache[key];
@@ -3394,10 +3385,7 @@
                         callbacks.error && callbacks.error(data);
                     }
                 }, function () {
-                    if (BI.isNotNull(timeoutToast.getReq(key))) {
-                        callbacks.done && callbacks.done();
-                        timeoutToast.removeReq(key);
-                    }
+                    callbacks.done && callbacks.done();
                 });
             }
         })(),

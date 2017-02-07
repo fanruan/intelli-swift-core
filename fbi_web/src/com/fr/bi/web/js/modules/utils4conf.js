@@ -891,7 +891,7 @@ BI.extend(BI.Utils, {
     },
 
     getTablesDetailInfoByTables4Refresh: function (tables, callback, complete) {
-        Data.Req.reqTablesDetailInfoByTables4Refresh(tables, function (res) {
+        return Data.Req.reqTablesDetailInfoByTables4Refresh(tables, function (res) {
             callback(res);
         }, complete);
     },
