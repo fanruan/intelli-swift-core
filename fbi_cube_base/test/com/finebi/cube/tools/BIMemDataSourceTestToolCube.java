@@ -698,11 +698,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     public String getTableName() {
         return "MemoryTable";
     }
-
-    @Override
-    public String getTempName() {
-        return null;
-    }
+    
 
     @Override
     public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {
