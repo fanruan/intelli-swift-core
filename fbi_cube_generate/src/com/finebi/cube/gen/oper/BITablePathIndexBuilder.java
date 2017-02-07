@@ -145,7 +145,6 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
-                throw new RuntimeException();
             } catch (Exception e) {
                 try {
                     BILoggerFactory.getLogger(BITablePathIndexBuilder.class).error(BIStringUtils.append("TablePathIndex Error", getTablePathInfo()), e);

@@ -1,6 +1,5 @@
 package com.finebi.cube.common.log;
 
-import com.fr.bi.stable.constant.BILogConstant;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.Loader;
 import org.slf4j.LoggerFactory;
@@ -9,9 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -111,22 +108,6 @@ public class BILoggerFactory {
     }
 
     public static void clearLoggerCacheValue(String cacheTag) {
-        Map exceptionMap = BILoggerFactory.getSpecificCacheMap(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
-        Iterator<Map.Entry<String, Object>> it = exceptionMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = it.next();
-            Map<String, Vector> subExceptionMap = (Map<String, Vector>) entry.getValue();
-            Iterator<Map.Entry<String, Vector>> subIt = subExceptionMap.entrySet().iterator();
-            while (subIt.hasNext()) {
-                Map.Entry subEntry = subIt.next();
-                Vector exceptionList = (Vector) subEntry.getValue();
-                if (exceptionList != null) {
-                    for (int i = 0; i < exceptionList.size(); i++)
-                        System.out.println(exceptionList.get(i).toString());
-                }
-            }
-        }
-
         if (loggerCacheMap.containsKey(cacheTag)) {
             loggerCacheMap.get(cacheTag).clear();
             loggerCacheMap.remove(cacheTag);
