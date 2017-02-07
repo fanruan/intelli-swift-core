@@ -73,7 +73,8 @@ BI.extend(BI.Monitor, {
                     status:item.h,
                     count:item.count,
                     percent:item.p,
-                    createChild:false
+                    createChild:false,
+                    t:item.t
                 })
                 id_table[item["id"]] = monitorTable;
                 monitorTables.push(monitorTable)
@@ -226,7 +227,8 @@ BI.extend(BI.Monitor, {
                     row:item.r,
                     status:item.h,
                     count:item.count,
-                    percent:item.p
+                    percent:item.p,
+                    t:item.t
                 })
                 id_table[item["id"]] = monitorTable;
                 monitorTables.push(monitorTable)

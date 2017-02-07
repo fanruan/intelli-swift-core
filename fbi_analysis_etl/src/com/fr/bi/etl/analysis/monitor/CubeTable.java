@@ -34,6 +34,7 @@ public class CubeTable extends SimpleTable {
         int v = h == GOOD ? 1:0;
         jo.put("p", v);
         jo.put("count", v);
+        jo.put("t",1);
     }
 
     private int checkStatus (long userId) {
