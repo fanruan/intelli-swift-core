@@ -1562,6 +1562,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.tooltip.shared = true;
+            configs.dTools.enabled = true;
             var formatterArray = [];
             BI.backEach(items, function (idx, item) {
                 if (BI.has(item, "settings")) {
@@ -5884,7 +5885,7 @@ Data.Utils = {
                         }
                     },
                     "dTools": {
-                        "enabled": 'true',
+                        "enabled": false,
                         "style": {
                             "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                             "color": "#1a1a1a",
