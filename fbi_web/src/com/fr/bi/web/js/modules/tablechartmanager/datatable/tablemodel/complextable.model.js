@@ -328,17 +328,24 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
     _createComplexTableHeader: function () {
         this._createCrossTableHeader();
         //补齐header的长度
-        var count = 0;
-        var length = this._getLargestLengthOfRowRegions();
-        var lastDimHeader = this.header[this.dimIds.length - 1];
-        while (count < length - this.dimIds.length) {
-            count++;
+        var count = 0,
+            rowLength = this._getLargestLengthOfRowRegions(),
+            colLength = this._getLargestLengthOfColRegions();
+        var lastDimHeader = this.header[this.dimIds.length - 1],
+            lastCrossDimHeader = this.crossHeader[this.crossDimIds.length - 1];
+        while (count < rowLength - this.dimIds.length) {
             // this.header.splice(this.dimIds.length + count - 1, 0, {
             //     type: "bi.page_table_cell",
             //     tag: BI.UUID(),
             //     styles: BI.SummaryTableHelper.getHeaderStyles(this.getThemeColor(), this.getTableStyle())
             // });
-            this.header.splice(this.dimIds.length - 1 + count, 0, lastDimHeader);
+            this.header.splice(this.dimIds.length + count, 0, lastDimHeader);
+            count++;
+        }
+        count = 0;
+        while (count < colLength - this.crossDimIds.length) {
+            count++;
+            this.crossHeader.splice(this.crossDimIds.length + count, 0, lastCrossDimHeader);
         }
     },
 
