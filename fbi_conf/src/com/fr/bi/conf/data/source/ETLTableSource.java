@@ -80,9 +80,9 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
             try {
                 index = op.writeSimpleIndex(travel, parents, loader);
             } catch (Exception e) {
-                BILoggerFactory.getLogger(this.getClass()).error("ETLTableSource Read Error. The error table info is: " + BILogHelper.logCubeLogTableSourceInfo(this.getSourceID()));
-                BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), op.getClass().toString() + "The error ETL table info is: " + BILogHelper.logCubeLogTableSourceInfo(this.getSourceID()) + " The error Parent Info is: " + getOperatorParentTableInfo(parents), e.getMessage(), e);
-                BILogHelper.cacheCubeLogException(this.getSourceID(), exceptionInfo);
+                BILoggerFactory.getLogger(this.getClass()).error("ETLTableSource Read Error. The error table info is: " + BILogHelper.logCubeLogTableSourceInfo(this.getSourceID()) + "\n the parent table info is: " + getOperatorParentTableInfo(parents));
+                BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), op.getClass().toString() + "The error ETL table info is: " + BILogHelper.logCubeLogTableSourceInfo(this.getSourceID()) + "\n The error Parent Info is: " + getOperatorParentTableInfo(parents), e.getMessage(), e);
+                BILogHelper.cacheCubeLogTableException(this.getSourceID(), exceptionInfo);
                 throw new RuntimeException(e);
             }
 
@@ -109,11 +109,21 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
         return set;
     }
 
+    private String getTempName() {
+        return tempName;
+    }
+
     private String getOperatorParentTableInfo(List<? extends CubeTableSource> parents) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < parents.size(); i++) {
-            sb.append("*************Parent Table " + i + "*************");
-            sb.append(BILogHelper.logCubeLogTableSourceInfo(parents.get(i).getSourceID()));
+            int j = i + 1;
+            sb.append("\n");
+            sb.append("*******************Parent Table " + j + "*******************");
+            if (parents.get(i) instanceof ETLTableSource) {
+                sb.append(" parent etl table name is: " + ((ETLTableSource) parents.get(i)).getTempName());
+            } else {
+                sb.append("parent table name is:" + parents.get(i).getTableName());
+            }
         }
         return sb.toString();
     }

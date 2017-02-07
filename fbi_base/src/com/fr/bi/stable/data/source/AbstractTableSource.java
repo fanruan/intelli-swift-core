@@ -44,7 +44,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     private transient BICore core;
 
     //用来存中间表产生的名字
-    private String tempName;
+    protected String tempName;
 
     protected AbstractTableSource() {
 
@@ -151,6 +151,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         }
 
     }
+
     public JSONObject createPreviewJSONFromCubeTableIndex(ArrayList<String> fields, ICubeTableService tableIndex) throws Exception {
         JSONArray allFieldNamesJo = new JSONArray();
         JSONArray fieldValues = new JSONArray();
@@ -160,15 +161,15 @@ public abstract class AbstractTableSource implements CubeTableSource {
         map.putAll(tableIndex.getColumns());
         ArrayList<ICubeFieldSource> fieldsCube = new ArrayList<ICubeFieldSource>();
 //        将内存中的cube的fields按照前端的fields排序，需要考虑数据库字段增加删除的情况
-        for(String fieldName : fields){
+        for (String fieldName : fields) {
             IndexKey key = new IndexKey(fieldName);
-            if(map.containsKey(key)){
+            if (map.containsKey(key)) {
                 fieldsCube.add(map.get(key));
                 map.remove(key);
             }
         }
-        if(!map.isEmpty()){
-            for (ICubeFieldSource field : map.values()){
+        if (!map.isEmpty()) {
+            for (ICubeFieldSource field : map.values()) {
                 fieldsCube.add(field);
             }
         }
@@ -353,7 +354,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            BILoggerFactory.getLogger().info(e.getMessage(),e);
+            BILoggerFactory.getLogger().info(e.getMessage(), e);
         }
         return null;
     }
@@ -442,7 +443,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CubeTableSource that = (CubeTableSource) o;
-        return ComparatorUtils.equals(that.getSourceID(),this.getSourceID());
+        return ComparatorUtils.equals(that.getSourceID(), this.getSourceID());
 
     }
 

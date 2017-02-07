@@ -115,12 +115,16 @@ public class BILoggerFactory {
         Iterator<Map.Entry<String, Object>> it = exceptionMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = it.next();
-            Vector exceptionList = (Vector) entry.getValue();
-            if (exceptionList != null) {
-                for (int i = 0; i < exceptionList.size(); i++)
-                    System.out.println(exceptionList.get(i).toString());
+            Map<String, Vector> subExceptionMap = (Map<String, Vector>) entry.getValue();
+            Iterator<Map.Entry<String, Vector>> subIt = subExceptionMap.entrySet().iterator();
+            while (subIt.hasNext()) {
+                Map.Entry subEntry = subIt.next();
+                Vector exceptionList = (Vector) subEntry.getValue();
+                if (exceptionList != null) {
+                    for (int i = 0; i < exceptionList.size(); i++)
+                        System.out.println(exceptionList.get(i).toString());
+                }
             }
-
         }
 
         if (loggerCacheMap.containsKey(cacheTag)) {
