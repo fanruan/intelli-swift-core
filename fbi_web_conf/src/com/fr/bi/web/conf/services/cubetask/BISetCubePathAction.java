@@ -35,7 +35,7 @@ public class BISetCubePathAction extends AbstractBIConfigureAction {
         if (StringUtils.isEmpty(fileName)) {
             return;
         }
-        String oPath = BIConfigureManagerCenter.getCubeConfManager().getCubePath();
+        String oPath = BIConfigurePathUtils.createBasePath();
         String path = BIConfigurePathUtils.checkCubePath(fileName);
         if (StringUtils.isNotEmpty(path)) {
             BIConfigureManagerCenter.getCubeConfManager().saveCubePath(fileName);
