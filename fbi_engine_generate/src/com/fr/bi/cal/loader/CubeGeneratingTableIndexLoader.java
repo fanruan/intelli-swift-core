@@ -16,8 +16,8 @@ import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
 
@@ -110,12 +110,12 @@ public class CubeGeneratingTableIndexLoader extends CubeAbstractLoader {
             public ICubeTableService createNewObject() {
                 ICubeTableService ti = null;
                 try {
-                    String path = BIPathUtils.createTableTempPath(core.getID().getIdentityValue(), biUser.getUserId());
+                    String path = BIConfigurePathUtils.createTableTempPath(core.getID().getIdentityValue(), biUser.getUserId());
                     TableCubeFile f = new TableCubeFile(path);
                     if (f.checkCubeVersion()) {
                         ti = new BITableIndex(path, getNIOReaderManager());
                     } else {
-                        path = BIPathUtils.createTablePath(core.getID().getIdentityValue(), biUser.getUserId());
+                        path = BIConfigurePathUtils.createTablePath(core.getID().getIdentityValue(), biUser.getUserId());
                         ti = new BITableIndex(path, getNIOReaderManager());
                     }
                 } catch (Exception e) {

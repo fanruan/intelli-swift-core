@@ -9,7 +9,7 @@ import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.io.sortlist.SortNIOReadDoubleList;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.util.Comparator;
 
@@ -21,12 +21,12 @@ public class DoubleColumnFile extends AbstractSingleColumnFile<Double> {
 
     @Override
     protected CubeDoubleFile createDetailFile() {
-        return BIFileUtils.createFile(this, getDetailFieldName(), CubeDoubleFile.class, BIPathUtils.createSingleFieldDetailPath(path));
+        return BIFileUtils.createFile(this, getDetailFieldName(), CubeDoubleFile.class, BIConfigurePathUtils.createSingleFieldDetailPath(path));
     }
 
     @Override
     protected CubeDoubleFile createGroupFile() {
-        return BIFileUtils.createFile(this, getGroupFieldName(), CubeDoubleFile.class, BIPathUtils.createSingleFieldGroupPath(path));
+        return BIFileUtils.createFile(this, getGroupFieldName(), CubeDoubleFile.class, BIConfigurePathUtils.createSingleFieldGroupPath(path));
     }
 
     @SuppressWarnings("unchecked")

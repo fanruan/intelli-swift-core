@@ -9,7 +9,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +31,8 @@ public class LinkFirstIndexLoaderManager {
         biUser = new BIUser(userId);
         this.relation = relation;
         String tableDirectory = relation.getPrimaryTable().fetchObjectCore().getIDValue();
-        oldCube = new TableCubeFile(BIPathUtils.createTablePath(tableDirectory, userId));
-        currentCube = new TableCubeFile(BIPathUtils.createTableTempPath(tableDirectory, userId));
+        oldCube = new TableCubeFile(BIConfigurePathUtils.createTablePath(tableDirectory, userId));
+        currentCube = new TableCubeFile(BIConfigurePathUtils.createTableTempPath(tableDirectory, userId));
     }
 
     /**

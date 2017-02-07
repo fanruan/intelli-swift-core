@@ -6,7 +6,7 @@ package com.fr.bi.etl.analysis.tableobj;
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 /**
  * @author Daniel
@@ -31,7 +31,7 @@ public class UserETLIndexGenerator extends IndexGenerator {
 	
     @Override
 	protected void createTableCube() {
-        cube = new TableCubeFile(BIPathUtils.createUserETLTablePath(source.fetchObjectCore().getID().getIdentityValue(), pathSuffix));
+        cube = new TableCubeFile(BIConfigurePathUtils.createUserETLTablePath(source.fetchObjectCore().getID().getIdentityValue(), pathSuffix));
     }
 
 }
