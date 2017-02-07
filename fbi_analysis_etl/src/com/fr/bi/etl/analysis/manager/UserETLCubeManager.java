@@ -13,7 +13,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.file.XMLFileManager;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
@@ -60,9 +60,9 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     private void removeUseLessPath() {
         Set<String> paths = new HashSet<String>();
         for(Entry<String, String> entry : cubePathMap.entrySet()) {
-            paths.add(BIPathUtils.createUserETLTablePath(entry.getKey(), entry.getValue()));
+            paths.add(BIConfigurePathUtils.createUserETLTablePath(entry.getKey(), entry.getValue()));
         }
-        File root = new File(BIPathUtils.createUserETLBasePath());
+        File root = new File(BIConfigurePathUtils.createUserETLBasePath());
         removeFiles(root, paths);
     }
 
