@@ -2542,6 +2542,13 @@
                 if (BI.isNull(groupValue) && BI.isNull(groupType)) {
                     //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
                     var sIndex = value.indexOf("-");
+                    if(sIndex === -1){  //空分组
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                            filter_value: {},
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        }
+                    }
                     var min = value.slice(0, sIndex), max = value.slice(sIndex + 1);
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
@@ -2569,11 +2576,19 @@
                         };
                         min = newMin;
                     }
-                    return {
-                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                        filter_value: groupMap[value],
-                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
-                    };
+                    if(BI.isNull(groupMap[value])){
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                            filter_value: {},
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        }
+                    }else{
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                            filter_value: groupMap[value],
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        };
+                    }
                 }
                 if (groupType === BICst.GROUP.ID_GROUP) {
                     if(BI.isNull(value) || BI.isEmptyString(value)){
@@ -3265,6 +3280,7 @@
                         var v = parseComplexDate(wValue);
                         if (BI.isNotNull(v)) {
                             date = new Date(v);
+                            date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
                         }
                     }
                     break;
