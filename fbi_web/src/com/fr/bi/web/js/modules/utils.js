@@ -628,11 +628,12 @@
                 });
                 obj.dimensions = dimensions;
                 obj.view = view;
+                var bounds = widget.bounds || {};
                 obj.bounds = {
-                    height: widget.bounds.height,
-                    width: widget.bounds.width,
-                    left: widget.bounds.left,
-                    top: widget.bounds.top
+                    height: bounds.height,
+                    width: bounds.width,
+                    left: bounds.left,
+                    top: bounds.top
                 };
                 obj.settings = widget.settings;
                 obj.value = widget.value;

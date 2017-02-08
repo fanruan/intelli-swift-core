@@ -476,7 +476,7 @@ BI.Fit = BI.inherit(BI.Widget, {
         var widgets = Data.SharingPool.cat("widgets");
         this._checkWidgetsExist();
         BI.each(widgets, function (id, widget) {
-            var bounds = widget.bounds;
+            var bounds = widget.bounds || {};
             var item = self._createItem(id, bounds);
             result.push({
                 el: item,
