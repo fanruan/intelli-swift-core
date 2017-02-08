@@ -29,7 +29,7 @@ BI.Calendar = BI.inherit(BI.Widget, {
         De.setFullYear(Y, M, D);
         log.ymd = [De.getFullYear(), De.getMonth(), De.getDate()];
 
-        var MD = BI.clone(Date._MD);
+        var MD = Date._MD.slice(0);
         MD[1] = Date.isLeap(log.ymd[0]) ? 29 : 28;
 
         De.setFullYear(log.ymd[0], log.ymd[1], 1);
