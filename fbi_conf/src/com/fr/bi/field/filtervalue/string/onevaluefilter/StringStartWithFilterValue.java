@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
@@ -31,10 +32,9 @@ public class StringStartWithFilterValue extends StringOneValueFilterValue {
         if (value == null || value.isEmpty()) {
             return ti.getAllShowIndex();
         }
-
         final ICubeColumnIndexReader sgm = dimension.createNoneSortNoneGroupValueMapGetter(target, loader);
-        final int start = ArrayLookupHelper.getStartIndex4StartWith(sgm, value, dimension.getComparator());
-        final int end = ArrayLookupHelper.getEndIndex4StartWith(sgm, value, dimension.getComparator()) + 1;
+        final int start = ArrayLookupHelper.getStartIndex4StartWith(sgm, value, BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC);
+        final int end = ArrayLookupHelper.getEndIndex4StartWith(sgm, value, BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC) + 1;
         if (start == -1) {
             return GVIFactory.createAllEmptyIndexGVI();
         }
