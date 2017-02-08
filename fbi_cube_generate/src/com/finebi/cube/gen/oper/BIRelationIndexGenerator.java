@@ -1,10 +1,12 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.adapter.BICubeTableAdapter;
+import com.finebi.cube.common.log.BILogExceptionInfo;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
@@ -16,6 +18,7 @@ import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -33,6 +36,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.collections.array.IntArray;
 import com.google.common.base.Stopwatch;
@@ -73,17 +77,24 @@ public class BIRelationIndexGenerator extends BIProcessor {
         biLogManager.logRelationStart(UserControl.getInstance().getSuperManagerID());
         Stopwatch stopwatch = Stopwatch.createStarted();
         RelationColumnKey relationColumnKeyInfo = null;
-        logger.info(BIStringUtils.append("\n    ", logRelation(), "start building relation index"));
+        logger.info(BIStringUtils.append("\n start building relation index", logRelation()));
+        String relationID = StringUtils.EMPTY;
+        try {
+            relationID = BuildLogHelper.calculateRelationID(relation);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BIRelationIndexGenerator.class).error("Calculate Relation ID Error, the Relation info is: " + logRelation());
+        }
+        BILogHelper.cacheCubeLogRelationNormalInfo(relationID, BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_START, System.currentTimeMillis());
         try {
             relationColumnKeyInfo = getRelationColumnKeyInfo();
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BIRelationIndexGenerator.class).error(e.getMessage(), e);
         }
         try {
             buildRelationIndex();
             biLogManager.infoRelation(relationColumnKeyInfo, stopwatch.elapsed(TimeUnit.SECONDS), UserControl.getInstance().getSuperManagerID());
-            logger.info(BIStringUtils.append("\n    ", logRelation(), "finish building relation index ,elapse {} second"), stopwatch.elapsed(TimeUnit.SECONDS));
-
+            logger.info(BIStringUtils.append("\n finish building relation index ,elapse {} second", logRelation()), stopwatch.elapsed(TimeUnit.SECONDS));
+            BILogHelper.cacheCubeLogRelationNormalInfo(relationID, BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_END, System.currentTimeMillis());
             return null;
         } catch (Exception e) {
             try {
@@ -91,7 +102,9 @@ public class BIRelationIndexGenerator extends BIProcessor {
             } catch (Exception e1) {
                 BILoggerFactory.getLogger().error(e1.getMessage(), e1);
             }
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "BuildRelationIndex The error relation info is: " + logRelation(), e.getMessage(), e);
+            BILogHelper.cacheCubeLogRelationException(relationID, exceptionInfo);
+            BILoggerFactory.getLogger(BIRelationIndexGenerator.class).error("BuildRelationIndex The error relation info is: " + logRelation(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
@@ -99,11 +112,11 @@ public class BIRelationIndexGenerator extends BIProcessor {
     private String logRelation() {
         try {
             return BIStringUtils.append(
-                    " Relation ID:" + BuildLogHelper.calculateRelationID(relation),
-                    " Primary table:", relation.getPrimaryTable().getSourceID(),
-                    " Primary field:", relation.getPrimaryField().getColumnName(),
-                    " Foreign table:", relation.getForeignTable().getSourceID(),
-                    " Foreign field:", relation.getForeignField().getColumnName()
+                    "\n Relation ID:" + BuildLogHelper.calculateRelationID(relation),
+                    "\n Primary table info:", BILogHelper.logCubeLogTableSourceInfo(relation.getPrimaryTable().getSourceID()),
+                    "\n Primary field:", relation.getPrimaryField().getColumnName(),
+                    "\n Foreign table info:", BILogHelper.logCubeLogTableSourceInfo(relation.getForeignTable().getSourceID()),
+                    "\n Foreign field:", relation.getForeignField().getColumnName()
             );
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -289,7 +302,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 }
 
                 if (CubeConstant.LOG_SEPERATOR_ROW != 0 && index % CubeConstant.LOG_SEPERATOR_ROW == 0) {
-                    logger.info(BIStringUtils.append("\n    ", logRelation(), "read ", String.valueOf(index), " rows field value and time elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
+                    logger.info(BIStringUtils.append(logRelation(), "read ", String.valueOf(index), " rows field value and time elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
                 }
             }
             while (foreignIndex < foreignGroupSize - 1) {

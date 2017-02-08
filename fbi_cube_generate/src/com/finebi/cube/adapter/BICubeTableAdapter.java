@@ -360,7 +360,7 @@ public class BICubeTableAdapter implements ICubeTableService {
         } catch (BIKeyAbsentException e) {
             BILoggerFactory.getLogger(BICubeTableAdapter.class).error("Get Column Key error, the error Column is: " + biKey.getKey() + " the error table is: " + BILogHelper.logCubeLogTableSourceInfo(this.tableKey.getSourceID()));
             BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "Get Column Key From Table: " + BILogHelper.logCubeLogTableSourceInfo(this.tableKey.getSourceID()) + " The Absent Column is: " + biKey.getKey(), e.getMessage(), e);
-            BILogHelper.cacheCubeLogException(this.tableKey.getSourceID(), exceptionInfo);
+            BILogHelper.cacheCubeLogTableException(this.tableKey.getSourceID(), exceptionInfo);
             throw BINonValueUtils.beyondControl(e);
         }
     }
