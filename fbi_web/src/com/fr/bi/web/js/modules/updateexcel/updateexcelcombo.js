@@ -2,6 +2,11 @@
  * Created by zcf on 2017/1/6.
  */
 BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
+    _constant: {
+        FILE_USING_ERROR: 1,
+        FILE_UPDATE_ERROR: 2
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.UpdateExcelCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-update-excel-combo",
@@ -13,7 +18,7 @@ BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
     _init: function () {
         BI.UpdateExcelCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.state = 4;
+        this.state = 10;
 
         this.trigger = BI.createWidget({
             type: "bi.update_excel_trigger",
@@ -71,7 +76,7 @@ BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
                 self.trigger.setState(true);
                 BI.Utils.broadcastAllWidgets2Refresh(true);
             } else {
-                self.trigger.setText(BI.i18nText("BI-Excel_Update_Fail") + "(e:" + self.state + ")");
+                self.trigger.setText(BI.i18nText("BI-Excel_Update_Fail"));
                 self.trigger.setState(false);//todo
             }
         })

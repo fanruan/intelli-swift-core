@@ -25,10 +25,8 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
     public static final String CMD = "update_excel_table_cube_by_table_id";
     private static String DATA_PATH = FRContext.getCurrentEnv().getPath() + BIBaseConstant.EXCELDATA.EXCEL_DATA_PATH;
     private static final int SUCCESS = 0;
-    private static final int FILETYPEERROR = 1;
-    private static final int FILEUSINGERROR = 2;
-    private static final int FILEUPDATEERROR = 3;
-    private static final int FILENOTEXIST = 4;
+    private static final int FILE_USING_ERROR = 1;
+    private static final int FILE_UPDATE_ERROR = 2;
 
 
     @Override
@@ -55,29 +53,22 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
         WebUtils.printAsJSON(res, jo);
     }
 
-    private boolean isEqualFileType(String oldFileName, String newFileName) {
-        return (oldFileName.endsWith(".xlsx") && newFileName.endsWith(".xlsx")) || (oldFileName.endsWith(".xls") && newFileName.endsWith(".xls")) || (oldFileName.endsWith(".csv") && newFileName.endsWith(".csv"));
-    }
-
     private int updateExcel(long userId, String oldExcelFullName, String newExcelFullName, CubeTableSource tableSource) {
         //更新的逻辑是先删除原来的Excel文件，然后将新的Excel的文件重命名为原来的文件名。避免重新保存关联等其他乱七八糟的
         File oldFile = new File(DATA_PATH, oldExcelFullName);
         File newFile = new File(DATA_PATH, newExcelFullName);
-        if (!isEqualFileType(oldExcelFullName, newExcelFullName)) {
-            return FILETYPEERROR;
-        }
         if (!oldFile.exists()) {
-            if(!newFile.renameTo(new File(DATA_PATH, oldExcelFullName))){
-                return FILEUPDATEERROR;
+            if (!newFile.renameTo(new File(DATA_PATH, oldExcelFullName))) {
+                return FILE_UPDATE_ERROR;
             }
             updateExcelTableDate(userId, tableSource);
             return SUCCESS;
         }
         if (!oldFile.delete()) {
-            return FILEUSINGERROR;
+            return FILE_USING_ERROR;
         }
         if (!newFile.renameTo(new File(DATA_PATH, oldExcelFullName))) {
-            return FILEUPDATEERROR;
+            return FILE_UPDATE_ERROR;
         }
         updateExcelTableDate(userId, tableSource);
         return SUCCESS;
