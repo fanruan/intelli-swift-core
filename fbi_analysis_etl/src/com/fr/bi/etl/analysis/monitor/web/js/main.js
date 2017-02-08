@@ -8,7 +8,7 @@ BI.extend(BI.Monitor, {
     constants : {
         COLUMN_GAP : 200,
         ROW_GAP : 30,
-        TABLE_WIDTH : 200,
+        TABLE_WIDTH : 210,
         TABLE_HEIGHT:30,
         ERROR: 0,
         GOOD : 1,
@@ -18,16 +18,30 @@ BI.extend(BI.Monitor, {
     },
 
     ajaxHealthData : function (callback) {
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: "body",
+            text: BI.i18nText("BI-Loading")
+        });
         return BI.requestAsync("sppa_monitor", "check_all_table_health", {}, function (res) {
             callback(res);
+        }, function () {
+            mask.destroy();
         })
     },
 
     ajaxSingleData : function (id, callback) {
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: "body",
+            text: BI.i18nText("BI-Loading")
+        });
         return BI.requestAsync("sppa_monitor", "check_single_table_health", {
             id:id
         }, function (res) {
             callback(res);
+        }, function () {
+            mask.destroy();
         })
     },
 
@@ -185,13 +199,13 @@ BI.extend(BI.Monitor, {
                 items:[{
                     type:"bi.label",
                     cls:"bi-monitor-table bi-monitor-table-2",
-                    value:"more than one cube inuse or parent table has been deleted",
-                    title:"more than one cube inuse or parent table has been deleted",
-                    width:BI.Monitor.constants.TABLE_WIDTH,
+                    value:"no cube or more than one cube inuse or parent table has been deleted",
+                    title:"no cube or more than one cube inuse or parent table has been deleted",
+                    width:BI.Monitor.constants.TABLE_WIDTH * 2,
                     height: BI.Monitor.constants.TABLE_HEIGHT
                 }]
             },
-            width:BI.Monitor.constants.TABLE_WIDTH
+            width:BI.Monitor.constants.TABLE_WIDTH* 2
         }, {
             type:"bi.layout",
             width:BI.Monitor.constants.ROW_GAP

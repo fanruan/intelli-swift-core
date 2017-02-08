@@ -47,7 +47,7 @@ public class CubeTable extends SimpleTable {
             is = CubeReadingTableIndexLoader.getInstance(userId).getTableIndex(table.getTableSource());
         } catch (Exception e) {
         }
-        return is == null ? GENERATING : GOOD;
+        return is == null ? WARNING : GOOD;
     }
 
     @Override
