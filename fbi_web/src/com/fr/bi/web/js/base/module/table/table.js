@@ -1579,7 +1579,6 @@ BI.Table = BI.inherit(BI.Widget, {
     getCalculateColumnSize: function () {
         var self = this, o = this.options;
         var columnSize = [];
-        var headerColumnSize = [];
         if (o.isNeedFreeze === true) {
             if (BI.size(this.bottomLeftBodyTds) > 0 || BI.size(this.bottomRightBodyTds) > 0) {
                 if (!BI.any(this.bottomLeftBodyTds, function (i, tds) {
@@ -1630,6 +1629,7 @@ BI.Table = BI.inherit(BI.Widget, {
                         columnSize.push(width);
                     });
                 }
+                return columnSize;
             }
             if (!BI.any(this.topLeftBodyTds, function (i, tds) {
                     if (!BI.any(tds, function (i, item) {
@@ -1642,7 +1642,7 @@ BI.Table = BI.inherit(BI.Widget, {
                             if (i == BI.size(tds) - 1) {
                                 width++;
                             }
-                            headerColumnSize.push(width);
+                            columnSize.push(width);
                         });
                         return true;
                     }
@@ -1652,7 +1652,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     if (i == BI.size(self.topLeftBodyTds[BI.size(self.topLeftBodyTds) - 1]) - 1) {
                         width++;
                     }
-                    headerColumnSize.push(width);
+                    columnSize.push(width);
                 });
             }
             if (!BI.any(this.topRightBodyTds, function (i, tds) {
@@ -1666,7 +1666,7 @@ BI.Table = BI.inherit(BI.Widget, {
                             if (i == BI.size(tds) - 1) {
                                 width++;
                             }
-                            headerColumnSize.push(width);
+                            columnSize.push(width);
                         });
                         return true;
                     }
@@ -1676,7 +1676,7 @@ BI.Table = BI.inherit(BI.Widget, {
                     if (i == BI.size(self.topRightBodyTds[BI.size(self.topRightBodyTds) - 1]) - 1) {
                         width++;
                     }
-                    headerColumnSize.push(width);
+                    columnSize.push(width);
                 });
             }
         } else {
@@ -1688,16 +1688,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 columnSize.push(width);
             });
         }
-
-        var result = [];
-        for (var i = 0, len = Math.max(columnSize.length, headerColumnSize.length); i < len; i++) {
-            if (i === len - 1) {
-                result[i] = Math.max(columnSize[i], headerColumnSize[i]);
-            } else {
-                result[i] = columnSize[i] || headerColumnSize[i];
-            }
-        }
-        return result;
+        return columnSize;
     },
 
     setHeaderColumnSize: function (columnSize) {
