@@ -39,7 +39,6 @@
   z-index: 99;
 }
 .monitor-content .bi-monitor-svg-line svg path {
-  stroke-dasharray: 1000;
   stroke-width: 2px;
   stroke-opacity: 0.5;
 }
@@ -53,72 +52,53 @@
   stroke: #fbb03b;
 }
 .monitor-content .bi-monitor-svg-line-3 svg path {
+  stroke-dasharray: 8;
   stroke: #9fd3ae;
 }
 .monitor-content .bi-monitor-svg-line-hover svg path {
+  stroke-dasharray: 8;
   stroke-width: 2;
   stroke-opacity: 1;
   stroke: #009de3;
 }
-.bi-monitor-svg-line svg path {
-  -webkit-animation: svg-change 2s ease;
-  -moz-animation: svg-change 2s ease;
-  -o-animation: svg-change 2s ease;
-  animation: svg-change 2s ease;
-}
-@keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
-}
-**/ } @-webkit-keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
-}
-**/ } @-moz-keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
-}
-**/ } @-o-keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
-}
-**/ } .useless-css-name-abcdefg-123456-just-comment {
-  transition: all 0.5s;
-}
 .bi-monitor-svg-line-generate svg path {
-  -webkit-animation: svg-change 2s linear infinite;
-  -moz-animation: svg-change 2s linear infinite;
-  -o-animation: svg-change 2s linear infinite;
-  animation: svg-change 2s linear infinite;
+  -webkit-animation: svg-change2 0.3s linear infinite;
+  -moz-animation: svg-change2 0.3s linear infinite;
+  -o-animation: svg-change2 0.3s linear infinite;
+  animation: svg-change2 0.3s linear infinite;
 }
-@keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+@keyframes svg-change2 {
+  from  {stroke-dashoffset:16} to {stroke-dashoffset:0}  /**: ;
 }
-**/ } @-webkit-keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+**/ } @-webkit-keyframes svg-change2 {
+  from  {stroke-dashoffset:16} to {stroke-dashoffset:0}  /**: ;
 }
-**/ } @-moz-keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+**/ } @-moz-keyframes svg-change2 {
+  from  {stroke-dashoffset:16} to {stroke-dashoffset:0}  /**: ;
 }
-**/ } @-o-keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+**/ } @-o-keyframes svg-change2 {
+  from  {stroke-dashoffset:16} to {stroke-dashoffset:0}  /**: ;
 }
 **/ } .useless-css-name-abcdefg-123456-just-comment {
   transition: all 0.5s;
 }
 .bi-monitor-svg-line-hover svg path {
-  -webkit-animation: svg-change 2s linear infinite;
-  -moz-animation: svg-change 2s linear infinite;
-  -o-animation: svg-change 2s linear infinite;
-  animation: svg-change 2s linear infinite;
+  -webkit-animation: svg-change3 0.3s linear infinite;
+  -moz-animation: svg-change3 0.3s linear infinite;
+  -o-animation: svg-change3 0.3s linear infinite;
+  animation: svg-change3 0.3s linear infinite;
 }
-@keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+@keyframes svg-change3 {
+  from  {stroke-dashoffset:16} to {stroke-dashoffset:0}  /**: ;
 }
-**/ } @-webkit-keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+**/ } @-webkit-keyframes svg-change3 {
+  from  {stroke-dashoffset:16} to {stroke-dashoffset:0}  /**: ;
 }
-**/ } @-moz-keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+**/ } @-moz-keyframes svg-change3 {
+  from  {stroke-dashoffset:16} to {stroke-dashoffset:0}  /**: ;
 }
-**/ } @-o-keyframes svg-change {
-  from  {stroke-dashoffset:1000} to {stroke-dashoffset:0}  /**: ;
+**/ } @-o-keyframes svg-change3 {
+  from  {stroke-dashoffset:16} to {stroke-dashoffset:0}  /**: ;
 }
 **/ } .useless-css-name-abcdefg-123456-just-comment {
   transition: all 0.5s;
