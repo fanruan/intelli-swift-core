@@ -18,16 +18,28 @@ BI.extend(BI.Monitor, {
     },
 
     ajaxHealthData : function (callback) {
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: "body",
+            text: BI.i18nText("BI-Loading")
+        });
         return BI.requestAsync("sppa_monitor", "check_all_table_health", {}, function (res) {
             callback(res);
+            mask.destroy();
         })
     },
 
     ajaxSingleData : function (id, callback) {
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: "body",
+            text: BI.i18nText("BI-Loading")
+        });
         return BI.requestAsync("sppa_monitor", "check_single_table_health", {
             id:id
         }, function (res) {
             callback(res);
+            mask.destroy();
         })
     },
 
