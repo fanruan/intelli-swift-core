@@ -2996,7 +2996,7 @@
                 }
                 //截零
                 var i = max.length - 1, add = "0.";
-                while (min[i] === "0" && max[i] === "0" && this.min != 0 && this.max != 0) {
+                while (min[i] === "0" && max[i] === "0" && this.min !== 0 && this.max !== 0) {
                     i--;
                 }
 
