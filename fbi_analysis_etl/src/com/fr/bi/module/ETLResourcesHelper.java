@@ -339,6 +339,9 @@ public class ETLResourcesHelper {
 
 	public static String[] getMonitorJS(){
 		return new String[]{
+				"com/fr/bi/etl/analysis/web/js/base/constant/etlconst.js",
+				"com/fr/bi/etl/analysis/web/js/base/constant/enums.js",
+				"com/fr/bi/etl/analysis/web/js/base/constant/constant.js",
 				"com/fr/bi/etl/analysis/monitor/web/js/main.js",
                 "com/fr/bi/etl/analysis/monitor/web/js/line.js",
                 "com/fr/bi/etl/analysis/monitor/web/js/table.js",

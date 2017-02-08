@@ -41,20 +41,14 @@ public class BITablePosition {
         this.column = column;
     }
 
-    public JSONObject createJSON(long userId) throws JSONException {
+    public JSONObject createJSON(long userId) throws Exception {
         JSONObject jo = JSONObject.create();
         jo.put("id", table.getId());
         BusinessTable bt = BIModuleUtils.getBusinessTableById(new BITableID(table.getId()));
-        String name = BIAnalysisETLManagerCenter.getAliasManagerProvider().getAliasName(table.getId(), userId);
-        name = StringUtils.isEmpty(name) ? table.getId() : name;
-        jo.put("name", name);
-        if(bt != null) {
-            double percent = BIAnalysisTableHelper.getTableGeneratingProcessById(table.getId(), userId);
-            jo.put("p", percent);
-            jo.put("count", BIAnalysisTableHelper.getTableCubeCount(table.getId(), userId));
-        } else {
+        if(bt == null) {
             jo.put("p", 0);
         }
+        table.dealWithJSONOption(jo, userId);
         jo.put("c", column);
         jo.put("r", row);
 

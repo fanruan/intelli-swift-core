@@ -12,7 +12,9 @@ import com.fr.bi.etl.analysis.data.AnalysisETLSourceField;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.manager.BIAnalysisBusiPackManagerProvider;
 import com.fr.bi.etl.analysis.monitor.MonitorUtils;
+import com.fr.bi.etl.analysis.monitor.SimpleTable;
 import com.fr.bi.etl.analysis.monitor.TableRelation;
+import com.fr.bi.etl.analysis.monitor.TableRelationTree;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -48,7 +50,7 @@ public class MonitorUtilsTest extends TestCase {
         control.replay();
         for(int i = 0; i< 10; i++){
             String id = String.valueOf(i + 1);
-            List<TableRelation> list = MonitorUtils.getTableRelations(id, userId);
+            List<TableRelation> list = MonitorUtils.getTableRelations(new SimpleTable(id), userId);
             for(TableRelation r : list) {
                 assertTableRelation(r);
             }
@@ -58,7 +60,7 @@ public class MonitorUtilsTest extends TestCase {
     private void assertTableRelation(TableRelation r) {
         TableRelation tr = r.getNext();
         if(tr != null) {
-            assertTrue(relationMap.get(r.getTable().getId()).contains(tr.getTable().getId()));
+            assertTrue(relationMap.get(r.getTable().getId()).contains(tr.getTable()));
             assertTableRelation(tr);
         }
     }
@@ -76,30 +78,30 @@ public class MonitorUtilsTest extends TestCase {
 
     static {
         Set set = new HashSet();
-        set.add("2");
-        set.add("3");
+        set.add(new SimpleTable("2"));
+        set.add(new SimpleTable("3"));
         relationMap.put("1", set);
         set = new HashSet();
-        set.add("3");
+        set.add(new SimpleTable("3"));
         relationMap.put("2", set);
         set = new HashSet();
-        set.add("4");
-        set.add("5");
-        set.add("6");
+        set.add(new SimpleTable("4"));
+        set.add(new SimpleTable("5"));
+        set.add(new SimpleTable("6"));
         relationMap.put("3", set);
         set = new HashSet();
-        set.add("4");
-        set.add("6");
+        set.add(new SimpleTable("4"));
+        set.add(new SimpleTable("6"));
         relationMap.put("5", set);
         set = new HashSet();
-        set.add("7");
-        set.add("8");
-        set.add("9");
+        set.add(new SimpleTable("7"));
+        set.add(new SimpleTable("8"));
+        set.add(new SimpleTable("9"));
         relationMap.put("4", set);
         set = new HashSet();
-        set.add("7");
-        set.add("8");
-        set.add("9");
+        set.add(new SimpleTable("7"));
+        set.add(new SimpleTable("8"));
+        set.add(new SimpleTable("9"));
         relationMap.put("10", set);
     }
 
@@ -107,12 +109,17 @@ public class MonitorUtilsTest extends TestCase {
         return  new AnalysisCubeTableSource() {
 
             @Override
-            public void getParentAnalysisBaseTableIds(Set<String> set) {
+            public void getParentAnalysisBaseTableIds(Set<SimpleTable> set) {
                 Set rs = relationMap.get(id);
                 if(rs != null) {
                     set.addAll(rs);
                 }
             }
+
+            public TableRelationTree getAllProcessAnalysisTablesWithRelation() {
+                return null;
+            }
+
             @Override
             public UserCubeTableSource createUserTableSource(long userId) {
                 return null;

@@ -5078,6 +5078,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         if (size.indexOf('px') != -1){
             return parseFloat(size);
         }
+
         if (size.indexOf('pt') != -1){
             return parseFloat(size) * 4 / 3;
         }
@@ -6737,8 +6738,9 @@ define('vector/ElementWrapper',['require','../utils/Class'],function(require){
         // rotate text(div, svg) according to center
         // for less dom operation, set textContent & style first
         // then rotate
-        vRotate: function (deg) {
-            this.renderer.vRotate(this, deg);
+        // delayMove for animation
+        vRotate: function (deg, delayMove) {
+            this.renderer.vRotate(this, deg, delayMove);
             return this;
         },
 
@@ -7427,7 +7429,7 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
             }
         },
 
-        vRotate: function (domWrapper, deg) {
+        vRotate: function (domWrapper, deg, delayMove) {
             var trans, transform, rotateStr,dom = domWrapper.node();
             if (domWrapper.type === 'div') {
                 transform = domWrapper.styles[BaseUtils.transPrefix + 'transform'] || '';
@@ -7461,7 +7463,9 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
                 }
                 rotateStr = 'rotate(' + deg + ' ' + centerX + ' ' + centerY + ')';
                 transform += rotateStr;
-                domWrapper.attr('transform', transform);
+                if (!delayMove) {
+                    domWrapper.attr('transform', transform);
+                }
             }
             domWrapper.rotateStr = rotateStr;
         },
@@ -29528,11 +29532,18 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
             for(i = 0, len = selection.enter.length; i < len; i++){
                 var d = selection.enter[i];
+                var transform = this._getLabelAttr(lastScale, d);
+
                 var tickLabel = this.tickLabelsGroup.append(
                     renderer.vtext(useHtml)
-                        .attr(this._getLabelAttr(lastScale, d))
+                        .textContent(d.tickContent)
                         .style({'opacity':0})
-                )
+                );
+                var rotateStr = (d.labelRotation % 360) ?
+                    tickLabel.vRotate(d.labelRotation, true/* delay */).rotateStr : '';
+                transform.transform += rotateStr;
+                tickLabel.attr(transform);
+
                 tickLabel.datum(d);
                 currentTickLabels.push(tickLabel);
             }
@@ -29547,19 +29558,15 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
                 var opacity = this._valueInDomain(d.tickValue) ? 1 : 0;
 
-                // html animation is err...
                 if(animation && !useHtml){
                     var rotateStr = (d.labelRotation % 360) ?
-                        tickLabel.vRotate(d.labelRotation).rotateStr : '';
+                        tickLabel.vRotate(d.labelRotation, true/* delay */).rotateStr : '';
                     transform.transform += rotateStr;
-                    var prop;
-                    if (tickLabel.type === 'div') {
-                        prop = 'style';
-                    } else {
-                        prop = 'attr';
-                    }
+
+                    // d3 will combine translate and rotate's center pos,
+                    // as a result, rotate(deg, removed, removed)
                     d3.select(tickLabel.node()).transition().duration(TIME).ease(EASE)
-                        [prop](transform).style({'opacity':opacity});
+                        .attr(transform).style({'opacity':opacity});
                 }else{
                     tickLabel.attr(transform).style({'opacity':opacity});
                     tickLabel.vRotate(d.labelRotation);
@@ -35284,7 +35291,10 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
 
         //每次钻取的时候要loadGeo的数据
         loadGeo:function(){
-            if(this._loaded && this.options.data == this._dataUrl){
+
+            var url = BaseUtils.pick(this.options.imageUrl,this.options.tileLayer,'') + this.options.data;
+
+            if(this._loaded && url == this._url){
                 return;
             }
 
@@ -35294,7 +35304,7 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
             this.vanchart.lastGeoData = this.options.data;
 
             this._loaded = true;
-            this._dataUrl = this.options.data;
+            this._url = url;
 
             this.scale = 1;
             var cfg = this.options, geo = this;
@@ -35359,6 +35369,9 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
                 this._imageBackgroundLayer = L.imageOverlay(url, bounds).addTo(leaflet);
             }else if(url){
 
+                this._tileLayer && this._tileLayer.remove();
+                this._attribution && this._attribution.remove();
+
                 this._attribution = _loadedLayerMap[vanchartsID][attribution] || L.control.attribution({position:'bottomright'}).addAttribution(attribution);
                 _loadedLayerMap[vanchartsID][attribution] = this._attribution;
 
@@ -35367,8 +35380,8 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
 
             }else if(wmsUrl){
 
-                this._wmsLayer = _loadedLayerMap[vanchartsID][wmsUrl] || L.tileLayer.wms(wmsUrl, {layers: wmsLayer.join(',')});
-                _loadedLayerMap[vanchartsID][wmsUrl] = this._wmsLayer;
+                this._wmsLayer && this._wmsLayer.remove();
+                this._wmsLayer = null;
 
                 this._attribution && this._attribution.remove();
                 this._attribution = null;
@@ -35378,6 +35391,9 @@ define('component/Geo',['require','./Base','../utils/BaseUtils','../utils/QueryU
 
                 this._imageBackgroundLayer && leaflet.removeLayer(this._imageBackgroundLayer)
                 this._imageBackgroundLayer = null;
+
+                this._wmsLayer = _loadedLayerMap[vanchartsID][wmsUrl] || L.tileLayer.wms(wmsUrl, {layers: wmsLayer.join(',')});
+                _loadedLayerMap[vanchartsID][wmsUrl] = this._wmsLayer;
 
             }else{
 

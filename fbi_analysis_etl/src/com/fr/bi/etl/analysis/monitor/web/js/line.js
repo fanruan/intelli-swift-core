@@ -4,6 +4,7 @@ BI.MonitorLine = BI.inherit(BI.Widget, {
         return BI.extend(BI.MonitorLine.superclass._defaultConfig.apply(this, arguments), {
             baseCls:"bi-monitor-svg-line",
             status:1,
+            direction:0,
             x : 0,
             y : 0,
             width : 100,
@@ -49,7 +50,11 @@ BI.MonitorLine = BI.inherit(BI.Widget, {
 
     _createPath : function () {
         var o = this.options;
-        return "M" + o.x+","+o.y+"C" + (o.x + o.w)/2 +","+o.y + " " + (o.x + o.w)/2 + ","+  o.h + " "+o.w + "," + o.h;
+        if(o.direction === 0) {
+            return "M" + o.x+","+o.y+"C" + (o.x + o.w)/2 +","+o.y + " " + (o.x + o.w)/2 + ","+  o.h + " "+o.w + "," + o.h;
+        } else {
+            return "M" + o.x+","+o.y+"C" + o.x +","+(o.y+o.h)/2 + " " + o.w + ","+  +(o.y+o.h)/2  + " "+o.w + "," + o.h;
+        }
     }
 
 })

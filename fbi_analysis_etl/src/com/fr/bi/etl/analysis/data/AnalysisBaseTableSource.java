@@ -10,6 +10,7 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.monitor.*;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -23,12 +24,8 @@ import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.sql.Types;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -197,7 +194,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         }
     }
 
-    @Override
     public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set) {
         if (set.contains(this)) {
             return;
@@ -205,7 +201,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         set.add(this);
     }
 
-    @Override
     public void refreshWidget() {
         widget.refreshSources();
         widget.reSetDetailTarget();
@@ -226,24 +221,37 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         widget.reSetDetailTarget();
     }
 
-    public void getParentAnalysisBaseTableIds(Set<String> set) {
+    public TableRelationTree getAllProcessAnalysisTablesWithRelation() {
+        Set<SimpleTable> set = new HashSet<SimpleTable>();
+        getParentAnalysisBaseTableIds(set);
+        TableRelationTree tree = new TableRelationTree(new BaseSourceTable(this));
+        for (SimpleTable id : set) {
+            tree.addParent(new TableRelationTree(id));
+        }
+        return tree;
+    }
+
+    public void getParentAnalysisBaseTableIds(Set<SimpleTable> set) {
         for (BITargetAndDimension dim : widget.getViewDimensions()) {
-            calcualteImport(set, dim);
+            calculateImport(set, dim);
         }
         for (BITargetAndDimension target : widget.getViewTargets()) {
-            calcualteImport(set, target);
+            calculateImport(set, target);
         }
     }
 
-    private void calcualteImport(Set<String> set, BITargetAndDimension dim) {
+    private void calculateImport(Set<SimpleTable> set, BITargetAndDimension dim) {
         if (dim.getStatisticElement() != null) {
             if(dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 CubeTableSource source = dim.createTableKey().getTableSource();
+                String id = dim.getStatisticElement().getTableBelongTo().getID().getIdentity();
                 if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
-                    set.add(dim.getStatisticElement().getTableBelongTo().getID().getIdentity());
+                    set.add(new SimpleTable(id));
+                } else {
+                    set.add(new CubeTable(id));
                 }
             } else {
-                set.add(dim.getStatisticElement().getTableBelongTo().getID().getIdentity());
+                set.add(new CubeTable(dim.getStatisticElement().getTableBelongTo().getID().getIdentity()));
             }
         }
     }
