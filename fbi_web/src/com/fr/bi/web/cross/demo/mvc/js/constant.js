@@ -214,6 +214,8 @@ var _JS = [
 
     "widget/mvc.searcher.js",
 
+    "widget/mvc.bubblecombo.js",
+
     "widget/mvc.calendar.js",
 
     "widget/mvc.yearcalendar.js",
@@ -561,6 +563,7 @@ var _Routes = {
     "/lazy_loader": "LazyLoaderView",
     "/navigation": "NavigationView",
     "/searcher": "SearcherView",
+    "/bubble_combo": "BubbleComboView",
     "/calendar": "CalendarView",
     "/year_calendar": "YearCalendarView",
     "/scrollview": "ScrollView",
@@ -885,6 +888,10 @@ _Models.widget = [{
     pId: 6,
     text: "bi.searcher",
     value: "searcher"
+}, {
+    pId: 6,
+    text: "bi.bubble_combo",
+    value: "bubble_combo"
 }, {
     pId: 1,
     text: "bi.customtree",

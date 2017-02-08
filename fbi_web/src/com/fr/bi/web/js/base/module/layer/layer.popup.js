@@ -142,6 +142,10 @@ BI.PopupView = BI.inherit(BI.Widget, {
         })
     },
 
+    getView: function () {
+        return this.button_group;
+    },
+
     populate: function (items) {
         this.button_group.populate.apply(this.button_group, arguments);
     },
