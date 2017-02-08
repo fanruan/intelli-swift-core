@@ -24,7 +24,7 @@ public class BIByteSingleFileNIOReader extends BIBaseSingleFileNIOReader impleme
             return byteBuffer.get((int) filePosition);
         } catch (IndexOutOfBoundsException e) {
             BILoggerFactory.getLogger(this.getClass()).error("The Error filePosition is: " + filePosition + " and the current buffer size is: " + byteBuffer.capacity());
-            throw new RuntimeException("the file is: " + baseFile, e);
+            return retryGetSpecificValue(filePosition);
         } catch (NullPointerException e) {
             initBuffer();
             if (byteBuffer == null) {
@@ -33,6 +33,22 @@ public class BIByteSingleFileNIOReader extends BIBaseSingleFileNIOReader impleme
             }
             return getSpecificValue(filePosition);
         }
+    }
+
+    private byte retryGetSpecificValue(long filePosition) throws BIResourceInvalidException {
+        try {
+            forceRelease();
+            initBuffer();
+            if (byteBuffer == null) {
+                BILoggerFactory.getLogger(this.getClass()).error("the isValid status is: " + isValid);
+                throw new RuntimeException("the file is released: " + baseFile);
+            }
+            return byteBuffer.get((int) filePosition);
+        } catch (IndexOutOfBoundsException e) {
+            BILoggerFactory.getLogger(this.getClass()).error("The Error filePosition is: " + filePosition + " and the current buffer size is: " + byteBuffer.capacity());
+            throw new RuntimeException("the file is: " + baseFile, e);
+        }
+
     }
 
     @Override
