@@ -471,9 +471,11 @@ BI.Table = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
             }
         });
-        BI.ResizeDetector.addResizeListener(this, function () {
-            self._resize();
-            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
+        BI.Resizers.add(this.getName(), function (e) {
+            if (BI.isWindow(e.target) && self.element.is(":visible")) {
+                self._resize();
+                self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
+            }
         });
     },
 
@@ -1061,9 +1063,11 @@ BI.Table = BI.inherit(BI.Widget, {
         };
 
         this._initNormalScroll();
-        BI.ResizeDetector.addResizeListener(this, function () {
-            self._resize();
-            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
+        BI.Resizers.add(this.getName(), function (e) {
+            if (self.element.is(":visible") && BI.isWindow(e.target)) {
+                self._resize();
+                self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
+            }
         });
         BI.nextTick(function () {
             if (self.element.is(":visible")) {
