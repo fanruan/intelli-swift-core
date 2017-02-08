@@ -36,7 +36,7 @@ GridTableView = BI.inherit(BI.View, {
         var table = BI.createWidget({
             type: "bi.resizable_table",
             el: {
-                type: "bi.collection_table",
+                type: "bi.quick_collection_table",
                 isNeedMerge: true,
                 mergeCols: [0, 1],
                 mergeRule: function (col1, col2) {

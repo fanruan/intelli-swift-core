@@ -11,6 +11,8 @@ BI.Collection = BI.inherit(BI.Widget, {
             baseCls: "bi-collection",
             width: 400,
             height: 300,
+            overflowX: true,
+            overflowY: true,
             cellSizeAndPositionGetter: BI.emptyFn,
             horizontalOverscanSize: 0,
             verticalOverscanSize: 0,
@@ -47,8 +49,9 @@ BI.Collection = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            scrollable: true,
-            scrolly: false,
+            scrollable: o.overflowX === true && o.overflowY === true,
+            scrolly: o.overflowX === false && o.overflowY === true,
+            scrollx: o.overflowX === true && o.overflowY === false,
             items: [this.container]
         });
         if (o.items.length > 0) {
@@ -195,11 +198,11 @@ BI.Collection = BI.inherit(BI.Widget, {
     },
 
     _getMaxScrollLeft: function () {
-        return Math.max(0, this._width - this.options.width + BI.DOM.getScrollWidth());
+        return Math.max(0, this._width - this.options.width + (this.options.overflowX ? BI.DOM.getScrollWidth() : 0));
     },
 
     _getMaxScrollTop: function () {
-        return Math.max(0, this._height - this.options.height + BI.DOM.getScrollWidth());
+        return Math.max(0, this._height - this.options.height + (this.options.overflowY ? BI.DOM.getScrollWidth() : 0));
     },
 
     _populate: function () {
@@ -236,12 +239,40 @@ BI.Collection = BI.inherit(BI.Widget, {
         this._calculateChildrenToRender();
     },
 
+    setOverflowX: function (b) {
+        var self = this;
+        if (this.options.overflowX !== !!b) {
+            this.options.overflowX = !!b;
+            BI.nextTick(function () {
+                self.element.css({overflowX: !!b ? "auto" : "hidden"});
+            });
+        }
+    },
+
+    setOverflowY: function (b) {
+        var self = this;
+        if (this.options.overflowY !== !!b) {
+            this.options.overflowY = !!b;
+            BI.nextTick(function () {
+                self.element.css({overflowY: !!b ? "auto" : "hidden"});
+            });
+        }
+    },
+
     getScrollLeft: function () {
         return this.options.scrollLeft;
     },
 
     getScrollTop: function () {
         return this.options.scrollTop;
+    },
+
+    getMaxScrollLeft: function () {
+        return this._getMaxScrollLeft();
+    },
+
+    getMaxScrollTop: function () {
+        return this._getMaxScrollTop();
     },
 
     restore: function () {

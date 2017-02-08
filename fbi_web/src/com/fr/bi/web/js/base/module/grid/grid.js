@@ -11,6 +11,8 @@ BI.Grid = BI.inherit(BI.Widget, {
             baseCls: "bi-grid",
             width: 400,
             height: 300,
+            overflowX: true,
+            overflowY: true,
             overscanColumnCount: 0,
             overscanRowCount: 0,
             rowHeightGetter: BI.emptyFn,
@@ -50,8 +52,9 @@ BI.Grid = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            scrollable: true,
-            scrolly: false,
+            scrollable: o.overflowX === true && o.overflowY === true,
+            scrolly: o.overflowX === false && o.overflowY === true,
+            scrollx: o.overflowX === true && o.overflowY === false,
             items: [this.container]
         });
         if (o.items.length > 0) {
@@ -184,11 +187,11 @@ BI.Grid = BI.inherit(BI.Widget, {
     },
 
     _getMaxScrollLeft: function () {
-        return Math.max(0, this._columnSizeAndPositionManager.getTotalSize() - this.options.width + BI.DOM.getScrollWidth());
+        return Math.max(0, this._columnSizeAndPositionManager.getTotalSize() - this.options.width + (this.options.overflowX ? BI.DOM.getScrollWidth() : 0));
     },
 
     _getMaxScrollTop: function () {
-        return Math.max(0, this._rowSizeAndPositionManager.getTotalSize() - this.options.height + BI.DOM.getScrollWidth());
+        return Math.max(0, this._rowSizeAndPositionManager.getTotalSize() - this.options.height + (this.options.overflowY ? BI.DOM.getScrollWidth() : 0));
     },
 
     _populate: function () {
@@ -230,12 +233,40 @@ BI.Grid = BI.inherit(BI.Widget, {
         this._calculateChildrenToRender();
     },
 
+    setOverflowX: function (b) {
+        var self = this;
+        if (this.options.overflowX !== !!b) {
+            this.options.overflowX = !!b;
+            BI.nextTick(function () {
+                self.element.css({overflowX: !!b ? "auto" : "hidden"});
+            });
+        }
+    },
+
+    setOverflowY: function (b) {
+        var self = this;
+        if (this.options.overflowY !== !!b) {
+            this.options.overflowY = !!b;
+            BI.nextTick(function () {
+                self.element.css({overflowY: !!b ? "auto" : "hidden"});
+            });
+        }
+    },
+
     getScrollLeft: function () {
         return this.options.scrollLeft;
     },
 
     getScrollTop: function () {
         return this.options.scrollTop;
+    },
+
+    getMaxScrollLeft: function () {
+        return this._getMaxScrollLeft();
+    },
+
+    getMaxScrollTop: function () {
+        return this._getMaxScrollTop();
     },
 
     setEstimatedColumnSize: function (width) {
