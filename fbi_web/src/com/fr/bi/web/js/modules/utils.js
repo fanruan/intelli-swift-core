@@ -2654,6 +2654,12 @@
                         },
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     }
+                } else if(BI.isNull(value) || BI.isEmptyString(value)){
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                        filter_value: {},
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
                 }
             }
 
