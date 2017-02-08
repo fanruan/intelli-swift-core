@@ -73,7 +73,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
     }
 
     /**
-     * updateSetting
+     * update
      *
      * @param req
      * @throws Exception
