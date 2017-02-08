@@ -153,9 +153,13 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
     }
 
     @Override
+    //FIXME 这里的结构太诡异了，保存了MD5，还有刷新方法，现在如果中间表删除，则不影响螺旋分析的生成，不知道到底好不好
     public void refreshColumn() {
         if (column != null){
-            column = BIModuleUtils.getBusinessFieldById(column.getFieldID());
+            BusinessField c = BIModuleUtils.getBusinessFieldById(column.getFieldID());
+            if(c != null){
+                column = c;
+            }
         }
     }
 

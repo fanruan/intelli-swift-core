@@ -115,7 +115,7 @@ public final class PositionCalculator {
                     row += positionHelper.get(next.getTable()).getRow();
                 }
                 row/=count;
-                tp.setRow(row);
+                tp.setRow(Math.max(tp.getRow(), row));
             }
         }
 
@@ -140,6 +140,8 @@ public final class PositionCalculator {
 
     public void sort() {
         sortBaseLine();
+        moveCenter();
+        //做两次
         moveCenter();
     }
 }

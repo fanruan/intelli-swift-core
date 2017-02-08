@@ -16,9 +16,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Service4AnalysisETLMonitor implements Service {
 
+    private static BIAnalysisETLCheckAllTableHealTHPageAction pageAction = new BIAnalysisETLCheckAllTableHealTHPageAction();
 
     private static RequestCMDReceiver[] actions = {
-            new BIAnalysisETLCheckAllTableHealTHPageAction(),
+            pageAction,
             new BIAnalysisETLCheckAllTableHealTHAction(),
             new BIAnalysisETLCheckSingleTableHealTHAction()
 
@@ -29,6 +30,6 @@ public class Service4AnalysisETLMonitor implements Service {
     }
 
     public void process(HttpServletRequest req, HttpServletResponse res, String op, String sessionID) throws Exception {
-        WebActionsDispatcher.dealForActionDefaultCmd(req,res,sessionID,actions, actions[0].getCMD());
+        WebActionsDispatcher.dealForActionDefaultCmd(req,res,sessionID,actions, pageAction.getCMD());
     }
 }

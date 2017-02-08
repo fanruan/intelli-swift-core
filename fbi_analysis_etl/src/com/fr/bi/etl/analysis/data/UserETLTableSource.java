@@ -10,6 +10,9 @@ import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
+import com.fr.bi.etl.analysis.monitor.SimpleTable;
+import com.fr.bi.etl.analysis.monitor.TableRelation;
+import com.fr.bi.etl.analysis.monitor.TableRelationTree;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -37,11 +40,17 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         this.fieldList = parent.getFieldsList();
     }
 
-    @Override
-    public void getParentAnalysisBaseTableIds(Set<String> set) {
+    public void getParentAnalysisBaseTableIds(Set<SimpleTable> set) {
         if(parent != null){
             parent.getParentAnalysisBaseTableIds(set);
         }
+    }
+
+    public TableRelationTree getAllProcessAnalysisTablesWithRelation() {
+        if(parent != null){
+            return parent.getAllProcessAnalysisTablesWithRelation();
+        }
+        return TableRelationTree.EMPTY;
     }
 
     @Override
@@ -96,13 +105,11 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     /**
      * @return
      */
-    @Override
     public long getUserId() {
         return userId;
     }
 
 
-    @Override
     public boolean containsIDParentsWithMD5(String md5, long userId) {
         for (UserCubeTableSource source : getParents()){
             if (ComparatorUtils.equals(md5, source.fetchObjectCore().getID().getIdentityValue())){
@@ -115,12 +122,10 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         return ComparatorUtils.equals(md5, fetchObjectCore().getIDValue());
     }
 
-    @Override
     public AnalysisCubeTableSource getAnalysisCubeTableSource() {
         return parent;
     }
 
-    @Override
     public boolean isParentAvailable() {
         List<UserCubeTableSource>  parents = getParents();
         for(UserCubeTableSource source : parents) {
@@ -132,7 +137,6 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     }
 
 
-    @Override
     public Set<CubeTableSource> getParentSource() {
         Set<CubeTableSource> set = new HashSet<CubeTableSource>();
         List<UserCubeTableSource>  parents = getParents();
@@ -155,7 +159,6 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         return set;
     }
 
-    @Override
     public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {
         if(set.contains(this)){
             return;
@@ -167,7 +170,6 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         set.add(this);
     }
 
-    @Override
     public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set){
         if(set.contains(this)){
             return;
@@ -178,30 +180,25 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
         set.add(this);
     }
 
-    @Override
     public void refreshWidget() {
         for (AnalysisCubeTableSource source : getParents()){
             source.refreshWidget();
         }
     }
 
-    @Override
     public Set<BIWidget> getWidgets() {
         return new HashSet<BIWidget>();
     }
-    @Override
     public void reSetWidgetDetailGetter() {
         for (AnalysisCubeTableSource source : getParents()){
             source.reSetWidgetDetailGetter();
         }
     }
 
-    @Override
     public UserCubeTableSource createUserTableSource(long userId) {
         return this;
     }
 
-    @Override
     public List<AnalysisETLSourceField> getFieldsList() {
         return fieldList;
     }

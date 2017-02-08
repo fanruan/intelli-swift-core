@@ -9,6 +9,10 @@ import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.monitor.SimpleSourceTable;
+import com.fr.bi.etl.analysis.monitor.SimpleTable;
+import com.fr.bi.etl.analysis.monitor.TableRelation;
+import com.fr.bi.etl.analysis.monitor.TableRelationTree;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -39,10 +43,19 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     }
 
     @Override
-    public void getParentAnalysisBaseTableIds(Set<String> set) {
+    public void getParentAnalysisBaseTableIds(Set<SimpleTable> set) {
         for(AnalysisCubeTableSource source : getParents()) {
             source.getParentAnalysisBaseTableIds(set);
         }
+    }
+
+    public TableRelationTree getAllProcessAnalysisTablesWithRelation() {
+        TableRelationTree tree = new TableRelationTree(new SimpleSourceTable(this));
+        for(AnalysisCubeTableSource source : getParents()) {
+            TableRelationTree parent = source.getAllProcessAnalysisTablesWithRelation();
+            tree.addParent(parent);
+        }
+        return tree;
     }
 
 
