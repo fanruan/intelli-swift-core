@@ -70,7 +70,7 @@ BI.RefreshTableLoadingMask = BI.inherit(BI.Widget, {
         }, {
             type: "bi.label",
             cls: "loading-comment",
-            text: BI.i18nText("BI-Refreshing"),
+            text: BI.i18nText("BI-Waiting_For_Loading_Data"),
             height: 30
         }, {
             type: "bi.center_adapt",
@@ -82,12 +82,13 @@ BI.RefreshTableLoadingMask = BI.inherit(BI.Widget, {
                 width: 90,
                 handler: function () {
                     self.isCancel = true;
+                    BI.isFunction(timeoutCancel) && timeoutCancel();
                     BI.Maskers.remove(self.maskId);
                 }
             }]
         }];
         this.wrapper.populate(items);
-        BI.Utils.getTablesDetailInfoByTables4Refresh([this.options.table], function (data) {
+        var timeoutCancel = BI.Utils.getTablesDetailInfoByTables4Refresh([this.options.table], function (data) {
             if (self.isCancel === true) {
                 self.isCancel = false;
                 return;
@@ -107,8 +108,10 @@ BI.RefreshTableLoadingMask = BI.inherit(BI.Widget, {
                     width: 90,
                     height: 28,
                     handler: function () {
-                        BI.Maskers.remove(self.maskId);
+                        self.isCancel = true;
+                        BI.isFunction(timeoutCancel) && timeoutCancel();
                         self.fireEvent(BI.RefreshTableLoadingMask.EVENT_CANCEL_REFRESH);
+                        BI.Maskers.remove(self.maskId);
                     }
                 });
                 var retryButton = BI.createWidget({
@@ -147,7 +150,11 @@ BI.RefreshTableLoadingMask = BI.inherit(BI.Widget, {
                     hgap: 5
                 }]);
             }
-        })
+        }, function (data) {
+            if (BI.isNull(data)) {
+                BI.Maskers.remove(self.maskId);
+            }
+        });
     }
 
 

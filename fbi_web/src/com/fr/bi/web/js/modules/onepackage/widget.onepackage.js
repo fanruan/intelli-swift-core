@@ -332,7 +332,8 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         var self = this;
         var selectTablePane = BI.createWidget({
             type: "bi.select_table_pane",
-            element: BI.Layers.create(BICst.SELECT_TABLES_LAYER, BICst.BODY_ELEMENT)
+            element: BI.Layers.create(BICst.SELECT_TABLES_LAYER, BICst.BODY_ELEMENT),
+            tables: this.model.getTables(),
         });
         BI.Layers.show(BICst.SELECT_TABLES_LAYER);
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {
