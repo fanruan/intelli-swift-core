@@ -6,7 +6,7 @@ BI.extend(jQuery.fn, {
 
     destroy: function () {
         this.remove();
-        if ($.browser.msie === true) {
+        if (BI.isIE() === true) {
             this[0].outerHTML = '';
         }
     },
