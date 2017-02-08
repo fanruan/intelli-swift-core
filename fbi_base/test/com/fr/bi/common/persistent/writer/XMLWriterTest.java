@@ -12,6 +12,7 @@ import com.fr.bi.common.world.people.Student;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StableUtils;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Created by Connery on 2015/12/31.
@@ -342,6 +344,7 @@ public class XMLWriterTest extends TestCase {
         test.value = "";
         checkEquals(test, "testUseContentEmpty");
     }
+
     public void testUseInvalidChar() {
         NormalString4SpecialChar test = new NormalString4SpecialChar();
         StringBuffer sb = new StringBuffer();
@@ -354,6 +357,54 @@ public class XMLWriterTest extends TestCase {
         System.out.printf(cont);
         test.value = cont;
 //        checkEquals(test, "testUseInvalidChar");
+    }
+
+    public void testUseInvalidValue() {
+        NormalString4SpecialChar test = new NormalString4SpecialChar();
+        StringBuffer sb = new StringBuffer();
+        sb.append("\u0000");
+        sb.append("\u0001");
+        sb.append("\u0002");
+        sb.append("\u0003");
+        sb.append("\u0004");
+        sb.append("\u0005");
+        sb.append("\u0006");
+        sb.append("\u0007");
+        sb.append("\u0008");
+        sb.append("\u0009");
+        sb.append("\u000b");
+        sb.append("\u000c");
+        sb.append("\u000e");
+        sb.append("\u000f");
+        sb.append("\u0010");
+        sb.append("\u0011");
+        sb.append("\u0012");
+        sb.append("\u0013");
+        sb.append("\u0014");
+        sb.append("\u0015");
+        sb.append("\u0016");
+        sb.append("\u0017");
+        sb.append("\u0018");
+        sb.append("\u0019");
+        sb.append("\u001a");
+        sb.append("\u001b");
+        sb.append("\u001c");
+        sb.append("\u001d");
+        sb.append("\u001e");
+        sb.append("\u001f");
+        test.value = sb.toString();
+        checkEquals(test, "testInvalidValue");
+    }
+
+    public void testFilterInvalidCode() {
+        String content = BIFileUtils.readFile("F:\\work\\BI\\env\\WebReport\\WEB-INF\\resources\\BusinessPackage.xml");
+        BIFileUtils.writeFile("F:\\work\\BI\\env\\WebReport\\WEB-INF\\resources\\BusinessPackage.xml", content.replaceAll("[\u0000-\u0008\u000b-\u000c\u000e-\u001f]", ""));
+    }
+    
+
+    public void testUUID() {
+        UUID uuid = UUID.randomUUID();
+        System.out.println(uuid);
     }
 
 }
