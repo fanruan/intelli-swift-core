@@ -97,8 +97,9 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
             //这里特别恶心， 自适应布局的时候高度又不能让它变化，但宽度又要resize
             var widgets = Data.SharingPool.cat("widgets");
             BI.each(widgets, function (i, widget) {
-                self.bounds[i].bounds.left = widget.bounds.left;
-                self.bounds[i].bounds.width = widget.bounds.width;
+                var bounds = widget.bounds || {};
+                self.bounds[i].bounds.left = bounds.left;
+                self.bounds[i].bounds.width = bounds.width;
             });
         }
     },
@@ -110,6 +111,7 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
         var items = [];
         BI.each(this.bounds, function (wid, widget) {
             var w = o.widgetCreator(wid);
+            var bounds = widget.bounds || {};
             var container = BI.createWidget({
                 type: "bi.absolute",
                 id: wid,
@@ -123,10 +125,10 @@ BI.Fit4Show = BI.inherit(BI.Widget, {
             });
             items.push({
                 el: container,
-                left: widget.bounds.left,
-                top: widget.bounds.top,
-                width: widget.bounds.width,
-                height: widget.bounds.height
+                left: bounds.left,
+                top: bounds.top,
+                width: bounds.width,
+                height: bounds.height
             });
         });
         BI.each(items, function (i, item) {

@@ -234,7 +234,8 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
             BI.some(tables, function (j, table) {
                 if (group.value === table.table_name &&
                     self.connectionName === table.connection_name) {
-                    item.extraCls = "package-table-selected";
+                    // item.extraCls = "package-table-selected";
+                    item.needMark = true;
                     return true;
                 }
             });

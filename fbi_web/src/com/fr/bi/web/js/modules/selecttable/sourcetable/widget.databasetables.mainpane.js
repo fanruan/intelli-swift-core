@@ -53,7 +53,8 @@ BI.DatabaseTablesMainPane = BI.inherit(BI.Widget, {
             isAutoSync: false,
             popup: {
                 type: "bi.database_tables_search_result_pane",
-                tables: this.options.tables
+                tables: this.options.tables,
+                linkNames: o.linkNames
             }
         });
         searcher.on(BI.Searcher.EVENT_START, function () {

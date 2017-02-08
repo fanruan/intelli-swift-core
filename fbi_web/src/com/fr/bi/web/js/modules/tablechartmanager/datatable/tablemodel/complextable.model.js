@@ -146,6 +146,24 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         return BI.size(this._getColRegions()) > 0;
     },
 
+    _getLargestLengthOfRowRegions: function () {
+        var regions = this._getRowRegions();
+        var length = 0;
+        BI.each(regions, function (i, region) {
+            region.length > length && (length = region.length);
+        });
+        return length;
+    },
+
+    _getLargestLengthOfColRegions: function () {
+        var regions = this._getColRegions();
+        var length = 0;
+        BI.each(regions, function (i, region) {
+            region.length > length && (length = region.length);
+        });
+        return length;
+    },
+
     /**
      * 基本的复杂表结构
      * 有几个维度的分组表示就有几个表
@@ -304,6 +322,30 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         return {
             crossItem: crossItem,
             item: item
+        }
+    },
+
+    _createComplexTableHeader: function () {
+        this._createCrossTableHeader();
+        //补齐header的长度
+        var count = 0,
+            rowLength = this._getLargestLengthOfRowRegions(),
+            colLength = this._getLargestLengthOfColRegions();
+        var lastDimHeader = this.header[this.dimIds.length - 1],
+            lastCrossDimHeader = this.crossHeader[this.crossDimIds.length - 1];
+        while (count < rowLength - this.dimIds.length) {
+            // this.header.splice(this.dimIds.length + count - 1, 0, {
+            //     type: "bi.page_table_cell",
+            //     tag: BI.UUID(),
+            //     styles: BI.SummaryTableHelper.getHeaderStyles(this.getThemeColor(), this.getTableStyle())
+            // });
+            this.header.splice(this.dimIds.length + count, 0, lastDimHeader);
+            count++;
+        }
+        count = 0;
+        while (count < colLength - this.crossDimIds.length) {
+            count++;
+            this.crossHeader.splice(this.crossDimIds.length + count, 0, lastCrossDimHeader);
         }
     },
 
@@ -485,6 +527,17 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         }];
     },
 
+    _setOtherComplexAttrs: function () {
+        this._setOtherCrossAttrs();
+        var largestRowDims = this._getLargestLengthOfRowRegions();
+        var count = 0;
+        while (count < largestRowDims - this.dimIds.length) {
+            count++;
+            this.mergeCols.push(this.mergeCols.length);
+            this.freezeCols.push(this.mergeCols.length);
+        }
+    },
+
     createTableAttrs: function () {
         this.headerOperatorCallback = arguments[0];
         this.expanderCallback = arguments[1];
@@ -495,8 +548,8 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         //正常复杂表
         if (this._isColRegionExist() && this._isRowRegionExist()) {
             this._createComplexTableItems();
-            this._createCrossTableHeader();
-            this._setOtherCrossAttrs();
+            this._createComplexTableHeader();
+            this._setOtherComplexAttrs();
             return;
         }
         //仅有列表头的时候（无指标）
