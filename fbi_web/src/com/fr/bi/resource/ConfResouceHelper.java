@@ -326,8 +326,6 @@ public class ConfResouceHelper {
                 "com/fr/bi/web/js/modules/onepackage/etl/filter/filter.multiselect.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/filter/widget.filter.js",
                 "com/fr/bi/web/js/modules/onepackage/etl/filter/widget.filter.model.js",
-                "com/fr/bi/web/js/modules/date/interval.date.js",
-                "com/fr/bi/web/js/modules/date/multi.date.js",
 
                 //增加公式列
                 "com/fr/bi/web/js/modules/onepackage/etl/confaddfield/widget.button.formulafield.js",
