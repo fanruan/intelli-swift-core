@@ -208,21 +208,34 @@ public class BILogHelper {
         return logInfo;
     }
 
-    public static Vector<BILogExceptionInfo> getCubeLogExceptionList(String tableSourceID) {
+
+    public static Vector<BILogExceptionInfo> getCubeLogExceptionList(String key, String subTag) {
         try {
-            Object exceptionList = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, tableSourceID);
+            Object exceptionList;
+            Object exceptionInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, subTag);
+            if (exceptionInfoMap != null && exceptionInfoMap instanceof Map) {
+                Map<String, Vector<BILogExceptionInfo>> tableExceptionMap = (Map<String, Vector<BILogExceptionInfo>>) exceptionInfoMap;
+                if (tableExceptionMap.containsKey(key)) {
+                    exceptionList = tableExceptionMap.get(key);
+                } else {
+                    return new Vector<BILogExceptionInfo>();
+                }
+            } else {
+                return new Vector<BILogExceptionInfo>();
+            }
+
             if (null == exceptionList) {
                 return new Vector<BILogExceptionInfo>();
             }
             if (exceptionList instanceof Vector) {
                 return (Vector<BILogExceptionInfo>) exceptionList;
             } else {
-                BILoggerFactory.getLogger(BILogHelper.class).warn("The cubeLogExceptionList is not a Vector,the tableSourceId is: " + tableSourceID + ", create a new Vector instead");
+                BILoggerFactory.getLogger(BILogHelper.class).warn("The cubeLogExceptionList is not a Vector,the tableSourceId is: " + key + ", create a new Vector instead");
                 return new Vector<BILogExceptionInfo>();
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger(BILogHelper.class).warn(e.getMessage(), e);
-            BILoggerFactory.getLogger(BILogHelper.class).warn("Get cubeLogExceptionList error, the tableSourceId is: " + tableSourceID + ", create a new Vector Instead");
+            BILoggerFactory.getLogger(BILogHelper.class).warn("Get cubeLogExceptionList error, the tableSourceId is: " + key + ", create a new Vector Instead");
             return new Vector<BILogExceptionInfo>();
         }
     }
@@ -234,6 +247,10 @@ public class BILogHelper {
     public static void cacheCubeLogFieldNormalInfo(String tableSourceID, String fieldName, String infoType, Object info) {
         String fieldInfoType = fieldName + '_' + infoType;
         cacheCubeLogNormalInfo(tableSourceID, fieldInfoType, info, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_FIELD_NORMAL_INFO);
+    }
+
+    public static void cacheCubeLogRelationNormalInfo(String relationID, String infoType, Object info) {
+        cacheCubeLogNormalInfo(relationID, infoType, info, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_RELATION_NORMAL_INFO);
     }
 
 
@@ -263,13 +280,31 @@ public class BILogHelper {
 
     }
 
-    public static void cacheCubeLogException(String tableSourceID, BILogExceptionInfo exceptionInfo) {
+
+    public static void cacheCubeLogTableException(String tableSourceID, BILogExceptionInfo exceptionInfo) {
+        cacheCubeLogException(tableSourceID, exceptionInfo, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_TABLE_EXCEPTION_INFO);
+    }
+
+    public static void cacheCubeLogRelationException(String relationID, BILogExceptionInfo exceptionInfo) {
+        cacheCubeLogException(relationID, exceptionInfo, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_RELATION_EXCEPTION_INFO);
+    }
+
+    public static void cacheCubeLogException(String key, BILogExceptionInfo exceptionInfo, String subTag) {
         try {
-            Vector<BILogExceptionInfo> exceptionList = BILogHelper.getCubeLogExceptionList(tableSourceID);
+            Vector<BILogExceptionInfo> exceptionList = BILogHelper.getCubeLogExceptionList(key, subTag);
             exceptionList.add(exceptionInfo);
-            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, BILogCacheTagHelper.getCubeLogSubTag(tableSourceID), exceptionList);
+
+            Object exceptionInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, subTag);
+            if (exceptionInfoMap != null && exceptionInfoMap instanceof Map) {
+                Map<String, Vector> cubeExceptionMap = (Map<String, Vector>) exceptionInfoMap;
+                cubeExceptionMap.put(key, exceptionList);
+            } else {
+                Map<String, Vector> cubeExceptionMap = new ConcurrentHashMap<String, Vector>();
+                cubeExceptionMap.put(key, exceptionList);
+                BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, subTag, cubeExceptionMap);
+            }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(BILogHelper.class).warn("Cache Cube Exception Error, the error tableSourceId is; " + tableSourceID);
+            BILoggerFactory.getLogger(BILogHelper.class).warn("Cache Cube Exception Error, the error tableSourceId is; " + key);
             BILoggerFactory.getLogger(BILogHelper.class).warn(e.getMessage(), e);
         }
 

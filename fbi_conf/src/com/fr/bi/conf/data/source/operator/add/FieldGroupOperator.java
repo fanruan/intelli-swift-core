@@ -99,7 +99,7 @@ public class FieldGroupOperator extends AbstractAddColumnOperator {
             } catch (Exception e) {
                 BILoggerFactory.getLogger(FieldGroupOperator.class).error("The FieldGroupOperator error, the error Table is: " + BILogHelper.logCubeLogTableSourceInfo(ti.getId()));
                 BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "The operator is: FieldGroupOperator. The Table is: " + BILogHelper.logCubeLogTableSourceInfo(ti.getId()), e.getMessage(), e);
-                BILogHelper.cacheCubeLogException(ti.getId(), exceptionInfo);
+                BILogHelper.cacheCubeLogTableException(ti.getId(), exceptionInfo);
             }
 
         }

@@ -128,7 +128,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             }
             BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_END, System.currentTimeMillis());
             BICubeLogExceptionInfo exceptionInfo = new BICubeLogExceptionInfo(System.currentTimeMillis(), "Field Index Build", e.getMessage(), e, tableSource.getSourceID(), hostBICubeFieldSource.getFieldName());
-            BILogHelper.cacheCubeLogException(tableSource.getSourceID(), exceptionInfo);
+            BILogHelper.cacheCubeLogTableException(tableSource.getSourceID(), exceptionInfo);
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
