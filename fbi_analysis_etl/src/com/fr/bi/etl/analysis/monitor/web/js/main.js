@@ -25,6 +25,7 @@ BI.extend(BI.Monitor, {
         });
         return BI.requestAsync("sppa_monitor", "check_all_table_health", {}, function (res) {
             callback(res);
+        }, function () {
             mask.destroy();
         })
     },
@@ -39,6 +40,7 @@ BI.extend(BI.Monitor, {
             id:id
         }, function (res) {
             callback(res);
+        }, function () {
             mask.destroy();
         })
     },
