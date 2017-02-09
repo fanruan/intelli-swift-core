@@ -3,27 +3,27 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 public class PageIteratorGroup {
 
-    private IRootDimensionGroup rowRoot;
+    private NodeDimensionIterator rowIterator;
 
-    private IRootDimensionGroup columnRoot;
+    private NodeDimensionIterator columnIterator;
 
     public PageIteratorGroup(){
 
     }
 
-    public IRootDimensionGroup getRowRoot() {
-        return rowRoot;
+    public NodeDimensionIterator getRowIterator() {
+        return rowIterator;
     }
 
-    public IRootDimensionGroup getColumnRoot() {
-        return columnRoot;
+    public NodeDimensionIterator getColumnIterator() {
+        return columnIterator;
     }
 
-    public void setRowRoot(IRootDimensionGroup rowRoot) {
-        this.rowRoot = rowRoot;
+    public void setRowIterator(NodeDimensionIterator rowIterator) {
+        this.rowIterator = rowIterator;
     }
 
-    public void setColumnRoot(IRootDimensionGroup columnRoot) {
-        this.columnRoot = columnRoot;
+    public void setColumnIterator(NodeDimensionIterator columnIterator) {
+        this.columnIterator = columnIterator;
     }
 }

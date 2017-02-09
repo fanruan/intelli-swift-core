@@ -33,6 +33,10 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
     private int sortType;
     private List<CalCalculator> configureRelatedCalculators;
     private DimensionFilter[] calculateMetricsDimensionFilters;
+
+    public PartConstructedRootDimensionGroup() {
+    }
+
     public PartConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, BISession session, boolean useRealData, int lastConstructedDimensionIndex, NameObject targetSort, List<CalCalculator> configureRelatedCalculators, DimensionFilter[] calculateMetricsDimensionFilters) {
         super(metricGroupInfoList, mergeIteratorCreators, session, useRealData);
         this.lastConstructedDimensionIndex = lastConstructedDimensionIndex;
@@ -152,5 +156,23 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
             }
             sum(node);
         }
+    }
+
+    @Override
+    public IRootDimensionGroup createClonedRoot() {
+        PartConstructedRootDimensionGroup root = (PartConstructedRootDimensionGroup) super.createClonedRoot();
+        root.lastConstructedDimensionIndex = lastConstructedDimensionIndex;
+        root.rootNode = rootNode;
+        root.sortIndex = sortIndex;
+        root.sortTarget = sortTarget;
+        root.sortType = sortType;
+        root.configureRelatedCalculators = configureRelatedCalculators;
+        root.calculateMetricsDimensionFilters = calculateMetricsDimensionFilters;
+        return root;
+    }
+
+    @Override
+    protected IRootDimensionGroup createNew() {
+        return new PartConstructedRootDimensionGroup();
     }
 }

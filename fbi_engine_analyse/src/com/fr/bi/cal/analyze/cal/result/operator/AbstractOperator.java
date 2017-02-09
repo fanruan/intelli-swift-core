@@ -26,5 +26,13 @@ public abstract class AbstractOperator implements Operator {
         return counter >= maxRow;
     }
 
+    @Override
+    public int getMaxRow() {
+        return maxRow;
+    }
 
+    @Override
+    public Object[] getClickedValue() {
+        return new Object[0];
+    }
 }

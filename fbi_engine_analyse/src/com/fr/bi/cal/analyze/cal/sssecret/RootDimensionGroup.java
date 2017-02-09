@@ -20,7 +20,6 @@ import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -35,7 +34,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected BISession session;
     protected boolean useRealData;
 
-    private TreeIterator iter;
     protected ICubeValueEntryGetter[][] getters;
     protected DimensionCalculator[][] columns;
     protected ICubeTableService[] tis;
@@ -44,7 +42,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected List<TargetAndKey>[] summaryLists;
     protected NoneDimensionGroup root;
     protected int rowSize;
-    private NodeExpander expander;
+
+    protected RootDimensionGroup(){
+
+    }
 
     public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, BISession session, boolean useRealData) {
         this.metricGroupInfoList = metricGroupInfoList;
@@ -71,7 +72,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             }
         }
         this.singleDimensionGroupCache = new ISingleDimensionGroup[rowSize];
-        this.iter = new TreeIterator(rowSize);
     }
 
     protected void initGetterAndRows() {
@@ -119,68 +119,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         return column.createKey();
     }
 
-    public static int findPageIndexDichotomy(int[] shrinkPos, List<int[]> pageIndex, int start, int end) throws ArrayIndexOutOfBoundsException {
-        //判断数组是否为空
-        if (pageIndex == null) {
-            throw new NullPointerException();
-        }
-        if (start < 0 || end < 0) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        if (end > start) {
-            int middle = (start + end) / 2;
-            int[] middleIndex = pageIndex.get(middle);
-            //中间值小于当前值
-            if (TreePageComparator.TC.compare(shrinkPos, middleIndex) >= 0) {
-                //中间值小于当前值，同时下一个值大于等于当前值（end>=middle+1）,则middle为最小的大于值
-                if (TreePageComparator.TC.compare(shrinkPos, pageIndex.get(middle + 1)) < 0) {
-                    return middle + 1;
-                } else {
-                    //中间值小于当前值，但是下一个值仍然小于，则结果应该在（middle+1,end）中间
-                    return findPageIndexDichotomy(shrinkPos, pageIndex, middle + 1, end);
-                }
-            } else {
-                //中间值大于当前值
-                return findPageIndexDichotomy(shrinkPos, pageIndex, start, middle);
-            }
-        } else if (start == end) {
-            return start;
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-    }
-
-    /**
-     * TODO 这里可以改成可以前后移动的游标提高性能先这样
-     */
     @Override
-    public TreeIterator moveToShrinkStartValue(Object[] value) {
-        if (value != null) {
-            int[] shrinkPos = getValueStartRow(value);
-            iter.travelToPositionPage(shrinkPos);
-        } else {
-            iter.moveCurrentStart();
-        }
-        return iter;
+    public NoneDimensionGroup getRoot() {
+        return root;
     }
 
-    @Override
-    public TreeIterator moveLast() {
-        iter.moveLast();
-        return iter;
-    }
-
-    @Override
-    public TreeIterator moveNext() {
-        return iter;
-    }
-
-    @Override
-    public void setExpander(NodeExpander expander) {
-        this.expander = expander;
-    }
-
-    private int[] getValueStartRow(Object[] value) {
+    public int[] getValueStartRow(Object[] value) {
         IntList result = new IntList();
         getValueStartRow(root, value, 0, result);
         for (int i = value.length; i < rowSize; i++) {
@@ -217,7 +161,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
      * @param expander 展开信息
      * @param list     当前的游标
      */
-    private ReturnStatus getNext(GroupConnectionValue gv,
+    public ReturnStatus getNext(GroupConnectionValue gv,
                                  int[] index,
                                  int deep,
                                  NodeExpander expander,
@@ -314,127 +258,25 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         return ngv;
     }
 
-    private static class TreePageComparator implements Comparator<int[]> {
-
-        private static TreePageComparator TC = new TreePageComparator();
-
-        @Override
-        public int compare(int[] p1, int[] p2) {
-            if (p1 == p2) {
-                return 0;
-            }
-            if (p1 == null) {
-                return -1;
-            }
-            if (p2 == null) {
-                return 1;
-            }
-            int len1 = p1.length;
-            int len2 = p2.length;
-            int lim = Math.min(len1, len2);
-            int k = 0;
-            while (k < lim) {
-                int c1 = p1[k];
-                int c2 = p2[k];
-                if (c1 != c2) {
-                    return c1 - c2;
-                }
-                k++;
-            }
-            return len1 - len2;
-        }
-
+    @Override
+    public IRootDimensionGroup createClonedRoot() {
+        RootDimensionGroup rootDimensionGroup = (RootDimensionGroup) createNew();
+        rootDimensionGroup.metricGroupInfoList = metricGroupInfoList;
+        rootDimensionGroup.mergeIteratorCreators = mergeIteratorCreators;
+        rootDimensionGroup.session = session;
+        rootDimensionGroup.useRealData = useRealData;
+        rootDimensionGroup.getters = getters;
+        rootDimensionGroup.columns = columns;
+        rootDimensionGroup.tis = tis;
+        rootDimensionGroup.singleDimensionGroupCache = singleDimensionGroupCache.clone();
+        rootDimensionGroup.metrics = metrics;
+        rootDimensionGroup.summaryLists = summaryLists;
+        rootDimensionGroup.root = root;
+        rootDimensionGroup.rowSize = rowSize;
+        return rootDimensionGroup;
     }
 
-    /**
-     * 类似n位进制不定的整数的加法，每次next就加1。
-     * 比如有三个维度，数组初始位置是{-1, -1, -1}, 从末尾依次往上加1，一旦越界，比如加到了{0, 0, 6}越界了，就进位加1，变成{0, 1, 0}再继续。
-     * 初始化为{-1, -1, -1}而不是{0, 0, -1}是因为可能没有展开倒最后一个维度，要是没有展开的情况会直接略过分组的第一个值。
-     */
-    private class TreeIterator implements NodeDimensionIterator {
-        private int[] index;
-        private int[] tempIndex;
-
-        /**
-         * TODO 先放内存看看再说
-         */
-        private List<int[]> pageIndex = new ArrayList<int[]>();
-
-        private TreeIterator(int len) {
-            this.index = new int[len];
-            Arrays.fill(this.index, -1);
-            pageEnd();
-        }
-
-        private void moveLast() {
-            int pos = pageIndex.size() - 3;
-            this.index = pageIndex.get(pos);
-            this.pageIndex = this.pageIndex.subList(0, pos + 1);
-        }
-
-        private void moveCurrentStart() {
-            int pos = pageIndex.size() - 2;
-            this.index = pageIndex.get(pos);
-            this.pageIndex = this.pageIndex.subList(0, pos + 1);
-        }
-
-
-        private void travelToPositionPage(int[] shrinkPos) {
-            int position = findPageIndexDichotomy(shrinkPos, pageIndex, 0, pageIndex.size() - 1);
-            if (position - 1 >= 0) {
-                this.index = pageIndex.get(position - 1);
-            }
-            if (position < pageIndex.size()) {
-                pageIndex = pageIndex.subList(0, position);
-            }
-        }
-
-        @Override
-        public GroupConnectionValue next() {
-            return seek(index);
-        }
-
-        private GroupConnectionValue seek(int[] index) {
-            GroupConnectionValue gv = new GroupConnectionValue(null, root);
-            IntList list = new IntList();
-            int indexCopy[] = Arrays.copyOf(index, index.length);
-            if (ReturnStatus.GroupEnd == getNext(gv, indexCopy, 0, expander, list)) {
-                this.tempIndex = null;
-                return null;
-            }
-            //没有展开的情况list的size会小于维度的数量，要补齐。主要是怕越界。。。
-            for (int i = list.size(); i < rowSize; i++) {
-                list.add(-1);
-            }
-            this.tempIndex = list.toArray();
-            return gv;
-        }
-
-        @Override
-        public boolean hasPrevious() {
-            return pageIndex.size() > 2;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return next() != null && index != null && index.length > 0;
-        }
-
-        @Override
-        public void moveNext() {
-            if (this.tempIndex != null) {
-                this.index = tempIndex.clone();
-            }
-        }
-
-        @Override
-        public int getPageIndex() {
-            return pageIndex.size() - 1;
-        }
-
-        @Override
-        public void pageEnd() {
-            pageIndex.add(this.index.clone());
-        }
+    protected IRootDimensionGroup createNew(){
+        return new RootDimensionGroup();
     }
 }

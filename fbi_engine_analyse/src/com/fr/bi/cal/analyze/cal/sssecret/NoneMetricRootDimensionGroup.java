@@ -37,6 +37,10 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     private DimensionCalculator[] dimensionCalculators;
     private DimensionFilter[] directDimensionFilters;
 
+    protected NoneMetricRootDimensionGroup(){
+
+    }
+
     public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, BISession session, boolean useRealData, TargetFilter filter, DimensionFilter[] directDimensionFilters) {
         super(metricGroupInfoList, mergeIteratorCreators, session, useRealData);
         this.filter = filter;
@@ -145,4 +149,17 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
         return gvi;
     }
 
+    @Override
+    public IRootDimensionGroup createClonedRoot() {
+        NoneMetricRootDimensionGroup root = (NoneMetricRootDimensionGroup) super.createClonedRoot();
+        root.filter = filter;
+        root.dimensionCalculators = dimensionCalculators;
+        root.directDimensionFilters = directDimensionFilters;
+        return root;
+    }
+
+    @Override
+    protected IRootDimensionGroup createNew() {
+        return new NoneMetricRootDimensionGroup();
+    }
 }
