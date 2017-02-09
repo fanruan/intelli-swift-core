@@ -61,7 +61,8 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
                             window.top.FS.tabPane.addItem({
                                 id: item.id,
                                 title: item.text,
-                                src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
+                                src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_",
+                                showFavorite: "no"
                             });
                         } else {
                             window.open(FR.servletURL + item.buildUrl + "&edit=_bi_edit_", "_blank");
