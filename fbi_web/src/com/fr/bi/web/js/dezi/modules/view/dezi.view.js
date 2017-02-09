@@ -18,28 +18,7 @@ BIDezi.View = BI.inherit(BI.View, {
         var self = this;
         vessel.css("z-index", 0);
         var subvessel = BI.createWidget();
-        var popup = BI.createWidget({
-            type: "bi.popup_saveas",
-            width: 340,
-            height: 140
-        });
-        popup.on(BI.PopupSaveAs.EVENT_COLLAPSE,function () {
-            saveAs.hideView();
-        });
-        popup.on(BI.PopupSaveAs.EVENT_CHANGE,function (data) {
-            saveAs.hideView();
-            BI.requestAsync("fr_bi", "report_save_as", {
-                report_id: self.model.get("reportId"),
-                report_name: data.report_name,
-                create_by: self.model.get("createBy"),
-                report_location: data.report_location,
-                real_time: self.model.get("description")
-            }, function (res, model) {
-                if (BI.isNotNull(res) && BI.isNotNull(res.reportId)) {
-                    BI.Msg.toast(BI.i18nText("BI-Save_As_Success"));
-                }
-            });
-        });
+
         var saveAs = BI.createWidget({
             type: "bi.bubble_combo",
             el: {
@@ -51,7 +30,28 @@ BIDezi.View = BI.inherit(BI.View, {
                 width: 70
             },
             popup: {
-                el: popup,
+                el: BI.createWidget({
+                    type: "bi.saveas_pupup",
+                    width: 340,
+                    height: 140,
+                    cancel: function () {
+                        saveAs.hideView();
+                    },
+                    confirm: function (data) {
+                        saveAs.hideView();
+                        BI.requestAsync("fr_bi", "report_save_as", {
+                            report_id: self.model.get("reportId"),
+                            report_name: data.report_name,
+                            create_by: self.model.get("createBy"),
+                            report_location: data.report_location,
+                            real_time: self.model.get("description")
+                        }, function (res, model) {
+                            if (BI.isNotNull(res) && BI.isNotNull(res.reportId)) {
+                                BI.Msg.toast(BI.i18nText("BI-Save_As_Success"));
+                            }
+                        });
+                    }
+                }),
                 maxHeight: 142,
                 minWidth: 340
             }

@@ -1,15 +1,15 @@
 /**
  * Created by lei.wang on 2017/2/7.
  */
-BI.PopupSaveAs = BI.inherit(BI.Widget, {
+BI.SaveAsPopup = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.PopupSaveAs.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-popup-saveas"
+        return BI.extend(BI.SaveAsPopup.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-saveas-popup"
         });
     },
 
     _init: function () {
-        BI.PopupSaveAs.superclass._init.apply(this, arguments);
+        BI.SaveAsPopup.superclass._init.apply(this, arguments);
         var o = this.options, self = this;
         this.rebuildCenter = function () {
             var self = this, o = this.options;
@@ -85,13 +85,13 @@ BI.PopupSaveAs = BI.inherit(BI.Widget, {
                         type: 'bi.inline_vertical_adapt',
                         width: 340,
                         items: [{
-                                type: "bi.label",
-                                text: BI.i18nText("BI-Template_Location"),
-                                height: 40,
-                                width: 80,
-                                textAlign: "center",
-                                cls: "template-location-label",
-                            }, this.reportLocation]
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Template_Location"),
+                            height: 40,
+                            width: 80,
+                            textAlign: "center",
+                            cls: "template-location-label",
+                        }, this.reportLocation]
                     })
                 ],
                 top: 10
@@ -103,24 +103,23 @@ BI.PopupSaveAs = BI.inherit(BI.Widget, {
                 type: "bi.button",
                 text: BI.i18nText("BI-OK"),
                 title: BI.i18nText("BI-OK"),
-                height: 30
-            });
-            this.saveButton.on(BI.Button.EVENT_CHANGE, function () {
-                self.fireEvent(BI.PopupSaveAs.EVENT_CHANGE, {
-                    report_name: self.templateName.getValue(),
-                    report_location: self.reportLocation.getValue()[0]
-                });
+                height: 30,
+                handler: function () {
+                    o.confirm({
+                        report_name: self.templateName.getValue(),
+                        report_location: self.reportLocation.getValue()[0]
+                    });
+                }
             });
             this.cancelButton = BI.createWidget({
                 type: "bi.button",
                 level: "ignore",
                 text: BI.i18nText("BI-Cancel"),
-                height: 30
+                height: 30,
+                handler: function () {
+                    o.cancel();
+                }
             });
-            this.cancelButton.on(BI.Button.EVENT_CHANGE, function () {
-                self.fireEvent(BI.PopupSaveAs.EVENT_COLLAPSE);
-            });
-
             return BI.createWidget({
                 type: 'bi.absolute',
                 width: 340,
@@ -129,7 +128,7 @@ BI.PopupSaveAs = BI.inherit(BI.Widget, {
                     el: this.saveButton,
                     top: 10,
                     right: 10
-                },{
+                }, {
                     el: this.cancelButton,
                     top: 10,
                     right: 120
@@ -187,6 +186,5 @@ BI.PopupSaveAs = BI.inherit(BI.Widget, {
     }
 });
 
-BI.PopupSaveAs.EVENT_COLLAPSE = "EVENT_COLLAPSE";
-BI.PopupSaveAs.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.popup_saveas", BI.PopupSaveAs);
+BI.SaveAsPopup.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.saveas_pupup", BI.SaveAsPopup);
