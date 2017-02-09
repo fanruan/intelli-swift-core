@@ -90,10 +90,10 @@ public class Service4BIDezi implements Service {
         FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
         BISession biSessionInfor = (BISession) SessionDealWith.getSessionIDInfor(sessionID);
 
-        if ((biSessionInfor != null)) {
-            WebActionsDispatcher.dealForActionCMD(req, res, sessionID, actions);
-        } else if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
+        if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
             vote.action(req, res);
+        } else if ((biSessionInfor != null)) {
+            WebActionsDispatcher.dealForActionCMD(req, res, sessionID, actions);
         } else {
             ErrorHandlerHelper.getErrorHandler().error(req, res, "Reportlet SessionId: \"" + sessionID + "\"time out. ");
         }
