@@ -65,48 +65,9 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
             currentRowData = new ArrayList<Object>();
             //首行 确定字段名
             if (i == 0) {
-                columnNames = new String[columnCount];
-                for (int j = 0; j < columnCount; j++) {
-                    String cName;
-                    try {
-                        cName = oneRow[j].toString();
-                    } catch (Exception e) {
-                        cName = StringUtils.EMPTY;
-                    }
-                    String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
-                    Pattern p = Pattern.compile(regEx);
-                    Matcher m = p.matcher(cName);
-                    cName = m.replaceAll(StringUtils.EMPTY).trim();
-                    columnNames[j] = cName;
-                }
+                dealWithExcelFieldName(oneRow);
             } else if (i == 1) {
-                columnTypes = new int[columnCount];
-                for (int j = 0; j < columnCount; j++) {
-                    String v;
-                    try {
-                        v = oneRow[j].toString();
-                    } catch (Exception e) {
-                        v = StringUtils.EMPTY;
-                    }
-                    currentRowData.add(v);
-                    boolean dateType = false;
-                    try {
-                        Date date = DateUtils.string2Date(v, true);
-                        if (date != null) {
-                            dateType = true;
-                        }
-                    } catch (Exception e) {
-                        dateType = false;
-                    }
-                    if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
-                        columnTypes[j] = DBConstant.COLUMN.NUMBER;
-                    } else if (dateType) {
-                        columnTypes[j] = DBConstant.COLUMN.DATE;
-                    } else {
-                        columnTypes[j] = DBConstant.COLUMN.STRING;
-                    }
-                }
-                rowDataList.add(currentRowData.toArray());
+                dealWithExcelFieldType(oneRow);
             } else {
                 for (int j = 0; j < columnCount; j++) {
                     String v;
@@ -120,5 +81,52 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
                 rowDataList.add(currentRowData.toArray());
             }
         }
+    }
+
+    private void dealWithExcelFieldName(Object[] oneRow) {
+        columnNames = new String[columnCount];
+        for (int j = 0; j < columnCount; j++) {
+            String cName;
+            try {
+                cName = oneRow[j].toString();
+            } catch (Exception e) {
+                cName = StringUtils.EMPTY;
+            }
+            String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
+            Pattern p = Pattern.compile(regEx);
+            Matcher m = p.matcher(cName);
+            cName = m.replaceAll(StringUtils.EMPTY).trim();
+            columnNames[j] = cName;
+        }
+    }
+
+    private void dealWithExcelFieldType(Object[] oneRow) {
+        columnTypes = new int[columnCount];
+        for (int j = 0; j < columnCount; j++) {
+            String v;
+            try {
+                v = oneRow[j].toString();
+            } catch (Exception e) {
+                v = StringUtils.EMPTY;
+            }
+            currentRowData.add(v);
+            boolean dateType = false;
+            try {
+                Date date = DateUtils.string2Date(v, true);
+                if (date != null) {
+                    dateType = true;
+                }
+            } catch (Exception e) {
+                dateType = false;
+            }
+            if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
+                columnTypes[j] = DBConstant.COLUMN.NUMBER;
+            } else if (dateType) {
+                columnTypes[j] = DBConstant.COLUMN.DATE;
+            } else {
+                columnTypes[j] = DBConstant.COLUMN.STRING;
+            }
+        }
+        rowDataList.add(currentRowData.toArray());
     }
 }
