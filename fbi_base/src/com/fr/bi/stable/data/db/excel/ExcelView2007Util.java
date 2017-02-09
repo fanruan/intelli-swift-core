@@ -4,6 +4,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.stable.StringUtils;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
@@ -72,7 +73,7 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v;
                     try {
-                        v = oneRow[j].toString();
+                        v = GeneralUtils.objectToString(oneRow[j]);
                     } catch (Exception e) {
                         v = StringUtils.EMPTY;
                     }
@@ -88,7 +89,7 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
         for (int j = 0; j < columnCount; j++) {
             String cName;
             try {
-                cName = oneRow[j].toString();
+                cName = GeneralUtils.objectToString(oneRow[j]);
             } catch (Exception e) {
                 cName = StringUtils.EMPTY;
             }
@@ -105,7 +106,7 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
         for (int j = 0; j < columnCount; j++) {
             String v;
             try {
-                v = oneRow[j].toString();
+                v = GeneralUtils.objectToString(oneRow[j]);
             } catch (Exception e) {
                 v = StringUtils.EMPTY;
             }
