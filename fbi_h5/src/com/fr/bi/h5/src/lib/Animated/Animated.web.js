@@ -11,7 +11,7 @@
 'use strict';
 
 import Animated from 'animated';
-import CSSPropertyOperations from 'react/lib/CSSPropertyOperations';
+import CSSPropertyOperations from 'react-dom/lib/CSSPropertyOperations';
 
 import flattenStyle from '../StyleSheet/FlattenStyle.web.js';
 import Image from '../Image/Image.web';

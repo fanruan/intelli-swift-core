@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.cal.result;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -25,7 +26,7 @@ public class NodeExpander {
      *
      * @param name 名字
      */
-    public void addChild(String name) {
+    private void addChild(String name) {
         NodeExpander ne = new NodeExpander();
         ne.setParent(this);
         childExpanderMap.put(name, ne);
@@ -39,18 +40,6 @@ public class NodeExpander {
         this.parent = parent;
     }
 
-    /**
-     * 加一个子点
-     *
-     * @param name         名字
-     * @param nodeExpander 节点
-     */
-    public void addChild(String name, NodeExpander nodeExpander) {
-        if (nodeExpander != null) {
-            nodeExpander.setParent(this);
-        }
-        childExpanderMap.put(name, nodeExpander);
-    }
 
     /**
      * 第index节点是否展开
@@ -134,5 +123,33 @@ public class NodeExpander {
         this.len = len;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
+        NodeExpander that = (NodeExpander) o;
+
+        if (expandAll != that.expandAll) {
+            return false;
+        }
+        if (len != that.len) {
+            return false;
+        }
+        return ComparatorUtils.equals(childExpanderMap,that.childExpanderMap);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (expandAll ? 1 : 0);
+        result = 31 * result + len;
+        //ponyHashMap的hashcode有问题，这里用size区分下吧，锅丢给equals处理
+        result = 31 * result + childExpanderMap.size();
+        return result;
+    }
 }

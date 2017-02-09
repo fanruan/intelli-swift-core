@@ -64,7 +64,7 @@ Data.Req = BIReq = {
     },
 
     reqTablesDetailInfoByTables4Refresh: function (tables, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "refresh_table_fields", {tables: tables}, function (res) {
+        return BI.requestAsync("fr_bi_configure", "refresh_table_fields", {tables: tables}, function (res) {
             callback(res);
         }, complete);
     },
@@ -235,6 +235,12 @@ Data.Req = BIReq = {
     reqUpdateOneTable: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "update_one_table", data, function (res) {
             callback();
+        }, complete);
+    },
+
+    reqUpdatePackageName: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "update_package_name", data, function (res) {
+            callback(res);
         }, complete);
     },
 

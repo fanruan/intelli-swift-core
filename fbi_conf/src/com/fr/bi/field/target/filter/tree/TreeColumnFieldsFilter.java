@@ -56,6 +56,12 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
         int result = 1;
         result = prime * result + Arrays.hashCode(keys);
         result = prime * result + Arrays.hashCode(values);
+        result = prime * result + foreignTable.hashCode();
+        if (relations != null){
+            for ( BITableRelation[] relation : relations){
+                result = prime * result + Arrays.hashCode(relation);
+            }
+        }
         return result;
     }
 
@@ -78,8 +84,11 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
         if (!ComparatorUtils.equals(keys, other.keys)) {
             return false;
         }
+        if (!ComparatorUtils.equals(foreignTable, other.foreignTable)) {
+            return false;
+        }
 
-        return true;
+        return ComparatorUtils.equals(relations, other.relations);
     }
 
     /**
@@ -207,7 +216,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
             for (int i = 0; i < values.length; i++) {
                 if (values[i] != null) {
                     GroupValueIndex tgvi = values[i].createFilterIndex(dimension, this.keys, 0, foreignTable, this.relations, loader, userId);
-                     resgvi.or(tgvi);
+                    resgvi.or(tgvi);
                 }
             }
             GroupValueIndex gvi = null;

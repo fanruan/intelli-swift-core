@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.cal.result.operator;
 
 
-import com.fr.bi.cal.analyze.cal.sssecret.IRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
 
 public class LastPageOperator extends AbstractOperator {
@@ -11,8 +10,8 @@ public class LastPageOperator extends AbstractOperator {
     }
 
     @Override
-    public NodeDimensionIterator getPageIterator(IRootDimensionGroup root) {
-        return root.moveLast();
+    public void moveIterator(NodeDimensionIterator iterator) {
+        iterator.moveLastPage();
     }
 
 }

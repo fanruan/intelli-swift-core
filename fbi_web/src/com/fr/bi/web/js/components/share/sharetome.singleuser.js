@@ -54,11 +54,16 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                             hgap: 10,
                             height: 40,
                             handler: function () {
-                                window.top.FS.tabPane.addItem({
-                                    id: report.id,
-                                    title: report.text,
-                                    src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
-                                });
+                                if (BI.isNotNull(window.top.FS) && BI.isNotNull(window.top.FS.tabPane)) {
+                                    window.top.FS.tabPane.addItem({
+                                        id: report.id,
+                                        title: report.text,
+                                        src: FR.servletURL + report.buildUrl + "&show=_bi_show_",
+                                        showFavorite: "no"
+                                    });
+                                } else {
+                                    window.open(FR.servletURL + report.buildUrl + "&show=_bi_show_", "_blank");
+                                }
                             }
                         }
                     }, {
@@ -93,11 +98,16 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                         iconWidth: 90,
                         iconHeight: 75,
                         handler: function () {
-                            window.top.FS.tabPane.addItem({
-                                id: report.id,
-                                title: report.text,
-                                src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
-                            });
+                            if (BI.isNotNull(window.top.FS) && BI.isNotNull(window.top.FS.tabPane)) {
+                                window.top.FS.tabPane.addItem({
+                                    id: report.id,
+                                    title: report.text,
+                                    src: FR.servletURL + report.buildUrl + "&show=_bi_show_",
+                                    showFavorite: "no"
+                                });
+                            } else {
+                                window.open(FR.servletURL + report.buildUrl + "&show=_bi_show_", "_blank");
+                            }
                         }
                     },
                     left: 30,

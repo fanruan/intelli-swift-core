@@ -3659,12 +3659,12 @@
   color: #009de3;
 }
 .widget-combo-pull-down-font .b-font:before {
-  content: "\e6ab";
+  content: "\e6e0";
   color: #009de3;
 }
 .widget-combo-pull-down-font.native .b-font:before,
 .widget-combo-pull-down-font.disabled .b-font:before {
-  content: "\e6ab";
+  content: "\e6e0";
   color: #009de3;
 }
 .widget-tools-maximization-font .b-font:before {
@@ -3731,12 +3731,12 @@
   color: #808080;
 }
 .widget-combo-rename-edit-font .b-font:before {
-  content: "\e670";
+  content: "\e6e1";
   color: #808080;
 }
 .widget-combo-rename-edit-font.native .b-font:before,
 .widget-combo-rename-edit-font.disabled .b-font:before {
-  content: "\e670";
+  content: "\e6e1";
   color: #808080;
 }
 .widget-combo-show-title-font .b-font:before {
@@ -3944,12 +3944,12 @@
   color: #e85050;
 }
 .rename-font-package .b-font:before {
-  content: "\e687";
+  content: "\e6e1";
   color: #009de3;
 }
 .rename-font-package.native .b-font:before,
 .rename-font-package.disabled .b-font:before {
-  content: "\e687";
+  content: "\e6e1";
   color: #009de3;
 }
 .package-selected-font .b-font:before {
@@ -3980,12 +3980,12 @@
   color: #f07d0a;
 }
 .report-rename-font .b-font:before {
-  content: "\e670";
+  content: "\e6e1";
   color: #58cc7d;
 }
 .report-rename-font.native .b-font:before,
 .report-rename-font.disabled .b-font:before {
-  content: "\e670";
+  content: "\e6e1";
   color: #58cc7d;
 }
 .report-cancel-share-font .b-font:before {

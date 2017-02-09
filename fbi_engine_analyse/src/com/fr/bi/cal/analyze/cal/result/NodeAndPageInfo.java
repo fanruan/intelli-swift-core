@@ -1,27 +1,31 @@
 package com.fr.bi.cal.analyze.cal.result;
 
+import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+
 /**
  * Created by 小灰灰 on 2014/12/18.
  */
 public class NodeAndPageInfo {
     private Node node;
-    private boolean hasPre;
+    private NodeDimensionIterator iterator;
     private boolean hasNext;
-    private int page;
 
-    public NodeAndPageInfo(Node node, boolean hasPre, boolean hasNext, int page) {
+    public NodeAndPageInfo(Node node, NodeDimensionIterator iterator) {
         this.node = node;
-        this.hasPre = hasPre;
-        this.hasNext = hasNext;
-        this.page = page;
+        this.iterator = iterator;
+        this.hasNext = iterator.hasNext();
     }
 
     public Node getNode() {
         return node;
     }
 
+    public NodeDimensionIterator getIterator() {
+        return iterator;
+    }
+
     public int isHasPre() {
-        return hasPre ? 1 : 0;
+        return iterator.hasPrevious() ? 1 : 0;
     }
 
     public int isHasNext() {
@@ -33,7 +37,6 @@ public class NodeAndPageInfo {
     }
 
     public int getPage() {
-        return page;
-
+        return iterator.getPageIndex();
     }
 }

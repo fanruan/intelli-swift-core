@@ -220,7 +220,7 @@ public abstract class BIAbstractWidget implements BIWidget {
         return gvi;
     }
 
-    private List<TargetFilter> getAuthFilter(long userId) {
+    public List<TargetFilter> getAuthFilter(long userId) {
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
         List<BIPackageID> authPacks;
         if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {

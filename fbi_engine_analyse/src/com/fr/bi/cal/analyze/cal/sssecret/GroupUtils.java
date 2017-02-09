@@ -9,7 +9,6 @@ import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryIndexCal;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
-import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.result.NodeUtils;
 import com.fr.bi.cal.analyze.cal.result.operator.Operator;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -20,9 +19,7 @@ import java.util.List;
 public class GroupUtils {
 
 
-    public static NodeAndPageInfo createNextPageMergeNode(IRootDimensionGroup root, Operator op, NodeExpander expander, boolean showSum, boolean shouldSetIndex) {
-        root.setExpander(expander);
-        NodeDimensionIterator iterator = op.getPageIterator(root);
+    public static NodeAndPageInfo createNextPageMergeNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex) {
         return createMergePageNode(iterator, op, showSum, shouldSetIndex);
     }
 
@@ -30,7 +27,7 @@ public class GroupUtils {
         Node node = new Node();
         GroupConnectionValue gc = iterator.next();
         if (gc == null) {
-            return new NodeAndPageInfo(node, false, false, 0);
+            return new NodeAndPageInfo(node, iterator);
         }
         addSummaryValue(node, gc, showSum, shouldSetIndex);
         while (!op.isPageEnd() && gc != null && gc.getChild() != null) {
@@ -57,7 +54,7 @@ public class GroupUtils {
         }
         iterator.pageEnd();
         NodeUtils.setSiblingBetweenFirstAndLastChild(node);
-        return new NodeAndPageInfo(node, iterator.hasPrevious(), iterator.hasNext(), getPage(iterator));
+        return new NodeAndPageInfo(node, iterator);
     }
 
 

@@ -4,9 +4,7 @@
  */
 BI.RequstLoading = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.RequstLoading.superclass._defaultConfig.apply(this, arguments), {
-
-        });
+        return BI.extend(BI.RequstLoading.superclass._defaultConfig.apply(this, arguments), {});
     },
 
     _init: function () {
@@ -18,8 +16,8 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
             type: "bi.tab",
             cardCreator: BI.bind(this._cardCreator, this),
             defaultShowIndex: BI.RequstLoading.ERROR,
-            width: 220,
-            height: 220
+            width: 400,
+            height: 300
         });
         var tempIcon = BI.createWidget({
             type: "bi.icon_button",
@@ -64,6 +62,29 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
 
     _cardCreator: function (v) {
         var self = this;
+        var cancel = BI.createWidget({
+            type: "bi.button",
+            text: BI.i18nText("BI-Cancel"),
+            title: BI.i18nText("BI-Cancel"),
+            level: "ignore",
+            height: 28,
+            width: 90,
+            handler: function () {
+                BI.Maskers.hide(BI.RequstLoading.MASK_ID);
+            }
+        });
+        var retry = BI.createWidget({
+            type: "bi.button",
+            text: BI.i18nText("BI-Retry"),
+            title: BI.i18nText("BI-Retry"),
+            level: "common",
+            height: 28,
+            width: 90,
+            handler: function () {
+                self.paneTab.setSelect(BI.RequstLoading.LOADING);
+                self.callback();
+            }
+        });
         switch (v) {
             case BI.RequstLoading.LOADING:
                 return BI.createWidget({
@@ -86,28 +107,39 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                     height: 200,
                     vgap: 10
                 });
+            case BI.RequstLoading.LOADING_TIMEOUT:
+                return BI.createWidget({
+                    type: "bi.vertical",
+                    items: [{
+                        type: "bi.center_adapt",
+                        cls: "loading-bar-icon",
+                        items: [{
+                            type: "bi.icon",
+                            width: 208,
+                            height: 15
+                        }]
+                    }, {
+                        type: "bi.label",
+                        cls: "loading-comment",
+                        text: BI.i18nText("BI-Loading"),
+                        height: 30
+                    }, {
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Request_Time_Out_Toast_Tip"),
+                        cls: "load-timeout-warning"
+                    }, {
+                        type: "bi.left_right_vertical_adapt",
+                        items: {
+                            left: [cancel],
+                            right: [retry]
+                        },
+                        height: 30,
+                        llgap: 100,
+                        rrgap: 100
+                    }],
+                    vgap: 10
+                });
             case BI.RequstLoading.ERROR:
-                var cancel = BI.createWidget({
-                    type: "bi.button",
-                    text: BI.i18nText("BI-Cancel"),
-                    level: "ignore",
-                    width: 90,
-                    height: 28,
-                    handler: function(){
-                        BI.Maskers.hide(BI.RequstLoading.MASK_ID);
-                    }
-                });
-                var retry = BI.createWidget({
-                    type: "bi.button",
-                    text: BI.i18nText("BI-Reload"),
-                    level: "ignore",
-                    width: 90,
-                    height: 28,
-                    handler: function(){
-                        self.paneTab.setSelect(BI.RequstLoading.LOADING);
-                        self.callback();
-                    }
-                });
                 return BI.createWidget({
                     type: "bi.vertical",
                     items: [{
@@ -120,7 +152,7 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                         }]
                     }, {
                         type: "bi.label",
-                        text: BI.i18nText("BI-Load_Failed"),
+                        text: BI.i18nText("BI-Connection_Lost"),
                         cls: "load-fail-comment"
                     }, {
                         type: "bi.left_right_vertical_adapt",
@@ -128,11 +160,11 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                             left: [cancel],
                             right: [retry]
                         },
-                        height: 30
+                        height: 30,
+                        llgap: 100,
+                        rrgap: 100
                     }],
-                    width: 208,
-                    height: 200,
-                    vgap: 10
+                    vgap: 20
                 });
         }
     },
@@ -146,14 +178,15 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
         BI.Maskers.show(BI.RequstLoading.MASK_ID);
         this.paneTab.setSelect(BI.RequstLoading.ERROR);
     },
-    
-    setCallback: function(callback) {
+
+    setCallback: function (callback) {
         this.callback = callback;
     }
 });
 BI.extend(BI.RequstLoading, {
     MASK_ID: "___request__loading___",
     LOADING: 1,
-    ERROR: 2
+    LOADING_TIMEOUT: 2,
+    ERROR: 3
 });
 $.shortcut("bi.request_loading", BI.RequstLoading);

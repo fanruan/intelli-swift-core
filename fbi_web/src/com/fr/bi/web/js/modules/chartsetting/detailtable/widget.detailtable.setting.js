@@ -202,7 +202,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                 return BI.isInteger(v) && v > 0 && v <= 100;
             }
         });
-        this.rowHeight.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.rowHeight.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
