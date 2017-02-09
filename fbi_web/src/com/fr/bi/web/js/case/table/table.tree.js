@@ -106,7 +106,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
         var header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep, o.headerCellStyleGetter);
-        var items = BI.TableTree.formatItems(o.items, deep, false, op.summaryCellStyleGetter);
+        var items = BI.TableTree.formatItems(o.items, deep, false, o.summaryCellStyleGetter);
         return {
             header: header,
             items: items

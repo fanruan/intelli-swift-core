@@ -726,6 +726,21 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             fieldType: BICst.COLUMN.DATE,
             drag: drag
         }, field, {
+            id: fieldId + BICst.GROUP.YMD,
+            pId: fieldId,
+            text: BI.i18nText("BI-Date"),
+            title: prefix + BI.i18nText("BI-Date"),
+            layer: isRelation ? 3 : 2,
+            value: {
+                field_id: fieldId,
+                group: {type: BICst.GROUP.YMD}
+            }
+        }), BI.extend({
+            wId: o.wId,
+            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+            fieldType: BICst.COLUMN.DATE,
+            drag: drag
+        }, field, {
             id: fieldId + BICst.GROUP.Y,
             pId: fieldId,
             text: BI.i18nText("BI-Year_Fen"),
@@ -779,21 +794,6 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             value: {
                 field_id: fieldId,
                 group: {type: BICst.GROUP.W}
-            }
-        }), BI.extend({
-            wId: o.wId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            fieldType: BICst.COLUMN.DATE,
-            drag: drag
-        }, field, {
-            id: fieldId + BICst.GROUP.YMD,
-            pId: fieldId,
-            text: BI.i18nText("BI-Date"),
-            title: prefix + BI.i18nText("BI-Date"),
-            layer: isRelation ? 3 : 2,
-            value: {
-                field_id: fieldId,
-                group: {type: BICst.GROUP.YMD}
             }
         })];
         //时刻加在明细表里面

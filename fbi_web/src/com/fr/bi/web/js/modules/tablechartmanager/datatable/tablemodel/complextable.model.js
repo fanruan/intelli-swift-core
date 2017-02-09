@@ -44,6 +44,58 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         });
     },
 
+    getExtraInfo: function () {
+        var op = {};
+        var crossExpanderNodes = this._formatExpanderTree(this.crossETree.toJSONWithNode());
+        var expanderNodes = this._formatExpanderTree(this.eTree.toJSONWithNode());
+        var crossEValues = [], eValues = [];
+        var rowRegions = this._getRowRegions(), colRegions = this._getColRegions();
+
+        function searchIndexOfRegion(dId, regions) {
+            var index = 0;
+            var regionIds = BI.sortBy(BI.keys(regions));
+            BI.some(regions, function (id, region) {
+                if (region.contains(dId)) {
+                    index = regionIds.indexOf(id);
+                    return true;
+                }
+            });
+            return index;
+        }
+
+        BI.each(rowRegions, function (i, rRegion) {
+            eValues.push([]);
+        });
+        BI.each(colRegions, function (i, cRegion) {
+            crossEValues.push([]);
+        });
+        BI.each(crossExpanderNodes, function (i, node) {
+            crossEValues[searchIndexOfRegion(node.dId, colRegions)].push(node);
+        });
+        BI.each(expanderNodes, function (i, node) {
+            eValues[searchIndexOfRegion(node.dId, rowRegions)].push(node);
+        });
+
+        op.expander = {
+            x: {
+                type: BI.Utils.getWSOpenColNodeByID(this.wId),
+                value: crossEValues
+            },
+            y: {
+                type: BI.Utils.getWSOpenRowNodeByID(this.wId),
+                value: eValues
+            }
+        };
+        op.clickvalue = this.clickValue;
+        op.page = this.pageOperator;
+        op.status = this.status;
+        op.real_data = true;
+        if (this.status === BICst.WIDGET_STATUS.DETAIL) {
+            op.real_data = BI.Utils.isShowWidgetRealDataByID(this.wId) || false;
+        }
+        return op;
+    },
+
     //获取有效的行表头区域
     _getRowRegions: function () {
         var rowRegions = {};
@@ -92,6 +144,24 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
     //列表头是否存在
     _isColRegionExist: function () {
         return BI.size(this._getColRegions()) > 0;
+    },
+
+    _getLargestLengthOfRowRegions: function () {
+        var regions = this._getRowRegions();
+        var length = 0;
+        BI.each(regions, function (i, region) {
+            region.length > length && (length = region.length);
+        });
+        return length;
+    },
+
+    _getLargestLengthOfColRegions: function () {
+        var regions = this._getColRegions();
+        var length = 0;
+        BI.each(regions, function (i, region) {
+            region.length > length && (length = region.length);
+        });
+        return length;
     },
 
     /**
@@ -255,6 +325,30 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         }
     },
 
+    _createComplexTableHeader: function () {
+        this._createCrossTableHeader();
+        //补齐header的长度
+        var count = 0,
+            rowLength = this._getLargestLengthOfRowRegions(),
+            colLength = this._getLargestLengthOfColRegions();
+        var lastDimHeader = this.header[this.dimIds.length - 1],
+            lastCrossDimHeader = this.crossHeader[this.crossDimIds.length - 1];
+        while (count < rowLength - this.dimIds.length) {
+            // this.header.splice(this.dimIds.length + count - 1, 0, {
+            //     type: "bi.page_table_cell",
+            //     tag: BI.UUID(),
+            //     styles: BI.SummaryTableHelper.getHeaderStyles(this.getThemeColor(), this.getTableStyle())
+            // });
+            this.header.splice(this.dimIds.length + count, 0, lastDimHeader);
+            count++;
+        }
+        count = 0;
+        while (count < colLength - this.crossDimIds.length) {
+            count++;
+            this.crossHeader.splice(this.crossDimIds.length + count, 0, lastCrossDimHeader);
+        }
+    },
+
     /**
      * 交叉表——crossItems
      */
@@ -270,6 +364,7 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
             var nodeId = BI.isNotNull(parent) ? parent.get("id") + cId : cId;
             var node = new BI.Node(nodeId);
             node.set("name", child.n);
+            node.set("dId", currDid);
             self.crossTree.addNode(parent, node);
             var pValues = [];
             var tempLayer = currentLayer, tempNodeId = nodeId;
@@ -432,6 +527,17 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         }];
     },
 
+    _setOtherComplexAttrs: function () {
+        this._setOtherCrossAttrs();
+        var largestRowDims = this._getLargestLengthOfRowRegions();
+        var count = 0;
+        while (count < largestRowDims - this.dimIds.length) {
+            count++;
+            this.mergeCols.push(this.mergeCols.length);
+            this.freezeCols.push(this.mergeCols.length);
+        }
+    },
+
     createTableAttrs: function () {
         this.headerOperatorCallback = arguments[0];
         this.expanderCallback = arguments[1];
@@ -442,8 +548,8 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         //正常复杂表
         if (this._isColRegionExist() && this._isRowRegionExist()) {
             this._createComplexTableItems();
-            this._createCrossTableHeader();
-            this._setOtherCrossAttrs();
+            this._createComplexTableHeader();
+            this._setOtherComplexAttrs();
             return;
         }
         //仅有列表头的时候（无指标）

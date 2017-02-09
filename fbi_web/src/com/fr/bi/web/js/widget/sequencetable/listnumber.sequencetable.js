@@ -108,7 +108,7 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
                     text: this.start + i,
                     styleGetter: function (index) {
                         return function () {
-                            return o.sequenceCellStyleGetter(index);
+                            return o.sequenceCellStyleGetter(self.start + i - 1);
                         }
                     }(cnt)
                 }));

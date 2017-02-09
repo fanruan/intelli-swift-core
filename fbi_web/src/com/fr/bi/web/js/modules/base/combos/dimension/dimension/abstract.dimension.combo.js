@@ -75,6 +75,18 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         return items;
     },
 
+    checkShowFieldDisabled: function(){
+        var o = this.options;
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        return ((wType !== BICst.WIDGET.TABLE &&
+        wType !== BICst.WIDGET.CROSS_TABLE &&
+        wType !== BICst.WIDGET.COMPLEX_TABLE &&
+        wType !== BICst.WIDGET.GIS_MAP)
+        && BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(o.dId))
+        && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1);
+    },
+
     _rebuildItems: function () {
         var o = this.options;
         if (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP) {

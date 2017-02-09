@@ -106,8 +106,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                     lastPage: BI.emptyFn
                 }
             },
-            isNeedMerge: true,
-            regionColumnSize: this.model.getStoredRegionColumnSize()
+            isNeedMerge: true
         };
         switch (tableStyle) {
             case BICst.TABLE_FORM.OPEN_COL:
@@ -163,7 +162,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             var columnSize = BI.clone(this.getColumnSize());
-            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: columnSize})});
+            self.fireEvent(BI.GroupTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: columnSize})});
         });
         if (this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_NEXT || this.model.getPageOperator() === BICst.TABLE_PAGE_OPERATOR.ROW_PRE) {
             this.table.setVPage(this.model.getPage()[4]);
@@ -333,6 +332,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
+        this.table.attr("regionColumnSize", this.model.getStoredRegionColumnSize());
         this.table.attr("headerRowSize", this.model.getHeaderRowSize());
         this.table.attr("rowSize", this.model.getRowSize());
     },

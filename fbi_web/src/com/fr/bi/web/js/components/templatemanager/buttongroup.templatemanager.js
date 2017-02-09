@@ -57,13 +57,14 @@ BI.TemplateManagerButtonGroup = BI.inherit(BI.Widget, {
                     isAdmin: o.isAdmin,
                     buildUrl: item.buildUrl,
                     onClickReport: function () {
-                        try {
+                        if (BI.isNotNull(window.top.FS) && BI.isNotNull(window.top.FS.tabPane)) {
                             window.top.FS.tabPane.addItem({
                                 id: item.id,
                                 title: item.text,
-                                src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_"
+                                src: FR.servletURL + item.buildUrl + "&edit=_bi_edit_",
+                                showFavorite: "no"
                             });
-                        } catch (e) {
+                        } else {
                             window.open(FR.servletURL + item.buildUrl + "&edit=_bi_edit_", "_blank");
                         }
                     },

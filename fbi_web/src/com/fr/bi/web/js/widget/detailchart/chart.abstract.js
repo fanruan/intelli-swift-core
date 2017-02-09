@@ -536,7 +536,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             gridLineColor: config.hGridLineColor,
             showLabel: config.rightY2ShowLabel,
             labelStyle: BI.extend({}, config.rightY2LabelStyle.textStyle, {
-                fontSize: config.rightY2LabelStyle && config.rightY2LabelStyle.text_style && config.rightY2LabelStyle.textStyle.fontSize + "px"
+                fontSize: config.rightY2LabelStyle && config.rightY2LabelStyle.textStyle && config.rightY2LabelStyle.textStyle.fontSize + "px"
             }),
             labelRotation: config.rightY2LabelStyle && config.rightY2LabelStyle.textDirection,
             reversed: config.rightY2Reverse,

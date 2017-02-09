@@ -207,6 +207,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
     },
 
     _tipAndTablesCreator: function (v) {
+        var self = this;
         switch (v) {
             case this._constant.SHOW_TIP:
                 return {
@@ -236,6 +237,14 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                     direction: "custom",
                     defaultShowIndex: BICst.TABLES_VIEW.TILE,
                     cardCreator: BI.bind(this._viewTypeCreator, this)
+                });
+
+                this.viewType.on(BI.Tab.EVENT_CHANGE, function(){
+                    if (this.getSelect() === BICst.TABLES_VIEW.RELATION) {
+                        this.populate({
+                            tablesData: self.model.getTables()
+                        });
+                    }
                 });
 
                 return BI.createWidget({
@@ -323,7 +332,8 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         var self = this;
         var selectTablePane = BI.createWidget({
             type: "bi.select_table_pane",
-            element: BI.Layers.create(BICst.SELECT_TABLES_LAYER, BICst.BODY_ELEMENT)
+            element: BI.Layers.create(BICst.SELECT_TABLES_LAYER, BICst.BODY_ELEMENT),
+            tables: this.model.getTables(),
         });
         BI.Layers.show(BICst.SELECT_TABLES_LAYER);
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {

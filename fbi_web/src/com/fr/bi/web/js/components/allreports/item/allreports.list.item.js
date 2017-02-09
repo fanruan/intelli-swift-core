@@ -160,11 +160,16 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
             height: 40
         });
         this.reportName.on(BI.TextButton.EVENT_CHANGE, function () {
-            window.top.FS.tabPane.addItem({
-                id: report.id,
-                title: report.text,
-                src: FR.servletURL + report.buildUrl
-            });
+            if (BI.isNotNull(window.top.FS) && BI.isNotNull(window.top.FS.tabPane)) {
+                window.top.FS.tabPane.addItem({
+                    id: report.id,
+                    title: report.text,
+                    src: FR.servletURL + report.buildUrl,
+                    showFavorite: "no"
+                });
+            } else {
+                window.open(FR.servletURL + report.buildUrl, "_blank");
+            }
         });
 
         BI.createWidget({

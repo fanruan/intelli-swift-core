@@ -43,6 +43,7 @@ public class CommonResourceHelper {
 
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
+
         };
     }
 
@@ -146,7 +147,6 @@ public class CommonResourceHelper {
                 //复制链接
                 "com/fr/bi/web/js/modules/copylinks/copylink.item.js",
                 "com/fr/bi/web/js/modules/copylinks/copylink.iconbutton.js",
-
 
                 /**
                  * 切片
