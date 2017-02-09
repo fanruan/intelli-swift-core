@@ -124,12 +124,12 @@
 
             this._deltaX += handleScrollX ? normalizedEvent.pixelX : 0;
             this._deltaY += handleScrollY ? normalizedEvent.pixelY : 0;
-            event.preventDefault();
+            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 
             var changed;
             if (this._deltaX !== 0 || this._deltaY !== 0) {
                 if (this._stopPropagation()) {
-                    event.stopPropagation();
+                    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
                 }
                 changed = true;
             }

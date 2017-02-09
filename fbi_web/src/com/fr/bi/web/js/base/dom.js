@@ -6,7 +6,7 @@ BI.extend(jQuery.fn, {
 
     destroy: function () {
         this.remove();
-        if ($.browser.msie === true) {
+        if (BI.isIE() === true) {
             this[0].outerHTML = '';
         }
     },
@@ -430,8 +430,10 @@ BI.extend(jQuery, {
                             left = $.getLeftPosition(combo, popup, tW).left;
                             if (topBottom[0] === "bottom") {
                                 pos = $.getTopAlignPosition(combo, popup, tH, needAdaptHeight);
+                                pos.dir = "left,bottom";
                             } else {
                                 pos = $.getBottomAlignPosition(combo, popup, tH, needAdaptHeight);
+                                pos.dir = "left,top";
                             }
                             if (tbFirst) {
                                 pos.change = "left";
@@ -449,8 +451,10 @@ BI.extend(jQuery, {
                             left = $.getRightPosition(combo, popup, tW).left;
                             if (topBottom[0] === "bottom") {
                                 pos = $.getTopAlignPosition(combo, popup, tH, needAdaptHeight);
+                                pos.dir = "right,bottom";
                             } else {
                                 pos = $.getBottomAlignPosition(combo, popup, tH, needAdaptHeight);
+                                pos.dir = "right,top";
                             }
                             if (tbFirst) {
                                 pos.change = "right";
@@ -467,8 +471,10 @@ BI.extend(jQuery, {
                         top = $.getTopPosition(combo, popup, tH).top;
                         if (leftRight[0] === "right") {
                             pos = $.getLeftAlignPosition(combo, popup, tW, needAdaptHeight);
+                            pos.dir = "top,right";
                         } else {
                             pos = $.getRightAlignPosition(combo, popup, tW);
+                            pos.dir = "top,left";
                         }
                         if (lrFirst) {
                             pos.change = "top";
@@ -487,8 +493,10 @@ BI.extend(jQuery, {
                         top = $.getBottomPosition(combo, popup, tH).top;
                         if (leftRight[0] === "right") {
                             pos = $.getLeftAlignPosition(combo, popup, tW, needAdaptHeight);
+                            pos.dir = "bottom,right";
                         } else {
                             pos = $.getRightAlignPosition(combo, popup, tW);
+                            pos.dir = "bottom,left";
                         }
                         if (lrFirst) {
                             pos.change = "bottom";
@@ -515,10 +523,12 @@ BI.extend(jQuery, {
                 if (topBottom[0] === "bottom") {
                     pos = $.getTopAlignPosition(combo, popup, extraHeight, needAdaptHeight);
                     pos.left = left;
+                    pos.dir = directions[0] + ",bottom";
                     return pos;
                 }
                 pos = $.getBottomAlignPosition(combo, popup, extraHeight, needAdaptHeight);
                 pos.left = left;
+                pos.dir = directions[0] + ",top";
                 return pos;
             default :
                 if ($.isBottomSpaceLarger(combo)) {
@@ -529,10 +539,12 @@ BI.extend(jQuery, {
                 if (leftRight[0] === "right") {
                     left = $.getLeftAlignPosition(combo, popup, extraWidth, needAdaptHeight).left;
                     pos.left = left;
+                    pos.dir = directions[0] + ",right";
                     return pos;
                 }
                 left = $.getRightAlignPosition(combo, popup, extraWidth).left;
                 pos.left = left;
+                pos.dir = directions[0] + ",left";
                 return pos;
         }
     },
@@ -542,9 +554,9 @@ BI.extend(jQuery, {
         extraWidth || (extraWidth = 0);
         extraHeight || (extraHeight = 0);
         var maxHeight = $("body").bounds().height - extraHeight;
-        maxHeight = Math.min(popup.element.attr("maxHeight") || maxHeight, maxHeight);
+        maxHeight = Math.min(popup.attr("maxHeight") || maxHeight, maxHeight);
         popup.resetHeight && popup.resetHeight(maxHeight);
-        var position = $.getComboPositionByDirections(combo, popup, extraWidth, extraHeight, needAdaptHeight, directions || ['bottom', 'top', 'right', 'left'])
+        var position = $.getComboPositionByDirections(combo, popup, extraWidth, extraHeight, needAdaptHeight, directions || ['bottom', 'top', 'right', 'left']);
         switch (offsetStyle) {
             case "center":
                 if (position.change) {

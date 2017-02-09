@@ -4,13 +4,13 @@
  * 数据库表的搜索结果面板
  */
 BI.DatabaseTablesSearchResultPane = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.DatabaseTablesSearchResultPane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-database-tables-search-result-pane"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.DatabaseTablesSearchResultPane.superclass._init.apply(this, arguments);
         this.allPageTables = [];
         this.resultPane = BI.createWidget({
@@ -28,7 +28,7 @@ BI.DatabaseTablesSearchResultPane = BI.inherit(BI.Widget, {
         this.allTables = searchResult;
         var pager = BI.createWidget({
             type: "bi.database_tables_pager",
-            pages: Math.ceil(this.allTables.length/100),
+            pages: Math.ceil(this.allTables.length / 100),
             height: 50
         });
         BI.createWidget({
@@ -56,19 +56,22 @@ BI.DatabaseTablesSearchResultPane = BI.inherit(BI.Widget, {
         });
     },
 
-    _formatGroup: function(groups){
+    _formatGroup: function (groups) {
         var self = this;
-        var formatGroup= [];
+        var formatGroup = [];
         var tables = this.options.tables;
-        BI.each(groups, function(i, group){
+        BI.each(groups, function (i, group) {
             var item = {
                 text: group.value,
-                value: group
+                value: group,
+                connName: self.connectionName,
+                linkNames: self.options.linkNames
             };
-            BI.some(tables, function(j, table){
-                if(group.value === table.table_name &&
-                    self.connectionName === table.connection_name){
-                    item.extraCls = "package-table-selected";
+            BI.some(tables, function (j, table) {
+                if (group.value === table.table_name &&
+                    self.connectionName === table.connection_name) {
+                    // item.extraCls = "package-table-selected";
+                    item.needMark = true;
                     return true;
                 }
             });
@@ -77,14 +80,14 @@ BI.DatabaseTablesSearchResultPane = BI.inherit(BI.Widget, {
         return formatGroup;
     },
 
-    _createPageCard: function(page){
+    _createPageCard: function (page) {
         var self = this;
-        var group = this.allTables.slice((page - 1) * 100, page*100);
+        var group = this.allTables.slice((page - 1) * 100, page * 100);
         var pageTables = BI.createWidget({
             type: "bi.button_group",
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_MULTI,
             behaviors: {
-                redmark: function(){
+                redmark: function () {
                     return true;
                 }
             },
@@ -100,7 +103,7 @@ BI.DatabaseTablesSearchResultPane = BI.inherit(BI.Widget, {
         });
         pageTables.populate(items, self.keyword);
         pageTables.setValue(self.selectedTables);
-        pageTables.on(BI.Controller.EVENT_CHANGE, function(){
+        pageTables.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         this.allPageTables.push(pageTables);

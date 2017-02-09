@@ -628,11 +628,12 @@
                 });
                 obj.dimensions = dimensions;
                 obj.view = view;
+                var bounds = widget.bounds || {};
                 obj.bounds = {
-                    height: widget.bounds.height,
-                    width: widget.bounds.width,
-                    left: widget.bounds.left,
-                    top: widget.bounds.top
+                    height: bounds.height,
+                    width: bounds.width,
+                    left: bounds.left,
+                    top: bounds.top
                 };
                 obj.settings = widget.settings;
                 obj.value = widget.value;
@@ -2994,7 +2995,7 @@
                 }
                 //截零
                 var i = max.length - 1, add = "0.";
-                while (min[i] === "0" && max[i] === "0" && this.min != 0 && this.max != 0) {
+                while (min[i] === "0" && max[i] === "0" && this.min !== 0 && this.max !== 0) {
                     i--;
                 }
 
@@ -3074,13 +3075,13 @@
                     };
                 }
                 if (groupType === BICst.GROUP.ID_GROUP) {
-                    if(BI.isNull(value) || BI.isEmptyString(value)){
+                    if (BI.isNull(value) || BI.isEmptyString(value)) {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
                             filter_value: {},
                             _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                         };
-                    }else{
+                    } else {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
                             filter_value: {
@@ -3125,7 +3126,7 @@
                         filter_type: BICst.FILTER_TYPE.AND,
                         filter_value: vs
                     };
-                } else if(BI.isNumeric(value)){
+                } else if (BI.isNumeric(value)) {
                     //自定义分组后不勾选剩余值分组到其他
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
@@ -3384,7 +3385,8 @@
                     } else {
                         callbacks.error && callbacks.error(data);
                     }
-                    callbacks.done && callbacks.done(data);
+                }, function () {
+                    callbacks.done && callbacks.done();
                 });
             }
         })(),

@@ -43,6 +43,7 @@ public class CommonResourceHelper {
 
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
+
         };
     }
 

@@ -14,6 +14,7 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -177,90 +178,19 @@ public class BaseResouceHelper {
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
         try {
-            JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
-            JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, req.getLocale());
-            List<BIPackageID> authPacks = new ArrayList<BIPackageID>();
-            //从分组中去掉allPacks没有的业务包
-            Iterator<String> gIds = allGroups.keys();
-            while (gIds.hasNext()) {
-                String gId = gIds.next();
-                JSONObject oneGroup = allGroups.getJSONObject(gId);
-                JSONArray nChildren = new JSONArray();
-                if (oneGroup.has("children")) {
-                    JSONArray children = oneGroup.getJSONArray("children");
-                    for (int i = 0; i < children.length(); i++) {
-                        JSONObject child = children.getJSONObject(i);
-                        if (allPacks.has(child.getString("id"))) {
-                            nChildren.put(child);
-                        }
-                    }
-                    oneGroup.put("children", nChildren);
-                }
-                allGroups.put(gId, oneGroup);
-            }
-            //管理员
-            if (manageId == userId) {
-                packages = allPacks;
-                groups = allGroups;
-            } else {
-                //前台能看到的业务包
-                authPacks = BIModuleUtils.getAvailablePackID(userId);
-                for (BIPackageID pId : authPacks) {
-                    if (allPacks.has(pId.getIdentityValue())) {
-                        packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
-                    }
-                }
-
-                //分组
-                Iterator<String> groupIds = allGroups.keys();
-                while (groupIds.hasNext()) {
-                    String groupId = groupIds.next();
-                    JSONObject group = allGroups.getJSONObject(groupId);
-                    JSONArray nChildren = new JSONArray();
-                    if (group.has("children")) {
-                        JSONArray children = group.getJSONArray("children");
-                        for (int i = 0; i < children.length(); i++) {
-                            JSONObject child = children.getJSONObject(i);
-                            String childId = child.getString("id");
-                            if (packages.has(childId)) {
-                                nChildren.put(child);
-                            }
-                        }
-                        group.put("children", nChildren);
-                    }
-                    if (nChildren.length() > 0) {
-                        groups.put(groupId, group);
-                    }
-                }
-            }
+            groups = getAuthGroups(userId, req.getLocale());
+            packages = getAuthPackages(userId, req.getLocale());
 
             translations = BIModuleUtils.createAliasJSON(userId);
             relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(manageId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(manageId);
-            Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
-            for (IBusinessPackageGetterService p : packs) {
-                if (manageId != userId && !authPacks.contains(p.getID())) {
-                    continue;
-                }
-                for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
-                    JSONObject jo = t.createJSONWithFieldsInfo(userId);
-                    JSONObject tableFields = jo.getJSONObject("tableFields");
-                    CubeTableSource tableSource = t.getTableSource();
-                    JSONObject sourceJO = tableSource.createJSON();
-                    String connectionName=sourceJO.optString("connection_name", StringUtils.EMPTY);
-                    tableFields.put("connection_name", connectionName);
-                    tables.put(t.getID().getIdentityValue(), tableFields);
-                    JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
-                    fields.join(fieldsInfo);
-                }
-            }
+            initTableAndFields(userId, tables, fields);
             Set<BITableRelation> connectionSet = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
             JSONArray connectionJA = new JSONArray();
             for (BITableRelation connection : connectionSet) {
                 connectionJA.put(connection.createJSON());
             }
             connections.put("connectionSet", connectionJA);
-
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
@@ -284,6 +214,97 @@ public class BaseResouceHelper {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return buffer.toString();
+    }
+
+    private static JSONObject getAuthGroups(long userId, Locale locale) throws Exception {
+        JSONObject allGroups = getFormatGroups(userId, locale);
+        if (ComparatorUtils.equals(UserControl.getInstance().getSuperManagerID(), userId)) {
+            return allGroups;
+        }
+        Iterator<String> groupIds = allGroups.keys();
+        JSONObject packages = getAuthPackages(userId, locale);
+        JSONObject groups = new JSONObject();
+        while (groupIds.hasNext()) {
+            String groupId = groupIds.next();
+            JSONObject group = allGroups.getJSONObject(groupId);
+            JSONArray nChildren = new JSONArray();
+            if (group.has("children")) {
+                JSONArray children = group.getJSONArray("children");
+                for (int i = 0; i < children.length(); i++) {
+                    JSONObject child = children.getJSONObject(i);
+                    String childId = child.getString("id");
+                    if (packages.has(childId)) {
+                        nChildren.put(child);
+                    }
+                }
+                group.put("children", nChildren);
+            }
+            if (nChildren.length() > 0) {
+                groups.put(groupId, group);
+            }
+        }
+        return groups;
+    }
+
+    private static JSONObject getAuthPackages(long userId, Locale locale) throws Exception {
+        JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, locale);
+        if (ComparatorUtils.equals(UserControl.getInstance().getSuperManagerID(), userId)) {
+            return allPacks;
+        }
+        List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
+        JSONObject packages = new JSONObject();
+        for (BIPackageID pId : authPacks) {
+            if (allPacks.has(pId.getIdentityValue())) {
+                packages.put(pId.getIdentityValue(), allPacks.getJSONObject(pId.getIdentityValue()));
+            }
+        }
+        return packages;
+    }
+
+    private static JSONObject getFormatGroups(long userId, Locale locale) throws Exception {
+        JSONObject allGroups = BICubeConfigureCenter.getPackageManager().createGroupJSON(userId);
+        JSONObject allPacks = BIModuleUtils.createAnalysisPackJSON(userId, locale);
+        //从分组中去掉allPacks没有的业务包
+        Iterator<String> gIds = allGroups.keys();
+        while (gIds.hasNext()) {
+            String gId = gIds.next();
+            JSONObject oneGroup = allGroups.getJSONObject(gId);
+            JSONArray nChildren = new JSONArray();
+            if (oneGroup.has("children")) {
+                JSONArray children = oneGroup.getJSONArray("children");
+                for (int i = 0; i < children.length(); i++) {
+                    JSONObject child = children.getJSONObject(i);
+                    if (allPacks.has(child.getString("id"))) {
+                        nChildren.put(child);
+                    }
+                }
+                oneGroup.put("children", nChildren);
+            }
+            allGroups.put(gId, oneGroup);
+        }
+        return allGroups;
+    }
+
+    private static void initTableAndFields(long userId, JSONObject tables, JSONObject fields) throws Exception {
+        Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
+        List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
+        for (IBusinessPackageGetterService p : packs) {
+            if (!ComparatorUtils.equals(UserControl.getInstance().getSuperManagerID(), userId) &&
+                    !authPacks.contains(p.getID())) {
+                continue;
+            }
+            for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
+                JSONObject jo = t.createJSONWithFieldsInfo(userId);
+                JSONObject tableFields = jo.getJSONObject("tableFields");
+                CubeTableSource tableSource = t.getTableSource();
+                JSONObject sourceJO = tableSource.createJSON();
+                String connectionName=sourceJO.optString("connection_name", StringUtils.EMPTY);
+                tableFields.put("connection_name", connectionName);
+                tables.put(t.getID().getIdentityValue(), tableFields);
+                JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
+                fields.join(fieldsInfo);
+            }
+        }
     }
 
 
@@ -382,6 +403,8 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
+                "com/fr/bi/web/css/base/combo/popup.bubble.css",
+                "com/fr/bi/web/css/base/combo/combo.bubble.css",
                 "com/fr/bi/web/css/base/combination/combo.css",
                 "com/fr/bi/web/css/base/combination/searcher.css",
                 "com/fr/bi/web/css/base/combination/expander/condition.expander.css",
@@ -412,7 +435,9 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/css/base/table/table.tree.css",
                 "com/fr/bi/web/css/base/table/table.grid.cell.css",
                 "com/fr/bi/web/css/base/table/table.grid.scrollbar.css",
+                "com/fr/bi/web/css/base/table/table.grid.quick.css",
                 "com/fr/bi/web/css/base/table/table.collection.cell.css",
+                "com/fr/bi/web/css/base/table/table.collection.quick.css",
                 "com/fr/bi/web/css/base/table/table.resizable.cell.css",
                 "com/fr/bi/web/css/base/table/table.resizable.css",
                 "com/fr/bi/web/css/base/layer/panel.css",
@@ -421,6 +446,8 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/css/base/layer/layer.panel.css",
                 "com/fr/bi/web/css/base/reqloading/loading.request.css",
                 "com/fr/bi/web/css/base/logintimeout/login.timeout.css",
+                //加载超时
+                "com/fr/bi/web/css/base/timeouttoast/widget.timeouttoast.css",
 
                 "com/fr/bi/web/css/utils/widget.css",
                 "com/fr/bi/web/css/utils/common.css",
@@ -773,7 +800,7 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/base/utils/heap.js",
                 "com/fr/bi/web/js/base/utils/integerBufferSet.js",
                 "com/fr/bi/web/js/base/utils/prefixIntervalTree.js",
-                "com/fr/bi/web/js/base/utils/helper.scroll.js",
+//                "com/fr/bi/web/js/base/utils/helper.scroll.js",
                 "com/fr/bi/web/js/base/utils/tableRowBuffer.js",
                 "com/fr/bi/web/js/base/utils/cellSizeAndPositionManager.js",
                 "com/fr/bi/web/js/base/utils/sectionManager.js",
@@ -886,8 +913,10 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/base/module/table/table.grid.cell.js",
                 "com/fr/bi/web/js/base/module/table/table.grid.scrollbar.js",
                 "com/fr/bi/web/js/base/module/table/table.grid.js",
+                "com/fr/bi/web/js/base/module/table/table.grid.quick.js",
                 "com/fr/bi/web/js/base/module/table/table.collection.cell.js",
                 "com/fr/bi/web/js/base/module/table/table.collection.js",
+                "com/fr/bi/web/js/base/module/table/table.collection.quick.js",
                 "com/fr/bi/web/js/base/module/table/table.resizable.cell.js",
                 "com/fr/bi/web/js/base/module/table/table.resizable.js",
 
@@ -902,6 +931,8 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/base/module/layer/layer.searcher.js",
 
                 "com/fr/bi/web/js/base/module/reqloading/loading.request.js",
+                //加载超时
+                "com/fr/bi/web/js/base/module/timeouttoast/widget.timeouttoast.js",
 
                 /**公式编辑器*/
                 "com/fr/bi/web/js/base/module/formula/formulaeditor.js",
@@ -1052,6 +1083,10 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/case/colorpicker/editor.colorpicker.js",
 
 //                "com/fr/bi/web/js/case/canvas/canvas.complex.js",
+
+                "com/fr/bi/web/js/case/combo/popup.bubble.js",
+                "com/fr/bi/web/js/case/combo/popup.bubble.bar.js",
+                "com/fr/bi/web/js/case/combo/combo.bubble.js",
 
                 "com/fr/bi/web/js/case/floatbox/floatboxsection.bar.js",
 

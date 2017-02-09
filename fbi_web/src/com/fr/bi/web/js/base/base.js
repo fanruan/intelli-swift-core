@@ -1093,7 +1093,7 @@ if (!window.BI) {
     _.extend(BI, {
 
         ajax: (function () {
-            var loading;
+            var loading, timeoutToast;
             return function (option) {
                 option || (option = {});
                 option.data = BI.extend({}, Data.SharingPool.cat("urlParameters"), option.data);
@@ -1111,12 +1111,27 @@ if (!window.BI) {
                     });
                 }
 
+                if (BI.isNull(timeoutToast)) {
+                    timeoutToast = BI.createWidget({
+                        type: "bi.timeout_toast"
+                    });
+                    timeoutToast.setCallback(function (op) {
+                        decodeBIParam(op.data);
+                        BI.ajax(op);
+                    });
+                }
+                timeoutToast.addReq(option);
+
                 FR.ajax({
                     url: option.url,
                     type: "POST",
                     data: option.data,
                     async: async,
                     error: function () {
+                        if (!timeoutToast.hasReq(option)) {
+                            return;
+                        }
+                        timeoutToast.removeReq(option);
                         //失败 取消、重新加载
                         loading.setCallback(function () {
                             decodeBIParam(option.data);
@@ -1125,6 +1140,10 @@ if (!window.BI) {
                         loading.showError();
                     },
                     complete: function (res, status) {
+                        if (!timeoutToast.hasReq(option)) {
+                            return;
+                        }
+                        timeoutToast.removeReq(option);
                         //登录超时
                         if (BI.isNotNull(res.responseText) &&
                             res.responseText.indexOf("fs-login-content") > -1 &&
@@ -1162,6 +1181,10 @@ if (!window.BI) {
                         }
                     }
                 });
+
+                return function cancel() {
+                    timeoutToast.removeReq(option);
+                };
 
                 function encodeBIParam(data) {
                     for (var key in data) {
@@ -1201,7 +1224,7 @@ if (!window.BI) {
                 data.sessionID = Data.SharingPool.get("sessionID");
             }
             var url = FR.servletURL + '?op=' + op + '&cmd=' + cmd + "&_=" + Math.random();
-            (BI.ajax)({
+            return (BI.ajax)({
                 url: url,
                 type: 'POST',
                 data: data,
