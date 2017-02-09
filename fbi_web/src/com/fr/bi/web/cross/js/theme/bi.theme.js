@@ -40,7 +40,8 @@ FS.THEME.config4navigation.onAfterInit = function () {
                             FS.tabPane.addItem({
                                 id: res.reportId,
                                 title: data.reportName,
-                                src: FR.servletURL + "?op=fr_bi&cmd=init_dezi_pane&reportId=" + res.reportId + "&edit=_bi_edit_"
+                                src: FR.servletURL + "?op=fr_bi&cmd=init_dezi_pane&reportId=" + res.reportId + "&edit=_bi_edit_",
+                                showFavorite: "no"
                             });
                         }
                     });
@@ -68,7 +69,8 @@ FS.THEME.config4navigation.onAfterInit = function () {
                     FS.tabPane.addItem({
                         id: BICst.DATA_CONFIG_TAB,
                         title: BI.i18nText('BI-Data_Setting'),
-                        src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane'
+                        src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane',
+                        showFavorite: "no"
                     });
                 });
                 header.addItem({

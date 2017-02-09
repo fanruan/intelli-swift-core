@@ -156,9 +156,9 @@ BI.PopupView = BI.inherit(BI.Widget, {
     },
 
     resetHeight: function (h) {
-        var tbHeight = 30 * (this.toolbar ? 1 : 0),
-            tabHeight = 25 * (this.tab ? 1 : 0),
-            toolHeight = ((this.tool && this.tool.element.outerHeight()) || 25) * ((this.tool && this.tool.isVisible()) ? 1 : 0);
+        var tbHeight = this.toolbar ? (this.toolbar.attr("height") || 30) : 0,
+            tabHeight = this.tab ? (this.tab.attr("height") || 25) : 0,
+            toolHeight = ((this.tool && this.tool.attr("height")) || 25) * ((this.tool && this.tool.isVisible()) ? 1 : 0);
         this.view.resetHeight ? this.view.resetHeight(h - tbHeight - tabHeight - toolHeight - 2) :
             this.view.element.css({"max-height": (h - tbHeight - tabHeight - toolHeight - 2) + "px"})
     },

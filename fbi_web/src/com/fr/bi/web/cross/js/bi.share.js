@@ -4,7 +4,8 @@ FS.THEME.config4MenuTree.insertNodes = [
             return {
                 text: BI.i18nText('BI-All_Reports'),
                 title: BI.i18nText('BI-All_Reports'),
-                src: FR.servletURL + "?op=fr_bi&cmd=bi_init_all_report"
+                src: FR.servletURL + "?op=fr_bi&cmd=bi_init_all_report",
+                showFavorite: "no"
             }
         }
     },
@@ -12,7 +13,8 @@ FS.THEME.config4MenuTree.insertNodes = [
         return {
             text: BI.i18nText('FS-Generic-I_Created'),
             title: BI.i18nText('FS-Generic-I_Created'),
-            src: FR.servletURL + "?op=fr_bi&cmd=bi_init_created_by_me"
+            src: FR.servletURL + "?op=fr_bi&cmd=bi_init_created_by_me",
+            showFavorite: "no"
         }
     },
     function () {
@@ -20,7 +22,8 @@ FS.THEME.config4MenuTree.insertNodes = [
             return {
                 text: BI.i18nText('FS-Generic-Shared_To_Me'),
                 title: BI.i18nText('FS-Generic-Shared_To_Me'),
-                src: FR.servletURL + "?op=fr_bi&cmd=bi_init_shared_to_me"
+                src: FR.servletURL + "?op=fr_bi&cmd=bi_init_shared_to_me",
+                showFavorite: "no"
             }
         }
     }
