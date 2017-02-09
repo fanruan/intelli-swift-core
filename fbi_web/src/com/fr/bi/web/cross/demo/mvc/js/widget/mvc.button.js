@@ -15,7 +15,6 @@ ButtonView = BI.inherit(BI.View, {
                 el: {
                     type: 'bi.button',
                     text: '一般按钮',
-                    stopPropagation:true,
                     level: 'common',
                     height: 30
                 }
