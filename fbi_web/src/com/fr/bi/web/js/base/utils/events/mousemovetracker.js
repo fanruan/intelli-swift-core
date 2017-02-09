@@ -44,7 +44,7 @@
                 this._x = event.clientX;
                 this._y = event.clientY;
             }
-            event.preventDefault();
+            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
         },
 
         releaseMouseMoves: function () {
@@ -87,7 +87,7 @@
 
             this._x = x;
             this._y = y;
-            event.preventDefault();
+            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
         },
 
         _didMouseMove: function () {
