@@ -14,7 +14,7 @@
 
 var UserAgent = require('./../UserAgent');
 
-var isEventSupported = require('react/lib/isEventSupported');
+var isEventSupported = require('react-dom/lib/isEventSupported');
 
 // Reasonable defaults
 var PIXEL_STEP = 10;

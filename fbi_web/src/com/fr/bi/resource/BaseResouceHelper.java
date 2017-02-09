@@ -397,6 +397,8 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
                 "com/fr/bi/web/css/base/view/scrollview.css",
+                "com/fr/bi/web/css/base/combo/popup.bubble.css",
+                "com/fr/bi/web/css/base/combo/combo.bubble.css",
                 "com/fr/bi/web/css/base/combination/combo.css",
                 "com/fr/bi/web/css/base/combination/searcher.css",
                 "com/fr/bi/web/css/base/combination/expander/condition.expander.css",
@@ -1071,6 +1073,10 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/case/colorpicker/editor.colorpicker.js",
 
 //                "com/fr/bi/web/js/case/canvas/canvas.complex.js",
+
+                "com/fr/bi/web/js/case/combo/popup.bubble.js",
+                "com/fr/bi/web/js/case/combo/popup.bubble.bar.js",
+                "com/fr/bi/web/js/case/combo/combo.bubble.js",
 
                 "com/fr/bi/web/js/case/floatbox/floatboxsection.bar.js",
 
