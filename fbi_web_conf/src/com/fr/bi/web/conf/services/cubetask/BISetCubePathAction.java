@@ -14,6 +14,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 
 public class BISetCubePathAction extends AbstractBIConfigureAction {
 
@@ -46,6 +47,8 @@ public class BISetCubePathAction extends AbstractBIConfigureAction {
                         //释放
                         BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
                         BIFileUtils.moveFile(oPath, path);
+                        //删除旧的螺旋分析
+                        BIFileUtils.delete(new File(BIConfigurePathUtils.getUserETLBasePath(oPath)));
                     } finally {
                         BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                     }

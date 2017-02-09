@@ -7,6 +7,7 @@ import com.finebi.cube.conf.pack.group.BIBusinessGroup;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.utils.BILogHelper;
+import com.fr.bi.base.BIBusinessPackagePersistThread;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
@@ -380,23 +381,15 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(BIStringUtils.append("analysisSource update failed", source.getSourceID(), e.getMessage()), e);
         }
-        //先这样写，等下再改
-        new Thread() {
+
+        BIUserETLBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action(){
             @Override
-                public void run () {
-                    BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
-                    BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
-                    BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-                }
-        }.start();
-//        new BIBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action(){
-//            @Override
-//            public void work() {
-//                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
-//                BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
-//                BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-//            }
-//        });
+            public void work() {
+                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
+                BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
+                BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
+            }
+        });
 
         JSONObject result = new JSONObject();
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);

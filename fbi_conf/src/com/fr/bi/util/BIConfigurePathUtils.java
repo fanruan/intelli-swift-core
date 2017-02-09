@@ -101,7 +101,11 @@ public class BIConfigurePathUtils {
      * 如果cube根目录没有parent目录,user_utl则在cube的根目录下
      */
     public static String createUserETLBasePath() {
-        File basePathFile = new File(createBasePath());
+        return getUserETLBasePath(createBasePath());
+    }
+
+    public static String getUserETLBasePath(String cubeBasePath) {
+        File basePathFile = new File(cubeBasePath);
         File parentFile = null;
 
         if (basePathFile.getParentFile() != null) {
