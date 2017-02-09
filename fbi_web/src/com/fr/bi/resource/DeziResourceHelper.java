@@ -169,7 +169,7 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/css/modules/linkage/linkage.css",
 
                 //另存为
-                "com/fr/bi/web/css/modules/saveas/report.saveas.floatbox.css",
+                "com/fr/bi/web/css/modules/saveas/popup.saveas.css",
 
                 //图表钻取
                 "com/fr/bi/web/css/modules/chartdrill/cell.chartdrill.css",
@@ -648,7 +648,7 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.popup.js",
 
                 //另存为
-                "com/fr/bi/web/js/modules/saveas/report.saveas.floatbox.js",
+                "com/fr/bi/web/js/modules/saveas/popup.saveas.js",
 
                 //图表钻取
                 "com/fr/bi/web/js/modules/chartdrill/button.pushdrill.js",
