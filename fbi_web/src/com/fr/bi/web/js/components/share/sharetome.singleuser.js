@@ -58,7 +58,8 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                                     window.top.FS.tabPane.addItem({
                                         id: report.id,
                                         title: report.text,
-                                        src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
+                                        src: FR.servletURL + report.buildUrl + "&show=_bi_show_",
+                                        showFavorite: "no"
                                     });
                                 } else {
                                     window.open(FR.servletURL + report.buildUrl + "&show=_bi_show_", "_blank");
@@ -101,7 +102,8 @@ BI.ShareToMeSingleUser = BI.inherit(BI.Widget, {
                                 window.top.FS.tabPane.addItem({
                                     id: report.id,
                                     title: report.text,
-                                    src: FR.servletURL + report.buildUrl + "&show=_bi_show_"
+                                    src: FR.servletURL + report.buildUrl + "&show=_bi_show_",
+                                    showFavorite: "no"
                                 });
                             } else {
                                 window.open(FR.servletURL + report.buildUrl + "&show=_bi_show_", "_blank");
