@@ -42,7 +42,7 @@ public class PhantomServer {
         osMap.put("linux32", "/phantomjs");
         osMap.put("linux64", "/phantomjs");
         osMap.put("macOS", "/phantomjs");
-        osMap.put("windows", "/phantomjs.exe");
+        osMap.put("windows", "/hantomjs.exe");
         osMap.put("unix32", "/phantomjs");
         osMap.put("unix64", "/phantomjs");
     }
@@ -126,7 +126,7 @@ public class PhantomServer {
         for (int i = 0; i < STARTTIMES; i++) {
             ArrayList<String> commands = new ArrayList<String>();
             commands.add(exe);
-            commands.add(PhantomEnv + "/webserver.js");
+            commands.add(PhantomEnv +File.separator+"webserver.js");
             commands.add("" + PORT);
 
             ProcessBuilder processBuilder = new ProcessBuilder(commands);
