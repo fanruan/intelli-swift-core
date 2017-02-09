@@ -164,7 +164,8 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
                 window.top.FS.tabPane.addItem({
                     id: report.id,
                     title: report.text,
-                    src: FR.servletURL + report.buildUrl
+                    src: FR.servletURL + report.buildUrl,
+                    showFavorite: "no"
                 });
             } else {
                 window.open(FR.servletURL + report.buildUrl, "_blank");
