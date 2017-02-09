@@ -1797,7 +1797,7 @@
             var wid = BI.find(widgets, function (i, wid) {
                 var dims = self.getAllDimensionIDs(wid);
                 return BI.find(dims, function (j, id) {
-                    return dId == id;
+                    return dId === id;
                 })
             });
             this._dimension2WidgetMap[dId] = wid;
