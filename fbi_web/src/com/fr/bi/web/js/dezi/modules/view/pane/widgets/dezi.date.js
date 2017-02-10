@@ -18,8 +18,8 @@ BIDezi.DateWidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.DateWidgetView.superclass._init.apply(this, arguments);
         var self = this;
-        this.broadcasts = [];
-        this.broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
+        this._broadcasts = [];
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         }));
 
