@@ -14586,7 +14586,10 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
         },
 
         remove:function(){
-
+            var vanchart = this.vanchart;
+            this.points.forEach(function(point){
+                vanchart.removePointGraphics(point, this.type);
+            });
             this._canvas && this._canvas.remove();
             this.textGraphicGroup && this.textGraphicGroup.remove();
             this.group && this.group.remove();
