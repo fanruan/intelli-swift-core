@@ -121,7 +121,7 @@ BI.DimensionFormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _getTargetItems: function(){
-        var dId = this.options.dId, fieldItems = [];
+        var dId = this.options.dId, fieldItems = [[],[],[]];
         var wId = BI.Utils.getWidgetIDByDimensionID(dId);
         var tIds = BI.Utils.getAllTargetDimensionIDs(wId);
         BI.each(tIds, function (i, tId) {
@@ -149,7 +149,7 @@ BI.DimensionFormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
                     fieldType = BICst.COLUMN.NUMBER;
                     break;
             }
-            fieldItems.push({
+            fieldItems[0].push({
                 text: BI.Utils.getDimensionNameByID(tId),
                 value: tId,
                 fieldType: fieldType

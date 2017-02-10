@@ -168,7 +168,9 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
                 //组件表头上指标的排序和过滤
-                if (BI.has(widget, "sort") && BI.isNotNull(widget.sort)) {
+                //BI-3341 看测试哪边的数据不知道为什么表头上的sort存了个空对象，而实际上对表头指标选择排序方式无论如何也不会出现空对象
+                //先在这边加个判断
+                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort) && BI.isNotEmptyObject(widget.sort)){
                     result.sort = BI.extend({}, widget.sort, {
                         sort_target: self._createDimensionsAndTargets(widget.sort.sort_target).id
                     })

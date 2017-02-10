@@ -25,9 +25,22 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
             width : self._constants.BUTTON_WIDTH,
             text : BI.i18nText('BI-Edit') + BI.i18nText('BI-Formula')
         });
-        self.fieldItems = [];
+        self.fieldItems = [[], [], []];
         BI.each(o[ETLCst.FIELDS], function (i, item) {
-            self.fieldItems.push({
+            var index = 0;
+            switch (item.field_type){
+                case BICst.COLUMN.STRING:
+                    index = 1;
+                    break;
+                case BICst.COLUMN.NUMBER:
+                case BICst.COLUMN.COUNTER:
+                    index = 0;
+                    break;
+                case BICst.COLUMN.DATE:
+                    index = 2;
+                    break;
+            }
+            self.fieldItems[index].push({
                 text : item.field_name,
                 value : item.field_name,
                 fieldType : item.field_type

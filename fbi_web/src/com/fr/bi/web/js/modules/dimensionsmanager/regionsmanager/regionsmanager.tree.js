@@ -51,6 +51,7 @@ BI.TreeRegionsManager = BI.inherit(BI.RegionsManager, {
             wId: o.wId,
             viewType: BICst.REGION.DIMENSION1
         });
+        this.headers.push(header);
         return header;
     },
 
