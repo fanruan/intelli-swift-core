@@ -88,7 +88,7 @@ BI.CalculateTargetPopupDetailModel = BI.inherit(FR.OB, {
                 fields.push(fieldItem);
             }
         });
-        return fields;
+        return BI.isEmptyArray(fields) ? [] : [fields];
     },
 
     getFormulaExpression: function () {

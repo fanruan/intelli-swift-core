@@ -99,7 +99,7 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
                 fields.push(fieldItem);
             }
         });
-        return fields;
+        return BI.isEmptyArray(fields)? [] : [fields];
     },
 
     getValidation: function () {

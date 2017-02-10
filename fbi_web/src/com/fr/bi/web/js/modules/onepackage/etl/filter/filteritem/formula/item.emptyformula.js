@@ -123,13 +123,28 @@ BI.ConfFormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _getFieldItems: function(){
-        return BI.map(this.options.fields, function (i, field) {
-            return {
+        var fieldItems = [[], [], []];
+        BI.each(this.options.fields, function (i, field) {
+            var index = 0;
+            switch (field.field_type){
+                case BICst.COLUMN.STRING:
+                    index = 1;
+                    break;
+                case BICst.COLUMN.NUMBER:
+                case BICst.COLUMN.COUNTER:
+                    index = 0;
+                    break;
+                case BICst.COLUMN.DATE:
+                    index = 2;
+                    break;
+            }
+            fieldItems[index].push({
                 text: field.field_name,
                 value: field.field_name,
                 fieldType: field.field_type
-            };
+            });
         });
+        return fieldItems;
     },
 
     _onEditFormula: function(value){

@@ -27,48 +27,58 @@ BI.FormulaFieldTree = BI.inherit(BI.Widget, {
         var o = this.options, c = this._const, self = this;
         this.empty();
         var map = {};
-        BI.each(items, function (i, item) {
-            if (!map[item.fieldType]) {
-                map[item.fieldType] = [];
-            }
-            map[item.fieldType].push(item);
+        BI.each(items, function (i, typeItem) {
+            BI.each(typeItem, function (i, item) {
+                if (!map[item.fieldType]) {
+                    map[item.fieldType] = [];
+                }
+                map[item.fieldType].push(item);
+            })
         });
 
+        var nodes = [{
+            id: BICst.COLUMN.NUMBER,
+            type: "bi.triangle_group_node",
+            text: BI.i18nText("BI-Formula_Numberic_Field") + "(" + self._getFieldNum(map,BICst.COLUMN.NUMBER) + ")",
+            value: BICst.COLUMN.NUMBER,
+            isParent: true,
+            open: items.length === 1
+        }];
 
-        var nodes = [
-            {
-                id: BICst.COLUMN.NUMBER,
-                type: "bi.triangle_group_node",
-                text: BI.i18nText("BI-Formula_Numberic_Field") + "(" + self._getFieldNum(map,BICst.COLUMN.NUMBER) + ")",
-                value: BICst.COLUMN.NUMBER,
-                isParent: true,
-                open: false
-            }, {
+        if(items.length > 1){
+            nodes.push({
                 id: BICst.COLUMN.STRING,
                 type: "bi.triangle_group_node",
                 text: BI.i18nText("BI-Formula_Text_Field") + "(" + self._getFieldNum(map, BICst.COLUMN.STRING) + ")",
                 value: BICst.COLUMN.STRING,
                 isParent: true,
                 open: false
-            }, {
+            });
+        }
+
+        if(items.length > 2){
+            nodes.push({
                 id: BICst.COLUMN.DATE,
                 type: "bi.triangle_group_node",
                 text: BI.i18nText("BI-Formula_Time_Field") + "(" + self._getFieldNum(map, BICst.COLUMN.DATE) + ")",
                 value: BICst.COLUMN.DATE,
                 isParent: true,
                 open: false
-            }
-        ];
-        BI.each(items, function (i, item) {
-            nodes.push(BI.extend({
-                id: BI.UUID(),
-                pId: item.fieldType
-            }, item, {
-                type: "bi.tree_text_leaf_item",
-                cls: "tree-text-leaf-item-draggable",
-                textAlign: "left",
-                lgap: c.leafGap
-            }))
+            });
+        }
+
+        BI.each(items, function(idx, typeItems){
+            BI.each(typeItems, function (i, item) {
+                nodes.push(BI.extend({
+                    id: BI.UUID(),
+                    pId: item.fieldType
+                }, item, {
+                    type: "bi.tree_text_leaf_item",
+                    cls: "tree-text-leaf-item-draggable",
+                    textAlign: "left",
+                    lgap: c.leafGap
+                }))
+            });
         });
         this.fieldtree = BI.createWidget({
             type: "bi.level_tree",

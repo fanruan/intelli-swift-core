@@ -18,6 +18,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
     _init: function () {
         BI.RegionsManager.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        this.headers = [];
         this.wrappers = {};
     },
 
@@ -35,6 +36,9 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         BI.each(this.wrappers, function (type, wrap) {
             wrap.populate();
+        });
+        BI.each(this.headers, function (idx, header) {
+            header.populate();
         });
     }
 });

@@ -71,6 +71,10 @@ BI.RegionHeader = BI.inherit(BI.Widget, {
             default:
                 return "dimension-region-header";
         }
+    },
+
+    populate: function(){
+
     }
 });
 $.shortcut("bi.region_header", BI.RegionHeader);

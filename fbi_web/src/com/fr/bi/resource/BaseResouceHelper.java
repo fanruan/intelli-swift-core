@@ -1528,6 +1528,10 @@ public class BaseResouceHelper {
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
 
+                //日期区间和选日期的
+                "com/fr/bi/web/js/components/datechooser/multi.date.js",
+                "com/fr/bi/web/js/components/datechooser/interval.date.js",
+
                 //选值
                 "com/fr/bi/web/js/components/valuechooser/combo.valuechooser.js",
                 "com/fr/bi/web/js/components/allvaluechooser/combo.allvaluechooser.js",
