@@ -307,7 +307,7 @@ public class StringControlWidget extends TableWidget {
             String str = ob.toString();
             if (match(str, key, selectedValue, mode)) {
                 if (matched >= start && matched < end) {
-                    if (ComparatorUtils.equals(keyword, str)) {
+                    if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
                         match.add(str);
                     } else {
                         find.add(str);
