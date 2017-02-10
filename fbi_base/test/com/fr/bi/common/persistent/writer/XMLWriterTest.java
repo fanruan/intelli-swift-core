@@ -9,6 +9,7 @@ import com.fr.bi.common.persistent.xml.writer.XMLNormalValueWriter;
 import com.fr.bi.common.persistent.xml.writer.XMLPersistentWriter;
 import com.fr.bi.common.world.BookRack;
 import com.fr.bi.common.world.people.Student;
+import com.fr.bi.stable.constant.BIXMLConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
@@ -400,11 +401,119 @@ public class XMLWriterTest extends TestCase {
         String content = BIFileUtils.readFile("F:\\work\\BI\\env\\WebReport\\WEB-INF\\resources\\BusinessPackage.xml");
         BIFileUtils.writeFile("F:\\work\\BI\\env\\WebReport\\WEB-INF\\resources\\BusinessPackage.xml", content.replaceAll("[\u0000-\u0008\u000b-\u000c\u000e-\u001f]", ""));
     }
-    
+
 
     public void testUUID() {
         UUID uuid = UUID.randomUUID();
         System.out.println(uuid);
+    }
+
+
+
+
+
+
+    private String[] getInvalidCharArray() {
+        String[] invalidString = new String[32];
+        invalidString[0x0000] = BIXMLConstant.INVALID_VALUE.U0000;
+        invalidString[0x0001] = BIXMLConstant.INVALID_VALUE.U0001;
+        invalidString[0x0002] = BIXMLConstant.INVALID_VALUE.U0002;
+        invalidString[0x0003] = BIXMLConstant.INVALID_VALUE.U0003;
+        invalidString[0x0004] = BIXMLConstant.INVALID_VALUE.U0004;
+        invalidString[0x0005] = BIXMLConstant.INVALID_VALUE.U0005;
+        invalidString[0x0006] = BIXMLConstant.INVALID_VALUE.U0006;
+        invalidString[0x0007] = BIXMLConstant.INVALID_VALUE.U0007;
+        invalidString[0x0008] = BIXMLConstant.INVALID_VALUE.U0008;
+        invalidString[0x000b] = BIXMLConstant.INVALID_VALUE.U000B;
+        invalidString[0x000c] = BIXMLConstant.INVALID_VALUE.U000C;
+        invalidString[0x000e] = BIXMLConstant.INVALID_VALUE.U000E;
+        invalidString[0x000f] = BIXMLConstant.INVALID_VALUE.U000F;
+        invalidString[0x0010] = BIXMLConstant.INVALID_VALUE.U0010;
+        invalidString[0x0011] = BIXMLConstant.INVALID_VALUE.U0011;
+        invalidString[0x0012] = BIXMLConstant.INVALID_VALUE.U0012;
+        invalidString[0x0013] = BIXMLConstant.INVALID_VALUE.U0013;
+        invalidString[0x0014] = BIXMLConstant.INVALID_VALUE.U0014;
+        invalidString[0x0015] = BIXMLConstant.INVALID_VALUE.U0015;
+        invalidString[0x0016] = BIXMLConstant.INVALID_VALUE.U0016;
+        invalidString[0x0017] = BIXMLConstant.INVALID_VALUE.U0017;
+        invalidString[0x0018] = BIXMLConstant.INVALID_VALUE.U0018;
+        invalidString[0x0019] = BIXMLConstant.INVALID_VALUE.U0019;
+        invalidString[0x001a] = BIXMLConstant.INVALID_VALUE.U001A;
+        invalidString[0x001b] = BIXMLConstant.INVALID_VALUE.U001B;
+        invalidString[0x001c] = BIXMLConstant.INVALID_VALUE.U001C;
+        invalidString[0x001e] = BIXMLConstant.INVALID_VALUE.U001E;
+        invalidString[0x001f] = BIXMLConstant.INVALID_VALUE.U001F;
+        return invalidString;
+    }
+
+    public void testRegexCostTime() {
+        String reg = "[\u0000-\u0008\u000b-\u000c\u000e-\u001f]";
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("\u0000");
+        sb.append("\u0001");
+        sb.append("\u0002");
+        sb.append("\u0003");
+        sb.append("\u0004");
+        sb.append("\u0005");
+        sb.append("\u0006");
+        sb.append("\u0007");
+        sb.append("\u0008");
+        sb.append("\u0009");
+        sb.append("\u0020");
+        sb.append("\u000b");
+        sb.append("\u000c");
+        sb.append("\u000e");
+        sb.append("\u000f");
+        sb.append("\u0010");
+        sb.append("\u0011");
+        sb.append("\u0012");
+        sb.append("\u0013");
+        sb.append("\u0014");
+        sb.append("\u0015");
+        sb.append("\u0016");
+        sb.append("\u0017");
+        sb.append("\u0018");
+        sb.append("\u0019");
+        sb.append("\u001a");
+        sb.append("\u001b");
+        sb.append("\u001c");
+        sb.append("\u001d");
+        sb.append("\u001e");
+        sb.append("\u001f");
+        String originalValue = sb.toString();
+        StringBuilder stringBuilder = new StringBuilder();
+        String strCopy = originalValue;
+        long startTime = System.currentTimeMillis();
+
+
+        for (int j = 0; j < 100000; j++) {
+            stringBuilder.delete(0, stringBuilder.length());
+            strCopy = originalValue;
+
+
+
+            char[] originalValueCharArray = strCopy.toCharArray();
+            String[] invalidCharValueArray = getInvalidCharArray();
+
+            for (int i = 0; i < originalValueCharArray.length; i++) {
+                char c = originalValueCharArray[i];
+                if (c <= 0x1f) {
+                    if (invalidCharValueArray[c] != null) {
+                        stringBuilder.append(invalidCharValueArray[c]);
+                    } else {
+                        stringBuilder.append(c);
+                    }
+                } else {
+                    stringBuilder.append(c);
+                }
+            }
+        }
+
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("result is: " + strCopy);
+        System.out.println("cost time :" + (endTime - startTime) + "ms");
     }
 
 }
