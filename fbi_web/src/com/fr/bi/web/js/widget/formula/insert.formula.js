@@ -246,16 +246,20 @@ BI.FormulaInsert = BI.inherit(BI.Widget, {
 
     _createFieldTextValueMap: function (fieldItems) {
         var fieldMap = {};
-        BI.each(fieldItems, function (i, fieldItem) {
-            fieldMap[fieldItem.text] = fieldItem.value;
-        });
+        BI.each(fieldItems, function(idx, typeItems){
+            BI.each(typeItems, function (i, fieldItem) {
+                fieldMap[fieldItem.text] = fieldItem.value;
+            });
+        })
         return fieldMap;
     },
 
     _createFieldValueTextMap: function (fieldItems) {
         var fieldMap = {};
-        BI.each(fieldItems, function (i, fieldItem) {
-            fieldMap[fieldItem.value] = fieldItem.text;
+        BI.each(fieldItems, function (idx, typeItems) {
+            BI.each(typeItems, function (i, fieldItem) {
+                fieldMap[fieldItem.value] = fieldItem.text;
+            })
         });
         return fieldMap;
     },

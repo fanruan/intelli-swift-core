@@ -392,9 +392,7 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/seriesaccumulation/group/container.accumulation.js",
                 "com/fr/bi/web/js/modules/seriesaccumulation/group/type.select.button.js",
 
-                "com/fr/bi/web/js/modules/date/interval.date.js",
                 "com/fr/bi/web/js/modules/date/interval.date.param.js",
-                "com/fr/bi/web/js/modules/date/multi.date.js",
                 "com/fr/bi/web/js/modules/datepane/datepane.js",
 
                 //下拉树控件字段关联设置

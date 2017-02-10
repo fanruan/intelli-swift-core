@@ -20,7 +20,8 @@ BI.DetailRegionHeader = BI.inherit(BI.RegionHeader, {
         this.relationButton = BI.createWidget({
             type: "bi.text_button",
             textHeight: 30,
-            value: BI.i18nText("BI-Field_Relation_Setting")
+            value: BI.i18nText("BI-Field_Relation_Setting"),
+            tipType: "success"
         });
 
         this.relationButton.on(BI.TextButton.EVENT_CHANGE, function () {
@@ -92,5 +93,70 @@ BI.DetailRegionHeader = BI.inherit(BI.RegionHeader, {
         var o = this.options;
         o.dimensionCreator(dId, o.viewType, options);
     },
+
+    populate: function(){
+        var o = this.options;
+        if(!checkRelationValid()){
+            this.relationButton.setEnable(false);
+            this.relationButton.setTitle(BI.i18nText("BI-Fields_Relation_Only"));
+        }else{
+            this.relationButton.setEnable(true);
+            this.relationButton.setTitle("");
+        }
+
+        if(!checkAddCalcTargetValid()){
+            this.calculateAddButton.setEnable(false);
+            this.calculateAddButton.setWarningTitle(BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Number_Target"));
+        }else{
+            this.calculateAddButton.setEnable(true);
+            this.calculateAddButton.setWarningTitle("");
+        }
+
+        //动画，先保留
+        //if(hasMultiRelation()){
+        //    this.relationButton.element.addClass("animated infinite pulse");
+        //}else{
+        //    this.relationButton.element.removeClass("animated infinite pulse");
+        //}
+
+        function checkRelationValid(){
+            var tableIds = BI.map(BI.Utils.getAllDimDimensionIDs(o.wId), function(idx, dId){
+                return BI.Utils.getTableIDByDimensionID(dId);
+            });
+            var commonTableIds = BI.Utils.getCommonForeignTablesByTableIDs(tableIds);
+            if(commonTableIds.length < 2){
+                return BI.isNotNull(BI.find(tableIds, function(idx, primaryTid){
+                    return BI.find(commonTableIds, function(idx, foreignTid){
+                        return BI.Utils.getPathsFromTableAToTableB(primaryTid, foreignTid).length > 1;
+                    })
+                }));
+            }
+            return true;
+        }
+
+        function checkAddCalcTargetValid(){
+            var dimsAndTars = BI.Utils.getAllDimensionIDs(o.wId);
+            return BI.isNotNull(BI.find(dimsAndTars, function(idx, dId){
+                var targetType = BI.Utils.getDimensionTypeByID(dId);
+                return targetType === BICst.TARGET_TYPE.NUMBER || targetType === BICst.TARGET_TYPE.FORMULA
+            }));
+        }
+
+        function hasMultiRelation(){
+            var tableIds = BI.map(BI.Utils.getAllDimDimensionIDs(o.wId), function(idx, dId){
+                return BI.Utils.getTableIDByDimensionID(dId);
+            });
+            var commonTableIds = BI.Utils.getCommonForeignTablesByTableIDs(tableIds);
+            if(commonTableIds.length > 1){
+                return true;
+            }else{
+                return BI.isNotNull(BI.find(tableIds, function(idx, primaryTid){
+                    return BI.find(commonTableIds, function(idx, foreignTid){
+                        return BI.Utils.getPathsFromTableAToTableB(primaryTid, foreignTid).length > 1;
+                    })
+                }));
+            }
+        }
+    }
 });
 $.shortcut("bi.detail_region_header", BI.DetailRegionHeader);
