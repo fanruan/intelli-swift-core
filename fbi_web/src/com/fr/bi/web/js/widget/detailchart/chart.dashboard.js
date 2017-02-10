@@ -40,9 +40,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type);
         var isMultiPointers = self.config.number_of_pointer === self.constants.MULTI_POINTER;
-        delete config.zoom;
         formatChartDashboardStyle();
         config.chartType = "gauge";
+        delete config.zoom;
         delete config.xAxis;
         delete config.yAxis;
         if (isDashboard && !isMultiPointers) {
