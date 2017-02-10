@@ -91,7 +91,7 @@ BI.Combo = BI.inherit(BI.Widget, {
     _initPullDownAction: function () {
         var self = this, o = this.options;
         var evs = this.options.trigger.split(",");
-        var ev = function (e) {
+        var st = function (e) {
             if (o.stopEvent) {
                 e.stopEvent();
             }
@@ -118,7 +118,7 @@ BI.Combo = BI.inherit(BI.Widget, {
                     });
                     break;
                 case "click":
-                    self.element.off(ev + "." + self.getName()).on(ev + "." + self.getName(), BI.debounce(function (e) {
+                    var debounce = BI.debounce(function (e) {
                         if (self.combo.element.__isMouseInBounds__(e)) {
                             if (self.isEnabled() && self.combo.isEnabled()) {
                                 o.toggle ? self._toggle() : self._popupView();
@@ -131,8 +131,11 @@ BI.Combo = BI.inherit(BI.Widget, {
                                 }
                             }
                         }
-                        ev(e);
-                    }, BI.EVENT_RESPONSE_TIME, true));
+                    }, BI.EVENT_RESPONSE_TIME, true);
+                    self.element.off(ev + "." + self.getName()).on(ev + "." + self.getName(), function(e){
+                        debounce(e);
+                        st(e);
+                    });
                     break;
             }
         });

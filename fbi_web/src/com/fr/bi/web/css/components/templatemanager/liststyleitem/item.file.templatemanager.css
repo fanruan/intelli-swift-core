@@ -14,3 +14,7 @@
 .bi-template-manager-file-item .template-item-mark-icon {
   background: #ffffff;
 }
+.bi-template-manager-file-item .template-file-item-label {
+  font-size: 14px;
+  color: #1a1a1a;
+}

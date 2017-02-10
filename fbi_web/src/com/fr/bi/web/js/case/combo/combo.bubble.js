@@ -17,6 +17,7 @@ BI.BubbleCombo = BI.inherit(BI.Widget, {
             isDefaultInit: false,
             isNeedAdjustHeight: true,//是否需要高度调整
             isNeedAdjustWidth: true,
+            stopPropagation: false,
             adjustLength: 0,//调整的距离
             // adjustXOffset: 0,
             // adjustYOffset: 10,
@@ -39,6 +40,7 @@ BI.BubbleCombo = BI.inherit(BI.Widget, {
             isNeedAdjustHeight: o.isNeedAdjustHeight,
             isNeedAdjustWidth: o.isNeedAdjustWidth,
             adjustLength: this._getAdjustLength(),
+            stopPropagation: o.stopPropagation,
             adjustXOffset: 0,
             adjustYOffset: 0,
             hideChecker: o.hideChecker,

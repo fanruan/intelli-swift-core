@@ -66,8 +66,6 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
                 self.packageManagePane.setVisible(true);
                 self.packageManagePane.populate();
             }
-
-
         });
 
         this.groupPane.on(BI.BusinessPackageManage.EVENT_PACKAGE_ADD, function (groupID, groupName) {
@@ -107,13 +105,8 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
 
         this.groupPane.on(BI.BusinessPackageManage.EVENT_PACKAGE_DELETE, function (packageID) {
             var packName = BI.Utils.getPackageNameByID4Conf(packageID);
-            BI.Msg.confirm("", BI.i18nText("BI-Is_Delete_Package") + ":" + packName + "?", function (v) {
-                if (v === true) {
-                    self.model.set("delete", packageID);
-                }
-            });
+            self.model.set("delete", packageID);
         });
-
 
         this.groupPane.on(BI.BusinessPackageManage.EVENT_CHANGE, function (groupID, packID) {
             //使用modules入口

@@ -21,7 +21,7 @@ BI.BubblePopupBarView = BI.inherit(BI.BubblePopupView, {
         BI.each(o.buttons.reverse(), function (i, buttonOpt) {
             items.push(BI.extend({
                 type: 'bi.button',
-                height: 25,
+                height: 30,
                 handler: function (v) {
                     self.fireEvent(BI.BubblePopupBarView.EVENT_CLICK_TOOLBAR_BUTTON, v);
                 }
@@ -29,8 +29,9 @@ BI.BubblePopupBarView = BI.inherit(BI.BubblePopupView, {
         });
         return BI.createWidget({
             type: 'bi.right_vertical_adapt',
-            height: 30,
-            hgap: 5,
+            height: 40,
+            hgap: 10,
+            bgap: 10,
             items: items
         });
     }
