@@ -345,6 +345,7 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/bi.directory.edit.js",
                 "/com/fr/bi/web/cross/js/reporthangout/hangoutreport.plate.js",
                 "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js",
+                "/com/fr/bi/web/cross/js/configauth/bi.config.authmanage.js"
         });
     }
 
