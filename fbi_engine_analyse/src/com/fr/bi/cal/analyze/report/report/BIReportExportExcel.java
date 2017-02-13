@@ -6,10 +6,7 @@ import com.fr.base.ScreenResolution;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.report.BIReportor;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelSheetData.ExcelExportPicData;
-import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelSheetData.ExcelInterface;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
@@ -95,9 +92,9 @@ public class BIReportExportExcel {
 
         for (BIWidget widget : widgets) {
             if (widgetHasData(widget)) {
-                if (widget instanceof MultiChartWidget) {
+                if (widget instanceof TableWidget) {
                     polyECBlock.addFloatElement(renderChartPic(widget));
-                }else {
+                } else {
                     polyECBlock.addFloatElement(renderChartPic(widget));
                 }
             } else {
@@ -143,20 +140,14 @@ public class BIReportExportExcel {
             BILoggerFactory.getLogger().error(exception.getMessage(), exception);
             jo.put("error", BIPrintUtils.outputException(exception));
         }
-        ExcelInterface data=null;
-        if (widget instanceof MultiChartWidget) {
-            data = new ExcelExportPicData(widget, jo.optJSONObject("data"));
-        }else {
-//            data = new ExprotTableData(widget, jo.optJSONObject("data"),sessionID);
-        }
-        //        JSONObject chartOptions = data.parseChartSetting();
-//        //将plotOptions下的animation设为false否则不能截图（只截到网格线）
-//        JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
-//        Rectangle rect = widget.getRect();
-//        plotOptions.put("animation", false);
-//        chartOptions.put("plotOptions", plotOptions);
+        JSONObject options = null;
+//        if (widget instanceof MultiChartWidget) {
+            options = ((TableWidget) widget).getPostOptions(sessionID);
+//        }else {
+
+//        }
         Rectangle rect = widget.getRect();
-        String postOptions = new JSONObject("{options:" + data.getChartOptions() + ", width:" + rect.getWidth() + ", height:" + rect.getHeight() + "}").toString();
+        String postOptions = new JSONObject("{options:" + options + ", width:" + rect.getWidth() + ", height:" + rect.getHeight() + "}").toString();
         String base64 = null;
         try {
             base64 = postMessage(PhantomIp, PhantomPort, postOptions);

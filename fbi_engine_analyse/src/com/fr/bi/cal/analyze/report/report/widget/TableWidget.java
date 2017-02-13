@@ -9,6 +9,8 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartDataConvertFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSettingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -25,6 +27,7 @@ import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
+import com.fr.web.core.SessionDealWith;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -325,6 +328,16 @@ public class TableWidget extends BISummaryWidget {
 
     @Override
     public void reSetDetailTarget() {
+    }
 
+    public JSONObject getPostOptions(String sessionId) throws Exception {
+        JSONObject dataJSON = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
+        JSONObject data = dataJSON.optJSONObject("data");
+        JSONObject chartOptions = parseChartSetting(data);
+        return chartOptions;
+    }
+    private JSONObject parseChartSetting(JSONObject data) throws Exception {
+        JSONObject convert = BIChartDataConvertFactory.convertForTableWidget(this, data);
+        return BIChartSettingFactory.parseChartSetting(this, convert.getJSONArray("data"), convert.optJSONObject("options"), convert.getJSONArray("types"));
     }
 }

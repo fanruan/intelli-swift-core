@@ -173,6 +173,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                 process = process > 0.9 ? 0.9 : process;
             }
             process = Math.ceil(process * 100);
+            console.log(process+data);
             process = process < 10 ? 10 : process;
             this.processBar.setValue(process);
             if (process < 100) {
