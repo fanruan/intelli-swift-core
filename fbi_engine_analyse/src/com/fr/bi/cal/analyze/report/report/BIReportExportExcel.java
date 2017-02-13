@@ -10,7 +10,6 @@ import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelSheetData.ExcelExportPicData;
 import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelSheetData.ExcelInterface;
-import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelSheetData.ExprotTableData;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
@@ -144,12 +143,11 @@ public class BIReportExportExcel {
             BILoggerFactory.getLogger().error(exception.getMessage(), exception);
             jo.put("error", BIPrintUtils.outputException(exception));
         }
-        ExcelInterface data;
+        ExcelInterface data=null;
         if (widget instanceof MultiChartWidget) {
             data = new ExcelExportPicData(widget, jo.optJSONObject("data"));
         }else {
-
-            data = new ExprotTableData(widget, jo.optJSONObject("data"),sessionID);
+//            data = new ExprotTableData(widget, jo.optJSONObject("data"),sessionID);
         }
         //        JSONObject chartOptions = data.parseChartSetting();
 //        //将plotOptions下的animation设为false否则不能截图（只截到网格线）

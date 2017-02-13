@@ -17,6 +17,7 @@ public class ExcelExportPicData implements ExcelInterface {
     //wb参数
     private JSONObject chartOptions;
 
+
     public ExcelExportPicData(BIWidget widget, JSONObject data) throws Exception {
         this.widget = widget;
         this.data = data;
