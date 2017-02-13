@@ -12,7 +12,7 @@ BI.ScatterDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _init: function() {
         BI.ScatterDataLabelDetailedSettingPopup.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         //系列名
         this.showSeriesName = BI.createWidget({
@@ -22,7 +22,7 @@ BI.ScatterDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showSeriesName.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AreaDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //值
@@ -33,7 +33,7 @@ BI.ScatterDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showValue.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.ScatterDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         var show = BI.createWidget({
@@ -50,7 +50,7 @@ BI.ScatterDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: 230
         });
         this.textStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ScatterDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
         var textStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.textStyle);
 

@@ -12,7 +12,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _init: function() {
         BI.TooltipDetailedSettingPopup.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         //显示所有指标
         this.showTargets = BI.createWidget({
@@ -23,7 +23,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showTargets.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.TooltipDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //分类名
@@ -34,7 +34,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.categoryName.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.TooltipDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //系列名
@@ -45,7 +45,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.seriesName.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.TooltipDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //值
@@ -56,7 +56,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showValue.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.TooltipDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //百分比
@@ -67,7 +67,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showPercentage.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.TooltipDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         var show = BI.createWidget({
@@ -84,7 +84,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: 230
         });
         this.textStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TooltipDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
         var textStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.textStyle);
 

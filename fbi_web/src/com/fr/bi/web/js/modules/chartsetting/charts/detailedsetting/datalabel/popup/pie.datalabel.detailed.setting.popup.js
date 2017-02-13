@@ -12,7 +12,7 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _init: function() {
         BI.PieDataLabelDetailedSettingPopup.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         //分类名
         this.showCategoryName = BI.createWidget({
@@ -22,7 +22,7 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showCategoryName.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.PieDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //系列名
@@ -33,7 +33,7 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showSeriesName.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.PieDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //值
@@ -44,7 +44,7 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showValue.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.PieDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //百分比
@@ -55,7 +55,7 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showPercentage.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.PieDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         var show = BI.createWidget({
@@ -82,7 +82,7 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         this.position.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.showTractionLine.setVisible(this.getValue()[0] === BICst.DATA_LABEL.POSITION_OUTER);
-            self.fireEvent(BI.PieDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         this.showTractionLine = BI.createWidget({
@@ -92,7 +92,7 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showTractionLine.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.PieDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         var positionAndLine = BI.createWidget({
@@ -109,7 +109,7 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: 230
         });
         this.textStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.PieDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
         var textStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.textStyle);
 

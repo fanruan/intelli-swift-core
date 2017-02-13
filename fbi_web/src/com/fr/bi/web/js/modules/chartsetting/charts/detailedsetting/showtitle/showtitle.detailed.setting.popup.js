@@ -6,7 +6,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _defaultConfig: function() {
         return BI.extend(BI.ShowTitleDetailedSettingPopup.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-detailed-setting bi-show-title-detailed-setting-popup"
+            baseCls: "bi-detailed-setting bi-show-title-detailed-setting-popup",
         })
     },
 
@@ -19,7 +19,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             type: "bi.global_style_index_background"
         });
         this.titleBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE);
+            self.options.onChange();
         });
 
         var titleColourWrapper = this._createComboWrapper(BI.i18nText("BI-Title_Background"), this.titleBG);
@@ -31,7 +31,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: 230
         });
         this.titleWordStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE)
+            self.onChange();
         });
         var titleWordStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.titleWordStyle);
 
@@ -88,5 +88,4 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.show_title_detailed_setting_popup", BI.ShowTitleDetailedSettingPopup);
