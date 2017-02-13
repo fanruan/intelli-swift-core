@@ -1238,7 +1238,6 @@ Data.Utils = {
                                     name: BI.UUID()
                                 })
                             });
-                            return [result]
                         }
                         if (config.number_of_pointer === constants.MULTI_POINTER && items[0].length > 1) {//多个系列
                             BI.each(items, function (idx, item) {
@@ -2264,6 +2263,10 @@ Data.Utils = {
             delete configs.xAxis;
             delete configs.yAxis;
             delete configs.zoom;
+            if(isDashboard && !isMultiPointers) {
+                configs.plotOptions.seriesLabel.enabled = false
+            }
+            configs.gaugeAxis[0].labelStyle = config.chart_font;
             return BI.extend(configs, {
                 series: items
             });
