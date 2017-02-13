@@ -640,7 +640,7 @@
                 //组件表头上指标的排序和过滤
                 //BI-3341 看测试哪边的数据不知道为什么表头上的sort存了个空对象，而实际上对表头指标选择排序方式无论如何也不会出现空对象
                 //先在这边加个判断
-                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort) && BI.isNotEmptyObject(widget.sort)){
+                if (BI.has(widget, "sort") && BI.isNotNull(widget.sort) && BI.isNotEmptyObject(widget.sort)) {
                     obj.sort = BI.extend({}, widget.sort, {
                         sort_target: createDimensionsAndTargets(widget.sort.sort_target).id
                     })
@@ -1696,6 +1696,40 @@
                             return false;
                         }
 
+                    });
+                }
+            }
+        },
+
+        isNoAuthFieldExistByWidgetID: function (wid) {
+            var self = this;
+            var allDimIds = this.getAllDimensionIDs(wid);
+            return BI.some(allDimIds, function (i, dId) {
+                return checkDimension(dId)
+            });
+
+            function checkDimension(dId) {
+                var dType = BI.Utils.getDimensionTypeByID(dId);
+                if (dType === BICst.TARGET_TYPE.STRING ||
+                    dType === BICst.TARGET_TYPE.NUMBER ||
+                    dType === BICst.TARGET_TYPE.DATE ||
+                    dType === BICst.TARGET_TYPE.COUNTER) {
+                    var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
+                    if (BI.isNotNull(Pool.noAuthFields[fieldId])) {
+                        return true;
+                    }
+                } else {
+                    //计算指标
+                    var expression = BI.Utils.getExpressionByDimensionID(dId);
+                    var fIds = expression.ids;
+                    return BI.some(fIds, function (j, fId) {
+                        var dId = fId;
+                        var id = BI.Utils.getFieldIDByDimensionID(dId);
+                        if (BI.isNotNull(self.getDimensionTypeByID(dId))) {
+                            return checkDimension(dId)
+                        } else if (BI.isNotNull(Pool.noAuthFields[id])) {
+                            return true;
+                        }
                     });
                 }
             }
@@ -3043,7 +3077,7 @@
                 if (BI.isNull(groupValue) && BI.isNull(groupType)) {
                     //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
                     var sIndex = value.indexOf("-");
-                    if(sIndex === -1){  //空分组
+                    if (sIndex === -1) {  //空分组
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
                             filter_value: {},
@@ -3077,13 +3111,13 @@
                         };
                         min = newMin;
                     }
-                    if(BI.isNull(groupMap[value])){
+                    if (BI.isNull(groupMap[value])) {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
                             filter_value: {},
                             _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                         }
-                    }else{
+                    } else {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
                             filter_value: groupMap[value],
@@ -3155,7 +3189,7 @@
                         },
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     }
-                }  else if(BI.isNull(value) || BI.isEmptyString(value)){
+                } else if (BI.isNull(value) || BI.isEmptyString(value)) {
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
                         filter_value: {},
