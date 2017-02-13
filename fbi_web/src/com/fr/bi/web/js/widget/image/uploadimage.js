@@ -85,15 +85,46 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         });
 
         this.del = BI.createWidget({
-            type: "bi.icon_button",
-            cls: "upload-image-icon-button img-shutdown-font",
-            title: BI.i18nText("BI-Delete"),
-            height: 24,
-            width: 24
-        });
-
-        this.del.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.UploadImage.EVENT_DESTROY);
+            type: "bi.bubble_combo",
+            el: {
+                type: "bi.icon_button",
+                cls: "upload-image-icon-button img-shutdown-font",
+                title: BI.i18nText("BI-Delete"),
+                height: 24,
+                width: 24
+            },
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        self.fireEvent(BI.UploadImage.EVENT_DESTROY);
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        self.del.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Sure_Delete_Current_Component"),
+                        cls: "upload-image-delete-label",
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            },
+            invisible: true,
+            stopPropagation: true
         });
 
         this.size = BI.createWidget({

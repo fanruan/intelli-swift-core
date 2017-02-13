@@ -23,20 +23,49 @@ BIDezi.ResetView = BI.inherit(BI.View, {
         resetButton.on(BI.Button.EVENT_CHANGE, function () {
             self._resetAllControlValues();
         });
-        var deleteButton = BI.createWidget({
-            type: "bi.icon_button",
-            cls: "close-font remove-button",
-            width: 20,
-            height: 20
+        var deleteCombo = BI.createWidget({
+            type: "bi.bubble_combo",
+            el: {
+                type: "bi.icon_button",
+                cls: "close-font remove-button",
+                width: 20,
+                height: 20
+            },
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        self.model.destroy();
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        deleteCombo.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Sure_Delete_Current_Component"),
+                        cls: "delete-label",
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            },
+            invisible: true,
+            stopPropagation: true
         });
-        deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
-            BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Sure_Delete_Current_Component") + self.model.get("name") + "?", function (v) {
-                if (v === true) {
-                    self.model.destroy();
-                }
-            });
-        });
-        deleteButton.setVisible(false);
+
+        deleteCombo.setVisible(false);
         BI.createWidget({
             type: "bi.absolute",
             element: veseel,
@@ -47,15 +76,15 @@ BIDezi.ResetView = BI.inherit(BI.View, {
                 top: 0,
                 bottom: 0
             }, {
-                el: deleteButton,
+                el: deleteCombo,
                 right: 5,
                 top: 10
             }]
         });
         veseel.hover(function () {
-            deleteButton.setVisible(true);
+            deleteCombo.setVisible(true);
         }, function () {
-            deleteButton.setVisible(false);
+            deleteCombo.setVisible(false);
         });
     },
 

@@ -154,23 +154,56 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
         var deleteIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: 'remove-report-font template-item-icon',
-            title: BI.i18nText("BI-Remove"),
+            title: BI.i18nText("BI-Remove")
+        });
+        var deleteCombo = BI.createWidget({
+            type: "bi.bubble_combo",
+            el: deleteIcon,
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        deleteCombo.hideView();
+                        BI.requestAsync("fr_bi", "check_report_edit", {id: o.id, createBy: o.createBy}, function (res) {
+                            if (BI.isNotNull(res.result) && res.result.length > 0) {
+                                BI.Msg.toast(BI.i18nText("BI-Report_Editing_Cannot_Remove", res.result), "warning");
+                            } else {
+                                o.onDeleteReport.apply(self, arguments);
+                            }
+                        });
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        deleteCombo.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        cls: "template-file-item-label",
+                        text: BI.i18nText("BI-Confirm_Delete_Report"),
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            },
             invisible: true,
             stopPropagation: true
         });
+
         if (o.status === BICst.REPORT_STATUS.HANGOUT) {
-            deleteIcon.setEnable(false);
+            deleteCombo.setEnable(false);
             deleteIcon.setWarningTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Delete"));
         }
-        deleteIcon.on(BI.IconButton.EVENT_CHANGE, function () {
-            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id, createBy: o.createBy}, function (res) {
-                if (BI.isNotNull(res.result) && res.result.length > 0) {
-                    BI.Msg.toast(BI.i18nText("BI-Report_Editing_Cannot_Remove", res.result), "warning");
-                } else {
-                    o.onDeleteReport.apply(self, arguments);
-                }
-            });
-        });
 
         var timeText = BI.createWidget({
             type: 'bi.label',
@@ -181,13 +214,13 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
         this.element.hover(function () {
             copyButton.setVisible(true);
             renameIcon.setVisible(true);
-            deleteIcon.setVisible(true);
+            deleteCombo.setVisible(true);
             self.hangout && self.hangout.setVisible(true);
             sharedButton && sharedButton.setVisible(true);
         }, function () {
             copyButton.setVisible(false);
             renameIcon.setVisible(false);
-            deleteIcon.setVisible(false);
+            deleteCombo.setVisible(false);
             self.hangout && self.hangout.setVisible(false);
             sharedButton && sharedButton.setVisible(false);
         });
@@ -239,7 +272,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             }, {
                 type: "bi.vertical_adapt",
                 hgap: 20,
-                items: [sharedButton, this.hangout, copyButton, renameIcon, deleteIcon]
+                items: [sharedButton, this.hangout, copyButton, renameIcon, deleteCombo]
             }, {
                 el: {
                     type: "bi.left_right_vertical_adapt",

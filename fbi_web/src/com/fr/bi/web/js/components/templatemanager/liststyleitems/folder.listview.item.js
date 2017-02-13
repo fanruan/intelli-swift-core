@@ -68,21 +68,51 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
             });
         });
 
-        var deleteIcon = BI.createWidget({
-            type: "bi.icon_button",
-            cls: 'remove-report-font template-item-icon',
-            title: BI.i18nText("BI-Remove"),
+        var deleteCombo = BI.createWidget({
+            type: "bi.bubble_combo",
+            el: {
+                type: "bi.icon_button",
+                cls: 'remove-report-font template-item-icon',
+                title: BI.i18nText("BI-Remove")
+            },
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        BI.requestAsync("fr_bi", "check_report_edit", {id: o.id}, function (res) {
+                            if (BI.isNotNull(res.result) && res.result.length > 0) {
+                                BI.Msg.toast(BI.i18nText("BI-Folder_Editing_Cannot_Remove", res.result), "warning");
+                            } else {
+                                o.onDeleteFolder.apply(self, arguments);
+                            }
+                        });
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        deleteCombo.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Confirm_Delete_Folder"),
+                        cls: "template-folder-label",
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            },
             invisible: true,
             stopPropagation: true
-        });
-        deleteIcon.on(BI.IconButton.EVENT_CHANGE, function () {
-            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id}, function (res) {
-                if (BI.isNotNull(res.result) && res.result.length > 0) {
-                    BI.Msg.toast(BI.i18nText("BI-Folder_Editing_Cannot_Remove", res.result), "warning");
-                } else {
-                    o.onDeleteFolder.apply(self, arguments);
-                }
-            });
         });
 
         var timeText = BI.createWidget({
@@ -99,10 +129,10 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
 
         this.element.hover(function () {
             renameIcon.setVisible(true);
-            deleteIcon.setVisible(true);
+            deleteCombo.setVisible(true);
         }, function () {
             renameIcon.setVisible(false);
-            deleteIcon.setVisible(false);
+            deleteCombo.setVisible(false);
         });
 
         this.blankSpace = BI.createWidget({
@@ -144,7 +174,7 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
             }, {
                 type: "bi.vertical_adapt",
                 hgap: 20,
-                items: [renameIcon, deleteIcon]
+                items: [renameIcon, deleteCombo]
             }, {
                 el: {
                     type: "bi.left_right_vertical_adapt",

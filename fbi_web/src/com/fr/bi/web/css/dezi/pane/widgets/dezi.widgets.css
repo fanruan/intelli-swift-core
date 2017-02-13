@@ -47,3 +47,7 @@
   opacity: 0.8;
   filter: alpha(opacity=80);
 }
+.bi-dashboard-widget .delete-label {
+  font-size: 14px;
+  color: #1a1a1a;
+}
