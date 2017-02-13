@@ -83,10 +83,10 @@ public class TestRPC extends TestCase {
     public void testCubeTask() {
         BISerializableUtils.findUnsupportedSerializable(MyCubeTask.class);
         BICubeManager provider = new BICubeManager();
-        provider.addTask(new MyCubeTask(), 123);
+        provider.addTask(new EmptyCubeTask("123"), 123);
         RPC.registerSkeleton(provider, 12345);
         BICubeManagerProvider proxy = (BICubeManagerProvider) RPC.getProxy(BICubeManager.class, "127.0.0.1", 12345);
-        System.out.println(proxy.hasTask(new MyCubeTask(), 123));
+        System.out.println(proxy.hasTask(new EmptyCubeTask("123"), 123));
     }
 
     class FOO implements Runnable,Serializable{
