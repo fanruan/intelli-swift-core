@@ -59,6 +59,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
             config.gaugeAxis = self.gaugeAxis;
             var slotValueLAbel = {
+                enabled: true,
                 formatter: function () {
                     var value = this.value;
                     if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && self.config.num_separators) {
@@ -145,10 +146,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function setPlotOptions(style, bands, valueLabel, percentageLabel, thermometerLayout, layout) {
+        function setPlotOptions(style, bands, slotValueLAbel, percentageLabel, thermometerLayout, layout) {
             config.plotOptions.style = style;
             config.plotOptions.bands = bands;
-            config.plotOptions.valueLabel = valueLabel;
+            config.plotOptions.valueLabel = slotValueLAbel;
             config.plotOptions.percentageLabel = percentageLabel;
             config.plotOptions.thermometerLayout = thermometerLayout;
             config.plotOptions.layout = layout;

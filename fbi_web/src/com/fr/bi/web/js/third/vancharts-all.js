@@ -4469,6 +4469,10 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     }
 
     function containsPoint(rect, point){
+        if(!rect || !point) {
+            return false;
+        }
+
         var x = pick(point.x || point[0]);
 
         var y = pick(point.y || point[1]);
