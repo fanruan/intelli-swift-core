@@ -119,9 +119,6 @@ public class BISession extends BIAbstractSession {
         }
         lockDAO.updateLock(sessionID, node.getUserId(), node.getId());
         BIReportNodeLock l = lockDAO.getLock(sessionID, node.getUserId(), node.getId());
-        if (l != null) {
-            BILoggerFactory.getLogger().info(l.toString());
-        }
     }
     //通过updatesession，更新配置锁的时间
     public void updateConfigLockTime() {
@@ -131,9 +128,6 @@ public class BISession extends BIAbstractSession {
         }
         lockDAO.updateLock(sessionID, node.getUserId());
         BIFineDBConfigLock l = lockDAO.getLock(sessionID, node.getUserId());
-        if (l != null) {
-            BILoggerFactory.getLogger().info(l.toString());
-        }
     }
     /**
      * 强奸
