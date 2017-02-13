@@ -63,7 +63,7 @@ public class StringValueSet implements BICoreService{
 
     @Override
     public int hashCode() {
-        int result = values.hashCode();
+        int result = values.size();
         result = 31 * result + type;
         return result;
     }

@@ -8,7 +8,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 
 
 public class StringTOPNFilterValue extends StringNFilterValue implements NFilterValue{
@@ -24,8 +24,8 @@ public class StringTOPNFilterValue extends StringNFilterValue implements NFilter
      * @return 是否显示
      */
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        LightNode parentNode = node.getParent();
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+        BINode parentNode = node.getParent();
         int count = parentNode.getChildLength();
         if (N < 1){
             return false;

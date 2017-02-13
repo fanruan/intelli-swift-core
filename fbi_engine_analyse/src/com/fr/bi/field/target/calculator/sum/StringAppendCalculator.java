@@ -8,6 +8,7 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
+import com.fr.bi.stable.report.result.SummaryContainer;
 
 import java.util.Collection;
 
@@ -39,7 +40,7 @@ public class StringAppendCalculator extends AbstractSummaryCalculator {
      * @return 结果
      */
     @Override
-    public <T extends BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
+    public <T extends SummaryContainer & BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
         return null;
     }
 

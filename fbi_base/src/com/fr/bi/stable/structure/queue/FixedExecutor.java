@@ -17,8 +17,8 @@ public class FixedExecutor<T extends AVTask> {
 
     private Executor executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() << 1);
     private Map<BICore, T> tasks = new ConcurrentHashMap<BICore, T>();
+    private Map<BICore, BICore> running = new ConcurrentHashMap<BICore, BICore>();
     private QueueThread checkTaskThread = new QueueThread();
-
 
     public FixedExecutor() {
         checkTaskThread.setTraversal(new Traversal() {
@@ -29,9 +29,9 @@ public class FixedExecutor<T extends AVTask> {
                     while (iterator.hasNext()) {
                         Map.Entry<BICore, T> entry = iterator.next();
                         T task = entry.getValue();
-                        if (task.isAvailable()) {
+                        if (task.isAvailable() && !running.containsKey(entry.getKey())) {
+                            running.put(entry.getKey(), entry.getKey());
                             executor.execute(new CallThread(task));
-                            iterator.remove();
                         }
                     }
                 }
@@ -44,13 +44,9 @@ public class FixedExecutor<T extends AVTask> {
         if(task != null) {
             BICore key = task.getKey();
             synchronized (this) {
-                if (task.isAvailable()) {
-                    executor.execute(new CallThread(task));
-                    tasks.remove(key);
-                } else {
-                    if (!tasks.containsKey(key)) {
-                        tasks.put(key, task);
-                    }
+                if (!tasks.containsKey(key)) {
+                    tasks.put(key, task);
+                    triggerCheck();
                 }
             }
         }
@@ -76,10 +72,15 @@ public class FixedExecutor<T extends AVTask> {
 
         @Override
         public void run()  {
-            if(task != null) {
-                task.work();
+            try {
+                if(task != null) {
+                    task.work();
+                }
+                triggerCheck();
+            } finally {
+                running.remove(task.getKey());
+                tasks.remove(task.getKey());
             }
-            triggerCheck();
         }
     }
 

@@ -6,7 +6,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 
 import java.math.BigDecimal;
 
@@ -29,7 +29,7 @@ public class NumberNotEqualFilterValue extends NumberEvenFilterValue {
      * @return true或false
      */
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         Number targetValue = node.getSummaryValue(targetKey);
         if (targetValue == null) {
             return false;

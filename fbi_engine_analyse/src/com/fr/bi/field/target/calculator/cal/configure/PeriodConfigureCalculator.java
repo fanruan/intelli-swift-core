@@ -7,8 +7,8 @@ import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateT
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
-import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -33,13 +33,13 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
      * @param node node节点
      */
     @Override
-    public void calCalculateTarget(LightNode node) {
+    public void calCalculateTarget(BINode node) {
         Object key = getCalKey();
         int deep = getCalDeep(node);
         if (key == null) {
             return;
         }
-        LightNode tempNode = node;
+        BINode tempNode = node;
         //从第几个纬度开始计算
         int calDeep = start_group == 0 ? deep - 1 : deep;
         for (int i = 0; i < calDeep; i++) {
@@ -49,8 +49,8 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
             tempNode = tempNode.getFirstChild();
         }
         List<RankDealWith> nodeList = new ArrayList<RankDealWith>();
-        LightNode cursor_node = tempNode;
-        LightNode last_node = null;
+        BINode cursor_node = tempNode;
+        BINode last_node = null;
         while (cursor_node != null) {
             nodeList.add(new RankDealWith(last_node, cursor_node));
             last_node = cursor_node;
@@ -107,10 +107,10 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
     }
 
     private class RankDealWith implements java.util.concurrent.Callable {
-        private LightNode last_node;
-        private LightNode current_node;
+        private BINode last_node;
+        private BINode current_node;
 
-        private RankDealWith(LightNode last_node, LightNode current_node) {
+        private RankDealWith(BINode last_node, BINode current_node) {
             this.last_node = last_node;
             this.current_node = current_node;
         }
@@ -119,14 +119,14 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
         @Override
         public Object call() throws Exception {
             int deep = 0;
-            LightNode temp_node = current_node;
+            BINode temp_node = current_node;
             while (temp_node.getFirstChild() != null) {
                 temp_node = temp_node.getFirstChild();
                 deep++;
             }
-            LightNode cursor_node = temp_node;
+            BINode cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                LightNode n = cursor_node;
+                BINode n = cursor_node;
                 Object[] way = new Object[deep];
                 for (int i = way.length; i > 0; i--) {
                     way[i - 1] = n.getData();
@@ -160,7 +160,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 return null;
             }
             int i = 0;
-            LightNode n = last_node;
+            BINode n = last_node;
             while (i < way.length) {
                 n = n.getChild(way[i++]);
                 if (n == null) {
@@ -184,11 +184,11 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
         }
 
 
-        private boolean isNotEnd(LightNode node, int deep) {
+        private boolean isNotEnd(BINode node, int deep) {
             if (node == null) {
                 return false;
             }
-            LightNode temp = node;
+            BINode temp = node;
             for (int i = 0; i < deep; i++) {
                 temp = temp.getParent();
             }

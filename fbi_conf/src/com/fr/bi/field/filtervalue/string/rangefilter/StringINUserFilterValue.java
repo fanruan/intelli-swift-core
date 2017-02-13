@@ -13,8 +13,8 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -64,7 +64,7 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
     }
 
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         addLogUserInfo();
         String value = StringFilterValueUtils.toString(node.getShowValue());
         if (valueSet.getValues() == null || valueSet.getValues().isEmpty()) {

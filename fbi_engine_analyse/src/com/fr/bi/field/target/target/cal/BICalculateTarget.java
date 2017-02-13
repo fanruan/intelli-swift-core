@@ -1,6 +1,5 @@
 package com.fr.bi.field.target.target.cal;
 
-import com.fr.bi.field.target.target.BIAbstractTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 
@@ -16,7 +15,7 @@ public abstract class BICalculateTarget extends BISummaryTarget {
 
     protected Map<String, TargetGettingKey> targetMap;
 
-    public abstract List<BIAbstractTarget> createCalculateUseTarget(BIAbstractTarget[] sumTarget);
+    public abstract List<BISummaryTarget> createCalculateUseTarget(BISummaryTarget[] sumTarget);
 
     public Map<String, TargetGettingKey> getTargetMap() {
         return targetMap;

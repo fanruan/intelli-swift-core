@@ -56,6 +56,11 @@ public class StringNotStartWithFilterValue extends StringOneValueFilterValue {
         }
     }
 
+
+    @Override
+    public boolean canCreateFilterIndex() {
+        return true;
+    }
 	/* (non-Javadoc)
 	 * @see com.fr.bi.cal.analyze.report.report.widget.field.filtervalue.string.onevaluefilter.StringOneValueFilterValue#contains(java.lang.String)
 	 */

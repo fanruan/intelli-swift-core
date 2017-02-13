@@ -262,7 +262,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
         long start = System.currentTimeMillis();
         Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageGroup(false, widget, new BISummaryTarget[0], usedDimensions, allDimensions, new BISummaryTarget[0], calpage, widget.useRealData(), session, expander.getYExpander());
         if (tree == null) {
-            tree = new Node(null, null);
+            tree = new Node();
         }
         System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;

@@ -1,7 +1,6 @@
 package com.fr.bi.stable.report.result;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * Created by 小灰灰 on 2014/9/30.
@@ -20,6 +19,4 @@ public interface BICrossNode extends Serializable, SummaryContainer {
     BINode getLeft();
 
     int getLeftChildLength();
-
-    Map getSummaryValue();
 }

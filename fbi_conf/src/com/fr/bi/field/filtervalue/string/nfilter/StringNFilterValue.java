@@ -56,6 +56,10 @@ public abstract class StringNFilterValue extends AbstractFilterValue<String> imp
         return result;
     }
 
+    public int getN() {
+        return N;
+    }
+
     @Override
     public boolean isAllCalculatorFilter() {
         return true;

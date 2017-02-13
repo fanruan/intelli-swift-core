@@ -1,45 +1,29 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 
-import com.fr.bi.cal.analyze.cal.store.GroupKey;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class PageIteratorGroup {
 
-    private Map<GroupKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
+    private NodeDimensionIterator rowIterator;
 
-    private Map<GroupKey, IRootDimensionGroup> columnMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
+    private NodeDimensionIterator columnIterator;
 
-    public PageIteratorGroup(Map<GroupKey, IRootDimensionGroup> rowMap) {
-        this.rowMap = rowMap;
+    public PageIteratorGroup(){
+
     }
 
-    public PageIteratorGroup(Map<GroupKey, IRootDimensionGroup> rowMap, Map<GroupKey, IRootDimensionGroup> columnMap) {
-        this(rowMap);
-        this.columnMap = columnMap;
+    public NodeDimensionIterator getRowIterator() {
+        return rowIterator;
     }
 
-    public Map<GroupKey, IRootDimensionGroup> getRowGroup() {
-        return rowMap;
+    public NodeDimensionIterator getColumnIterator() {
+        return columnIterator;
     }
 
-    public Map<GroupKey, IRootDimensionGroup> getColumnGroup() {
-        return columnMap;
+    public void setRowIterator(NodeDimensionIterator rowIterator) {
+        this.rowIterator = rowIterator;
     }
 
-    public void releaseIndex() {
-        Iterator<IRootDimensionGroup> it = rowMap.values().iterator();
-        while (it.hasNext()) {
-            it.next().clearCache();
-        }
-        Iterator<IRootDimensionGroup> it1 = columnMap.values().iterator();
-        while (it1.hasNext()) {
-            it1.next().clearCache();
-        }
+    public void setColumnIterator(NodeDimensionIterator columnIterator) {
+        this.columnIterator = columnIterator;
     }
-
 }

@@ -8,8 +8,9 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
+import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.stable.report.result.SummaryContainer;
 import com.fr.stable.StringUtils;
 
 import java.util.Collection;
@@ -41,7 +42,7 @@ public class CountCalculator extends AbstractSummaryCalculator {
      * @return double值
      */
     @Override
-    public <T extends BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
+    public <T extends SummaryContainer & BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
         return calculateNodes(key, c);
     }
 

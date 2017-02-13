@@ -7,10 +7,6 @@ import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
  * Created by Connery on 2014/12/14.
  */
 public interface ILazyExecutorOperation<T, F> {
-    /**
-     * 在LazyExecutor开始循环前，执行该操作
-     */
-    void initPrecondition() throws TerminateExecutorException;
 
     /**
      * 为主要部分准备执行环境
@@ -33,11 +29,6 @@ public interface ILazyExecutorOperation<T, F> {
      * T obj 遍历器next()
      */
     void mainTask(T itNext, F preCondition) throws TerminateExecutorException;
-
-    /**
-     * Executor循环体执行完后，会调用该操作。
-     */
-    void endCheck() throws TerminateExecutorException;
 
     void executorTerminated();
 }

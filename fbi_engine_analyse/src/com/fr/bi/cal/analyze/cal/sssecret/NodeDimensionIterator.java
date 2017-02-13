@@ -1,18 +1,32 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
+import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+
 public interface NodeDimensionIterator {
 
-    public void moveNext();
+    void setExpander(NodeExpander expander);
 
-    public GroupConnectionValue next();
+    void setRoot(IRootDimensionGroup root);
 
+    IRootDimensionGroup getRoot();
 
-    public void PageEnd();
+    int[] getStartIndex();
 
+    void moveNext();
 
-    public boolean hasPrevious();
+    GroupConnectionValue next();
 
-    public boolean hasNext();
+    void pageEnd();
 
-    public int getPageIndex();
+    boolean hasPrevious();
+
+    boolean hasNext();
+
+    int getPageIndex();
+
+    void moveToShrinkStartValue(Object[] value);
+
+    void moveLastPage();
+
+    NodeDimensionIterator createClonedIterator();
 }

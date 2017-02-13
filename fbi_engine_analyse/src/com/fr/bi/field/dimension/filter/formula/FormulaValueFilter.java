@@ -7,8 +7,8 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
-import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.report.result.SummaryValue;
+import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.stable.report.result.SummaryContainer;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.BIFormularUtils;
@@ -47,12 +47,7 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
     }
 
     @Override
-    public boolean needParentRelation() {
-        return false;
-    }
-
-    @Override
-    public boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
         Object res = calCalculateTarget(node, targetsMap);
         if (res instanceof Boolean) {
             return ((Boolean) res).booleanValue();
@@ -61,9 +56,9 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
     }
 
 
-    public Object calCalculateTarget(SummaryValue node, Map<String, TargetCalculator> targetsMap) {
+    public Object calCalculateTarget(SummaryContainer node, Map<String, TargetCalculator> targetsMap) {
         String formula = "=" + expression;
-        return BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetsMap, node.getSummaryValueMap()));
+        return BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetsMap, node.getSummaryValue()));
     }
 
     @Override

@@ -35,6 +35,10 @@ public abstract class BISummaryTarget extends BIAbstractTarget {
     public void setTargetMap(Map<String, TargetGettingKey> targetMap) {
     }
 
+    public Map<String, TargetGettingKey> getTargetMap(){
+        return null;
+    }
+
     /**
      * 将JSON对象转换成java对象
      *
@@ -69,6 +73,10 @@ public abstract class BISummaryTarget extends BIAbstractTarget {
         }
 
         return true;
+    }
+
+    public TargetType getType(){
+        return TargetType.NORMAL;
     }
 
     /**
