@@ -20,7 +20,7 @@ BI.SelectNumberPane = BI.inherit(BI.Widget, {
             element: this.element,
             wId: o.wId,
             showRelativeTables: true,
-            showExcelView: false,
+            showExcelView: true,
             showDateGroup: false,
             tablesCreator: function (packageIdOrTableId, opt) {
                 if (opt.isRelation === true) {

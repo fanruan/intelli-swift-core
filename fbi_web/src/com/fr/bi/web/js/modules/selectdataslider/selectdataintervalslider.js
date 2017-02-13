@@ -21,45 +21,39 @@ BI.SelectDataIntervalSlider = BI.inherit(BI.Widget, {
         })
     },
 
-    _getMinAndMaxFromData: function (jsonData) {
-        var dataArray = jsonData.data.c;
-        var minString = dataArray[0].n;
-        var maxString = dataArray[dataArray.length - 1].n;
-        var min = BI.parseFloat(minString);
-        var max = BI.parseFloat(maxString);
-        return [min, max];
-    },
-
     getValue: function () {
         var value = this.widget.getValue();
         return {
             closemax: false,
             closemin: false,
-            max: value[1],
-            min: value[0]
+            max: value.max,
+            min: value.min
         }
     },
 
     setValue: function () {
         var o = this.options;
         var widgetValue = BI.Utils.getWidgetValueByID(o.wId) || {};
-        this.widget.setValue([widgetValue.min, widgetValue.max]);
+        this.widget.setValue({min: widgetValue.min, max: widgetValue.max});
     },
 
     populate: function () {
         var self = this, o = this.options;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId);
         var widgetValue = BI.Utils.getWidgetValueByID(o.wId) || {};
-        var value = [widgetValue.min, widgetValue.max];
-        if (dimensions.length == 0) {
+        var value = {min: widgetValue.min, max: widgetValue.max};
+        if (dimensions.length === 0) {
             this.widget.reset()
         } else {
             BI.Utils.getWidgetDataByID(o.wId, {
                 success: function (jsonData) {
-                    var minAndMax = self._getMinAndMaxFromData(jsonData);
-                    self.widget.populate(minAndMax[0], minAndMax[1], value);
+                    if (BI.isNotEmptyObject(jsonData)) {
+                        self.widget.setMinAndMax(jsonData);
+                        self.widget.setValue(value);
+                        self.widget.populate();
+                    }
                 }
-            }, {page: -1})
+            })
         }
     }
 });

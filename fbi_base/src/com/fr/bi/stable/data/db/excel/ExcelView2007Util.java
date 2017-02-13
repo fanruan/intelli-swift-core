@@ -4,6 +4,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.stable.StringUtils;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
@@ -35,6 +36,9 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
         if (tempRowDataList.size() == 0) {
             processFirstSheetFromBI();
         }
+        //读取完后关闭文件
+        this.xlsxPackage.close();
+
         // 处理一下单元格合并
         mergeCell();
 
@@ -62,53 +66,14 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
             currentRowData = new ArrayList<Object>();
             //首行 确定字段名
             if (i == 0) {
-                columnNames = new String[columnCount];
-                for (int j = 0; j < columnCount; j++) {
-                    String cName;
-                    try {
-                        cName = oneRow[j].toString();
-                    } catch (Exception e) {
-                        cName = StringUtils.EMPTY;
-                    }
-                    String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
-                    Pattern p = Pattern.compile(regEx);
-                    Matcher m = p.matcher(cName);
-                    cName = m.replaceAll(StringUtils.EMPTY).trim();
-                    columnNames[j] = cName;
-                }
+                dealWithExcelFieldName(oneRow);
             } else if (i == 1) {
-                columnTypes = new int[columnCount];
-                for (int j = 0; j < columnCount; j++) {
-                    String v;
-                    try {
-                        v = oneRow[j].toString();
-                    } catch (Exception e) {
-                        v = StringUtils.EMPTY;
-                    }
-                    currentRowData.add(v);
-                    boolean dateType = false;
-                    try {
-                        Date date = DateUtils.string2Date(v, true);
-                        if (date != null) {
-                            dateType = true;
-                        }
-                    } catch (Exception e) {
-                        dateType = false;
-                    }
-                    if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
-                        columnTypes[j] = DBConstant.COLUMN.NUMBER;
-                    } else if (dateType) {
-                        columnTypes[j] = DBConstant.COLUMN.DATE;
-                    } else {
-                        columnTypes[j] = DBConstant.COLUMN.STRING;
-                    }
-                }
-                rowDataList.add(currentRowData.toArray());
+                dealWithExcelFieldType(oneRow);
             } else {
                 for (int j = 0; j < columnCount; j++) {
                     String v;
                     try {
-                        v = oneRow[j].toString();
+                        v = GeneralUtils.objectToString(oneRow[j]);
                     } catch (Exception e) {
                         v = StringUtils.EMPTY;
                     }
@@ -117,5 +82,52 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
                 rowDataList.add(currentRowData.toArray());
             }
         }
+    }
+
+    private void dealWithExcelFieldName(Object[] oneRow) {
+        columnNames = new String[columnCount];
+        for (int j = 0; j < columnCount; j++) {
+            String cName;
+            try {
+                cName = GeneralUtils.objectToString(oneRow[j]);
+            } catch (Exception e) {
+                cName = StringUtils.EMPTY;
+            }
+            String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
+            Pattern p = Pattern.compile(regEx);
+            Matcher m = p.matcher(cName);
+            cName = m.replaceAll(StringUtils.EMPTY).trim();
+            columnNames[j] = cName;
+        }
+    }
+
+    private void dealWithExcelFieldType(Object[] oneRow) {
+        columnTypes = new int[columnCount];
+        for (int j = 0; j < columnCount; j++) {
+            String v;
+            try {
+                v = GeneralUtils.objectToString(oneRow[j]);
+            } catch (Exception e) {
+                v = StringUtils.EMPTY;
+            }
+            currentRowData.add(v);
+            boolean dateType = false;
+            try {
+                Date date = DateUtils.string2Date(v, true);
+                if (date != null) {
+                    dateType = true;
+                }
+            } catch (Exception e) {
+                dateType = false;
+            }
+            if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
+                columnTypes[j] = DBConstant.COLUMN.NUMBER;
+            } else if (dateType) {
+                columnTypes[j] = DBConstant.COLUMN.DATE;
+            } else {
+                columnTypes[j] = DBConstant.COLUMN.STRING;
+            }
+        }
+        rowDataList.add(currentRowData.toArray());
     }
 }

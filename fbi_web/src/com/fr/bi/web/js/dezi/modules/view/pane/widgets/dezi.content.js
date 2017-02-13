@@ -35,20 +35,46 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
         });
 
         this.del = BI.createWidget({
-            type: "bi.icon_button",
-            width: 24,
-            height: 24,
+            type: "bi.bubble_combo",
+            el: {
+                type: "bi.icon_button",
+                width: 24,
+                height: 24,
+                cls: "img-shutdown-font delete-button",
+                title: BI.i18nText("BI-Delete")
+            },
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        self.model.destroy();
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        self.del.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Sure_Delete_Current_Component"),
+                        cls: "delete-label",
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            },
             invisible: true,
-            cls: "img-shutdown-font delete-button",
-            title: BI.i18nText("BI-Delete")
-        });
-
-        this.del.on(BI.IconButton.EVENT_CHANGE, function () {
-            BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete_Current_Component"), function (v) {
-                if (v === true) {
-                    self.model.destroy();
-                }
-            });
+            stopPropagation: true
         });
 
         vessel.hover(function () {

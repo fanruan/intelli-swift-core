@@ -417,14 +417,12 @@ public class ConfResouceHelper {
                 //excel
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.js",
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.model.js",
-                "com/fr/bi/web/js/extend/excel/upload/button.uploadexcel.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/excel.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/excel.fieldset.table.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/combo.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/trigger.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/item.excelfieldtype.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/popup.fieldset.js",
-                "com/fr/bi/web/js/extend/excel/upload/tipcombo/excel.tipcombo.js",
 
                 "com/fr/bi/web/js/extend/sql/editsql/sql.edit.js",
                 "com/fr/bi/web/js/extend/sql/editsql/sql.edit.model.js",

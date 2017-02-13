@@ -148,6 +148,10 @@ public class CommonResourceHelper {
                 "com/fr/bi/web/js/modules/copylinks/copylink.item.js",
                 "com/fr/bi/web/js/modules/copylinks/copylink.iconbutton.js",
 
+                //配置excel与业务人员上传excel通用
+                "com/fr/bi/web/js/extend/excel/upload/button.uploadexcel.js",
+                "com/fr/bi/web/js/extend/excel/upload/tipcombo/excel.tipcombo.js",
+
                 /**
                  * 切片
                 */

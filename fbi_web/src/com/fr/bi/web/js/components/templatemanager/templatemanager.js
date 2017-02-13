@@ -258,18 +258,10 @@ BI.TemplateManager = BI.inherit(BI.Pane, {
     _onRemove: function (id, type) {
         var self = this;
         //删除当前节点及其所有子节点
-        var mes = BI.i18nText("BI-Confirm_Delete_Folder");
-        if (type === BI.TemplateManagerButtonGroup.DELETE_REPORT) {
-            mes = BI.i18nText("BI-Confirm_Delete_Report")
-        }
-        BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), mes, function (flag) {
-            if (flag === true) {
-                self.fireEvent(BI.TemplateManager.EVENT_DELETE, id, type, function() {
-                    self.model.removeNode(id, type);
-                    self._refreshNavTreeData();
-                    self.populate();
-                });
-            }
+        self.fireEvent(BI.TemplateManager.EVENT_DELETE, id, type, function () {
+            self.model.removeNode(id, type);
+            self._refreshNavTreeData();
+            self.populate();
         });
     },
 

@@ -35,3 +35,7 @@
 .bi-business-package .package-selected-font {
   font-size: 20px;
 }
+.bi-business-package .package-delete-label {
+  font-size: 14px;
+  color: #1a1a1a;
+}

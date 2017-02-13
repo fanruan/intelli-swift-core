@@ -19,6 +19,13 @@ public class DeziResourceHelper {
                 //下拉树控件字段关联设置
                 "com/fr/bi/web/css/modules/fieldrelationsettingwithpreviewpopup/fieldrelationsettingwithpreviewpopup.css",
 
+                //业务人员上传excel
+                "com/fr/bi/web/css/modules/updateexcel/updateexcelcombo.css",
+                "com/fr/bi/web/css/modules/updateexcel/updateexcelpopup.css",
+                "com/fr/bi/web/css/modules/updateexcel/button/stateiconbutton.css",
+                "com/fr/bi/web/css/modules/updateexcel/excelfieldstable/updateexcelfieldtable.css",
+                "com/fr/bi/web/css/modules/updateexcel/messagepane/failpane.css",
+                "com/fr/bi/web/css/modules/updateexcel/messagepane/successpane.css",
 
                 //选择字段
                 "com/fr/bi/web/css/modules/selectdata/tab.selectdata.css",
@@ -169,7 +176,7 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/css/modules/linkage/linkage.css",
 
                 //另存为
-                "com/fr/bi/web/css/modules/saveas/report.saveas.floatbox.css",
+                "com/fr/bi/web/css/modules/saveas/popup.saveas.css",
 
                 //图表钻取
                 "com/fr/bi/web/css/modules/chartdrill/cell.chartdrill.css",
@@ -305,6 +312,16 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.detailtable.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.tree.js",
 
+                //业务人员上传excel
+                "com/fr/bi/web/js/modules/updateexcel/model.updateexcel.js",
+                "com/fr/bi/web/js/modules/updateexcel/updateexcelcombo.js",
+                "com/fr/bi/web/js/modules/updateexcel/updateexcelpopup.js",
+                "com/fr/bi/web/js/modules/updateexcel/updateexceltrigger.js",
+                "com/fr/bi/web/js/modules/updateexcel/button/stateiconbutton.js",
+                "com/fr/bi/web/js/modules/updateexcel/excelfieldtable/updateexcelfieldtable.js",
+                "com/fr/bi/web/js/modules/updateexcel/messagepane/failpane.js",
+                "com/fr/bi/web/js/modules/updateexcel/messagepane/successpane.js",
+
                 //自定义排序
                 "com/fr/bi/web/js/modules/customsort/widget.pane.customsort.js",
 
@@ -314,6 +331,7 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level1.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem/item.level2.js",
+                "com/fr/bi/web/js/modules/selectdata/treeitem/node.level0.excel.js",
 
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.button.level0.js",
@@ -325,6 +343,7 @@ public class DeziResourceHelper {
 
                 //明细表选字段
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.excel.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/widget.selectdatapane.detail.js",
@@ -332,6 +351,7 @@ public class DeziResourceHelper {
 
                 //树控件选字段
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/abstract.node.level.js",
+                "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level0.excel.js",
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4tree/widget.selectdatapane.tree.js",
@@ -646,7 +666,7 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.popup.js",
 
                 //另存为
-                "com/fr/bi/web/js/modules/saveas/report.saveas.floatbox.js",
+                "com/fr/bi/web/js/modules/saveas/popup.saveas.js",
 
                 //图表钻取
                 "com/fr/bi/web/js/modules/chartdrill/button.pushdrill.js",

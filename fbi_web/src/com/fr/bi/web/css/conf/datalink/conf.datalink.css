@@ -13,3 +13,7 @@
 .bi-data-link-pane .data-links-table .icon-font {
   font-size: 16px;
 }
+.bi-data-link-pane .data-links-table .data-link-delete-label {
+  font-size: 14px;
+  color: #1a1a1a;
+}
