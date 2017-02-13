@@ -8,6 +8,7 @@ import com.fr.bi.cal.analyze.base.CubeIndexManager;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BISessionUtils;
 import com.fr.bi.conf.VT4FBI;
+import com.fr.bi.conf.base.dataconfig.source.BIDataConfigAuthority;
 import com.fr.bi.conf.fs.BIUserAuthorAttr;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -325,7 +326,7 @@ public class BIWebUtils {
 
     private static void writeData(HttpServletRequest req, HttpServletResponse res, String templatePath, Map messageMap) throws Exception {
         Device device = WebUtils.getDevice(req);
-          boolean isCached = !StringUtils.isBlank(WebUtils.getHTTPRequestParameter(req, "isCached"));
+        boolean isCached = !StringUtils.isBlank(WebUtils.getHTTPRequestParameter(req, "isCached"));
         if (device.isMobile()) {
             if (messageMap.containsKey("message")) {
                 PrintWriter writer = WebUtils.createPrintWriter(res);
@@ -429,5 +430,20 @@ public class BIWebUtils {
         }
 
         return BIReportConstant.REPORT_AUTH.NONE;
+    }
+
+    /**
+     * 是否显示数据配置
+     *
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public static boolean showDataConfig(long userId) throws Exception {
+        if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
+            return true;
+        }
+        Set<BIDataConfigAuthority> authorities = BIConfigureManagerCenter.getDataAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
+        return authorities.size() > 0;
     }
 }

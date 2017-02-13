@@ -11,36 +11,21 @@
         tab: function (contentWidth, contentHeight, viewOnly, hasTool, onCustomSelect) {
             var tools = [{
                 name: 'view',
-                //编辑按钮事件
                 onToolClick: function (e, treeNode, isSelect) {
                     if (FS.isGradeAuthorityOpen()) {
-                        //有授权
                         if (!isSelect && (treeNode["design"] !== 0)) {
-                            FSPM.VIEW.reportTableTree.cancelSelectedNodeWithCascade(treeNode, 1);
-                        }
-                    }
-                    if (FS.isEditReportAuthorityOpen()) {
-                        //有编辑
-                        if (!isSelect && (treeNode["edit"] !== 0)) {
-                            FSPM.VIEW.reportTableTree.cancelSelectedNodeWithCascade(treeNode, tools.length - 1);
+                            getBIDataConfigTree().cancelSelectedNodeWithCascade(treeNode, 1);
                         }
                     }
                     e.stopEvent();
                 }
             }];
             if (FS.isGradeAuthorityOpen()) {
-                //开启了分级授权才有授权工具
                 tools.push({
                     name: 'design',
-                    //编辑按钮事件
                     onToolClick: function (e, treeNode, isSelect) {
                         if (isSelect && (treeNode["view"] !== 1)) {
-                            FSPM.VIEW.reportTableTree.selectNodeWithCascade(treeNode, true, 0);
-                        }
-                        if (FS.isEditReportAuthorityOpen()) {
-                            if (!isSelect && (treeNode["edit"] !== 0)) {
-                                FSPM.VIEW.reportTableTree.cancelSelectedNodeWithCascade(treeNode, tools.length - 1);
-                            }
+                            getDataConfigTree().selectNodeWithCascade(treeNode, true, 0);
                         }
                         e.stopEvent();
                     }
@@ -53,7 +38,25 @@
                 alwaysShowTools: true,
                 tools: tools,
                 onItemToolClick: function () {
-                    FSPM.VIEW.saveEntryCache();
+                    //点击item 缓存
+                    var positionAndCustomRoleInsideTab = FSPM.VIEW.tabPane.getWidgetByName(Constants.positionAndCustomRoleInsideTabNoCheckWD);
+                    var roleName, roleType = positionAndCustomRoleInsideTab.getActiveIndex();
+                    if (roleType === 0) {
+                        var treeNode = FSPM.VIEW.tabPane.getWidgetByName(Constants.departmentTableTreeNoCheckWD).getSelectedNodes()[0];
+                        if (!treeNode) {
+                            return;
+                        }
+                        roleName = treeNode.name;
+                        var parentNode = treeNode.getParentNode();
+                        if (BI.isNotNull(parentNode)) {
+                            roleName = parentNode.name + "," + roleName;
+                        }
+                    } else {
+                        roleName = positionAndCustomRoleInsideTab.getWidgetByName(Constants.customRoleListNoCheckWD).getValue();
+                    }
+                    if (roleName) {
+                        setChangedRoleAuth(roleName, roleType, getBIDataConfigTree().getSelectedNodes());
+                    }
                 }
             };
             if (viewOnly) {
@@ -65,9 +68,9 @@
                     type: 'fstabletree',
                     height: contentHeight,
                     width: contentWidth,
-                    treeID: "mytree",
+                    treeID: BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY,
                     setting: dataSetting,
-                    widgetName: "mywidget"
+                    widgetName: BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY
                 },
                 width: 100
             };
@@ -75,6 +78,41 @@
                 $.extend(result.content, toolConfig);
             }
             return result;
+
+            function getBIDataConfigTree() {
+                if (BI.isNull(FSPM.VIEW.biDataConfigTree)) {
+                    var entryAndModuleTab = FSPM.VIEW.tabPane.getWidgetByName(Constants.entryAndModuleInsideTabWD);
+                    FSPM.VIEW.biDataConfigTree = entryAndModuleTab.getWidgetByName(BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY);
+                }
+                return FSPM.VIEW.biDataConfigTree;
+            }
+
+            function setChangedRoleAuth(roleName, roleType, nodes) {
+                if (BI.isNull(Data.SharingPool.cat(BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY))) {
+                    Data.SharingPool.put(BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY, []);
+                }
+                var allChanged = Data.SharingPool.cat(BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY);
+                BI.remove(allChanged, function (i, changed) {
+                    return roleName === changed.roleName && roleType === changed.roleType;
+                });
+                BI.each(nodes, function (i, node) {
+                    allChanged.push({
+                        roleName: roleName,
+                        roleType: roleType,
+                        id: node.id,
+                        pId: node.pId,
+                        view: node.view,
+                        design: node.design
+                    })
+                });
+                //全部清除
+                if (nodes.length === 0) {
+                    allChanged.push({
+                        roleName: roleName,
+                        roleType: roleType
+                    });
+                }
+            }
 
             function getRootNamesById(id) {
                 switch (id) {
@@ -120,7 +158,8 @@
                         result.push(zItem);
                     }
                     return result;
-                };
+                }
+
                 return {
                     async: {
                         enable: true,
@@ -139,7 +178,7 @@
                             enable: true,
                             idKey: "id",
                             pidKey: "pId",
-                            rootPId: "0-1"
+                            rootPId: "-1"
                         }
                     },
                     callback: {
@@ -155,7 +194,13 @@
         },
         // 保存回调
         save: function () {
-            FR.Msg.toast("The custom tab data has been saved");
+            BI.requestAsync("fr_bi_base", "save_data_config_authorities", {
+                authorities: Data.SharingPool.cat(BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY)
+            }, function () {
+
+            }, function () {
+
+            });
         },
         // 表头工具栏点击事件
         authorityToolAction: function (col) {

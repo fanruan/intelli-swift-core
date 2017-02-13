@@ -58,7 +58,7 @@ public class Service4BIReport implements Service {
             new BIGetAllAuthUserListAction(),
             new BIGetLimitBIUserCountAction(),
             new BISetAuthUserAction(),
-            new BIGetUserEditAuthAction(),
+            new BIGetDesignConfigAuthAction(),
 
             new BIInitCreatedByMeAction(),
             new BIInitAllReportAction(),
