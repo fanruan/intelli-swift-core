@@ -85,8 +85,8 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
                         self.setVisible(false);
                     }
                 },
-                right: 10,
-                bottom: 10
+                right: 0,
+                bottom: 2
             }]
         });
         BI.createWidget({
