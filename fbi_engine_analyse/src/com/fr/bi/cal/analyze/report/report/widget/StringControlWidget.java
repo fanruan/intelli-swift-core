@@ -86,6 +86,17 @@ public class StringControlWidget extends TableWidget {
         public abstract int size();
     }
 
+    private JSONObject switchGetResultMethod(ICubeColumnIndexReader reader, Set<String> selected_value, SimpleIntArray groupArray, SearchMode mode) throws JSONException{
+        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
+            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
+        }
+        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1) {
+            return getSearchResult(reader, selected_value, 0, groupArray.size(), groupArray, mode);
+        } else {
+            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, groupArray, mode);
+        }
+    }
+
     //超过50w只搜索开头是
     private static final int START_WITH_LIMIT = 500000;
 
@@ -95,8 +106,7 @@ public class StringControlWidget extends TableWidget {
         if (getter.getGroupSize() > START_WITH_LIMIT){
             mode = SearchMode.START_WITH;
             start = ArrayLookupHelper.getStartIndex4StartWith(reader, keyword, comparator);
-            end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;
-        }
+            end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;}
         SimpleIntArray groupArray;
         if (gvi instanceof AllShowRoaringGroupValueIndex){
             final int fstart = start, size = start == -1 ? 0 :  end - start;
@@ -105,7 +115,6 @@ public class StringControlWidget extends TableWidget {
                 public int get(int index) {
                     return index + fstart;
                 }
-
                 @Override
                 public int size() {
                     return size;
@@ -118,17 +127,13 @@ public class StringControlWidget extends TableWidget {
                 @Override
                 public void actionPerformed(int row) {
                     int groupRow = getter.getPositionOfGroupByRow(row);
-                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
-                        groupIndex[groupRow] = groupRow;
-                    }
+                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {groupIndex[groupRow] = groupRow;}
                 }
             });
             final IntArray array = new IntArray();
             if (start != -1){
                 for (int i = start; i < end; i ++){
-                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE){
-                        array.add(i);
-                    }
+                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE){array.add(i);}
                 }
             }
             groupArray = new SimpleIntArray() {
@@ -142,14 +147,7 @@ public class StringControlWidget extends TableWidget {
                 }
             };
         }
-        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
-            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
-        }
-        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1) {
-            return getSearchResult(reader, selected_value, 0, groupArray.size(), groupArray, mode);
-        } else {
-            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, groupArray, mode);
-        }
+        return switchGetResultMethod(reader, selected_value, groupArray, mode);
     }
 
     private JSONObject getCustomGroupResult(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, DimensionCalculator calculator) throws JSONException {
