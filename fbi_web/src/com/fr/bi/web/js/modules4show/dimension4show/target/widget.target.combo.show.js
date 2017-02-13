@@ -60,6 +60,10 @@ BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
                     text: BI.i18nText("BI-Area_Chart"),
                     value: BICst.WIDGET.AREA,
                     cls: "dot-e-font"
+                }, {
+                    text: BI.i18nText("BI-Accumulate_Area"),
+                    value: BICst.WIDGET.ACCUMULATE_AREA,
+                    cls: "dot-e-font"
                 }],
                 disabled: true
             }],
@@ -103,10 +107,43 @@ BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
         var item = this.defaultItems();
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
-        if (wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
-            wType === BICst.WIDGET.COMBINE_CHART) {
-            item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
-        }
+        // switch (wType) {todo
+        //     case BICst.WIDGET.COMBINE_CHART:
+        //         item[0][this.constants.CHART_TYPE_POSITION].disabled = false;
+        //         break;
+        //     case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+        //         item[0][this.constants.CHART_TYPE_POSITION] = {
+        //             el: {
+        //                 text: BI.i18nText("BI-Chart_Type"),
+        //                 value: BICst.TARGET_COMBO.CHART_TYPE,
+        //                 iconCls1: "",
+        //                 disabled: false
+        //             },
+        //             children: [{
+        //                 text: BI.i18nText("BI-Column_Chart"),
+        //                 value: BICst.WIDGET.AXIS,
+        //                 cls: "dot-e-font"
+        //             }, {
+        //                 text: BI.i18nText("BI-Line_Chart"),
+        //                 value: BICst.WIDGET.LINE,
+        //                 cls: "dot-e-font"
+        //             }, {
+        //                 text: BI.i18nText("BI-Area_Chart"),
+        //                 value: BICst.WIDGET.AREA,
+        //                 cls: "dot-e-font"
+        //             }]
+        //         };
+        //         break;
+        //     default:
+        //         BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
+        //         break;
+        // }
+        // if (wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
+        //     wType === BICst.WIDGET.COMBINE_CHART) {
+        //     item[0][this.constants.CHART_TYPE_POSITION]
+        //     // item[0][].disabled = false;
+        // }
+        BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
         return item;
     },
 

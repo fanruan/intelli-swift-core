@@ -15,7 +15,7 @@ BI.StateIconButton = BI.inherit(BI.Widget, {
             type: "bi.absolute",
             element: this.element,
             items: [{
-                el:this._createIconButton(""),
+                el: this._createIconButton(""),
                 top: 2,
                 bottom: 0,
                 left: 0,
@@ -42,7 +42,7 @@ BI.StateIconButton = BI.inherit(BI.Widget, {
     },
 
     _createUpdatingButtonItem: function () {
-        var cls = "excel-updating-font";
+        var cls = "excel-success-font";
         return {
             el: this._createIconButton(cls),
             top: 2,
@@ -52,8 +52,8 @@ BI.StateIconButton = BI.inherit(BI.Widget, {
         }
     },
 
-    _createCompleteButtonItem: function () {
-        var cls = "excel-complete-font";
+    _createFailButtonItem: function () {
+        var cls = "excel-fail-font";
         return {
             el: this._createIconButton(cls),
             top: 2,
@@ -68,7 +68,7 @@ BI.StateIconButton = BI.inherit(BI.Widget, {
         if (state) {
             this.buttonWrapper.addItem(this._createUpdatingButtonItem());
         } else {
-            this.buttonWrapper.addItem(this._createCompleteButtonItem());
+            this.buttonWrapper.addItem(this._createFailButtonItem());
         }
     }
 });

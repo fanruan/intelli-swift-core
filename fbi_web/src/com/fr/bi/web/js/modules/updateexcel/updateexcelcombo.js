@@ -2,6 +2,11 @@
  * Created by zcf on 2017/1/6.
  */
 BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
+    _constant: {
+        FILE_USING_ERROR: 1,
+        FILE_UPDATE_ERROR: 2
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.UpdateExcelCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-update-excel-combo",
@@ -13,13 +18,14 @@ BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
     _init: function () {
         BI.UpdateExcelCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        this.state = 10;
 
-        this.trigger=BI.createWidget({
-            type:"bi.update_excel_trigger",
-            height:o.height,
-            width:o.width
+        this.trigger = BI.createWidget({
+            type: "bi.update_excel_trigger",
+            height: o.height,
+            width: o.width
         });
-        this.trigger.on(BI.UpdateExcelTrigger.EVENT_CHANGE,function () {
+        this.trigger.on(BI.UpdateExcelTrigger.EVENT_CHANGE, function () {
             self.combo.showView();
         });
 
@@ -62,12 +68,17 @@ BI.UpdateExcelCombo = BI.inherit(BI.Widget, {
             newExcelFullName: newExcelFullName
         };
         this.trigger.setText(BI.i18nText("BI-Excel_Is_Updating"));
-        Data.Req.reqUpdateExcelTableCube(data, function () {
-
+        Data.Req.reqUpdateExcelTableCube(data, function (state) {
+            self.state = state.state;
         }, function () {
-            self.trigger.setText(BI.i18nText("BI-Excel_Update_Complete"));
-            self.trigger.setState(false);//todo
-            BI.Utils.broadcastAllWidgets2Refresh(true);
+            if (BI.isNotNull(self.state) && self.state === 0) {
+                self.trigger.setText(BI.i18nText("BI-Excel_Update_Complete"));
+                self.trigger.setState(true);
+                BI.Utils.broadcastAllWidgets2Refresh(true);
+            } else {
+                self.trigger.setText(BI.i18nText("BI-Excel_Update_Fail"));
+                self.trigger.setState(false);//todo
+            }
         })
     }
 });
