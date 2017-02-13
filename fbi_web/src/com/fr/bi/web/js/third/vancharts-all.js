@@ -5555,7 +5555,7 @@ define('utils/BoundsManager',['require','./BaseUtils'],function(require){
         },
 
         isEmpty:function(){
-            return this.addedBounds.length == 0;
+            return this.addedBounds.length === 0;
         }
 
     };
