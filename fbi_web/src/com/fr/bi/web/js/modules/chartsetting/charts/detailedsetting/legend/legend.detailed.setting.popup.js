@@ -59,5 +59,4 @@ BI.LegendDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.LegendDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.legend_detailed_setting_popup", BI.LegendDetailedSettingPopup);

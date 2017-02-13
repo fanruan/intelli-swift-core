@@ -145,5 +145,4 @@ BI.AxisDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.AxisDataLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.axis_data_label_detailed_setting_popup", BI.AxisDataLabelDetailedSettingPopup);

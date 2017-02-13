@@ -164,5 +164,4 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.PieDataLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.pie_data_label_detailed_setting_popup", BI.PieDataLabelDetailedSettingPopup);

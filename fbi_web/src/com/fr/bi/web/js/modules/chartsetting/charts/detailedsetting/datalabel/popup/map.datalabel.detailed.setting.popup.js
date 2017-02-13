@@ -121,5 +121,4 @@ BI.MapDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.MapDataLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.map_data_label_detailed_setting_popup", BI.MapDataLabelDetailedSettingPopup);

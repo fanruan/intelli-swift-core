@@ -108,5 +108,4 @@ BI.DashboardDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.DashboardDataLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.dashboard_data_label_detailed_setting_popup", BI.DashboardDataLabelDetailedSettingPopup);

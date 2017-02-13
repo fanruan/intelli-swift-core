@@ -95,5 +95,4 @@ BI.ScatterDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.ScatterDataLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.scatter_data_label_detailed_setting_popup", BI.ScatterDataLabelDetailedSettingPopup);

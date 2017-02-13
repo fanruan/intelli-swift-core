@@ -119,5 +119,4 @@ BI.BubbleDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.BubbleDataLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.bubble_data_label_detailed_setting_popup", BI.BubbleDataLabelDetailedSettingPopup);

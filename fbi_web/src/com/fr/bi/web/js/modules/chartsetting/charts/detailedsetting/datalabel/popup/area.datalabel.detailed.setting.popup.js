@@ -121,5 +121,4 @@ BI.AreaDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.AreaDataLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.area_data_label_detailed_setting_popup", BI.AreaDataLabelDetailedSettingPopup);

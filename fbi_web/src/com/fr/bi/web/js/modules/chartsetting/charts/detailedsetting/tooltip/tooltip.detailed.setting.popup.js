@@ -136,5 +136,4 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.TooltipDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.tooltip_detailed_setting_popup", BI.TooltipDetailedSettingPopup);
