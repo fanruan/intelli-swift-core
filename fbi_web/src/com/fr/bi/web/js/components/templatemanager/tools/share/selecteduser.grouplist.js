@@ -45,6 +45,7 @@ BI.SelectedUserGroupList = BI.inherit(BI.Widget, {
                         type: "bi.label",
                         cls: "role-name",
                         text: role,
+                        title: role,
                         height: 30
                     }, {
                         type: "bi.label",
