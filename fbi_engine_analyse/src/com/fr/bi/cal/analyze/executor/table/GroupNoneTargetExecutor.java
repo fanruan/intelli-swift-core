@@ -192,7 +192,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
      * @throws NoneAccessablePrivilegeException
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         Node tree = getCubeNode();
         if (tree == null) {
             return new CBCell[][]{new CBCell[0]};
@@ -209,7 +209,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
         CBCell[][] cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
 
         for (int i = 0; i < rowLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)usedDimensions[i]).getText());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
             cell.setColumn(i + widget.isOrder());
             cell.setRow(0);
             cell.setRowSpan(1);
@@ -229,7 +229,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
         }
         if (paging.getOprator() < Node.NONE_PAGE_LEVER) {
-            dealWithNode(tree, cbcells, 1, 0, paging.getOprator(), usedDimensions, usedSumTarget, usedDimensions.length - 1,  widget.isOrder(), new BIComplexExecutData(usedDimensions));
+            dealWithNode(tree, cbcells, 1, 0, paging.getOprator(), usedDimensions, usedSumTarget, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
         } else {
             dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
         }
@@ -248,7 +248,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     @Override
-    public Node getCubeNode() {
+    public Node getCubeNode() throws Exception {
         if (getSession() == null) {
             return null;
         }

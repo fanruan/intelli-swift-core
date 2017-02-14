@@ -171,7 +171,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
      * @throws NoneAccessablePrivilegeException
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         Node tree = getCubeNode();
         if (tree == null) {
             return new CBCell[][]{new CBCell[0]};
@@ -195,7 +195,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
 
     private void generateTitle(CBCell[][] cbcells, int rowLength) {
         for (int i = 0; i < rowLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)usedDimensions[i]).getText());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
             cell.setColumn(0);
             cell.setRow(i);
             cell.setRowSpan(1);
@@ -221,7 +221,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     @Override
-    public Node getCubeNode() {
+    public Node getCubeNode() throws Exception {
         if (getSession() == null) {
             return null;
         }

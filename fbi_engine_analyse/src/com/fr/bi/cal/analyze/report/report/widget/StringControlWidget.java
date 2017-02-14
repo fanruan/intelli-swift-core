@@ -45,7 +45,7 @@ public class StringControlWidget extends TableWidget {
         return 0;
     }
 
-    public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
+    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
         BIDimension dimension = getDimensions()[0];
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
         Set<String> selected_value = new HashSet<String>();
@@ -55,18 +55,18 @@ public class StringControlWidget extends TableWidget {
             selected_value.addAll(Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray)));
         }
 
-        if(needDoLoadGroup){
+        if (needDoLoadGroup) {
             Node node = CubeIndexLoader.getInstance(session.getUserId()).loadGroup(this, getViewTargets(), getViewDimensions(), getViewDimensions(), getTargets(), -1, true, (BISession) session);
             List<Object> list = new ArrayList<Object>();
-            for(Node child : node.getChilds()){
+            for (Node child : node.getChilds()) {
                 list.add(child.getShowValue());
             }
             return getCustomGroupResult(list, selected_value, calculator);
-        }else{
+        } else {
             GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
             ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
 
-            if (dimension.getGroup()!= null && dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
+            if (dimension.getGroup() != null && dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
                 return getCustomGroupResult(gvi, reader, selected_value, calculator);
             } else {
                 ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
@@ -76,11 +76,11 @@ public class StringControlWidget extends TableWidget {
         }
     }
 
-    private enum SearchMode{
+    private enum SearchMode {
         PY, START_WITH
     }
 
-    private abstract class SimpleIntArray{
+    private abstract class SimpleIntArray {
         public abstract int get(int index);
 
         public abstract int size();
@@ -89,17 +89,17 @@ public class StringControlWidget extends TableWidget {
     //超过50w只搜索开头是
     private static final int START_WITH_LIMIT = 500000;
 
-    private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException{
+    private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException {
         SearchMode mode = SearchMode.PY;
         int start = 0, end = getter.getGroupSize();
-        if (getter.getGroupSize() > START_WITH_LIMIT){
+        if (getter.getGroupSize() > START_WITH_LIMIT) {
             mode = SearchMode.START_WITH;
             start = ArrayLookupHelper.getStartIndex4StartWith(reader, keyword, comparator);
             end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;
         }
         SimpleIntArray groupArray;
-        if (gvi instanceof AllShowRoaringGroupValueIndex){
-            final int fstart = start, size = start == -1 ? 0 :  end - start;
+        if (gvi instanceof AllShowRoaringGroupValueIndex) {
+            final int fstart = start, size = start == -1 ? 0 : end - start;
             groupArray = new SimpleIntArray() {
                 @Override
                 public int get(int index) {
@@ -124,9 +124,9 @@ public class StringControlWidget extends TableWidget {
                 }
             });
             final IntArray array = new IntArray();
-            if (start != -1){
-                for (int i = start; i < end; i ++){
-                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE){
+            if (start != -1) {
+                for (int i = start; i < end; i++) {
+                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE) {
                         array.add(i);
                     }
                 }
@@ -136,6 +136,7 @@ public class StringControlWidget extends TableWidget {
                 public int get(int index) {
                     return array.get(index);
                 }
+
                 @Override
                 public int size() {
                     return array.size;
@@ -184,7 +185,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private int getSearchCount(ICubeColumnIndexReader reader, Set selectedValue, SimpleIntArray array, SearchMode mode) {
-        if (selectedValue.isEmpty() && mode == SearchMode.START_WITH){
+        if (selectedValue.isEmpty() && mode == SearchMode.START_WITH) {
             return array.size();
         }
         int count = 0;
@@ -205,7 +206,7 @@ public class StringControlWidget extends TableWidget {
     private int getSearchCount(Set selectedValue, List<Object> list) {
         int count = 0;
         String keyword = this.keyword.toLowerCase();
-        for (Object ob : list){
+        for (Object ob : list) {
             if (ob == null) {
                 continue;
             }
@@ -223,7 +224,7 @@ public class StringControlWidget extends TableWidget {
         if (StringUtils.isEmpty(keyword)) {
             return true;
         }
-        if (mode == SearchMode.START_WITH){
+        if (mode == SearchMode.START_WITH) {
             return true;
         }
         String strPinyin = BIPhoneticismUtils.getPingYin(value).toLowerCase();
@@ -249,7 +250,7 @@ public class StringControlWidget extends TableWidget {
             selected_values = treeJo.optString("selected_values", StringUtils.EMPTY);
             keyword = treeJo.optString("keyword", StringUtils.EMPTY);
         }
-        if(this.getTargets().length > 0){
+        if (this.getTargets().length > 0) {
             needDoLoadGroup = true;
         }
     }
@@ -262,7 +263,7 @@ public class StringControlWidget extends TableWidget {
         List<String> match = new ArrayList<String>();
         int matched = 0;
         String key = this.keyword.toLowerCase();
-        for (Object ob : list){
+        for (Object ob : list) {
             if (ob == null) {
                 continue;
             }
@@ -319,16 +320,16 @@ public class StringControlWidget extends TableWidget {
                 matched++;
             }
         }
-        if(getDimensions()[0].getSortType() == BIReportConstant.SORT.DESC){
+        if (getDimensions()[0].getSortType() == BIReportConstant.SORT.DESC) {
             ListIterator<String> m = match.listIterator(match.size());
             ListIterator<String> f = find.listIterator(find.size());
-            while (m.hasPrevious()){
+            while (m.hasPrevious()) {
                 ja.put(m.previous());
             }
-            while (f.hasPrevious()){
+            while (f.hasPrevious()) {
                 ja.put(f.previous());
             }
-        }else{
+        } else {
             for (String s : match) {
                 ja.put(s);
             }

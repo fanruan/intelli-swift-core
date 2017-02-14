@@ -5,7 +5,6 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
@@ -17,7 +16,7 @@ public abstract class AbstractNodeExecutor extends BITableExecutor<Node>{
     }
 
     @Override
-    public JSONObject createJSONObject() throws JSONException {
+    public JSONObject createJSONObject() throws Exception {
         return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
     }
 }

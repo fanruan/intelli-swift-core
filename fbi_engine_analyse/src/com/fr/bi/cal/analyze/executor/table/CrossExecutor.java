@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.executor.table;
 
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -50,7 +49,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
      * @return 注释
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         NewCrossRoot node = getCubeNode();
         if (node == null) {
             return new CBCell[0][0];
@@ -324,7 +323,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     @Override
-    public NewCrossRoot getCubeNode() {
+    public NewCrossRoot getCubeNode() throws Exception{
         long start = System.currentTimeMillis();
         if (getSession() == null) {
             return null;
@@ -349,7 +348,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
     }
 
     @Override
-    public JSONObject createJSONObject() throws JSONException {
+    public JSONObject createJSONObject() throws Exception {
         return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey());
     }
 

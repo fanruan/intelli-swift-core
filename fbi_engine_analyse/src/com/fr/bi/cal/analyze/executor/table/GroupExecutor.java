@@ -652,7 +652,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
      * @throws NoneAccessablePrivilegeException
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         Node tree = getCubeNode();
         if (tree == null) {
             return new CBCell[][]{new CBCell[0]};
@@ -811,7 +811,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
      */
     @Override
 
-    public Node getCubeNode() {
+    public Node getCubeNode() throws Exception{
         if (session == null) {
             return null;
         }

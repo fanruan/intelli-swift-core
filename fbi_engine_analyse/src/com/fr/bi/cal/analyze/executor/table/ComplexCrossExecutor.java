@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.executor.table;
 
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -113,7 +112,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
      * @return 注释
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         Map<Integer, NewCrossRoot[]> nodesMap = getCubeCrossNodes();
         if (nodesMap.isEmpty() || nodesMap == null) {
             return new CBCell[0][0];
@@ -507,7 +506,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     /* (non-Javadoc)
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
-    private Map<Integer, NewCrossRoot[]> getCubeCrossNodes() {
+    private Map<Integer, NewCrossRoot[]> getCubeCrossNodes() throws Exception{
         long start = System.currentTimeMillis();
         if (getSession() == null) {
             return null;
@@ -525,7 +524,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     }
 
     //通过交叉表的provide，创建nodeMap
-    private Map<Integer, NewCrossRoot[]> getCubeCrossNodesFromProvide(Map<String, TargetCalculator> targetsMap) {
+    private Map<Integer, NewCrossRoot[]> getCubeCrossNodesFromProvide(Map<String, TargetCalculator> targetsMap) throws Exception{
         BISummaryTarget[] usedTarget = createTarget4Calculate();
         Map<Integer, NewCrossRoot[]> nodeMap = new HashMap<Integer, NewCrossRoot[]>();
         int columnRegionLen = columnData.getDimensionArrayLength();

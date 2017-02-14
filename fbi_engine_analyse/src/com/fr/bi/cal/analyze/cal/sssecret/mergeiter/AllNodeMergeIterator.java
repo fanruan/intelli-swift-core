@@ -3,6 +3,8 @@ package com.fr.bi.cal.analyze.cal.sssecret.mergeiter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
@@ -14,6 +16,7 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.NameObject;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by 小灰灰 on 2017/1/9.
@@ -28,6 +31,10 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private Node root;
     private Iterator<MetricMergeResult> mergeIterator;
     private Iterator<MetricMergeResult> resultIter;
+    private boolean completed;
+    private volatile boolean started;
+    private AtomicInteger count;
+    private int size;
 
     public AllNodeMergeIterator(Iterator<MetricMergeResult> mergeIterator, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader) {
         this.mergeIterator = mergeIterator;
@@ -42,10 +49,31 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
 
     private void initIter() {
         root = new Node(null);
+        count = new AtomicInteger(0);
+        completed = metricsToCalculate != null;
+        started = true;
+        BIMultiThreadExecutor executor = null;
+        if (MultiThreadManagerImpl.getInstance().isMultiCall()){
+            executor = MultiThreadManagerImpl.getInstance().getExecutorService();
+        }
         while (mergeIterator.hasNext()) {
             MetricMergeResult result = mergeIterator.next();
-            checkSum(result);
+            checkSum(result, executor);
             root.addChild(result);
+            size++;
+        }
+        if (metricsToCalculate != null){
+            size *= metricsToCalculate.length;
+        }
+        started = false;
+        if (!completed){
+            synchronized (this){
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         List<MetricMergeResult> resultList = new ArrayList<MetricMergeResult>();
         for (Node node : root.getChilds()) {
@@ -57,17 +85,42 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         resultIter = resultList.iterator();
     }
 
-    private void checkSum(MetricMergeResult result) {
+    private void checkComplete(){
+        if (count.incrementAndGet() == size && !started){
+            completed = true;
+            this.notify();
+        }
+    }
+
+    private void checkSum(MetricMergeResult result, BIMultiThreadExecutor executor) {
         GroupValueIndex[] gvis = result.getGvis();
         if (metricsToCalculate != null) {
             for (int i = 0; i < metricsToCalculate.length; i++) {
                 List<TargetAndKey> targetAndKeys = metricsToCalculate[i];
                 if (targetAndKeys != null) {
                     for (TargetAndKey targetAndKey : targetAndKeys) {
-                        new SummaryCall(tis[i], result, targetAndKey, gvis[i], loader).cal();
+                        if (executor != null){
+                            executor.add(new SummaryCountCal(tis[i], result, targetAndKey, gvis[i], loader));
+                        } else {
+                            new SummaryCountCal(tis[i], result, targetAndKey, gvis[i], loader).cal();
+                        }
                     }
                 }
             }
+        }
+    }
+
+    private class SummaryCountCal extends SummaryCall{
+
+        public SummaryCountCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader) {
+            super(ti, node, targetAndKey, gvi, loader);
+        }
+
+        @Override
+        public void cal() {
+            super.cal();
+            checkComplete();
+            ((MetricMergeResult) node).clearGvis();
         }
     }
 

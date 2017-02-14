@@ -2,13 +2,12 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.fr.bi.cal.analyze.cal.chart.PolyCubeChartBlock;
 import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSetting;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyChartBlock;
 import com.fr.report.poly.TemplateBlock;
@@ -81,7 +80,7 @@ public class ChartWidget extends BISummaryWidget {
      * @return 注释
      */
     @Override
-    public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
+    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
 		if(session == null){
 			return null;
 		}

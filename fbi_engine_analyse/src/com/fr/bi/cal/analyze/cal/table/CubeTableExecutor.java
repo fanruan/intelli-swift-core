@@ -86,7 +86,7 @@ public class CubeTableExecutor extends SheetExecutor {
         return startTime;
     }
 
-    private void execute() throws NoneAccessablePrivilegeException {
+    private void execute() throws Exception {
         if (session == null) {
             cbcells = new CBCell[][]{new CBCell[0]};
         }

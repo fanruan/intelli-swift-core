@@ -95,7 +95,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
      * @throws NoneAccessablePrivilegeException
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         Map<Integer, Node> nodeMap = getCubeNodes();
         if (nodeMap == null || nodeMap.isEmpty()) {
             return new CBCell[][]{new CBCell[0]};
@@ -249,7 +249,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     @Override
-    public Map<Integer, Node> getCubeNodes() {
+    public Map<Integer, Node> getCubeNodes() throws Exception {
         if (getSession() == null) {
             return null;
         }

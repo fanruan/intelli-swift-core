@@ -79,7 +79,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
      * @return
      */
     @Override
-    public Map<Integer, Node> getCubeNodes() {
+    public Map<Integer, Node> getCubeNodes() throws Exception{
 
         long start = System.currentTimeMillis();
         if (getSession() == null) {
@@ -149,7 +149,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
      * @return 构建的cells
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         Map<Integer, Node> nodeMap = getCubeNodes();
         if (nodeMap == null || nodeMap.isEmpty()) {
             return new CBCell[][]{new CBCell[0]};
