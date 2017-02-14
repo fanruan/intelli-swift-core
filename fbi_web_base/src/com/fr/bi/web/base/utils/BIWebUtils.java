@@ -457,7 +457,7 @@ public class BIWebUtils {
         if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
             return true;
         }
-        Set<BIDataConfigAuthority> authorities = BIConfigureManagerCenter.getDataAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
+        Set<BIDataConfigAuthority> authorities = BIConfigureManagerCenter.getDataConfigAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
         return authorities.size() > 0;
     }
 }

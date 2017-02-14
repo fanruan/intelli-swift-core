@@ -82,6 +82,8 @@ public class BIBaseConstant {
     //TODO 待确认 线程太多没用 改成cpu个数两倍
     public static int THREADPOOLSIZE = Math.max(1, AVAILABLEPROCESSORS) * 2;
 
+    public static final long DATE_HEADER_EXPIRES = -10;
+
     /**
      * 字符串相等判断
      *

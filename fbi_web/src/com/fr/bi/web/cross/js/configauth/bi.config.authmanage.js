@@ -6,6 +6,38 @@
     /**
      * 平台权限tab页接口
      */
+    function refreshDataConfigTab() {
+        var moduleIndex = FSPM.VIEW.tabPane.getWidgetByName(Constants.entryAndModuleInsideTabWD).getActiveIndex();
+        if (moduleIndex !== 0 && moduleIndex !== 1) {
+            var allCacheAuth = Data.SharingPool.get(BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY);
+            var roleTab = FSPM.VIEW.tabPane.getWidgetByName(Constants.positionAndCustomRoleInsideTabNoCheckWD);
+            var roleName, roleType = roleTab.getActiveIndex() + 1;
+            if (roleType === 1) {
+                var treeNode = FSPM.VIEW.tabPane.getWidgetByName(Constants.departmentTableTreeNoCheckWD).getSelectedNodes()[0];
+                if (!treeNode) {
+                    return;
+                }
+                roleName = treeNode.name;
+                var parentNode = treeNode.getParentNode();
+                if (BI.isNotNull(parentNode)) {
+                    roleName = parentNode.name + "," + roleName;
+                }
+            } else {
+                roleName = roleTab.getWidgetByName(Constants.customRoleListNoCheckWD).getText();
+            }
+            var selectedNodes = [];
+            BI.each(allCacheAuth, function (i, auth) {
+                if (auth.roleName === roleName && auth.roleType === roleType) {
+                    selectedNodes.push(auth);
+                }
+            });
+
+            var entryAndModuleTab = FSPM.VIEW.tabPane.getWidgetByName(Constants.entryAndModuleInsideTabWD);
+            var dataConfigList = entryAndModuleTab.getWidgetByName(BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY);
+            dataConfigList.clearState();
+            dataConfigList.selectNodesByData(selectedNodes);
+        }
+    }
     FS.Plugin.PrivilegeManageTabProvider.items.push({
         // tab视图
         tab: function (contentWidth, contentHeight, viewOnly, hasTool, onCustomSelect) {
@@ -25,7 +57,7 @@
                     name: 'design',
                     onToolClick: function (e, treeNode, isSelect) {
                         if (isSelect && (treeNode["view"] !== 1)) {
-                            getDataConfigTree().selectNodeWithCascade(treeNode, true, 0);
+                            getBIDataConfigTree().selectNodeWithCascade(treeNode, true, 0);
                         }
                         e.stopEvent();
                     }
@@ -39,9 +71,9 @@
                 tools: tools,
                 onItemToolClick: function () {
                     //点击item 缓存
-                    var positionAndCustomRoleInsideTab = FSPM.VIEW.tabPane.getWidgetByName(Constants.positionAndCustomRoleInsideTabNoCheckWD);
-                    var roleName, roleType = positionAndCustomRoleInsideTab.getActiveIndex();
-                    if (roleType === 0) {
+                    var roleTab = FSPM.VIEW.tabPane.getWidgetByName(Constants.positionAndCustomRoleInsideTabNoCheckWD);
+                    var roleName, roleType = roleTab.getActiveIndex() + 1;
+                    if (roleType === 1) {
                         var treeNode = FSPM.VIEW.tabPane.getWidgetByName(Constants.departmentTableTreeNoCheckWD).getSelectedNodes()[0];
                         if (!treeNode) {
                             return;
@@ -52,7 +84,7 @@
                             roleName = parentNode.name + "," + roleName;
                         }
                     } else {
-                        roleName = positionAndCustomRoleInsideTab.getWidgetByName(Constants.customRoleListNoCheckWD).getValue();
+                        roleName = roleTab.getWidgetByName(Constants.customRoleListNoCheckWD).getText();
                     }
                     if (roleName) {
                         setChangedRoleAuth(roleName, roleType, getBIDataConfigTree().getSelectedNodes());
@@ -77,7 +109,21 @@
             if (hasTool) {
                 $.extend(result.content, toolConfig);
             }
+            initDataConfigAuthorities();
             return result;
+
+            function initDataConfigAuthorities() {
+                var mask = BI.createWidget({
+                    type: "bi.loading_mask",
+                    masker: this.element,
+                    text: BI.i18nText("BI-Loading")
+                });
+                BI.requestAsync("fr_bi_base", "get_data_config_authorities", {}, function (res) {
+                    Data.SharingPool.put(BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY, res);
+                }, function () {
+                    mask.destroy();
+                });
+            }
 
             function getBIDataConfigTree() {
                 if (BI.isNull(FSPM.VIEW.biDataConfigTree)) {
@@ -101,9 +147,9 @@
                         roleType: roleType,
                         id: node.id,
                         pId: node.pId,
-                        view: node.view,
-                        design: node.design
-                    })
+                        view: node.view || 0,
+                        design: node.design || 0
+                    });
                 });
                 //全部清除
                 if (nodes.length === 0) {
@@ -163,7 +209,7 @@
                 return {
                     async: {
                         enable: true,
-                        url: FR.servletURL + "?op=fr_bi_base&cmd=get_data_config_authorities",
+                        url: FR.servletURL + "?op=fr_bi_base&cmd=get_data_config_nodes",
                         dataFilter: filter,
                         data: {
                             serverID: FS.serverID
@@ -204,7 +250,13 @@
         },
         // 表头工具栏点击事件
         authorityToolAction: function (col) {
-            FR.Msg.toast("BI");
+
+        },
+        afterTabClick: function () {
+            refreshDataConfigTab();
+        },
+        positionAndCustomRoleAction: function () {
+            refreshDataConfigTab();
         }
     });
 })();

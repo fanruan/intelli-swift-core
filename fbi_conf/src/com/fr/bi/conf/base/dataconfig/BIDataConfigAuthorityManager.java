@@ -55,7 +55,7 @@ public class BIDataConfigAuthorityManager {
         Set<BIDataConfigAuthority> authorities = new HashSet<BIDataConfigAuthority>();
         for (BIDataConfigAuthority authority : dataConfigAuthorities) {
             String roleName = authority.getRoleName();
-            switch (authority.getRoleType() + 1) {
+            switch (authority.getRoleType()) {
                 case BIBaseConstant.ROLE_TYPE.COMPANY:
                     for (CompanyRole role : comRoles) {
                         String dName = DepartmentControl.getInstance().getDepartmentShowName(role.getDepartmentId(), ",");

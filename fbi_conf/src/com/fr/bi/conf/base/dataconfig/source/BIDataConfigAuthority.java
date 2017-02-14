@@ -86,8 +86,8 @@ public class BIDataConfigAuthority implements JSONTransform {
         if (jo.has("id")) {
             id = jo.getString("id");
         }
-        if (jo.has("parentId")) {
-            parentId = jo.getString("parentId");
+        if (jo.has("pId")) {
+            parentId = jo.getString("pId");
         }
         if (jo.has("view")) {
             view = jo.optInt("view", 0);
