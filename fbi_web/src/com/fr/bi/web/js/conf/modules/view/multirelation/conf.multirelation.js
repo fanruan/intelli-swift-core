@@ -31,10 +31,10 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         });
 
         this.multiRelation = BI.createWidget({
-            type: "bi.multi_relation"
+            type: "bi.multi_relation_grid"
         });
 
-        this.multiRelation.on(BI.MultiRelation.EVENT_CHANGE, function () {
+        this.multiRelation.on(BI.MultiRelationGrid.EVENT_CHANGE, function () {
             var disabledRelation = self.multiRelation.getNotSelectedValue();
             var availableRelation = self.multiRelation.getValue();
             self.model.set({
@@ -44,7 +44,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         });
 
         this.searchMultiRelation = BI.createWidget({
-            type: "bi.multi_relation"
+            type: "bi.multi_relation_grid"
         });
 
 
@@ -118,6 +118,9 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
                 type: "bi.multi_relation_searcher_view",
                 searcher: this.searchMultiRelation
             }
+        });
+        self.searcher.on(BI.Searcher.EVENT_STOP, function () {
+            self.multiRelation.populate();
         });
 
         this.cubeLabel = BI.createWidget({
@@ -222,7 +225,9 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         relations = BI.sortBy(relations, function (i, item) {
             return BI.Utils.getTableNameByFieldId4Conf(BI.lastObject(item[0]).foreignKey.field_id)
         });
-        self.multiRelation.populate(relations, availableRelations);
+        self.multiRelation.setRelations(relations);
+        self.multiRelation.setValue(availableRelations);
+        self.multiRelation.populate();
         self.cubeLabel.setValue(BI.i18nText("BI-Multi_Path_Use_Cur_Cube_Version") + ": " + new Date(cubeEnd).print("%Y-%X-%d,%H:%M:%S"));
         BI.size(relations) > 0 ? this.tab.setSelect(c.HAS_MULTI_PATH) : this.tab.setSelect(c.NONE_MULTI_PATH);
     },
@@ -230,7 +235,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
     refresh: function () {
         var self = this;
         this.readData(true, {
-            complete: function() {
+            complete: function () {
                 self.mask.destroy();
             }
         });

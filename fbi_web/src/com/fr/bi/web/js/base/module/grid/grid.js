@@ -277,6 +277,16 @@ BI.Grid = BI.inherit(BI.Widget, {
         this.options.estimatedRowSize = height;
     },
 
+    setHeight: function (height) {
+        this.options.height = height;
+        this.element.css({"height": height + "px"})
+    },
+
+    setWidth: function (width) {
+        this.options.width = width;
+        this.element.css({"width": width + "px"})
+    },
+
     restore: function () {
         BI.each(this.renderedCells, function (i, cell) {
             cell.el.destroy();
@@ -284,6 +294,14 @@ BI.Grid = BI.inherit(BI.Widget, {
         this.renderedCells = [];
         this.renderedKeys = [];
         this._scrollLock = false;
+    },
+
+    getAllRenderedCells: function () {
+        var cells = [];
+        BI.each(this.renderedCells, function (i, cell) {
+            cells.push(cell.el);
+        });
+        return cells;
     },
 
     populate: function (items) {
