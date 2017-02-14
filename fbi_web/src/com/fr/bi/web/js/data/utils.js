@@ -1452,7 +1452,7 @@ Data.Utils = {
             }
         }
 
-        function _formatTickInXYaxis(type, number_level, separators) {
+        function _formatTickInXYaxis(type, number_level, separators, isCompareBar) {
             var formatter = '#.##';
             switch (type) {
                 case constants.NORMAL:
@@ -1484,6 +1484,12 @@ Data.Utils = {
                 formatter += '%';
             }
             formatter += ";-" + formatter;
+            if(isCompareChart) {
+                return function () {
+                    arguments[0] = arguments[0] > 0 ? arguments[0] : (-1) * arguments[0];
+                    return BI.contentFormat(arguments[0], formatter);
+                }
+            }
             return function () {
                 return BI.contentFormat(arguments[0], formatter)
             }
@@ -3200,7 +3206,7 @@ Data.Utils = {
                 enableTick: config.enable_tick,
                 enableMinorTick: config.enable_minor_tick,
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
-                formatter: _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
+                formatter: _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators, true)
             });
             _formatNumberLevelInXaxis(items, config.left_y_axis_number_level);
 
