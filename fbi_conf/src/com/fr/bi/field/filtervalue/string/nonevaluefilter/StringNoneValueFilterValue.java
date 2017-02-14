@@ -5,7 +5,7 @@ import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
@@ -94,7 +94,7 @@ public abstract class StringNoneValueFilterValue extends AbstractFilterValue<Str
      * @return 是否显示
      */
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         String value = StringFilterValueUtils.toString(node.getShowValue());
         //FIXME 这里之前将空值保存为空字符串
         return isMatchValue(value);

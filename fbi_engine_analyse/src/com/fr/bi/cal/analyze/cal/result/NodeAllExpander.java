@@ -50,5 +50,36 @@ public class NodeAllExpander extends NodeExpander {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
+        NodeAllExpander that = (NodeAllExpander) o;
+
+        if (allLevel != that.allLevel) {
+            return false;
+        }
+        if (level != that.level) {
+            return false;
+        }
+        return baseLevel == that.baseLevel;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (allLevel ? 1 : 0);
+        result = 31 * result + level;
+        result = 31 * result + baseLevel;
+        return result;
+    }
 }

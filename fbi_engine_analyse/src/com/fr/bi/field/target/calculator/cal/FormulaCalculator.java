@@ -4,8 +4,8 @@ import com.fr.bi.field.target.key.cal.BIFormulaCalculatorTargetKey;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
-import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BIFormularUtils;
 import com.fr.bi.stable.utils.BICollectionUtils;
@@ -59,10 +59,10 @@ public class FormulaCalculator extends CalCalculator {
      * @param node node节点
      */
     @Override
-    public void calCalculateTarget(LightNode node) {
+    public void calCalculateTarget(BINode node) {
         String formula = "=" + expression;
         try {
-            Object value = BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValueMap()));
+            Object value = BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValue()));
             //抛错就是没有值啦
             //pony 这边都存double吧，汇总在汇总要写cube，类型要统一
             node.setSummaryValue(createTargetGettingKey(), ((Number) value).doubleValue());

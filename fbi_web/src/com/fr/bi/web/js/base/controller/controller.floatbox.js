@@ -120,6 +120,10 @@ BI.FloatBoxController = BI.inherit(BI.Controller, {
         return this.floatManager[name];
     },
 
+    isVisible: function(name) {
+        return this.floatContainer[name] && this.floatContainer[name].isVisible();
+    },
+
     remove: function (name) {
         if (!this._check(name)) {
             return this;

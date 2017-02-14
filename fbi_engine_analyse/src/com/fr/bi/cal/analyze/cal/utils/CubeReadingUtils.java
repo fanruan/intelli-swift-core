@@ -10,8 +10,8 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
 import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
 import com.fr.data.impl.EmbeddedTableData;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
@@ -24,9 +24,9 @@ import java.util.TreeSet;
  */
 public class CubeReadingUtils {
 
-    public static void setSibing(LightNode last, LightNode first) {
-        LightNode lastChild = last.getLastChild();
-        LightNode firstChild = first.getFirstChild();
+    public static void setSibing(BINode last, BINode first) {
+        BINode lastChild = last.getLastChild();
+        BINode firstChild = first.getFirstChild();
         if (lastChild != null && firstChild != null) {
             lastChild.setSibling(firstChild);
             setSibing(lastChild, firstChild);

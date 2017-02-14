@@ -9,6 +9,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -121,6 +122,17 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
             }
         }
         return true;
+    }
+
+
+    @Override
+    public Set<CubeTableSource> getParentSource() {
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+        List<UserCubeTableSource>  parents = getParents();
+        for(UserCubeTableSource source : parents) {
+            set.add(source);
+        }
+        return set;
     }
 
     @Override

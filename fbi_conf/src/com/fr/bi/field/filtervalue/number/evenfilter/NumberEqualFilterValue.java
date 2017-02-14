@@ -3,7 +3,7 @@ package com.fr.bi.field.filtervalue.number.evenfilter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 
 import java.math.BigDecimal;
 
@@ -26,7 +26,7 @@ public class NumberEqualFilterValue extends NumberEvenFilterValue {
      * @return true或false
      */
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         Number targetValue = node.getSummaryValue(targetKey);
         if (targetValue == null) {
             return false;

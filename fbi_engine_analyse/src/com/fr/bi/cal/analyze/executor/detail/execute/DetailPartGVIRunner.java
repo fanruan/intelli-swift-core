@@ -49,7 +49,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
     @Override
     public void Traversal(TableRowTraversal action) {
         while (true) {
-            GroupValueIndex sortGvi = index.createSortedGVI(gvi, paging.getEndRow() - row);
+            GroupValueIndex sortGvi = index.createSortedGVI(paging.getEndRow() - row);
             if (sortGvi == null || sortGvi.isAllEmpty()) {
                 break;
             }

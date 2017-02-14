@@ -7,8 +7,8 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
 
 
 public class DateNullFilterValue extends DateNoneValueFilterValue {
@@ -40,7 +40,7 @@ public class DateNullFilterValue extends DateNoneValueFilterValue {
     }
 
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         return false;
     }
 }

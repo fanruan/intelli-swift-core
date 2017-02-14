@@ -8,7 +8,6 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.LightNode;
 
 import java.util.Collection;
 import java.util.Set;
@@ -100,8 +99,8 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
      */
     protected int getCalDeep(Object rank_node) {
         int deep = 0;
-        if (rank_node instanceof LightNode) {
-            LightNode node = (LightNode) rank_node;
+        if (rank_node instanceof BINode) {
+            BINode node = (BINode) rank_node;
             while (node.getFirstChild() != null) {
                 deep++;
                 node = node.getFirstChild();
@@ -124,9 +123,9 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
         Number countValue = null;
         TargetGettingKey sumGettingKey = new TargetGettingKey(targetKey.getSumKey(), targetName);
         TargetGettingKey countGettingKey = new TargetGettingKey(targetKey.getCountKey(), targetName);
-        if (cursor_node instanceof LightNode) {
-            sumValue = ((LightNode) cursor_node).getSummaryValue(sumGettingKey);
-            countValue = ((LightNode) cursor_node).getSummaryValue(countGettingKey);
+        if (cursor_node instanceof BINode) {
+            sumValue = ((BINode) cursor_node).getSummaryValue(sumGettingKey);
+            countValue = ((BINode) cursor_node).getSummaryValue(countGettingKey);
         } else if (cursor_node instanceof CrossNode) {
             sumValue = ((CrossNode)cursor_node).getSummaryValue(sumGettingKey);
             countValue = ((CrossNode)cursor_node).getSummaryValue(countGettingKey);

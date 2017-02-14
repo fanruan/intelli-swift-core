@@ -15,14 +15,7 @@ BI.TableDetailedSettingCombo = BI.inherit(BI.Widget, {
         BI.TableDetailedSettingCombo.superclass._init.apply(this, arguments);
         var self = this;
 
-        this.popup = BI.createWidget({
-            type: "bi.table_detailed_setting_popup"
-        });
-        this.popup.on(BI.TableDetailedSettingPopup.EVENT_CHANGE, function() {
-            self.fireEvent(BI.TableDetailedSettingCombo.EVENT_CHANGE)
-        });
-
-        BI.createWidget({
+        this.combo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
             width: this.options.width,
@@ -30,7 +23,12 @@ BI.TableDetailedSettingCombo = BI.inherit(BI.Widget, {
                 type: "bi.detailed_setting_trigger"
             },
             popup: {
-                el:  this.popup,
+                el:  {
+                    type: "bi.table_detailed_setting_popup",
+                    onChange: function() {
+                        self.fireEvent(BI.TableDetailedSettingCombo.EVENT_CHANGE);
+                    }
+                },
                 minWidth: 390,
                 stopPropagation: false
             }
@@ -38,11 +36,11 @@ BI.TableDetailedSettingCombo = BI.inherit(BI.Widget, {
     },
 
     setValue: function(v) {
-        this.popup.setValue(v)
+        this.combo.setValue(v)
     },
 
     getValue: function() {
-        return this.popup.getValue()
+        return this.combo.getValue()
     }
 });
 BI.TableDetailedSettingCombo.EVENT_CHANGE = 'EVENT_CHANGE';

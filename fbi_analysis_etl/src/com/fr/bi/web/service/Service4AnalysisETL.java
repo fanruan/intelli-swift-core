@@ -9,7 +9,6 @@ import com.fr.fs.web.service.AbstractFSAuthService;
 import com.fr.privilege.base.PrivilegeVote;
 import com.fr.stable.fun.Service;
 import com.fr.stable.web.RequestCMDReceiver;
-import com.fr.web.core.ActionCMD;
 import com.fr.web.core.ErrorHandlerHelper;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.WebActionsDispatcher;
@@ -32,7 +31,7 @@ public class Service4AnalysisETL implements Service {
             new BIAnalysisETLGetFieldMinMaxValueAction(),
             new BIAnalysisETLGetGeneratingStatusAction(),
             new BIGetUsedTablesAction(),
-            new BIAnalysisETLAddTaskAction()
+            new BIAnalysisETLCheckAllTableStatusAction()
 };
 
 @Override

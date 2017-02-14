@@ -3,8 +3,8 @@ package com.fr.bi.field.target.calculator.cal.configure;
 import com.fr.bi.field.target.key.cal.configuration.summary.BICountOfAllKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.report.result.BICrossNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
-import com.fr.bi.stable.report.result.LightNode;
 
 import java.util.concurrent.Callable;
 
@@ -19,7 +19,7 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
     }
 
     @Override
-    public Callable createNodeDealWith(LightNode node) {
+    public Callable createNodeDealWith(BINode node) {
         return new RankDealWith(node);
     }
 
@@ -34,9 +34,9 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
     }
 
     private class RankDealWith implements Callable {
-        private LightNode rank_node;
+        private BINode rank_node;
 
-        private RankDealWith(LightNode rank_node) {
+        private RankDealWith(BINode rank_node) {
             this.rank_node = rank_node;
         }
 
@@ -44,8 +44,8 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
         @Override
         public Object call() throws Exception {
             int deep = getCalDeep(rank_node);
-            LightNode temp_node = getDeepCalNode(rank_node);
-            LightNode cursor_node = temp_node;
+            BINode temp_node = getDeepCalNode(rank_node);
+            BINode cursor_node = temp_node;
             int count = 0;
             while (isNotEnd(cursor_node, deep)) {
                 count++;
@@ -60,11 +60,11 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
             return null;
         }
 
-        private boolean isNotEnd(LightNode node, int deep) {
+        private boolean isNotEnd(BINode node, int deep) {
             if (node == null) {
                 return false;
             }
-            LightNode temp = node;
+            BINode temp = node;
             for (int i = 0; i < deep; i++) {
                 temp = temp.getParent();
             }

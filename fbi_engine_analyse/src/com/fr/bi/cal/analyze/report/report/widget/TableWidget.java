@@ -274,6 +274,15 @@ public class TableWidget extends BISummaryWidget {
         return settings;
     }
 
+    public boolean showRowToTal() {
+        return settings.showRowTotal();
+    }
+
+    @Override
+    public boolean showColumnTotal() {
+        return settings.showColTotal();
+    }
+
     @Override
     public int getType() {
         return BIReportConstant.WIDGET.TABLE;

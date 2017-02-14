@@ -1,1 +1,0 @@
-package com.fr.bi.stable.report.result;/** * Created by Hiram on 2015/1/31. */public interface ISortInfo {    String getTargetName();    int getSortType();}

@@ -4,13 +4,13 @@
 
 package com.fr.bi.stable.gvi.roaringbitmap;
 
+import com.fr.bi.stable.gvi.roaringbitmap.buffer.MappeableBitmapContainer;
+import com.fr.bi.stable.gvi.roaringbitmap.buffer.MappeableContainer;
+
 import java.io.*;
 import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
-
-import com.fr.bi.stable.gvi.roaringbitmap.buffer.MappeableBitmapContainer;
-import com.fr.bi.stable.gvi.roaringbitmap.buffer.MappeableContainer;
 
 
 /**
@@ -1271,7 +1271,7 @@ final class BitmapContainerShortIterator implements PeekableShortIterator {
   @Override
   public int nextAsInt() {
     long t = w & -w;
-    int answer = x * 64 + Long.bitCount(t - 1);
+    int answer = (x << 6) + Long.bitCount(t - 1);
     w ^= t;
     while (w == 0) {
       ++x;

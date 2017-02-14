@@ -4,7 +4,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
 import java.util.ArrayList;
@@ -22,14 +22,14 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
     }
 
     @Override
-    public void calCalculateTarget(LightNode node) {
+    public void calCalculateTarget(BINode node) {
         Object key = getCalKey();
         //获得当前node的纬度数
         int deep = getCalDeep(node);
         if (key == null) {
             return;
         }
-        LightNode tempNode = node;
+        BINode tempNode = node;
         //从第几个纬度开始计算
         int calDeep = start_group == 0 ? 0 : deep - start_group;
         for (int i = 0; i < calDeep; i++) {
@@ -39,7 +39,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
             tempNode = tempNode.getFirstChild();
         }
         List nodeList = new ArrayList();
-        LightNode cursor_node = tempNode;
+        BINode cursor_node = tempNode;
         while (cursor_node != null) {
             nodeList.add(createNodeDealWith(cursor_node));
             cursor_node = cursor_node.getSibling();
@@ -51,7 +51,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
         }
     }
 
-    public abstract Callable createNodeDealWith(LightNode node);
+    public abstract Callable createNodeDealWith(BINode node);
 
     @Override
     public void calCalculateTarget(BICrossNode node, TargetGettingKey key1) {
@@ -82,8 +82,8 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
     public abstract Callable createNodeDealWith(BICrossNode node);
 
 
-    protected LightNode getFirstCalNode(LightNode rank_node) {
-        LightNode temp_node = rank_node;
+    protected BINode getFirstCalNode(BINode rank_node) {
+        BINode temp_node = rank_node;
         if (temp_node.getFirstChild() != null) {
             temp_node = temp_node.getFirstChild();
         }
@@ -98,8 +98,8 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
         return temp_node;
     }
 
-    protected LightNode getDeepCalNode(LightNode rank_node) {
-        LightNode temp_node = rank_node;
+    protected BINode getDeepCalNode(BINode rank_node) {
+        BINode temp_node = rank_node;
         for (int i = 0; i < getCalDeep(rank_node); i++) {
             if (temp_node.getFirstChild() != null) {
                 temp_node = temp_node.getFirstChild();

@@ -12,7 +12,6 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -71,33 +70,6 @@ public class CrossNode implements BICrossNode {
         return null;
     }
 
-    /**
-     * 获取索引用于值计算
-     *
-     * @return 索引
-     */
-    @Override
-    public GroupValueIndex getIndex4Cal() {
-        return null;
-    }
-
-    /**
-     * 获取汇总的个数
-     *
-     * @return 个数
-     */
-    public int getSummarySize() {
-        return summaryValue.size();
-    }
-
-    /**
-     * 获取汇总值的迭代器
-     *
-     * @return 迭代器用于遍历
-     */
-    public Iterator getSummaryValueIterator() {
-        return summaryValue.entrySet().iterator();
-    }
 
     /**
      * 获取汇总值
@@ -113,6 +85,11 @@ public class CrossNode implements BICrossNode {
     @Override
 	public Map getSummaryValue() {
         return summaryValue;
+    }
+
+    @Override
+    public void setSummaryValue(Map summaryValue) {
+        this.summaryValue = summaryValue;
     }
 
     /**
@@ -486,7 +463,6 @@ public class CrossNode implements BICrossNode {
         return jo;
     }
 
-    @Override
     public GroupValueIndex getIndex4CalByTargetKey(TargetGettingKey key) {
 
         return null;

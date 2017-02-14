@@ -19,8 +19,8 @@ import com.fr.bi.stable.engine.cal.ResultDealer;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -133,7 +133,7 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
     }
 
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
         // TODO Auto-generated method stub
         return false;
     }
