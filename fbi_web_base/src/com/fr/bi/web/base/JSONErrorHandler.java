@@ -31,11 +31,6 @@ public class JSONErrorHandler implements ErrorHandler {
     }
 
     @Override
-    public void error(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FRException e) {
-
-    }
-
-    @Override
     public int currentAPILevel() {
         return CURRENT_LEVEL;
     }
