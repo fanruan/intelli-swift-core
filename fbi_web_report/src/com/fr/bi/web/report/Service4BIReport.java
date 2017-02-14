@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel-pc
  */
 public class Service4BIReport implements Service {
-
+    private static long DATE_HEADER_EXPIRES = -10;
 
     private static RequestCMDReceiver[] actions = {
             new FSMainBIReportAction(),
@@ -88,7 +88,7 @@ public class Service4BIReport implements Service {
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
-        res.setDateHeader("Expires", -10);
+        res.setDateHeader("Expires", DATE_HEADER_EXPIRES);
 
         dealWithPreviousUrl(req);
         PrivilegeVote vote = getFSVote(req, res);

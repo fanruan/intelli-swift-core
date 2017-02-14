@@ -181,7 +181,6 @@ public class BaseResouceHelper {
         try {
             groups = getAuthGroups(userId, req.getLocale());
             packages = getAuthPackages(userId, req.getLocale());
-
             translations = BIModuleUtils.createAliasJSON(userId);
             relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(manageId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(manageId);
@@ -195,7 +194,6 @@ public class BaseResouceHelper {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-
         Map<String, JSONObject> map = new HashMap<String, JSONObject>();
         map.put("source", source);
         map.put("groups", groups);

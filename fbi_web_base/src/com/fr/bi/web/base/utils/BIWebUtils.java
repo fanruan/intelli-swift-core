@@ -204,52 +204,32 @@ public class BIWebUtils {
         reportName.put("name", node.getReportName() != null ? node.getReportName() : "null");
         map.put(ParameterConsts.SESSION_ID, sessionID);
         String isDebug = WebUtils.getHTTPRequestParameter(req, ParameterConsts.__ISDEBUG__);
-        String edit = WebUtils.getHTTPRequestParameter(req, "edit");
-        String show = WebUtils.getHTTPRequestParameter(req, "show");
-        String hideTop = WebUtils.getHTTPRequestParameter(req, "hideTop");
         JSONObject plateConfig = getPlateConfig();
+        initReqMaps(req, map);
         map.put("userId", userId);
-        map.put("edit", edit == null ? "null" : edit);
-        map.put("show", show == null ? "null" : show);
-        map.put("hideTop", hideTop == null ? "null" : hideTop);
         map.put("createBy", node.getUserId());
         map.put("reportName", reportName);
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
         map.put("plateConfig", plateConfig);
-        //cube版本号、权限版本号、多路径版本号
-        map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + ""
-                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + ""
-                + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
-        //jar包版本
-        map.put("__v__", GeneralUtils.readBuildNO());
-        boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
+        dealWithVersions(userId, map);
+        boolean biEdit = pop == null || ComparatorUtils.equals(WebUtils.getHTTPRequestParameter(req, "edit"), "_bi_edit_");
         boolean isEdit = sessionIDInfo.setEdit(biEdit);
         if (biEdit && !isEdit) {
             map.put("lockedBy", BISessionUtils.getCurrentEditingUserByReport(node.getId(), node.getUserId()));
         }
-
         //无任何权限
         if (ComparatorUtils.equals(getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.NONE)) {
-            String message = Inter.getLocText(biEdit ? "BI-User_Has_No_Edit_Privilege" : "BI-User_Has_No_View_Privilege", locale);
-            map.put("message", message);
-            writeData(req, res, "/com/fr/bi/web/html/bi_no_privilege.html", map);
+            dealWithAuthPage(req, res, BIReportConstant.REPORT_AUTH.NONE, map, biEdit, locale);
             return;
         }
-
         //仅有可查看权限
         if (biEdit && ComparatorUtils.equals(getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.VIEW)) {
-            String message = Inter.getLocText("BI-User_Has_No_Edit_Privilege", locale);
-            map.put("message", message);
-            writeData(req, res, "/com/fr/bi/web/html/bi_no_privilege.html", map);
+            dealWithAuthPage(req, res, BIReportConstant.REPORT_AUTH.VIEW, map, true, locale);
             return;
         }
-
         map.put("onlyViewAuth", ComparatorUtils.equals(getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.VIEW));
-
-        /**
-         * Connery:用于预览用户于模板的操作
-         * */
+        //用于预览用户于模板的操作
         String mode = WebUtils.getHTTPRequestParameter(req, "mode");
         if (ComparatorUtils.equals(mode, "user_operation_preview")) {
             BIOperationRecord record = new BIOperationRecord(node.getUserId(), node.getReportName());
@@ -257,7 +237,41 @@ public class BIWebUtils {
             writeData(req, res, "/com/fr/bi/web/html/bi_dezi_operation_preview.html", map);
         }
         writeData(req, res, isEdit ? (isDebug == null ? "/com/fr/bi/web/html/bi_dezi.html" : "/com/fr/bi/web/html/bi_dezi_debug.html") : "/com/fr/bi/web/html/bi_show.html", map);
+    }
 
+    private static void dealWithAuthPage(HttpServletRequest req, HttpServletResponse res, int auth, Map<String, Object> map, boolean biEdit, Locale locale) throws Exception {
+        String message;
+        switch (auth) {
+            case BIReportConstant.REPORT_AUTH.NONE:
+                message = Inter.getLocText(biEdit ? "BI-User_Has_No_Edit_Privilege" : "BI-User_Has_No_View_Privilege", locale);
+                map.put("message", message);
+                writeData(req, res, "/com/fr/bi/web/html/bi_no_privilege.html", map);
+                break;
+            case BIReportConstant.REPORT_AUTH.VIEW:
+                message = Inter.getLocText("BI-User_Has_No_Edit_Privilege", locale);
+                map.put("message", message);
+                writeData(req, res, "/com/fr/bi/web/html/bi_no_privilege.html", map);
+                break;
+        }
+    }
+
+    private static void dealWithVersions(long userId, Map<String, Object> map) {
+        //cube版本号、权限版本号、多路径版本号
+        map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + ""
+                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + ""
+                + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
+        //jar包版本
+        map.put("__v__", GeneralUtils.readBuildNO());
+    }
+
+    private static void initReqMaps(HttpServletRequest req, Map<String, Object> map) {
+        String edit = WebUtils.getHTTPRequestParameter(req, "edit");
+        String show = WebUtils.getHTTPRequestParameter(req, "show");
+        String hideTop = WebUtils.getHTTPRequestParameter(req, "hideTop");
+
+        map.put("edit", edit == null ? "null" : edit);
+        map.put("show", show == null ? "null" : show);
+        map.put("hideTop", hideTop == null ? "null" : hideTop);
     }
 
 
@@ -326,7 +340,7 @@ public class BIWebUtils {
 
     private static void writeData(HttpServletRequest req, HttpServletResponse res, String templatePath, Map messageMap) throws Exception {
         Device device = WebUtils.getDevice(req);
-        boolean isCached = !StringUtils.isBlank(WebUtils.getHTTPRequestParameter(req, "isCached"));
+        boolean isCached = StringUtils.isNotBlank(WebUtils.getHTTPRequestParameter(req, "isCached"));
         if (device.isMobile()) {
             if (messageMap.containsKey("message")) {
                 PrintWriter writer = WebUtils.createPrintWriter(res);
