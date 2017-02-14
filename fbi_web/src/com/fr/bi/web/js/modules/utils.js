@@ -2726,11 +2726,11 @@
                 if (id === notcontain) {
                     return;
                 }
-                //去掉自身和在自身之后创建的控件
-                if (BI.isNotNull(notcontain) && self.isControlWidgetByWidgetId(notcontain)
-                    && self.getWidgetInitTimeByID(id) > self.getWidgetInitTimeByID(notcontain)) {
-                    return;
-                }
+                // //去掉自身和在自身之后创建的控件
+                // if (BI.isNotNull(notcontain) && self.isControlWidgetByWidgetId(notcontain)
+                //     && self.getWidgetInitTimeByID(id) > self.getWidgetInitTimeByID(notcontain)) {
+                //     return;
+                // }
                 var value = self.getWidgetValueByID(id);
                 if (BI.isNotNull(value)) {
                     var dimensionIds = self.getAllDimensionIDs(id);
