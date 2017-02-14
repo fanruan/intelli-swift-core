@@ -37,8 +37,7 @@ BI.DetailedSettingTrigger = BI.inherit(BI.Trigger, {
     },
 
     setValue: function (value) {
-        this.text.setValue(value);
-        this.text.setTitle(value);
+
     },
 
     setText: function (text) {

@@ -12,7 +12,7 @@ BI.DashboardDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _init: function() {
         BI.DashboardDataLabelDetailedSettingPopup.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         //分类名
         this.showCategoryName = BI.createWidget({
@@ -22,7 +22,7 @@ BI.DashboardDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showCategoryName.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AreaDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //值
@@ -33,7 +33,7 @@ BI.DashboardDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showValue.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.DashboardDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //百分比
@@ -44,7 +44,7 @@ BI.DashboardDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showPercentage.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.DashboardDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         var show = BI.createWidget({
@@ -61,7 +61,7 @@ BI.DashboardDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: 230
         });
         this.textStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.DashboardDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
         var textStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.textStyle);
 
@@ -108,5 +108,4 @@ BI.DashboardDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.DashboardDataLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.dashboard_data_label_detailed_setting_popup", BI.DashboardDataLabelDetailedSettingPopup);

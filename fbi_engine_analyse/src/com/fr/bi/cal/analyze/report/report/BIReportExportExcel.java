@@ -141,7 +141,7 @@ public class BIReportExportExcel {
 
         JSONObject configs = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.optJSONObject("data"));
         JSONObject chartOptions = BIChartSettingFactory.parseChartSetting((MultiChartWidget) widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
-        //将plotOptions下的animation设为false否则不能截图（只截到网格线）
+        //将plotOptions下的animation设为false(去掉动画)否则只截到网格线
         JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
         Rectangle rect = widget.getRect();
         plotOptions.put("animation", false);
