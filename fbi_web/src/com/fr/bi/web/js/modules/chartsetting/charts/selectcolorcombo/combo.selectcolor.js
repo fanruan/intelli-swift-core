@@ -16,10 +16,6 @@ BI.ChartSettingSelectColorCombo = BI.inherit(BI.Widget, {
         BI.ChartSettingSelectColorCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
-        this.popup = BI.createWidget({
-            type: "bi.chart_setting_select_color_popup"
-        });
-
         this.combo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
@@ -28,7 +24,9 @@ BI.ChartSettingSelectColorCombo = BI.inherit(BI.Widget, {
                 type: "bi.chart_setting_select_color_trigger"
             },
             popup: {
-                el: this.popup,
+                el: {
+                    type: "bi.chart_setting_select_color_popup"
+                },
                 stopPropagation: false,
                 minWidth: 145
             }
