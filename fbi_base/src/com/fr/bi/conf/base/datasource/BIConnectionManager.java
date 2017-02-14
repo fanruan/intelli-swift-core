@@ -12,7 +12,6 @@ import com.fr.data.core.db.dialect.MSSQLDialect;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
-import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.file.XMLFileManager;
 import com.fr.general.ComparatorUtils;
@@ -46,7 +45,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     @Override
     public void updateAvailableConnection() {
         availableConnection.clear();
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String name = nameIt.next();
@@ -77,7 +76,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         if (connMap.containsKey(name)) {
             return connMap.get(name).getSchema();
         }
-        Connection connection = DatasourceManager.getInstance().getConnection(name);
+        Connection connection = DatasourceManagerProxy.getDatasourceManager().getConnection(name);
         if (needSchema(connection)) {
             String[] schemas = DataCoreUtils.getDatabaseSchema(connection);
             connMap.put(name, new BIConnection(name, schemas != null && schemas.length != 0 ? schemas[0] : StringUtils.EMPTY));
@@ -94,7 +93,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
     @Override
     public Connection getConnection(String name) {
-        return DatasourceManager.getInstance().getConnection(name);
+        return DatasourceManagerProxy.getDatasourceManager().getConnection(name);
     }
 
     static {
@@ -149,7 +148,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         JDBCDatabaseConnection jdbcDatabaseConnection = dl.createJDBCDatabaseConnection();
         /*BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils(jdbcDatabaseConnection);
         jdbcDatabaseConnection = utils.optimizeConnection(jdbcDatabaseConnection);*/ //连接保存时，如果是sqlserver连接，不会再url上字段加selectMethod，当在需要数据库连接时，加上selectMethod属性
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
 
         if (!ComparatorUtils.equals(oldName, newName)) {
             datasourceManager.renameConnection(oldName, newName);
@@ -172,7 +171,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
             return;
         }
         connMap.remove(name);
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String connectionName = nameIt.next();
@@ -201,7 +200,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     @Override
     public JSONObject createJSON() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
 
         int index = 0;

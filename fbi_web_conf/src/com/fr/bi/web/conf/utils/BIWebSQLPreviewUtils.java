@@ -1,11 +1,11 @@
 package com.fr.bi.web.conf.utils;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
-import com.fr.file.DatasourceManager;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -16,7 +16,7 @@ import com.fr.json.JSONObject;
  */
 public class BIWebSQLPreviewUtils {
     public static JSONObject getPreviewData(String sql, String connectionName) throws JSONException {
-        com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
+        com.fr.data.impl.Connection dbc = DatasourceManagerProxy.getDatasourceManager().getConnection(connectionName);
         DBTableData dbTableData = new DBTableData(dbc, sql);
         JSONObject jo = new JSONObject();
         try {

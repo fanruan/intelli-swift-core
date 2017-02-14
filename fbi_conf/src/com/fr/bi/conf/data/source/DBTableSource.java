@@ -10,6 +10,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BILogManagerProvider;
@@ -33,7 +34,6 @@ import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
-import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -369,7 +369,7 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     public Connection getConnection() {
-        return DatasourceManager.getInstance().getConnection(dbName);
+        return DatasourceManagerProxy.getDatasourceManager().getConnection(dbName);
     }
 
     // TODO: 2016/11/9 判断表的字段和数据库中的能否对得上

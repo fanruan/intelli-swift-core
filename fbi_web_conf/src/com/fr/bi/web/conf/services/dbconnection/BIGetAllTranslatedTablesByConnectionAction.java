@@ -2,12 +2,12 @@ package com.fr.bi.web.conf.services.dbconnection;
 
 import com.fr.base.FRContext;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.stable.constant.DBConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.TableProcedure;
-import com.fr.file.DatasourceManager;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -37,7 +37,7 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
         JSONObject groupJo = new JSONObject();
         groupJo.put("group_name", "0");
         JSONArray groupArray = new JSONArray();
-        Iterator names = DatasourceManager.getInstance().getTableDataNameIterator();
+        Iterator names = DatasourceManagerProxy.getDatasourceManager().getTableDataNameIterator();
         while (names.hasNext()) {
             JSONObject table = new JSONObject();
             table.put("value", names.next());
@@ -60,7 +60,7 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
         if (isServerTableData(connectionName)) {
             dealWithServerTableData(ja);
         } else {
-            com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
+            com.fr.data.impl.Connection dbc = DatasourceManagerProxy.getDatasourceManager().getConnection(connectionName);
             TableProcedure[] tps = new TableProcedure[0];
             TableProcedure[] views = new TableProcedure[0];
             String schemaName = BIConnectionManager.getBIConnectionManager().getSchema(connectionName);

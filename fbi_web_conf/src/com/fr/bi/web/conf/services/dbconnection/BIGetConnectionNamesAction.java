@@ -1,9 +1,9 @@
 package com.fr.bi.web.conf.services.dbconnection;
 
+import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.JDBCDatabaseConnection;
-import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -20,7 +20,7 @@ public class BIGetConnectionNamesAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         JSONArray ja = new JSONArray();
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
         Iterator names = datasourceManager.getConnectionNameIterator();
         while (names.hasNext()) {
             String name = (String) names.next();

@@ -3,6 +3,7 @@ package com.fr.bi.conf.data.source;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -11,7 +12,6 @@ import com.fr.bi.stable.data.db.ServerLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DecryptBi;
 import com.fr.data.impl.Connection;
-import com.fr.file.DatasourceManager;
 import com.fr.json.JSONObject;
 
 /**
@@ -114,7 +114,7 @@ public class SQLTableSource extends ServerTableSource {
 
     @Override
     public Connection getConnection() {
-        return DatasourceManager.getInstance().getConnection(sqlConnection);
+        return DatasourceManagerProxy.getDatasourceManager().getConnection(sqlConnection);
     }
 
     @Override
