@@ -5,6 +5,7 @@ import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.file.FunctionManager;
 import com.fr.file.FunctionManagerProvider;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -30,7 +31,7 @@ public class FormulaCollections {
      * @return 列表
      */
 
-    public static JSONArray getAllFormulaObject() {
+    public static JSONArray getAllFormulaObject(String language) {
         List<String> names = new ArrayList<String>();
         JSONArray formulaJSONs = new JSONArray();
         names.addAll(findFunction());
@@ -57,7 +58,11 @@ public class FormulaCollections {
             }
             JSONObject formulaJo = new JSONObject();
             try {
-                formulaJo.put("def", formula.getCN());
+                if(ComparatorUtils.equals(language, "zh")){
+                    formulaJo.put("def", formula.getCN());
+                }else if(ComparatorUtils.equals(language, "en")){
+                    formulaJo.put("def", formula.getEN());
+                }
                 formulaJo.put("type", getFunctionType(formula.getType()));
                 formulaJo.put("name", formulaName);
             } catch (JSONException e) {
