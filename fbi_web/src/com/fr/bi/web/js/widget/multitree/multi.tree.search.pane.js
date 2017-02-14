@@ -45,7 +45,7 @@ BI.MultiTreeSearchPane = BI.inherit(BI.Pane, {
 
     setValue: function (v) {
         v || (v = {});
-        this.partTree.setValue(v.value);
+        this.partTree.setSelectedValue(v.value);
     },
 
     getValue: function () {
