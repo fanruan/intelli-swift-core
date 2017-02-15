@@ -17,5 +17,4 @@ public class TableDataForExport {
         this.crossItems = crossItems;
         this.crossHeader = crossHeader;
     }
-
 }

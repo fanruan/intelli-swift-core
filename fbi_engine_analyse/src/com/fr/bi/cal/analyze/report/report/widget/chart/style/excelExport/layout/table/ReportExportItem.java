@@ -9,12 +9,14 @@ public class ReportExportItem {
 
     private String dId;
     private String text;
-    private String[] value;
+    private List<ReportExportItem> value;
     private boolean isCross;
     private boolean needExpand;
     private List<ReportExportItem> children;
-    private List<ReportExportItem> clicked;
+    private List<String> clicked;
     private boolean isSum;
+    private String style;
+    private String type;
 
     public ReportExportItem() {
     }
@@ -35,11 +37,11 @@ public class ReportExportItem {
         this.text = text;
     }
 
-    public String[] getValue() {
+    public List<ReportExportItem> getValue() {
         return value;
     }
 
-    public void setValue(String[] value) {
+    public void setValue(List<ReportExportItem> value) {
         this.value = value;
     }
 
@@ -67,11 +69,11 @@ public class ReportExportItem {
         this.children = children;
     }
 
-    public List<ReportExportItem> getClicked() {
+    public List<String> getClicked() {
         return clicked;
     }
 
-    public void setClicked(List<ReportExportItem> clicked) {
+    public void setClicked(List<String> clicked) {
         this.clicked = clicked;
     }
 
@@ -81,5 +83,37 @@ public class ReportExportItem {
 
     public void setSum(boolean sum) {
         isSum = sum;
+    }
+
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "ReportExportItem{" +
+                "dId='" + dId + '\'' +
+                ", text='" + text + '\'' +
+                ", value=" + value +
+                ", isCross=" + isCross +
+                ", needExpand=" + needExpand +
+                ", children=" + children +
+                ", clicked=" + clicked +
+                ", isSum=" + isSum +
+                ", style='" + style + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

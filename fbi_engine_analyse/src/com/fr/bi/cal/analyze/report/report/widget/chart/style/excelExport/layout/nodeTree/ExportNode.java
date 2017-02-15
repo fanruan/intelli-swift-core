@@ -1,4 +1,6 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table;
+package com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.nodeTree;
+
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.ReportExportItem;
 
 import java.util.List;
 
@@ -68,5 +70,20 @@ public class ExportNode {
 
     public void setRight(String right) {
         this.right = right;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ExportNode that = (ExportNode) o;
+
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

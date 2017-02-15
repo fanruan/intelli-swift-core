@@ -9,7 +9,8 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
-import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.ExportNode;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.nodeTree.ExportNode;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.nodeTree.ExportNodeTree;
 import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.ReportExportHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.ReportExportItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.TableDataForExport;
@@ -351,14 +352,15 @@ public class TableWidget extends BISummaryWidget {
         }
 
         JSONObject dataJSON = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
-        List<ReportExportItem> items = createCommonTableItems(dataJSON.getJSONArray("c"), 0, null, this.getViewDimensions(), this.getViewTargets());
+        List<ReportExportItem> items = createCommonTableItems(dataJSON.getJSONObject("data").getJSONArray("c"), 0, null, this.getViewDimensions(), this.getViewTargets(), new ExportNodeTree());
         TableDataForExport tableDataForExport = new TableDataForExport(items, headers, null, null);
         return new JSONObject();
     }
 
-    private List<ReportExportItem> createCommonTableItems(JSONArray cArray, int curentLayer, ReportExportHeader parent, BIDimension[] viewDimensions, BISummaryTarget[] viewTargets) throws JSONException {
+    private List<ReportExportItem> createCommonTableItems(JSONArray cArray, int curentLayer, ExportNode parent, BIDimension[] viewDimensions, BISummaryTarget[] viewTargets, ExportNodeTree nodeTree) throws JSONException {
+        curentLayer++;
         List<ReportExportItem> items = new ArrayList<>();
-        for (int i = 0; i <= cArray.length(); i++) {
+        for (int i = 0; i < cArray.length(); i++) {
             ExportNode node = new ExportNode();
             JSONObject child = cArray.getJSONObject(i);
             String cId = BIStringUtils.isEmptyString(child.getString("n")) ? UUID.randomUUID().toString() : child.getString("n");
@@ -368,12 +370,46 @@ public class TableWidget extends BISummaryWidget {
             String currentValue = child.getString("n");
             node.setName(currentValue);
             node.setdId(currDid);
+            nodeTree.addNode(parent, node);
+            List<String> pValues = new ArrayList();
+            int tempLayer = curentLayer;
+            String tempNodeId = node.getId();
+            while (tempLayer > 0) {
+                ExportNode exportNode = nodeTree.getNode(tempNodeId);
 
+                JSONObject json = new JSONObject();
+                json.put("value", "");
+                json.put("dId", dimensions[tempLayer - 1]);
+                pValues.add(json.toString());
+                tempNodeId = exportNode.getParent().getId();
+                tempLayer--;
+            }
             ReportExportItem item = new ReportExportItem();
             item.setdId(currDid);
             item.setText(currentValue);
             item.setNeedExpand(curentLayer < viewDimensions.length);
+            item.setStyle("");
+            item.setType("bi.normal_expander_cell");
             if (child.has("c")) {
+                List<ReportExportItem> c = createCommonTableItems(child.getJSONArray("c"), curentLayer, node, dimensions, targets, nodeTree);
+                item.setChildren(c);
+            }
+            if (child.has("s")) {
+                List<ReportExportItem> values = new ArrayList<>();
+//                boolean isCross = child.getJSONArray("s").length() || child.getJSONArray("s").isNull("s");
+                boolean isCross = false;
+                if (isCross) {
+                } else {
+                    JSONArray childs = child.getJSONArray("s");
+                    for (int j = 0; j < childs.length(); j++) {
+                        ReportExportItem tartItem = new ReportExportItem();
+                        tartItem.setText(childs.getString(j));
+                        tartItem.setdId(viewTargets[j].getId());
+                        tartItem.setClicked(pValues);
+                        values.add(tartItem);
+                    }
+                }
+                item.setValue(values);
             }
             items.add(item);
         }
