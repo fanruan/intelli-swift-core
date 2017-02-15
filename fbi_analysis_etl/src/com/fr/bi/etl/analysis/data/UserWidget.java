@@ -11,6 +11,7 @@ import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BIWeblet;
+import com.fr.bi.cluster.utils.ClusterLockObject;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -38,7 +39,7 @@ public class UserWidget implements Serializable {
     @BICoreField
     private long userId;
     @BIIgnoreField
-    private LockObject lock = new LockObject();
+    private ClusterLockObject lock = new ClusterLockObject();
 
     @BIIgnoreField
     private transient UserSession session;
