@@ -175,16 +175,16 @@ public class BaseResouceHelper {
         JSONObject tables = new JSONObject();
         JSONObject source = new JSONObject();
         JSONObject fields = new JSONObject();
+        JSONObject noAuthFields = new JSONObject();
         JSONObject translations = new JSONObject();
         JSONObject excelViews = new JSONObject();
         try {
             groups = getAuthGroups(userId, req.getLocale());
             packages = getAuthPackages(userId, req.getLocale());
-
             translations = BIModuleUtils.createAliasJSON(userId);
             relations = BICubeConfigureCenter.getTableRelationManager().createRelationsPathJSON(manageId);
             excelViews = BIConfigureManagerCenter.getExcelViewManager().createJSON(manageId);
-            initTableAndFields(userId, tables, fields);
+            initTableAndFields(userId, tables, fields, noAuthFields);
             Set<BITableRelation> connectionSet = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
             JSONArray connectionJA = new JSONArray();
             for (BITableRelation connection : connectionSet) {
@@ -194,7 +194,6 @@ public class BaseResouceHelper {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-
         Map<String, JSONObject> map = new HashMap<String, JSONObject>();
         map.put("source", source);
         map.put("groups", groups);
@@ -204,6 +203,7 @@ public class BaseResouceHelper {
         map.put("translations", translations);
         map.put("tables", tables);
         map.put("fields", fields);
+        map.put("noAuthFields", noAuthFields);
         map.put("excel_views", excelViews);
         StringBuilder buffer = new StringBuilder();
         try {
@@ -285,24 +285,25 @@ public class BaseResouceHelper {
         return allGroups;
     }
 
-    private static void initTableAndFields(long userId, JSONObject tables, JSONObject fields) throws Exception {
+    private static void initTableAndFields(long userId, JSONObject tables, JSONObject fields, JSONObject noAuthFields) throws Exception {
         Set<IBusinessPackageGetterService> packs = BIModuleUtils.getAllPacks(userId);
         List<BIPackageID> authPacks = BIModuleUtils.getAvailablePackID(userId);
         for (IBusinessPackageGetterService p : packs) {
-            if (!ComparatorUtils.equals(UserControl.getInstance().getSuperManagerID(), userId) &&
-                    !authPacks.contains(p.getID())) {
-                continue;
-            }
             for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
                 JSONObject jo = t.createJSONWithFieldsInfo(userId);
-                JSONObject tableFields = jo.getJSONObject("tableFields");
                 CubeTableSource tableSource = t.getTableSource();
                 JSONObject sourceJO = tableSource.createJSON();
-                String connectionName=sourceJO.optString("connection_name", StringUtils.EMPTY);
-                tableFields.put("connection_name", connectionName);
-                tables.put(t.getID().getIdentityValue(), tableFields);
+                String connectionName = sourceJO.optString("connection_name", StringUtils.EMPTY);
                 JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
-                fields.join(fieldsInfo);
+                if (ComparatorUtils.equals(UserControl.getInstance().getSuperManagerID(), userId) ||
+                        authPacks.contains(p.getID())) {
+                    JSONObject tableFields = jo.getJSONObject("tableFields");
+                    tableFields.put("connection_name", connectionName);
+                    tables.put(t.getID().getIdentityValue(), tableFields);
+                    fields.join(fieldsInfo);
+                } else {
+                    noAuthFields.join(fieldsInfo);
+                }
             }
         }
     }

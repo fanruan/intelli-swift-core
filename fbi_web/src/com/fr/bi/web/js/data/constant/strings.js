@@ -40,3 +40,5 @@ BICst.ETL_OPERATOR = {
 };
 
 BICst.DATA_CONFIG_TAB = "__bi_data_config_tab__";
+
+BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY = "__bi_data_config_authority_cache_key__";

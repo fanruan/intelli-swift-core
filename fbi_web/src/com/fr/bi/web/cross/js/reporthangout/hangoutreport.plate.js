@@ -77,6 +77,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
                 self.reportName.setValue(reportText);
                 self.description.setValue(description);
             }
+        }, function () {
             mask.destroy();
         });
 

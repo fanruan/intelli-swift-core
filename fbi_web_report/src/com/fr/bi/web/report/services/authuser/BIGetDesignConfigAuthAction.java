@@ -10,17 +10,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * 新建分析 数据配置是否显示
  * Created by Young's on 2016/10/21.
  */
-public class BIGetUserEditAuthAction extends ActionNoSessionCMD {
+public class BIGetDesignConfigAuthAction extends ActionNoSessionCMD {
     @Override
     public String getCMD() {
-        return "get_user_edit_auth";
+        return "get_design_config_auth";
     }
 
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        WebUtils.printAsJSON(res, JSONObject.create().put("result", BIWebUtils.getUserEditViewAuth(userId)));
+        JSONObject jo = new JSONObject();
+        jo.put("design", BIWebUtils.getUserEditViewAuth(userId));
+        jo.put("config", BIWebUtils.showDataConfig(userId));
+        WebUtils.printAsJSON(res, jo);
     }
 }

@@ -567,7 +567,7 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         this._refreshDimsInfo();
 
         //正常复杂表
-        if (this._isColRegionExist() && this._isRowRegionExist()) {
+        if (this._isColRegionExist() || this._isRowRegionExist()) {
             this._createComplexTableItems();
             this._createComplexTableHeader();
             this._setOtherComplexAttrs();

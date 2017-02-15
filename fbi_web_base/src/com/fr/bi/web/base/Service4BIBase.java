@@ -1,12 +1,12 @@
 package com.fr.bi.web.base;
 
 
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.base.fs.BIFSGetConfigAction;
 import com.fr.bi.web.base.fs.BIFSSetConfigAction;
-import com.fr.bi.web.base.image.BIFSGetImageSizeAction;
-import com.fr.bi.web.base.image.BIFSSaveUploadImageAction;
 import com.fr.bi.web.base.services.*;
 import com.fr.bi.web.base.services.dataconfigauth.BIGetDataConfigAuthoritiesAction;
+import com.fr.bi.web.base.services.dataconfigauth.BIGetDataConfigNodesAction;
 import com.fr.bi.web.base.services.dataconfigauth.BISaveDataConfigAuthoritiesAction;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel-pc
  */
 public class Service4BIBase extends NoSessionIDService {
-    private static int Expires = -10;
-
     private static AbstractBIBaseAction[] actions = {
             new BIGetPyAction(),
             new BIGetTableAction(),
@@ -36,17 +34,10 @@ public class Service4BIBase extends NoSessionIDService {
             new BICheckValidationOfExpressionAction(),
             new BIGetMapJsonAction(),
             new BIGetBuildNoAction(),
-            new BIGetPyAction(),
-            new BIGetTableAction(),
-            new BIFSGetConfigAction(),
-            new BIFSSetConfigAction(),
-            new BICheckValidationOfExpressionAction(),
-            new BIFSSaveUploadImageAction(),
-            new BIFSGetImageSizeAction(),
-            new BIGetMapJsonAction(),
 
+            new BIGetDataConfigNodesAction(),
+            new BISaveDataConfigAuthoritiesAction(),
             new BIGetDataConfigAuthoritiesAction(),
-            new BISaveDataConfigAuthoritiesAction()
     };
 
     /**
@@ -73,7 +64,7 @@ public class Service4BIBase extends NoSessionIDService {
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
-        res.setDateHeader("Expires", Expires);
+        res.setDateHeader("Expires", BIBaseConstant.DATE_HEADER_EXPIRES);
 //
 //        PrivilegeVote vote = getFSVote(req, res);
 //        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
