@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
+import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryIndexCal;
 import com.fr.bi.cal.analyze.cal.result.Node;
@@ -74,18 +75,18 @@ public class GroupUtils {
                 List<TargetAndKey>[] summaryLists = group.getSummaryLists();
                 GroupValueIndex[] gvis = group.getGvis();
                 node.setSummaryValue(group.getSummaryValue());
-//                ICubeTableService[] tis = group.getTis();
-//                for (int i = 0; i < summaryLists.length; i++) {
-//                    List<TargetAndKey> targetAndKeys = summaryLists[i];
-//                    for (TargetAndKey targetAndKey : targetAndKeys) {
-//                        BISingleThreadCal singleThreadCal = createSinlgeThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex);
-//                        if (MultiThreadManagerImpl.isMultiCall()) {
-//                            MultiThreadManagerImpl.getInstance().getExecutorService().add(singleThreadCal);
-//                        } else {
-//                            singleThreadCal.cal();
-//                        }
-//                    }
-//                }
+                ICubeTableService[] tis = group.getTis();
+                for (int i = 0; i < summaryLists.length; i++) {
+                    List<TargetAndKey> targetAndKeys = summaryLists[i];
+                    for (TargetAndKey targetAndKey : targetAndKeys) {
+                        BISingleThreadCal singleThreadCal = createSinlgeThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex);
+                        if (MultiThreadManagerImpl.isMultiCall()) {
+                            MultiThreadManagerImpl.getInstance().getExecutorService().add(singleThreadCal);
+                        } else {
+                            singleThreadCal.cal();
+                        }
+                    }
+                }
             }
         }
     }

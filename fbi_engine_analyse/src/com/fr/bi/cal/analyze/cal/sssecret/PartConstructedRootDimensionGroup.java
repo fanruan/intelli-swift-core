@@ -65,6 +65,9 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private void initRootNode() {
         rootNode = new MetricMergeResult(null, root.getGvis());
+        if(columns.length == 0){
+            return;
+        }
         SingleDimensionGroup rootGroup =  root.createSingleDimensionGroup(columns[0], getters[0], null, mergeIteratorCreators[0], useRealData);
         int index = 0;
         MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);

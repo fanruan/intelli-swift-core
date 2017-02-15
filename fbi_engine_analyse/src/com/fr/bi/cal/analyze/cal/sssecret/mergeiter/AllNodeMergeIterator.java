@@ -31,10 +31,13 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private Node root;
     private Iterator<MetricMergeResult> mergeIterator;
     private Iterator<MetricMergeResult> resultIter;
+    //线程池是否已经计算完成
     private volatile boolean completed;
-    private volatile boolean started;
+    //是否已经全部加到线程池
+    private volatile boolean allAdded;
     //已经完成计算的数量
     private AtomicInteger count;
+    //丢近线程池的计算的数量
     private int size;
 
     public AllNodeMergeIterator(Iterator<MetricMergeResult> mergeIterator, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader) {
@@ -49,14 +52,15 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     }
 
     private void initIter() {
-        root = new Node(null);
-        count = new AtomicInteger(0);
-        completed = metricsToCalculate == null;
-        started = true;
         BIMultiThreadExecutor executor = null;
         if (MultiThreadManagerImpl.getInstance().isMultiCall()){
             executor = MultiThreadManagerImpl.getInstance().getExecutorService();
         }
+        root = new Node(null);
+        count = new AtomicInteger(0);
+        //不是多线程，或者没有指标都表示线程池的计算已经结束
+        completed = getMetricsSize() == 0 || !MultiThreadManagerImpl.getInstance().isMultiCall();
+        allAdded = false;
         while (mergeIterator.hasNext()) {
             MetricMergeResult result = mergeIterator.next();
             checkSum(result, executor);
@@ -64,10 +68,11 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
             ++size;
         }
         if (metricsToCalculate != null){
-            size *= metricsToCalculate.length;
+            size *= getMetricsSize();
         }
-        started = false;
-        if (!completed && executor!= null){
+        allAdded = true;
+        //如果多线程计算没有结束，就等结束
+        if (!completed  && size > 0){
             executor.wakeUp();
             synchronized (this){
                 try {
@@ -88,12 +93,23 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     }
 
     private void checkComplete(){
-        if (count.incrementAndGet() == size && !started){
+        //如果已经计算完了加入线程池的计算，并且所有计算都已经加入线程池了，就说明计算完了，唤醒下等待的线程。
+        if (count.incrementAndGet() == size && allAdded){
             completed = true;
             synchronized (this){
                 this.notify();
             }
         }
+    }
+
+    private int getMetricsSize(){
+        int size = 0;
+        if (metricsToCalculate != null) {
+            for (int i = 0; i < metricsToCalculate.length; i++) {
+                size += metricsToCalculate[i].size();
+            }
+        }
+        return size;
     }
 
     private void checkSum(MetricMergeResult result, BIMultiThreadExecutor executor) {
@@ -124,7 +140,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         public void cal() {
             super.cal();
             checkComplete();
-            ((MetricMergeResult) node).clearGvis();
+           // ((MetricMergeResult) node).clearGvis();
         }
     }
 
