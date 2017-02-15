@@ -68,7 +68,7 @@ BI.MultiTreePopup = BI.inherit(BI.Pane, {
 
     setValue: function (v) {
         v || (v = {});
-        this.tree.setValue(v.value);
+        this.tree.setSelectedValue(v.value);
     },
 
     populate: function (config) {

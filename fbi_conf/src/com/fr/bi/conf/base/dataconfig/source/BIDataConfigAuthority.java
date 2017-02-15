@@ -12,8 +12,8 @@ public class BIDataConfigAuthority implements JSONTransform {
     private int roleType;       //角色类型
     private String id;          //管理节点id
     private String parentId;    //管理节点parentId
-    private boolean show;           //查看
-    private boolean authorized;     //授权
+    private int view = 0;       //查看
+    private int design = 0;     //授权
 
     public String getRoleName() {
         return roleName;
@@ -47,20 +47,20 @@ public class BIDataConfigAuthority implements JSONTransform {
         this.parentId = parentId;
     }
 
-    public boolean isShow() {
-        return show;
+    public int getView() {
+        return view;
     }
 
-    public void setShow(boolean show) {
-        this.show = show;
+    public void setView(int view) {
+        this.view = view;
     }
 
-    public boolean isAuthorized() {
-        return authorized;
+    public int getDesign() {
+        return design;
     }
 
-    public void setAuthorized(boolean authorized) {
-        this.authorized = authorized;
+    public void setDesign(int design) {
+        this.design = design;
     }
 
     @Override
@@ -70,8 +70,8 @@ public class BIDataConfigAuthority implements JSONTransform {
         jo.put("roleType", roleType);
         jo.put("id", id);
         jo.put("parentId", parentId);
-        jo.put("show", show);
-        jo.put("authorized", authorized);
+        jo.put("view", view);
+        jo.put("design", design);
         return jo;
     }
 
@@ -86,14 +86,14 @@ public class BIDataConfigAuthority implements JSONTransform {
         if (jo.has("id")) {
             id = jo.getString("id");
         }
-        if (jo.has("parentId")) {
-            parentId = jo.getString("parentId");
+        if (jo.has("pId")) {
+            parentId = jo.getString("pId");
         }
-        if (jo.has("show")) {
-            show = jo.optBoolean("show", false);
+        if (jo.has("view")) {
+            view = jo.optInt("view", 0);
         }
-        if (jo.has("authorized")) {
-            authorized = jo.optBoolean("authorized", false);
+        if (jo.has("design")) {
+            design = jo.optInt("design", 0);
         }
     }
 }

@@ -34,6 +34,16 @@ public class BISystemDataConfigAuthorityManager extends BISystemDataManager<BIDa
     }
 
     @Override
+    public Set<BIDataConfigAuthority> getDataConfigAuthoritiesByUserId(long userId) {
+        try {
+            return getValue(UserControl.getInstance().getSuperManagerID()).getDataConfigAuthoritiesByUserId(userId);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BISystemDataConfigAuthorityManager.class).error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Override
     public void saveDataConfigAuthorities(Set<BIDataConfigAuthority> authorities) {
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).setDataConfigAuthorities(authorities);

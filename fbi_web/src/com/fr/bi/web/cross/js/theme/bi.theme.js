@@ -9,13 +9,13 @@ FS.THEME.config4navigation.onAfterInit = function () {
     $('#fs-frame-reg').css({
         right: 400
     });
-    BI.requestAsync("fr_bi", "get_user_edit_auth", {mode: Consts.BIEDIT}, function(res) {
-        if (FS.isAdmin() || res.result === BICst.REPORT_AUTH.EDIT) {
-            var $header = $('#fs-frame-header');
-            var header = BI.createWidget({
-                type: "bi.absolute",
-                element: $header
-            });
+    BI.requestAsync("fr_bi", "get_design_config_auth", {mode: Consts.BIEDIT}, function (res) {
+        var $header = $('#fs-frame-header');
+        var header = BI.createWidget({
+            type: "bi.absolute",
+            element: $header
+        });
+        if (FS.isAdmin() || res.design === BICst.REPORT_AUTH.EDIT) {
             var newAnalysis = BI.createWidget({
                 type: "bi.icon_text_item",
                 cls: "new-analysis-font bi-new-analysis-button",
@@ -55,33 +55,35 @@ FS.THEME.config4navigation.onAfterInit = function () {
                 top: 0,
                 bottom: 0
             });
-            if (FS.isAdmin()) {
-                var dataConfig = BI.createWidget({
-                    type: "bi.icon_text_item",
-                    cls: "data-config-font bi-data-config-button",
-                    text: BI.i18nText("BI-Data_Setting"),
-                    height: 60,
-                    width: 120,
-                    iconWidth: 20,
-                    iconHeight: 20
+        }
+        if (FS.isAdmin() || res.config === true) {
+            var dataConfig = BI.createWidget({
+                type: "bi.icon_text_item",
+                cls: "data-config-font bi-data-config-button",
+                text: BI.i18nText("BI-Data_Setting"),
+                height: 60,
+                width: 120,
+                iconWidth: 20,
+                iconHeight: 20
+            });
+            dataConfig.on(BI.IconTextItem.EVENT_CHANGE, function () {
+                FS.tabPane.addItem({
+                    id: BICst.DATA_CONFIG_TAB,
+                    title: BI.i18nText('BI-Data_Setting'),
+                    src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane',
+                    showFavorite: "no"
                 });
-                dataConfig.on(BI.IconTextItem.EVENT_CHANGE, function () {
-                    FS.tabPane.addItem({
-                        id: BICst.DATA_CONFIG_TAB,
-                        title: BI.i18nText('BI-Data_Setting'),
-                        src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane',
-                        showFavorite: "no"
-                    });
-                });
-                header.addItem({
-                    el: dataConfig,
-                    right: 220,
-                    top: 0,
-                    bottom: 0
-                });
+            });
+            header.addItem({
+                el: dataConfig,
+                right: 220,
+                top: 0,
+                bottom: 0
+            });
+            if (header.attr("items").length > 1) {
                 header.attr("items")[0].right = 340;
-                header.resize();
             }
+            header.resize();
         }
     });
 };

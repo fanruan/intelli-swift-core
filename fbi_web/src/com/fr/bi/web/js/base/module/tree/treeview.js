@@ -446,11 +446,15 @@ BI.TreeView = BI.inherit(BI.Pane, {
     },
 
     setValue: function (value, param) {
-        this.options.paras.selected_values = value || {};
-        this.selected_values = BI.deepClone(value) || {};
+        this.setSelectedValue(value);
         this.checkAll(false);
         this.updateValue(value, param);
         this.refresh();
+    },
+
+    setSelectedValue: function (value) {
+        this.options.paras.selected_values = value || {};
+        this.selected_values = BI.deepClone(value) || {};
     },
 
     updateValue: function (values, param) {

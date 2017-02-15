@@ -5,7 +5,7 @@ package com.fr.bi.stable.constant;
  */
 public class BIReportConstant {
 
-    public final static String VERSION = "4.0";
+    public final static String VERSION = "4.0.2";
 
     public static final class BI_REPORT {
         public final static int NULL = 0x0;
