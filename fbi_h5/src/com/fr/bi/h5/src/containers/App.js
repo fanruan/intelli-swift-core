@@ -81,7 +81,7 @@ if (UserAgent.mobile()) {
 
 // import DialogDemo from '../examples/base/3/Dialog/Dialog'
 
-//import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
+import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 // import Game2048 from '../examples/2048/Game2048'
 
 // import LayoutDemo from '../examples/base/Layout'
@@ -136,32 +136,33 @@ class App extends Component {
     }
 
     render() {
-        const {width, height} = this.state;
-        let Component = MainContainer4Phone;
-        if (isMobile) {
-            if (isPad) {
-                Component = width > height ? MainContainerHorizontal4Pad : MainContainer4Pad;
-            } else {
-                Component = width > height ? MainContainerHorizontal4Phone : MainContainer4Phone;
-            }
-        }
-        if (isMobile) {
-            return <View>
-                <Layout flex box='mean'>
-                    <Component width={width} height={height}
-                               $template={this.props.$template}/>
-                </Layout>
-                <Portal />
-            </View>;
-        }
-
-        return <View>
-            <Layout flex box='mean'>
-                <MainContainerWeb width={width} height={height}
-                           $template={this.props.$template}/>
-            </Layout>
-            <Portal />
-        </View>;
+        return <UIExplorerApp />
+        // const {width, height} = this.state;
+        // let Component = MainContainer4Phone;
+        // if (isMobile) {
+        //     if (isPad) {
+        //         Component = width > height ? MainContainerHorizontal4Pad : MainContainer4Pad;
+        //     } else {
+        //         Component = width > height ? MainContainerHorizontal4Phone : MainContainer4Phone;
+        //     }
+        // }
+        // if (isMobile) {
+        //     return <View>
+        //         <Layout flex box='mean'>
+        //             <Component width={width} height={height}
+        //                        $template={this.props.$template}/>
+        //         </Layout>
+        //         <Portal />
+        //     </View>;
+        // }
+        //
+        // return <View>
+        //     <Layout flex box='mean'>
+        //         <MainContainerWeb width={width} height={height}
+        //                    $template={this.props.$template}/>
+        //     </Layout>
+        //     <Portal />
+        // </View>;
     }
 
     componentWillUnmount() {
