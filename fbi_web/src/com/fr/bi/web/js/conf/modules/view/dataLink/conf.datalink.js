@@ -99,6 +99,44 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
         var self = this, items = [];
         BI.each(dataLinks, function (i, info) {
             var item = [];
+            var deleteCombo = BI.createWidget({
+                type: "bi.bubble_combo",
+                el: {
+                    type: "bi.icon_button",
+                    cls: "data-link-remove-font icon-font",
+                    title: BI.i18nText("BI-Remove")
+                },
+                popup: {
+                    type: "bi.bubble_bar_popup_view",
+                    buttons: [{
+                        value: BI.i18nText(BI.i18nText("BI-Sure")),
+                        handler: function () {
+                            self.model.set("delete", info.id);
+                        }
+                    }, {
+                        value: BI.i18nText("BI-Cancel"),
+                        level: "ignore",
+                        handler: function () {
+                            deleteCombo.hideView();
+                        }
+                    }],
+                    el: {
+                        type: "bi.vertical_adapt",
+                        items: [{
+                            type: "bi.label",
+                            text: BI.i18nText("BI-Sure_Delete_Connection"),
+                            cls: "data-link-delete-label",
+                            textAlign: "left",
+                            width: 300
+                        }],
+                        width: 300,
+                        height: 100,
+                        hgap: 20
+                    },
+                    maxHeight: 140,
+                    minWidth: 340
+                }
+            });
             item.push({
                 type: "bi.label",
                 text: info.name,
@@ -143,19 +181,7 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                     handler: function () {
                         self.model.set("copy", info.id);
                     }
-                }, {
-                    type: "bi.icon_button",
-                    cls: "data-link-remove-font icon-font",
-                    title: BI.i18nText("BI-Remove"),
-                    handler: function () {
-                        var dataLinkName = info.name;
-                        BI.Msg.confirm(BI.i18nText('BI-Sure_Delete_Connection'), BI.i18nText('BI-Sure_Delete_Connection') + ":" + dataLinkName + "?", function (v) {
-                            if (BI.isNotNull(v) && v === true) {
-                                self.model.set("delete", info.id);
-                            }
-                        })
-                    }
-                }]
+                }, deleteCombo]
             });
             items.push(item);
         });

@@ -17,7 +17,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _init: function() {
         BI.TableDetailedSettingPopup.superclass._init.apply(this, arguments);
-        var self = this, c = this.constant;
+        var self = this, o = this.options, c = this.constant;
 
         //字段名
         this.tableName = BI.createWidget({
@@ -25,7 +25,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
             cls: "detailed-setting-popup"
         });
         this.tableName.on(BI.TableDetailSettingTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
         var tableNameWrapper = this._createWrapper(BI.i18nText("BI-Field_Name"), this.tableName);
 
@@ -36,7 +36,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: c.BUTTON_WIDTH,
         });
         this.nameColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE);
+            o.onChange();
         });
 
         var nameColorWrapper = this._createComboWrapper(this.nameColor);
@@ -47,7 +47,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
             cls: "detailed-setting-popup"
         });
         this.tableValue.on(BI.TableDetailSettingTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
         var tableValueWrapper = this._createWrapper(BI.i18nText("BI-Field_Value"), this.tableValue);
 
@@ -60,7 +60,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         this.bgColorInterval.on(BI.Controller.EVENT_CHANGE, function() {
             self.intervalValueColor.setVisible(this.isSelected());
-            self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         var intervalWrapper = this._createComboWrapper(this.bgColorInterval);
@@ -72,7 +72,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: c.BUTTON_WIDTH,
         });
         this.valueColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE);
+            o.onChange();
         });
 
         var valueColorWrapper = this._createComboWrapper(this.valueColor);
@@ -84,7 +84,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: c.BUTTON_WIDTH,
         });
         this.intervalValueColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE);
+            o.onChange();
         });
         var intervalValueColorWrapper = this._createComboWrapper(this.intervalValueColor);
 
@@ -96,7 +96,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.tableLine.on(BI.ColorChooser.EVENT_CHANGE, function() {
-             self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         var tableLineWrapper = this._createWrapper(BI.i18nText("BI-Table_Line"), this.tableLine);
@@ -166,5 +166,4 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.TableDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.table_detailed_setting_popup", BI.TableDetailedSettingPopup);

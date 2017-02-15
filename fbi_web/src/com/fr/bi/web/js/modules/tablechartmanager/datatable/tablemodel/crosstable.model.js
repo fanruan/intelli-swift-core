@@ -310,146 +310,6 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
         }
     },
 
-    _createSingleCrossTableHeader: function () {
-        var self = this;
-        BI.each(this.crossDimIds, function (i, dId) {
-            if (BI.isNotNull(dId)) {
-                self.crossHeader.push({
-                    type: "bi.normal_header_cell",
-                    dId: dId,
-                    text: BI.Utils.getDimensionNameByID(dId),
-                    sortFilterChange: function (v) {
-                        self.resetETree();
-                        self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-                        self.headerOperatorCallback(v, dId);
-                    }
-                });
-            }
-        });
-
-        var targetsArray = [];
-        BI.each(this.targetIds, function (i, tId) {
-            if (BI.isNotNull(tId)) {
-                targetsArray.push({
-                    type: "bi.page_table_cell",
-                    cls: "cross-table-target-header",
-                    text: BI.Utils.getDimensionNameByID(tId),
-                    title: BI.Utils.getDimensionNameByID(tId)
-                });
-            }
-        });
-
-        //根据crossItems创建部分header
-        if (!this._isOnlyCrossAndTarget()) {
-            this._createCrossPartHeader();
-        }
-    },
-
-    _createSingleCrossTableItems: function () {
-        var self = this;
-        var top = this.data.t, left = this.data.l;
-
-        //根据所在的层，汇总情况——是否含有汇总
-        this.crossItemsSums = [];
-        this.crossItemsSums[0] = [];
-        if (BI.isNotNull(left.s)) {
-            this.crossItemsSums[0].push(true);
-        }
-        this._initCrossItemsSum(0, left.c);
-
-        //交叉表items
-        var crossItem = {
-            children: this._createCrossPartItems(top.c, 0)
-        };
-        if (this.showColTotal === true) {
-            if (this._isOnlyCrossAndTarget()) {
-                crossItem.children.push({
-                    text: BI.i18nText("BI-Summary_Values"),
-                });
-            } else {
-                BI.each(this.targetIds, function (i, tId) {
-                    crossItem.children.push({
-                        type: "bi.normal_header_cell",
-                        dId: tId,
-                        text: BI.i18nText("BI-Summary_Values"),
-                        tag: BI.UUID(),
-                        sortFilterChange: function (v) {
-                            self.resetETree();
-                            self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
-                            self.headerOperatorCallback(v, tId);
-                        },
-                        isSum: true
-                    });
-                });
-            }
-        }
-        this.crossItems = [crossItem];
-
-        //用cross parent value来对应到联动的时候的列表头值
-        this.crossPV = [];
-        function parseCrossItem2Array(crossItems, pValues, pv) {
-            BI.each(crossItems, function (i, crossItem) {
-                if (BI.isNotNull(crossItem.children)) {
-                    var tempPV = [];
-                    if (BI.isNotNull(crossItem.dId)) {
-                        if (BI.isNotEmptyArray(crossItem.values)) {
-                            BI.each(crossItem.values, function (j, v) {
-                                tempPV = pv.concat([{
-                                    dId: crossItem.dId,
-                                    value: [BI.Utils.getClickedValue4Group(crossItem.text, crossItem.dId)]
-                                }]);
-                            });
-                            //显示列汇总的时候需要构造汇总
-                        } else {
-                            tempPV = pv.concat([{
-                                dId: crossItem.dId,
-                                value: [BI.Utils.getClickedValue4Group(crossItem.text, crossItem.dId)]
-                            }]);
-                        }
-                    }
-                    parseCrossItem2Array(crossItem.children, pValues, tempPV);
-                    //汇总
-                    if (BI.isNotEmptyArray(crossItem.values)) {
-                        BI.each(crossItem.values, function (j, v) {
-                            pValues.push([{
-                                dId: crossItem.dId,
-                                value: [BI.Utils.getClickedValue4Group(crossItem.text, crossItem.dId)]
-                            }]);
-                        });
-                    }
-                } else if (BI.isNotNull(crossItem.dId)) {
-                    if (BI.isNotEmptyArray(crossItem.values)) {
-                        BI.each(crossItem.values, function (j, v) {
-                            pValues.push(pv.concat([{
-                                dId: crossItem.dId,
-                                value: [BI.Utils.getClickedValue4Group(crossItem.text, crossItem.dId)]
-                            }]));
-                        });
-                    } else {
-                        // pValues.push(pv.concat([{dId: crossItem.dId, value: [crossItem.text]}]));
-                        //最外层
-                        pValues.push([]);
-                    }
-                } else if (BI.isNotNull(crossItem.isSum)) {
-                    pValues.push(pv);
-                }
-            });
-        }
-
-        parseCrossItem2Array(this.crossItems, this.crossPV, []);
-
-        //无行表头 有列表头、指标
-        if (this._isOnlyCrossAndTarget()) {
-            this._createItems4OnlyCrossAndTarget();
-            return;
-        }
-
-        var item = {
-            children: this._createTableItems(left.c, 0)
-        };
-        this.items = [item];
-    },
-
     /**
      * 交叉表 items and crossItems
      */
@@ -472,7 +332,9 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
         if (this.showColTotal === true) {
             if (this._isOnlyCrossAndTarget()) {
                 crossItem.children.push({
+                    type: "bi.page_table_cell",
                     text: BI.i18nText("BI-Summary_Values"),
+                    styles: BI.SummaryTableHelper.getHeaderStyles(this.getThemeColor(), this.getTableStyle())
                 });
             } else {
                 BI.each(this.targetIds, function (i, tId) {
@@ -549,7 +411,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
 
         //无行表头 有列表头、指标
         if (this._isOnlyCrossAndTarget()) {
-            this._createItems4OnlyCrossAndTarget();
+            this.items = this._createItems4OnlyCrossAndTarget(this.data, this.crossPV);
             return;
         }
 
@@ -695,9 +557,9 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
     },
 
     //仅有列表头和指标 l: {s: {c: [{s: [1, 2]}, {s: [3, 4]}], s: [100, 200]}}
-    _createItems4OnlyCrossAndTarget: function () {
+    _createItems4OnlyCrossAndTarget: function (data, crossPV) {
         var self = this;
-        var l = this.data.l;
+        var l = data.l;
         var items = [];
         BI.each(this.targetIds, function (i, tId) {
             items.push({
@@ -710,7 +572,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
             });
         });
         createItems(items, l.s, {cIndex: 0});
-        this.items = items;
+        return items;
 
         function createItems(items, data, indexOb) {
             var s = data.s, c = data.c;
@@ -728,7 +590,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                                 text: sum,
                                 styles: BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, j),
                                 dId: self.targetIds[j],
-                                clicked: self.crossPV[indexOb.cIndex]
+                                clicked: crossPV[indexOb.cIndex]
                             });
                         });
                         indexOb.cIndex++;
@@ -745,7 +607,7 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                         text: sum,
                         styles: BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, j),
                         dId: self.targetIds[j],
-                        clicked: self.crossPV[indexOb.cIndex]
+                        clicked: crossPV[indexOb.cIndex]
                     });
                 });
                 indexOb.cIndex++;
@@ -846,6 +708,33 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
 
     },
 
+    //从分组表样式的数据获取交叉表数据样式
+    getTopOfCrossByGroupData: function (c) {
+        var self = this;
+        var newC = [];
+        BI.each(c, function (idx, child) {
+            var obj = {};
+            if (BI.has(child, "c")) {
+                obj.c = self.getTopOfCrossByGroupData(child.c);
+                if (BI.has(child, "n")) {
+                    obj.n = child.n;
+                }
+                newC.push(obj);
+                return;
+            }
+            if (BI.has(child, "n")) {
+                newC.push({
+                    c: BI.map(self.targetIds, function (id, targetId) {
+                        return {"n": targetId};
+                    }),
+                    n: child.n
+                });
+                return newC;
+            }
+        });
+        return newC;
+    },
+
     createTableAttrs: function () {
         var self = this;
         this.headerOperatorCallback = arguments[0];
@@ -853,6 +742,15 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
 
         this._resetPartAttrs();
         this._refreshDimsInfo();
+
+        //仅有列表头的时候(有指标) 修正数据
+        if (this.dimIds.length === 0 &&
+            this.crossDimIds.length > 0 &&
+            this.targetIds.length > 0) {
+            var clonedData = BI.deepClone(this.data);
+            this.data.t = {c: this.getTopOfCrossByGroupData(clonedData.c)};
+            this.data.l = {s: clonedData};
+        }
 
         //正常交叉表
         if (BI.isNotNull(this.data) && BI.isNotNull(this.data.t)) {
@@ -871,47 +769,10 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
             return;
         }
 
-        //仅有列表头的时候(有指标)
-        if(this.dimIds.length === 0 &&
-            this.crossDimIds.length > 0 &&
-            this.targetIds.length > 0){
-            this.data.t = {c: _getT(this.data.c)};
-            this.data.l = {s: this.data};
-            this._createSingleCrossTableHeader();
-            this._createSingleCrossTableItems();
-            this._setOtherCrossAttrs();
-            return;
-        }
-
         //无列表头
         this._createTableHeader();
         this._createTableItems();
         this._setOtherAttrs();
-
-        function _getT(c) {
-            var newC = [];
-            BI.each(c, function(idx, child){
-                var obj = {};
-                if(BI.has(child, "c")){
-                    obj.c = _getT(child.c);
-                    if(BI.has(child, "n")){
-                        obj.n = child.n;
-                    }
-                    newC.push(obj);
-                    return;
-                }
-                if(BI.has(child, "n")){
-                    newC.push({
-                        c: BI.map(self.targetIds, function(id, targetId){
-                            return {"n": targetId};
-                        }),
-                        n: child.n
-                    });
-                    return newC;
-                }
-            });
-            return newC;
-        }
 
     }
 });

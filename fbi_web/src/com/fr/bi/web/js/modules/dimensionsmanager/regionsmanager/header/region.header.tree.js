@@ -65,5 +65,31 @@ BI.TreeRegionHeader = BI.inherit(BI.RegionHeader, {
         var self = this, o = this.options;
         o.dimensionCreator(dId, o.viewType, options);
     },
+
+    populate: function(){
+        var o = this.options;
+        if(!checkRelationValid()){
+            this.relationButton.setEnable(false);
+            this.relationButton.setTitle(BI.i18nText("BI-Fields_Relation_Only"));
+        }else{
+            this.relationButton.setEnable(true);
+            this.relationButton.setTitle("");
+        }
+
+        function checkRelationValid(){
+            var tableIds = BI.map(BI.Utils.getAllDimDimensionIDs(o.wId), function(idx, dId){
+                return BI.Utils.getTableIDByDimensionID(dId);
+            });
+            var commonTableIds = BI.Utils.getCommonForeignTablesByTableIDs(tableIds);
+            if(commonTableIds.length < 2){
+                return BI.isNotNull(BI.find(tableIds, function(idx, primaryTid){
+                    return BI.find(commonTableIds, function(idx, foreignTid){
+                        return BI.Utils.getPathsFromTableAToTableB(primaryTid, foreignTid).length > 1;
+                    })
+                }));
+            }
+            return true;
+        }
+    }
 });
 $.shortcut("bi.tree_region_header", BI.TreeRegionHeader);

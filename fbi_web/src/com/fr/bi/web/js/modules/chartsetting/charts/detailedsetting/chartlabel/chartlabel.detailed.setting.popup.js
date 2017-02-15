@@ -12,7 +12,7 @@ BI.ChartLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _init: function() {
         BI.ChartLabelDetailedSettingPopup.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         //文本方向
         this.textDirection = BI.createWidget({
@@ -29,7 +29,7 @@ BI.ChartLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.textDirection.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.ChartLabelDetailedSettingPopup.EVENT_CHANGE);
+            o.onChange();
         });
 
         var direction = BI.createWidget({
@@ -52,7 +52,7 @@ BI.ChartLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: 230
         });
         this.textStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
         var textStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.textStyle);
 
@@ -95,5 +95,4 @@ BI.ChartLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.ChartLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.chart_label_detailed_setting_popup", BI.ChartLabelDetailedSettingPopup);

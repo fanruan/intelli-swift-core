@@ -72,7 +72,9 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 text: BI.i18nText("BI-Show_Field"),
                 value: BICst.DIMENSION_DATE_COMBO.SHOW_FIELD,
                 cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : "",
-                disabled: this.checkShowFieldDisabled()
+                disabled: this.checkShowFieldDisabled(),
+                tipType: "success",
+                title: BI.i18nText("BI-Show_Field")
             }],
             [{
                 text: BI.i18nText("BI-Rename"),

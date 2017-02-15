@@ -11,6 +11,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
@@ -18,6 +19,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
+import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.Transmitter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -294,6 +296,10 @@ public class BaseResouceHelper {
             for (BIBusinessTable t : (Set<BIBusinessTable>) p.getBusinessTables()) {
                 JSONObject jo = t.createJSONWithFieldsInfo(userId);
                 JSONObject tableFields = jo.getJSONObject("tableFields");
+                CubeTableSource tableSource = t.getTableSource();
+                JSONObject sourceJO = tableSource.createJSON();
+                String connectionName=sourceJO.optString("connection_name", StringUtils.EMPTY);
+                tableFields.put("connection_name", connectionName);
                 tables.put(t.getID().getIdentityValue(), tableFields);
                 JSONObject fieldsInfo = jo.getJSONObject("fieldsInfo");
                 fields.join(fieldsInfo);
@@ -1521,6 +1527,10 @@ public class BaseResouceHelper {
                 */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
+
+                //日期区间和选日期的
+                "com/fr/bi/web/js/components/datechooser/multi.date.js",
+                "com/fr/bi/web/js/components/datechooser/interval.date.js",
 
                 //选值
                 "com/fr/bi/web/js/components/valuechooser/combo.valuechooser.js",

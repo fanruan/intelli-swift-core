@@ -44,6 +44,12 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         });
     },
 
+    _isOnlyCrossAndTarget: function () {
+        return !this._isRowRegionExist() &&
+            this._isColRegionExist() &&
+            this.targetIds.length > 0;
+    },
+
     getExtraInfo: function () {
         var op = {};
         var crossExpanderNodes = this._formatExpanderTree(this.crossETree.toJSONWithNode());
@@ -182,12 +188,14 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
             BI.each(rowTables, function (j, tableData) {
                 //parse一个表结构
                 var singleTable = self._createSingleCrossTableItems(tableData, self._getDimsByDataPos(i, j));
-                self._parseRowTableItems(singleTable.item);
+                BI.each(singleTable.items, function (k, item) {
+                    self._parseRowTableItems(item);
+                });
                 if (j === 0) {
-                    tempItems.push(singleTable.item);
+                    tempItems = tempItems.concat(singleTable.items);
                 }
                 if (BI.parseInt(i) === 0) {
-                    tempCrossItems.push(singleTable.crossItem);
+                    tempCrossItems = tempCrossItems.concat(singleTable.crossItems);
                 }
             });
         });
@@ -285,6 +293,15 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
 
         parseCrossItem2Array(crossItems, crossPV, []);
 
+        //无行表头 有列表头、指标
+        if (this._isColRegionExist() && !this._isRowRegionExist() &&
+            self.targetIds.length > 0) {
+            return {
+                crossItems: [crossItem],
+                items: this._createItems4OnlyCrossAndTarget(data, crossPV)
+            };
+        }
+
         var item = {
             children: this._createCommonTableItems(left.c, 0, null, dims.dimIds, crossPV)
         };
@@ -320,8 +337,8 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
             item.values = sums;
         }
         return {
-            crossItem: crossItem,
-            item: item
+            crossItems: [crossItem],
+            items: [item]
         }
     },
 
@@ -427,7 +444,11 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
                 });
             }
             if (self.showColTotal === true || BI.isNull(item.children)) {
-                item.values = BI.makeArray(self.targetIds.length, "");
+                if (self._isOnlyCrossAndTarget()) {
+                    item.values = [""];
+                } else {
+                    item.values = BI.makeArray(self.targetIds.length, "");
+                }
             }
             crossHeaderItems.push(item);
         });
@@ -511,7 +532,7 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         BI.each(tempItems, function (i, tItem) {
             children = children.concat(tItem.children);
             if (self.showRowTotal === true &&
-                (self._isColRegionExist() || self._isRowRegionExist())) {
+                (self._isColRegionExist() || self._isRowRegionExist()) && !self._isOnlyCrossAndTarget()) {
                 children.push({
                     type: "bi.page_table_cell",
                     text: BI.i18nText("BI-Summary_Values"),
@@ -561,7 +582,18 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
             return;
         }
 
-        //无列表头
+        //仅有列表头的时候(有指标)
+        if (this._isOnlyCrossAndTarget()) {
+            var clonedData = BI.deepClone(this.data);
+            this.data.t = {c: this.getTopOfCrossByGroupData(clonedData.c)};
+            this.data.l = {s: clonedData};
+            this._createComplexTableItems();
+            this._createComplexTableHeader();
+            this._setOtherComplexAttrs();
+            return;
+        }
+
+        //无列表头 有指标 当作普通分组表
         this._createTableHeader();
         this._createTableItems();
         this._setOtherAttrs();

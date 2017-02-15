@@ -14,7 +14,7 @@ BI.DataLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
     _init: function () {
         BI.DataLabelDetailedSettingCombo.superclass._init.apply(this, arguments);
 
-        BI.createWidget({
+        this.combo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
             width: this.options.width,
@@ -32,6 +32,7 @@ BI.DataLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
     _getPopup: function () {
         var self = this, o = this.options;
         var wType = BI.Utils.getWidgetTypeByID(o.wId);
+        var popup;
         //力学气泡没有数据标签的详细设置
         switch (wType) {
             case BICst.WIDGET.ACCUMULATE_AXIS:
@@ -47,9 +48,7 @@ BI.DataLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.PARETO:
-                this.popup = BI.createWidget({
-                    type: "bi.axis_data_label_detailed_setting_popup"
-                });
+                popup = "bi.axis_data_label_detailed_setting_popup";
                 break;
             case BICst.WIDGET.ACCUMULATE_AREA:
             case BICst.WIDGET.LINE:
@@ -59,53 +58,42 @@ BI.DataLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.RANGE_AREA:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.RADAR:
-                this.popup = BI.createWidget({
-                    type: "bi.area_data_label_detailed_setting_popup"
-                });
+                popup = "bi.area_data_label_detailed_setting_popup";
                 break;
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_PIE:
-                this.popup = BI.createWidget({
-                    type: "bi.pie_data_label_detailed_setting_popup"
-                });
+                popup = "bi.pie_data_label_detailed_setting_popup";
                 break;
             case BICst.WIDGET.DASHBOARD:
-                this.popup = BI.createWidget({
-                    type: "bi.dashboard_data_label_detailed_setting_popup"
-                });
+                popup = "bi.dashboard_data_label_detailed_setting_popup";
                 break;
             case BICst.WIDGET.BUBBLE:
-                this.popup = BI.createWidget({
-                    type: "bi.bubble_data_label_detailed_setting_popup"
-                });
+                popup = "bi.bubble_data_label_detailed_setting_popup";
                 break;
             case BICst.WIDGET.SCATTER:
-                this.popup = BI.createWidget({
-                    type: "bi.scatter_data_label_detailed_setting_popup"
-                });
+                popup = "bi.scatter_data_label_detailed_setting_popup";
                 break;
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
-                this.popup = BI.createWidget({
-                    type: "bi.map_data_label_detailed_setting_popup"
-                });
+                popup = "bi.map_data_label_detailed_setting_popup";
                 break;
         }
 
-        this.popup.on(BI.AxisDataLabelDetailedSettingPopup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE)
-        });
-
-        return this.popup;
+        return {
+            type: popup,
+            onChange: function() {
+                self.fireEvent(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE)
+            }
+        };
     },
 
     setValue: function (v) {
-        this.popup.setValue(v)
+        this.combo.setValue(v)
     },
 
     getValue: function () {
-        return this.popup.getValue()
+        return this.combo.getValue()
     }
 });
 BI.DataLabelDetailedSettingCombo.EVENT_CHANGE = 'EVENT_CHANGE';

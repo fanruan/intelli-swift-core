@@ -119,11 +119,11 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
             self._expandWidget();
         });
-        var combo = BI.createWidget({
+        var widgetCombo = BI.createWidget({
             type: "bi.widget_combo",
             wId: this.model.get("id")
         });
-        combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
+        widgetCombo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
                     self._expandWidget();
@@ -138,13 +138,62 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE:
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete_Current_Component") + self.model.get("name") + "?", function (v) {
-                        if (v === true) {
-                            self.model.destroy();
-                        }
-                    });
+                    self.del.showView();
                     break;
             }
+        });
+        this.del = BI.createWidget({
+            type: "bi.bubble_combo",
+            el: {},
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        self.del.hideView();
+                        self.model.destroy();
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        self.del.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Sure_Delete_Current_Component"),
+                        cls: "delete-label",
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            }
+        });
+
+        var combo = BI.createWidget({
+            type: "bi.absolute",
+            items: [
+                {
+                    el: widgetCombo,
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0
+                },{
+                    el:this.del,
+                    bottom: 0,
+                    left: widgetCombo.combo.options.width / 2
+                }],
+            height: widgetCombo.combo.options.height,
+            width: widgetCombo.combo.options.width
         });
         this.tools = BI.createWidget({
             type: "bi.left",

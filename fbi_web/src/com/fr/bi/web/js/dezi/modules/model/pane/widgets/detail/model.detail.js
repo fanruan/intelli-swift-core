@@ -445,6 +445,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 var dimensions = BI.deepClone(this.get("dimensions"));
                 //region1、2中的维度增加的时候，先看原先中是否有已勾选了的，如果有将拖入的used设置为false
                 //region2中的维度增加的时候，如果指标有多个勾选，也要将拖入的used设置为false
+                //此时如果指标勾选多于一个，则系列全不勾选
                 var usedTargetCount = 0;
                 var hasMultiTarget = BI.isNotNull(BI.find(view, function (region, dims) {
                     if (BI.Utils.isTargetRegionByRegionType(region)) {
@@ -460,7 +461,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     if (BI.Utils.isDimensionRegionByRegionType(region)) {
                         var adds = [], isPreSelect = false;
                         BI.each(dims, function (i, dim) {
-                            if (BI.isNotNull(preView[region]) && !preView[region].contains(dim)) {
+                            if (BI.isNull(preView[region]) || !preView[region].contains(dim)) {
                                 adds.push(dim);
                             }
                         });
@@ -471,6 +472,15 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             if (isPreSelect === true || (BI.Utils.isDimensionRegion2ByRegionType(region) && hasMultiTarget)) {
                                 BI.each(adds, function (i, add) {
                                     dimensions[add].used = false;
+                                });
+                            }
+                            if(BI.Utils.getAllUsableTargetDimensionIDs(self.get("id")).length > 1){
+                                BI.each(view, function (region, arr) {
+                                    if(BI.Utils.isDimensionRegion2ByRegionType(region)) {
+                                        BI.each(arr, function (idx, dId) {
+                                            dimensions[dId].used = false;
+                                        })
+                                    }
                                 });
                             }
                         }
@@ -484,7 +494,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         if (BI.Utils.isTargetRegionByRegionType(region)) {
                             var adds = [], isPreSelect = false;
                             BI.each(dims, function (i, dim) {
-                                if (BI.isNotNull(preView[region]) && !preView[region].contains(dim)) {
+                                if (BI.isNull(preView[region]) || !preView[region].contains(dim)) {
                                     adds.push(dim);
                                 }
                             });
@@ -506,7 +516,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         if (BI.Utils.isTargetRegion2ByRegionType(region)) {
                             var adds = [], isPreSelect = false;
                             BI.each(dims, function (i, dim) {
-                                if (BI.isNotNull(preView[region]) && !preView[region].contains(dim)) {
+                                if (BI.isNull(preView[region]) || !preView[region].contains(dim)) {
                                     adds.push(dim);
                                 }
                             });
@@ -522,6 +532,29 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             }
                         }
                     });
+                    var target1RegionDId = [], target2RegionDId = [];
+                    BI.each(view, function(region, arr){
+                        if(BI.Utils.isTargetRegion1ByRegionType(region)){
+                            target1RegionDId = BI.concat(target1RegionDId, arr);
+                        }
+                        if(BI.Utils.isTargetRegion2ByRegionType(region)){
+                            target2RegionDId = BI.concat(target2RegionDId, arr);
+                        }
+                    });
+                    BI.find(target2RegionDId, function(idx, dId){
+                        if(BI.Utils.isDimensionUsable(dId)){
+                            var select = false;
+                            BI.each(target1RegionDId, function(id, d){
+                                if (select === true) {
+                                    dimensions[d].used = false;
+                                }
+                                if (BI.Utils.isDimensionUsable(d)) {
+                                    select = true;
+                                }
+                            });
+                            return true;
+                        }
+                    })
                 }
                 this.set("dimensions", dimensions);
 

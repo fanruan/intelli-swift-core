@@ -12,7 +12,7 @@ BI.LegendDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.LegendDetailedSettingPopup.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         //字体设置
         this.textStyle = BI.createWidget({
@@ -21,7 +21,7 @@ BI.LegendDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: 230
         });
         this.textStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.LegendDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
         var textStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.textStyle);
 
@@ -59,5 +59,4 @@ BI.LegendDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.LegendDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.legend_detailed_setting_popup", BI.LegendDetailedSettingPopup);

@@ -15,14 +15,7 @@ BI.ChartLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
         BI.ChartLabelDetailedSettingCombo.superclass._init.apply(this, arguments);
         var self = this;
 
-        this.popup = BI.createWidget({
-            type: "bi.chart_label_detailed_setting_popup"
-        });
-        this.popup.on(BI.ChartLabelDetailedSettingPopup.EVENT_CHANGE, function() {
-            self.fireEvent(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE)
-        });
-
-        BI.createWidget({
+        this.combo = BI.createWidget({
             type: "bi.combo",
             width: this.options.width,
             element: this.element,
@@ -30,7 +23,12 @@ BI.ChartLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
                 type: "bi.detailed_setting_trigger"
             },
             popup: {
-                el:  this.popup,
+                el:  {
+                    type: "bi.chart_label_detailed_setting_popup",
+                    onChange: function() {
+                        self.fireEvent(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE)
+                    }
+                },
                 minWidth: 320,
                 stopPropagation: false
             }
@@ -38,11 +36,11 @@ BI.ChartLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
     },
 
     setValue: function(v) {
-        this.popup.setValue(v)
+        this.combo.setValue(v)
     },
 
     getValue: function() {
-        return this.popup.getValue()
+        return this.combo.getValue()
     }
 });
 BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE = 'EVENT_CHANGE';

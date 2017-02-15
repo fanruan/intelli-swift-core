@@ -13,6 +13,8 @@ BI.Combo = BI.inherit(BI.Widget, {
             isDefaultInit: false,
             isNeedAdjustHeight: true,//是否需要高度调整
             isNeedAdjustWidth: true,
+            stopEvent: false,
+            stopPropagation: false,
             adjustLength: 0,//调整的距离
             adjustXOffset: 0,
             adjustYOffset: 0,
@@ -89,6 +91,14 @@ BI.Combo = BI.inherit(BI.Widget, {
     _initPullDownAction: function () {
         var self = this, o = this.options;
         var evs = this.options.trigger.split(",");
+        var st = function (e) {
+            if (o.stopEvent) {
+                e.stopEvent();
+            }
+            if (o.stopPropagation) {
+                e.stopPropagation();
+            }
+        };
         BI.each(evs, function (i, ev) {
             switch (ev) {
                 case "hover":
@@ -108,25 +118,27 @@ BI.Combo = BI.inherit(BI.Widget, {
                     });
                     break;
                 case "click":
-                    if (ev) {
-                        self.element.off(ev + "." + self.getName()).on(ev + "." + self.getName(), BI.debounce(function (e) {
-                            if (self.combo.element.__isMouseInBounds__(e)) {
-                                if (self.isEnabled() && self.combo.isEnabled()) {
-                                    o.toggle ? self._toggle() : self._popupView();
-                                    if (self.isViewVisible()) {
-                                        self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.EXPAND, "", self.combo);
-                                        self.fireEvent(BI.Combo.EVENT_EXPAND);
-                                    } else {
-                                        self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.COLLAPSE, "", self.combo);
-                                        self.fireEvent(BI.Combo.EVENT_COLLAPSE);
-                                    }
+                    var debounce = BI.debounce(function (e) {
+                        if (self.combo.element.__isMouseInBounds__(e)) {
+                            if (self.isEnabled() && self.combo.isEnabled()) {
+                                o.toggle ? self._toggle() : self._popupView();
+                                if (self.isViewVisible()) {
+                                    self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.EXPAND, "", self.combo);
+                                    self.fireEvent(BI.Combo.EVENT_EXPAND);
+                                } else {
+                                    self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.COLLAPSE, "", self.combo);
+                                    self.fireEvent(BI.Combo.EVENT_COLLAPSE);
                                 }
                             }
-                        }, BI.EVENT_RESPONSE_TIME, true));
-                    }
+                        }
+                    }, BI.EVENT_RESPONSE_TIME, true);
+                    self.element.off(ev + "." + self.getName()).on(ev + "." + self.getName(), function(e){
+                        debounce(e);
+                        st(e);
+                    });
                     break;
             }
-        })
+        });
     },
 
     _initCombo: function () {

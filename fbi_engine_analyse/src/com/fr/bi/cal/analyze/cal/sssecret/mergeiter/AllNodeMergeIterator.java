@@ -31,8 +31,9 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private Node root;
     private Iterator<MetricMergeResult> mergeIterator;
     private Iterator<MetricMergeResult> resultIter;
-    private boolean completed;
+    private volatile boolean completed;
     private volatile boolean started;
+    //已经完成计算的数量
     private AtomicInteger count;
     private int size;
 
@@ -50,7 +51,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private void initIter() {
         root = new Node(null);
         count = new AtomicInteger(0);
-        completed = metricsToCalculate != null;
+        completed = metricsToCalculate == null;
         started = true;
         BIMultiThreadExecutor executor = null;
         if (MultiThreadManagerImpl.getInstance().isMultiCall()){
@@ -60,13 +61,14 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
             MetricMergeResult result = mergeIterator.next();
             checkSum(result, executor);
             root.addChild(result);
-            size++;
+            ++size;
         }
         if (metricsToCalculate != null){
             size *= metricsToCalculate.length;
         }
         started = false;
-        if (!completed){
+        if (!completed && executor!= null){
+            executor.wakeUp();
             synchronized (this){
                 try {
                     this.wait();
@@ -88,7 +90,9 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private void checkComplete(){
         if (count.incrementAndGet() == size && !started){
             completed = true;
-            this.notify();
+            synchronized (this){
+                this.notify();
+            }
         }
     }
 

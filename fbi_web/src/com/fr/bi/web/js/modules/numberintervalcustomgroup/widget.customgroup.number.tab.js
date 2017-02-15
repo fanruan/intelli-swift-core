@@ -309,7 +309,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                 case BICst.NUMBER_INTERVAL_CUSTOM_GROUP_AUTO:
                 default :
                     self.tab.setSelect(BI.NumberIntervalCustomGroupTab.Type_Group_Auto);
-                    self.space = (BI.isNull(config) || BI.isNull(config.group_interval)) ? self._checkInterval() : BI.parseInt(config.group_interval);
+                    self.space = (BI.isNull(config) || BI.isNull(config.group_interval)) ? self._checkInterval() : BI.parseFloat(config.group_interval);
                     self.editor && self.editor.setValue(self.space);
                     self.panel && self.panel.populate(self._createItems());
                     break;

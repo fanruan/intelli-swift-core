@@ -22,6 +22,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         var self = this;
         var c = this._constant;
         this.enable = false;
+        this.value = "";
 
         this.backgroundTrack = BI.createWidget({
             type: "bi.layout",
@@ -51,7 +52,9 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
                 var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
                 self._setBlueTrack(percent);
                 self._setLabelPosition(percent);
-                self.label.setValue(self._getValueByPercent(percent));
+                var v = self._getValueByPercent(percent);
+                self.label.setValue(v);
+                self.value = v;
             },
             stop: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
@@ -83,7 +86,9 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
                     percent = 100
                 }
                 self._setAllPosition(percent);
-                self.label.setValue(self._getValueByPercent(percent));
+                var v = self._getValueByPercent(percent);
+                self.label.setValue(v);
+                self.value = v;
                 self.fireEvent(BI.SingleSlider.EVENT_CHANGE);
             }
         });
@@ -214,15 +219,22 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.label.getValue();
+        return this.value;
     },
 
     setValue: function (v) {
         var value = BI.parseFloat(v);
-        if ((!isNaN(value)) && this._checkValidation(value) && this.enable) {
-            this.label.setValue(value);
-            var percent = this._getPercentByValue(value);
-            this._setAllPosition(percent);
+        if ((!isNaN(value)) && this._checkValidation(value)) {
+            this.value = value;
+        }
+    },
+
+    setMinAndMax: function (v) {
+        var minNumber = BI.parseFloat(v.min);
+        var maxNumber = BI.parseFloat(v.max);
+        if ((!isNaN(minNumber)) && (!isNaN(maxNumber)) && (maxNumber > minNumber )) {
+            this.min = minNumber;
+            this.max = maxNumber;
         }
     },
 
@@ -232,21 +244,16 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         this._setBlueTrack(0);
     },
 
-    populate: function (min, max, value) {
-        var minNumber = BI.parseFloat(min);
-        var maxNumber = BI.parseFloat(max);
-        var valueNumber = BI.parseFloat(value);
-        if ((!isNaN(minNumber)) && (!isNaN(maxNumber)) && (maxNumber > minNumber )) {
-            this.min = minNumber;
-            this.max = maxNumber;
+    populate: function () {
+        if (!isNaN(this.min) && !isNaN(this.max)) {
             this._setVisible(true);
             this.enable = true;
-            this.label.setErrorText(BI.i18nText("BI-Please_Enter") + minNumber + "-" + maxNumber + BI.i18nText("BI-De") + BI.i18nText("BI-Number"));
-            if (!isNaN(valueNumber) && this._checkValidation(valueNumber)) {
-                this.label.setValue(valueNumber);
-                this._setAllPosition(this._getPercentByValue(valueNumber));
+            this.label.setErrorText(BI.i18nText("BI-Please_Enter") + this.min + "-" + this.max + BI.i18nText("BI-De") + BI.i18nText("BI-Number"));
+            if (BI.isNumeric(this.value) || BI.isNotEmptyString(this.value)) {
+                this.label.setValue(this.value);
+                this._setAllPosition(this._getPercentByValue(this.value));
             } else {
-                this.label.setValue(maxNumber);
+                this.label.setValue(this.max);
                 this._setAllPosition(100);
             }
         }
