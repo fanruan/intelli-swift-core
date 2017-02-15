@@ -136,33 +136,32 @@ class App extends Component {
     }
 
     render() {
-        return <UIExplorerApp />
-        // const {width, height} = this.state;
-        // let Component = MainContainer4Phone;
-        // if (isMobile) {
-        //     if (isPad) {
-        //         Component = width > height ? MainContainerHorizontal4Pad : MainContainer4Pad;
-        //     } else {
-        //         Component = width > height ? MainContainerHorizontal4Phone : MainContainer4Phone;
-        //     }
-        // }
-        // if (isMobile) {
-        //     return <View>
-        //         <Layout flex box='mean'>
-        //             <Component width={width} height={height}
-        //                        $template={this.props.$template}/>
-        //         </Layout>
-        //         <Portal />
-        //     </View>;
-        // }
-        //
-        // return <View>
-        //     <Layout flex box='mean'>
-        //         <MainContainerWeb width={width} height={height}
-        //                    $template={this.props.$template}/>
-        //     </Layout>
-        //     <Portal />
-        // </View>;
+        const {width, height} = this.state;
+        let Component = MainContainer4Phone;
+        if (isMobile) {
+            if (isPad) {
+                Component = width > height ? MainContainerHorizontal4Pad : MainContainer4Pad;
+            } else {
+                Component = width > height ? MainContainerHorizontal4Phone : MainContainer4Phone;
+            }
+        }
+        if (isMobile) {
+            return <View>
+                <Layout flex box='mean'>
+                    <Component width={width} height={height}
+                               $template={this.props.$template}/>
+                </Layout>
+                <Portal />
+            </View>;
+        }
+
+        return <View>
+            <Layout flex box='mean'>
+                <MainContainerWeb width={width} height={height}
+                           $template={this.props.$template}/>
+            </Layout>
+            <Portal />
+        </View>;
     }
 
     componentWillUnmount() {
