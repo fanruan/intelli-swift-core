@@ -102,6 +102,11 @@ BI.RelationInfoPane = BI.inherit(BI.Widget, {
     _getMD5ByPathAndDimensionFieldId: function(path, fId){
         var res = "";
         var getMD5Result = function(pa){
+            //前置操作
+            if(pa.length === 1 &&
+                BI.Utils.getTableIdByFieldID(BI.Utils.getPrimaryIdFromRelation(pa[0])) === BI.Utils.getTableIdByFieldID(BI.Utils.getForeignIdFromRelation(pa[0]))){
+                return fId + BI.Utils.getPrimaryIdFromRelation(pa[0]);
+            }
             var fArray = BI.pluck(pa, "foreignKey");
             var pArray = BI.pluck(pa, "primaryKey");
             var s = fId;
