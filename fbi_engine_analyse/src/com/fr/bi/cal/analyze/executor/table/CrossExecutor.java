@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -160,13 +161,17 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             }
             discardSummary = !left.needSummary() || keys.length == 0;
         }
-        if ((left.getChildLength() > 0 && !chartSetting.showRowTotal()) || discardSummary) {
+        if (isNotChild(left, chartSetting, discardSummary)) {
             return pos;
         }
         //pos如果不为0说明是汇总的格子
         dealWithCrossNode(left.getValue(), paging.getOprator() < Node.NONE_PAGE_LEVER ? new NodeAllExpander(colDimension.length - 1) : expander.getXExpander(), cbcells, row + pos, column, keys, colDimension.length, pos != 0, total, chartSetting);
         pos++;
         return pos;
+    }
+
+    private boolean isNotChild(CrossHeader left, DetailChartSetting chartSetting, boolean discardSummary) {
+        return (left.getChildLength() > 0 && !chartSetting.showRowTotal()) || discardSummary;
     }
 
     private int dealWithCrossNode(CrossNode node, NodeExpander xExpander, CBCell[][] cbcells, int row, int column, TargetGettingKey[] keys, int xTotal, boolean isYSummary, int yTotal, DetailChartSetting chartSetting) {
@@ -183,21 +188,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         }
         //pos如果不为0说明是汇总的格子
         if (keys.length == 0) {
-            Object v = null;
-            CBCell cell = new CBCell(NONEVALUE);
-            cell.setColumn(column + widget.isOrder());
-            cell.setRow(row);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, false) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, false));
-            List cellList = new ArrayList();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
-            cbox.setDimensionJSON(createDimensionValue(node));
-            cbox.setName(StringUtils.EMPTY);
-            cell.setBoxElement(cbox);
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
+            dealwithSum(node, cbcells, row, column, isYSummary, yTotal, chartSetting);
         } else {
             for (int k = 0; k < keys.length; k++) {
                 int numLevel = chartSetting.getNumberLevelByTargetId(keys[k].getTargetName());
@@ -227,6 +218,24 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         }
         pos++;
         return pos;
+    }
+
+    private void dealwithSum(CrossNode node, CBCell[][] cbcells, int row, int column, boolean isYSummary, int yTotal, DetailChartSetting chartSetting) {
+        Object v = null;
+        CBCell cell = new CBCell(NONEVALUE);
+        cell.setColumn(column + widget.isOrder());
+        cell.setRow(row);
+        cell.setRowSpan(1);
+        cell.setColumnSpan(1);
+        cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, false) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, false));
+        List cellList = new ArrayList();
+        cellList.add(cell);
+        CBBoxElement cbox = new CBBoxElement(cellList);
+        cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
+        cbox.setDimensionJSON(createDimensionValue(node));
+        cbox.setName(StringUtils.EMPTY);
+        cell.setBoxElement(cbox);
+        cbcells[cell.getColumn()][cell.getRow()] = cell;
     }
 
     //TODO代码质量
@@ -341,9 +350,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
 
         clearNullSummary(node.getLeft(), keys);
         clearNullSummary(node.getTop(), keys);
-
-
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return node;
     }
 

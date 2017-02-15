@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
@@ -177,6 +178,10 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             row += rowSpan;
         }
+        dealWithSum(cbcells, columnDimensionLength);
+    }
+
+    private void dealWithSum(CBCell[][] cbcells, int columnDimensionLength) {
         for (int i = 0; i < usedSumTarget.length; i++) {
             CBCell cell = new CBCell(usedSumTarget[i].getValue());
             cell.setColumn(0);
@@ -267,7 +272,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
                 allSumTarget, keys, paging.getOprator(), widget.useRealData(), session, complexExpander, false);
 
 
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return nodeMap;
     }
 }

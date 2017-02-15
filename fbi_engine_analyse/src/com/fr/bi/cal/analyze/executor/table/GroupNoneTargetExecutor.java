@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
@@ -8,8 +9,6 @@ import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.field.BIAbstractTargetAndDimension;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -17,10 +16,11 @@ import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,17 +58,13 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
         Node tempNode = null;
         int tempRow = row;
         CBCell cell = null;
-
-        //最大的行宽
         int columnSpan = rowData.getColumnRowSpan(column, rowLength);
         int noneChildSpan = rowData.getNoneChildSpan(column, rowLength);
         if (expander == null) {
             return;
         }
-
         for (int i = 0, len = node.getChildLength(); i < len; i++) {
             tempNode = node.getChild(i);
-            @SuppressWarnings("unchecked")
             ArrayList<String> currentIndex = (ArrayList<String>) indexList.clone();
             BIDimension rd = rowColumn[column];
             String name = rd.toString(tempNode.getData());
@@ -88,11 +84,9 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
             List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
-            //TODO CBBoxElement需要整合减少内存
             CBBoxElement cbox = new CBBoxElement(cellList);
             BITargetAndDimension rowCol = rowColumn[column];
             cbox.setName(rowCol.getValue());
-
             if (column != rowLength - 1) {
                 cbox.setIndexString_y(trunToIndexString(currentIndex));
                 cbox.setExpand(expander.isChildExpand(name));
@@ -100,18 +94,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
             }
             cbox.setType(CellConstant.CBCELL.ROWFIELD);
             cell.setBoxElement(cbox);
-            Node t = tempNode;
-            JSONArray ja = new JSONArray();
-            int k = column;
-            while (k != -1 && t != null) {
-                try {
-                    ja.put(new JSONObject().put(rowColumn[k].getValue(), rowColumn[k].toFilterObject(t.getData())));
-                } catch (Exception e) {
-                }
-                t = t.getParent();
-                k--;
-            }
-            cbox.setDimensionJSON(ja.toString());
+            cbox.setDimensionJSON(getDimensionJSONString(rowColumn, column, tempNode));
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             dealWithNode(tempNode, expander.getChildExpander(name), cbcells, tempRow, column + 1, page, rowColumn, sumColumn, currentIndex, total - 1, hasNumber, rowData);
             tempRow += rowSpan;
@@ -163,18 +146,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
             cbox.setName(rowCol.getValue());
             cbox.setType(CellConstant.CBCELL.ROWFIELD);
             cell.setBoxElement(cbox);
-            Node t = tempNode;
-            JSONArray ja = new JSONArray();
-            int k = column;
-            while (k != -1 && t != null) {
-                try {
-                    ja.put(new JSONObject().put(rowColumn[k].getValue(), rowColumn[k].toFilterObject(t.getData())));
-                } catch (Exception e) {
-                }
-                t = t.getParent();
-                k--;
-            }
-            cbox.setDimensionJSON(ja.toString());
+            cbox.setDimensionJSON(getDimensionJSONString(rowColumn, column, tempNode));
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             dealWithNode(tempNode, cbcells, tempRow, column + 1, page, rowColumn, sumColumn, total - 1, hasNumber, rowData);
             tempRow += rowSpan;
@@ -264,7 +236,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
         if (tree == null) {
             tree = new Node();
         }
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;
     }
 }

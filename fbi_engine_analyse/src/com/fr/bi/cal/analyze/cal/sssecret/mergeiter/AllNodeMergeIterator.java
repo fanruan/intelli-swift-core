@@ -78,7 +78,6 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
                 try {
                     this.wait();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         }

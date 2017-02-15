@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -519,7 +520,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
 
         Map<Integer, NewCrossRoot[]> nodeMap = getCubeCrossNodesFromProvide(targetsMap);
 
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return nodeMap;
     }
 
