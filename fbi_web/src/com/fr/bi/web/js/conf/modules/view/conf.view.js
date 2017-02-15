@@ -131,6 +131,7 @@ BIConf.View = BI.inherit(BI.View, {
     },
 
     refresh: function (value) {
+        value = this.service_pane.checkValue(value);
         this.title.setValue(BI.i18nText(value));
         this.service_pane.setValue(value);
         this.skipTo(value, "rightDisplayPane", {}, {}, {force: true});

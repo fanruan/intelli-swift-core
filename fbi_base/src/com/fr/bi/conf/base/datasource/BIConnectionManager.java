@@ -1,9 +1,9 @@
 package com.fr.bi.conf.base.datasource;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.data.db.DataLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -15,6 +15,7 @@ import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.file.XMLFileManager;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONException;
@@ -80,6 +81,13 @@ public class BIConnectionManager extends XMLFileManager {
         return null;
     }
 
+    public long getCreateBy(String name) {
+        if (connMap.containsKey(name)) {
+            return connMap.get(name).getCreateBy();
+        }
+        return UserControl.getInstance().getSuperManagerID();
+    }
+
     public Connection getConnection(String name) {
         return DatasourceManager.getInstance().getConnection(name);
     }
@@ -106,7 +114,9 @@ public class BIConnectionManager extends XMLFileManager {
     public void readXML(XMLableReader reader) {
         if (reader.isChildNode()) {
             if (ComparatorUtils.equals(reader.getTagName(), "conn")) {
-                BIConnection connection = new BIConnection(reader.getAttrAsString("name", StringUtils.EMPTY), reader.getAttrAsString("schema", null));
+                BIConnection connection = new BIConnection(reader.getAttrAsString("name", StringUtils.EMPTY),
+                        reader.getAttrAsString("schema", null),
+                        reader.getAttrAsLong("createBy", UserControl.getInstance().getSuperManagerID()));
                 connMap.put(connection.getName(), connection);
             }
         }
@@ -121,6 +131,7 @@ public class BIConnectionManager extends XMLFileManager {
             if (connection.getSchema() != null) {
                 writer.attr("schema", connection.getSchema());
             }
+            writer.attr("createBy", connection.getCreateBy());
             writer.end();
         }
         writer.end();
@@ -141,8 +152,9 @@ public class BIConnectionManager extends XMLFileManager {
         }
         BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
         datasourceManager.putConnection(newName, jdbcDatabaseConnection);
+        long createBy = getCreateBy(oldName);
         connMap.remove(oldName);
-        connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null)));
+        connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null), createBy));
         try {
             FRContext.getCurrentEnv().writeResource(datasourceManager);
             FRContext.getCurrentEnv().writeResource(this);
@@ -235,6 +247,7 @@ public class BIConnectionManager extends XMLFileManager {
                 jo.put("originalCharsetName", StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
                 jo.put("newCharsetName", StringUtils.alwaysNotNull(c.getNewCharsetName()));
                 jo.put("schema", getSchema(name));
+                jo.put("createBy", getConnection(name));
                 jsonObject.put("link" + index++, jo);
             }
         }

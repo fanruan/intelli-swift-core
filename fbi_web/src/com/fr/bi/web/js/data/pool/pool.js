@@ -7,6 +7,7 @@ if (!window.Pool) {
         relations: {},
         translations: {},
         tables: {},
-        fields: {}
+        fields: {},
+        noAuthFields: {}
     };
 }
