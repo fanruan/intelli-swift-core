@@ -27,6 +27,7 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
         var self = this, o = this.options, c = this._constant;
         this.value = [];
         this.allRelations = [];
+        // this.notSelectedValues = [];
         this.isTitleMap = {};
         this.keyWord = "";
 
@@ -112,9 +113,17 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
             }
         });
         this.value = value;
+        // this.notSelectedValues.push(relation);
     },
 
     _addValue: function (relation) {
+        // var notSelectedValues = [];
+        // BI.each(this.notSelectedValues, function (i, rel) {
+        //     if (!BI.isEqual(rel, relation)) {
+        //         notSelectedValues.push(rel)
+        //     }
+        // });
+        // this.notSelectedValues = notSelectedValues;
         this.value.push(relation)
     },
 
@@ -147,13 +156,6 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
         return this.element.height() - c.BGAP_AND_TGAP;
     },
 
-    _populateCurrentItem: function () {
-        var currentCells = this.grid.getAllRenderedCells();
-        BI.each(currentCells, function (i, cell) {
-            cell.populate();
-        })
-    },
-
     setKeyWord: function (keyWord) {
         this.keyWord = keyWord;
     },
@@ -161,6 +163,10 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
     setValue: function (v) {
         this.value = v;
     },
+
+    // setNotSelectedValue: function (v) {
+    //     this.notSelectedValues = v;
+    // },
 
     setRelations: function (relations) {
         this.options.relations = relations;
@@ -175,7 +181,7 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
         return this.attr("relations");
     },
 
-    getNotSelectedValue: function () {
+    getNotSelectedValue: function () {//这里卡，复杂度为O(n^2),1000条关联耗时1秒多
         var self = this;
         var notSelectValue = [];
         BI.each(this.allRelations, function (i, relation) {
@@ -195,7 +201,6 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
 
     populate: function () {
         var self = this, c = this._constant;
-        var args = arguments;
         BI.nextTick(function () {//每次populate的时候可以自适应宽高，但还是无法实现窗口变化的时候自动调整。
             var height = self._getHeight();
             var width = self._getWidth();
@@ -203,9 +208,7 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
             self.grid.setWidth(width);
             self.grid.setEstimatedColumnSize(width);
             var items = self._getGridItems();
-            args[0] = items;
             self.grid.populate(items);
-            self._populateCurrentItem();
         });
     }
 });
