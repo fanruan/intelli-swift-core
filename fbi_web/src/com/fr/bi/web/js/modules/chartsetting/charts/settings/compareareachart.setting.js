@@ -80,27 +80,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
-        //风格——1、2
-        this.chartStyle = BI.createWidget({
-            type: "bi.button_group",
-            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
-                type: "bi.icon_button",
-                extraCls: "chart-style-font",
-                width: constant.BUTTON_WIDTH,
-                height: constant.BUTTON_HEIGHT,
-                iconWidth: constant.ICON_WIDTH,
-                iconHeight: constant.ICON_HEIGHT
-            }),
-            layouts: [{
-                type: "bi.vertical_adapt",
-                height: constant.SINGLE_LINE_HEIGHT
-            }]
-        });
-        this.chartStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
-        });
-
-        this.chartType = BI.createWidget({
+        this.lineAreaChartType = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.AREA_CHART_STYLE_GROUP, {
                 type: "bi.icon_button",
@@ -115,7 +95,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 height: constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.chartType.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+        this.lineAreaChartType.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
@@ -164,7 +144,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names",
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.chartType],
+                    items: [this.lineAreaChartType],
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
@@ -873,8 +853,14 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.dataLabelSetting]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.showDataTable]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showZoom]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.nullContinuity]
-                }/*, {
+                },/*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
                     cls: "attr-names"
@@ -995,7 +981,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
 
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
-        this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
+        this.lineAreaChartType.setValue(BI.Utils.getWSLineAreaChartTypeByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
         this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
@@ -1071,7 +1057,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             widgetNameStyle: this.widgetNameStyle.getValue(),
 
             chartColor: this.chartColor.getValue()[0],
-            chartStyle: this.chartStyle.getValue()[0],
+            lineAreaChartType: this.lineAreaChartType.getValue()[0],
             widgetBG: this.widgetBG.getValue(),
 
             leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
@@ -1079,7 +1065,6 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             leftYUnit: this.leftYUnit.getValue(),
             leftYShowTitle: this.leftYShowTitle.isSelected(),
             leftYTitle: this.leftYTitle.getValue(),
-            leftYReverse: this.leftYReverse.isSelected(),
             leftYShowCustomScale: this.leftYShowCustomScale.isSelected(),
             leftYCustomScale: this.leftYCustomScale.getValue(),
             leftYSeparator: this.leftYSeparator.isSelected(),
@@ -1093,7 +1078,6 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             rightYUnit: this.rightYUnit.getValue(),
             rightYShowTitle: this.rightYShowTitle.isSelected(),
             rightYTitle: this.rightYTitle.getValue(),
-            rightYReverse: this.rightYReverse.isSelected(),
             rightYTitleStyle: this.rightYTitleStyle.getValue(),
             rightYShowCustomScale: this.rightYShowCustomScale.isSelected(),
             rightYCustomScale: this.rightYCustomScale.getValue(),
@@ -1115,9 +1099,9 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             dataLabelSetting: this.dataLabelSetting.getValue(),
             showDataTable: this.showDataTable.isSelected(),
             showZoom: this.showZoom.isSelected(),
-            showHGridLine: this.showHGridLine.isSelected(),
+            hShowGridLine: this.hShowGridLine.isSelected(),
             hGridLineColor: this.hGridLineColor.getValue(),
-            showVGridLine: this.showVGridLine.isSelected(),
+            vShowGridLine: this.vShowGridLine.isSelected(),
             vGridLineColor: this.vGridLineColor.getValue(),
             tooltipStyle: this.tooltipStyle.getValue(),
             nullContinuity: this.nullContinuity.isSelected(),
