@@ -81,11 +81,11 @@ public class BIConnectionManager extends XMLFileManager {
         return null;
     }
 
-    public long getCreateBy(String name) {
+    private long getCreateBy(String name, long userId) {
         if (connMap.containsKey(name)) {
             return connMap.get(name).getCreateBy();
         }
-        return UserControl.getInstance().getSuperManagerID();
+        return userId;
     }
 
     public Connection getConnection(String name) {
@@ -137,7 +137,7 @@ public class BIConnectionManager extends XMLFileManager {
         writer.end();
     }
 
-    public void updateConnection(String linkData, String oldName) throws Exception {
+    public void updateConnection(long userId, String linkData, String oldName) throws Exception {
         JSONObject linkDataJo = new JSONObject(linkData);
         String newName = linkDataJo.optString("name");
         DataLinkInformation dl = new DataLinkInformation();
@@ -152,7 +152,7 @@ public class BIConnectionManager extends XMLFileManager {
         }
         BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
         datasourceManager.putConnection(newName, jdbcDatabaseConnection);
-        long createBy = getCreateBy(oldName);
+        long createBy = getCreateBy(oldName, userId);
         connMap.remove(oldName);
         connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null), createBy));
         try {
@@ -247,7 +247,7 @@ public class BIConnectionManager extends XMLFileManager {
                 jo.put("originalCharsetName", StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
                 jo.put("newCharsetName", StringUtils.alwaysNotNull(c.getNewCharsetName()));
                 jo.put("schema", getSchema(name));
-                jo.put("createBy", getConnection(name));
+                jo.put("createBy", getCreateBy(name, UserControl.getInstance().getSuperManagerID()));
                 jsonObject.put("link" + index++, jo);
             }
         }

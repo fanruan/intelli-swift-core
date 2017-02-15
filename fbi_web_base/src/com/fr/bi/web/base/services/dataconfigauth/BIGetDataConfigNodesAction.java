@@ -134,7 +134,7 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
         Set<BIDataConfigAuthority> authoritySet = BIConfigureManagerCenter.getDataConfigAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
         List<String> connNamesList = getAllConnectionNames();
         for (BIDataConfigAuthority authority : authoritySet) {
-            if (ComparatorUtils.equals(authority.getDesign(), DBConstant.DATA_CONFIG_DESIGN.YES)) {
+            if (!ComparatorUtils.equals(authority.getDesign(), DBConstant.DATA_CONFIG_DESIGN.NO)) {
                 String id = authority.getId();
                 String pId = authority.getParentId();
                 JSONArray authConn = new JSONArray();
@@ -149,7 +149,7 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
                         ja.put(childConnNode);
                     }
                 }
-                if (authConn.length() > 0) {
+                if (ComparatorUtils.equals(id, type)) {
                     JSONObject connectionNodeJO = new JSONObject();
                     connectionNodeJO.put("id", type);  //根节点
                     ja.put(connectionNodeJO);
