@@ -21,6 +21,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.Transmitter;
+import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,17 +45,22 @@ public class BaseResouceHelper {
 
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
-            return transmit(files);
+            Locale locale = WebUtils.getLocale(req);
+            return transmit(files, locale.getLanguage());
         }
 
         public String transmit(String[] files) {
+            return this.transmit(files, "zh");
+        }
+
+        public String transmit(String[] files, String language) {
             if (formula != null) {
                 return formula;
             }
             synchronized (this) {
                 String res = formula;
                 if (res == null) {
-                    res = getFormulaJS(files);
+                    res = getFormulaJS(files, language);
                     if (!StableUtils.isDebug()) {
                         formula = res;
                     }
@@ -309,10 +315,10 @@ public class BaseResouceHelper {
     }
 
 
-    private static String getFormulaJS(String[] files) {
+    private static String getFormulaJS(String[] files, String language) {
         Map<String, Object> map = new HashMap<String, Object>();
         JSONArray array = new JSONArray();
-        JSONArray formulaJos = FormulaCollections.getAllFormulaObject();
+        JSONArray formulaJos = FormulaCollections.getAllFormulaObject(language);
         for (int i = 0; i < formulaJos.length(); i++) {
             try {
                 JSONObject formulaJo = formulaJos.getJSONObject(i);
@@ -325,7 +331,7 @@ public class BaseResouceHelper {
         }
 
         map.put("formula", array);
-        map.put("formulaJSONs", FormulaCollections.getAllFormulaObject());
+        map.put("formulaJSONs", FormulaCollections.getAllFormulaObject(language));
         StringBuilder buffer = new StringBuilder();
         try {
             for (String file : files) {
