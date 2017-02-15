@@ -35,10 +35,8 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         });
 
         this.multiRelation.on(BI.MultiRelationGrid.EVENT_CHANGE, function () {
-            var disabledRelation = self.multiRelation.getNotSelectedValue();
             var availableRelation = self.multiRelation.getValue();
             self.model.set({
-                disabledRelations: disabledRelation,
                 availableRelations: availableRelation
             })
         });
@@ -203,8 +201,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         if (BI.has(changed, "availableRelations")) {
             self.model.update({
                 data: {
-                    disabledRelations: self.model.get("disabledRelations"),
-                    availableRelations: self.model.get("availableRelations")
+                    relation: self.multiRelation.getCurrentRelation()
                 },
                 complete: function () {
                     self.refresh();

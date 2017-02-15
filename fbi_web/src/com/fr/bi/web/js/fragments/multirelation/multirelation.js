@@ -24,12 +24,11 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
     _init: function () {
         BI.MultiRelationGrid.superclass._init.apply(this, arguments);
 
-        var self = this, o = this.options, c = this._constant;
+        var self = this, c = this._constant;
         this.value = [];
-        this.allRelations = [];
-        // this.notSelectedValues = [];
         this.isTitleMap = {};
         this.keyWord = "";
+        this.currentRelation = [];
 
         this.grid = BI.createWidget({
             type: "bi.grid_view",
@@ -46,6 +45,10 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
             }
         });
 
+        BI.ResizeDetector.addResizeListener(this, function () {
+            self.resize();
+        });
+
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -60,7 +63,7 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
     },
 
     _getGridItems: function () {
-        var self = this, o = this.options;
+        var self = this;
         var relations = this.options.relations;
         var items = [];
         this.isTitleMap = {};
@@ -82,6 +85,7 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
                         return self._isSelect(relation);
                     },
                     onEventChange: function (relation, type, value, ob) {
+                        self.currentRelation = relation;
                         self._clickRelationItem(relation);
                         self.fireEvent(BI.Controller.EVENT_CHANGE, type, value, ob);
                         self.fireEvent(BI.MultiRelationGrid.EVENT_CHANGE);
@@ -113,17 +117,9 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
             }
         });
         this.value = value;
-        // this.notSelectedValues.push(relation);
     },
 
     _addValue: function (relation) {
-        // var notSelectedValues = [];
-        // BI.each(this.notSelectedValues, function (i, rel) {
-        //     if (!BI.isEqual(rel, relation)) {
-        //         notSelectedValues.push(rel)
-        //     }
-        // });
-        // this.notSelectedValues = notSelectedValues;
         this.value.push(relation)
     },
 
@@ -133,17 +129,6 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
         } else {
             this._addValue(relation);
         }
-    },
-
-    _setAllRelation: function () {
-        var relations = this.options.relations;
-        var allRelation = [];
-        BI.each(relations, function (i, rels) {
-            BI.each(rels, function (i, relation) {
-                allRelation.push(relation);
-            })
-        });
-        this.allRelations = allRelation;
     },
 
     _getWidth: function () {
@@ -164,13 +149,8 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
         this.value = v;
     },
 
-    // setNotSelectedValue: function (v) {
-    //     this.notSelectedValues = v;
-    // },
-
     setRelations: function (relations) {
         this.options.relations = relations;
-        this._setAllRelation();
     },
 
     getValue: function () {
@@ -181,15 +161,8 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
         return this.attr("relations");
     },
 
-    getNotSelectedValue: function () {//这里卡，复杂度为O(n^2),1000条关联耗时1秒多
-        var self = this;
-        var notSelectValue = [];
-        BI.each(this.allRelations, function (i, relation) {
-            if (!self._isSelect(relation)) {
-                notSelectValue.push(relation)
-            }
-        });
-        return notSelectValue;
+    getCurrentRelation: function () {
+        return this.currentRelation;
     },
 
     restore: function () {
@@ -199,17 +172,21 @@ BI.MultiRelationGrid = BI.inherit(BI.Single, {
     doBehavior: function () {
     },
 
-    populate: function () {
-        var self = this, c = this._constant;
-        BI.nextTick(function () {//每次populate的时候可以自适应宽高，但还是无法实现窗口变化的时候自动调整。
+    resize: function () {
+        var self = this;
+        BI.nextTick(function () {
             var height = self._getHeight();
             var width = self._getWidth();
             self.grid.setHeight(height);
             self.grid.setWidth(width);
             self.grid.setEstimatedColumnSize(width);
-            var items = self._getGridItems();
-            self.grid.populate(items);
-        });
+            self.grid.populate();
+        })
+    },
+
+    populate: function () {
+        var items = this._getGridItems();
+        this.grid.populate(items);
     }
 });
 BI.MultiRelationGrid.EVENT_CHANGE = "MultiRelationGrid.EVENT_CHANGE";
