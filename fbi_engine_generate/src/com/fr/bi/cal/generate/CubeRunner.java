@@ -17,8 +17,8 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.time.BIDateUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import org.slf4j.Logger;
@@ -226,7 +226,7 @@ public class CubeRunner {
      * @return true或false
      */
     private boolean checkCubePath() {
-        return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));
+        return BIFileUtils.checkDir(new File(BIConfigurePathUtils.createBasePath()));
     }
 
     private void recordLogs(CubeTask cubeTask, BILogManagerProvider logManager) {

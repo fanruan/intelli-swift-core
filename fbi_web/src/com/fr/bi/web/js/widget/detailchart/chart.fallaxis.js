@@ -223,9 +223,9 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function(idx, item){
             BI.each(item.data, function(i, t){
                 if(t.y < 0){
-                    tables.push([t.x, t.y, sum + t.y, t.targetIds]);
+                    tables.push([t.x, t.y, sum + t.y, t]);
                 }else{
-                    tables.push([t.x, t.y, sum, t.targetIds]);
+                    tables.push([t.x, t.y, sum, t]);
                 }
                 sum += t.y;
             });
@@ -234,7 +234,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         return [BI.map(BI.makeArray(2, null), function(idx, item){
             return {
                 "data": BI.map(tables, function(id, cell){
-                    var axis = BI.extend({targetIds: cell[3]}, {
+                    var axis = BI.extend({}, cell[3], {
                         x: cell[0],
                         y: Math.abs(cell[2 - idx])
                     });
