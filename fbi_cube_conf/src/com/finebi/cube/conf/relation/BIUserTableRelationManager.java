@@ -18,11 +18,13 @@ import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.exception.*;
+import com.fr.bi.stable.utils.program.BICollectionUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,8 +63,22 @@ public class BIUserTableRelationManager implements Release {
 
 
     public Set<BITableRelation> getAllTableRelation() {
-        return currentAnalyserHandler.getRelationContainer().getContainer();
+        Set<BITableRelation> relations = currentAnalyserHandler.getRelationContainer().getContainer();
+        return removeSelfRelation(relations);
     }
+
+    private Set<BITableRelation> removeSelfRelation(Set<BITableRelation> relations) {
+        Set<BITableRelation> newRelations = new HashSet<>();
+        Iterator<BITableRelation> iterator = relations.iterator();
+        while (iterator.hasNext()) {
+            BITableRelation relation = iterator.next();
+            if (!ComparatorUtils.equals(relation.getPrimaryTable().getID().getIdentity(), relation.getForeignTable().getID().getIdentity())) {
+                newRelations.add(relation);
+            }
+        }
+        return BICollectionUtils.unmodifiedCollection(newRelations);
+    }
+
 
     public Set<BITableRelation> getAllOldTableRelation() {
         return oldAnalyserHandler.getRelationContainer().getContainer();
@@ -258,7 +274,7 @@ public class BIUserTableRelationManager implements Release {
                     try {
                         oldAnalyserHandler.addRelation(relation);
                     } catch (BIRelationDuplicateException e) {
-                        BILoggerFactory.getLogger().error(e.getMessage(),e);
+                        BILoggerFactory.getLogger().error(e.getMessage());
                     }
                 }
             }
