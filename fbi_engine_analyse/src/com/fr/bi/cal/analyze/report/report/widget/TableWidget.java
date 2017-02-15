@@ -9,8 +9,10 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
-import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartDataConvertFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSettingFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.ExportNode;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.ReportExportHeader;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.ReportExportItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.TableDataForExport;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -24,13 +26,17 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.web.core.SessionDealWith;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -331,13 +337,47 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public JSONObject getPostOptions(String sessionId) throws Exception {
+
+        this.getViewDimensions();
+        this.getViewTargets();
+        List<ReportExportHeader> headers = new ArrayList<>();
+        for (BIDimension dimension : this.getViewDimensions()) {
+            ReportExportHeader header = new ReportExportHeader(dimension.getValue(), dimension.getText(), dimension.getText());
+            headers.add(header);
+        }
+        for (BISummaryTarget biSummaryTarget : this.getViewTargets()) {
+            ReportExportHeader header = new ReportExportHeader(biSummaryTarget.getValue(), biSummaryTarget.getText(), biSummaryTarget.getName());
+            headers.add(header);
+        }
+
         JSONObject dataJSON = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
-        JSONObject data = dataJSON.optJSONObject("data");
-        JSONObject chartOptions = parseChartSetting(data);
-        return chartOptions;
+        List<ReportExportItem> items = createCommonTableItems(dataJSON.getJSONArray("c"), 0, null, this.getViewDimensions(), this.getViewTargets());
+        TableDataForExport tableDataForExport = new TableDataForExport(items, headers, null, null);
+        return new JSONObject();
     }
-    private JSONObject parseChartSetting(JSONObject data) throws Exception {
-        JSONObject convert = BIChartDataConvertFactory.convertForTableWidget(this, data);
-        return BIChartSettingFactory.parseChartSetting(this, convert.getJSONArray("data"), convert.optJSONObject("options"), convert.getJSONArray("types"));
+
+    private List<ReportExportItem> createCommonTableItems(JSONArray cArray, int curentLayer, ReportExportHeader parent, BIDimension[] viewDimensions, BISummaryTarget[] viewTargets) throws JSONException {
+        List<ReportExportItem> items = new ArrayList<>();
+        for (int i = 0; i <= cArray.length(); i++) {
+            ExportNode node = new ExportNode();
+            JSONObject child = cArray.getJSONObject(i);
+            String cId = BIStringUtils.isEmptyString(child.getString("n")) ? UUID.randomUUID().toString() : child.getString("n");
+            String nodeId = null != parent ? parent.getId() + cId : cId;
+            node.setId(nodeId);
+            String currDid = viewDimensions[curentLayer - 1].getId();
+            String currentValue = child.getString("n");
+            node.setName(currentValue);
+            node.setdId(currDid);
+
+            ReportExportItem item = new ReportExportItem();
+            item.setdId(currDid);
+            item.setText(currentValue);
+            item.setNeedExpand(curentLayer < viewDimensions.length);
+            if (child.has("c")) {
+            }
+            items.add(item);
+        }
+        return items;
     }
+
 }

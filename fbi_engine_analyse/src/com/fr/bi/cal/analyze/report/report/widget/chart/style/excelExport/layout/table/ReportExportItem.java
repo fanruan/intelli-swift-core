@@ -18,4 +18,68 @@ public class ReportExportItem {
 
     public ReportExportItem() {
     }
+
+    public String getdId() {
+        return dId;
+    }
+
+    public void setdId(String dId) {
+        this.dId = dId;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String[] getValue() {
+        return value;
+    }
+
+    public void setValue(String[] value) {
+        this.value = value;
+    }
+
+    public boolean isCross() {
+        return isCross;
+    }
+
+    public void setCross(boolean cross) {
+        isCross = cross;
+    }
+
+    public boolean isNeedExpand() {
+        return needExpand;
+    }
+
+    public void setNeedExpand(boolean needExpand) {
+        this.needExpand = needExpand;
+    }
+
+    public List<ReportExportItem> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<ReportExportItem> children) {
+        this.children = children;
+    }
+
+    public List<ReportExportItem> getClicked() {
+        return clicked;
+    }
+
+    public void setClicked(List<ReportExportItem> clicked) {
+        this.clicked = clicked;
+    }
+
+    public boolean isSum() {
+        return isSum;
+    }
+
+    public void setSum(boolean sum) {
+        isSum = sum;
+    }
 }

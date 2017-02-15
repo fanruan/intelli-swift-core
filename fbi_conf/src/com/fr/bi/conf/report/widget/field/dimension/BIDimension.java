@@ -55,4 +55,6 @@ public interface BIDimension extends BITargetAndDimension {
     BITableRelationPath getSelfToSelfRelationPath();
 
     ChartSetting getChartSetting();
+
+
 }
