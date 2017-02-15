@@ -39,7 +39,7 @@ public class BICheckCubeTableStatusAction extends AbstractBIConfigureAction {
             } else {
                 taskId = BIStringUtils.append(baseTableSourceId, baseTableSourceId);
             }
-            CubeTask cubeTask = getCubeTask(taskId);
+            CubeTask cubeTask = new EmptyCubeTask(taskId);
             BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
             jo.put("hasTask", cubeManager.hasTask(cubeTask, userId) || cubeManager.hasBuildingTask());
         } catch (Exception e) {
@@ -57,16 +57,6 @@ public class BICheckCubeTableStatusAction extends AbstractBIConfigureAction {
         }
         return null;
     }
-
-    private CubeTask getCubeTask(final String taskId) {
-        return new EmptyCubeTask() {
-            @Override
-            public String getTaskId() {
-                return taskId;
-            }
-        };
-    }
-
     @Override
     public String getCMD() {
         return "check_cube_table_status";

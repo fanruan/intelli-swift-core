@@ -12,8 +12,6 @@ import com.finebi.cube.structure.group.BICubeByteGroupData;
  * @since 4.0
  */
 public class BICubeByteColumn extends BICubeColumnEntity<Byte> {
-    private static final long serialVersionUID = -5860863508480928098L;
-
     public BICubeByteColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation) {
         super(discovery, currentLocation);
     }
