@@ -151,7 +151,7 @@ BI.TableChartManagerAspect = function () {
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "radar-tip-background");
                 break;
             case BICst.WIDGET.DONUT:
-                !((dim1Size > 0|| dim2Size > 0) && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "donut-tip-background");
+                tar1Size === 0 && (cls = "donut-tip-background");
                 break;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "combine-m-tip-background");
