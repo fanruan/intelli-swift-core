@@ -285,8 +285,4 @@ public class BIConfigurePathUtils {
         BIField foreignKey = (BIField) relation.getForeignKey();
         return LINK_INDEX + primaryKey.getTableBelongTo().getID().getIdentityValue() + "_" + primaryKey.getFieldName() + "_TO_" + foreignKey.getTableBelongTo().getID().getIdentityValue() + "_" + foreignKey.getFieldName();
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 01a57496ee080c5036322f3e592d300ee12b1211
 }
