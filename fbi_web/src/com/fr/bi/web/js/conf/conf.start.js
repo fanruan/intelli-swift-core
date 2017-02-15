@@ -12,6 +12,7 @@ BI.extend(BIConf, {
         this.supportSheets = options.supportSheets;
         this.sessionID = options.sessionID;
         Data.SharingPool.put("sessionID", this.sessionID);
+        Data.SharingPool.put("authNodes", options.authNodes);
 
         var AppRouter = BI.Router.extend({
             routes: {

@@ -1,6 +1,7 @@
 package com.fr.bi.web.conf;
 
 
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.conf.services.*;
 import com.fr.bi.web.conf.services.cubeconf.*;
@@ -156,7 +157,7 @@ public class Service4BIConfigure implements Service {
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
-        res.setDateHeader("Expires", -10);
+        res.setDateHeader("Expires", BIBaseConstant.DATE_HEADER_EXPIRES);
         dealServletPreviousUrl(req);
         PrivilegeVote vote = getFSVote(req, res);
         FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
@@ -165,7 +166,7 @@ public class Service4BIConfigure implements Service {
             return;
         }
         long userId = ServiceUtils.getCurrentUserID(req);
-        if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.BI)) {
+        if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.PRIVILEGE)) {
             WebActionsDispatcher.dealForActionCMD(req, res, sessionID, actions);
         }
     }
