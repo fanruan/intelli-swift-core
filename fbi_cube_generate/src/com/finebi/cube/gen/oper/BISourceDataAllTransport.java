@@ -78,7 +78,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             }
             BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             BICubeLogExceptionInfo exceptionInfo = new BICubeLogExceptionInfo(System.currentTimeMillis(), "Transport Exception", e.getMessage(), e, tableSource.getSourceID());
-            BILogHelper.cacheCubeLogException(tableSource.getSourceID(), exceptionInfo);
+            BILogHelper.cacheCubeLogTableException(tableSource.getSourceID(), exceptionInfo);
             BILoggerFactory.getLogger(BISourceDataAllTransport.class).error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }

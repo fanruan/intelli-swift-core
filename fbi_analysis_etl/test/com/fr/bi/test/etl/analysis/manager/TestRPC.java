@@ -1,17 +1,26 @@
 package com.fr.bi.test.etl.analysis.manager;
 
+import com.fr.bi.cal.BICubeManager;
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.fr.bi.cal.generate.EmptyCubeTask;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.base.datasource.BIConnectionProvider;
+import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.BIAuthorityManageProvider;
+import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.etl.analysis.manager.UserETLCubeManager;
 import com.fr.bi.etl.analysis.manager.UserETLCubeManagerProvider;
+import com.fr.bi.stable.engine.CubeTask;
+import com.fr.bi.stable.utils.BISerializableUtils;
 import com.fr.cluster.rpc.RPC;
 import com.fr.json.JSONException;
 import com.fr.stable.bridge.StableFactory;
 import junit.framework.TestCase;
+
+import java.io.*;
 
 /**
  * Created by wang on 2016/11/22.
@@ -51,6 +60,13 @@ public class TestRPC extends TestCase {
         }
     }
 
+    public void testUpdateFrequency() {
+        BIUpdateFrequencyManagerProvider provider = new BIUpdateSettingManager();
+        RPC.registerSkeleton(provider, 1245);
+        BIUpdateFrequencyManagerProvider proxy = (BIUpdateFrequencyManagerProvider) RPC.getProxy(BIUpdateSettingManager.class, "127.0.0.1", 12345);
+        System.err.println(proxy.toString());
+    }
+
     public void testAuth() {
         BISystemAuthorityManager provider = new BISystemAuthorityManager();
         RPC.registerSkeleton(provider, 12345);
@@ -63,7 +79,55 @@ public class TestRPC extends TestCase {
 
     }
 
-    public void testTime(){
+
+    public void testCubeTask() {
+        BISerializableUtils.findUnsupportedSerializable(MyCubeTask.class);
+        BICubeManager provider = new BICubeManager();
+        provider.addTask(new EmptyCubeTask("123"), 123);
+        RPC.registerSkeleton(provider, 12345);
+        BICubeManagerProvider proxy = (BICubeManagerProvider) RPC.getProxy(BICubeManager.class, "127.0.0.1", 12345);
+        System.out.println(proxy.hasTask(new EmptyCubeTask("123"), 123));
+    }
+
+    class FOO implements Runnable,Serializable{
+
+        private static final long serialVersionUID = 4710240579276018302L;
+
+        @Override
+        public void run() {
+            System.out.println("Lala");
+        }
+    }
+
+    public void testInnerClassSerialize(){
+        FOO foo = new FOO();
+        Thread t = new Thread(foo);
+//        t.start();
+//        t.join();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(baos);
+            oos.writeObject(foo);
+            oos.close();
+            FOO foofoo = (FOO) new ObjectInputStream(
+                    new ByteArrayInputStream(baos.toByteArray())).readObject();
+
+            t = new Thread(foofoo);
+            t.start();
+            t.join();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void testTime() {
         long start = System.currentTimeMillis();
         try {
             Thread.sleep(45000);
@@ -71,7 +135,7 @@ public class TestRPC extends TestCase {
             e.printStackTrace();
         }
         long end = System.currentTimeMillis();
-        System.err.println(end -start);
+        System.err.println(end - start);
     }
 
 }
