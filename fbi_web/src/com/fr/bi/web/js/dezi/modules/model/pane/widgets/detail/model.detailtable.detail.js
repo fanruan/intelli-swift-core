@@ -180,6 +180,12 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
         var viewTableIds = [];
         //包括当前参与计算的维度所在表
         var allTableIds = [];
+        //当前公共子表
+        var currentCommonTableId = null;
+        var map =  BI.Utils.getDimensionMapByDimensionID(BI.firstKey(dimensions));
+        if(BI.isNotNull(map)){
+            currentCommonTableId = BI.firstKey(map);
+        }
         BI.each(dimensions, function (did, dimension) {
             var tableId = BI.Utils.getTableIdByFieldID(dimension._src.field_id);
             if (BI.isNotNull(tableId)) {
@@ -203,7 +209,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 dimension.dimension_map = self._getDefaultRelation(dimension, defaultCommonTable);
             });
         }else{
-            dimensions[dId].dimension_map = self._getDefaultRelation(dimensions[dId], defaultCommonTable)
+            dimensions[dId].dimension_map = self._getDefaultRelation(dimensions[dId], currentCommonTableId)
         }
     },
 

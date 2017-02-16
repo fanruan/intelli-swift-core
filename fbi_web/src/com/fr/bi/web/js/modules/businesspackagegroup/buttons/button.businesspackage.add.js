@@ -34,8 +34,8 @@ BI.BusinessPackageAdd = BI.inherit(BI.IconButton, {
             element: this.element,
             items: [{
                 el: addButton,
-                top: 30,
-                bottom: 55,
+                top: 0,
+                bottom: 0,
                 left: 0,
                 right: 0
             }]

@@ -154,4 +154,10 @@ public class DBConstant {
         public static final String FINE_INDEX_UPDATE = "__fine_index_update__";       //FineIndex更新
 
     }
+
+    //是否授权节点
+    public static final class DATA_CONFIG_DESIGN {
+        public static final int NO = 0;
+        public static final int YES = 1;
+    }
 }
