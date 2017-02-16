@@ -16,29 +16,29 @@ import java.util.Map;
  * 进度条计算: cube准备,每个table transport, 每个column index builder,
  * 每个relation和path生成,跟最后替换新的cube,都占均等的等份.
  */
-public class ProcessCalculatorImpl implements ProcessCalculator{
+public class ProcessCalculatorImpl implements ProcessCalculator {
 
     public double calculateProcess(JSONObject recordJson) {
-        try {
-            long cube_start = 0L;
-            long cube_end = 0L;
-            JSONObject allTableinfo;
-            JSONArray allRelationPathSet;
-            JSONArray generatedTable;
-            JSONArray generatedRelationAndPath;
 
+        long cube_start = 0L;
+        long cube_end = 0L;
+        JSONObject allTableinfo;
+        JSONArray allRelationPathSet;
+        JSONArray generatedTable;
+        JSONArray generatedRelationAndPath;
+        try {
             if (recordJson.has("cube_start")) {
-                cube_start = Long.valueOf(recordJson.get("cube_start").toString()).longValue();
+                cube_start = recordJson.optLong("cube_start");
             }
             if (recordJson.has("cube_end")) {
-                cube_end = Long.valueOf(recordJson.get("cube_end").toString()).longValue();
+                cube_end = recordJson.optLong("cube_end");
             }
 
-            allTableinfo = (JSONObject) recordJson.get("allTableInfo");
-            allRelationPathSet = (JSONArray) recordJson.get("allRelationInfo");
+            allTableinfo = recordJson.optJSONObject("allTableInfo");
+            allRelationPathSet = recordJson.optJSONArray("allRelationInfo");
 
-            generatedTable = (JSONArray) recordJson.get("tables");
-            generatedRelationAndPath = (JSONArray) recordJson.get("connections");
+            generatedTable = recordJson.optJSONArray("tables");
+            generatedRelationAndPath = recordJson.optJSONArray("connections");
 
             return calculateRate(cube_start, cube_end, allTableinfo, allRelationPathSet, generatedTable, generatedRelationAndPath);
         } catch (Exception e) {
@@ -47,9 +47,9 @@ public class ProcessCalculatorImpl implements ProcessCalculator{
         }
     }
 
-    public double calculateRate(long cube_start, long cube_end, JSONObject allTableinfo, JSONArray allRelationPathSet
+    public double calculateRate(long cube_start, long cube_end, JSONObject allTableInfo, JSONArray allRelationPathSet
             , JSONArray generatedTable, JSONArray generatedRelationAndPath) {
-        int allDivisions = getAllDivisions(allTableinfo, allRelationPathSet);
+        int allDivisions = getAllDivisions(allTableInfo, allRelationPathSet);
         int divisionsDone = getDivisionsDone(cube_start, cube_end, generatedTable, generatedRelationAndPath);
         return (double) divisionsDone / allDivisions;
     }
