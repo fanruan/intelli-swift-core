@@ -43,7 +43,8 @@ BI.DimensionFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 columnSize: [this._constant.FIELD_NAME_BUTTON_WIDTH, "", this._constant.ICON_BUTTON_WIDTH],
                 height: this._constant.CONTAINER_HEIGHT,
                 items: [[left[0], left[1], this.deleteButton]]
-            }]
+            }],
+            scrolly: false
         });
     },
 
