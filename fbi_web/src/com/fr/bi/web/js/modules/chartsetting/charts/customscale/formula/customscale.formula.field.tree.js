@@ -23,7 +23,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 type: "bi.custom_scale_formula_field_tree_mid_leaf",
                 id: item,
                 pId: nodes[0].id,
-                text: axisOne + (idx + 1),
+                text: axisOne + (idx === 0 ? "" : idx) + BI.i18nText("BI-Displayed_Value"),
                 value: item
             });
             nodes = BI.concat(nodes, self._createLeaves(item))
@@ -39,7 +39,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 type: "bi.custom_scale_formula_field_tree_mid_leaf",
                 id: item,
                 pId: nodes[0].id,
-                text: axisOne + (idx + 1),
+                text: axisOne + (idx === 0 ? "" : idx) + BI.i18nText("BI-Displayed_Value"),
                 value: item
             });
             nodes = BI.concat(nodes, self._createLeaves(item))
@@ -50,7 +50,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 type: "bi.custom_scale_formula_field_tree_mid_leaf",
                 id: item,
                 pId: nodes[0].id,
-                text: axisTwo + (idx + 1),
+                text: axisTwo + (idx === 0 ? "" : idx) + BI.i18nText("BI-Displayed_Value"),
                 value: item
             });
             nodes = BI.concat(nodes, self._createLeaves(item))
@@ -65,7 +65,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 type: "bi.custom_scale_formula_field_tree_mid_leaf",
                 id: item,
                 pId: nodes[0].id,
-                text: axisOne + (idx + 1),
+                text: axisOne + (idx === 0 ? "" : idx) + BI.i18nText("BI-Displayed_Value"),
                 value: item
             });
             nodes = BI.concat(nodes, self._createLeaves(item))
@@ -76,7 +76,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 type: "bi.custom_scale_formula_field_tree_mid_leaf",
                 id: item,
                 pId: nodes[0].id,
-                text: axisTwo + (idx + 1),
+                text: axisTwo + (idx === 0 ? "" : idx) + BI.i18nText("BI-Displayed_Value"),
                 value: item
             });
             nodes = BI.concat(nodes, self._createLeaves(item))
@@ -87,7 +87,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 type: "bi.custom_scale_formula_field_tree_mid_leaf",
                 id: item,
                 pId: nodes[0].id,
-                text: axisThree + (idx + 1),
+                text: axisThree + (idx === 0 ? "" : idx) + BI.i18nText("BI-Displayed_Value"),
                 value: item
             });
             nodes = BI.concat(nodes, self._createLeaves(item, item))
