@@ -20,6 +20,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
     },
 
     defaultItems: function () {
+        var showFieldDisabled = this.checkShowFieldDisabled();
         return [
             [{
                 el: {
@@ -72,9 +73,9 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 text: BI.i18nText("BI-Show_Field"),
                 value: BICst.DIMENSION_DATE_COMBO.SHOW_FIELD,
                 cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : "",
-                disabled: this.checkShowFieldDisabled(),
+                disabled: showFieldDisabled,
                 tipType: "success",
-                title: BI.i18nText("BI-Show_Field")
+                title: showFieldDisabled ? BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension") : BI.i18nText("BI-Show_Field")
             }],
             [{
                 text: BI.i18nText("BI-Rename"),

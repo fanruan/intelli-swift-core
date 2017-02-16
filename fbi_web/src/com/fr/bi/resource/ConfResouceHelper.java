@@ -432,11 +432,11 @@ public class ConfResouceHelper {
                 "com/fr/bi/web/js/extend/sql/etl.sql.plugin.js",
 
                 //多路径设置
-                "com/fr/bi/web/js/fragments/multirelation/expander.multirelation.js",
-                "com/fr/bi/web/js/fragments/multirelation/multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/item.multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/item.tablefield.multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/view.searcher.multirelation.js",
+                "com/fr/bi/web/js/fragments/multirelation/multirelation.js",
+                "com/fr/bi/web/js/fragments/multirelation/multirelationtitle.js",
 
                 //数据连接
                 "com/fr/bi/web/js/modules/datalink/widget.testlink.loading.js",
