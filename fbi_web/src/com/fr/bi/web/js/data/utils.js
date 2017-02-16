@@ -1290,7 +1290,6 @@ Data.Utils = {
                                     name: BI.UUID()
                                 })
                             });
-                            return [result]
                         }
                         if (config.number_of_pointer === constants.MULTI_POINTER && items[0].length > 1) {//多个系列
                             BI.each(items, function (idx, item) {
@@ -1620,6 +1619,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.style = config.chart_font;
             configs.plotOptions.tooltip.shared = true;
+            configs.dTools.enabled = true;
             var formatterArray = [];
             BI.backEach(items, function (idx, item) {
                 if (BI.has(item, "settings")) {
@@ -1769,14 +1769,14 @@ Data.Utils = {
                             BI.each(styles, function (idx, style) {
                                 if(style.range.max) {
                                     range.push({
-                                        color: style.color,
+                                        color: style.color || "rgba(255,255,255,0)",
                                         from: style.range.min,
                                         to: style.range.max
                                     });
                                 } else {
                                     var to = style.range.min < maxScale ? maxScale : 266396;
                                     range.push({
-                                        color: style.color,
+                                        color: style.color || "rgba(255,255,255,0)",
                                         from: style.range.min,
                                         to: to,
                                     });
@@ -1796,7 +1796,7 @@ Data.Utils = {
 
                             if (conditionMax && conditionMax < maxScale) {
                                 range.push({
-                                    color: color,
+                                    color: color || "rgba(255,255,255,0)",
                                     from: conditionMax,
                                     to: maxScale
                                 });
@@ -2162,11 +2162,16 @@ Data.Utils = {
             configs.chartType = "bubble";
 
             if (BI.isNotEmptyArray(config.tooltip)) {
-                configs.plotOptions.tooltip.formatter = function () {
+                configs.plotOptions.bubble.tooltip = {
+                    useHtml: true,
+                    style: {
+                        color: 'RGB(184, 184, 184)'
+                    },
+                    formatter : function () {
                     var y = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)(this.y);
                     var x = _formatTickInXYaxis(config.x_axis_style, config.x_axis_number_level, config.right_num_separators)(this.x);
                     return this.seriesName + '<div>(X)' + config.tooltip[0] + ':' + x + '</div><div>(Y)' + config.tooltip[1]
-                        + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + config.tooltip[2] + ':' + this.size + '</div>'
+                        + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + config.tooltip[2] + ':' + this.size + '</div>'}
                 };
             }
 
@@ -2321,6 +2326,10 @@ Data.Utils = {
             delete configs.xAxis;
             delete configs.yAxis;
             delete configs.zoom;
+            if(isDashboard && !isMultiPointers) {
+                configs.plotOptions.seriesLabel.enabled = false
+            }
+            configs.gaugeAxis[0].labelStyle = config.chart_font;
             return BI.extend(configs, {
                 series: items
             });
@@ -2334,6 +2343,7 @@ Data.Utils = {
                 configs.gaugeAxis = gaugeAxis;
 
                 var slotValueLAbel = {
+                    enabled: true,
                     formatter: function () {
                         var value = this.value;
                         if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && config.num_separators) {
@@ -5942,7 +5952,7 @@ Data.Utils = {
                         }
                     },
                     "dTools": {
-                        "enabled": 'true',
+                        "enabled": false,
                         "style": {
                             "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                             "color": "#1a1a1a",

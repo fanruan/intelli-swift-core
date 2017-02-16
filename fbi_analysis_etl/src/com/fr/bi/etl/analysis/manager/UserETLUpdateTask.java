@@ -109,7 +109,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
                     e.printStackTrace();
-                }
+            }
             }
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
         tableEntityService.addVersion(getTableVersion());

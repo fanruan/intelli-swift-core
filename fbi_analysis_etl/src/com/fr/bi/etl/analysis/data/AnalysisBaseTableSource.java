@@ -10,6 +10,7 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.monitor.*;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -24,10 +25,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.sql.Types;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -198,7 +196,6 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
         }
     }
 
-    @Override
     public void getSourceNeedCheckSource(Set<AnalysisCubeTableSource> set) {
         if (set.contains(this)) {
             return;
@@ -206,7 +203,6 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
         set.add(this);
     }
 
-    @Override
     public void refreshWidget() {
         widget.refreshSources();
         widget.reSetDetailTarget();
@@ -223,10 +219,45 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
     }
 
 
-    @Override
     public void reSetWidgetDetailGetter() {
         widget.reSetDetailTarget();
     }
+
+    public TableRelationTree getAllProcessAnalysisTablesWithRelation() {
+        Set<SimpleTable> set = new HashSet<SimpleTable>();
+        getParentAnalysisBaseTableIds(set);
+        TableRelationTree tree = new TableRelationTree(new BaseSourceTable(this));
+        for (SimpleTable id : set) {
+            tree.addParent(new TableRelationTree(id));
+        }
+        return tree;
+    }
+
+    public void getParentAnalysisBaseTableIds(Set<SimpleTable> set) {
+        for (BITargetAndDimension dim : widget.getViewDimensions()) {
+            calculateImport(set, dim);
+        }
+        for (BITargetAndDimension target : widget.getViewTargets()) {
+            calculateImport(set, target);
+        }
+    }
+
+    private void calculateImport(Set<SimpleTable> set, BITargetAndDimension dim) {
+        if (dim.getStatisticElement() != null) {
+            if(dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
+                CubeTableSource source = dim.createTableKey().getTableSource();
+                String id = dim.getStatisticElement().getTableBelongTo().getID().getIdentity();
+                if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
+                    set.add(new SimpleTable(id));
+                } else {
+                    set.add(new CubeTable(id));
+                }
+            } else {
+                set.add(new CubeTable(dim.getStatisticElement().getTableBelongTo().getID().getIdentity()));
+            }
+        }
+    }
+
 
     @Override
     public JSONObject createJSON() throws Exception {
@@ -247,7 +278,6 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
         jo.put("operator", widget);
         return jo;
     }
-
     /**
      * @return
      */

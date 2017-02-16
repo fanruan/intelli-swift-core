@@ -24,20 +24,24 @@ BI.DetailStringDimensionCombo = BI.inherit(BI.Widget, {
             items: [
                 [{
                     text: BI.i18nText("BI-Filter_Setting"),
-                    value: BICst.DETAIL_STRING_COMBO.FILTER
+                    value: BICst.DETAIL_STRING_COMBO.FILTER,
+                    cls: "filter-h-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Hyperlink"),
-                    value: BICst.DETAIL_STRING_COMBO.HYPERLINK
+                    value: BICst.DETAIL_STRING_COMBO.HYPERLINK,
+                    cls: "hyper-link-font"
                 }],
                 [{
                     text: BI.i18nText("BI-Remove"),
-                    value: BICst.DETAIL_STRING_COMBO.DELETE
+                    value: BICst.DETAIL_STRING_COMBO.DELETE,
+                    cls: "delete-h-font"
                 }],
                 [{
                     text: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
                     title: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
-                    tipType: "warning",
+                    tipType: "success",
+                    cls: "dimension-from-font",
                     value: BICst.DETAIL_STRING_COMBO.INFO,
                     disabled: true
                 }]

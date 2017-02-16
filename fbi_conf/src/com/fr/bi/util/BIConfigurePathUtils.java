@@ -99,6 +99,7 @@ public class BIConfigurePathUtils {
     /**
      * 创建螺旋分析根目录, 如果cube根目录有parent目录,则螺旋分析目录user_utl与cube根目录并列
      * 如果cube根目录没有parent目录,user_utl则在cube的根目录下
+     *
      */
     public static String createUserETLBasePath() {
         return getUserETLBasePath(createBasePath());
@@ -284,5 +285,4 @@ public class BIConfigurePathUtils {
         BIField foreignKey = (BIField) relation.getForeignKey();
         return LINK_INDEX + primaryKey.getTableBelongTo().getID().getIdentityValue() + "_" + primaryKey.getFieldName() + "_TO_" + foreignKey.getTableBelongTo().getID().getIdentityValue() + "_" + foreignKey.getFieldName();
     }
-
 }
