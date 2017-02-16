@@ -65,7 +65,7 @@ public class StringControlWidget extends TableWidget {
             return getCustomGroupResult(list, selected_value, calculator);
         }else{
             GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
-            ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
+            ICubeColumnIndexReader reader = dimension.getSort().createGroupedMap(calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader()));
 
             if (dimension.getGroup()!= null && dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
                 return getCustomGroupResult(gvi, reader, selected_value, calculator);
@@ -308,7 +308,7 @@ public class StringControlWidget extends TableWidget {
             String str = ob.toString();
             if (match(str, key, selectedValue, mode)) {
                 if (matched >= start && matched < end) {
-                    if (ComparatorUtils.equals(keyword, str)) {
+                    if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
                         match.add(str);
                     } else {
                         find.add(str);
@@ -320,22 +320,11 @@ public class StringControlWidget extends TableWidget {
                 matched++;
             }
         }
-        if(getDimensions()[0].getSortType() == BIReportConstant.SORT.DESC){
-            ListIterator<String> m = match.listIterator(match.size());
-            ListIterator<String> f = find.listIterator(find.size());
-            while (m.hasPrevious()){
-                ja.put(m.previous());
-            }
-            while (f.hasPrevious()){
-                ja.put(f.previous());
-            }
-        }else{
-            for (String s : match) {
-                ja.put(s);
-            }
-            for (String s : find) {
-                ja.put(s);
-            }
+        for (String s : match) {
+            ja.put(s);
+        }
+        for (String s : find) {
+            ja.put(s);
         }
         jo.put(BIJSONConstant.JSON_KEYS.VALUE, ja);
         jo.put(BIJSONConstant.JSON_KEYS.HAS_NEXT, hasNext);

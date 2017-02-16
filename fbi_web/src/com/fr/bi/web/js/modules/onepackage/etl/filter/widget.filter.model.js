@@ -154,7 +154,7 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
             var type = v.type, value = v.value;
             var date = new Date();
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
-            if (BI.isNull(type) && BI.isNotNull(v.year)) {
+            if (BI.isNull(type) && isValidDate(v)) {
                 return new Date(v.year, v.month, v.day).getTime();
             }
             switch (type) {
@@ -195,6 +195,10 @@ BI.FilterDataModel = BI.inherit(BI.Widget, {
                 case BICst.MULTI_DATE_CALENDAR:
                     return new Date(value.year, value.month, value.day).getTime();
             }
+        }
+
+        function isValidDate(v) {
+            return BI.isNotNull(v.year) && BI.isNotNull(v.month) && BI.isNotNull(v.day);
         }
     }
 });
