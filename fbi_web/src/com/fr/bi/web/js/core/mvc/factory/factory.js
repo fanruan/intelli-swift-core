@@ -17,8 +17,8 @@ BI.Factory = {
     createView : function(url, viewFunc, mData, vData, context){
         var modelFunc = viewFunc.replace(/View/, "Model");
         modelFunc = this.parsePath(modelFunc)(window);
-        if(modelFunc === viewFunc || !_.isFunction(modelFunc)){
-            modelFunc = "BI.Model";
+        if(!_.isFunction(modelFunc)){
+            modelFunc = BI.Model;
         }
 //        try {
             var model = new (modelFunc)(_.extend({}, mData, {
