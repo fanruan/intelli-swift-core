@@ -26,20 +26,21 @@ public class ProcessCalculatorImpl implements ProcessCalculator {
         JSONArray allRelationPathSet;
         JSONArray generatedTable;
         JSONArray generatedRelationAndPath;
+
+        if (recordJson.has("cube_start")) {
+            cube_start = recordJson.optLong("cube_start");
+        }
+        if (recordJson.has("cube_end")) {
+            cube_end = recordJson.optLong("cube_end");
+        }
+
+        allTableinfo = recordJson.optJSONObject("allTableInfo");
+        allRelationPathSet = recordJson.optJSONArray("allRelationInfo");
+
+        generatedTable = recordJson.optJSONArray("tables");
+        generatedRelationAndPath = recordJson.optJSONArray("connections");
+
         try {
-            if (recordJson.has("cube_start")) {
-                cube_start = recordJson.optLong("cube_start");
-            }
-            if (recordJson.has("cube_end")) {
-                cube_end = recordJson.optLong("cube_end");
-            }
-
-            allTableinfo = recordJson.optJSONObject("allTableInfo");
-            allRelationPathSet = recordJson.optJSONArray("allRelationInfo");
-
-            generatedTable = recordJson.optJSONArray("tables");
-            generatedRelationAndPath = recordJson.optJSONArray("connections");
-
             return calculateRate(cube_start, cube_end, allTableinfo, allRelationPathSet, generatedTable, generatedRelationAndPath);
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
