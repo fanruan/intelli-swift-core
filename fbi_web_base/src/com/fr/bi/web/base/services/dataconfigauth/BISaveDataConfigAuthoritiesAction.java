@@ -37,7 +37,7 @@ public class BISaveDataConfigAuthoritiesAction extends AbstractBIBaseAction {
                 BILoggerFactory.getLogger().error(e.getMessage());
             }
         }
-        BIConfigureManagerCenter.getDataConfigAuthorityManager().saveDataConfigAuthorities(authorities);
+        BIConfigureManagerCenter.getDataConfigAuthorityManager().saveDataConfigAuthorities(userId, authorities);
         synchronized (this) {
             BIConfigureManagerCenter.getDataConfigAuthorityManager().persistData(userId);
         }

@@ -9,16 +9,18 @@ public class BIConnection{
     private String name;
     private String schema;
     private long createBy = UserControl.getInstance().getSuperManagerID();  //默认admin
+    private long initTime;
 
     public BIConnection(String name, String schema) {
         this.name = name;
         this.schema = schema;
     }
 
-    public BIConnection(String name, String schema, long createBy) {
+    public BIConnection(String name, String schema, long createBy, long initTime) {
         this.name = name;
         this.schema = schema;
         this.createBy = createBy;
+        this.initTime = initTime;
     }
 
     public String getName() {
@@ -43,5 +45,13 @@ public class BIConnection{
 
     public void setCreateBy(long createBy) {
         this.createBy = createBy;
+    }
+
+    public long getInitTime() {
+        return initTime;
+    }
+
+    public void setInitTime(long initTime) {
+        this.initTime = initTime;
     }
 }

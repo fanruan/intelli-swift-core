@@ -37,7 +37,7 @@ public class BIGetDataLinkAction extends AbstractBIConfigureAction {
             for (BIDataConfigAuthority authority : authoritySet) {
                 if (ComparatorUtils.equals(authority.getView(), DBConstant.DATA_CONFIG_DESIGN.YES)) {
                     String id = authority.getId();
-                    String pId = authority.getParentId();
+                    String pId = authority.getpId();
                     if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION)) {
                         String connName = id.substring(DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.length());
                         Iterator<String> linkIterator = linksJO.keys();

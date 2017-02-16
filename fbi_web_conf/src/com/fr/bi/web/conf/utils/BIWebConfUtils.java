@@ -67,7 +67,7 @@ public class BIWebConfUtils {
             JSONArray authPackageConn = new JSONArray();
             for (BIDataConfigAuthority authority : authoritySet) {
                 String id = authority.getId();
-                String pId = authority.getParentId();
+                String pId = authority.getpId();
                 if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION)) {
                     authConn.put(id.split(DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION)[1]);
                 }
