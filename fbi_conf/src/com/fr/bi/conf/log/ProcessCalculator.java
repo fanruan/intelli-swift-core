@@ -13,7 +13,7 @@ public interface ProcessCalculator {
 
     double calculateProcess(JSONObject recordJson);
 
-    double calculateRate(long cube_start, long cube_end, JSONObject allTableinfo, JSONArray allRelationPathSet
+    double calculateRate(long cube_start, long cube_end, JSONObject allTableInfo, JSONArray allRelationPathSet
             , JSONArray generatedTable, JSONArray generatedRelationAndPath);
 
 }
