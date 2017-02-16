@@ -48,7 +48,7 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
     @Override
     public ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
         synchronized (this) {
-            if (!isAvailable(readerHandlerManager) || (isAvailable(readerHandlerManager) && (readerHandlerManager.isForceReleased()))) {
+            if (!isAvailable(readerHandlerManager)) {
                 ICubePrimitiveReader reader = readerManager.buildCubeReader(resourceLocation);
                 readerHandlerManager = new ReaderHandlerManager(reader, resourceLocation);
                 reader.setHandlerReleaseHelper(readerHandlerManager);
