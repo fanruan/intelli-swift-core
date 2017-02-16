@@ -41,6 +41,10 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
                 var res = BI.Func.getSearchResult(self.items, keyword);
                 callback(res.finded, res.matched, keyword);
             },
+            popup: {
+                type: "bi.searcher_view",
+                chooseType: BI.Selection.Multi
+            },
             masker: {
                 offset:{
                     top: 30
@@ -48,18 +52,25 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
             }
         });
 
+        this.adapter.on(BI.SelectList.EVENT_CHANGE, function(){
+            self.fireEvent(BI.ETLMultiValueChooserPane.EVENT_CONFIRM);
+        });
+
         this.searcher.on(BI.Searcher.EVENT_CHANGE, function(value, obj){
-            var values = self.adapter.getValue().value;
+            var initialValues = self.adapter.getValue();
+            var values = initialValues.type === BI.Selection.Multi ? (initialValues.values || []): (initialValues.assist || [])
             if (!obj.isSelected()) {
-                self.adapter.setValue(BI.deepWithout(values, obj.getValue()));
+                self.adapter.setValue({type: BI.Selection.Multi, value: BI.deepWithout(values, value)});
             } else {
-                values.push(obj.getValue());
-                self.adapter.setValue(values);
+                values.push(value);
+                self.adapter.setValue({type: BI.Selection.Multi, value: values});
             }
+            self.fireEvent(BI.ETLMultiValueChooserPane.EVENT_CONFIRM);
         });
 
         this.searcher.on(BI.Searcher.EVENT_SEARCHING, function(){
-            this.getView().setValue(self.adapter.getValue())
+            var value = self.adapter.getValue();
+            this.getView().setValue(value.type === BI.Selection.Multi ? (value.value || []): (value.assist || []))
         });
 
         BI.createWidget({
@@ -111,6 +122,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
     },
 
     getValue: function () {
+        this._adjustValue(this.adapter.getValue());
         return this.storeValue;
     },
 
