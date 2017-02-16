@@ -120,10 +120,10 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
     @Override
     public boolean isForceReleased() {
         try {
-            readWriteLock.writeLock().lock();
+            readWriteLock.readLock().lock();
             return isForceReleased;
         } finally {
-            readWriteLock.writeLock().unlock();
+            readWriteLock.readLock().unlock();
         }
     }
 
