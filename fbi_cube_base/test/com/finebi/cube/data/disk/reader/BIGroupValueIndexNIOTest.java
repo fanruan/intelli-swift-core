@@ -6,6 +6,7 @@ import com.finebi.cube.data.disk.reader.primitive.BIIntegerNIOReader;
 import com.finebi.cube.data.disk.reader.primitive.BILongNIOReader;
 import com.finebi.cube.data.disk.writer.BIByteArrayNIOWriter;
 import com.finebi.cube.data.disk.writer.BIGroupValueIndexNIOWriter;
+import com.finebi.cube.data.disk.writer.WriterHandlerManager;
 import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
 import com.finebi.cube.data.disk.writer.primitive.BIIntegerNIOWriter;
 import com.finebi.cube.data.disk.writer.primitive.BILongNIOWriter;
@@ -42,10 +43,20 @@ public class BIGroupValueIndexNIOTest extends TestCase {
         ICubeLongWriter startPositionRecorder = new BILongNIOWriter(start);
         ICubeIntegerWriter lengthRecorder = new BIIntegerNIOWriter(length);
         ICubeByteWriter contentRecorder = new BIByteNIOWriter(content);
+
+        startPositionRecorder.setHandlerReleaseHelper(new WriterHandlerManager(startPositionRecorder));
+        lengthRecorder.setHandlerReleaseHelper(new WriterHandlerManager(lengthRecorder));
+        contentRecorder.setHandlerReleaseHelper(new WriterHandlerManager(contentRecorder));
+
         writer = new BIGroupValueIndexNIOWriter(new BIByteArrayNIOWriter(startPositionRecorder, lengthRecorder, contentRecorder));
         ICubeLongReader startPositionRecorderReader = new BILongNIOReader(start);
         ICubeIntegerReader lengthRecorderReader = new BIIntegerNIOReader(length);
         ICubeByteReader contentRecorderReader = new BIByteNIOReader(content);
+
+        startPositionRecorderReader.setHandlerReleaseHelper(new ReaderHandlerManager(startPositionRecorderReader));
+        lengthRecorderReader.setHandlerReleaseHelper(new ReaderHandlerManager(lengthRecorderReader));
+        contentRecorderReader.setHandlerReleaseHelper(new ReaderHandlerManager(contentRecorderReader));
+
         reader = new BIGroupValueIndexNIOReader(new BIByteArrayNIOReader(startPositionRecorderReader, lengthRecorderReader, contentRecorderReader));
     }
 
@@ -90,7 +101,8 @@ public class BIGroupValueIndexNIOTest extends TestCase {
             /**
              * Expect Exception
              */
-            assertTrue(false);
+            return;
         }
+        assertTrue(false);
     }
 }

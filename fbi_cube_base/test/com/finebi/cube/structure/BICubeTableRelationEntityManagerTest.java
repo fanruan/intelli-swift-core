@@ -37,6 +37,7 @@ public class BICubeTableRelationEntityManagerTest extends TestCase {
         try {
             ICubeRelationEntityService relationEntityService = relationEntityManager.getRelationService(BICubePathUtils.convert(BITableSourceRelationPathTestTool.generatePathABC()));
             relationEntityService.addRelationIndex(0, GroupValueIndexTestTool.generateSampleIndex());
+            relationEntityService.forceReleaseWriter();
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), relationEntityService.getBitmapIndex(0));
 
         } catch (Exception e) {

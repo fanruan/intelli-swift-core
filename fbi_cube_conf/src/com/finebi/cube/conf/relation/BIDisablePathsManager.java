@@ -1,8 +1,12 @@
 package com.finebi.cube.conf.relation;
 
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.stable.exception.BITablePathAbsentException;
 import com.fr.bi.stable.exception.BITablePathDuplicationException;
-import com.finebi.cube.relation.BITableRelationPath;
+
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -16,7 +20,16 @@ public class BIDisablePathsManager {
     }
 
     public boolean isPathDisable(BITableRelationPath path) {
-        return disablePathContainer.contain(path);
+        List<BITableRelation> relationList = path.getAllRelations();
+
+        Set<BITableRelationPath> disablePaths = disablePathContainer.getContainer();
+        for (BITableRelationPath disablePath : disablePaths) {
+            List<BITableRelation> disableRelationList = disablePath.getAllRelations();
+            if (relationList.containsAll(disableRelationList)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addDisabledPath(BITableRelationPath path) throws BITablePathDuplicationException {

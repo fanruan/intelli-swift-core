@@ -75,27 +75,27 @@ public class BIRelationPathTest extends TestCase {
         }
     }
 
-    public void testGetOneTableInTwoPathIncludingCircle() {
-        try {
-            addRelation(BITableRelationTestTool.getAaBa());
-            addRelation(BITableRelationTestTool.getBcCc());
-            addRelation(BITableRelationTestTool.getCaAa());
-            Set<BITableRelationPath> relationSet = pathAnalysersService.analysisAllPath(new BITablePair(
-                    BITableTestTool.getB()
-                    , BITableTestTool.getB())
-
-            );
-            assertEquals(relationSet.size(), 1);
-            BITableRelationPath B_C_A_B = new BITableRelationPath();
-            B_C_A_B.addRelationAtHead(BITableRelationTestTool.getAaBa());
-            B_C_A_B.addRelationAtHead(BITableRelationTestTool.getCaAa());
-            B_C_A_B.addRelationAtHead(BITableRelationTestTool.getBcCc());
-            assertTrue(relationSet.contains(B_C_A_B));
-        } catch (Exception ignore) {
-            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
-            assertTrue(false);
-        }
-    }
+//    public void testGetOneTableInTwoPathIncludingCircle() {
+//        try {
+//            addRelation(BITableRelationTestTool.getAaBa());
+//            addRelation(BITableRelationTestTool.getBcCc());
+//            addRelation(BITableRelationTestTool.getCaAa());
+//            Set<BITableRelationPath> relationSet = pathAnalysersService.analysisAllPath(new BITablePair(
+//                    BITableTestTool.getB()
+//                    , BITableTestTool.getB())
+//
+//            );
+//            assertEquals(relationSet.size(), 1);
+//            BITableRelationPath B_C_A_B = new BITableRelationPath();
+//            B_C_A_B.addRelationAtHead(BITableRelationTestTool.getAaBa());
+//            B_C_A_B.addRelationAtHead(BITableRelationTestTool.getCaAa());
+//            B_C_A_B.addRelationAtHead(BITableRelationTestTool.getBcCc());
+//            assertTrue(relationSet.contains(B_C_A_B));
+//        } catch (Exception ignore) {
+//            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
+//            assertTrue(false);
+//        }
+//    }
 
     public void testGetTwoPartCoverAvailablePath() {
         try {

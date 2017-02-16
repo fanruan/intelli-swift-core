@@ -55,7 +55,7 @@ public class BITablePathBuilderTest extends BICubeTestBase {
         tablePathIndexBuilder.mainTask(null);
     }
 
-
+    // TODO: 2017-2-16 need repaired 
     public void testPathIndex() {
         try {
             buildTablePath();
@@ -72,6 +72,7 @@ public class BITablePathBuilderTest extends BICubeTestBase {
         }
     }
 
+    // TODO: 2017-2-16 need repaired
     public void testEmptyPath() {
         try {
             buildEmptyTablePath();

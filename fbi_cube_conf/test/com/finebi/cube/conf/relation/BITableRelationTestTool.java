@@ -67,4 +67,7 @@ public class BITableRelationTestTool {
         return new BITableRelation(BIFieldTestTool.getBa(), BIFieldTestTool.getEa());
     }
 
+    public static BITableRelation getCaDa() {
+        return new BITableRelation(BIFieldTestTool.getCa(), BIFieldTestTool.getDa());
+    }
 }
