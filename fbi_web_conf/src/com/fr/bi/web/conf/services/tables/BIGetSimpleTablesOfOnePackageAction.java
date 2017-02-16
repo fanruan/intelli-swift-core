@@ -6,16 +6,20 @@ import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.file.DatasourceManager;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -43,7 +47,18 @@ public class BIGetSimpleTablesOfOnePackageAction extends AbstractBIConfigureActi
             tableJO.put("id", tableId);
             tablesJO.put(tableId, tableJO);
         }
-        WebUtils.printAsJSON(res, tablesJO);
+
+        Iterator connNames = DatasourceManager.getInstance().getConnectionNameIterator();
+        JSONArray namesJA = new JSONArray();
+        while (connNames.hasNext()) {
+            namesJA.put(connNames.next());
+        }
+        namesJA.put(DBConstant.CONNECTION.SERVER_CONNECTION);
+
+        JSONObject jo = new JSONObject();
+        jo.put("tables", tablesJO);
+        jo.put("connNames", namesJA);
+        WebUtils.printAsJSON(res, jo);
     }
 
     //可能是新添加的分组、业务包
