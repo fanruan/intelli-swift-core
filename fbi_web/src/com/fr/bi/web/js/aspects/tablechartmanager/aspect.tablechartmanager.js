@@ -146,7 +146,7 @@ BI.TableChartManagerAspect = function () {
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "radar-tip-background");
                 break;
             case BICst.WIDGET.DONUT:
-                !((dim1Size > 0|| dim2Size > 0) && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "donut-tip-background");
+                !((dim1Size > 0 || dim2Size > 0) && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "donut-tip-background");
                 break;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "combine-m-tip-background");
@@ -201,9 +201,15 @@ BI.TableChartManagerAspect = function () {
             assertTip();
             self.mainPane.setVisible(true);
             self.textLabel.setVisible(true);
-            self.textLabel.setText(BI.i18nText("BI-Data_Miss_Tip"));
+            var tipText = BI.i18nText("BI-Data_Miss_Tip");
+            var tipCls = "data-miss-background";
+            if (BI.Utils.isNoAuthFieldExistByWidgetID(self.options.wId)) {
+                tipText = BI.i18nText("BI-No_Data_Auth_Tip");
+                tipCls = "no-data-auth-background";
+            }
+            self.textLabel.setText(tipText);
             self.contactAdmin.setVisible(true);
-            self.tipPane.element.removeClass().addClass("data-miss-background");
+            self.tipPane.element.removeClass().addClass(tipCls);
             return false;
         }
         self.mainPane && self.mainPane.setVisible(false);

@@ -77,6 +77,7 @@ public class FsResouceHelper {
                 "com/fr/bi/web/js/base/utils/heap.js",
                 "com/fr/bi/web/js/base/utils/aspect.js",
                 "com/fr/bi/web/js/base/utils/load.js",
+                "com/fr/bi/web/js/base/utils/detectElementResize.js",
 
 
                 "com/fr/bi/web/js/base/parsers/expression.js",

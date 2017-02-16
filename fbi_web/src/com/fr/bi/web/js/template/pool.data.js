@@ -7,6 +7,7 @@ Pool = {
     translations: ${translations},
     tables: ${tables},
     fields: ${fields},
+    noAuthFields: ${noAuthFields},
     excel_views: ${excel_views}
 };
 Pool.foreignRelations = {};

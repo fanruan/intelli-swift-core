@@ -5,20 +5,17 @@ package com.fr.bi.cal.analyze.cal.result;
 
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.dimension.filter.ResultFilter;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
-import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Daniel
@@ -34,23 +31,17 @@ public class CrossHeader extends Node implements Serializable {
 
     private CrossNode value;
 
+    public CrossHeader(){
+
+    }
+
     /**
      * 构造函数
      *
-     * @param key    字段信息
      * @param data   值
-     * @param getter 索引
      */
-    public CrossHeader(DimensionCalculator key, Object data, GroupValueIndex gvi) {
-        super(key, data);
-        this.setGroupValueIndex(gvi);
-    }
-
-    private static CrossNode getLeftNode(CrossNode valueNode, int[] index, int i) {
-        if (index.length > i) {
-            return getLeftNode(valueNode.getLeftChild(index[i]), index, ++i);
-        }
-        return valueNode;
+    public CrossHeader(Comparator comparator, Object data) {
+        super(comparator, data);
     }
 
     private static CrossNode getBottomNode(CrossNode valueNode, int[] index, int i) {
@@ -65,20 +56,9 @@ public class CrossHeader extends Node implements Serializable {
      */
     @Override
     protected CrossHeader createNewNode() {
-        CrossHeader header = new CrossHeader(key, this.getData(), null);
+        CrossHeader header = new CrossHeader(this.getComparator(), this.getData());
         header.setShowValue(getShowValue());
-        header.setGroupValueIndex(this.getGroupValueIndex());
         return header;
-    }
-
-    /**
-     * 合并this 与 参数header为一个header
-     *
-     * @param header 被合并的header
-     * @return 新的CrossHeader
-     */
-    public Node OrMerge(CrossHeader header) {
-        return OrMerge(header, null);
     }
 
     /**
@@ -97,41 +77,6 @@ public class CrossHeader extends Node implements Serializable {
      */
     public void setValue(CrossNode value) {
         this.value = value;
-    }
-
-    /**
-     * 根据位置直接获取右方子节点的值
-     *
-     * @param index 子节点的位置定位
-     * @param key   值的key
-     * @return 右方子节点的值
-     */
-    public Number getLeftValue(int[] index, Object key) {
-        return getLeftNode(index).getSummaryValue(key);
-    }
-
-    /**
-     * 获取右方子节点
-     *
-     * @param index 子节点的位置定位
-     * @return 右方子节点
-     */
-    public CrossNode getLeftNode(int[] index) {
-        if (index == null) {
-            return getValue();
-        }
-        return getLeftNode(getValue(), index, 0);
-    }
-
-    /**
-     * 根据位置和key获取下方子节点的值
-     *
-     * @param index 位置
-     * @param key   值的key
-     * @return 下方节点值
-     */
-    public Number getBottomValue(int[] index, Object key) {
-        return getBottomNode(index).getSummaryValue(key);
     }
 
     /**
@@ -201,45 +146,6 @@ public class CrossHeader extends Node implements Serializable {
             child.setValue(node);
             top.dealWithChildTop(child, node);
             child.dealWithChildLeft(top, node);
-            if (temp != null) {
-                CubeReadingUtils.setSibing(temp, node);
-            }
-            temp = node;
-        }
-    }
-
-    protected void dealWithChildTop4Merge(CrossHeader left, CrossNode baseNode, CrossNode left1, CrossNode left2, TargetGettingKey key2) {
-        CrossNode temp = null;
-        for (int i = 0, len = this.getChildLength(); i < len; i++) {
-            CrossHeader child = (CrossHeader) this.getChild(i);
-            Object v = child.getData();
-            CrossNode left1V = left1 != null ? left1.getTopChild(v) : null;
-            CrossNode left2V = left2 != null ? left2.getTopChild(v) : null;
-            CrossNode node = new CrossNode(child, left);
-            node.mergeValue(left1V, left2V, key2);
-            baseNode.addTopChild(node);
-            child.dealWithChildTop4Merge(left, node, left1V, left2V, key2);
-            if (temp != null) {
-                CubeReadingUtils.setSibing(temp, node);
-            }
-            temp = node;
-        }
-    }
-
-    protected void dealWithChildLeft4Merge(CrossHeader top, CrossNode baseNode, CrossHeader left1, CrossHeader left2, TargetGettingKey key2) {
-        CrossNode temp = null;
-        for (int i = 0, len = this.getChildLength(); i < len; i++) {
-            CrossHeader child = (CrossHeader) this.getChild(i);
-            Object v = child.getData();
-            CrossHeader left1H = left1 != null ? (CrossHeader) left1.getChild(v) : null;
-            CrossHeader left2H = left2 != null ? (CrossHeader) left2.getChild(v) : null;
-            CrossNode left1V = left1H != null ? left1H.getValue() : null;
-            CrossNode left2V = left2H != null ? left2H.getValue() : null;
-            CrossNode node = new CrossNode(top, child);
-            node.mergeValue(left1V, left2V, key2);
-            child.setValue(node);
-            top.dealWithChildTop4Merge(child, node, left1V, left2V, key2);
-            child.dealWithChildLeft4Merge(top, node, left1H, left2H, key2);
             if (temp != null) {
                 CubeReadingUtils.setSibing(temp, node);
             }
@@ -334,6 +240,13 @@ public class CrossHeader extends Node implements Serializable {
         return value.getSummaryValue();
     }
 
+    protected Map getNotNullSummaryValue() {
+        if (value == null) {
+            return new HashMap();
+        }
+        return value.getSummaryValue();
+    }
+
     /**
      * 根据值过滤创建新的节点
      *
@@ -381,235 +294,6 @@ public class CrossHeader extends Node implements Serializable {
     }
 
     /**
-     * 根据值过滤创建新的节点
-     *
-     * @param targetFilterMap 指标过滤
-     * @param targetsMap      所有的指标
-     * @return 新的节点
-     */
-    public CrossHeader createResultFilterNodeWithTopValue(Map<String, ResultFilter> targetFilterMap,
-                                                          Map<String, TargetCalculator> targetsMap) {
-        return createTargetFilterNodeWithTopValue(targetFilterMap, targetsMap);
-    }
-
-    private CrossHeader createTargetFilterNodeWithTopValue(Map<String, ResultFilter> targetFilterMap,
-                                                           Map<String, TargetCalculator> targetsMap) {
-        CrossHeader newnode = createNewNode();
-        newnode.value = this.value.cloneWithTopChildNode();
-        ChildsMap childs = this.childs;
-        CrossHeader tempNode = null;
-        for (int i = 0; i < childs.size(); i++) {
-            CrossHeader temp_node = (CrossHeader) childs.get(i);
-            boolean showNode = true;
-            if (targetFilterMap != null) {
-                Iterator<ResultFilter> it = targetFilterMap.values().iterator();
-                while (it.hasNext()) {
-                    if (!it.next().showNode(temp_node, targetsMap, null)) {
-                        showNode = false;
-                        break;
-                    }
-                }
-            }
-            if (showNode) {
-                CrossHeader child = temp_node.createTargetFilterNodeWithTopValue(targetFilterMap, targetsMap);
-                if (child == null) {
-                    continue;
-                }
-                if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
-                }
-                newnode.addChild(child);
-                tempNode = child;
-            }
-        }
-        if (tempNode == null && childs.size() > 0) {
-            return newnode;
-        }
-        return newnode;
-    }
-
-    /**
-     * 创建值排序后的左节点
-     *
-     * @param targetSort ??这是什么 @pony
-     * @param targetsMap 所有的指标
-     * @param top        上节点
-     * @return 排序后的左方节点
-     */
-    public CrossHeader createSortedNodeWithTopValue(NameObject targetSort,
-                                                    Map<String, TargetGettingKey> targetsMap, CrossHeader top) {
-        return createTargetSortedNodeWithTopValue(targetSort, targetsMap, top);
-    }
-
-    private CrossHeader createTargetSortedNodeWithTopValue(NameObject targetSort,
-                                                           Map<String, TargetGettingKey> targetsMap, CrossHeader top) {
-        CrossHeader newnode = createNewNode();
-        if (value == null) {
-            return newnode;
-        }
-        newnode.value = this.value.cloneWithTopChildNode(top);
-        ChildsMap childs = this.childs;
-        CrossHeader tempNode = null;
-        String sort_target = targetSort.getName();
-        List<CrossHeader> childNodes = childs.getNodeList();
-        final TargetGettingKey target_key = sort_target != null ? targetsMap.get(sort_target) : null;
-        final int sortType = (Integer) targetSort.getObject();
-        if (target_key != null) {
-            Collections.sort(childNodes, new Comparator<CrossHeader>() {
-                @Override
-                public int compare(CrossHeader o1, CrossHeader o2) {
-                    Number v1 = o1.getSummaryValue(target_key);
-                    Number v2 = o2.getSummaryValue(target_key);
-                    if (v1 == v2) {
-                        return 0;
-                    }
-                    if (v1 == null) {
-                        return 1;
-                    }
-                    if (v2 == null) {
-                        return -1;
-                    }
-                    if (v1.doubleValue() == v2.doubleValue()) {
-                        return 0;
-                    }
-                    boolean v = v1.doubleValue() < v2.doubleValue();
-                    return (sortType == BIReportConstant.SORT.ASC) == v ? -1 : 1;
-                }
-            });
-        }
-        for (int i = 0; i < childNodes.size(); i++) {
-            CrossHeader temp_node = childNodes.get(i);
-            CrossHeader child = temp_node.createTargetSortedNodeWithTopValue(targetSort, targetsMap, top);
-            //清除兄弟关系
-            temp_node.setSibling(null);
-            if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
-            }
-            newnode.addChild(child);
-            tempNode = child;
-        }
-        return newnode;
-    }
-
-    /**
-     * 根据排序规则创建新节点
-     *
-     * @param rowDimension 维度
-     * @param targetsMap   所有指标
-     * @param top          上位置
-     * @return 新节点
-     */
-    public CrossHeader createSortedNodeWithTopValue(BIDimension[] rowDimension,
-                                                    Map<String, TargetGettingKey> targetsMap, CrossHeader top) {
-        return createSortedNodeWithTopValue(0, rowDimension, targetsMap, top);
-    }
-
-    private CrossHeader createSortedNodeWithTopValue(int index, BIDimension[] rowDimension,
-                                                     Map<String, TargetGettingKey> targetsMap, CrossHeader top) {
-
-        CrossHeader newnode = createNewNode();
-        newnode.value = this.value.cloneWithTopChildNode(top);
-        if (rowDimension.length == index) {
-            return newnode;
-        }
-
-        ChildsMap childs = this.childs;
-        CrossHeader tempNode = null;
-        String sort_target = rowDimension[index].getSortTarget();
-        List<CrossHeader> childNodes = childs.getNodeList();
-        final TargetGettingKey target_key = sort_target != null ? targetsMap.get(sort_target) : null;
-        final int sortType = rowDimension[index].getSortType();
-        if (target_key != null) {
-            Collections.sort(childNodes, new Comparator<CrossHeader>() {
-                @Override
-                public int compare(CrossHeader o1, CrossHeader o2) {
-                    Number v1 = o1.getSummaryValue(target_key);
-                    Number v2 = o2.getSummaryValue(target_key);
-                    if (v1 == v2) {
-                        return 0;
-                    }
-                    if (v1 == null) {
-                        return 1;
-                    }
-                    if (v2 == null) {
-                        return -1;
-                    }
-                    if (v1.doubleValue() == v2.doubleValue()) {
-                        return 0;
-                    }
-                    boolean v = v1.doubleValue() < v2.doubleValue();
-                    return (sortType == BIReportConstant.SORT.ASC) == v ? -1 : 1;
-                }
-            });
-        }
-        for (int i = 0; i < childNodes.size(); i++) {
-            CrossHeader temp_node = childNodes.get(i);
-            CrossHeader child = temp_node.createSortedNodeWithTopValue(index + 1, rowDimension, targetsMap, top);
-            //清除兄弟关系
-            temp_node.setSibling(null);
-            if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
-            }
-            newnode.addChild(child);
-            tempNode = child;
-        }
-        return newnode;
-    }
-
-    /**
-     * 创建排序的节点
-     *
-     * @param index       位置
-     * @param sortType    排序规则
-     * @param sort_target 排序指标
-     * @param targetsMap  所有指标
-     * @return
-     */
-    protected CrossHeader createSortedNodeWithTopValue(final int[] index, final int sortType, String sort_target, Map<String, TargetGettingKey> targetsMap) {
-        CrossHeader newnode = createNewNode();
-        newnode.value = this.value.cloneWithTopChildNode();
-        ChildsMap childs = this.childs;
-        CrossHeader tempNode = null;
-        List<CrossHeader> childNodes = childs.getNodeList();
-        final TargetGettingKey target_key = sort_target != null ? targetsMap.get(sort_target) : null;
-        if (target_key != null) {
-            Collections.sort(childNodes, new Comparator<CrossHeader>() {
-                @Override
-                public int compare(CrossHeader o1, CrossHeader o2) {
-                    Number v1 = o1.getBottomValue(index, target_key);
-                    Number v2 = o2.getBottomValue(index, target_key);
-                    if (v1 == v2) {
-                        return 0;
-                    }
-                    if (v1 == null) {
-                        return 1;
-                    }
-                    if (v2 == null) {
-                        return -1;
-                    }
-                    if (v1.doubleValue() == v2.doubleValue()) {
-                        return 0;
-                    }
-                    boolean v = v1.doubleValue() < v2.doubleValue();
-                    return (sortType == BIReportConstant.SORT.ASC) == v ? -1 : 1;
-                }
-            });
-        }
-        for (int i = 0; i < childNodes.size(); i++) {
-            CrossHeader temp_node = childNodes.get(i);
-            CrossHeader child = temp_node.createSortedNodeWithTopValue(index, sortType, sort_target, targetsMap);
-            //清除兄弟关系
-            temp_node.setSibling(null);
-            if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
-            }
-            newnode.addChild(child);
-            tempNode = child;
-        }
-        return newnode;
-    }
-
-    /**
      * 创建只有key值的新左节点
      *
      * @param key 值的key
@@ -632,23 +316,6 @@ public class CrossHeader extends Node implements Serializable {
         }
         return n;
     }
-
-    /**
-     * 把null变成0
-     *
-     * @param keys 所有keys
-     */
-    public void clearNullSummary(TargetGettingKey[] keys) {
-        if (this.getChildLength() == 0) {
-            return;
-        }
-        int childLen = childs.size();
-        for (int i = 0; i < childLen; i++) {
-            ((CrossHeader) childs.get(i)).clearNullSummary(keys);
-        }
-        this.value.clearNullSummary(keys);
-    }
-
 
     /**
      * 克隆新的值
@@ -675,32 +342,6 @@ public class CrossHeader extends Node implements Serializable {
     }
 
     /**
-     * 获取第几页的值
-     *
-     * @param page 页码
-     * @return 注释
-     */
-    @Override
-    public Node createPageNode(int page) {
-        CrossHeader node = (CrossHeader) super.createPageNode(page);
-        node.setValue(getValue());
-        return node;
-    }
-
-    /**
-     * 获取第几页的值
-     *
-     * @param page 页码
-     * @return 注释
-     */
-    @Override
-    public Node createTopPageNode(int page) {
-        CrossHeader node = (CrossHeader) super.createTopPageNode(page);
-        node.setValue(getValue());
-        return node;
-    }
-
-    /**
      * 创建node的前count个
      *
      * @param count 个数
@@ -722,19 +363,6 @@ public class CrossHeader extends Node implements Serializable {
     @Override
     public Node createAfterCountNode(int count) {
         CrossHeader node = (CrossHeader) super.createAfterCountNode(count);
-        node.setValue(getValue());
-        return node;
-    }
-
-    /**
-     * 合并两个
-     *
-     * @param node1 新的
-     * @param shift 偏移量
-     * @return 新的node
-     */
-    public Node createShiftCountNode(CrossHeader node1, int shift) {
-        CrossHeader node = (CrossHeader) super.createShiftCountNode(node1, shift);
         node.setValue(getValue());
         return node;
     }

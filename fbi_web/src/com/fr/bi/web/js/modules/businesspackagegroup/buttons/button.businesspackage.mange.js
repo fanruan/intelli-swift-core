@@ -29,18 +29,48 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
             self.packageNameEditor.element.addClass("editor-border");
         });
 
-        this.deleteButton = BI.createWidget({
-            type: "bi.icon_button",
-            cls: "delete-font-package delete-font-style",
-            title: BI.i18nText("BI-Delete_Package"),
-            iconWidth: 20,
-            iconHeight: 20,
-            stopPropagation: true,
-            invisible: true
-        });
-
-        this.deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BusinessPackageButton.EVENT_CLICK_DELETE, self);
+        this.deleteCombo = BI.createWidget({
+            type: "bi.bubble_combo",
+            el: {
+                type: "bi.icon_button",
+                cls: "delete-font-package delete-font-style",
+                title: BI.i18nText("BI-Delete_Package"),
+                iconWidth: 20,
+                iconHeight: 20
+            },
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        self.deleteCombo.hideView();
+                        self.fireEvent(BI.BusinessPackageButton.EVENT_CLICK_DELETE, self);
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        self.deleteCombo.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Is_Delete_Package"),
+                        cls: "package-delete-label",
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            },
+            invisible: true,
+            stopPropagation: true
         });
 
         var packageButton = BI.createWidget({
@@ -128,7 +158,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
                 top: 110,
                 bottom: 0
             }, {
-                el: this.deleteButton,
+                el: this.deleteCombo,
                 right: 0,
                 top: 0
             }, {
@@ -176,7 +206,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
     hover: function () {
         BI.BusinessPackageButton.superclass.hover.apply(this, arguments);
         this.checkboxIcon.setVisible(true);
-        this.deleteButton.setVisible(true);
+        this.deleteCombo.setVisible(true);
         this.renameButton.setVisible(true);
     },
 
@@ -185,7 +215,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
         if (!this.isSelected()) {
             this.checkboxIcon.setVisible(false);
         }
-        this.deleteButton.setVisible(false);
+        this.deleteCombo.setVisible(false);
         this.renameButton.setVisible(false);
     },
 

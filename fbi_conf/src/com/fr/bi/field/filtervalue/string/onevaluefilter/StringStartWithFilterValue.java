@@ -55,6 +55,11 @@ public class StringStartWithFilterValue extends StringOneValueFilterValue {
         }
     }
 
+    @Override
+    public boolean canCreateFilterIndex() {
+        return true;
+    }
+
     /**
      * 是否包含
      *

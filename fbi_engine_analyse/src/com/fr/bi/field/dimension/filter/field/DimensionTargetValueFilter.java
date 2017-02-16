@@ -4,12 +4,11 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
-import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.fr.bi.field.filtervalue.FilterValueFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -33,9 +32,13 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
         filterValue = FilterValueFactory.parseFilterValue(jo, userId);
     }
 
+    public FilterValue getFilterValue() {
+        return filterValue;
+    }
+
     /* (non-Javadoc)
-     * @see com.fr.bi.report.data.dimension.filter.ResultFilter#getUsedTargets()
-     */
+         * @see com.fr.bi.report.data.dimension.filter.ResultFilter#getUsedTargets()
+         */
     @Override
     public List<String> getUsedTargets() {
         if (target_id == null) {
@@ -87,12 +90,7 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
     }
 
     @Override
-    public boolean needParentRelation() {
-        return filterValue instanceof NFilterValue;
-    }
-
-    @Override
-    public boolean showNode(LightNode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
+    public boolean showNode(BINode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
         TargetCalculator targetCalculator = targetsMap.get(target_id);
         if (targetCalculator != null) {
             return filterValue.showNode(node, targetsMap.get(target_id).createTargetGettingKey(), loader);

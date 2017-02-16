@@ -25,6 +25,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
 
 
     defaultItems: function () {
+        var showFieldDisabled = this.checkShowFieldDisabled();
         return [
             [{
                 el: {
@@ -57,9 +58,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }],
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),
-                title: BI.i18nText("BI-Dimension_Filter_Title"),
                 value: BICst.DIMENSION_STRING_COMBO.FILTER,
-                title: BI.i18nText("BI-Dimension_Filter_Tip"),
                 cls: "filter-h-font"
             }],
             [{
@@ -71,7 +70,9 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 text: BI.i18nText("BI-Show_Field"),
                 value: BICst.DIMENSION_STRING_COMBO.SHOW_FIELD,
                 cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : "",
-                disabled: this.checkShowFieldDisabled()
+                disabled: showFieldDisabled,
+                tipType: "success",
+                title: showFieldDisabled ? BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension") : BI.i18nText("BI-Show_Field")
             }],
             [{
                 text: BI.i18nText("BI-Rename"),

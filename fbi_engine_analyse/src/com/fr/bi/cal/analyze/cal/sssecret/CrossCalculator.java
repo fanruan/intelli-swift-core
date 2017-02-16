@@ -3,18 +3,15 @@
  */
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.cal.thread.EvaluateSummaryValuePool;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.stable.report.key.SummaryCalculator;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.cal.analyze.cal.result.*;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.TargetCalculator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 
 /**
  * @author Daniel
@@ -76,42 +73,32 @@ public class CrossCalculator {
                 left().dealWithChildLeft(top(), baseNode);
                 left().buildLeftRelation(top());
             }
-            List<SummaryCalculator> threadList = new ArrayList<SummaryCalculator>();
             if (calculators == null) {
                 return;
             }
-            createSumIndex(left(), threadList, expander.getYExpander(), expander.getYExpander(), expander.getXExpander());
+            createSumIndex(left(), expander.getYExpander(), expander.getYExpander(), expander.getXExpander());
         }
 
-        private void createSumIndex(CrossHeader left, List threadList, NodeExpander yp, NodeExpander y, NodeExpander x) {
+        private void createSumIndex(CrossHeader left, NodeExpander yp, NodeExpander y, NodeExpander x) {
             if (yp != null) {
-                dealWithCrossNode(left.getValue(), threadList, x, x);
+                dealWithCrossNode(left.getValue(), x, x);
                 for (int i = 0; i < left.getChildLength(); i++) {
-                    createSumIndex((CrossHeader) left.getChild(i), threadList, y, y == null ? null : y.getChildExpander((left.getChild(i)).getShowValue()), x);
+                    createSumIndex((CrossHeader) left.getChild(i), y, y == null ? null : y.getChildExpander((left.getChild(i)).getShowValue()), x);
                 }
             }
         }
 
-        private void dealWithCrossNode(CrossNode node, List threadList, NodeExpander xp, NodeExpander x) {
+        private void dealWithCrossNode(CrossNode node, NodeExpander xp, NodeExpander x) {
             if (xp != null) {
                 for (int i = 0; i < calculators.size(); i++) {
                     TargetCalculator calculator = calculators.get(i);
                     calculator.calculateFilterIndex(loader);
-//	                if (node.getSummaryValue(key) == null) {
                     //TODO 改成多线程
-                    SummaryCalculator sc = calculator.createSummaryCalculator(loader.getTableIndex(calculator.createTableKey().getTableSource()), node);
-                    sc.setTargetGettingKey(calculator.createTargetGettingKey());
-                    Future futureValue = EvaluateSummaryValuePool.evaluateValue(sc);
-                    try {
-                        node.setSummaryValue(calculator.createTargetGettingKey(), futureValue.get());
-                    } catch (Exception ex) {
-
-                    }
-
-//	                }
+                    TargetGettingKey key = calculator.createTargetGettingKey();
+                    calculator.doCalculator(loader.getTableIndex(calculator.createTableKey().getTableSource()), node, node.getIndex4CalByTargetKey(key), key);
                 }
                 for (int i = 0; i < node.getTopChildLength(); i++) {
-                    dealWithCrossNode(node.getTopChild(i), threadList, x, x == null ? null : x.getChildExpander(node.getTopChild(i).getHead().getShowValue()));
+                    dealWithCrossNode(node.getTopChild(i), x, x == null ? null : x.getChildExpander(node.getTopChild(i).getHead().getShowValue()));
                 }
             }
         }

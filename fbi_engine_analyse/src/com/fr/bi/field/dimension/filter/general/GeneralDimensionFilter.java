@@ -60,13 +60,13 @@ public abstract class GeneralDimensionFilter extends AbstractDimensionFilter {
 
 
     @Override
-    public boolean needParentRelation() {
-        for (DimensionFilter filter : childs) {
-            if (filter.needParentRelation()) {
-                return true;
+    public boolean canCreateDirectFilter() {
+        for (DimensionFilter filter : childs){
+            if (!filter.canCreateDirectFilter()){
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     @Override

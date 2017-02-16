@@ -29,23 +29,6 @@ public class StringNullFilterValue extends StringNoneValueFilterValue {
         return StringUtils.isEmpty(value);
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        return true;
-    }
-
     /**
      * 获取过滤后的索引
      *

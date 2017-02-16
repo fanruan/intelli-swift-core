@@ -12,7 +12,7 @@ BI.BubbleDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _init: function() {
         BI.BubbleDataLabelDetailedSettingPopup.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         //系列名
         this.showSeriesName = BI.createWidget({
@@ -22,7 +22,7 @@ BI.BubbleDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showSeriesName.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.BubbleDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         //值
@@ -33,7 +33,7 @@ BI.BubbleDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.showValue.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.BubbleDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         var show = BI.createWidget({
@@ -59,7 +59,7 @@ BI.BubbleDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.position.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BubbleDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
 
         var positionWrapper = this._createWrapper(BI.i18nText("BI-Show_Position"), this.position);
@@ -71,7 +71,7 @@ BI.BubbleDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: 230
         });
         this.textStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BubbleDataLabelDetailedSettingPopup.EVENT_CHANGE)
+            o.onChange();
         });
         var textStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.textStyle);
 
@@ -119,5 +119,4 @@ BI.BubbleDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
-BI.BubbleDataLabelDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.bubble_data_label_detailed_setting_popup", BI.BubbleDataLabelDetailedSettingPopup);

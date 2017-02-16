@@ -232,39 +232,11 @@ BI.ETL = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.ETL.EVENT_SAVE, data);
             });
         });
-        var removeButton = BI.createWidget({
-            type: "bi.text_button",
-            text: BI.i18nText("BI-Shift_Out_Package"),
-            cls: "etl-remove-table",
-            handler: function () {
-                var mask = BI.createWidget({
-                    type: "bi.loading_mask",
-                    masker: BICst.BODY_ELEMENT,
-                    text: BI.i18nText("BI-Loading")
-                });
-                BI.Utils.checkTableInUse({
-                    id: self.model.getId()
-                }, function (res) {
-                    if (BI.isNotNull(res) && res["inUse"] === true) {
-                        BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Table_In_Use_Tip"), function (flag) {
-                            if (flag === true) {
-                                self.fireEvent(BI.ETL.EVENT_REMOVE);
-                            }
-                        });
-                    } else {
-                        BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Is_Delete_Table"), function (flag) {
-                            if (flag === true) {
-                                self.fireEvent(BI.ETL.EVENT_REMOVE);
-                            }
-                        });
-                    }
-                }, function () {
-                    mask.destroy();
-                });
-            }
-        });
+
+        var removeCombo = this._createRemoveCombo(this);
+
         if (this.model.isNewTable() === true) {
-            removeButton.setVisible(false);
+            removeCombo.setVisible(false);
         }
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
@@ -278,7 +250,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                     handler: function () {
                         self.fireEvent(BI.ETL.EVENT_CANCEL);
                     }
-                }, removeButton],
+                }, removeCombo],
                 right: [
                     this.updateSetButton,
                     this.excelViewButton,
@@ -290,6 +262,81 @@ BI.ETL = BI.inherit(BI.Widget, {
             rrgap: this.constants.ETL_PANE_BUTTON_GAP,
             rlgap: this.constants.ETL_DATA_SET_PANE_GAP
         })
+    },
+
+    _createRemoveCombo : function (self) {
+        var removeButton = BI.createWidget({
+            type: "bi.text_button",
+            text: BI.i18nText("BI-Shift_Out_Package"),
+            cls: "etl-remove-table"
+        });
+
+        var removeCombo = BI.createWidget({
+            type: "bi.bubble_combo",
+            el: removeButton,
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        removeCombo.hideView();
+                        self.fireEvent(BI.ETL.EVENT_REMOVE);
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        removeCombo.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.loader",
+                        logic: {
+                            dynamic: true,
+                            scrolly: true
+                        },
+                        itemsCreator: function (options, popuplate) {
+                            var mask = BI.createWidget({
+                                type: "bi.loading_mask",
+                                masker: BICst.BODY_ELEMENT,
+                                text: BI.i18nText("BI-Loading")
+                            });
+                            BI.Utils.checkTableInUse({
+                                id: self.model.getId()
+                            }, function (res) {
+                                if (BI.isNotNull(res) && res["inUse"] === true) {
+                                    popuplate([{
+                                        type: "bi.label",
+                                        text:  BI.i18nText("BI-Table_In_Use_Tip"),
+                                        cls: "elt-remove-label",
+                                        textAlign: "left",
+                                        width: 300
+                                    }])
+                                } else {
+                                    popuplate([{
+                                        type: "bi.label",
+                                        text:  BI.i18nText("BI-Is_Delete_Table"),
+                                        cls: "elt-remove-label",
+                                        textAlign: "left",
+                                        width: 300
+                                    }])
+                                }
+                            }, function () {
+                                mask.destroy();
+                            });
+                        }
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            }
+        });
+        return removeCombo;
     },
 
     _onClickUpdateSet: function () {

@@ -417,14 +417,12 @@ public class ConfResouceHelper {
                 //excel
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.js",
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.model.js",
-                "com/fr/bi/web/js/extend/excel/upload/button.uploadexcel.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/excel.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/excel.fieldset.table.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/combo.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/trigger.fieldset.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/item.excelfieldtype.js",
                 "com/fr/bi/web/js/extend/excel/upload/fieldset/combo/popup.fieldset.js",
-                "com/fr/bi/web/js/extend/excel/upload/tipcombo/excel.tipcombo.js",
 
                 "com/fr/bi/web/js/extend/sql/editsql/sql.edit.js",
                 "com/fr/bi/web/js/extend/sql/editsql/sql.edit.model.js",
@@ -434,11 +432,11 @@ public class ConfResouceHelper {
                 "com/fr/bi/web/js/extend/sql/etl.sql.plugin.js",
 
                 //多路径设置
-                "com/fr/bi/web/js/fragments/multirelation/expander.multirelation.js",
-                "com/fr/bi/web/js/fragments/multirelation/multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/item.multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/item.tablefield.multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/view.searcher.multirelation.js",
+                "com/fr/bi/web/js/fragments/multirelation/multirelation.js",
+                "com/fr/bi/web/js/fragments/multirelation/multirelationtitle.js",
 
                 //数据连接
                 "com/fr/bi/web/js/modules/datalink/widget.testlink.loading.js",

@@ -49,7 +49,7 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                 right: 10,
                 bottom: 10
             }, {
-                el: this.tools,
+                el: this.comboGroup,
                 top: 0,
                 right: 10
             }]
@@ -117,14 +117,62 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE:
-                    BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Sure_Delete_Current_Component") + self.model.get("name") + "?", function (v) {
-                        if (v === true) {
-                            self.model.destroy();
-                            BI.Utils.broadcastAllWidgets2Refresh();
-                        }
-                    });
+                    self.del.showView();
                     break;
             }
+        });
+        this.del = BI.createWidget({
+            type: "bi.bubble_combo",
+            el: {},
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        self.del.hideView();
+                        self.model.destroy();
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        self.del.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Sure_Delete_Current_Component"),
+                        cls: "delete-label",
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            }
+        });
+
+        this.comboGroup = BI.createWidget({
+            type: "bi.absolute",
+            items: [
+                {
+                    el: this.tools,
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0
+                },{
+                    el:this.del,
+                    bottom: 0,
+                    left: this.tools.combo.options.width / 2
+                }],
+            height: this.tools.combo.options.height,
+            width: this.tools.combo.options.width
         });
         this.tools.setVisible(false);
     },

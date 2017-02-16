@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 
 
 public class NumberTopNFilterValue extends NumberNFilterValue implements NFilterValue{
@@ -25,8 +25,8 @@ public class NumberTopNFilterValue extends NumberNFilterValue implements NFilter
      * @return 是否显示
      */
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        LightNode parentNode = node.getParent();
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+        BINode parentNode = node.getParent();
         double nline = parentNode.getChildTOPNValueLine(targetKey, n);
         //FIXME 不存在的值怎么处理呢
         Number targetValue = node.getSummaryValue(targetKey);

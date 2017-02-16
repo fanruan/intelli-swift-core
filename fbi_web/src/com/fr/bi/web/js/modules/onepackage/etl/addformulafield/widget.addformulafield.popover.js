@@ -162,16 +162,29 @@ BI.AddFormulaFieldPopover = BI.inherit(BI.BarPopoverSection, {
     },
 
     _getFormulaFiledItems: function () {
-        var fieldItems = [];
+        var fieldItems = [[], [], []];
         var fields = this.model.getFields();
-        BI.each(fields, function (i, fieldObjs) {
+        BI.each(fields, function (idx, fieldObjs) {
             BI.each(fieldObjs, function (i, field) {
+                var index = 0;
+                switch (field.field_type){
+                    case BICst.COLUMN.STRING:
+                        index = 1;
+                        break;
+                    case BICst.COLUMN.NUMBER:
+                    case BICst.COLUMN.COUNTER:
+                        index = 0;
+                        break;
+                    case BICst.COLUMN.DATE:
+                        index = 2;
+                        break;
+                }
                 var fieldItem = {};
                 fieldItem.fieldType = field.field_type;
                 fieldItem.value = field.field_name;
                 fieldItem.text = field.field_name;
                 fieldItem.title = field.field_name;
-                fieldItems.push(fieldItem);
+                fieldItems[index].push(fieldItem);
             })
         });
         return fieldItems

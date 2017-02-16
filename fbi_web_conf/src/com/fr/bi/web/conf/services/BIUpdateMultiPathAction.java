@@ -26,10 +26,9 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
 
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String disabledRelationsStr = WebUtils.getHTTPRequestParameter(req, "disabledRelations");
-        String availableRelationsStr = WebUtils.getHTTPRequestParameter(req, "availableRelations");
+        String relation = WebUtils.getHTTPRequestParameter(req, "relation");
         long userId = ServiceUtils.getCurrentUserID(req);
-        updateDisablePath(disabledRelationsStr, availableRelationsStr, userId);
+        updateRelation(relation, userId);
     }
 
     @Override
@@ -37,49 +36,23 @@ public class BIUpdateMultiPathAction extends AbstractBIConfigureAction {
         return "update_multi_path";
     }
 
-    private void updateDisablePath(String disabledRelationStr, String availableRelationStr, long userId) throws Exception {
-        JSONArray disabledJa = new JSONArray(disabledRelationStr);
-        JSONArray availableJa = new JSONArray(availableRelationStr);
-
-
-        for (int i = 0; i < disabledJa.length(); i++) {
-            JSONArray pathJa = disabledJa.getJSONArray(i);
-            BITableRelationPath disablePath = createPath(pathJa);
-            BusinessTable foreignTable = getFirstForeignTable(pathJa);
-            BusinessTable primaryTable = getLastPrimaryTable(pathJa);
-            Set<BITableRelationPath> allPaths = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, foreignTable, primaryTable);
-            Iterator it = allPaths.iterator();
-            while (it.hasNext()) {
-                BITableRelationPath path = (BITableRelationPath) it.next();
-                if (ComparatorUtils.equals(path, disablePath)) {
-                    if (!BICubeConfigureCenter.getTableRelationManager().isPathDisable(userId, path)) {
-                        BICubeConfigureCenter.getTableRelationManager().addDisableRelations(userId, path);
-                    }
+    private void updateRelation(String relation, long userId) throws Exception {
+        JSONArray relationJa = new JSONArray(relation);
+        BITableRelationPath pathJa = createPath(relationJa);
+        BusinessTable foreignTable = getFirstForeignTable(relationJa);
+        BusinessTable primaryTable = getLastPrimaryTable(relationJa);
+        Set<BITableRelationPath> allPaths = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, foreignTable, primaryTable);
+        Iterator it = allPaths.iterator();
+        while (it.hasNext()) {
+            BITableRelationPath path = (BITableRelationPath) it.next();
+            if (ComparatorUtils.equals(path, pathJa)) {
+                if (BICubeConfigureCenter.getTableRelationManager().isPathDisable(userId, path)) {
+                    BICubeConfigureCenter.getTableRelationManager().removeDisableRelations(userId, path);
+                } else {
+                    BICubeConfigureCenter.getTableRelationManager().addDisableRelations(userId, path);
                 }
             }
         }
-
-        for (int i = 0; i < availableJa.length(); i++) {
-            JSONArray pathJa = availableJa.getJSONArray(i);
-            BITableRelationPath availablePath = createPath(pathJa);
-            BusinessTable foreignTable = getFirstForeignTable(pathJa);
-            BusinessTable primaryTable = getLastPrimaryTable(pathJa);
-            Set<BITableRelationPath> allPaths = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, foreignTable, primaryTable);
-            Iterator it = allPaths.iterator();
-            while (it.hasNext()) {
-                BITableRelationPath path = (BITableRelationPath) it.next();
-                if (ComparatorUtils.equals(path, availablePath)) {
-                    if (BICubeConfigureCenter.getTableRelationManager().isPathDisable(userId, path)) {
-                        BICubeConfigureCenter.getTableRelationManager().removeDisableRelations(userId, path);
-                    }
-                }
-            }
-        }
-
-        BIConfigureManagerCenter.getCubeConfManager().setMultiPathVersion();
-        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NEED_GENERATE_CUBE);
-        BICubeConfigureCenter.getTableRelationManager().persistData(userId);
-        BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
 
     }
 

@@ -29,9 +29,9 @@ public class CrossNode4Calculate extends CrossNode {
     public CrossNode4Calculate(CrossHeader head, CrossHeader left, TargetCalculator[] calculators) {
         super(head, left);
         for (int i = 0; i < calculators.length; i++) {
-            GroupValueIndex headerGvi = this.getHead().getGroupValueIndex(calculators[i].createTargetGettingKey());
+            GroupValueIndex headerGvi = this.getHead().getTargetIndex(calculators[i].createTargetGettingKey());
             GroupValueIndex h = headerGvi != null ? headerGvi : this.getHead().getTargetIndex(calculators[i].createTargetGettingKey());
-            GroupValueIndex leftGvi = this.getLeft().getGroupValueIndex(calculators[i].createTargetGettingKey());
+            GroupValueIndex leftGvi = this.getLeft().getTargetIndex(calculators[i].createTargetGettingKey());
             GroupValueIndex l = leftGvi != null ? leftGvi : this.getLeft().getTargetIndex(calculators[i].createTargetGettingKey());
             GroupValueIndex gvi = getAndGvi(h, l);
             if (gvi != null) {

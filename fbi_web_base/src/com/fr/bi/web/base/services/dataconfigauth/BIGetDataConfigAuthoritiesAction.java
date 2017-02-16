@@ -8,28 +8,22 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
- * 获取数据配置权限
- * Created by Young's on 2017/1/17.
+ * 所有权限信息
+ * Created by Young's on 2017/2/14.
  */
 public class BIGetDataConfigAuthoritiesAction extends AbstractBIBaseAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
+
+        Set<BIDataConfigAuthority> authoritySet = BIConfigureManagerCenter.getDataConfigAuthorityManager().getAllDataConfigAuthorities();
         JSONArray ja = new JSONArray();
-        Set<BIDataConfigAuthority> authoritySet = BIConfigureManagerCenter.getDataAuthorityManager().getAllDataConfigAuthorities();
-        Iterator<BIDataConfigAuthority> authorityIterator = authoritySet.iterator();
-        while (authorityIterator.hasNext()) {
-            BIDataConfigAuthority authority = authorityIterator.next();
-            if (authority != null) {
-                ja.put(authority.createJSON());
-            }
+        for (BIDataConfigAuthority authority : authoritySet) {
+            ja.put(authority.createJSON());
         }
-
         WebUtils.printAsJSON(res, ja);
-
     }
 
     @Override

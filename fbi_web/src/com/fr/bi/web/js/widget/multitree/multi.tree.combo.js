@@ -228,16 +228,12 @@ BI.MultiTreeCombo = BI.inherit(BI.Single, {
     },
 
     setEnable: function(v){
-        this.trigger.setEnable(v);
         this.combo.setEnable(v);
     },
 
     setValue: function (v) {
         this.storeValue.value = v || {};
         this.combo.setValue({
-            value: v || {}
-        });
-        this.trigger.setValue({
             value: v || {}
         });
     },

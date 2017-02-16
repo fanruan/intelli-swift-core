@@ -6,8 +6,8 @@ import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
+import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.BITargetKey;
-import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
 import java.util.ArrayList;
@@ -25,12 +25,12 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
     }
 
     @Override
-    public void calCalculateTarget(LightNode node) {
+    public void calCalculateTarget(BINode node) {
         Object key = getCalKey();
         if (key == null) {
             return;
         }
-        LightNode tempNode = node;
+        BINode tempNode = node;
         for (int i = 0; i < start_group; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
@@ -38,7 +38,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
             tempNode = tempNode.getFirstChild();
         }
         List nodeList = new ArrayList();
-        LightNode cursor_node = tempNode;
+        BINode cursor_node = tempNode;
         while (cursor_node != null) {
             nodeList.add(new RankDealWith(cursor_node));
             cursor_node = cursor_node.getSibling();
@@ -82,9 +82,9 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
     }
 
     private class RankDealWith implements java.util.concurrent.Callable {
-        private LightNode rank_node;
+        private BINode rank_node;
 
-        private RankDealWith(LightNode rank_node) {
+        private RankDealWith(BINode rank_node) {
             this.rank_node = rank_node;
         }
 
@@ -95,13 +95,13 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
             String targetName = ((TargetGettingKey) key).getTargetName();
             BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
             int deep = 0;
-            LightNode temp_node = rank_node;
+            BINode temp_node = rank_node;
             while (temp_node.getFirstChild() != null) {
                 temp_node = temp_node.getFirstChild();
                 deep++;
             }
-            LightNode cursor_node = temp_node;
-            Double sum = null;
+            BINode cursor_node = temp_node;
+            double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
                 Number value;
                 if (targetKey instanceof AvgKey) {
@@ -109,23 +109,18 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
                 } else {
                     value = cursor_node.getSummaryValue(key);
                 }
-                if (value != null) {
-                    if (sum == null) {
-                        sum = new Double(0.0f);
-                    }
-                    sum += value.doubleValue();
-                }
-                cursor_node.setSummaryValue(createTargetGettingKey(), sum);
+                sum += value == null ? 0 : value.doubleValue();
+                cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
                 cursor_node = cursor_node.getSibling();
             }
             return null;
         }
 
-        private boolean isNotEnd(LightNode node, int deep) {
+        private boolean isNotEnd(BINode node, int deep) {
             if (node == null) {
                 return false;
             }
-            LightNode temp = node;
+            BINode temp = node;
             for (int i = 0; i < deep; i++) {
                 temp = temp.getParent();
             }

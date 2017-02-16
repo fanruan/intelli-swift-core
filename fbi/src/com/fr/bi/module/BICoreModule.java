@@ -20,6 +20,7 @@ import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
+import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManager;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
@@ -113,6 +114,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManager());
+        StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
 
     }
 

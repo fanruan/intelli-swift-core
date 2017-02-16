@@ -84,11 +84,24 @@ BI.TargetFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
     _getFieldItems: function () {
-        var field_id = this.options.field_id, fieldItems = [];
+        var field_id = this.options.field_id, fieldItems = [[], [], []];
         var tId = BI.Utils.getTableIdByFieldID(field_id);
         var fIds = BI.Utils.getFieldIDsOfTableID(tId);
         BI.each(fIds, function (i, fId) {
-            fieldItems.push({
+            var index = 0;
+            switch (BI.Utils.getFieldTypeByID(fId)){
+                case BICst.COLUMN.STRING:
+                    index = 1;
+                    break;
+                case BICst.COLUMN.NUMBER:
+                case BICst.COLUMN.COUNTER:
+                    index = 0;
+                    break;
+                case BICst.COLUMN.DATE:
+                    index = 2;
+                    break;
+            }
+            fieldItems[index].push({
                 text: BI.Utils.getFieldNameByID(fId),
                 value: BICst.FIELD_ID.HEAD + fId,
                 fieldType: BI.Utils.getFieldTypeByID(fId)

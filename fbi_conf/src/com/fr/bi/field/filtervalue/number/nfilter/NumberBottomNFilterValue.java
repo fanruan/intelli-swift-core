@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.LightNode;
+import com.fr.bi.stable.report.result.BINode;
 
 
 public class NumberBottomNFilterValue extends NumberNFilterValue implements NFilterValue{
@@ -25,8 +25,8 @@ public class NumberBottomNFilterValue extends NumberNFilterValue implements NFil
      * @return 是否显示
      */
     @Override
-    public boolean showNode(LightNode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
-        LightNode parentNode = node.getParent();
+    public boolean showNode(BINode node, TargetGettingKey targetKey, ICubeDataLoader loader) {
+        BINode parentNode = node.getParent();
         int comparedRow = parentNode.getChildLength() + 1 - n;
         if (comparedRow <= 0) {
             return true;

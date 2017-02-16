@@ -73,6 +73,7 @@ BI.RadarRegionsManager = BI.inherit(BI.RegionsManager, {
             wId: o.wId,
             viewType: BICst.REGION.DIMENSION1
         });
+        this.headers.push(header);
         return header;
     },
 
@@ -86,6 +87,7 @@ BI.RadarRegionsManager = BI.inherit(BI.RegionsManager, {
             wId: o.wId,
             viewType: BICst.REGION.DIMENSION2
         });
+        this.headers.push(header);
         return header;
     },
 
@@ -99,6 +101,7 @@ BI.RadarRegionsManager = BI.inherit(BI.RegionsManager, {
             wId: o.wId,
             viewType: BICst.REGION.TARGET1
         });
+        this.headers.push(header);
         return header;
     },
 

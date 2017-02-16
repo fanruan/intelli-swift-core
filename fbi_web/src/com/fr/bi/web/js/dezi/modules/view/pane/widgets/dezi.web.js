@@ -31,11 +31,7 @@ BIDezi.WebWidgetView = BI.inherit(BI.View, {
         });
 
         this.web.on(BI.WebPage.EVENT_DESTROY, function () {
-            BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete_Current_Component"), function (v) {
-                if (v === true) {
-                    self.model.destroy();
-                }
-            });
+            self.model.destroy();
         });
 
         this.web.on(BI.WebPage.EVENT_VALUE_CHANGE, function () {

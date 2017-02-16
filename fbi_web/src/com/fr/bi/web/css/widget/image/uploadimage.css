@@ -10,3 +10,7 @@
   font-size: 16px;
   background-color: #ffffff;
 }
+.bi-upload-image .upload-image-delete-label {
+  font-size: 14px;
+  color: #1a1a1a;
+}
