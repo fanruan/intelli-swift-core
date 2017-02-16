@@ -188,14 +188,14 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                         BI.each(styles, function (idx, style) {
                             if(style.range.max) {
                                 range.push({
-                                    color: style.color,
+                                    color: style.color || "rgba(255,255,255,0)",
                                     from: style.range.min,
                                     to: style.range.max
                                 });
                             } else {
                                 var to = style.range.min < maxScale ? maxScale : 266396;
                                 range.push({
-                                    color: style.color,
+                                    color: style.color || "rgba(255,255,255,0)",
                                     from: style.range.min,
                                     to: to,
                                 });
@@ -215,7 +215,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
                         if (conditionMax && conditionMax < maxScale) {
                             range.push({
-                                color: color,
+                                color: color || "rgba(255,255,255,0)",
                                 from: conditionMax,
                                 to: maxScale
                             });

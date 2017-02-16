@@ -1,10 +1,5 @@
 package com.fr.bi.stable.utils.file;
 
-
-/**
- * Created by GUY on 2015/3/4.
- */
-
 /**
  * 文件路径生成工具
  */

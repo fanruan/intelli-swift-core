@@ -342,7 +342,8 @@ Date.checkLegal = function (str) {
     if (ar.length <= 2) {
         return MM >= 1 && MM <= 12;
     }
-    Date._MD[1] = Date.isLeap(YY) ? 29 : 28;
+    var MD = Date._MD.slice(0);
+    MD[1] = Date.isLeap(YY) ? 29 : 28;
     return MM >= 1 && MM <= 12 && DD <= Date._MD[MM - 1];
 };
 
