@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.filter.FilterFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.filter.IFilter;
 import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.filter.objectcondition.FilterBubbleScatterFactory;
@@ -12,7 +12,6 @@ import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -28,118 +27,6 @@ import java.util.*;
 public class BIChartDataConvertFactory {
 
     private static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
-
-    public static JSONObject convertForTableWidget(TableWidget widget, JSONObject data) {
-        int type = widget.getType();
-        boolean isTable = type == BIReportConstant.WIDGET.TABLE;
-        if (!isTable) {
-            return new JSONObject();
-        }
-        JSONObject options = new JSONObject();
-        JSONArray types = new JSONArray();
-//        BIDimension categoryDimension = widget.getCategoryDimension();
-//        BIDimension seriesDimension = widget.getSeriesDimension();
-//        IGroup categoryGroup = categoryDimension != null ? categoryDimension.getGroup() : new NoGroup();
-//        IGroup seriesGroup = seriesDimension != null ? seriesDimension.getGroup() : new NoGroup();
-//        try {
-//            BISummaryTarget[] showTargets = widget.getViewTargets();
-//            JSONArray convertedData = parseSNDataToXYZData(widget, data, seriesGroup, categoryGroup, showTargets);
-//
-//            int count = 0;
-//
-//            for (int i = 0; i < convertedData.length(); i++) {
-//                JSONArray t = new JSONArray();
-//                JSONArray da = convertedData.getJSONArray(i);
-//                for (int j = 0; j < da.length(); j++) {
-//                    if (b) {
-//                        JSONObject chart = new JSONObject();
-//                        if (showTargets[count].getChartSetting().getStyleOfChart().length() != 0) {
-//                            chart = showTargets[count].getChartSetting().getStyleOfChart();
-//                        } else {
-//                            if (showTargets[0].getChartSetting().getStyleOfChart().length() != 0) {
-//                                chart = showTargets[0].getChartSetting().getStyleOfChart();
-//                            }
-//                        }
-//                        if (chart.has("type")) {
-//                            t.put(chart.getInt("type"));
-//                        } else {
-//                            t.put(BIReportConstant.WIDGET.AXIS);
-//                        }
-//                    } else {
-//                        t.put(type);
-//                    }
-//                    count++;
-//                }
-//                types.put(t);
-//            }
-//            if (types.length() == 0) {
-//                types.put(new JSONArray().put(type));
-//            }
-//            for (int i = 0; i < convertedData.length(); i++) {
-//                String uuid = UUID.randomUUID().toString();
-//                JSONArray t = types.getJSONArray(i);
-//                JSONArray item = convertedData.getJSONArray(i);
-//                for (int j = 0; j < item.length(); j++) {
-//                    if (t.getInt(j) == BIReportConstant.WIDGET.ACCUMULATE_AREA || t.getInt(j) == BIReportConstant.WIDGET.ACCUMULATE_AXIS) {
-//                        item.getJSONObject(j).put("stack", uuid);
-//                    }
-//                }
-//            }
-//            if (type == BIReportConstant.WIDGET.MAP) {
-//                String subType = widget.getSubType();
-//                BIMapInfoManager manager = BIMapInfoManager.getInstance();
-//                if (subType != null) {
-//                    for (Map.Entry<String, Integer> entry : manager.getinnerMapLayer().entrySet()) {
-//                        if (entry.getValue() == 0) {
-//                            subType = entry.getKey();
-//                            break;
-//                        }
-//                    }
-//                }
-//                String name = manager.getinnerMapTypeName().get(subType);
-//                if (name == null) {
-//                    name = manager.getCustomMapTypeName().get(subType);
-//                }
-//                options.put("initDrillPath", new JSONArray().put(name));
-//                JSONObject drill = widget.getWidgetDrill();
-//                if (drill.names() != null) {
-//                    JSONArray drillValue = drill.getJSONArray(drill.names().getString(0));
-//                    for (int i = 0; i < drillValue.length(); i++) {
-//                        JSONObject dValue = drillValue.getJSONObject(i);
-//                        options.getJSONArray("initDrillPath").put(dValue.getJSONArray("values").getJSONObject(0).getJSONArray("value").getString(0));
-//                    }
-//                }
-//                String d = manager.getinnerMapPath().get(subType);
-//                String n = manager.getinnerMapTypeName().get(subType);
-//                if (d == null) {
-//                    d = manager.getCustomMapPath().get(subType);
-//                }
-//                if (n == null) {
-//                    n = manager.getCustomMapTypeName().get(subType);
-//                }
-//                options.put("geo", new JSONObject().put("data", d).put("name", n));
-//            }
-//            if (type == BIReportConstant.WIDGET.GIS_MAP) {
-//                options.put("geo", new JSONObject().put("tileLayer", BIChartSettingConstant.GIS_MAP_PATH).put("attribution", BIChartSettingConstant.KNOWLEDGE_RIGHT));
-//            }
-//            options.put("cordon", getCordon(widget, widget.getDimensions(), showTargets)).put("tooltip", getToolTip(type, showTargets));
-//            JSONObject lnglat;
-//            if (categoryDimension != null) {
-//                lnglat = categoryDimension.getChartSetting().getPosition();
-//                if (!lnglat.isNull("type")) {
-//                    options.put("lnglat", lnglat.getInt("type"));
-//                } else {
-//                    options.put("lnglat", BIChartSettingConstant.LNG_FIRST);
-//                }
-//            } else {
-//                options.put("lnglat", BIChartSettingConstant.LNG_FIRST);
-//            }
-//            return new JSONObject().put("types", types).put("data", convertedData).put("options", options);
-//        } catch (JSONException e) {
-//            BILoggerFactory.getLogger().error(e.getMessage());
-//        }
-        return new JSONObject();
-    }
 
     public static JSONObject convert(MultiChartWidget widget, JSONObject data) {
         JSONObject options = new JSONObject();
@@ -1051,6 +938,4 @@ public class BIChartDataConvertFactory {
         }
         data.put("dataLabels", dataLabels);
     }
-
-
 }

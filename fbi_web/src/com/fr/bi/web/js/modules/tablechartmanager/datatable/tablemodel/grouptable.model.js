@@ -271,7 +271,6 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
      * @private
      */
     _createCommonTableItems: function (c, currentLayer, parent, dimIds, crossPV) {
-        console.log(c);
         var self = this, items = [];
         currentLayer++;
         BI.each(c, function (i, child) {

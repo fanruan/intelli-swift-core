@@ -42,7 +42,7 @@ public class PhantomServer {
         osMap.put("linux32", "/phantomjs");
         osMap.put("linux64", "/phantomjs");
         osMap.put("macOS", "/phantomjs");
-        osMap.put("windows", "/hantomjs.exe");
+        osMap.put("windows", File.separator+"phantomjs.exe");
         osMap.put("unix32", "/phantomjs");
         osMap.put("unix64", "/phantomjs");
     }

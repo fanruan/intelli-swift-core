@@ -1595,7 +1595,6 @@
 
         //根据text dId 获取clicked 处理分组的情况
         getClickedValue4Group: function (v, dId) {
-            console.log(v,dId);
             var group = this.getDimensionGroupByID(dId);
             var fieldType = this.getFieldTypeByDimensionID(dId);
             var clicked = v;
