@@ -140,12 +140,7 @@ public class BIReportExportExcel {
             BILoggerFactory.getLogger().error(exception.getMessage(), exception);
             jo.put("error", BIPrintUtils.outputException(exception));
         }
-        JSONObject options = null;
-//        if (widget instanceof MultiChartWidget) {
-            options = ((TableWidget) widget).getPostOptions(sessionID);
-//        }else {
-
-//        }
+        JSONObject options = ((TableWidget) widget).getPostOptions(sessionID);
         Rectangle rect = widget.getRect();
         String postOptions = new JSONObject("{options:" + options + ", width:" + rect.getWidth() + ", height:" + rect.getHeight() + "}").toString();
         String base64 = null;

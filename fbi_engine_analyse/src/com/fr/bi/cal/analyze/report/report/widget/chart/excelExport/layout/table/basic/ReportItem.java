@@ -1,24 +1,25 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic;
 
 import java.util.List;
 
 /**
  * Created by Kary on 2017/2/13.
  */
-public class ReportExportItem {
+public class ReportItem {
 
     private String dId;
     private String text;
-    private List<ReportExportItem> value;
+    private List<ReportItem> value;
     private boolean isCross;
     private boolean needExpand;
-    private List<ReportExportItem> children;
+    private boolean isExpanded;
+    private List<ReportItem> children;
     private List<String> clicked;
     private boolean isSum;
     private String style;
     private String type;
 
-    public ReportExportItem() {
+    public ReportItem() {
     }
 
     public String getdId() {
@@ -37,11 +38,11 @@ public class ReportExportItem {
         this.text = text;
     }
 
-    public List<ReportExportItem> getValue() {
+    public List<ReportItem> getValue() {
         return value;
     }
 
-    public void setValue(List<ReportExportItem> value) {
+    public void setValue(List<ReportItem> value) {
         this.value = value;
     }
 
@@ -61,11 +62,11 @@ public class ReportExportItem {
         this.needExpand = needExpand;
     }
 
-    public List<ReportExportItem> getChildren() {
+    public List<ReportItem> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ReportExportItem> children) {
+    public void setChildren(List<ReportItem> children) {
         this.children = children;
     }
 
@@ -101,14 +102,23 @@ public class ReportExportItem {
         this.type = type;
     }
 
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
+    }
+
     @Override
     public String toString() {
-        return "ReportExportItem{" +
+        return "ReportItem{" +
                 "dId='" + dId + '\'' +
                 ", text='" + text + '\'' +
                 ", value=" + value +
                 ", isCross=" + isCross +
                 ", needExpand=" + needExpand +
+                ", isExpanded=" + isExpanded +
                 ", children=" + children +
                 ", clicked=" + clicked +
                 ", isSum=" + isSum +

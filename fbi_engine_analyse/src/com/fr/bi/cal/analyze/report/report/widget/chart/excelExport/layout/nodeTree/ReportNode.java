@@ -1,26 +1,33 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.nodeTree;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.nodeTree;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table.ReportExportItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic.ReportItem;
 
 import java.util.List;
 
 /**
  * Created by Kary on 2017/2/14.
  */
-public class ExportNode {
-    private List<ReportExportItem> children;
+public class ReportNode {
+    private List<ReportItem> children;
     private String dId;
     private String id;
     private String left;
     private String name;
-    private ExportNode parent;
+    private ReportNode parent;
     private String right;
 
-    public List<ReportExportItem> getChildren() {
+    public ReportNode() {
+    }
+
+    public ReportNode(String id) {
+        this.id = id;
+    }
+
+    public List<ReportItem> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ReportExportItem> children) {
+    public void setChildren(List<ReportItem> children) {
         this.children = children;
     }
 
@@ -56,11 +63,11 @@ public class ExportNode {
         this.name = name;
     }
 
-    public ExportNode getParent() {
+    public ReportNode getParent() {
         return parent;
     }
 
-    public void setParent(ExportNode parent) {
+    public void setParent(ReportNode parent) {
         this.parent = parent;
     }
 
@@ -77,7 +84,7 @@ public class ExportNode {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ExportNode that = (ExportNode) o;
+        ReportNode that = (ReportNode) o;
 
         return id != null ? id.equals(that.id) : that.id == null;
     }

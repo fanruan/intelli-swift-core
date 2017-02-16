@@ -1,14 +1,14 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.style.excelExport.layout.table;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic;
 
 /**
  * Created by Kary on 2017/2/13.
  */
-public class ReportExportHeader {
+public class ReportTableHeader {
     private String text;
     private String title;
     private String id;
 
-    public ReportExportHeader(String text, String title, String tag) {
+    public ReportTableHeader(String text, String title, String tag) {
         this.text = text;
         this.title = title;
         this.id = tag;
