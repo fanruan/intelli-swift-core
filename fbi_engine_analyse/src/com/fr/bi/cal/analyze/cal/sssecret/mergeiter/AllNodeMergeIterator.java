@@ -72,12 +72,17 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         }
         allAdded = true;
         //如果多线程计算没有结束，就等结束
-        if (!completed  && size > 0){
+        //有可能在设置allAdded = true之前就结束了，导致 checkComplete 没执行，这边还要判断下size
+        completed = completed || count.get() == size;
+        if (!completed){
+        //没完成的话要唤醒下executor，以防有加到executor里wait住的。
             executor.wakeUp();
             synchronized (this){
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
+                if (!completed){
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                    }
                 }
             }
         }
@@ -94,8 +99,8 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private void checkComplete(){
         //如果已经计算完了加入线程池的计算，并且所有计算都已经加入线程池了，就说明计算完了，唤醒下等待的线程。
         if (count.incrementAndGet() == size && allAdded){
-            completed = true;
             synchronized (this){
+                completed = true;
                 this.notify();
             }
         }
@@ -139,7 +144,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         public void cal() {
             super.cal();
             checkComplete();
-           // ((MetricMergeResult) node).clearGvis();
+     //      ((MetricMergeResult) node).clearGvis();
         }
     }
 
