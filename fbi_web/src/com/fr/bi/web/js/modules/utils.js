@@ -479,7 +479,9 @@
                 obj.settings = widget.settings;
                 obj.value = widget.value;
                 //组件表头上指标的排序和过滤
-                if (BI.has(widget, "sort") && BI.isNotNull(widget.sort)) {
+                //BI-3341 看测试哪边的数据不知道为什么表头上的sort存了个空对象，而实际上对表头指标选择排序方式无论如何也不会出现空对象
+                //先在这边加个判断
+                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort) && BI.isNotEmptyObject(widget.sort)){
                     obj.sort = BI.extend({}, widget.sort, {
                         sort_target: createDimensionsAndTargets(widget.sort.sort_target).id
                     })
@@ -2542,6 +2544,13 @@
                 if (BI.isNull(groupValue) && BI.isNull(groupType)) {
                     //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
                     var sIndex = value.indexOf("-");
+                    if(sIndex === -1){  //空分组
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                            filter_value: {},
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        }
+                    }
                     var min = value.slice(0, sIndex), max = value.slice(sIndex + 1);
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
@@ -2569,11 +2578,19 @@
                         };
                         min = newMin;
                     }
-                    return {
-                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                        filter_value: groupMap[value],
-                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
-                    };
+                    if(BI.isNull(groupMap[value])){
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                            filter_value: {},
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        }
+                    }else{
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                            filter_value: groupMap[value],
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        };
+                    }
                 }
                 if (groupType === BICst.GROUP.ID_GROUP) {
                     if(BI.isNull(value) || BI.isEmptyString(value)){
@@ -2639,6 +2656,12 @@
                         },
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     }
+                } else if(BI.isNull(value) || BI.isEmptyString(value)){
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                        filter_value: {},
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
                 }
             }
 
@@ -3265,6 +3288,7 @@
                         var v = parseComplexDate(wValue);
                         if (BI.isNotNull(v)) {
                             date = new Date(v);
+                            date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
                         }
                     }
                     break;
