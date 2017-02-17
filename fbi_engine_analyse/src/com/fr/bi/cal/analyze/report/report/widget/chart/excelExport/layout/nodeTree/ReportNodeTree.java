@@ -9,8 +9,7 @@ import java.util.UUID;
  */
 public class ReportNodeTree {
     private ReportNode root;
-    private Set<ReportNode> nodeTree =new HashSet<>();
-
+    private Set<ReportNode> nodeTree = new HashSet<ReportNode>();
     public ReportNode getRoot() {
         return root;
     }
