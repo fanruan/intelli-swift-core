@@ -60,7 +60,7 @@ public abstract class BITableExecutor<T> extends BIAbstractExecutor<T> {
 
     //创建汇总格
     protected static void createSummaryCellElement(CBCell[][] cbcells, int row) {
-        String name = Inter.getLocText("BI-Summary");
+        String name = Inter.getLocText("BI-Summary_Summary");
         CBCell cell = new CBCell(name);
         cell.setRow(row);
         cell.setColumn(0);

@@ -222,7 +222,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         CBCell cell = null;
         int rowLength = rowColumn.length;
         if (chartSetting.showRowTotal() && judgeNode(node, sumColumn)) {
-            cell = new CBCell(Inter.getLocText("BI-Summary"));
+            cell = new CBCell(Inter.getLocText("BI-Summary_Summary"));
             cell.setRow(tempRow);
             cell.setColumn(column == 0 ? 0 : (column + hasNumber));
             cell.setRowSpan(1);
@@ -464,7 +464,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                                            int hasNumber, int tempRow, BIComplexExecutData rowData, DetailChartSetting chartSetting) {
         int rowLength = rowColumn.length;
         CBCell cell = null;
-        cell = new CBCell(Inter.getLocText("BI-Summary"));
+        cell = new CBCell(Inter.getLocText("BI-Summary_Summary"));
         cell.setRow(tempRow);
         cell.setColumn(column == 0 ? 0 : (column + hasNumber));
         cell.setRowSpan(1);
