@@ -41,15 +41,16 @@ public class BICubeTableColumnManagerTest extends BICubeTestBase {
 
             BIColumnKey year = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR);
             BICubeYearColumn yearColumn = (BICubeYearColumn) managerService.getColumn(year);
+            date.forceReleaseWriter();
             assertEquals(Integer.valueOf(2016), yearColumn.getOriginalValueByRow(0));
 
             BIColumnKey month = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_MONTH);
             BICubeMonthColumn monthColumn = (BICubeMonthColumn) managerService.getColumn(month);
-            assertEquals(Integer.valueOf(3), monthColumn.getOriginalValueByRow(0));
+            assertEquals(Integer.valueOf(4), monthColumn.getOriginalValueByRow(0));
 
             BIColumnKey week = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_WEEK);
             BICubeWeekColumn weekColumn = (BICubeWeekColumn) managerService.getColumn(week);
-            assertEquals(Integer.valueOf(5), weekColumn.getOriginalValueByRow(0));
+            assertEquals(Integer.valueOf(4), weekColumn.getOriginalValueByRow(0));
 
             BIColumnKey day = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_DAY);
             BICubeDayColumn dayColumn = (BICubeDayColumn) managerService.getColumn(day);

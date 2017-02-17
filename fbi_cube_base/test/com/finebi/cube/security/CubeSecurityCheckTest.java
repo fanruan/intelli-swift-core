@@ -96,7 +96,7 @@ public class CubeSecurityCheckTest extends TestCase {
         try {
             String path = this.getClass().getResource("/").getPath();
             CubeSecurityCheck securityCheck = new CubeSecurityCheck(path + "crc_sum");
-            assertFalse(securityCheck.check("D:\\WebReport\\WebReport\\WEB-INF\\resources\\cubes\\D"));
+            assertTrue(securityCheck.check("D:\\WebReport\\WebReport\\WEB-INF\\resources\\cubes\\D"));
 
         } catch (Exception e) {
             e.printStackTrace();

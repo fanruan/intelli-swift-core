@@ -10,12 +10,12 @@ import com.fr.bi.stable.data.source.CubeTableSource;
  * @since 4.0
  */
 public class BITableSourceTestTool {
-    public static CubeTableSource getDBTableSourceA() {
-        return new DBTableSource("DB_A", "Table_A");
-    }
-
     public static CubeTableSource getDBTableSourceB() {
         return new DBTableSource("DB_A", "Table_B");
+    }
+
+    public static CubeTableSource getDBTableSourceA() {
+        return new DBTableSource("DB_A", "Table_A");
     }
 
     public static CubeTableSource getDBTableSourceC() {
