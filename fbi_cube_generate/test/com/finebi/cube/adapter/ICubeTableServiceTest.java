@@ -10,9 +10,11 @@ import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
+import com.fr.base.FRContext;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
+import com.fr.dav.LocalEnv;
 import com.fr.fs.control.UserControl;
 
 import java.util.Iterator;
@@ -60,8 +62,8 @@ public class ICubeTableServiceTest extends BICubeTestBase {
             Iterator<String> it = content.iterator();
             while (it.hasNext()) {
                 String name = it.next();
-                assertEquals(tableService.getIndexes(new IndexKey("name"), new Object[]{name})[0],
-                        GroupValueIndexTestTool.build(content, name));
+                assertTrue(tableService.getIndexes(new IndexKey("name"), new Object[]{name})[0].
+                        hasSameValue(GroupValueIndexTestTool.build(content, name)));
             }
         } catch (Exception e) {
             assertTrue(false);
@@ -92,11 +94,10 @@ public class ICubeTableServiceTest extends BICubeTestBase {
 
     public void testTableFieldRelation() {
         try {
-
             ICubeColumnIndexReader reader = tableService.loadGroup(new IndexKey("gender"), BITableSourceRelationPathTestTool.getABCList());
-            assertEquals(reader.getGroupIndex(new Object[]{"girl"})[0], RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 7}));
-            assertEquals(reader.getGroupIndex(new Object[]{".dr"})[0], RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}));
-            assertEquals(reader.getGroupIndex(new Object[]{"boy"})[0], RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertTrue(reader.getGroupIndex(new Object[]{"girl"})[0].hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 7})));
+            assertTrue(reader.getGroupIndex(new Object[]{".dr"})[0].hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6})));
+            assertTrue(reader.getGroupIndex(new Object[]{"boy"})[0].equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{})));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,11 +108,11 @@ public class ICubeTableServiceTest extends BICubeTestBase {
     public void testTableTableRelation() {
         try {
             ICubeTableIndexReader reader = tableService.ensureBasicIndex(BITableSourceRelationPathTestTool.getABCList());
-            assertEquals(reader.get(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 7}));
-            assertEquals(reader.get(1), RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}));
-            assertEquals(reader.get(2), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
-            assertEquals(reader.get(3), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
-            assertEquals(reader.get(4), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertTrue(reader.get(0).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 7})));
+            assertTrue(reader.get(1).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6})));
+            assertTrue(reader.get(2).equals( RoaringGroupValueIndex.createGroupValueIndex(new int[]{})));
+            assertTrue(reader.get(3).equals( RoaringGroupValueIndex.createGroupValueIndex(new int[]{})));
+            assertTrue(reader.get(4).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{})));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

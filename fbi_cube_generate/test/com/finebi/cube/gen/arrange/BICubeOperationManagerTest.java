@@ -38,7 +38,6 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
         super.setUp();
     }
 
-    // TODO: 2017-2-16 need repaired
     public void testBasic() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
@@ -95,7 +94,6 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
 
     /*关联关系中，取消部分依赖
         * 假设A已经存在，现在更新relationAB*/
-    // TODO: 2017-2-16 need repaired 
     public void testTableRelation() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();

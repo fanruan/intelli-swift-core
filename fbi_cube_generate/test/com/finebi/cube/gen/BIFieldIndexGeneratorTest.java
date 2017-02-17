@@ -79,7 +79,8 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
                 assertEquals(content.get(i), columnReaderService.getGroupObjectValue(i));
                 String one = content.get(i);
                 GroupValueIndex groupValueIndex = columnReaderService.getBitmapIndex(i);
-                assertEquals(groupValueIndex, GroupValueIndexTestTool.build(tableSource.stringData, one));
+                assertTrue(groupValueIndex.hasSameValue(GroupValueIndexTestTool.build(tableSource.stringData, one))
+                        || groupValueIndex.equals(GroupValueIndexTestTool.build(tableSource.stringData, one)));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,7 +100,8 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
                 assertEquals(content.get(i), columnReaderService.getGroupObjectValue(i));
                 Long one = content.get(i);
                 GroupValueIndex groupValueIndex = columnReaderService.getBitmapIndex(i);
-                assertEquals(groupValueIndex, GroupValueIndexTestTool.build(tableData.contents.get(0), one));
+                assertTrue(groupValueIndex.hasSameValue(GroupValueIndexTestTool.build(tableData.contents.get(0), one))
+                        || groupValueIndex.equals(GroupValueIndexTestTool.build(tableData.contents.get(0), one)));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,9 +132,12 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             CubeTableEntityGetterService dataTable = cube.getCubeTable(BITableKeyUtils.convert(tableData));
             ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             CubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateYear(field));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{5}), columnReaderService.getBitmapIndex(0));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0, 1, 2, 3, 4}), columnReaderService.getBitmapIndex(1));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{6}), columnReaderService.getBitmapIndex(2));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{5}).hasSameValue(columnReaderService.getBitmapIndex(0))
+                    || RoaringGroupValueIndex.createGroupValueIndex(new int[]{5}).equals(columnReaderService.getBitmapIndex(0)));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0, 1, 2, 3, 4}).hasSameValue(columnReaderService.getBitmapIndex(1))
+                    || RoaringGroupValueIndex.createGroupValueIndex(new int[]{0, 1, 2, 3, 4}).equals(columnReaderService.getBitmapIndex(1)));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{6}).hasSameValue(columnReaderService.getBitmapIndex(2))
+                    || RoaringGroupValueIndex.createGroupValueIndex(new int[]{6}).equals(columnReaderService.getBitmapIndex(2)));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,9 +153,9 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 
             ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             CubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateMonth(field));
-            assertEquals(6, columnReaderService.getGroupObjectValue(0));
-            assertEquals(7, columnReaderService.getGroupObjectValue(1));
-            assertEquals(8, columnReaderService.getGroupObjectValue(2));
+            assertEquals(7, columnReaderService.getGroupObjectValue(0));
+            assertEquals(8, columnReaderService.getGroupObjectValue(1));
+            assertEquals(9, columnReaderService.getGroupObjectValue(2));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -165,9 +170,9 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 
             ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             CubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateMonth(field));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{5}), columnReaderService.getBitmapIndex(0));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0, 1, 2, 3, 4}), columnReaderService.getBitmapIndex(1));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{6}), columnReaderService.getBitmapIndex(2));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{5}).hasSameValue(columnReaderService.getBitmapIndex(0)));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0, 1, 2, 3, 4}).hasSameValue(columnReaderService.getBitmapIndex(1)));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{6}).hasSameValue(columnReaderService.getBitmapIndex(2)));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,11 +207,16 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
 
             ICubeFieldSource field = tableData.getFieldsArray(null)[0];
             CubeColumnReaderService columnReaderService = dataTable.getColumnDataGetter(BIDateColumnTool.generateDay(field));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0}), columnReaderService.getBitmapIndex(0));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{1}), columnReaderService.getBitmapIndex(1));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{2}), columnReaderService.getBitmapIndex(2));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{3, 5}), columnReaderService.getBitmapIndex(3));
-            assertEquals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}), columnReaderService.getBitmapIndex(4));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0}).hasSameValue(columnReaderService.getBitmapIndex(0))
+                    || RoaringGroupValueIndex.createGroupValueIndex(new int[]{0}).equals(columnReaderService.getBitmapIndex(0)));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{1}).hasSameValue(columnReaderService.getBitmapIndex(1))
+                    || RoaringGroupValueIndex.createGroupValueIndex(new int[]{1}).equals(columnReaderService.getBitmapIndex(1)));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{2}).hasSameValue(columnReaderService.getBitmapIndex(2))
+                    || RoaringGroupValueIndex.createGroupValueIndex(new int[]{2}).equals(columnReaderService.getBitmapIndex(2)));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{3, 5}).hasSameValue(columnReaderService.getBitmapIndex(3))
+                    || RoaringGroupValueIndex.createGroupValueIndex(new int[]{3, 5}).equals(columnReaderService.getBitmapIndex(3)));
+            assertTrue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}).hasSameValue(columnReaderService.getBitmapIndex(4))
+                    || RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}).equals(columnReaderService.getBitmapIndex(4)));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -225,7 +235,7 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             assertEquals(2, columnReaderService.getGroupObjectValue(1));
             assertEquals(3, columnReaderService.getGroupObjectValue(2));
             assertEquals(4, columnReaderService.getGroupObjectValue(3));
-            assertEquals(5, columnReaderService.getGroupObjectValue(4));
+            assertEquals(7, columnReaderService.getGroupObjectValue(4));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -273,8 +283,9 @@ public class BIFieldIndexGeneratorTest extends BICubeTestBase {
             for (int i = 0; i < tableSource.stringData.size(); i++) {
                 String one = (String) columnReaderService.getOriginalObjectValueByRow(i);
                 int groupRow = columnReaderService.getPositionOfGroupByRow(i);
-                GroupValueIndex groupValueIndex = columnReaderService.getBitmapIndex(i);
-                assertEquals(groupValueIndex, GroupValueIndexTestTool.build(tableSource.stringData, one));
+                GroupValueIndex groupValueIndex = columnReaderService.getBitmapIndex(groupRow);
+                assertTrue(groupValueIndex.hasSameValue(GroupValueIndexTestTool.build(tableSource.stringData, one))
+                        || groupValueIndex.equals(GroupValueIndexTestTool.build(tableSource.stringData, one)));
             }
         } catch (Exception e) {
             e.printStackTrace();

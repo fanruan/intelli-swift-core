@@ -75,12 +75,18 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
         try {
             generateRelationIndex(relation, tableA, tableB, 1, 2);
             CubeRelationEntityGetterService relationService = cube.getCubeRelation(BITableKeyUtils.convert(tableA), relation);
-            assertEquals(relationService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{0}));
-            assertEquals(relationService.getBitmapIndex(1), RoaringGroupValueIndex.createGroupValueIndex(new int[]{2, 4, 6}));
-            assertEquals(relationService.getBitmapIndex(2), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
-            assertEquals(relationService.getBitmapIndex(3), RoaringGroupValueIndex.createGroupValueIndex(new int[]{3}));
-            assertEquals(relationService.getBitmapIndex(4), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
-            assertEquals(relationService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 5}));
+            assertTrue(relationService.getBitmapIndex(0).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0}))
+                    || relationService.getBitmapIndex(0).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0})));
+            assertTrue(relationService.getBitmapIndex(1).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{2, 4, 6}))
+                    || relationService.getBitmapIndex(1).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{2, 4, 6})));
+            assertTrue(relationService.getBitmapIndex(2).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{}))
+                    || relationService.getBitmapIndex(2).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{})));
+            assertTrue(relationService.getBitmapIndex(3).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{3}))
+                    || relationService.getBitmapIndex(3).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{3})));
+            assertTrue(relationService.getBitmapIndex(4).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{}))
+                    || relationService.getBitmapIndex(4).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{})));
+            assertTrue(relationService.getNULLIndex(0).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 5}))
+                    || relationService.getNULLIndex(0).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 5})));
 
         } catch (Exception e) {
             e.printStackTrace();
