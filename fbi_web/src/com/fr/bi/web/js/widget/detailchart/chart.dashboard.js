@@ -86,6 +86,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
                     return '<div style="text-align: center">' + this.category + '</div>' + label;
                 },
+                enabled: true,
                 style: self.config.chartFont,
                 useHtml: true
             };
