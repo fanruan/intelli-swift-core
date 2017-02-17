@@ -5,7 +5,10 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.MultirelationItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-multi-relation-item",
-            relations: []
+            relations: [],
+            isSelect: BI.emptyFn,
+            onEventChange: BI.emptyFn,
+            getKeyWord: BI.emptyFn
         })
     },
 
@@ -18,6 +21,7 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
 
         this.checkbox.on(BI.Controller.EVENT_CHANGE, function (type, value, obj) {
             var value = self.getValue();
+            o.onEventChange(o.relations, type, value, self);
             self.fireEvent(BI.Controller.EVENT_CHANGE, type, value, self);
         });
 
@@ -33,6 +37,9 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
                 type: "bi.left"
             }]
         });
+
+        this._setSelect();
+        this._setRedMark();
 
         BI.createWidget({
             type: "bi.horizontal",
@@ -85,6 +92,18 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
         return items;
     },
 
+    _setSelect: function () {
+        var select = this.options.isSelect();
+        this.setSelected(select);
+    },
+
+    _setRedMark: function () {
+        var keyWork = this.options.getKeyWord();
+        if (BI.isNotEmptyString(keyWork)) {
+            this.doBehavior(keyWork);
+        }
+    },
+
     doBehavior: function () {
         this.textGroup.doBehavior.apply(this.textGroup, arguments);
     },
@@ -104,8 +123,12 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
 
     isSelected: function () {
         return this.checkbox.isSelected();
-    }
+    },
 
+    populate: function () {
+        this._setSelect();
+        this._setRedMark();
+    }
 
 });
 $.shortcut("bi.multi_relation_item", BI.MultirelationItem);

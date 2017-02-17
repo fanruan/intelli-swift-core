@@ -202,12 +202,14 @@ BI.TableChartManagerAspect = function () {
             self.mainPane.setVisible(true);
             self.textLabel.setVisible(true);
             var tipText = BI.i18nText("BI-Data_Miss_Tip");
+            var tipCls = "data-miss-background";
             if (BI.Utils.isNoAuthFieldExistByWidgetID(self.options.wId)) {
                 tipText = BI.i18nText("BI-No_Data_Auth_Tip");
+                tipCls = "no-data-auth-background";
             }
             self.textLabel.setText(tipText);
             self.contactAdmin.setVisible(true);
-            self.tipPane.element.removeClass().addClass("data-miss-background");
+            self.tipPane.element.removeClass().addClass(tipCls);
             return false;
         }
         self.mainPane && self.mainPane.setVisible(false);

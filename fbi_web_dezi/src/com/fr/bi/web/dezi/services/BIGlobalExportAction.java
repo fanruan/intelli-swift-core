@@ -65,7 +65,6 @@ public class BIGlobalExportAction extends AbstractBIDeziAction {
     private void export(HttpServletRequest req, HttpServletResponse res, ResultWorkBook resultWorkBook, long t) throws Exception {
         AppExporter exporter = new BIExcel2007Exporter(ReportUtils.getPaperSettingListFromWorkBook(resultWorkBook));
         OutputStream outputStream = res.getOutputStream();
-
         try {
             exporter.export(outputStream, resultWorkBook);
         } catch (Exception e) {

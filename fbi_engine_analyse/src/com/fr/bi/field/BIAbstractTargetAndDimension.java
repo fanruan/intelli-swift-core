@@ -82,7 +82,8 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
 
     @Override
     public boolean useHyperLink() {
-        return !StringUtils.isEmpty(hyperLinkExpression) && useHyperLink;
+        boolean expressEmpty=StringUtils.isEmpty(hyperLinkExpression);
+        return !expressEmpty && useHyperLink;
     }
 
     @Override
@@ -163,4 +164,13 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         return chartSetting;
     }
 
+    @Override
+    public String getId(){
+       return super.getValue();
+    }
+
+    @Override
+    public String getText(){
+        return super.getText();
+    }
 }

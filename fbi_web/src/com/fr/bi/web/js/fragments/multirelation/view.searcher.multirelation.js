@@ -66,12 +66,15 @@ BI.MultiRelationSearcherView = BI.inherit(BI.Pane, {
     populate: function (searchResult, selectedResult, keyword) {
         searchResult || (searchResult = []);
         this.setTipVisible(searchResult.length === 0);
-        this.searcher.populate(searchResult, selectedResult, keyword);
+        this.searcher.setRelations(searchResult);
+        this.searcher.setValue(selectedResult);
+        this.searcher.setKeyWord(keyword);
+        this.searcher.populate();
 
     },
 
     empty: function () {
-        this.searcher.empty();
+        this.searcher.restore();
     }
 
 });
