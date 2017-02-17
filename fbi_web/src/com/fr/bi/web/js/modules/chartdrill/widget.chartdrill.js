@@ -27,9 +27,10 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         }, function () {
             self._doHide = true;
             self._debounce2Hide();
+            self._debounce2HideDrillCellPane();
         });
         this.pushButton = BI.createWidget({
-            type: "bi.drill_push_button",
+            type: "bi.drill_push_button"
         });
         this.pushButton.on(BI.DrillPushButton.EVENT_CHANGE, function () {
             self._onClickPush(!self.wrapper.isVisible());
@@ -37,6 +38,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
         this._doHide = true;
         this._debounce2Hide = BI.debounce(BI.bind(this._hideDrill, this), 3000);
+        this._debounce2HideDrillCellPane = BI.debounce(BI.bind(this._hideDrillCellPane, this), 3000);
 
         BI.Broadcasts.on(BICst.BROADCAST.CHART_CLICK_PREFIX + wId, function (obj) {
             var showDrill = self._canChartDrillShow();
@@ -62,6 +64,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             self.wrapper.element.width(width);
             self._doHide = true;
             self._debounce2Hide();
+            self._debounce2HideDrillCellPane();
         });
 
         BI.createWidget({
@@ -75,8 +78,14 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         })
     },
 
-    _hideDrill: function () {
+    _hideDrillCellPane: function () {
         if (this._doHide && BI.Utils.isWidgetExistByID(this.options.wId)) {
+            this._onClickPush(false);
+        }
+    },
+
+    _hideDrill: function () {
+        if (this._doHide && BI.Utils.isWidgetExistByID(this.options.wId) && !this._hasUpDrill()) {
             this.setVisible(false);
         }
     },

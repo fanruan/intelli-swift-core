@@ -516,7 +516,9 @@
             var self = this, o = this.options;
             // be sure input accept multiple files
             var input = this.element[0];
-            this.element.attr("multiple", "multiple");
+            if (o.multiple === true) {
+                this.element.attr("multiple", "multiple");
+            }
             input.value = "";
 
             // wrap Object
