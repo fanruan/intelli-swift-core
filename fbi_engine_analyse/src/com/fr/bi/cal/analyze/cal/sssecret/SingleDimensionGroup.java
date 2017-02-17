@@ -98,7 +98,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         }
         boolean urd = useRealData;
         int groupLimit = demoGroupLimit;
-        if (!useRealData) {
+        if (!useRealData && tis[index] != null) {
             long rowCount = tis[index].getRowCount();
             if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
                 urd = true;
