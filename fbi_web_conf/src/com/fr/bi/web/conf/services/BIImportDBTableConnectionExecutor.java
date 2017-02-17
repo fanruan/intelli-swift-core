@@ -4,7 +4,7 @@ import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
-import com.fr.bi.mongodbsource.MongoDBTableSource;
+import com.fr.bi.conf.data.source.MongoDBTableSource;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.BIDBTableField;
 import com.fr.bi.stable.data.source.AbstractTableSource;

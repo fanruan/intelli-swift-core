@@ -1,6 +1,6 @@
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.mongodbsource.MongoDBExtractor;
-import com.fr.bi.mongodbsource.MongoDBTableSource;
+import com.fr.bi.data.MongoDBExtractor;
+import com.fr.bi.conf.data.source.MongoDBTableSource;
 import com.fr.bi.mongodbsource.MongoDatabaseConnection;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.PersistentTable;

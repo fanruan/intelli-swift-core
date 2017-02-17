@@ -1,4 +1,4 @@
-package com.fr.bi.mongodbsource;
+package com.fr.bi.conf.data.source;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -7,6 +7,9 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.data.MongoDBExtractor;
+import com.fr.bi.mongodbsource.MongoDatabaseConnection;
+import com.fr.bi.mongodbsource.MongoTableData;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;

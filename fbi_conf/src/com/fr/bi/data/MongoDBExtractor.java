@@ -1,7 +1,10 @@
-package com.fr.bi.mongodbsource;
+package com.fr.bi.data;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.mongodbsource.MongoConstants;
+import com.fr.bi.mongodbsource.MongoDatabaseConnection;
+import com.fr.bi.mongodbsource.MongoTypeConvert;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.PersistentTable;
@@ -9,9 +12,7 @@ import com.fr.stable.StringUtils;
 import com.mongodb.MongoClient;
 import com.mongodb.client.*;
 import org.bson.BsonDocument;
-import org.bson.BsonUndefined;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 import java.util.*;
 

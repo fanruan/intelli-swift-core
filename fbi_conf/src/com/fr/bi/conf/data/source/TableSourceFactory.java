@@ -1,6 +1,5 @@
 package com.fr.bi.conf.data.source;
 
-import com.fr.bi.mongodbsource.MongoDBTableSource;
 import com.fr.bi.mongodbsource.MongoDatabaseConnection;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.AbstractTableSource;
