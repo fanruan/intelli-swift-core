@@ -20,6 +20,7 @@ import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.structure.queue.FixedExecutor;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.data.impl.Connection;
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.ArrayUtils;
 
 import java.io.File;
@@ -221,7 +222,22 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return configHelper.convertPath(path);
     }
 
-    protected Set<BITableSourceRelation> removeDuplicateRelations(Set<BITableSourceRelation> tableRelations) {
+    protected Set<BITableSourceRelation> filterRelations(Set<BITableSourceRelation> tableRelations) {
+        Set<BITableSourceRelation> relations = removeDuplicateRelations(tableRelations);
+        return removeSelfRelations(relations);
+    }
+
+    private Set<BITableSourceRelation> removeSelfRelations(Set<BITableSourceRelation> tableRelations) {
+        Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
+        for (BITableSourceRelation relation : tableRelations) {
+            if (!ComparatorUtils.equals(relation.getPrimaryTable().getSourceID(), relation.getForeignTable().getSourceID())) {
+                set.add(relation);
+            }
+        }
+        return set;
+    }
+
+    private Set<BITableSourceRelation> removeDuplicateRelations(Set<BITableSourceRelation> tableRelations) {
         Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
         Map sourceIdMap = new HashMap<String, BITableSourceRelation>();
         for (BITableSourceRelation relation : tableRelations) {
