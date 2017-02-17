@@ -73,17 +73,19 @@ public class GroupUtils {
             NoneDimensionGroup group = gcv.getCurrentValue();
             if (group != null) {
                 List<TargetAndKey>[] summaryLists = group.getSummaryLists();
-                GroupValueIndex[] gvis = group.getGvis();
                 node.setSummaryValue(group.getSummaryValue());
-                ICubeTableService[] tis = group.getTis();
-                for (int i = 0; i < summaryLists.length; i++) {
-                    List<TargetAndKey> targetAndKeys = summaryLists[i];
-                    for (TargetAndKey targetAndKey : targetAndKeys) {
-                        BISingleThreadCal singleThreadCal = createSinlgeThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex);
-                        if (MultiThreadManagerImpl.isMultiCall()) {
-                            MultiThreadManagerImpl.getInstance().getExecutorService().add(singleThreadCal);
-                        } else {
-                            singleThreadCal.cal();
+                GroupValueIndex[] gvis = group.getGvis();
+                if (gvis != null){
+                    ICubeTableService[] tis = group.getTis();
+                    for (int i = 0; i < summaryLists.length; i++) {
+                        List<TargetAndKey> targetAndKeys = summaryLists[i];
+                        for (TargetAndKey targetAndKey : targetAndKeys) {
+                            BISingleThreadCal singleThreadCal = createSinlgeThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex);
+                            if (MultiThreadManagerImpl.isMultiCall()) {
+                                MultiThreadManagerImpl.getInstance().getExecutorService().add(singleThreadCal);
+                            } else {
+                                singleThreadCal.cal();
+                            }
                         }
                     }
                 }

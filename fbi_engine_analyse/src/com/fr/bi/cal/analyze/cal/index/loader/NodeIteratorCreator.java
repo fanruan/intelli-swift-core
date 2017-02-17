@@ -172,6 +172,8 @@ public class NodeIteratorCreator {
                     creator = new NFilterMergeIteratorCreator(((StringTOPNFilterValue) filterValue).getN());
                 } else if (filterValue instanceof StringOneValueFilterValue) {
                     creator = new FilterMergeIteratorCreator((StringOneValueFilterValue) filterValue);
+                } else {
+                    creator = new SimpleMergeIteratorCreator();
                 }
             } else {
                 creator = new SimpleMergeIteratorCreator();
@@ -199,6 +201,8 @@ public class NodeIteratorCreator {
                     mergeIteratorCreators[i] = new NFilterMergeIteratorCreator(((StringTOPNFilterValue) filterValue).getN());
                 } else if (filterValue instanceof StringOneValueFilterValue) {
                     mergeIteratorCreators[i] = new FilterMergeIteratorCreator((StringOneValueFilterValue) filterValue);
+                } else {
+                    createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort.getName(), new SimpleMergeIteratorCreator());
                 }
             } else {
                 createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort.getName(), new SimpleMergeIteratorCreator());
