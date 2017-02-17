@@ -41,6 +41,7 @@ public class NodeIteratorCreator {
     private NameObject targetSort;
     private TargetFilter filter;
     private final boolean showSum;
+    private final boolean setIndex;
     private final boolean calAllPage;
     private List<CalCalculator> configureRelatedCalculators;
     private Map<String, BISummaryTarget> targetIdMap;
@@ -55,6 +56,7 @@ public class NodeIteratorCreator {
         this.targetSort = targetSort;
         this.filter = filter;
         this.showSum = showSum;
+        this.setIndex = setIndex;
         this.calAllPage = calAllPage;
         checkTargetSort();
         classifyMetrics();
@@ -100,6 +102,9 @@ public class NodeIteratorCreator {
     //获取相关的基本指标
     private void getRelatedNormalIds(String name, Set<String> ids) {
         BISummaryTarget target = targetIdMap.get(name);
+        if (target == null){
+            return;
+        }
         if (target.getType() != TargetType.NORMAL) {
             Map<String, TargetGettingKey> usedTargets = target.getTargetMap();
             if (usedTargets != null) {
