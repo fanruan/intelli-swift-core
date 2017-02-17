@@ -6,10 +6,7 @@ import com.fr.base.ScreenResolution;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.report.BIReportor;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartDataConvertFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSettingFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
@@ -95,16 +92,21 @@ public class BIReportExportExcel {
 
         for (BIWidget widget : widgets) {
             if (widgetHasData(widget)) {
-                polyECBlock.addFloatElement(renderChartPic(widget));
+                if (widget instanceof TableWidget) {
+                    polyECBlock.addFloatElement(renderChartPic(widget));
+                } else {
+                    polyECBlock.addFloatElement(renderChartPic(widget));
+                }
             } else {
                 polyECBlock.addFloatElement(renderDefaultChartPic(widget));
             }
         }
-
+//        dashboard
         reportSheet.addBlock(polyECBlock);
         wb.addReport("Dashboard", reportSheet);
+        //other sheets
         for (BIWidget widget : widgets) {
-            if(widgetHasData(widget)) {
+            if (widgetHasData(widget)) {
                 widget = (BIWidget) widget.clone();
                 switch (widget.getType()) {
                     case BIReportConstant.WIDGET.TABLE:
@@ -130,7 +132,7 @@ public class BIReportExportExcel {
         return wb.execute4BI(session.getParameterMap4Execute());
     }
 
-    private FloatElement renderChartPic (BIWidget widget) throws JSONException {
+    private FloatElement renderChartPic(BIWidget widget) throws Exception {
         JSONObject jo = JSONObject.create();
         try {
             jo = widget.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionID));
@@ -138,15 +140,9 @@ public class BIReportExportExcel {
             BILoggerFactory.getLogger().error(exception.getMessage(), exception);
             jo.put("error", BIPrintUtils.outputException(exception));
         }
-
-        JSONObject configs = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.optJSONObject("data"));
-        JSONObject chartOptions = BIChartSettingFactory.parseChartSetting((MultiChartWidget) widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
-        //将plotOptions下的animation设为false(去掉动画)否则只截到网格线
-        JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
+        JSONObject options = ((TableWidget) widget).getPostOptions(sessionID);
         Rectangle rect = widget.getRect();
-        plotOptions.put("animation", false);
-        chartOptions.put("plotOptions", plotOptions);
-        String postOptions = new JSONObject("{options:" + chartOptions + ", width:" + rect.getWidth() + ", height:" + rect.getHeight() + "}").toString();
+        String postOptions = new JSONObject("{options:" + options + ", width:" + rect.getWidth() + ", height:" + rect.getHeight() + "}").toString();
         String base64 = null;
         try {
             base64 = postMessage(PhantomIp, PhantomPort, postOptions);
@@ -156,7 +152,7 @@ public class BIReportExportExcel {
         return createFloatElement(base64Decoder(base64), rect);
     }
 
-    private FloatElement renderDefaultChartPic (BIWidget widget) throws IOException, JSONException {
+    private FloatElement renderDefaultChartPic(BIWidget widget) throws IOException, JSONException {
         String imageFolder = FRContext.getCurrentEnv().getPath() + "/classes/com/fr/bi/web/images/background/charts";
         String base64 = getDefaultImage(widget.getType(), imageFolder);
         JSONObject imgOptions = JSONObject.create();
@@ -172,7 +168,7 @@ public class BIReportExportExcel {
         return createFloatElement(base64Decoder(getBase64), widget.getRect());
     }
 
-    private FloatElement createFloatElement (BufferedImage img, Rectangle rect) {
+    private FloatElement createFloatElement(BufferedImage img, Rectangle rect) {
         FloatElement floatElement = new FloatElement(img);
         int resolution = ScreenResolution.getScreenResolution();
         floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
@@ -234,7 +230,7 @@ public class BIReportExportExcel {
         return (widget.getViewDimensions().length + widget.getViewTargets().length) != 0;
     }
 
-    private String getDefaultImage (int type, String imageFolder) throws IOException {
+    private String getDefaultImage(int type, String imageFolder) throws IOException {
         Map<Integer, String> map = new HashMap<Integer, String>();
         map.put(BIReportConstant.WIDGET.ACCUMULATE_AXIS, "/axis_accu.png");
         map.put(BIReportConstant.WIDGET.ACCUMULATE_AREA, "/area_accu.png");
@@ -273,8 +269,8 @@ public class BIReportExportExcel {
         return coderBase64(IOUtils.readImage(imageFolder + map.get(type)));
     }
 
-     private String coderBase64(Image image) throws IOException {
-        if (image == null){
+    private String coderBase64(Image image) throws IOException {
+        if (image == null) {
             return StringUtils.EMPTY;
         }
         byte[] data = null;
