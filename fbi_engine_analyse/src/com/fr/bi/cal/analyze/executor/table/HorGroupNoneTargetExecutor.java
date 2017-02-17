@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
@@ -8,8 +9,6 @@ import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.field.BIAbstractTargetAndDimension;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -17,10 +16,11 @@ import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.field.BIAbstractTargetAndDimension;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,17 +85,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
             cbox.setType(CellConstant.CBCELL.ROWFIELD);
             cell.setBoxElement(cbox);
             Node t = tempNode;
-            JSONArray ja = new JSONArray();
-            int k = dimensionIndex;
-            while (k != -1 && t != null) {
-                try {
-                    ja.put(new JSONObject().put(rowColumn[k].getValue(), rowColumn[k].toFilterObject(t.getData())));
-                } catch (Exception e) {
-                }
-                t = t.getParent();
-                k--;
-            }
-            cbox.setDimensionJSON(ja.toString());
+            cbox.setDimensionJSON(getDimensionJSONString(rowColumn, dimensionIndex, t));
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             dealWithNode(tempNode, expander.getChildExpander(name), cbcells, tempRow, column + columnSpan, rowColumn, sumColumn, currentIndex, total - 1, rowData);
             tempRow += rowSpan;
@@ -142,18 +132,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
             cbox.setName(rowCol.getValue());
             cbox.setType(CellConstant.CBCELL.ROWFIELD);
             cell.setBoxElement(cbox);
-            Node t = tempNode;
-            JSONArray ja = new JSONArray();
-            int k = dimensionIndex;
-            while (k != -1 && t != null) {
-                try {
-                    ja.put(new JSONObject().put(rowColumn[k].getValue(), rowColumn[k].toFilterObject(t.getData())));
-                } catch (Exception e) {
-                }
-                t = t.getParent();
-                k--;
-            }
-            cbox.setDimensionJSON(ja.toString());
+            cbox.setDimensionJSON(getDimensionJSONString(rowColumn, dimensionIndex, tempNode));
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             dealWithNode(tempNode, cbcells, tempRow, column + columnSpan, rowColumn, sumColumn, total - 1, rowData);
             tempRow += rowSpan;
@@ -171,7 +150,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
      * @throws NoneAccessablePrivilegeException
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         Node tree = getCubeNode();
         if (tree == null) {
             return new CBCell[][]{new CBCell[0]};
@@ -195,7 +174,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
 
     private void generateTitle(CBCell[][] cbcells, int rowLength) {
         for (int i = 0; i < rowLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension)usedDimensions[i]).getText());
+            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
             cell.setColumn(0);
             cell.setRow(i);
             cell.setRowSpan(1);
@@ -221,7 +200,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     @Override
-    public Node getCubeNode() {
+    public Node getCubeNode() throws Exception {
         if (getSession() == null) {
             return null;
         }
@@ -237,7 +216,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
         if (tree == null) {
             tree = new Node();
         }
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;
     }
 

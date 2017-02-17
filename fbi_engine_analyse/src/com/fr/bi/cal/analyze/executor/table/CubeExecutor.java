@@ -87,7 +87,7 @@ public class CubeExecutor extends SheetExecutor {
         return startTime;
     }
 
-    private void execute() throws NoneAccessablePrivilegeException {
+    private void execute() throws Exception {
         BISession session = (BISession) SessionDealWith.getSessionIDInfor(sessionID);
         if (session == null) {
             cbcells = new CBCell[][]{new CBCell[0]};

@@ -27,12 +27,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Service4BIBase extends NoSessionIDService {
     private static AbstractBIBaseAction[] actions = {
-            new BIGetPyAction(),
-            new BIGetTableAction(),
-            new BIFSGetConfigAction(),
-            new BIFSSetConfigAction(),
-            new BICheckValidationOfExpressionAction(),
-            new BIGetMapJsonAction(),
             new BIGetBuildNoAction(),
 
             new BIGetDataConfigNodesAction(),

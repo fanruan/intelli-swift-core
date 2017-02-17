@@ -804,7 +804,7 @@ public class HorGroupExecutor extends GroupExecutor {
     }
 
     @Override
-    public Node getCubeNode() {
+    public Node getCubeNode() throws Exception{
         if (session == null) {
             return null;
         }
@@ -879,7 +879,7 @@ public class HorGroupExecutor extends GroupExecutor {
      * @throws NoneAccessablePrivilegeException
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         long start = System.currentTimeMillis();
         if (getSession() == null) {
             return null;

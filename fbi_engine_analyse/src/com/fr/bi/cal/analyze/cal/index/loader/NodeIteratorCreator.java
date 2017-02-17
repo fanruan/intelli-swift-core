@@ -41,6 +41,7 @@ public class NodeIteratorCreator {
     private NameObject targetSort;
     private TargetFilter filter;
     private final boolean showSum;
+    private final boolean setIndex;
     private final boolean calAllPage;
     private List<CalCalculator> configureRelatedCalculators;
     private Map<String, BISummaryTarget> targetIdMap;
@@ -55,6 +56,7 @@ public class NodeIteratorCreator {
         this.targetSort = targetSort;
         this.filter = filter;
         this.showSum = showSum;
+        this.setIndex = setIndex;
         this.calAllPage = calAllPage;
         checkTargetSort();
         classifyMetrics();
@@ -100,6 +102,9 @@ public class NodeIteratorCreator {
     //获取相关的基本指标
     private void getRelatedNormalIds(String name, Set<String> ids) {
         BISummaryTarget target = targetIdMap.get(name);
+        if (target == null){
+            return;
+        }
         if (target.getType() != TargetType.NORMAL) {
             Map<String, TargetGettingKey> usedTargets = target.getTargetMap();
             if (usedTargets != null) {
@@ -167,6 +172,8 @@ public class NodeIteratorCreator {
                     creator = new NFilterMergeIteratorCreator(((StringTOPNFilterValue) filterValue).getN());
                 } else if (filterValue instanceof StringOneValueFilterValue) {
                     creator = new FilterMergeIteratorCreator((StringOneValueFilterValue) filterValue);
+                } else {
+                    creator = new SimpleMergeIteratorCreator();
                 }
             } else {
                 creator = new SimpleMergeIteratorCreator();
@@ -194,6 +201,8 @@ public class NodeIteratorCreator {
                     mergeIteratorCreators[i] = new NFilterMergeIteratorCreator(((StringTOPNFilterValue) filterValue).getN());
                 } else if (filterValue instanceof StringOneValueFilterValue) {
                     mergeIteratorCreators[i] = new FilterMergeIteratorCreator((StringOneValueFilterValue) filterValue);
+                } else {
+                    createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort.getName(), new SimpleMergeIteratorCreator());
                 }
             } else {
                 createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort.getName(), new SimpleMergeIteratorCreator());

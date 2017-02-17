@@ -84,7 +84,7 @@ public class NoneDimensionGroup implements Release {
      */
     @Override
     public void clear() {
-//        root.release();
+
     }
 
     public List<TargetAndKey>[] getSummaryLists() {
