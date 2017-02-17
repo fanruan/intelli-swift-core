@@ -4,7 +4,6 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -19,6 +18,7 @@ import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.MySQLDialect;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.impl.DBTableData;
+import com.fr.file.DatasourceManager;
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.Primitive;
@@ -111,7 +111,7 @@ public class ServerTableSource extends DBTableSource {
     }
 
     protected TableData getTableData() {
-        return DatasourceManagerProxy.getDatasourceManager().getTableData(getTableName());
+        return DatasourceManager.getInstance().getTableData(getTableName());
     }
 
     @Override

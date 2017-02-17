@@ -6,7 +6,6 @@ import com.fr.base.TableData;
 import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtils;
 import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtilsFactory;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
-import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.dbdealer.*;
@@ -19,6 +18,7 @@ import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.*;
 import com.fr.data.pool.DBCPConnectionPoolAttr;
+import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.data.DataModel;
@@ -431,7 +431,7 @@ public class BIDBUtils {
     public static PersistentTable getServerBITable(String tableName) {
         if (StringUtils.isNotBlank(tableName)) {
             PersistentTable persistentTable = new PersistentTable(null, tableName, null);
-            DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
+            DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
             TableData tableData = datasourceManager.getTableData(tableName);
             if (tableData == null) {
                 BILoggerFactory.getLogger().error("can not find server db :" + tableName);

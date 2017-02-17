@@ -22,8 +22,6 @@ import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.base.datasource.BIConnectionProvider;
-import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
-import com.fr.bi.conf.base.datasource.DatasourceManagerProxyProvider;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
@@ -122,8 +120,6 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BICubeManagerProvider.XML_TAG, getCubeManagerProvider());
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, getBILogManager());
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
-        //dataSourceManager注册必须在Connectionmanager之前，connecttionManager初始化中用到了datasourcemanager
-        StableFactory.registerMarkedObject(DatasourceManagerProxyProvider.XML_TAG,getDatasourceManager());
         StableFactory.registerMarkedObject(BIConnectionProvider.XML_TAG,getConnectionManager());
         StableFactory.registerMarkedObject(UpdateFrequencyManager.XML_TAG, new UpdateFrequencyManager());
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, getExcelViewManager());
@@ -428,33 +424,18 @@ public class BICoreModule extends AbstractModule {
         }
     }
 
-    private DatasourceManagerProxyProvider getDatasourceManager(){
-        if (ClusterEnv.isCluster()) {
-            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                DatasourceManagerProxy provider = new DatasourceManagerProxy(DatasourceManager.getProviderInstance());
-                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
-                return provider;
-            } else {
-                return (DatasourceManagerProxyProvider) RPC.getProxy(DatasourceManagerProxy.class,
-                        ClusterAdapter.getManager().getHostManager().getIp(),
-                        ClusterAdapter.getManager().getHostManager().getPort());
-            }
-        } else {
-            return new DatasourceManagerProxy(DatasourceManager.getProviderInstance());
-        }
-    }
+
     private void initDataSourcePool() {
-        DatasourceManagerProxyProvider provider = DatasourceManagerProxy.getDatasourceManager();
-        synchronized (provider) {
-            Iterator<String> iterator = provider.getConnectionNameIterator();
+        synchronized (DatasourceManager.getInstance()) {
+            Iterator<String> iterator = DatasourceManager.getProviderInstance().getConnectionNameIterator();
             while (iterator.hasNext()) {
                 String name = iterator.next();
-                JDBCDatabaseConnection connection = provider.getConnection(name, JDBCDatabaseConnection.class);
+                JDBCDatabaseConnection connection = DatasourceManager.getProviderInstance().getConnection(name, JDBCDatabaseConnection.class);
                 BIDBUtils.dealWithJDBCConnection(connection);
             }
             try {
                 MemoryConnection.getConnectionMap().clear();
-                DatasourceManagerProxy.getDatasourceManager().writeContextResource();
+                FRContext.getCurrentEnv().writeResource(DatasourceManager.getInstance());
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }

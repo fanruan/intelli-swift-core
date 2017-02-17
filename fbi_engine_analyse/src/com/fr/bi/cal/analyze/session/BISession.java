@@ -158,7 +158,6 @@ public class BISession extends BIAbstractSession {
             isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId());
             if (!isEdit) {
                 List<BIReportNodeLock> locks = lockDAO.getLock(node.getUserId(), node.getId());
-                BILoggerFactory.getLogger().info(locks.toString());
                 boolean doForce = true;
                 for (BIReportNodeLock l : locks) {
                     long t = 0;

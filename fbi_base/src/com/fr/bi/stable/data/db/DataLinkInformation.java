@@ -1,9 +1,15 @@
 package com.fr.bi.stable.data.db;
 
+import com.fr.bi.mongodbsource.MongoConstants;
+import com.fr.bi.mongodbsource.MongoDatabaseConnection;
+import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONParser;
 import com.fr.stable.StringUtils;
+
+import static com.fr.bi.mongodbsource.MongoConstants.MONGODB_URL_PREFIX;
 
 
 /**
@@ -14,7 +20,7 @@ import com.fr.stable.StringUtils;
  * To change this template use File | Settings | File Templates.
  */
 public class DataLinkInformation implements JSONParser {
-    private String database;
+    private String databaseName;
     private String driver;
     private String url;
     private String user;
@@ -25,6 +31,8 @@ public class DataLinkInformation implements JSONParser {
     public DataLinkInformation() throws Exception {
 
     }
+
+
 
     /**
      * 通过当前数据获取连接
@@ -40,8 +48,13 @@ public class DataLinkInformation implements JSONParser {
         if (StringUtils.isNotBlank(newCharsetName)) {
             jdbcDatabaseConnection.setNewCharsetName(newCharsetName);
         }
-
+        BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
         return jdbcDatabaseConnection;
+    }
+
+    public MongoDatabaseConnection createMongoDatabaseConnection() {
+        MongoDatabaseConnection mc = new MongoDatabaseConnection(url,user,password);
+        return mc;
     }
 
     /**
@@ -52,8 +65,8 @@ public class DataLinkInformation implements JSONParser {
      */
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if(jo.has("database")) {
-            database = jo.getString("database");
+        if(jo.has("name")) {
+            databaseName = jo.getString("name");
         }
         if (jo.has("driver")) {
             driver = jo.getString("driver");
@@ -72,6 +85,14 @@ public class DataLinkInformation implements JSONParser {
         }
         if (jo.has("newCharsetName")) {
             newCharsetName = jo.getString("newCharsetName");
+        }
+    }
+
+    public Connection createDatabaseConnection() {
+        if(url.contains(MongoConstants.MONGODB_URL_PREFIX)){
+            return createMongoDatabaseConnection();
+        }else {
+            return createJDBCDatabaseConnection();
         }
     }
 }

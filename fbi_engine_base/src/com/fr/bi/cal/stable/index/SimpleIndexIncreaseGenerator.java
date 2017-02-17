@@ -9,7 +9,6 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
-import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.data.DBQueryExecutor;
@@ -29,6 +28,7 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
+import com.fr.file.DatasourceManager;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 
@@ -73,7 +73,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             return rowCount;
         }
         DBTableSource source = (DBTableSource) dataSource;
-        com.fr.data.impl.Connection connection = DatasourceManagerProxy.getDatasourceManager().getConnection(source.getDbName());
+        com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(source.getDbName());
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(iSql);
         return (int) DBQueryExecutor.getInstance().runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {

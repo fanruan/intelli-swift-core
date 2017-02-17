@@ -1,14 +1,14 @@
 package com.fr.bi.web.conf.services.dbconnection;
 
-import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.web.utils.WebUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
@@ -20,13 +20,14 @@ public class BIGetConnectionNamesAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         JSONArray ja = new JSONArray();
-        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
         Iterator names = datasourceManager.getConnectionNameIterator();
         while (names.hasNext()) {
             String name = (String) names.next();
-            JDBCDatabaseConnection conn = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
+
+            Connection conn = datasourceManager.getConnection(name);
             if (conn != null) {
-                if (ComparatorUtils.equals(conn.getDriver(), "sun.jdbc.odbc.JdbcOdbcDriver") && conn.getURL().indexOf("Microsoft Access Driver") > 0) {
+                if (conn instanceof JDBCDatabaseConnection && ComparatorUtils.equals(conn.getDriver(), "sun.jdbc.odbc.JdbcOdbcDriver") && ((JDBCDatabaseConnection) conn).getURL().indexOf("Microsoft Access Driver") > 0) {
                     continue;
                 }
                 ja.put(name);

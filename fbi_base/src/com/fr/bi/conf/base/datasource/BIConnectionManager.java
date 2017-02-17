@@ -2,6 +2,7 @@ package com.fr.bi.conf.base.datasource;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.bi.mongodbsource.MongoDatabaseConnection;
 import com.fr.bi.stable.data.db.DataLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.data.core.DataCoreUtils;
@@ -12,6 +13,7 @@ import com.fr.data.core.db.dialect.MSSQLDialect;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.file.XMLFileManager;
 import com.fr.general.ComparatorUtils;
@@ -35,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BIConnectionManager extends XMLFileManager implements BIConnectionProvider{
     public static final String XML_TAG = "BIConnectionManager";
     private Map<String, BIConnection> connMap = new ConcurrentHashMap<String, BIConnection>();
-    private Map<String, JDBCDatabaseConnection> availableConnection = new HashMap<String, JDBCDatabaseConnection>();
+    private Map<String, Connection> availableConnection = new HashMap<String, Connection>();
     private static BIConnectionManager manager;
 
     private BIConnectionManager() {
@@ -45,11 +47,11 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     @Override
     public void updateAvailableConnection() {
         availableConnection.clear();
-        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String name = nameIt.next();
-            JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
+            Connection c = datasourceManager.getConnection(name);
             if (c != null && testConnection(c)) {
                 availableConnection.put(name, c);
             }
@@ -76,7 +78,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         if (connMap.containsKey(name)) {
             return connMap.get(name).getSchema();
         }
-        Connection connection = DatasourceManagerProxy.getDatasourceManager().getConnection(name);
+        Connection connection = DatasourceManager.getInstance().getConnection(name);
         if (needSchema(connection)) {
             String[] schemas = DataCoreUtils.getDatabaseSchema(connection);
             connMap.put(name, new BIConnection(name, schemas != null && schemas.length != 0 ? schemas[0] : StringUtils.EMPTY));
@@ -93,7 +95,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
     @Override
     public Connection getConnection(String name) {
-        return DatasourceManagerProxy.getDatasourceManager().getConnection(name);
+        return DatasourceManager.getInstance().getConnection(name);
     }
 
     static {
@@ -143,18 +145,15 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     public void updateConnection(String linkData, String oldName) throws Exception {
         JSONObject linkDataJo = new JSONObject(linkData);
         String newName = linkDataJo.optString("name");
-        DataLinkInformation dl = new DataLinkInformation();
-        dl.parseJSON(linkDataJo);
-        JDBCDatabaseConnection jdbcDatabaseConnection = dl.createJDBCDatabaseConnection();
-        /*BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils(jdbcDatabaseConnection);
-        jdbcDatabaseConnection = utils.optimizeConnection(jdbcDatabaseConnection);*/ //连接保存时，如果是sqlserver连接，不会再url上字段加selectMethod，当在需要数据库连接时，加上selectMethod属性
-        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
-
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
         if (!ComparatorUtils.equals(oldName, newName)) {
             datasourceManager.renameConnection(oldName, newName);
         }
-        BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
-        datasourceManager.putConnection(newName, jdbcDatabaseConnection);
+        DataLinkInformation dl = new DataLinkInformation();
+        dl.parseJSON(linkDataJo);
+
+        Connection databaseConnection = dl.createDatabaseConnection();
+        datasourceManager.putConnection(newName,databaseConnection);
         connMap.remove(oldName);
         connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null)));
         try {
@@ -171,7 +170,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
             return;
         }
         connMap.remove(name);
-        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String connectionName = nameIt.next();
@@ -200,28 +199,38 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     @Override
     public JSONObject createJSON() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
 
         int index = 0;
         while (nameIt.hasNext()) {
             String name = nameIt.next();
-            JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
-            if (c != null) {
-                if (isMicrosoftAccessDatabase(c)) {
-                    continue;
+            JSONObject jo = new JSONObject();
+            jo.put("name", name);
+            Connection mc = datasourceManager.getConnection(name);
+            if(mc instanceof MongoDatabaseConnection){
+                jo.put("driver", mc.getDriver());
+                jo.put("url", ((MongoDatabaseConnection) mc).getUrl());
+                jo.put("user", ((MongoDatabaseConnection) mc).getUsername());
+                jo.put("password", ((MongoDatabaseConnection) mc).getPassword());
+                jo.put("originalCharsetName", StringUtils.alwaysNotNull(mc.getOriginalCharsetName()));
+                jo.put("newCharsetName", StringUtils.alwaysNotNull(mc.getNewCharsetName()));
+            }else if(mc instanceof JDBCDatabaseConnection){
+                JDBCDatabaseConnection c = (JDBCDatabaseConnection)mc;
+                if (c != null) {
+                    if (isMicrosoftAccessDatabase(c)) {
+                        continue;
+                    }
                 }
-                JSONObject jo = new JSONObject();
-                jo.put("name", name);
                 jo.put("driver", c.getDriver());
                 jo.put("url", c.getURL());
                 jo.put("user", c.getUser());
                 jo.put("password", c.getPassword());
                 jo.put("originalCharsetName", StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
                 jo.put("newCharsetName", StringUtils.alwaysNotNull(c.getNewCharsetName()));
+            }
                 jo.put("schema", getSchema(name));
                 jsonObject.put("link" + index++, jo);
-            }
         }
 
         return jsonObject;

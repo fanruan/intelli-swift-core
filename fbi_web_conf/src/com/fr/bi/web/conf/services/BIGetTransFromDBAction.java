@@ -1,7 +1,6 @@
 package com.fr.bi.web.conf.services;
 
 import com.fr.base.TableData;
-import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -11,6 +10,7 @@ import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.file.DatasourceManager;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.data.DataModel;
@@ -106,8 +106,8 @@ public class BIGetTransFromDBAction extends AbstractBIConfigureAction {
         jo.put(BIJSONConstant.JSON_KEYS.VALUE, trans);
         String tableJsonString = WebUtils.getHTTPRequestParameter(req, BIJSONConstant.JSON_KEYS.TABLES);
         Map<String, DBTableSource> sourceMap = getDBSource(tableJsonString, userId);
-        TableData translatedTableNameTableData = DatasourceManagerProxy.getDatasourceManager().getTableData(SERVER_TABLE_NAME);
-        TableData translatedFieldNameTableData = DatasourceManagerProxy.getDatasourceManager().getTableData(SERVER_FIELD_NAME);
+        TableData translatedTableNameTableData = DatasourceManager.getInstance().getTableData(SERVER_TABLE_NAME);
+        TableData translatedFieldNameTableData = DatasourceManager.getInstance().getTableData(SERVER_FIELD_NAME);
         if (translatedTableNameTableData != null && translatedFieldNameTableData != null) {
             Calculator c = Calculator.createCalculator();
             DataModel model4TableName = translatedTableNameTableData.createDataModel(c);
@@ -169,8 +169,8 @@ public class BIGetTransFromDBAction extends AbstractBIConfigureAction {
 
 
     private boolean checkExistOfEmbbededTableData() throws TableDataException {
-        TableData translatedTableNameTableData = DatasourceManagerProxy.getDatasourceManager().getTableData(SERVER_TABLE_NAME);
-        TableData translatedFieldNameTableData = DatasourceManagerProxy.getDatasourceManager().getTableData(SERVER_FIELD_NAME);
+        TableData translatedTableNameTableData = DatasourceManager.getInstance().getTableData(SERVER_TABLE_NAME);
+        TableData translatedFieldNameTableData = DatasourceManager.getInstance().getTableData(SERVER_FIELD_NAME);
         if (translatedTableNameTableData != null && translatedFieldNameTableData != null) {
             Calculator c = Calculator.createCalculator();
             DataModel model4TableName = translatedTableNameTableData.createDataModel(c);

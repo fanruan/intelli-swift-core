@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.datalink.data;
 
-import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.general.ComparatorUtils;
 
@@ -14,7 +14,7 @@ public class BIConnectionTestByNameUtils extends BIConnectionTestUtils {
 
     @Override
     protected JDBCDatabaseConnection fetchConnection(String configData) throws Exception {
-        DatasourceManagerProvider datasourceManager = DatasourceManagerProxy.getDatasourceManager();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String n = nameIt.next();

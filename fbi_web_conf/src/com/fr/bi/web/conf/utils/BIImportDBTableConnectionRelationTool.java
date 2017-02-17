@@ -4,7 +4,6 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
-import com.fr.bi.conf.base.datasource.DatasourceManagerProxy;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITableID;
@@ -12,6 +11,7 @@ import com.fr.bi.stable.data.db.BIDBTableField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.file.DatasourceManager;
 
 import java.sql.Connection;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class BIImportDBTableConnectionRelationTool {
 
     public boolean putConnection(String connectionName, Map<String, java.sql.Connection> connMap) throws Exception {
         if (!connMap.containsKey(connectionName)) {
-            com.fr.data.impl.Connection dbc = DatasourceManagerProxy.getDatasourceManager().getConnection(connectionName);
+            com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
             if (dbc == null) {
                 return false;
             }
