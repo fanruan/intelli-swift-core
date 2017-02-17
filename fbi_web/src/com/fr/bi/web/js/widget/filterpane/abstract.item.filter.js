@@ -39,7 +39,8 @@ BI.AbstractFilterItem = BI.inherit(BI.Widget, {
                 BI.createWidget({
                     type: "bi.vertical",
                     element: this.element,
-                    items: [this.emptyItem]
+                    items: [this.emptyItem],
+                    scrolly: false
                 });
             }
         }

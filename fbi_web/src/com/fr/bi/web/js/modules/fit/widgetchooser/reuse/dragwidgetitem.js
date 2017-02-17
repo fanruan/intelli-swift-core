@@ -116,6 +116,22 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 return "reuse-query-font";
             case BICst.WIDGET.RESET:
                 return "reuse-reset-font";
+            case BICst.WIDGET.SINGLE_SLIDER:
+                return "reuse-single-slider-icon";
+            case BICst.WIDGET.MULTI_PIE:
+                return "reuse-multi-pie-icon";
+            case BICst.WIDGET.RECT_TREE:
+                return "reuse-rect-tree-icon";
+            case BICst.WIDGET.TREE_LABEL:
+                return "reuse-tree-label-icon";
+            case BICst.WIDGET.TREE_LIST:
+                return "reuse-tree-list-icon";
+            case BICst.WIDGET.INTERVAL_SLIDER:
+                return "reuse-interval-slider-icon";
+            case BICst.WIDGET.STRING_LIST:
+                return "reuse-string-list-icon";
+            case BICst.WIDGET.LIST_LABEL:
+                return "reuse-list-label-icon";
         }
     },
 

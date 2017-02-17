@@ -216,7 +216,7 @@ public class NodeIteratorCreator {
     }
 
     private void createAllNodeCreator(MergeIteratorCreator[] mergeIteratorCreators, int index, DimensionFilter filter, String sortTarget, MergeIteratorCreator creator) {
-        List<TargetAndKey>[] metricsToCalculate = new List[mergeIteratorCreators.length];
+        List<TargetAndKey>[] metricsToCalculate = new List[metricGroupInfoList.size()];
         Map<String, TargetCalculator> calculatedMap = new HashMap<String, TargetCalculator>();
         Set<String> metrics = new HashSet<String>();
         List<String> usedTargets = new ArrayList<String>();

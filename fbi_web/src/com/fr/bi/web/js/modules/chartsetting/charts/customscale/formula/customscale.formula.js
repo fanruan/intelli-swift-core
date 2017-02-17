@@ -273,6 +273,10 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
         return v.match(regx);
     },
 
+    focus: function() {
+        this.formulaEditor.focus();
+    },
+
     getAnalyzeContent: function () {
         var v = this.getValue();
         return this._analyzeContent(v)
