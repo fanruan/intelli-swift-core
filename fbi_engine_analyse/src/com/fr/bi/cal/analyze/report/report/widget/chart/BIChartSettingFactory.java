@@ -167,6 +167,7 @@ public class BIChartSettingFactory {
     public static BIChartSetting newChartSettingByType(int type) throws Exception {
         switch (type) {
             case BIReportConstant.WIDGET.AXIS:
+                return new AxisChartSetting();
             case BIReportConstant.WIDGET.COMBINE_CHART:
                 return new AxisChartSetting();
             case BIReportConstant.WIDGET.ACCUMULATE_AXIS:

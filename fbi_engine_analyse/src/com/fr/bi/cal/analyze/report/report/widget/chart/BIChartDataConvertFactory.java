@@ -558,6 +558,10 @@ public class BIChartDataConvertFactory {
 
         }
         int type = widget.getType();
+        return getResult(cordon, result, type);
+    }
+
+    private static JSONArray getResult(JSONObject cordon, JSONArray result, int type) throws JSONException {
         if (type == BIReportConstant.WIDGET.SCATTER || type == BIReportConstant.WIDGET.BUBBLE) {
             result.put(cordon.optJSONArray(BIReportConstant.REGION.TARGET2) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET2));
             result.put(cordon.optJSONArray(BIReportConstant.REGION.TARGET1) == null ? new JSONArray() : cordon.getJSONArray(BIReportConstant.REGION.TARGET1));
@@ -616,7 +620,8 @@ public class BIChartDataConvertFactory {
                     }
                 }
             }
-            if (!dataLabel.has("target_id") || (dataLabel.has("target_id") && ComparatorUtils.equals(widget.getRegionTypeByDimension(widget.getDimensionById(dataLabel.getString("target_id"))).toString(), BIReportConstant.REGION.DIMENSION1))) {
+            boolean canGetTarget=dataLabel.has("target_id") && ComparatorUtils.equals(widget.getRegionTypeByDimension(widget.getDimensionById(dataLabel.getString("target_id"))).toString(), BIReportConstant.REGION.DIMENSION1);
+            if (!dataLabel.has("target_id") || canGetTarget) {
                 filter = FilterBubbleScatterFactory.parseFilter(dataLabel);
                 filterArray = filter.getFilterResult(flatten(pluck(data, "data")));
                 for (int j = 0; j < data.length(); j++) {
@@ -848,10 +853,11 @@ public class BIChartDataConvertFactory {
     private static boolean bubbleScatterPropertyContains(JSONArray array, JSONObject key) throws JSONException {
         for (int i = 0; i < array.length(); i++) {
             JSONObject jo = array.getJSONObject(i);
-            if (ComparatorUtils.equals(jo.optString("x"), key.optString("x"))
-                    && ComparatorUtils.equals(jo.optString("y"), key.optString("y"))
-                    && ComparatorUtils.equals(jo.optString("z"), key.optString("z"))
-                    && ComparatorUtils.equals(jo.optString("seriesName"), key.optString("seriesName"))) {
+            boolean hasXY = ComparatorUtils.equals(jo.optString("x"), key.optString("x"))
+                    && ComparatorUtils.equals(jo.optString("y"), key.optString("y"));
+            boolean hasZAndSeriesName = ComparatorUtils.equals(jo.optString("z"), key.optString("z"))
+                    && ComparatorUtils.equals(jo.optString("seriesName"), key.optString("seriesName"));
+            if (hasXY && hasZAndSeriesName) {
                 return true;
             }
         }
