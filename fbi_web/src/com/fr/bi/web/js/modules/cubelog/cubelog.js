@@ -114,7 +114,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
     setEnd: function () {
         var self = this;
         this.processBar.setValue(100);
-        BI.delay(function() {
+        BI.delay(function () {
             self._showFinish();
         }, 300);
     },
@@ -147,16 +147,12 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             BI.each(data.tables, function (i, table) {
                 generated += table.column.length;
             });
-            var process = 1;
+            var process = Math.ceil(data.process * 100);
             if (data.hasTask === true) {
                 if (allFields === 0) {
                     return;
                 }
-                process = generated / allFields;
-                process = process > 0.9 ? 0.9 : process;
             }
-            process = Math.ceil(process * 100);
-            process = process < 10 ? 10 : process;
             this.processBar.setValue(process);
             if (process < 100) {
                 this._showBar();

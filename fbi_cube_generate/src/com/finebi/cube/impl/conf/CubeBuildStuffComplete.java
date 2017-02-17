@@ -80,7 +80,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
 
     public void setTableRelationSet(Set<BITableRelation> tableRelationSet) {
         this.tableRelationSet = filterRelation(tableRelationSet);
-        this.tableSourceRelationSet = removeDuplicateRelations(convertRelations(this.tableRelationSet));
+        this.tableSourceRelationSet = filterRelations(convertRelations(this.tableRelationSet));
     }
 
     public Set<BITableSourceRelationPath> getTableSourceRelationPathSet() {
