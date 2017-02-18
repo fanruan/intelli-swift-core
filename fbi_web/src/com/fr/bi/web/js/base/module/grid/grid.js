@@ -289,6 +289,7 @@ BI.Grid = BI.inherit(BI.Widget, {
     populate: function (items) {
         if (items && items !== this.options.items) {
             this.options.items = items;
+            this.restore();
         }
         this._populate();
     }

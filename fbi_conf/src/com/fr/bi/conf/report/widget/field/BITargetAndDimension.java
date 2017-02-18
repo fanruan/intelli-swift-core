@@ -47,4 +47,9 @@ public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BI
     boolean isUsed();
 
     void refreshColumn();
+
+    String getId();
+
+    String getText();
+
 }

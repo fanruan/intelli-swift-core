@@ -6,10 +6,7 @@ import com.fr.general.IOUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.OperatingSystem;
-import sun.misc.BASE64Decoder;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -104,7 +101,7 @@ public class PhantomServerUtils {
     }
 
     public static String getExe(String path) {
-        String exe = path + "/phantomjs";
+        String exe = path + File.separator+"phantomjs";
         //if it is not windows, set authority
         if (isLinux32() || isLinux64()){
             PhantomServerUtils.setAuthority(exe);

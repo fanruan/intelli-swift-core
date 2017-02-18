@@ -4,6 +4,8 @@ package com.fr.bi.web.base;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.base.fs.BIFSGetConfigAction;
 import com.fr.bi.web.base.fs.BIFSSetConfigAction;
+import com.fr.bi.web.base.image.BIFSGetImageSizeAction;
+import com.fr.bi.web.base.image.BIFSSaveUploadImageAction;
 import com.fr.bi.web.base.services.*;
 import com.fr.bi.web.base.services.dataconfigauth.BIGetDataConfigAuthoritiesAction;
 import com.fr.bi.web.base.services.dataconfigauth.BIGetDataConfigNodesAction;
@@ -29,9 +31,12 @@ public class Service4BIBase extends NoSessionIDService {
     private static AbstractBIBaseAction[] actions = {
             new BIGetPyAction(),
             new BIGetTableAction(),
+//            new BIGetTransNameAction(),
             new BIFSGetConfigAction(),
             new BIFSSetConfigAction(),
             new BICheckValidationOfExpressionAction(),
+            new BIFSSaveUploadImageAction(),
+            new BIFSGetImageSizeAction(),
             new BIGetMapJsonAction(),
             new BIGetBuildNoAction(),
 

@@ -1,11 +1,12 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart;
 
-import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.BIChartSetting;
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
@@ -45,12 +46,12 @@ public class BIChartSettingFactory {
             BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART
     };
 
-    public static JSONObject parseChartSetting(MultiChartWidget widget, JSONArray data, JSONObject options, JSONArray types){
+    public static JSONObject parseChartSetting(BIWidget widget, JSONArray data, JSONObject options, JSONArray types){
         int type = widget.getType();
         BIChartSetting chartSetting = null;
         try {
             chartSetting = newChartSettingByType(type);
-            JSONObject settings = widget.getChartSetting().getDetailChartSetting();
+            JSONObject settings =((TableWidget) widget).getChartSetting().getDetailChartSetting();
             boolean isMinimalistModel = false;
             if(settings.optBoolean("minimalist_model", false)){
                 for(int i = 0; i < MINIMALIST_WIDGET.length; i++){
@@ -166,6 +167,7 @@ public class BIChartSettingFactory {
     public static BIChartSetting newChartSettingByType(int type) throws Exception {
         switch (type) {
             case BIReportConstant.WIDGET.AXIS:
+                return new AxisChartSetting();
             case BIReportConstant.WIDGET.COMBINE_CHART:
                 return new AxisChartSetting();
             case BIReportConstant.WIDGET.ACCUMULATE_AXIS:

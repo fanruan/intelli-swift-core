@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services.datalink;
 
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.web.utils.WebUtils;
 
@@ -19,7 +20,7 @@ public class BIModifyDataLinkAction extends AbstractBIConfigureAction {
 
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-
+        long userId = ServiceUtils.getCurrentUserID(req);
         String actionType = WebUtils.getHTTPRequestParameter(req, "actionType");
 
         if (ComparatorUtils.equals(actionType, "delete")) {
@@ -27,7 +28,7 @@ public class BIModifyDataLinkAction extends AbstractBIConfigureAction {
         } else if (ComparatorUtils.equals(actionType, "update")) {
             String linkData = WebUtils.getHTTPRequestParameter(req, "linkData");
             String oldName = WebUtils.getHTTPRequestParameter(req, "oldName");
-            BIConnectionManager.getInstance().updateConnection(linkData, oldName);
+            BIConnectionManager.getInstance().updateConnection(userId, linkData, oldName);
         }
 //        BIConnectionManager.getInstance().updateAvailableConnection();
     }
