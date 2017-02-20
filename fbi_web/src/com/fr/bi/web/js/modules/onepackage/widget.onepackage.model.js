@@ -305,6 +305,6 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             trans[table.id] = BI.Utils.getTransNameById4Conf(table.id);
         });
         //同步到后台
-        BI.Utils.updateTablesTranOfPackage({translations: trans});
+        BI.Utils.updateTablesTranOfPackage({translations: trans}, BI.emptyFn, BI.emptyFn);
     }
 });

@@ -170,6 +170,7 @@ public class BIConnectionManager extends XMLFileManager {
                 writer.attr("schema", connection.getSchema());
             }
             writer.attr("createBy", connection.getCreateBy());
+            writer.attr("initTime", connection.getInitTime());
             writer.end();
         }
         writer.end();

@@ -1,5 +1,6 @@
 package com.fr.bi.web.base.utils;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.base.ChartPreStyleServerManager;
 import com.fr.base.ConfigManager;
@@ -16,7 +17,6 @@ import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.conf.BISystemEnvUtils;
 import com.fr.bi.web.base.operation.BIOperationRecord;
 import com.fr.chart.base.ChartPreStyle;

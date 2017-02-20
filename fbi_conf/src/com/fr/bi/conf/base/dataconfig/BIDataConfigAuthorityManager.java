@@ -5,10 +5,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
-import com.fr.fs.control.CompanyRoleControl;
-import com.fr.fs.control.CustomRoleControl;
-import com.fr.fs.control.DepartmentControl;
-import com.fr.fs.control.PostControl;
+import com.fr.fs.control.*;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -33,7 +30,7 @@ public class BIDataConfigAuthorityManager {
             }
         }
         for (BIDataConfigAuthority authority : dataConfigAuthorities) {
-            clearByRole(authority.getRoleName(), authority.getRoleType(), authIds);
+            clearByRole(authority.getRoleName(), authority.getRoleType(), authIds, userId);
         }
         for (BIDataConfigAuthority authority : dataConfigAuthorities) {
             if (authority.getId() != null) {
@@ -92,12 +89,12 @@ public class BIDataConfigAuthorityManager {
         dataConfigAuthorities.addAll(authorities);
     }
 
-    private void clearByRole(String roleName, int roleType, List<String> authIds) throws Exception {
+    private void clearByRole(String roleName, int roleType, List<String> authIds, long userId) throws Exception {
         Set<BIDataConfigAuthority> need2Remove = new HashSet<BIDataConfigAuthority>();
         for (BIDataConfigAuthority authority : this.dataConfigAuthorities) {
-            if (authIds.contains(authority.getId()) &&
-                    ComparatorUtils.equals(roleName, authority.getRoleName()) &&
-                    ComparatorUtils.equals(roleType, authority.getRoleType())) {
+            if (ComparatorUtils.equals(roleName, authority.getRoleName()) &&
+                    ComparatorUtils.equals(roleType, authority.getRoleType()) &&
+                    (authIds.contains(authority.getId()) || ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID()))) {
                 need2Remove.add(authority);
             }
         }
