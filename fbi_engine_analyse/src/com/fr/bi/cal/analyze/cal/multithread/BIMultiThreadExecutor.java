@@ -31,6 +31,14 @@ public class BIMultiThreadExecutor {
         index++;
     }
 
+    /**
+     * 唤醒下下面wait的线程，可能队列里面没达到自动唤醒的阈值
+     */
+    public void wakeUp(){
+        for (MergeSummaryCallList list : lists){
+            list.wakeUp();
+        }
+    }
 
     protected void awaitExecutor(final BISession session) {
         if (null != lists) {

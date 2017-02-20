@@ -40,7 +40,7 @@ public abstract class BIComplexExecutor<T> extends BIAbstractExecutor<T> {
      *
      * @return 获取的nodes
      */
-    public abstract Map<Integer, T> getCubeNodes() throws InterruptedException;
+    public abstract Map<Integer, T> getCubeNodes() throws Exception;
 
     /**
      * 获取nodes的个数
