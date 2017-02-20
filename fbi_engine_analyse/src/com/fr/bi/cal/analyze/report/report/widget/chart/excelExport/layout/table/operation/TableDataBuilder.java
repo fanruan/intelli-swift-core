@@ -68,7 +68,7 @@ public class TableDataBuilder {
 
     private Map createCommonTableItems() throws JSONException {
         List<ReportItem> items = createCommonTableItems(dataJSON.getJSONObject("data").getJSONArray("c"), 0, null, new ReportNodeTree());
-        Map item = new HashMap<String,ReportTableHeader>();
+        Map item = new HashMap<String, ReportTableHeader>();
         item.put("children", items);
         Map value = createItemValue(item, dataJSON);
         return value;
@@ -124,60 +124,63 @@ public class TableDataBuilder {
         curentLayer++;
         List<ReportItem> items = new ArrayList<ReportItem>();
         for (int i = 0; i < cArray.length(); i++) {
-            ReportNode node = new ReportNode();
-            JSONObject child = cArray.getJSONObject(i);
-            String cId = BIStringUtils.isEmptyString(child.getString("n")) ? UUID.randomUUID().toString() : child.getString("n");
-            String nodeId = null != parent ? parent.getId() + cId : cId;
-            node.setId(nodeId);
-            String currDid = viewDimensions[curentLayer - 1].getId();
-            String currentValue = child.getString("n");
-            node.setName(currentValue);
-            node.setdId(currDid);
-            nodeTree.addNode(parent, node);
-            List<String> pValues = new ArrayList();
-            int tempLayer = curentLayer;
-            String tempNodeId = node.getId();
-            while (tempLayer > 0) {
-                ReportNode itemNode = nodeTree.getNode(tempNodeId);
-                JSONObject json = new JSONObject();
-                json.put("value", itemNode.getName());
-                json.put("dId", viewDimensions[tempLayer - 1]);
-                pValues.add(json.toString());
-                tempNodeId = itemNode.getParent().getId();
-                tempLayer--;
-            }
-            ReportItem item = new ReportItem();
-            item.setdId(currDid);
-            item.setText(currentValue);
-            item.setNeedExpand(curentLayer < viewDimensions.length);
-            item.setStyle("");
-            item.setType("bi.normal_expander_cell");
-            if (child.has("c")) {
-                List<ReportItem> c = createCommonTableItems(child.getJSONArray("c"), curentLayer, node, nodeTree);
-                item.setChildren(c);
-            }
-            if (child.has("s")) {
-                List<ReportItem> values = new ArrayList<ReportItem>();
-                //todo
-                boolean isCross = child.getJSONArray("s").length() == 0;
-                isCross = false;
-                if (isCross) {
-                } else {
-                    JSONArray childs = child.getJSONArray("s");
-                    for (int j = 0; j < childs.length(); j++) {
-                        ReportItem tartItem = new ReportItem();
-                        tartItem.setText(childs.getString(j));
-                        tartItem.setdId(viewTargets[j].getId());
-                        tartItem.setClicked(pValues);
-                        values.add(tartItem);
-                    }
-                }
-                item.setValue(values);
-            }
-            items.add(item);
+            getItems(cArray, curentLayer, parent, nodeTree, viewDimensions, viewTargets, items, i);
         }
         return items;
 
+    }
+
+    private void getItems(JSONArray cArray, int curentLayer, ReportNode parent, ReportNodeTree nodeTree, BIDimension[] viewDimensions, BISummaryTarget[] viewTargets, List<ReportItem> items, int i) throws JSONException {
+        ReportNode node = new ReportNode();
+        JSONObject child = cArray.getJSONObject(i);
+        String cId = BIStringUtils.isEmptyString(child.getString("n")) ? UUID.randomUUID().toString() : child.getString("n");
+        String nodeId = null != parent ? parent.getId() + cId : cId;
+        node.setId(nodeId);
+        String currDid = viewDimensions[curentLayer - 1].getId();
+        String currentValue = child.getString("n");
+        node.setName(currentValue);
+        node.setdId(currDid);
+        nodeTree.addNode(parent, node);
+        List<String> pValues = new ArrayList();
+        int tempLayer = curentLayer;
+        String tempNodeId = node.getId();
+        while (tempLayer > 0) {
+            ReportNode itemNode = nodeTree.getNode(tempNodeId);
+            JSONObject json = new JSONObject();
+            json.put("value", itemNode.getName()).put("dId", viewDimensions[tempLayer - 1]);
+            pValues.add(json.toString());
+            tempNodeId = itemNode.getParent().getId();
+            tempLayer--;
+        }
+        ReportItem item = new ReportItem();
+        item.setdId(currDid);
+        item.setText(currentValue);
+        item.setNeedExpand(curentLayer < viewDimensions.length);
+        item.setStyle("");
+        item.setType("bi.normal_expander_cell");
+        if (child.has("c")) {
+            List<ReportItem> c = createCommonTableItems(child.getJSONArray("c"), curentLayer, node, nodeTree);
+            item.setChildren(c);
+        }
+        if (child.has("s")) {
+            List<ReportItem> values = new ArrayList<ReportItem>();
+            //todo
+            boolean isCross = child.getJSONArray("s").length() == 0;
+            isCross = false;
+            if (isCross) {
+            } else {
+                JSONArray childs = child.getJSONArray("s");
+                for (int j = 0; j < childs.length(); j++) {
+                    ReportItem tartItem = new ReportItem();
+                    tartItem.setText(childs.getString(j));
+                    tartItem.setdId(viewTargets[j].getId());
+                    tartItem.setClicked(pValues);
+                    values.add(tartItem);
+                }
+            }
+            item.setValue(values);
+        }
+        items.add(item);
     }
 
     //todo
@@ -209,24 +212,11 @@ public class TableDataBuilder {
      */
     private List<ReportItem> createCrossPartItems(JSONArray c, int currentLayer, ReportNode parent, ReportNodeTree crossTree) throws JSONException {
         List items = new ArrayList();
-        JSONArray crossItems = new JSONArray();
+//        JSONArray crossItems = new JSONArray();
         currentLayer++;
         for (int j = 0; j < c.length(); j++) {
             JSONObject child = c.getJSONObject(j);
-            boolean flag = false;
-            for (BIDimension biDimension : widget.getViewDimensions()) {
-                if (biDimension.getValue().equals(child.getString("n"))) {
-                    flag = true;
-                    break;
-                }
-            }
-            for (BISummaryTarget target : widget.getViewTargets()) {
-                if (target.getValue().equals(child.getString("n"))) {
-                    flag = true;
-                    break;
-                }
-            }
-            if (child.has("c") && flag) {
+            if (returnNullItems(child)) {
                 return items;
             }
             String cId = child.has("n") ? UUID.randomUUID().toString() : child.getString("n");
@@ -269,6 +259,26 @@ public class TableDataBuilder {
             }
         }
         return items;
+    }
+
+    private boolean returnNullItems(JSONObject child) throws JSONException {
+        boolean flag = false;
+        for (BIDimension biDimension : widget.getViewDimensions()) {
+            if (biDimension.getValue().equals(child.getString("n"))) {
+                flag = true;
+                break;
+            }
+        }
+        for (BISummaryTarget target : widget.getViewTargets()) {
+            if (target.getValue().equals(child.getString("n"))) {
+                flag = true;
+                break;
+            }
+        }
+        if (child.has("c") && flag) {
+            return true;
+        }
+        return false;
     }
 
 }
