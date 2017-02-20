@@ -1197,6 +1197,9 @@ public class BaseResouceHelper {
                 "com/fr/bi/web/js/widget/date/calendar/popup.calendar.date.js",
                 "com/fr/bi/web/js/widget/date/combo.date.js",
 
+                //日期面板
+                "com/fr/bi/web/js/widget/datepane/datepanenotselectday.js",
+                
                 //图控件
                 "com/fr/bi/web/js/widget/detailchart/chart.abstract.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulatearea.js",

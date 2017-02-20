@@ -60,7 +60,8 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
             }, {
                 el: this.dataPane,
                 top: 10,
-                right: 10
+                right: 10,
+                bottom: 10
             }]
         });
         this.widget.element.hover(function () {
@@ -187,8 +188,8 @@ BIDezi.DatePaneView = BI.inherit(BI.View, {
                     right: 0,
                     top: 0,
                     bottom: 0
-                },{
-                    el:this.del,
+                }, {
+                    el: this.del,
                     bottom: 0,
                     left: widgetCombo.combo.options.width / 2
                 }],
