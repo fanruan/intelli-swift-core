@@ -19,12 +19,12 @@ public class LazyCalculateContainer<T> {
     private int size = -1;
     private ConcurrentHashMap<Object, LazyValueWaiter> map = new ConcurrentHashMap<Object, LazyValueWaiter>();
 
-    //TODO 先抄过来，等fr合并了再删了
     public LazyCalculateContainer() {
     }
 
     /**
      * 固定容量
+     *
      * @param size 容量
      */
     public LazyCalculateContainer(int size) {
@@ -36,19 +36,22 @@ public class LazyCalculateContainer<T> {
 
     /**
      * 获取值
+     *
      * @param hashKey key
      * @param creator 构造值的接口
      * @return
      */
-    public T get(Object hashKey, LazyValueCreator<T> creator) {
+    public T get(Object hashKey, LazyValueCreator<T> creator) throws Exception {
         if (!map.containsKey(hashKey)) {
             synchronized (this) {
+                //如果满了，并且没有相同的再执行，就等前面的执行完了
                 while (isFull() && !map.containsKey(hashKey)) {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
                     }
                 }
+                //如果没有正在执行的任务，就加一个
                 if (!map.containsKey(hashKey)) {
                     map.put(hashKey, new LazyValueWaiter(hashKey, creator));
                 }
@@ -68,6 +71,7 @@ public class LazyCalculateContainer<T> {
         }
     }
 
+    //任务分三个状态，未开始，已经开始但未完成，已经完成
     enum Status {
         NOT_STARTED, STARTED, CREATED
     }
@@ -77,13 +81,15 @@ public class LazyCalculateContainer<T> {
         private Object hashKey;
         private LazyValueCreator<T> creator;
         private volatile Status status = Status.NOT_STARTED;
+        private Exception exception;
 
         public LazyValueWaiter(Object hashKey, LazyValueCreator<T> creator) {
             this.hashKey = hashKey;
             this.creator = creator;
         }
 
-        T get() {
+        T get() throws Exception {
+            //如果已经开始但未完成就等着
             if (status == Status.STARTED) {
                 synchronized (this) {
                     while (status == Status.STARTED) {
@@ -94,7 +100,10 @@ public class LazyCalculateContainer<T> {
                     }
                 }
             } else {
+                //一开始的线程肯定走的是else这里
+                //可能同时有多个走到else这
                 synchronized (this) {
+                    //如果已经开始但未完成就等着
                     if (status == Status.STARTED) {
                         while (status == Status.STARTED) {
                             try {
@@ -103,12 +112,18 @@ public class LazyCalculateContainer<T> {
                             }
                         }
                     } else {
+                        //第一个线程走到else，把状态设置成STARTED，然后notifyAll，让其他synchronized的线程往下走，wait住
                         status = Status.STARTED;
                         this.notifyAll();
                     }
                 }
+                //第一个到这边的线程开始计算
                 if (status != Status.CREATED) {
-                    this.value = this.creator.create();
+                    try {
+                        this.value = this.creator.create();
+                    } catch (Exception e) {
+                        this.exception = e;
+                    }
                     status = Status.CREATED;
                     synchronized (this) {
                         this.notifyAll();
@@ -116,8 +131,10 @@ public class LazyCalculateContainer<T> {
                     remove(hashKey);
                 }
             }
+            if (exception != null) {
+                throw exception;
+            }
             return value;
         }
     }
-
 }

@@ -19,16 +19,17 @@ public class BIIntegerSingleFileNIOReader extends BIBaseSingleFileNIOReader impl
     }
 
     public int getSpecificValue(long filePosition) throws BIResourceInvalidException {
+        checkBuffer();
         try {
             return intBuffer.get((int)filePosition);
         } catch (IndexOutOfBoundsException e) {
             throw new RuntimeException("the file is: "+baseFile , e);
-        } catch (NullPointerException e){
+        }
+    }
+
+    private void checkBuffer() {
+        if (intBuffer == null){
             initBuffer();
-            if (intBuffer == null){
-                throw new RuntimeException("the file is released: "+baseFile , e);
-            }
-            return getSpecificValue(filePosition);
         }
     }
 

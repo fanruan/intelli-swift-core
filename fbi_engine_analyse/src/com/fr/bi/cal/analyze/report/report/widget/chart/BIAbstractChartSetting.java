@@ -72,33 +72,34 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
     }
 
     @Override
-	public final BISummaryTarget[] getUsedTargets(BISummaryTarget[] targets) {
+    public final BISummaryTarget[] getUsedTargets(BISummaryTarget[] targets) {
         return BITravalUtils.getTargetsOrDimensionsByName(BISummaryTarget.class, getTargetNameSet(), targets);
     }
 
-    protected abstract HashSet<String>  getTargetNameSet();
+    protected abstract HashSet<String> getTargetNameSet();
 
 
     @Override
-	public final BIDimension[] getUsedDimensions(BIDimension[] dimensions) {
+    public final BIDimension[] getUsedDimensions(BIDimension[] dimensions) {
         return BITravalUtils.getTargetsOrDimensionsByName(BIDimension.class, getDimensionNameSet(), dimensions);
     }
 
 
-    protected abstract HashSet<String>  getDimensionNameSet();
+    protected abstract HashSet<String> getDimensionNameSet();
 
     /**
      * 获取cube节点
+     *
      * @param dimensions 维度
-     * @param targets 指标
-     * @param session session会话
+     * @param targets    指标
+     * @param session    session会话
      * @return node节点
      */
     @Override
-    public Node getCubeNode(ChartWidget widget, BIDimension[] dimensions,BISummaryTarget[] targets, BISession session) {
+    public Node getCubeNode(ChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets, BISession session) throws Exception {
         BISummaryTarget[] summary = getUsedTargets(targets);
         BIDimension[] rows = getUsedDimensions(dimensions);
-        return CubeIndexLoader.getInstance(session.getUserId()).loadGroup(widget, summary, rows, dimensions, targets, -1, widget.isRealData(),  session);
+        return CubeIndexLoader.getInstance(session.getUserId()).loadGroup(widget, summary, rows, dimensions, targets, -1, widget.isRealData(), session);
     }
 
 
@@ -113,7 +114,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
      * @return tabledata对象
      */
     @Override
-    public TableData createTableData(ChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets, BISession session, BaseChartCollection cc) {
+    public TableData createTableData(ChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets, BISession session, BaseChartCollection cc) throws Exception{
         BISummaryTarget[] summary = getUsedTargets(targets);
         BIDimension[] rows = getUsedDimensions(dimensions);
         Node node = getCubeNode(widget, dimensions, targets, session);
@@ -121,7 +122,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
         return CubeReadingUtils.createChartTableData(node, rows, summary);
     }
 
-    protected void afterNodeConstructed(BIDimension[] rows, BISummaryTarget[] summary, BISession session, Node node, BaseChartCollection cc){
+    protected void afterNodeConstructed(BIDimension[] rows, BISummaryTarget[] summary, BISession session, Node node, BaseChartCollection cc) {
 
     }
 

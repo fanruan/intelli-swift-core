@@ -45,7 +45,7 @@ public class StringControlWidget extends TableWidget {
         return 0;
     }
 
-    public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
+    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
         BIDimension dimension = getDimensions()[0];
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
         Set<String> selected_value = new HashSet<String>();
