@@ -131,8 +131,8 @@ public class TableDataBuilder {
     }
 
     private void getItems(JSONArray cArray, int curentLayer, ReportNode parent, ReportNodeTree nodeTree, BIDimension[] viewDimensions, BISummaryTarget[] viewTargets, List<ReportItem> items, int i) throws JSONException {
-        ReportNode node = new ReportNode();
         JSONObject child = cArray.getJSONObject(i);
+        ReportNode node = new ReportNode();
         String cId = BIStringUtils.isEmptyString(child.getString("n")) ? UUID.randomUUID().toString() : child.getString("n");
         String nodeId = null != parent ? parent.getId() + cId : cId;
         node.setId(nodeId);
@@ -165,22 +165,26 @@ public class TableDataBuilder {
         if (child.has("s")) {
             List<ReportItem> values = new ArrayList<ReportItem>();
             //todo
-            boolean isCross = child.getJSONArray("s").length() == 0;
-            isCross = false;
-            if (isCross) {
-            } else {
+//            boolean isCross = child.getJSONArray("s").length() == 0;
+//            isCross = false;
+//            if (isCross) {
+//            } else {
                 JSONArray childs = child.getJSONArray("s");
                 for (int j = 0; j < childs.length(); j++) {
-                    ReportItem tartItem = new ReportItem();
-                    tartItem.setText(childs.getString(j));
-                    tartItem.setdId(viewTargets[j].getId());
-                    tartItem.setClicked(pValues);
-                    values.add(tartItem);
+                    addTarItem(viewTargets[j], pValues, values, childs.getString(j));
                 }
-            }
+//            }
             item.setValue(values);
         }
         items.add(item);
+    }
+
+    private void addTarItem(BISummaryTarget viewTarget, List<String> pValues, List<ReportItem> values, String string) throws JSONException {
+        ReportItem tartItem = new ReportItem();
+        tartItem.setText(string);
+        tartItem.setdId(viewTarget.getId());
+        tartItem.setClicked(pValues);
+        values.add(tartItem);
     }
 
     //todo
