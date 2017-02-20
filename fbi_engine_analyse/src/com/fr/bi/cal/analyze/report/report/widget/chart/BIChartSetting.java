@@ -53,7 +53,7 @@ public interface BIChartSetting extends JSONParser {
      * @param cc         集合
      * @return tabledata对象
      */
-    TableData createTableData(ChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets, BISession session, BaseChartCollection cc);
+    TableData createTableData(ChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets, BISession session, BaseChartCollection cc) throws Exception;
 
     /**
      * 获取节点
@@ -65,5 +65,5 @@ public interface BIChartSetting extends JSONParser {
      * @param session    session会话
      * @return Node节点
      */
-    Node getCubeNode(ChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets, BISession session);
+    Node getCubeNode(ChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets, BISession session) throws Exception;
 }
