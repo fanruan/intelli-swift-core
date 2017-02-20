@@ -13,9 +13,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Kary on 2017/2/16.
@@ -36,22 +34,22 @@ public class TableDataBuilder {
     public TableDataForExport buildTableData() throws JSONException {
         TableDataForExport tableDataForExport;
         List<ReportTableHeader> headers = buildHeaders();
-        List<ReportItem> items = createCommonTableItems(dataJSON.getJSONObject("data").getJSONArray("c"), 0, null, new ReportNodeTree());
         boolean isCross = dataJSON.getJSONObject("data").has("t");
         if (!isCross) {
+            Map items = createCommonTableItems();
             tableDataForExport = new TableDataForExport(items, headers, null, null);
         } else {
+            List<ReportItem> items = createCommonTableItems(dataJSON.getJSONObject("data").getJSONArray("c"), 0, null, new ReportNodeTree());
             List<ReportTableHeader> crossHeaders = buildCrossHeaders();
-            items = createCommonTableItems();
             List<ReportItem> crossItems = createCrossItems();
-            tableDataForExport = new TableDataForExport(items, headers, crossItems, crossHeaders);
+            tableDataForExport = new TableDataForExport(null, headers, null, crossHeaders);
         }
         return tableDataForExport;
     }
 
 
     private List<ReportTableHeader> buildHeaders() {
-        List<ReportTableHeader> headers = new ArrayList<>();
+        List<ReportTableHeader> headers = new ArrayList<ReportTableHeader>();
         for (BIDimension dimension : widget.getViewDimensions()) {
             ReportTableHeader header = new ReportTableHeader(dimension.getValue(), dimension.getText(), dimension.getText());
             headers.add(header);
@@ -64,20 +62,67 @@ public class TableDataBuilder {
     }
 
     private List<ReportTableHeader> buildCrossHeaders() {
-        List<ReportTableHeader> headers = new ArrayList<>();
+        List<ReportTableHeader> headers = new ArrayList<ReportTableHeader>();
         return headers;
     }
 
-    private List<ReportItem> createCommonTableItems() throws JSONException {
+    private Map createCommonTableItems() throws JSONException {
         List<ReportItem> items = createCommonTableItems(dataJSON.getJSONObject("data").getJSONArray("c"), 0, null, new ReportNodeTree());
-        return items;
+        Map item = new HashMap<String,ReportTableHeader>();
+        item.put("children", items);
+        Map value = createItemValue(item, dataJSON);
+        return value;
+    }
+
+    private Map createItemValue(Map itemMap, JSONObject dataJSON) throws JSONException {
+        List<ReportItem> outerValues = new ArrayList();
+        //汇总
+        if (dataJSON.getJSONObject("data").has("s")) {
+            if (widget.getViewDimensions().length > 0) {
+                JSONArray array = dataJSON.getJSONObject("data").getJSONArray("s");
+                for (int i = 0; i < array.length(); i++) {
+                    String tId = widget.getViewTargets()[i].getId();
+                    ReportItem itemTmp = new ReportItem();
+                    itemTmp.setdId(tId);
+                    itemTmp.setText(array.getString(i));
+                    itemTmp.setStyle("BI.SummaryTableHelper.getLastSummaryStyles(self.themeColor, self.tableStyle)");
+                    outerValues.add(itemTmp);
+                }
+            }
+            itemMap.put("values", outerValues);
+        } else {
+            //使用第一个值作为一个维度
+            if (dataJSON.getJSONArray("s").length() == 0) {
+                return itemMap;
+            }
+            if (widget.getViewDimensions().length > 0) {
+                JSONArray array = dataJSON.getJSONObject("data").getJSONArray("s");
+                for (int i = 0; i < array.length(); i++) {
+                    String tId = widget.getViewTargets()[i].getId();
+                    ReportItem itemTmp = new ReportItem();
+                    itemTmp.setdId(tId);
+                    itemTmp.setText(array.getString(i));
+                    itemTmp.setStyle("BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle)");
+                    outerValues.add(itemTmp);
+                }
+                ReportItem itemSum = new ReportItem();
+                itemSum.setType("bi.target_body_normal_cell");
+                itemSum.setType(dataJSON.getJSONObject("data").getJSONArray("s").getString(0));
+                itemSum.setSum(true);
+                itemSum.setValue(outerValues);
+                itemSum.setStyle("BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle)");
+                ((List<ReportItem>) itemMap.get("children")).add(itemSum);
+                itemMap.put("values", itemMap);
+            }
+        }
+        return itemMap;
     }
 
     private List<ReportItem> createCommonTableItems(JSONArray cArray, int curentLayer, ReportNode parent, ReportNodeTree nodeTree) throws JSONException {
         BIDimension[] viewDimensions = widget.getViewDimensions();
         BISummaryTarget[] viewTargets = widget.getTargets();
         curentLayer++;
-        List<ReportItem> items = new ArrayList<>();
+        List<ReportItem> items = new ArrayList<ReportItem>();
         for (int i = 0; i < cArray.length(); i++) {
             ReportNode node = new ReportNode();
             JSONObject child = cArray.getJSONObject(i);
@@ -112,7 +157,7 @@ public class TableDataBuilder {
                 item.setChildren(c);
             }
             if (child.has("s")) {
-                List<ReportItem> values = new ArrayList<>();
+                List<ReportItem> values = new ArrayList<ReportItem>();
                 //todo
                 boolean isCross = child.getJSONArray("s").length() == 0;
                 isCross = false;
