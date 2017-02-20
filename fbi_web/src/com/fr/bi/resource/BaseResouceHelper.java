@@ -1331,7 +1331,6 @@ public class BaseResouceHelper {
                 //单值滑块
                 "com/fr/bi/web/js/widget/singleslider/singleslider.js",
                 "com/fr/bi/web/js/widget/singleslider/slider/widget.slider.js",
-                "com/fr/bi/web/js/widget/singleslider/track/widget.track.js",
 
                 //区间滑块
                 "com/fr/bi/web/js/widget/intervalslider/intervalslider.js",

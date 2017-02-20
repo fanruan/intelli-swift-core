@@ -358,6 +358,8 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         if ((!isNaN(minNumber)) && (!isNaN(maxNumber)) && (maxNumber > minNumber )) {
             this.min = minNumber;
             this.max = maxNumber;
+            this.valueOne = minNumber;
+            this.valueTwo = maxNumber;
         }
     },
 
