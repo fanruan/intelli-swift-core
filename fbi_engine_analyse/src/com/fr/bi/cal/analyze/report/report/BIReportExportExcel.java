@@ -101,7 +101,7 @@ public class BIReportExportExcel {
                 polyECBlock.addFloatElement(renderDefaultChartPic(widget));
             }
         }
-//        dashboard
+        //dashboard
         reportSheet.addBlock(polyECBlock);
         wb.addReport("Dashboard", reportSheet);
         //other sheets
