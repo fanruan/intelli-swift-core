@@ -51,7 +51,7 @@ public class TableDataBuilder {
 
 
     private List<ReportTableHeader> buildHeaders() {
-        List<ReportTableHeader> headers = new ArrayList<>();
+        List<ReportTableHeader> headers = new ArrayList<ReportTableHeader>();
         for (BIDimension dimension : widget.getViewDimensions()) {
             ReportTableHeader header = new ReportTableHeader(dimension.getValue(), dimension.getText(), dimension.getText());
             headers.add(header);
@@ -64,7 +64,7 @@ public class TableDataBuilder {
     }
 
     private List<ReportTableHeader> buildCrossHeaders() {
-        List<ReportTableHeader> headers = new ArrayList<>();
+        List<ReportTableHeader> headers = new ArrayList<ReportTableHeader>();
         return headers;
     }
 
@@ -77,7 +77,7 @@ public class TableDataBuilder {
         BIDimension[] viewDimensions = widget.getViewDimensions();
         BISummaryTarget[] viewTargets = widget.getTargets();
         curentLayer++;
-        List<ReportItem> items = new ArrayList<>();
+        List<ReportItem> items = new ArrayList<ReportItem>();
         for (int i = 0; i < cArray.length(); i++) {
             ReportNode node = new ReportNode();
             JSONObject child = cArray.getJSONObject(i);
@@ -112,7 +112,7 @@ public class TableDataBuilder {
                 item.setChildren(c);
             }
             if (child.has("s")) {
-                List<ReportItem> values = new ArrayList<>();
+                List<ReportItem> values = new ArrayList<ReportItem>();
                 //todo
                 boolean isCross = child.getJSONArray("s").length() == 0;
                 isCross = false;

@@ -81,7 +81,7 @@ if (UserAgent.mobile()) {
 
 // import DialogDemo from '../examples/base/3/Dialog/Dialog'
 
-import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
+// import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 // import Game2048 from '../examples/2048/Game2048'
 
 // import LayoutDemo from '../examples/base/Layout'
