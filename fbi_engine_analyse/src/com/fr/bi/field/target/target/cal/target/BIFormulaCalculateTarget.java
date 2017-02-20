@@ -12,6 +12,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,6 +44,12 @@ public class BIFormulaCalculateTarget extends BICalculateTarget {
         }
         return list;
     }
+
+    @Override
+    public Collection<String> getCalculateUseTargetIDs() {
+        return BIFormularUtils.createColumnIndexMap(expression).values();
+    }
+
     public TargetType getType(){
         return TargetType.FORMULA;
     }
