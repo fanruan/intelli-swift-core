@@ -2437,19 +2437,8 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/slider-active.png');
   _background: none;
 }
-.widget-slider-icon:active .x-icon,
-.widget-slider-icon.active .x-icon {
-  display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/slider-active.png') no-repeat 0 0;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/slider-active.png');
-  _background: none;
-}
 .widget-slider-icon.native .x-icon,
 .widget-slider-icon.disabled .x-icon {
-  display: block;
-}
-.widget-slider-icon.native .x-icon,
-.widget-slider-icon.disabled.active .x-icon {
   display: block;
 }
 .down-arrow .x-icon,
