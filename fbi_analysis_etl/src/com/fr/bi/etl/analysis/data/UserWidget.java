@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.result.Node;
@@ -16,8 +17,6 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.json.JSONException;
 import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
@@ -144,7 +143,7 @@ public class UserWidget {
                 }
                 n = n.getSibling();
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return values;

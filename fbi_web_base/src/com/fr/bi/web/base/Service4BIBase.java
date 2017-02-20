@@ -31,7 +31,6 @@ public class Service4BIBase extends NoSessionIDService {
     private static AbstractBIBaseAction[] actions = {
             new BIGetPyAction(),
             new BIGetTableAction(),
-//            new BIGetTransNameAction(),
             new BIFSGetConfigAction(),
             new BIFSSetConfigAction(),
             new BICheckValidationOfExpressionAction(),
@@ -39,7 +38,6 @@ public class Service4BIBase extends NoSessionIDService {
             new BIFSGetImageSizeAction(),
             new BIGetMapJsonAction(),
             new BIGetBuildNoAction(),
-
             new BIGetDataConfigNodesAction(),
             new BISaveDataConfigAuthoritiesAction(),
             new BIGetDataConfigAuthoritiesAction(),
