@@ -44,7 +44,6 @@ public class ResourceHelper {
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
             Locale locale = WebUtils.getLocale(req);
-            BILoggerFactory.getLogger().info(locale.getLanguage());
             return transmit(files, locale.getLanguage());
         }
 

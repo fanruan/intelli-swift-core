@@ -35,7 +35,6 @@ public class FormulaCollections {
         List<String> names = new ArrayList<String>();
         JSONArray formulaJSONs = new JSONArray();
         names.addAll(findFunction());
-        BILoggerFactory.getLogger().info(language);
         for (String formulaName : names) {
             String className = "com.fr.function." + formulaName;
             Class formulaClass = null;
