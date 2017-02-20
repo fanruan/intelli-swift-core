@@ -80,25 +80,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
-        this.chartStyle = BI.createWidget({
-            type: "bi.button_group",
-            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
-                type: "bi.icon_button",
-                extraCls: "chart-style-font",
-                width: constant.BUTTON_WIDTH,
-                height: constant.BUTTON_HEIGHT,
-                iconWidth: constant.ICON_WIDTH,
-                iconHeight: constant.ICON_HEIGHT
-            }),
-            layouts: [{
-                type: "bi.vertical_adapt",
-                height: constant.SINGLE_LINE_HEIGHT
-            }]
-        });
-        this.chartStyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
-        });
-
         var chartTypeItems = [];
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
             case BICst.WIDGET.AREA:
@@ -1042,7 +1023,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
 
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
-        this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.lineAreaChartType.setValue(BI.Utils.getWSLineAreaChartTypeByID(wId));
 
@@ -1121,7 +1101,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             widgetNameStyle: this.widgetNameStyle.getValue(),
 
             chartColor: this.chartColor.getValue()[0],
-            chartStyle: this.chartStyle.getValue()[0],
             widgetBG: this.widgetBG.getValue(),
             lineAreaChartType: this.lineAreaChartType.getValue()[0],
 
