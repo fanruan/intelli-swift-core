@@ -76,12 +76,16 @@ public class DimensionGroupFilter {
 
     private boolean hasInSumMetrics() {
         for (MergerInfo info : mergerInfoList){
-            if (info.biDimensionTarget.getSummaryType() != BIReportConstant.SUMMARY_TYPE.SUM ||
-                    info.biDimensionTarget.getSummaryType() != BIReportConstant.SUMMARY_TYPE.COUNT){
+            if (hasInSumMetric(info.biDimensionTarget)){
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean hasInSumMetric(BISummaryTarget target){
+        return target!= null && (target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.SUM ||
+                target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.COUNT);
     }
 
     private NodeDimensionIterator[] getNodeIterators(List<MergerInfo> mergerInfoList) {
