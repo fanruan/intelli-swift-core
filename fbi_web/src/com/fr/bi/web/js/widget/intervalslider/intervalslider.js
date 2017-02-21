@@ -366,9 +366,19 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     setValue: function (v) {
         var valueOne = BI.parseFloat(v.min);
         var valueTwo = BI.parseFloat(v.max);
-        if (!isNaN(valueOne) && !isNaN(valueTwo) && this._checkValidation(valueOne) && this._checkValidation(valueTwo)) {
-            this.valueOne = valueOne;
-            this.valueTwo = valueTwo;
+        if (!isNaN(valueOne) && !isNaN(valueTwo)) {
+            if (this._checkValidation(valueOne)) {
+                this.valueOne = valueOne;
+            }
+            if (this._checkValidation(valueTwo)) {
+                this.valueTwo = valueTwo;
+            }
+            if (valueOne < this.min) {
+                this.valueOne = this.min;
+            }
+            if (valueTwo > this.max) {
+                this.valueTwo = this.max;
+            }
         }
     },
 
