@@ -30,26 +30,10 @@ BI.PackageTablesListPane = BI.inherit(BI.Widget, {
         })
     },
 
-    _getAllDatabaseLinkNames: function (items) {
-        var linkNames = [];
-        BI.each(items, function (i, item) {
-            var connName = item.connName;
-            if (BI.isNotNull(connName) && !linkNames.contains(connName) &&
-                connName !== BICst.CONNECTION.ETL_CONNECTION &&
-                connName !== BICst.CONNECTION.EXCEL_CONNECTION &&
-                connName !== BICst.CONNECTION.SQL_CONNECTION &&
-                connName !== BICst.CONNECTION.SERVER_CONNECTION) {
-                linkNames.push(connName);
-            }
-        });
-        return linkNames;
-    },
-
     populate: function (items) {
         var self = this;
         this.options.items = items;
         var tables = [];
-        var linkNames = this._getAllDatabaseLinkNames(items);
 
         BI.each(items, function (i, item) {
             var dbTable = BI.createWidget({
@@ -57,7 +41,7 @@ BI.PackageTablesListPane = BI.inherit(BI.Widget, {
                 forceNotSelected: true,
                 text: item.text,
                 connName: item.connName,
-                linkNames: linkNames,
+                linkNames: self.options.connNames,
                 needMark: true
             });
             dbTable.on(BI.Controller.EVENT_CHANGE, function () {

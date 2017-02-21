@@ -202,13 +202,13 @@ BI.extend(BI.TableTree, {
     formatHeader: function (header, crossHeader, crossItems, hDeep, vDeep, styleGetter) {
         var items = BI.TableTree.formatCrossItems(crossItems, vDeep, styleGetter);
         var result = [];
-        BI.each(items, function (row, node) {
+        for (var i = 0; i < vDeep; i++) {
             var c = [];
-            for (var i = 0; i < hDeep; i++) {
-                c.push(crossHeader[row]);
+            for (var j = 0; j < hDeep; j++) {
+                c.push(crossHeader[i]);
             }
-            result.push(c.concat(node || []));
-        });
+            result.push(c.concat(items[i] || []));
+        }
         if (header && header.length > 0) {
             result.push(header);
         }

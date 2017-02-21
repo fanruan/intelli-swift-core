@@ -103,7 +103,7 @@ BI.DataLinkGroup = BI.inherit(BI.Widget, {
         BI.each(links, function(i, link) {
             items.push(BI.extend({
                 type: "bi.text_button",
-                cls: "nav-button" + (i % 10 + 1),
+                cls: link.value.indexOf(BICst.DATA_LINK.DATA_SOURCE) > -1 ? "nav-button" + (i % 10 + 1) : "nav-button1",
                 textAlign: "left",
                 height: self.constants.NAV_BUTTON_HEIGHT,
                 lgap: self.constants.LEFT_GAP

@@ -678,7 +678,8 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
             cSize.push("");
         });
         if (this._isOnlyCrossAndTarget()) {
-            cSize = BI.makeArray(this.items[0].children[0].values.length + 1, "");
+            var values = this.items[0].children[0].values;
+            cSize = BI.makeArray(BI.isNotNull(values) ? values.length + 1 : 1, "");
         }
         if (this.columnSize.length !== cSize.length) {
             //重置列宽
