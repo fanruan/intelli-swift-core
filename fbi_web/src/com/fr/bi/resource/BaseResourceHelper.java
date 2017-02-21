@@ -31,7 +31,7 @@ import java.util.*;
 /**
  * Created by Wang on 2017/1/18.
  */
-public class BaseResouceHelper {
+public class BaseResourceHelper {
     public static Transmitter DataTransmitter = new Transmitter() {
 
         @Override
@@ -154,9 +154,9 @@ public class BaseResouceHelper {
         }
     }
 
-    public static BaseResouceHelper.MapConstantTransmitter MapTransmitter = new BaseResouceHelper.MapConstantTransmitter();
+    public static BaseResourceHelper.MapConstantTransmitter MapTransmitter = new BaseResourceHelper.MapConstantTransmitter();
 
-    public static BaseResouceHelper.FormulaTransmitter FormulaTransmitter = new BaseResouceHelper.FormulaTransmitter();
+    public static BaseResourceHelper.FormulaTransmitter FormulaTransmitter = new BaseResourceHelper.FormulaTransmitter();
 
     public static String[] getDataJS() {
         return new String[]{"/com/fr/bi/web/js/template/pool.data.js"};

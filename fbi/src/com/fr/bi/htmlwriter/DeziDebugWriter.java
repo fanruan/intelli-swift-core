@@ -1,6 +1,6 @@
 package com.fr.bi.htmlwriter;
 
-import com.fr.bi.resource.BaseResouceHelper;
+import com.fr.bi.resource.BaseResourceHelper;
 import com.fr.bi.resource.CommonResourceHelper;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class DeziDebugWriter {
     public static void main(String args []) {
-        String [] bases = BaseResouceHelper.getBaseJs();
+        String [] bases = BaseResourceHelper.getBaseJs();
         String [] modules = CommonResourceHelper.getCommonJs();
 
         String path = System.getProperty("user.dir");
