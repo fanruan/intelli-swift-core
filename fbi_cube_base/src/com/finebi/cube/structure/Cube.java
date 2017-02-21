@@ -35,7 +35,7 @@ import java.io.Serializable;
  * @see ICubeResourceRetrievalService 数据位置检索
  * @since 4.0
  */
-public interface Cube extends ICubeVersion,Serializable {
+public interface Cube extends ICubeVersion, Serializable {
     /**
      * 获得表的操作接口
      *
@@ -75,6 +75,11 @@ public interface Cube extends ICubeVersion,Serializable {
      * @return 关联路径的操作对象
      */
     CubeRelationEntityGetterService getCubeRelation(ITableKey tableKey, BICubeRelation relation) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException;
+
+    ICubeRelationEntityService getCubeRelationWriter(ITableKey tableKey, BICubeRelation relation) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException;
+
+
+    ICubeRelationEntityService getCubeRelationWriter(ITableKey tableKey, BICubeTablePath relationPath) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException;
 
     /**
      * cubeTableSource存在
