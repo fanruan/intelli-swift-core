@@ -215,7 +215,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
 
     showLoading : function (percent) {
         var self = this;
-        if (percent != 1){
+        if (percent !== 1){
             this.loadingBar.setVisible(true);
         } else {
             BI.delay(function () {
