@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
@@ -13,6 +14,8 @@ import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.report.poly.PolyECBlock;
+import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
@@ -120,6 +123,11 @@ public class SingleSliderWidget extends TableWidget {
                 return array.size;
             }
         };
+    }
+
+    @Override
+    protected TemplateBlock createBIBlock(BISession session) {
+        return new PolyECBlock();
     }
 
     @Override
