@@ -79,11 +79,13 @@ BI.DatePaneWidget = BI.inherit(BI.Widget, {
 
     setValue: function (timeOb) {
         this.datePicker.setValue(timeOb);
-        this.calendar.setSelect(BI.Calendar.getPageByDateJSON(timeOb));
-        if (BI.isNotNull(timeOb.day)) {
-            this.calendar.setValue(timeOb);
-            this.selectedTime = timeOb;
+        if (BI.isNull(timeOb.day)) {
+            this.calendar.empty();
         }
+        this.calendar.setSelect(BI.Calendar.getPageByDateJSON(timeOb));
+        this.calendar.setValue(timeOb);
+        this.selectedTime = timeOb;
+
     },
 
     getValue: function () {

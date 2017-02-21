@@ -41,6 +41,14 @@ BI.CustomMultiDatePane = BI.inherit(BI.Widget, {
         })
     },
 
+    _getNewCurrentDate: function () {
+        var today = new Date();
+        return {
+            year: today.getFullYear(),
+            month: today.getMonth()
+        }
+    },
+
     getValue: function () {
         return this.datapane.getValue();
     },
@@ -48,6 +56,8 @@ BI.CustomMultiDatePane = BI.inherit(BI.Widget, {
     setValue: function (v) {
         if (BI.isNotEmptyObject(v)) {
             this.datapane.setValue(v);
+        } else {
+            this.datapane.setValue(this._getNewCurrentDate());
         }
     }
 });
