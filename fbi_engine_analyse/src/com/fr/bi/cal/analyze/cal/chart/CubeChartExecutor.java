@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.cal.chart;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.base.chart.BaseChartCollection;
 import com.fr.bi.cal.analyze.report.report.widget.ChartWidget;
@@ -49,7 +50,12 @@ public class CubeChartExecutor extends ChartBlockExecutor {
         BIChartSetting data = widget.getChartSetting();
         BaseChartCollection cc = tplBlock.getChartCollection();
 		if(data != null) {
-            TableData tableData = data.createTableData(widget, widget.getDimensions(), widget.getTargets(),session, cc);
+            TableData tableData = null;
+            try {
+                tableData = data.createTableData(widget, widget.getDimensions(), widget.getTargets(),session, cc);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage());
+            }
             for(int i = 0, length = cc.getChartCount(); i < length; i++) {
                 TableDataDefinition tdf = (TableDataDefinition)cc.getChartWithIndex(i).getFilterDefinition();
                 if(tdf != null ){

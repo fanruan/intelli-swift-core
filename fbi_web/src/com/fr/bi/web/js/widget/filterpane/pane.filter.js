@@ -30,7 +30,8 @@ BI.FilterPane = BI.inherit(BI.Widget, {
                 type: "bi.button_map",
                 chooseType: BI.ButtonGroup.CHOOSE_TYPE_DEFAULT,
                 layouts: [{
-                    type: "bi.vertical"
+                    type: "bi.vertical",
+                    scrolly: false
                 }]
             }
         });

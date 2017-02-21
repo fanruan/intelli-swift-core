@@ -20,6 +20,7 @@ import com.fr.general.NameObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by 小灰灰 on 2017/1/17.
@@ -33,6 +34,12 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
     private int sortType;
     private List<CalCalculator> configureRelatedCalculators;
     private DimensionFilter[] calculateMetricsDimensionFilters;
+    //线程池是否已经计算完成
+    private volatile boolean completed;
+    //是否已经全部加到线程池
+    private volatile boolean allAdded;
+    //已经完成计算的数量
+    private AtomicInteger count;
 
     public PartConstructedRootDimensionGroup() {
     }
@@ -65,6 +72,9 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private void initRootNode() {
         rootNode = new MetricMergeResult(null, root.getGvis());
+        if(columns.length == 0){
+            return;
+        }
         SingleDimensionGroup rootGroup =  root.createSingleDimensionGroup(columns[0], getters[0], null, mergeIteratorCreators[0], useRealData);
         int index = 0;
         MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
@@ -72,6 +82,10 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
         if (MultiThreadManagerImpl.getInstance().isMultiCall()){
             executor = MultiThreadManagerImpl.getInstance().getExecutorService();
         }
+        count = new AtomicInteger(0);
+        //不是多线程，或者没有子节点都表示线程池的计算已经结束
+        completed = result == MetricMergeResult.NULL || !MultiThreadManagerImpl.getInstance().isMultiCall();
+        allAdded = false;
         while (result != MetricMergeResult.NULL){
             rootNode.addChild(result);
             SingleChildCal cal = new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), 1);
@@ -83,12 +97,33 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
             index++;
             result = rootGroup.getMetricMergeResultByWait(index);
         }
-        if (executor != null){
-            MultiThreadManagerImpl.getInstance().awaitExecutor(session);
+        allAdded = true;
+        completed = completed || count.get() == rootNode.getChildLength();
+        //如果多线程计算没有结束，就等结束
+        if (!completed){
+            executor.wakeUp();
+            synchronized (this){
+                if (!completed){
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
         }
         sum(rootNode);
         sumCalculateMetrics();
         root.setChildren(rootNode.getChilds());
+    }
+
+    private void checkComplete(){
+        //如果已经计算完了加入线程池的计算，并且所有计算都已经加入线程池了，就说明计算完了，唤醒下等待的线程。
+        if (count.incrementAndGet() == rootNode.getChildLength() && allAdded){
+            synchronized (this){
+                completed = true;
+                this.notify();
+            }
+        }
     }
 
     private void sumCalculateMetrics() {
@@ -140,9 +175,13 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
         @Override
         public void cal() {
             cal(node, childDimensionGroup, level);
+            checkComplete();
         }
 
         private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
+            if (level >= lastConstructedDimensionIndex){
+                return;
+            }
             SingleDimensionGroup rootGroup =  childDimensionGroup.createSingleDimensionGroup(columns[level], getters[level], null, mergeIteratorCreators[level], useRealData);
             int index = 0;
             MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);

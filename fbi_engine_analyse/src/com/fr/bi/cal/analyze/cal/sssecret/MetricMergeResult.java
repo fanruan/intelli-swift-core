@@ -27,4 +27,8 @@ public class MetricMergeResult extends Node {
     public GroupValueIndex[] getGvis() {
         return gvis;
     }
+
+    public void clearGvis(){
+        gvis = null;
+    }
 }

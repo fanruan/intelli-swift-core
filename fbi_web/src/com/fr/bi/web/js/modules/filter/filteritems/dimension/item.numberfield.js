@@ -61,7 +61,8 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                     lhgap: this._constant.LEFT_ITEMS_H_GAP,
                     rhgap: this._constant.LEFT_ITEMS_H_GAP
                 }
-            }]
+            }],
+            scrolly: false
         });
     },
 

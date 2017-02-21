@@ -102,6 +102,10 @@
             this._checkWaterMark();
         },
 
+        focus: function() {
+            this.editor.focus();
+        },
+
         /**
          * 添加字段
          * @param field

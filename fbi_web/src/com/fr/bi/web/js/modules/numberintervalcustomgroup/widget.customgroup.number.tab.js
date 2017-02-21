@@ -52,7 +52,8 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                 break;
             case BI.NumberIntervalCustomGroupCombo.Type_Auto:
                 if(BI.isNull(this.space)){
-                    this.space = this._checkInterval();
+                    this._getGeneMinMax();
+                    this.space = (BI.parseFloat(this.genMax.sub(this.genMin)).div(5));
                     this.editor.setValue(this.space);
                 }
                 this.fireEvent(BI.NumberIntervalCustomGroupTab.EVENT_VALID);
@@ -195,7 +196,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         return dotText.length;
     },
 
-    _checkInterval:function(){
+    _getGeneMinMax:function(){
         var self = this;
         var min = Math.abs(this.min) + "";
         var max = Math.abs(this.max) + "";
@@ -232,7 +233,7 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         }
         //截零
         var i = max.length - 1, add = "0.";
-        while (min[i] === "0" && max[i] === "0" && this.min != 0 && this.max != 0) {
+        while (min[i] === "0" && max[i] === "0" && this.min !== 0 && this.max !== 0) {
             i--;
         }
 
@@ -247,7 +248,6 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
         //(max - min) / 5
         this.genMin = min.mul(magnify);
         this.genMax = max.mul(magnify);
-        return BI.parseFloat(this.genMax.sub(this.genMin)).div(5);
 
         function cutSmall(val){
             return BI.parseFloat(val.substring(0, i));
@@ -309,7 +309,8 @@ BI.NumberIntervalCustomGroupTab = BI.inherit(BI.Widget,{
                 case BICst.NUMBER_INTERVAL_CUSTOM_GROUP_AUTO:
                 default :
                     self.tab.setSelect(BI.NumberIntervalCustomGroupTab.Type_Group_Auto);
-                    self.space = (BI.isNull(config) || BI.isNull(config.group_interval)) ? self._checkInterval() : BI.parseFloat(config.group_interval);
+                    self._getGeneMinMax();
+                    self.space = (BI.isNull(config) || BI.isNull(config.group_interval)) ? (BI.parseFloat(self.genMax.sub(self.genMin)).div(5)) : BI.parseFloat(config.group_interval);
                     self.editor && self.editor.setValue(self.space);
                     self.panel && self.panel.populate(self._createItems());
                     break;

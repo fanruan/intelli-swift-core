@@ -41,7 +41,7 @@ public class BaseResouceHelper {
     };
 
     public static class FormulaTransmitter implements Transmitter {
-        private String formula = null;
+        private Map<String, String> formula = new HashMap<String, String>();
 
         @Override
         public String transmit(HttpServletRequest req, HttpServletResponse res, String[] files) {
@@ -49,20 +49,23 @@ public class BaseResouceHelper {
             return transmit(files, locale.getLanguage());
         }
 
-        public String transmit(String[] files) {
-            return this.transmit(files, "zh");
+        public String transmit(String[] files, Locale[] locales) {
+            for (Locale locale : locales) {
+                this.transmit(files, locale.getLanguage());
+            }
+            return formula.get(Locale.CHINA.getLanguage());
         }
 
         public String transmit(String[] files, String language) {
-            if (formula != null) {
-                return formula;
+            if (formula.containsKey(language)) {
+                return formula.get(language);
             }
             synchronized (this) {
-                String res = formula;
+                String res = formula.get(language);
                 if (res == null) {
                     res = getFormulaJS(files, language);
                     if (!StableUtils.isDebug()) {
-                        formula = res;
+                        formula.put(language, res);
                     }
                 }
                 return res;

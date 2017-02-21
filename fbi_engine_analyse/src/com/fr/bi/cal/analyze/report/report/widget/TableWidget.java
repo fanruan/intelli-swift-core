@@ -9,6 +9,8 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic.TableDataForExport;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.operation.TableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -25,6 +27,7 @@ import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
+import com.fr.web.core.SessionDealWith;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -60,6 +63,7 @@ public class TableWidget extends BISummaryWidget {
     private transient BISummaryTarget[] usedTargets;
 
     private DetailChartSetting settings = new DetailChartSetting();
+
 
     @Override
     public BIDimension[] getViewDimensions() {
@@ -334,6 +338,14 @@ public class TableWidget extends BISummaryWidget {
 
     @Override
     public void reSetDetailTarget() {
-
     }
+
+    public JSONObject getPostOptions(String sessionId) throws Exception {
+        JSONObject dataJSON = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
+        TableDataBuilder builder = new TableDataBuilder(this, dataJSON);
+        TableDataForExport tableDataForExport = builder.buildTableData();
+        return tableDataForExport.createJsonObject();
+    }
+
+
 }

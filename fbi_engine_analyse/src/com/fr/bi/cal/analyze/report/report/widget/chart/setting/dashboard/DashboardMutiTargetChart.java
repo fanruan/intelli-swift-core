@@ -59,35 +59,36 @@ public class DashboardMutiTargetChart extends PIEMutiTargetChart {
 
     /**
      * 创建tableData
-     * @param dimensions  维度
-     * @param targets  目标
-     * @param session   当前用户
-     * @param cc  图表集合
+     *
+     * @param dimensions 维度
+     * @param targets    目标
+     * @param session    当前用户
+     * @param cc         图表集合
      * @return tableData对象
      */
-	@Override
-	public TableData createTableData(ChartWidget widget, BIDimension[] dimensions,
-			BISummaryTarget[] targets,
-			BISession session, BaseChartCollection cc) {
+    @Override
+    public TableData createTableData(ChartWidget widget, BIDimension[] dimensions,
+                                     BISummaryTarget[] targets,
+                                     BISession session, BaseChartCollection cc) throws Exception {
         BISummaryTarget[] summary = getUsedTargets(targets);
-		Node node = getCubeNode(widget, dimensions, targets,  session);
-		EmbeddedTableData resData = new EmbeddedTableData();
-		resData.addColumn(COLUMNNAME, String.class);
-		resData.addColumn(VALUENAME, Double.class);
-		Node n = node;
-		while (n.getFirstChild() != null) {
-			n = n.getFirstChild();
-		}
-		int slen = summary.length;
-		TargetGettingKey[] key = new TargetGettingKey[slen];
-		for(int i = 0; i < slen; i++){
-			key[i] = new TargetGettingKey(summary[i].createSummaryKey(session.getLoader()), summary[i].getValue());
-			List<Object> rowList = new ArrayList<Object>();
-			rowList.add(summary[i].getValue());
-			rowList.add(n.getSummaryValue(key[i]));
-			resData.addRow(rowList);
-		}
-		return resData;
-	}
+        Node node = getCubeNode(widget, dimensions, targets, session);
+        EmbeddedTableData resData = new EmbeddedTableData();
+        resData.addColumn(COLUMNNAME, String.class);
+        resData.addColumn(VALUENAME, Double.class);
+        Node n = node;
+        while (n.getFirstChild() != null) {
+            n = n.getFirstChild();
+        }
+        int slen = summary.length;
+        TargetGettingKey[] key = new TargetGettingKey[slen];
+        for (int i = 0; i < slen; i++) {
+            key[i] = new TargetGettingKey(summary[i].createSummaryKey(session.getLoader()), summary[i].getValue());
+            List<Object> rowList = new ArrayList<Object>();
+            rowList.add(summary[i].getValue());
+            rowList.add(n.getSummaryValue(key[i]));
+            resData.addRow(rowList);
+        }
+        return resData;
+    }
 
 }
