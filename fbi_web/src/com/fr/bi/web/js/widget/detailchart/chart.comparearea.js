@@ -90,7 +90,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
-            var res = _calculateValueNiceDomain(0, self.maxes[axis.axisIndex]);
+            var res = _calculateValueNiceDomain(0, self.maxes[idx]);
             axis.max = res[1].mul(2);
             axis.min = res[0].mul(2);
             axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
