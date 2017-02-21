@@ -29,7 +29,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.BICubeAdapter;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
@@ -56,6 +56,7 @@ import com.fr.json.JSONObject;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 /**
@@ -74,9 +75,10 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
-    protected Cube integrityCube;
+    protected BICube integrityCube;
     protected BICubeFinishObserver<Future<String>> finishObserver;
     private int retryNTimes;
+    private BICubeAdapter cubeAdapter;
 
 
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
@@ -87,6 +89,7 @@ public class BuildCubeTask implements CubeTask {
         ICubeConfiguration IntegrityCubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         this.integrityCube = new BICube(new BICubeResourceRetrieval(IntegrityCubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        this.cubeAdapter = new BICubeAdapter(integrityCube, cube);
         retryNTimes = 100;
     }
 
@@ -252,9 +255,13 @@ public class BuildCubeTask implements CubeTask {
         operationManager.setVersionMap(cubeBuildStuff.getVersions());
         operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
         logTableDepend(cubeBuildStuff.getDependTableResource());
-        operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
+        Map<String, CubeTableSource> tablesNeed2GenerateMap = new ConcurrentHashMap<String, CubeTableSource>();
+        for (CubeTableSource tableSource : cubeBuildStuff.getSingleSourceLayers()) {
+            tablesNeed2GenerateMap.put(tableSource.getSourceID(), tableSource);
+        }
+        operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet(), tablesNeed2GenerateMap);
         logRelationDepend(cubeBuildStuff.getCubeGenerateRelationSet());
-        operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
+        operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet(), tablesNeed2GenerateMap);
         logPathDepend(cubeBuildStuff.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
