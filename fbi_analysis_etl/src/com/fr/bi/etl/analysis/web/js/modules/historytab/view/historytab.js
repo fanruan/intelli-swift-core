@@ -24,7 +24,7 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
     },
 
     _initView: function () {
-        var o = this.options;
+        var self = this, o = this.options;
         this.tabButton = BI.createWidget({
             type: "bi.history_button_group",
             items:[],
@@ -90,10 +90,17 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
         // this.controller.selectLastTab();
     },
 
+    isCurrentTheLastOperator: function(){
+        var v = this.tabButton.getValue()[0];
+        var position = this.controller.getIndexByValue(v);
+        return position === this.tabButton.getAllButtons().length - 1;
+    },
+
     _createTabs : function(v) {
         var self = this;
         var tab = BI.createWidget({
-            type:this.controller.getOperatorTypeByValue(v)
+            type:this.controller.getOperatorTypeByValue(v),
+            isCurrentTheLastOperator: BI.bind(this.isCurrentTheLastOperator, this)
         })
 
         BI.nextTick(function () {
@@ -119,8 +126,8 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
             self.fireEvent(BI.HistoryTab.VALID_CHANGE)
         });
 
-        tab.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(){
-            self.controller.clickTitleSave(v)
+        tab.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(widget){
+            self.controller.clickTitleSave(v, widget);
         });
 
         tab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, function () {
@@ -139,5 +146,6 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
     }
 
 })
+BI.HistoryTab.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
 BI.HistoryTab.VALID_CHANGE = "valid_change"
 $.shortcut("bi.history_tab",BI.HistoryTab)

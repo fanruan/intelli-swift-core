@@ -23,6 +23,8 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
             self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments)
         })
 
+
+
         this.saveButton = BI.createWidget({
             el: {
                 type: "bi.button",
@@ -31,7 +33,7 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
                 text: BI.i18nText('BI-Save_To_Package'),
                 title: BI.i18nText('BI-Save_To_Package'),
                 handler: function (v) {
-                    self.fireEvent(BI.AnalysisOperatorTitle.EVENT_SAVE, arguments)
+                    self.fireEvent(BI.AnalysisOperatorTitle.EVENT_SAVE, self.saveButton)
                 }
             }
         })
@@ -46,6 +48,10 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
                 right: [this.saveButton]
             }
         })
+    },
+
+    getTitleButtons: function(){
+        return this.operator.getAllButtons();
     },
 
     setEnable : function(v, txt){

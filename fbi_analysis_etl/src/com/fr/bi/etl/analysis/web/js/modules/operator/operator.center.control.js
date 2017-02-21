@@ -157,6 +157,14 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
         return widget.previewTable;
     },
 
+    getCurrentEditOperator: function(){
+        return this.editorOperator;
+    },
+
+    setCurrentEditOperator: function(v){
+        this.editorOperator = v;
+    },
+
     filterChange : function (filter, widget){
         var showingCard = this._statusAdd ? this._getOperatorPane(widget).getContentWidget().getShowingCard() : this._getOperatorEditPane(widget).getContentWidget();
         showingCard.controller.filterChange(filter);
@@ -183,7 +191,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
         this.populatePreviewData.apply(this, args)
     },
 
-     setPreviewOperator : function(operator) {
+    setPreviewOperator : function(operator) {
         this.previewOperator = operator;
     },
 
@@ -203,7 +211,7 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
             field : field
         }, callback);
     },
-    
+
     populate : function (widget, model) {
         if(this.options.showContent === true) {
             widget.operatorEditPane.getContentWidget().populate(model.update(), this.options);

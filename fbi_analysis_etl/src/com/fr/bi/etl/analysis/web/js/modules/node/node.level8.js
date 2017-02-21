@@ -52,18 +52,60 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             py: o.py
         });
         this.settingIcon = BI.createWidget({
-                type: "bi.down_list_combo",
-                height: o.height,
-                iconCls: "icon-analysis-table-set",
-                items: this._createItemList()
+            type: "bi.down_list_combo",
+            height: o.height,
+            iconCls: "icon-analysis-table-set",
+            items: this._createItemList()
         })
 
         this.settingIcon.on(BI.DownListCombo.EVENT_CHANGE, function(v){
-            self.controller.afterClickList(v, o);
+            self.afterClickList(v, o);
         });
 
         this.settingIcon.element.click(function(e){
             e.stopPropagation();
+        })
+
+        this.confirmCombo = BI.createWidget({
+            type: "bi.bubble_combo",
+            el: {},
+            element: this.settingIcon,
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        self.confirmCombo.hideView();
+                        BI.createWidget({
+                            type: "bi.analysis_etl_main",
+                            element: BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body"),
+                            model: self.res
+                        })
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        self.confirmCombo.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        whiteSpace: "normal",
+                        text: BI.i18nText("BI-Current_Table_Is_Used_By_Other_Confirm_To_Continue"),
+                        cls: "delete-label",
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
+            }
         })
 
         this.tip = BI.createWidget({
@@ -93,7 +135,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                 el: this.checkbox
             }, {
                 width : 23,
-               el: this.icon
+                el: this.icon
             },{
                 el: this.text
             }, {
@@ -134,6 +176,41 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             text: BI.i18nText("BI-Remove"),
             value:ETLCst.ANALYSIS_TABLE_SET.DELETE
         }]];
+    },
+
+    afterClickList: function (v, option) {
+        var self = this;
+        this.res = null;
+        switch (v) {
+            case ETLCst.ANALYSIS_TABLE_SET.EDIT :
+                BI.ETLReq.reqEditTable({id: option.id}, function (res) {
+                    if (res['used']) {
+                        self.res = res;
+                        self.confirmCombo.showView();
+                    } else {
+                        BI.createWidget({
+                            type: "bi.analysis_etl_main",
+                            element: BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body"),
+                            model: res
+                        })
+                    }
+                });
+                return;
+            case ETLCst.ANALYSIS_TABLE_SET.RENAME :
+                self.controller._showRenamePop(option.id, option.text);
+                return;
+            case ETLCst.ANALYSIS_TABLE_SET.DELETE :
+                BI.ETLReq.reqDeleteTable({id: option.id}, BI.emptyFn)
+                return;
+            case ETLCst.ANALYSIS_TABLE_SET.COPY :
+                BI.ETLReq.reqSaveTable({
+                    id: option.id,
+                    new_id: BI.UUID(),
+                    name: BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(), option.text)
+                }, BI.emptyFn);
+                return;
+        }
+
     },
 
     showLoading : function (percent) {

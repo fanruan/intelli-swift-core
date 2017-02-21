@@ -74,6 +74,10 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
         return !this.options.lock;
     },
 
+    getAllButtons: function(){
+        return this.buttons;
+    },
+
     getValue : function() {
         var res = null;
         BI.some(this.buttons, function(idx, item){
