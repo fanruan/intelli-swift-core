@@ -35,7 +35,7 @@ public class StringNotLikeFilterValue extends StringOneValueFilterValue {
      */
     @Override
     public boolean isMatchValue(String key) {
-        return key.indexOf(value) == -1;
+        return StringUtils.isEmpty(value) || key.indexOf(value) == -1;
     }
 
 }

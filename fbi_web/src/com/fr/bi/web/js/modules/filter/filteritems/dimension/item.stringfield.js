@@ -41,6 +41,7 @@ BI.DimensionStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
+            scrolly: false,
             items: [{
                 el: {
                     type: "bi.left_right_vertical_adapt",

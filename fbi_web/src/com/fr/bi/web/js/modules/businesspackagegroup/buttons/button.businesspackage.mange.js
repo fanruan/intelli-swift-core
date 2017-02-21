@@ -72,7 +72,14 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
                     }
                 })
             },
-            errorText: BI.i18nText("BI-Busi_Package_Name_Not_Repeat")
+            allowBlank: false,
+            errorText: function(v){
+                if(BI.isEmptyString(v)){
+                    return BI.i18nText("BI-Value_Cannot_Be_Null");
+                }else{
+                    return BI.i18nText("BI-Busi_Package_Name_Not_Repeat");
+                }
+            }
         });
 
         this.packageNameEditor.on(BI.ShelterEditor.EVENT_CONFIRM, function () {
