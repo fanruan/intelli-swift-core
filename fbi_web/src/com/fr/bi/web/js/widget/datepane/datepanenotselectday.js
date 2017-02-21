@@ -77,15 +77,40 @@ BI.DatePaneWidget = BI.inherit(BI.Widget, {
         return calendar;
     },
 
-    setValue: function (timeOb) {
-        this.datePicker.setValue(timeOb);
-        if (BI.isNull(timeOb.day)) {
-            this.calendar.empty();
+    _getNewCurrentDate: function () {
+        var today = new Date();
+        return {
+            year: today.getFullYear(),
+            month: today.getMonth()
         }
-        this.calendar.setSelect(BI.Calendar.getPageByDateJSON(timeOb));
-        this.calendar.setValue(timeOb);
-        this.selectedTime = timeOb;
+    },
 
+    _setCalenderValue: function (date) {
+        this.calendar.setSelect(BI.Calendar.getPageByDateJSON(date));
+        this.calendar.setValue(date);
+        this.selectedTime = date;
+    },
+
+    _setDatePicker: function (timeOb) {
+        if (BI.isNull(timeOb) || BI.isNull(timeOb.year) || BI.isNull(timeOb.month)) {
+            this.datePicker.setValue(this._getNewCurrentDate());
+        } else {
+            this.datePicker.setValue(timeOb);
+        }
+    },
+
+    _setCalendar: function (timeOb) {
+        if (BI.isNull(timeOb) || BI.isNull(timeOb.day)) {
+            this.calendar.empty();
+            this._setCalenderValue(this._getNewCurrentDate());
+        } else {
+            this._setCalenderValue(timeOb)
+        }
+    },
+
+    setValue: function (timeOb) {
+        this._setDatePicker(timeOb);
+        this._setCalendar(timeOb);
     },
 
     getValue: function () {
