@@ -56,7 +56,8 @@ BI.DimensionNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [this.itemContainer]
+            items: [this.itemContainer],
+            scrolly: false
         });
     },
 

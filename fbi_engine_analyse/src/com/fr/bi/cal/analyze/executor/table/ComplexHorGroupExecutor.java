@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
@@ -95,7 +96,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
      * @throws NoneAccessablePrivilegeException
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         Map<Integer, Node> nodeMap = getCubeNodes();
         if (nodeMap == null || nodeMap.isEmpty()) {
             return new CBCell[][]{new CBCell[0]};
@@ -177,6 +178,10 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             row += rowSpan;
         }
+        dealWithSum(cbcells, columnDimensionLength);
+    }
+
+    private void dealWithSum(CBCell[][] cbcells, int columnDimensionLength) {
         for (int i = 0; i < usedSumTarget.length; i++) {
             CBCell cell = new CBCell(usedSumTarget[i].getValue());
             cell.setColumn(0);
@@ -249,7 +254,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     @Override
-    public Map<Integer, Node> getCubeNodes() {
+    public Map<Integer, Node> getCubeNodes() throws Exception {
         if (getSession() == null) {
             return null;
         }
@@ -267,7 +272,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
                 allSumTarget, keys, paging.getOprator(), widget.useRealData(), session, complexExpander, false);
 
 
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return nodeMap;
     }
 }

@@ -30,4 +30,8 @@ public class MergeSummaryCallList implements Callable {
         }
         return null;
     }
+
+    protected void wakeUp() {
+        iterator.wakeUp();
+    }
 }

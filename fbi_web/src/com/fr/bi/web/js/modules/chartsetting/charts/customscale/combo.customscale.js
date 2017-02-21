@@ -65,7 +65,8 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
         });
 
         this.combo.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {
-            self.pane.refresh()
+            self.pane.focus();
+            self.pane.refresh();
         });
 
         this.combo.on(BI.Combo.EVENT_AFTER_HIDEVIEW, function () {

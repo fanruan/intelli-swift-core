@@ -41,6 +41,7 @@ public class NodeIteratorCreator {
     private NameObject targetSort;
     private TargetFilter filter;
     private final boolean showSum;
+    private final boolean setIndex;
     private final boolean calAllPage;
     private List<CalCalculator> configureRelatedCalculators;
     private Map<String, BISummaryTarget> targetIdMap;
@@ -55,6 +56,7 @@ public class NodeIteratorCreator {
         this.targetSort = targetSort;
         this.filter = filter;
         this.showSum = showSum;
+        this.setIndex = setIndex;
         this.calAllPage = calAllPage;
         checkTargetSort();
         classifyMetrics();
@@ -89,7 +91,7 @@ public class NodeIteratorCreator {
             Map<String, TargetGettingKey> usedTargets = target.getTargetMap();
             if (usedTargets != null) {
                 for (String id : usedTargets.keySet()) {
-                    if (!ComparatorUtils.equals(id, target.getName())){
+                    if (!ComparatorUtils.equals(id, target.getName())) {
                         getRelatedFormulaMetricIds(id, ids);
                     }
                 }
@@ -100,11 +102,14 @@ public class NodeIteratorCreator {
     //获取相关的基本指标
     private void getRelatedNormalIds(String name, Set<String> ids) {
         BISummaryTarget target = targetIdMap.get(name);
+        if (target == null) {
+            return;
+        }
         if (target.getType() != TargetType.NORMAL) {
             Map<String, TargetGettingKey> usedTargets = target.getTargetMap();
             if (usedTargets != null) {
                 for (String id : usedTargets.keySet()) {
-                    if (!ComparatorUtils.equals(id, target.getName())){
+                    if (!ComparatorUtils.equals(id, target.getName())) {
                         getRelatedNormalIds(id, ids);
                     }
                 }
@@ -133,10 +138,14 @@ public class NodeIteratorCreator {
         if (calAllPage || !configureRelatedCalculators.isEmpty()) {
             return CalLevel.ALL_NODE;
         }
-        if (hasDimensionInDirectFilter() && (showSum || hasTargetSort())) {
+        if (isDimensionFilter()) {
             return CalLevel.ALL_NODE;
         }
         return CalLevel.PART_NODE;
+    }
+
+    private boolean isDimensionFilter() {
+        return hasDimensionInDirectFilter() && (showSum || hasTargetSort());
     }
 
     public IRootDimensionGroup createRoot() {
@@ -167,6 +176,8 @@ public class NodeIteratorCreator {
                     creator = new NFilterMergeIteratorCreator(((StringTOPNFilterValue) filterValue).getN());
                 } else if (filterValue instanceof StringOneValueFilterValue) {
                     creator = new FilterMergeIteratorCreator((StringOneValueFilterValue) filterValue);
+                } else {
+                    creator = new SimpleMergeIteratorCreator();
                 }
             } else {
                 creator = new SimpleMergeIteratorCreator();
@@ -194,6 +205,8 @@ public class NodeIteratorCreator {
                     mergeIteratorCreators[i] = new NFilterMergeIteratorCreator(((StringTOPNFilterValue) filterValue).getN());
                 } else if (filterValue instanceof StringOneValueFilterValue) {
                     mergeIteratorCreators[i] = new FilterMergeIteratorCreator((StringOneValueFilterValue) filterValue);
+                } else {
+                    createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort.getName(), new SimpleMergeIteratorCreator());
                 }
             } else {
                 createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort.getName(), new SimpleMergeIteratorCreator());
@@ -203,7 +216,7 @@ public class NodeIteratorCreator {
     }
 
     private void createAllNodeCreator(MergeIteratorCreator[] mergeIteratorCreators, int index, DimensionFilter filter, String sortTarget, MergeIteratorCreator creator) {
-        List<TargetAndKey>[] metricsToCalculate = new List[mergeIteratorCreators.length];
+        List<TargetAndKey>[] metricsToCalculate = new List[metricGroupInfoList.size()];
         Map<String, TargetCalculator> calculatedMap = new HashMap<String, TargetCalculator>();
         Set<String> metrics = new HashSet<String>();
         List<String> usedTargets = new ArrayList<String>();
@@ -215,10 +228,10 @@ public class NodeIteratorCreator {
         if (sortTarget != null) {
             usedTargets.add(sortTarget);
         }
-        for (String id : usedTargets){
-            getRelatedNormalIds(id ,metrics);
+        for (String id : usedTargets) {
+            getRelatedNormalIds(id, metrics);
         }
-        for (CalCalculator cal : configureRelatedCalculators){
+        for (CalCalculator cal : configureRelatedCalculators) {
             getRelatedNormalIds(cal.getName(), metrics);
         }
         fillMetricsToCalculate(metrics, metricsToCalculate, calculatedMap);
@@ -269,8 +282,8 @@ public class NodeIteratorCreator {
 
     public DimensionFilter[] getCalculateMetricsDimensionFilters() {
         DimensionFilter[] filters = new DimensionFilter[rowDimension.length];
-        for (int i = 0; i < rowDimension.length; i++){
-            if (rowDimension[i].getFilter() != null && hasCalculateMetrics(rowDimension[i].getFilter().getUsedTargets())){
+        for (int i = 0; i < rowDimension.length; i++) {
+            if (rowDimension[i].getFilter() != null && hasCalculateMetrics(rowDimension[i].getFilter().getUsedTargets())) {
                 filters[i] = rowDimension[i].getFilter();
             }
         }
@@ -278,9 +291,9 @@ public class NodeIteratorCreator {
     }
 
     private boolean hasCalculateMetrics(List<String> usedTargets) {
-        for (String id : usedTargets){
+        for (String id : usedTargets) {
             BISummaryTarget target = targetIdMap.get(id);
-            if (target != null && !(target.getType() == TargetType.NORMAL)){
+            if (target != null && !(target.getType() == TargetType.NORMAL)) {
                 return true;
             }
         }

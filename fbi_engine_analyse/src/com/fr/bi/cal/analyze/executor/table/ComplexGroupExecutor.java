@@ -1,21 +1,21 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.field.BITargetAndDimensionUtils;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.field.BITargetAndDimensionUtils;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -79,7 +79,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
      * @return
      */
     @Override
-    public Map<Integer, Node> getCubeNodes() {
+    public Map<Integer, Node> getCubeNodes() throws Exception{
 
         long start = System.currentTimeMillis();
         if (getSession() == null) {
@@ -96,7 +96,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
             return null;
         }
 
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return nodeMap;
     }
 
@@ -149,7 +149,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
      * @return 构建的cells
      */
     @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
+    public CBCell[][] createCellElement() throws Exception {
         Map<Integer, Node> nodeMap = getCubeNodes();
         if (nodeMap == null || nodeMap.isEmpty()) {
             return new CBCell[][]{new CBCell[0]};
