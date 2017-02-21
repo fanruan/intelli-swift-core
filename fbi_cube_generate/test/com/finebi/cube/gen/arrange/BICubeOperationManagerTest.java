@@ -49,8 +49,8 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             Set<BITableSourceRelationPath> pathSet = new HashSet<BITableSourceRelationPath>();
             pathSet.add(BITableSourceRelationPathTestTool.getABCPath());
             manager.registerTableRelationPath(pathSet);
-            operationManager.generateRelationBuilder(BIMemoryCubeGenerateFactory.getCubeGenerateRelationABC());
-            operationManager.generateTableRelationPath(BIMemoryCubeGenerateFactory.getCubeGenerateRelationPathABC());
+            operationManager.generateRelationBuilder(BIMemoryCubeGenerateFactory.getCubeGenerateRelationABC(), null);
+            operationManager.generateTableRelationPath(BIMemoryCubeGenerateFactory.getCubeGenerateRelationPathABC(), null);
             operationManager.generateDataSource(BIMemoryDataSourceFactory.getDataSourceSetMap());
             IRouter router = BIFactoryHelper.getObject(IRouter.class);
             router.deliverMessage(BIMessageTestTool.generateMessageDataSourceStart());
@@ -107,12 +107,12 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             relations.add(BITableSourceRelationTestTool.getMemoryAB());
             manager.registerRelation(relations);
             operationManager.generateDataSource(BIMemoryDataSourceFactory.getDataSourceSetMapWithB());
-            Set<CubeTableSource> analysisTableSources=new HashSet<CubeTableSource>();
+            Set<CubeTableSource> analysisTableSources = new HashSet<CubeTableSource>();
             analysisTableSources.add(BIMemoryDataSourceFactory.generateTableB());
-            BICubeGenerateRelation biCubeGenerateRelation = new BICubeGenerateRelation(BITableSourceRelationTestTool.getMemoryAB(),analysisTableSources);
-            Set<BICubeGenerateRelation> biTableSourceRelationSet=new HashSet<BICubeGenerateRelation>();
+            BICubeGenerateRelation biCubeGenerateRelation = new BICubeGenerateRelation(BITableSourceRelationTestTool.getMemoryAB(), analysisTableSources);
+            Set<BICubeGenerateRelation> biTableSourceRelationSet = new HashSet<BICubeGenerateRelation>();
             biTableSourceRelationSet.add(biCubeGenerateRelation);
-            operationManager.generateRelationBuilder(biTableSourceRelationSet);
+            operationManager.generateRelationBuilder(biTableSourceRelationSet, null);
             IRouter router = BIFactoryHelper.getObject(IRouter.class);
             router.deliverMessage(BIMessageTestTool.generateMessageDataSourceStart());
             BICubeFinishObserver<Future> observer = new BICubeFinishObserver(new BIOperationID("finishObserver"));
@@ -127,6 +127,7 @@ public class BICubeOperationManagerTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
+
     public void testDependTable() {
         try {
             BICubeBuildTopicManager manager = new BICubeBuildTopicManager();

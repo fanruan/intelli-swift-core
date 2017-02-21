@@ -10,15 +10,10 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
  * @author Connery
  * @since 4.0
  */
-public class AVGCalculator4Test extends AVGCalculator {
+public class AVGCalculatorTestTool extends AVGCalculator {
     private double sum;
 
-//    public AVGCalculator4Test(double sum) {
-//        this.sum = sum;
-//    }
-
-
-    public void setSum(double sum) {
+    public AVGCalculatorTestTool(double sum) {
         this.sum = sum;
     }
 

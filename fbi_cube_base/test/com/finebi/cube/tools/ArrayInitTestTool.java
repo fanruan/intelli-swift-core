@@ -1,4 +1,4 @@
-package com.finebi.cube.data.disk.reader.primitive;
+package com.finebi.cube.tools;
 
 /**
  * This class created on 2016/8/17.
@@ -6,7 +6,7 @@ package com.finebi.cube.data.disk.reader.primitive;
  * @author Connery
  * @since Advanced FineBI Analysis 1.0
  */
-public class ArrayInit4Test {
+public class ArrayInitTestTool {
     private byte[] contain = new byte[1];
 
 

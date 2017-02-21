@@ -1,6 +1,6 @@
 package com.finebi.cube.data.disk.reader;
 
-import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.disk.reader.primitive.BIByteNIOReader;
 import com.finebi.cube.data.disk.reader.primitive.BIIntegerNIOReader;
 import com.finebi.cube.data.disk.reader.primitive.BILongNIOReader;
@@ -16,8 +16,8 @@ import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.data.output.primitive.ICubeByteWriter;
 import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
 import com.finebi.cube.data.output.primitive.ICubeLongWriter;
+import com.finebi.cube.tools.BIProjectPathTool;
 import com.fr.bi.stable.utils.algorithem.BIRandomUitils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import junit.framework.TestCase;
 
@@ -36,9 +36,9 @@ public class BIStringNIOTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        String start = BIDiskWriterReaderTest.projectPath + File.separator + "start";
-        String length = BIDiskWriterReaderTest.projectPath + File.separator + "length";
-        String content = BIDiskWriterReaderTest.projectPath + File.separator + "content";
+        String start = BIProjectPathTool.projectPath + File.separator + "start";
+        String length = BIProjectPathTool.projectPath + File.separator + "length";
+        String content = BIProjectPathTool.projectPath + File.separator + "content";
         ICubeLongWriter startPositionRecorder = new BILongNIOWriter(start);
         ICubeIntegerWriter lengthRecorder = new BIIntegerNIOWriter(length);
         ICubeByteWriter contentRecorder = new BIByteNIOWriter(content);

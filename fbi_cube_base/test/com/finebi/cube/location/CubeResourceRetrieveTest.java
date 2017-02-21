@@ -4,10 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.tools.BIColumnKeyTestTool;
-import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
-import com.finebi.cube.tools.BITableSourceRelationTestTool;
-import com.finebi.cube.tools.BITableSourceTestTool;
+import com.finebi.cube.tools.*;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
@@ -28,7 +25,7 @@ public class CubeResourceRetrieveTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        cubeConfiguration = new BICubeConfigurationTest();
+        cubeConfiguration = new BICubeConfigurationTool();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
     }
 

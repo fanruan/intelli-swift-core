@@ -20,8 +20,7 @@ public class AVGCalculatorTest extends TestCase {
         try {
             GroupValueIndex groupValueIndex = EasyMock.createMock(GroupValueIndex.class);
             EasyMock.expect(groupValueIndex.getRowsCountWithData()).andReturn(100);
-            AVGCalculator4Test avgCalculator = new AVGCalculator4Test();
-            avgCalculator.setSum(1000);
+            AVGCalculatorTestTool avgCalculator = new AVGCalculatorTestTool(1000);
             EasyMock.replay(groupValueIndex);
             assertEquals(avgCalculator.calculate(null, null, groupValueIndex), Double.valueOf(10));
         } catch (Exception e) {

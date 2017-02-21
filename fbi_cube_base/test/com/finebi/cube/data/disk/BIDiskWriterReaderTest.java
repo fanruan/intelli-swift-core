@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubePrimitiveResourceDiscovery;
 import com.finebi.cube.data.disk.reader.BIStringNIOReader;
 import com.finebi.cube.data.disk.reader.primitive.BIByteNIOReader;
@@ -7,13 +8,10 @@ import com.finebi.cube.data.disk.writer.BIStringNIOWriter;
 import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
 import com.finebi.cube.exception.BIBuildReaderException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
-import com.finebi.cube.tools.BILocationBuildTestTool;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.finebi.cube.tools.BILocationBuildTestTool;
+import com.finebi.cube.tools.BIProjectPathTool;
 import junit.framework.TestCase;
-
-import java.io.File;
 
 /**
  * This class created on 2016/3/10.
@@ -24,52 +22,19 @@ import java.io.File;
 public class BIDiskWriterReaderTest extends TestCase {
     private ICubePrimitiveResourceDiscovery discovery;
 
-    public static String projectPath = computePath();
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-//        discovery = BICubeDiskPrimitiveDiscovery.getInstance();
     }
 
     public BIDiskWriterReaderTest() {
         this.discovery = BICubeDiskPrimitiveDiscovery.getInstance();
     }
 
-    private static String computePath() {
-        String classFileName = "classes";
-        String libFileName = "lib";
-        File directory = new File("");
-        String classRootPath = BIDiskWriterReaderTest.class.getResource("/").getPath();
-        classRootPath = classRootPath.replace("/", File.separator);
-        if (classRootPath.endsWith(File.separator)) {
-            classRootPath = cut(classRootPath, File.separator);
-        }
-        if (classRootPath.endsWith(classFileName)) {
-            classRootPath = cut(classRootPath, classFileName);
-        }
-        if (classRootPath.endsWith(libFileName)) {
-            classRootPath = cut(classRootPath, libFileName);
-        }
-        if (classRootPath.endsWith(File.separator)) {
-            classRootPath = BIStringUtils.append(classRootPath, "testFolder", File.separator, "cube");
-        }
-        return classRootPath;
-    }
-
-    private static String cut(String path, String suffix) {
-        return BIStringUtils.cutEndChar(path, suffix);
-    }
-
-    public void testPath() {
-        System.out.println(computePath());
-    }
-
     public void testSimpleWriteReader() {
-//        synchronized(discovery) {
         try {
             discovery = BICubeDiskPrimitiveDiscovery.getInstance();
-            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "writer");
+            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer");
             location.setByteType();
             BIByteNIOWriter writer = (BIByteNIOWriter) discovery.getCubeWriter(location);
             writer.recordSpecificPositionValue(0l, Byte.valueOf("35"));
@@ -89,13 +54,12 @@ public class BIDiskWriterReaderTest extends TestCase {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-//        }
     }
 
     public void testSimpleWriteReaderOpenTime() {
         try {
             long time = System.currentTimeMillis();
-            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "writer");
+            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer");
             location.setByteType();
 
             for (int i = 0; i < 100000; i++) {
@@ -114,13 +78,12 @@ public class BIDiskWriterReaderTest extends TestCase {
 
     public void testSimpleObjectOpenTime() {
         try {
-            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "writer");
+            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer");
 
             long time = System.currentTimeMillis();
 
             for (int i = 0; i < 100000; i++) {
                 location.setWriterSourceLocation();
-//                BIByteNIOWriter writer = new BIByteNIOWriter("D:\\temp\\arrayBasic.xml");
             }
             System.out.println(System.currentTimeMillis() - time);
         } catch (Exception e) {
@@ -130,7 +93,7 @@ public class BIDiskWriterReaderTest extends TestCase {
 
     public void testWriteNull() {
         try {
-            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer");
+            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer");
             location.setStringType();
             location.setWriterSourceLocation();
             BIStringNIOWriter writer1 = (BIStringNIOWriter) BICubeDiskDiscovery.getInstance().getCubeWriter(location);
@@ -152,7 +115,7 @@ public class BIDiskWriterReaderTest extends TestCase {
         int size = 102400000;
         try {
             for (int i = 0; i < filesize; i++) {
-                ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + i + "ok");
+                ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + i + "ok");
                 location.setStringType();
                 location.setWriterSourceLocation();
                 BIStringNIOWriter writer = (BIStringNIOWriter) BICubeDiskDiscovery.getInstance().getCubeWriter(location);
@@ -175,7 +138,7 @@ public class BIDiskWriterReaderTest extends TestCase {
         String r = "";
         try {
             for (int i = 0; i < filesize; i++) {
-                ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + i + "ok");
+                ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + i + "ok");
                 location.setStringType();
                 location.setReaderSourceLocation();
                 BIStringNIOReader reader = (BIStringNIOReader) BICubeDiskDiscovery.getInstance().getCubeReader(location);
@@ -191,7 +154,7 @@ public class BIDiskWriterReaderTest extends TestCase {
     }
 
     public void testMultiThreadRead() {
-        ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
+        ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
         location.setStringType();
         location.setReaderSourceLocation();
         BIStringNIOReader reader = null;

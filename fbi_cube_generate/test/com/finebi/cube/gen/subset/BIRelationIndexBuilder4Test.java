@@ -32,6 +32,6 @@ public class BIRelationIndexBuilder4Test extends BIRelationIndexGenerator {
     }
 
     public BIRelationIndexBuilder4Test(Cube cube, BICubeRelation relation) {
-        super(cube, null, relation);
+        super(cube, null, relation, null);
     }
 }

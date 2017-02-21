@@ -3,7 +3,7 @@ package com.finebi.cube.structure.property;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
-import com.finebi.cube.location.BICubeConfigurationTest;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -26,7 +26,7 @@ public class BICubeColumnPositionOfGroupServiceTest extends TestCase {
 
     public BICubeColumnPositionOfGroupServiceTest() {
         try {
-            cubeConfiguration = new BICubeConfigurationTest();
+            cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
             cubeColumnPositionOfGroupService = new BICubeColumnPositionOfGroupService(location, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));

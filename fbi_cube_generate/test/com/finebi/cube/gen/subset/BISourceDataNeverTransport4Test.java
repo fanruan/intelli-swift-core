@@ -3,7 +3,7 @@ package com.finebi.cube.gen.subset;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
 import com.finebi.cube.gen.oper.BISourceDataNeverTransport;
-import com.finebi.cube.location.BICubeConfigurationTest;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
@@ -48,7 +48,7 @@ public class BISourceDataNeverTransport4Test extends BISourceDataNeverTransport 
             }
         };
 
-        ICubeConfiguration advancedConf = new BICubeConfigurationTest();
+        ICubeConfiguration advancedConf = new BICubeConfigurationTool();
         try {
             BICubeLocation from = new BICubeLocation(advancedConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());

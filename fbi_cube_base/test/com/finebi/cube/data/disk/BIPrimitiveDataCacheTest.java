@@ -1,11 +1,12 @@
 package com.finebi.cube.data.disk;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubePrimitiveResourceDiscovery;
 import com.finebi.cube.data.disk.reader.primitive.BIByteNIOReader;
 import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.tools.BILocationBuildTestTool;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.tools.BIProjectPathTool;
 import junit.framework.TestCase;
 
 /**
@@ -26,7 +27,7 @@ public class BIPrimitiveDataCacheTest extends TestCase {
 
     public void testWriteReaderRelease() {
         try {
-            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer");
+            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer");
             location.setByteType();
             BIByteNIOWriter writer = (BIByteNIOWriter) discovery.getCubeWriter(location);
             writer.recordSpecificPositionValue(0l, Byte.valueOf("35"));
@@ -61,7 +62,7 @@ public class BIPrimitiveDataCacheTest extends TestCase {
 
     public void testCacheRelease() {
         try {
-            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer");
+            ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer");
             location.setByteType();
             BIByteNIOWriter writer = (BIByteNIOWriter) discovery.getCubeWriter(location);
             writer.recordSpecificPositionValue(0l, Byte.valueOf("35"));

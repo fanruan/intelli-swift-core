@@ -7,6 +7,7 @@ import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.tools.BILocationBuildTestTool;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.tools.BIProjectPathTool;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
 import java.io.File;
@@ -17,8 +18,6 @@ import java.io.File;
  */
 public class BIThreadWriterCrash1Test extends Thread {
     private ICubePrimitiveResourceDiscovery discovery;
-
-    public static String projectPath = computePath();
 
     public void run() {
          testSimpleWriteReader();
@@ -33,7 +32,7 @@ public class BIThreadWriterCrash1Test extends Thread {
 
     public BIThreadWriterCrash1Test() {
         this.discovery = BICubeDiskPrimitiveDiscovery.getInstance();
-        ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(projectPath, "threadWriter");
+        ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "threadWriter");
         location.setByteType();
         try {
             writer = (BIByteNIOWriter) discovery.getCubeWriter(location);
@@ -45,37 +44,32 @@ public class BIThreadWriterCrash1Test extends Thread {
         }
     }
 
-    private static String computePath() {
-        String classFileName = "classes";
-        String libFileName = "lib";
-        File directory = new File("");
-        String classRootPath = com.finebi.cube.data.disk.BIDiskWriterReaderTest.class.getResource("/").getPath();
-        classRootPath = classRootPath.replace("/", File.separator);
-        if (classRootPath.endsWith(File.separator)) {
-            classRootPath = cut(classRootPath, File.separator);
-        }
-        if (classRootPath.endsWith(classFileName)) {
-            classRootPath = cut(classRootPath, classFileName);
-        }
-        if (classRootPath.endsWith(libFileName)) {
-            classRootPath = cut(classRootPath, libFileName);
-        }
-        if (classRootPath.endsWith(File.separator)) {
-            classRootPath = BIStringUtils.append(classRootPath, "testFolder", File.separator, "cube");
-        }
-        return classRootPath;
-    }
+//    private static String computePath() {
+//        String classFileName = "classes";
+//        String libFileName = "lib";
+//        File directory = new File("");
+//        String classRootPath = com.finebi.cube.data.disk.BIDiskWriterReaderTest.class.getResource("/").getPath();
+//        classRootPath = classRootPath.replace("/", File.separator);
+//        if (classRootPath.endsWith(File.separator)) {
+//            classRootPath = cut(classRootPath, File.separator);
+//        }
+//        if (classRootPath.endsWith(classFileName)) {
+//            classRootPath = cut(classRootPath, classFileName);
+//        }
+//        if (classRootPath.endsWith(libFileName)) {
+//            classRootPath = cut(classRootPath, libFileName);
+//        }
+//        if (classRootPath.endsWith(File.separator)) {
+//            classRootPath = BIStringUtils.append(classRootPath, "testFolder", File.separator, "cube");
+//        }
+//        return classRootPath;
+//    }
 
     private static String cut(String path, String suffix) {
         return BIStringUtils.cutEndChar(path, suffix);
     }
 
-    public void testPath() {
-        System.out.println(computePath());
-    }
-
     public void testSimpleWriteReader() {
-//        synchronized(discovery) {
         try {
 
             this.writer.recordSpecificPositionValue(0l, Byte.valueOf("35"));
