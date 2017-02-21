@@ -11,7 +11,7 @@ public class BIDataConfigAuthority implements JSONTransform {
     private String roleName;    //角色名称
     private int roleType;       //角色类型
     private String id;          //管理节点id
-    private String parentId;    //管理节点parentId
+    private String pId;    //管理节点pId
     private int view = 0;       //查看
     private int design = 0;     //授权
 
@@ -39,14 +39,6 @@ public class BIDataConfigAuthority implements JSONTransform {
         this.id = id;
     }
 
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
     public int getView() {
         return view;
     }
@@ -63,13 +55,21 @@ public class BIDataConfigAuthority implements JSONTransform {
         this.design = design;
     }
 
+    public String getpId() {
+        return pId;
+    }
+
+    public void setpId(String pId) {
+        this.pId = pId;
+    }
+
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("roleName", roleName);
         jo.put("roleType", roleType);
         jo.put("id", id);
-        jo.put("parentId", parentId);
+        jo.put("pId", pId);
         jo.put("view", view);
         jo.put("design", design);
         return jo;
@@ -87,7 +87,7 @@ public class BIDataConfigAuthority implements JSONTransform {
             id = jo.getString("id");
         }
         if (jo.has("pId")) {
-            parentId = jo.getString("pId");
+            pId = jo.getString("pId");
         }
         if (jo.has("view")) {
             view = jo.optInt("view", 0);
@@ -95,5 +95,31 @@ public class BIDataConfigAuthority implements JSONTransform {
         if (jo.has("design")) {
             design = jo.optInt("design", 0);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BIDataConfigAuthority authority = (BIDataConfigAuthority) o;
+
+        if (roleType != authority.roleType) return false;
+        if (view != authority.view) return false;
+        if (design != authority.design) return false;
+        if (roleName != null ? !roleName.equals(authority.roleName) : authority.roleName != null) return false;
+        if (id != null ? !id.equals(authority.id) : authority.id != null) return false;
+        return pId != null ? pId.equals(authority.pId) : authority.pId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = roleName != null ? roleName.hashCode() : 0;
+        result = 31 * result + roleType;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (pId != null ? pId.hashCode() : 0);
+        result = 31 * result + view;
+        result = 31 * result + design;
+        return result;
     }
 }

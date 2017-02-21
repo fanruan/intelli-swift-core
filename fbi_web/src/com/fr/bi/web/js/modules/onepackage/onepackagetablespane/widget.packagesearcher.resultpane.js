@@ -4,22 +4,23 @@
  * 业务包搜索结果面板
  */
 BI.PackageSearcherResultPane = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.PackageSearcherResultPane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-package-searcher-result-pane"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.PackageSearcherResultPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.resultPane = BI.createWidget({
             type: "bi.searcher_view",
             searcher: {
-                type: "bi.package_tables_list_pane"
+                type: "bi.package_tables_list_pane",
+                connNames: o.connNames
             }
         });
-        this.resultPane.on(BI.Controller.EVENT_CHANGE, function(){
+        this.resultPane.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
         BI.createWidget({

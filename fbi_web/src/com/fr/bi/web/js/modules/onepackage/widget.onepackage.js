@@ -95,6 +95,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             },
             popup: {
                 type: "bi.package_searcher_result_pane",
+                connNames: self.model.getConnNames(),
                 onStartSearch: function () {
                     addNewTableCombo.setEnable(false);
                 },
@@ -188,7 +189,8 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         switch (v) {
             case BICst.TABLES_VIEW.TILE:
                 this.tableList = BI.createWidget({
-                    type: "bi.package_tables_list_pane"
+                    type: "bi.package_tables_list_pane",
+                    connNames: self.model.getConnNames()
                 });
                 this.tableList.on(BI.PackageTablesListPane.EVENT_CLICK_TABLE, function (id) {
                     self._onClickOneTable(id);
