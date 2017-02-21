@@ -43,6 +43,7 @@ public class BICubeStringColumnTest extends BICubeColumnBasicTest<String> {
 
     public void testGetGroupByPosition() {
         try {
+            column.forceReleaseWriter();
             assertEquals(column.getPositionOfGroupByGroupValue("a"), 0);
             assertEquals(column.getPositionOfGroupByGroupValue("b"), 1);
             assertEquals(column.getPositionOfGroupByGroupValue("c"), 2);

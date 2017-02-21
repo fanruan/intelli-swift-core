@@ -40,6 +40,7 @@ public class BICubeFieldRelationManagerTest extends TestCase {
         try {
             ICubeRelationEntityService relationEntityService = relationEntityManager.getRelationService(BICubePathUtils.convert(BITableSourceRelationPathTestTool.generatePathAaBC()));
             relationEntityService.addRelationIndex(0, GroupValueIndexTestTool.generateSampleIndex());
+            relationEntityService.forceReleaseWriter();
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), relationEntityService.getBitmapIndex(0));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);

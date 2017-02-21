@@ -232,7 +232,16 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     if (styles.length === 0) {
                         return bands
                     } else {
+                        var maxScale = _calculateValueNiceDomain(0, max)[1];
+
                         BI.each(styles, function (idx, style) {
+                            if(BI.parseFloat(style.range.min) > BI.parseFloat(style.range.max)) {
+                               return bands.push({
+                                    color: color,
+                                    from: conditionMax,
+                                    to: maxScale
+                                });
+                            }
                             bands.push({
                                 color: style.color,
                                 from: style.range.min,
@@ -247,8 +256,6 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                             from: 0,
                             to: min
                         });
-
-                        var maxScale = _calculateValueNiceDomain(0, max)[1];
 
                         bands.push({
                             color: color,

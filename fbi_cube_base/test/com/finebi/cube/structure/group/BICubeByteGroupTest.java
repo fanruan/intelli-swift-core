@@ -9,12 +9,15 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.tools.BITableSourceTestTool;
+import com.finebi.cube.tools.BIUrlCutTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import junit.framework.TestCase;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * This class created on 2016/5/2.
@@ -34,8 +37,11 @@ public class BICubeByteGroupTest extends TestCase {
             cubeConfiguration = new BICubeConfigurationTest();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
+            location.setBaseLocation(new URI(BIUrlCutTestTool.joinUrl(BIUrlCutTestTool.cutUrl("testFolder",location.getAbsolutePath()),"testFolder","//byte")));
             groupData = new BICubeByteGroupData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),location);
         } catch (BICubeResourceAbsentException e) {
+            assertFalse(true);
+        } catch (URISyntaxException ee) {
             assertFalse(true);
         }
     }
@@ -65,22 +71,26 @@ public class BICubeByteGroupTest extends TestCase {
             assertTrue(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());
             assertFalse(groupData.isLengthWriterAvailable());
+            groupData.forceReleaseWriter();
             assertEquals(value.byteValue(), groupData.getGroupValueByPosition(position));
             assertEquals(value, groupData.getGroupObjectValueByPosition(position));
             assertTrue(groupData.isGroupReaderAvailable());
-            assertTrue(groupData.isGroupWriterAvailable());
+            assertFalse(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());
             assertFalse(groupData.isLengthWriterAvailable());
+            groupData.forceReleaseReader();
             groupData.writeSizeOfGroup(10);
-            assertTrue(groupData.isGroupReaderAvailable());
-            assertTrue(groupData.isGroupWriterAvailable());
+            assertFalse(groupData.isGroupReaderAvailable());
+            assertFalse(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());
             assertTrue(groupData.isLengthWriterAvailable());
+            groupData.forceReleaseWriter();
             assertEquals(10, groupData.sizeOfGroup());
-            assertTrue(groupData.isGroupReaderAvailable());
-            assertTrue(groupData.isGroupWriterAvailable());
+            assertFalse(groupData.isGroupReaderAvailable());
+            assertFalse(groupData.isGroupWriterAvailable());
             assertTrue(groupData.isLengthReaderAvailable());
-            assertTrue(groupData.isLengthWriterAvailable());
+            assertFalse(groupData.isLengthWriterAvailable());
+            groupData.forceReleaseReader();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
@@ -88,28 +98,38 @@ public class BICubeByteGroupTest extends TestCase {
     }
 
     public void testReset() {
+        reset(1, Byte.valueOf("123"));
+    }
+
+    public void reset(int position, Byte value) {
         try {
-            testAvailable();
-            groupData.resetGroupWriter();
-            assertTrue(groupData.isGroupReaderAvailable());
-            assertFalse(groupData.isGroupWriterAvailable());
-            assertTrue(groupData.isLengthReaderAvailable());
-            assertTrue(groupData.isLengthWriterAvailable());
-            groupData.resetGroupReader();
-            assertFalse(groupData.isGroupReaderAvailable());
-            assertFalse(groupData.isGroupWriterAvailable());
-            assertTrue(groupData.isLengthReaderAvailable());
-            assertTrue(groupData.isLengthWriterAvailable());
-            groupData.resetLengthWriter();
-            assertFalse(groupData.isGroupReaderAvailable());
-            assertFalse(groupData.isGroupWriterAvailable());
-            assertTrue(groupData.isLengthReaderAvailable());
-            assertFalse(groupData.isLengthWriterAvailable());
-            groupData.resetLengthReader();
             assertFalse(groupData.isGroupReaderAvailable());
             assertFalse(groupData.isGroupWriterAvailable());
             assertFalse(groupData.isLengthReaderAvailable());
             assertFalse(groupData.isLengthWriterAvailable());
+            groupData.addGroupDataValue(position, value);
+            groupData.writeSizeOfGroup(10);
+            assertTrue(groupData.isGroupWriterAvailable());
+            assertTrue(groupData.isLengthWriterAvailable());
+            groupData.resetGroupWriter();
+            assertFalse(groupData.isGroupWriterAvailable());
+            assertTrue(groupData.isLengthWriterAvailable());
+            groupData.resetLengthWriter();
+            assertFalse(groupData.isGroupWriterAvailable());
+            assertFalse(groupData.isLengthWriterAvailable());
+
+            assertEquals(value.byteValue(), groupData.getGroupValueByPosition(position));
+            assertEquals(value, groupData.getGroupObjectValueByPosition(position));
+            assertEquals(10, groupData.sizeOfGroup());
+            assertTrue(groupData.isGroupReaderAvailable());
+            assertTrue(groupData.isLengthReaderAvailable());
+            groupData.resetGroupReader();
+            assertFalse(groupData.isGroupReaderAvailable());
+            assertTrue(groupData.isLengthReaderAvailable());
+            groupData.resetLengthReader();
+            assertFalse(groupData.isGroupReaderAvailable());
+            assertFalse(groupData.isLengthReaderAvailable());
+
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
@@ -118,7 +138,7 @@ public class BICubeByteGroupTest extends TestCase {
 
     public void testResetInitial() {
         try {
-            testReset();
+            reset(1, Byte.valueOf("32"));
             available(1, Byte.valueOf("32"));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);

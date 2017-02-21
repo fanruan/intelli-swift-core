@@ -103,11 +103,11 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
         while (it.hasNext()) {
             Map.Entry<String, AbstractTableSource> entry = it.next();
             IPersistentTable table = entry.getValue().getPersistentTable();
-            if (!StringUtils.isEmpty(table.getRemark())) {
+            if (!StringUtils.isEmpty(StringUtils.trim(table.getRemark()))) {
                 tableTrans.put(entry.getKey(), table.getRemark());
             }
             for (PersistentField column : table.getFieldList()) {
-                if (!StringUtils.isEmpty(column.getRemark())) {
+                if (!StringUtils.isEmpty(StringUtils.trim(column.getRemark()))) {
                     fieldTrans.put(allFieldIdMap.get(entry.getKey() + column.getFieldName()), column.getRemark());
                 }
             }

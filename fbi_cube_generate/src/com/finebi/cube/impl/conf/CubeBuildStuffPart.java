@@ -79,7 +79,7 @@ public class CubeBuildStuffPart extends AbstractCubeBuildStuff implements CubeBu
                 newTableSources.add(sourceRelation.getPrimaryTable());
             }
         }
-        biTableSourceRelationSet = removeDuplicateRelations(biTableSourceRelationSet);
+        biTableSourceRelationSet = filterRelations(biTableSourceRelationSet);
     }
 
     private void setRelationPath() {

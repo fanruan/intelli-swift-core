@@ -56,6 +56,7 @@ public class BICubeIndexTest extends TestCase {
         try {
             BICubeIndexData column = new BICubeIndexData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),BICubeResourceLocationTestTool.getBasic("testIndex"));
             column.addIndex(0, GroupValueIndexTestTool.generateSampleIndex());
+            column.forceReleaseWriter();
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), column.getBitmapIndex(0));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -67,6 +68,7 @@ public class BICubeIndexTest extends TestCase {
         try {
             BICubeIndexData column = new BICubeIndexData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),BICubeResourceLocationTestTool.getBasic("testNullIndex"));
             column.addNULLIndex(0, GroupValueIndexTestTool.generateSampleIndex());
+            column.forceReleaseWriter();
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), column.getNULLIndex(0));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -85,21 +87,23 @@ public class BICubeIndexTest extends TestCase {
             assertTrue(indexData.isIndexWriterAvailable());
             assertFalse(indexData.isNullReaderAvailable());
             assertFalse(indexData.isNullWriterAvailable());
+            indexData.forceReleaseWriter();
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), indexData.getBitmapIndex(0));
             assertTrue(indexData.isIndexReaderAvailable());
-            assertTrue(indexData.isIndexWriterAvailable());
+            assertFalse(indexData.isIndexWriterAvailable());
             assertFalse(indexData.isNullReaderAvailable());
             assertFalse(indexData.isNullWriterAvailable());
             indexData.addNULLIndex(0, GroupValueIndexTestTool.generateSampleIndex());
             assertTrue(indexData.isIndexReaderAvailable());
-            assertTrue(indexData.isIndexWriterAvailable());
+            assertFalse(indexData.isIndexWriterAvailable());
             assertFalse(indexData.isNullReaderAvailable());
             assertTrue(indexData.isNullWriterAvailable());
+            indexData.forceReleaseWriter();
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), indexData.getNULLIndex(0));
             assertTrue(indexData.isIndexReaderAvailable());
-            assertTrue(indexData.isIndexWriterAvailable());
+            assertFalse(indexData.isIndexWriterAvailable());
             assertTrue(indexData.isNullReaderAvailable());
-            assertTrue(indexData.isNullWriterAvailable());
+            assertFalse(indexData.isNullWriterAvailable());
         } catch (BICubeIndexException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);

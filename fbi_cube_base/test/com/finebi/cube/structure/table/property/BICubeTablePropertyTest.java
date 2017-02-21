@@ -123,9 +123,10 @@ public class BICubeTablePropertyTest extends TestCase {
                 property.recordRowCount(count);
                 assertFalse(property.isRowCountReaderAvailable());
                 assertTrue(property.isRowCountWriterAvailable());
+                property.forceReleaseWriter();
                 assertEquals(property.getRowCount(), count);
-                assertTrue(property.isRowCountReaderAvailable());
-                assertTrue(property.isRowCountWriterAvailable());
+                assertFalse(property.isRowCountReaderAvailable());
+                assertFalse(property.isRowCountWriterAvailable());
             } catch (Exception e) {
                 assertFalse(true);
             } finally {
@@ -207,12 +208,13 @@ public class BICubeTablePropertyTest extends TestCase {
                 assertFalse(property.isCurrentExecuteTimeReaderAvailable());
                 assertTrue(property.isCurrentExecuteTimeWriterAvailable());
 
-                assertEquals(property.getCurrentExecuteTime().getTime(), time);
+                property.forceReleaseWriter();
+                assertEquals(property.getLastExecuteTime().getTime(), time);
 
                 assertFalse(property.isRowCountReaderAvailable());
                 assertFalse(property.isRowCountWriterAvailable());
-                assertTrue(property.isCurrentExecuteTimeWriterAvailable());
-                assertTrue(property.isCurrentExecuteTimeReaderAvailable());
+                assertFalse(property.isLastExecuteTimeWriterAvailable());
+                assertTrue(property.isLastExecuteTimeReaderAvailable());
             }
         } catch (Exception e) {
             assertTrue(false);
@@ -258,7 +260,7 @@ public class BICubeTablePropertyTest extends TestCase {
                 assertFalse(property.isRowCountWriterAvailable());
                 assertFalse(property.isLastExecuteTimeReaderAvailable());
                 assertFalse(property.isLastExecuteTimeWriterAvailable());
-                assertTrue(property.isFieldReaderAvailable());
+                assertFalse(property.isFieldReaderAvailable());
                 assertTrue(property.isFieldWriterAvailable());
             }
         } catch (Exception e) {
@@ -286,7 +288,7 @@ public class BICubeTablePropertyTest extends TestCase {
                 assertFalse(property.isFieldReaderAvailable());
 
                 assertFalse(property.isPropertyExist());
-                assertTrue(property.isFieldReaderAvailable());
+                assertFalse(property.isFieldReaderAvailable());
 
                 property.recordTableStructure(null);
 
@@ -294,7 +296,7 @@ public class BICubeTablePropertyTest extends TestCase {
                 assertFalse(property.isRowCountWriterAvailable());
                 assertFalse(property.isLastExecuteTimeReaderAvailable());
                 assertFalse(property.isLastExecuteTimeWriterAvailable());
-                assertTrue(property.isFieldReaderAvailable());
+                assertFalse(property.isFieldReaderAvailable());
                 assertTrue(property.isFieldWriterAvailable());
                 property.recordCurrentExecuteTime();
                 assertTrue(property.isPropertyExist());
@@ -323,7 +325,7 @@ public class BICubeTablePropertyTest extends TestCase {
                 assertFalse(property.isFieldReaderAvailable());
 
                 assertFalse(property.isPropertyExist());
-                assertTrue(property.isFieldReaderAvailable());
+                assertFalse(property.isFieldReaderAvailable());
                 List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
                 fields.add(DBFieldTestTool.generateSTRING());
                 property.recordTableStructure(fields);
@@ -332,7 +334,7 @@ public class BICubeTablePropertyTest extends TestCase {
                 assertFalse(property.isRowCountWriterAvailable());
                 assertFalse(property.isLastExecuteTimeReaderAvailable());
                 assertFalse(property.isLastExecuteTimeWriterAvailable());
-                assertTrue(property.isFieldReaderAvailable());
+                assertFalse(property.isFieldReaderAvailable());
                 assertTrue(property.isFieldWriterAvailable());
                 property.recordCurrentExecuteTime();
                 assertTrue(property.isPropertyExist());
@@ -362,6 +364,7 @@ public class BICubeTablePropertyTest extends TestCase {
                 property.recordParentsTable(parents);
                 assertFalse(property.isParentReaderAvailable());
                 assertTrue(property.isParentWriterAvailable());
+                property.forceReleaseWriter();
                 List<ITableKey> parentsTable = property.getParentsTable();
                 assertEquals(tableKey, parentsTable.get(0));
                 assertEquals(tableKey2, parentsTable.get(1));
@@ -371,7 +374,7 @@ public class BICubeTablePropertyTest extends TestCase {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         } finally {
-            property.forceRelease();
+//            property.forceRelease();
             File file = new File(location.getAbsolutePath());
             if (file.exists()) {
                 BIFileUtils.delete(file);

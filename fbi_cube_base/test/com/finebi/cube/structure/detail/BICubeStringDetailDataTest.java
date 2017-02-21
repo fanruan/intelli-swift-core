@@ -9,12 +9,14 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.tools.BITableSourceTestTool;
+import com.finebi.cube.tools.BIUrlCutTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import junit.framework.TestCase;
 
 import java.io.File;
+import java.net.URI;
 
 /**
  * This class created on 2016/5/2.
@@ -34,8 +36,10 @@ public class BICubeStringDetailDataTest extends TestCase {
             cubeConfiguration = new BICubeConfigurationTest();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
-            detailData = new BICubeStringDetailData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),location);
+            location.setBaseLocation(new URI(BIUrlCutTestTool.joinUrl(BIUrlCutTestTool.cutUrl("testFolder",location.getAbsolutePath()),"testFolder","//string")));            detailData = new BICubeStringDetailData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),location);
         } catch (BICubeResourceAbsentException e) {
+            assertFalse(true);
+        } catch (Exception e1) {
             assertFalse(true);
         }
     }
@@ -57,9 +61,11 @@ public class BICubeStringDetailDataTest extends TestCase {
             detailData.addDetailDataValue(0, "abc");
             assertFalse(detailData.isCubeReaderAvailable());
             assertTrue(detailData.isCubeWriterAvailable());
+            detailData.forceReleaseWriter();
             assertEquals("abc", detailData.getOriginalValueByRow(0));
             assertTrue(detailData.isCubeReaderAvailable());
-            assertTrue(detailData.isCubeWriterAvailable());
+            assertFalse(detailData.isCubeWriterAvailable());
+            detailData.forceReleaseReader();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
@@ -68,13 +74,18 @@ public class BICubeStringDetailDataTest extends TestCase {
 
     public void testReset() {
         try {
-            testAvailable();
-            detailData.resetCubeWriter();
-            assertFalse(detailData.isCubeWriterAvailable());
-            assertTrue(detailData.isCubeReaderAvailable());
-            detailData.resetCubeReader();
             assertFalse(detailData.isCubeWriterAvailable());
             assertFalse(detailData.isCubeReaderAvailable());
+            detailData.addDetailDataValue(0, "abc");
+            assertTrue(detailData.isCubeWriterAvailable());
+            detailData.resetCubeWriter();
+            assertFalse(detailData.isCubeWriterAvailable());
+
+            assertEquals("abc", detailData.getOriginalValueByRow(0));
+            assertTrue(detailData.isCubeReaderAvailable());
+            detailData.resetCubeReader();
+            assertFalse(detailData.isCubeReaderAvailable());
+
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
@@ -83,14 +94,6 @@ public class BICubeStringDetailDataTest extends TestCase {
 
     public void testResetInitial() {
         try {
-            testReset();
-            assertEquals("abc", detailData.getOriginalValueByRow(0));
-            detailData.clear();
-            detailData.addDetailDataValue(0, "dabc");
-            assertEquals("dabc", detailData.getOriginalValueByRow(0));
-
-            assertTrue(detailData.isCubeReaderAvailable());
-            assertTrue(detailData.isCubeWriterAvailable());
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);

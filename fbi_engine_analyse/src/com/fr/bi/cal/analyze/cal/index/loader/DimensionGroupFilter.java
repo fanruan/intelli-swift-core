@@ -53,6 +53,7 @@ public class DimensionGroupFilter {
     Comparator[] dimensionComparator;
     private boolean shouldRecalculateIndex = false;
     private boolean calAllPage;
+    private boolean hasInSumMetrics;
     private long startTime = System.currentTimeMillis();
 
 
@@ -69,7 +70,18 @@ public class DimensionGroupFilter {
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
         this.calAllPage = calAllPage;
+        this.hasInSumMetrics = hasInSumMetrics();
         LoaderUtils.setAllExpander(mergerInfoList);
+    }
+
+    private boolean hasInSumMetrics() {
+        for (MergerInfo info : mergerInfoList){
+            if (info.biDimensionTarget.getSummaryType() != BIReportConstant.SUMMARY_TYPE.SUM ||
+                    info.biDimensionTarget.getSummaryType() != BIReportConstant.SUMMARY_TYPE.COUNT){
+                return true;
+            }
+        }
+        return false;
     }
 
     private NodeDimensionIterator[] getNodeIterators(List<MergerInfo> mergerInfoList) {
@@ -414,7 +426,7 @@ public class DimensionGroupFilter {
     }
 
     private boolean shouldSetIndex() {
-        return shouldRecalculateIndex;
+        return shouldRecalculateIndex || hasInSumMetrics;
     }
 
     private void setRootIndexMap(TreeBuilder nodeBuilder) {
@@ -529,11 +541,13 @@ public class DimensionGroupFilter {
     }
 
     private LightNode sumNode(LightNode sortedNode) {
-        NodeSummarizing summarizing = new NodeSummarizing();
+        NodeSummarizing summarizing = hasInSumMetrics ? new NodeGVISummarizing() : new NodeSummarizing();
         summarizing.setNode(sortedNode);
         summarizing.setTargetGettingKeys(getNoCalculatorTargets());
         return summarizing.sum();
     }
+
+
 
     private IMergerNode copyValue(IMergerNode node) {
         return MergerNode.copyNode(node);
