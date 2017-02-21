@@ -55,6 +55,7 @@ BI.DatePaneWidget = BI.inherit(BI.Widget, {
         });
         this.calendar.on(BI.Navigation.EVENT_CHANGE, function () {
             self.selectedTime = self.calendar.getValue();
+            self.calendar.empty();
             self.setValue(self.selectedTime);
             self.fireEvent(BI.DateCalendarPopup.EVENT_CHANGE);
         });
