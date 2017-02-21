@@ -32,7 +32,9 @@ public class BICubeIntegerGroupTest extends TestCase {
     private ICubeResourceLocation location;
 
 
-    public BICubeIntegerGroupTest() {
+    @Override
+    protected void setUp() throws Exception {
+
         try {
             cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
@@ -43,10 +45,7 @@ public class BICubeIntegerGroupTest extends TestCase {
         } catch (URISyntaxException ee) {
             assertFalse(true);
         }
-    }
 
-    @Override
-    protected void setUp() throws Exception {
         super.setUp();
         ICubeResourceLocation location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
         File file = new File(location.getAbsolutePath());

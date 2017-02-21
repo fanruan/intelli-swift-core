@@ -24,7 +24,9 @@ public class BICubeColumnPositionOfGroupServiceTest extends TestCase {
     private ICubeConfiguration cubeConfiguration;
     private ICubeResourceLocation location;
 
-    public BICubeColumnPositionOfGroupServiceTest() {
+    @Override
+    protected void setUp() throws Exception {
+
         try {
             cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
@@ -33,9 +35,7 @@ public class BICubeColumnPositionOfGroupServiceTest extends TestCase {
         } catch (BICubeResourceAbsentException e) {
             assertFalse(true);
         }
-    }
-    @Override
-    protected void setUp() throws Exception {
+
         super.setUp();
         ICubeResourceLocation location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
         File file = new File(location.getAbsolutePath());

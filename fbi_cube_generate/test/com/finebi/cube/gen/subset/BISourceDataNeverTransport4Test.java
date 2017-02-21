@@ -1,15 +1,15 @@
 package com.finebi.cube.gen.subset;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.gen.oper.BISourceDataNeverTransport;
-import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.tools.BILocationBuildTestTool;
+import com.finebi.cube.tools.BIProjectPathTool;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
 import java.io.File;
@@ -44,7 +44,7 @@ public class BISourceDataNeverTransport4Test extends BISourceDataNeverTransport 
         ICubeConfiguration tempConf = new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
-                return URI.create(BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "temptable").getAbsolutePath());
+                return URI.create(BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "temptable").getAbsolutePath());
             }
         };
 

@@ -38,6 +38,8 @@ public class BICubeStringColumnTest extends BICubeColumnBasicTest<String> {
         assertEquals(column.getGroupObjectValue(0), "a");
         assertEquals(column.getGroupObjectValue(1), "b");
         assertEquals(column.getGroupObjectValue(2), "c");
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
 
@@ -47,7 +49,8 @@ public class BICubeStringColumnTest extends BICubeColumnBasicTest<String> {
             assertEquals(column.getPositionOfGroupByGroupValue("a"), 0);
             assertEquals(column.getPositionOfGroupByGroupValue("b"), 1);
             assertEquals(column.getPositionOfGroupByGroupValue("c"), 2);
-
+            column.forceReleaseReader();
+            column.forceReleaseWriter();
         } catch (BIResourceInvalidException e) {
             assertTrue(false);
         }

@@ -28,7 +28,8 @@ public class BICubeVersionTest extends TestCase {
     private ICubeResourceLocation location;
 
 
-    public BICubeVersionTest() {
+    @Override
+    protected void setUp() throws Exception {
         try {
             cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
@@ -37,10 +38,6 @@ public class BICubeVersionTest extends TestCase {
         } catch (BICubeResourceAbsentException e) {
             assertFalse(true);
         }
-    }
-
-    @Override
-    protected void setUp() throws Exception {
         super.setUp();
         ICubeResourceLocation location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
         File file = new File(location.getAbsolutePath());

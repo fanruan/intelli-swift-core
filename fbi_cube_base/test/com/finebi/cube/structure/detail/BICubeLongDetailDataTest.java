@@ -30,8 +30,9 @@ public class BICubeLongDetailDataTest extends TestCase {
     private ICubeConfiguration cubeConfiguration;
     private ICubeResourceLocation location;
 
+    @Override
+    protected void setUp() throws Exception {
 
-    public BICubeLongDetailDataTest() {
         try {
             cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
@@ -42,10 +43,6 @@ public class BICubeLongDetailDataTest extends TestCase {
         } catch (Exception e1) {
             assertFalse(true);
         }
-    }
-
-    @Override
-    protected void setUp() throws Exception {
         super.setUp();
         ICubeResourceLocation location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
         File file = new File(location.getAbsolutePath());
@@ -70,6 +67,9 @@ public class BICubeLongDetailDataTest extends TestCase {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
+        } finally {
+            detailData.forceReleaseReader();
+            detailData.forceReleaseWriter();
         }
     }
 
@@ -90,6 +90,9 @@ public class BICubeLongDetailDataTest extends TestCase {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
+        } finally {
+            detailData.forceReleaseReader();
+            detailData.forceReleaseWriter();
         }
     }
 

@@ -13,9 +13,28 @@ import java.io.File;
  */
 public class BIProjectPathTool {
 
+    private static String basePath = computeBasePath();
+
     public static String projectPath = computePath();
 
+    public static String bigfilePath = computeBigfilePath();
+
+    private static String computeBigfilePath() {
+        if (basePath.endsWith(File.separator)) {
+            return BIStringUtils.append(basePath, "testFolder", File.separator, "bigfiles", File.separator, "cube");
+        }
+        return basePath;
+    }
+
+
     private static String computePath() {
+        if (basePath.endsWith(File.separator)) {
+            return BIStringUtils.append(basePath, "testFolder", File.separator, "cube");
+        }
+        return basePath;
+    }
+
+    private static String computeBasePath() {
         String classFileName = "classes";
         String libFileName = "lib";
         File directory = new File("");
@@ -30,9 +49,6 @@ public class BIProjectPathTool {
         if (classRootPath.endsWith(libFileName)) {
             classRootPath = cut(classRootPath, libFileName);
         }
-        if (classRootPath.endsWith(File.separator)) {
-            classRootPath = BIStringUtils.append(classRootPath, "testFolder", File.separator, "cube");
-        }
         return classRootPath;
     }
 
@@ -41,6 +57,8 @@ public class BIProjectPathTool {
     }
 
     public static void main(String[] args) {
+        System.out.println(computeBasePath());
         System.out.println(computePath());
+        System.out.println(computeBigfilePath());
     }
 }

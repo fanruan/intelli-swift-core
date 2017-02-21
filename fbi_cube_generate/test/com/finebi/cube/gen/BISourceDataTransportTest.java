@@ -2,9 +2,9 @@ package com.finebi.cube.gen;
 
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.disk.BICubeIncreaseDisDiscovery;
-import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.gen.oper.BISourceDataAllTransport;
 import com.finebi.cube.gen.oper.BISourceDataTransport;
@@ -28,7 +28,6 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.File;
 import java.net.URI;
@@ -138,7 +137,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         ICubeConfiguration tempConf = new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
-                return URI.create(BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "temptable").getAbsolutePath());
+                return URI.create(BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "temptable").getAbsolutePath());
             }
         };
         BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());

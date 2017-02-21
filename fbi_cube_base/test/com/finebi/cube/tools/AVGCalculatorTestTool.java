@@ -1,6 +1,7 @@
-package com.finebi.cube.calculator.bidouble;
+package com.finebi.cube.tools;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.calculator.bidouble.AVGCalculator;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 

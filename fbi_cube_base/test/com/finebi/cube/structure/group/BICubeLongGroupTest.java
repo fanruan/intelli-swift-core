@@ -31,8 +31,9 @@ public class BICubeLongGroupTest extends TestCase {
     private ICubeConfiguration cubeConfiguration;
     private ICubeResourceLocation location;
 
+    @Override
+    protected void setUp() throws Exception {
 
-    public BICubeLongGroupTest() {
         try {
             cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
@@ -44,10 +45,7 @@ public class BICubeLongGroupTest extends TestCase {
         } catch (URISyntaxException ee) {
             assertFalse(true);
         }
-    }
 
-    @Override
-    protected void setUp() throws Exception {
         super.setUp();
         ICubeResourceLocation location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
         File file = new File(location.getAbsolutePath());

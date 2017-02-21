@@ -1,5 +1,6 @@
 package com.finebi.cube.calculator.bidouble;
 
+import com.finebi.cube.tools.AVGCalculatorTestTool;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;

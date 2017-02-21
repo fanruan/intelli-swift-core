@@ -228,8 +228,11 @@ public class NIOResourceManagerTest extends TestCase {
         }
     }
 
-    public void testAllRelease() {
-        String basePath = "D:\\bigfiles\\env\\WebReport\\WEB-INF\\testFolder\\cube";
+    /**
+     * TODO
+     */
+    public void atestAllRelease() {
+        String basePath = BIProjectPathTool.bigfilePath;
         final BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
         final int size = 1024;
         Runnable forceRelease = new Runnable() {
@@ -412,7 +415,7 @@ public class NIOResourceManagerTest extends TestCase {
     }
 
     public void testQueryHandler(){
-        String basePath = "D:\\bigfiles\\env\\WebReport\\WEB-INF\\testFolder\\cube";
+        String basePath = BIProjectPathTool.bigfilePath;
         final BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
         for(int i=0;i<2;i++){
             final ICubeResourceLocation locationRR = BILocationBuildTestTool.buildWrite(basePath, "query" + 0+".fp");
@@ -429,20 +432,9 @@ public class NIOResourceManagerTest extends TestCase {
             };
             new Thread(readRR).start();
         }
-        NIOResourceManagerTest.reader1.clear();
-        try {
-            NIOResourceManagerTest.reader1.getSpecificValue(0);
-        } catch (BIResourceInvalidException e) {
-            e.printStackTrace();
-        }
         BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
         BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
         System.out.println("--------------------");
-        try {
-            Thread.currentThread().join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 }
