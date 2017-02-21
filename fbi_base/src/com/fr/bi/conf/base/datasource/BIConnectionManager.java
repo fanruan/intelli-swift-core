@@ -28,6 +28,7 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -88,6 +89,42 @@ public class BIConnectionManager extends XMLFileManager {
         return userId;
     }
 
+    private long getInitTime(String name) {
+        if (connMap.containsKey(name)) {
+            long initTime = connMap.get(name).getInitTime();
+            if (ComparatorUtils.equals(initTime, 0)) {
+                ensureInitTimeExist();
+                return System.currentTimeMillis();
+            }
+            return initTime;
+        }
+        return System.currentTimeMillis();
+    }
+
+    public void ensureInitTimeExist() {
+        Set<String> names = connMap.keySet();
+        long initTime = System.currentTimeMillis();
+        int index = 0;
+        for (String name : names) {
+            BIConnection connection = connMap.get(name);
+            if (ComparatorUtils.equals(connection.getInitTime(), 0)) {
+                connection.setInitTime(initTime + index);
+                index++;
+            }
+        }
+        if (index > 0) {
+            try {
+                FRContext.getCurrentEnv().writeResource(this);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+        }
+    }
+
+    public BIConnection getBIConnection(String name) {
+        return connMap.get(name);
+    }
+
     public Connection getConnection(String name) {
         return DatasourceManager.getInstance().getConnection(name);
     }
@@ -116,7 +153,8 @@ public class BIConnectionManager extends XMLFileManager {
             if (ComparatorUtils.equals(reader.getTagName(), "conn")) {
                 BIConnection connection = new BIConnection(reader.getAttrAsString("name", StringUtils.EMPTY),
                         reader.getAttrAsString("schema", null),
-                        reader.getAttrAsLong("createBy", UserControl.getInstance().getSuperManagerID()));
+                        reader.getAttrAsLong("createBy", UserControl.getInstance().getSuperManagerID()),
+                        reader.getAttrAsLong("initTime", 0));
                 connMap.put(connection.getName(), connection);
             }
         }
@@ -132,6 +170,7 @@ public class BIConnectionManager extends XMLFileManager {
                 writer.attr("schema", connection.getSchema());
             }
             writer.attr("createBy", connection.getCreateBy());
+            writer.attr("initTime", connection.getInitTime());
             writer.end();
         }
         writer.end();
@@ -153,8 +192,9 @@ public class BIConnectionManager extends XMLFileManager {
         BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
         datasourceManager.putConnection(newName, jdbcDatabaseConnection);
         long createBy = getCreateBy(oldName, userId);
+        long initTime = getInitTime(oldName);
         connMap.remove(oldName);
-        connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null), createBy));
+        connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null), createBy, initTime));
         try {
             FRContext.getCurrentEnv().writeResource(datasourceManager);
             FRContext.getCurrentEnv().writeResource(this);
