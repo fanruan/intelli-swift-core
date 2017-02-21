@@ -18,54 +18,56 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         var o = this.options;
 
         this.pager = BI.createWidget({
-            type: "bi.all_pager",
-            cls: "page-table-pager",
-            height: 18
+            type: "bi.all_count_pager",
+            cls: "page-table-pager"
         });
 
         this.table = BI.createWidget({
-            type: "bi.style_table",
+            type: "bi.page_detail_table",
             isNeedFreeze: null,
             isNeedMerge: false,
-            regionColumnSize: this.getStoredRegionColumnSize(),
+            summaryCellStyleGetter: function (isLast) {
+                return isLast ? BI.SummaryTableHelper.getLastSummaryStyles(self._getThemeColor(), self._getTableStyle()) :
+                    BI.SummaryTableHelper.getSummaryStyles(self._getThemeColor(), self._getTableStyle())
+            },
+            sequenceCellStyleGetter: function (index) {
+                return BI.SummaryTableHelper.getBodyStyles(self._getThemeColor(), self._getTableStyle(), index);
+            },
+            headerCellStyleGetter: function () {
+                return BI.SummaryTableHelper.getHeaderStyles(self._getThemeColor(), self._getTableStyle());
+            },
             el: {
-                type: "bi.page_table",
+                type: "bi.sequence_detail_table",
                 el: {
+                    type: "bi.adaptive_detail_table",
                     el: {
+                        type: "bi.resizable_table",
                         el: {
-                            el: {
-                                type: "bi.table_view",
-                                // afterScroll: function () {
-                                //     self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(o.wId), BI.Utils.getWSThemeColorByID(o.wId));
-                                // }
-                            }
+                            type: "bi.grid_table"
                         }
-                    },
-                    sequence: {
-                        type: "bi.sequence_table_list_number",
-                        pageSize: 100
                     }
                 },
-                itemsCreator: function (op, populate) {
-                    var vPage = op.vpage;
-                    self._onPageChange(vPage, function (items, header, crossItems, crossHeader) {
-                        populate.apply(self.table, arguments);
-                    })
-                },
-                pager: this.pager
-            }
+                sequence: {
+                    type: "bi.sequence_detail_table_list_number",
+                    pageSize: 100
+                }
+            },
+            itemsCreator: function (op, populate) {
+                var vPage = op.vpage;
+                self._onPageChange(vPage, function (items, header, crossItems, crossHeader) {
+                    populate.apply(self.table, arguments);
+                })
+            },
+            pager: this.pager
         });
 
-        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             var columnSize = BI.clone(self.table.getColumnSize());
             self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
         });
-        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
-            var columnSize = this.getCalculateRegionColumnSize();
-            self.setStoredRegionColumnSize(columnSize[0]);
-        });
-        this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_INIT, function () {
-            self._resizeTableColumnSize();
+        this.table.on(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE, function () {
+            var columnSize = this.getRegionColumnSize();
+            self._setStoredRegionColumnSize(columnSize[0]);
         });
         this.errorPane = BI.createWidget({
             type: "bi.table_chart_error_pane",
@@ -88,7 +90,25 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 bottom: 0,
                 right: 0
             }]
-        })
+        });
+        this._resizeHandler = BI.debounce(function () {
+            self.table.setWidth(self.element.width());
+            self.table.setHeight(self.element.height());
+            self.table.populate();
+        }, 0);
+        BI.ResizeDetector.addResizeListener(this, function () {
+            self._resizeHandler();
+        });
+    },
+
+    _getThemeColor: function () {
+        var widgetId = this.options.wId;
+        return BI.Utils.getWSThemeColorByID(widgetId);
+    },
+
+    _getTableStyle: function () {
+        var widgetId = this.options.wId;
+        return BI.Utils.getWSTableStyleByID(widgetId);
     },
 
     _onPageChange: function (vPage, callback) {
@@ -131,6 +151,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                             type: "bi.detail_table_header",
                             dId: dId,
                             text: BI.Utils.getDimensionNameByID(dId),
+                            styles: BI.SummaryTableHelper.getHeaderStyles(self._getThemeColor(), self._getTableStyle()),
                             sortFilterChange: function (v) {
                                 self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
                                 self._headerOperatorChange(v, dId);
@@ -138,25 +159,24 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                         });
                     });
                     var items = self._createTableItems(json.value);
-
+                    self.pager.setCount(row);
                     self.pager.setAllPages(Math.ceil(row / size));
                     self.pager.setValue(vPage);
+
+                    self.table.setWidth(self.element.width());
+                    self.table.setHeight(self.element.height());
                     self.table.attr("columnSize", self._getColumnSize(header));
+                    self.table.attr("regionColumnSize", self._getStoredRegionColumnSize());
+                    self.table.attr("minColumnSize", self._getMinColumnSize(header));
+                    self.table.attr("isNeedFreeze", true);
+                    self.table.attr("freezeCols", self._getFreezeCols());
+                    self.table.attr("showSequence", BI.Utils.getWSShowNumberByID(widgetId));
                     callback(items, [header]);
                 } catch (e) {
                     self.errorPane.setErrorInfo("error happens during populate chart: " + e);
                     self.errorPane.setVisible(true);
                     return;
                 }
-                //显示序号
-                if (BI.Utils.getWSShowNumberByID(widgetId)) {
-                    self.table.showSequence();
-                } else {
-                    self.table.hideSequence();
-                }
-
-                //设置样式和颜色
-                self.table.setStyleAndColor(BI.Utils.getWSTableStyleByID(widgetId), BI.Utils.getWSThemeColorByID(widgetId));
             },
             done: function () {
                 self.loaded();
@@ -164,65 +184,8 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         }, ob);
     },
 
-    _resizeTableColumnSize: function () {
-        var o = this.options;
-        var cs = this.table.getColumnSize();
-        var isValid = true;
-        BI.some(cs, function (i, size) {
-            if (!BI.isNumeric(size)) {
-                isValid = false;
-                return true;
-            }
-        });
-        if (!isValid) {
-            var columnSize = this.table.getCalculateColumnSize();
-            if (this._isNeedFreeze()) {
-                var regionColumnSize = this.table.getCalculateRegionColumnSize();
-                this.setStoredRegionColumnSize(regionColumnSize[0]);
-                var freezeCols = this._getFreezeCols();
-                var freezeColumnSize = columnSize.slice(0, freezeCols.length);
-                var otherSize = columnSize.slice(freezeCols.length);
-                var fl = freezeColumnSize.length, ol = otherSize.length;
-                BI.each(freezeColumnSize, function (i, size) {
-                    if (size > 200 && i < fl - 1) {
-                        freezeColumnSize[fl - 1] = freezeColumnSize[fl - 1] + freezeColumnSize[i] - 200;
-                        freezeColumnSize[i] = 200;
-                    }
-                    if (size < 80 && i < fl - 1) {
-                        var tempSize = freezeColumnSize[fl - 1] - (80 - freezeColumnSize[i]);
-                        freezeColumnSize[fl - 1] = tempSize < 80 ? 80 : tempSize;
-                        freezeColumnSize [i] = 80;
-                    }
-                });
-                BI.each(otherSize, function (i, size) {
-                    if (size > 200 && i < ol - 1) {
-                        otherSize[ol - 1] = otherSize[ol - 1] + otherSize[i] - 200;
-                        otherSize[i] = 200;
-                    }
-                    if (size < 80 && i < ol - 1) {
-                        var tempSize = otherSize[ol - 1] - (80 - otherSize[i]);
-                        otherSize[ol - 1] = tempSize < 80 ? 80 : tempSize;
-                        otherSize [i] = 80;
-                    }
-                });
-                columnSize = freezeColumnSize.concat(otherSize);
-            } else {
-                var cl = columnSize.length;
-                BI.each(columnSize, function (i, size) {
-                    if (size > 200 && i < cl - 1) {
-                        columnSize[cl - 1] = columnSize[cl - 1] + columnSize[i] - 200;
-                        columnSize[i] = 200;
-                    }
-                    if (size < 80 && i < cl - 1) {
-                        var tempSize = columnSize[cl - 1] - (80 - columnSize[i]);
-                        columnSize[cl - 1] = tempSize < 80 ? 80 : tempSize;
-                        columnSize [i] = 80;
-                    }
-                })
-            }
-            this.table.setColumnSize(columnSize);
-            self.fireEvent(BI.DetailTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(o.wId), {column_size: columnSize})});
-        }
+    _getMinColumnSize: function (header) {
+        return BI.makeArray(header.length, 80);
     },
 
     _getColumnSize: function (header) {
@@ -238,7 +201,6 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         });
         return columnSize;
     },
-
 
     _headerOperatorChange: function (v, dId) {
         switch (v) {
@@ -295,20 +257,22 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     _createTableItems: function (values) {
         var tableItems = [], self = this;
         BI.each(values, function (i, row) {
-            tableItems.push(self._createRowItem(row));
+            tableItems.push(self._createRowItem(row, i));
         });
         return tableItems
     },
 
-    _createRowItem: function (rowValues, dId) {
+    _createRowItem: function (rowValues, index) {
+        var self = this;
         var dimensionIds = BI.Utils.getWidgetViewByID(this.options.wId)[BICst.REGION.DIMENSION1];
         var rowItems = [];
         BI.each(rowValues, function (i, rowValue) {
             if (BI.Utils.isDimensionUsable(dimensionIds[i])) {
                 rowItems.push({
-                    text: BI.isNull(rowValue) ? "" : rowValue,
                     type: "bi.detail_table_cell",
-                    dId: dimensionIds[i]
+                    dId: dimensionIds[i],
+                    text: BI.isNull(rowValue) ? "" : rowValue,
+                    styles: BI.SummaryTableHelper.getBodyStyles(self._getThemeColor(), self._getTableStyle(), index)
                 })
             }
         });
@@ -319,20 +283,15 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         return BI.Utils.getWSFreezeFirstColumnById(wId) ? [0] : [];
     },
 
-    _isNeedFreeze: function () {
-        var wId = this.options.wId;
-        return BI.Utils.getWSFreezeFirstColumnById(wId);
-    },
-
-    getStoredRegionColumnSize: function () {
+    _getStoredRegionColumnSize: function () {
         var columnSize = BI.Cache.getItem(BICst.CACHE.REGION_COLUMN_SIZE_PREFIX + this.options.wId);
         if (BI.isKey(columnSize)) {
             return [BI.parseInt(columnSize), ""];
         }
-        return false;
+        return [];
     },
 
-    setStoredRegionColumnSize: function (columnSize) {
+    _setStoredRegionColumnSize: function (columnSize) {
         if (BI.isKey(columnSize)) {
             BI.Cache.setItem(BICst.CACHE.REGION_COLUMN_SIZE_PREFIX + this.options.wId, columnSize);
         }
@@ -342,16 +301,14 @@ BI.DetailTable = BI.inherit(BI.Pane, {
     populate: function () {
         var self = this;
         this._onPageChange(BICst.TABLE_PAGE_OPERATOR.REFRESH, function (items, header) {
-            self.table.attr("isNeedFreeze", true);
-            self.table.attr("freezeCols", self._getFreezeCols());
+            self.table.restore();
             self.table.populate(items, header);
         });
     },
 
     resize: function () {
-        this.table.resize();
+        this._resizeHandler();
     }
-
 });
 BI.DetailTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.detail_table", BI.DetailTable);

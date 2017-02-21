@@ -24,15 +24,13 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
             });
         }
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        var st = this._getNumLevelByLevel(styleSettings.num_level) + (styleSettings.unit || "");
+        var st = this._getNumLevelByLevel(styleSettings.numLevel) + (styleSettings.unit || "");
         if (BI.isNotEmptyString(st)) {
             name = name + "(" + st + ")";
         }
         BI.createWidget({
-            type: "bi.horizontal_adapt",
-            // type: "bi.htape",
+            type: "bi.htape",
             element: this.element,
-            columnSize: ["", 25],
             items: [{
                 el: {
                     type: "bi.label",
@@ -42,18 +40,23 @@ BI.DetailTableHeader = BI.inherit(BI.Widget, {
                     whiteSpace: "nowrap",
                     textAlign: "center",
                     lgap: 5,
-                    height: 25
+                    height: o.height
                 }
             }, {
                 el: {
                     type: "bi.center_adapt",
                     items: [combo],
                     width: 25,
-                    height: 25
+                    height: o.height
                 },
                 width: 25
             }]
         });
+
+        //表格样式
+        if (BI.isNotNull(o.styles) && BI.isObject(o.styles)) {
+            this.element.css(o.styles);
+        }
     },
 
     _getNumLevelByLevel: function (level) {
