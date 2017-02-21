@@ -13,7 +13,12 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 public class AVGCalculator4Test extends AVGCalculator {
     private double sum;
 
-    public AVGCalculator4Test(double sum) {
+//    public AVGCalculator4Test(double sum) {
+//        this.sum = sum;
+//    }
+
+
+    public void setSum(double sum) {
         this.sum = sum;
     }
 
