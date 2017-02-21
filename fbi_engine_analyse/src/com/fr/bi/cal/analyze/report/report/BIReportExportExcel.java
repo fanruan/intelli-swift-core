@@ -20,6 +20,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.general.IOUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.main.workbook.ResultWorkBook;
@@ -50,21 +51,17 @@ import java.util.Map;
  * Created by AstronautOO7 on 2017/1/11.
  */
 public class BIReportExportExcel {
-    protected BIReport report = new BIReportor();
 
     private String sessionID;
-
     private BISession session;
-
     private BIReportNode node;
-
     private static int bytesLength = 256;
-
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
-
+    private JSONArray specialWidgets = JSONArray.create();
     private String PhantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
-
     private int PhantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
+
+    protected BIReport report = new BIReportor();
 
     public BIReportExportExcel(String sessionID) throws Exception {
         this.sessionID = sessionID;
@@ -75,36 +72,66 @@ public class BIReportExportExcel {
 
         while (it.hasNext()) {
             JSONObject widgetJSON = widgetsJSON.getJSONObject((String) it.next());
-            JSONObject exp = new JSONObject("{ type: true, value: [[]]}");
-            widgetJSON.put("page", BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
-            widgetJSON.put("expander", new JSONObject("{ x:" + exp + ", y:" + exp + "}"));
-            widgets.add(BIWidgetFactory.parseWidget(widgetJSON, node.getUserId()));
+            int type = widgetJSON.optInt("type");
+            if (BIReportConstant.WIDGET.CONTENT <= type && type <= BIReportConstant.WIDGET.WEB) {
+                specialWidgets.put(widgetJSON);
+            } else {
+                JSONObject exp = new JSONObject("{ type: true, value: [[]]}");
+                widgetJSON.put("page", BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
+                widgetJSON.put("expander", new JSONObject("{ x:" + exp + ", y:" + exp + "}"));
+                widgets.add(BIWidgetFactory.parseWidget(widgetJSON, node.getUserId()));
+            }
         }
     }
 
     public ResultWorkBook getExportBook() throws Exception {
-        if (widgets.size() == 0) {
+        if (widgets.size() == 0 && specialWidgets.length() == 0) {
             return null;
         }
         BIWorkBook wb = new BIWorkBook();
         BIPolyWorkSheet reportSheet = new BIPolyWorkSheet();
         PolyECBlock polyECBlock = createPolyECBlock("Dashboard");
-
-        for (BIWidget widget : widgets) {
-            if (widgetHasData(widget)) {
-                if (widget instanceof TableWidget) {
-                    polyECBlock.addFloatElement(renderChartPic(widget));
+        if (widgets.size() != 0) {
+            for (BIWidget widget : widgets) {
+                if (widgetHasData(widget)) {
+                    if (widget instanceof TableWidget) {
+                        polyECBlock.addFloatElement(renderChartPic(widget));
+                    } else {
+                        polyECBlock.addFloatElement(renderChartPic(widget));
+                    }
                 } else {
-                    polyECBlock.addFloatElement(renderChartPic(widget));
+                    polyECBlock.addFloatElement(renderDefaultChartPic(widget));
                 }
-            } else {
-                polyECBlock.addFloatElement(renderDefaultChartPic(widget));
+            }
+        }
+
+        if (specialWidgets.length() != 0) {
+            for (int i = 0; i < specialWidgets.length(); i++) {
+                JSONObject jo = specialWidgets.getJSONObject(i);
+                switch(jo.optInt("type")) {
+                    case BIReportConstant.WIDGET.CONTENT:
+
+                    case BIReportConstant.WIDGET.IMAGE:
+
+                    case BIReportConstant.WIDGET.WEB:
+
+                }
             }
         }
         //dashboard
         reportSheet.addBlock(polyECBlock);
         wb.addReport("Dashboard", reportSheet);
+
+        createOtherSheets(wb);
+
+        return wb.execute4BI(session.getParameterMap4Execute());
+    }
+
+    private BIWorkBook createOtherSheets(BIWorkBook wb) throws CloneNotSupportedException {
         //other sheets
+        if (widgets.size() == 0) {
+            return wb;
+        }
         for (BIWidget widget : widgets) {
             if (widgetHasData(widget)) {
                 widget = (BIWidget) widget.clone();
@@ -128,8 +155,7 @@ public class BIReportExportExcel {
                 wb.addReport(widget.getWidgetName(), emptySheet);
             }
         }
-
-        return wb.execute4BI(session.getParameterMap4Execute());
+        return wb;
     }
 
     private FloatElement renderChartPic(BIWidget widget) throws Exception {
