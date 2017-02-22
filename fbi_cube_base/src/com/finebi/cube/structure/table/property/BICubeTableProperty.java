@@ -724,9 +724,14 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             removeListReader.clear();
             removeListReader = null;
         }
-        parentFieldProperty.forceRelease();
-        version.forceRelease();
-//        clear();
+        if (parentFieldProperty != null) {
+            parentFieldProperty.forceReleaseWriter();
+            parentFieldProperty = null;
+        }
+        if (version != null) {
+            (version).forceReleaseWriter();
+            version = null;
+        }
     }
 
     @Override

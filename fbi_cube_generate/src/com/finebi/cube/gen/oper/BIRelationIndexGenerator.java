@@ -58,12 +58,13 @@ public class BIRelationIndexGenerator extends BIProcessor {
     protected BICubeRelation relation;
     private static final Logger logger = LoggerFactory.getLogger(BIRelationIndexGenerator.class);
 
-    public BIRelationIndexGenerator(Cube cube, Cube integrityCube, BICubeRelation relation) {
+    public BIRelationIndexGenerator(Cube cube, Cube integrityCube, BICubeRelation relation, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
         this.cube = cube;
-        this.cubeChooser = new CubeChooser(cube, integrityCube);
+        this.cubeChooser = new CubeChooser(cube, integrityCube, tablesNeed2GenerateMap);
         this.relation = relation;
         initThreadPool();
     }
+
 
     @Override
     protected void initThreadPool() {
@@ -222,6 +223,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             /**
              * 表间关联对象
              */
+//            tableRelation = (BICubeRelationEntity) cube.getCubeRelationWriter(primaryTableKey, relation);
             tableRelation = (BICubeRelationEntity) cube.getCubeRelation(primaryTableKey, relation);
             final BICubeRelationEntity finalTableRelation = tableRelation;
             GroupValueIndex nullIndex = GVIFactory.createAllEmptyIndexGVI();

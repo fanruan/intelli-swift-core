@@ -1,11 +1,15 @@
 package com.finebi.cube.conf.relation;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.BITableRelationConfigurationProvider;
+import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
+import com.fr.stable.bridge.StableFactory;
 import junit.framework.TestCase;
 
 import java.util.HashSet;
@@ -294,6 +298,42 @@ public class BITableRelationManagerTest extends TestCase {
         }
     }
 
+    //设置ABCD,禁用ABC,AB可用， ABC和ABCD不可用
+    public void testAddDisablePathByPart2() {
+        try {
+            manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getAaBa());
+            manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getBaCa());
+            manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getCaDa());
+
+            BITableRelationPath A_B_C = new BITableRelationPath();
+            A_B_C.addRelationAtHead(BITableRelationTestTool.getAaBa());
+            A_B_C.addRelationAtTail(BITableRelationTestTool.getBaCa());
+            manager.addDisableRelations(user.getUserId(), A_B_C);
+
+            Set<BITableRelationPath> relationSet = manager.getAllAvailablePath(user.getUserId()
+                    , BITableTestTool.getB()
+                    , BITableTestTool.getA()
+            );
+            assertEquals(relationSet.size(), 1);
+
+            relationSet = manager.getAllAvailablePath(user.getUserId()
+                    , BITableTestTool.getC()
+                    , BITableTestTool.getA()
+            );
+            assertEquals(relationSet.size(), 0);
+
+            relationSet = manager.getAllAvailablePath(user.getUserId()
+                    , BITableTestTool.getD()
+                    , BITableTestTool.getA()
+            );
+            assertEquals(relationSet.size(), 0);
+
+        } catch (Exception ignore) {
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
+            assertTrue(false);
+        }
+    }
+
     public void testGetAllTablesPath() {
         try {
             manager.registerTableRelation(user.getUserId(), BITableRelationTestTool.getAaBa());
@@ -315,17 +355,17 @@ public class BITableRelationManagerTest extends TestCase {
      */
     public void testIsRelationGenerated() {
         try {
+            StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, new BISystemPackageConfigurationManager());
+            StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, new BISystemTableRelationManager());
             BITableRelation aaBa = BITableRelationTestTool.getAaBa();
             BITableRelation aaCa = BITableRelationTestTool.getAaCa();
             manager.registerTableRelation(user.getUserId(), aaBa);
             manager.registerTableRelation(user.getUserId(), aaCa);
             assertFalse(manager.isRelationGenerated(user.getUserId(), aaBa));
             assertFalse(manager.isRelationGenerated(user.getUserId(), aaCa));
-            Set<BITableRelation> biTableRelationSet = new HashSet<BITableRelation>();
-            biTableRelationSet.add(aaBa);
             manager.finishGenerateCubes(user.getUserId(), new HashSet<BITableSourceRelation>());
             assertTrue(manager.isRelationGenerated(user.getUserId(), aaBa));
-            assertFalse(manager.isRelationGenerated(user.getUserId(), aaCa));
+            assertTrue(manager.isRelationGenerated(user.getUserId(), aaCa));
         } catch (Exception ignore) {
             assertTrue(false);
         }

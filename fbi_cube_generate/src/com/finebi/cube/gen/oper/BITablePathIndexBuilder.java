@@ -52,12 +52,20 @@ public class BITablePathIndexBuilder extends BIProcessor {
     protected BICubeTablePath relationPath;
     private static final Logger logger = LoggerFactory.getLogger(BITablePathIndexBuilder.class);
 
+    public BITablePathIndexBuilder(Cube cube, Cube integrityCube, BICubeTablePath relationPath, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        this.cube = cube;
+        this.cubeChooser = new CubeChooser(cube, integrityCube, tablesNeed2GenerateMap);
+        this.relationPath = relationPath;
+        initThreadPool();
+    }
+
     public BITablePathIndexBuilder(Cube cube, Cube integrityCube, BICubeTablePath relationPath) {
         this.cube = cube;
         this.cubeChooser = new CubeChooser(cube, integrityCube);
         this.relationPath = relationPath;
         initThreadPool();
     }
+
 
     @Override
     protected void initThreadPool() {
@@ -241,7 +249,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         BICubeTablePath frontRelation = new BICubeTablePath();
         frontRelation.copyFrom(relationPath);
         ITableKey firstPrimaryKey = relationPath.getFirstRelation().getPrimaryTable();
-        return (ICubeRelationEntityService) cube.getCubeRelation(firstPrimaryKey, frontRelation);
+        return cube.getCubeRelationWriter(firstPrimaryKey, frontRelation);
     }
 
     private CubeRelationEntityGetterService buildFrontRelationPathReader() throws

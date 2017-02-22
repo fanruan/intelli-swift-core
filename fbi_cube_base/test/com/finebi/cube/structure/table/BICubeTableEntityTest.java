@@ -41,7 +41,7 @@ public class BICubeTableEntityTest extends TestCase {
         fields.add(DBFieldTestTool.generateDATE());
         fields.add(DBFieldTestTool.generateSTRING());
         tableEntity.recordTableStructure(fields);
-        assertTrue(tableEntity.tableDataAvailable());
+        assertFalse(tableEntity.tableDataAvailable());
     }
 
     public void testFieldData() {
@@ -61,7 +61,7 @@ public class BICubeTableEntityTest extends TestCase {
             tableEntity.recordTableStructure(fields);
             CubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
 
-            assertTrue(tableEntity.tableDataAvailable());
+            assertFalse(tableEntity.tableDataAvailable());
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
@@ -79,7 +79,7 @@ public class BICubeTableEntityTest extends TestCase {
             List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
             fields.add(DBFieldTestTool.generateDATE());
             tableEntity.recordTableStructure(fields);
-            assertTrue(tableEntity.tableDataAvailable());
+            assertFalse(tableEntity.tableDataAvailable());
 
 
             fields.clear();
@@ -96,7 +96,7 @@ public class BICubeTableEntityTest extends TestCase {
             tableEntity.recordTableStructure(fields);
             CubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
 
-            assertTrue(tableEntity.tableDataAvailable());
+            assertFalse(tableEntity.tableDataAvailable());
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
@@ -104,7 +104,7 @@ public class BICubeTableEntityTest extends TestCase {
     }
 
     public void testField() {
-        assertTrue(tableEntity.tableDataAvailable());
+        assertFalse(tableEntity.tableDataAvailable());
     }
 
 
