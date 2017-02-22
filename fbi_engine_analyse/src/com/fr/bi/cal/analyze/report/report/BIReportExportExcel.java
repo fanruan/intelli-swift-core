@@ -114,6 +114,7 @@ public class BIReportExportExcel {
                     case BIReportConstant.WIDGET.IMAGE:
 
                     case BIReportConstant.WIDGET.WEB:
+
                         break;
                 }
             }
