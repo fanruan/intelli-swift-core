@@ -94,7 +94,9 @@ class ValueIterator {
                 values[values.length - 1] = entry.getKey();
                 valuesAndGVIs[i + 1] = new ValuesAndGVI(values, entry.getValue().AND(valuesAndGVIs[i].gvi));
             } else {
-                move(i - 1);
+                if (iterators[i - 1].hasNext()) {
+                    move(i - 1);
+                }
             }
         }
         next = valuesAndGVIs[valuesAndGVIs.length - 1];
