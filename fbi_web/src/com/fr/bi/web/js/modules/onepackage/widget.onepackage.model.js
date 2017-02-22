@@ -50,9 +50,14 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             id: this.id,
             groupName: BI.Utils.getGroupNameById4Conf(this.gid),
             packageName: BI.Utils.getPackageNameByID4Conf(this.id)
-        }, function (tables) {
-            if (BI.isNotNull(tables)) {
-                self.tables = tables;
+        }, function (res) {
+            if (BI.isNotNull(res)) {
+                if (BI.isNotNull(res.tables)) {
+                    self.tables = res.tables;
+                }
+                if (BI.isNotNull(res.connNames)) {
+                    self.connNames = res.connNames;
+                }
             }
             callback();
         }, function () {
@@ -75,6 +80,10 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
             id: self.id,
             name: name
         }, BI.emptyFn);
+    },
+
+    getConnNames: function () {
+        return this.connNames || [];
     },
 
     getGroupId: function () {
@@ -290,5 +299,12 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
         BI.each(fieldTrans, function (id, tranFName) {
             BI.Utils.updateTranName4Conf(id, tranFName);
         });
+
+        var trans = {};
+        BI.each(this.tables, function(i, table) {
+            trans[table.id] = BI.Utils.getTransNameById4Conf(table.id);
+        });
+        //同步到后台
+        BI.Utils.updateTablesTranOfPackage({translations: trans}, BI.emptyFn, BI.emptyFn);
     }
 });

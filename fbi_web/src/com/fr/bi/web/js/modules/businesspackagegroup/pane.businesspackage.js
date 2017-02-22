@@ -55,6 +55,7 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
             BI.isNull(self.groupMap[group_id]) && (self.groupMap[group_id] = {});
             self.groupMap[group_id].init_time = item.init_time;
             self.groupMap[group_id].name = item.value;
+            self.groupMap[group_id].edit = item.edit;
             self.fieldInGroupMap[group_id] = {};
             BI.each(item.children, function (i_in, item_in) {
                 var field_id;
@@ -105,6 +106,7 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
                 groupItem.id = groupID;
                 groupItem.value = self.groupMap[groupID].name;
                 groupItem.children = [];
+                groupItem.showAdd = self.groupMap[groupID].edit;
                 expanderItems.push(groupItem);
             }
         });
@@ -135,6 +137,7 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
                 fieldItem.id = fieldID;
                 fieldItem.value = fieldName;
                 groupItem.children.push(fieldItem);
+                groupItem.showAdd = self.groupMap[groupID].edit;
                 expanderItems.push(groupItem);
             }
         });

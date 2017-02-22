@@ -2,17 +2,13 @@ package com.fr.bi.conf.base.dataconfig;
 
 import com.fr.bi.conf.base.dataconfig.source.BIDataConfigAuthority;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
-import com.fr.fs.control.CompanyRoleControl;
-import com.fr.fs.control.CustomRoleControl;
-import com.fr.fs.control.DepartmentControl;
-import com.fr.fs.control.PostControl;
+import com.fr.fs.control.*;
 import com.fr.general.ComparatorUtils;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Young's on 2017/1/16.
@@ -24,10 +20,17 @@ public class BIDataConfigAuthorityManager {
         return dataConfigAuthorities;
     }
 
-    public void setDataConfigAuthorities(Set<BIDataConfigAuthority> dataConfigAuthorities) {
-        //按角色先清掉
+    public void setDataConfigAuthorities(long userId, Set<BIDataConfigAuthority> dataConfigAuthorities) throws Exception {
+        //按角色先清掉当前用户有授权权限的节点
+        Set<BIDataConfigAuthority> authorities = getDataConfigAuthoritiesByUserId(userId);
+        List<String> authIds = new ArrayList<String>();
+        for (BIDataConfigAuthority authority : authorities) {
+            if (!ComparatorUtils.equals(authority.getDesign(), DBConstant.DATA_CONFIG_DESIGN.NO)) {
+                authIds.add(authority.getId());
+            }
+        }
         for (BIDataConfigAuthority authority : dataConfigAuthorities) {
-            clearByRole(authority.getRoleName(), authority.getRoleType());
+            clearByRole(authority.getRoleName(), authority.getRoleType(), authIds, userId);
         }
         for (BIDataConfigAuthority authority : dataConfigAuthorities) {
             if (authority.getId() != null) {
@@ -86,11 +89,12 @@ public class BIDataConfigAuthorityManager {
         dataConfigAuthorities.addAll(authorities);
     }
 
-    private void clearByRole(String roleName, int roleType) {
+    private void clearByRole(String roleName, int roleType, List<String> authIds, long userId) throws Exception {
         Set<BIDataConfigAuthority> need2Remove = new HashSet<BIDataConfigAuthority>();
         for (BIDataConfigAuthority authority : this.dataConfigAuthorities) {
             if (ComparatorUtils.equals(roleName, authority.getRoleName()) &&
-                    ComparatorUtils.equals(roleType, authority.getRoleType())) {
+                    ComparatorUtils.equals(roleType, authority.getRoleType()) &&
+                    (authIds.contains(authority.getId()) || ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID()))) {
                 need2Remove.add(authority);
             }
         }

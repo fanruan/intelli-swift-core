@@ -224,8 +224,16 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         var value = BI.parseFloat(v);
-        if ((!isNaN(value)) && this._checkValidation(value)) {
-            this.value = value;
+        if ((!isNaN(value))) {
+            if (this._checkValidation(value)) {
+                this.value = value;
+            }
+            if (value > this.max) {
+                this.value = this.max;
+            }
+            if (value < this.min) {
+                this.value = this.min;
+            }
         }
     },
 

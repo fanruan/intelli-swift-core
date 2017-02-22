@@ -3,6 +3,7 @@ package com.fr.bi.web.conf;
 
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.base.utils.BIServiceUtil;
+import com.fr.bi.web.base.utils.BIWebUtils;
 import com.fr.bi.web.conf.services.*;
 import com.fr.bi.web.conf.services.cubeconf.*;
 import com.fr.bi.web.conf.services.cubeconf.updatesetting.BIGetUpdateSettingAction;
@@ -15,10 +16,8 @@ import com.fr.bi.web.conf.services.session.BIConfUpdateSession;
 import com.fr.bi.web.conf.services.tables.*;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
-import com.fr.fs.control.UserControl;
 import com.fr.fs.privilege.auth.FSAuthentication;
 import com.fr.fs.privilege.auth.FSAuthenticationManager;
-import com.fr.fs.web.FSConstants;
 import com.fr.fs.web.service.AbstractFSAuthService;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
@@ -123,6 +122,7 @@ public class Service4BIConfigure implements Service {
             new BICancelEditTableAction(),
             new BIUpdateRelationAction(),
             new BIUpdatePackageNameAction(),
+            new BIUpdateTablesTranOfPackageAction(),
 
             // 后门
             new BICacheClearAction(),
@@ -154,6 +154,7 @@ public class Service4BIConfigure implements Service {
 
     @Override
     public void process(HttpServletRequest req, HttpServletResponse res, String op, String sessionID) throws Exception {
+        long userId = ServiceUtils.getCurrentUserID(req);
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
@@ -165,10 +166,13 @@ public class Service4BIConfigure implements Service {
             vote.action(req, res);
             return;
         }
-        long userId = ServiceUtils.getCurrentUserID(req);
-        if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.PRIVILEGE)) {
+        if (hasDataConfigAuth(userId)) {
             WebActionsDispatcher.dealForActionCMD(req, res, sessionID, actions);
         }
+    }
+
+    private boolean hasDataConfigAuth(long userId) throws Exception {
+        return BIWebUtils.showDataConfig(userId);
     }
 
     private void dealServletPreviousUrl(HttpServletRequest req) {
