@@ -16,7 +16,9 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.core.db.dml.Table;
-import com.fr.data.impl.*;
+import com.fr.data.impl.DBTableData;
+import com.fr.data.impl.EmbeddedTableData;
+import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.DBCPConnectionPoolAttr;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
@@ -28,7 +30,6 @@ import com.fr.stable.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.*;
-import java.sql.Connection;
 import java.util.*;
 import java.util.Date;
 
@@ -256,7 +257,7 @@ public class BIDBUtils {
                 if (columnSize == 0) {
                     column = new PersistentField(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize());
                 } else {
-                    column = new PersistentField(columns[i].getColumnName(), null, columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
+                    column = convert4Scale(columns[i]);
                 }
                 table.addColumn(column);
             }
@@ -266,6 +267,41 @@ public class BIDBUtils {
             com.fr.data.core.db.DBUtils.closeConnection(conn);
         }
         return table;
+    }
+
+    /**
+     * Author：Connery
+     * 这么多个数据库，就一个处理的类,还是静态的
+     * 这个类型转换有很多问题。一个数据库处理好了，完全可能改坏其他的。
+     * TODO 每个数据库，各自的处理逻辑
+     * @param columnInformation
+     * @return
+     */
+
+    private static PersistentField convert4Scale(ColumnInformation columnInformation) {
+
+        if (columnInformation.getColumnType() == java.sql.Types.DOUBLE && columnInformation.getScale() == 0) {
+            /**
+             * Author：Connery
+             * 这个IF判断是处理SQLServer2008，读取float类型，没有scale，而导致最终被认为是整型。
+             *
+             * 这个scale的默认值，我记得是改过的。
+             */
+            return new PersistentField(
+                    columnInformation.getColumnName(),
+                    null,
+                    columnInformation.getColumnType(),
+                    columnInformation.getColumnSize(),
+                    PersistentField.DEFALUTSCALE);
+        } else {
+            return new PersistentField(
+                    columnInformation.getColumnName(),
+                    null,
+                    columnInformation.getColumnType(),
+                    columnInformation.getColumnSize(),
+                    columnInformation.getScale());
+        }
+
     }
 
     private static TableData getServerTableData(String sqlConnection, String sql) {
