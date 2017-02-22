@@ -172,6 +172,12 @@
                         return BI.i18nText("BI-Multi_Path_Man");
                     case BICst.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE:
                         return BI.i18nText("BI-Cube_Updates_Setting");
+                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION:
+                        return BI.i18nText("BI-Database");
+                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP:
+                        return BI.i18nText("BI-Package_Group");
+                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.SERVER_CONNECTION:
+                        return BI.i18nText("BI-Server_Dataset");
                 }
             }
 

@@ -16,7 +16,7 @@ public interface BIDataConfigAuthorityProvider {
 
     Set<BIDataConfigAuthority> getDataConfigAuthoritiesByUserId(long userId);
 
-    void saveDataConfigAuthorities(Set<BIDataConfigAuthority> authorities);
+    void saveDataConfigAuthorities(long userId, Set<BIDataConfigAuthority> authorities);
 
     void clear();
 
