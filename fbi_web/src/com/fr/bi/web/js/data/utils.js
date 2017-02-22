@@ -995,14 +995,14 @@ Data.Utils = {
                 BI.each(data, function (idx, item) {
                     BI.each(item, function (id, it) {
                         if (idx > 0) {
-                            BI.extend(it, {reversed: true, xAxis: 1});
+                            BI.extend(it, {reversed: true, xAxis: 0});
                         } else {
-                            BI.extend(it, {reversed: false, xAxis: 0});
+                            BI.extend(it, {reversed: false, xAxis: 1});
                         }
                     });
                 });
                 var opts = formatItems(data, t);
-                return formatConfigForCompare(opts[1], opts[0], BICst.WIDGET.AXIS);
+                return formatConfigForCompare(opts[1], opts[0], t);
             case BICst.WIDGET.COMPARE_AREA:
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
@@ -1015,14 +1015,14 @@ Data.Utils = {
                 BI.each(data, function (idx, item) {
                     BI.each(item, function (id, it) {
                         if (idx > 0) {
-                            BI.extend(it, {reversed: true, xAxis: 1});
+                            BI.extend(it, {reversed: true, xAxis: 0});
                         } else {
-                            BI.extend(it, {reversed: false, xAxis: 0});
+                            BI.extend(it, {reversed: false, xAxis: 1});
                         }
                     });
                 });
                 var opts = formatItems(data, t);
-                return formatConfigForCompare(opts[1], opts[0], BICst.WIDGET.AREA);
+                return formatConfigForCompare(opts[1], opts[0], t);
             case BICst.WIDGET.FALL_AXIS:
                 var items = [];
                 var t = [];
@@ -3961,7 +3961,6 @@ Data.Utils = {
         }
 
         function formatConfigForCompare(configs, items, cType) {
-
             var xAxis = [{
                 type: "category",
                 title: {
@@ -3995,17 +3994,8 @@ Data.Utils = {
                 showLabel: false
             }];
 
-            var types = [];
-            BI.each(items, function (idx, axisItems) {
-                var type = [];
-                BI.each(axisItems, function (id, item) {
-                    type.push(cType);
-                });
-                types.push(type);
-            });
-
             var yAxis = [];
-            BI.each(types, function (idx, type) {
+            BI.each(cType, function (idx, type) {
                 if (BI.isEmptyArray(type)) {
                     return;
                 }
@@ -4094,7 +4084,7 @@ Data.Utils = {
                         formatNumberLevelInYaxis(config.right_y_axis_number_level, idx, axis.formatter);
                         break;
                 }
-                var res = _calculateValueNiceDomain(0, maxes[axis.axisIndex]);
+                var res = _calculateValueNiceDomain(0, maxes[idx]);
                 axis.max = res[1].mul(2);
                 axis.min = res[0].mul(2);
                 axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);

@@ -354,10 +354,12 @@ public class BICubeOperationManager {
         return operation;
     }
 
-    /*
-    * 同时支持完整依赖和部分依赖
-    * */
-    public void generateRelationBuilder(Set<BICubeGenerateRelation> relationSet) {
+    /**
+     * 关联取表数据的时候，如果该表不需要更新，就从老Cube中获取数据
+     *
+     * @param relationSet
+     */
+    public void generateRelationBuilder(Set<BICubeGenerateRelation> relationSet, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
         if (relationSet != null && !relationSet.isEmpty()) {
             Iterator<BICubeGenerateRelation> it = relationSet.iterator();
             while (it.hasNext()) {
@@ -366,7 +368,7 @@ public class BICubeOperationManager {
                     String sourceID = BIRelationIDUtils.calculateRelationID(relation.getRelation());
                     BIOperation<Object> operation = new BIOperation<Object>(
                             sourceID,
-                            getRelationBuilder(cube, integrityCube, relation.getRelation()));
+                            getRelationBuilder(cube, integrityCube, relation.getRelation(), tablesNeed2GenerateMap));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                     if (null != relation.getDependTableSourceSet() && relation.getDependTableSourceSet().size() != 0) {
@@ -398,13 +400,13 @@ public class BICubeOperationManager {
     /*
     * 同时支持完整依赖和部分依赖
     * */
-    public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet) {
+    public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
         for (BICubeGenerateRelationPath path : relationPathSet) {
             try {
                 String sourceID = BIRelationIDUtils.calculatePathID(path.getBiTableSourceRelationPath());
                 BIOperation<Object> operation = new BIOperation<Object>(
                         sourceID,
-                        getTablePathBuilder(cube, integrityCube, path.getBiTableSourceRelationPath()));
+                        getTablePathBuilder(cube, integrityCube, path.getBiTableSourceRelationPath(), tablesNeed2GenerateMap));
                 operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                 operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 if (path.getDependRelationPathSet().size() != 0) {
@@ -464,8 +466,8 @@ public class BICubeOperationManager {
 //    }
 
 
-    protected BIRelationIndexGenerator getRelationBuilder(Cube cube, Cube integrityCube, BITableSourceRelation relation) {
-        return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation));
+    protected BIRelationIndexGenerator getRelationBuilder(Cube cube, Cube integrityCube, BITableSourceRelation relation, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
     }
 
     protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
@@ -497,8 +499,8 @@ public class BICubeOperationManager {
 //        }
     }
 
-    protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, Cube integrityCube, BITableSourceRelationPath tablePath) {
-        return new BITablePathIndexBuilder(cube, integrityCube, BICubePathUtils.convert(tablePath));
+    protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, Cube integrityCube, BITableSourceRelationPath tablePath, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        return new BITablePathIndexBuilder(cube, integrityCube, BICubePathUtils.convert(tablePath), tablesNeed2GenerateMap);
     }
 
     protected BIFieldPathIndexBuilder getFieldPathBuilder(Cube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {
