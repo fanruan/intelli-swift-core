@@ -279,17 +279,20 @@ public class GroupUtils {
                     LightNode root = groups[i].getLightNode();
                     NodeUtils.copyIndexMap(node, root);
                     if (MultiThreadManagerImpl.isMultiCall()) {
-                        TargetCalculator[] cs = calculators.get(i);
-                        if (cs != null){
-                            for (TargetCalculator c : cs){
-                                MultiThreadManagerImpl.getInstance().getExecutorService().add(new SummaryCall(node, groups[i],c));
+                        for (TargetCalculator[] cs : calculators){
+                            if (cs != null){
+                                for (TargetCalculator c : cs){
+                                    MultiThreadManagerImpl.getInstance().getExecutorService().add(new SummaryCall(node, groups[i],c));
+                                }
                             }
                         }
                     } else {
-                        for (TargetCalculator calculator : calculators.get(i)){
-                            Number v = groups[i].getSummaryValue(calculator);
-                            if (v != null) {
-                                node.setSummaryValue(calculator.createTargetGettingKey(), v);
+                        for (TargetCalculator[] cs : calculators){
+                            for (TargetCalculator calculator : cs){
+                                Number v = groups[i].getSummaryValue(calculator);
+                                if (v != null) {
+                                    node.setSummaryValue(calculator.createTargetGettingKey(), v);
+                                }
                             }
                         }
                     }
