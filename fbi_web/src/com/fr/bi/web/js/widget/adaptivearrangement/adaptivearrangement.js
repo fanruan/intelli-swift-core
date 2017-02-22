@@ -110,11 +110,13 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         item.element.css("zIndex", ++this.zIndex);
         item.element.mousedown(function () {
-            item.element.css("zIndex", ++self.zIndex);
-            BI.each(self.getAllRegions(), function (i, region) {
-                region.el.element.removeClass("selected");
-            });
-            item.element.addClass("selected");
+            if(!item.element.hasClass("selected")){
+                item.element.css("zIndex", ++self.zIndex);
+                BI.each(self.getAllRegions(), function (i, region) {
+                    region.el.element.removeClass("selected");
+                });
+                item.element.addClass("selected");
+            }
         });
         o.resizable && item.element.resizable({
             handles: "e, s, se",

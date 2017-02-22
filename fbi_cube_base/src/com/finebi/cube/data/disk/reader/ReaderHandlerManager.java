@@ -101,7 +101,7 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
                 }
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl(e);
-            }finally {
+            } finally {
                 readWriteLock.writeLock().unlock();
             }
         }
@@ -119,12 +119,22 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
 
     @Override
     public boolean isForceReleased() {
-        return isForceReleased;
+        try {
+            readWriteLock.readLock().lock();
+            return isForceReleased;
+        } finally {
+            readWriteLock.readLock().unlock();
+        }
     }
 
     @Override
     public void reValidHandler() {
-        isForceReleased = false;
-        reader.reSetValid(true);
+        try {
+            readWriteLock.writeLock().lock();
+            isForceReleased = false;
+            reader.reSetValid(true);
+        } finally {
+            readWriteLock.writeLock().unlock();
+        }
     }
 }

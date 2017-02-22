@@ -14,7 +14,7 @@ public class BINumberTarget extends BISummaryTarget {
 
     @Override
     public TargetCalculator createSummaryCalculator() {
-    	switch(getSuamryType()){
+    	switch(getSummaryType()){
 	    	case BIReportConstant.SUMMARY_TYPE.SUM :{
 	    		return  new SumCalculator(this);
 	    	}

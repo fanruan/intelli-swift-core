@@ -1,8 +1,10 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.SummaryIndexCall;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
@@ -11,7 +13,6 @@ import com.fr.bi.cal.analyze.cal.result.operator.Operator;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.report.result.TargetCalculator;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class GroupUtils {
 
     public static NodeAndPageInfo createNextPageMergeNode(IRootDimensionGroup[] roots, List<TargetCalculator[]> calculators, NodeExpander expander, Operator op) {
         NodeDimensionIterator[] iters = op.getPageIterator(roots, expander);
+        MultiThreadManagerImpl.getInstance().refreshExecutorService();
         return createMergePageNode(iters, calculators, op, roots);
     }
 
@@ -276,13 +278,31 @@ public class GroupUtils {
                     setSummaryValueMap(node, (TreeNoneDimensionGroup) groups[i]);
                     LightNode root = groups[i].getLightNode();
                     NodeUtils.copyIndexMap(node, root);
+                    if (MultiThreadManagerImpl.isMultiCall()) {
+                        for (TargetCalculator[] cs : calculators){
+                            if (cs != null){
+                                for (TargetCalculator c : cs){
+                                    MultiThreadManagerImpl.getInstance().getExecutorService().add(new SummaryCall(node, groups[i],c));
+                                }
+                            }
+                        }
+                    } else {
+                        for (TargetCalculator[] cs : calculators){
+                            for (TargetCalculator calculator : cs){
+                                Number v = groups[i].getSummaryValue(calculator);
+                                if (v != null) {
+                                    node.setSummaryValue(calculator.createTargetGettingKey(), v);
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
                 if (MultiThreadManagerImpl.isMultiCall()) {
                     TargetCalculator[] cs = calculators.get(i);
                     if (cs != null){
                         for (TargetCalculator c : cs){
-                            MultiThreadManagerImpl.getInstance().getExecutorService().add(new SummaryCall(node, groups[i],c));
+                            MultiThreadManagerImpl.getInstance().getExecutorService().add(new SummaryIndexCall(node, groups[i],c));
                         }
                     }
                 } else {

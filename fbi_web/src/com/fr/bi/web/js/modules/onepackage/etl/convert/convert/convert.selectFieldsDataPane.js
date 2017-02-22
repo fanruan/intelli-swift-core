@@ -80,7 +80,7 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
             var lc_value =  BI.find(lc_values, function(idx, arr){
                 return arr[self.constants.initialValuePos] === item;
             });
-            if(BI.isNotEmptyString(item)){
+            if(BI.isNotEmptyString(item) || BI.isNumber(item)){
                 res.push({
                     value: [item, BI.isNotNull(lc_value) ? lc_value[self.constants.newValuePos] : item],
                     selected: BI.isNull(lc_values) ? true : BI.isNotNull(lc_value)
