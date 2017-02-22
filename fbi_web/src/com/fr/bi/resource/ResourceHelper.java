@@ -12,6 +12,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
+import com.fr.bi.h5.locale.InterH5;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
