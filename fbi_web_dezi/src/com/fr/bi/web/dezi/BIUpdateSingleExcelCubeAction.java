@@ -3,8 +3,7 @@ package com.fr.bi.web.dezi;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.base.FRContext;
-import com.fr.bi.cal.generate.CubeBuildManager;
-import com.fr.bi.conf.data.source.ExcelTableSource;
+import com.fr.bi.cal.generate.CubeBuildHelper;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
@@ -75,6 +74,6 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
     }
 
     private void updateExcelTableDate(long userId, CubeTableSource tableSource) {
-        new CubeBuildManager().addSingleTableTask(userId, tableSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, tableSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
     }
 }
