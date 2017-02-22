@@ -168,6 +168,21 @@
             return translations[tableId];
         },
 
+        getConnectionNameByTableId: function (tableId) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
+                var connectionName = Pool.tables[tableId].connection_name;
+                return connectionName || "";
+            }
+            return "";
+        },
+
+        getFieldsByTableId: function (tableId) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
+                return Pool.tables[tableId].fields[0] || [];
+            }
+            return [];
+        },
+
         getFieldIDsOfTableID: function (tableId) {
             if (BI.isNotNull(Pool.tables[tableId])) {
                 var fields = Pool.tables[tableId].fields;
