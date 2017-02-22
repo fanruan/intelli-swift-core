@@ -22,7 +22,7 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
             width: this._constant.buttonWidth,
             text:BI.i18nText("BI-Save"),
             handler : function(e){
-               self.controller.save();
+               self.controller.save(self.saveButton);
             }
         })
 

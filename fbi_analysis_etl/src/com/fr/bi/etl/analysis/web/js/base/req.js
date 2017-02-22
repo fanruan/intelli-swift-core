@@ -70,6 +70,13 @@ BI.ETLReq = {
         })
     },
 
+    reqCheckTableInUse: function (data, callback) {
+        data.sessionID = Data.SharingPool.get("sessionID");
+        BI.requestAsync("fr_bi_analysis_etl", "etl_table_in_use_check", data, function (res) {
+            callback(res);
+        });
+    },
+
     reqPreviewTable: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
         if (data[ETLCst.ITEMS] && data[ETLCst.ITEMS].length > 0 && data[ETLCst.ITEMS][0].operator) {
