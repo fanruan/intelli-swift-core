@@ -10,3 +10,6 @@
 .bi-analysis-etl-operator-button-group .bi-analysis-etl-operator-button:active {
   background: #0582ba;
 }
+.bi-analysis-etl-operator-button-group .select-bubble-combo .bubble-combo-triangle-bottom {
+  z-index: 1;
+}

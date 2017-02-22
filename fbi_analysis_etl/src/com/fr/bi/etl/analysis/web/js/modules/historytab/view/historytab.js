@@ -126,8 +126,8 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
             self.fireEvent(BI.HistoryTab.VALID_CHANGE)
         });
 
-        tab.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(widget){
-            self.controller.clickTitleSave(v, widget);
+        tab.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(value, desc){
+            self.controller.clickTitleSave(v, value, desc);
         });
 
         tab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, function () {

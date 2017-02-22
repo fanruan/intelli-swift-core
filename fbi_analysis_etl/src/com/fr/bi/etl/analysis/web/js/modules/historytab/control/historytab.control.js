@@ -60,7 +60,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     populateOneTab : function (v, widget, model) {
         var tab = widget.tab.getTab(v)
         var self = this;
-        tab.populate(this.findItem(v, widget, model), BI.extend(this.options, {
+        tab.populate(BI.extend({tableName: model.getValue("table_name")}, this.findItem(v, widget, model)), BI.extend(this.options, {
             checkBeforeSave : function (table) {
                 return self.checkBeforeSave(table, widget, model)
             }
@@ -95,75 +95,21 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         this.deferChange(widget, model);
     },
 
-    clickTitleSave : function (id, element, widget, model) {
+    clickTitleSave : function (id, value, desc, widget, model) {
         var self = this;
         var item = model.findItem(id);
-        if(BI.isNull(this.confirmCombo)){
-            this.pane = BI.createWidget({
-                type: "bi.etl_rename_pane",
-                renameChecker : function (v) {
-                    return !BI.Utils.getAllETLTableNames().contains(v);
-                }
-            });
-            this.pane.on(BI.ETLNamePane.EVENT_VALID, function(){
-                confirmButton.setEnable(true);
-            });
-            this.pane.on(BI.ETLNamePane.EVENT_ERROR, function(v){
-                if (BI.isEmptyString(v)) {
-                    confirmButton.setWarningTitle(BI.i18nText("BI-Report_Name_Not_Null"));
-                } else {
-                    confirmButton.setWarningTitle(BI.i18nText("BI-Template_Name_Already_Exist"));
-                }
-                confirmButton.setEnable(false);
-            });
-            var confirmButton = BI.createWidget({
-                type: "bi.button",
-                height: 30,
-                value: BI.i18nText(BI.i18nText("BI-Sure")),
-                handler: function () {
-                    self.confirmCombo.hideView();
-                    var sheets = [BI.extend(BI.deepClone(item), {
-                        value: model.getValue("value"),
-                        table_name: self.pane.getValue()
-                    })]
-                    var res = {};
-                    var table = {};
-                    table[ETLCst.ITEMS] = sheets;
-                    res["table"] = table;
-                    res["id"] = BI.UUID();
-                    res["name"] = self.pane.getValue();
-                    res['describe'] = self.pane.getDesc();
-                    BI.ETLReq.reqSaveTable(res, BI.emptyFn);
-                }
-            });
-            this.confirmCombo = BI.createWidget({
-                type: "bi.bubble_combo",
-                el: {},
-                element: element,
-                popup: {
-                    type: "bi.bubble_bar_popup_view",
-                    buttons: [confirmButton, {
-                        value: BI.i18nText("BI-Cancel"),
-                        level: "ignore",
-                        handler: function () {
-                            self.confirmCombo.hideView();
-                        }
-                    }],
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [self.pane],
-                        width: 400,
-                        height: 300,
-                        hgap: 20
-                    },
-                    maxHeight: 340,
-                    minWidth: 400
-                }
-            });
-        }
-        this.pane.populate(BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(),model.getValue("table_name")));
-        this.confirmCombo.showView();
-        this.pane.setTemplateNameFocus();
+        var sheets = [BI.extend(BI.deepClone(item), {
+            value: model.getValue("value"),
+            table_name: value
+        })]
+        var res = {};
+        var table = {};
+        table[ETLCst.ITEMS] = sheets;
+        res["table"] = table;
+        res["id"] = BI.UUID();
+        res["name"] = value;
+        res['describe'] = desc;
+        BI.ETLReq.reqSaveTable(res, BI.emptyFn);
     },
 
     getOperatorTypeByValue : function (v, widget, model) {

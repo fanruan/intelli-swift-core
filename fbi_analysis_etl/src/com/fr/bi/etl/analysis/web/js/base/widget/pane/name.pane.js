@@ -4,7 +4,7 @@
 BI.ETLNamePane = BI.inherit(BI.Widget, {
     _constants:{
         NORTH_HEIGHT : 50,
-        EDITOR_WIDTH : 260,
+        EDITOR_WIDTH : 258,
         EDITOR_HEIGHT : 28,
         LABEL_WIDTH : 100,
         LABEL_HEIGHT : 30,

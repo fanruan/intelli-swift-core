@@ -39,25 +39,30 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             type:"bi.analysis_operator_title"
         })
 
-        BI.each(this.title.getTitleButtons(), function(idx, button){
-            self._createBubbleCombo(button);
+        this.title.on(BI.AnalysisOperatorTitle.CLICK_SAVE, function(){
+            self.title.setTableName(self.controller.getTableName());
         });
 
-        this.title.on(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, function(v){
-            self.controller.setCurrentEditOperator(v);
-            var result = BI.find(self.title.getTitleButtons(), function(idx, button){
-                if(!o.isCurrentTheLastOperator() && button.getValue() === v.getValue()){
-                    self.combos[idx].showView();
-                    return true;
-                }
-            });
-            if(BI.isNull(result)){
+        this.title.on(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, function(v, isConfirm){
+            if(isConfirm){
                 self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments);
                 self.controller.showOperatorPane(v);
+            }else{
+                var combos = self.title.getTitleCombos();
+                var result = BI.find(self.title.getTitleButtons(), function(idx, button){
+                    if(!o.isCurrentTheLastOperator() && button.getValue() === v.getValue()){
+                        combos[idx].showView();
+                        return true;
+                    }
+                });
+                if(BI.isNull(result)){
+                    self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments);
+                    self.controller.showOperatorPane(v);
+                }
             }
         })
 
-        this.title.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(v){
+        this.title.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(){
             self.fireEvent(BI.AnalysisOperatorTitle.EVENT_SAVE, arguments)
         })
         this.title.on(BI.AnalysisOperatorTitle.EVENT_STATE_CHANGE, function(v){
@@ -179,7 +184,7 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
         }
         this.vtapeItem =[{
             el : this.title,
-            height : 40
+            height : 39
         }, this.operatorPaneItem,
             this.operatorEditPaneItem,{
                 el : {
@@ -212,50 +217,6 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             cls:"bi-elt-operator-select-data-center",
             items:this.vtapeItem
         })
-    },
-
-    _createBubbleCombo: function(button){
-        var self = this;
-        var combo = BI.createWidget({
-            type: "bi.bubble_combo",
-            el: {},
-            element: button,
-            popup: {
-                type: "bi.bubble_bar_popup_view",
-                buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Sure")),
-                    handler: function () {
-                        combo.hideView();
-                        self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, self.controller.getCurrentEditOperator());
-                        self.controller.showOperatorPane(self.controller.getCurrentEditOperator());
-                    }
-                }, {
-                    value: BI.i18nText("BI-Cancel"),
-                    level: "ignore",
-                    handler: function () {
-                        combo.hideView();
-                    }
-                }],
-                el: {
-                    type: "bi.vertical_adapt",
-                    items: [{
-                        type: "bi.label",
-                        whiteSpace: "normal",
-                        text: BI.i18nText("BI-Current_Operator_May_Cause_Problem_With_After_Confirm_To_Continue"),
-                        cls: "delete-label",
-                        textAlign: "left",
-                        width: 300
-                    }],
-                    width: 300,
-                    height: 100,
-                    hgap: 20
-                },
-                maxHeight: 140,
-                minWidth: 340
-            }
-        });
-        this.combos.push(combo);
-        return combo;
     },
 
     _createOperatorCard : function () {
