@@ -236,7 +236,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             return BI.map(columnSizeArray, function (idx, value) {
                 var adjustData = BI.map(data.c, function (id, item) {
                     var x = item.n;
-                    return {
+                    var obj = {
                         x: x,
                         xValue: item.n,
                         y: item.s[idx],
@@ -244,6 +244,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         dimensionIds: [drillcataDimId || self.cataDid],
                         targetIds: [targetIds[idx]]
                     };
+                    if(BI.has(item, "c") && BI.isNotEmptyArray(item.c) && BI.isNotEmptyString(item.c[0].n)){
+                        obj.z = obj.zValue = item.c[0].n;
+                    }
+                    return obj;
                 });
                 var obj = {};
                 obj.data = adjustData;
