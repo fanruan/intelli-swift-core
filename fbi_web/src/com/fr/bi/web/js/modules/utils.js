@@ -2899,6 +2899,15 @@
                 }
             });
 
+            //gis地图按分组表来算，而非交叉表
+            if(widget.type === BICst.WIDGET.GIS_MAP){
+                if(BI.isNotEmptyArray(widget.view[BICst.REGION.DIMENSION2])){
+                    widget.view[BICst.REGION.DIMENSION1] = widget.view[BICst.REGION.DIMENSION1] || [];
+                    widget.view[BICst.REGION.DIMENSION1] = BI.concat(widget.view[BICst.REGION.DIMENSION1], widget.view[BICst.REGION.DIMENSION2]);
+                    widget.view[BICst.REGION.DIMENSION2] = [];
+                }
+            }
+
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             widget.real_data = true;
 
