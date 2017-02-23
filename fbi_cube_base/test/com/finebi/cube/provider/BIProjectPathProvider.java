@@ -38,8 +38,8 @@ public class BIProjectPathProvider {
         String classFileName = "classes";
         String libFileName = "lib";
         File directory = new File("");
-        String classRootPath = "H:\\jenkins\\workspace\\test\\build\\classes";
-//        String classRootPath = BIDiskWriterReaderTest.class.getResource("/").getPath();
+//        String classRootPath = "H:\\jenkins\\workspace\\test\\build\\classes";
+        String classRootPath = BIProjectPathProvider.class.getResource("/").getPath();
         classRootPath = classRootPath.replace("/", File.separator);
         if (classRootPath.endsWith(File.separator)) {
             classRootPath = cut(classRootPath, File.separator);
