@@ -1,8 +1,8 @@
 package com.finebi.cube.tools;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.tools.BILocationBuildTestTool;
-import com.finebi.cube.tools.BIProjectPathTool;
+import com.finebi.cube.provider.BICubeLocationProvider;
+import com.finebi.cube.provider.BIProjectPathProvider;
 
 import java.net.URI;
 
@@ -15,6 +15,6 @@ import java.net.URI;
 public class BICubeConfigurationTool implements ICubeConfiguration {
     @Override
     public URI getRootURI() {
-        return URI.create(BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "table").getAbsolutePath());
+        return URI.create(BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "table").getAbsolutePath());
     }
 }

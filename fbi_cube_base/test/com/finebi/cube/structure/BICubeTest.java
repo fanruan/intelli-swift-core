@@ -3,6 +3,7 @@ package com.finebi.cube.structure;
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;
+import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -23,6 +24,10 @@ public class BICubeTest extends BICubeTestBase {
         List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
         fields.add(DBFieldTestTool.generateDATE());
         tableEntity.recordTableStructure(fields);
+        System.out.print("BICubeTest=========test:"+fields.get(0).getFieldName());
+        System.out.print("BICubeTest=========test: column info:"+((tableEntity).getCubeColumnInfo().size()));
+        System.out.print("BICubeTest=========test: column info:"+tableEntity.currentLocation.getBaseLocation().toString());
+        System.out.print("BICubeTest=========test: column info:"+tableEntity.currentLocation.getChildLocation().toString());
         assertFalse(tableEntity.tableDataAvailable());
     }
 

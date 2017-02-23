@@ -12,6 +12,8 @@ import com.finebi.cube.gen.subset.BISourceDataNeverTransport4Test;
 import com.finebi.cube.gen.subset.BISourceDataPartTransport4Test;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.provider.BICubeLocationProvider;
+import com.finebi.cube.provider.BIProjectPathProvider;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.structure.BICube;
@@ -137,7 +139,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         ICubeConfiguration tempConf = new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
-                return URI.create(BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "temptable").getAbsolutePath());
+                return URI.create(BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "temptable").getAbsolutePath());
             }
         };
         BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());

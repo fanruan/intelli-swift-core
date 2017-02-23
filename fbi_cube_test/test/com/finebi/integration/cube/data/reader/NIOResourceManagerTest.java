@@ -1,5 +1,7 @@
-package com.finebi.cube.data.disk;
+package com.finebi.integration.cube.data.reader;
 
+import com.finebi.cube.data.disk.BICubeDiskDiscovery;
+import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.data.disk.reader.BICubeIntegerReaderWrapper;
 import com.finebi.cube.data.disk.reader.BIStringNIOReader;
 import com.finebi.cube.data.disk.writer.BIStringNIOWriter;
@@ -8,8 +10,8 @@ import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.tools.BILocationBuildTestTool;
-import com.finebi.cube.tools.BIProjectPathTool;
+import com.finebi.cube.provider.BICubeLocationProvider;
+import com.finebi.cube.provider.BIProjectPathProvider;
 import junit.framework.TestCase;
 
 /**
@@ -18,7 +20,7 @@ import junit.framework.TestCase;
 public class NIOResourceManagerTest extends TestCase {
     public static BICubeIntegerReaderWrapper reader1 = null;
     public void testReadAndRead() {
-        final ICubeResourceLocation locationR = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
+        final ICubeResourceLocation locationR = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationR.setStringType();
         locationR.setReaderSourceLocation();
         BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
@@ -41,10 +43,10 @@ public class NIOResourceManagerTest extends TestCase {
     }
 
     public void testReadAndWrite() {
-        final ICubeResourceLocation locationR = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
+        final ICubeResourceLocation locationR = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationR.setStringType();
         locationR.setReaderSourceLocation();
-        final ICubeResourceLocation locationW = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
+        final ICubeResourceLocation locationW = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationW.setStringType();
         locationW.setWriterSourceLocation();
         BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
@@ -66,10 +68,10 @@ public class NIOResourceManagerTest extends TestCase {
     }
 
     public void testWriteAndRead() {
-        final ICubeResourceLocation locationR = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
+        final ICubeResourceLocation locationR = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationR.setStringType();
         locationR.setReaderSourceLocation();
-        final ICubeResourceLocation locationW = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
+        final ICubeResourceLocation locationW = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationW.setStringType();
         locationW.setWriterSourceLocation();
         BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
@@ -89,10 +91,10 @@ public class NIOResourceManagerTest extends TestCase {
     }
 
     public void testWriteAndWrite() {
-        final ICubeResourceLocation locationW = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
+        final ICubeResourceLocation locationW = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationW.setStringType();
         locationW.setReaderSourceLocation();
-        final ICubeResourceLocation locationW1 = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
+        final ICubeResourceLocation locationW1 = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationW.setStringType();
         locationW.setWriterSourceLocation();
         BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
@@ -114,10 +116,10 @@ public class NIOResourceManagerTest extends TestCase {
     }
 
     public void testMultiThreadRead() {
-        final ICubeResourceLocation locationR = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
+        final ICubeResourceLocation locationR = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationR.setStringType();
         locationR.setReaderSourceLocation();
-        final ICubeResourceLocation locationW = BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "writer" + 0 + "ok");
+        final ICubeResourceLocation locationW = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationW.setStringType();
         locationW.setWriterSourceLocation();
         final BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
@@ -232,7 +234,7 @@ public class NIOResourceManagerTest extends TestCase {
      * TODO
      */
     public void atestAllRelease() {
-        String basePath = BIProjectPathTool.bigfilePath;
+        String basePath = BIProjectPathProvider.bigfilePath;
         final BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
         final int size = 1024;
         Runnable forceRelease = new Runnable() {
@@ -245,7 +247,7 @@ public class NIOResourceManagerTest extends TestCase {
             }
         };
         for(int i=0;i<4;i++){
-            final ICubeResourceLocation locationRR = BILocationBuildTestTool.buildWrite(basePath, "test" + i + "ok");
+            final ICubeResourceLocation locationRR = BICubeLocationProvider.buildWrite(basePath, "test" + i + "ok");
             locationRR.setStringType();
             locationRR.setReaderSourceLocation();
             final int index = i;
@@ -262,7 +264,7 @@ public class NIOResourceManagerTest extends TestCase {
         new Thread(forceRelease).start();
 
         for (int i=0;i<4;i++){
-            final ICubeResourceLocation locationW = BILocationBuildTestTool.buildWrite(basePath, "testww" + i + "ok");
+            final ICubeResourceLocation locationW = BICubeLocationProvider.buildWrite(basePath, "testww" + i + "ok");
             locationW.setStringType();
             locationW.setWriterSourceLocation();
             final int index = i;
@@ -277,7 +279,7 @@ public class NIOResourceManagerTest extends TestCase {
             new Thread(writeW).start();
         }
         for(int i=0;i<4;i++){
-            final ICubeResourceLocation locationRR = BILocationBuildTestTool.buildWrite(basePath, "testw" + i + "ok");
+            final ICubeResourceLocation locationRR = BICubeLocationProvider.buildWrite(basePath, "testw" + i + "ok");
             locationRR.setStringType();
             locationRR.setReaderSourceLocation();
             final int index = i;
@@ -293,7 +295,7 @@ public class NIOResourceManagerTest extends TestCase {
         }
 
         for(int i=0;i<4;i++){
-            final ICubeResourceLocation locationRR = BILocationBuildTestTool.buildWrite(basePath, "testww" + i + "ok");
+            final ICubeResourceLocation locationRR = BICubeLocationProvider.buildWrite(basePath, "testww" + i + "ok");
             locationRR.setStringType();
             locationRR.setReaderSourceLocation();
             final int index = i;
@@ -415,10 +417,10 @@ public class NIOResourceManagerTest extends TestCase {
     }
 
     public void testQueryHandler(){
-        String basePath = BIProjectPathTool.bigfilePath;
+        String basePath = BIProjectPathProvider.bigfilePath;
         final BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
         for(int i=0;i<2;i++){
-            final ICubeResourceLocation locationRR = BILocationBuildTestTool.buildWrite(basePath, "query" + 0+".fp");
+            final ICubeResourceLocation locationRR = BICubeLocationProvider.buildWrite(basePath, "query" + 0+".fp");
             locationRR.setIntegerTypeWrapper();
             locationRR.setReaderSourceLocation();
             final int index = i;

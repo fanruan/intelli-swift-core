@@ -1,6 +1,8 @@
 package com.finebi.cube.tools;
 
 import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.provider.BICubeLocationProvider;
+import com.finebi.cube.provider.BIProjectPathProvider;
 
 /**
  * This class created on 2016/3/29.
@@ -10,6 +12,6 @@ import com.finebi.cube.location.ICubeResourceLocation;
  */
 public class BICubeResourceLocationTestTool {
     public static ICubeResourceLocation getBasic(String name) {
-        return BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, name);
+        return BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, name);
     }
 }

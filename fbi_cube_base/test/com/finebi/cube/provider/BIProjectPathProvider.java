@@ -1,4 +1,4 @@
-package com.finebi.cube.tools;
+package com.finebi.cube.provider;
 
 import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -11,7 +11,7 @@ import java.io.File;
  * @author Lucifer
  * @since 4.0
  */
-public class BIProjectPathTool {
+public class BIProjectPathProvider {
 
     private static String basePath = computeBasePath();
 

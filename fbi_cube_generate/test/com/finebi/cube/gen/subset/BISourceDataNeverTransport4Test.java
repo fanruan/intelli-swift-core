@@ -7,8 +7,8 @@ import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.tools.BICubeConfigurationTool;
-import com.finebi.cube.tools.BILocationBuildTestTool;
-import com.finebi.cube.tools.BIProjectPathTool;
+import com.finebi.cube.provider.BICubeLocationProvider;
+import com.finebi.cube.provider.BIProjectPathProvider;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
@@ -44,7 +44,7 @@ public class BISourceDataNeverTransport4Test extends BISourceDataNeverTransport 
         ICubeConfiguration tempConf = new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
-                return URI.create(BILocationBuildTestTool.buildWrite(BIProjectPathTool.projectPath, "temptable").getAbsolutePath());
+                return URI.create(BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "temptable").getAbsolutePath());
             }
         };
 
