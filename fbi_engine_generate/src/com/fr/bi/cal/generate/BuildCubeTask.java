@@ -17,7 +17,7 @@ import com.finebi.cube.gen.oper.BuildLogHelper;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTopic;
-import com.finebi.cube.impl.operate.BIOperationID;
+import com.finebi.cube.tools.operate.BIOperationID;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;

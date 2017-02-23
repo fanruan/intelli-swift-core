@@ -39,8 +39,8 @@ public class BIProjectPathProvider {
         String libFileName = "lib";
         File directory = new File("");
         String classRootPath = "";
-        if(new File(BIProjectPathProvider.class.getResource("").getPath()).exists()) {
-            classRootPath = BIProjectPathProvider.class.getResource("").getPath();
+        if(new File(BIProjectPathProvider.class.getResource("/").getPath()).exists()) {
+            classRootPath = BIProjectPathProvider.class.getResource("/").getPath();
         } else if(new File("H:\\jenkins\\workspace\\test\\build\\classes").exists()) {
             classRootPath = "H:\\jenkins\\workspace\\test\\build\\classes";
         }
