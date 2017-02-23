@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by wang on 2016/9/2.
  */
-public class DoubleIntArrayListExternalMapTest extends TestCase {
+public class DoubleIntArrayListExternalMapTestaa extends TestCase {
     public void testDoubleIntArrayListExternalMap() {
         DoubleIntArrayListExternalMap map = new DoubleIntArrayListExternalMap(ComparatorFacotry.DOUBLE_DESC, "test/Double");
         for (int c = 1; c < 40000; c++) {

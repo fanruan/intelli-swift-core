@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by wang on 2016/9/2.
  */
-public class LongIntArrayListExternalMapTest extends TestCase {
+public class LongIntArrayListExternalMapTestaa extends TestCase {
     public void testLongIntArrayListExternalMap() {
         LongIntArrayListExternalMap map = new LongIntArrayListExternalMap(ComparatorFacotry.LONG_ASC, "test/Long");
         for (long c = 1; c < 40000; c++) {

@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by wang on 2016/8/30.
  */
-public class IntExternalMapIntListTest extends TestCase {
+public class IntExternalMapIntListTestaa extends TestCase {
     public void testIntExternalMapIntList() {
         IntegerIntListExternalMap map = new IntegerIntListExternalMap(ComparatorFacotry.INTEGER_ASC, "test");
         for (int c = 1; c < 4; c++) {

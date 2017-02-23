@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by wang on 2016/9/2.
  */
-public class StringIntArrayListExternalMapTest extends TestCase {
+public class StringIntArrayListExternalMapTestaa extends TestCase {
     public void testStringIntArrayListExternalMap() {
         StringIntArrayListExternalMap map = new StringIntArrayListExternalMap(ComparatorFacotry.CHINESE_ASC, "test/String");
         for (int c = 1; c < 40000; c++) {
