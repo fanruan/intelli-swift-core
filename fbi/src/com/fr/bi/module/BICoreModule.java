@@ -354,16 +354,16 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registerResources() {
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, BaseResouceHelper.getThirdJs());
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MAP_JS, BaseResouceHelper.getMapJS(), BaseResouceHelper.MapTransmitter);
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, BaseResouceHelper.getBaseJs());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, BaseResouceHelper.getThirdCss());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, BaseResouceHelper.getBaseCss());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, BaseResourceHelper.getThirdJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MAP_JS, BaseResourceHelper.getMapJS(), BaseResourceHelper.MapTransmitter);
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, BaseResourceHelper.getBaseJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, BaseResourceHelper.getThirdCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, BaseResourceHelper.getBaseCss());
 
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, BaseResouceHelper.getDataJS(), BaseResouceHelper.DataTransmitter);
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, BaseResourceHelper.getDataJS(), BaseResourceHelper.DataTransmitter);
 
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_CONF_JS, ConfResouceHelper.getConfJs());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ConfResouceHelper.getConfCss());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_CONF_JS, ConfResourceHelper.getConfJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ConfResourceHelper.getConfCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, DeziResourceHelper.getDeziJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, DeziResourceHelper.getDeziCss());
@@ -374,7 +374,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MODULE_JS, CommonResourceHelper.getCommonJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_MODULE_CSS, CommonResourceHelper.getCommonCss());
 
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, BaseResouceHelper.getFormulaCollectionJS(), BaseResouceHelper.FormulaTransmitter);
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, BaseResourceHelper.getFormulaCollectionJS(), BaseResourceHelper.FormulaTransmitter);
     }
 
     public void loadResources(Locale[] locales) {
@@ -385,7 +385,7 @@ public class BICoreModule extends AbstractModule {
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_SHOW_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_MODULE_JS);
-        BaseResouceHelper.FormulaTransmitter.transmit(BaseResouceHelper.getFormulaCollectionJS(), locales);
+        BaseResourceHelper.FormulaTransmitter.transmit(BaseResourceHelper.getFormulaCollectionJS(), locales);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_THIRD_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
