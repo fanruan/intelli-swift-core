@@ -33,7 +33,7 @@ BI.SelectDataIntervalSlider = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this, o = this.options;
-        var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId);
+        var dimensions = BI.Utils.getAllDimensionIDs(o.wId);
         var widgetValue = BI.Utils.getWidgetValueByID(o.wId) || {};
         var value = {min: widgetValue.min, max: widgetValue.max};
         if (dimensions.length === 0) {
