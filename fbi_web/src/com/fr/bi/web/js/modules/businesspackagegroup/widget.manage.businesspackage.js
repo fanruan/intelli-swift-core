@@ -26,7 +26,7 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
         });
 
 
-        var top = BI.createWidget({
+        this.topButtons = BI.createWidget({
             type: "bi.right",
             hgap: 10,
             items: [
@@ -47,7 +47,7 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
             items: [
                 {
                     height: 40,
-                    el: top
+                    el: this.topButtons
                 }, {
                     el: self.groupPane
                 }
@@ -106,12 +106,13 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
     },
 
 
-    populate: function (groupedItems, allPackages) {
+    populate: function (groupedItems, allPackages, eidt) {
         var self = this, o = this.options;
         var groupedFieldItems = [];
         var unGroupedFieldItem = {};
         unGroupedFieldItem.value = BI.i18nText("BI-Ungrouped_China");
         unGroupedFieldItem.children = [];
+        unGroupedFieldItem.edit = true;
         var groupedFieldMap = {};
         BI.each(groupedItems, function (i, groupItem) {
             var item = {};
@@ -119,6 +120,7 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
             item.children = [];
             item.id = groupItem.id;
             item.init_time = groupItem.init_time;
+            item.edit = groupItem.edit;
             BI.each(groupItem.children, function (i, packageObject) {
                 var object = {};
                 object.value = packageObject.id;
@@ -138,6 +140,9 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
             }
         });
         self.groupPane.populate([unGroupedFieldItem], groupedFieldItems);
+        if (eidt === false) {
+            this.topButtons.setVisible(false);
+        }
     },
 
     getValue: function () {

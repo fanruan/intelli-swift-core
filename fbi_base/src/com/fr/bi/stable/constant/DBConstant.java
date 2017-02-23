@@ -147,6 +147,7 @@ public class DBConstant {
             public static final String SERVER_CONNECTION = "__package_server_connection__";   //业务包选表控制服务器数据集权限
             public static final String DATA_CONNECTION = "__package_data_connection__";
             public static final String PACKAGE_GROUP = "__package_group__";
+            public static final String UNGROUP_PACKAGE = "__ungroup_package__";     //业务包分组的“未分组”
         }
 
         public static final String MULTI_PATH_SETTING = "__multi_path_setting__";     //多路径设置

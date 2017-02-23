@@ -142,6 +142,15 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
             }
             var item = [];
             if (BI.Utils.isPrimaryKeyByFieldId4Conf(field.id)) {
+                var fieldNameLabel = BI.createWidget({
+                    type: "bi.label",
+                    text: field["field_name"],
+                    title: field["field_name"],
+                    width: 90,
+                    whiteSpace: "nowrap",
+                    textAlign: "left"
+                });
+                fieldNameLabel.doRedMark(self.keyword);
                 item.push({
                     type: "bi.left",
                     cls: "primary-key-font",
@@ -149,18 +158,11 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
                         type: "bi.icon",
                         width: 20,
                         title: BI.i18nText("BI-Primary_Key")
-                    }, {
-                        type: "bi.label",
-                        text: field["field_name"],
-                        title: field["field_name"],
-                        width: 90,
-                        whiteSpace: "nowrap",
-                        textAlign: "left"
-                    }],
+                    }, fieldNameLabel],
                     lgap: 5
                 });
             } else {
-                item.push({
+                var fieldNameLabel = BI.createWidget({
                     type: "bi.label",
                     text: field["field_name"],
                     title: field["field_name"],
@@ -169,6 +171,8 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
                     textAlign: "left",
                     lgap: 5
                 });
+                fieldNameLabel.doRedMark(self.keyword);
+                item.push(fieldNameLabel);
             }
             item.push({
                 type: "bi.icon_button",
