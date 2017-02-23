@@ -168,6 +168,10 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.DetailNumberDimensionComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
+                case BICst.DETAIL_STRING_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.DETAIL_NUMBER_COMBO.FORM_SETTING:
                     self._buildStyleSettingPane();
                     break;
@@ -194,6 +198,10 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.DetailDateDimensionComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
+                case BICst.DETAIL_STRING_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.DETAIL_DATE_COMBO.YMD:
                     self.model.set("group", {type: BICst.GROUP.YMD});
                     break;
@@ -235,6 +243,10 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
         });
         this.combo.on(BI.DetailFormulaDimensionComboShow.EVENT_CHANGE, function (v) {
             switch (v) {
+                case BICst.DETAIL_STRING_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.DETAIL_FORMULA_COMBO.FORM_SETTING:
                     break;
                 case BICst.DETAIL_FORMULA_COMBO.UPDATE_FORMULA:

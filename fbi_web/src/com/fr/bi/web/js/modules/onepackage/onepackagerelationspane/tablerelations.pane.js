@@ -255,12 +255,21 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         });
     },
 
+    refresh: function (items) {
+        this.relationView.populate(items);
+    },
+
     populate: function (items) {
         var self = this, o = this.options;
         this.model.populate(items);
         this.model.getTableNamesOfAllPackages(function () {
-            self.relationView.populate(self._createItemsByTableIdsAndRelations());
+            self.cacheItems = self._createItemsByTableIdsAndRelations();
+            self.relationView.populate(self.cacheItems);
         });
+    },
+
+    getCacheItems: function() {
+        return BI.deepClone(this.cacheItems);
     },
 
     getValue: function () {

@@ -350,14 +350,21 @@ BI.EditSQL = BI.inherit(BI.Widget, {
     _getPreviewResult: function () {
         var self = this;
         var mask = BI.createWidget({
-            type: "bi.loading_mask",
+            type: "bi.loading_cancel_mask",
             masker: BICst.BODY_ELEMENT,
             text: BI.i18nText("BI-Loading")
+        });
+        var cancel = false;
+        mask.on(BI.LoadingCancelMask.EVENT_VALUE_CANCEL, function () {
+            cancel = true;
         });
         BI.Utils.getServerSetPreviewBySql({
             data_link: self.model.getDataLinkName(),
             sql: BI.encrypt(self.model.getSQL(), "sh")
         }, function (res) {
+            if (cancel) {
+                return;
+            }
             if (BI.isNotNull(res) && BI.isNotNull(res.field_names)) {
                 self._createPreviewTable(res);
                 self.previewTab.setSelect(self.constants.PREVIEW_PANE);

@@ -1,6 +1,7 @@
 package com.fr.bi.field.filtervalue.string.onevaluefilter;
 
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.stable.StringUtils;
 
 public class StringLikeFilterValue extends StringOneValueFilterValue {
     /**
@@ -21,7 +22,7 @@ public class StringLikeFilterValue extends StringOneValueFilterValue {
      */
     @Override
     public boolean isMatchValue(String key) {
-        return key.indexOf(value) != -1;
+        return StringUtils.isEmpty(value) || key.indexOf(value) != -1;
     }
 
 

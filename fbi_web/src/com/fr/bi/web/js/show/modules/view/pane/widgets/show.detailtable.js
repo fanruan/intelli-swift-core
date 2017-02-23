@@ -89,7 +89,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
-            if (!self.widget.element.parent().parent().hasClass("selected")) {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
         });

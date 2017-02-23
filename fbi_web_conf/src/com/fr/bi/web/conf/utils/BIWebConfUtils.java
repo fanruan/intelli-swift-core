@@ -4,13 +4,14 @@ import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.conf.base.dataconfig.source.BIDataConfigAuthority;
+import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
-import com.fr.json.JSONArray;
+import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 
 import java.util.Iterator;
@@ -51,28 +52,27 @@ public class BIWebConfUtils {
     public static JSONObject getAuthDataConfigNodes(long userId) throws Exception {
         JSONObject jo = new JSONObject();
         if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
-            Iterator names = DatasourceManager.getInstance().getConnectionNameIterator();
-            JSONArray nameJA = new JSONArray();
-            while (names.hasNext()) {
-                nameJA.put(names.next());
-            }
-            jo.put(DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION, nameJA);
-            jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, nameJA);
+            jo.put(DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION, true);
+            jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, true);
             jo.put(DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING, true);
             jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY, true);
             jo.put(DBConstant.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE, true);
         } else {
             Set<BIDataConfigAuthority> authoritySet = BIConfigureManagerCenter.getDataConfigAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
-            JSONArray authConn = new JSONArray();
-            JSONArray authPackageConn = new JSONArray();
             for (BIDataConfigAuthority authority : authoritySet) {
                 String id = authority.getId();
-                String pId = authority.getParentId();
+                String pId = authority.getpId();
                 if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION)) {
-                    authConn.put(id.split(DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION)[1]);
+                    jo.put(pId, true);
                 }
-                if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER)) {
-                    authPackageConn.put(id.split(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER)[1]);
+                if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION)) {
+                    jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, true);
+                }
+                if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP)) {
+                    jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, true);
+                }
+                if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.SERVER_CONNECTION)) {
+                    jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, true);
                 }
                 if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING)) {
                     jo.put(DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING, true);
@@ -84,14 +84,24 @@ public class BIWebConfUtils {
                     jo.put(DBConstant.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE, true);
                 }
             }
-            if (authConn.length() > 0) {
-                jo.put(DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION, authConn);
-            }
-            if (authPackageConn.length() > 0) {
-                jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, authPackageConn);
-            }
         }
         return jo;
     }
 
+    /**
+     * 数据连接“ID”
+     * @param id
+     * @return
+     */
+    public static String getConnectionNameByID(String id) {
+        Iterator<String> connNames = DatasourceManager.getInstance().getConnectionNameIterator();
+        while (connNames.hasNext()) {
+            String name = connNames.next();
+            long initTime = BIConnectionManager.getInstance().getBIConnection(name).getInitTime();
+            if (ComparatorUtils.equals(id, GeneralUtils.objectToString(initTime))) {
+                return name;
+            }
+        }
+        return null;
+    }
 }

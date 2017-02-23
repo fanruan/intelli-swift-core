@@ -139,6 +139,9 @@ BI.RelationView = BI.inherit(BI.Widget, {
                     handler: items.length > 0 ? items[0].regionHandler : BI.emptyFn,
                     items: items
                 });
+                if (BI.isNotNull(items[0]) && BI.isNotNull(items[0].keyword)) {
+                    views[i][j].doRedMark(items[0].keyword);
+                }
                 views[i][j].on(BI.RelationViewRegion.EVENT_HOVER_IN, function (v) {
                     self._hoverIn(v)
                 });

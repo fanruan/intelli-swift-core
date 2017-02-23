@@ -808,8 +808,8 @@ BI.extend(BI.Utils, {
         }, complete);
     },
 
-    updatePackageName4Conf: function(data,callback, complete) {
-        Data.Req.reqUpdatePackageName(data, function(res) {
+    updatePackageName4Conf: function (data, callback, complete) {
+        Data.Req.reqUpdatePackageName(data, function (res) {
             callback(res);
         }, complete);
     },
@@ -988,6 +988,12 @@ BI.extend(BI.Utils, {
 
     checkTableInUse: function (data, callback, complete) {
         Data.Req.reqCheckTableInUse(data, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    updateTablesTranOfPackage: function (data, callback, complete) {
+        Data.Req.reqUpdateTablesTranOfPackage(data, function (res) {
             callback(res);
         }, complete);
     }
