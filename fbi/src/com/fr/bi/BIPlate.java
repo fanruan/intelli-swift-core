@@ -23,7 +23,7 @@ import com.fr.bi.fs.entry.BIReportEntryDAO;
 import com.fr.bi.fs.entry.EntryConstants;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
-import com.fr.bi.resource.FsResouceHelper;
+import com.fr.bi.resource.FsResourceHelper;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.web.dezi.phantom.PhantomServer;
@@ -300,7 +300,7 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public String[] getPlateStyleFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(FsResouceHelper.getFsCss(), new String[]{
+        return (String[]) ArrayUtils.addAll(FsResourceHelper.getFsCss(), new String[]{
                 "/com/fr/bi/web/cross/css/bi.toolbar.add.css",
                 "/com/fr/bi/web/cross/css/bi.shared.table.css",
 
@@ -331,7 +331,7 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public String[] getPlateJavaScriptFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(FsResouceHelper.getFsJs(), new String[]{
+        return (String[]) ArrayUtils.addAll(FsResourceHelper.getFsJs(), new String[]{
                 "/com/fr/bi/web/cross/js/bi.user.manager.js",
                 "/com/fr/bi/web/cross/js/effect/create.by.me.js",
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",

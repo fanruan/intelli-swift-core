@@ -5,9 +5,9 @@ import com.fr.stable.ArrayUtils;
 /**
  * Created by Wang on 2017/1/18.
  */
-public class FsResouceHelper {
+public class FsResourceHelper {
     public static String[] getFsCss() {
-        String[] base = BaseResouceHelper.getBaseCss();
+        String[] base = BaseResourceHelper.getBaseCss();
         String[] fs = new String[]{
                 //BI风格中用到的全局样式
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.css",
