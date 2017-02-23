@@ -203,6 +203,71 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         this._parseRowTableCrossItems(tempCrossItems);
     },
 
+    //仅有行表头和指标的情况
+    _createMultiGroupItems: function () {
+        var self = this;
+        if (BI.isNotNull(this.data.c)) {
+            this._createTableItems();
+            return;
+        }
+        var tempItems = [];
+        BI.each(this.data, function(i, rowTable) {
+            var dimOb = self._getDimsByDataPos(i, 0);
+            var dimIds = dimOb.dimIds;
+            var item = {
+                children: self._createCommonTableItems(rowTable.c, 0, null, dimIds)
+            };
+            //汇总
+            if (self.showRowTotal === true && BI.isNotEmptyArray(rowTable.s)) {
+                var outerValues = [];
+                if (dimIds.length > 0) {
+                    BI.each(rowTable.s, function (i, v) {
+                        var tId = self.targetIds[i];
+                        outerValues.push({
+                            type: "bi.target_body_normal_cell",
+                            text: v,
+                            dId: tId,
+                            cls: "summary-cell last",
+                            clicked: [{}],
+                            styles: BI.SummaryTableHelper.getLastSummaryStyles(self.themeColor, self.tableStyle)
+                        });
+                    });
+                    item.values = outerValues;
+                } else {
+                    //使用第一个值作为一个维度
+                    BI.each(rowTable.s, function (i, v) {
+                        if (i === 0) {
+                            return;
+                        }
+                        var tId = self.targetIds[i];
+                        outerValues.push({
+                            type: "bi.target_body_normal_cell",
+                            text: v,
+                            dId: tId,
+                            cls: "summary-cell",
+                            clicked: [{}],
+                            styles: BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle)
+                        });
+                    });
+                    item.children.push({
+                        type: "bi.target_body_normal_cell",
+                        text: rowTable.s[0],
+                        dId: self.targetIds[0],
+                        cls: "summary-cell",
+                        clicked: [{}],
+                        tag: BI.UUID(),
+                        isSum: true,
+                        values: outerValues,
+                        styles: BI.SummaryTableHelper.getSummaryStyles(self.themeColor, self.tableStyle)
+                    });
+                    item.values = item;
+                }
+            }
+            tempItems.push(item);
+        });
+        this._parseColTableItems(tempItems);
+    },
+
     /**
      * 交叉表 items and crossItems
      */
@@ -567,12 +632,13 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
         this._refreshDimsInfo();
 
         //正常复杂表
-        if (this._isColRegionExist() || this._isRowRegionExist()) {
+        if (this._isColRegionExist() && this._isRowRegionExist()) {
             this._createComplexTableItems();
             this._createComplexTableHeader();
             this._setOtherComplexAttrs();
             return;
         }
+
         //仅有列表头的时候（无指标）
         if (this._isColRegionExist() && !this._isRowRegionExist() &&
             this.targetIds.length === 0) {
@@ -593,7 +659,15 @@ BI.ComplexTableModel = BI.inherit(BI.CrossTableModel, {
             return;
         }
 
-        //无列表头 有指标 当作普通分组表
+        //无列表头 有指标 当作多个普通分组表
+        if (this._isRowRegionExist() && !this._isColRegionExist() &&
+            this.targetIds.length > 0) {
+            this._createTableHeader();
+            this._createMultiGroupItems();
+            this._setOtherAttrs();
+            return;
+        }
+
         this._createTableHeader();
         this._createTableItems();
         this._setOtherAttrs();

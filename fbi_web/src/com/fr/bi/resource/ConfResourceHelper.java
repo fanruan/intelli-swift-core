@@ -5,7 +5,7 @@ import com.fr.stable.ArrayUtils;
 /**
  * Created by Wang on 2017/1/18.
  */
-public class ConfResouceHelper {
+public class ConfResourceHelper {
     private static String[] getConfCssModule() {
         return new String[]{
                 //数据连接
@@ -75,6 +75,8 @@ public class ConfResouceHelper {
                 //FineBI Service
                 "com/fr/bi/web/css/modules/finebiservice/expander.finebiservice.css",
                 "com/fr/bi/web/css/modules/finebiservice/finebiservice.css",
+
+                "com/fr/bi/web/css/modules/onepackage/relationspane/relations.result.pane.css",
 
                 //业务包分组
                 "com/fr/bi/web/css/modules/businesspackagegroup/pane.ungroup.and.group.businesspackage.css",
@@ -250,6 +252,7 @@ public class ConfResouceHelper {
 
                 //表关联视图
                 "com/fr/bi/web/js/modules/onepackage/onepackagerelationspane/tablerelations.pane.js",
+                "com/fr/bi/web/js/modules/onepackage/onepackagerelationspane/tablerelations.result.pane.js",
                 "com/fr/bi/web/js/modules/onepackage/onepackagerelationspane/tablerelations.pane.model.js",
 
                 //etl新增分组列
