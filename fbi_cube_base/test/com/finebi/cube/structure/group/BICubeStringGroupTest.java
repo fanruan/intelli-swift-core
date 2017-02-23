@@ -39,7 +39,8 @@ public class BICubeStringGroupTest extends TestCase {
             cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
-            location.setBaseLocation(new URI(BIUrlCutTestTool.joinUrl(BIUrlCutTestTool.cutUrl("testFolder",location.getAbsolutePath()),"testFolder","//string")));            groupData = new BICubeStringGroupData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), location);
+            location.setBaseLocation(new URI(BIUrlCutTestTool.joinUrl(BIUrlCutTestTool.cutUrl("testFolder",location.getAbsolutePath()),"testFolder","//string")));
+            groupData = new BICubeStringGroupData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class), location);
         } catch (BICubeResourceAbsentException e) {
             assertFalse(true);
         } catch (URISyntaxException ee) {
