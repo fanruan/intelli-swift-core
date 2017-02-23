@@ -109,12 +109,15 @@ public class BIReportExportExcel {
         if (specialWidgets.length() != 0) {
             for (int i = 0; i < specialWidgets.length(); i++) {
                 JSONObject jo = specialWidgets.getJSONObject(i);
-                switch(jo.optInt("type")) {
-//                    case BIReportConstant.WIDGET.CONTENT:
+                switch (jo.optInt("type")) {
+                    case BIReportConstant.WIDGET.CONTENT:
+                        polyECBlock.addFloatElement(renderContentWidget(specialWidgets.getJSONObject(i)));
+                        break;
                     case BIReportConstant.WIDGET.IMAGE:
-                         polyECBlock.addFloatElement(renderImageWidget(specialWidgets.getJSONObject(i)));
+                        polyECBlock.addFloatElement(renderImageWidget(specialWidgets.getJSONObject(i)));
+                        break;
                     case BIReportConstant.WIDGET.WEB:
-                         polyECBlock.addFloatElement(renderWebWidget(specialWidgets.getJSONObject(i)));
+                        polyECBlock.addFloatElement(renderWebWidget(specialWidgets.getJSONObject(i)));
                         break;
                 }
             }
@@ -126,6 +129,29 @@ public class BIReportExportExcel {
         createOtherSheets(wb);
 
         return wb.execute4BI(session.getParameterMap4Execute());
+    }
+
+    private FloatElement renderContentWidget(JSONObject wjo) throws JSONException {
+        JSONObject contentOptions = JSONObject.create();
+        JSONObject jo = JSONObject.create();
+        JSONObject bounds = wjo.optJSONObject("bounds");
+
+        jo.put("width", bounds.optInt("width"));
+        jo.put("height", bounds.optInt("height"));
+        jo.put("content", wjo.optString("content"));
+        jo.put("style", wjo.optJSONObject("style"));
+
+        contentOptions.put("contentOptions", jo);
+
+        String base64 = null;
+
+        try {
+            base64 = postMessage(contentOptions.toString());
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+
+        return createFloatElement(base64Decoder(base64), getWidgetRect(bounds));
     }
 
     private FloatElement renderImageWidget(JSONObject wjo) {
@@ -163,37 +189,6 @@ public class BIReportExportExcel {
         }
 
         return createFloatElement(base64Decoder(base64), getWidgetRect(bounds));
-    }
-
-    private BIWorkBook createOtherSheets(BIWorkBook wb) throws CloneNotSupportedException {
-        //other sheets
-        if (widgets.size() == 0) {
-            return wb;
-        }
-        for (BIWidget widget : widgets) {
-            if (widgetHasData(widget)) {
-                widget = (BIWidget) widget.clone();
-                switch (widget.getType()) {
-                    case BIReportConstant.WIDGET.TABLE:
-                    case BIReportConstant.WIDGET.CROSS_TABLE:
-                    case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                        ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
-                        ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
-                        break;
-                    case BIReportConstant.WIDGET.DETAIL:
-                        ((BIDetailWidget) widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
-                        break;
-                }
-
-                BIPolyWorkSheet ws = widget.createWorkSheet(session);
-                wb.addReport(widget.getWidgetName(), ws);
-            } else {
-                BIPolyWorkSheet emptySheet = new BIPolyWorkSheet();
-                emptySheet.addBlock(createPolyECBlock(widget.getWidgetName()));
-                wb.addReport(widget.getWidgetName(), emptySheet);
-            }
-        }
-        return wb;
     }
 
     private FloatElement renderChartPic(BIWidget widget) throws Exception {
@@ -234,8 +229,39 @@ public class BIReportExportExcel {
         return createFloatElement(base64Decoder(getBase64), widget.getRect());
     }
 
-    private FloatElement createFloatElement(BufferedImage img, Rectangle rect) {
-        FloatElement floatElement = new FloatElement(img);
+    private BIWorkBook createOtherSheets(BIWorkBook wb) throws CloneNotSupportedException {
+        //other sheets
+        if (widgets.size() == 0) {
+            return wb;
+        }
+        for (BIWidget widget : widgets) {
+            if (widgetHasData(widget)) {
+                widget = (BIWidget) widget.clone();
+                switch (widget.getType()) {
+                    case BIReportConstant.WIDGET.TABLE:
+                    case BIReportConstant.WIDGET.CROSS_TABLE:
+                    case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                        ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
+                        ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
+                        break;
+                    case BIReportConstant.WIDGET.DETAIL:
+                        ((BIDetailWidget) widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
+                        break;
+                }
+
+                BIPolyWorkSheet ws = widget.createWorkSheet(session);
+                wb.addReport(widget.getWidgetName(), ws);
+            } else {
+                BIPolyWorkSheet emptySheet = new BIPolyWorkSheet();
+                emptySheet.addBlock(createPolyECBlock(widget.getWidgetName()));
+                wb.addReport(widget.getWidgetName(), emptySheet);
+            }
+        }
+        return wb;
+    }
+
+    private FloatElement createFloatElement(BufferedImage bufferedImage, Rectangle rect) {
+        FloatElement floatElement = new FloatElement(bufferedImage);
         int resolution = ScreenResolution.getScreenResolution();
         floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
         floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
@@ -353,7 +379,7 @@ public class BIReportExportExcel {
         return result;// 返回Base64编码过的字节数组字符串
     }
 
-    private Rectangle getWidgetRect (JSONObject bounds) {
+    private Rectangle getWidgetRect(JSONObject bounds) {
         Rectangle rect = new Rectangle(bounds.optInt("left"), bounds.optInt("top"),
                 bounds.optInt("width"), bounds.optInt("height"));
         return rect;
