@@ -31,7 +31,8 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
             return;
         }
         LightNode tempNode = node;
-        for (int i = 0; i < start_group; i++) {
+        int deep = getActualStart_Group(start_group, tempNode);
+        for (int i = 0; i < deep; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
@@ -57,7 +58,8 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
             return;
         }
         BICrossNode tempNode = node;
-        for (int i = 0; i < start_group; i++) {
+        int deep = getActualStart_Group(start_group, tempNode);
+        for (int i = 0; i < deep; i++) {
             if (tempNode.getLeftFirstChild() == null) {
                 break;
             }
