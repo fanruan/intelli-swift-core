@@ -98,15 +98,43 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 connNames: self.model.getConnNames(),
                 onStartSearch: function () {
                     addNewTableCombo.setEnable(false);
+                    self.tabButtons.setEnable(false);
                 },
                 onStopSearch: function () {
                     addNewTableCombo.setEnable(true);
+                    self.tabButtons.setEnable(true);
                 }
             }
         });
         this.searcher.on(BI.Searcher.EVENT_CHANGE, function (v) {
             self._onClickOneTable(v);
         });
+
+        this.relationSearcher = BI.createWidget({
+            type: "bi.searcher",
+            width: this._constant.SEARCH_WIDTH,
+            cls: "package-search-editor",
+            onSearch: function (op, callback) {
+                callback(self.relationView.getCacheItems(), BI.keys(self.model.getTables()), op.keyword);
+            },
+            isAutoSearch: false,
+            isAutoSync: false,
+            popup: {
+                type: "bi.package_table_relation_result_pane",
+                onStartSearch: function () {
+                    addNewTableCombo.setEnable(false);
+                    self.tabButtons.setEnable(false);
+                },
+                onStopSearch: function () {
+                    addNewTableCombo.setEnable(true);
+                    self.tabButtons.setEnable(true);
+                }
+            }
+        });
+        this.relationSearcher.on(BI.Searcher.EVENT_CHANGE, function (v) {
+            self._onClickOneTable(v);
+        });
+        this.relationSearcher.setVisible(false);
 
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
@@ -120,7 +148,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                     },
                     packageName, addNewTableCombo
                 ],
-                right: [this.searcher]
+                right: [this.searcher, this.relationSearcher]
             },
             lhgap: 10,
             rrgap: 90,
@@ -204,6 +232,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 this.relationView.on(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, function (id) {
                     self._onClickOneTable(id);
                 });
+                this.relationSearcher.setAdapter(this.relationView);
                 return this.relationView;
         }
     },
@@ -222,30 +251,36 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                     }]
                 };
             case this._constant.SHOW_TABLE:
-                var tab = BI.createWidget({
+                this.tabButtons = BI.createWidget({
                     type: "bi.segment",
                     cls: "tables-view-group",
                     items: BI.createItems(this.model.getViewType(), {
                         type: "bi.icon_button",
                         extraCls: "tables-view",
                         width: this._constant.VIEW_WIDTH,
-                        height: this._constant.VIEW_HEIGHT
+                        height: this._constant.VIEW_HEIGHT,
+                        warningTitle: BI.i18nText("BI-No_Switch_Searching")
                     }),
                     width: 60
                 });
                 this.viewType = BI.createWidget({
                     type: "bi.tab",
-                    tab: tab,
+                    tab: this.tabButtons,
                     direction: "custom",
                     defaultShowIndex: BICst.TABLES_VIEW.TILE,
                     cardCreator: BI.bind(this._viewTypeCreator, this)
                 });
 
-                this.viewType.on(BI.Tab.EVENT_CHANGE, function(){
+                this.viewType.on(BI.Tab.EVENT_CHANGE, function () {
                     if (this.getSelect() === BICst.TABLES_VIEW.RELATION) {
                         this.populate({
                             tablesData: self.model.getTables()
                         });
+                        self.relationSearcher.setVisible(true);
+                        self.searcher.setVisible(false);
+                    } else {
+                        self.relationSearcher.setVisible(false);
+                        self.searcher.setVisible(true);
                     }
                 });
 
@@ -253,7 +288,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                     type: "bi.absolute",
                     element: this.viewType,
                     items: [{
-                        el: tab,
+                        el: this.tabButtons,
                         top: -40,
                         right: 20
                     }]
