@@ -33,7 +33,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
     protected ICubeResourceRetrievalService resourceRetrievalService;
     protected ICubeTableColumnManagerService columnManager;
     protected ICubeRelationManagerService relationManager;
-    public ICubeResourceLocation currentLocation;
+    protected ICubeResourceLocation currentLocation;
     protected ICubeTablePropertyService tableProperty;
     protected ICubeResourceDiscovery discovery;
     private ICubeIntegerWriter removedLineWriter;
