@@ -2,7 +2,6 @@ package com.finebi.cube.map;
 
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import junit.framework.TestCase;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -10,8 +9,8 @@ import java.util.Map;
 /**
  * Created by wang on 2016/8/30.
  */
-public class IntExternalMapIntListTestaa extends TestCase {
-    public void testIntExternalMapIntList() {
+public class TestIntExternalMapIntList {
+    public static void main(String[] args) {
         IntegerIntListExternalMap map = new IntegerIntListExternalMap(ComparatorFacotry.INTEGER_ASC, "test");
         for (int c = 1; c < 4; c++) {
             IntList list = new IntList();
