@@ -127,11 +127,11 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 top: 0,
                 left: 290
             }, {
-                el: viewChange,
+                el: this.globalStyle,
                 top: 0,
                 left: 370
             }, {
-                el: this.globalStyle,
+                el: viewChange,
                 top: 0,
                 left: 470
             }]
