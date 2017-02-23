@@ -110,9 +110,6 @@ public class BIGetSimpleTablesOfOnePackageAction extends AbstractBIConfigureActi
      * @param packageID
      */
     private void assignAuthority(long userId, BIPackageID packageID, String groupName) throws Exception {
-        BIGroupTagName groupTagName = new BIGroupTagName(groupName);
-        IBusinessGroupGetterService groupGetterService = BICubeConfigureCenter.getPackageManager().getGroup(UserControl.getInstance().getSuperManagerID(), groupTagName);
-        long position = groupGetterService.getPosition();
         List<BIDataConfigAuthority> assignAuth = new ArrayList<BIDataConfigAuthority>();
         Set<BIDataConfigAuthority> authorities = BIConfigureManagerCenter.getDataConfigAuthorityManager().getAllDataConfigAuthorities();
         for (BIDataConfigAuthority authority : authorities) {
@@ -124,6 +121,9 @@ public class BIGetSimpleTablesOfOnePackageAction extends AbstractBIConfigureActi
                         ComparatorUtils.equals(groupName, StringUtils.EMPTY)) {
                     assignAuth.add(authority);
                 } else {
+                    BIGroupTagName groupTagName = new BIGroupTagName(groupName);
+                    IBusinessGroupGetterService groupGetterService = BICubeConfigureCenter.getPackageManager().getGroup(UserControl.getInstance().getSuperManagerID(), groupTagName);
+                    long position = groupGetterService.getPosition();
                     String groupPos = id.substring(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP.length());
                     if (ComparatorUtils.equals(groupPos, GeneralUtils.objectToString(position))) {
                         assignAuth.add(authority);
