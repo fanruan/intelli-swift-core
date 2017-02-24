@@ -11,7 +11,7 @@ import com.finebi.cube.gen.oper.watcher.BICubeBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIDataSourceBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BITableSourceBuildWatcher;
-import com.finebi.cube.impl.operate.BIOperation;
+import com.finebi.cube.tools.operate.BIOperation;
 import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;

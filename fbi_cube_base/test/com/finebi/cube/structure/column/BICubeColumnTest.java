@@ -27,6 +27,9 @@ public class BICubeColumnTest extends TestCase {
         } catch (Exception e) {
             assertFalse(false);
             return;
+        } finally {
+            column.forceReleaseReader();
+            column.forceReleaseWriter();
         }
         assertFalse(true);
     }
@@ -43,6 +46,9 @@ public class BICubeColumnTest extends TestCase {
         } catch (Exception e) {
             assertFalse(false);
             return;
+        } finally {
+            column.forceReleaseReader();
+            column.forceReleaseWriter();
         }
         assertFalse(true);
     }
@@ -55,6 +61,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertEquals(12, column.getOriginalValueByRow(1));
         assertEquals(Integer.valueOf(12), column.getOriginalObjectValueByRow(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testIntegerCubeColumnDetailNull() {
@@ -63,6 +72,9 @@ public class BICubeColumnTest extends TestCase {
         column.addOriginalDataValue(1, null);
         column.forceReleaseWriter();
         assertTrue(null == column.getOriginalObjectValueByRow(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
 
     }
 
@@ -74,6 +86,9 @@ public class BICubeColumnTest extends TestCase {
         assertEquals(12, column.getGroupValue(1));
         assertEquals(Integer.valueOf(12), column.getGroupObjectValue(1));
 
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
+
     }
 
     public void testIntegerCubeColumnGroupNULL() {
@@ -82,6 +97,9 @@ public class BICubeColumnTest extends TestCase {
         column.addGroupValue(1, null);
         column.forceReleaseWriter();
         assertTrue(null == column.getGroupObjectValue(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testDoubleCubeColumnDetail() {
@@ -92,6 +110,9 @@ public class BICubeColumnTest extends TestCase {
         assertEquals(Double.valueOf("12"), column.getOriginalValueByRow(1));
         assertEquals(Double.valueOf("12"), column.getOriginalObjectValueByRow(1));
 
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
+
     }
 
     public void testDoubleCubeColumnGroup() {
@@ -101,6 +122,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertEquals(Double.valueOf("12"), column.getGroupValue(1));
         assertEquals(Double.valueOf("12"), column.getGroupObjectValue(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testDoubleCubeColumnGroupNULL() {
@@ -110,6 +134,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertTrue(null == column.getGroupObjectValue(1));
 
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
+
     }
 
     public void testDoubleCubeColumnDetailNULL() {
@@ -118,6 +145,9 @@ public class BICubeColumnTest extends TestCase {
         column.addOriginalDataValue(1, null);
         column.forceReleaseWriter();
         assertTrue(null == column.getOriginalObjectValueByRow(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testLongCubeColumnDetail() {
@@ -127,6 +157,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertEquals(12, column.getOriginalValueByRow(1));
         assertEquals(Long.valueOf("12"), column.getOriginalObjectValueByRow(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testLongCubeColumnDetailNULL() {
@@ -135,6 +168,9 @@ public class BICubeColumnTest extends TestCase {
         column.addOriginalDataValue(1, null);
         column.forceReleaseWriter();
         assertTrue(null == column.getOriginalObjectValueByRow(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testLongCubeColumnGroup() {
@@ -145,6 +181,9 @@ public class BICubeColumnTest extends TestCase {
         assertEquals(Long.valueOf("12"), column.getGroupObjectValue(1));
         assertEquals(12, column.getGroupValue(1));
 
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
+
     }
 
     public void testLongCubeColumnGroupNULL() {
@@ -153,6 +192,9 @@ public class BICubeColumnTest extends TestCase {
         column.addGroupValue(1, null);
         column.forceReleaseWriter();
         assertEquals(null, column.getGroupObjectValue(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
 
     }
 
@@ -166,6 +208,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertTrue("abc".equals(column.getOriginalValueByRow(1)));
         assertTrue("abc".equals(column.getOriginalObjectValueByRow(1)));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testStringCubeColumnDetailNull() {
@@ -175,6 +220,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertTrue(null == column.getOriginalValueByRow(1));
         assertTrue(null == column.getOriginalObjectValueByRow(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testStringCubeColumnDetailEmpty() {
@@ -184,6 +232,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertTrue("".equals(column.getOriginalValueByRow(1)));
         assertTrue("".equals(column.getOriginalObjectValueByRow(1)));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testStringCubeColumnGroup() {
@@ -193,6 +244,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertTrue("abc".equals(column.getGroupValue(1)));
         assertTrue("abc".equals(column.getGroupObjectValue(1)));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testStringCubeColumnGroupNull() {
@@ -202,6 +256,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertTrue(null == column.getGroupValue(1));
         assertTrue(null == column.getGroupObjectValue(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testStringCubeColumnGroupEmpty() {
@@ -211,6 +268,9 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertTrue("".equals(column.getGroupValue(1)));
         assertTrue("".equals(column.getGroupObjectValue(1)));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testDateCubeColumnGroup() {
@@ -221,6 +281,10 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertEquals(time.longValue(), column.getGroupValue(1));
         assertEquals(time, column.getGroupObjectValue(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
+
     }
 
     public void testDateCubeColumnGroupEmptyNull() {
@@ -229,6 +293,9 @@ public class BICubeColumnTest extends TestCase {
         column.addGroupValue(1, null);
         column.forceReleaseWriter();
         assertEquals(null, column.getGroupObjectValue(1));
+
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
     public void testCubeColumnGroupSize() {
@@ -238,6 +305,8 @@ public class BICubeColumnTest extends TestCase {
         column.forceReleaseWriter();
         assertEquals(10, column.sizeOfGroup());
 
+        column.forceReleaseReader();
+        column.forceReleaseWriter();
     }
 
 

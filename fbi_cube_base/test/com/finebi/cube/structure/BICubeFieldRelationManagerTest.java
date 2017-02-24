@@ -2,7 +2,7 @@ package com.finebi.cube.structure;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.location.BICubeConfigurationTest;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.column.BIColumnKey;
@@ -31,7 +31,7 @@ public class BICubeFieldRelationManagerTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        cubeConfiguration = new BICubeConfigurationTest();
+        cubeConfiguration = new BICubeConfigurationTool();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         relationEntityManager = new BICubeFieldRelationManager(retrievalService, BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()), BIColumnKey.covertColumnKey(DBFieldTestTool.generateSTRINGA()), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }

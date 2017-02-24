@@ -1,6 +1,7 @@
 package com.finebi.cube.structure.table;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.finebi.cube.ICubeConfiguration;
@@ -30,7 +31,7 @@ public class BICubeTableEntityTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        cubeConfiguration = new BICubeConfigurationTest();
+        cubeConfiguration = new BICubeConfigurationTool();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         tableEntity = new BICubeTableEntity(BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()), retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
