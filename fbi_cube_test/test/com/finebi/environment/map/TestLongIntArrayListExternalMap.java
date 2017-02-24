@@ -1,5 +1,6 @@
-package com.finebi.cube.map;
+package com.finebi.environment.map;
 
+import com.finebi.cube.map.ExternalMap;
 import com.finebi.cube.map.map2.LongIntArrayListExternalMap;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.stable.collections.array.IntArray;

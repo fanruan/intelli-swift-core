@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  * Created by wang on 2016/10/9.
  */
-public class NIOResourceManagerTest extends TestCase {
+public class TestNIOResourceManager extends TestCase {
     private static BICubeIntegerReaderWrapper reader1 =null;
 
     public void testReadAndRead() {
@@ -471,8 +471,8 @@ public class NIOResourceManagerTest extends TestCase {
             for(int i=0;i<1;i++){
                 System.out.println("---"+reader.getSpecificValue(i));
             }
-            if(NIOResourceManagerTest.reader1==null){
-                NIOResourceManagerTest.reader1 = reader;
+            if(TestNIOResourceManager.reader1==null){
+                TestNIOResourceManager.reader1 = reader;
             }
         } catch (Exception e) {
         } finally {
