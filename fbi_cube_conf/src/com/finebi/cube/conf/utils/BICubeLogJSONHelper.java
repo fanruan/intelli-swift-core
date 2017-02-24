@@ -23,6 +23,12 @@ public class BICubeLogJSONHelper extends BILogHelper {
         return tableExceptionInfoJSON;
     }
 
+    public static JSONObject getCubeLogTableNormalInfoJSON() {
+        JSONObject tableNormalInfoJSON = new JSONObject();
+        initTableInfoJSON(tableNormalInfoJSON, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_TABLE_NORMAL_INFO);
+        return tableNormalInfoJSON;
+    }
+
     private static void initExceptionJson(JSONObject tableExceptionInfoJSON, String exceptionSubTag) {
         Object tableExceptionInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, exceptionSubTag);
         if (tableExceptionInfoMap != null && tableExceptionInfoMap instanceof Map) {
@@ -42,5 +48,24 @@ public class BICubeLogJSONHelper extends BILogHelper {
             }
         }
     }
+
+    public static void initTableInfoJSON(JSONObject tableNormalInfoJSON, String normalInfoSubTag) {
+        Object normalInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_TABLE_NORMAL_INFO);
+        if (normalInfoMap != null && normalInfoMap instanceof Map) {
+            Map<String, Map<String, Object>> cubeTableNormalInfoMap = (Map<String, Map<String, Object>>) normalInfoMap;
+            Iterator<Map.Entry<String, Map<String, Object>>> it = ((Map) normalInfoMap).entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Map<String, Object>> entry = it.next();
+                String tableSourceId = entry.getKey();
+                try {
+                    tableNormalInfoJSON.put(tableSourceId, entry.getValue());
+                } catch (JSONException e) {
+                    BILoggerFactory.getLogger(BICubeLogJSONHelper.class).error("create cube log normal json error \n " + e.getMessage(), e);
+                }
+            }
+        }
+
+    }
+
 
 }
