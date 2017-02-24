@@ -285,15 +285,41 @@ public class BILogHelper {
         cacheCubeLogException(tableSourceID, exceptionInfo, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_TABLE_EXCEPTION_INFO);
     }
 
+    public static void cacheCubeLogTableException(String tableSourceID, BILogExceptionInfo exceptionInfo, boolean cacheExceptionOnlyOnce) {
+        cacheCubeLogException(tableSourceID, exceptionInfo, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_TABLE_EXCEPTION_INFO, cacheExceptionOnlyOnce);
+    }
+
+    public Vector<BILogExceptionInfo> getCubeLogTableExceptionList(String tableSourceID) {
+        return getCubeLogExceptionList(tableSourceID, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_TABLE_EXCEPTION_INFO);
+    }
+
     public static void cacheCubeLogRelationException(String relationID, BILogExceptionInfo exceptionInfo) {
         cacheCubeLogException(relationID, exceptionInfo, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_RELATION_EXCEPTION_INFO);
     }
 
+    public static void cacheCubeLogRelationException(String relationID, BILogExceptionInfo exceptionInfo, boolean cacheExceptionOnlyOnce) {
+        cacheCubeLogException(relationID, exceptionInfo, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_RELATION_EXCEPTION_INFO, cacheExceptionOnlyOnce);
+    }
+
+    public Vector<BILogExceptionInfo> getCubeLogRelationExceptionList(String relationID) {
+        return getCubeLogExceptionList(relationID, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_RELATION_EXCEPTION_INFO);
+    }
+
     public static void cacheCubeLogException(String key, BILogExceptionInfo exceptionInfo, String subTag) {
+        cacheCubeLogException(key, exceptionInfo, subTag, false);
+    }
+
+    public static void cacheCubeLogException(String key, BILogExceptionInfo exceptionInfo, String subTag, boolean cacheExceptionOnlyOnce) {
         try {
             Vector<BILogExceptionInfo> exceptionList = BILogHelper.getCubeLogExceptionList(key, subTag);
+            if (cacheExceptionOnlyOnce) {
+                for (BILogExceptionInfo exceptionInfoRecorded : exceptionList) {
+                    if (exceptionInfoRecorded.equals(exceptionInfo)) {
+                        return;
+                    }
+                }
+            }
             exceptionList.add(exceptionInfo);
-
             Object exceptionInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, subTag);
             if (exceptionInfoMap != null && exceptionInfoMap instanceof Map) {
                 Map<String, Vector> cubeExceptionMap = (Map<String, Vector>) exceptionInfoMap;
