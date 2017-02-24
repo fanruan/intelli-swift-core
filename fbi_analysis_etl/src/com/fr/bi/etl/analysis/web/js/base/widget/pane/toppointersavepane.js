@@ -47,6 +47,13 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
             }
         })
 
+        var label = BI.createWidget({
+            type: "bi.label",
+            cls: "delete-label",
+            whiteSpace: "normal",
+            width: 360
+        })
+
         this.save = BI.createWidget({
             type:"bi.button",
             width:this._constant.buttonWidth,
@@ -54,18 +61,11 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
             text:BI.i18nText("BI-Save"),
             handler : function(e){
                 if(!o.saveHandler(self.controller.isEditing())) {
-                    var change  = function () {
-                        self.controller.changeEditingState()
-                        self.controller.fireSaveOrEditEvent();
-                    }
                     if(self.controller.isEditing()){
                          var res = o.checkBeforeSave();
                         if(res[0] === false) {
-                            BI.Msg.confirm(res[2], res[1], function (v) {
-                                if(v === true) {
-                                    change();
-                                }
-                            })
+                            label.setText(res[1]);
+                            self.confirmCombo.showView();
                         } else {
                             change();
                         }
@@ -73,6 +73,37 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
                         change();
                     }
                 }
+            }
+        });
+
+        this.confirmCombo = BI.createWidget({
+            type: "bi.bubble_combo",
+            trigger: "",
+            el: this.save,
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function(){
+                        self.confirmCombo.hideView();
+                        change();
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        self.confirmCombo.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [label],
+                    width: 400,
+                    hgap: 20
+                },
+                minHeight: 140,
+                maxHeight: 340,
+                minWidth: 400
             }
         });
 
@@ -134,7 +165,7 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
                         }, {
                             type:"bi.center_adapt",
                             height:50,
-                            items:[this.save]
+                            items:[this.confirmCombo]
                         },{
                             type:"bi.layout",
                             width:10,
@@ -149,6 +180,11 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
                 }]
             }
         })
+
+        function change(){
+            self.controller.changeEditingState();
+            self.controller.fireSaveOrEditEvent();
+        }
     },
 
     getContentWidget : function () {
