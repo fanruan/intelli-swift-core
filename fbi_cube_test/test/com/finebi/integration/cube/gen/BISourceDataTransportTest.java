@@ -4,12 +4,10 @@ import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.data.disk.BICubeIncreaseDisDiscovery;
+import com.finebi.cube.data.disk.BICubeDiskDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.gen.oper.BISourceDataAllTransport;
 import com.finebi.cube.gen.oper.BISourceDataTransport;
-import com.finebi.cube.tools.subset.BISourceDataNeverTransportTestTool;
-import com.finebi.cube.tools.subset.BISourceDataPartTransportTestTool;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.provider.BICubeLocationProvider;
@@ -20,10 +18,14 @@ import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
+import com.finebi.cube.structure.column.BICubeTableColumnManager;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
+import com.finebi.cube.structure.column.ICubeTableColumnManagerService;
 import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.table.CompoundCubeTableReader;
 import com.finebi.cube.tools.*;
+import com.finebi.cube.tools.subset.BISourceDataNeverTransportTestTool;
+import com.finebi.cube.tools.subset.BISourceDataPartTransportTestTool;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -34,7 +36,9 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -119,7 +123,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
         CubeColumnReaderService column = null;
         for (ICubeFieldSource fieldSource : BINationDataFactory.createTableNation().getSelfFields(null)) {
             if (fieldSource.getFieldName().equals("name")) {
-                column=cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTableNation()), BIColumnKey.covertColumnKey(fieldSource));
+                column = cube.getCubeColumn(BITableKeyUtils.convert(BINationDataFactory.createTableNation()), BIColumnKey.covertColumnKey(fieldSource));
             }
         }
         try {
@@ -172,20 +176,23 @@ public class BISourceDataTransportTest extends BICubeTestBase {
 
     public void testTransportCompoundTable() {
         try {
-            BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent();
+            CubeTableSource tableSourceParent = BIMemoryDataSourceFactory.generateTableA();
+            List<CubeTableSource> list = new ArrayList<>();
+            list.add(tableSourceParent);
+            BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent(list);
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
             new BISourceDataAllTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1).mainTask(null);
             parents.add(tableSource.parent);
             dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents, 1);
             dataTransport.mainTask(null);
-
-
             CompoundCubeTableReader compoundTable = (CompoundCubeTableReader) cube.getCubeTable(BITableKeyUtils.convert(tableSource));
-            int size = tableSource.getFieldsArray(null).length + tableSource.parent.getFacetFields(null).size();
+            int size = tableSource.getSelfFields(null).size() + tableSource.parent.getFacetFields(null).size();
             assertEquals(size, compoundTable.getFieldInfo().size());
+            compoundTable.forceReleaseWriter();
             CubeTableEntityGetterService parent = compoundTable.getParentTable();
             BIMemoryDataSource memoryDataSource = (BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableA();
             ICubeFieldSource[] fields = tableSource.parent.getFieldsArray(new HashSet<CubeTableSource>());
+
             CubeColumnReaderService col1 = compoundTable.getColumnDataGetter(BIColumnKey.covertColumnKey(fields[0]));
             CubeColumnReaderService col2 = compoundTable.getColumnDataGetter(BIColumnKey.covertColumnKey(fields[1]));
             CubeColumnReaderService col3 = compoundTable.getColumnDataGetter(BIColumnKey.covertColumnKey(fields[2]));
@@ -211,8 +218,10 @@ public class BISourceDataTransportTest extends BICubeTestBase {
      */
     public void testCompoundSubTableRelation() {
         try {
-
-            BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent();
+            CubeTableSource tableSourceParent = BIMemoryDataSourceFactory.generateTableA();
+            List<CubeTableSource> list = new ArrayList<>();
+            list.add(tableSourceParent);
+            BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent(list);
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
             new BISourceDataAllTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1).mainTask(null);
             parents.add(tableSource.parent);
@@ -239,7 +248,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
 
     public void transportByPart(CubeTableSource tableSource, int oldCount) {
         try {
-            ICubeResourceDiscovery discovery = BICubeIncreaseDisDiscovery.getInstance();
+            ICubeResourceDiscovery discovery = BICubeDiskDiscovery.getInstance();
 //            ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             cube = new BICube(retrievalService, discovery);

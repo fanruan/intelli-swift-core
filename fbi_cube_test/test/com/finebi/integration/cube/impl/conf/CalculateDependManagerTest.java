@@ -26,7 +26,7 @@ public class CalculateDependManagerTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        calculateDependManager4Test = new CalculateDependManager4Test();
+        calculateDependManager4Test = new CalculateDependManagerTestTool();
 
     }
 

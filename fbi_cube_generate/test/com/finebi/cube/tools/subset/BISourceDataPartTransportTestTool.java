@@ -37,6 +37,7 @@ public class BISourceDataPartTransportTestTool extends BISourceDataPartTransport
         }
         tableEntityService.addVersion(version);
         tableEntityService.recordRowCount(count);
+        tableEntityService.forceReleaseWriter();
         return null;
     }
 
@@ -52,7 +53,7 @@ public class BISourceDataPartTransportTestTool extends BISourceDataPartTransport
             @Override
             public void actionPerformed(BIDataValue v) {
                 try {
-                    tableEntityService.addDataValue(v);
+                    tableEntityService.increaseAddDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
                     e.printStackTrace();
                 }
