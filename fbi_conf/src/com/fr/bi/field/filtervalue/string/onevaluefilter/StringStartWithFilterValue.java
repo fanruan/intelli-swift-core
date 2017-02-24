@@ -39,11 +39,11 @@ public class StringStartWithFilterValue extends StringOneValueFilterValue {
             return GVIFactory.createAllEmptyIndexGVI();
         }
         GroupValueIndexOrHelper orHelper = new GroupValueIndexOrHelper();
-        if (end - start > sgm.sizeOfGroup() / 2){
-            for (int i = 0; i < start; i ++){
+        if (end - start > sgm.sizeOfGroup() / 2) {
+            for (int i = 0; i < start; i++) {
                 orHelper.add(sgm.getGroupValueIndex(i));
             }
-            for (int i = end + 1; i < sgm.sizeOfGroup(); i ++){
+            for (int i = end; i < sgm.sizeOfGroup(); i++) {
                 orHelper.add(sgm.getGroupValueIndex(i));
             }
             return orHelper.compute().NOT(ti.getRowCount());
