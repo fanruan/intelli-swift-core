@@ -9,3 +9,7 @@
 .bi-analysis-etl-main .bi-analysis-etl-main-save-button {
   margin-right: 5px;
 }
+.bi-analysis-etl-main .delete-label {
+  font-size: 14px;
+  color: #1a1a1a;
+}

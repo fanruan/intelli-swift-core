@@ -65,3 +65,10 @@
   font-size: 14px;
   color: #1a1a1a;
 }
+.bi-dashboard-widget .filter-triangle-bottom {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #d8f2fd;
+}

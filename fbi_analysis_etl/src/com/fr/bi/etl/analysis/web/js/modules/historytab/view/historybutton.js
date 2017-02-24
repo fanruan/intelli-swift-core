@@ -15,7 +15,12 @@ BI.HistoryButton =  FR.extend(BI.BasicButton, {
             value : 1,
             width:  180,
             forceSelected:true,
-            canDelete : true
+            canDelete : true,
+            deleteButton: BI.createWidget({
+                type:"bi.icon_button",
+                title:BI.i18nText("Delete"),
+                cls:"delete-field-font delete bi-shake-icon"
+            })
         })
     },
 
@@ -36,41 +41,33 @@ BI.HistoryButton =  FR.extend(BI.BasicButton, {
             width : o.width - this._constant.selectTagWidth*2 - this._constant.gap - this._constant.iconWidth
         });
 
-        this.deleteButton = BI.createWidget({
-            type:"bi.icon_button",
-            title:BI.i18nText("Delete"),
-            cls:"delete-field-font delete bi-shake-icon"
-        })
+        this.deleteButton = BI.createWidget(o.deleteButton);
 
-        var self = this;
-        this.deleteButton.on(BI.IconButton.EVENT_CHANGE, function(){
-            self.fireEvent(BI.HistoryButton.EVENT_DELETE, self.getValue())
-        })
         BI.createWidget({
             element:this.element,
             type:"bi.htape",
             height:this._constant.height,
             items : [{
-                        type:"bi.layout",
-                        width:this._constant.gap,
-                        height:this._constant.height
-                    },{
-                        el:  this.text
-                     }, {
-                        type:"bi.center_adapt" ,
-                        items:[this.deleteButton],
-                        height:this._constant.height,
-                        width:this._constant.iconWidth
-                    }, {
-                        type:"bi.layout",
-                        width:this._constant.selectTagWidth,
-                        height:this._constant.height
-                     },{
-                        type:"bi.layout",
-                        cls:"select_tag",
-                        width:this._constant.selectTagWidth,
-                        height:this._constant.height
-                    }]
+                type:"bi.layout",
+                width:this._constant.gap,
+                height:this._constant.height
+            },{
+                el:  this.text
+            }, {
+                type:"bi.center_adapt" ,
+                items:[this.deleteButton],
+                height:this._constant.height,
+                width:this._constant.iconWidth
+            }, {
+                type:"bi.layout",
+                width:this._constant.selectTagWidth,
+                height:this._constant.height
+            },{
+                type:"bi.layout",
+                cls:"select_tag",
+                width:this._constant.selectTagWidth,
+                height:this._constant.height
+            }]
         })
         //setVisible会调用缓存的样式如果不设置一下display block会导致show的时候会使用diplay inline导致效果不正确
         this.deleteButton.element.css('display',"block");

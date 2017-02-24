@@ -66,16 +66,15 @@ BI.ETLReq = {
             }
             // 当前编辑的螺旋分析被其他的螺旋分析正在使用 用于选字段禁用
             Pool.current_edit_etl_used = res.usedTables;
-            if (res['used']) {
-                BI.Msg.confirm(BI.i18nText("BI-Warning"), BI.i18nText("BI-ETL_Table_Edit_Warning"), function (v) {
-                    if (v === true) {
-                        callback(res);
-                    }
-                });
-            } else {
-                callback(res);
-            }
+            callback(res);
         })
+    },
+
+    reqCheckTableInUse: function (data, callback) {
+        data.sessionID = Data.SharingPool.get("sessionID");
+        BI.requestAsync("fr_bi_analysis_etl", "etl_table_in_use_check", data, function (res) {
+            callback(res);
+        });
     },
 
     reqPreviewTable: function (data, callback) {

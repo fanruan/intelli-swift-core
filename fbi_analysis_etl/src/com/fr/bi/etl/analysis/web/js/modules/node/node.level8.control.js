@@ -67,34 +67,5 @@ BI.SelectDataLevel8NodeController = BI.inherit(BI.Controller, {
         BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
         namePopover.populate(text, BI.isNotEmptyArray(BI.Utils.getFieldIDsOfTableID(id)) ? BI.Utils.getDescribe(id) : '');
         namePopover.setTemplateNameFocus();
-    },
-
-    afterClickList: function (v, option) {
-        var self = this;
-        switch (v) {
-            case ETLCst.ANALYSIS_TABLE_SET.EDIT :
-                BI.ETLReq.reqEditTable({id: option.id}, function (res) {
-                    BI.createWidget({
-                        type: "bi.analysis_etl_main",
-                        element: BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body"),
-                        model: res
-                    })
-                })
-                return;
-            case ETLCst.ANALYSIS_TABLE_SET.RENAME :
-                self._showRenamePop(option.id, option.text);
-                return;
-            case ETLCst.ANALYSIS_TABLE_SET.DELETE :
-                BI.ETLReq.reqDeleteTable({id: option.id}, BI.emptyFn)
-                return;
-            case ETLCst.ANALYSIS_TABLE_SET.COPY :
-                BI.ETLReq.reqSaveTable({
-                    id: option.id,
-                    new_id: BI.UUID(),
-                    name: BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(), option.text)
-                }, BI.emptyFn);
-                return;
-        }
-
     }
 })

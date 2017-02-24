@@ -20,6 +20,9 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
                     width:120
                 }]
             },
+            isCurrentTheLastOperator: function(){
+                return true;
+            },
             previewOperator : ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA
         })
     },
@@ -30,18 +33,36 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
     },
 
     _initView: function () {
-        var o = this.options;
+        var self = this, o = this.options;
+        this.combos = [];
         this.title = BI.createWidget({
             type:"bi.analysis_operator_title"
         })
 
-        var self = this;
-        this.title.on(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, function(v){
-            self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments)
-            self.controller.showOperatorPane(v);
+        this.title.on(BI.AnalysisOperatorTitle.CLICK_SAVE, function(){
+            self.title.setTableName(self.controller.getTableName());
+        });
+
+        this.title.on(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, function(v, isConfirm){
+            if(isConfirm){
+                self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments);
+                self.controller.showOperatorPane(v);
+            }else{
+                var combos = self.title.getTitleCombos();
+                var result = BI.find(self.title.getTitleButtons(), function(idx, button){
+                    if(!o.isCurrentTheLastOperator() && button.getValue() === v.getValue()){
+                        combos[idx].showView();
+                        return true;
+                    }
+                });
+                if(BI.isNull(result)){
+                    self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments);
+                    self.controller.showOperatorPane(v);
+                }
+            }
         })
 
-        this.title.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(v){
+        this.title.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function(){
             self.fireEvent(BI.AnalysisOperatorTitle.EVENT_SAVE, arguments)
         })
         this.title.on(BI.AnalysisOperatorTitle.EVENT_STATE_CHANGE, function(v){
@@ -83,7 +104,7 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
             contentItem:this.operatorCard,
             cancelHandler : function () {
                 return BI.isFunction(self.operatorCard.getShowingCard().cancelHandler)
-                            && self.operatorCard.getShowingCard().cancelHandler()
+                    && self.operatorCard.getShowingCard().cancelHandler()
             },
             saveHandler : function (editing) {
                 return BI.isFunction(self.operatorCard.getShowingCard().saveHandler)
@@ -146,7 +167,7 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
 
         this.operatorEditPane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (model, type) {
             self.controller.doPreviewChange(model, type)
-            
+
         })
 
         this.operatorEditPane.on(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, function (v) {
@@ -163,33 +184,33 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
         }
         this.vtapeItem =[{
             el : this.title,
-            height : 40
+            height : 39
         }, this.operatorPaneItem,
             this.operatorEditPaneItem,{
-           el : {
-               type:"bi.border",
-               cls : "preview",
-               items:{
-                   north:{
-                       type:"bi.layout",
-                       height:10
-                   },
-                   center:this.previewTable,
-                   south:{
-                       type:"bi.layout",
-                       height:10
-                   },
-                   east:{
-                       type:"bi.layout",
-                       width:10
-                   },
-                   west:{
-                       type:"bi.layout",
-                       width:10
-                   },
-               }
-           }
-        }]
+                el : {
+                    type:"bi.border",
+                    cls : "preview",
+                    items:{
+                        north:{
+                            type:"bi.layout",
+                            height:10
+                        },
+                        center:this.previewTable,
+                        south:{
+                            type:"bi.layout",
+                            height:10
+                        },
+                        east:{
+                            type:"bi.layout",
+                            width:10
+                        },
+                        west:{
+                            type:"bi.layout",
+                            width:10
+                        },
+                    }
+                }
+            }]
         this.vtape = BI.createWidget({
             type:"bi.vtape",
             element : this.element,
