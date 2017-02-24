@@ -42,6 +42,7 @@ public class Service4BIDezi implements Service {
             new BIGetFieldMinMaxValueAction(),
 
             new BIUpdateSingleExcelCubeAction(),
+            new BIDeziSaveFileGetExcelDateAction(),
             new BIExcelExportAction(),
 
             new BIStartGenerateTempCubeAction(),
