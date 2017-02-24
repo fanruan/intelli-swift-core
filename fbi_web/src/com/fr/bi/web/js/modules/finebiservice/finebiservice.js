@@ -90,7 +90,7 @@ BI.FineBIService = BI.inherit(BI.Widget, {
         this.leaves = [];
         if (BI.isNotNull(authNodes)) {
             var connItems = [], packItems = [], authItems = [], fineIndexItems = [];
-            if (BI.isNotNull(authNodes[BICst.DATA_CONFIG_AUTHORITY.DATA_CONNECTION])) {
+            if (BI.isNotNull(authNodes[BICst.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE])) {
                 connItems.push({
                     text: BI.i18nText("BI-Data_Connection_Man"),
                     value: "BI-Data_Connection_Man"
@@ -106,7 +106,7 @@ BI.FineBIService = BI.inherit(BI.Widget, {
                     items: connItems
                 })
             }
-            if (BI.isNotNull(authNodes[BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER])) {
+            if (BI.isNotNull(authNodes[BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE])) {
                 packItems.push({
                     text: BI.i18nText("BI-Packages_Man"),
                     value: "BI-Packages_Man"

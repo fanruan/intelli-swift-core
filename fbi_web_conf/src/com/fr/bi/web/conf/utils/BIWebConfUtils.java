@@ -52,8 +52,8 @@ public class BIWebConfUtils {
     public static JSONObject getAuthDataConfigNodes(long userId) throws Exception {
         JSONObject jo = new JSONObject();
         if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
-            jo.put(DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION, true);
-            jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, true);
+            jo.put(DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE, true);
+            jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE, true);
             jo.put(DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING, true);
             jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY, true);
             jo.put(DBConstant.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE, true);
@@ -61,27 +61,12 @@ public class BIWebConfUtils {
             Set<BIDataConfigAuthority> authoritySet = BIConfigureManagerCenter.getDataConfigAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
             for (BIDataConfigAuthority authority : authoritySet) {
                 String id = authority.getId();
-                String pId = authority.getpId();
-                if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION)) {
-                    jo.put(pId, true);
-                }
-                if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION)) {
-                    jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, true);
-                }
-                if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP)) {
-                    jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, true);
-                }
-                if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.SERVER_CONNECTION)) {
-                    jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER, true);
-                }
-                if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING)) {
-                    jo.put(DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING, true);
-                }
-                if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY)) {
-                    jo.put(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY, true);
-                }
-                if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE)) {
-                    jo.put(DBConstant.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE, true);
+                if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE) ||
+                        ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE) ||
+                        ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING) ||
+                        ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY) ||
+                        ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE)) {
+                    jo.put(id, true);
                 }
             }
         }
@@ -90,6 +75,7 @@ public class BIWebConfUtils {
 
     /**
      * 数据连接“ID”
+     *
      * @param id
      * @return
      */

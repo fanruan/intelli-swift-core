@@ -112,7 +112,6 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
         var unGroupedFieldItem = {};
         unGroupedFieldItem.value = BI.i18nText("BI-Ungrouped_China");
         unGroupedFieldItem.children = [];
-        unGroupedFieldItem.edit = true;
         var groupedFieldMap = {};
         BI.each(groupedItems, function (i, groupItem) {
             var item = {};
@@ -120,7 +119,6 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
             item.children = [];
             item.id = groupItem.id;
             item.init_time = groupItem.init_time;
-            item.edit = groupItem.edit;
             BI.each(groupItem.children, function (i, packageObject) {
                 var object = {};
                 object.value = packageObject.id;

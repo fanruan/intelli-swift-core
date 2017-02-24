@@ -1,6 +1,8 @@
 package com.fr.bi.web.conf.services.dbconnection;
 
 import com.fr.bi.conf.base.dataconfig.source.BIDataConfigAuthority;
+import com.fr.bi.conf.base.datasource.BIConnection;
+import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -36,18 +38,19 @@ public class BIGetConnectionNamesAction extends AbstractBIConfigureAction {
         List<String> authNames = new ArrayList<String>();
         boolean serverAuth = false;
         for (BIDataConfigAuthority authority : authorities) {
-            if (ComparatorUtils.equals(authority.getpId(), DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION)) {
+            if (ComparatorUtils.equals(authority.getpId(), DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION)) {
                 String connId = authority.getId().substring(authority.getpId().length());
                 String connName = BIWebConfUtils.getConnectionNameByID(connId);
                 authNames.add(connName);
             }
-            if (ComparatorUtils.equals(authority.getId(), DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.SERVER_CONNECTION)) {
+            if (ComparatorUtils.equals(authority.getId(), DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.SERVER_CONNECTION)) {
                 serverAuth = true;
             }
         }
         while (names.hasNext()) {
             String name = (String) names.next();
-            if (authNames.contains(name) || isAdmin) {
+            BIConnection connection = BIConnectionManager.getInstance().getBIConnection(name);
+            if (isAdmin || ComparatorUtils.equals(connection.getCreateBy(), userId) || authNames.contains(name)) {
                 JDBCDatabaseConnection conn = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
                 if (conn != null) {
                     if (ComparatorUtils.equals(conn.getDriver(), "sun.jdbc.odbc.JdbcOdbcDriver") && conn.getURL().indexOf("Microsoft Access Driver") > 0) {
