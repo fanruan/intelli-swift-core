@@ -158,6 +158,7 @@ BI.TestLinkLoadingMask = BI.inherit(BI.Widget, {
                     width: 498,
                     height: 100,
                     cls: "test-fail-detail-info",
+                    srcolly: true,
                     items: [{
                         type: "bi.label",
                         text: info,
