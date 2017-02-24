@@ -64,6 +64,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.yAxis[0].lineWidth = 1;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
         config.yAxis[0].maxWidth = '40%';
 
