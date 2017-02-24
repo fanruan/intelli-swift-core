@@ -45,7 +45,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.show_title_detailed_setting_combo"
         });
 
-        this.widgetName.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE)
         });
 

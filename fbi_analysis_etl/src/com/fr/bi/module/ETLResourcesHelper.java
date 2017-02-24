@@ -235,6 +235,7 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/control/select.data.control.js",
 				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/widget.selectdatapane.js",
 				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/control/widget.selectdatapane.control.js",
+				"com/fr/bi/etl/analysis/web/js/base/widget/pane/name.pane.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/pane/toppointerpane.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/pane/toppointersavepane.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/pane/toppointersavepane.control.js",

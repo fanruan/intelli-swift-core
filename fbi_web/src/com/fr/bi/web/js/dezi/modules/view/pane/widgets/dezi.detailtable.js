@@ -189,6 +189,27 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             self._onClickFilter();
         });
 
+        this.triangle = BI.createWidget({
+            type: "bi.layout",
+            cls: "filter-triangle-bottom",
+            invisible: true
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: filter,
+            items: [{
+                el:{
+                    type: "bi.horizontal_auto",
+                    height: 10,
+                    items:[this.triangle]
+                },
+                left: 0,
+                right: 0,
+                bottom: -9
+            }]
+        });
+
         var expand = BI.createWidget({
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
@@ -351,9 +372,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     bottom: 0
                 }]
             });
+            this.triangle.setVisible(true);
             return;
         }
         this.filterPane.setVisible(!this.filterPane.isVisible());
+        this.triangle.setVisible(this.filterPane.isVisible());
     },
 
     _refreshGlobalStyle: function (globalStyle) {

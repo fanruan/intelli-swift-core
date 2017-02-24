@@ -131,9 +131,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     bottom: 0
                 }]
             });
+            this.triangle.setVisible(true);
             return;
         }
         this.filterPane.setVisible(!this.filterPane.isVisible());
+        this.triangle.setVisible(this.filterPane.isVisible());
     },
 
     _buildWidgetTitle: function () {
@@ -253,6 +255,27 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         filter.on(BI.IconButton.EVENT_CHANGE, function () {
             self._onClickFilter();
+        });
+
+        this.triangle = BI.createWidget({
+            type: "bi.layout",
+            cls: "filter-triangle-bottom",
+            invisible: true
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: filter,
+            items: [{
+                el:{
+                    type: "bi.horizontal_auto",
+                    height: 10,
+                    items:[this.triangle]
+                },
+                left: 0,
+                right: 0,
+                bottom: -9
+            }]
         });
 
         var expand = BI.createWidget({
