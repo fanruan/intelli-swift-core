@@ -24,7 +24,7 @@ public interface BIConnectionProvider {
 
     JSONObject createJSON() throws JSONException;
 
-    boolean isMicrosoftAccessDatabase(JDBCDatabaseConnection c);
+    boolean isMicrosoftAccessDatabase(String driver,String url);
 
     boolean needSchema(Connection c);
 }

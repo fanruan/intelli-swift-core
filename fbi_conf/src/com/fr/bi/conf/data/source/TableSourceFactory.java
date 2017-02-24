@@ -1,7 +1,10 @@
 package com.fr.bi.conf.data.source;
 
+import com.fr.bi.mongodb.MongoDatabaseConnection;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.AbstractTableSource;
+import com.fr.data.impl.Connection;
+import com.fr.file.DatasourceManager;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
@@ -24,11 +27,17 @@ public class TableSourceFactory {
 
     public static AbstractTableSource createTableSource(JSONObject jo, long userId) throws Exception {
         String connectionName = jo.optString("connection_name", StringUtils.EMPTY);
+        Connection conn =  DatasourceManager.getInstance().getConnection(connectionName);
         AbstractTableSource tableSource;
         if(SOURCES.get(connectionName) != null) {
             tableSource = (AbstractTableSource) SOURCES.get(connectionName).newInstance();
             tableSource.parseJSON(jo, userId);
-        } else {
+        }
+        else if(conn instanceof MongoDatabaseConnection){
+            tableSource = new MongoDBTableSource();
+            tableSource.parseJSON(jo, userId);
+        }
+        else {
             tableSource = new DBTableSource();
             tableSource.parseJSON(jo, userId);
         }

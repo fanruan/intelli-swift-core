@@ -3,6 +3,8 @@ package com.fr.bi.web.conf.services.dbconnection;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.data.MongoDBExtractor;
+import com.fr.bi.mongodb.MongoDatabaseConnection;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.core.DataCoreUtils;
@@ -75,8 +77,17 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
                         views = ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schemaName));
                     }
                 } else {
-                    tps = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.TABLE, null);
-                    views = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, null);
+                    if (dbc instanceof MongoDatabaseConnection) {
+                        List<String> collList = MongoDBExtractor.getInstance().getCollections((MongoDatabaseConnection) dbc);
+                        TableProcedure[] tmp = new TableProcedure[collList.size()];
+                        for (int i = 0; i < collList.size(); i++) {
+                            tmp[i] = new TableProcedure(schemaName,collList.get(i),TableProcedure.TABLE,null);
+                        }
+                        tps= tmp;
+                    } else {
+                        tps = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.TABLE, null);
+                        views = FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, null);
+                    }
                 }
             } catch (Exception e) {
                 jo.put("error", e.getMessage());
