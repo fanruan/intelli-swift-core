@@ -311,9 +311,9 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 dimensionStructure.push({
                     id: BI.UUID(),
                     pId: wId,
-                    type: "bi.detail_select_dimension_level0_item",
+                    type: "bi._level0_item",
                     layer: layer,
-                    fieldType: BI.Utils.getFieldTypeByID(dimension._src.field_id),
+                    fieldType: dimension.type === BICst.TARGET_TYPE.COUNTER ? BICst.COLUMN.COUNTER : BI.Utils.getFieldTypeByID(dimension._src.field_id),
                     text: dimensionName,
                     title: dimensionName,
                     value: dimension,
