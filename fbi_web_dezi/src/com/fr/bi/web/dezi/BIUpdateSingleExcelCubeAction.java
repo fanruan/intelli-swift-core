@@ -1,5 +1,6 @@
 package com.fr.bi.web.dezi;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.base.FRContext;
@@ -8,7 +9,6 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
 
@@ -75,6 +75,10 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
     }
 
     private void updateExcelTableDate(long userId, CubeTableSource tableSource) {
-        CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, tableSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        try {
+            CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, tableSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        } catch (InterruptedException e) {
+            BILoggerFactory.getLogger(this.getClass()).error("update excel single table error: " + e.getMessage(), e);
+        }
     }
 }
