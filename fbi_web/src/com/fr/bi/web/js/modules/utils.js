@@ -168,6 +168,21 @@
             return translations[tableId];
         },
 
+        getConnectionNameByTableId: function (tableId) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
+                var connectionName = Pool.tables[tableId].connection_name;
+                return connectionName || "";
+            }
+            return "";
+        },
+
+        getFieldsByTableId: function (tableId) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
+                return Pool.tables[tableId].fields[0] || [];
+            }
+            return [];
+        },
+
         getFieldIDsOfTableID: function (tableId) {
             if (BI.isNotNull(Pool.tables[tableId])) {
                 var fields = Pool.tables[tableId].fields;
@@ -1767,19 +1782,31 @@
         //获取某维度或指标是否被其他维度或指标（计算指标）使用的指标
         getDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
             var self = this;
-            if (this.isDimensionByDimensionID(dId)) {
-                return [];
-            }
             var wId = this.getWidgetIDByDimensionID(dId);
-            var ids = this.getAllTargetDimensionIDs(wId);
-            var result = [];
-            BI.each(ids, function (i, id) {
-                var tids = self.getExpressionValuesByDimensionID(id);
-                if (tids.contains(dId)) {
-                    result.push(id);
-                }
-            });
-            return result;
+            var ids = [], result = [];
+            switch (this.getWidgetTypeByID(wId)) {
+                case BICst.WIDGET.DETAIL:
+                    ids = this.getAllDimensionIDs(wId);
+                    BI.each(ids, function (i, id) {
+                        var tids = self.getExpressionValuesByDimensionID(id);
+                        if (tids.contains(dId)) {
+                            result.push(id);
+                        }
+                    });
+                    return result;
+                default:
+                    if (this.isDimensionByDimensionID(dId)) {
+                        return [];
+                    }
+                    ids = this.getAllTargetDimensionIDs(wId);
+                    BI.each(ids, function (i, id) {
+                        var tids = self.getExpressionValuesByDimensionID(id);
+                        if (tids.contains(dId)) {
+                            result.push(id);
+                        }
+                    });
+                    return result;
+            }
         },
 
 
@@ -2886,6 +2913,15 @@
                     widget.dimensions[dId].used = false;
                 }
             });
+
+            //gis地图按分组表来算，而非交叉表
+            if(widget.type === BICst.WIDGET.GIS_MAP){
+                if(BI.isNotEmptyArray(widget.view[BICst.REGION.DIMENSION2])){
+                    widget.view[BICst.REGION.DIMENSION1] = widget.view[BICst.REGION.DIMENSION1] || [];
+                    widget.view[BICst.REGION.DIMENSION1] = BI.concat(widget.view[BICst.REGION.DIMENSION1], widget.view[BICst.REGION.DIMENSION2]);
+                    widget.view[BICst.REGION.DIMENSION2] = [];
+                }
+            }
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             widget.real_data = true;

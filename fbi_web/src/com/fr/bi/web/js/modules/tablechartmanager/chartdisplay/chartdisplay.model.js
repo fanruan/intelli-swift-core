@@ -113,60 +113,23 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _formatDataForGISMap: function (data) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
-        if (BI.has(data, "t")) {
-            var top = data.t, left = data.l;
-            var init = BI.map(left.c, function (id, lObj) {
-                var obj = {};
-                BI.any(top.c, function (idx, tObj) {
-                    var data = [], x = lObj.n;
-                    BI.each(lObj.s.c[idx].s, function (i, o) {
-                        if (BI.isNotNull(o) && BI.isNotNull(x)) {
-                            data.push({
-                                "x": x,
-                                "xValue": x,
-                                "z": tObj.n,
-                                "zValue": tObj.n,
-                                "y": o,
-                                "yValue": o,
-                                "targetIds": [targetIds[i]]
-                            });
-                        }
-                    });
-                    if(BI.isNotEmptyArray(data)){
-                        obj.data = data;
-                        obj.name = tObj.n;
-                        return true;
-                    }
-                });
-                return obj;
-            });
-            var result = [];
-            var size = 0;
-            if (init.length > 0) {
-                size = targetIds.length;
-            }
-            BI.each(BI.makeArray(size, null), function (idx, index) {
-                var res = {data: [], name: BI.Utils.getDimensionNameByID(targetIds[idx])};
-                BI.each(init, function (id, obj) {
-                    res.data.push(obj.data[idx]);
-                });
-                result.push(res);
-            });
-            return result;
-        }
         if (BI.has(data, "c")) {
             var obj = (data.c)[0];
             var columnSizeArray = BI.makeArray(BI.isNull(obj) ? 0 : BI.size(obj.s), 0);
             return BI.map(columnSizeArray, function (idx, value) {
                 var adjustData = BI.map(data.c, function (id, item) {
                     var x = item.n;
-                    return {
+                    var obj = {
                         x: x,
                         xValue: x,
                         y: item.s[idx],
                         yValue: item.s[idx],
                         targetIds: [targetIds[idx]]
                     };
+                    if(BI.has(item, "c") && BI.isNotEmptyArray(item.c) && BI.isNotEmptyString(item.c[0].n)){
+                        obj.z = obj.zValue = item.c[0].n;
+                    }
+                    return obj;
                 });
                 var obj = {};
                 obj.data = adjustData;

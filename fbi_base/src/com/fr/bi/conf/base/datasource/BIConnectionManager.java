@@ -3,7 +3,6 @@ package com.fr.bi.conf.base.datasource;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.data.db.DataLinkInformation;
-import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -11,7 +10,6 @@ import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.MSSQLDialect;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.impl.Connection;
-import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.file.XMLFileManager;
@@ -36,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BIConnectionManager extends XMLFileManager implements BIConnectionProvider{
     public static final String XML_TAG = "BIConnectionManager";
     private Map<String, BIConnection> connMap = new ConcurrentHashMap<String, BIConnection>();
-    private Map<String, JDBCDatabaseConnection> availableConnection = new HashMap<String, JDBCDatabaseConnection>();
+    private Map<String, Connection> availableConnection = new HashMap<String, Connection>();
     private static BIConnectionManager manager;
 
     private BIConnectionManager() {
@@ -50,7 +48,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String name = nameIt.next();
-            JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
+            Connection c = datasourceManager.getConnection(name);
             if (c != null && testConnection(c)) {
                 availableConnection.put(name, c);
             }
@@ -144,18 +142,15 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     public void updateConnection(String linkData, String oldName) throws Exception {
         JSONObject linkDataJo = new JSONObject(linkData);
         String newName = linkDataJo.optString("name");
-        DataLinkInformation dl = new DataLinkInformation();
-        dl.parseJSON(linkDataJo);
-        JDBCDatabaseConnection jdbcDatabaseConnection = dl.createJDBCDatabaseConnection();
-        /*BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils(jdbcDatabaseConnection);
-        jdbcDatabaseConnection = utils.optimizeConnection(jdbcDatabaseConnection);*/ //连接保存时，如果是sqlserver连接，不会再url上字段加selectMethod，当在需要数据库连接时，加上selectMethod属性
         DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
-
         if (!ComparatorUtils.equals(oldName, newName)) {
             datasourceManager.renameConnection(oldName, newName);
         }
-        BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
-        datasourceManager.putConnection(newName, jdbcDatabaseConnection);
+        DataLinkInformation dl = new DataLinkInformation();
+        dl.parseJSON(linkDataJo);
+
+        Connection databaseConnection = dl.createDatabaseConnection();
+        datasourceManager.putConnection(newName,databaseConnection);
         connMap.remove(oldName);
         connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null)));
         try {
@@ -207,30 +202,26 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         int index = 0;
         while (nameIt.hasNext()) {
             String name = nameIt.next();
-            JDBCDatabaseConnection c = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
+            Connection c = datasourceManager.getConnection(name);
+            JSONObject jo = c.toJSONObject();
+            jo.put("name", name);
             if (c != null) {
-                if (isMicrosoftAccessDatabase(c)) {
+                if (isMicrosoftAccessDatabase(jo.optString("driver"),jo.optString("url"))) {
                     continue;
                 }
-                JSONObject jo = new JSONObject();
-                jo.put("name", name);
-                jo.put("driver", c.getDriver());
-                jo.put("url", c.getURL());
-                jo.put("user", c.getUser());
-                jo.put("password", c.getPassword());
-                jo.put("originalCharsetName", StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
-                jo.put("newCharsetName", StringUtils.alwaysNotNull(c.getNewCharsetName()));
-                jo.put("schema", getSchema(name));
-                jsonObject.put("link" + index++, jo);
             }
+            if(c.hasSchema()) {
+                jo.put("schema", getSchema(name));
+            }
+            jsonObject.put("link" + index++, jo);
         }
 
         return jsonObject;
     }
 
     @Override
-    public boolean isMicrosoftAccessDatabase(JDBCDatabaseConnection c) {
-        return "sun.jdbc.odbc.JdbcOdbcDriver".equals(c.getDriver()) && c.getURL().indexOf("Microsoft Access Driver") > 0;
+    public boolean isMicrosoftAccessDatabase(String driver,String url) {
+        return "sun.jdbc.odbc.JdbcOdbcDriver".equals(driver) && url.indexOf("Microsoft Access Driver") > 0;
     }
 
     @Override

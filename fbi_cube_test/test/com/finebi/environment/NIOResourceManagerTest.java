@@ -1,4 +1,4 @@
-package com.finebi.integration.cube.data.reader;
+package com.finebi.environment;
 
 import com.finebi.cube.data.disk.BICubeDiskDiscovery;
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
@@ -14,11 +14,13 @@ import com.finebi.cube.provider.BICubeLocationProvider;
 import com.finebi.cube.provider.BIProjectPathProvider;
 import junit.framework.TestCase;
 
+
 /**
  * Created by wang on 2016/10/9.
  */
 public class NIOResourceManagerTest extends TestCase {
-    public static BICubeIntegerReaderWrapper reader1 = null;
+    private static BICubeIntegerReaderWrapper reader1 =null;
+
     public void testReadAndRead() {
         final ICubeResourceLocation locationR = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
         locationR.setStringType();
@@ -30,11 +32,17 @@ public class NIOResourceManagerTest extends TestCase {
         try {
             reader1 = (BIStringNIOReader) discovery.getCubeReader(locationR);
             r = reader1.getSpecificValue(0);
+            System.out.println(r);
+//            reader1.forceRelease();
             reader2 = (BIStringNIOReader) discovery.getCubeReader(locationR);
             r = reader2.getSpecificValue(0);
-            reader1.forceRelease();
+            System.out.println(r);
+
+//            reader1.clear();
+//            reader1.forceRelease();
             reader2.forceRelease();
 
+            System.err.println(reader1.isForceReleased());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -59,7 +67,51 @@ public class NIOResourceManagerTest extends TestCase {
 
             writer1 = (BIStringNIOWriter) discovery.getCubeWriter(locationW);
             writer1.recordSpecificValue(1, "b");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
 
+        }
+    }
+
+    /**
+     * 第一次文件为single，第二次文件变为multi，由于缓存reader，导致第二次读取文件异常（indexOutOfBounds）
+     */
+    public void testSingleFileToMultiFile() {
+        final ICubeResourceLocation locationR = BICubeLocationProvider.buildWrite("D:/35dfc32c/", "test");
+        locationR.setStringType();
+        locationR.setReaderSourceLocation();
+        final ICubeResourceLocation locationW = BICubeLocationProvider.buildWrite("D:/35dfc32c/", "test");
+        locationW.setStringType();
+        locationW.setWriterSourceLocation();
+        BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
+        BIStringNIOReader reader1 = null;
+        BIStringNIOWriter writer1 = null;
+        String r = "";
+        try {
+            int last = 3 * 1024 * 1024;
+            writer1 = (BIStringNIOWriter) discovery.getCubeWriter(locationW);
+
+            for (int i = 0; i < last / 2; i++) {
+                writer1.recordSpecificValue(i, "用中文吧会占用的用用中文吧会占用的用中文吧会占用的代销尝一下测试测试测用中文吧会占用的代销尝一下测试测试测代销尝一下测试测试测中文吧会占用的代销尝一下测试测试测用中文吧会占用的代销尝一下测试测试测代销尝一下测试测试测用中文吧会占用的用中文吧会占用的代销尝一下测试测试测用中文吧会占用的代销尝一下测试测试测代销尝一下测试测试测");
+            }
+            writer1.forceRelease();
+            reader1 = (BIStringNIOReader) discovery.getCubeReader(locationR);
+            for (int i = 0; i < 1024 * 1024 - 1; i++) {
+                reader1.getSpecificValue(i);
+            }
+            reader1.forceRelease();
+
+            writer1 = (BIStringNIOWriter) discovery.getCubeWriter(locationW);
+            for (int i = 0; i < last; i++) {
+                writer1.recordSpecificValue(i, "用中文吧会占用的用用中文吧会占用的用中文吧会占用的代销尝一下测试测试测用中文吧会占用的代销尝一下测试测试测代销尝一下测试测试测中文吧会占用的代销尝一下测试测试测用中文吧会占用的代销尝一下测试测试测代销尝一下测试测试测用中文吧会占用的用中文吧会占用的代销尝一下测试测试测用中文吧会占用的代销尝一下测试测试测代销尝一下测试测试测");
+            }
+            writer1.forceRelease();
+            reader1 = (BIStringNIOReader) discovery.getCubeReader(locationR);
+            for (int i = 1024 * 1024 * 2; i < 1024 * 1024 * 3; i++) {
+                reader1.getSpecificValue(i);
+            }
+            reader1.forceRelease();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -120,8 +172,8 @@ public class NIOResourceManagerTest extends TestCase {
         locationR.setStringType();
         locationR.setReaderSourceLocation();
         final ICubeResourceLocation locationW = BICubeLocationProvider.buildWrite(BIProjectPathProvider.projectPath, "writer" + 0 + "ok");
-        locationW.setStringType();
-        locationW.setWriterSourceLocation();
+        locationR.setStringType();
+        locationR.setReaderSourceLocation();
         final BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
         Runnable readTask = new Runnable() {
             @Override
@@ -130,9 +182,9 @@ public class NIOResourceManagerTest extends TestCase {
                 String r = "";
                 try {
                     reader = (BIStringNIOReader) discovery.getCubeReader(locationR);
-                    for (int i = 0; i < 100000; i++) {
+                    for (int i = 0; i < 1024; i++) {
                         r = reader.getSpecificValue(0);
-                        if (i % 20000 == 0) {
+                        if (i % 20 == 0) {
                             System.out.println(" r: " + r);
                         }
                     }
@@ -234,7 +286,34 @@ public class NIOResourceManagerTest extends TestCase {
      * TODO
      */
     public void atestAllRelease() {
-        String basePath = BIProjectPathProvider.bigfilePath;
+//        String basePath = BIProjectPathProvider.bigfilePath;
+//        try {
+//            System.out.println("------------------------------");
+//            BIStringNIOReader R = (BIStringNIOReader) discovery.getCubeReader(locationR);
+//            System.out.println("------------------------------" + R.getSpecificValue(1));
+//        } catch (IllegalCubeResourceLocationException e) {
+//            e.printStackTrace();
+//        } catch (BIBuildReaderException e) {
+//            e.printStackTrace();
+//        } catch (BIResourceInvalidException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            Thread.currentThread().join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+////        for (int i = 0; i < 5; i++) {
+////            new Thread(writeTask).start();
+////        }
+
+    }
+
+    public void testIsSIngle() {
+
+    }
+    public void testAllRelease() {
+        String basePath = "D:\\bigfiles\\env\\WebReport\\WEB-INF\\testFolder\\cube";
         final BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
         final int size = 1024;
         Runnable forceRelease = new Runnable() {
@@ -438,5 +517,4 @@ public class NIOResourceManagerTest extends TestCase {
         BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
         System.out.println("--------------------");
     }
-
 }

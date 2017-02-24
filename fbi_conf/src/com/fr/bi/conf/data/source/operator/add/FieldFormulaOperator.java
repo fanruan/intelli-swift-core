@@ -93,7 +93,7 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
                 BILoggerFactory.getLogger(FieldFormulaOperator.class).error(BIStringUtils.append(e.getMessage() + "", e.getClass().toString()));
                 BILoggerFactory.getLogger(FieldFormulaOperator.class).error(BIStringUtils.append("The formula:", formula));
                 BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "The Table is: " + BILogHelper.logCubeLogTableSourceInfo(ti.getId()) + "The formula is: " + formula, e.getMessage(), e);
-                BILogHelper.cacheCubeLogTableException(this.getBITable().getTableName(), exceptionInfo);
+                BILogHelper.cacheCubeLogTableException(this.getBITable().getTableName(), exceptionInfo, true);
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }
