@@ -55,6 +55,7 @@ import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.MemoryConnection;
 import com.fr.file.DatasourceManager;
+import com.fr.file.DatasourceManagerProvider;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
@@ -126,7 +127,6 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManager());
-
     }
 
     public BIUpdateFrequencyManagerProvider getBIUpdateSettingManager(){
@@ -371,6 +371,7 @@ public class BICoreModule extends AbstractModule {
             return new BISystemTableRelationManager();
         }
     }
+
 
     private BISystemPackageConfigurationProvider generateBusiPackManager() {
         if (ClusterEnv.isCluster()) {

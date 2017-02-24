@@ -1,9 +1,9 @@
 package com.fr.bi.test.etl.analysis.manager;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.BICubeManager;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.fr.bi.cal.generate.EmptyCubeTask;
-import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.base.datasource.BIConnectionProvider;
@@ -13,14 +13,17 @@ import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.etl.analysis.manager.UserETLCubeManager;
 import com.fr.bi.etl.analysis.manager.UserETLCubeManagerProvider;
-import com.fr.bi.stable.engine.CubeTask;
-import com.fr.bi.stable.utils.BISerializableUtils;
+import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.cluster.rpc.RPC;
+import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.data.pool.MemoryConnection;
+import com.fr.file.DatasourceManager;
 import com.fr.json.JSONException;
 import com.fr.stable.bridge.StableFactory;
 import junit.framework.TestCase;
 
 import java.io.*;
+import java.util.Iterator;
 
 /**
  * Created by wang on 2016/11/22.
@@ -81,7 +84,6 @@ public class TestRPC extends TestCase {
 
 
     public void testCubeTask() {
-        BISerializableUtils.findUnsupportedSerializable(MyCubeTask.class);
         BICubeManager provider = new BICubeManager();
         provider.addTask(new EmptyCubeTask("123"), 123);
         RPC.registerSkeleton(provider, 12345);
@@ -89,7 +91,7 @@ public class TestRPC extends TestCase {
         System.out.println(proxy.hasTask(new EmptyCubeTask("123"), 123));
     }
 
-    class FOO implements Runnable,Serializable{
+    class FOO implements Runnable, Serializable {
 
         private static final long serialVersionUID = 4710240579276018302L;
 
@@ -99,7 +101,7 @@ public class TestRPC extends TestCase {
         }
     }
 
-    public void testInnerClassSerialize(){
+    public void testInnerClassSerialize() {
         FOO foo = new FOO();
         Thread t = new Thread(foo);
 //        t.start();
