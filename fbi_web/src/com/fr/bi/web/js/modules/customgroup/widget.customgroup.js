@@ -541,6 +541,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         BI.each(group.details, function (i, groupobj) {
             sort.details.push(groupobj.value);
         });
+        group.ungroup = BI.pluck(self.fieldPane.createUngroupedItemFromGroupMap(), "content")[0] || [];
         if (self.bottom.isSelected()) {
             group.ungroup2Other = BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED;
             group.ungroup2OtherName = ungroupedName;
