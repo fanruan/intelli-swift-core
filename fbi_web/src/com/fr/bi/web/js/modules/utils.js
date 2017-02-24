@@ -3179,10 +3179,21 @@
                         } else {
                             delete filterValue.end;
                         }
-                    } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                        filterValue.start = parseComplexDate(wValue.start);
-                    } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                        filterValue.end = parseComplexDate(wValue.end);
+                    } else if (BI.isNotNull(wValue.start)) {
+                        var s = parseComplexDate(wValue.start);
+                        delete filterValue.start;
+                        if(BI.isNotNull(s)){
+                            filterValue.end = s - 1;
+                        } else {
+                            delete filterValue.end;
+                        }
+                    } else if (BI.isNotNull(wValue.end)) {
+                        var e = parseComplexDate(wValue.end);
+                        delete filterValue.end;
+                        if(BI.isNotNull(e)){
+                            filterValue.end = e;
+                        }
+                        filterValue.start = parseComplexDate(wValue.end);
                     }
                     break;
                 case BICst.YEAR_QUARTER:
