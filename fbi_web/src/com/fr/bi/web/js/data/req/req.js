@@ -180,6 +180,12 @@ Data.Req = BIReq = {
         }, complete)
     },
 
+    reqDeziSaveFileGetExcelData: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_dezi", "dezi_save_file_get_excel_data", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
     reqSaveFileGetExcelData: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "save_file_get_excel_data", data, function (res) {
             callback(res);

@@ -43,7 +43,7 @@ BI.UpdateExcelModel = BI.inherit(BI.Widget, {
         var excelFileName = file.filename;
         var fullFileName = file.attach_id + excelFileName;
         preProcess();
-        Data.Req.reqSaveFileGetExcelData({fileId: file.attach_id}, function (data) {
+        Data.Req.reqDeziSaveFileGetExcelData({fileId: file.attach_id}, function (data) {
             self.validation = false;
             //对比前一次fields
             var newFields = data.fields[0];
