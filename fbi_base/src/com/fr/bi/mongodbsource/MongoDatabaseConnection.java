@@ -4,6 +4,7 @@ import com.fr.data.impl.AbstractDatabaseConnection;
 import com.fr.data.impl.Connection;
 import com.fr.general.FRLogger;
 import com.fr.general.Inter;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONParser;
 import com.fr.stable.CodeUtils;
@@ -220,4 +221,20 @@ public class MongoDatabaseConnection extends AbstractDatabaseConnection implemen
                 ", options='" + options + '\'' +
                 '}';
     }
+
+    public boolean hasSchema() {
+        return false;
+    }
+
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject var1 = new JSONObject();
+        var1.put("driver", this.getDriver());
+        var1.put("url", this.getUrl());
+        var1.put("user", this.getUsername());
+        var1.put("password", this.getPassword());
+        var1.put("originalCharsetName", StringUtils.alwaysNotNull(this.getOriginalCharsetName()));
+        var1.put("newCharsetName", StringUtils.alwaysNotNull(this.getNewCharsetName()));
+        return var1;
+    }
+
 }

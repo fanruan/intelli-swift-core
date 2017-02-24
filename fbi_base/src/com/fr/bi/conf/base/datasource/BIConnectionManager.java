@@ -205,40 +205,26 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         int index = 0;
         while (nameIt.hasNext()) {
             String name = nameIt.next();
-            JSONObject jo = new JSONObject();
+            Connection c = datasourceManager.getConnection(name);
+            JSONObject jo = c.toJSONObject();
             jo.put("name", name);
-            Connection mc = datasourceManager.getConnection(name);
-            if(mc instanceof MongoDatabaseConnection){
-                jo.put("driver", mc.getDriver());
-                jo.put("url", ((MongoDatabaseConnection) mc).getUrl());
-                jo.put("user", ((MongoDatabaseConnection) mc).getUsername());
-                jo.put("password", ((MongoDatabaseConnection) mc).getPassword());
-                jo.put("originalCharsetName", StringUtils.alwaysNotNull(mc.getOriginalCharsetName()));
-                jo.put("newCharsetName", StringUtils.alwaysNotNull(mc.getNewCharsetName()));
-            }else if(mc instanceof JDBCDatabaseConnection){
-                JDBCDatabaseConnection c = (JDBCDatabaseConnection)mc;
-                if (c != null) {
-                    if (isMicrosoftAccessDatabase(c)) {
-                        continue;
-                    }
+            if (c != null) {
+                if (isMicrosoftAccessDatabase(jo.optString("driver"),jo.optString("url"))) {
+                    continue;
                 }
-                jo.put("driver", c.getDriver());
-                jo.put("url", c.getURL());
-                jo.put("user", c.getUser());
-                jo.put("password", c.getPassword());
-                jo.put("originalCharsetName", StringUtils.alwaysNotNull(c.getOriginalCharsetName()));
-                jo.put("newCharsetName", StringUtils.alwaysNotNull(c.getNewCharsetName()));
             }
+            if(c.hasSchema()) {
                 jo.put("schema", getSchema(name));
-                jsonObject.put("link" + index++, jo);
+            }
+            jsonObject.put("link" + index++, jo);
         }
 
         return jsonObject;
     }
 
     @Override
-    public boolean isMicrosoftAccessDatabase(JDBCDatabaseConnection c) {
-        return "sun.jdbc.odbc.JdbcOdbcDriver".equals(c.getDriver()) && c.getURL().indexOf("Microsoft Access Driver") > 0;
+    public boolean isMicrosoftAccessDatabase(String driver,String url) {
+        return "sun.jdbc.odbc.JdbcOdbcDriver".equals(driver) && url.indexOf("Microsoft Access Driver") > 0;
     }
 
     @Override
