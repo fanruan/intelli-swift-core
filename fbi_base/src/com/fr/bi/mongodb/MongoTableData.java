@@ -1,4 +1,4 @@
-package com.fr.bi.mongodbsource;
+package com.fr.bi.mongodb;
 
 import com.fr.base.Parameter;
 import com.fr.base.TableData;
@@ -6,7 +6,6 @@ import com.fr.base.TemplateUtils;
 import com.fr.data.AbstractParameterTableData;
 import com.fr.data.core.DataCoreXmlUtils;
 import com.fr.data.impl.Connection;
-import com.fr.file.DatasourceManager;
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.ArrayUtils;

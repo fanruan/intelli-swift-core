@@ -2,9 +2,7 @@ package com.fr.bi.conf.base.datasource;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
-import com.fr.bi.mongodbsource.MongoDatabaseConnection;
 import com.fr.bi.stable.data.db.DataLinkInformation;
-import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -12,7 +10,6 @@ import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.MSSQLDialect;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.impl.Connection;
-import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.file.XMLFileManager;

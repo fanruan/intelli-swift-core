@@ -2,9 +2,9 @@ package com.fr.bi.data;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.mongodbsource.MongoConstants;
-import com.fr.bi.mongodbsource.MongoDatabaseConnection;
-import com.fr.bi.mongodbsource.MongoTypeConvert;
+import com.fr.bi.mongodb.MongoConstants;
+import com.fr.bi.mongodb.MongoDatabaseConnection;
+import com.fr.bi.mongodb.MongoTypeConvert;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.PersistentTable;

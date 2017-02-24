@@ -1,4 +1,4 @@
-package com.fr.bi.mongodbsource;
+package com.fr.bi.mongodb;
 
 
 /**

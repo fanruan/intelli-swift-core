@@ -1,15 +1,13 @@
 package com.fr.bi.stable.data.db;
 
-import com.fr.bi.mongodbsource.MongoConstants;
-import com.fr.bi.mongodbsource.MongoDatabaseConnection;
+import com.fr.bi.mongodb.MongoConstants;
+import com.fr.bi.mongodb.MongoDatabaseConnection;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONParser;
 import com.fr.stable.StringUtils;
-
-import static com.fr.bi.mongodbsource.MongoConstants.MONGODB_URL_PREFIX;
 
 
 /**

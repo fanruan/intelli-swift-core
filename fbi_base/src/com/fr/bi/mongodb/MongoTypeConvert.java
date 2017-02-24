@@ -1,9 +1,8 @@
-package com.fr.bi.mongodbsource;
+package com.fr.bi.mongodb;
 
 import org.bson.BsonUndefined;
 import org.bson.types.ObjectId;
 
-import java.sql.Types;
 import java.util.Date;
 
 /**

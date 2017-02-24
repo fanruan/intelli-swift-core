@@ -1,7 +1,6 @@
-package com.fr.bi.mongodbsource;
+package com.fr.bi.mongodb;
 
 import com.fr.base.TableData;
-import com.fr.general.ModuleContext;
 import com.fr.general.data.DataModel;
 import com.fr.general.data.TableDataException;
 import com.fr.stable.StringUtils;

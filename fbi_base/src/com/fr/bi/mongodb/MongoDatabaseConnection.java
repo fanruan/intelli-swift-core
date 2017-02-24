@@ -1,8 +1,7 @@
-package com.fr.bi.mongodbsource;
+package com.fr.bi.mongodb;
 
 import com.fr.data.impl.AbstractDatabaseConnection;
 import com.fr.data.impl.Connection;
-import com.fr.general.FRLogger;
 import com.fr.general.Inter;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -13,7 +12,6 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 import com.mongodb.*;
-import com.mongodb.client.MongoIterable;
 
 import java.util.List;
 

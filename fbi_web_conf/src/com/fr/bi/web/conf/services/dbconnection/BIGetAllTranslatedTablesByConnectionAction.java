@@ -4,7 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.data.MongoDBExtractor;
-import com.fr.bi.mongodbsource.MongoDatabaseConnection;
+import com.fr.bi.mongodb.MongoDatabaseConnection;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.core.DataCoreUtils;
