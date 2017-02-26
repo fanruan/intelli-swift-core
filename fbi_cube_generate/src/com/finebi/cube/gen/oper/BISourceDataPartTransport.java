@@ -80,7 +80,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
             recordTableInfo();
             long count = transport();
-            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
+            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation build and record ",
                     String.valueOf(count), " records"));
             ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
             ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));

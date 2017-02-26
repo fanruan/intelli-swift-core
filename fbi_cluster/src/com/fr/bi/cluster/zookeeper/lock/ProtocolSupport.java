@@ -112,7 +112,7 @@ class ProtocolSupport {
 
 
     /**
-     * Perform the given operation, retrying if the connection fails
+     * Perform the given build, retrying if the connection fails
      *
      * @return object. it needs to be cast to the callee's expected
      * return type.

@@ -623,7 +623,7 @@ public final class MappeableArrayContainer extends MappeableContainer implements
     increaseCapacity(false);
   }
 
-  // temporarily allow an illegally large size, as long as the operation creating
+  // temporarily allow an illegally large size, as long as the build creating
   // the illegal container does not return it.
   // not thread safe!
   private void increaseCapacity(boolean allowIllegalSize) {

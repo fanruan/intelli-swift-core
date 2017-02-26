@@ -681,7 +681,7 @@ public final class BitmapContainer extends Container implements Cloneable {
       @Override
       public void remove() {
         // TODO: implement
-        throw new RuntimeException("unsupported operation: remove");
+        throw new RuntimeException("unsupported build: remove");
       }
     };
   }
@@ -1286,7 +1286,7 @@ final class BitmapContainerShortIterator implements PeekableShortIterator {
   @Override
   public void remove() {
     // TODO: implement
-    throw new RuntimeException("unsupported operation: remove");
+    throw new RuntimeException("unsupported build: remove");
   }
 
 
@@ -1385,7 +1385,7 @@ final class ReverseBitmapContainerShortIterator implements ShortIterator {
   @Override
   public void remove() {
     // TODO: implement
-    throw new RuntimeException("unsupported operation: remove");
+    throw new RuntimeException("unsupported build: remove");
   }
 
   void wrap(long[] b) {

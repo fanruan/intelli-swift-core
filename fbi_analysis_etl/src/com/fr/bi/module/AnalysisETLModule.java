@@ -27,9 +27,6 @@ import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.bi.web.service.action.PartCubeDataLoader;
 import com.fr.cluster.rpc.RPC;
 import com.fr.stable.bridge.StableFactory;
-import com.fr.stable.bridge.event.StableFactoryMessageTransponder;
-import com.fr.stable.bridge.event.StableFactoryProducer;
-import com.fr.stable.bridge.event.StableFactoryResourceType;
 import com.fr.stable.fun.Service;
 import com.fr.web.ResourceHelper;
 
@@ -52,18 +49,18 @@ public class AnalysisETLModule extends AbstractModule {
      */
     private void registerResources() {
 
-        StableFactoryMessageTransponder.getInstance().addProducer(new StableFactoryProducer() {
-
-            @Override
-            public void reInject(StableFactoryResourceType resourceType) {
-
-                if (StableFactoryResourceType.TYPE_JS.equals(resourceType)) {
-                    registerJavaScriptFiles();
-                } else if (StableFactoryResourceType.TYPE_CSS.equals(resourceType)) {
-                    registerStyleFiles();
-                }
-            }
-        }, new StableFactoryResourceType[]{StableFactoryResourceType.TYPE_CSS, StableFactoryResourceType.TYPE_JS});
+//        StableFactoryMessageTransponder.getInstance().addProducer(new StableFactoryProducer() {
+//
+//            @Override
+//            public void reInject(StableFactoryResourceType resourceType) {
+//
+//                if (StableFactoryResourceType.TYPE_JS.equals(resourceType)) {
+//                    registerJavaScriptFiles();
+//                } else if (StableFactoryResourceType.TYPE_CSS.equals(resourceType)) {
+//                    registerStyleFiles();
+//                }
+//            }
+//        }, new StableFactoryResourceType[]{StableFactoryResourceType.TYPE_CSS, StableFactoryResourceType.TYPE_JS});
 
         registerJavaScriptFiles();
         registerStyleFiles();

@@ -487,7 +487,7 @@ public final class ArrayContainer extends Container implements Cloneable {
   }
 
 
-  // temporarily allow an illegally large size, as long as the operation creating
+  // temporarily allow an illegally large size, as long as the build creating
   // the illegal container does not return it.
   private void increaseCapacity(boolean allowIllegalSize) {
     int newCapacity = (this.content.length == 0) ? DEFAULT_INIT_SIZE

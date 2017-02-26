@@ -21,7 +21,7 @@ public class BIWorkerFirstIndexOperation implements BIWorkerOperation {
     public BIWorkerNodeValue operate(BIWorkerNodeValue nodeValue) {
         long userId = nodeValue.getUserId();
 //        LOG.info("当前work正在进行基础索引的工作" );
-//        CubeBuildOperation operation = new CubeBuildFirstIndexOperation(nodeValue.getBasePath(), nodeValue.getTmpPath(), userId);
+//        CubeBuildOperation build = new CubeBuildFirstIndexOperation(nodeValue.getBasePath(), nodeValue.getTmpPath(), userId);
         try {
             ArrayList<JSONParser> jsons = BINodeValueParser.string2BIJson(nodeValue.getTaskContent(), nodeValue.getTaskName());
 //            LOG.info("当前worker处理的基础索引数量为：" + jsons.size());
@@ -30,7 +30,7 @@ public class BIWorkerFirstIndexOperation implements BIWorkerOperation {
             while (it.hasNext()) {
                 relations.add((BITableRelation) it.next());
             }
-//            operation.process(relations);
+//            build.process(relations);
         } catch (Exception ex) {
              BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         } finally {

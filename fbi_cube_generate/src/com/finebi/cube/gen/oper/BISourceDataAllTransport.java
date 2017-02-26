@@ -43,10 +43,10 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
         try {
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
             recordTableInfo();
-            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " process transportation operation"));
+            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " process transportation build"));
             buildTableBasicStructure();
             long count = transport();
-            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
+            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation build and record ",
                     String.valueOf(count), " records"));
             if (count >= 0) {
                 /*清除remove的过滤条件*/

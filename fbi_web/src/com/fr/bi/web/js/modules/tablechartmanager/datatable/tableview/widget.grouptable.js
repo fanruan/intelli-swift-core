@@ -74,6 +74,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
                 self.vPage = vPage;
                 self.model.setPageOperator(pageOperator);
                 self._onPageChange(function (items, header, crossItems, crossHeader) {
+                    console.log(items,header,crossItems,crossHeader);
                     populate(items, header, crossItems, crossHeader);
                 })
             },

@@ -32,7 +32,7 @@ public final class MappeableBitmapContainer extends MappeableContainer implement
 
   /**
    * optimization flag: whether the cardinality of the bitmaps is maintained through branchless
-   * operation
+   * build
    */
   public static final boolean USE_BRANCHLESS = true;
 
@@ -979,7 +979,7 @@ public final class MappeableBitmapContainer extends MappeableContainer implement
       @Override
       public void remove() {
         // TODO: implement
-        throw new RuntimeException("unsupported operation: remove");
+        throw new RuntimeException("unsupported build: remove");
       }
     };
   }
@@ -1909,7 +1909,7 @@ final class MappeableBitmapContainerShortIterator implements PeekableShortIterat
   @Override
   public void remove() {
     // TODO: implement
-    throw new RuntimeException("unsupported operation: remove");
+    throw new RuntimeException("unsupported build: remove");
   }
 
   void wrap(MappeableBitmapContainer p) {
@@ -2009,7 +2009,7 @@ final class ReverseMappeableBitmapContainerShortIterator implements ShortIterato
   @Override
   public void remove() {
     // TODO: implement
-    throw new RuntimeException("unsupported operation: remove");
+    throw new RuntimeException("unsupported build: remove");
   }
 
   public void wrap(MappeableBitmapContainer p) {

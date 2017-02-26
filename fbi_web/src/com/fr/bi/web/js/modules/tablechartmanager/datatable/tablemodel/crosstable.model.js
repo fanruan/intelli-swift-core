@@ -418,7 +418,6 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
         var item = {
             children: this._createCommonTableItems(left.c, 0, null, this.dimIds, this.crossPV)
         };
-
         if (this.showRowTotal === true) {
             //汇总值
             var sums = [], ob = {index: 0};
@@ -507,7 +506,6 @@ BI.CrossTableModel = BI.inherit(BI.GroupTableModel, {
                 if (BI.isNotNull(item.children)) {
                     parseHeader(item.children);
                     if (BI.isNotNull(item.values) && self.showColTotal === true) {
-                        //合计
                         BI.each(self.targetIds, function (j, tarId) {
                             self.header.push({
                                 type: "bi.page_table_cell",

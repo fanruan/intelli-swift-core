@@ -402,7 +402,7 @@ public class BaseResourceHelper {
                 "com/fr/bi/web/css/widget/filterpane/abstract.item.filter.css",
                 "com/fr/bi/web/css/widget/filterpane/expander.filter.css",
                 "com/fr/bi/web/css/widget/filterpane/pane.filter.css",
-                "com/fr/bi/web/css/widget/filterpane/operation.filter.css",
+                "com/fr/bi/web/css/widget/filterpane/build.filter.css",
 
                 //公式输入框
                 "com/fr/bi/web/css/widget/formula/group.symbol.css",

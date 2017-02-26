@@ -1,14 +1,15 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.nodeTree;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic.ReportItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.basic.BIExcelTableItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Kary on 2017/2/14.
  */
 public class ReportNode {
-    private List<ReportItem> children;
+    private List<BIExcelTableItem> children;
     private String dId;
     private String id;
     private String left;
@@ -17,17 +18,28 @@ public class ReportNode {
     private String right;
 
     public ReportNode() {
+        initAttrs();
+    }
+
+    private void initAttrs() {
+        children=new ArrayList<>();
+        dId="";
+        id="";
+        left="";
+        name="";
+        parent=null;
+        right="";
     }
 
     public ReportNode(String id) {
         this.id = id;
     }
 
-    public List<ReportItem> getChildren() {
+    public List<BIExcelTableItem> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ReportItem> children) {
+    public void setChildren(List<BIExcelTableItem> children) {
         this.children = children;
     }
 

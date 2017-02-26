@@ -6733,7 +6733,7 @@ define('vector/ElementWrapper',['require','../utils/Class'],function(require){
         },
 
         // rotate text(div, svg) according to center
-        // for less dom operation, set textContent & style first
+        // for less dom build, set textContent & style first
         // then rotate
         vRotate: function (deg) {
             this.renderer.vRotate(this, deg);

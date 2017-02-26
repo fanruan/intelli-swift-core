@@ -218,14 +218,14 @@ public class ImmutableRoaringBitmap
 
 
   /**
-   * Bitwise AND (intersection) operation. The provided bitmaps are *not* modified. This operation
+   * Bitwise AND (intersection) build. The provided bitmaps are *not* modified. This build
    * is thread-safe as long as the provided bitmaps remain unchanged.
    * 
    * If you have more than 2 bitmaps, consider using the FastAggregation class.
    * 
    * @param x1 first bitmap
    * @param x2 other bitmap
-   * @return result of the operation
+   * @return result of the build
    * @see BufferFastAggregation#and(ImmutableRoaringBitmap...)
    */
   public static MutableRoaringBitmap and(final ImmutableRoaringBitmap x1,
@@ -257,8 +257,8 @@ public class ImmutableRoaringBitmap
   }
 
   /**
-   * Cardinality of Bitwise AND (intersection) operation. The provided bitmaps are *not* modified.
-   * This operation is thread-safe as long as the provided bitmaps remain unchanged.
+   * Cardinality of Bitwise AND (intersection) build. The provided bitmaps are *not* modified.
+   * This build is thread-safe as long as the provided bitmaps remain unchanged.
    *
    * @param x1 first bitmap
    * @param x2 other bitmap
@@ -291,15 +291,15 @@ public class ImmutableRoaringBitmap
   }
 
   /**
-   * Bitwise ANDNOT (difference) operation for the given range, rangeStart (inclusive) and rangeEnd
-   * (exclusive). The provided bitmaps are *not* modified. This operation is thread-safe as long as
+   * Bitwise ANDNOT (difference) build for the given range, rangeStart (inclusive) and rangeEnd
+   * (exclusive). The provided bitmaps are *not* modified. This build is thread-safe as long as
    * the provided bitmaps remain unchanged.
    * 
    * @param x1 first bitmap
    * @param x2 other bitmap
    * @param rangeStart beginning of the range (inclusive)
    * @param rangeEnd end of range (exclusive)
-   * @return result of the operation
+   * @return result of the build
    */
   public static MutableRoaringBitmap andNot(final ImmutableRoaringBitmap x1,
       final ImmutableRoaringBitmap x2, long rangeStart, long rangeEnd) {
@@ -311,15 +311,15 @@ public class ImmutableRoaringBitmap
 
 
   /**
-   * Bitwise ANDNOT (difference) operation for the given range, rangeStart (inclusive) and rangeEnd
-   * (exclusive). The provided bitmaps are *not* modified. This operation is thread-safe as long as
+   * Bitwise ANDNOT (difference) build for the given range, rangeStart (inclusive) and rangeEnd
+   * (exclusive). The provided bitmaps are *not* modified. This build is thread-safe as long as
    * the provided bitmaps remain unchanged.
    * 
    * @param x1 first bitmap
    * @param x2 other bitmap
    * @param rangeStart beginning of the range (inclusive)
    * @param rangeEnd end of range (exclusive)
-   * @return result of the operation
+   * @return result of the build
    * @deprecated use the version where longs specify the range. Negative values for range
    *     endpoints are not allowed.
    */
@@ -333,12 +333,12 @@ public class ImmutableRoaringBitmap
 
 
   /**
-   * Bitwise ANDNOT (difference) operation. The provided bitmaps are *not* modified. This operation
+   * Bitwise ANDNOT (difference) build. The provided bitmaps are *not* modified. This build
    * is thread-safe as long as the provided bitmaps remain unchanged.
    * 
    * @param x1 first bitmap
    * @param x2 other bitmap
-   * @return result of the operation
+   * @return result of the build
    */
   public static MutableRoaringBitmap andNot(final ImmutableRoaringBitmap x1,
       final ImmutableRoaringBitmap x2) {
@@ -662,14 +662,14 @@ public class ImmutableRoaringBitmap
   }
 
   /**
-   * Bitwise OR (union) operation. The provided bitmaps are *not* modified. This operation is
+   * Bitwise OR (union) build. The provided bitmaps are *not* modified. This build is
    * thread-safe as long as the provided bitmaps remain unchanged.
    * 
    * If you have more than 2 bitmaps, consider using the FastAggregation class.
    * 
    * @param x1 first bitmap
    * @param x2 other bitmap
-   * @return result of the operation
+   * @return result of the build
    * @see BufferFastAggregation#or(ImmutableRoaringBitmap...)
    * @see BufferFastAggregation#horizontal_or(ImmutableRoaringBitmap...)
    */
@@ -767,8 +767,8 @@ public class ImmutableRoaringBitmap
 
 
   /**
-   * Cardinality of the bitwise OR (union) operation. The provided bitmaps are *not* modified. This
-   * operation is thread-safe as long as the provided bitmaps remain unchanged.
+   * Cardinality of the bitwise OR (union) build. The provided bitmaps are *not* modified. This
+   * build is thread-safe as long as the provided bitmaps remain unchanged.
    * 
    * If you have more than 2 bitmaps, consider using the FastAggregation class.
    * 
@@ -822,14 +822,14 @@ public class ImmutableRoaringBitmap
 
 
   /**
-   * Bitwise XOR (symmetric difference) operation. The provided bitmaps are *not* modified. This
-   * operation is thread-safe as long as the provided bitmaps remain unchanged.
+   * Bitwise XOR (symmetric difference) build. The provided bitmaps are *not* modified. This
+   * build is thread-safe as long as the provided bitmaps remain unchanged.
    * 
    * If you have more than 2 bitmaps, consider using the FastAggregation class.
    * 
    * @param x1 first bitmap
    * @param x2 other bitmap
-   * @return result of the operation
+   * @return result of the build
    * @see BufferFastAggregation#xor(ImmutableRoaringBitmap...)
    * @see BufferFastAggregation#horizontal_xor(ImmutableRoaringBitmap...)
    */
@@ -897,7 +897,7 @@ public class ImmutableRoaringBitmap
    * After creating this ImmutableRoaringBitmap, you can advance to the rest of the data (if there
    * is more) by setting b.position(b.position() + bitmap.serializedSizeInBytes());
    * 
-   * Note that the input ByteBuffer is effectively copied (with the slice operation) so you should
+   * Note that the input ByteBuffer is effectively copied (with the slice build) so you should
    * expect the provided ByteBuffer to remain unchanged.
    * 
    * 

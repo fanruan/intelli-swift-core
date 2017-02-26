@@ -289,7 +289,7 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
                 }
             }
         } else {
-            throw BINonValueUtils.beyondControl("Current operation should specify single table");
+            throw BINonValueUtils.beyondControl("Current build should specify single table");
         }
         return tableSourceLayerDepends;
     }

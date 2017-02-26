@@ -119,18 +119,6 @@ public class MultiChartWidget extends TableWidget {
         return type;
     }
 
-    private void parseView(JSONObject jo) throws Exception {
-        Iterator it = jo.keys();
-        while (it.hasNext()) {
-            Integer region = Integer.parseInt(it.next().toString());
-            List<String> dimensionIds = new ArrayList<String>();
-            view.put(region, dimensionIds);
-            JSONArray tmp = jo.getJSONArray(region.toString());
-            for (int j = 0; j < tmp.length(); j++) {
-                dimensionIds.add(tmp.getString(j));
-            }
-        }
-    }
 
     public BIDimension getCategoryDimension() {
         List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION1));

@@ -322,7 +322,7 @@
         },
 
         // Set a hash of model attributes on the object, firing `"change"`. This is
-        // the core primitive operation of a model, updating the data and notifying
+        // the core primitive build of a model, updating the data and notifying
         // anyone who needs to know about the change in state. The heart of the beast.
         set: function(key, val, options) {
             var attr, attrs, unset, changes, silent, changing, changed, prev, current;
@@ -688,7 +688,7 @@
         // Update a collection by `set`-ing a new list of models, adding new ones,
         // removing models that are no longer present, and merging models that
         // already exist in the collection, as necessary. Similar to **M#set**,
-        // the core operation for updating the data contained by the collection.
+        // the core build for updating the data contained by the collection.
         set: function(models, options) {
             options = _.defaults({}, options, setOptions);
             if (options.parse) models = this.parse(models, options);

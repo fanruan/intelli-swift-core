@@ -1,25 +1,30 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.basic;
+
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic.BIExcelItemData;
+import com.fr.json.JSONArray;
+import com.fr.json.JSONObject;
 
 import java.util.List;
 
 /**
  * Created by Kary on 2017/2/13.
  */
-public class ReportItem {
+public class BIExcelTableItem implements BIExcelItemData{
 
     private String dId;
     private String text;
-    private List<ReportItem> value;
+    private JSONArray value;
     private boolean isCross;
     private boolean needExpand;
     private boolean isExpanded;
-    private List<ReportItem> children;
-    private List<String> clicked;
+    private List<BIExcelTableItem> children;
+    private JSONArray clicked;
     private boolean isSum;
     private String style;
     private String type;
+    private String tag;
 
-    public ReportItem() {
+    public BIExcelTableItem() {
     }
 
     public String getdId() {
@@ -38,11 +43,11 @@ public class ReportItem {
         this.text = text;
     }
 
-    public List<ReportItem> getValue() {
+    public JSONArray getValue() {
         return value;
     }
 
-    public void setValue(List<ReportItem> value) {
+    public void setValue(JSONArray value) {
         this.value = value;
     }
 
@@ -62,19 +67,19 @@ public class ReportItem {
         this.needExpand = needExpand;
     }
 
-    public List<ReportItem> getChildren() {
+    public List<BIExcelTableItem> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ReportItem> children) {
+    public void setChildren(List<BIExcelTableItem> children) {
         this.children = children;
     }
 
-    public List<String> getClicked() {
+    public JSONArray getClicked() {
         return clicked;
     }
 
-    public void setClicked(List<String> clicked) {
+    public void setClicked(JSONArray clicked) {
         this.clicked = clicked;
     }
 
@@ -110,9 +115,17 @@ public class ReportItem {
         isExpanded = expanded;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     @Override
     public String toString() {
-        return "ReportItem{" +
+        return "BIExcelTableItem{" +
                 "dId='" + dId + '\'' +
                 ", text='" + text + '\'' +
                 ", value=" + value +
@@ -126,4 +139,15 @@ public class ReportItem {
                 ", type='" + type + '\'' +
                 '}';
     }
+    @Override
+    public JSONObject createJSON() throws Exception {
+        JSONObject jo = new JSONObject();
+        jo.put("dId",getdId());
+        jo.put("styles",getStyle());
+        jo.put("text",getText());
+        jo.put("type",getType());
+        jo.put("values",getValue());
+        return jo;
+    }
+
 }

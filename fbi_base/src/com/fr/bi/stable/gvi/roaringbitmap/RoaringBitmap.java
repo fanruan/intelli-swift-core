@@ -250,14 +250,14 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
     }
 
     /**
-     * Bitwise AND (intersection) operation. The provided bitmaps are *not* modified. This operation
+     * Bitwise AND (intersection) build. The provided bitmaps are *not* modified. This build
      * is thread-safe as long as the provided bitmaps remain unchanged.
      * <p>
      * If you have more than 2 bitmaps, consider using the FastAggregation class.
      *
      * @param x1 first bitmap
      * @param x2 other bitmap
-     * @return result of the operation
+     * @return result of the build
      * @see FastAggregation#and(RoaringBitmap...)
      */
     public static RoaringBitmap and(final RoaringBitmap x1, final RoaringBitmap x2) {
@@ -288,8 +288,8 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
 
 
     /**
-     * Cardinality of Bitwise AND (intersection) operation. The provided bitmaps are *not* modified.
-     * This operation is thread-safe as long as the provided bitmaps remain unchanged.
+     * Cardinality of Bitwise AND (intersection) build. The provided bitmaps are *not* modified.
+     * This build is thread-safe as long as the provided bitmaps remain unchanged.
      *
      * @param x1 first bitmap
      * @param x2 other bitmap
@@ -321,12 +321,12 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
     }
 
     /**
-     * Bitwise ANDNOT (difference) operation. The provided bitmaps are *not* modified. This operation
+     * Bitwise ANDNOT (difference) build. The provided bitmaps are *not* modified. This build
      * is thread-safe as long as the provided bitmaps remain unchanged.
      *
      * @param x1 first bitmap
      * @param x2 other bitmap
-     * @return result of the operation
+     * @return result of the build
      */
     public static RoaringBitmap andNot(final RoaringBitmap x1, final RoaringBitmap x2) {
         final RoaringBitmap answer = new RoaringBitmap();
@@ -665,14 +665,14 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
     }
 
     /**
-     * Bitwise OR (union) operation. The provided bitmaps are *not* modified. This operation is
+     * Bitwise OR (union) build. The provided bitmaps are *not* modified. This build is
      * thread-safe as long as the provided bitmaps remain unchanged.
      * <p>
      * If you have more than 2 bitmaps, consider using the FastAggregation class.
      *
      * @param x1 first bitmap
      * @param x2 other bitmap
-     * @return result of the operation
+     * @return result of the build
      * @see FastAggregation#or(RoaringBitmap...)
      * @see FastAggregation#horizontal_or(RoaringBitmap...)
      */
@@ -722,8 +722,8 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
     }
 
     /**
-     * Cardinality of the bitwise OR (union) operation. The provided bitmaps are *not* modified. This
-     * operation is thread-safe as long as the provided bitmaps remain unchanged.
+     * Cardinality of the bitwise OR (union) build. The provided bitmaps are *not* modified. This
+     * build is thread-safe as long as the provided bitmaps remain unchanged.
      * <p>
      * If you have more than 2 bitmaps, consider using the FastAggregation class.
      *
@@ -813,14 +813,14 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
 
 
     /**
-     * Bitwise XOR (symmetric difference) operation. The provided bitmaps are *not* modified. This
-     * operation is thread-safe as long as the provided bitmaps remain unchanged.
+     * Bitwise XOR (symmetric difference) build. The provided bitmaps are *not* modified. This
+     * build is thread-safe as long as the provided bitmaps remain unchanged.
      * <p>
      * If you have more than 2 bitmaps, consider using the FastAggregation class.
      *
      * @param x1 first bitmap
      * @param x2 other bitmap
-     * @return result of the operation
+     * @return result of the build
      * @see FastAggregation#xor(RoaringBitmap...)
      * @see FastAggregation#horizontal_xor(RoaringBitmap...)
      */
@@ -970,7 +970,7 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
 
 
     /**
-     * In-place bitwise AND (intersection) operation. The current bitmap is modified.
+     * In-place bitwise AND (intersection) build. The current bitmap is modified.
      *
      * @param x2 other bitmap
      */
@@ -1041,7 +1041,7 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
 
 
     /**
-     * In-place bitwise ANDNOT (difference) operation. The current bitmap is modified.
+     * In-place bitwise ANDNOT (difference) build. The current bitmap is modified.
      *
      * @param x2 other bitmap
      */
@@ -1081,15 +1081,15 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
 
 
     /**
-     * Bitwise ANDNOT (difference) operation for the given range, rangeStart (inclusive) and rangeEnd
-     * (exclusive). The provided bitmaps are *not* modified. This operation is thread-safe as long as
+     * Bitwise ANDNOT (difference) build for the given range, rangeStart (inclusive) and rangeEnd
+     * (exclusive). The provided bitmaps are *not* modified. This build is thread-safe as long as
      * the provided bitmaps remain unchanged.
      *
      * @param x1         first bitmap
      * @param x2         other bitmap
      * @param rangeStart starting point of the range (inclusive)
      * @param rangeEnd   end point of the range (exclusive)
-     * @return result of the operation
+     * @return result of the build
      */
     public static RoaringBitmap andNot(final RoaringBitmap x1, final RoaringBitmap x2,
                                        long rangeStart, long rangeEnd) {
@@ -1101,15 +1101,15 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
     }
 
     /**
-     * Bitwise ANDNOT (difference) operation for the given range, rangeStart (inclusive) and rangeEnd
-     * (exclusive). The provided bitmaps are *not* modified. This operation is thread-safe as long as
+     * Bitwise ANDNOT (difference) build for the given range, rangeStart (inclusive) and rangeEnd
+     * (exclusive). The provided bitmaps are *not* modified. This build is thread-safe as long as
      * the provided bitmaps remain unchanged.
      *
      * @param x1         first bitmap
      * @param x2         other bitmap
      * @param rangeStart starting point of the range (inclusive)
      * @param rangeEnd   end point of the range (exclusive)
-     * @return result of the operation
+     * @return result of the build
      * @deprecated use the version where longs specify the range. Negative values for range
      * endpoints are not allowed.
      */
@@ -1594,7 +1594,7 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
     }
 
     /**
-     * In-place bitwise OR (union) operation. The current bitmap is modified.
+     * In-place bitwise OR (union) build. The current bitmap is modified.
      *
      * @param x2 other bitmap
      */
@@ -2131,7 +2131,7 @@ public class RoaringBitmap implements Cloneable, Serializable, Iterable<Integer>
     }
 
     /**
-     * In-place bitwise XOR (symmetric difference) operation. The current bitmap is modified.
+     * In-place bitwise XOR (symmetric difference) build. The current bitmap is modified.
      *
      * @param x2 other bitmap
      */

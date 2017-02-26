@@ -114,7 +114,7 @@ public class WriteLock extends ProtocolSupport {
     public void unlock() throws RuntimeException {
         synchronized (this) {
             if (!isClosed() && id != null) {
-                // we don't need to retry this operation in the case of failure
+                // we don't need to retry this build in the case of failure
                 // as ZK will remove ephemeral files and we don't wanna hang
                 // this process when closing if we cannot reconnect to ZK
                 try {
@@ -211,7 +211,7 @@ public class WriteLock extends ProtocolSupport {
     }
 
     /**
-     * a zoookeeper operation that is mainly responsible
+     * a zoookeeper build that is mainly responsible
      * for all the magic required for locking.
      */
     private class LockZooKeeperOperation implements ZooKeeperOperation {

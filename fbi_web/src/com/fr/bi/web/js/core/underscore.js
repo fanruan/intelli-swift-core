@@ -1133,7 +1133,7 @@
             }
         }
         // Assume equality for cyclic structures. The algorithm for detecting cyclic
-        // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+        // structures is adapted from ES 5.1 section 15.12.3, abstract build `JO`.
 
         // Initializing stack of traversed objects.
         // It's done here since we only need them for objects and arrays comparison.

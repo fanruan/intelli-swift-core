@@ -9,12 +9,12 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic.TableDataForExport;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.operation.TableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.manager.ExcelExportDataBuildFactory;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -24,13 +24,13 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.web.core.SessionDealWith;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -64,6 +64,8 @@ public class TableWidget extends BISummaryWidget {
 
     private DetailChartSetting settings = new DetailChartSetting();
 
+    private Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
+
 
     @Override
     public BIDimension[] getViewDimensions() {
@@ -84,6 +86,10 @@ public class TableWidget extends BISummaryWidget {
         }
         usedDimension = dimensions;
         return dimensions;
+    }
+
+    public Map<Integer, List<String>> getView() {
+        return view;
     }
 
     @Override
@@ -236,9 +242,10 @@ public class TableWidget extends BISummaryWidget {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if (jo.has("view")) {
+            JSONObject vjo = jo.optJSONObject("view");
+            parseView(vjo);
             data.parseJSON(jo);
         }
-
         if (jo.has("type")) {
             table_type = jo.optInt("type");
         }
@@ -256,6 +263,19 @@ public class TableWidget extends BISummaryWidget {
         changeCalculateTargetStartGroup();
 
 
+    }
+
+    protected void parseView(JSONObject jo) throws Exception {
+        Iterator it = jo.keys();
+        while (it.hasNext()) {
+            Integer region = Integer.parseInt(it.next().toString());
+            List<String> dimensionIds = new ArrayList<String>();
+            view.put(region, dimensionIds);
+            JSONArray tmp = jo.getJSONArray(region.toString());
+            for (int j = 0; j < tmp.length(); j++) {
+                dimensionIds.add(tmp.getString(j));
+            }
+        }
     }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
@@ -341,11 +361,31 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public JSONObject getPostOptions(String sessionId) throws Exception {
-        JSONObject dataJSON = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
-        TableDataBuilder builder = new TableDataBuilder(this, dataJSON);
-        TableDataForExport tableDataForExport = builder.buildTableData();
-        return tableDataForExport.createJsonObject();
+        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
+        return ExcelExportDataBuildFactory.createExprotData(this, dataJSON).createJSON();
     }
 
 
+    public String getDimensionNameByID(String dID) throws Exception {
+       return getBITargetAndDimension(dID).getText();
+    }
+
+    public int getFieldTypeByDimensionID(String dID) throws Exception {
+        return getBITargetAndDimension(dID).createColumnKey().getFieldType();
+    }
+
+
+    private BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
+        for (BIDimension dimension : getDimensions()) {
+            if (ComparatorUtils.equals(dimension.getId(), dID)) {
+                return dimension;
+            }
+        }
+        for (BISummaryTarget target : getTargets()) {
+            if (ComparatorUtils.equals(target.getId(), dID)) {
+                return target;
+            }
+        }
+        throw new Exception();
+    }
 }

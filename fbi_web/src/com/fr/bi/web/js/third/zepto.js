@@ -894,7 +894,7 @@
                 return this.each(function(_, target){
                     parent = inside ? target : target.parentNode
 
-                    // convert all methods to a "before" operation
+                    // convert all methods to a "before" build
                     target = operatorIndex == 0 ? target.nextSibling :
                         operatorIndex == 1 ? target.firstChild :
                             operatorIndex == 2 ? target :

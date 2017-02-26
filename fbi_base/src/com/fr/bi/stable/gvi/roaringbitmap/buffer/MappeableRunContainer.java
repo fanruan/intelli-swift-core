@@ -1122,7 +1122,7 @@ public final class MappeableRunContainer extends MappeableContainer implements C
           firstValuePastRange = contains((short) rangeEnd);
         }
 
-        // there is definitely one more run after the operation.
+        // there is definitely one more run after the build.
         if (lastValueInRange == firstValuePastRange) {
           return not(rangeStart, rangeEnd); // can't do in-place: true space limit
         }
