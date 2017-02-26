@@ -197,9 +197,32 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
                         bottom: 0
                     }]
                 });
+                triangle.setVisible(true);
                 return;
             }
             self.filterPane.setVisible(!self.filterPane.isVisible());
+            triangle.setVisible(self.filterPane.isVisible());
+        });
+
+        var triangle = BI.createWidget({
+            type: "bi.layout",
+            cls: "filter-triangle-bottom",
+            invisible: true
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: filterIcon,
+            items: [{
+                el:{
+                    type: "bi.horizontal_auto",
+                    height: 10,
+                    items:[triangle]
+                },
+                left: 0,
+                right: 0,
+                bottom: -9
+            }]
         });
 
         var excel = BI.createWidget({

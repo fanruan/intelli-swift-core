@@ -54,7 +54,11 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
             type: "bi.etl_group_custom_group_all_fields_pane",
             enableCheckGroup: true,
             height: 270,
-            unGroupedItems: self.unGroupedItems
+            unGroupedItems: self.unGroupedItems,
+            validationChecker: function (v) {
+                var otherGroupName = self.bottom.getValue();
+                return otherGroupName !== v;
+            }
         });
 
         this.groupButtons = BI.createWidget({

@@ -207,6 +207,28 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT
         });
+
+        var triangle = BI.createWidget({
+            type: "bi.layout",
+            cls: "filter-triangle-bottom",
+            invisible: true
+        });
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: filterIcon,
+            items: [{
+                el:{
+                    type: "bi.horizontal_auto",
+                    height: 10,
+                    items:[triangle]
+                },
+                left: 0,
+                right: 0,
+                bottom: -9
+            }]
+        });
+
         filterIcon.on(BI.IconButton.EVENT_CHANGE, function () {
             if (BI.isNull(self.filterPane)) {
                 self.filterPane = BI.createWidget({
@@ -227,9 +249,11 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                         bottom: 0
                     }]
                 });
+                triangle.setVisible(true);
                 return;
             }
             self.filterPane.setVisible(!self.filterPane.isVisible());
+            triangle.setVisible(self.filterPane.isVisible());
         });
 
         var excel = BI.createWidget({

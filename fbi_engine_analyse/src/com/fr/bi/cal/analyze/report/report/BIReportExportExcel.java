@@ -15,11 +15,13 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.manager.PerformancePlugManager;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.general.IOUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.main.workbook.ResultWorkBook;
@@ -50,21 +52,17 @@ import java.util.Map;
  * Created by AstronautOO7 on 2017/1/11.
  */
 public class BIReportExportExcel {
-    protected BIReport report = new BIReportor();
 
     private String sessionID;
-
     private BISession session;
-
     private BIReportNode node;
-
     private static int bytesLength = 256;
-
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
-
+    private JSONArray specialWidgets = JSONArray.create();
     private String PhantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
-
     private int PhantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
+
+    protected BIReport report = new BIReportor();
 
     public BIReportExportExcel(String sessionID) throws Exception {
         this.sessionID = sessionID;
@@ -75,36 +73,167 @@ public class BIReportExportExcel {
 
         while (it.hasNext()) {
             JSONObject widgetJSON = widgetsJSON.getJSONObject((String) it.next());
-            JSONObject exp = new JSONObject("{ type: true, value: [[]]}");
-            widgetJSON.put("page", BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
-            widgetJSON.put("expander", new JSONObject("{ x:" + exp + ", y:" + exp + "}"));
-            widgets.add(BIWidgetFactory.parseWidget(widgetJSON, node.getUserId()));
+            int type = widgetJSON.optInt("type");
+            if (BIReportConstant.WIDGET.CONTENT <= type && type <= BIReportConstant.WIDGET.WEB) {
+                specialWidgets.put(widgetJSON);
+            } else {
+                JSONObject exp = new JSONObject("{ type: true, value: [[]]}");
+                widgetJSON.put("page", BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
+                widgetJSON.put("expander", new JSONObject("{ x:" + exp + ", y:" + exp + "}"));
+                widgets.add(BIWidgetFactory.parseWidget(widgetJSON, node.getUserId()));
+            }
         }
     }
 
     public ResultWorkBook getExportBook() throws Exception {
-        if (widgets.size() == 0) {
+        if (widgets.size() == 0 && specialWidgets.length() == 0) {
             return null;
         }
         BIWorkBook wb = new BIWorkBook();
         BIPolyWorkSheet reportSheet = new BIPolyWorkSheet();
         PolyECBlock polyECBlock = createPolyECBlock("Dashboard");
-
-        for (BIWidget widget : widgets) {
-            if (widgetHasData(widget)) {
-                if (widget instanceof TableWidget) {
-                    polyECBlock.addFloatElement(renderChartPic(widget));
+        if (widgets.size() != 0) {
+            for (BIWidget widget : widgets) {
+                if (widgetHasData(widget)) {
+                    if (widget instanceof TableWidget) {
+                        polyECBlock.addFloatElement(renderChartPic(widget));
+                    } else {
+                        polyECBlock.addFloatElement(renderChartPic(widget));
+                    }
                 } else {
-                    polyECBlock.addFloatElement(renderChartPic(widget));
+                    polyECBlock.addFloatElement(renderDefaultChartPic(widget));
                 }
-            } else {
-                polyECBlock.addFloatElement(renderDefaultChartPic(widget));
             }
         }
-//        dashboard
+
+        if (specialWidgets.length() != 0) {
+            for (int i = 0; i < specialWidgets.length(); i++) {
+                JSONObject jo = specialWidgets.getJSONObject(i);
+                switch (jo.optInt("type")) {
+                    case BIReportConstant.WIDGET.CONTENT:
+                        polyECBlock.addFloatElement(renderContentWidget(specialWidgets.getJSONObject(i)));
+                        break;
+                    case BIReportConstant.WIDGET.IMAGE:
+                        polyECBlock.addFloatElement(renderImageWidget(specialWidgets.getJSONObject(i)));
+                        break;
+                    case BIReportConstant.WIDGET.WEB:
+                        polyECBlock.addFloatElement(renderWebWidget(specialWidgets.getJSONObject(i)));
+                        break;
+                }
+            }
+        }
+        //dashboard
         reportSheet.addBlock(polyECBlock);
         wb.addReport("Dashboard", reportSheet);
+
+        createOtherSheets(wb);
+
+        return wb.execute4BI(session.getParameterMap4Execute());
+    }
+
+    private FloatElement renderContentWidget(JSONObject wjo) throws JSONException {
+        JSONObject contentOptions = JSONObject.create();
+        JSONObject jo = JSONObject.create();
+        JSONObject bounds = wjo.optJSONObject("bounds");
+
+        jo.put("width", bounds.optInt("width"));
+        jo.put("height", bounds.optInt("height"));
+        jo.put("content", wjo.optString("content"));
+        jo.put("style", wjo.optJSONObject("style"));
+
+        contentOptions.put("contentOptions", jo);
+
+        String base64 = null;
+
+        try {
+            base64 = postMessage(contentOptions.toString());
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+
+        return createFloatElement(base64Decoder(base64), getWidgetRect(bounds));
+    }
+
+    private FloatElement renderImageWidget(JSONObject wjo) {
+        BufferedImage sourceImg = null;
+        JSONObject bounds = wjo.optJSONObject("bounds");
+        try {
+            File imageFile = new File(FRContext.getCurrentEnv().getPath() +
+                    BIBaseConstant.UPLOAD_IMAGE.IMAGE_PATH + File.separator + wjo.optString("src"));
+            if (imageFile.exists()) {
+                sourceImg = ImageIO.read(new FileInputStream(imageFile));
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return createFloatElement(sourceImg, getWidgetRect(bounds));
+    }
+
+    private FloatElement renderWebWidget(JSONObject wjo) throws JSONException {
+        JSONObject jo = JSONObject.create();
+        JSONObject webOptions = JSONObject.create();
+        JSONObject bounds = wjo.optJSONObject("bounds");
+
+        webOptions.put("width", bounds.optInt("width"));
+        webOptions.put("height", bounds.optInt("height"));
+        webOptions.put("src", wjo.optString("url"));
+
+        jo.put("webOptions", webOptions);
+
+        String base64 = null;
+
+        try {
+            base64 = postMessage(jo.toString());
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+
+        return createFloatElement(base64Decoder(base64), getWidgetRect(bounds));
+    }
+
+    private FloatElement renderChartPic(BIWidget widget) throws Exception {
+        JSONObject jo = JSONObject.create();
+        try {
+            jo = widget.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionID));
+        } catch (Exception exception) {
+            BILoggerFactory.getLogger().error(exception.getMessage(), exception);
+            jo.put("error", BIPrintUtils.outputException(exception));
+        }
+        JSONObject options = ((TableWidget) widget).getPostOptions(sessionID);
+        Rectangle rect = widget.getRect();
+        String postOptions = new JSONObject("{options:" + options + ", width:" + rect.getWidth() +
+                ", height:" + rect.getHeight() + "}").toString();
+        String base64 = null;
+        try {
+            base64 = postMessage(postOptions);
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return createFloatElement(base64Decoder(base64), rect);
+    }
+
+    private FloatElement renderDefaultChartPic(BIWidget widget) throws IOException, JSONException {
+        String imageFolder = FRContext.getCurrentEnv().getPath() +
+                "/classes/com/fr/bi/web/images/background/charts";
+        String base64 = getDefaultImage(widget.getType(), imageFolder);
+        JSONObject imgOptions = JSONObject.create();
+        imgOptions.put("base64", base64);
+        imgOptions.put("width", widget.getRect().getWidth());
+        imgOptions.put("height", widget.getRect().getHeight());
+        String getBase64 = null;
+        try {
+            getBase64 = postMessage(imgOptions.toString());
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return createFloatElement(base64Decoder(getBase64), widget.getRect());
+    }
+
+    private BIWorkBook createOtherSheets(BIWorkBook wb) throws CloneNotSupportedException {
         //other sheets
+        if (widgets.size() == 0) {
+            return wb;
+        }
         for (BIWidget widget : widgets) {
             if (widgetHasData(widget)) {
                 widget = (BIWidget) widget.clone();
@@ -128,48 +257,11 @@ public class BIReportExportExcel {
                 wb.addReport(widget.getWidgetName(), emptySheet);
             }
         }
-
-        return wb.execute4BI(session.getParameterMap4Execute());
+        return wb;
     }
 
-    private FloatElement renderChartPic(BIWidget widget) throws Exception {
-        JSONObject jo = JSONObject.create();
-        try {
-            jo = widget.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionID));
-        } catch (Exception exception) {
-            BILoggerFactory.getLogger().error(exception.getMessage(), exception);
-            jo.put("error", BIPrintUtils.outputException(exception));
-        }
-        JSONObject options = ((TableWidget) widget).getPostOptions(sessionID);
-        Rectangle rect = widget.getRect();
-        String postOptions = new JSONObject("{options:" + options + ", width:" + rect.getWidth() + ", height:" + rect.getHeight() + "}").toString();
-        String base64 = null;
-        try {
-            base64 = postMessage(PhantomIp, PhantomPort, postOptions);
-        } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-        return createFloatElement(base64Decoder(base64), rect);
-    }
-
-    private FloatElement renderDefaultChartPic(BIWidget widget) throws IOException, JSONException {
-        String imageFolder = FRContext.getCurrentEnv().getPath() + "/classes/com/fr/bi/web/images/background/charts";
-        String base64 = getDefaultImage(widget.getType(), imageFolder);
-        JSONObject imgOptions = JSONObject.create();
-        imgOptions.put("base64", base64);
-        imgOptions.put("width", widget.getRect().getWidth());
-        imgOptions.put("height", widget.getRect().getHeight());
-        String getBase64 = null;
-        try {
-            getBase64 = postMessage(PhantomIp, PhantomPort, imgOptions.toString());
-        } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-        return createFloatElement(base64Decoder(getBase64), widget.getRect());
-    }
-
-    private FloatElement createFloatElement(BufferedImage img, Rectangle rect) {
-        FloatElement floatElement = new FloatElement(img);
+    private FloatElement createFloatElement(BufferedImage bufferedImage, Rectangle rect) {
+        FloatElement floatElement = new FloatElement(bufferedImage);
         int resolution = ScreenResolution.getScreenResolution();
         floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
         floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
@@ -178,12 +270,12 @@ public class BIReportExportExcel {
         return floatElement;
     }
 
-    public String postMessage(String ip, int port, String message) throws IOException {
-        URL url = new URL("http://" + ip + ":" + port + "/");
+    public String postMessage(String message) throws IOException {
+        URL url = new URL("http://" + PhantomIp + ":" + PhantomPort + "/");
         URLConnection connection = url.openConnection();
         connection.setDoOutput(true);
-        connection.setConnectTimeout(50000);
-        connection.setReadTimeout(50000);
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
 
         OutputStream out = connection.getOutputStream();
         out.write(message.getBytes("utf-8"));
@@ -285,5 +377,11 @@ public class BIReportExportExcel {
         String result = encoder.encode(data);
         result = result.replace("\r\n", "");
         return result;// 返回Base64编码过的字节数组字符串
+    }
+
+    private Rectangle getWidgetRect(JSONObject bounds) {
+        Rectangle rect = new Rectangle(bounds.optInt("left"), bounds.optInt("top"),
+                bounds.optInt("width"), bounds.optInt("height"));
+        return rect;
     }
 }

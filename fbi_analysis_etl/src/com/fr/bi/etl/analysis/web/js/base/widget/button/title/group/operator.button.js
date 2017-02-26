@@ -17,13 +17,60 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
         BI.AnalysisOperatorButton.superclass._init.apply(this, arguments);
         var o = this.options;
         this._createButtons();
+        this._createCombos();
         var self =  this;
         BI.createWidget({
             type: "bi.inline",
             element:this.element,
-            scrollable : false,
             height: o.height,
-            items : this.buttons
+            items : this.combos
+        })
+    },
+
+    _createCombos: function(){
+        var self = this;
+        this.combos = [];
+        BI.each(this.buttons, function(idx, button) {
+            var combo = BI.createWidget({
+                type: "bi.bubble_combo",
+                cls: "select-bubble-combo",
+                height: 30,
+                trigger: "",
+                el: button,
+                popup: {
+                    type: "bi.bubble_bar_popup_view",
+                    buttons: [{
+                        value: BI.i18nText(BI.i18nText("BI-Sure")),
+                        handler: function () {
+                            combo.hideView();
+                            self.fireEvent(BI.AnalysisOperatorButton.EVENT_OPERATOR_CHANGE, button, true);
+                        }
+                    }, {
+                        value: BI.i18nText("BI-Cancel"),
+                        level: "ignore",
+                        handler: function () {
+                            combo.hideView();
+                        }
+                    }],
+                    el: {
+                        type: "bi.vertical_adapt",
+                        items: [{
+                            type: "bi.label",
+                            whiteSpace: "normal",
+                            text: BI.i18nText("BI-Current_Operator_May_Cause_Problem_With_After_Confirm_To_Continue"),
+                            cls: "delete-label",
+                            textAlign: "left",
+                            width: 300
+                        }],
+                        width: 300,
+                        height: 100,
+                        hgap: 20
+                    },
+                    maxHeight: 140,
+                    minWidth: 340
+                }
+            });
+            self.combos.push(combo);
         })
     },
 
@@ -43,7 +90,7 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
                     return;
                 }
                 self.setValue(v.getValue())
-                self.fireEvent(BI.AnalysisOperatorButton.EVENT_OPERATOR_CHANGE, arguments)
+                self.fireEvent(BI.AnalysisOperatorButton.EVENT_OPERATOR_CHANGE, v, false);
             });
             self.buttons.push(button)
         })
@@ -72,6 +119,14 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
 
     isEnabled : function(){
         return !this.options.lock;
+    },
+
+    getAllButtons: function(){
+        return this.buttons;
+    },
+
+    getAllCombos: function(){
+        return this.combos;
     },
 
     getValue : function() {

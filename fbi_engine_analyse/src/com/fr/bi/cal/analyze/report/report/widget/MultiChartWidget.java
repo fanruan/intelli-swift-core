@@ -22,16 +22,11 @@ public class MultiChartWidget extends TableWidget {
 
     private int type;
     private String subType;
-    private Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
-    private Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
-    private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
-    private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         if (jo.has("view")) {
             JSONObject vjo = jo.optJSONObject("view");
-            parseView(vjo);
             JSONArray ja = new JSONArray();
             JSONArray rectJa = new JSONArray();
             Iterator it = vjo.keys();
@@ -75,43 +70,7 @@ public class MultiChartWidget extends TableWidget {
         if (jo.has("subType")) {
             subType = jo.getString("subType");
         }
-        if (jo.has("clicked")) {
-            JSONObject c = jo.getJSONObject("clicked");
-            Iterator it = c.keys();
-            while (it.hasNext()) {
-                String key = it.next().toString();
-                clicked.put(key, c.getJSONArray(key));
-            }
-        }
         super.parseJSON(jo, userId);
-        createDimensionAndTargetMap();
-    }
-
-    private void createDimensionAndTargetMap() {
-        for (BIDimension dimension : this.getDimensions()) {
-            for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
-                Integer key = entry.getKey();
-                if (key <= Integer.parseInt(BIReportConstant.REGION.DIMENSION2)) {
-                    List<String> dIds = entry.getValue();
-                    if (dIds.contains(dimension.getValue())) {
-                        dimensionsIdMap.put(dimension.getValue(), dimension);
-                        break;
-                    }
-                }
-            }
-        }
-        for (BISummaryTarget target : this.getTargets()) {
-            for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
-                Integer key = entry.getKey();
-                if (key >= Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
-                    List<String> dIds = entry.getValue();
-                    if (dIds.contains(target.getValue())) {
-                        targetsIdMap.put(target.getValue(), target);
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -119,7 +78,10 @@ public class MultiChartWidget extends TableWidget {
         return type;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0c7da71500ac95ed7f077e2707a542d9c84a0c6a
     public BIDimension getCategoryDimension() {
         List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION1));
         if (dimensionIds == null) {
@@ -144,43 +106,6 @@ public class MultiChartWidget extends TableWidget {
             }
         }
         return null;
-    }
-
-    public Set<String> getAllDimensionIds() {
-        Set<String> dimensionIds = new HashSet<String>();
-        for (BIDimension dimension : this.getDimensions()) {
-            dimensionIds.add(dimension.getValue());
-        }
-        return dimensionIds;
-    }
-
-    public Set<String> getAllTargetIds() {
-        Set<String> targetIds = new HashSet<String>();
-        for (BISummaryTarget target : this.getTargets()) {
-            targetIds.add(target.getValue());
-        }
-        return targetIds;
-    }
-
-    public JSONObject getWidgetDrill() throws JSONException {
-        JSONObject drills = new JSONObject();
-        Set<String> dimensionIds = this.getAllDimensionIds();
-
-        for (Map.Entry<String, JSONArray> entry : clicked.entrySet()) {
-            String dId = entry.getKey();
-            if (dimensionIds.contains(dId)) {
-                drills.put(dId, entry.getValue());
-            }
-        }
-        return drills;
-    }
-
-    public BIDimension getDrillDimension(JSONArray drill) throws JSONException {
-        if (drill == null || drill.length() == 0) {
-            return null;
-        }
-        String id = drill.getJSONObject(drill.length() - 1).getString("dId");
-        return dimensionsIdMap.get(id);
     }
 
     public BIDimension getDimensionById(String id) {
@@ -222,10 +147,6 @@ public class MultiChartWidget extends TableWidget {
             }
         }
         return targets;
-    }
-
-    public Map<Integer, List<String>> getWidgetView() {
-        return view;
     }
 
     public Integer getRegionTypeByDimension(BIDimension dimension) {

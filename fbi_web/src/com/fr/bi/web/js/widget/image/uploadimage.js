@@ -49,7 +49,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             var file = files[files.length - 1];
             var attachId = file.attach_id, fileName = file.filename;
             var imageId = attachId + "_" + fileName;
-            BI.requestAsync("fr_bi_dezi", "save_upload_image", {
+            BI.requestAsync("fr_bi_base", "save_upload_image", {
                 attach_id: attachId
             }, function (res) {
                 self.img.setValue(imageId);

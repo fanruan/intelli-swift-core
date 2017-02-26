@@ -3,7 +3,10 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
     _constant : {
         buttonHeight:30,
         buttonWidth:90,
-        titleHeight:40
+        titleHeight:40,
+        WARNING: 1,
+        RENAME: 2,
+        MULTI_SHEET: 3
     },
 
     _defaultConfig: function() {
@@ -15,16 +18,112 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
     },
 
     _initView : function() {
-        var self = this;
+        var self = this, c = this._constant;
         this.saveButton = BI.createWidget({
             type:"bi.button",
             height: this._constant.buttonHeight,
             width: this._constant.buttonWidth,
-            text:BI.i18nText("BI-Save"),
-            handler : function(e){
-               self.controller.save();
+            text:BI.i18nText("BI-Save")
+        });
+
+        this.saveButton.on(BI.Button.EVENT_CHANGE, function(){
+            self.confirmCombo.showView();
+            if (self.controller.getSheetLength() > 1){
+                popupTab.setSelect(c.MULTI_SHEET);
+            } else if (BI.isNull(self.controller.getId())){
+                popupTab.setSelect(c.RENAME);
+                self.pane.populate(self.controller.getTableDefaultName());
+                self.confirmCombo.showView();
+                self.pane.setTemplateNameFocus();
+            } else {
+                popupTab.setSelect(c.WARNING);
+                BI.ETLReq.reqCheckTableInUse(self.controller.getModelJSON(), function(data){
+                    var items = data["usedTemplate"] || [];
+                    items = BI.map(items, function(idx, name){
+                        return {
+                            type: "bi.label",
+                            text: name,
+                            title: name,
+                            cls: "delete-label",
+                            textAlign: "center",
+                            width: 360
+                        }
+                    });
+                    popupTab.getSelectedTab().populate(BI.concat([{
+                        type: "bi.label",
+                        whiteSpace: "normal",
+                        text: BI.i18nText("BI-Current_Edit_May_Interfere_Other_Template_Confirm_To_Continue"),
+                        cls: "delete-label",
+                        textAlign: "center",
+                        width: 360
+                    }], items));
+                })
             }
-        })
+            self.controller.resetPoolCurrentUsedTables();
+        });
+
+        this.confirmButton = BI.createWidget({
+            type: "bi.button",
+            height: 30,
+            value: BI.i18nText(BI.i18nText("BI-Sure")),
+            handler: function () {
+                self.confirmCombo.hideView();
+                switch (popupTab.getSelect()){
+                    case c.MULTI_SHEET:
+                        if (BI.isNull(model.get('id'))){
+                            popupTab.setSelect(c.RENAME);
+                            self.pane.populate(self.controller.getTableDefaultName());
+                            self.confirmCombo.showView();
+                            self.pane.setTemplateNameFocus();
+                        } else {
+                            self.controller.doSave();
+                        }
+                        break;
+                    case c.WARNING:
+                        self.controller.doSave();
+                        break;
+                    case c.RENAME:
+                        self.controller.setSaveInfo(self.pane.getValue(), self.pane.getDesc());
+                        self.controller.doSave();
+                        break;
+                }
+            }
+        });
+
+
+        var popupTab = BI.createWidget({
+            direction: "custom",
+            type: "bi.tab",
+            logic: {
+                dynamic: true
+            },
+            cardCreator: BI.bind(this._createTabs, this)
+        });
+
+        this.confirmCombo = BI.createWidget({
+            type: "bi.bubble_combo",
+            trigger: "",
+            el: this.saveButton,
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [this.confirmButton, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        self.confirmCombo.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical",
+                    items: [popupTab],
+                    width: 400,
+                    hgap: 20
+                },
+                minHeight: 140,
+                maxHeight: 340,
+                minWidth: 400
+            }
+        });
 
         var cancelButton = BI.createWidget({
             type:"bi.button",
@@ -44,7 +143,7 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
             items : [{
                 type:"bi.center_adapt",
                 cls:"bi-analysis-etl-main-save-button",
-                items:[this.saveButton],
+                items:[this.confirmCombo],
                 height:this._constant.titleHeight
             }, {
                 type:"bi.center_adapt",
@@ -68,6 +167,56 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
                 el:self.tab,
             }]
         })
+    },
+
+    _createTabs: function(v){
+        var self = this;
+        var c = this._constant;
+        switch (v) {
+            case c.MULTI_SHEET:
+                return BI.createWidget({
+                    type: "bi.vertical_adapt",
+                    items:[{
+                        type: "bi.label",
+                        whiteSpace: "normal",
+                        text: BI.i18nText("BI-ETL_Saving_Warning_Text"),
+                        cls: "delete-label",
+                        textAlign: "left",
+                        width: 300,
+                        height: 100
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                });
+            case c.RENAME:
+                this.pane = BI.createWidget({
+                    type: "bi.etl_rename_pane",
+                    renameChecker : function (v) {
+                        return !BI.Utils.getAllETLTableNames().contains(v);
+                    }
+                });
+                this.pane.on(BI.ETLNamePane.EVENT_VALID, function(){
+                    self.confirmButton.setEnable(true);
+                });
+                this.pane.on(BI.ETLNamePane.EVENT_ERROR, function(v){
+                    if (BI.isEmptyString(v)) {
+                        self.confirmButton.setWarningTitle(BI.i18nText("BI-Report_Name_Not_Null"));
+                    } else {
+                        self.confirmButton.setWarningTitle(BI.i18nText("BI-Template_Name_Already_Exist"));
+                    }
+                    self.confirmButton.setEnable(false);
+                });
+                return this.pane;
+            case c.WARNING:
+                return BI.createWidget({
+                    type: "bi.button_group",
+                    items: [],
+                    layouts: [{
+                        type: "bi.vertical"
+                    }]
+                })
+        }
     },
 
     _initController : function () {

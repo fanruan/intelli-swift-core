@@ -35,6 +35,10 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         return model.findItem(v);
     },
 
+    getIndexByValue: function(v, widget, model){
+        return model.getIndexByValue(v);
+    },
+
     checkBeforeSave : function (table, widget, model) {
         var v = this._getTabButtonGroup(widget).getValue()[0];
         var position = model.getIndexByValue(v);
@@ -56,7 +60,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     populateOneTab : function (v, widget, model) {
         var tab = widget.tab.getTab(v)
         var self = this;
-        tab.populate(this.findItem(v, widget, model), BI.extend(this.options, {
+        tab.populate(BI.extend({tableName: model.getValue("table_name")}, this.findItem(v, widget, model)), BI.extend(this.options, {
             checkBeforeSave : function (table) {
                 return self.checkBeforeSave(table, widget, model)
             }
@@ -84,7 +88,6 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         }
     },
 
-
     saveOneSheet : function (table, widget, model) {
         model.saveItem(table);
         this.populateOneTab(table.value, widget, model)
@@ -92,37 +95,21 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         this.deferChange(widget, model);
     },
 
-    clickTitleSave : function (id, widget, model) {
+    clickTitleSave : function (id, value, desc, widget, model) {
         var self = this;
-        var namePopover = BI.createWidget({
-            type: "bi.etl_table_name_popover",
-            renameChecker : function (v) {
-                return !BI.Utils.getAllETLTableNames().contains(v);
-            }
-        });
-        namePopover.on(BI.PopoverSection.EVENT_CLOSE, function () {
-            BI.Layers.hide(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
-        })
-        var item = model.findItem(id)
-        namePopover.on(BI.ETLTableNamePopover.EVENT_CHANGE, function (v, des) {
-            var sheets = [BI.extend(BI.deepClone(item), {
-                value:model.getValue("value"),
-                table_name:v
-            })]
-            var res = {};
-            var table = {};
-            table[ETLCst.ITEMS] = sheets;
-            res["table"] = table;
-            res["id"] = BI.UUID();
-            res["name"] = v;
-            res['describe'] = des
-            BI.ETLReq.reqSaveTable(res, BI.emptyFn);
-        });
-        BI.Popovers.remove("etlTableName");
-        BI.Popovers.create("etlTableName", namePopover, {width : 450, height : 370, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlTableName");
-        BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER);
-        namePopover.populate(BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(),model.getValue("table_name")));
-        namePopover.setTemplateNameFocus();
+        var item = model.findItem(id);
+        var sheets = [BI.extend(BI.deepClone(item), {
+            value: model.getValue("value"),
+            table_name: value
+        })]
+        var res = {};
+        var table = {};
+        table[ETLCst.ITEMS] = sheets;
+        res["table"] = table;
+        res["id"] = BI.UUID();
+        res["name"] = value;
+        res['describe'] = desc;
+        BI.ETLReq.reqSaveTable(res, BI.emptyFn);
     },
 
     getOperatorTypeByValue : function (v, widget, model) {
@@ -218,31 +205,70 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     },
 
     _addNewButtonAfterPos : function(item, index, widget, model) {
-        var button = BI.createWidget(BI.extend(item, {
-            type:"bi.history_button"
-        }))
         var self = this;
-        button.on(BI.HistoryButton.EVENT_DELETE, function(v){
-            var pos = model.getIndexByValue(v);
-            if(pos === 0) {
-                if(widget.options.allHistory === true) {
-                    BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"),BI.i18nText("BI-Confirm_Delete_Etl_History"), function (v) {
-                        if(v === true) {
-                            widget.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE);
+        var deleteButton = BI.createWidget({
+            type:"bi.icon_button",
+            title:BI.i18nText("Delete"),
+            cls:"delete-field-font delete"
+        });
+        var button = BI.createWidget(BI.extend({}, item, {
+            type:"bi.history_button",
+            deleteButton: deleteButton
+        }));
+        var confirmCombo = BI.createWidget({
+            type: "bi.bubble_combo",
+            el: {},
+            element: deleteButton,
+            popup: {
+                type: "bi.bubble_bar_popup_view",
+                buttons: [{
+                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    handler: function () {
+                        confirmCombo.hideView();
+                        var v = button.getValue();
+                        var pos = model.getIndexByValue(v);
+                        if(pos === 0) {
+                            if(widget.options.allHistory === true) {
+                                widget.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE);
+                            }
+                            return;
                         }
-                    })
-                } else {
-                    BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'),  BI.i18nText('BI-Cannot-Delete-Last'))
-                }
-                return;
+                        self._removeSheet(v, widget, model)
+                    }
+                }, {
+                    value: BI.i18nText("BI-Cancel"),
+                    level: "ignore",
+                    handler: function () {
+                        confirmCombo.hideView();
+                    }
+                }],
+                el: {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        whiteSpace: "normal",
+                        text: BI.i18nText("BI-Confirm_Delete_Etl_History"),
+                        cls: "delete-label",
+                        textAlign: "left",
+                        width: 300
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                },
+                maxHeight: 140,
+                minWidth: 340
             }
-            BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), BI.i18nText("BI-Confirm_Delete_Etl_History"), function (res) {
-                if(res === true) {
-                    self._removeSheet(v, widget, model)
-                }
-            })
-
-        })
+        });
+        deleteButton.on(BI.IconButton.EVENT_CHANGE, function(){
+            var v = button.getValue();
+            var pos = model.getIndexByValue(v);
+            if(pos === 0 && widget.options.allHistory === false) {
+                BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'),  BI.i18nText('BI-Cannot-Delete-Last'))
+            }else{
+                confirmCombo.showView();
+            }
+        });
         var invalidIndex = model.get('invalidIndex');
         if(invalidIndex <= index) {
             button.setValid(false);
