@@ -40,7 +40,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             } else {
                 op.id = op.id || selectedIds[op.floor];
                 op.id = BI.isArray(op.id) ? op.id : [op.id];
-                BI.each(selectedIds[op.floor], function (idx, id) {
+                BI.each(op.id, function (idx, id) {
                     var temp = [];
                     getAllParentValue(id, op.floor - 1, selectedIds, temp);
                     op.parentValues.push({
