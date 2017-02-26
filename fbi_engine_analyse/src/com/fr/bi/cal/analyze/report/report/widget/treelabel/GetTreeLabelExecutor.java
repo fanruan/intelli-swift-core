@@ -71,14 +71,13 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
             Collections.sort(vl, new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {
-                    int flag1 = 0;
-                    int flag2 = 0;
+                    int pre = 0, next = 0;
                     try {
-                        flag1 = containString(selectedValues, o1);
-                        flag2 = containString(selectedValues, o2);
-                        return flag1 - flag2;
+                        pre = containString(selectedValues, o1);
+                        next = containString(selectedValues, o2);
+                        return pre - next;
                     } catch (JSONException e) {
-                        return flag1 - flag2;
+                        return 0;
                     }
                 }
             });
