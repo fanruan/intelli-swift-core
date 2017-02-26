@@ -19,6 +19,7 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
                 var data = {};
                 data.floors = op.floor;
                 data.parentValues = op.parentValues;
+                data.selectedValues = self.selectedValues || [];
                 if (BI.isEmptyObject(op)) {
                     callback({});
                 } else {
@@ -38,11 +39,14 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         var self = this, o = this.options;
+        var selectedValues = [];
+        convertToArray(v, selectedValues, 0);
+        this.selectedValues = selectedValues;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId),
             titles = [],
             data = {
                 floors: 0,
-                selectedValues: v,
+                selectedValues: selectedValues,
                 parentValues: [{
                     id: "",
                     value: []
@@ -72,6 +76,18 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
                 self.treeLabel.setValue(v);
             }
         }, {tree_options: data});
+
+        function convertToArray(obj, result, i) {
+            if (BI.isEmptyObject(obj)) {
+                return [];
+            }
+            var keys = Object.keys(obj);
+            result[i] = BI.uniq(BI.concat(result[i] || [], keys));
+            BI.each(keys, function (idx, key) {
+                convertToArray(obj[key], result, i + 1)
+            });
+            return result;
+        }
     },
 
     getValue: function () {

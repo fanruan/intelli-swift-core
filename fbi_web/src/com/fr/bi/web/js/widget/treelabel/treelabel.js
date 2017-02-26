@@ -38,56 +38,34 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                     value: op.value === BICst.LIST_LABEL_TYPE.ALL ? [] : [op.value]
                 }]
             } else {
-                if (!op.id) {
-                    BI.each(selectedIds[op.floor], function (idx, id) {
-                        op.parentValues.push({
-                            id: id,
-                            value: getCombineValue(id, selectedIds[op.floor - 1])
-                        });
+                op.id = op.id || selectedIds[op.floor];
+                op.id = BI.isArray(op.id) ? op.id : [op.id];
+                BI.each(selectedIds[op.floor], function (idx, id) {
+                    var temp = [];
+                    getAllParentValue(id, op.floor - 1, selectedIds, temp);
+                    op.parentValues.push({
+                        id: id,
+                        value: temp.reverse()
                     });
-                    op.floor = op.floor - 1;
-                } else {
-                    op.id = BI.isArray(op.id) ? op.id : [op.id];
-                    if (op.floor >= 1) {
-                        BI.each(selectedIds[op.floor - 1], function (idx, id) {
-                            var tempForId = getChildId(id, op.id);
-                            if(tempForId){
-                                op.parentValues.push({
-                                    id: tempForId,
-                                    value: [self.itemsMap[id].value, op.value]
-                                });
-                            }
-                        });
-                        op.floor = op.floor - 1;
-                    }
-                }
+                });
+                op.floor = op.floor - 1;
             }
             self._itemsCreator(op, BI.bind(self.view.updateView, self.view));
             self.fireEvent(BI.TreeLabel.EVENT_CHANGE, arguments);
         });
-
-        function getChildId(id, children) {
-            if (!id || !children) {
-                return "";
-            }
-            for (var i = 0; i < children.length; i++) {
-                if (children[i].indexOf(id) === 0) {
-                    return children[i];
+        
+        function getAllParentValue(id, floor, selectedIds, result) {
+            var tempForId;
+            result = result || [];
+            result.push(self.itemsMap[id].value);
+            BI.each(selectedIds[floor], function (idx, pId) {
+                if (id.indexOf(pId) === 0) {
+                    tempForId = pId;
                 }
+            });
+            if(tempForId) {
+               return getAllParentValue(tempForId, floor - 1, selectedIds, result);
             }
-            return "";
-        }
-
-        function getCombineValue(id, parents) {
-            if (!id || !parents) {
-                return [];
-            }
-            for (var i = 0; i < parents.length; i++) {
-                if (id.indexOf(parents[i]) === 0) {
-                    return [self.itemsMap[parents[i]].value, self.itemsMap[id].value];
-                }
-            }
-            return [];
         }
     },
 

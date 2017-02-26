@@ -11,14 +11,14 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by fay on 2016/10/17.
  */
 public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
     private String parentValues;
+    private String selectedValues;
     private int floors = 0;
 
     public GetTreeLabelExecutor(TreeLabelWidget widget, Paging paging, BISession session) {
@@ -33,18 +33,22 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         if (jo.has("parentValues")) {
             parentValues = jo.getString("parentValues");
         }
+        if (jo.has("selectedValues")) {
+            selectedValues = jo.getString("selectedValues");
+        }
     }
 
     public JSONObject getResultJSON() throws JSONException {
         String id;
         String[] values;
         ArrayList<JSONArray> vl = new ArrayList<JSONArray>();
+        JSONArray selected = new JSONArray(selectedValues);
         if (parentValues != null) {
             JSONArray pvalues = new JSONArray(parentValues);
             for (int i = 0; i < pvalues.length(); i++) {
                 id = pvalues.getJSONObject(i).getString("id");
                 values = BIJsonUtils.jsonArray2StringArray(new JSONArray(pvalues.getJSONObject(i).getString("value")));
-                getAllData(vl, values, id, 0);
+                getAllData(vl, values, id, 0, selected);
             }
         }
 
@@ -54,11 +58,32 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         return jo;
     }
 
-    private void getAllData(ArrayList<JSONArray> result, String[] values, String id, int floor) throws JSONException {
-        if (floors < result.size() && result.get(floors).length() >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
+    private void getAllData(ArrayList<JSONArray> result, String[] values, String id, final int floor, final JSONArray selected)
+            throws JSONException {
+        if (floor < result.size() &&
+                result.get(floor).length() >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
             return;
         }
-        List<String> vl = createData(values, floors, 1);
+        List<String> vl = createData(values, 0, 1);
+
+        if (selected.length() > floor) {
+            final JSONArray selectedValues = selected.getJSONArray(floor);
+            Collections.sort(vl, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    int flag1 = 0;
+                    int flag2 = 0;
+                    try {
+                        flag1 = containString(selectedValues, o1);
+                        flag2 = containString(selectedValues, o2);
+                        return flag1 - flag2;
+                    } catch (JSONException e) {
+                        return flag1 - flag2;
+                    }
+                }
+            });
+        }
+
         if (!vl.isEmpty()) {
             if (result.size() > floor) {
                 concatArray(result.get(floor), createJSONArrayForTree(vl, id));
@@ -75,7 +100,7 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
                     temp = id + "_" + (i + 1);
                 }
                 if (values.length < widget.getViewDimensions().length - 1 - floors) {
-                    getAllData(result, ArrayUtils.addAll(values, val), temp, floor + 1);
+                    getAllData(result, ArrayUtils.addAll(values, val), temp, floor + 1, selected);
                 } else {
                     break;
                 }
@@ -88,6 +113,17 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         for (int i = 0; i < arr2.length(); i++) {
             arr1.put(arr2.get(i));
         }
+    }
+
+    private int containString(JSONArray array, String str)
+            throws JSONException {
+        int flag = -1;
+        for (int i = 0; i < array.length(); i++) {
+            if (str.equals(array.getString(i))) {
+                flag = 1;
+            }
+        }
+        return flag;
     }
 
     private JSONArray createJSONArrayForTree(List<String> list, String id) {
