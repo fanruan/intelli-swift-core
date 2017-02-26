@@ -25,12 +25,12 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.web.core.SessionDealWith;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -45,25 +45,24 @@ public class TableWidget extends BISummaryWidget {
      */
     @BICoreField
     private BITableReportSetting data = new BITableReportSetting();
-
     private int[] pageSpinner = new int[5];
-
     private int operator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
-
     private int table_type = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
+    @BIIgnoreField
+    private transient BIDimension[] usedDimension;
+    @BIIgnoreField
+    private transient BISummaryTarget[] usedTargets;
+    private DetailChartSetting settings = new DetailChartSetting();
+    private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
+    private Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
+    private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
+
+    protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
 
     @Override
     public void setPageSpinner(int index, int value) {
         this.pageSpinner[index] = value;
     }
-
-    @BIIgnoreField
-    private transient BIDimension[] usedDimension;
-    @BIIgnoreField
-    private transient BISummaryTarget[] usedTargets;
-
-    private DetailChartSetting settings = new DetailChartSetting();
-
 
     @Override
     public BIDimension[] getViewDimensions() {
@@ -123,11 +122,9 @@ public class TableWidget extends BISummaryWidget {
         return dimensions;
     }
 
-
     public boolean useRealData() {
         return data.useRealData();
     }
-
 
     /**
      * 有无编号
@@ -185,7 +182,6 @@ public class TableWidget extends BISummaryWidget {
         return executor;
     }
 
-
     private BIEngineExecutor createNormalExecutor(BISession session, boolean hasTarget, BIDimension[] usedRows, BIDimension[] usedColumn, CrossExpander expander) {
         BIEngineExecutor executor;
         int summaryLen = getViewTargets().length;
@@ -223,7 +219,6 @@ public class TableWidget extends BISummaryWidget {
         return jo;
     }
 
-
     /**
      * 创建表格的Block
      */
@@ -236,6 +231,7 @@ public class TableWidget extends BISummaryWidget {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if (jo.has("view")) {
+            parseView(jo.optJSONObject("view"));
             data.parseJSON(jo);
         }
 
@@ -253,9 +249,56 @@ public class TableWidget extends BISummaryWidget {
             settings = new DetailChartSetting();
             settings.parseJSON(jo);
         }
+        if (jo.has("clicked")) {
+            JSONObject c = jo.getJSONObject("clicked");
+            Iterator it = c.keys();
+            while (it.hasNext()) {
+                String key = it.next().toString();
+                clicked.put(key, c.getJSONArray(key));
+            }
+        }
         changeCalculateTargetStartGroup();
+        createDimensionAndTargetMap();
+    }
 
+    private void createDimensionAndTargetMap() {
+        for (BIDimension dimension : this.getDimensions()) {
+            for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
+                Integer key = entry.getKey();
+                if (key <= Integer.parseInt(BIReportConstant.REGION.DIMENSION2)) {
+                    List<String> dIds = entry.getValue();
+                    if (dIds.contains(dimension.getValue())) {
+                        dimensionsIdMap.put(dimension.getValue(), dimension);
+                        break;
+                    }
+                }
+            }
+        }
+        for (BISummaryTarget target : this.getTargets()) {
+            for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
+                Integer key = entry.getKey();
+                if (key >= Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
+                    List<String> dIds = entry.getValue();
+                    if (dIds.contains(target.getValue())) {
+                        targetsIdMap.put(target.getValue(), target);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
+    public void parseView(JSONObject jo) throws Exception {
+        Iterator it = jo.keys();
+        while (it.hasNext()) {
+            Integer region = Integer.parseInt(it.next().toString());
+            List<String> dimensionIds = new ArrayList<String>();
+            view.put(region, dimensionIds);
+            JSONArray tmp = jo.getJSONArray(region.toString());
+            for (int j = 0; j < tmp.length(); j++) {
+                dimensionIds.add(tmp.getString(j));
+            }
+        }
     }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
@@ -276,6 +319,43 @@ public class TableWidget extends BISummaryWidget {
 
     public DetailChartSetting getChartSetting() {
         return settings;
+    }
+
+    public Set<String> getAllDimensionIds() {
+        Set<String> dimensionIds = new HashSet<String>();
+        for (BIDimension dimension : this.getDimensions()) {
+            dimensionIds.add(dimension.getValue());
+        }
+        return dimensionIds;
+    }
+
+    public Set<String> getAllTargetIds() {
+        Set<String> targetIds = new HashSet<String>();
+        for (BISummaryTarget target : this.getTargets()) {
+            targetIds.add(target.getValue());
+        }
+        return targetIds;
+    }
+
+    public JSONObject getWidgetDrill() throws JSONException {
+        JSONObject drills = new JSONObject();
+        Set<String> dimensionIds = this.getAllDimensionIds();
+
+        for (Map.Entry<String, JSONArray> entry : clicked.entrySet()) {
+            String dId = entry.getKey();
+            if (dimensionIds.contains(dId)) {
+                drills.put(dId, entry.getValue());
+            }
+        }
+        return drills;
+    }
+
+    public BIDimension getDrillDimension(JSONArray drill) throws JSONException {
+        if (drill == null || drill.length() == 0) {
+            return null;
+        }
+        String id = drill.getJSONObject(drill.length() - 1).getString("dId");
+        return dimensionsIdMap.get(id);
     }
 
     public boolean showRowToTal() {
@@ -347,5 +427,7 @@ public class TableWidget extends BISummaryWidget {
         return tableDataForExport.createJsonObject();
     }
 
-
+    public Map<Integer, List<String>> getWidgetView() {
+        return view;
+    }
 }

@@ -19,13 +19,17 @@ BI.BubblePopupBarView = BI.inherit(BI.BubblePopupView, {
 
         var items = [];
         BI.each(o.buttons.reverse(), function (i, buttonOpt) {
-            items.push(BI.extend({
-                type: 'bi.button',
-                height: 30,
-                handler: function (v) {
-                    self.fireEvent(BI.BubblePopupBarView.EVENT_CLICK_TOOLBAR_BUTTON, v);
-                }
-            }, buttonOpt))
+            if(BI.isWidget(buttonOpt)){
+                items.push(buttonOpt);
+            }else{
+                items.push(BI.extend({
+                    type: 'bi.button',
+                    height: 30,
+                    handler: function (v) {
+                        self.fireEvent(BI.BubblePopupBarView.EVENT_CLICK_TOOLBAR_BUTTON, v);
+                    }
+                }, buttonOpt))
+            }
         });
         return BI.createWidget({
             type: 'bi.right_vertical_adapt',

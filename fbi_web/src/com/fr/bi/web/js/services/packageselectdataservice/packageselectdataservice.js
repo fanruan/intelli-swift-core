@@ -347,7 +347,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: self._getTitleByFieldId(fid),
-                    value: self._getTitleByFieldId(fid),
+                    value: fid,
                     drag: self._createDrag(fieldName)
                 }, field))
             }
