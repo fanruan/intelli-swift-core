@@ -28,7 +28,7 @@ public class BIChartSettingFactory {
     };
 
     private static final int[] MINIMALIST_WIDGET = new int[]{
-            BIReportConstant.WIDGET.AXIS,
+            BIReportConstant.WIDGET.COLUMN,
             BIReportConstant.WIDGET.ACCUMULATE_AXIS,
             BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS,
             BIReportConstant.WIDGET.COMPARE_AXIS,
@@ -166,7 +166,7 @@ public class BIChartSettingFactory {
 
     public static BIChartSetting newChartSettingByType(int type) throws Exception {
         switch (type) {
-            case BIReportConstant.WIDGET.AXIS:
+            case BIReportConstant.WIDGET.COLUMN:
                 return new AxisChartSetting();
             case BIReportConstant.WIDGET.COMBINE_CHART:
                 return new AxisChartSetting();

@@ -32,7 +32,7 @@ public class FallAxisChartSetting extends BIAbstractAxisChartSetting {
             JSONArray type = new JSONArray();
             JSONArray axisItems = data.getJSONArray(i);
             for(int j = 0; j < axisItems.length(); j++){
-                type.put(BIReportConstant.WIDGET.AXIS);
+                type.put(BIReportConstant.WIDGET.COLUMN);
             }
             newTypes.put(type);
         }

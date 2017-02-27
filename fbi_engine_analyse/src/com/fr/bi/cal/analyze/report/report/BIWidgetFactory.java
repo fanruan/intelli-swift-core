@@ -38,7 +38,7 @@ public class BIWidgetFactory {
         BIWidget biWidget;
         switch (type) {
             case BIReportConstant.WIDGET.BAR:
-            case BIReportConstant.WIDGET.AXIS:
+            case BIReportConstant.WIDGET.COLUMN:
             case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
             case BIReportConstant.WIDGET.COMPARE_BAR:
             case BIReportConstant.WIDGET.COMPARE_AXIS:

@@ -73,7 +73,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
             case BIReportConstant.WIDGET.SCATTER:
                 items.put("type", "scatter");
                 break;
-            case BIReportConstant.WIDGET.AXIS:
+            case BIReportConstant.WIDGET.COLUMN:
             case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
             case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BIReportConstant.WIDGET.COMPARE_AXIS:

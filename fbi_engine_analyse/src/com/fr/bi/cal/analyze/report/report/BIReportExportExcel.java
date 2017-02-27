@@ -327,7 +327,7 @@ public class BIReportExportExcel {
         map.put(BIReportConstant.WIDGET.ACCUMULATE_AXIS, "/axis_accu.png");
         map.put(BIReportConstant.WIDGET.ACCUMULATE_AREA, "/area_accu.png");
         map.put(BIReportConstant.WIDGET.ACCUMULATE_RADAR, "/radar_accu.png");
-        map.put(BIReportConstant.WIDGET.AXIS, "/axis.png");
+        map.put(BIReportConstant.WIDGET.COLUMN, "/axis.png");
         map.put(BIReportConstant.WIDGET.LINE, "/line.png");
         map.put(BIReportConstant.WIDGET.AREA, "/area.png");
         map.put(BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS, "/axis_percent.png");

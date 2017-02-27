@@ -362,7 +362,7 @@ public class BIReportConstant {
         public static final int COMPLEX_TABLE = 0x3;     //复杂表
         public static final int DETAIL = 0x4;             //明细表
 
-        public static final int AXIS = 0x5;               //柱状图
+        public static final int COLUMN = 0x5;               //柱状图
         public static final int ACCUMULATE_AXIS = 0x6;   //堆积柱状图
         public static final int PERCENT_ACCUMULATE_AXIS = 0x7;   //百分比堆积柱状图
         public static final int COMPARE_AXIS = 0x8;      //对比柱状图

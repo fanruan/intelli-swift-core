@@ -58,7 +58,7 @@ public class BIChartDataConvertFactory {
                         if (chart.has("type")) {
                             t.put(chart.getInt("type"));
                         } else {
-                            t.put(BIReportConstant.WIDGET.AXIS);
+                            t.put(BIReportConstant.WIDGET.COLUMN);
                         }
                     } else {
                         t.put(type);
@@ -142,7 +142,7 @@ public class BIChartDataConvertFactory {
             case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
             case BIReportConstant.WIDGET.ACCUMULATE_AREA:
             case BIReportConstant.WIDGET.ACCUMULATE_RADAR:
-            case BIReportConstant.WIDGET.AXIS:
+            case BIReportConstant.WIDGET.COLUMN:
             case BIReportConstant.WIDGET.LINE:
             case BIReportConstant.WIDGET.AREA:
             case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -255,7 +255,7 @@ public class BIChartDataConvertFactory {
                     if (view.containsKey(Integer.parseInt(BIReportConstant.REGION.TARGET2)) && view.get(Integer.parseInt(BIReportConstant.REGION.TARGET2)).contains(showTarget[i].getValue())) {
                         switch (type) {
                             case BIReportConstant.WIDGET.BUBBLE:
-                            case BIReportConstant.WIDGET.AXIS:
+                            case BIReportConstant.WIDGET.COLUMN:
                             case BIReportConstant.WIDGET.PIE:
                             default:
                                 res = new JSONObject("{ " +
