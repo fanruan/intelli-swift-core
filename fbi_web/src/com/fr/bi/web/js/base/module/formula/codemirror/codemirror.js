@@ -2966,7 +2966,7 @@
     } while (i < callbacks.length);
   }
 
-  // Finish an build, updating the display and signalling delayed events
+  // Finish an operation, updating the display and signalling delayed events
   function endOperation(cm) {
     var op = cm.curOp, group = op.ownsGroup;
     if (!group) return;
@@ -2980,7 +2980,7 @@
     }
   }
 
-  // The DOM updates done when an build finishes are batched so
+  // The DOM updates done when an operation finishes are batched so
   // that the minimum number of relayouts are required.
   function endOperations(group) {
     var ops = group.ops;
@@ -3104,14 +3104,14 @@
       op.update.finish();
   }
 
-  // Run the given function in an build
+  // Run the given function in an operation
   function runInOp(cm, f) {
     if (cm.curOp) return f();
     startOperation(cm);
     try { return f(); }
     finally { endOperation(cm); }
   }
-  // Wraps a function in an build. Returns the wrapped function.
+  // Wraps a function in an operation. Returns the wrapped function.
   function operation(cm, f) {
     return function() {
       if (cm.curOp) return f.apply(cm, arguments);
@@ -3451,7 +3451,7 @@
     var d = cm.display;
     if (d.lastWrapHeight == d.wrapper.clientHeight && d.lastWrapWidth == d.wrapper.clientWidth)
       return;
-    // Might be a text scaling build, clear size caches.
+    // Might be a text scaling operation, clear size caches.
     d.cachedCharWidth = d.cachedTextHeight = d.cachedPaddingH = null;
     d.scrollbarsClipped = false;
     cm.setSize();
@@ -4554,7 +4554,7 @@
   }
 
   // Store a relative adjustment to the scroll position in the current
-  // build (to be applied when the build finishes).
+  // operation (to be applied when the operation finishes).
   function addToScrollPos(cm, left, top) {
     if (left != null || top != null) resolveScrollToPos(cm);
     if (left != null)
@@ -4563,7 +4563,7 @@
       cm.curOp.scrollTop = (cm.curOp.scrollTop == null ? cm.doc.scrollTop : cm.curOp.scrollTop) + top;
   }
 
-  // Make sure that at the end of the build the current cursor is
+  // Make sure that at the end of the operation the current cursor is
   // shown.
   function ensureCursorVisible(cm) {
     resolveScrollToPos(cm);
@@ -4575,8 +4575,8 @@
     cm.curOp.scrollToPos = {from: from, to: to, margin: cm.options.cursorScrollMargin, isCursor: true};
   }
 
-  // When an build has its scrollToPos property set, and another
-  // scroll action is applied before the end of the build, this
+  // When an operation has its scrollToPos property set, and another
+  // scroll action is applied before the end of the operation, this
   // 'simulates' scrolling that position into view in a cheap way, so
   // that the effect of intermediate scroll commands is not ignored.
   function resolveScrollToPos(cm) {
@@ -4775,7 +4775,7 @@
   // EDITOR METHODS
 
   // The publicly visible API. Note that methodOp(f) means
-  // 'wrap f in an build, performed on its `this` parameter'.
+  // 'wrap f in an operation, performed on its `this` parameter'.
 
   // This is not the complete set of editor methods. Most of the
   // methods defined on the Doc type are also injected into
@@ -6040,7 +6040,7 @@
     // (markTextShared will call out to this again, once per
     // document).
     if (options && options.shared) return markTextShared(doc, from, to, options, type);
-    // Ensure we are in an build.
+    // Ensure we are in an operation.
     if (doc.cm && !doc.cm.curOp) return operation(doc.cm, markText)(doc, from, to, options, type);
 
     var marker = new TextMarker(doc, type), diff = cmp(from, to);
@@ -7772,7 +7772,7 @@
   }
 
   // Register a change in the history. Merges changes that are within
-  // a single build, ore are close together with an origin that
+  // a single operation, ore are close together with an origin that
   // allows merging (starting with "+") into a single event.
   function addChangeToHistory(doc, change, selAfter, opId) {
     var hist = doc.history;
@@ -8038,8 +8038,8 @@
   // other methods on the editor, which might be in an inconsistent
   // state or simply not expect any other events to happen.
   // signalLater looks whether there are any handlers, and schedules
-  // them to be executed when the last build ends, or, if no
-  // build is active, when a timeout fires.
+  // them to be executed when the last operation ends, or, if no
+  // operation is active, when a timeout fires.
   function signalLater(emitter, type /*, values...*/) {
     var arr = emitter._handlers && emitter._handlers[type];
     if (!arr) return;

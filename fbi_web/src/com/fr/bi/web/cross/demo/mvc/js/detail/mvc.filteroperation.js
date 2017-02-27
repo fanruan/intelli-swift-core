@@ -4,7 +4,7 @@
 FilterOperationView = BI.inherit(BI.View, {
     _defaultConfig: function () {
         return BI.extend(FilterOperationView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "mvc-filter-build bi-mvc-layout"
+            baseCls: "mvc-filter-operation bi-mvc-layout"
         })
     },
     _init: function () {

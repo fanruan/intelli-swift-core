@@ -1601,7 +1601,6 @@
             var fieldType = this.getFieldTypeByDimensionID(dId);
             var clicked = v;
 
-            console.log(group);
             if (BI.isNotNull(group)) {
                 if (fieldType === BICst.COLUMN.STRING) {
                     var details = group.details,
