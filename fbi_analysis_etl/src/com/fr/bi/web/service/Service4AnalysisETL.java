@@ -31,7 +31,8 @@ public class Service4AnalysisETL implements Service {
             new BIAnalysisETLGetFieldMinMaxValueAction(),
             new BIAnalysisETLGetGeneratingStatusAction(),
             new BIGetUsedTablesAction(),
-            new BIAnalysisETLCheckAllTableStatusAction()
+            new BIAnalysisETLCheckAllTableStatusAction(),
+            new BIAnalysisETLCheckTableInUseAction()
 };
 
 @Override

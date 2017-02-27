@@ -187,6 +187,7 @@ BI.BubbleCombo = BI.inherit(BI.Widget, {
     },
 
     hideView: function () {
+        this._hideTriangle();
         this.combo && this.combo.hideView();
     },
 

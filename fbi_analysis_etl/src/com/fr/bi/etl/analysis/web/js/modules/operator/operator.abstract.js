@@ -19,7 +19,8 @@ BI.AnalysisETLOperatorAbstractPane = BI.inherit(BI.MVCWidget, {
                 value: o.value,
                 type:o.value.operatorType + ETLCst.ANALYSIS_TABLE_PANE,
                 model:o.model
-            }
+            },
+            isCurrentTheLastOperator: o.isCurrentTheLastOperator
         })
 
         var self = this;
@@ -56,7 +57,7 @@ BI.AnalysisETLOperatorAbstractPane = BI.inherit(BI.MVCWidget, {
         this.center.on(BI.AnalysisETLOperatorCenter.DATA_CHANGE, function (model) {
             self.controller.refreshModel(model);
         })
-        
+
         this.center.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (previewModel, operatorType) {
             self.controller.refreshPreviewData(previewModel, operatorType)
         })
@@ -67,5 +68,5 @@ BI.AnalysisETLOperatorAbstractPane = BI.inherit(BI.MVCWidget, {
             items: [this.center]
         })
     }
- 
+
 })
