@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
@@ -24,8 +25,11 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -36,6 +40,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -486,5 +491,60 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         }
         dimensionsMap.clear();
         dimensionsMap = refreshedDimensionsMap;
+    }
+
+    public abstract class SimpleIntArray{
+        public abstract int get(int index);
+
+        public abstract int size();
+    }
+
+    protected SimpleIntArray createGroupArray(int start, int end, final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+        if (gvi instanceof AllShowRoaringGroupValueIndex) {
+            final int fstart = start, size = start == -1 ? 0 : end - start;
+            return new SingleSliderWidget.SimpleIntArray() {
+                @Override
+                public int get(int index) {
+                    return index + fstart;
+                }
+
+                @Override
+                public int size() {
+                    return size;
+                }
+            };
+        } else {
+            final int[] groupIndex = new int[getter.getGroupSize()];
+            Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
+            gvi.Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    int groupRow = getter.getPositionOfGroupByRow(row);
+                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                        groupIndex[groupRow] = groupRow;
+                    }
+                }
+            });
+            final IntArray array = new IntArray();
+            if (start != -1) {
+                for (int i = start; i < end; i++) {
+                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE) {
+                        array.add(i);
+                    }
+                }
+            }
+            return new SimpleIntArray() {
+                @Override
+                public int get(int index) {
+                    return array.get(index);
+                }
+
+                @Override
+                public int size() {
+                    return array.size;
+                }
+            };
+        }
+
     }
 }
