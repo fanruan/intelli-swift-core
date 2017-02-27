@@ -38,10 +38,10 @@ public class BIWidgetFactory {
         BIWidget biWidget;
         switch (type) {
             case BIReportConstant.WIDGET.BAR:
-            case BIReportConstant.WIDGET.AXIS:
-            case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
+            case BIReportConstant.WIDGET.COLUMN:
+            case BIReportConstant.WIDGET.ACCUMULATE_COLUMN:
             case BIReportConstant.WIDGET.COMPARE_BAR:
-            case BIReportConstant.WIDGET.COMPARE_AXIS:
+            case BIReportConstant.WIDGET.COMPARE_COLUMN:
             case BIReportConstant.WIDGET.COMPARE_AREA:
             case BIReportConstant.WIDGET.RANGE_AREA:
             case BIReportConstant.WIDGET.LINE:
@@ -59,7 +59,7 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.RADAR:
             case BIReportConstant.WIDGET.SCATTER:
             case BIReportConstant.WIDGET.BUBBLE:
-                biWidget = new MultiChartWidget();
+                biWidget = new VanChartWidget();
                 break;
             case BIReportConstant.WIDGET.TABLE:
             case BIReportConstant.WIDGET.CROSS_TABLE:
@@ -88,7 +88,7 @@ public class BIWidgetFactory {
                 biWidget = new SingleSliderWidget();
                 break;
             default:
-                biWidget = new MultiChartWidget();
+                biWidget = new VanChartWidget();
         }
         return biWidget;
     }

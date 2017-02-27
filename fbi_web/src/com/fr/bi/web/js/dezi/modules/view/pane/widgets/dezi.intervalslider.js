@@ -186,8 +186,8 @@ BIDezi.IntervalSliderWidgetView = BI.inherit(BI.View, {
                     right: 0,
                     top: 0,
                     bottom: 0
-                },{
-                    el:this.del,
+                }, {
+                    el: this.del,
                     bottom: 0,
                     left: widgetCombo.combo.options.width / 2
                 }],
@@ -265,13 +265,9 @@ BIDezi.IntervalSliderWidgetView = BI.inherit(BI.View, {
     change: function (changed, prev, context, options) {
         if (BI.has(changed, "bounds")) {
         }
-        if (BI.has(changed, "dimension")) {
+        if (BI.has(changed, "dimension") || BI.has(changed, "value") || BI.has(changed, "view")) {
             BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
             this.combo.populate();
-        }
-        if (BI.has(changed, "value")) {
-            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
-            this.combo.setValue();
         }
     },
 

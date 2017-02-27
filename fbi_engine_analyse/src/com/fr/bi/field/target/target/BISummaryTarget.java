@@ -10,6 +10,7 @@ import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -35,7 +36,7 @@ public abstract class BISummaryTarget extends BIAbstractTarget {
     public void setTargetMap(Map<String, TargetGettingKey> targetMap) {
     }
 
-    public Map<String, TargetGettingKey> getTargetMap(){
+    public Collection<String> getCalculateUseTargetIDs(){
         return null;
     }
 

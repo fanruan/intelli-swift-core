@@ -1,7 +1,7 @@
 package cal.analyze.report;
 
 import com.fr.base.CoreDecimalFormat;
-import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.AccumulateAxisChartSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.AccumulateAxisChartSetting;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONException;

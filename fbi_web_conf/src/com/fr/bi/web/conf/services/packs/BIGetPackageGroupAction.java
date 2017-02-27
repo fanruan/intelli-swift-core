@@ -5,9 +5,7 @@ import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.dataconfig.source.BIDataConfigAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
@@ -21,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class BIGetPackageGroupAction extends AbstractBIConfigureAction {
 
@@ -59,33 +56,23 @@ public class BIGetPackageGroupAction extends AbstractBIConfigureAction {
             }
 
             //分组
-            dealWithGroups(userId, groupsJO, packagesJO);
+            dealWithGroups(groupsJO, packagesJO);
             jo.put("edit", false);
-        } else {
-            Iterator<String> groupKeys = groupsJO.keys();
-            while (groupKeys.hasNext()) {
-                String key = groupKeys.next();
-                JSONObject groupJO = groupsJO.getJSONObject(key);
-                groupJO.put("edit", true);
-            }
         }
         jo.put("packages", packagesJO).put("groups", groupsJO);
         WebUtils.printAsJSON(res, jo);
 
     }
 
-    private void dealWithGroups(long userId, JSONObject groupsJO, JSONObject packagesJO) throws Exception {
+    /**
+     * 只要该分组中存在有权限的业务包即展示
+     *
+     * @param groupsJO
+     * @param packagesJO
+     * @throws Exception
+     */
+    private void dealWithGroups(JSONObject groupsJO, JSONObject packagesJO) throws Exception {
         List<String> need2Remove = new ArrayList<String>();
-        Set<BIDataConfigAuthority> authoritySet = BIConfigureManagerCenter.getDataConfigAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
-        List<String> authGroupIds = new ArrayList<String>();
-        for (BIDataConfigAuthority authority : authoritySet) {
-            String pId = authority.getpId();
-            String id = authority.getId();
-            if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP)) {
-                authGroupIds.add(id.substring(pId.length()));
-            }
-        }
-
         Iterator<String> groupKeys = groupsJO.keys();
         while (groupKeys.hasNext()) {
             String groupId = groupKeys.next();
@@ -99,15 +86,8 @@ public class BIGetPackageGroupAction extends AbstractBIConfigureAction {
                 }
             }
             groupJO.put("children", newChildren);
-            groupJO.put("edit", true);
-            String id = groupJO.getString("init_time"); //“id”
-            //无权限的分组如果含有有权限的业务包，标识为“不可编辑（无添加权限）”
-            if (!authGroupIds.contains(id)) {
-                if (newChildren.length() > 0) {
-                    groupJO.put("edit", false);
-                } else {
-                    need2Remove.add(groupId);
-                }
+            if (newChildren.length() == 0) {
+                need2Remove.add(groupId);
             }
         }
         for (String removeId : need2Remove) {

@@ -57,7 +57,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         var partUpdate = this._createPartUpdateTab();
         partUpdate.setVisible(true);
 
-
         //定时设置
         var timeSetting = this._createTimeSetting();
         partUpdate.setVisible(true);
@@ -79,16 +78,23 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 type: "bi.vertical"
             }]
         });
-        this.immediateButton = BI.createWidget({
-            type: "bi.button",
-            text: BI.i18nText("BI-Update_Table_Immedi"),
-            height: 28,
-            width: 104
+
+        this.processBar = BI.createWidget({
+            type: "bi.progress_text_bar",
+            width: 115,
+            height: 28
         });
+        this.processBar.setVisible(false);
+
         this.immediateCombo = BI.createWidget({
             type: "bi.combo",
             trigger: "hover",
-            el: this.immediateButton,
+            el: {
+                type: "bi.button",
+                text: BI.i18nText("BI-Update_Table_Immedi"),
+                height: 28,
+                width: 115
+            },
             popup: {
                 el: popup
             }
@@ -97,7 +103,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             self.immediateCombo.hideView();
         });
         this.immediateCombo.on(BI.Combo.EVENT_CHANGE, function (v) {
-            self._immediateButtonDisable();
+            self._startSingleUpdate(v);
             var tableInfo = {
                 updateType: v,
                 baseTable: self.model.table,
@@ -107,8 +113,9 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 tableInfo.isETL = true;
                 tableInfo.ETLTable = self.model.currentTable;
             }
-            self._createCheckInterval();
-            self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, tableInfo);
+            self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, tableInfo, function () {
+                self._createCheckInterval();
+            });
         });
 
         BI.createWidget({
@@ -130,16 +137,19 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     el: this.updateType,
                     width: "fill"
                 }, {
-                    el: this.immediateCombo,
-                    width: 105
+                    el: {
+                        type: "bi.vertical",
+                        items: [this.processBar, this.immediateCombo]
+                    },
+                    width: 115
                 }],
                 hgap: 5,
                 height: 30
             }, timeSetting, partUpdate],
             hgap: 10,
             vgap: 10
-        })
-        self._initImmediateButtonStatus();
+        });
+        self._createCheckInterval();
     },
 
     _createPartUpdateTab: function () {
@@ -445,8 +455,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 height: 30
             }, this.timeSettingGroup]
         })
-    }
-    ,
+    },
 
     _removeSettingById: function (id) {
         var allButtons = this.timeSettingGroup.getAllButtons();
@@ -458,13 +467,11 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             }
         });
         this.timeSettingGroup.removeItemAt(index);
-    }
-    ,
+    },
 
     getValue: function () {
         return this.model.getValue();
-    }
-    ,
+    },
 
     _createTimeSettingListItems: function () {
         var self = this;
@@ -485,44 +492,56 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             items.push(item);
         });
         return items;
-    }
-    ,
+    },
 
     _createCheckInterval: function () {
         var self = this;
-        if (undefined != self.cubeInterval) {
-            self._clearCheckInterval();
-        }
+        this._clearCheckInterval();
         self.cubeInterval = setInterval(function () {
-            self._getTaskStatus()
-        }, 5000)
-
+            self._getTaskStatus();
+        }, 2000);
     },
 
-    _initImmediateButtonStatus: function () {
-        var self = this;
-        var tableInfo =this._getTableInfo();
-        BI.Utils.reqCubeStatusCheck(tableInfo, function (data) {
-                if (!data.hasTask) {
-                    self._immediateButtonAvailable();
-                } else {
-                    self._immediateButtonDisable();
-                    self._createCheckInterval();
-                }
-            }
-        )
+    _getTextByUpdatingType: function () {
+        return this.updatingType === BICst.SINGLE_TABLE_UPDATE_TYPE.PART ?
+            BI.i18nText("BI-Incremental") : BI.i18nText("BI-Full_Amount");
     },
 
-    _immediateButtonAvailable: function () {
-        var self = this;
-        self.immediateButton.setEnable(true);
-        self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
+    _startSingleUpdate: function (v) {
+        this.updatingType = v;
+        this.immediateCombo.setVisible(false);
+        this.processBar.setVisible(true);
+        this.processBar.setValue(0);
+        this.processBar.setText(BI.i18nText("BI-Wait_For_Update", this._getTextByUpdatingType()));
     },
 
-    _immediateButtonDisable: function () {
+    //后台无法提供单表的更新进度
+    //简单的展现：剩余随机
+    _setProcess: function () {
+        if (this.processBar.isVisible() === false) {
+            this.processBar.setVisible(true);
+            this.immediateCombo.setVisible(false);
+        }
+        var value = this.processBar.getValue();
+        value = value + Math.random() * (100 - value) / 2;
+        value = BI.parseInt(value);
+        this.processBar.setValue(value > 95 ? 95 : value);
+        this.processBar.setText(BI.i18nText("BI-Single_Table_Updating", this._getTextByUpdatingType()) + value + "%");
+    },
+
+    //更新完成
+    _updateComplete: function () {
         var self = this;
-        self.immediateButton.setEnable(false);
-        self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+        if (this.processBar.isVisible() === false) {
+            return;
+        }
+        this.processBar.setValue(100);
+        this.processBar.setText(BI.i18nText("BI-Completed"));
+        BI.delay(function () {
+            self.processBar.setVisible(false);
+            self.processBar.setValue(0);
+            self.immediateCombo.setVisible(true);
+        }, 1000);
     },
 
     _getTableInfo: function () {
@@ -542,19 +561,19 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         var self = this;
         BI.Utils.reqCubeStatusCheck(tableInfo, function (data) {
                 if (!data.hasTask) {
-                    self._immediateButtonAvailable();
+                    self._updateComplete();
                     self._clearCheckInterval();
                 } else {
-                    self._immediateButtonDisable()
+                    self._setProcess();
                 }
             }
         )
     },
 
     _clearCheckInterval: function () {
-        var self = this;
-        if (undefined != self.cubeInterval) {
-            clearInterval(self.cubeInterval);
+        if (BI.isNotNull(this.cubeInterval)) {
+            clearInterval(this.cubeInterval);
+            this.cubeInterval = null;
         }
     }
 

@@ -1,6 +1,5 @@
 package com.fr.bi.web.base.services.dataconfigauth;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.fr.bi.conf.base.dataconfig.source.BIDataConfigAuthority;
 import com.fr.bi.conf.base.datasource.BIConnection;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
@@ -29,7 +28,6 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        BIConnectionManager.getInstance().ensureInitTimeExist();
         //管理员可以授权所有数据配置相关节点
         if (ComparatorUtils.equals(UserControl.getInstance().getSuperManagerID(), userId)) {
             WebUtils.printAsJSON(res, createJSON4Admin());
@@ -40,47 +38,33 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
 
     private JSONArray createJSON4Admin() throws Exception {
         JSONArray ja = new JSONArray();
-        JSONObject connectionNodeJO = new JSONObject();
-        connectionNodeJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION);  //根节点
-        ja.put(connectionNodeJO);       //数据连接节点
+        JSONObject connNode = new JSONObject();
+        connNode.put("id", DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.NODE);  //数据连接根节点
+        ja.put(connNode);
+        JSONObject connPage = new JSONObject();
+        connPage.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.NODE);
+        connPage.put("id", DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE);  //数据连接页面
+        ja.put(connPage);
 
-        JSONObject packageNodeJO = new JSONObject();
-        packageNodeJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER);  //根节点
-        ja.put(packageNodeJO);      //业务包管理
+        JSONObject packageNode = new JSONObject();
+        packageNode.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE);  //业务包管理根节点
+        ja.put(packageNode);
+
+        JSONObject packagePage = new JSONObject();
+        packagePage.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE);
+        packagePage.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE);   //业务包管理页面
+        ja.put(packagePage);
 
         JSONObject serverJO = new JSONObject();
-        serverJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER);
-        serverJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.SERVER_CONNECTION);
-        ja.put(serverJO);       //业务包管理->服务器数据集
-
+        serverJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE);
+        serverJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.SERVER_CONNECTION); //业务包管理->服务器数据集
+        ja.put(serverJO);
         JSONObject packConnNodeJO = new JSONObject();
-        packConnNodeJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER);
-        packConnNodeJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION);
+        packConnNodeJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE);
+        packConnNodeJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION);
         ja.put(packConnNodeJO);     //业务包管理->数据库
 
         createConnectionNodes4Admin(ja);
-
-        JSONObject packGroupJO = new JSONObject();
-        packGroupJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER);
-        packGroupJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP);
-        ja.put(packGroupJO);        //业务包管理->业务包分组
-
-        JSONObject groupsJO = BICubeConfigureCenter.getPackageManager().createGroupJSON(UserControl.getInstance().getSuperManagerID());
-        Iterator<String> ids = groupsJO.keys();
-        while (ids.hasNext()) {
-            String id = ids.next();
-            JSONObject group = groupsJO.getJSONObject(id);
-            String position = group.getString("init_time");
-            JSONObject groupJO = new JSONObject();
-            groupJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP);
-            groupJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP + position);
-            groupJO.put("text", group.getString("name"));
-            ja.put(groupJO);
-        }
-        //未分组
-//        JSONObject unGroupJO = new JSONObject();
-//        unGroupJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.UNGROUP_PACKAGE);
-//        unGroupJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP);
 
         createRootNodes4Admin(ja);
         return ja;
@@ -111,13 +95,13 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
             JSONObject childPackNode = new JSONObject();
             String name = GeneralUtils.objectToString(connectionNames.next());
             String id = getConnectionIDByName(name);
-            childConnNode.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION);
-            childConnNode.put("id", DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION + id);
+            childConnNode.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.NODE);
+            childConnNode.put("id", DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.NODE + id);
             childConnNode.put("text", name);
             ja.put(childConnNode);
 
-            childPackNode.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION);
-            childPackNode.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION + id);
+            childPackNode.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION);
+            childPackNode.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION + id);
             childPackNode.put("text", name);
             ja.put(childPackNode);
         }
@@ -140,23 +124,15 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
                 String pId = authority.getpId();
                 JSONObject jo = new JSONObject();
                 if (id != null) {
-                    //删除的数据连接、分组 不显示
-                    if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION) ||
-                            ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION)) {
+                    //删除的数据连接 不显示
+                    if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION) ||
+                            ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.NODE)) {
                         String connId = id.substring(pId.length());
                         String connName = getConnectionNameByID(connId);
                         if (connName == null) {
                             continue;
                         }
                         jo.put("text", connName);
-                    }
-                    if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP)) {
-                        String groupId = id.substring(pId.length());
-                        String groupName = getGroupNameByID(groupId);
-                        if (groupName == null) {
-                            continue;
-                        }
-                        jo.put("text", groupName);
                     }
                     jo.put("id", id);
                 }
@@ -174,24 +150,22 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
         JSONObject connJO = new JSONObject();
         JSONObject pmJO = new JSONObject();
         JSONObject pmConnJO = new JSONObject();
-        JSONObject pmGroupJO = new JSONObject();
         for (int i = 0; i < ja.length(); i++) {
             JSONObject jo = ja.getJSONObject(i);
             String pId = jo.optString("pId");
-            if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION)) {
+            if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.NODE)) {
                 connJO.put("id", pId);
             }
-            if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION)) {
+            if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION)) {
                 pmConnJO.put("id", pId);
-                pmConnJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER);
+                pmConnJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE);
             }
-            if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP)) {
-                pmGroupJO.put("id", pId);
-                pmGroupJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER);
+            if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE)) {
+                pmJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE);
             }
         }
-        if (pmConnJO.length() > 0 || pmGroupJO.length() > 0) {
-            pmJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER);
+        if (pmConnJO.length() > 0) {
+            pmJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE);
         }
         if (connJO.length() > 0) {
             ja.put(connJO);
@@ -202,9 +176,6 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
         if (pmConnJO.length() > 0) {
             ja.put(pmConnJO);
         }
-        if (pmGroupJO.length() > 0) {
-            ja.put(pmGroupJO);
-        }
     }
 
     private String getConnectionNameByID(String id) {
@@ -214,26 +185,6 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
             long initTime = BIConnectionManager.getInstance().getBIConnection(name).getInitTime();
             if (ComparatorUtils.equals(id, GeneralUtils.objectToString(initTime))) {
                 return name;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 业务包分组“ID”
-     *
-     * @param id
-     * @return
-     * @throws Exception
-     */
-    private String getGroupNameByID(String id) throws Exception {
-        JSONObject groupsJO = BICubeConfigureCenter.getPackageManager().createGroupJSON(UserControl.getInstance().getSuperManagerID());
-        Iterator<String> groupKeys = groupsJO.keys();
-        while (groupKeys.hasNext()) {
-            String gId = groupKeys.next();
-            JSONObject group = groupsJO.getJSONObject(gId);
-            if (ComparatorUtils.equals(id, group.getString("init_time"))) {
-                return group.getString("name");
             }
         }
         return null;
