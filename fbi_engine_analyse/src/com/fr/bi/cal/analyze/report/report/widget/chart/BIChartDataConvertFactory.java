@@ -75,7 +75,7 @@ public class BIChartDataConvertFactory {
                 JSONArray t = types.getJSONArray(i);
                 JSONArray item = convertedData.getJSONArray(i);
                 for (int j = 0; j < item.length(); j++) {
-                    if (t.getInt(j) == BIReportConstant.WIDGET.ACCUMULATE_AREA || t.getInt(j) == BIReportConstant.WIDGET.ACCUMULATE_AXIS) {
+                    if (t.getInt(j) == BIReportConstant.WIDGET.ACCUMULATE_AREA || t.getInt(j) == BIReportConstant.WIDGET.ACCUMULATE_COLUMN) {
                         item.getJSONObject(j).put("stack", uuid);
                     }
                 }
@@ -139,7 +139,7 @@ public class BIChartDataConvertFactory {
     private static JSONArray parseSNDataToXYZData(VanChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
         JSONArray da;
         switch (widget.getType()) {
-            case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
+            case BIReportConstant.WIDGET.ACCUMULATE_COLUMN:
             case BIReportConstant.WIDGET.ACCUMULATE_AREA:
             case BIReportConstant.WIDGET.ACCUMULATE_RADAR:
             case BIReportConstant.WIDGET.COLUMN:

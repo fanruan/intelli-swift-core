@@ -324,7 +324,7 @@ public class BIReportExportExcel {
 
     private String getDefaultImage(int type, String imageFolder) throws IOException {
         Map<Integer, String> map = new HashMap<Integer, String>();
-        map.put(BIReportConstant.WIDGET.ACCUMULATE_AXIS, "/axis_accu.png");
+        map.put(BIReportConstant.WIDGET.ACCUMULATE_COLUMN, "/column_accu.png");
         map.put(BIReportConstant.WIDGET.ACCUMULATE_AREA, "/area_accu.png");
         map.put(BIReportConstant.WIDGET.ACCUMULATE_RADAR, "/radar_accu.png");
         map.put(BIReportConstant.WIDGET.COLUMN, "/axis.png");
