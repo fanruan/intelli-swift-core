@@ -94,7 +94,7 @@ public class BIConnectionManager extends XMLFileManager {
             long initTime = connMap.get(name).getInitTime();
             if (ComparatorUtils.equals(initTime, 0)) {
                 ensureInitTimeExist();
-                return System.currentTimeMillis();
+                return getInitTime(name);
             }
             return initTime;
         }
@@ -122,6 +122,7 @@ public class BIConnectionManager extends XMLFileManager {
     }
 
     public BIConnection getBIConnection(String name) {
+        ensureInitTimeExist();
         return connMap.get(name);
     }
 

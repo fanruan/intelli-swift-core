@@ -38,6 +38,7 @@
             dataConfigList.selectNodesByData(selectedNodes);
         }
     }
+
     FS.Plugin.PrivilegeManageTabProvider.items.push({
         // tab视图
         tab: function (contentWidth, contentHeight, viewOnly, hasTool, onCustomSelect) {
@@ -162,21 +163,23 @@
 
             function getRootNamesById(id) {
                 switch (id) {
-                    case BICst.DATA_CONFIG_AUTHORITY.DATA_CONNECTION:
+                    case BICst.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.NODE:
                         return BI.i18nText("BI-Data_Connection");
-                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER:
+                    case BICst.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE:
+                        return BI.i18nText("BI-Data_Link_Page");
+                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE:
                         return BI.i18nText("BI-Packages_Man");
+                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE:
+                        return BI.i18nText("BI-Package_Manager_Page");
                     case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY:
                         return BI.i18nText("BI-Package_Authority_Manager");
                     case BICst.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING:
                         return BI.i18nText("BI-Multi_Path_Man");
                     case BICst.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE:
                         return BI.i18nText("BI-Cube_Updates_Setting");
-                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION:
+                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION:
                         return BI.i18nText("BI-Database");
-                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP:
-                        return BI.i18nText("BI-Package_Group");
-                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.SERVER_CONNECTION:
+                    case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.SERVER_CONNECTION:
                         return BI.i18nText("BI-Server_Dataset");
                 }
             }

@@ -139,15 +139,16 @@ public class DBConstant {
 
     //数据配置权限分配的基本节点常量 都作为id、parentId使用
     public static final class DATA_CONFIG_AUTHORITY {
-        public static final String DATA_CONNECTION = "__data_connection__";    //数据连接
+        public static final class DATA_CONNECTION {
+            public static final String NODE = "__data_connection_node__";   //节点
+            public static final String PAGE = "__data_connection_page__";   //页面展示
+        }
 
-        public static final String PACKAGE_MANAGER = "__package_manager__";    //业务包管理
-
-        public static final class PACKAGE_MANAGER_CHILDREN {
+        public static final class PACKAGE_MANAGER {
+            public static final String NODE = "__package_manager_node__";
+            public static final String PAGE = "__package_manager_page__";
             public static final String SERVER_CONNECTION = "__package_server_connection__";   //业务包选表控制服务器数据集权限
             public static final String DATA_CONNECTION = "__package_data_connection__";
-            public static final String PACKAGE_GROUP = "__package_group__";
-            public static final String UNGROUP_PACKAGE = "__ungroup_package__";     //业务包分组的“未分组”
         }
 
         public static final String MULTI_PATH_SETTING = "__multi_path_setting__";     //多路径设置

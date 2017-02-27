@@ -148,6 +148,7 @@ public class ConfResourceHelper {
                 "com/fr/bi/web/css/extend/update/singletable/update.singletable.setting.css",
                 "com/fr/bi/web/css/extend/update/singletable/iconchangetext.button.css",
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
+                "com/fr/bi/web/css/extend/update/singletable/widget.progress.text.css",
 
                 //全局更新
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
@@ -500,6 +501,7 @@ public class ConfResourceHelper {
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.model.js",
+                "com/fr/bi/web/js/extend/update/singletable/progress/widget.progress.text.js",
         };
     }
 

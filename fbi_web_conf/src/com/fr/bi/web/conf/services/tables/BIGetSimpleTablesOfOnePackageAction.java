@@ -3,23 +3,16 @@ package com.fr.bi.web.conf.services.tables;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.*;
-import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
-import com.fr.bi.conf.base.dataconfig.source.BIDataConfigAuthority;
-import com.fr.bi.conf.provider.BIAuthorityManageProvider;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.file.DatasourceManager;
-import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
-import com.fr.general.GeneralUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -27,9 +20,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -76,12 +67,10 @@ public class BIGetSimpleTablesOfOnePackageAction extends AbstractBIConfigureActi
         BIPackageID packageID = new BIPackageID(packageId);
         BISystemPackageConfigurationProvider packageConfigProvider = BICubeConfigureCenter.getPackageManager();
         IBusinessPackageGetterService pack;
-        boolean isNewPackage = false;
         if (!packageConfigProvider.containPackageID(userId, packageID)) {
             BIBusinessPackage biBasicBusinessPackage = new BIBasicBusinessPackage(new BIPackageID(packageId), new BIPackageName(packageName), new BIUser(userId), System.currentTimeMillis());
             packageConfigProvider.addPackage(userId, biBasicBusinessPackage);
             pack = packageConfigProvider.getPackage(userId, packageID);
-            isNewPackage = true;
         } else {
             pack = packageConfigProvider.getPackage(userId, packageID);
             if (!ComparatorUtils.equals(packageName, pack.getName().getValue())) {
@@ -97,50 +86,7 @@ public class BIGetSimpleTablesOfOnePackageAction extends AbstractBIConfigureActi
                 packageConfigProvider.stickGroupTagOnPackage(userId, packageID, groupTagName);
             }
         }
-        //添加业务包自动分配权限
-        if (isNewPackage) {
-            assignAuthority(userId, packageID, groupName);
-        }
         return pack;
-    }
-
-    /**
-     * 分配给所有拥有 当前业务包所在分组权限 的角色
-     *
-     * @param packageID
-     */
-    private void assignAuthority(long userId, BIPackageID packageID, String groupName) throws Exception {
-        List<BIDataConfigAuthority> assignAuth = new ArrayList<BIDataConfigAuthority>();
-        Set<BIDataConfigAuthority> authorities = BIConfigureManagerCenter.getDataConfigAuthorityManager().getAllDataConfigAuthorities();
-        for (BIDataConfigAuthority authority : authorities) {
-            String id = authority.getId();
-            String pId = authority.getpId();
-            if (ComparatorUtils.equals(pId, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP)) {
-                //未分组
-                if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.UNGROUP_PACKAGE) &&
-                        ComparatorUtils.equals(groupName, StringUtils.EMPTY)) {
-                    assignAuth.add(authority);
-                } else {
-                    BIGroupTagName groupTagName = new BIGroupTagName(groupName);
-                    IBusinessGroupGetterService groupGetterService = BICubeConfigureCenter.getPackageManager().getGroup(UserControl.getInstance().getSuperManagerID(), groupTagName);
-                    long position = groupGetterService.getPosition();
-                    String groupPos = id.substring(DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP.length());
-                    if (ComparatorUtils.equals(groupPos, GeneralUtils.objectToString(position))) {
-                        assignAuth.add(authority);
-                    }
-                }
-            }
-        }
-        List<BIPackageAuthority> packageAuthorities = new ArrayList<BIPackageAuthority>();
-        for (BIDataConfigAuthority authority : assignAuth) {
-            BIPackageAuthority packageAuthority = new BIPackageAuthority();
-            packageAuthority.setRoleName(authority.getRoleName());
-            packageAuthority.setRoleType(authority.getRoleType());
-            packageAuthorities.add(packageAuthority);
-        }
-        BIAuthorityManageProvider manager = BIConfigureManagerCenter.getAuthorityManager();
-        manager.savePackageAuth(packageID, packageAuthorities, userId);
-        manager.persistData(userId);
     }
 
     @Override

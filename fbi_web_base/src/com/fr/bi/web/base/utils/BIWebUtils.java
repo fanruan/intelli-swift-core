@@ -16,6 +16,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.utils.conf.BISystemEnvUtils;
 import com.fr.bi.web.base.operation.BIOperationRecord;
@@ -458,6 +459,16 @@ public class BIWebUtils {
             return true;
         }
         Set<BIDataConfigAuthority> authorities = BIConfigureManagerCenter.getDataConfigAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
-        return authorities.size() > 0;
+        for (BIDataConfigAuthority authority : authorities) {
+            String id = authority.getId();
+            if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE) ||
+                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE) ||
+                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING) ||
+                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY) ||
+                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

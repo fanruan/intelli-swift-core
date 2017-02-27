@@ -131,16 +131,11 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
 
     populate: function (item) {
         var self = this;
-        var items = [];
-        if (item.showAdd === true) {
-            var addButton = self._createAddButton();
-            items.push(addButton);
-        }
+        var addButton = self._createAddButton();
         var popupButtons = self._createFieldButtons(item);
-        items = items.concat(popupButtons);
         self.node.setValue(item.value);
         self.popup.empty();
-        self.popup.populate(items);
+        self.popup.populate(BI.union([addButton], popupButtons));
     },
 
     getNodeValue: function () {
