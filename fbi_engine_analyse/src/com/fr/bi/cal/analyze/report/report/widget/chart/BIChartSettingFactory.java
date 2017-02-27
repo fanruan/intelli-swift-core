@@ -2,8 +2,8 @@ package com.fr.bi.cal.analyze.report.report.widget.chart;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.*;
-import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.BIChartSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.*;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.BIChartSetting;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;

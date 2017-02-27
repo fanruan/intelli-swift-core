@@ -2,9 +2,9 @@ package com.fr.bi.cal.analyze.report.report.widget.chart;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.filter.FilterFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.filter.IFilter;
-import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.filter.objectcondition.FilterBubbleScatterFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.filter.FilterFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.filter.IFilter;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.filter.objectcondition.FilterBubbleScatterFactory;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
