@@ -17,9 +17,9 @@ import com.fr.bi.field.filtervalue.string.onevaluefilter.StringOneValueFilterVal
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.TargetType;
+import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
@@ -88,9 +88,9 @@ public class NodeIteratorCreator {
             if (target.getType() == TargetType.FORMULA) {
                 ids.add(target.getName());
             }
-            Map<String, TargetGettingKey> usedTargets = target.getTargetMap();
+            Collection<String> usedTargets = target.getCalculateUseTargetIDs();
             if (usedTargets != null) {
-                for (String id : usedTargets.keySet()) {
+                for (String id : usedTargets) {
                     if (!ComparatorUtils.equals(id, target.getName())) {
                         getRelatedFormulaMetricIds(id, ids);
                     }
@@ -106,9 +106,9 @@ public class NodeIteratorCreator {
             return;
         }
         if (target.getType() != TargetType.NORMAL) {
-            Map<String, TargetGettingKey> usedTargets = target.getTargetMap();
+            Collection<String> usedTargets = target.getCalculateUseTargetIDs();
             if (usedTargets != null) {
-                for (String id : usedTargets.keySet()) {
+                for (String id : usedTargets) {
                     if (!ComparatorUtils.equals(id, target.getName())) {
                         getRelatedNormalIds(id, ids);
                     }
@@ -235,8 +235,8 @@ public class NodeIteratorCreator {
             getRelatedNormalIds(cal.getName(), metrics);
         }
         fillMetricsToCalculate(metrics, metricsToCalculate, calculatedMap);
-        //如果不过滤计算指标，就直接过滤，过滤计算指标（特别是配置类计算）需要等到全部计算完了猜过滤
-        mergeIteratorCreators[index] = new AllNodeMergeIteratorCreator(hasCalculateMetrics ? filter : null, targetSort, metricsToCalculate, calculatedMap, creator);
+        //如果不过滤计算指标，就直接过滤，过滤计算指标（特别是配置类计算）需要等到全部计算完了才过滤
+        mergeIteratorCreators[index] = new AllNodeMergeIteratorCreator(hasCalculateMetrics ? null : filter, targetSort, metricsToCalculate, calculatedMap, creator);
     }
 
     private void fillMetricsToCalculate(Set<String> metrics, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap) {
