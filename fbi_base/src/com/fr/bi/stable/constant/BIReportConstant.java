@@ -364,9 +364,9 @@ public class BIReportConstant {
 
         public static final int COLUMN = 0x5;               //柱状图
         public static final int ACCUMULATE_COLUMN = 0x6;   //堆积柱状图
-        public static final int PERCENT_ACCUMULATE_AXIS = 0x7;   //百分比堆积柱状图
-        public static final int COMPARE_AXIS = 0x8;      //对比柱状图
-        public static final int FALL_AXIS = 0x9;         //瀑布图
+        public static final int PERCENT_ACCUMULATE_COLUMN = 0x7;   //百分比堆积柱状图
+        public static final int COMPARE_COLUMN = 0x8;      //对比柱状图
+        public static final int FALL_COLUMN = 0x9;         //瀑布图
 
         public static final int BAR = 0xa;                //条形图
         public static final int ACCUMULATE_BAR = 0xb;    //堆积条形图

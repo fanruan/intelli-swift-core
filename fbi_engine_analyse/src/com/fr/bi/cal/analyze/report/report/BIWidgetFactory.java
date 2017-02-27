@@ -41,7 +41,7 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.COLUMN:
             case BIReportConstant.WIDGET.ACCUMULATE_COLUMN:
             case BIReportConstant.WIDGET.COMPARE_BAR:
-            case BIReportConstant.WIDGET.COMPARE_AXIS:
+            case BIReportConstant.WIDGET.COMPARE_COLUMN:
             case BIReportConstant.WIDGET.COMPARE_AREA:
             case BIReportConstant.WIDGET.RANGE_AREA:
             case BIReportConstant.WIDGET.LINE:

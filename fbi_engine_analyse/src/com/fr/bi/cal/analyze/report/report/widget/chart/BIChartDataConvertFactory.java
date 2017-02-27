@@ -145,11 +145,11 @@ public class BIChartDataConvertFactory {
             case BIReportConstant.WIDGET.COLUMN:
             case BIReportConstant.WIDGET.LINE:
             case BIReportConstant.WIDGET.AREA:
-            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_COLUMN:
             case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BIReportConstant.WIDGET.COMPARE_AXIS:
+            case BIReportConstant.WIDGET.COMPARE_COLUMN:
             case BIReportConstant.WIDGET.COMPARE_AREA:
-            case BIReportConstant.WIDGET.FALL_AXIS:
+            case BIReportConstant.WIDGET.FALL_COLUMN:
             case BIReportConstant.WIDGET.RANGE_AREA:
             case BIReportConstant.WIDGET.BAR:
             case BIReportConstant.WIDGET.ACCUMULATE_BAR:

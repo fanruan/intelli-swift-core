@@ -75,9 +75,9 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
                 break;
             case BIReportConstant.WIDGET.COLUMN:
             case BIReportConstant.WIDGET.ACCUMULATE_COLUMN:
-            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BIReportConstant.WIDGET.COMPARE_AXIS:
-            case BIReportConstant.WIDGET.FALL_AXIS:
+            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BIReportConstant.WIDGET.COMPARE_COLUMN:
+            case BIReportConstant.WIDGET.FALL_COLUMN:
                 items.put("type", "column");
                 break;
             case BIReportConstant.WIDGET.LINE:

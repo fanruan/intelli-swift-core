@@ -327,14 +327,14 @@ public class BIReportExportExcel {
         map.put(BIReportConstant.WIDGET.ACCUMULATE_COLUMN, "/column_accu.png");
         map.put(BIReportConstant.WIDGET.ACCUMULATE_AREA, "/area_accu.png");
         map.put(BIReportConstant.WIDGET.ACCUMULATE_RADAR, "/radar_accu.png");
-        map.put(BIReportConstant.WIDGET.COLUMN, "/axis.png");
+        map.put(BIReportConstant.WIDGET.COLUMN, "/column.png");
         map.put(BIReportConstant.WIDGET.LINE, "/line.png");
         map.put(BIReportConstant.WIDGET.AREA, "/area.png");
-        map.put(BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS, "/axis_percent.png");
+        map.put(BIReportConstant.WIDGET.PERCENT_ACCUMULATE_COLUMN, "/column_percent.png");
         map.put(BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AREA, "/area_percent.png");
-        map.put(BIReportConstant.WIDGET.COMPARE_AXIS, "/axis_compare.png");
+        map.put(BIReportConstant.WIDGET.COMPARE_COLUMN, "/column_compare.png");
         map.put(BIReportConstant.WIDGET.COMPARE_AREA, "/area_compare.png");
-        map.put(BIReportConstant.WIDGET.FALL_AXIS, "/axis_fall.png");
+        map.put(BIReportConstant.WIDGET.FALL_COLUMN, "/column_fall.png");
         map.put(BIReportConstant.WIDGET.RANGE_AREA, "/area_range.png");
         map.put(BIReportConstant.WIDGET.BAR, "/bar.png");
         map.put(BIReportConstant.WIDGET.ACCUMULATE_BAR, "/bar_accu.png");

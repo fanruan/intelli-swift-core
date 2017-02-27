@@ -30,9 +30,9 @@ public class BIChartSettingFactory {
     private static final int[] MINIMALIST_WIDGET = new int[]{
             BIReportConstant.WIDGET.COLUMN,
             BIReportConstant.WIDGET.ACCUMULATE_COLUMN,
-            BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS,
-            BIReportConstant.WIDGET.COMPARE_AXIS,
-            BIReportConstant.WIDGET.FALL_AXIS,
+            BIReportConstant.WIDGET.PERCENT_ACCUMULATE_COLUMN,
+            BIReportConstant.WIDGET.COMPARE_COLUMN,
+            BIReportConstant.WIDGET.FALL_COLUMN,
             BIReportConstant.WIDGET.BAR,
             BIReportConstant.WIDGET.ACCUMULATE_BAR,
             BIReportConstant.WIDGET.COMPARE_BAR,
@@ -172,11 +172,11 @@ public class BIChartSettingFactory {
                 return new AxisChartSetting();
             case BIReportConstant.WIDGET.ACCUMULATE_COLUMN:
                 return new AccumulateAxisChartSetting();
-            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_COLUMN:
                 return new PercentAccumulateAxisChartSetting();
-            case BIReportConstant.WIDGET.COMPARE_AXIS:
+            case BIReportConstant.WIDGET.COMPARE_COLUMN:
                 return new CompareAxisChartSetting();
-            case BIReportConstant.WIDGET.FALL_AXIS:
+            case BIReportConstant.WIDGET.FALL_COLUMN:
                 return new FallAxisChartSetting();
             case BIReportConstant.WIDGET.BAR:
                 return new BarChartSetting();
