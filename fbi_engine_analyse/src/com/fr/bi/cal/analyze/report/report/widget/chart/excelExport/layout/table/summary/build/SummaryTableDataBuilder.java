@@ -269,29 +269,7 @@ public class SummaryTableDataBuilder implements BIExcelDataBuilder {
         }
         initCrossItemsSum(0, left.getJSONArray("c"), crossItemSums);
         //交叉表items
-        JSONObject crossItem = new JSONObject();
-        List children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
-        crossItem.put("children", children);
-        if (showColTotal) {
-            if (isOnlyCrossAndTarget()) {
-                BIExcelTableItem item = new BIExcelTableItem();
-                item.setType("bi.page_table_cell");
-                item.setText("BI.i18nText(\"BI-Summary_Values\")");
-                item.setStyle("");
-                crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
-            } else {
-                for (String targetId : targetIds) {
-                    BIExcelTableItem item = new BIExcelTableItem();
-                    item.setType("bi.normal_header_cell");
-                    item.setText("BI.i18nText(\"BI-Summary_Values\")");
-                    item.setStyle("");
-                    item.setTag(UUID.randomUUID().toString());
-                    item.setSum(true);
-                    crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
-                }
-            }
-        }
-        crossItems = new JSONArray().put(crossItem);
+        createCrossItems(top);
         //用cross parent value来对应到联动的时候的列表头值
         JSONArray crossPV = new JSONArray();
         parseCrossItem2Array(crossItems, crossPV, new JSONArray());
@@ -300,6 +278,10 @@ public class SummaryTableDataBuilder implements BIExcelDataBuilder {
             items = createItems4OnlyCrossAndTarget(this.dataJSON, crossPV);
             return;
         }
+        createCrossItems(left, crossPV);
+    }
+
+    private void createCrossItems(JSONObject left, JSONArray crossPV) throws Exception {
         JSONObject item = new JSONObject();
         item.put("children", createCommonTableItems(left.getString("c"), 0, null, dimIds, crossPV));
         if (showColTotal) {
@@ -339,6 +321,32 @@ public class SummaryTableDataBuilder implements BIExcelDataBuilder {
             item.put("values", sums);
         }
         this.items = new JSONArray().put(item);
+    }
+
+    private void createCrossItems(JSONObject top) throws Exception {
+        JSONObject crossItem = new JSONObject();
+        List children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
+        crossItem.put("children", children);
+        if (showColTotal) {
+            if (isOnlyCrossAndTarget()) {
+                BIExcelTableItem item = new BIExcelTableItem();
+                item.setType("bi.page_table_cell");
+                item.setText("BI.i18nText(\"BI-Summary_Values\")");
+                item.setStyle("");
+                crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
+            } else {
+                for (String targetId : targetIds) {
+                    BIExcelTableItem item = new BIExcelTableItem();
+                    item.setType("bi.normal_header_cell");
+                    item.setText("BI.i18nText(\"BI-Summary_Values\")");
+                    item.setStyle("");
+                    item.setTag(UUID.randomUUID().toString());
+                    item.setSum(true);
+                    crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
+                }
+            }
+        }
+        crossItems = new JSONArray().put(crossItem);
     }
 
 
@@ -577,60 +585,65 @@ public class SummaryTableDataBuilder implements BIExcelDataBuilder {
                 tempNodeId = itemNode.getParent().getId();
                 tempLayer--;
             }
-            BIExcelTableItem item = new BIExcelTableItem();
-            item.setText("bi.normal_expander_cell");
-            item.setText(currValue);
-            item.setdId(currDid);
-            item.setCross(true);
-            if (currentLayer < crossDimIds.size()) {
-                item.setNeedExpand(true);
-                item.setExpanded(false);
-            }
-            if (child.has("c")) {
-                List children = createCrossPartItems(child.getJSONArray("c"), currentLayer, node);
-                if (children.size() > 0) {
-                    item.setChildren(createCrossPartItems(child.getJSONArray("c"), currentLayer, node));
-                    item.setExpanded(true);
-                }
-            }
-            boolean hasSum = false;
-            // FIXME: 2017/2/23 这个地方有问题，获取的data明显和前台不一致，top数据直接默认为max了
-            boolean b = crossItemSums.get(currentLayer).length() > i;
-            if (b) {
-                if (null != crossItemSums && null != crossItemSums.get(currentLayer) && crossItemSums.get(currentLayer).getBoolean(i)) {
-                    hasSum = true;
-                }
-            }
-            if (showColTotal && hasSum && (null != item.getChildren() && item.getChildren().size() > 0)) {
-                JSONArray itemList = new JSONArray();
-                if (isOnlyCrossAndTarget()) {
-                    itemList.put(new JSONArray());
-                } else {
-                    int size = targetIds.size();
-                    JSONArray jsonArray = new JSONArray();
-                    for (int j = 0; j < size; j++) {
-                        jsonArray.put(j);
-                    }
-                    for (int j = 0; j < size; j++) {
-                        itemList.put(jsonArray);
-                    }
-                }
-                item.setValue(itemList);
-            }
-            if (showColTotal || null != item.getChildren()) {
-                JSONArray itemList = new JSONArray();
-                if (isOnlyCrossAndTarget()) {
-                    itemList.put(new BIExcelTableItem().createJSON());
-                } else {
-                    for (int j = 0; j < targetIds.size(); j++) {
-                        itemList.put(new String());
-                    }
-                }
-                item.setValue(itemList);
-            }
+            BIExcelTableItem item = setPartItem(currentLayer, i, child, currDid, currValue, node);
             crossHeaderIItems.add(item.createJSON());
         }
         return crossHeaderIItems;
+    }
+
+    private BIExcelTableItem setPartItem(int currentLayer, int i, JSONObject child, String currDid, String currValue, ReportNode node) throws Exception {
+        BIExcelTableItem item = new BIExcelTableItem();
+        item.setType("bi.normal_expander_cell");
+        item.setText(currValue);
+        item.setdId(currDid);
+        item.setCross(true);
+        if (currentLayer < crossDimIds.size()) {
+            item.setNeedExpand(true);
+            item.setExpanded(false);
+        }
+        if (child.has("c")) {
+            List children = createCrossPartItems(child.getJSONArray("c"), currentLayer, node);
+            if (children.size() > 0) {
+                item.setChildren(createCrossPartItems(child.getJSONArray("c"), currentLayer, node));
+                item.setExpanded(true);
+            }
+        }
+        boolean hasSum = false;
+        // FIXME: 2017/2/23 这个地方有问题，获取的data明显和前台不一致，top数据直接默认为max了
+        boolean currentLayerHasSums = crossItemSums.get(currentLayer).length() >= i&&crossItemSums.get(currentLayer).getBoolean(i);
+        if (currentLayerHasSums) {
+                hasSum = true;
+        }
+        boolean showColAndSums = showColTotal && hasSum;
+        boolean childExist = null != item.getChildren() && item.getChildren().size() > 0;
+        if (showColAndSums && childExist) {
+            JSONArray itemList = new JSONArray();
+            if (isOnlyCrossAndTarget()) {
+                itemList.put(new JSONArray());
+            } else {
+                int size = targetIds.size();
+                JSONArray jsonArray = new JSONArray();
+                for (int j = 0; j < size; j++) {
+                    jsonArray.put(j);
+                }
+                for (int j = 0; j < size; j++) {
+                    itemList.put(jsonArray);
+                }
+            }
+            item.setValue(itemList);
+        }
+        if (showColTotal || null != item.getChildren()) {
+            JSONArray itemList = new JSONArray();
+            if (isOnlyCrossAndTarget()) {
+                itemList.put(new BIExcelTableItem().createJSON());
+            } else {
+                for (int j = 0; j < targetIds.size(); j++) {
+                    itemList.put(new String());
+                }
+            }
+            item.setValue(itemList);
+        }
+        return item;
     }
 
     /**
@@ -683,59 +696,67 @@ public class SummaryTableDataBuilder implements BIExcelDataBuilder {
                 }
                 //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
                 if (child.has("c")) {
-                    List children = createCommonTableItems(child.getString("c"), currentLayer, node, dimIds, crossPV);
-                    item.setChildren(children);
-                    //在tableForm为 行展开模式 的时候 如果不显示汇总行 只是最后一行不显示汇总
-                    // TODO: 2017/2/22 如何定义tableFrom属性从而来确定是否为行展开？
-                    boolean openCol = true;
-                    if (showColTotal || openCol) {
-                        JSONArray vs = new JSONArray();
-                        JSONArray summary = getOneRowSummary(child.getString("s"));
-                        int tartSize = targetIds.size();
-                        for (int j = 0; j < summary.length(); j++) {
-                            BIExcelTableItem tarItem = new BIExcelTableItem();
-                            tarItem.setType("bi.target_body_normal_cell");
-                            tarItem.setText(summary.getString(j));
-                            tarItem.setdId(targetIds.get(j % tartSize));
-                            tarItem.setClicked(pValues);
-                            vs.put(tarItem.createJSON());
-                        }
-                        item.setValue(vs);
-                    }
-                    item.setExpanded(true);
+                    hasChildren(currentLayer, dimIds, crossPV, child, node, pValues, item);
                 } else {
-                    if (child.has("s")) {
-                        JSONArray values = new JSONArray();
-                        boolean hasSC = BIJsonUtils.isKeyValueSet(child.getString("s")) && child.getJSONObject("s").has("c");
-                        boolean isArraySS = BIJsonUtils.isKeyValueSet(child.getString("s")) && BIJsonUtils.isArray(child.getJSONObject("s").getString("s"));
-                        if (hasSC || isArraySS) {
-                            JSONObject childS = child.getJSONObject("s");
-                            //交叉表，pValue来自于行列表头的结合
-                            JSONObject ob = new JSONObject().put("index", 0);
-                            createTableSumItems(childS.getString("c"), values, pValues, ob, false, i, crossPV);
-                            //显示列汇总 有指标
-                            if (showColTotal && targetIds.size() > 0) {
-                                createTableSumItems(childS.getString("s"), values, pValues, ob, false, i, crossPV);
-                            }
-                        } else {
-                            JSONArray array = child.getJSONArray("s");
-                            for (int j = 0; j < array.length(); j++) {
-                                String tId = targetIds.get(j);
-                                BIExcelTableItem tarItem = new BIExcelTableItem();
-                                tarItem.setType("bi.target_body_normal_cell");
-                                tarItem.setText(array.getString(j));
-                                tarItem.setClicked(pValues);
-                                tarItem.setdId(tId);
-                                values.put(tarItem.createJSON());
-                            }
-                        }
-                        item.setValue(values);
-                    }
+                    hasNoneChildren(crossPV, i, child, pValues, item);
                 }
                 items.add(item.createJSON());
             }
         }
         return items;
+    }
+
+    private void hasChildren(int currentLayer, List<String> dimIds, JSONArray crossPV, JSONObject child, ReportNode node, JSONArray pValues, BIExcelTableItem item) throws Exception {
+        List children = createCommonTableItems(child.getString("c"), currentLayer, node, dimIds, crossPV);
+        item.setChildren(children);
+        //在tableForm为 行展开模式 的时候 如果不显示汇总行 只是最后一行不显示汇总
+        // TODO: 2017/2/22 如何定义tableFrom属性从而来确定是否为行展开？
+        boolean openCol = true;
+        if (showColTotal || openCol) {
+            JSONArray vs = new JSONArray();
+            JSONArray summary = getOneRowSummary(child.getString("s"));
+            int tartSize = targetIds.size();
+            for (int j = 0; j < summary.length(); j++) {
+                BIExcelTableItem tarItem = new BIExcelTableItem();
+                tarItem.setType("bi.target_body_normal_cell");
+                tarItem.setText(summary.getString(j));
+                tarItem.setdId(targetIds.get(j % tartSize));
+                tarItem.setClicked(pValues);
+                vs.put(tarItem.createJSON());
+            }
+            item.setValue(vs);
+        }
+        item.setExpanded(true);
+    }
+
+    private void hasNoneChildren(JSONArray crossPV, int i, JSONObject child, JSONArray pValues, BIExcelTableItem item) throws Exception {
+        if (child.has("s")) {
+            JSONArray values = new JSONArray();
+            boolean hasSC = BIJsonUtils.isKeyValueSet(child.getString("s")) && child.getJSONObject("s").has("c");
+            boolean isArraySS = BIJsonUtils.isKeyValueSet(child.getString("s")) && BIJsonUtils.isArray(child.getJSONObject("s").getString("s"));
+            if (hasSC || isArraySS) {
+                JSONObject childS = child.getJSONObject("s");
+                //交叉表，pValue来自于行列表头的结合
+                JSONObject ob = new JSONObject().put("index", 0);
+                createTableSumItems(childS.getString("c"), values, pValues, ob, false, i, crossPV);
+                //显示列汇总 有指标
+                if (showColTotal && targetIds.size() > 0) {
+                    createTableSumItems(childS.getString("s"), values, pValues, ob, false, i, crossPV);
+                }
+            } else {
+                JSONArray array = child.getJSONArray("s");
+                for (int j = 0; j < array.length(); j++) {
+                    String tId = targetIds.get(j);
+                    BIExcelTableItem tarItem = new BIExcelTableItem();
+                    tarItem.setType("bi.target_body_normal_cell");
+                    tarItem.setText(array.getString(j));
+                    tarItem.setClicked(pValues);
+                    tarItem.setdId(tId);
+                    values.put(tarItem.createJSON());
+                }
+            }
+            item.setValue(values);
+        }
     }
 
     /**
