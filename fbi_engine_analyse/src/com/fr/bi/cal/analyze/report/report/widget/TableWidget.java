@@ -9,7 +9,7 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.manager.ExcelExportDataBuildFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.ExcelExportDataBuildFactory;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;

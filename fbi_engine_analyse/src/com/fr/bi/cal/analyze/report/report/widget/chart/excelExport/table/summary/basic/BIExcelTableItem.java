@@ -1,6 +1,6 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.basic;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic.BIExcelItemData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.BIExcelItemData;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 

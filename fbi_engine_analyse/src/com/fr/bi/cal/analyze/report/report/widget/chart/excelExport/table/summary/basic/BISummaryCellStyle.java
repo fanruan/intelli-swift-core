@@ -1,6 +1,6 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.basic;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.utils.BICellStyle;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils.BICellStyle;
 import com.fr.json.JSONObject;
 
 /**

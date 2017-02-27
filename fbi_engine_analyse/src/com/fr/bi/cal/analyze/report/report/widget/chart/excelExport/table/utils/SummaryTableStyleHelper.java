@@ -1,6 +1,6 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.basic.BISummaryCellStyle;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BISummaryCellStyle;
 
 /**
  * Created by Kary on 2017/2/26.

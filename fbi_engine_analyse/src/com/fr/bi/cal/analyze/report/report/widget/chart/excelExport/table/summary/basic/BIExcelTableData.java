@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.basic;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic;
 
 import com.fr.json.JSONArray;
 import com.fr.json.JSONCreator;

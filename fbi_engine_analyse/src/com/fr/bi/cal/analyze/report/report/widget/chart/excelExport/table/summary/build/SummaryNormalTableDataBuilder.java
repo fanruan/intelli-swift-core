@@ -1,7 +1,7 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.build;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build;
 
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 

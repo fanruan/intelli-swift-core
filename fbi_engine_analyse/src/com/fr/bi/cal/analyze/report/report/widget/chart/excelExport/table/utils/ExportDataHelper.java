@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.utils;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils;
 
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 

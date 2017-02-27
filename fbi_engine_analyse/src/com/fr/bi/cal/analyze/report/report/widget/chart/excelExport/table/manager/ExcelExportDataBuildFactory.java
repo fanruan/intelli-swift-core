@@ -1,10 +1,10 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.manager;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager;
 
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic.BIExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.basic.BIExcelTableData;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.build.SummaryNormalTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.summary.build.SummaryTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.BIExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SummaryNormalTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SummaryTableDataBuilder;
 import com.fr.json.JSONObject;
 
 /**
