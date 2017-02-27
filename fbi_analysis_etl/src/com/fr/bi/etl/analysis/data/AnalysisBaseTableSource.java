@@ -7,6 +7,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
@@ -77,7 +78,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     private int getSqlType(int index) {
-        if (widget.getType() != BIReportConstant.WIDGET.DETAIL) {
+        if (widget.getType() != WidgetType.DETAIL) {
             return getTableWidgetSqlType(index);
         } else {
             return getDetailWidgetSqlType(index);

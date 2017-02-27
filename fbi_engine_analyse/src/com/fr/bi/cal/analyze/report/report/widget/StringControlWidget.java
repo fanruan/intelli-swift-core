@@ -7,6 +7,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -329,8 +330,8 @@ public class StringControlWidget extends TableWidget {
     }
 
     @Override
-    public int getType() {
-        return BIReportConstant.WIDGET.STRING;
+    public WidgetType getType() {
+        return WidgetType.STRING;
     }
 
 }

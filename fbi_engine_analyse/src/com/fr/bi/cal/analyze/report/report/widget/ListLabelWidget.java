@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
@@ -314,8 +315,8 @@ public class ListLabelWidget extends BISummaryWidget {
     }
 
     @Override
-    public int getType() {
-        return BIReportConstant.WIDGET.STRING;
+    public WidgetType getType() {
+        return WidgetType.STRING;
     }
 
     @Override

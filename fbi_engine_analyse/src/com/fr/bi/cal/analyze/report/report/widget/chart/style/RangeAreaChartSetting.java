@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.style;
 
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -73,14 +74,14 @@ public class RangeAreaChartSetting extends BIAbstractAxisChartSetting {
     @Override
     public JSONArray formatTypes(JSONArray data, JSONArray types) throws JSONException {
         JSONArray newTypes = new JSONArray();
-        for(int i = 0; i < data.length(); i++){
-            JSONArray type = new JSONArray();
-            JSONArray axisItems = data.getJSONArray(i);
-            for(int j = 0; j < axisItems.length(); j++){
-                type.put(BIReportConstant.WIDGET.RANGE_AREA);
-            }
-            newTypes.put(type);
-        }
+//        for(int i = 0; i < data.length(); i++){
+//            JSONArray type = new JSONArray();
+//            JSONArray axisItems = data.getJSONArray(i);
+//            for(int j = 0; j < axisItems.length(); j++){
+//                type.put(WidgetType.RANGE_AREA);
+//            }
+//            newTypes.put(type);
+//        }
         return newTypes;
     }
 }

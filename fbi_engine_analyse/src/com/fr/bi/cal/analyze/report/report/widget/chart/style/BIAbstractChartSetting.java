@@ -60,59 +60,59 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
     }
 
     private JSONObject formatChildItem(int type, JSONObject items) throws JSONException{
-        switch (type) {
-            case BIReportConstant.WIDGET.BAR:
-            case BIReportConstant.WIDGET.ACCUMULATE_BAR:
-            case BIReportConstant.WIDGET.COMPARE_BAR:
-                items.put("type", "bar");
-                break;
-            case BIReportConstant.WIDGET.BUBBLE:
-            case BIReportConstant.WIDGET.FORCE_BUBBLE:
-                items.put("type",  "bubble");
-                break;
-            case BIReportConstant.WIDGET.SCATTER:
-                items.put("type", "scatter");
-                break;
-            case BIReportConstant.WIDGET.COLUMN:
-            case BIReportConstant.WIDGET.ACCUMULATE_COLUMN:
-            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_COLUMN:
-            case BIReportConstant.WIDGET.COMPARE_COLUMN:
-            case BIReportConstant.WIDGET.FALL_COLUMN:
-                items.put("type", "column");
-                break;
-            case BIReportConstant.WIDGET.LINE:
-                items.put("type", "line");
-                break;
-            case BIReportConstant.WIDGET.AREA:
-            case BIReportConstant.WIDGET.ACCUMULATE_AREA:
-            case BIReportConstant.WIDGET.COMPARE_AREA:
-            case BIReportConstant.WIDGET.RANGE_AREA:
-            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AREA:
-                items.put("type", "area");
-                break;
-            case BIReportConstant.WIDGET.DONUT:
-                items.put("type", "pie");
-                break;
-            case BIReportConstant.WIDGET.RADAR:
-            case BIReportConstant.WIDGET.ACCUMULATE_RADAR:
-                items.put("type", "radar");
-                break;
-            case BIReportConstant.WIDGET.PIE:
-                items.put("type", "pie");
-                break;
-            case BIReportConstant.WIDGET.DASHBOARD:
-                items.put("type", "gauge");
-                break;
-            case BIReportConstant.WIDGET.MAP:
-                items.put("type", "areaMap");
-                break;
-            case BIReportConstant.WIDGET.GIS_MAP:
-                items.put("type", "pointMap");
-                break;
-            default:
-                items.put("type", "column");
-                break;
-        }
+//        switch (type) {
+//            case BIReportConstant.WIDGET.BAR:
+//            case BIReportConstant.WIDGET.ACCUMULATE_BAR:
+//            case BIReportConstant.WIDGET.COMPARE_BAR:
+//                items.put("type", "bar");
+//                break;
+//            case BIReportConstant.WIDGET.BUBBLE:
+//            case BIReportConstant.WIDGET.FORCE_BUBBLE:
+//                items.put("type",  "bubble");
+//                break;
+//            case BIReportConstant.WIDGET.SCATTER:
+//                items.put("type", "scatter");
+//                break;
+//            case BIReportConstant.WIDGET.COLUMN:
+//            case BIReportConstant.WIDGET.ACCUMULATE_COLUMN:
+//            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+//            case BIReportConstant.WIDGET.COMPARE_COLUMN:
+//            case BIReportConstant.WIDGET.FALL_COLUMN:
+//                items.put("type", "column");
+//                break;
+//            case BIReportConstant.WIDGET.LINE:
+//                items.put("type", "line");
+//                break;
+//            case BIReportConstant.WIDGET.AREA:
+//            case BIReportConstant.WIDGET.ACCUMULATE_AREA:
+//            case BIReportConstant.WIDGET.COMPARE_AREA:
+//            case BIReportConstant.WIDGET.RANGE_AREA:
+//            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AREA:
+//                items.put("type", "area");
+//                break;
+//            case BIReportConstant.WIDGET.DONUT:
+//                items.put("type", "pie");
+//                break;
+//            case BIReportConstant.WIDGET.RADAR:
+//            case BIReportConstant.WIDGET.ACCUMULATE_RADAR:
+//                items.put("type", "radar");
+//                break;
+//            case BIReportConstant.WIDGET.PIE:
+//                items.put("type", "pie");
+//                break;
+//            case BIReportConstant.WIDGET.GAUGE:
+//                items.put("type", "gauge");
+//                break;
+//            case BIReportConstant.WIDGET.MAP:
+//                items.put("type", "areaMap");
+//                break;
+//            case BIReportConstant.WIDGET.GIS_MAP:
+//                items.put("type", "pointMap");
+//                break;
+//            default:
+//                items.put("type", "column");
+//                break;
+//        }
         return items;
     }
 

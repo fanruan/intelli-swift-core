@@ -60,14 +60,14 @@ public class CompareBarChartSetting extends BIAbstractBarChartSetting {
     @Override
     public JSONArray formatTypes(JSONArray data, JSONArray types) throws JSONException {
         JSONArray newTypes = new JSONArray();
-        for(int i = 0; i < data.length(); i++){
-            JSONArray type = new JSONArray();
-            JSONArray axisItems = data.getJSONArray(i);
-            for(int j = 0; j < axisItems.length(); j++){
-                type.put(BIReportConstant.WIDGET.BAR);
-            }
-            newTypes.put(type);
-        }
+//        for(int i = 0; i < data.length(); i++){
+//            JSONArray type = new JSONArray();
+//            JSONArray axisItems = data.getJSONArray(i);
+//            for(int j = 0; j < axisItems.length(); j++){
+//                type.put(BIReportConstant.WIDGET.BAR);
+//            }
+//            newTypes.put(type);
+//        }
         return newTypes;
     }
 }

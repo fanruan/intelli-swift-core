@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
@@ -136,8 +137,8 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     @Override
-    public int getType() {
-        return type;
+    public WidgetType getType() {
+        return WidgetType.SINGLE_SLIDER;
     }
 
     private class MaxAndMin {

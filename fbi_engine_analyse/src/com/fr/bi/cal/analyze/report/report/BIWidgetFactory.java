@@ -3,10 +3,14 @@ package com.fr.bi.cal.analyze.report.report;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.cal.analyze.report.report.widget.*;
+import com.fr.bi.cal.analyze.report.report.widget.chart.VanChartUtils;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * Widget的静态方法
@@ -14,6 +18,11 @@ import com.fr.json.JSONObject;
  * @author Daniel-pc
  */
 public class BIWidgetFactory {
+
+
+    private static HashMap widgets = new HashMap<WidgetType, BIWidget>();
+
+
 
     /**
      * 根据属性选择生成不同的widget
@@ -27,69 +36,43 @@ public class BIWidgetFactory {
         if (view == null) {
             view = new JSONObject();
         }
-        int type = jo.optInt("type");
         JSONArray viewTargets = getViewTarget(view);
-        BIWidget widget = newWidgetByType(type, viewTargets);
+        BIWidget widget = newWidgetByType(WidgetType.parse(jo.optInt("type")), viewTargets);
         widget.parseJSON(jo, userId);
         return widget;
     }
 
-    public static BIWidget newWidgetByType(int type, JSONArray viewTargets) throws Exception {
-        BIWidget biWidget;
+    public static BIWidget newWidgetByType(WidgetType type, JSONArray viewTargets) throws Exception {
+        BIWidget biWidget = null;
         switch (type) {
-            case BIReportConstant.WIDGET.BAR:
-            case BIReportConstant.WIDGET.COLUMN:
-            case BIReportConstant.WIDGET.ACCUMULATE_COLUMN:
-            case BIReportConstant.WIDGET.COMPARE_BAR:
-            case BIReportConstant.WIDGET.COMPARE_COLUMN:
-            case BIReportConstant.WIDGET.COMPARE_AREA:
-            case BIReportConstant.WIDGET.RANGE_AREA:
-            case BIReportConstant.WIDGET.LINE:
-            case BIReportConstant.WIDGET.AREA:
-            case BIReportConstant.WIDGET.ACCUMULATE_AREA:
-            case BIReportConstant.WIDGET.COMBINE_CHART:
-            case BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART:
-            case BIReportConstant.WIDGET.MAP:
-            case BIReportConstant.WIDGET.ACCUMULATE_BAR:
-            case BIReportConstant.WIDGET.PIE:
-            case BIReportConstant.WIDGET.MULTI_PIE:
-            case BIReportConstant.WIDGET.RECT_TREE:
-            case BIReportConstant.WIDGET.DASHBOARD:
-            case BIReportConstant.WIDGET.DONUT:
-            case BIReportConstant.WIDGET.RADAR:
-            case BIReportConstant.WIDGET.SCATTER:
-            case BIReportConstant.WIDGET.BUBBLE:
-                biWidget = new VanChartWidget();
-                break;
-            case BIReportConstant.WIDGET.TABLE:
-            case BIReportConstant.WIDGET.CROSS_TABLE:
-            case BIReportConstant.WIDGET.COMPLEX_TABLE:
+            case TABLE:
+            case CROSS_TABLE:
+            case COMPLEX_TABLE:
                 biWidget = new TableWidget();
                 break;
-            case BIReportConstant.WIDGET.DETAIL:
+            case DETAIL:
                 biWidget = new BIDetailWidget();
                 break;
-            case BIReportConstant.WIDGET.STRING:
-            case BIReportConstant.WIDGET.STRING_LIST:
+            case STRING:
+            case STRING_LIST:
                 biWidget = new StringControlWidget();
                 break;
-            case BIReportConstant.WIDGET.LIST_LABEL:
+            case LIST_LABEL:
                 biWidget = new ListLabelWidget();
                 break;
-            case BIReportConstant.WIDGET.TREE:
-            case BIReportConstant.WIDGET.TREE_LIST:
+            case TREE:
+            case TREE_LIST:
                 biWidget = new TreeWidget();
                 break;
-            case BIReportConstant.WIDGET.TREE_LABEL:
+            case TREE_LABEL:
                 biWidget = new TreeLabelWidget();
                 break;
-            case BIReportConstant.WIDGET.SINGLE_SLIDER:
-            case BIReportConstant.WIDGET.INTERVAL_SLIDER:
+            case SINGLE_SLIDER:
+            case INTERVAL_SLIDER:
                 biWidget = new SingleSliderWidget();
                 break;
-            default:
-                biWidget = new VanChartWidget();
         }
+
         return biWidget;
     }
 
