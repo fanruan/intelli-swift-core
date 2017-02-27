@@ -12,8 +12,8 @@ import java.util.Set;
  * Created by AstronautOO7 on 2016/9/19.
  */
 public class StringInFilter implements IFilter {
-    private final int MULTI = 1;
-    private final int ALL = 2;
+    private static final int MULTI = 1;
+    private static final int ALL = 2;
     private int type;
     private Set<String> valueSet;
 

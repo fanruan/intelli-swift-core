@@ -13,8 +13,8 @@ import java.util.Set;
  */
 public class StringNotInFilter implements IFilter {
 
-    private final int MULTI = 1;
-    private final int ALL = 2;
+    private static final int MULTI = 1;
+    private static final int ALL = 2;
     private int type;
     private Set<String> valueSet;
 
