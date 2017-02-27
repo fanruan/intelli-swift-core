@@ -20,7 +20,7 @@ public class ProcessCalculatorImpl implements ProcessCalculator {
 
     public double calculateProcess(JSONObject recordJson) {
 
-        double process = 0;
+        double process = 0.0;
 
         long cube_start = 0L;
         long cube_end = 0L;
