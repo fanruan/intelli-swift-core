@@ -3,7 +3,7 @@ package com.fr.bi.web.dezi;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
-import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
+import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartDataConvertFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSettingFactory;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -69,10 +69,10 @@ public class BIChartSettingAction extends AbstractBIDeziAction {
         }
         sessionIDInfor.getLoader().releaseCurrentThread();
 
-        JSONObject configs = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.getJSONObject("data"));
+        JSONObject configs = BIChartDataConvertFactory.convert((VanChartWidget) widget, jo.getJSONObject("data"));
 
         try {
-            WebUtils.printAsJSON(res, BIChartSettingFactory.parseChartSetting((MultiChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types")));
+            WebUtils.printAsJSON(res, BIChartSettingFactory.parseChartSetting((VanChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types")));
         }catch (Exception e){
             BILoggerFactory.getLogger().error(e.getMessage());
         }

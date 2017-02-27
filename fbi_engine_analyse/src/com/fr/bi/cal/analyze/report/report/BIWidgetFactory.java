@@ -59,7 +59,7 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.RADAR:
             case BIReportConstant.WIDGET.SCATTER:
             case BIReportConstant.WIDGET.BUBBLE:
-                biWidget = new MultiChartWidget();
+                biWidget = new VanChartWidget();
                 break;
             case BIReportConstant.WIDGET.TABLE:
             case BIReportConstant.WIDGET.CROSS_TABLE:
@@ -88,7 +88,7 @@ public class BIWidgetFactory {
                 biWidget = new SingleSliderWidget();
                 break;
             default:
-                biWidget = new MultiChartWidget();
+                biWidget = new VanChartWidget();
         }
         return biWidget;
     }

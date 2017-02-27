@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.analyze.report.report.widget.MultiChartWidget;
+import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.style.filter.FilterFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.style.filter.IFilter;
 import com.fr.bi.cal.analyze.report.report.widget.chart.style.filter.objectcondition.FilterBubbleScatterFactory;
@@ -28,7 +28,7 @@ public class BIChartDataConvertFactory {
 
     private static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static JSONObject convert(MultiChartWidget widget, JSONObject data) {
+    public static JSONObject convert(VanChartWidget widget, JSONObject data) {
         JSONObject options = new JSONObject();
         int type = widget.getType();
         JSONArray types = new JSONArray();
@@ -136,7 +136,7 @@ public class BIChartDataConvertFactory {
         return new JSONObject();
     }
 
-    private static JSONArray parseSNDataToXYZData(MultiChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
+    private static JSONArray parseSNDataToXYZData(VanChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
         JSONArray da;
         switch (widget.getType()) {
             case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
@@ -177,7 +177,7 @@ public class BIChartDataConvertFactory {
         }
     }
 
-    private static JSONArray formatDataForGISMap(MultiChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
+    private static JSONArray formatDataForGISMap(VanChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
         if (data.has("t")) {
             JSONObject top = data.getJSONObject("t"), left = data.getJSONObject("l");
             JSONArray init = new JSONArray();
@@ -233,7 +233,7 @@ public class BIChartDataConvertFactory {
         return new JSONArray();
     }
 
-    private static JSONArray formatDataForMap(MultiChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
+    private static JSONArray formatDataForMap(VanChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
         JSONArray result = new JSONArray();
         if (data.has("c")) {
             JSONObject obj = data.getJSONArray("c").getJSONObject(0);
@@ -293,7 +293,7 @@ public class BIChartDataConvertFactory {
         return new JSONArray();
     }
 
-    private static JSONArray formatDataForScatter(MultiChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
+    private static JSONArray formatDataForScatter(VanChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
         if (!checkScatterValid(widget)) {
             return new JSONArray();
         }
@@ -325,7 +325,7 @@ public class BIChartDataConvertFactory {
         return new JSONArray();
     }
 
-    private static JSONArray formatDataForBubble(MultiChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
+    private static JSONArray formatDataForBubble(VanChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
         if (!checkBubbleValid(widget)) {
             return new JSONArray();
         }
@@ -359,7 +359,7 @@ public class BIChartDataConvertFactory {
         return new JSONArray();
     }
 
-    private static JSONArray formatDataForAxis(MultiChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
+    private static JSONArray formatDataForAxis(VanChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
         JSONArray da = formatDataForCommon(widget, data, seriesGroup, categoryGroup, showTarget);
         setDataLabelSettingForAxis(widget, da);
         if (da.length() == 0) {
@@ -411,7 +411,7 @@ public class BIChartDataConvertFactory {
         return array;
     }
 
-    private static boolean checkBubbleValid(MultiChartWidget widget) {
+    private static boolean checkBubbleValid(VanChartWidget widget) {
         Map<Integer, List<String>> view = widget.getWidgetView();
         for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
             if (entry.getValue().size() == 0) {
@@ -421,7 +421,7 @@ public class BIChartDataConvertFactory {
         return view.size() == 4;
     }
 
-    private static boolean checkScatterValid(MultiChartWidget widget) {
+    private static boolean checkScatterValid(VanChartWidget widget) {
         Map<Integer, List<String>> view = widget.getWidgetView();
         for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
             if (entry.getValue().size() == 0) {
@@ -431,7 +431,7 @@ public class BIChartDataConvertFactory {
         return view.size() == 3;
     }
 
-    private static JSONArray formatDataForCommon(MultiChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
+    private static JSONArray formatDataForCommon(VanChartWidget widget, JSONObject data, IGroup seriesGroup, IGroup categoryGroup, BISummaryTarget[] showTarget) throws JSONException {
         if (data.has("t")) {
             JSONObject top = data.getJSONObject("t"), left = data.getJSONObject("l");
             JSONArray result = new JSONArray();
@@ -529,7 +529,7 @@ public class BIChartDataConvertFactory {
         }
     }
 
-    private static JSONArray getCordon(MultiChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets) throws JSONException {
+    private static JSONArray getCordon(VanChartWidget widget, BIDimension[] dimensions, BISummaryTarget[] targets) throws JSONException {
         JSONObject cordon = new JSONObject();
         JSONArray result = new JSONArray();
         for (int i = 0; i < dimensions.length + targets.length; i++) {
@@ -589,7 +589,7 @@ public class BIChartDataConvertFactory {
         return result;
     }
 
-    private static void setDataLabelSettingForBubbleAndScatter(MultiChartWidget widget, JSONArray data) throws JSONException {
+    private static void setDataLabelSettingForBubbleAndScatter(VanChartWidget widget, JSONArray data) throws JSONException {
         JSONArray allSeries = pluck(data, "name");
 //        JSONArray dataLabels = widget.getChatSetting().getDetailChartSetting().optJSONArray("data_label");
         JSONArray dataLabels = null;
@@ -638,7 +638,7 @@ public class BIChartDataConvertFactory {
         }
     }
 
-    private static void setDataLabelSettingForAxis(MultiChartWidget widget, JSONArray data) throws JSONException {
+    private static void setDataLabelSettingForAxis(VanChartWidget widget, JSONArray data) throws JSONException {
         if (widget.getType() == BIReportConstant.WIDGET.PIE || widget.getType() == BIReportConstant.WIDGET.DONUT) {
             return;
         }
@@ -744,7 +744,7 @@ public class BIChartDataConvertFactory {
         }
     }
 
-    private static void setDataImageSettingForAxis(MultiChartWidget widget, JSONArray data) throws JSONException {
+    private static void setDataImageSettingForAxis(VanChartWidget widget, JSONArray data) throws JSONException {
         if (widget.getType() == BIReportConstant.WIDGET.PIE || widget.getType() == BIReportConstant.WIDGET.DONUT) {
             return;
         }
@@ -864,7 +864,7 @@ public class BIChartDataConvertFactory {
         return false;
     }
 
-    private static void formatDataLabelForClassify(MultiChartWidget widget, IFilter filter, JSONObject series, JSONArray array, JSONObject labelStyle) throws JSONException {
+    private static void formatDataLabelForClassify(VanChartWidget widget, IFilter filter, JSONObject series, JSONArray array, JSONObject labelStyle) throws JSONException {
         if (!widget.isDimensionUsable(labelStyle.getString("target_id"))) {
             return;
         }
@@ -878,7 +878,7 @@ public class BIChartDataConvertFactory {
         }
     }
 
-    private static void formatDataImageForClassify(MultiChartWidget widget, IFilter filter, JSONObject series, JSONArray array, JSONObject labelStyle) throws JSONException {
+    private static void formatDataImageForClassify(VanChartWidget widget, IFilter filter, JSONObject series, JSONArray array, JSONObject labelStyle) throws JSONException {
         if (!widget.isDimensionUsable(labelStyle.getString("target_id"))) {
             return;
         }
@@ -898,7 +898,7 @@ public class BIChartDataConvertFactory {
         data.put("image", labelStyle.getJSONObject("style_setting").getString("src"));
     }
 
-    private static void formatDataLabelForSelf(MultiChartWidget widget, IFilter filter, JSONObject series, JSONArray array, JSONObject labelStyle) throws JSONException {
+    private static void formatDataLabelForSelf(VanChartWidget widget, IFilter filter, JSONObject series, JSONArray array, JSONObject labelStyle) throws JSONException {
         JSONArray filterArray = filter.getFilterResult(array);
         JSONArray data = series.getJSONArray("data");
         for (int i = 0; i < data.length(); i++) {
