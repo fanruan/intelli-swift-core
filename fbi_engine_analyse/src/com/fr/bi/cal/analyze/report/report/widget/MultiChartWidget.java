@@ -72,10 +72,12 @@ public class MultiChartWidget extends TableWidget {
         super.parseJSON(jo, userId);
     }
 
+
     @Override
     public int getType() {
         return type;
     }
+
 
     public BIDimension getCategoryDimension() {
         List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION1));

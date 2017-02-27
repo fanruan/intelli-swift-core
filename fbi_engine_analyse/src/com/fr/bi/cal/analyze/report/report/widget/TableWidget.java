@@ -54,8 +54,8 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
     private DetailChartSetting settings = new DetailChartSetting();
-    private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
-    private Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
+    protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
+    protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
     private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
 
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
@@ -84,6 +84,10 @@ public class TableWidget extends BISummaryWidget {
         }
         usedDimension = dimensions;
         return dimensions;
+    }
+
+    public Map<Integer, List<String>> getView() {
+        return view;
     }
 
     @Override
@@ -262,7 +266,7 @@ public class TableWidget extends BISummaryWidget {
         createDimensionAndTargetMap();
     }
 
-    private void createDimensionAndTargetMap() {
+    protected void createDimensionAndTargetMap() {
         for (BIDimension dimension : this.getDimensions()) {
             for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
                 Integer key = entry.getKey();
