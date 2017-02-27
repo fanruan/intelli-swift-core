@@ -3,6 +3,7 @@ package com.fr.bi.field.target.target.cal;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,8 @@ public abstract class BICalculateTarget extends BISummaryTarget {
     protected Map<String, TargetGettingKey> targetMap;
 
     public abstract List<BISummaryTarget> createCalculateUseTarget(BISummaryTarget[] sumTarget);
+
+    public abstract Collection<String> getCalculateUseTargetIDs();
 
     public Map<String, TargetGettingKey> getTargetMap() {
         return targetMap;

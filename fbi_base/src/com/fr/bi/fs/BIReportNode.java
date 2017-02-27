@@ -359,4 +359,20 @@ public class BIReportNode extends DAOBean implements Entry {
 
     }
 
+    @Override
+    public BIReportNode clone() throws CloneNotSupportedException {
+        BIReportNode node = (BIReportNode) super.clone();
+        node.path = path;
+        node.userid = userid;
+        node.username = username;
+        node.templateid = templateid;
+        node.reportname = reportname;
+        node.parentid = parentid;
+        node.createtime = new Date(createtime.getTime());
+        node.description = description;
+        node.modifytime = new Date(modifytime.getTime());
+        node.status = status;
+        return node;
+    }
+
 }

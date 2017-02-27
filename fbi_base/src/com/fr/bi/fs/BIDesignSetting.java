@@ -35,10 +35,13 @@ public class BIDesignSetting implements XMLable, XMLFileReader {
         return new BIDesignSetting();
     }
 
-    public JSONObject getReportSetting() throws JSONException {
+    public JSONObject getReportJSON() throws JSONException {
         return new JSONObject(this.reportSetting);
     }
 
+    public String getReportSetting() {
+        return reportSetting;
+    }
 
     @Override
     public void readXML(XMLableReader var1) {

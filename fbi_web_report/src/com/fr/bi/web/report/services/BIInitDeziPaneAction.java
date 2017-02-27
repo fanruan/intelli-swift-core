@@ -26,7 +26,7 @@ public class BIInitDeziPaneAction extends ActionNoSessionCMD {
      * @param res 注释
      * @return 注释
      */
-    public static void dealWithWebPage(HttpServletRequest req, HttpServletResponse res) throws Exception {
+    public void dealWithWebPage(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String reportId = WebUtils.getHTTPRequestParameter(req, BIBaseConstant.REPORT_ID);
         BIReportNode node = BIDAOUtils.findByID(Long.parseLong(reportId), ServiceUtils.getCurrentUserID(req));
         JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);

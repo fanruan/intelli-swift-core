@@ -60,8 +60,9 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         });
         this.labelOne.on(BI.Editor.EVENT_CONFIRM, function () {
             var percent = self._getPercentByValue(this.getValue());
-            self._setLabelOnePosition(percent);
-            self._setSliderOnePosition(percent);
+            var significantPercent = BI.parseFloat(percent.toFixed(1));//分成1000份
+            self._setLabelOnePosition(significantPercent);
+            self._setSliderOnePosition(significantPercent);
             self._setBlueTrack();
             self.fireEvent(BI.IntervalSlider.EVENT_CHANGE);
         });
@@ -82,8 +83,9 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         });
         this.labelTwo.on(BI.Editor.EVENT_CONFIRM, function () {
             var percent = self._getPercentByValue(this.getValue());
-            self._setLabelTwoPosition(percent);
-            self._setSliderTwoPosition(percent);
+            var significantPercent = BI.parseFloat(percent.toFixed(1));
+            self._setLabelTwoPosition(significantPercent);
+            self._setSliderTwoPosition(significantPercent);
             self._setBlueTrack();
             self.fireEvent(BI.IntervalSlider.EVENT_CHANGE);
         });
@@ -97,15 +99,17 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             scroll: false,
             drag: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
-                self._setLabelOnePosition(percent);
-                var v = self._getValueByPercent(percent);
+                var significantPercent = BI.parseFloat(percent.toFixed(1));
+                self._setLabelOnePosition(significantPercent);
+                var v = self._getValueByPercent(significantPercent);
                 self.labelOne.setValue(v);
                 self.valueOne = v;
                 self._setBlueTrack();
             },
             stop: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
-                self._setSliderOnePosition(percent);
+                var significantPercent = BI.parseFloat(percent.toFixed(1));
+                self._setSliderOnePosition(significantPercent);
                 self.fireEvent(BI.IntervalSlider.EVENT_CHANGE);
             }
         });
@@ -119,15 +123,17 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             scroll: false,
             drag: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
-                self._setLabelTwoPosition(percent);
-                var v = self._getValueByPercent(percent);
+                var significantPercent = BI.parseFloat(percent.toFixed(1));
+                self._setLabelTwoPosition(significantPercent);
+                var v = self._getValueByPercent(significantPercent);
                 self.labelTwo.setValue(v);
                 self.valueTwo = v;
                 self._setBlueTrack();
             },
             stop: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
-                self._setSliderTwoPosition(percent);
+                var significantPercent = BI.parseFloat(percent.toFixed(1));
+                self._setSliderTwoPosition(significantPercent);
                 self.fireEvent(BI.IntervalSlider.EVENT_CHANGE);
             }
         });
@@ -337,7 +343,8 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     },
 
     _getValueByPercent: function (percent) {
-        return (((this.max - this.min) * percent) / 100 + this.min);
+        var thousandth = BI.parseInt(percent * 10);
+        return (((this.max - this.min) * thousandth) / 1000 + this.min);
     },
 
     _getPercentByValue: function (v) {

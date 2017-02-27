@@ -2,8 +2,8 @@ package com.fr.bi.cal.analyze.report.report.widget.chart;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.*;
-import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.BIChartSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.*;
+import com.fr.bi.cal.analyze.report.report.widget.chart.style.BIChartSetting;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -28,11 +28,11 @@ public class BIChartSettingFactory {
     };
 
     private static final int[] MINIMALIST_WIDGET = new int[]{
-            BIReportConstant.WIDGET.AXIS,
-            BIReportConstant.WIDGET.ACCUMULATE_AXIS,
-            BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS,
-            BIReportConstant.WIDGET.COMPARE_AXIS,
-            BIReportConstant.WIDGET.FALL_AXIS,
+            BIReportConstant.WIDGET.COLUMN,
+            BIReportConstant.WIDGET.ACCUMULATE_COLUMN,
+            BIReportConstant.WIDGET.PERCENT_ACCUMULATE_COLUMN,
+            BIReportConstant.WIDGET.COMPARE_COLUMN,
+            BIReportConstant.WIDGET.FALL_COLUMN,
             BIReportConstant.WIDGET.BAR,
             BIReportConstant.WIDGET.ACCUMULATE_BAR,
             BIReportConstant.WIDGET.COMPARE_BAR,
@@ -166,17 +166,17 @@ public class BIChartSettingFactory {
 
     public static BIChartSetting newChartSettingByType(int type) throws Exception {
         switch (type) {
-            case BIReportConstant.WIDGET.AXIS:
+            case BIReportConstant.WIDGET.COLUMN:
                 return new AxisChartSetting();
             case BIReportConstant.WIDGET.COMBINE_CHART:
                 return new AxisChartSetting();
-            case BIReportConstant.WIDGET.ACCUMULATE_AXIS:
+            case BIReportConstant.WIDGET.ACCUMULATE_COLUMN:
                 return new AccumulateAxisChartSetting();
-            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BIReportConstant.WIDGET.PERCENT_ACCUMULATE_COLUMN:
                 return new PercentAccumulateAxisChartSetting();
-            case BIReportConstant.WIDGET.COMPARE_AXIS:
+            case BIReportConstant.WIDGET.COMPARE_COLUMN:
                 return new CompareAxisChartSetting();
-            case BIReportConstant.WIDGET.FALL_AXIS:
+            case BIReportConstant.WIDGET.FALL_COLUMN:
                 return new FallAxisChartSetting();
             case BIReportConstant.WIDGET.BAR:
                 return new BarChartSetting();
