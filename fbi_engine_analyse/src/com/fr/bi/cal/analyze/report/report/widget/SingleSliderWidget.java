@@ -25,7 +25,7 @@ import java.util.*;
  * Created by zcf on 2017/1/20.
  */
 public class SingleSliderWidget extends TableWidget {
-    private int type;
+    private WidgetType type;
     private double minMin;
     private double maxMax;
 
@@ -33,7 +33,7 @@ public class SingleSliderWidget extends TableWidget {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if (jo.has("type")) {
-            type = jo.getInt("type");
+            type = WidgetType.parse(jo.getInt("type"));
         }
     }
 
@@ -138,7 +138,7 @@ public class SingleSliderWidget extends TableWidget {
 
     @Override
     public WidgetType getType() {
-        return WidgetType.SINGLE_SLIDER;
+        return this.type;
     }
 
     private class MaxAndMin {
