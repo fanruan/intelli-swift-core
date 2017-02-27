@@ -22,13 +22,13 @@ public class ReportNode {
     }
 
     private void initAttrs() {
-        children=new ArrayList<>();
-        dId="";
-        id="";
-        left="";
-        name="";
-        parent=null;
-        right="";
+        children = new ArrayList<>();
+        dId = "";
+        id = "";
+        left = "";
+        name = "";
+        parent = null;
+        right = "";
     }
 
     public ReportNode(String id) {
@@ -93,7 +93,9 @@ public class ReportNode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }

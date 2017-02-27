@@ -608,12 +608,8 @@ public class SummaryTableDataBuilder implements BIExcelDataBuilder {
                 item.setExpanded(true);
             }
         }
-        boolean hasSum = false;
+        boolean hasSum = crossItemSums.get(currentLayer).length() >= i && crossItemSums.get(currentLayer).getBoolean(i);
         // FIXME: 2017/2/23 这个地方有问题，获取的data明显和前台不一致，top数据直接默认为max了
-        boolean currentLayerHasSums = crossItemSums.get(currentLayer).length() >= i&&crossItemSums.get(currentLayer).getBoolean(i);
-        if (currentLayerHasSums) {
-                hasSum = true;
-        }
         boolean showColAndSums = showColTotal && hasSum;
         boolean childExist = null != item.getChildren() && item.getChildren().size() > 0;
         if (showColAndSums && childExist) {
