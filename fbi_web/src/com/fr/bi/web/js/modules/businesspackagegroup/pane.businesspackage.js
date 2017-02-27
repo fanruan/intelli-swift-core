@@ -106,7 +106,6 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
                 groupItem.id = groupID;
                 groupItem.value = self.groupMap[groupID].name;
                 groupItem.children = [];
-                groupItem.showAdd = self.groupMap[groupID].edit;
                 expanderItems.push(groupItem);
             }
         });
@@ -137,7 +136,6 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
                 fieldItem.id = fieldID;
                 fieldItem.value = fieldName;
                 groupItem.children.push(fieldItem);
-                groupItem.showAdd = self.groupMap[groupID].edit;
                 expanderItems.push(groupItem);
             }
         });

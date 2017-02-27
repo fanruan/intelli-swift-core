@@ -264,7 +264,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         })
     },
 
-    _createRemoveCombo : function (self) {
+    _createRemoveCombo: function (self) {
         var removeButton = BI.createWidget({
             type: "bi.text_button",
             text: BI.i18nText("BI-Shift_Out_Package"),
@@ -309,7 +309,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                                 if (BI.isNotNull(res) && res["inUse"] === true) {
                                     popuplate([{
                                         type: "bi.label",
-                                        text:  BI.i18nText("BI-Table_In_Use_Tip"),
+                                        text: BI.i18nText("BI-Table_In_Use_Tip"),
                                         cls: "elt-remove-label",
                                         textAlign: "left",
                                         width: 300
@@ -317,7 +317,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                                 } else {
                                     popuplate([{
                                         type: "bi.label",
-                                        text:  BI.i18nText("BI-Is_Delete_Table"),
+                                        text: BI.i18nText("BI-Is_Delete_Table"),
                                         cls: "elt-remove-label",
                                         textAlign: "left",
                                         width: 300
@@ -349,11 +349,14 @@ BI.ETL = BI.inherit(BI.Widget, {
         updateSet.on(BI.UpdateTableData.EVENT_SAVE, function () {
             self.model.setUpdateSettings(this.getValue());
         });
-        updateSet.on(BI.UpdateTableData.EVENT_CUBE_SAVE, function (tableInfo) {
+        updateSet.on(BI.UpdateTableData.EVENT_CUBE_SAVE, function (updateTable, callback) {
             self.model.setUpdateSettings(this.getValue());
-            var info = {};
-            info.tableInfo = tableInfo;
-            self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, info, self.model.getValue());
+            self.model.saveTable(function (data) {
+                BI.Utils.generateCubeByTable(updateTable, function () {
+                    callback();
+                });
+                self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, data);
+            });
         });
         BI.Popovers.create(this.model.getId(), updateSet).open(this.model.getId());
     },

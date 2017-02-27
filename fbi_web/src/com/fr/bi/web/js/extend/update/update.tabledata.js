@@ -45,8 +45,8 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
             this.setting.on(BI.UpdateSingleTableSetting.EVENT_CLOSE_PREVIEW, function () {
                 BI.Popovers.open(self.model.getId());
             });
-            this.setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function (tableInfo) {
-                self.fireEvent(BI.UpdateTableData.EVENT_CUBE_SAVE, tableInfo);
+            this.setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function (tableInfo, callback) {
+                self.fireEvent(BI.UpdateTableData.EVENT_CUBE_SAVE, tableInfo, callback);
             });
             this.settings[tableIds[0]] = this.setting;
         } else {
@@ -90,8 +90,8 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                             currentTable: self.model.table,
                             update_setting: self.model.getUpdateSettingBySourceTableId(id)
                         });
-                        setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function (obj) {
-                            self.fireEvent(BI.UpdateTableData.EVENT_CUBE_SAVE, obj);
+                        setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function (obj, callback) {
+                            self.fireEvent(BI.UpdateTableData.EVENT_CUBE_SAVE, obj, callback);
                         });
                         setting.on(BI.UpdateSingleTableSetting.EVENT_CHANGE, function() {
                             var updateType = this.getValue().update_type;

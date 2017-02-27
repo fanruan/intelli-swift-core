@@ -25,10 +25,9 @@ public class BIGetDataConfigAuthoritiesAction extends AbstractBIBaseAction {
         for (BIDataConfigAuthority authority : authoritySet) {
             //一些固定的父节点 全选与半选不考虑
             String id = authority.getId();
-            if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION) ||
-                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER) ||
-                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.DATA_CONNECTION) ||
-                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER_CHILDREN.PACKAGE_GROUP)) {
+            if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.NODE) ||
+                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE) ||
+                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION)) {
                 authority.setDesign(DBConstant.DATA_CONFIG_DESIGN.NO);
                 authority.setView(DBConstant.DATA_CONFIG_DESIGN.NO);
             }

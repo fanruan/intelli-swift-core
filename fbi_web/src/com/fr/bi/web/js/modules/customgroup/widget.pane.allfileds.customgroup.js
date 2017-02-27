@@ -85,6 +85,10 @@ BI.CustomGroupAllFieldsPane = BI.inherit(BI.Pane, {
         return this.groupedPane.createItemFromGroupMap();
     },
 
+    createUngroupedItemFromGroupMap: function () {
+        return this.ungroupedPane.createItemFromGroupMap();
+    },
+
     createItemFromUngroupedFieldMap: function (ungroupedFieldMap) {
         var ungroupedItem = this.ungroupedPane.createItemFromFieldMap(ungroupedFieldMap);
         return ungroupedItem;
