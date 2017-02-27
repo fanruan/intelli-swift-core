@@ -141,12 +141,12 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
 
 
   /**
-   * Bitwise AND (intersection) build. The provided bitmaps are *not* modified. This build
+   * Bitwise AND (intersection) operation. The provided bitmaps are *not* modified. This operation
    * is thread-safe as long as the provided bitmaps remain unchanged.
    *
    * @param x1 first bitmap
    * @param x2 other bitmap
-   * @return result of the build
+   * @return result of the operation
    */
   public static MutableRoaringBitmap and(final MutableRoaringBitmap x1,
       final MutableRoaringBitmap x2) {
@@ -177,12 +177,12 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
   }
 
   /**
-   * Bitwise ANDNOT (difference) build. The provided bitmaps are *not* modified. This build
+   * Bitwise ANDNOT (difference) operation. The provided bitmaps are *not* modified. This operation
    * is thread-safe as long as the provided bitmaps remain unchanged.
    *
    * @param x1 first bitmap
    * @param x2 other bitmap
-   * @return result of the build
+   * @return result of the operation
    */
   public static MutableRoaringBitmap andNot(final MutableRoaringBitmap x1,
       final MutableRoaringBitmap x2) {
@@ -446,12 +446,12 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
   }
 
   /**
-   * Bitwise OR (union) build. The provided bitmaps are *not* modified. This build is
+   * Bitwise OR (union) operation. The provided bitmaps are *not* modified. This operation is
    * thread-safe as long as the provided bitmaps remain unchanged.
    *
    * @param x1 first bitmap
    * @param x2 other bitmap
-   * @return result of the build
+   * @return result of the operation
    */
   public static MutableRoaringBitmap or(final MutableRoaringBitmap x1,
       final MutableRoaringBitmap x2) {
@@ -588,12 +588,12 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
 
 
   /**
-   * Bitwise XOR (symmetric difference) build. The provided bitmaps are *not* modified. This
-   * build is thread-safe as long as the provided bitmaps remain unchanged.
+   * Bitwise XOR (symmetric difference) operation. The provided bitmaps are *not* modified. This
+   * operation is thread-safe as long as the provided bitmaps remain unchanged.
    *
    * @param x1 first bitmap
    * @param x2 other bitmap
-   * @return result of the build
+   * @return result of the operation
    */
   public static MutableRoaringBitmap xor(final MutableRoaringBitmap x1,
       final MutableRoaringBitmap x2) {
@@ -745,7 +745,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
 
 
   /**
-   * In-place bitwise AND (intersection) build. The current bitmap is modified.
+   * In-place bitwise AND (intersection) operation. The current bitmap is modified.
    *
    * @param array other bitmap
    */
@@ -776,7 +776,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
 
 
   /**
-   * In-place bitwise ANDNOT (difference) build. The current bitmap is modified.
+   * In-place bitwise ANDNOT (difference) operation. The current bitmap is modified.
    *
    * @param x2 other bitmap
    */
@@ -1143,7 +1143,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
 
 
   /**
-   * In-place bitwise OR (union) build. The current bitmap is modified.
+   * In-place bitwise OR (union) operation. The current bitmap is modified.
    *
    * @param x2 other bitmap
    */
@@ -1383,7 +1383,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
 
 
   /**
-   * In-place bitwise XOR (symmetric difference) build. The current bitmap is modified.
+   * In-place bitwise XOR (symmetric difference) operation. The current bitmap is modified.
    *
    * @param x2 other bitmap
    */

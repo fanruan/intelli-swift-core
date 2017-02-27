@@ -1153,7 +1153,7 @@ public final class RunContainer extends Container implements Cloneable {
                     firstValuePastRange = contains((short) rangeEnd);
                 }
 
-                // there is definitely one more run after the build.
+                // there is definitely one more run after the operation.
                 if (lastValueInRange == firstValuePastRange) {
                     return not(rangeStart, rangeEnd); // can't do in-place: true space limit
                 }
