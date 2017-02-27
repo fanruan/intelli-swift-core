@@ -1,6 +1,5 @@
 package com.fr.bi.conf.data.source;
 
-import com.fr.bi.mongodb.MongoDatabaseConnection;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.data.impl.Connection;
@@ -31,10 +30,6 @@ public class TableSourceFactory {
         AbstractTableSource tableSource;
         if(SOURCES.get(connectionName) != null) {
             tableSource = (AbstractTableSource) SOURCES.get(connectionName).newInstance();
-            tableSource.parseJSON(jo, userId);
-        }
-        else if(conn instanceof MongoDatabaseConnection){
-            tableSource = new MongoDBTableSource();
             tableSource.parseJSON(jo, userId);
         }
         else {

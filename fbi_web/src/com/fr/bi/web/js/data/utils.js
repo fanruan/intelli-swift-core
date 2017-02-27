@@ -2152,6 +2152,7 @@ Data.Utils = {
             formatNumberLevelInYaxis(config.left_y_axis_number_level, constants.LEFT_AXIS);
             configs.yAxis[0].title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + yText : yText;
             configs.yAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
+            configs.yAxis[0].lineWidth = 1;
             configs.yAxis[0].title.rotation = constants.ROTATION;
 
             configs.xAxis[0].formatter = _formatTickInXYaxis(config.x_axis_style, config.x_axis_number_level, config.right_num_separators);

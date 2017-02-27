@@ -20,6 +20,8 @@ public class ProcessCalculatorImpl implements ProcessCalculator {
 
     public double calculateProcess(JSONObject recordJson) {
 
+        double process = 0.0;
+
         long cube_start = 0L;
         long cube_end = 0L;
         JSONObject allTableinfo;
@@ -29,7 +31,10 @@ public class ProcessCalculatorImpl implements ProcessCalculator {
 
         if (recordJson.has("cube_start")) {
             cube_start = recordJson.optLong("cube_start");
+        } else {
+            return process;
         }
+
         if (recordJson.has("cube_end")) {
             cube_end = recordJson.optLong("cube_end");
         }
@@ -41,11 +46,11 @@ public class ProcessCalculatorImpl implements ProcessCalculator {
         generatedRelationAndPath = recordJson.optJSONArray("connections");
 
         try {
-            return calculateRate(cube_start, cube_end, allTableinfo, allRelationPathSet, generatedTable, generatedRelationAndPath);
+            process = calculateRate(cube_start, cube_end, allTableinfo, allRelationPathSet, generatedTable, generatedRelationAndPath);
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
-            return 0;
         }
+        return process;
     }
 
     public double calculateRate(long cube_start, long cube_end, JSONObject allTableInfo, JSONArray allRelationPathSet

@@ -1,7 +1,5 @@
 package com.fr.bi.stable.data.db;
 
-import com.fr.bi.mongodb.MongoConstants;
-import com.fr.bi.mongodb.MongoDatabaseConnection;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
@@ -50,10 +48,7 @@ public class DataLinkInformation implements JSONParser {
         return jdbcDatabaseConnection;
     }
 
-    public MongoDatabaseConnection createMongoDatabaseConnection() {
-        MongoDatabaseConnection mc = new MongoDatabaseConnection(url,user,password);
-        return mc;
-    }
+
 
     /**
      * parse对象
@@ -87,10 +82,6 @@ public class DataLinkInformation implements JSONParser {
     }
 
     public Connection createDatabaseConnection() {
-        if(url.contains(MongoConstants.MONGODB_URL_PREFIX)){
-            return createMongoDatabaseConnection();
-        }else {
             return createJDBCDatabaseConnection();
-        }
     }
 }

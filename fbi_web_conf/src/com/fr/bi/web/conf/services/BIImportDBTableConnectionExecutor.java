@@ -4,7 +4,6 @@ import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
-import com.fr.bi.conf.data.source.MongoDBTableSource;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.BIDBTableField;
 import com.fr.bi.stable.data.source.AbstractTableSource;
@@ -37,9 +36,6 @@ public class BIImportDBTableConnectionExecutor {
         while (sit.hasNext()) {
             Map.Entry<String, AbstractTableSource> tableID2Table = sit.next();
             AbstractTableSource table = tableID2Table.getValue();
-            if(table instanceof MongoDBTableSource){
-                continue;
-            }
             DBTableSource currentTable = (DBTableSource) table;
             String connectionName = currentTable.getDbName();
             if (!(tool.putConnection(connectionName, connMap))) {
