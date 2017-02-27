@@ -9,7 +9,6 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
 
@@ -73,10 +72,12 @@ public class VanChartWidget extends TableWidget {
         super.parseJSON(jo, userId);
     }
 
+
     @Override
     public int getType() {
         return type;
     }
+
 
     public BIDimension getCategoryDimension() {
         List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION1));
