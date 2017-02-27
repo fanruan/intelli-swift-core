@@ -2921,7 +2921,7 @@
   var operationGroup = null;
 
   var nextOpId = 0;
-  // Start a new build.
+  // Start a new operation.
   function startOperation(cm) {
     cm.curOp = {
       cm: cm,

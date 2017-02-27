@@ -170,7 +170,7 @@ public class BICubeOperationManager {
                  */
                 CubeTableSource tableSource = sameLevelTableIt.next();
                 if (!isGenerated(tableSource)) {
-//                    BIOperation<Object> build = new BIOperation<Object>(
+//                    BIOperation<Object> operation = new BIOperation<Object>(
 //                            tableSource.getSourceID(),
 //                            getDataTransportBuilder(cube, addConnection(tableSource), originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
                     BIOperation<Object> operation = new BIOperation<Object>(

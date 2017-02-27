@@ -9,8 +9,8 @@ public class BIMasterBasicIndexOperation implements BIMasterOperation {
 //        Set<Table> generateTable;
 //        HashSet<JSONCreator> generateTableObject = new HashSet<JSONCreator>();
 //        if (ClusterEnv.isCluster()) {
-//            CubeBuildBasicIndexOperation build = new CubeBuildBasicIndexOperation(basePath, tmpPath, userId);
-//            generateTable = (Set<Table>) build.getData();
+//            CubeBuildBasicIndexOperation operation = new CubeBuildBasicIndexOperation(basePath, tmpPath, userId);
+//            generateTable = (Set<Table>) operation.getData();
 ////            System.out.println("Current user id is：" + userId);
 //            BILogger.getLogger().info("Current user id is：" + userId);
 //            Iterator<Table> it = generateTable.iterator();

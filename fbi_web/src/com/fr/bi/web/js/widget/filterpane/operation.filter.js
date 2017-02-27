@@ -8,7 +8,7 @@
 BI.FilterOperation = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.FilterOperation.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-filter-build",
+            baseCls: "bi-filter-operation",
             expander: {},
             items: [],
             selections: [BICst.FILTER_OPERATION_CONDITION, BICst.FILTER_OPERATION_FORMULA],

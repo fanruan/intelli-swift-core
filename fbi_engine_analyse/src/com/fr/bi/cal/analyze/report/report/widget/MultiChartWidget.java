@@ -9,7 +9,6 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
 
@@ -78,10 +77,6 @@ public class MultiChartWidget extends TableWidget {
         return type;
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 0c7da71500ac95ed7f077e2707a542d9c84a0c6a
     public BIDimension getCategoryDimension() {
         List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION1));
         if (dimensionIds == null) {

@@ -14,6 +14,7 @@ import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -23,6 +24,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -426,5 +428,28 @@ public class TableWidget extends BISummaryWidget {
 
     public Map<Integer, List<String>> getWidgetView() {
         return view;
+    }
+
+    public String getDimensionNameByID(String dID) throws Exception {
+        return getBITargetAndDimension(dID).getText();
+    }
+
+    public int getFieldTypeByDimensionID(String dID) throws Exception {
+        return getBITargetAndDimension(dID).createColumnKey().getFieldType();
+    }
+
+
+    private BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
+        for (BIDimension dimension : getDimensions()) {
+            if (ComparatorUtils.equals(dimension.getId(), dID)) {
+                return dimension;
+            }
+        }
+        for (BISummaryTarget target : getTargets()) {
+            if (ComparatorUtils.equals(target.getId(), dID)) {
+                return target;
+            }
+        }
+        throw new Exception();
     }
 }

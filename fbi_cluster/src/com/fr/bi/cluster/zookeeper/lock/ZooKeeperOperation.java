@@ -26,10 +26,10 @@ import org.apache.zookeeper.KeeperException;
 public interface ZooKeeperOperation {
 
     /**
-     * Performs the build - which may be involved multiple times if the connection
-     * to ZooKeeper closes during this build
+     * Performs the operation - which may be involved multiple times if the connection
+     * to ZooKeeper closes during this operation
      *
-     * @return the result of the build or null
+     * @return the result of the operation or null
      * @throws org.apache.zookeeper.KeeperException
      * @throws InterruptedException
      */

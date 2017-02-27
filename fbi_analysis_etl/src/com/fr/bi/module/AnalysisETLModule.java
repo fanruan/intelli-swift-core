@@ -49,18 +49,18 @@ public class AnalysisETLModule extends AbstractModule {
      */
     private void registerResources() {
 
-//        StableFactoryMessageTransponder.getInstance().addProducer(new StableFactoryProducer() {
-//
-//            @Override
-//            public void reInject(StableFactoryResourceType resourceType) {
-//
-//                if (StableFactoryResourceType.TYPE_JS.equals(resourceType)) {
-//                    registerJavaScriptFiles();
-//                } else if (StableFactoryResourceType.TYPE_CSS.equals(resourceType)) {
-//                    registerStyleFiles();
-//                }
-//            }
-//        }, new StableFactoryResourceType[]{StableFactoryResourceType.TYPE_CSS, StableFactoryResourceType.TYPE_JS});
+        StableFactoryMessageTransponder.getInstance().addProducer(new StableFactoryProducer() {
+
+            @Override
+            public void reInject(StableFactoryResourceType resourceType) {
+
+                if (StableFactoryResourceType.TYPE_JS.equals(resourceType)) {
+                    registerJavaScriptFiles();
+                } else if (StableFactoryResourceType.TYPE_CSS.equals(resourceType)) {
+                    registerStyleFiles();
+                }
+            }
+        }, new StableFactoryResourceType[]{StableFactoryResourceType.TYPE_CSS, StableFactoryResourceType.TYPE_JS});
 
         registerJavaScriptFiles();
         registerStyleFiles();
