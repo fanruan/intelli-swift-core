@@ -121,11 +121,11 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             case BIReportConstant.GROUP.S:
             case BIReportConstant.GROUP.MD:
             case BIReportConstant.GROUP.W:
-                type = Types.VARCHAR;
+                type = Types.INTEGER;
                 break;
             case BIReportConstant.GROUP.YMD:
             case BIReportConstant.GROUP.YMDHMS:
-                type =  Types.DATE;
+                type = Types.DATE;
                 break;
         }
 
