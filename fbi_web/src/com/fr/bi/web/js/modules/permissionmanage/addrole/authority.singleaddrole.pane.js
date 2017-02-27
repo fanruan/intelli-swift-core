@@ -88,13 +88,15 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
             var items = [];
             BI.each(roles, function (i, role) {
                 var roleName = role.role_id;
-                if (BI.isNull(roleName) || roleName === "" || !self._isRoleExist(role)) {
+                if (BI.isNull(roleName) || roleName === "") {
                     return;
                 }
                 var filter = role.filter;
                 var trigger = BI.createWidget({
                     type: "bi.text_button",
                     cls: "role-item",
+                    disabled: !self._isRoleExist(role),
+                    warningTitle: BI.i18nText("BI-No_Role_Auth_Tip"),
                     text: roleName,
                     height: 30,
                     hgap: 5
