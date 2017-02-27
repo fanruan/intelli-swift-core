@@ -76,6 +76,9 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
                 BI.each(groupObject.details, function (i, groupitem) {
                     sortObject.details.push(groupitem.value)
                 });
+                BI.each(groupObject.ungroup, function (i, groupitem) {
+                    sortObject.details.push(groupitem.value)
+                });
                 self.set("sort", sortObject)
             }
             if (this.get("type") === BICst.TARGET_TYPE.NUMBER) {
