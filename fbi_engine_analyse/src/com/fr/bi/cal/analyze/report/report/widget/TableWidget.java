@@ -9,12 +9,12 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.basic.TableDataForExport;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.table.operation.TableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.ExcelExportDataBuildFactory;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -24,6 +24,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -53,8 +54,8 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
     private DetailChartSetting settings = new DetailChartSetting();
-    private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
-    private Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
+    protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
+    protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
     private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
 
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
@@ -83,6 +84,10 @@ public class TableWidget extends BISummaryWidget {
         }
         usedDimension = dimensions;
         return dimensions;
+    }
+
+    public Map<Integer, List<String>> getView() {
+        return view;
     }
 
     @Override
@@ -261,7 +266,7 @@ public class TableWidget extends BISummaryWidget {
         createDimensionAndTargetMap();
     }
 
-    private void createDimensionAndTargetMap() {
+    protected void createDimensionAndTargetMap() {
         for (BIDimension dimension : this.getDimensions()) {
             for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
                 Integer key = entry.getKey();
@@ -421,13 +426,34 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public JSONObject getPostOptions(String sessionId) throws Exception {
-        JSONObject dataJSON = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
-        TableDataBuilder builder = new TableDataBuilder(this, dataJSON);
-        TableDataForExport tableDataForExport = builder.buildTableData();
-        return tableDataForExport.createJsonObject();
+        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
+        return ExcelExportDataBuildFactory.createExprotData(this, dataJSON).createJSON();
     }
 
     public Map<Integer, List<String>> getWidgetView() {
         return view;
+    }
+
+    public String getDimensionNameByID(String dID) throws Exception {
+        return getBITargetAndDimension(dID).getText();
+    }
+
+    public int getFieldTypeByDimensionID(String dID) throws Exception {
+        return getBITargetAndDimension(dID).createColumnKey().getFieldType();
+    }
+
+
+    private BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
+        for (BIDimension dimension : getDimensions()) {
+            if (ComparatorUtils.equals(dimension.getId(), dID)) {
+                return dimension;
+            }
+        }
+        for (BISummaryTarget target : getTargets()) {
+            if (ComparatorUtils.equals(target.getId(), dID)) {
+                return target;
+            }
+        }
+        throw new Exception();
     }
 }
