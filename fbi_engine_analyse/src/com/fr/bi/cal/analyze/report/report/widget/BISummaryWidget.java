@@ -39,6 +39,7 @@ import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.collections.array.IntArray;
 
@@ -354,53 +355,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
                     }
                     if (targetRelationJo.has("target_relation")) {
-                        Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
-                        if (relationMap == null) {
-                            relationMap = new LinkedHashMap<String, List<BITableRelation>>();
-                            relationsMap.put(dimensionId, relationMap);
-                        }
-                        JSONArray dimensionAndTargetPathsJa = targetRelationJo.getJSONArray("target_relation");
-                        List<BITableRelation> relationList = new ArrayList<BITableRelation>();
-                        //指标的关联关系
-                        JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
-                        JSONObject primaryKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("primaryKey");
-                        JSONObject foreignKeyJo = targetRelationsJa.optJSONObject(targetRelationsJa.length() - 1).optJSONObject("foreignKey");
-                        String primaryFieldId = primaryKeyJo.optString("field_id");
-                        String foreignFieldId = foreignKeyJo.optString("field_id");
-                        String primaryTableId = primaryKeyJo.has("table_id") ? primaryKeyJo.getString("table_id") : null;
-                        String foreignTableId = foreignKeyJo.has("table_id") ? foreignKeyJo.getString("table_id") : null;
-
-                        JSONObject srcJo = dims.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-//                        if (srcJo.has("target_relation")) {
-//                            JSONArray selfRelationJa = srcJo.getJSONArray("target_relation");
-//                            for (int i = 0; i < selfRelationJa.length(); i++) {
-//                                BITableRelation selfRelation = BITableRelationHelper.getRelation(selfRelationJa.getJSONObject(i));
-//                                if (BICubeConfigureCenter.getTableRelationManager().containTableRelation(userId, selfRelation)) {
-//                                    relationList.add(selfRelation);
-//                                }
-//                            }
-//                        }
-                        if (primaryTableId != null && foreignTableId != null) {
-                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreignTableId)))) {
-                                relationMap.put(targetId, relationList);
-                            } else {
-                                for (int j = 0; j < targetRelationsJa.length(); j++) {
-                                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
-                                }
-                                relationMap.put(targetId, relationList);
-                            }
-                        } else {
-                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo()) && !srcJo.has("target_relation")) {
-                                relationMap.put(targetId, relationList);
-                            } else {
-                                for (int j = 0; j < targetRelationsJa.length(); j++) {
-                                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
-                                }
-                                relationMap.put(targetId, relationList);
-                            }
-                        }
-
-
+                        JSONArray dimensionAndTargetPathsJa = this.createDimensionAndTargetPathsJa(dimensionId, targetId, dims, targetRelationJo);
                         //多对多时纬度的关联关系
                         if (dimensionAndTargetPathsJa.length() > 1) {
                             Map<String, List<BITableRelation>> dimensionRelationMap = directToDimensionRelationsMap.get(dimensionId);
@@ -421,6 +376,47 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 }
             }
         }
+    }
+
+    private JSONArray createDimensionAndTargetPathsJa (String dimensionId, String targetId, JSONObject dims, JSONObject targetRelationJo)throws JSONException{
+        Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
+        if (relationMap == null) {
+            relationMap = new LinkedHashMap<String, List<BITableRelation>>();
+            relationsMap.put(dimensionId, relationMap);
+        }
+        JSONArray dimensionAndTargetPathsJa = targetRelationJo.getJSONArray("target_relation");
+        List<BITableRelation> relationList = new ArrayList<BITableRelation>();
+        //指标的关联关系
+        JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
+        JSONObject primaryKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("primaryKey");
+        JSONObject foreignKeyJo = targetRelationsJa.optJSONObject(targetRelationsJa.length() - 1).optJSONObject("foreignKey");
+        String primaryFieldId = primaryKeyJo.optString("field_id");
+        String foreignFieldId = foreignKeyJo.optString("field_id");
+        String primaryTableId = primaryKeyJo.has("table_id") ? primaryKeyJo.getString("table_id") : null;
+        String foreignTableId = foreignKeyJo.has("table_id") ? foreignKeyJo.getString("table_id") : null;
+
+        JSONObject srcJo = dims.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+        if (primaryTableId != null && foreignTableId != null) {
+            if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreignTableId)))) {
+                relationMap.put(targetId, relationList);
+            } else {
+                for (int j = 0; j < targetRelationsJa.length(); j++) {
+                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
+                }
+                relationMap.put(targetId, relationList);
+            }
+        } else {
+            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo()) && !srcJo.has("target_relation")) {
+                relationMap.put(targetId, relationList);
+            } else {
+                for (int j = 0; j < targetRelationsJa.length(); j++) {
+                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
+                }
+                relationMap.put(targetId, relationList);
+            }
+        }
+
+        return dimensionAndTargetPathsJa;
     }
 
     /**
