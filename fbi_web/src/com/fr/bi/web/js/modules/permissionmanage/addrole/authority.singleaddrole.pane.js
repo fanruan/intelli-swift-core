@@ -150,7 +150,7 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
     _isRoleExist: function (role) {
         var allRoles = BI.Utils.getAuthorityRoles();
         return BI.some(allRoles, function (i, aRole) {
-            var roleName = aRole.text || (aRole.department_name + "," + aRole.post_name);
+            var roleName = aRole.text || (aRole.departmentname + "," + aRole.postname);
             return role.role_type === aRole.role_type && role.role_id === roleName;
         });
     },

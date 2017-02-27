@@ -21,6 +21,7 @@ import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.utils.conf.BISystemEnvUtils;
 import com.fr.bi.web.base.operation.BIOperationRecord;
 import com.fr.chart.base.ChartPreStyle;
+import com.fr.fs.FSConfig;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
@@ -458,15 +459,18 @@ public class BIWebUtils {
         if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
             return true;
         }
-        Set<BIDataConfigAuthority> authorities = BIConfigureManagerCenter.getDataConfigAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
-        for (BIDataConfigAuthority authority : authorities) {
-            String id = authority.getId();
-            if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE) ||
-                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE) ||
-                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING) ||
-                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY) ||
-                    ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE)) {
-                return true;
+        //开启了分级权限
+        if (FSConfig.getProviderInstance().getAuthorizeAttr().isGradeAuthority()) {
+            Set<BIDataConfigAuthority> authorities = BIConfigureManagerCenter.getDataConfigAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
+            for (BIDataConfigAuthority authority : authorities) {
+                String id = authority.getId();
+                if (ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE) ||
+                        ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE) ||
+                        ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING) ||
+                        ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY) ||
+                        ComparatorUtils.equals(id, DBConstant.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE)) {
+                    return true;
+                }
             }
         }
         return false;

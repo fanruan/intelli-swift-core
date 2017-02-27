@@ -9,7 +9,7 @@ import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.general.VT4FR;
 import com.fr.general.web.ParameterConsts;
-import com.fr.report.event.OB;
+import com.fr.privilege.PrivilegeManager;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
 
@@ -42,6 +42,7 @@ public class BIInitConfigurePaneAction extends AbstractBIConfigureAction {
 
         //节点权限控制
         data.put("authNodes", BIWebConfUtils.getAuthDataConfigNodes(userId));
+        data.put("isAdmin", userId == PrivilegeManager.SYSADMINID);
 
 //        data.put("supportMultiSheet", "");
         BIServiceUtil.setPreviousUrl(req);

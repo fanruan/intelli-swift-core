@@ -152,7 +152,7 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
         });
         var items = [];
         BI.each(sortedRoles, function(i, role) {
-            var roleName = role.text || (role.department_name  + "," + role.post_name);
+            var roleName = role.text || (role.departmentname  + "," + role.postname);
             items.push({
                 type: "bi.text_button",
                 cls: "role-item",
