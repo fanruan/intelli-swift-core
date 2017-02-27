@@ -76,12 +76,12 @@ public class TreeWidget extends BIAbstractWidget {
 
     @Override
     public <T extends BITargetAndDimension> T[] getDimensions() {
-        return null;
+        return (T[])new BITargetAndDimension[0];
     }
 
     @Override
     public <T extends BITargetAndDimension> T[] getTargets() {
-        return null;
+        return (T[])new BITargetAndDimension[0];
     }
 
     @Override
