@@ -245,8 +245,6 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             String region = regions.next();
             int regionValue = Integer.parseInt(region);
             if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) && regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
-//                if (ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-//                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)) {
                 for (int i = 0; i < view.getJSONArray(region).length(); i++) {
                     dimensionIds.put(view.getJSONArray(region).getString(i));
                 }
@@ -264,7 +262,6 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         }
         this.dimensions = dims.toArray(new BIDimension[dims.size()]);
         List<BISummaryTarget> tars = new ArrayList<BISummaryTarget>();
-
         // young BI-2332 指标数超过65后，计算指标值不对
         Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
         for (int j = 0; j < targetIds.length(); j++) {
