@@ -3,6 +3,7 @@ package com.fr.bi.stable.utils.program;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 /**
  *
@@ -43,5 +44,39 @@ public class BIJsonUtils {
             jo.put(arr.optString(i), right.opt(arr.optString(i)));
         }
         return jo;
+    }
+
+    public enum JSON_TYPE {
+        JSON_TYPE_OBJECT,
+        JSON_TYPE_ARRAY,
+        JSON_TYPE_ERROR
+    }
+
+   public static BIJsonUtils.JSON_TYPE getJSONType(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return BIJsonUtils.JSON_TYPE.JSON_TYPE_ERROR;
+        }
+
+        final char[] strChar = str.substring(0, 1).toCharArray();
+        final char firstChar = strChar[0];
+
+        if (firstChar == '{') {
+            return BIJsonUtils.JSON_TYPE.JSON_TYPE_OBJECT;
+        } else if (firstChar == '[') {
+            return BIJsonUtils.JSON_TYPE.JSON_TYPE_ARRAY;
+        } else {
+            return BIJsonUtils.JSON_TYPE.JSON_TYPE_ERROR;
+        }
+    }
+
+
+    public static boolean isKeyValueSet(String str) {
+        BIJsonUtils.JSON_TYPE type = getJSONType(str);
+        return type == BIJsonUtils.JSON_TYPE.JSON_TYPE_OBJECT;
+    }
+
+    public static boolean isArray(String str) {
+        BIJsonUtils.JSON_TYPE type = getJSONType(str);
+        return type == BIJsonUtils.JSON_TYPE.JSON_TYPE_ARRAY;
     }
 }

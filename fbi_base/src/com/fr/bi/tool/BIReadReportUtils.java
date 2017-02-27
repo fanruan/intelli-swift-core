@@ -15,6 +15,16 @@ import java.io.File;
  */
 public class BIReadReportUtils {
     public static JSONObject getBIReportNodeJSON(BIReportNode node) throws Exception {
+        BIDesignSetting setting = getBiDesignSetting(node);
+        return setting.getReportJSON();
+    }
+
+    public static String getBIReportNodeSetting(BIReportNode node) throws Exception {
+        BIDesignSetting setting = getBiDesignSetting(node);
+        return setting.getReportSetting();
+    }
+
+    private static BIDesignSetting getBiDesignSetting(BIReportNode node) throws Exception {
         String nodePath = CodeUtils.decodeText(node.getPath());
         /**
          * 兼容以前的绝对路径
@@ -35,9 +45,8 @@ public class BIReadReportUtils {
         if (!file.exists()) {
             throw new RuntimeException("can't find file:" + node.getPath() + "! might be delete or move!");
         }
-        BIDesignSetting setting = (BIDesignSetting) BaseXMLUtils.readXMLFile(
+        return (BIDesignSetting) BaseXMLUtils.readXMLFile(
                 BaseUtils.readResource(file.getAbsolutePath()),
                 new BIDesignSetting());
-        return setting.getReportSetting();
     }
 }

@@ -207,6 +207,20 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             case self.constants.PREVIEW_PANE:
                 return self.previewWrapper;
             case self.constants.PREVIEW_ERROR:
+                var detailButton = BI.createWidget({
+                    type: "bi.text_button",
+                    text: BI.i18nText("BI-Detail_Info"),
+                    cls: "fail-detail-button",
+                    handler: function(){
+                        if(detailButton.getText() === BI.i18nText("BI-Detail_Info")){
+                            detailButton.setText(BI.i18nText("BI-Close_Detail_Info"));
+                            detailInfo.setVisible(true);
+                        } else {
+                            detailButton.setText(BI.i18nText("BI-Detail_Info"));
+                            detailInfo.setVisible(false);
+                        }
+                    }
+                });
                 var cancelButton = BI.createWidget({
                     type: "bi.button",
                     text: BI.i18nText("BI-Cancel"),
@@ -227,14 +241,23 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                         self._getPreviewResult();
                     }
                 });
+
                 self.errorMes = BI.createWidget({
                     type: "bi.label",
-                    textHeight: 30,
-                    cls: "preview-fail-comment",
                     whiteSpace: "normal",
-                    textAlign: "left",
-                    width: 400
+                    textAlign: "left"
                 });
+                var detailInfo = BI.createWidget({
+                    type: "bi.left",
+                    height: 100,
+                    cls: "fail-detail-info",
+                    scrollable: true,
+                    items: [self.errorMes],
+                    hgap: 10
+                });
+                detailInfo.setVisible(false);
+
+
                 return BI.createWidget({
                     type: "bi.center_adapt",
                     items: [{
@@ -258,12 +281,12 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                             type: "bi.horizontal_float",
                             items: [{
                                 type: "bi.horizontal",
-                                items: [cancelButton, retryButton],
+                                items: [detailButton, cancelButton, retryButton],
                                 hgap: 5
                             }],
                             height: 30,
                             hgap: 5
-                        }, self.errorMes],
+                        }, detailInfo],
                         width: 400,
                         height: 340,
                         vgap: 10

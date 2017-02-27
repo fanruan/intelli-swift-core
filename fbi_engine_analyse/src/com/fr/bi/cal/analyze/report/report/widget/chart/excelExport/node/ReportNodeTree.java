@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.layout.nodeTree;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.node;
 
 import java.util.HashSet;
 import java.util.Set;

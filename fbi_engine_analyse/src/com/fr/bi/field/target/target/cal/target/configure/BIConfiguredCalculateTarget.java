@@ -9,6 +9,7 @@ import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -71,6 +72,13 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
             list.add(target);
         }
         return list;
+    }
+
+    @Override
+    public Collection<String> getCalculateUseTargetIDs() {
+        List<String> ids = new ArrayList<String>();
+        ids.add(target_id);
+        return ids;
     }
 
     @Override

@@ -313,11 +313,12 @@
 
 # define BI_DATA_CONFIG_DESIGN_NO 0
 # define BI_DATA_CONFIG_DESIGN_YES 1
-# define BI_DATA_CONFIG_AUTHORITY_PACKAGE_MANAGER_CHILDREN_SERVER_CONNECTION @"__package_server_connection__"
-# define BI_DATA_CONFIG_AUTHORITY_PACKAGE_MANAGER_CHILDREN_DATA_CONNECTION @"__package_data_connection__"
-# define BI_DATA_CONFIG_AUTHORITY_PACKAGE_MANAGER_CHILDREN_PACKAGE_GROUP @"__package_group__"
-# define BI_DATA_CONFIG_AUTHORITY_DATA_CONNECTION @"__data_connection__"
-# define BI_DATA_CONFIG_AUTHORITY_PACKAGE_MANAGER @"__package_manager__"
+# define BI_DATA_CONFIG_AUTHORITY_PACKAGE_MANAGER_NODE @"__package_manager_node__"
+# define BI_DATA_CONFIG_AUTHORITY_PACKAGE_MANAGER_PAGE @"__package_manager_page__"
+# define BI_DATA_CONFIG_AUTHORITY_PACKAGE_MANAGER_SERVER_CONNECTION @"__package_server_connection__"
+# define BI_DATA_CONFIG_AUTHORITY_PACKAGE_MANAGER_DATA_CONNECTION @"__package_data_connection__"
+# define BI_DATA_CONFIG_AUTHORITY_DATA_CONNECTION_NODE @"__data_connection_node__"
+# define BI_DATA_CONFIG_AUTHORITY_DATA_CONNECTION_PAGE @"__data_connection_page__"
 # define BI_DATA_CONFIG_AUTHORITY_MULTI_PATH_SETTING @"__multi_path_setting__"
 # define BI_DATA_CONFIG_AUTHORITY_PACKAGE_AUTHORITY @"__package_authority__"
 # define BI_DATA_CONFIG_AUTHORITY_FINE_INDEX_UPDATE @"__fine_index_update__"
