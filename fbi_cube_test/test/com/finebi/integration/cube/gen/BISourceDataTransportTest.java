@@ -18,9 +18,7 @@ import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.structure.column.BICubeTableColumnManager;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
-import com.finebi.cube.structure.column.ICubeTableColumnManagerService;
 import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.table.CompoundCubeTableReader;
 import com.finebi.cube.tools.*;
@@ -36,10 +34,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class created on 2016/4/6.
@@ -61,7 +56,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     public void transport(CubeTableSource tableSource) {
         try {
             setUp();
-            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1);
+            dataTransport = new BISourceDataAllTransport(cube, integrityCube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1, new HashMap<String, CubeTableSource>());
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -181,9 +176,9 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             list.add(tableSourceParent);
             BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent(list);
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
-            new BISourceDataAllTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1).mainTask(null);
+            new BISourceDataAllTransport(cube, integrityCube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1, new HashMap<String, CubeTableSource>()).mainTask(null);
             parents.add(tableSource.parent);
-            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents, 1);
+            dataTransport = new BISourceDataAllTransport(cube, integrityCube, tableSource, new HashSet<CubeTableSource>(), parents, 1, new HashMap<String, CubeTableSource>());
             dataTransport.mainTask(null);
             CompoundCubeTableReader compoundTable = (CompoundCubeTableReader) cube.getCubeTable(BITableKeyUtils.convert(tableSource));
             int size = tableSource.getSelfFields(null).size() + tableSource.parent.getFacetFields(null).size();
@@ -223,9 +218,9 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             list.add(tableSourceParent);
             BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent(list);
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
-            new BISourceDataAllTransport(cube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1).mainTask(null);
+            new BISourceDataAllTransport(cube, integrityCube, tableSource.parent, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1, new HashMap<String, CubeTableSource>()).mainTask(null);
             parents.add(tableSource.parent);
-            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), parents, 1);
+            dataTransport = new BISourceDataAllTransport(cube, integrityCube, tableSource, new HashSet<CubeTableSource>(), parents, 1, new HashMap<String, CubeTableSource>());
             dataTransport.mainTask(null);
 
 
