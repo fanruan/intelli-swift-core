@@ -380,7 +380,7 @@ BI.Fit = BI.inherit(BI.Widget, {
         return dragGroup;
     },
 
-    _checkWidgetsExist: function(){
+    _checkWidgetsExist: function () {
         var widgets = Data.SharingPool.cat("widgets");
         this.noWidgetTip.setVisible(BI.size(widgets) === 0);
     },
@@ -428,6 +428,7 @@ BI.Fit = BI.inherit(BI.Widget, {
     copyRegion: function (id, newId) {
         var flag = false;
         var region = this.arrangement.getRegionByName(id);
+        var offset = this.arrangement._getScrollOffset();
         var el = this._createItem(newId, {
             width: region.width,
             height: region.height
@@ -437,23 +438,30 @@ BI.Fit = BI.inherit(BI.Widget, {
                 width: region.width,
                 height: region.height
             }, {
-                left: region.left + region.width / 2 + 1,
-                top: region.top + region.height / 2 + 1
+                left: region.left - offset.left + region.width / 2 + 1,
+                top: region.top - offset.top + region.height / 2 + 1
             }))) {
-            if (!(flag = this.arrangement.addRegion(el, {
-                    left: region.left + region.width / 2,
-                    top: region.top + region.height / 4 - 1
+            if (!(flag = this.arrangement.addRegion({
+                    el: el,
+                    width: region.width,
+                    height: region.height
+                }, {
+                    left: region.left - offset.left + region.width / 2,
+                    top: region.top - offset.top + region.height / 4 - 1
                 }))) {
-                if (!(flag = this.arrangement.addRegion(el, {
-                        left: region.left + region.width / 2,
-                        top: region.top + region.height * 3 / 4 + 1
+                if (!(flag = this.arrangement.addRegion({
+                        el: el,
+                        width: region.width,
+                        height: region.height
+                    }, {
+                        left: region.left - offset.left + region.width / 2,
+                        top: region.top - offset.top + region.height * 3 / 4 + 1
                     }))) {
                 }
             }
         }
         if (flag === true) {
             this._changeLayoutType(this.getLayoutType());
-            this._checkWidgetsExist();
             this.fireEvent(BI.Fit.EVENT_CHANGE);
         }
         return flag;
