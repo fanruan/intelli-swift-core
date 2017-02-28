@@ -20,7 +20,7 @@ BI.AllCountPager = BI.inherit(BI.Widget, {
             type: "bi.small_text_editor",
             cls: "pager-editor",
             validationChecker: function (v) {
-                return (self.rowCount.getValue() == 0 && v === "0") || BI.isPositiveInteger(v);
+                return (self.rowCount.getValue() === 0 && v === "0") || BI.isPositiveInteger(v);
             },
             hgap: 4,
             vgap: 0,
