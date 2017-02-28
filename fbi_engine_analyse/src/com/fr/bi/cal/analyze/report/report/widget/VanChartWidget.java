@@ -1,14 +1,11 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartDataConvertFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.BIChartSettingFactory;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
 import com.fr.general.ComparatorUtils;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
 
@@ -24,58 +21,58 @@ public class VanChartWidget extends TableWidget {
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-        if (jo.has("view")) {
-            JSONObject vjo = jo.optJSONObject("view");
-            JSONArray ja = new JSONArray();
-            JSONArray rectJa = new JSONArray();
-            Iterator it = vjo.keys();
-            List<String> sorted = new ArrayList<String>();
-            while (it.hasNext()) {
-                sorted.add(it.next().toString());
-            }
-            Collections.sort(sorted, new ChinesePinyinComparator());
-            for (String region : sorted) {
-//                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-//                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+//        if (jo.has("view")) {
+//            JSONObject vjo = jo.optJSONObject("view");
+//            JSONArray ja = new JSONArray();
+//            JSONArray rectJa = new JSONArray();
+//            Iterator it = vjo.keys();
+//            List<String> sorted = new ArrayList<String>();
+//            while (it.hasNext()) {
+//                sorted.add(it.next().toString());
+//            }
+//            Collections.sort(sorted, new ChinesePinyinComparator());
+//            for (String region : sorted) {
+////                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
+////                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+////                    continue;
+////                }
+//                int regionValue = Integer.parseInt(region);
+//                if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) &&
+//                        regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
+//                    if (jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE) {
+//                        JSONArray tmp = vjo.getJSONArray(region);
+//                        for (int j = 0; j < tmp.length(); j++) {
+//                            rectJa.put(tmp.getString(j));
+//                        }
+//                    }
 //                    continue;
 //                }
-                int regionValue = Integer.parseInt(region);
-                if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) &&
-                        regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
-                    if (jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE) {
-                        JSONArray tmp = vjo.getJSONArray(region);
-                        for (int j = 0; j < tmp.length(); j++) {
-                            rectJa.put(tmp.getString(j));
-                        }
-                    }
-                    continue;
-                }
-                JSONArray tmp = vjo.getJSONArray(region);
-                for (int j = 0; j < tmp.length(); j++) {
-                    ja.put(tmp.getString(j));
-                }
-            }
-            if (jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE) {
-                vjo.remove(BIReportConstant.REGION.DIMENSION2);
-                vjo.put(BIReportConstant.REGION.DIMENSION1, rectJa);
-            }
-            vjo.remove(BIReportConstant.REGION.TARGET2);
-            vjo.remove(BIReportConstant.REGION.TARGET3);
-            vjo.put(BIReportConstant.REGION.TARGET1, ja);
-        }
-        if (jo.has("type")) {
-            type = jo.getInt("type");
-        }
-        if (jo.has("subType")) {
-            subType = jo.getString("subType");
-        }
+//                JSONArray tmp = vjo.getJSONArray(region);
+//                for (int j = 0; j < tmp.length(); j++) {
+//                    ja.put(tmp.getString(j));
+//                }
+//            }
+//            if (jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE) {
+//                vjo.remove(BIReportConstant.REGION.DIMENSION2);
+//                vjo.put(BIReportConstant.REGION.DIMENSION1, rectJa);
+//            }
+//            vjo.remove(BIReportConstant.REGION.TARGET2);
+//            vjo.remove(BIReportConstant.REGION.TARGET3);
+//            vjo.put(BIReportConstant.REGION.TARGET1, ja);
+//        }
+//        if (jo.has("type")) {
+//            type = jo.getInt("type");
+//        }
+//        if (jo.has("subType")) {
+//            subType = jo.getString("subType");
+//        }
         super.parseJSON(jo, userId);
     }
 
 
     @Override
-    public int getType() {
-        return type;
+    public WidgetType getType() {
+        return WidgetType.BAR;
     }
 
 
@@ -192,7 +189,8 @@ public class VanChartWidget extends TableWidget {
     }
 
     private JSONObject parseChartSetting(JSONObject data) throws Exception {
-        JSONObject convert = BIChartDataConvertFactory.convert(this, data);
-        return BIChartSettingFactory.parseChartSetting(this, convert.getJSONArray("data"), convert.optJSONObject("options"), convert.getJSONArray("types"));
+        return JSONObject.EMPTY;
+//        JSONObject convert = BIChartDataConvertFactory.convert(this, data);
+//        return BIChartSettingFactory.parseChartSetting(this, convert.getJSONArray("data"), convert.optJSONObject("options"), convert.getJSONArray("types"));
     }
 }
