@@ -40,7 +40,7 @@ public enum WidgetType {
     RADAR(0x1d),//雷达图
     ACCUMULATE_RADAR(0x1e),//堆积雷达图
     FUNNEL(0x1f),//漏斗图
-    RECT_TREE(0x27),//矩形树图
+    TREE_MAP(0x27),//矩形树图
     MULTI_PIE(0x28),//多层饼图
     HEAT_MAP(0x41),//热力地图
     PARETO(0x42),//帕累托图

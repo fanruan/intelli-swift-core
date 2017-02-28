@@ -1,14 +1,19 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.operation.group.IGroup;
+import com.fr.bi.stable.operation.group.group.NoGroup;
 import com.fr.general.ComparatorUtils;
+import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
+import sun.misc.DoubleConsts;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -16,65 +21,7 @@ import java.util.*;
  */
 public class VanChartWidget extends TableWidget {
 
-    private int type;
-    private String subType;
-
-    @Override
-    public void parseJSON(JSONObject jo, long userId) throws Exception {
-//        if (jo.has("view")) {
-//            JSONObject vjo = jo.optJSONObject("view");
-//            JSONArray ja = new JSONArray();
-//            JSONArray rectJa = new JSONArray();
-//            Iterator it = vjo.keys();
-//            List<String> sorted = new ArrayList<String>();
-//            while (it.hasNext()) {
-//                sorted.add(it.next().toString());
-//            }
-//            Collections.sort(sorted, new ChinesePinyinComparator());
-//            for (String region : sorted) {
-////                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-////                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
-////                    continue;
-////                }
-//                int regionValue = Integer.parseInt(region);
-//                if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) &&
-//                        regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
-//                    if (jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE) {
-//                        JSONArray tmp = vjo.getJSONArray(region);
-//                        for (int j = 0; j < tmp.length(); j++) {
-//                            rectJa.put(tmp.getString(j));
-//                        }
-//                    }
-//                    continue;
-//                }
-//                JSONArray tmp = vjo.getJSONArray(region);
-//                for (int j = 0; j < tmp.length(); j++) {
-//                    ja.put(tmp.getString(j));
-//                }
-//            }
-//            if (jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE) {
-//                vjo.remove(BIReportConstant.REGION.DIMENSION2);
-//                vjo.put(BIReportConstant.REGION.DIMENSION1, rectJa);
-//            }
-//            vjo.remove(BIReportConstant.REGION.TARGET2);
-//            vjo.remove(BIReportConstant.REGION.TARGET3);
-//            vjo.put(BIReportConstant.REGION.TARGET1, ja);
-//        }
-//        if (jo.has("type")) {
-//            type = jo.getInt("type");
-//        }
-//        if (jo.has("subType")) {
-//            subType = jo.getString("subType");
-//        }
-        super.parseJSON(jo, userId);
-    }
-
-
-    @Override
-    public WidgetType getType() {
-        return WidgetType.BAR;
-    }
-
+    private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public BIDimension getCategoryDimension() {
         List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION1));
@@ -169,28 +116,27 @@ public class VanChartWidget extends TableWidget {
         return null;
     }
 
-    public String getSubType() {
-        return subType;
-    }
-
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
-        JSONObject data = dataJSON.optJSONObject("data");
-        JSONObject chartOptions = parseChartSetting(data);
-        return resetAnimation(chartOptions);
-    }
-
-    private JSONObject resetAnimation(JSONObject chartOptions) throws Exception {
-        //将plotOptions下的animation设为false否则不能截图（只截到网格线）
-        JSONObject plotOptions = (JSONObject) chartOptions.get("plotOptions");
+        JSONObject chartOptions = createOptions(dataJSON.optJSONObject("data"));
+        JSONObject plotOptions = chartOptions.optJSONObject("plotOptions");
         plotOptions.put("animation", false);
         chartOptions.put("plotOptions", plotOptions);
         return chartOptions;
     }
 
-    private JSONObject parseChartSetting(JSONObject data) throws Exception {
-        return JSONObject.EMPTY;
-//        JSONObject convert = BIChartDataConvertFactory.convert(this, data);
-//        return BIChartSettingFactory.parseChartSetting(this, convert.getJSONArray("data"), convert.optJSONObject("options"), convert.getJSONArray("types"));
+    public JSONObject createOptions(JSONObject data){
+        return JSONObject.create();
     }
+
+    protected JSONArray createXYSeries(JSONObject data) throws JSONException{
+        JSONArray series = JSONArray.create();
+        BIDimension categoryDimension = this.getCategoryDimension();
+        BIDimension seriesDimension = this.getSeriesDimension();
+        IGroup categoryGroup = categoryDimension != null ? categoryDimension.getGroup() : new NoGroup();
+        IGroup seriesGroup = seriesDimension != null ? seriesDimension.getGroup() : new NoGroup();
+
+        return series;
+    }
+
 }
