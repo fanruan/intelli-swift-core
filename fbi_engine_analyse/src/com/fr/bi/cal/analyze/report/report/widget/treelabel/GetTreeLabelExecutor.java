@@ -75,7 +75,7 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
                     try {
                         pre = containString(selectedValues, o1);
                         next = containString(selectedValues, o2);
-                        return pre - next;
+                        return next - pre;
                     } catch (JSONException e) {
                         return 0;
                     }
