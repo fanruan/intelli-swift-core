@@ -7,6 +7,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -80,12 +81,6 @@ public class StringControlWidget extends TableWidget {
         PY, START_WITH
     }
 
-    private abstract class SimpleIntArray{
-        public abstract int get(int index);
-
-        public abstract int size();
-    }
-
     private JSONObject switchGetResultMethod(ICubeColumnIndexReader reader, Set<String> selected_value, SimpleIntArray groupArray, SearchMode mode) throws JSONException{
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
             return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
@@ -107,46 +102,7 @@ public class StringControlWidget extends TableWidget {
             mode = SearchMode.START_WITH;
             start = ArrayLookupHelper.getStartIndex4StartWith(reader, keyword, comparator);
             end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;}
-        SimpleIntArray groupArray;
-        if (gvi instanceof AllShowRoaringGroupValueIndex){
-            final int fstart = start, size = start == -1 ? 0 :  end - start;
-            groupArray = new SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    return index + fstart;
-                }
-                @Override
-                public int size() {
-                    return size;
-                }
-            };
-        } else {
-            final int[] groupIndex = new int[getter.getGroupSize()];
-            Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
-            gvi.Traversal(new SingleRowTraversalAction() {
-                @Override
-                public void actionPerformed(int row) {
-                    int groupRow = getter.getPositionOfGroupByRow(row);
-                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {groupIndex[groupRow] = groupRow;}
-                }
-            });
-            final IntArray array = new IntArray();
-            if (start != -1){
-                for (int i = start; i < end; i ++){
-                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE){array.add(i);}
-                }
-            }
-            groupArray = new SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    return array.get(index);
-                }
-                @Override
-                public int size() {
-                    return array.size;
-                }
-            };
-        }
+        SimpleIntArray groupArray = this.createGroupArray(start, end, getter, gvi);
         return switchGetResultMethod(reader, selected_value, groupArray, mode);
     }
 
@@ -397,8 +353,8 @@ public class StringControlWidget extends TableWidget {
     }
 
     @Override
-    public int getType() {
-        return BIReportConstant.WIDGET.STRING;
+    public WidgetType getType() {
+        return WidgetType.STRING;
     }
 
 }
