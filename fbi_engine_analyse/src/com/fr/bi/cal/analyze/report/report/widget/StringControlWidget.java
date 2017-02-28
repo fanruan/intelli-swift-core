@@ -64,7 +64,7 @@ public class StringControlWidget extends TableWidget {
             return getCustomGroupResult(list, selected_value, calculator);
         }else{
             GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
-            ICubeColumnIndexReader reader = dimension.getSort().createGroupedMap(calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader()));
+            ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
 
             if (dimension.getGroup()!= null && dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
                 return getCustomGroupResult(gvi, reader, selected_value, calculator);
@@ -252,14 +252,34 @@ public class StringControlWidget extends TableWidget {
         }
     }
 
-    private JSONObject getSearchResult(Set selectedValue, int start, int end, List<Object> list, DimensionCalculator calculator) throws JSONException {
-        JSONArray ja = JSONArray.create();
-        JSONObject jo = JSONObject.create();
+    private boolean getReserveList(List<Object> list, String key, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match){
         boolean hasNext = false;
-        List<String> find = new ArrayList<String>();
-        List<String> match = new ArrayList<String>();
-        int matched = 0;
-        String key = this.keyword.toLowerCase();
+        for (int i = list.size() - 1; i > -1; i--){
+            Object ob = list.get(i);
+            if (ob == null) {
+                continue;
+            }
+
+            String str = ob.toString();
+            if (match(str, key, selectedValue, SearchMode.PY)) {
+                if (matched >= start && matched < end) {
+                    if (ComparatorUtils.equals(keyword, str)) {
+                        match.add(str);
+                    } else {
+                        find.add(str);
+                    }
+                } else if (matched >= end) {
+                    hasNext = true;
+                    break;
+                }
+                matched++;
+            }
+        }
+        return hasNext;
+    }
+
+    private boolean getList(List<Object> list, String key, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match){
+        boolean hasNext = false;
         for (Object ob : list){
             if (ob == null) {
                 continue;
@@ -280,6 +300,22 @@ public class StringControlWidget extends TableWidget {
                 matched++;
             }
         }
+        return hasNext;
+    }
+
+    private JSONObject getSearchResult(Set selectedValue, int start, int end, List<Object> list, DimensionCalculator calculator) throws JSONException {
+        JSONArray ja = JSONArray.create();
+        JSONObject jo = JSONObject.create();
+        boolean hasNext = false;
+        List<String> find = new ArrayList<String>();
+        List<String> match = new ArrayList<String>();
+        int matched = 0;
+        String key = this.keyword.toLowerCase();
+        if(getDimensions()[0].getSort().getSortType() == BIReportConstant.SORT.NUMBER_DESC || getDimensions()[0].getSort().getSortType() == BIReportConstant.SORT.DESC){
+            hasNext = getReserveList(list, key, selectedValue, matched, start, end, find, match);
+        }else{
+            hasNext = getList(list, key, selectedValue, matched, start, end, find, match);
+        }
         for (String s : match) {
             ja.put(s);
         }
@@ -291,15 +327,30 @@ public class StringControlWidget extends TableWidget {
         return jo;
     }
 
-
-    private JSONObject getSearchResult(ICubeColumnIndexReader reader, Set selectedValue, int start, int end, SimpleIntArray array, SearchMode mode) throws JSONException {
-        JSONArray ja = JSONArray.create();
-        JSONObject jo = JSONObject.create();
+    private boolean getReserveListWithArray(ICubeColumnIndexReader reader, SimpleIntArray array, String key, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match, SearchMode mode){
         boolean hasNext = false;
-        List<String> find = new ArrayList<String>();
-        List<String> match = new ArrayList<String>();
-        int matched = 0;
-        String key = this.keyword.toLowerCase();
+        for (int i = array.size() - 1; i > 0; i--) {
+            Object ob = reader.getGroupValue(array.get(i));
+            String str = ob.toString();
+            if (match(str, key, selectedValue, mode)) {
+                if (matched >= start && matched < end) {
+                    if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
+                        match.add(str);
+                    } else {
+                        find.add(str);
+                    }
+                } else if (matched >= end) {
+                    hasNext = true;
+                    break;
+                }
+                matched++;
+            }
+        }
+        return hasNext;
+    }
+
+    private boolean getListWithArray(ICubeColumnIndexReader reader, SimpleIntArray array, String key, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match, SearchMode mode){
+        boolean hasNext = false;
         for (int i = 0; i < array.size(); i++) {
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
@@ -316,6 +367,23 @@ public class StringControlWidget extends TableWidget {
                 }
                 matched++;
             }
+        }
+        return hasNext;
+    }
+
+
+    private JSONObject getSearchResult(ICubeColumnIndexReader reader, Set selectedValue, int start, int end, SimpleIntArray array, SearchMode mode) throws JSONException {
+        JSONArray ja = JSONArray.create();
+        JSONObject jo = JSONObject.create();
+        boolean hasNext = false;
+        List<String> find = new ArrayList<String>();
+        List<String> match = new ArrayList<String>();
+        int matched = 0;
+        String key = this.keyword.toLowerCase();
+        if(getDimensions()[0].getSort().getSortType() == BIReportConstant.SORT.NUMBER_DESC || getDimensions()[0].getSort().getSortType() == BIReportConstant.SORT.DESC){
+            hasNext = getReserveListWithArray(reader, array, key, selectedValue, matched, start, end, find, match, mode);
+        }else{
+            hasNext = getListWithArray(reader, array, key, selectedValue, matched, start, end, find, match, mode);
         }
         for (String s : match) {
             ja.put(s);
