@@ -9,6 +9,7 @@ import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.tree.*;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -75,12 +76,12 @@ public class TreeWidget extends BIAbstractWidget {
 
     @Override
     public <T extends BITargetAndDimension> T[] getDimensions() {
-        return null;
+        return (T[])new BITargetAndDimension[0];
     }
 
     @Override
     public <T extends BITargetAndDimension> T[] getTargets() {
-        return null;
+        return (T[])new BITargetAndDimension[0];
     }
 
     @Override
@@ -333,8 +334,8 @@ public class TreeWidget extends BIAbstractWidget {
     }
 
     @Override
-    public int getType() {
-        return BIReportConstant.WIDGET.TREE;
+    public WidgetType getType() {
+        return WidgetType.TREE;
     }
 
     @Override

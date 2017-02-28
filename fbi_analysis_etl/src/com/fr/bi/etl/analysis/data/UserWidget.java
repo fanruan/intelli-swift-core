@@ -14,6 +14,7 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BIWeblet;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -54,7 +55,7 @@ public class UserWidget {
         if (!contains(start, end)) {
             synchronized (lock) {
                 if (!contains(start, end)) {
-                    if (widget.getType() == BIReportConstant.WIDGET.DETAIL) {
+                    if (widget.getType() == WidgetType.DETAIL) {
                         createDetailData(start, end);
                     } else {
                         createTableData(end);
