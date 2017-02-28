@@ -20,7 +20,7 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
                 data.floors = op.floor;
                 data.parentValues = op.parentValues;
                 data.selectedValues = self.selectedValues || [];
-                if (BI.isEmptyObject(op)) {
+                if (BI.isEmptyObject(op) || BI.isEmptyArray(op.parentValues)) {
                     callback({});
                 } else {
                     BI.Utils.getWidgetDataByID(o.wId, {

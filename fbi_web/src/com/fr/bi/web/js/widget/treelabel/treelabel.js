@@ -30,26 +30,28 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.TreeLabel.EVENT_CHANGE, arguments);
                 return;
             }
-            var selectedIds = op.selectedIds;
+            var selectedIds = op.selectedIds, orgId = op.id;
+            if(!op.id) {
+                if (self.floorMap[op.floor]) {
+                    op.id = [];
+                } else {
+                    op.id = selectedIds[op.floor];
+                }
+                self.floorMap[op.floor] = true;
+            }
             op.parentValues = [];
-            if (op.floor === 0) {
-                op.parentValues = [{
-                    id: BI.isNull(op.id) ? null : op.id,
-                    value: op.value === BICst.LIST_LABEL_TYPE.ALL ? [] : [op.value]
-                }]
-            } else {
-                op.id = op.id || selectedIds[op.floor];
-                op.id = BI.isArray(op.id) ? op.id : [op.id];
-                BI.each(op.id, function (idx, id) {
-                    var temp = [];
-                    getAllParentValue(id, op.floor - 1, selectedIds, temp);
+            op.id = BI.isArray(op.id) ? op.id : [op.id];
+            BI.each(op.id, function (idx, id) {
+                var temp = [];
+                getAllParentValue(id, op.floor - 1, selectedIds, temp);
+                if(self.itemsMap[id].clicked !== true) {
                     op.parentValues.push({
                         id: id,
                         value: temp.reverse()
                     });
-                });
-                op.floor = op.floor - 1;
-            }
+                }
+                orgId && (self.itemsMap[id].clicked = true);
+            });
             self._itemsCreator(op, BI.bind(self.view.updateView, self.view));
             self.fireEvent(BI.TreeLabel.EVENT_CHANGE, arguments);
         });
@@ -73,6 +75,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         var self = this, result = [];
         this.map = {};
         this.itemsMap = {};
+        this.floorMap = {};
         BI.each(items, function (idx, item) {
             var temp = [];
             BI.each(item, function (i, data) {
