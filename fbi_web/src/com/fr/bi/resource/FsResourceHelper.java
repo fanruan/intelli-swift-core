@@ -325,9 +325,6 @@ public class FsResourceHelper {
                 "com/fr/bi/web/js/case/table/table.dynamicsummarylayertree.js",
                 "com/fr/bi/web/js/case/table/tabler.js",
 
-                //chart
-                "com/fr/bi/web/js/case/chart/chart.combine.js",
-
                 "com/fr/bi/web/js/case/logintimeout/login.timeout.js",
         };
     }

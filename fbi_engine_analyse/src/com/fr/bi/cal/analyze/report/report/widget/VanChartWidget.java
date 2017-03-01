@@ -1,7 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
-import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -13,7 +11,6 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
-import sun.misc.DoubleConsts;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
