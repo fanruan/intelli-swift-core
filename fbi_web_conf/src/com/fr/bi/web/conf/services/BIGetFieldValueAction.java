@@ -9,6 +9,7 @@ import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -31,7 +32,13 @@ public class BIGetFieldValueAction extends AbstractBIConfigureAction {
         }
         long userId = ServiceUtils.getCurrentUserID(req);
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, "table")), userId);
-        Set set = source.getFieldDistinctNewestValues(fieldName, BICubeManager.getInstance().fetchCubeLoader(userId), userId);
+        Set initialSet = source.getFieldDistinctNewestValues(fieldName, BICubeManager.getInstance().fetchCubeLoader(userId), userId);
+        Set set = new HashSet();
+        for (Object s: initialSet) {
+            if(s!=null){
+                set.add(GeneralUtils.objectToString(s));
+            }
+        }
         String filterConfigString = WebUtils.getHTTPRequestParameter(req, "filterConfig");
         String keyword = null;
         List<String> selected_value = new ArrayList<String>();
