@@ -45,11 +45,11 @@ public abstract class SummaryAbstractTableDataBuilder implements BIExcelDataBuil
 
     protected void initAllAttrs() {
         tree = new ReportNodeTree();
-        dimIds = new ArrayList<>();
-        targetIds = new ArrayList<>();
+        dimIds = new ArrayList<String>();
+        targetIds = new ArrayList<String>();
         crossItems = new JSONArray();
-        crossDimIds = new ArrayList<>();
-        crossItemSums = new ArrayList<>();
+        crossDimIds = new ArrayList<String>();
+        crossItemSums = new ArrayList<JSONArray>();
         items = new JSONArray();
         headers = new JSONArray();
         crossHeaders = new JSONArray();
