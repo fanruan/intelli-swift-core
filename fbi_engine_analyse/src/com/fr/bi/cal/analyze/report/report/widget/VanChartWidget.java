@@ -1,5 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -123,6 +125,28 @@ public class VanChartWidget extends TableWidget {
         plotOptions.put("animation", false);
         chartOptions.put("plotOptions", plotOptions);
         return chartOptions;
+    }
+
+    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
+        //用来做测试
+        return new JSONObject("{\n" +
+                "                    \"plotOptions\":{\n" +
+                "\n" +
+                "                    },\n" +
+                "                    \"chartType\": \"column\",\n" +
+                "\n" +
+                "                    \"series\": [\n" +
+                "                        {\n" +
+                "                            \"data\": [\n" +
+                "                                {\n" +
+                "                                    \"x\": \"孙林\",\n" +
+                "                                    \"y\": 140\n" +
+                "                                }\n" +
+                "                            ],\n" +
+                "                            \"name\": \"苹果汁\"\n" +
+                "                        }\n" +
+                "                    ]\n" +
+                "                };");
     }
 
     public JSONObject createOptions(JSONObject data){
