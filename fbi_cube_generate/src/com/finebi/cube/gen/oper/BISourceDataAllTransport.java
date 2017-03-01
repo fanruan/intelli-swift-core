@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -33,8 +34,8 @@ import java.util.TreeSet;
 public class BISourceDataAllTransport extends BISourceDataTransport {
     private static final Logger logger = LoggerFactory.getLogger(BISourceDataAllTransport.class);
 
-    public BISourceDataAllTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
-        super(cube, tableSource, allSources, parentTableSource, version);
+    public BISourceDataAllTransport(Cube cube, Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        super(cube, integrityCube, tableSource, allSources, parentTableSource, version, tablesNeed2GenerateMap);
     }
 
     @Override
@@ -101,7 +102,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
-        }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube));
+        }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cubeChooser));
     }
 
 

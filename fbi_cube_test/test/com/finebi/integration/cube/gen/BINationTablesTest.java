@@ -127,7 +127,7 @@ public class BINationTablesTest extends BICubeTestBase {
      */
     public void transport(CubeTableSource tableSource) {
         try {
-            dataTransport = new BISourceDataAllTransport(cube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1);
+            dataTransport = new BISourceDataAllTransport(cube, integrityCube, tableSource, new HashSet<CubeTableSource>(), new HashSet<CubeTableSource>(), 1, new HashMap<String, CubeTableSource>());
             dataTransport.mainTask(null);
         } catch (Exception e) {
             e.printStackTrace();

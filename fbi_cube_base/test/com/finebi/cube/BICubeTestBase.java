@@ -25,6 +25,7 @@ public class BICubeTestBase extends TestCase {
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
+    protected BICube integrityCube;
     protected BICubeTableEntity tableEntity;
 
     @Override
@@ -33,6 +34,7 @@ public class BICubeTestBase extends TestCase {
         cubeConfiguration = new BICubeConfigurationTool();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        integrityCube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         tableEntity = (BICubeTableEntity) cube.getCubeTableWriter(BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()));
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
     }
