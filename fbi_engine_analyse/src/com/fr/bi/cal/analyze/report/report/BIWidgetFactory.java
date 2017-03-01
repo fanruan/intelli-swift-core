@@ -71,6 +71,8 @@ public class BIWidgetFactory {
             case INTERVAL_SLIDER:
                 biWidget = new SingleSliderWidget();
                 break;
+            default:
+                biWidget = new VanChartWidget();
         }
 
         return biWidget;

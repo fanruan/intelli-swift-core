@@ -159,8 +159,6 @@ public class FsResourceHelper {
 
                 "com/fr/bi/web/js/base/module/farbtastic/farbtastic.js",
 
-                "com/fr/bi/web/js/base/module/chart/chart.js",
-
 //                "com/fr/bi/web/js/base/module/canvas/canvas.js",
 
                 "com/fr/bi/web/js/base/module/svg/svg.js",
@@ -329,7 +327,6 @@ public class FsResourceHelper {
 
                 //chart
                 "com/fr/bi/web/js/case/chart/chart.combine.js",
-                "com/fr/bi/web/js/case/chart/factory.charts.js",
 
                 "com/fr/bi/web/js/case/logintimeout/login.timeout.js",
         };

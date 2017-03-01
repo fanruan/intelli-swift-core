@@ -522,7 +522,6 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/complextable.model.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.model.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
