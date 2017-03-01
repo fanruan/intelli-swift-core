@@ -96,7 +96,7 @@ class ValueIterator {
             } else {
                 move(i - 1);
                 if (next == null) {
-                    break;
+                    return;
                 }
             }
         }

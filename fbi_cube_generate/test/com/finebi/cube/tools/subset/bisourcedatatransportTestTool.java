@@ -6,6 +6,7 @@ import com.finebi.cube.structure.Cube;
 import com.finebi.cube.tools.BICubeBuildProbeTool;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,7 +34,7 @@ public class bisourcedatatransportTestTool extends BISourceDataTransport {
 
     }
 
-    public bisourcedatatransportTestTool(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource) {
-        super(cube, tableSource, allSources, parentTableSource,1);
+    public bisourcedatatransportTestTool(Cube cube, Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        super(cube, integrityCube, tableSource, allSources, parentTableSource, 1, tablesNeed2GenerateMap);
     }
 }
