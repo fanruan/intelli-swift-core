@@ -33,9 +33,13 @@ public class JobTask implements Job {
             CubeBuildHelper.getInstance().CubeBuildStaffComplete(userId);
         } else {
             if (isTableUsed(userId, tableKey)) {
-                CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, tableKey, updateType);
+                try {
+                    CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, tableKey, updateType);
+                } catch (InterruptedException e) {
+                    BILoggerFactory.getLogger(this.getClass()).error("addSingleTableTask failure " + e.getMessage(), e);
+                }
             } else {
-                BILoggerFactory.getLogger().warn("the table " + tableKey + " is not existed. Timer task canceled");
+                BILoggerFactory.getLogger(this.getClass()).warn("the table " + tableKey + " is not existed. Timer task canceled");
             }
         }
     }

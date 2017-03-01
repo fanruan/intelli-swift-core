@@ -72,7 +72,7 @@ public class CubeBuildHelper {
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + baseTableSourceId);
                                 }
-                            } catch (InterruptedException e) {
+                            } catch (Exception e) {
                                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
                             }
                         }
@@ -111,34 +111,11 @@ public class CubeBuildHelper {
         }
     }
 
-    public void addSingleTableTask2Queue(long userId, String baseTableSourceId, int updateType) {
-        taskQueue.add(new SingleTableTask(userId, baseTableSourceId, updateType));
+    public void addSingleTableTask2Queue(long userId, String baseTableSourceId, int updateType) throws InterruptedException {
+        taskQueue.put(new SingleTableTask(userId, baseTableSourceId, updateType));
     }
 
 
-//    public void addSingleTableTask(long userId, String baseTableSourceId, int updateType) {
-//        BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);
-//        int times = 0;
-//        for (int i = 0; i < 100; i++) {
-//            if (!cubeManager.hasTask()) {
-//                CubeBuildSingleTable(userId, baseTableSourceId, updateType);
-//                break;
-//            }
-//            long timeDelay = i * 5000;
-//            BILoggerFactory.getLogger(CubeBuildHelper.class).info("Cube is generating, wait to add SingleTable Cube Task until finished, retry times : " + i);
-//            BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + baseTableSourceId);
-//            try {
-//                Thread.sleep(timeDelay);
-//            } catch (InterruptedException e) {
-//                BILoggerFactory.getLogger(CubeBuildHelper.class).error(e.getMessage(), e);
-//            }
-//            times++;
-//        }
-//        if (times == 100) {
-//            BILoggerFactory.getLogger(CubeBuildHelper.class).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
-//            BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + baseTableSourceId);
-//        }
-//    }
 
     public void CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);

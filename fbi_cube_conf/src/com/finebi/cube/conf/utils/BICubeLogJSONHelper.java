@@ -23,11 +23,25 @@ public class BICubeLogJSONHelper extends BILogHelper {
         return tableExceptionInfoJSON;
     }
 
-    public static JSONObject getCubeLogTableNormalInfoJSON() {
+    public static JSONObject getCubeLogTableTransportInfoJSON() {
         JSONObject tableNormalInfoJSON = new JSONObject();
         initTableInfoJSON(tableNormalInfoJSON, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_TABLE_NORMAL_INFO);
         return tableNormalInfoJSON;
     }
+
+
+    public static JSONObject getCubeLogTableFieldIndexInfoJSON() {
+        JSONObject tableFieldIndexInfoJSON = new JSONObject();
+        initTableInfoJSON(tableFieldIndexInfoJSON, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_FIELD_NORMAL_INFO);
+        return tableFieldIndexInfoJSON;
+    }
+
+    public static JSONObject getCubeLogRelationIndexInfoJSON() {
+        JSONObject relationIndexInfoJSON = new JSONObject();
+        initTableInfoJSON(relationIndexInfoJSON, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_RELATION_NORMAL_INFO);
+        return relationIndexInfoJSON;
+    }
+
 
     private static void initExceptionJson(JSONObject tableExceptionInfoJSON, String exceptionSubTag) {
         Object tableExceptionInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, exceptionSubTag);
@@ -50,9 +64,8 @@ public class BICubeLogJSONHelper extends BILogHelper {
     }
 
     public static void initTableInfoJSON(JSONObject tableNormalInfoJSON, String normalInfoSubTag) {
-        Object normalInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_TABLE_NORMAL_INFO);
+        Object normalInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, normalInfoSubTag);
         if (normalInfoMap != null && normalInfoMap instanceof Map) {
-            Map<String, Map<String, Object>> cubeTableNormalInfoMap = (Map<String, Map<String, Object>>) normalInfoMap;
             Iterator<Map.Entry<String, Map<String, Object>>> it = ((Map) normalInfoMap).entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, Map<String, Object>> entry = it.next();
@@ -64,7 +77,6 @@ public class BICubeLogJSONHelper extends BILogHelper {
                 }
             }
         }
-
     }
 
 

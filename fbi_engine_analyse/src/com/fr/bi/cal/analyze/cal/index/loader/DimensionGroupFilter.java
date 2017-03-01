@@ -75,16 +75,16 @@ public class DimensionGroupFilter {
     }
 
     private boolean hasInSumMetrics() {
-        for (MergerInfo info : mergerInfoList){
-            if (hasInSumMetric(info.biDimensionTarget)){
+        for (MergerInfo info : mergerInfoList) {
+            if (hasInSumMetric(info.biDimensionTarget)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean hasInSumMetric(BISummaryTarget target){
-        return target!= null && (target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.SUM ||
+    private boolean hasInSumMetric(BISummaryTarget target) {
+        return target != null && (target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.SUM &&
                 target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.COUNT);
     }
 
@@ -469,13 +469,16 @@ public class DimensionGroupFilter {
         LightNode retNode = filterBuilder.build();
 
 
+        retNode = sum(retNode);
+
         if (hasTargetSort()) {
             retNode = sortNode(retNode);
         }
 
         retNode = clearNull(retNode, 0);
         NodeUtils.buildParentAndSiblingRelation(retNode);
-        retNode = sum(retNode);
+
+
         return retNode;
     }
 
@@ -550,7 +553,6 @@ public class DimensionGroupFilter {
         summarizing.setTargetGettingKeys(getNoCalculatorTargets());
         return summarizing.sum();
     }
-
 
 
     private IMergerNode copyValue(IMergerNode node) {

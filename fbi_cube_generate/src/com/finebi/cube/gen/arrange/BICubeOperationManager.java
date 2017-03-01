@@ -11,7 +11,7 @@ import com.finebi.cube.gen.oper.watcher.BICubeBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIDataSourceBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BITableSourceBuildWatcher;
-import com.finebi.cube.impl.operate.BIOperation;
+import com.finebi.cube.tools.operate.BIOperation;
 import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -95,12 +95,12 @@ public class BICubeOperationManager {
     }
 
 
-    public void generateDataSource(Set<List<Set<CubeTableSource>>> tableSourceSet) {
+    public void generateDataSource(Set<List<Set<CubeTableSource>>> tableSourceSet, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
         if (null != tableSourceSet && !tableSourceSet.isEmpty()) {
             registeredTransportTable.clear();
             registeredFieldIndex.clear();
             tableSourceWatchers.clear();
-            generateTransportBuilder(tableSourceSet);
+            generateTransportBuilder(tableSourceSet, tablesNeed2GenerateMap);
             generateFieldIndexBuilder(tableSourceSet);
             generateDataSourceFinishBuilder(tableSourceSet);
             subscribeDataSourceFinish();
@@ -131,11 +131,11 @@ public class BICubeOperationManager {
      * @param tableSourceSet list是指父类带有序列的集合。list内部的Set是指当前序列可能有多个
      *                       TableSource构成。最外层的Set是指多个List。
      */
-    private void generateTransportBuilder(Set<List<Set<CubeTableSource>>> tableSourceSet) {
+    private void generateTransportBuilder(Set<List<Set<CubeTableSource>>> tableSourceSet, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
         Iterator<List<Set<CubeTableSource>>> it = tableSourceSet.iterator();
         while (it.hasNext()) {
             List<Set<CubeTableSource>> tableSourceList = it.next();
-            generateSingleTransport(tableSourceList);
+            generateSingleTransport(tableSourceList, tablesNeed2GenerateMap);
         }
     }
 
@@ -151,7 +151,7 @@ public class BICubeOperationManager {
      *                       由5张表组成的层级关系。b,c设成前，a表必须生成好。
      *                       d表生成前，bc表需要生成好。
      */
-    private void generateSingleTransport(List<Set<CubeTableSource>> tableSourceSet) {
+    private void generateSingleTransport(List<Set<CubeTableSource>> tableSourceSet, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
         Iterator<Set<CubeTableSource>> it = tableSourceSet.iterator();
         Set<CubeTableSource> parentTables = null;
         while (it.hasNext()) {
@@ -175,7 +175,7 @@ public class BICubeOperationManager {
 //                            getDataTransportBuilder(cube, addConnection(tableSource), originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
-                            getDataTransportBuilder(cube, tableSource, originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
+                            getDataTransportBuilder(cube, integrityCube, tableSource, originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource), tablesNeed2GenerateMap));
 
                     operation.setOperationTopicTag(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource));
@@ -478,14 +478,14 @@ public class BICubeOperationManager {
         return new BITableSourceBuildWatcher(tableEntityService);
     }
 
-    protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource tableUpdateSetting) {
+    protected BISourceDataTransport getDataTransportBuilder(Cube cube, Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource tableUpdateSetting, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
 /*若没有更新设置,按全部更新处理 &&首次更新均为全局更新*/
         if (null == tableUpdateSetting || !(BITableKeyUtils.isTableExisted(tableSource, BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()))))) {
-            return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+            return new BISourceDataAllTransport(cube, integrityCube, tableSource, allSources, parent, version, tablesNeed2GenerateMap);
         }
         switch (tableUpdateSetting.getUpdateType()) {
             case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
-                return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+                return new BISourceDataAllTransport(cube, integrityCube, tableSource, allSources, parent, version, tablesNeed2GenerateMap);
             }
             case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
                 return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting);
@@ -494,7 +494,7 @@ public class BICubeOperationManager {
                 return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
             }
             default:
-                return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+                return new BISourceDataAllTransport(cube, integrityCube, tableSource, allSources, parent, version, tablesNeed2GenerateMap);
         }
 //        }
     }

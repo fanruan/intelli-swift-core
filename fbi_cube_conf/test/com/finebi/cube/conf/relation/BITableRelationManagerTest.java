@@ -7,6 +7,9 @@ import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.tool.BISystemTableRelationManagerTestTool;
+import com.finebi.cube.tool.BITableRelationTestTool;
+import com.finebi.cube.tool.BITableTestTool;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
 import com.fr.stable.bridge.StableFactory;
@@ -27,7 +30,7 @@ public class BITableRelationManagerTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        manager = new BISystemTableRelationManager4Test();
+        manager = new BISystemTableRelationManagerTestTool();
     }
 
     public void testRemoveRelationship() {

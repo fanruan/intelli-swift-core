@@ -17,7 +17,7 @@ import com.finebi.cube.gen.oper.BuildLogHelper;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTopic;
-import com.finebi.cube.impl.operate.BIOperationID;
+import com.finebi.cube.tools.operate.BIOperationID;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -250,13 +250,13 @@ public class BuildCubeTask implements CubeTask {
         manager.registerTableRelationPath(relationPathSet);
         logPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
-        operationManager.setVersionMap(cubeBuildStuff.getVersions());
-        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
-        logTableDepend(cubeBuildStuff.getDependTableResource());
         Map<String, CubeTableSource> tablesNeed2GenerateMap = new ConcurrentHashMap<String, CubeTableSource>();
         for (CubeTableSource tableSource : cubeBuildStuff.getSingleSourceLayers()) {
             tablesNeed2GenerateMap.put(tableSource.getSourceID(), tableSource);
         }
+        operationManager.setVersionMap(cubeBuildStuff.getVersions());
+        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource(),tablesNeed2GenerateMap);
+        logTableDepend(cubeBuildStuff.getDependTableResource());
         operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet(), tablesNeed2GenerateMap);
         logRelationDepend(cubeBuildStuff.getCubeGenerateRelationSet());
         operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet(), tablesNeed2GenerateMap);

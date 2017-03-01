@@ -3,19 +3,20 @@ package com.finebi.cube.impl.router;
 import com.finebi.cube.exception.*;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageFragment;
-import com.finebi.cube.impl.message.BIMessageTestTool;
+import com.finebi.cube.tools.BISubscribeTestTool;
+import com.finebi.cube.tools.BIMessageTestTool;
 import com.finebi.cube.impl.message.BIMessageTopic;
-import com.finebi.cube.impl.pubsub.BISubscribTestTool;
+import com.finebi.cube.tools.BISubscribTestTool;
 import com.finebi.cube.impl.pubsub.BISubscribe;
 import com.finebi.cube.impl.pubsub.BISubscribeID;
 import com.finebi.cube.impl.router.fragment.BIFragment;
 import com.finebi.cube.impl.router.fragment.BIFragmentID;
 import com.finebi.cube.impl.router.fragment.BIFragmentTag;
-import com.finebi.cube.impl.router.fragment.BIFragmentTagTestTool;
+import com.finebi.cube.tools.BIFragmentTagTestTool;
 import com.finebi.cube.impl.router.status.BIStatusTag;
 import com.finebi.cube.impl.router.topic.BITopicID;
 import com.finebi.cube.impl.router.topic.BITopicTag;
-import com.finebi.cube.impl.router.topic.BITopicTagTestTool;
+import com.finebi.cube.tools.BITopicTagTestTool;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.pubsub.IProcessor;
 import com.finebi.cube.pubsub.IPublish;
@@ -71,7 +72,7 @@ public class BIRouterTest extends TestCase {
             ITopicTag topicTag = BITopicTagTestTool.getTopicTagA();
             ITopic topic = BIFactoryHelper.getObject(ITopic.class, topicTag);
             router.registerTopic(topic);
-            BISubscribe4Test subscribe = new BISubscribe4Test(new BISubscribeID("sub_1"));
+            BISubscribeTestTool subscribe = new BISubscribeTestTool(new BISubscribeID("sub_1"));
             router.subscribe(subscribe, topicTag);
             router.deliverMessage(BIMessageTestTool.generateMessageTa());
             Thread.sleep(10);
@@ -158,8 +159,8 @@ public class BIRouterTest extends TestCase {
             router.registerTopic(topic);
             IFragment fragment = BIFactoryHelper.getObject(IFragment.class, BIFragmentTagTestTool.getFragmentTagA());
             router.registerFragment(BITopicTagTestTool.getTopicTagA(), fragment);
-            BISubscribe4Test subscribe_A = BISubscribTestTool.generateSubA();
-            BISubscribe4Test subscribe_B = BISubscribTestTool.generateSubB();
+            BISubscribeTestTool subscribe_A = BISubscribTestTool.generateSubA();
+            BISubscribeTestTool subscribe_B = BISubscribTestTool.generateSubB();
 
             router.subscribe(subscribe_A, BITopicTagTestTool.getTopicTagA());
             router.subscribe(subscribe_B, BITopicTagTestTool.getTopicTagA(), BIFragmentTagTestTool.getFragmentTagA());
@@ -213,9 +214,9 @@ public class BIRouterTest extends TestCase {
             router.registerTopic(topic);
             IFragment fragment = BIFactoryHelper.getObject(IFragment.class, BIFragmentTagTestTool.getFragmentTagA());
             router.registerFragment(BITopicTagTestTool.getTopicTagA(), fragment);
-            BISubscribe4Test subscribe_Topic = BISubscribTestTool.generateSubA();
-            BISubscribe4Test subscribe_Fragment = BISubscribTestTool.generateSubB();
-            BISubscribe4Test subscribe_Status = BISubscribTestTool.generateSubC();
+            BISubscribeTestTool subscribe_Topic = BISubscribTestTool.generateSubA();
+            BISubscribeTestTool subscribe_Fragment = BISubscribTestTool.generateSubB();
+            BISubscribeTestTool subscribe_Status = BISubscribTestTool.generateSubC();
 
             router.subscribe(subscribe_Topic, BITopicTagTestTool.getTopicTagA());
             router.subscribe(subscribe_Fragment, BITopicTagTestTool.getTopicTagA(), BIFragmentTagTestTool.getFragmentTagA());

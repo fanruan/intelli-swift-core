@@ -3,7 +3,7 @@ package com.finebi.cube.structure.detail;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
-import com.finebi.cube.location.BICubeConfigurationTest;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -30,10 +30,11 @@ public class BICubeByteDetailDataTest extends TestCase {
     private ICubeConfiguration cubeConfiguration;
     private ICubeResourceLocation location;
 
+    @Override
+    protected void setUp() throws Exception {
 
-    public BICubeByteDetailDataTest() {
         try {
-            cubeConfiguration = new BICubeConfigurationTest();
+            cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
             location.setBaseLocation(new URI(BIUrlCutTestTool.joinUrl(BIUrlCutTestTool.cutUrl("testFolder",location.getAbsolutePath()),"testFolder","//byte")));
@@ -43,10 +44,7 @@ public class BICubeByteDetailDataTest extends TestCase {
         } catch (Exception e1) {
             assertFalse(true);
         }
-    }
 
-    @Override
-    protected void setUp() throws Exception {
         super.setUp();
         ICubeResourceLocation location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
         File file = new File(location.getAbsolutePath());
@@ -71,6 +69,9 @@ public class BICubeByteDetailDataTest extends TestCase {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
+        } finally {
+            detailData.forceReleaseReader();
+            detailData.forceReleaseWriter();
         }
     }
 
@@ -91,6 +92,9 @@ public class BICubeByteDetailDataTest extends TestCase {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
+        } finally {
+            detailData.forceReleaseReader();
+            detailData.forceReleaseWriter();
         }
     }
 

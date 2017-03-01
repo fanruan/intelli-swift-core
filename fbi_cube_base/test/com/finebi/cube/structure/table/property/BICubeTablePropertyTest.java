@@ -4,7 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.exception.BIResourceInvalidException;
-import com.finebi.cube.location.BICubeConfigurationTest;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -37,20 +37,17 @@ public class BICubeTablePropertyTest extends TestCase {
     private ICubeConfiguration cubeConfiguration;
     private ICubeResourceLocation location;
 
+    @Override
+    protected void setUp() throws Exception {
 
-    public BICubeTablePropertyTest() {
         try {
-            cubeConfiguration = new BICubeConfigurationTest();
+            cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
             property = new BICubeTableProperty(location, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         } catch (BICubeResourceAbsentException e) {
             assertFalse(true);
         }
-    }
-
-    @Override
-    protected void setUp() throws Exception {
         super.setUp();
         ICubeResourceLocation location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
         File file = new File(location.getAbsolutePath());

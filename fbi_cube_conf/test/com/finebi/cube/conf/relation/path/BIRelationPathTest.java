@@ -2,8 +2,8 @@ package com.finebi.cube.conf.relation.path;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.relation.BITableRelationAnalysisService;
-import com.finebi.cube.conf.relation.BITableRelationTestTool;
-import com.finebi.cube.conf.relation.BITableTestTool;
+import com.finebi.cube.tool.BITableRelationTestTool;
+import com.finebi.cube.tool.BITableTestTool;
 import com.finebi.cube.relation.BITablePair;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;

@@ -3,7 +3,7 @@ package com.finebi.cube.structure.group;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
-import com.finebi.cube.location.BICubeConfigurationTest;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -32,9 +32,11 @@ public class BICubeIntegerGroupTest extends TestCase {
     private ICubeResourceLocation location;
 
 
-    public BICubeIntegerGroupTest() {
+    @Override
+    protected void setUp() throws Exception {
+
         try {
-            cubeConfiguration = new BICubeConfigurationTest();
+            cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
             location.setBaseLocation(new URI(BIUrlCutTestTool.joinUrl(BIUrlCutTestTool.cutUrl("testFolder",location.getAbsolutePath()),"testFolder","//integer")));            groupData = new BICubeIntegerGroupData(BIFactoryHelper.getObject(ICubeResourceDiscovery.class),location);
@@ -43,10 +45,7 @@ public class BICubeIntegerGroupTest extends TestCase {
         } catch (URISyntaxException ee) {
             assertFalse(true);
         }
-    }
 
-    @Override
-    protected void setUp() throws Exception {
         super.setUp();
         ICubeResourceLocation location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
         File file = new File(location.getAbsolutePath());
