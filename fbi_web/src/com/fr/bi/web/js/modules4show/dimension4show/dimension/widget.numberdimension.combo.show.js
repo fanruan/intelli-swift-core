@@ -44,7 +44,7 @@ BI.DimensionNumberComboShow = BI.inherit(BI.AbstractDimensionComboShow, {
     },
 
     _rebuildItems :function(){
-        var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
+        var items = BI.DimensionNumberComboShow.superclass._rebuildItems.apply(this, arguments), o = this.options;
         var group = this._assertGroup(BI.Utils.getDimensionGroupByID(o.dId));
         var customSort = items[0][this.constants.customSortPos];
         group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
