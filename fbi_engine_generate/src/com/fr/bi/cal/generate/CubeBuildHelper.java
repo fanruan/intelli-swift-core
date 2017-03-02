@@ -39,7 +39,7 @@ public class CubeBuildHelper {
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
     private LinkedBlockingQueue<SingleTableTask> taskQueue = new LinkedBlockingQueue(100);
-    private boolean isTaskGenerating = false;
+    private boolean isCubeBuilding = false;
 
     private CubeBuildHelper() {
         Thread taskAddThread = new Thread(
@@ -49,7 +49,7 @@ public class CubeBuildHelper {
                         while (true) {
                             try {
                                 SingleTableTask taskInfo = taskQueue.take();
-                                isTaskGenerating = true;
+                                isCubeBuilding = true;
                                 long userId = taskInfo.getUserId();
                                 String baseTableSourceId = taskInfo.getBaseTableSourceId();
                                 int updateType = taskInfo.getUpdateType();
@@ -58,7 +58,7 @@ public class CubeBuildHelper {
                                 for (int i = 0; i < 100; i++) {
                                     if (!cubeManager.hasTask()) {
                                         CubeBuildSingleTable(userId, baseTableSourceId, updateType);
-                                        isTaskGenerating = false;
+                                        isCubeBuilding = false;
                                         break;
                                     }
                                     long timeDelay = i * 5000;
@@ -74,10 +74,10 @@ public class CubeBuildHelper {
                                 if (times == 100) {
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + baseTableSourceId);
-                                    isTaskGenerating = false;
+                                    isCubeBuilding = false;
                                 }
                             } catch (Exception e) {
-                                isTaskGenerating = false;
+                                isCubeBuilding = false;
                                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
                             }
                         }
@@ -121,7 +121,7 @@ public class CubeBuildHelper {
     }
 
     public boolean hasWaitingTables() {
-        return taskQueue.size() > 0 || isTaskGenerating;
+        return taskQueue.size() > 0 || isCubeBuilding;
     }
 
     public void CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
