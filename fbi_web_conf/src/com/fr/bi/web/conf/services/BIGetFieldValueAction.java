@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.api.BICubeManager;
 import com.fr.bi.conf.data.source.TableSourceFactory;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -9,7 +10,6 @@ import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
-import com.fr.general.GeneralUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -25,7 +25,8 @@ import java.util.*;
 public class BIGetFieldValueAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String fieldName = WebUtils.getHTTPRequestParameter(req, "field");
+        String fieldName = WebUtils.getHTTPRequestParameter(req, "fieldName");
+        String fieldType = WebUtils.getHTTPRequestParameter(req, "fieldType");
         if(StringUtils.isEmpty(fieldName)){
             WebUtils.printAsJSON(res, new JSONObject());
             return;
@@ -33,10 +34,15 @@ public class BIGetFieldValueAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(WebUtils.getHTTPRequestParameter(req, "table")), userId);
         Set initialSet = source.getFieldDistinctNewestValues(fieldName, BICubeManager.getInstance().fetchCubeLoader(userId), userId);
-        Set set = new HashSet();
-        for (Object s: initialSet) {
-            if(s!=null){
-                set.add(GeneralUtils.objectToString(s));
+        TreeSet set = null;
+        if(Integer.parseInt(fieldType) == DBConstant.COLUMN.NUMBER){
+            set = new TreeSet(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        }else{
+            set = new TreeSet(BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC);
+        }
+        for (Object obj: initialSet) {
+            if(obj != null){
+                set.add(obj);
             }
         }
         String filterConfigString = WebUtils.getHTTPRequestParameter(req, "filterConfig");
@@ -104,10 +110,10 @@ public class BIGetFieldValueAction extends AbstractBIConfigureAction {
         return result;
     }
 
-    private Set getSearchResult(Set source, String keyword, List<String> selectedValue){
+    private TreeSet getSearchResult(TreeSet source, String keyword, List<String> selectedValue){
         if(keyword != null && StringUtils.isNotEmpty(keyword)){
-            Set<String> find = new HashSet<String>();
-            Set<String> match = new HashSet<String>();
+            TreeSet<String> find = new TreeSet<String>();
+            TreeSet<String> match = new TreeSet<String>();
 
             keyword = keyword.toUpperCase();
             Iterator it = source.iterator();
