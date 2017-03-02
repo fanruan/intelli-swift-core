@@ -51,7 +51,6 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
     private void createGroupValueWithParentValues(final List<String> dataList, List<List<String>> parentValues, GroupValueIndex filterGvi, int floors, int times) {
         if (floors == parentValues.size()) {
             BIDimension[] dimensions = Arrays.copyOfRange(widget.getViewDimensions(), searchFloor, widget.getViewDimensions().length);
-            //BIDimension[] dimensions = widget.getViewDimensions();
             BIDimension dimension = dimensions[floors];
             ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable().getTableSource());
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
@@ -90,30 +89,35 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
         }
         if (floors < parentValues.size()) {
             if (!containsAllSelected(parentValues.get(floors))) {
-                List<GroupValueIndex> gviList =new ArrayList<GroupValueIndex>();
-                GroupValueIndex result;
-                for(String str : parentValues.get(floors)) {
-                    String[] groupValue = new String[1];
-                    groupValue[0] = str;
-                    BIDimension dimension = widget.getViewDimensions()[floors + searchFloor];
-                    ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
-                    final ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
-                    GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
-                    gviList.add(gvi);
-                }
-                if (gviList.size() <= 0) {
-                    result = filterGvi;
-                } else {
-                    result = gviList.get(0).AND(filterGvi);
-                    for(int i = 1; i< gviList.size();i++) {
-                        result = gviList.get(i).AND(filterGvi).OR(result);
-                    }
-                }
+                GroupValueIndex result = generateGVI(parentValues, floors, filterGvi);
                 createGroupValueWithParentValues(dataList, parentValues, result, floors + 1, times);
             } else {
                 createGroupValueWithParentValues(dataList, parentValues, filterGvi, floors + 1, times);
             }
         }
+    }
+
+    private GroupValueIndex generateGVI(List<List<String>> parentValues, int floors, GroupValueIndex filterGvi) {
+        List<GroupValueIndex> gviList =new ArrayList<GroupValueIndex>();
+        GroupValueIndex result;
+        for(String str : parentValues.get(floors)) {
+            String[] groupValue = new String[1];
+            groupValue[0] = str;
+            BIDimension dimension = widget.getViewDimensions()[floors + searchFloor];
+            ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
+            final ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
+            GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
+            gviList.add(gvi);
+        }
+        if (gviList.size() <= 0) {
+            result = filterGvi;
+        } else {
+            result = gviList.get(0).AND(filterGvi);
+            for(int i = 1; i< gviList.size();i++) {
+                result = gviList.get(i).AND(filterGvi).OR(result);
+            }
+        }
+        return result;
     }
 
     private boolean containsAllSelected(List<String> values) {
