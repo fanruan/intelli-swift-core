@@ -3,10 +3,8 @@ package com.fr.bi;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
-import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.TimerRunner;
 import com.fr.bi.cal.report.BIActor;
@@ -79,16 +77,10 @@ public class BIPlate extends AbstractFSPlate {
         initPlugin();
         registerEntrySomething();
         initOOMKillerForLinux();
-        BICubeManagerProvider markedObject = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class);
         loadMemoryData();
         /*载入定时任务*/
         TimerRunner timerRunner = new TimerRunner(UserControl.getInstance().getSuperManagerID());
         timerRunner.reGenerateTimeTasks();
-        /*若发现cube需要更新的话,更新cube*/
-        if (CubeUpdateUtils.cubeStatusCheck(UserControl.getInstance().getSuperManagerID())) {
-//            if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
-            markedObject.generateCubes();
-        }
         BIConfigureManagerCenter.getLogManager().logEnd(UserControl.getInstance().getSuperManagerID());
         addBITableColumn4NewConnection();
         addSharedTableColumn4NewConnection();

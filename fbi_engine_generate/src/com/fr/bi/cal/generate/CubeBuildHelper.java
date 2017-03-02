@@ -47,7 +47,10 @@ public class CubeBuildHelper {
                     public void run() {
                         while (true) {
                             try {
-                                SingleTableTask taskInfo = taskQueue.take();
+                                SingleTableTask taskInfo = taskQueue.peek();
+                                if (null==taskInfo){
+                                    continue;
+                                }
                                 long userId = taskInfo.getUserId();
                                 String baseTableSourceId = taskInfo.getBaseTableSourceId();
                                 int updateType = taskInfo.getUpdateType();
@@ -56,6 +59,7 @@ public class CubeBuildHelper {
                                 for (int i = 0; i < 100; i++) {
                                     if (!cubeManager.hasTask()) {
                                         CubeBuildSingleTable(userId, baseTableSourceId, updateType);
+                                        taskQueue.take();
                                         break;
                                     }
                                     long timeDelay = i * 5000;
@@ -71,6 +75,7 @@ public class CubeBuildHelper {
                                 if (times == 100) {
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + baseTableSourceId);
+                                    taskQueue.take();
                                 }
                             } catch (Exception e) {
                                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
@@ -87,7 +92,7 @@ public class CubeBuildHelper {
     }
 
 
-    private class SingleTableTask {
+    public class SingleTableTask {
         private long userId;
         private String baseTableSourceId;
         private int updateType;
@@ -102,7 +107,7 @@ public class CubeBuildHelper {
             return userId;
         }
 
-        private String getBaseTableSourceId() {
+         String getBaseTableSourceId() {
             return baseTableSourceId;
         }
 
@@ -115,7 +120,9 @@ public class CubeBuildHelper {
         taskQueue.put(new SingleTableTask(userId, baseTableSourceId, updateType));
     }
 
-
+    public boolean hasWaitingTables() {
+        return taskQueue.size() > 0;
+    }
 
     public void CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);

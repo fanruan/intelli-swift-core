@@ -3,6 +3,7 @@ package com.fr.bi.web.base;
 import com.fr.base.FRContext;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.FRException;
 import com.fr.stable.fun.ErrorHandler;
 import com.fr.web.utils.WebUtils;
 
@@ -27,6 +28,11 @@ public class JSONErrorHandler implements ErrorHandler {
         } catch (Exception e) {
             FRContext.getLogger().errorWithServerLevel(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void error(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FRException e) {
+
     }
 
     @Override

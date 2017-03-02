@@ -4,13 +4,11 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
-import com.fr.bi.base.provider.AllUserTravel;
 import com.fr.bi.cal.generate.CubeBuildHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
-import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
@@ -70,11 +68,6 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public boolean checkCubeStatus(long userId) {
         return getCubeManager(userId).checkCubeStatus();
-    }
-
-    @Override
-    public Status getStatus(long userId) {
-        return getCubeManager(userId).getStatus();
     }
 
     @Override
@@ -163,19 +156,6 @@ public class BICubeManager implements BICubeManagerProvider {
         getCubeManager(userId).resetCubeGenerationHour();
     }
 
-    /**
-     * 生成cube
-     */
-    @Override
-    public void generateCubes() {
-        BIUserUtils.allUserTravelAction(new AllUserTravel() {
-
-            @Override
-            public void start(long userId) {
-                getCubeManager(userId).generateCubes();
-            }
-        });
-    }
 
     @Override
     public void envChanged() {
@@ -188,11 +168,6 @@ public class BICubeManager implements BICubeManagerProvider {
             }
             userMap.clear();
         }
-    }
-
-    @Override
-    public boolean isReplacing(long userId) {
-        return getCubeManager(userId).isReplacing();
     }
 
     @Override
@@ -217,13 +192,4 @@ public class BICubeManager implements BICubeManagerProvider {
 
     }
 
-
-    @Override
-    public boolean hasBuildingTask() {
-        boolean result = false;
-        for (long userId : userMap.keySet()) {
-            result = (result || getCubeManager(userId).isTaskBuilding());
-        }
-        return result;
-    }
 }
