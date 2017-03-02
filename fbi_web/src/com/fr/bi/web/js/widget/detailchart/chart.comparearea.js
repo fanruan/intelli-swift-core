@@ -85,12 +85,12 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                         enableTick: self.config.enable_tick,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.constants.right_y_axis_number_level, self.config.right_num_separators)
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)
                     });
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
-            var res = _calculateValueNiceDomain(0, self.maxes[axis.axisIndex]);
+            var res = _calculateValueNiceDomain(0, self.maxes[idx]);
             axis.max = res[1].mul(2);
             axis.min = res[0].mul(2);
             axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
