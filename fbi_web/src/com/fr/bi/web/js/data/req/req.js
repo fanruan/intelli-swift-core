@@ -303,9 +303,6 @@ Data.Req = BIReq = {
     reqGenerateCubeByTable: function (tableInfo, callback, complete) {
         BI.requestAsync("fr_bi_configure", "set_cube_generate", {
                 baseTableSourceId: tableInfo.baseTable.md5,
-                isETL: tableInfo.isETL,
-                // tableId: BI.isNull(tableInfo.ETLTable) ? "" : tableInfo.ETLTable.id,
-                tableId: tableInfo.isETL ? tableInfo.ETLTable.id : tableInfo.baseTable.id,
                 updateType: tableInfo.updateType
             },
             function (res) {

@@ -233,7 +233,19 @@ BI.ETL = BI.inherit(BI.Widget, {
             title: BI.i18nText("BI-Save"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT,
             handler: function () {
-                self.fireEvent(BI.ETL.EVENT_SAVE, self.model.getValue());
+                //如果是EXCEL,保存时需要保存业务包并生成（更新）的cube
+                if (self.model.tableData.connection_name == BICst.CONNECTION.EXCEL_CONNECTION) {
+                    var info = {};
+                    info.tableInfo = {
+                        baseTable: {
+                            md5: self.model.tableData.md5
+                        },
+                        updateType: BICst.SINGLE_TABLE_UPDATE_TYPE.ALL
+                    };
+                    self.fireEvent(BI.ETL.EVENT_CUBE_SAVE, info, self.model.getValue());
+                } else {
+                    self.fireEvent(BI.ETL.EVENT_SAVE, self.model.getValue());
+                }
             }
         });
         var removeButton = BI.createWidget({
