@@ -37,38 +37,6 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         }
     },
 
-    _formatItems: function (items) {
-        var result = [], self = this, o = this.options;
-        var yAxisIndex = 0;
-        BI.each(items, function (i, belongAxisItems) {
-            var combineItems = BI.ChartCombineFormatItemFactory.combineItems(o.types[i], belongAxisItems);
-            BI.each(combineItems, function (j, axisItems) {
-                if (BI.isArray(axisItems)) {
-                    result = BI.concat(result, axisItems);
-                } else {
-                    result.push(BI.extend(axisItems, {"yAxis": yAxisIndex}));
-                }
-            });
-            if (BI.isNotEmptyArray(combineItems)) {
-                yAxisIndex++;
-            }
-        });
-        var config = BI.ChartCombineFormatItemFactory.combineConfig();
-        config.plotOptions.click = function () {
-            var data = BI.clone(this.options);
-            data.toolTipRect = this.getTooltipRect();
-            var items = o.popupItemsGetter(data);
-            if(items && items.length === 1) {
-                self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, BI.extend({}, items[0], data));
-            }
-            if (items && items.length > 1) {
-                self._createPopup(items, data.toolTipRect, data);
-            }
-            self.fireEvent(BI.CombineChart.EVENT_CHANGE, data);
-        };
-        return [result, config];
-    },
-
     _createPopup: function (items, rect, opt) {
         var self = this;
         if(this.combo) {
@@ -131,7 +99,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         this.options.types = types || [[]];
     },
 
-    populate: function (items, types) {
+    populate: function (options) {
         var o = this.options;
         if (BI.isNotNull(types)) {
             this.setTypes(types);
@@ -143,6 +111,20 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         });
         var result = o.formatConfig(opts[1], opts[0]);
         this.CombineChart.populate(result[0], result[1]);
+
+
+        config.plotOptions.click = function () {
+            var data = BI.clone(this.options);
+            data.toolTipRect = this.getTooltipRect();
+            var items = o.popupItemsGetter(data);
+            if(items && items.length === 1) {
+                self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, BI.extend({}, items[0], data));
+            }
+            if (items && items.length > 1) {
+                self._createPopup(items, data.toolTipRect, data);
+            }
+            self.fireEvent(BI.CombineChart.EVENT_CHANGE, data);
+        };
     },
 
     resize: function () {
