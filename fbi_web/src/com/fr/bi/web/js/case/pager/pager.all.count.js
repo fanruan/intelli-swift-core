@@ -20,7 +20,7 @@ BI.AllCountPager = BI.inherit(BI.Widget, {
             type: "bi.small_text_editor",
             cls: "pager-editor",
             validationChecker: function (v) {
-                return BI.isPositiveInteger(v);
+                return (self.rowCount.getValue() === 0 && v === "0") || BI.isPositiveInteger(v);
             },
             hgap: 4,
             vgap: 0,
@@ -121,6 +121,7 @@ BI.AllCountPager = BI.inherit(BI.Widget, {
         this.allPages.setText("/" + v);
         this.allPages.setTitle(v);
         this.pager.setAllPages(v);
+        this.editor.setEnable(v >= 1);
     },
 
     setValue: function (v) {

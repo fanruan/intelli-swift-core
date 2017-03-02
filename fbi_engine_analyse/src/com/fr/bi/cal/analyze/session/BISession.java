@@ -20,6 +20,7 @@ import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BIReportNodeLock;
@@ -235,13 +236,13 @@ public class BISession extends BIAbstractSession {
         if (widget != null) {
             widget = (BIWidget) widget.clone();
             switch (widget.getType()) {
-                case BIReportConstant.WIDGET.TABLE:
-                case BIReportConstant.WIDGET.CROSS_TABLE:
-                case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                case TABLE:
+                case CROSS_TABLE:
+                case COMPLEX_TABLE:
                     ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
                     ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
                     break;
-                case BIReportConstant.WIDGET.DETAIL:
+                case DETAIL:
                     ((BIDetailWidget) widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
                     break;
             }
