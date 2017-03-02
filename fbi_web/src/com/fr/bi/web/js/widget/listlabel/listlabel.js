@@ -49,8 +49,8 @@ BI.ListLabel = BI.inherit(BI.Widget, {
                 height: o.height
             }]
         });
-        this.container.on(BI.ButtonGroup.EVENT_CHANGE, function (value, obj) {
-            self.fireEvent(BI.ListLabel.EVENT_CHANGE, value, obj.options.id);
+        this.container.on(BI.ButtonGroup.EVENT_CHANGE, function (value) {
+            self.fireEvent(BI.ListLabel.EVENT_CHANGE, value);
         });
         this.minTip = BI.createWidget({
             type: "bi.label",
@@ -128,23 +128,6 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         return this.container.getAllButtons();
     },
 
-    getSelectedIds: function () {
-        var selectedButtons = this.getSelectedButtons();
-        var ids = [];
-        if(selectedButtons.length === 1 && selectedButtons[0].getValue() === BICst.LIST_LABEL_TYPE.ALL) {
-            BI.each(this.getAllButtons(), function (idx, button) {
-                var id = button.options.id;
-                id && (ids = BI.union(ids, BI.isArray(id) ? id : [id]));
-            })
-        } else {
-            BI.each(selectedButtons, function (idx, button) {
-                var id = button.options.id;
-                id && (ids = BI.union(ids, BI.isArray(id) ? id : [id]));
-            });
-        }
-        return ids;
-    },
-
     setTitle: function (title) {
         this.title.setText(title + BI.i18nText("BI-Colon"));
         this.title.setTitle(title);
@@ -159,13 +142,13 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         }));
     },
 
-    setValue: function (v) {
-        this.container.setValue(v);
-    },
-
     populate: function (v) {
         this.setTitle(v.title || BI.i18nText("BI-List_Label_Con"));
         this.setItems(v.items || []);
+    },
+
+    setValue: function (v) {
+        this.container.setValue(v);
     },
 
     getValue: function () {

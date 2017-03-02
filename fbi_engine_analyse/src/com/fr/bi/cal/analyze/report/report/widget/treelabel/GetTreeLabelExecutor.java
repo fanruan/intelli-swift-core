@@ -1,6 +1,4 @@
 package com.fr.bi.cal.analyze.report.report.widget.treelabel;
-
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeLabelWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -13,13 +11,9 @@ import com.fr.stable.ArrayUtils;
 
 import java.util.*;
 
-/**
- * Created by fay on 2016/10/17.
- */
 public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
-    private String parentValues;
     private String selectedValues;
-    private int floors = 0;
+    private int floors = -1;
 
     public GetTreeLabelExecutor(TreeLabelWidget widget, Paging paging, BISession session) {
         super(widget, paging, session);
@@ -30,124 +24,104 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         if (jo.has("floors")) {
             floors = jo.getInt("floors");
         }
-        if (jo.has("parentValues")) {
-            parentValues = jo.getString("parentValues");
-        }
         if (jo.has("selectedValues")) {
             selectedValues = jo.getString("selectedValues");
         }
     }
 
     public JSONObject getResultJSON() throws JSONException {
-        String id;
-        String[] values;
-        ArrayList<JSONArray> vl = new ArrayList<JSONArray>();
-        JSONArray selected = new JSONArray(selectedValues);
-        if (parentValues != null) {
-            JSONArray pvalues = new JSONArray(parentValues);
-            for (int i = 0; i < pvalues.length(); i++) {
-                id = pvalues.getJSONObject(i).getString("id");
-                values = BIJsonUtils.jsonArray2StringArray(new JSONArray(pvalues.getJSONObject(i).getString("value")));
-                getAllData(vl, values, id, 0, selected);
+        ArrayList<LinkedHashSet<String>> staticVl = new ArrayList<LinkedHashSet<String>>();
+        ArrayList<LinkedHashSet<String>> otherVl = new ArrayList<LinkedHashSet<String>>();
+        ArrayList<LinkedHashSet<String>> vl = new ArrayList<LinkedHashSet<String>>();
+        List<List<String>> staticSelectedValues = new ArrayList<List<String>>();
+        List<List<String>> otherSelectedValues = new ArrayList<List<String>>();
+        List<List<String>> allSelectedValues = new ArrayList<List<String>>();
+        JSONArray selectedVals = new JSONArray(selectedValues);
+        if (selectedVals.length() == 0) {
+            for (int i =0;i< widget.getViewDimensions().length; i++) {
+                selectedVals.put(new JSONArray("['_*_']"));
             }
         }
+        for (int i = 0; i < selectedVals.length(); i++) {
+            ArrayList<String> listData = new ArrayList<String>();
+            JSONArray jArray = selectedVals.getJSONArray(i);
+            for (int idx = 0; idx < jArray.length(); idx++) {
+                listData.add(jArray.getString(idx));
+            }
+            if (floors >= 0 && floors >= i) {
+                staticSelectedValues.add(listData);
+            } else {
+                otherSelectedValues.add(listData);
+            }
+            allSelectedValues.add(listData);
+        }
+//        List<String> temp = new ArrayList<String>();
+//        recursive(staticSelectedValues, staticLinks, 0, temp);
+//        temp = new ArrayList<String>();
+//        recursive(otherSelectedValues, otherLinks, 0, temp);
+
+//        for(List<String> filters : staticSelectedValues) {
+//            getAllData(staticVl, filters.toArray(new String[filters.size()]), otherSelectedValues, 0);
+//        }
+        getStaticData(otherVl, allSelectedValues,0);
 
         JSONObject jo = new JSONObject();
 
+        vl = otherVl;
+        vl.addAll(staticVl);
         jo.put("items", vl);
+        jo.put("values", selectedVals);
         return jo;
     }
 
-    private void getAllData(ArrayList<JSONArray> result, String[] values, String id, final int floor, final JSONArray selected)
-            throws JSONException {
-        if (floor < result.size() &&
-                result.get(floor).length() >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
+//    private void getAllData(ArrayList<LinkedHashSet<String>> result, List<List<String>> values, List<List<String>> otherValues, int floor)
+//            throws JSONException {
+//        if (values.size() >= widget.getViewDimensions().length - 1) {
+//            return;
+//        }
+//        if (result.size() > floor + 1 &&
+//                result.get(floor + 1).size() > BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM &&
+//                result.get(floor).size() > BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM ) {
+//            return;
+//        }
+//
+//        List<String> vl = createData(values, 0, 1);
+//
+//        if (result.size() > floor) {
+//            concatSetAndList(result.get(floor), vl);
+//        } else {
+//            result.add(new LinkedHashSet<String>());
+//            concatSetAndList(result.get(floor), vl);
+//        }
+//        String[] next = otherValues.get(floor).toArray(new String[otherValues.get(floor).size()]);
+//        String[] filterValues = ArrayUtils.addAll(values, next);
+//        getAllData(result, filterValues, otherValues, floor + 1);
+//    }
+
+    private void getStaticData(ArrayList<LinkedHashSet<String>> result, List<List<String>> values, int floor)
+            throws JSONException{
+        if(floor >= values.size()) {
             return;
         }
-        List<String> vl = createData(values, 0, 1);
-
-        if (selected.length() > floor) {
-            final JSONArray selectedValues = selected.getJSONArray(floor);
-            Collections.sort(vl, new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    int pre = 0, next = 0;
-                    try {
-                        pre = containString(selectedValues, o1);
-                        next = containString(selectedValues, o2);
-                        return next - pre;
-                    } catch (JSONException e) {
-                        return 0;
-                    }
-                }
-            });
+        List<List<String>> filter = new ArrayList<List<String>>();
+        for (int i =0;i < floor; i++) {
+            filter.add(values.get(i));
         }
 
-        if (!vl.isEmpty()) {
-            if (result.size() > floor) {
-                concatArray(result.get(floor), createJSONArrayForTree(vl, id));
-            } else {
-                result.add(new JSONArray());
-                concatArray(result.get(floor), createJSONArrayForTree(vl, id));
-            }
-            for (int i = 0; i < vl.size(); i++) {
-                String[] val = {vl.get(i)};
-                String temp;
-                if (id == null) {
-                    temp = "_" + (i + 1);
-                } else {
-                    temp = id + "_" + (i + 1);
-                }
-                if (values.length < widget.getViewDimensions().length - 1 - floors) {
-                    getAllData(result, ArrayUtils.addAll(values, val), temp, floor + 1, selected);
-                } else {
-                    break;
-                }
-            }
+        List<String> vl = createData( filter, 0, 1);
+        if (result.size() > floor) {
+            concatSetAndList(result.get(floor), vl);
+        } else {
+            result.add(new LinkedHashSet<String>());
+            concatSetAndList(result.get(floor), vl);
         }
+        getStaticData(result, values, floor + 1);
     }
 
-    private void concatArray(JSONArray arr1, JSONArray arr2)
-            throws JSONException {
-        for (int i = 0; i < arr2.length(); i++) {
-            arr1.put(arr2.get(i));
+    private LinkedHashSet<String> concatSetAndList(LinkedHashSet<String> set, List<String> list) {
+        for (String str : list) {
+            set.add(str);
         }
-    }
-
-    private int containString(JSONArray array, String str)
-            throws JSONException {
-        int flag = -1;
-        for (int i = 0; i < array.length(); i++) {
-            if (str.equals(array.getString(i))) {
-                flag = 1;
-            }
-        }
-        return flag;
-    }
-
-    private JSONArray createJSONArrayForTree(List<String> list, String id) {
-        JSONArray ja = new JSONArray();
-        int len = list.size();
-        if (len != 0) {
-            for (int i = 0; i < len; i++) {
-                JSONObject nodeJa = new JSONObject();
-                try {
-                    if (id == null) {
-                        nodeJa.put("id", "_" + (i + 1));
-                    } else {
-                        nodeJa.put("pId", id);
-                        nodeJa.put("id", id + "_" + (i + 1));
-                    }
-                    nodeJa.put("text", list.get(i));
-                    nodeJa.put("title", list.get(i));
-                    nodeJa.put("value", list.get(i));
-                } catch (JSONException e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-                }
-
-                ja.put(nodeJa);
-            }
-        }
-        return ja;
+        return set;
     }
 }
