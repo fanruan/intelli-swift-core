@@ -116,16 +116,20 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         this.title.setHeight(titles.length * this._constant.LIST_LABEL_HEIGHT);
     },
 
-    populate: function(v) {
-        v.titles && this._setTitles(v.titles);
-        v.items && this._setItems(v.items);
-        v.values && this.setValue(v.values);
-    },
-
-    setValue: function (values) {
+    _setValue: function (values) {
         BI.each(this.items, function (idx, item) {
             values[idx] && item.setValue(values[idx]);
         })
+    },
+
+    populate: function(v) {
+        v.titles && this._setTitles(v.titles);
+        v.items && this._setItems(v.items);
+        v.values && this._setValue(v.values);
+    },
+
+    getMaxFloor: function () {
+        return this.items.length || 0;
     },
 
     getValue: function () {

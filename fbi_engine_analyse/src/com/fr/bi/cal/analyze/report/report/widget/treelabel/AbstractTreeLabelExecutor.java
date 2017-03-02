@@ -117,13 +117,6 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
     }
 
     private boolean containsAllSelected(List<String> values) {
-        boolean hasAllSelected = false;
-        for (String str : values) {
-            if("_*_".equals(str)) {
-                hasAllSelected = true;
-                break;
-            }
-        }
-        return hasAllSelected;
+        return values.contains("_*_");
     }
 }

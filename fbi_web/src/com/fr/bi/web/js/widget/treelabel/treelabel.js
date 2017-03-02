@@ -23,7 +23,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         });
         this.view.on(BI.TreeLabelView.EVENT_CHANGE, function (floors)  {
             var op = {};
-            if (floors !== self.items.length - 1) {
+            if (floors !== self.view.getMaxFloor() - 1) {
                 op.floors = floors;
                 op.selectedValues = self.getValue();
                 self._itemsCreator(op);

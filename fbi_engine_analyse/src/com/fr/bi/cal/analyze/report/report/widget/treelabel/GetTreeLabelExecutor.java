@@ -30,11 +30,7 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
     }
 
     public JSONObject getResultJSON() throws JSONException {
-        ArrayList<LinkedHashSet<String>> staticVl = new ArrayList<LinkedHashSet<String>>();
-        ArrayList<LinkedHashSet<String>> otherVl = new ArrayList<LinkedHashSet<String>>();
         ArrayList<LinkedHashSet<String>> vl = new ArrayList<LinkedHashSet<String>>();
-        List<List<String>> staticSelectedValues = new ArrayList<List<String>>();
-        List<List<String>> otherSelectedValues = new ArrayList<List<String>>();
         List<List<String>> allSelectedValues = new ArrayList<List<String>>();
         JSONArray selectedVals = new JSONArray(selectedValues);
         if (selectedVals.length() == 0) {
@@ -48,57 +44,19 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
             for (int idx = 0; idx < jArray.length(); idx++) {
                 listData.add(jArray.getString(idx));
             }
-            if (floors >= 0 && floors >= i) {
-                staticSelectedValues.add(listData);
-            } else {
-                otherSelectedValues.add(listData);
-            }
             allSelectedValues.add(listData);
         }
-//        List<String> temp = new ArrayList<String>();
-//        recursive(staticSelectedValues, staticLinks, 0, temp);
-//        temp = new ArrayList<String>();
-//        recursive(otherSelectedValues, otherLinks, 0, temp);
 
-//        for(List<String> filters : staticSelectedValues) {
-//            getAllData(staticVl, filters.toArray(new String[filters.size()]), otherSelectedValues, 0);
-//        }
-        getStaticData(otherVl, allSelectedValues,0);
+        getAllData(vl, allSelectedValues,0);
 
         JSONObject jo = new JSONObject();
 
-        vl = otherVl;
-        vl.addAll(staticVl);
         jo.put("items", vl);
-        jo.put("values", selectedVals);
+        jo.put("values", allSelectedValues);
         return jo;
     }
 
-//    private void getAllData(ArrayList<LinkedHashSet<String>> result, List<List<String>> values, List<List<String>> otherValues, int floor)
-//            throws JSONException {
-//        if (values.size() >= widget.getViewDimensions().length - 1) {
-//            return;
-//        }
-//        if (result.size() > floor + 1 &&
-//                result.get(floor + 1).size() > BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM &&
-//                result.get(floor).size() > BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM ) {
-//            return;
-//        }
-//
-//        List<String> vl = createData(values, 0, 1);
-//
-//        if (result.size() > floor) {
-//            concatSetAndList(result.get(floor), vl);
-//        } else {
-//            result.add(new LinkedHashSet<String>());
-//            concatSetAndList(result.get(floor), vl);
-//        }
-//        String[] next = otherValues.get(floor).toArray(new String[otherValues.get(floor).size()]);
-//        String[] filterValues = ArrayUtils.addAll(values, next);
-//        getAllData(result, filterValues, otherValues, floor + 1);
-//    }
-
-    private void getStaticData(ArrayList<LinkedHashSet<String>> result, List<List<String>> values, int floor)
+    private void getAllData(ArrayList<LinkedHashSet<String>> result, List<List<String>> values, int floor)
             throws JSONException{
         if(floor >= values.size()) {
             return;
@@ -115,7 +73,26 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
             result.add(new LinkedHashSet<String>());
             concatSetAndList(result.get(floor), vl);
         }
-        getStaticData(result, values, floor + 1);
+        if(floor > floors && (values.size() > floor)) {
+            values.set(floor, checkSelectedValues(vl, values.get(floor)));
+        }
+        getAllData(result, values, floor + 1);
+    }
+
+    private List<String> checkSelectedValues(List<String> values, List<String> selects) {
+        List<String> result = new ArrayList<String>();
+        if(selects.contains("_*_")) {
+            return selects;
+        }
+        for (String select : selects) {
+            if(values.contains(select)) {
+                result.add(select);
+            }
+        }
+        if(result.size() == 0) {
+            result.add("_*_");
+        }
+        return result;
     }
 
     private LinkedHashSet<String> concatSetAndList(LinkedHashSet<String> set, List<String> list) {

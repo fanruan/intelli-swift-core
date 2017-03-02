@@ -34,12 +34,13 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
+        v = v || [];
         var self = this, o = this.options;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId),
             titles = [],
             data = {
                 floors: -1,
-                selectedValues: []
+                selectedValues: v
             };
         if (BI.isEmptyArray(dimensions)) {
             self.treeLabel.populate({
@@ -56,6 +57,7 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
             success: function (jsonData) {
                 self.treeLabel.populate({
                     items: jsonData.items,
+                    values: jsonData.values,
                     titles: titles
                 });
                 self.treeLabel.setValue(v);

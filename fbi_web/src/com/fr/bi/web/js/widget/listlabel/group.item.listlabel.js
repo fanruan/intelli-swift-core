@@ -10,6 +10,7 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
 
     _init: function () {
         BI.ListLabelItemGroup.superclass._init.apply(this, arguments);
+        this.otherValues = [];
         if (BI.isEmptyArray(this.getValue())) {
             BI.each(this.buttons, function (idx, button) {
                 if (button.getValue() === BICst.LIST_LABEL_TYPE.ALL) {
@@ -69,7 +70,7 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
     },
 
     _checkBtnState: function () {
-        if (BI.isEmptyArray(this.getValue())) {
+        if (BI.isEmptyArray(this.getValue()) && BI.isEmptyArray(this.otherValues)) {
             this.buttons[0].setSelected(true);
             this.fireEvent(BI.ButtonGroup.EVENT_CHANGE, this.buttons[0].getValue(), this.buttons[0]);
         } else if (this.getValue().length === 1 && BI.isEqual(this.getValue()[0], BICst.LIST_LABEL_TYPE.ALL)) {
@@ -99,23 +100,36 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
     },
 
     setValue: function (v) {
-        BI.ListLabelItemGroup.superclass.setValue.apply(this, arguments);
+        var self = this;
+        v = BI.isArray(v) ? v : [v];
+        BI.each(this.buttons, function (i, item) {
+            if (BI.deepContains(v, item.getValue())) {
+                item.setSelected && item.setSelected(true);
+            } else {
+                item.setSelected && item.setSelected(false);
+            }
+        });
+        var currentValues = this.getValue();
+        this.otherValues = [];
+        BI.each(v, function (idx, value) {
+            if (currentValues.indexOf(value) === -1) {
+                self.otherValues.push(value);
+            }
+        });
         this._checkBtnState();
         this._checkBtnStyle();
-        if (!arraysEqual(v, this.getValue())) {
-            this.fireEvent(BI.ButtonGroup.EVENT_CHANGE, this.buttons[0].getValue(), this.buttons[0]);
-        }
-        function arraysEqual (a1, a2) {     //仅考虑数值字符串等简单数据
-            if (a1.length !== a2.length) {
-                return false;
+
+    },
+
+    getValue: function () {
+        var v = [];
+        BI.each(this.buttons, function (i, item) {
+            if (item.isEnabled() && item.isSelected && item.isSelected()) {
+                v.push(item.getValue());
             }
-            BI.each(a2, function (idx, data) {
-                if(a1.indexOf(data) === -1) {
-                    return false;
-                }
-            });
-            return true;
-        }
+        });
+        v = v.concat(this.otherValues || []);
+        return v;
     }
 });
 
