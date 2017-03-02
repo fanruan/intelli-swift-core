@@ -8,14 +8,14 @@ BI.AuthorityBatchSetPane = BI.inherit(BI.Widget, {
         SHOW_PANE: 2,
         SHOW_SEARCHER: 3
     },
-    
-    _defaultConfig: function(){
+
+    _defaultConfig: function () {
         return BI.extend(BI.AuthorityBatchSetPane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-authority-batch-set-pane"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.AuthorityBatchSetPane.superclass._init.apply(this, arguments);
         this.packageName = BI.createWidget({
             type: "bi.label",
@@ -24,13 +24,13 @@ BI.AuthorityBatchSetPane = BI.inherit(BI.Widget, {
             cls: "package-title"
         });
 
-        this.rolesTab = BI.createWidget({
+        this.tab = BI.createWidget({
             type: "bi.tab",
             tab: "",
             direction: "custom",
             cardCreator: BI.bind(this._createTab, this)
         });
-        this.rolesTab.setSelect(this._constants.SHOW_EMPTY);
+        this.tab.setSelect(this._constants.SHOW_EMPTY);
         BI.createWidget({
             type: "bi.vtape",
             element: this.element,
@@ -49,36 +49,61 @@ BI.AuthorityBatchSetPane = BI.inherit(BI.Widget, {
                 },
                 height: 40
             }, {
-                el: this.rolesTab,
+                el: this.tab,
                 height: "fill"
             }],
             hgap: 20
         });
     },
 
-    _createTab: function(v) {
+    _createTab: function (v) {
         var self = this;
         switch (v) {
+            case this._constants.SHOW_EMPTY:
+                this.addRolePane = BI.createWidget({
+                    type: "bi.authority_batch_add_role_empty_pane"
+                });
+                this.addRolePane.on(BI.AuthorityBatchAddRoleEmptyPane.EVENT_CHANGE, function () {
+                    self._showRoleSearcherPane();
+                });
+                return this.addRolePane;
             case this._constants.SHOW_PANE:
                 this.roles = BI.createWidget({
                     type: "bi.authority_batch_add_role_pane"
                 });
-                this.roles.on(BI.AuthorityBatchAddRolePane.EVENT_ADD_ROLE, function(){
-                    self.rolesTab.setSelect(self._constants.SHOW_SEARCHER);
-                    self.searcher.populate(self.packageIds);
+                this.roles.on(BI.AuthorityBatchAddRolePane.EVENT_ADD_ROLE, function () {
+                    self._showRoleSearcherPane();
                 });
-                return this.roles;
+                this.roles.on(BI.AuthorityBatchAddRolePane.EVENT_SAVE, function () {
+                    self._updatePackageRoles(self.roles.getRoles());
+                    self.fireEvent(BI.AuthorityBatchSetPane.EVENT_CHANGE);
+                });
+                this.roles.on(BI.AuthorityBatchAddRolePane.EVENT_CANCEL, function () {
+                    self.roles.clearRoles();
+                    self._showEmptyPane();
+                });
+                return BI.createWidget({
+                    type: "bi.absolute",
+                    items: [{
+                        el: this.roles,
+                        top: 0,
+                        left: -220,
+                        right: 0,
+                        bottom: 0
+                    }]
+                });
+
             case this._constants.SHOW_SEARCHER:
                 this.searcher = BI.createWidget({
                     type: "bi.batch_add_role_searcher"
                 });
-                this.searcher.on(BI.BatchAddRoleSearcher.EVENT_CANCEL, function(){
-                    self.rolesTab.setSelect(self._constants.SHOW_PANE);
+                this.searcher.on(BI.BatchAddRoleSearcher.EVENT_CANCEL, function () {
+                    self.tab.setSelect(self._constants.SHOW_PANE);
                 });
-                this.searcher.on(BI.BatchAddRoleSearcher.EVENT_SAVE, function(v){
-                    self._updatePackageRoles(v);
-                    self.rolesTab.setSelect(self._constants.SHOW_PANE);
-                    self.fireEvent(BI.AuthorityBatchSetPane.EVENT_CHANGE);
+                this.searcher.on(BI.BatchAddRoleSearcher.EVENT_SAVE, function (roles) {
+                    self.tab.setSelect(self._constants.SHOW_PANE);
+                    self.roles.populatePackageTree(self.packageIds);
+                    self.roles.addRoles(roles);
                 });
                 return BI.createWidget({
                     type: "bi.absolute",
@@ -93,35 +118,45 @@ BI.AuthorityBatchSetPane = BI.inherit(BI.Widget, {
         }
     },
 
-    _updatePackageRoles: function(roles){
+    _showRoleSearcherPane: function () {
+        this.tab.setSelect(this._constants.SHOW_SEARCHER);
+        BI.isNotNull(this.searcher) && this.searcher.populate(this.packageIds, BI.isNotNull(this.roles) ? this.roles.getRoles() : []);
+        BI.isNotNull(this.roles) && this.roles.populatePackageTree(this.packageIds);
+    },
+
+    _showEmptyPane: function () {
+        this.tab.setSelect(this._constants.SHOW_EMPTY);
+    },
+
+    _updatePackageRoles: function (roles) {
         var authSettings = Data.SharingPool.get("authority_settings");
         var packagesAuth = authSettings.packages_auth;
         var pAuth = packagesAuth[this.packageId] || [];
         var newPAuth = pAuth.concat(roles);
-        BI.each(this.packageIds, function(i, pId){
-            packagesAuth[pId] = newPAuth;    
+        BI.each(this.packageIds, function (i, pId) {
+            packagesAuth[pId] = newPAuth;
         });
         Data.SharingPool.put("authority_settings", authSettings);
         BI.Utils.savePackageAuthority({
             package_ids: this.packageIds,
             roles: newPAuth
-        }, function(){});
+        }, BI.emptyFn);
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         //去掉分组名（分组里无业务包的）
         var self = this;
         var allPackIds = BI.Utils.getAllPackageIDs4Conf();
         this.packageIds = [];
-        BI.each(v, function(i, pId) {
+        BI.each(v, function (i, pId) {
             allPackIds.contains(pId) && self.packageIds.push(pId);
         });
         this.packageName.setText(BI.isNotNull(this.packageIds) ? BI.i18nText("BI-N_Packages", BI.uniq(this.packageIds).length) : "");
-        this.rolesTab.setSelect(this._constants.SHOW_PANE);
-        BI.isNotNull(this.roles) && this.roles.populate(this.packageIds);
+        this.tab.setSelect(this._constants.SHOW_EMPTY);
+        BI.isNotNull(this.addRolePane) && this.addRolePane.setValue(this.packageIds);
     },
 
-    populate: function(){
+    populate: function () {
 
     }
 });
