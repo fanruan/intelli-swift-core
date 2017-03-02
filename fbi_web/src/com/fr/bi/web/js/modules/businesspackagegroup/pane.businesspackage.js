@@ -162,12 +162,11 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
         return expanderItems;
     },
 
-    //edit : 编辑分组
     createGroupWidget: function (groupItem) {
         var self = this, o = this.options;
         var groupWidget = BI.createWidget({
             type: "bi.business_package_expander",
-            nodeType: BI.Utils.isAdmin4Conf() ? o.nodeType : "bi.arrow_group_node",
+            nodeType: o.nodeType,
             validationChecker: function (v) {
                 return BI.some(self.groupMap, function (groupID, obj) {
                     if (obj.name != v || groupItem.id === groupID) {

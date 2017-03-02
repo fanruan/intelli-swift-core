@@ -70,11 +70,6 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
             self.fireEvent(BI.AuthorityPackagesTree.EVENT_TYPE_CHANGE);
         });
 
-        //功能定暂时非管理员隐藏批量设置切换
-        if (!BI.Utils.isAdmin4Conf()) {
-            this.switchButton.setVisible(false);
-        }
-
         return BI.createWidget({
             type: "bi.left",
             items: [{

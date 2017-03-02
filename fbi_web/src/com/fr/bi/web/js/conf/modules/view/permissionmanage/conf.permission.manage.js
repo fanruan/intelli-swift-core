@@ -57,9 +57,6 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
 
     _buildUserField: function(){
         var self = this;
-        if (!BI.Utils.isAdmin4Conf()) {
-            return BI.createWidget();
-        }
         this.selectField = BI.createWidget({
             type: "bi.text_button",
             text: BI.i18nText("BI-Please_Select"),

@@ -138,9 +138,6 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
             }
         });
         self.groupPane.populate([unGroupedFieldItem], groupedFieldItems);
-        if (!BI.Utils.isAdmin4Conf()) {
-            this.topButtons.setVisible(false);
-        }
     },
 
     getValue: function () {
