@@ -1,7 +1,7 @@
 package com.fr.bi.fs;
 
-import com.fr.base.FRContext;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.FRContext;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.XMLFileManager;
@@ -183,12 +183,15 @@ public class BITableDataDAOManager extends XMLFileManager {
             while (iterator.hasNext()) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 BISharedReportNode node = (BISharedReportNode) entry.getValue();
-                long shareToId = TableDataSyncDB.getInstance().findUserByUserName(node.getShareToName()).getId();
-                if (node.getReportId() == reportId && ComparatorUtils.equals(createUser.getUsername(), node.getCreateByName())) {
-                    if (isReset) {
-                        iterator.remove();
-                    } else if (ArrayUtils.contains(userIds, shareToId)) {
-                        userIds = ArrayUtils.remove(userIds, ArrayUtils.indexOf(userIds, shareToId));
+                User shareToUser = TableDataSyncDB.getInstance().findUserByUserName(node.getShareToName());
+                if (shareToUser != null) {
+                    long shareToId = shareToUser.getId();
+                    if (node.getReportId() == reportId && ComparatorUtils.equals(createUser.getUsername(), node.getCreateByName())) {
+                        if (isReset) {
+                            iterator.remove();
+                        } else if (ArrayUtils.contains(userIds, shareToId)) {
+                            userIds = ArrayUtils.remove(userIds, ArrayUtils.indexOf(userIds, shareToId));
+                        }
                     }
                 }
             }
