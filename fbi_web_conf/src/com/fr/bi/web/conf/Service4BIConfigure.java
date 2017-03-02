@@ -65,7 +65,6 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetTransFromDBAction(),
 
             new BIModifyGlobalUpdateSettingAction(),
-            new BIGetCubeGenerateStatusAction(),
             new BISetCubeGenerateAction(),
             new BIGetCubeTaskListAction(),
             new BIAddSingleTableUpdateTaskAction(),
