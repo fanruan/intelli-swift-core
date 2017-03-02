@@ -4,10 +4,9 @@ import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.common.log.BILogExceptionInfo;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.utils.BILogCacheTagHelper;
+import com.finebi.cube.conf.utils.BICubeLogExceptionInfo;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
@@ -76,7 +75,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
                 BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
-        BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogCacheTagHelper.getCubeLogTransportTimeSubTag(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.START), System.currentTimeMillis());
+        BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START, System.currentTimeMillis());
         long t = System.currentTimeMillis();
         try {
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " copy old cube files"));
@@ -99,7 +98,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
             System.out.println("table usage:" + tableCostTime);
-            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogCacheTagHelper.getCubeLogTransportTimeSubTag(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.END), System.currentTimeMillis());
+            BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
@@ -112,11 +111,9 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             } catch (Exception e1) {
                 BILoggerFactory.getLogger().error(e1.getMessage(), e1);
             }
-            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogCacheTagHelper.getCubeLogTransportTimeSubTag(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.END), System.currentTimeMillis());
-            BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "Transport Exception", e.getMessage());
-            Vector<BILogExceptionInfo> exceptionList = BILogHelper.getCubeLogExceptionList(tableSource.getSourceID());
-            exceptionList.add(exceptionInfo);
-            BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, BILogCacheTagHelper.getCubeLogExceptionSubTag(tableSource.getSourceID()), exceptionList);
+            BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
+            BICubeLogExceptionInfo exceptionInfo = new BICubeLogExceptionInfo(System.currentTimeMillis(), "Transport Exception", e.getMessage(), e, tableSource.getSourceID());
+            BILogHelper.cacheCubeLogTableException(tableSource.getSourceID(), exceptionInfo);
             BILoggerFactory.getLogger(BISourceDataPartTransport.class).error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }

@@ -12,11 +12,13 @@ public class BILogExceptionInfo {
     private long occurTime;
     private String exceptionMessage;
     private String operation;
+    private Exception exception;
 
-    public BILogExceptionInfo(long occurTime, String operation, String exceptionMessage) {
+    public BILogExceptionInfo(long occurTime, String operation, String exceptionMessage, Exception exception) {
         this.occurTime = occurTime;
         this.exceptionMessage = exceptionMessage;
         this.operation = operation;
+        this.exception = exception;
     }
 
     @Override
@@ -29,10 +31,31 @@ public class BILogExceptionInfo {
             sb.append("\n" + "The Exception Occur Time: " + simpleDateFormat.format(date));
             sb.append("\n" + "The Exception Operation: " + operation);
             sb.append("\n" + "The Exception Message: " + exceptionMessage);
+            sb.append("\n" + "The Exception: " + exception);
             exceptionLogString = sb.toString();
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
         return exceptionLogString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BILogExceptionInfo that = (BILogExceptionInfo) o;
+
+        if (exceptionMessage != null ? !exceptionMessage.equals(that.exceptionMessage) : that.exceptionMessage != null)
+            return false;
+        return operation != null ? operation.equals(that.operation) : that.operation == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = exceptionMessage != null ? exceptionMessage.hashCode() : 0;
+        result = 31 * result + (operation != null ? operation.hashCode() : 0);
+        return result;
     }
 }

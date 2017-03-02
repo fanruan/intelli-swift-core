@@ -23,7 +23,7 @@ public class BICubeTest extends BICubeTestBase {
         List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
         fields.add(DBFieldTestTool.generateDATE());
         tableEntity.recordTableStructure(fields);
-        assertTrue(tableEntity.tableDataAvailable());
+        assertFalse(tableEntity.tableDataAvailable());
     }
 
     public void testFieldData() {
@@ -44,7 +44,7 @@ public class BICubeTest extends BICubeTestBase {
             tableEntity.recordTableStructure(fields);
             CubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
 
-            assertTrue(tableEntity.tableDataAvailable());
+            assertFalse(tableEntity.tableDataAvailable());
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);

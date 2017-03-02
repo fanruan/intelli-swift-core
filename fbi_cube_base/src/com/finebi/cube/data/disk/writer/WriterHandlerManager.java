@@ -33,7 +33,9 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     public ICubePrimitiveWriter queryHandler() {
         synchronized (this) {
             countOfWriters.getAndIncrement();
-            BILoggerFactory.getLogger().debug("query writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
+            if(BILoggerFactory.getLogger().isDebugEnabled()) {
+                BILoggerFactory.getLogger().debug("query writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
+            }
             return writer;
         }
     }
@@ -46,7 +48,9 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
                 queryRecorder.remove(handlerKey);
                 countOfWriters.decrementAndGet();
             }else {
-                BILoggerFactory.getLogger().debug(handlerKey+" writer has been released========== "+ resourceLocation.getAbsolutePath());
+                if(BILoggerFactory.getLogger().isDebugEnabled()) {
+                    BILoggerFactory.getLogger().debug(handlerKey + " writer has been released========== " + resourceLocation.getAbsolutePath());
+                }
             }
             currentCountOfWriters = countOfWriters.get();
             if (currentCountOfWriters == 0) {
@@ -55,7 +59,9 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
                     writer.destroyResource();
                     countOfWriters.set(0);
                     queryRecorder.clear();
-                    BILoggerFactory.getLogger().debug("=0 release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
+                    if(BILoggerFactory.getLogger().isDebugEnabled()) {
+                        BILoggerFactory.getLogger().debug("=0 release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
+                    }
                 } catch (Exception e) {
                     throw BINonValueUtils.beyondControl(e);
                 } finally {
@@ -63,7 +69,9 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
                 }
             } else if (currentCountOfWriters < 0) {
                 countOfWriters.set(0);
-                BILoggerFactory.getLogger().debug("<0 release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
+                if(BILoggerFactory.getLogger().isDebugEnabled()) {
+                    BILoggerFactory.getLogger().debug("<0 release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
+                }
             }
         }
     }
@@ -78,7 +86,9 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
             writer.destroyResource();
             countOfWriters.set(0);
             queryRecorder.clear();
-            BILoggerFactory.getLogger().debug("force release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
+            if(BILoggerFactory.getLogger().isDebugEnabled()) {
+                BILoggerFactory.getLogger().debug("force release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
+            }
         }
     }
 
@@ -89,7 +99,9 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
 
     @Override
     public boolean isForceReleased() {
-        return isForceReleased;
+        synchronized (this) {
+            return isForceReleased;
+        }
     }
 
     @Override

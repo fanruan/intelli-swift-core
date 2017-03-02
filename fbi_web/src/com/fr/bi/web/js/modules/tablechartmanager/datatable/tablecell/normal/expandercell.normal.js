@@ -57,6 +57,14 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
             }
         }
 
+        //科学计数法的显示
+        var fieldType = BI.Utils.getFieldTypeByDimensionID(o.dId);
+        if (fieldType === BICst.COLUMN.NUMBER &&
+            BI.isNotNull(dGroup) &&
+            dGroup.type === BICst.GROUP.ID_GROUP &&
+            BI.isNumeric(text)) {
+            text = BI.parseFloat(text);
+        }
 
         var cls = "expander-cell-text";
         //交叉表的item

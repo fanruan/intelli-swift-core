@@ -26,6 +26,7 @@ BI.CustomGroupAllFieldsPane = BI.inherit(BI.Pane, {
             items: o.groupedItems,
             enableCheckGroup: o.enableCheckGroup,
             validationChecker: function (v, id) {
+                var isValidForOtherGroupName = o.validationChecker(v);
                 var groupMap = self.groupedPane.getGroupMap();
                 var ungroupedFieldMap = self.ungroupedPane.getFieldMap();
                 var result = BI.findKey(groupMap, function (groupID, groupName) {
@@ -34,7 +35,7 @@ BI.CustomGroupAllFieldsPane = BI.inherit(BI.Pane, {
                 result = result || BI.findKey(ungroupedFieldMap, function (fieldID, fieldName) {
                         return fieldName === v
                     });
-                if (BI.isNotNull(result)) {
+                if (BI.isNotNull(result) || !isValidForOtherGroupName) {
                     return false
                 } else {
                     return true
@@ -82,6 +83,10 @@ BI.CustomGroupAllFieldsPane = BI.inherit(BI.Pane, {
 
     createItemFromGroupMap: function () {
         return this.groupedPane.createItemFromGroupMap();
+    },
+
+    createUngroupedItemFromGroupMap: function () {
+        return this.ungroupedPane.createItemFromGroupMap();
     },
 
     createItemFromUngroupedFieldMap: function (ungroupedFieldMap) {

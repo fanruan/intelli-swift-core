@@ -167,19 +167,24 @@ public class ExcelTableSource extends AbstractTableSource {
         JSONObject jo = new JSONObject();
         JSONArray fieldNames = new JSONArray();
         JSONArray values = new JSONArray();
+        JSONArray types = new JSONArray();
         jo.put(BIJSONConstant.JSON_KEYS.FIELDS, fieldNames);
         jo.put(BIJSONConstant.JSON_KEYS.VALUE, values);
+        jo.put(BIJSONConstant.JSON_KEYS.TYPE, types);
         BIExcelDataModel tableData = null;
         try {
             tableData = createExcelTableData().createDataModel();
             String[] columnNames = tableData.onlyGetColumnNames();
+            int[] columnTypes = tableData.onlyGetColumnTypes();
             int previewRowCount = Math.min(BIBaseConstant.PREVIEW_COUNT, tableData.getDataList().size());
             for (int col = 0; col < columnNames.length; col++) {
                 String name = columnNames[col];
+                int type = columnTypes[col];
                 if (!fields.isEmpty() && !fields.contains(name)) {
                     continue;
                 }
                 fieldNames.put(name);
+                types.put(type);
                 JSONArray value = new JSONArray();
                 values.put(value);
                 for (int row = 0; row < previewRowCount; row++) {

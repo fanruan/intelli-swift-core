@@ -7,6 +7,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -44,14 +45,13 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         String newTableString = WebUtils.getHTTPRequestParameter(req, "newTables");
         String oldTableString = WebUtils.getHTTPRequestParameter(req, "oldTables");
-        Map<String, DBTableSource> newTableSources = getDBSourceMap(newTableString, userId);
-        Map<String, DBTableSource> oldTableSources = getDBSourceMap(oldTableString, userId);
+        Map<String, AbstractTableSource> newTableSources = getDBSourceMap(newTableString, userId);
+        Map<String, AbstractTableSource> oldTableSources = getDBSourceMap(oldTableString, userId);
         Map<String, String> allFieldIdMap = new HashMap<String, String>();
         JSONObject newTablesJo = new JSONObject(newTableString);
         JSONObject oldTablesJo = new JSONObject(oldTableString);
         initFieldIdsMap(allFieldIdMap, newTablesJo);
         initFieldIdsMap(allFieldIdMap, oldTablesJo);
-
         JSONArray relations = getJSONArrayRelationByTables(
                 new BIImportDBTableConnectionExecutor().getRelationsByTables(newTableSources, oldTableSources, allFieldIdMap, userId));
         JSONObject translations = getTranslationsByTables(newTableSources, allFieldIdMap);
@@ -72,15 +72,15 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
     }
 
 
-    private Map<String, DBTableSource> getDBSourceMap(String tableJO, long userId) throws Exception {
-        Map<String, DBTableSource> sources = new HashMap<String, DBTableSource>();
+    private Map<String, AbstractTableSource> getDBSourceMap(String tableJO, long userId) throws Exception {
+        Map<String, AbstractTableSource> sources = new HashMap<String, AbstractTableSource>();
         JSONObject jo = new JSONObject(tableJO);
         Iterator<String> iterator = jo.keys();
         while (iterator.hasNext()) {
             String id = iterator.next();
             CubeTableSource source = TableSourceFactory.createTableSource(jo.getJSONObject(id), userId);
             if (source.getType() == BIBaseConstant.TABLETYPE.DB) {
-                sources.put(id, (DBTableSource) source);
+                sources.put(id, (AbstractTableSource) source);
             }
         }
         return sources;
@@ -93,21 +93,21 @@ public class BIImportDBTableConnectionAction extends AbstractBIConfigureAction {
      * @return
      * @throws Exception
      */
-    private JSONObject getTranslationsByTables(Map<String, DBTableSource> sourceTables, Map<String, String> allFieldIdMap) throws Exception {
+    private JSONObject getTranslationsByTables(Map<String, AbstractTableSource> sourceTables, Map<String, String> allFieldIdMap) throws Exception {
         JSONObject jo = new JSONObject();
         JSONObject tableTrans = new JSONObject();
         JSONObject fieldTrans = new JSONObject();
         jo.put(BIJSONConstant.JSON_KEYS.TABLE, tableTrans);
         jo.put(BIJSONConstant.JSON_KEYS.FIELD, fieldTrans);
-        Iterator<Map.Entry<String, DBTableSource>> it = sourceTables.entrySet().iterator();
+        Iterator<Map.Entry<String, AbstractTableSource>> it = sourceTables.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<String, DBTableSource> entry = it.next();
+            Map.Entry<String, AbstractTableSource> entry = it.next();
             IPersistentTable table = entry.getValue().getPersistentTable();
-            if (!StringUtils.isEmpty(table.getRemark())) {
+            if (!StringUtils.isEmpty(StringUtils.trim(table.getRemark()))) {
                 tableTrans.put(entry.getKey(), table.getRemark());
             }
             for (PersistentField column : table.getFieldList()) {
-                if (!StringUtils.isEmpty(column.getRemark())) {
+                if (!StringUtils.isEmpty(StringUtils.trim(column.getRemark()))) {
                     fieldTrans.put(allFieldIdMap.get(entry.getKey() + column.getFieldName()), column.getRemark());
                 }
             }

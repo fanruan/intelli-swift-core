@@ -49,7 +49,8 @@ BI.TargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
                     rhgap: this._constant.LEFT_ITEMS_H_GAP
                 }
-            }]
+            }],
+            scrolly: false
         });
 
     },

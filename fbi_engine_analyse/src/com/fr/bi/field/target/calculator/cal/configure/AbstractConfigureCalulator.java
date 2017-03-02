@@ -93,31 +93,34 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
         return null;
     }
 
-    /**
-     * 在第几个维度上汇总，暂时写死为1
-     *
-     * @return
-     */
-    protected int getCalDeep(Object rank_node) {
+    protected int getCalDeep(LightNode rank_node) {
         int deep = 0;
-        if (rank_node instanceof LightNode) {
-            LightNode node = (LightNode) rank_node;
-            while (node.getFirstChild() != null) {
-                deep++;
-                node = node.getFirstChild();
-            }
-        } else if (rank_node instanceof BICrossNode) {
-            BICrossNode node = (BICrossNode) rank_node;
-            while (node.getLeftFirstChild() != null) {
-                deep++;
-                node = node.getLeftFirstChild();
-            }
-        } else {
-            return 1;
+        LightNode node = rank_node;
+        while (node.getFirstChild() != null) {
+            deep++;
+            node = node.getFirstChild();
         }
-
         return deep;
     }
+
+    protected int getCalDeep(BICrossNode rank_node) {
+        int deep = 0;
+        BICrossNode node = rank_node;
+        while (node.getLeftFirstChild() != null) {
+            deep++;
+            node = node.getLeftFirstChild();
+        }
+        return deep;
+    }
+
+    protected int getActualStart_Group(int start_group, LightNode rank_node) {
+        return start_group == 0 ? 0 : getCalDeep(rank_node) - 1;
+    }
+
+    protected int getActualStart_Group(int start_group, BICrossNode rank_node) {
+        return start_group == 0 ? 0 : getCalDeep(rank_node);
+    }
+
 
     protected double getAvgValue(String targetName, AvgKey targetKey, Object cursor_node) {
         Number sumValue = null;
@@ -128,8 +131,8 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
             sumValue = ((LightNode) cursor_node).getSummaryValue(sumGettingKey);
             countValue = ((LightNode) cursor_node).getSummaryValue(countGettingKey);
         } else if (cursor_node instanceof CrossNode) {
-            sumValue = ((CrossNode)cursor_node).getSummaryValue(sumGettingKey);
-            countValue = ((CrossNode)cursor_node).getSummaryValue(countGettingKey);
+            sumValue = ((CrossNode) cursor_node).getSummaryValue(sumGettingKey);
+            countValue = ((CrossNode) cursor_node).getSummaryValue(countGettingKey);
         }
         double avgValue = 0;
         if (sumValue != null && countValue != null) {

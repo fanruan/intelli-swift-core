@@ -30,7 +30,7 @@ public class BIStatusTag implements IStatusTag {
         return new BIWaitingStatusTag(fragmentTag);
     }
 
-    protected BIStatusTag(IStatusID statusID, IFragmentTag fragmentTag) {
+    public BIStatusTag(IStatusID statusID, IFragmentTag fragmentTag) {
         this.superFragmentTag = fragmentTag;
         this.statusID = statusID;
     }

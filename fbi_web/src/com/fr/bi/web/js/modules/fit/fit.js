@@ -345,6 +345,7 @@ BI.Fit = BI.inherit(BI.Widget, {
     copyRegion: function (id, newId) {
         var flag = false;
         var region = this.arrangement.getRegionByName(id);
+        var offset = this.arrangement._getScrollOffset();
         var el = this._createItem(newId, {
             width: region.width,
             height: region.height
@@ -354,16 +355,24 @@ BI.Fit = BI.inherit(BI.Widget, {
                 width: region.width,
                 height: region.height
             }, {
-                left: region.left + region.width / 2 + 1,
-                top: region.top + region.height / 2 + 1
+                left: region.left - offset.left + region.width / 2 + 1,
+                top: region.top - offset.top + region.height / 2 + 1
             }))) {
-            if (!(flag = this.arrangement.addRegion(el, {
-                    left: region.left + region.width / 2,
-                    top: region.top + region.height / 4 - 1
+            if (!(flag = this.arrangement.addRegion({
+                    el: el,
+                    width: region.width,
+                    height: region.height
+                }, {
+                    left: region.left - offset.left + region.width / 2,
+                    top: region.top - offset.top + region.height / 4 - 1
                 }))) {
-                if (!(flag = this.arrangement.addRegion(el, {
-                        left: region.left + region.width / 2,
-                        top: region.top + region.height * 3 / 4 + 1
+                if (!(flag = this.arrangement.addRegion({
+                        el: el,
+                        width: region.width,
+                        height: region.height
+                    }, {
+                        left: region.left - offset.left + region.width / 2,
+                        top: region.top - offset.top + region.height * 3 / 4 + 1
                     }))) {
                 }
             }

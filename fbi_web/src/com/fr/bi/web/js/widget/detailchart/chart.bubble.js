@@ -64,6 +64,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.yAxis[0].lineWidth = 1;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
         config.yAxis[0].maxWidth = '40%';
 
@@ -77,11 +78,16 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "bubble";
 
         if (BI.isNotEmptyArray(this.config.tooltip)) {
-            config.plotOptions.tooltip.formatter = function () {
+            config.plotOptions.bubble.tooltip = {
+                useHtml: true,
+                style: {
+                    color: 'RGB(184, 184, 184)'
+                },
+                formatter: function () {
                 var y = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)(this.y);
                 var x = self.formatTickInXYaxis(self.config.x_axis_style, self.config.x_axis_number_level, self.config.right_num_separators)(this.x);
                 return this.seriesName + '<div>(X)' + self.config.tooltip[0] + ':' + x + '</div><div>(Y)' + self.config.tooltip[1]
-                    + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + self.config.tooltip[2] + ':' + this.size + '</div>'
+                    + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + self.config.tooltip[2] + ':' + this.size + '</div>'}
             };
         }
 

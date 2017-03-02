@@ -17,7 +17,7 @@ import com.finebi.cube.gen.oper.BuildLogHelper;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTopic;
-import com.finebi.cube.impl.operate.BIOperationID;
+import com.finebi.cube.tools.operate.BIOperationID;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -29,7 +29,6 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.Cube;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
@@ -56,6 +55,7 @@ import com.fr.json.JSONObject;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 /**
@@ -74,9 +74,10 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
-    protected Cube integrityCube;
+    protected BICube integrityCube;
     protected BICubeFinishObserver<Future<String>> finishObserver;
     private int retryNTimes;
+
 
 
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
@@ -103,7 +104,10 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
-        BILoggerFactory.cacheLoggerInfo("Cube Generate Info", "ReadOnlyBusinessTablesOfTableSourceMap", BILogHelper.getReadOnlyBusinessTablesOfTableSourceMap());
+        BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
+        BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
+        BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_START, System.currentTimeMillis());
+        BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.READ_ONLY_BUSINESS_TABLES_OF_TABLE_SOURCE_MAP, BILogHelper.getReadOnlyBusinessTablesOfTableSourceMap());
         PerformancePlugManager.getInstance().printSystemParameters();
         logCubeTaskType();
         logBusinessTable();
@@ -147,8 +151,7 @@ public class BuildCubeTask implements CubeTask {
                     message = "Cube replace failed ,the Cube files will not be replaced ";
                     BILoggerFactory.getLogger().error(message);
                 }
-                BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
-                BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
+                BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_END, System.currentTimeMillis());
             } else {
                 try {
                     BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
@@ -158,8 +161,6 @@ public class BuildCubeTask implements CubeTask {
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
-                    BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
-                    BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
                     BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 }
             }
@@ -249,12 +250,16 @@ public class BuildCubeTask implements CubeTask {
         manager.registerTableRelationPath(relationPathSet);
         logPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
+        Map<String, CubeTableSource> tablesNeed2GenerateMap = new ConcurrentHashMap<String, CubeTableSource>();
+        for (CubeTableSource tableSource : cubeBuildStuff.getSingleSourceLayers()) {
+            tablesNeed2GenerateMap.put(tableSource.getSourceID(), tableSource);
+        }
         operationManager.setVersionMap(cubeBuildStuff.getVersions());
-        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
+        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource(),tablesNeed2GenerateMap);
         logTableDepend(cubeBuildStuff.getDependTableResource());
-        operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
+        operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet(), tablesNeed2GenerateMap);
         logRelationDepend(cubeBuildStuff.getCubeGenerateRelationSet());
-        operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
+        operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet(), tablesNeed2GenerateMap);
         logPathDepend(cubeBuildStuff.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {

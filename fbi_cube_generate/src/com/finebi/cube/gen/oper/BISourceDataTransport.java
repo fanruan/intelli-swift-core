@@ -26,10 +26,7 @@ import com.fr.general.DateUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class created on 2016/4/5.
@@ -42,6 +39,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
     protected Set<CubeTableSource> allSources;
     protected CubeTableEntityService tableEntityService;
     protected Cube cube;
+    protected CubeChooser cubeChooser;
     protected List<ITableKey> parents = null;
     protected long version = 0;
 
@@ -53,6 +51,17 @@ public abstract class BISourceDataTransport extends BIProcessor {
         this.version = version;
         initThreadPool();
     }
+
+    public BISourceDataTransport(Cube cube, Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        this.tableSource = tableSource;
+        this.allSources = allSources;
+        this.cube = cube;
+        this.cubeChooser = new CubeChooser(cube, integrityCube, tablesNeed2GenerateMap);
+        tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+        this.version = version;
+        initThreadPool();
+    }
+
 
     @Override
     protected void initThreadPool() {

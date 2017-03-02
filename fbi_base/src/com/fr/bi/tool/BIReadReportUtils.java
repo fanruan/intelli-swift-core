@@ -14,12 +14,12 @@ import java.io.File;
 /**
  * Created by Young's on 2016/9/23.
  */
-public class BIReadReportUtils implements BIReadReportProvider{
+public class BIReadReportUtils implements BIReadReportProvider {
     public static final String XML_TAG = "BIReadReportUtils";
     private static BIReadReportUtils manager;
 
-    public static BIReadReportProvider getBIReadReportManager(){
-        return StableFactory.getMarkedObject(BIReadReportProvider.XML_TAG,BIReadReportProvider.class);
+    public static BIReadReportProvider getBIReadReportManager() {
+        return StableFactory.getMarkedObject(BIReadReportProvider.XML_TAG, BIReadReportProvider.class);
     }
 
     public static BIReadReportUtils getInstance() {
@@ -30,6 +30,7 @@ public class BIReadReportUtils implements BIReadReportProvider{
             return manager;
         }
     }
+
     @Override
     public JSONObject getBIReportNodeJSON(BIReportNode node) throws Exception {
         String nodePath = CodeUtils.decodeText(node.getPath());
@@ -55,6 +56,7 @@ public class BIReadReportUtils implements BIReadReportProvider{
         BIDesignSetting setting = (BIDesignSetting) BaseXMLUtils.readXMLFile(
                 BaseUtils.readResource(file.getAbsolutePath()),
                 new BIDesignSetting());
+        setting.updateSetting();
         return setting.getReportSetting();
     }
 }

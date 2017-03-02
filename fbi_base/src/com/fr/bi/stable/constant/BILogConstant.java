@@ -33,16 +33,26 @@ public class BILogConstant {
         public static final String CUBE_GENERATE_EXCEPTION_INFO = "CUBE_GENERATE_EXCEPTION_INFO";
     }
 
-    public static final class LOG_CACHE_TIME_TYPE {
-        public static final String START = "START";
-        public static final String END = "END";
-    }
-
-
     public static final class LOG_CACHE_SUB_TAG {
-        public static final String TRANSPORT_EXECUTE_TIME = "TRANSPORT_EXECUTE_TIME";
-        public static final String FIELD_INDEX_EXECUTE_TIME = "FIELD_INDEX_EXECUTE_TIME";
-        public static final String RELATION_INDEX_EXECUTE_TIME = "RELATION_INDEX_EXECUTE_TIME";
+        public static final String CUBE_GENERATE_START = "CUBE_GENERATE_START";
+        public static final String CUBE_GENERATE_END = "CUBE_GENERATE_END";
+        public static final String CUBE_GENERATE_TABLE_NORMAL_INFO = "CUBE_GENERATE_TABLE_NORMAL_INFO";
+        public static final String CUBE_GENERATE_FIELD_NORMAL_INFO = "CUBE_GENERATE_FIELD_NORMAL_INFO";
+        public static final String CUBE_GENERATE_RELATION_NORMAL_INFO = "CUBE_GENERATE_RELATION_NORMAL_INFO";
+        public static final String READ_ONLY_BUSINESS_TABLES_OF_TABLE_SOURCE_MAP = "READ_ONLY_BUSINESS_TABLES_OF_TABLE_SOURCE_MAP";
+        public static final String CUBE_GENERATE_TABLE_EXCEPTION_INFO = "CUBE_GENERATE_TABLE_EXCEPTION_INFO";
+        public static final String CUBE_GENERATE_RELATION_EXCEPTION_INFO = "CUBE_GENERATE_RELATION_EXCEPTION_INFO";
     }
+
+
+    public static final class LOG_CACHE_TIME_TYPE {
+        public static final String TRANSPORT_EXECUTE_START = "TRANSPORT_EXECUTE_START";
+        public static final String TRANSPORT_EXECUTE_END = "TRANSPORT_EXECUTE_END";
+        public static final String FIELD_INDEX_EXECUTE_START = "FIELD_INDEX_EXECUTE_START";
+        public static final String FIELD_INDEX_EXECUTE_END = "FIELD_INDEX_EXECUTE_END";
+        public static final String RELATION_INDEX_EXECUTE_START = "RELATION_INDEX_EXECUTE_START";
+        public static final String RELATION_INDEX_EXECUTE_END = "RELATION_INDEX_EXECUTE_END";
+    }
+
 
 }

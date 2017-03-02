@@ -168,6 +168,21 @@
             return translations[tableId];
         },
 
+        getConnectionNameByTableId: function (tableId) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
+                var connectionName = Pool.tables[tableId].connection_name;
+                return connectionName || "";
+            }
+            return "";
+        },
+
+        getFieldsByTableId: function (tableId) {
+            if (BI.isNotNull(Pool.tables[tableId])) {
+                return Pool.tables[tableId].fields[0] || [];
+            }
+            return [];
+        },
+
         getFieldIDsOfTableID: function (tableId) {
             if (BI.isNotNull(Pool.tables[tableId])) {
                 var fields = Pool.tables[tableId].fields;
@@ -479,7 +494,9 @@
                 obj.settings = widget.settings;
                 obj.value = widget.value;
                 //组件表头上指标的排序和过滤
-                if (BI.has(widget, "sort") && BI.isNotNull(widget.sort)) {
+                //BI-3341 看测试哪边的数据不知道为什么表头上的sort存了个空对象，而实际上对表头指标选择排序方式无论如何也不会出现空对象
+                //先在这边加个判断
+                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort) && BI.isNotEmptyObject(widget.sort)){
                     obj.sort = BI.extend({}, widget.sort, {
                         sort_target: createDimensionsAndTargets(widget.sort.sort_target).id
                     })
@@ -1765,19 +1782,31 @@
         //获取某维度或指标是否被其他维度或指标（计算指标）使用的指标
         getDimensionUsedByOtherDimensionsByDimensionID: function (dId) {
             var self = this;
-            if (this.isDimensionByDimensionID(dId)) {
-                return [];
-            }
             var wId = this.getWidgetIDByDimensionID(dId);
-            var ids = this.getAllTargetDimensionIDs(wId);
-            var result = [];
-            BI.each(ids, function (i, id) {
-                var tids = self.getExpressionValuesByDimensionID(id);
-                if (tids.contains(dId)) {
-                    result.push(id);
-                }
-            });
-            return result;
+            var ids = [], result = [];
+            switch (this.getWidgetTypeByID(wId)) {
+                case BICst.WIDGET.DETAIL:
+                    ids = this.getAllDimensionIDs(wId);
+                    BI.each(ids, function (i, id) {
+                        var tids = self.getExpressionValuesByDimensionID(id);
+                        if (tids.contains(dId)) {
+                            result.push(id);
+                        }
+                    });
+                    return result;
+                default:
+                    if (this.isDimensionByDimensionID(dId)) {
+                        return [];
+                    }
+                    ids = this.getAllTargetDimensionIDs(wId);
+                    BI.each(ids, function (i, id) {
+                        var tids = self.getExpressionValuesByDimensionID(id);
+                        if (tids.contains(dId)) {
+                            result.push(id);
+                        }
+                    });
+                    return result;
+            }
         },
 
 
@@ -2459,6 +2488,81 @@
                 }
             }
 
+            //计算数值自动分组时候的最大最小值
+            function calculateMinMax4Auto(min, max) {
+                var min = Math.abs(min) + "";
+                var max = Math.abs(max) + "";
+                var minCount = min.split(".")[0].length;
+                var maxCount = max.split(".")[0].length;
+                var count = minCount > maxCount ? minCount : maxCount;
+                var magnify = 1;
+                //缩小补零
+                var s = "0.";
+                while (count - minCount > 0) {
+                    s += "0";
+                    minCount++;
+                }
+                min = min.replace(".", "");
+                min = s + min;
+                s = "0.";
+                while (count - maxCount > 0) {
+                    s += "0";
+                    maxCount++;
+                }
+                max = max.replace(".", "");
+                max = s + max;
+
+                //后面补零对齐
+                var zeros = max.length - min.length;
+                if (zeros > 0) {
+                    while (zeros-- > 0) {
+                        min += "0";
+                    }
+                } else {
+                    while (zeros++ < 0) {
+                        max += "0";
+                    }
+                }
+                //截零
+                var i = max.length - 1, add = "0.";
+                while (min[i] === "0" && max[i] === "0" && this.min != 0 && this.max != 0) {
+                    i--;
+                }
+
+                //截位/截位+1
+                min = this.min < 0 ? -(cutBig(min)) : cutSmall(min);
+                max = this.max < 0 ? -(cutSmall(max)) : cutBig(max);
+
+                while (count-- > 0) {
+                    magnify *= 10;
+                }
+
+                return {
+                    max: max.mul(magnify),
+                    min: min.mul(magnify)
+                }
+
+                function cutSmall(val) {
+                    return BI.parseFloat(val.substring(0, i));
+                }
+
+                function cutBig(val) {
+                    if (val[i] === "0") {
+                        return BI.parseFloat(val);
+                    }
+                    val = val.substring(0, i);
+                    var length = val.length - 2;
+                    while (--length > 0) {
+                        add += "0";
+                    }
+                    add += "1";
+                    if (val[i - 1] === ".") {
+                        return BI.parseFloat(val) + 1;
+                    }
+                    return BI.parseFloat(val) + BI.parseFloat(add);
+                }
+            }
+
             function parseNumberFilter4Group(dId, v) {
                 var value = v[0];
                 var group = BI.Utils.getDimensionGroupByID(dId);
@@ -2467,6 +2571,13 @@
                 if (BI.isNull(groupValue) && BI.isNull(groupType)) {
                     //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
                     var sIndex = value.indexOf("-");
+                    if(sIndex === -1){  //空分组
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                            filter_value: {},
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        }
+                    }
                     var min = value.slice(0, sIndex), max = value.slice(sIndex + 1);
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
@@ -2481,9 +2592,11 @@
                 }
                 if (groupType === BICst.GROUP.AUTO_GROUP) {
                     //坑爹，要自己算分组名称出来
-                    var groupInterval = groupValue.group_interval, max = groupValue.max, min = groupValue.min;
+                    var groupInterval = groupValue.group_interval;
+                    var maxMin = calculateMinMax4Auto(groupValue.min, groupValue.max);
+                    var max = maxMin.max, min = maxMin.min;
                     while (min < max) {
-                        var newMin = BI.parseInt(min) + BI.parseInt(groupInterval);
+                        var newMin = min + BI.parseFloat(groupInterval);
                         groupMap[min + "-" + newMin] = {
                             min: min,
                             max: newMin,
@@ -2492,11 +2605,19 @@
                         };
                         min = newMin;
                     }
-                    return {
-                        filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                        filter_value: groupMap[value],
-                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
-                    };
+                    if(BI.isNull(groupMap[value])){
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                            filter_value: {},
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        }
+                    }else{
+                        return {
+                            filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                            filter_value: groupMap[value],
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        };
+                    }
                 }
                 if (groupType === BICst.GROUP.ID_GROUP) {
                     if(BI.isNull(value) || BI.isEmptyString(value)){
@@ -2537,15 +2658,18 @@
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     };
                 } else if (value === BICst.UNGROUP_TO_OTHER) {
+                    //反选数值区间，使用多个反条件并集
+                    var vs = [];
+                    BI.each(groupMap, function (id, v) {
+                        vs.push({
+                            filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+                            filter_value: v,
+                            _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        });
+                    });
                     return {
-                        filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
-                        filter_value: {
-                            min: oMin,
-                            max: oMax,
-                            closemin: true,
-                            closemax: true
-                        },
-                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                        filter_type: BICst.FILTER_TYPE.AND,
+                        filter_value: vs
                     };
                 } else if(BI.isNumeric(value)){
                     //自定义分组后不勾选剩余值分组到其他
@@ -2559,6 +2683,12 @@
                         },
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     }
+                } else if(BI.isNull(value) || BI.isEmptyString(value)){
+                    return {
+                        filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
+                        filter_value: {},
+                        _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
+                    };
                 }
             }
 
@@ -2783,6 +2913,15 @@
                     widget.dimensions[dId].used = false;
                 }
             });
+
+            //gis地图按分组表来算，而非交叉表
+            if(widget.type === BICst.WIDGET.GIS_MAP){
+                if(BI.isNotEmptyArray(widget.view[BICst.REGION.DIMENSION2])){
+                    widget.view[BICst.REGION.DIMENSION1] = widget.view[BICst.REGION.DIMENSION1] || [];
+                    widget.view[BICst.REGION.DIMENSION1] = BI.concat(widget.view[BICst.REGION.DIMENSION1], widget.view[BICst.REGION.DIMENSION2]);
+                    widget.view[BICst.REGION.DIMENSION2] = [];
+                }
+            }
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             widget.real_data = true;
@@ -3040,10 +3179,21 @@
                         } else {
                             delete filterValue.end;
                         }
-                    } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
-                        filterValue.start = parseComplexDate(wValue.start);
-                    } else if (BI.isNotNull(wValue.end) && BI.isNotNull(wValue.end.year)) {
-                        filterValue.end = parseComplexDate(wValue.end);
+                    } else if (BI.isNotNull(wValue.start)) {
+                        var s = parseComplexDate(wValue.start);
+                        delete filterValue.start;
+                        if(BI.isNotNull(s)){
+                            filterValue.end = s - 1;
+                        } else {
+                            delete filterValue.end;
+                        }
+                    } else if (BI.isNotNull(wValue.end)) {
+                        var e = parseComplexDate(wValue.end);
+                        delete filterValue.end;
+                        if(BI.isNotNull(e)){
+                            filterValue.end = e;
+                        }
+                        filterValue.start = parseComplexDate(wValue.end);
                     }
                     break;
                 case BICst.YEAR_QUARTER:
@@ -3185,6 +3335,7 @@
                         var v = parseComplexDate(wValue);
                         if (BI.isNotNull(v)) {
                             date = new Date(v);
+                            date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
                         }
                     }
                     break;

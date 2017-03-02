@@ -53,6 +53,7 @@ public class DimensionGroupFilter {
     Comparator[] dimensionComparator;
     private boolean shouldRecalculateIndex = false;
     private boolean calAllPage;
+    private boolean hasInSumMetrics;
     private long startTime = System.currentTimeMillis();
 
 
@@ -69,7 +70,22 @@ public class DimensionGroupFilter {
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
         this.calAllPage = calAllPage;
+        this.hasInSumMetrics = hasInSumMetrics();
         LoaderUtils.setAllExpander(mergerInfoList);
+    }
+
+    private boolean hasInSumMetrics() {
+        for (MergerInfo info : mergerInfoList) {
+            if (hasInSumMetric(info.biDimensionTarget)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasInSumMetric(BISummaryTarget target) {
+        return target != null && (target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.SUM &&
+                target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.COUNT);
     }
 
     private NodeDimensionIterator[] getNodeIterators(List<MergerInfo> mergerInfoList) {
@@ -414,7 +430,7 @@ public class DimensionGroupFilter {
     }
 
     private boolean shouldSetIndex() {
-        return shouldRecalculateIndex;
+        return shouldRecalculateIndex || hasInSumMetrics;
     }
 
     private void setRootIndexMap(TreeBuilder nodeBuilder) {
@@ -453,13 +469,16 @@ public class DimensionGroupFilter {
         LightNode retNode = filterBuilder.build();
 
 
+        retNode = sum(retNode);
+
         if (hasTargetSort()) {
             retNode = sortNode(retNode);
         }
 
         retNode = clearNull(retNode, 0);
         NodeUtils.buildParentAndSiblingRelation(retNode);
-        retNode = sum(retNode);
+
+
         return retNode;
     }
 
@@ -529,11 +548,12 @@ public class DimensionGroupFilter {
     }
 
     private LightNode sumNode(LightNode sortedNode) {
-        NodeSummarizing summarizing = new NodeSummarizing();
+        NodeSummarizing summarizing = hasInSumMetrics ? new NodeGVISummarizing() : new NodeSummarizing();
         summarizing.setNode(sortedNode);
         summarizing.setTargetGettingKeys(getNoCalculatorTargets());
         return summarizing.sum();
     }
+
 
     private IMergerNode copyValue(IMergerNode node) {
         return MergerNode.copyNode(node);

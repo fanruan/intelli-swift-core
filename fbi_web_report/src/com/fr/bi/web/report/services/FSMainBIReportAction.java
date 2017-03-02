@@ -39,7 +39,6 @@ public class FSMainBIReportAction extends ActionNoSessionCMD {
         if (id != null) {
             node = BIDAOUtils.getBIDAOManager().findByID(Long.parseLong(id), templateCreateUserId);
         }
-
         dealWithEntryResourceRequest(req, res, currentLoginUserId, node);
     }
 

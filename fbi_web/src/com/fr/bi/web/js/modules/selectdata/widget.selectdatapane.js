@@ -34,9 +34,10 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                 }
                 var ids = BI.Utils.getTableIDsOfPackageID(packageId);
                 return BI.map(ids, function (i, id) {
-                    return {
-                        id: id
-                    }
+                    return BI.Utils.getConnectionNameByTableId(id) === BICst.TABLE_TYPE_EXCEL ? {
+                        id: id,
+                        type: "bi.detail_select_data_level0_excel_node"
+                    } : {id: id};
                 })
             },
             fieldsCreator: function (tableId, opt) {

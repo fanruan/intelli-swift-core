@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
+import com.finebi.cube.tools.ArrayInitTestTool;
 import junit.framework.TestCase;
 
 /**
@@ -16,7 +17,7 @@ public class ArrayInitTest extends TestCase {
      */
     public void testBasic() {
         try {
-            ArrayInit4Test test = new ArrayInit4Test();
+            ArrayInitTestTool test = new ArrayInitTestTool();
             System.out.println(test.getValue(3));
         } catch (Exception e) {
             e.printStackTrace();
@@ -31,7 +32,7 @@ public class ArrayInitTest extends TestCase {
      */
     public void testTempPara() {
         try {
-            ArrayInit4Test test = new ArrayInit4Test();
+            ArrayInitTestTool test = new ArrayInitTestTool();
             test.getTempParaValue(3);
         } catch (Exception e) {
             e.printStackTrace();

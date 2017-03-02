@@ -210,7 +210,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         return excelSource;
     }
 
-    private void updateExcelTables(long userId, List<CubeTableSource> excelSources) {
+    private void updateExcelTables(long userId, List<CubeTableSource> excelSources) throws InterruptedException {
         for (CubeTableSource source : excelSources) {
 //            new CubeBuildManager().CubeBuildSingleTable(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
 //            通过RPC接口远程进行cube生成

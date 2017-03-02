@@ -1,9 +1,11 @@
 package com.finebi.cube.tools;
 
+import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -13,7 +15,12 @@ import java.util.Set;
  * @since 4.0
  */
 public class BIMemDataSourceDependent extends BIMemDataSourceTestToolCube {
-    public CubeTableSource parent = BIMemoryDataSourceFactory.generateTableA();
+    public CubeTableSource parent;
+
+    public BIMemDataSourceDependent(List<CubeTableSource> parents) {
+        super(null, parents);
+        this.parent = parents.get(0);
+    }
 
     @Override
     public boolean isIndependent() {

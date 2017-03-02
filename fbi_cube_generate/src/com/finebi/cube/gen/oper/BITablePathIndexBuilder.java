@@ -1,9 +1,11 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.common.log.BILogExceptionInfo;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
@@ -16,6 +18,7 @@ import com.finebi.cube.structure.*;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -49,12 +52,20 @@ public class BITablePathIndexBuilder extends BIProcessor {
     protected BICubeTablePath relationPath;
     private static final Logger logger = LoggerFactory.getLogger(BITablePathIndexBuilder.class);
 
+    public BITablePathIndexBuilder(Cube cube, Cube integrityCube, BICubeTablePath relationPath, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        this.cube = cube;
+        this.cubeChooser = new CubeChooser(cube, integrityCube, tablesNeed2GenerateMap);
+        this.relationPath = relationPath;
+        initThreadPool();
+    }
+
     public BITablePathIndexBuilder(Cube cube, Cube integrityCube, BICubeTablePath relationPath) {
         this.cube = cube;
         this.cubeChooser = new CubeChooser(cube, integrityCube);
         this.relationPath = relationPath;
         initThreadPool();
     }
+
 
     @Override
     protected void initThreadPool() {
@@ -65,7 +76,9 @@ public class BITablePathIndexBuilder extends BIProcessor {
     public Object mainTask(IMessage lastReceiveMessage) {
         Stopwatch stopwatch = Stopwatch.createStarted();
         logger.info(BIStringUtils.append("\n    ", logPath(), "start building path index main task"));
+        BILogHelper.cacheCubeLogRelationNormalInfo(relationPath.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_START, System.currentTimeMillis());
         buildRelationPathIndex();
+        BILogHelper.cacheCubeLogRelationNormalInfo(relationPath.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_END, System.currentTimeMillis());
         logger.info(BIStringUtils.append("\n    ", logPath(), "finish building path index main task,{} second "), stopwatch.elapsed(TimeUnit.SECONDS));
         return null;
     }
@@ -139,16 +152,17 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 try {
                     biLogManager.infoRelation(columnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
                 } catch (Exception e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(),e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             } catch (Exception e) {
                 try {
-                    BILoggerFactory.getLogger().error(BIStringUtils.append("error path:", columnKeyInfo.createJSON().toString()) + e.getMessage(), e);
+                    BILoggerFactory.getLogger(BITablePathIndexBuilder.class).error(BIStringUtils.append("TablePathIndex Error", getTablePathInfo()), e);
                     biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
                 } catch (Exception e1) {
-                    BILoggerFactory.getLogger().error(e1.getMessage());
-
+                    BILoggerFactory.getLogger(BITablePathIndexBuilder.class).error(e1.getMessage());
                 }
+                BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), BIStringUtils.append("TablePathIndex Error", getTablePathInfo()), e.getMessage(), e);
+                BILogHelper.cacheCubeLogRelationException(relationPath.getSourceID(), exceptionInfo);
                 throw BINonValueUtils.beyondControl(e.getMessage(), e);
             } finally {
 
@@ -235,7 +249,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         BICubeTablePath frontRelation = new BICubeTablePath();
         frontRelation.copyFrom(relationPath);
         ITableKey firstPrimaryKey = relationPath.getFirstRelation().getPrimaryTable();
-        return (ICubeRelationEntityService) cube.getCubeRelation(firstPrimaryKey, frontRelation);
+        return cube.getCubeRelationWriter(firstPrimaryKey, frontRelation);
     }
 
     private CubeRelationEntityGetterService buildFrontRelationPathReader() throws
@@ -321,5 +335,33 @@ public class BITablePathIndexBuilder extends BIProcessor {
         }
         return cubeTableSourceSet;
     }
+
+    private String getTablePathInfo() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("\n The path info is:");
+        int i = 0;
+        for (BICubeRelation relation : this.relationPath.getAllRelations()) {
+            i++;
+            sb.append("\n*******************path contain relation " + i + "*******************");
+            sb.append(logRelation(relation));
+        }
+        return sb.toString();
+    }
+
+    private String logRelation(BICubeRelation relation) {
+        try {
+            return BIStringUtils.append(
+                    "\n Relation ID:" + BuildLogHelper.calculateRelationID(relation),
+                    "\n Primary table info:", BILogHelper.logCubeLogTableSourceInfo(relation.getPrimaryTable().getSourceID()),
+                    "\n Primary field:", relation.getPrimaryField().getColumnName(),
+                    "\n Foreign table info:", BILogHelper.logCubeLogTableSourceInfo(relation.getForeignTable().getSourceID()),
+                    "\n Foreign field:", relation.getForeignField().getColumnName()
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return "Get relation info error.";
+        }
+    }
+
 
 }

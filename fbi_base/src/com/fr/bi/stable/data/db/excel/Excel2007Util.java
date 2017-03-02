@@ -4,6 +4,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.stable.StringUtils;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
@@ -34,6 +35,9 @@ public class Excel2007Util extends AbstractExcel2007Util {
         if (tempRowDataList.size() == 0) {
             processFirstSheetFromBI();
         }
+        //读取完后关闭文件
+        this.xlsxPackage.close();
+
         // 处理一下单元格合并
         mergeCell();
 
@@ -63,13 +67,23 @@ public class Excel2007Util extends AbstractExcel2007Util {
     protected void dealWithSomething() {
         for (int i = 0; i < tempRowDataList.size(); i++) {
             Object[] oneRow = tempRowDataList.get(i);
+            if (oneRow.length > columnCount) {
+                columnCount = oneRow.length;
+            }
+        }
+        for (int i = 0; i < tempRowDataList.size(); i++) {
+            Object[] oneRow = tempRowDataList.get(i);
             currentRowData = new ArrayList<Object>();
             //首行 确定字段名
             if (i == 0) {
-                columnCount = oneRow.length;
                 columnNames = new String[columnCount];
-                for (int j = 0; j < oneRow.length; j++) {
-                    String cName = oneRow[j].toString();
+                for (int j = 0; j < columnCount; j++) {
+                    String cName;
+                    try {
+                        cName = GeneralUtils.objectToString(oneRow[j]);
+                    } catch (Exception e) {
+                        cName = StringUtils.EMPTY;
+                    }
                     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
                     Pattern p = Pattern.compile(regEx);
                     Matcher m = p.matcher(cName);
@@ -85,7 +99,7 @@ public class Excel2007Util extends AbstractExcel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v;
                     try {
-                        v = oneRow[j].toString();
+                        v = GeneralUtils.objectToString(oneRow[j]);
                     } catch (Exception e) {
                         v = StringUtils.EMPTY;
                     }
@@ -112,7 +126,7 @@ public class Excel2007Util extends AbstractExcel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v;
                     try {
-                        v = oneRow[j].toString();
+                        v = GeneralUtils.objectToString(oneRow[j]);
                     } catch (Exception e) {
                         v = StringUtils.EMPTY;
                     }

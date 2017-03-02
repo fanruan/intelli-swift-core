@@ -148,11 +148,11 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                         relationItem: op.relationItem
                     });
                 }
-
                 if (!dimensionsVessel[dId]) {
                     dimensionsVessel[dId] = BI.createWidget({
                         type: "bi.layout"
                     });
+                    self.addSubVessel(dId, dimensionsVessel[dId]);
                     var dimensions = self.model.cat("dimensions");
                     if (!BI.has(dimensions, dId)) {
                         self.model.set("addDimension", {
@@ -162,7 +162,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                         });
                     }
                 }
-                self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
+                //self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
                 return dimensionsVessel[dId];
 
             }
@@ -237,6 +237,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             BI.has(changed, "filter_value") ||
             (BI.has(changed, "target_relation"))) {
             this.tablePopulate();
+            this._refreshDimensions();
         }
         if (BI.has(changed, "settings")) {
             var diffs = BI.deepDiff(changed.settings, prev.settings);
@@ -244,6 +245,15 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                 this.tablePopulate();
             }
         }
+    },
+
+    _refreshDimensions: function () {
+        var self = this;
+        BI.each(self.model.cat("view"), function (regionType, dids) {
+            BI.each(dids, function (i, dId) {
+                self.skipTo(regionType + "/" + dId, dId, "dimensions." + dId, {}, {force: true});
+            });
+        });
     },
 
 
@@ -267,5 +277,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         var self = this;
         this.dimensionsManager.populate();
         this.tablePopulate();
+        this._refreshDimensions();
     }
 });

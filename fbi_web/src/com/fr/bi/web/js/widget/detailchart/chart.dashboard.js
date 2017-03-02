@@ -40,9 +40,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type);
         var isMultiPointers = self.config.number_of_pointer === self.constants.MULTI_POINTER;
-        delete config.zoom;
         formatChartDashboardStyle();
         config.chartType = "gauge";
+        delete config.zoom;
         delete config.xAxis;
         delete config.yAxis;
         if (isDashboard && !isMultiPointers) {
@@ -59,6 +59,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
             config.gaugeAxis = self.gaugeAxis;
             var slotValueLAbel = {
+                enabled: true,
                 formatter: function () {
                     var value = this.value;
                     if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && self.config.num_separators) {
@@ -145,10 +146,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function setPlotOptions(style, bands, valueLabel, percentageLabel, thermometerLayout, layout) {
+        function setPlotOptions(style, bands, slotValueLAbel, percentageLabel, thermometerLayout, layout) {
             config.plotOptions.style = style;
             config.plotOptions.bands = bands;
-            config.plotOptions.valueLabel = valueLabel;
+            config.plotOptions.valueLabel = slotValueLAbel;
             config.plotOptions.percentageLabel = percentageLabel;
             config.plotOptions.thermometerLayout = thermometerLayout;
             config.plotOptions.layout = layout;
@@ -231,7 +232,16 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     if (styles.length === 0) {
                         return bands
                     } else {
+                        var maxScale = _calculateValueNiceDomain(0, max)[1];
+
                         BI.each(styles, function (idx, style) {
+                            if(BI.parseFloat(style.range.min) > BI.parseFloat(style.range.max)) {
+                               return bands.push({
+                                    color: color,
+                                    from: conditionMax,
+                                    to: maxScale
+                                });
+                            }
                             bands.push({
                                 color: style.color,
                                 from: style.range.min,
@@ -246,8 +256,6 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                             from: 0,
                             to: min
                         });
-
-                        var maxScale = _calculateValueNiceDomain(0, max)[1];
 
                         bands.push({
                             color: color,

@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.input.primitive.ICubeByteReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 
@@ -11,7 +12,7 @@ import java.nio.MappedByteBuffer;
  * Created by 小灰灰 on 2016/9/30.
  */
 public class BIByteSingleFileNIOReader extends BIBaseSingleFileNIOReader implements ICubeByteReader {
-    private ByteBuffer byteBuffer ;
+    private ByteBuffer byteBuffer;
     private ByteBuffer fakeBuffer;
 
     public BIByteSingleFileNIOReader(File cacheFile) {
@@ -20,16 +21,34 @@ public class BIByteSingleFileNIOReader extends BIBaseSingleFileNIOReader impleme
 
     public byte getSpecificValue(long filePosition) throws BIResourceInvalidException {
         try {
-            return byteBuffer.get((int)filePosition);
+            return byteBuffer.get((int) filePosition);
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the file is: "+baseFile , e);
-        } catch (NullPointerException e){
+            BILoggerFactory.getLogger(this.getClass()).error("The Error filePosition is: " + filePosition + " and the current buffer size is: " + byteBuffer.capacity());
+            throw new RuntimeException("the file is: " + baseFile, e);
+        } catch (NullPointerException e) {
             initBuffer();
-            if (byteBuffer == null){
-                throw new RuntimeException("the file is released: "+baseFile , e);
+            if (byteBuffer == null) {
+                BILoggerFactory.getLogger(this.getClass()).error("the isValid status is: " + isValid);
+                throw new RuntimeException("the file is released: " + baseFile, e);
             }
             return getSpecificValue(filePosition);
         }
+    }
+
+    private byte retryGetSpecificValue(long filePosition) throws BIResourceInvalidException {
+        try {
+            forceRelease();
+            initBuffer();
+            if (byteBuffer == null) {
+                BILoggerFactory.getLogger(this.getClass()).error("the isValid status is: " + isValid);
+                throw new RuntimeException("the file is released: " + baseFile);
+            }
+            return byteBuffer.get((int) filePosition);
+        } catch (IndexOutOfBoundsException e) {
+            BILoggerFactory.getLogger(this.getClass()).error("The Error filePosition is: " + filePosition + " and the current buffer size is: " + byteBuffer.capacity());
+            throw new RuntimeException("the file is: " + baseFile, e);
+        }
+
     }
 
     @Override
@@ -42,11 +61,11 @@ public class BIByteSingleFileNIOReader extends BIBaseSingleFileNIOReader impleme
     protected void releaseChild() {
         readWriteLock.writeLock().lock();
         try {
-            if(byteBuffer!=null) {
+            if (byteBuffer != null) {
                 byteBuffer.clear();
                 byteBuffer = null;
             }
-            if (fakeBuffer != null){
+            if (fakeBuffer != null) {
                 fakeBuffer.clear();
                 fakeBuffer = null;
             }

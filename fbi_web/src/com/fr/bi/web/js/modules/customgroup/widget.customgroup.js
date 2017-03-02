@@ -54,7 +54,11 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
             type: "bi.custom_group_all_fields_pane",
             enableCheckGroup: true,
             height: 270,
-            unGroupedItems: self.unGroupedItems
+            unGroupedItems: self.unGroupedItems,
+            validationChecker: function (v) {
+                var otherGroupName = self.bottom.getValue();
+                return otherGroupName !== v;
+            }
         });
 
         this.groupButtons = BI.createWidget({
@@ -537,6 +541,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         BI.each(group.details, function (i, groupobj) {
             sort.details.push(groupobj.value);
         });
+        group.ungroup = BI.pluck(self.fieldPane.createUngroupedItemFromGroupMap(), "content")[0] || [];
         if (self.bottom.isSelected()) {
             group.ungroup2Other = BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED;
             group.ungroup2OtherName = ungroupedName;

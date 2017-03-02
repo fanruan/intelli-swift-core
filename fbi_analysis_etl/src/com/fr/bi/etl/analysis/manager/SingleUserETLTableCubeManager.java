@@ -4,6 +4,7 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Release;
@@ -12,10 +13,11 @@ import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.tableobj.ETLTableObject;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.structure.queue.FixedQueueThread;
-import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
+import com.fr.general.ComparatorUtils;
+import com.fr.general.FRLogger;
 import com.fr.stable.StringUtils;
 
 import java.io.File;
@@ -32,9 +34,17 @@ public class SingleUserETLTableCubeManager implements Release {
 
     private UserCubeTableSource source;
 
+	private volatile boolean isError = false;
+
     public UserCubeTableSource getSource() {
         return source;
     }
+
+
+	public int getThreadPoolCubeCount() {
+		return tq.size();
+	}
+
 
 	private String getSavedPath(){
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
@@ -55,10 +65,39 @@ public class SingleUserETLTableCubeManager implements Release {
 	public SingleUserETLTableCubeManager (UserCubeTableSource source){
 		this.source = source;
 		String path = getSavedPath();
-		if(path != null && new File(BIPathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), path)).exists()){
-			tq.add(new ETLTableObject(source, path));
+		if(path != null){
+			File file = new File(BIConfigurePathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), path));
+			if(file.exists()) {
+				try {
+					tq.add(new ETLTableObject(source, path));
+				} catch (Exception e){
+					BILoggerFactory.getLogger().error(e.getMessage(), e);
+				}
+			}
+			removeOtherPath(file);
+		} else{
+			clearAllPath(source.fetchObjectCore().getIDValue());
 		}
 		addTask();
+	}
+
+	private void clearAllPath(String idValue) {
+		BIFileUtils.delete(new File(BIConfigurePathUtils.createUserETLTableBasePath(idValue)));
+	}
+
+
+	public void removeOtherPath(File file) {
+		File root = file.getParentFile().getParentFile();
+		if(root.exists()) {
+			File[] files = root.listFiles();
+			for (File f : files) {
+				if (f.exists()) {
+					if (!ComparatorUtils.equals(f.getAbsolutePath(), file.getParentFile().getAbsolutePath())) {
+						BIFileUtils.delete(f);
+					}
+				}
+			}
+		}
 	}
 
 	public boolean isAvailable() {
@@ -68,8 +107,15 @@ public class SingleUserETLTableCubeManager implements Release {
 		}
 		return !isEmpty;
 	}
+
+	public void resetErrorStatus() {
+		isError = false;
+	}
 	
 	public void addTask(){
+		if(isError) {
+			return;
+		}
 		if(updateTask == null){
 			synchronized (this) {
 				if(updateTask == null){
@@ -99,8 +145,10 @@ public class SingleUserETLTableCubeManager implements Release {
 								tq.add(new ETLTableObject(source, data.getPath()));
 								UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
 								manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue(), source.getUserId());
-							} catch (Exception e){
+							} catch (Throwable e){
 								BILoggerFactory.getLogger().error(e.getMessage(), e);
+								isError = true;
+								data.rollback();
 							} finally {
 							}
 						}
@@ -114,7 +162,7 @@ public class SingleUserETLTableCubeManager implements Release {
 	
 	
     private boolean checkCubePath() {
-        return BIFileUtils.checkDir(new File(BIPathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue())));
+        return BIFileUtils.checkDir(new File(BIConfigurePathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue())));
     }
 	
 	protected boolean checkVersion(){

@@ -96,7 +96,7 @@ Data.Req = BIReq = {
     },
 
     reqCubeStatusCheck: function (table, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "check_cube_table_status", {table:table}, function (res) {
+        BI.requestAsync("fr_bi_configure", "check_cube_table_status", {table: table}, function (res) {
             callback(res);
         }, complete)
     },
@@ -170,6 +170,18 @@ Data.Req = BIReq = {
 
     reqUpdateTablesOfOnePackage: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "update_tables_in_package", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqUpdateExcelTableCube: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_dezi", "update_excel_table_cube_by_table_id", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqDeziSaveFileGetExcelData: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_dezi", "dezi_save_file_get_excel_data", data, function (res) {
             callback(res);
         }, complete)
     },

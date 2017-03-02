@@ -256,7 +256,7 @@ public class BIDBUtils {
                 if (columnSize == 0) {
                     column = new PersistentField(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize());
                 } else {
-                    column = new PersistentField(columns[i].getColumnName(), null, columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
+                    column = convert4Scale(columns[i]);
                 }
                 table.addColumn(column);
             }
@@ -268,6 +268,40 @@ public class BIDBUtils {
         return table;
     }
 
+    /**
+     * Author：Connery
+     * 这么多个数据库，就一个处理的类,还是静态的
+     * 这个类型转换有很多问题。一个数据库处理好了，完全可能改坏其他的。
+     * TODO 每个数据库，各自的处理逻辑
+     * @param columnInformation
+     * @return
+     */
+
+    private static PersistentField convert4Scale(ColumnInformation columnInformation) {
+
+        if (columnInformation.getColumnType() == java.sql.Types.DOUBLE && columnInformation.getScale() == 0) {
+            /**
+             * Author：Connery
+             * 这个IF判断是处理SQLServer2008，读取float类型，没有scale，而导致最终被认为是整型。
+             *
+             * 这个scale的默认值，我记得是改过的。
+             */
+            return new PersistentField(
+                    columnInformation.getColumnName(),
+                    null,
+                    columnInformation.getColumnType(),
+                    columnInformation.getColumnSize(),
+                    PersistentField.DEFALUTSCALE);
+        } else {
+            return new PersistentField(
+                    columnInformation.getColumnName(),
+                    null,
+                    columnInformation.getColumnType(),
+                    columnInformation.getColumnSize(),
+                    columnInformation.getScale());
+        }
+
+    }
     private static TableData getServerTableData(String sqlConnection, String sql) {
         try {
             ServerLinkInformation serverLinkInformation = new ServerLinkInformation(sqlConnection, sql);

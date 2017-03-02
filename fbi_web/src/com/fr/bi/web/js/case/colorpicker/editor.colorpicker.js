@@ -60,7 +60,10 @@ BI.ColorPickerEditor = BI.inherit(BI.Widget, {
         });
         this.none.on(BI.Checkbox.EVENT_CHANGE, function () {
             if (this.isSelected()) {
+                self.lastColor = self.getValue();
                 self.setValue("");
+            } else {
+                self.setValue(self.lastColor || "#000000");
             }
             if (self.R.isValid() && self.G.isValid() && self.B.isValid()) {
                 self.colorShow.element.css("background-color", self.getValue());

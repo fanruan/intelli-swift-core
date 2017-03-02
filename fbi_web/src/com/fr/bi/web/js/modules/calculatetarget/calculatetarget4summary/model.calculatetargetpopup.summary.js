@@ -145,7 +145,7 @@ BI.CalculateTargetPopupSummaryModel = BI.inherit(FR.OB, {
     },
 
     getCatagoryDimensionIDs: function () {
-        return BI.filter(BI.Utils.getAllDimDimensionIDs(this.wId), function(idx, dId){
+        return BI.filter(this.getDimDimensionIDs(this.wId), function(idx, dId){
             var regionType = BI.Utils.getRegionTypeByDimensionID(dId);
             return regionType < BICst.REGION.DIMENSION2;
         });

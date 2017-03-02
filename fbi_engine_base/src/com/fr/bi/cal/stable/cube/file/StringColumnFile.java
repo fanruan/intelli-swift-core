@@ -17,6 +17,7 @@ import com.fr.bi.stable.io.sortlist.SortNIOReadStringList;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.io.File;
 import java.util.Comparator;
@@ -36,20 +37,20 @@ public class StringColumnFile extends AbstractSingleColumnFile<String> {
 
     @Override
     protected CubeStringFile createDetailFile() {
-        return BIFileUtils.createFile(this, getDetailFieldName(), CubeStringFile.class, BIPathUtils.createSingleFieldDetailPath(path));
+        return BIFileUtils.createFile(this, getDetailFieldName(), CubeStringFile.class, BIConfigurePathUtils.createSingleFieldDetailPath(path));
     }
     
     private VersionFile getStringIndexVersionFile() {
-        return BIFileUtils.createFile(this, "stringIndexGroupVersion", VersionFile.class, BIPathUtils.createVersionColumnCubePath(BIPathUtils.createSingleFieldDetailPath(path)));
+        return BIFileUtils.createFile(this, "stringIndexGroupVersion", VersionFile.class, BIConfigurePathUtils.createVersionColumnCubePath(BIConfigurePathUtils.createSingleFieldDetailPath(path)));
     }
 
     @Override
     protected CubeStringFile createGroupFile() {
-        return BIFileUtils.createFile(this, getGroupFieldName(), CubeStringFile.class, BIPathUtils.createSingleFieldGroupPath(path));
+        return BIFileUtils.createFile(this, getGroupFieldName(), CubeStringFile.class, BIConfigurePathUtils.createSingleFieldGroupPath(path));
     }
 
     private CubeIntegerFile createIndexGroupFile() {
-    	return BIFileUtils.createFile(this, "stringIndexGroup", CubeIntegerFile.class, BIPathUtils.createCorrespondPath(path));
+    	return BIFileUtils.createFile(this, "stringIndexGroup", CubeIntegerFile.class, BIConfigurePathUtils.createCorrespondPath(path));
     }
     
 	@Override
@@ -113,7 +114,7 @@ public class StringColumnFile extends AbstractSingleColumnFile<String> {
     public void copyDetailValue(String path,  ColumnFile columnFile, SingleUserNIOReadManager manager, long rowCount) {
         File newFile = new File(path);
         File oldFile = new File(this.path);
-        String field = BIPathUtils.createSingleFieldDetailPath(this.path);
+        String field = BIConfigurePathUtils.createSingleFieldDetailPath(this.path);
         //pony 先复制string的三个文件
         BIFileUtils.copyFile(field, oldFile, newFile);
         BIFileUtils.copyFile(BIPathUtils.createIndexPath(field), oldFile, newFile);

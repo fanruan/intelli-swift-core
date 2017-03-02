@@ -194,6 +194,15 @@ if (!window.BI) {
         BI[name] = _applyFunc(name)
     });
     _.extend(BI, {
+        clamp: function (value, minValue, maxValue) {
+            if (value < minValue) {
+                value = minValue;
+            }
+            if (value > maxValue) {
+                value = maxValue;
+            }
+            return value;
+        },
         //数数
         count: function (from, to, predicate) {
             var t;

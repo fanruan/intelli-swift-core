@@ -21,6 +21,7 @@ public abstract class BIBaseSingleFileNIOReader extends BIAbstractBaseNIOReader 
     public BIBaseSingleFileNIOReader(File cacheFile) {
         super(cacheFile);
     }
+
     public BIBaseSingleFileNIOReader(String cacheFilePath) {
         this(new File(cacheFilePath));
     }
@@ -29,20 +30,20 @@ public abstract class BIBaseSingleFileNIOReader extends BIAbstractBaseNIOReader 
     protected abstract void releaseChild();
 
     protected void initBuffer() {
-        if (isValid){
+        if (isValid) {
             /**
              * 资源不可用，需要初始化，释放读锁，加写锁。
              */
             readWriteLock.writeLock().lock();
             try {
-                if (buffer != null || !isValid){
+                if (buffer != null || !isValid) {
                     return;
                 }
                 fc = initFile();
                 buffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
                 initChild(buffer);
             } catch (IOException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger(BIBaseSingleFileNIOReader.class).error(e.getMessage(), e);
             } finally {
                 /**
                  * 释放写锁，保持读锁
