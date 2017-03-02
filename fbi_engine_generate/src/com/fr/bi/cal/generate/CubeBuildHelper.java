@@ -92,7 +92,7 @@ public class CubeBuildHelper {
     }
 
 
-    public class SingleTableTask {
+    private class SingleTableTask {
         private long userId;
         private String baseTableSourceId;
         private int updateType;
@@ -107,7 +107,7 @@ public class CubeBuildHelper {
             return userId;
         }
 
-         String getBaseTableSourceId() {
+        private String getBaseTableSourceId() {
             return baseTableSourceId;
         }
 
