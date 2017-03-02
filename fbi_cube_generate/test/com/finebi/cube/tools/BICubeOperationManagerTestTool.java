@@ -20,6 +20,7 @@ import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -42,8 +43,8 @@ public class BICubeOperationManagerTestTool extends BICubeOperationManager {
 
 
     @Override
-    protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource updateSetting) {
-        return new bisourcedatatransportTestTool(cube, tableSource, allSources, parent);
+    protected BISourceDataTransport getDataTransportBuilder(Cube cube,Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource updateSetting,Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        return new bisourcedatatransportTestTool(cube,integrityCube, tableSource, allSources, parent,tablesNeed2GenerateMap);
     }
 
 
