@@ -1,24 +1,30 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build;
 
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Kary on 2017/2/16.
  */
-public class SummaryNormalTableDataBuilder extends SummaryTableDataBuilder {
+public class SummaryNormalTableDataBuilder extends SumaryCrossTableDataBuilder {
 
 
-    public SummaryNormalTableDataBuilder(TableWidget widget, JSONObject dataJSON) throws Exception {
-        super(widget, dataJSON);
+    public SummaryNormalTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
+        super(dimAndTar, dataJSON);
     }
-
 
     @Override
     public void initAttrs() throws JSONException {
-super.initAttrs();
+        initAllAttrs();
+        refreshDimsInfo();
+        //仅有列表头的时候(有指标) 修正数据
+        if (this.dimIds.size() == 0 && this.crossDimIds.size() > 0 && this.targetIds.size() > 0) {
+            amendment();
+        }
     }
 
     @Override

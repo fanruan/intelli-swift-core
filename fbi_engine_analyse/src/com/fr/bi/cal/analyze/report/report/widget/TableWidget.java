@@ -87,10 +87,6 @@ public class TableWidget extends BISummaryWidget {
         return dimensions;
     }
 
-    public Map<Integer, List<String>> getView() {
-        return view;
-    }
-
     @Override
     public BISummaryTarget[] getViewTargets() {
         if (usedTargets != null) {
@@ -428,7 +424,7 @@ public class TableWidget extends BISummaryWidget {
 
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
-        return ExcelExportDataBuildFactory.createExprotData(this, dataJSON).createJSON();
+        return ExcelExportDataBuildFactory.createExportData(this, dataJSON.getJSONObject("data")).createJSON();
     }
 
     public Map<Integer, List<String>> getWidgetView() {
@@ -442,7 +438,6 @@ public class TableWidget extends BISummaryWidget {
     public int getFieldTypeByDimensionID(String dID) throws Exception {
         return getBITargetAndDimension(dID).createColumnKey().getFieldType();
     }
-
 
     private BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
         for (BIDimension dimension : getDimensions()) {
