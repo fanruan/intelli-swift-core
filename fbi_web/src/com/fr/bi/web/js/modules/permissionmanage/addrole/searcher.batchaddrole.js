@@ -144,7 +144,7 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
         });
     },
     
-    populate: function(packages){
+    populate: function(packages, setRoles){
         var self = this, o = this.options;
         var allRoles = BI.Utils.getAuthorityRoles();
         var sortedRoles = BI.sortBy(allRoles, function(index, item) {
@@ -152,7 +152,15 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
         });
         var items = [];
         BI.each(sortedRoles, function(i, role) {
-            var roleName = role.text || (role.department_name  + "," + role.post_name);
+            var roleName = role.text || (role.departmentname  + "," + role.postname);
+            var found = BI.some(setRoles, function (j, r) {
+                if (roleName === r.role_id && r.role_type === role.role_type) {
+                    return true;
+                }
+            });
+            if (found === true) {
+                return;
+            }
             items.push({
                 type: "bi.text_button",
                 cls: "role-item",

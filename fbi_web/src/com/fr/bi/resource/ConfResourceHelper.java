@@ -486,6 +486,7 @@ public class ConfResourceHelper {
                 "com/fr/bi/web/js/modules/permissionmanage/authorityset/authority.batchset.pane.js",
                 "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.singleaddrole.pane.js",
                 "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.batchaddrole.pane.js",
+                "com/fr/bi/web/js/modules/permissionmanage/addrole/authority.batchaddrole.empty.pane.js",
                 "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.batchaddrole.js",
                 "com/fr/bi/web/js/modules/permissionmanage/addrole/searcher.singleaddrole.js",
                 "com/fr/bi/web/js/modules/permissionmanage/logininfo/widget.selectsinglefield.logininfo.js",

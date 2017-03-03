@@ -5,6 +5,10 @@
  */
 BI.extend(BI.Utils, {
 
+    isAdmin4Conf: function () {
+        return Data.SharingPool.get("isAdmin");
+    },
+
     getCurrentPackageId4Conf: function () {
         return BI.firstKey(Data.SharingPool.cat(BICst.CURRENT_EDITING_PACKAGE));
     },

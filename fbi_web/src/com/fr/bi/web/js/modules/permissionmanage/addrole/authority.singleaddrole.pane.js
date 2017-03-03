@@ -88,13 +88,15 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
             var items = [];
             BI.each(roles, function (i, role) {
                 var roleName = role.role_id;
-                if (BI.isNull(roleName) || roleName === "" || !self._isRoleExist(role)) {
+                if (BI.isNull(roleName) || roleName === "") {
                     return;
                 }
                 var filter = role.filter;
                 var trigger = BI.createWidget({
                     type: "bi.text_button",
                     cls: "role-item",
+                    disabled: !self._isRoleExist(role),
+                    warningTitle: BI.i18nText("BI-No_Role_Auth_Tip"),
                     text: roleName,
                     height: 30,
                     hgap: 5
@@ -150,7 +152,7 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
     _isRoleExist: function (role) {
         var allRoles = BI.Utils.getAuthorityRoles();
         return BI.some(allRoles, function (i, aRole) {
-            var roleName = aRole.text || (aRole.department_name + "," + aRole.post_name);
+            var roleName = aRole.text || (aRole.departmentname + "," + aRole.postname);
             return role.role_type === aRole.role_type && role.role_id === roleName;
         });
     },
