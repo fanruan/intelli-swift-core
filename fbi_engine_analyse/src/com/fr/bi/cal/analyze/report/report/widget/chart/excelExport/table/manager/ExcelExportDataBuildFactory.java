@@ -28,7 +28,7 @@ public class ExcelExportDataBuildFactory {
     }
 
     private static Map<Integer, List<JSONObject>> createViewMap(TableWidget widget, Map<Integer, List<String>> view) throws Exception {
-        Map<Integer, List<JSONObject>> dimAndTar = new HashMap<>();
+        Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
         Iterator<Integer> iterator = view.keySet().iterator();
         while (iterator.hasNext()) {
             Integer next = iterator.next();

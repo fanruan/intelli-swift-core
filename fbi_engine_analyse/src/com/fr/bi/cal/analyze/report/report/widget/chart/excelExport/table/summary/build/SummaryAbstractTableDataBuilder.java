@@ -119,7 +119,7 @@ public abstract class SummaryAbstractTableDataBuilder implements BIExcelDataBuil
     }
 
     private void createTableHeader() throws Exception {
-        List<String> allIds = new ArrayList<>(dimIds);
+        List<String> allIds = new ArrayList<String>(dimIds);
         allIds.addAll(targetIds);
         for (String dimId : allIds) {
             BIExcelTableHeader header = new BIExcelTableHeader();

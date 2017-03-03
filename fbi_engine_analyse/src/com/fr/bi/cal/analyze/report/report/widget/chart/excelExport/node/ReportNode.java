@@ -22,7 +22,7 @@ public class ReportNode {
     }
 
     private void initAttrs() {
-        children = new ArrayList<>();
+        children = new ArrayList<BIExcelTableItem>();
         dId = "";
         id = "";
         left = "";
