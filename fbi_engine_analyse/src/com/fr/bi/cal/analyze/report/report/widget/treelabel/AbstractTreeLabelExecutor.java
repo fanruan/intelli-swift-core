@@ -35,7 +35,7 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
         }
     }
 
-    protected List<String> createData(String[] parentValues,int floor, int times) throws JSONException {
+    protected List<String> createData(List<List<String>> parentValues,int floor, int times) throws JSONException {
         List<String> dataList = new ArrayList<String>();
         searchFloor = floor;
         BIDimension[] rowDimension = widget.getViewDimensions();
@@ -48,10 +48,9 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
         return dataList;
     }
 
-    private void createGroupValueWithParentValues(final List<String> dataList, String[] parentValues, GroupValueIndex filterGvi, int floors, int times) {
-        if (floors == parentValues.length) {
+    private void createGroupValueWithParentValues(final List<String> dataList, List<List<String>> parentValues, GroupValueIndex filterGvi, int floors, int times) {
+        if (floors == parentValues.size()) {
             BIDimension[] dimensions = Arrays.copyOfRange(widget.getViewDimensions(), searchFloor, widget.getViewDimensions().length);
-            //BIDimension[] dimensions = widget.getViewDimensions();
             BIDimension dimension = dimensions[floors];
             ICubeTableService targetTi = getLoader().getTableIndex(widget.getTargetTable().getTableSource());
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
@@ -73,15 +72,10 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
                     Collections.reverse(dataList);
                 }
             } else {
-                int count = 0;
                 for (int i = 0; i < dataReader.sizeOfGroup(); i++) {
-                    if (count >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
-                        break;
-                    }
                     Object[] rowValue = new Object[1];
                     rowValue[0] = dataReader.getGroupValue(i);
                     if (!filterGvi.AND(dataReader.getGroupIndex(rowValue)[0]).isAllEmpty()) {
-                        count++;
                         String k = dataReader.getGroupValue(i).toString();
                         dataList.add(k);
                     }
@@ -93,14 +87,40 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
             ti.clear();
             targetTi.clear();
         }
-        if (floors < parentValues.length) {
+        if (floors < parentValues.size()) {
+            if (!containsAllSelected(parentValues.get(floors))) {
+                GroupValueIndex result = generateGVI(parentValues, floors, filterGvi);
+                createGroupValueWithParentValues(dataList, parentValues, result, floors + 1, times);
+            } else {
+                createGroupValueWithParentValues(dataList, parentValues, filterGvi, floors + 1, times);
+            }
+        }
+    }
+
+    private GroupValueIndex generateGVI(List<List<String>> parentValues, int floors, GroupValueIndex filterGvi) {
+        List<GroupValueIndex> gviList =new ArrayList<GroupValueIndex>();
+        GroupValueIndex result;
+        for(String str : parentValues.get(floors)) {
             String[] groupValue = new String[1];
-            groupValue[0] = parentValues[floors];
+            groupValue[0] = str;
             BIDimension dimension = widget.getViewDimensions()[floors + searchFloor];
             ICubeTableService ti = getLoader().getTableIndex(dimension.createTableKey().getTableSource());
             final ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), widget.getTableSourceRelationList(dimension, session.getUserId()));
             GroupValueIndex gvi = dataReader.getGroupIndex(groupValue)[0].AND(filterGvi);
-            createGroupValueWithParentValues(dataList, parentValues, gvi, floors + 1, times);
+            gviList.add(gvi);
         }
+        if (gviList.size() <= 0) {
+            result = filterGvi;
+        } else {
+            result = gviList.get(0).AND(filterGvi);
+            for(int i = 1; i< gviList.size();i++) {
+                result = gviList.get(i).AND(filterGvi).OR(result);
+            }
+        }
+        return result;
+    }
+
+    private boolean containsAllSelected(List<String> values) {
+        return values.contains("_*_");
     }
 }

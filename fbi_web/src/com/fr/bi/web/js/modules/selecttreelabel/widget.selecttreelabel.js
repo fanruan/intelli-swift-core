@@ -16,9 +16,6 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
             type: "bi.tree_label",
             element: this.element,
             itemsCreator: function (op, callback) {
-                var data = {};
-                data.floors = op.floor;
-                data.parentValues = op.parentValues;
                 if (BI.isEmptyObject(op)) {
                     callback({});
                 } else {
@@ -26,7 +23,7 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
                         success: function (jsonData) {
                             callback(jsonData);
                         }
-                    }, {tree_options: data})
+                    }, {tree_options: op})
                 }
             }
         });
@@ -37,16 +34,13 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
+        v = v || [];
         var self = this, o = this.options;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId),
             titles = [],
             data = {
-                floors: 0,
-                selectedValues: v,
-                parentValues: [{
-                    id: "",
-                    value: []
-                }]
+                floors: -1,
+                selectedValues: v
             };
         if (BI.isEmptyArray(dimensions)) {
             self.treeLabel.populate({
@@ -57,21 +51,19 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
             return;
         }
         BI.each(dimensions, function (idx, dId) {
-            var temp = BI.Utils.getDimensionNameByID(dId);
-            titles.push({
-                text: temp + BI.i18nText("BI-Colon"),
-                title: temp
-            })
+            titles.push(BI.Utils.getDimensionNameByID(dId))
         });
         BI.Utils.getWidgetDataByID(o.wId, {
             success: function (jsonData) {
                 self.treeLabel.populate({
                     items: jsonData.items,
+                    values: jsonData.values,
                     titles: titles
                 });
                 self.treeLabel.setValue(v);
             }
         }, {tree_options: data});
+
     },
 
     getValue: function () {

@@ -244,7 +244,7 @@ BIDezi.TreeLabelView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 35;
             this.widget.attr("items")[2].left = 10;
         }
-        this.treeLabel.setHeight(height - 42);
+        this.treeLabel.setHeight(height - 50);
         this.widget.resize();
     },
 

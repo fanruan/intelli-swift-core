@@ -2868,16 +2868,16 @@
 
                     if (self.getWidgetTypeByID(id) === BICst.WIDGET.TREE_LABEL) {
                         var viewDimensionIds = self.getWidgetViewByID(id)[BICst.REGION.DIMENSION1];
-                        var treeValue = [];
-                        createTreeLabelFilterValue(treeValue, value, 0, viewDimensionIds);
+                        var treeLabelValue = [];
+                        createTreeLabelFilterValue(treeLabelValue, value, viewDimensionIds);
                         filter = {
                             filter_type: BICst.FILTER_TYPE.OR,
-                            filter_value: treeValue
+                            filter_value: treeLabelValue
                         };
                         filterValues.push(filter);
                     }
 
-                    if (value.length === 1) {
+                    if (self.getWidgetTypeByID(id) === BICst.WIDGET.GENERAL_QUERY && value.length === 1) {
                         var filter = value[0];
                         parseFilter(filter);
                         filterValues.push(filter);
@@ -2915,36 +2915,38 @@
                 );
             }
 
-            function createTreeLabelFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
-                BI.each(v, function (value, child) {
-                        var leafFilterObj = [{
+            function createTreeLabelFilterValue(result, v, dimensionIds) {
+                v = descartes(v);
+                BI.each(v, function (index, values) {
+                    var obj = {
+                        filter_type: BICst.FILTER_TYPE.AND,
+                        filter_value: []
+                    };
+                    BI.each(values, function (idx, value) {
+                        if (value === BICst.LIST_LABEL_TYPE.ALL) {
+                            return;
+                        }
+                        obj.filter_value.push({
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
-                                type: value === BICst.LIST_LABEL_TYPE.ALL ? BI.Selection.All : BI.Selection.Multi,
-                                value: [value === BICst.LIST_LABEL_TYPE.ALL ? "" : value]
+                                type: BI.Selection.Multi,
+                                value: [value]
                             },
-                            // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
-                            _src: self.getDimensionSrcByID(dimensionIds[floor])
-                        }];
-                        if (BI.isEmptyObject(child) === true) {
-                            var filterObj = {
-                                filter_type: BICst.FILTER_TYPE.AND,
-                                filter_value: []
-                            };
-                            filterObj.filter_value = BI.concat(filterObj.filter_value, leafFilterObj);
-                            BI.isNotNull(fatherFilterValue) && (filterObj.filter_value = BI.concat(filterObj.filter_value, fatherFilterValue));
-                            result.push(filterObj);
-                        } else {
-                            if (leafFilterObj[0].filter_value.type === BI.Selection.All) {
-                                leafFilterObj = [];
-                            }
-                            if (fatherFilterValue) {
-                                leafFilterObj = BI.concat(leafFilterObj, fatherFilterValue);
-                            }
-                            createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
-                        }
-                    }
-                );
+                            _src: self.getDimensionSrcByID(dimensionIds[idx])
+                        });
+                    });
+                    result.push(obj);
+                })
+            }
+
+            function descartes(arr) {
+                return arr.reduce(function(a,b){
+                    return a.map(function(x){
+                        return b.map(function(y){
+                            return x.concat(y);
+                        })
+                    }).reduce(function(a,b){ return a.concat(b) },[])
+                }, [[]])
             }
 
             function checkValueValid(type, value) {
