@@ -2,8 +2,9 @@ package com.fr.bi.cal.analyze.report.report;
 
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.*;
-import com.fr.bi.cal.analyze.report.report.widget.chart.VanChartUtils;
+import com.fr.bi.cal.analyze.report.report.widget.chart.types.VanColumnWidget;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -19,8 +20,27 @@ import java.util.HashMap;
  */
 public class BIWidgetFactory {
 
+    private static HashMap<WidgetType, Class<? extends VanChartWidget>> vancharts = new HashMap<>();
 
-    private static HashMap widgets = new HashMap<WidgetType, BIWidget>();
+    static {
+        vancharts.put(WidgetType.COLUMN, VanColumnWidget.class);
+        vancharts.put(WidgetType.BAR, VanColumnWidget.class);
+    }
+
+
+    public static BIWidget createVanChartWidget(WidgetType type){
+        try {
+
+            return vancharts.get(type).newInstance();
+
+        }catch (Exception e){
+
+            BILoggerFactory.getLogger().error("error in create chart widget");
+
+            return null;
+        }
+
+    }
 
 
 
@@ -43,7 +63,7 @@ public class BIWidgetFactory {
     }
 
     public static BIWidget newWidgetByType(WidgetType type, JSONArray viewTargets) throws Exception {
-        BIWidget biWidget = null;
+        BIWidget biWidget;
         switch (type) {
             case TABLE:
             case CROSS_TABLE:
@@ -72,7 +92,7 @@ public class BIWidgetFactory {
                 biWidget = new SingleSliderWidget();
                 break;
             default:
-                biWidget = new VanChartWidget();
+                biWidget = createVanChartWidget(type);
         }
 
         return biWidget;
