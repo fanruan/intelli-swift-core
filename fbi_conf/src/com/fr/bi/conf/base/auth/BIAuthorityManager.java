@@ -76,8 +76,6 @@ public class BIAuthorityManager implements Serializable{
         List<BIPackageAuthority> result = new ArrayList<BIPackageAuthority>();
         for (int i = 0; i < packAuths.size(); i++) {
             BIPackageAuthority auth = packAuths.get(i);
-//            List<CompanyRole> comRoles = session.getCompanyRoles();
-//            List<CustomRole> cusRoles = session.getCustomRoles();
             String roleName = auth.getRoleName();
             int roleType = auth.getRoleType();
             switch (roleType) {
@@ -147,8 +145,6 @@ public class BIAuthorityManager implements Serializable{
             BIPackageID pId = packAuth.getKey();
             for (int i = 0; i < authorities.size(); i++) {
                 BIPackageAuthority auth = authorities.get(i);
-//                List<CompanyRole> comRoles = session.getCompanyRoles();
-//                List<CustomRole> cusRoles = session.getCustomRoles();
                 String roleName = auth.getRoleName();
                 int roleType = auth.getRoleType();
                 switch (roleType) {
