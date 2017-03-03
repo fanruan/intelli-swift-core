@@ -41,16 +41,16 @@ public class BIFSGetConfigAction extends AbstractBIBaseAction {
         PrintWriter pw = WebUtils.createPrintWriter(res);
         JSONObject jo = new JSONObject();
 
-        jo.put("chartStyle", FBIConfig.getInstance().getChartStyleAttr().getChartStyle());
-//        jo.put("defaultStyle", FBIConfig.getInstance().getChartStyleAttr().getDefaultStyle());
-        String defaultColor = ChartPreStyleServerManager.getInstance().getCurrentStyle();
+        jo.put("chartStyle", FBIConfig.getProviderInstance().getChartStyleAttr().getChartStyle());
+//        jo.put("defaultStyle", FBIConfig.getProviderInstance().getChartStyleAttr().getDefaultStyle());
+        String defaultColor = ChartPreStyleServerManager.getProviderInstance().getCurrentStyle();
         jo.put("defaultColor", defaultColor);
 
         JSONArray ja = new JSONArray();
-        Iterator<String> it = ChartPreStyleServerManager.getInstance().names();
+        Iterator<String> it = ChartPreStyleServerManager.getProviderInstance().names();
         while (it.hasNext()) {
             String name = it.next();
-            ChartPreStyle style = (ChartPreStyle) ChartPreStyleServerManager.getInstance().getPreStyle(name);
+            ChartPreStyle style = (ChartPreStyle) ChartPreStyleServerManager.getProviderInstance().getPreStyle(name);
             java.util.List colorList = style.getAttrFillStyle().getColorList();
 
             Iterator itColor = colorList.iterator();

@@ -465,7 +465,7 @@ public class BIDBUtils {
     public static PersistentTable getServerBITable(String tableName) {
         if (StringUtils.isNotBlank(tableName)) {
             PersistentTable persistentTable = new PersistentTable(null, tableName, null);
-            DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+            DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
             TableData tableData = datasourceManager.getTableData(tableName);
             if (tableData == null) {
                 BILoggerFactory.getLogger().error("can not find server db :" + tableName);
