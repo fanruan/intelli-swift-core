@@ -61,6 +61,7 @@ public enum WidgetType {
     QUARTER(0x32),
     MONTH(0x33),
     YMD(0x34),
+    DATE_PANE(0x3d),
 
     QUERY(0x35),
     RESET(0x36),

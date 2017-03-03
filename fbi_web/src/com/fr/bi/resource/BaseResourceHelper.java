@@ -1061,7 +1061,7 @@ public class BaseResourceHelper {
 
                 //日期面板
                 "com/fr/bi/web/js/widget/datepane/datepanenotselectday.js",
-                
+
                 //图控件
                 "com/fr/bi/web/js/widget/detailchart/chart.abstract.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.accumulatearea.js",
@@ -1198,6 +1198,7 @@ public class BaseResourceHelper {
                 "com/fr/bi/web/js/widget/singleslider/slider/widget.slider.js",
 
                 //区间滑块
+                "com/fr/bi/web/js/widget/intervalslider/model.accuratecalculation.js",
                 "com/fr/bi/web/js/widget/intervalslider/intervalslider.js",
 
                 //可以设置参数的下拉框
