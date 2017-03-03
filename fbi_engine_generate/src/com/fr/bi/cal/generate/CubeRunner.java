@@ -97,20 +97,6 @@ public class CubeRunner {
         cubeThread.start();
     }
 
-    /**
-     * 生成cube
-     */
-    public void generateCubes() {
-        synchronized (cubeThread) {
-            new Thread() {
-                @Override
-                public void run() {
-                    generateCube();
-                }
-            }.start();
-        }
-    }
-
     public boolean hasTask(CubeTask t) {
         Iterator<CubeTask> iterator = cubeThread.iterator();
         while (iterator.hasNext()) {
@@ -120,16 +106,12 @@ public class CubeRunner {
             }
         }
         return false;
-//        return cubeThread.contains(task);
     }
 
     public boolean hasTask() {
         return !cubeThread.isEmpty();
     }
 
-    public boolean isTaskBuilding() {
-        return statue == Status.PREPARING;
-    }
 
     public boolean hasWaitingCheckTask() {
         Iterator<CubeTask> iter = cubeThread.iterator();
@@ -159,13 +141,6 @@ public class CubeRunner {
 
     public Iterator<CubeTask> getWaitingList() {
         return cubeThread.iterator();
-    }
-
-    private void generateCube() {
-//        setStatue(Status.LOADED);
-//        CubeBuildStuff cubeBuild = new CubeBuildStuffIncreased(biUser.getUserId(), CubeUpdateUtils.getCubeAbsentTables(biUser.getUserId()), CubeUpdateUtils.getCubeAbsentRelations(biUser.getUserId()));
-//        CubeTask task = new BuildCubeTask(biUser, cubeBuild);
-//        CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
     }
 
     private void start() {

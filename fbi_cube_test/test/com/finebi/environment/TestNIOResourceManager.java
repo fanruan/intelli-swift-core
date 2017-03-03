@@ -393,11 +393,11 @@ public class TestNIOResourceManager extends TestCase {
 
         System.out.println("------------");
         forceRelease.run();
-        try {
-            Thread.currentThread().join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.currentThread().join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static void sleepy() {
