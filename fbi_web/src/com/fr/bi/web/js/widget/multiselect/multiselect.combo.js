@@ -67,7 +67,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             valueFormatter: o.valueFormatter,
             itemsCreator: function (op, callback) {
                 o.itemsCreator(op, function (res) {
-                    if (op.times === 1 && BI.isNotNull(op.keyword)) {
+                    if (op.times === 1 && BI.isNotNull(op.keywords)) {
                         self.trigger.setValue(self.getValue());
                     }
                     callback.apply(self, arguments);
@@ -207,7 +207,8 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
         this._assertValue(this.storeValue);
         if (!this._allData) {
             o.itemsCreator({
-                type: BI.MultiSelectCombo.REQ_GET_ALL_DATA
+                type: BI.MultiSelectCombo.REQ_GET_ALL_DATA,
+                keywords: keywords
             }, function (ob) {
                 self._allData = BI.pluck(ob.items, "value");
                 digest(self._allData);
@@ -232,7 +233,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
         this._assertValue(res);
         o.itemsCreator({
             type: BI.MultiSelectCombo.REQ_GET_ALL_DATA,
-            keyword: this.trigger.getKey()
+            keywords: [this.trigger.getKey()]
         }, function (ob) {
             var items = BI.pluck(ob.items, "value");
             if (self.storeValue.type === res.type) {
