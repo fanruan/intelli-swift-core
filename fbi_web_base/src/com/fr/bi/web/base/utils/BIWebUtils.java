@@ -7,6 +7,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.base.CubeIndexManager;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BISessionUtils;
+import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.fs.BIUserAuthorAttr;
 import com.fr.bi.conf.fs.FBIConfig;
@@ -222,6 +223,7 @@ public class BIWebUtils {
                 + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
         //jar包版本
         map.put("__v__", GeneralUtils.readBuildNO());
+        map.put("isCluster", ClusterEnv.isCluster());
         boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         boolean isEdit = sessionIDInfo.setEdit(biEdit);
         if (biEdit && !isEdit) {

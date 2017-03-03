@@ -13,6 +13,9 @@ BI.Plugin.registerWidget("bi.detail_select_data_level0_node", function(el){
 BI.Plugin.DATA_STYLE_TAB_ITEM = BI.Plugin.DATA_STYLE_TAB_ITEM || [];
 (function () {
     BI.Plugin.registerObject('bi.data_style_tab', function(obj){
+        if (Data.SharingPool.get("isCluster")) {
+            return;
+        }
         var _createMainModel = function (wId) {
             var self = this, model = {}, items = [];
             var widget = BI.Utils.getWidgetCalculationByID(wId);
