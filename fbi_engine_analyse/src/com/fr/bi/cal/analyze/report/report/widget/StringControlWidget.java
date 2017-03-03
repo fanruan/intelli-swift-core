@@ -108,8 +108,7 @@ public class StringControlWidget extends TableWidget {
 
     private JSONObject getCustomGroupResult(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, DimensionCalculator calculator) throws JSONException {
         List<Object> list = new ArrayList<Object>();
-        int sortType = this.getDimensions()[0].getSortType();
-        Iterator<Map.Entry<Object, GroupValueIndex>> it = (sortType == BIReportConstant.SORT.ASC ? reader.iterator() : reader.previousIterator());
+        Iterator<Map.Entry<Object, GroupValueIndex>> it = reader.iterator();
         while (it.hasNext()) {
             Map.Entry<Object, GroupValueIndex> entry = it.next();
             if (entry.getValue().hasSameValue(gvi)) {
