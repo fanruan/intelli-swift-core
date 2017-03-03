@@ -11,7 +11,15 @@ import com.fr.web.core.SessionDealWith;
  */
 public abstract class VanChartWidget extends TableWidget {
 
-    private static final int STYLE_GRADULA = 2;
+    private static final int STYLE_GRADUAL = 2;
+
+    //兼容前台用数字表示位置的写法，真xx丑
+    private static final int TOP = 2;
+    private static final int RIGHT = 3;
+    private static final int BOTTOM = 4;
+    private static final int LEFT = 5;
+
+    public abstract JSONArray createSeries(JSONObject data) throws JSONException;
 
     public JSONObject createDataJSON(BISessionProvider session) throws Exception {
 
@@ -22,18 +30,6 @@ public abstract class VanChartWidget extends TableWidget {
         return this.createOptions().put("series", series);
     }
 
-
-    public JSONObject getPostOptions(String sessionId) throws Exception {
-        JSONObject chartOptions = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
-        JSONObject plotOptions = chartOptions.optJSONObject("plotOptions");
-        plotOptions.put("animation", false);
-        chartOptions.put("plotOptions", plotOptions);
-        return chartOptions;
-    }
-
-
-    public abstract JSONArray createSeries(JSONObject data) throws JSONException;
-
     public JSONObject createOptions() throws JSONException{
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getChartSetting().getDetailChartSetting();
@@ -42,10 +38,11 @@ public abstract class VanChartWidget extends TableWidget {
             options.put("colors", settings.getJSONArray("chartColor"));
         }
 
-        if(settings.getInt("chartStyle") == STYLE_GRADULA){
+        if(settings.optInt("chartStyle") == STYLE_GRADUAL){
             options.put("style", "gradual");
         }
 
+        options.put("legend", this.parseLegend(settings));
 
         return options;
     }
@@ -74,6 +71,90 @@ public abstract class VanChartWidget extends TableWidget {
             }
         }
         return series;
+    }
+
+    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
+
+        JSONObject category = JSONObject.create();
+
+        category
+                .put("type", "category")
+                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("catShowTitle")).put("style", this.checkTextStyle(settings.optJSONObject("catTitleStyle"))).put("text", settings.optString("catTitle")))
+                .put("showLabel", settings.optBoolean("catShowLabel"))
+                .put("labelStyle", this.checkTextStyle(settings.optJSONObject("catLabelStyle")))
+                .put("lineColor", settings.optString("catLineColor"));
+
+        return JSONArray.create().put(category);
+    }
+
+    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
+
+        JSONArray axis = JSONArray.create();
+        JSONObject labelStyle = settings.optJSONObject("leftYLabelStyle");
+
+        JSONObject left = JSONObject.create()
+                .put("type", "value")
+                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("leftYShowTitle")).put("style", this.checkTextStyle(settings.optJSONObject("leftYTitleStyle"))).put("text", settings.optString("leftYTitle")))
+                .put("showLabel", settings.optBoolean("leftYShowLabel"))
+                .put("labelStyle", this.checkTextStyle(labelStyle.optJSONObject("textStyle")))
+                .put("lineColor", settings.optString("leftYLineColor"));
+
+        labelStyle = settings.optJSONObject("rightYLabelStyle");
+        JSONObject right = JSONObject.create()
+                .put("type", "value")
+                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("rightYShowTitle")).put("style", this.checkTextStyle(settings.optJSONObject("rightYTitleStyle"))).put("text", settings.optString("rightYTitle")))
+                .put("showLabel", settings.optBoolean("rightYShowLabel"))
+                .put("labelStyle", this.checkTextStyle(labelStyle.optJSONObject("textStyle")))
+                .put("lineColor", settings.optString("rightYLineColor"));
+
+        axis.put(left);
+        axis.put(right);
+
+        if(settings.has("rightY2LineColor")){
+            labelStyle = settings.optJSONObject("rightY2LabelStyle");
+            JSONObject right2 = JSONObject.create()
+                    .put("type", "value")
+                    .put("title", JSONObject.create().put("enabled", settings.optJSONObject("rightY2ShowTitle")).put("style", this.checkTextStyle(settings.optJSONObject("rightY2TitleStyle"))).put("text", settings.optString("rightY2Title")))
+                    .put("showLabel", settings.optBoolean("rightY2ShowLabel"))
+                    .put("labelStyle", this.checkTextStyle(labelStyle.optJSONObject("textStyle")))
+                    .put("lineColor", settings.optString("rightY2LineColor"));
+
+            axis.put(right2);
+        }
+
+        return axis;
+    }
+
+    protected JSONObject parseLegend(JSONObject settings) throws JSONException{
+
+        int legend = settings.optInt("legend");
+        String position = "top";
+
+        if(legend == RIGHT){
+            position = "right";
+        }else if(legend == BOTTOM){
+            position = "bottom";
+        }else if(legend == LEFT){
+            position = "left";
+        }
+
+        return JSONObject.create().put("enabled", legend >= TOP).put("position", position).put("style", this.checkTextStyle(settings.optJSONObject("legendStyle")));
+    }
+
+    //过来的setting里，fontSize没有单位
+    protected JSONObject checkTextStyle(JSONObject textStyle) throws JSONException{
+        if(textStyle != null && textStyle.has("fontSize")){
+            return new JSONObject(textStyle.toString()).put("fontSize", textStyle.optInt("fontSize") + "px");
+        }
+        return textStyle;
+    }
+
+    public JSONObject getPostOptions(String sessionId) throws Exception {
+        JSONObject chartOptions = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
+        JSONObject plotOptions = chartOptions.optJSONObject("plotOptions");
+        plotOptions.put("animation", false);
+        chartOptions.put("plotOptions", plotOptions);
+        return chartOptions;
     }
 
 }
