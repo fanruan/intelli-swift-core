@@ -177,6 +177,14 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                     self.combo.showView();
                 }
             });
+            this.changeIcon = BI.createWidget({
+                type: "bi.icon_button",
+                cls: "bi-trigger-date-change widget-date-h-change-font",
+                width: 30,
+                height: 23,
+                invisible: true
+            });
+
 
             BI.createWidget({
                 type: "bi.absolute",
@@ -191,13 +199,50 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                     el: triggerBtn,
                     top: 0,
                     left: 0
+                }, {
+                    el: this.changeIcon,
+                    top: 0,
+                    right: 0
                 }]
             })
         },
+
+        _checkDynamicValue: function(v){
+            var type = null;
+            if (BI.isNotNull(v)) {
+                type = v.type
+            }
+            switch (type){
+                case BICst.MULTI_DATE_YEAR_PREV:
+                case BICst.MULTI_DATE_YEAR_AFTER:
+                case BICst.MULTI_DATE_YEAR_BEGIN:
+                case BICst.MULTI_DATE_YEAR_END:
+                case BICst.MULTI_DATE_QUARTER_PREV:
+                case BICst.MULTI_DATE_QUARTER_AFTER:
+                case BICst.MULTI_DATE_QUARTER_BEGIN:
+                case BICst.MULTI_DATE_QUARTER_END:
+                case BICst.MULTI_DATE_MONTH_PREV:
+                case BICst.MULTI_DATE_MONTH_AFTER:
+                case BICst.MULTI_DATE_MONTH_BEGIN:
+                case BICst.MULTI_DATE_MONTH_END:
+                case BICst.MULTI_DATE_WEEK_PREV:
+                case BICst.MULTI_DATE_WEEK_AFTER:
+                case BICst.MULTI_DATE_DAY_PREV:
+                case BICst.MULTI_DATE_DAY_AFTER:
+                case BICst.MULTI_DATE_DAY_TODAY:
+                    this.changeIcon.setVisible(true);
+                    break;
+                default:
+                    this.changeIcon.setVisible(false);
+                    break;
+            }
+        },
+
         setValue: function (v) {
             this.storeValue = v;
             this.popup.setValue(v);
             this.trigger.setValue(v);
+            this._checkDynamicValue(v)
         },
         getValue: function () {
             return this.storeValue;
