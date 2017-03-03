@@ -12,6 +12,7 @@ import com.finebi.cube.gen.oper.BITablePathIndexBuilder;
 import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.tools.BICubePathTestTool;
 import com.finebi.cube.tools.BICubeRelationTestTool;
+import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
@@ -47,11 +48,15 @@ public class BITablePathBuilderTest extends BICubeTestBase {
         transportTest.transport(BIMemoryDataSourceFactory.generateTableB());
         transportTest.transport(BIMemoryDataSourceFactory.generateTableC());
 
-        BIFieldIndexGeneratorTest fieldIndexGenerator = new BIFieldIndexGeneratorTest();
-        fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableA(), 1);
-        fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableC(), 2);
-        fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableB(), 1);
-        fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableB(), 2);
+//        BIFieldIndexGeneratorTest fieldIndexGenerator = new BIFieldIndexGeneratorTest();
+//        fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableA(), 1);
+//        fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableC(), 2);
+//        fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableB(), 1);
+//        fieldIndexGenerator.fieldIndexGenerator(BIMemoryDataSourceFactory.generateTableB(), 2);
+
+        BIFieldIndexGeneratorTest.buildFieldIndex((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableA());
+        BIFieldIndexGeneratorTest.buildFieldIndex((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableB());
+        BIFieldIndexGeneratorTest.buildFieldIndex((BIMemoryDataSource) BIMemoryDataSourceFactory.generateTableC());
 
         BIRelationIndexBuilderTest relationIndexBuilder = new BIRelationIndexBuilderTest();
         relationIndexBuilder.setTableA(BIMemoryDataSourceFactory.generateTableA());
