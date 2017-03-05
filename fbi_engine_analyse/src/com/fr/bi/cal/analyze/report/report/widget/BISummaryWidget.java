@@ -378,7 +378,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         }
     }
 
-    private JSONArray createDimensionAndTargetPathsJa (String dimensionId, String targetId, JSONObject dims, JSONObject targetRelationJo)throws JSONException{
+    private JSONArray createDimensionAndTargetPathsJa(String dimensionId, String targetId, JSONObject dims, JSONObject targetRelationJo) throws JSONException {
         Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
         if (relationMap == null) {
             relationMap = new LinkedHashMap<String, List<BITableRelation>>();
@@ -486,24 +486,50 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         dimensionsMap = refreshedDimensionsMap;
     }
 
-    public abstract class SimpleIntArray{
+    public abstract class SimpleIntArray {
         public abstract int get(int index);
 
         public abstract int size();
     }
 
-    protected SimpleIntArray createGroupArray(int start, int end, final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+    /**
+     * @param start
+     * @param end
+     * @param limitStarts start和end可以是数组
+     * @param limitEnds
+     * @param getter
+     * @param gvi
+     * @return
+     */
+    protected SimpleIntArray createGroupArray(int start, int end, final int[] limitStarts, final int[] limitEnds, final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
         if (gvi instanceof AllShowRoaringGroupValueIndex) {
-            final int fstart = start, size = start == -1 ? 0 : end - start;
-            return new SingleSliderWidget.SimpleIntArray() {
+            int size = 0;
+            if (limitStarts.length == 0) {
+                size = end;
+            }
+            final int[] intevals = new int[limitStarts.length];
+            for (int i = 0, len = limitStarts.length; i < len; i++) {
+                size += (limitStarts[i] == -1 ? 0 : limitEnds[i] - limitStarts[i]);
+                intevals[i] = size;
+            }
+            final int fsize = size, fstart = start;
+            return new SimpleIntArray() {
                 @Override
                 public int get(int index) {
+                    for (int i = intevals.length - 1; i >= 0; i--) {
+                        if (i == 0) {
+                            return index + limitStarts[0];
+                        }
+                        if (index < intevals[i] && index >= intevals[i - 1]) {
+                            return index - intevals[i - 1] + limitStarts[i];
+                        }
+                    }
                     return index + fstart;
                 }
 
                 @Override
                 public int size() {
-                    return size;
+                    return fsize;
                 }
             };
         } else {
@@ -519,10 +545,24 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 }
             });
             final IntArray array = new IntArray();
-            if (start != -1) {
-                for (int i = start; i < end; i++) {
-                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE) {
-                        array.add(i);
+            if (limitStarts.length > 0) {
+                for (int i = 0, len = limitStarts.length; i < len; i++) {
+                    start = limitStarts[i];
+                    end = limitEnds[i];
+                    if (start != -1) {
+                        for (int j = start; j < end; j++) {
+                            if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
+                                array.add(j);
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (start != -1) {
+                    for (int j = start; j < end; j++) {
+                        if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
+                            array.add(j);
+                        }
                     }
                 }
             }
