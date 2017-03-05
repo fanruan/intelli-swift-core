@@ -543,7 +543,7 @@ BI.Convert = BI.inherit(BI.Widget, {
                 return field.field_name == self.model.getLCName();
             });
 
-            BI.Utils.getConfDataByField(tables, BI.isNull(field) ? "" : field.field_name, {
+            BI.Utils.getSortableConfDataByField(tables, BI.isNull(field) ? "" : field.field_name,  BI.isNull(field) ? "" : field.field_type, {
                 type: BICst.REQ_DATA_TYPE.REQ_GET_ALL_DATA
             }, function (data) {
                 BI.each(fields, function(idx, field){
