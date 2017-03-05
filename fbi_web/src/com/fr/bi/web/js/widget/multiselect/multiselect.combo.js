@@ -205,17 +205,13 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
     _joinKeywords: function (keywords, callback) {
         var self = this, o = this.options;
         this._assertValue(this.storeValue);
-        if (!this._allData) {
-            o.itemsCreator({
-                type: BI.MultiSelectCombo.REQ_GET_ALL_DATA,
-                keywords: keywords
-            }, function (ob) {
-                self._allData = BI.pluck(ob.items, "value");
-                digest(self._allData);
-            })
-        } else {
-            digest(this._allData)
-        }
+        o.itemsCreator({
+            type: BI.MultiSelectCombo.REQ_GET_ALL_DATA,
+            keywords: keywords
+        }, function (ob) {
+            var values = BI.pluck(ob.items, "value");
+            digest(values);
+        });
 
         function digest(items) {
             var selectedMap = self._makeMap(items);
@@ -338,7 +334,6 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
 
     populate: function () {
         this._count = null;
-        this._allData = null;
         this.combo.populate.apply(this.combo, arguments);
     }
 });
