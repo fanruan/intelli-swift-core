@@ -241,14 +241,12 @@ public class StringControlWidget extends TableWidget {
                 continue;
             }
             String str = ob.toString();
-            if (keywords.length > 0) {
-                for (String keyword : keywords) {
-                    if (match(str, keyword.toLowerCase(), selectedValue, mode)) {
-                        count++;
-                    }
-                }
-            } else {
-                if (match(str, "", selectedValue, mode)) {
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                if (match(str, keyword.toLowerCase(), selectedValue, mode)) {
                     count++;
                 }
             }
@@ -262,14 +260,12 @@ public class StringControlWidget extends TableWidget {
             if (ob == null) {
                 continue;
             }
-            if (keywords.length > 0) {
-                for (String keyword : keywords) {
-                    if (match(ob.toString(), keyword.toLowerCase(), selectedValue, SearchMode.PY)) {
-                        count++;
-                    }
-                }
-            } else {
-                if (match(ob.toString(), "", selectedValue, SearchMode.PY)) {
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                if (match(ob.toString(), keyword.toLowerCase(), selectedValue, SearchMode.PY)) {
                     count++;
                 }
             }
@@ -339,27 +335,19 @@ public class StringControlWidget extends TableWidget {
             }
 
             String str = ob.toString();
-            if (keywords.length > 0) {
-                for (String keyword : keywords) {
-                    keyword = keyword.toLowerCase();
-                    if (match(str, keyword, selectedValue, SearchMode.PY)) {
-                        if (matched >= start && matched < end) {
-                            if (ComparatorUtils.equals(keyword, str)) {
-                                match.add(str);
-                            } else {
-                                find.add(str);
-                            }
-                        } else if (matched >= end) {
-                            hasNext = true;
-                            break;
-                        }
-                        matched++;
-                    }
-                }
-            } else {
-                if (match(str, "", selectedValue, SearchMode.PY)) {
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                keyword = keyword.toLowerCase();
+                if (match(str, keyword, selectedValue, SearchMode.PY)) {
                     if (matched >= start && matched < end) {
-                        find.add(str);
+                        if (ComparatorUtils.equals(keyword, str)) {
+                            match.add(str);
+                        } else {
+                            find.add(str);
+                        }
                     } else if (matched >= end) {
                         hasNext = true;
                         break;
@@ -377,29 +365,20 @@ public class StringControlWidget extends TableWidget {
             if (ob == null) {
                 continue;
             }
-
             String str = ob.toString();
-            if (keywords.length > 0) {
-                for (String keyword : keywords) {
-                    keyword = keyword.toLowerCase();
-                    if (match(str, keyword, selectedValue, SearchMode.PY)) {
-                        if (matched >= start && matched < end) {
-                            if (ComparatorUtils.equals(keyword, str)) {
-                                match.add(str);
-                            } else {
-                                find.add(str);
-                            }
-                        } else if (matched >= end) {
-                            hasNext = true;
-                            break;
-                        }
-                        matched++;
-                    }
-                }
-            } else {
-                if (match(str, "", selectedValue, SearchMode.PY)) {
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                keyword = keyword.toLowerCase();
+                if (match(str, keyword, selectedValue, SearchMode.PY)) {
                     if (matched >= start && matched < end) {
-                        find.add(str);
+                        if (ComparatorUtils.equals(keyword, str)) {
+                            match.add(str);
+                        } else {
+                            find.add(str);
+                        }
                     } else if (matched >= end) {
                         hasNext = true;
                         break;
@@ -439,27 +418,19 @@ public class StringControlWidget extends TableWidget {
         for (int i = array.size() - 1; i > 0; i--) {
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
-            if (keywords.length > 0) {
-                for (String keyword : keywords) {
-                    keyword = keyword.toLowerCase();
-                    if (match(str, keyword, selectedValue, mode)) {
-                        if (matched >= start && matched < end) {
-                            if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
-                                match.add(str);
-                            } else {
-                                find.add(str);
-                            }
-                        } else if (matched >= end) {
-                            hasNext = true;
-                            break;
-                        }
-                        matched++;
-                    }
-                }
-            } else {
-                if (match(str, "", selectedValue, mode)) {
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                keyword = keyword.toLowerCase();
+                if (match(str, keyword, selectedValue, mode)) {
                     if (matched >= start && matched < end) {
-                        find.add(str);
+                        if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
+                            match.add(str);
+                        } else {
+                            find.add(str);
+                        }
                     } else if (matched >= end) {
                         hasNext = true;
                         break;
@@ -476,27 +447,19 @@ public class StringControlWidget extends TableWidget {
         for (int i = 0; i < array.size(); i++) {
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
-            if (keywords.length > 0) {
-                for (String keyword : keywords) {
-                    keyword = keyword.toLowerCase();
-                    if (match(str, keyword, selectedValue, mode)) {
-                        if (matched >= start && matched < end) {
-                            if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
-                                match.add(str);
-                            } else {
-                                find.add(str);
-                            }
-                        } else if (matched >= end) {
-                            hasNext = true;
-                            break;
-                        }
-                        matched++;
-                    }
-                }
-            } else {
-                if (match(str, "", selectedValue, mode)) {
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                keyword = keyword.toLowerCase();
+                if (match(str, keyword, selectedValue, mode)) {
                     if (matched >= start && matched < end) {
-                        find.add(str);
+                        if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
+                            match.add(str);
+                        } else {
+                            find.add(str);
+                        }
                     } else if (matched >= end) {
                         hasNext = true;
                         break;
