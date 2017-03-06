@@ -28,7 +28,6 @@ import com.fr.report.poly.PolyECBlock;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 import com.fr.stable.collections.array.IntArray;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import java.util.*;
 
