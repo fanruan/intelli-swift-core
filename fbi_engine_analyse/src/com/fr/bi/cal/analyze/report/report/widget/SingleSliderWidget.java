@@ -71,7 +71,7 @@ public class SingleSliderWidget extends TableWidget {
 
     private MaxAndMin createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException {
         int start = 0, end = getter.getGroupSize();
-        SimpleIntArray groupArray = this.createGroupArray(start, end, getter, gvi);
+        SimpleIntArray groupArray = this.createGroupArray(start, end, new int[0], new int[0], getter, gvi);
 
         Object min = reader.getGroupValue(groupArray.get(groupArray.get(0)));
         Object max = reader.getGroupValue(groupArray.get(groupArray.get(groupArray.size() - 1)));
