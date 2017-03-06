@@ -11,6 +11,7 @@ import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.MSSQLDialect;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.impl.Connection;
+import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.file.XMLFileManager;
@@ -46,7 +47,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     @Override
     public void updateAvailableConnection() {
         availableConnection.clear();
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String name = nameIt.next();
@@ -77,7 +78,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         if (connMap.containsKey(name)) {
             return connMap.get(name).getSchema();
         }
-        Connection connection = DatasourceManager.getInstance().getConnection(name);
+        Connection connection = DatasourceManager.getProviderInstance().getConnection(name);
         if (needSchema(connection)) {
             String[] schemas = DataCoreUtils.getDatabaseSchema(connection);
             connMap.put(name, new BIConnection(name, schemas != null && schemas.length != 0 ? schemas[0] : StringUtils.EMPTY));
@@ -94,7 +95,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
     @Override
     public Connection getConnection(String name) {
-        return DatasourceManager.getInstance().getConnection(name);
+        return DatasourceManager.getProviderInstance().getConnection(name);
     }
 
     static {
@@ -144,7 +145,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     public void updateConnection(String linkData, String oldName) throws Exception {
         JSONObject linkDataJo = new JSONObject(linkData);
         String newName = linkDataJo.optString("name");
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         if (!ComparatorUtils.equals(oldName, newName)) {
             datasourceManager.renameConnection(oldName, newName);
         }
@@ -169,7 +170,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
             return;
         }
         connMap.remove(name);
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String connectionName = nameIt.next();
@@ -199,7 +200,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     @Override
     public JSONObject createJSON() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
 
         int index = 0;

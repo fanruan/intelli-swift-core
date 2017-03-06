@@ -157,7 +157,19 @@ BI.extend(BI.Utils, {
     getConfDataByField: function (table, fieldName, filterConfig, callback, complete) {
         Data.Req.reqFieldsDataByData({
             table: table,
-            field: fieldName,
+            fieldName: fieldName,
+            fieldType: BICst.COLUMN.STRING,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        }, complete);
+    },
+
+    getSortableConfDataByField: function (table, fieldName, fieldType, filterConfig, callback, complete) {
+        Data.Req.reqFieldsDataByData({
+            table: table,
+            fieldName: fieldName,
+            fieldType: fieldType,
             filterConfig: filterConfig
         }, function (data) {
             callback(data.value, data.hasNext);

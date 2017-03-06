@@ -74,7 +74,7 @@ public class XYSCATTERTargetChart extends BIAbstractChartSetting {
             chart.setTitle(null);
             chart.getPlot().setHotHyperLink(BIExcutorConstant.CHART.createChartHyperLink(this.dimension, null, widgetName));
             chart.getPlot().setSeriesDragEnable(false);
-            chart.getPlot().setPlotStyle(FBIConfig.getInstance().getChartStyleAttr().getDefaultStyle());
+            chart.getPlot().setPlotStyle(FBIConfig.getProviderInstance().getChartStyleAttr().getDefaultStyle());
 
             dealWithChartStyle(chart.getPlot());
             ChartCollection cc = new ChartCollection(chart);

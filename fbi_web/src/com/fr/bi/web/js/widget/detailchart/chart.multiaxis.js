@@ -67,7 +67,6 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     title = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[0];
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
                         showLabel: self.config.show_label,
@@ -83,7 +82,6 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     title = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[1];
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
                         showLabel: self.config.show_label,
@@ -99,7 +97,6 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     title = self.getXYAxisUnit(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
                     axis.title.text = self.config.show_right_y_axis_second_title === true ? self.config.right_y_axis_second_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[2];
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
                         showLabel: self.config.show_label,

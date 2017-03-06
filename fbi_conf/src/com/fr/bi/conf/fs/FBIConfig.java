@@ -1,9 +1,12 @@
 package com.fr.bi.conf.fs;
 
+import com.fr.base.FRContext;
 import com.fr.file.XMLFileManager;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
+import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.file.RemoteXMLFileManagerProvider;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -12,7 +15,7 @@ import com.fr.stable.xml.XMLableReader;
  *
  * @author Daniel
  */
-public class FBIConfig extends XMLFileManager {
+public class FBIConfig extends XMLFileManager implements FBIConfigProvider{
     private static final String XML_TAG = "fbiConfig";
     private static FBIConfig SC = null;
     //图标样式
@@ -37,6 +40,10 @@ public class FBIConfig extends XMLFileManager {
         return SC;
     }
 
+    public static FBIConfigProvider getProviderInstance(){
+       return  StableFactory.getMarkedObject(FBIConfigProvider.XML_TAG,FBIConfigProvider.class);
+    }
+
     /**
      * 释放
      */
@@ -56,6 +63,16 @@ public class FBIConfig extends XMLFileManager {
 
     public BIChartStyleAttr getChartStyleAttr() {
         return chartStyleAttr;
+    }
+
+    @Override
+    public void setUserAuthorAttr(BIUserAuthorAttr userAuthorAttr) {
+        this.userAuthorAttr = userAuthorAttr;
+    }
+
+    @Override
+    public void setChartStyleAttr(BIChartStyleAttr chartStyleAttr) {
+        this.chartStyleAttr = chartStyleAttr;
     }
 
 
@@ -119,5 +136,10 @@ public class FBIConfig extends XMLFileManager {
 
     public BIUserAuthorAttr getUserAuthorAttr() {
         return userAuthorAttr;
+    }
+
+    @Override
+    public boolean writeResource() throws Exception {
+       return FRContext.getCurrentEnv().writeResource(getProviderInstance());
     }
 }

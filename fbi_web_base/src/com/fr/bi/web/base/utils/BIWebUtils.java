@@ -7,6 +7,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.base.CubeIndexManager;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BISessionUtils;
+import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.fs.BIUserAuthorAttr;
 import com.fr.bi.conf.fs.FBIConfig;
@@ -222,6 +223,7 @@ public class BIWebUtils {
                 + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
         //jar包版本
         map.put("__v__", GeneralUtils.readBuildNO());
+        map.put("isCluster", ClusterEnv.isCluster());
         boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         boolean isEdit = sessionIDInfo.setEdit(biEdit);
         if (biEdit && !isEdit) {
@@ -270,7 +272,7 @@ public class BIWebUtils {
     }
 
     private static void dealWithLog(BISession sessionIDInfo, String reportName) {
-        if (ConfigManager.getInstance().getLogConfig().isRecordErr()) {
+        if (ConfigManager.getProviderInstance().getLogConfig().isRecordErr()) {
             try {
                 FRLogManager.setSession(sessionIDInfo);
 
@@ -293,18 +295,18 @@ public class BIWebUtils {
         try {
             User user = UserControl.getInstance().getUser(useId);
             String userName = user.getUsername();
-            JSONObject editJo = FBIConfig.getInstance().getUserAuthorAttr().getBIEditUserJo();
-            JSONObject viewJo = FBIConfig.getInstance().getUserAuthorAttr().getBIViewUserJo();
+            JSONObject editJo = FBIConfig.getProviderInstance().getUserAuthorAttr().getBIEditUserJo();
+            JSONObject viewJo = FBIConfig.getProviderInstance().getUserAuthorAttr().getBIViewUserJo();
 
             if (isEdit) {
 
-                return editJo.has(userName) || FBIConfig.getInstance().getUserAuthorAttr().getBiEditUserLimit() == 0; //0代表不限制
+                return editJo.has(userName) || FBIConfig.getProviderInstance().getUserAuthorAttr().getBiEditUserLimit() == 0; //0代表不限制
             } else {
                 if (!editJo.has(userName) && viewJo.has(userName)) {
                     helpMap.put("onlyViewAuth", true);
                 }
                 return editJo.has(userName) || viewJo.has(userName) ||
-                        FBIConfig.getInstance().getUserAuthorAttr().getBiViewUserLimit() == 0;   //0代表不限制
+                        FBIConfig.getProviderInstance().getUserAuthorAttr().getBiViewUserLimit() == 0;   //0代表不限制
             }
 
         } catch (Exception e) {
@@ -348,16 +350,16 @@ public class BIWebUtils {
     private static JSONObject getPlateConfig() throws JSONException {
         JSONObject jo = new JSONObject();
 
-        jo.put("chartStyle", FBIConfig.getInstance().getChartStyleAttr().getChartStyle());
-//        jo.put("defaultStyle", FBIConfig.getInstance().getChartStyleAttr().getDefaultStyle());
-        String defaultColor = ChartPreStyleServerManager.getInstance().getCurrentStyle();
+        jo.put("chartStyle", FBIConfig.getProviderInstance().getChartStyleAttr().getChartStyle());
+//        jo.put("defaultStyle", FBIConfig.getProviderInstance().getChartStyleAttr().getDefaultStyle());
+        String defaultColor = ChartPreStyleServerManager.getProviderInstance().getCurrentStyle();
         jo.put("defaultColor", defaultColor);
 
         JSONArray ja = new JSONArray();
-        Iterator<String> it = ChartPreStyleServerManager.getInstance().names();
+        Iterator<String> it = ChartPreStyleServerManager.getProviderInstance().names();
         while (it.hasNext()) {
             String name = it.next();
-            ChartPreStyle style = (ChartPreStyle) ChartPreStyleServerManager.getInstance().getPreStyle(name);
+            ChartPreStyle style = (ChartPreStyle) ChartPreStyleServerManager.getProviderInstance().getPreStyle(name);
             java.util.List colorList = style.getAttrFillStyle().getColorList();
 
             Iterator itColor = colorList.iterator();
@@ -411,7 +413,7 @@ public class BIWebUtils {
         }
 
         //编辑
-        JSONArray editUsers = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.EDIT, StringUtils.EMPTY);
+        JSONArray editUsers = FBIConfig.getProviderInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.EDIT, StringUtils.EMPTY);
         for (int i = 0; i < editUsers.length(); i++) {
             JSONObject jo = editUsers.getJSONObject(i);
             if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {
@@ -420,7 +422,7 @@ public class BIWebUtils {
         }
 
         //查看
-        JSONArray viewUsers = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.VIEW, StringUtils.EMPTY);
+        JSONArray viewUsers = FBIConfig.getProviderInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.VIEW, StringUtils.EMPTY);
         for (int i = 0; i < viewUsers.length(); i++) {
             JSONObject jo = viewUsers.getJSONObject(i);
             if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {

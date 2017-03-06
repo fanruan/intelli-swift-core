@@ -18,6 +18,8 @@ import java.util.Map;
  */
 public class ProcessCalculatorImpl implements ProcessCalculator {
 
+    private static final double PROCESS_FINISH_VALUE = 1.0;
+
     public double calculateProcess(JSONObject recordJson) {
 
         double process = 0.0;
@@ -32,7 +34,7 @@ public class ProcessCalculatorImpl implements ProcessCalculator {
         if (recordJson.has("cube_start")) {
             cube_start = recordJson.optLong("cube_start");
         } else {
-            return process;
+            return PROCESS_FINISH_VALUE;
         }
 
         if (recordJson.has("cube_end")) {

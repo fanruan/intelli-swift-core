@@ -80,7 +80,7 @@ public class PIEOneTargetChart extends BIAbstractChartSetting {
             chart.getPlot().setHotHyperLink(BIExcutorConstant.CHART.createChartHyperLink(null,
                     this.dimension, widgetName));
             chart.getPlot().setSeriesDragEnable(false);
-            chart.getPlot().setPlotStyle(FBIConfig.getInstance().getChartStyleAttr().getDefaultStyle());
+            chart.getPlot().setPlotStyle(FBIConfig.getProviderInstance().getChartStyleAttr().getDefaultStyle());
 
             dealWithChartStyle(chart.getPlot());
             ChartCollection cc = new ChartCollection(chart);

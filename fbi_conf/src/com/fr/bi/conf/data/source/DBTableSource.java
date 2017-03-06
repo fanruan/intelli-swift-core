@@ -369,7 +369,7 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     public Connection getConnection() {
-        return DatasourceManager.getInstance().getConnection(dbName);
+        return DatasourceManager.getProviderInstance().getConnection(dbName);
     }
 
     // TODO: 2016/11/9 判断表的字段和数据库中的能否对得上

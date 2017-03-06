@@ -7,6 +7,8 @@ import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.fs.base.entity.CompanyRole;
+import com.fr.fs.base.entity.CustomRole;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
@@ -45,10 +47,10 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
     }
 
     @Override
-    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID, String sessionId) {
+    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID, List<CompanyRole> comRoles, List<CustomRole> cusRoles) {
         try {
-            BISessionProvider session = (BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId);
-            return getValue(UserControl.getInstance().getSuperManagerID()).getPackageAuthBySession(packageID, session);
+//            BISessionProvider session = (BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId);
+            return getValue(UserControl.getInstance().getSuperManagerID()).getPackageAuthBySession(packageID, comRoles,cusRoles);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
@@ -66,10 +68,10 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
     }
 
     @Override
-    public List<BIPackageID> getAuthPackagesBySession(String sessionId) {
+    public List<BIPackageID> getAuthPackagesBySession(List<CompanyRole> comRoles, List<CustomRole> cusRoles) {
         try {
-            BISessionProvider session = (BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId);
-            return getValue(UserControl.getInstance().getSuperManagerID()).getAuthPackagesBySession(session);
+//            BISessionProvider session = (BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId);
+            return getValue(UserControl.getInstance().getSuperManagerID()).getAuthPackagesBySession(comRoles,cusRoles);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
