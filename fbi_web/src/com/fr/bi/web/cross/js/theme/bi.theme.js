@@ -11,11 +11,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
     });
     BI.requestAsync("fr_bi", "get_user_edit_auth", {mode: Consts.BIEDIT}, function(res) {
         if (FS.isAdmin() || res.result === BICst.REPORT_AUTH.EDIT) {
-            var $header = $('#fs-frame-header');
-            var header = BI.createWidget({
-                type: "bi.absolute",
-                element: $header
-            });
+            var $nav = $('#fs-frame-navi');
             var newAnalysis = BI.createWidget({
                 type: "bi.icon_text_item",
                 cls: "new-analysis-font bi-new-analysis-button",
@@ -48,12 +44,8 @@ FS.THEME.config4navigation.onAfterInit = function () {
                 BI.Popovers.create(id, newAnalysisBox, {width: 400, height: 320}).open(id);
                 newAnalysisBox.setTemplateNameFocus();
             });
-            header.addItem({
-                el: newAnalysis,
-                right: 220,
-                top: 0,
-                bottom: 0
-            });
+            newAnalysis.element.css({position: "relative", float: "right"});
+            $nav.after(newAnalysis.element);
             if (FS.isAdmin()) {
                 var dataConfig = BI.createWidget({
                     type: "bi.icon_text_item",
@@ -71,14 +63,8 @@ FS.THEME.config4navigation.onAfterInit = function () {
                         src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane'
                     });
                 });
-                header.addItem({
-                    el: dataConfig,
-                    right: 220,
-                    top: 0,
-                    bottom: 0
-                });
-                header.attr("items")[0].right = 340;
-                header.resize();
+                dataConfig.element.css({position: "relative", float: "right"});
+                $nav.after(dataConfig.element);
             }
         }
     });

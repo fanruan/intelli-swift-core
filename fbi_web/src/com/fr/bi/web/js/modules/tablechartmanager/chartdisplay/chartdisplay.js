@@ -78,7 +78,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         //当前钻取的根节点
         var rootId = dId;
         BI.each(drillMap, function (drId, ds) {
-            if (dId === drId || (ds.length > 0 && ds[ds.length - 1].dId === dId)) {
+            if (dId === drId || BI.find(ds, function(idx, obj){
+                    return obj.dId === dId
+                })) {
                 rootId = drId;
             }
         });
@@ -87,16 +89,20 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         //上钻
         if (BI.isNull(drillId)) {
             if (drillOperators.length !== 0) {
-                var val = drillOperators[drillOperators.length - 1].values[0].dId;
+                var index = drillOperators.length - 1;
+                var val = drillOperators[index].values[0].dId;
                 while (val !== dId) {
-                    if (drillOperators.length === 0) {
+                    if (index < 0) {
                         break;
                     }
-                    var obj = drillOperators.pop();
+                    var obj = drillOperators[index--];
                     val = obj.values[0].dId;
                 }
-                if (val === dId && drillOperators.length !== 0) {
+                while (index > -1 && index <= drillOperators.length - 1){
                     drillOperators.pop();
+                }
+                if(index === -1 && val === dId){
+                    drillOperators = [];
                 }
             }
         } else {

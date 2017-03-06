@@ -8,6 +8,7 @@ import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
+import com.fr.bi.cal.analyze.cal.index.loader.MergerInfo;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
@@ -81,6 +82,8 @@ public class BISession extends BIAbstractSession {
     private List<CustomRole> customRoles = new ArrayList<CustomRole>();
     private List<CompanyRole> companyRoles = new ArrayList<CompanyRole>();
 
+    private Map<String, List<MergerInfo>> mergerInfoList = new ConcurrentHashMap<String, List<MergerInfo>>();
+
     public BISession(String remoteAddress, BIWeblet let, long userId) {
         super(remoteAddress, let, userId);
     }
@@ -121,6 +124,7 @@ public class BISession extends BIAbstractSession {
         }
         lockDAO.updateLock(sessionID, node.getUserId(), node.getId());
     }
+
     //通过updatesession，更新配置锁的时间
     public void updateConfigLockTime() {
         BIFineDBConfigLockDAO lockDAO = StableFactory.getMarkedObject(BIFineDBConfigLockDAO.class.getName(), BIFineDBConfigLockDAO.class);
@@ -129,6 +133,7 @@ public class BISession extends BIAbstractSession {
         }
         lockDAO.updateLock(sessionID, node.getUserId());
     }
+
     /**
      * 强奸
      */
@@ -574,5 +579,13 @@ public class BISession extends BIAbstractSession {
      */
     public BIReportNode getReportNode() {
         return node;
+    }
+
+    public List<MergerInfo> getMergerInfoList(String widgetName) {
+        return mergerInfoList.get(widgetName);
+    }
+
+    public void setMergerInfoList(String widgetName, List<MergerInfo> mergerInfoList) {
+        this.mergerInfoList.put(widgetName, mergerInfoList);
     }
 }
