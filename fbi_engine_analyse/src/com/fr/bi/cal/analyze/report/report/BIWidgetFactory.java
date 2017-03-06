@@ -20,7 +20,7 @@ import java.util.HashMap;
  */
 public class BIWidgetFactory {
 
-    private static HashMap<WidgetType, Class<? extends VanChartWidget>> vancharts = new HashMap<>();
+    private static HashMap<WidgetType, Class<? extends VanChartWidget>> vancharts = new HashMap<WidgetType, Class<? extends VanChartWidget>>();
 
     static {
         vancharts.put(WidgetType.COLUMN, VanColumnWidget.class);
