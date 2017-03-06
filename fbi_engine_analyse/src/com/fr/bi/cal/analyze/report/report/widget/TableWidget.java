@@ -1,7 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.cal.analyze.cal.index.loader.MergerInfo;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
@@ -9,6 +11,7 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -20,6 +23,8 @@ import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateT
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.GVIUtils;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONArray;
@@ -27,6 +32,7 @@ import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,6 +67,8 @@ public class TableWidget extends BISummaryWidget {
     private transient BISummaryTarget[] usedTargets;
 
     private DetailChartSetting settings = new DetailChartSetting();
+
+    private TableWidget linkedWidget;
 
     @Override
     public BIDimension[] getViewDimensions() {
@@ -232,6 +240,14 @@ public class TableWidget extends BISummaryWidget {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
+        if (jo.has("linkages")) {
+            JSONObject linkagesJSON = jo.getJSONObject("linkages");
+            if (linkagesJSON.has("linkedWidget")) {
+                this.linkedWidget = (TableWidget) BIWidgetFactory.parseWidget(linkagesJSON.getJSONObject("linkedWidget"), userId);
+            }
+
+        }
+
         if (jo.has("view")) {
             data.parseJSON(jo);
         }
@@ -323,6 +339,23 @@ public class TableWidget extends BISummaryWidget {
             }
         }
     }
+
+    public GroupValueIndex createLinkedFilterGVI(BusinessTable targetKey, BISession session) {
+        if (linkedWidget != null) {
+            GroupValueIndex fatherWidgetLinkedFilterGVI = linkedWidget.createLinkedFilterGVI(targetKey, session);
+            List<MergerInfo> mergerInfoList = session.getMergerInfoList(this.linkedWidget.getWidgetName());
+            if (mergerInfoList == null) {
+                return null;
+            }
+            for (MergerInfo mergerInfo : mergerInfoList) {
+                if (mergerInfo.getTargetAndKeyList().get(0).getCalculator().createTableKey().equals(targetKey)) {
+                    return GVIUtils.AND(fatherWidgetLinkedFilterGVI, mergerInfo.getFilterIndex());
+                }
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public void reSetDetailTarget() {
