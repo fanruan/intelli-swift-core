@@ -146,6 +146,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
             value: o.widget.name,
             iconWidth: c.iconWidth,
             iconHeight: c.iconHeight,
+            title: o.widget.name,
             iconCls: this._getWidgetClass(o.widget.type)
         });
 
