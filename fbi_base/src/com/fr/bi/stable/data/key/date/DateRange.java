@@ -14,6 +14,7 @@ import com.fr.stable.xml.XMLableReader;
 
 public class DateRange implements JSONParser, JSONCreator, XMLable {
 
+    private static final long serialVersionUID = -2895847354100461898L;
     private BIDay start;
 
     private BIDay end;
