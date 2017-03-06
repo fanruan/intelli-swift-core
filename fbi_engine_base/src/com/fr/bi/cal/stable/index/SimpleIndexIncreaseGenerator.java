@@ -73,7 +73,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             return rowCount;
         }
         DBTableSource source = (DBTableSource) dataSource;
-        com.fr.data.impl.Connection connection = DatasourceManager.getInstance().getConnection(source.getDbName());
+        com.fr.data.impl.Connection connection = DatasourceManager.getProviderInstance().getConnection(source.getDbName());
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(iSql);
         return (int) DBQueryExecutor.getInstance().runSQL(sqlStatement, cube.getBIField(), new Traversal<BIDataValue>() {

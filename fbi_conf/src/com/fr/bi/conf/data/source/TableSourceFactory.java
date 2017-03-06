@@ -26,7 +26,7 @@ public class TableSourceFactory {
 
     public static AbstractTableSource createTableSource(JSONObject jo, long userId) throws Exception {
         String connectionName = jo.optString("connection_name", StringUtils.EMPTY);
-        Connection conn =  DatasourceManager.getInstance().getConnection(connectionName);
+        Connection conn =  DatasourceManager.getProviderInstance().getConnection(connectionName);
         AbstractTableSource tableSource;
         if(SOURCES.get(connectionName) != null) {
             tableSource = (AbstractTableSource) SOURCES.get(connectionName).newInstance();

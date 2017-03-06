@@ -43,4 +43,9 @@ public class JSONErrorHandler implements ErrorHandler {
     public int layerIndex() {
         return 2;
     }
+
+    @Override
+    public void error(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FRException e) {
+
+    }
 }

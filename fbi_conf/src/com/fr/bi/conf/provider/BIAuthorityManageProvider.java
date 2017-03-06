@@ -2,6 +2,8 @@ package com.fr.bi.conf.provider;
 
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
+import com.fr.fs.base.entity.CompanyRole;
+import com.fr.fs.base.entity.CustomRole;
 import com.fr.json.JSONObject;
 
 import java.util.List;
@@ -19,11 +21,11 @@ public interface BIAuthorityManageProvider {
 
     List<BIPackageAuthority> getPackageAuthByID(BIPackageID packageID, long userId);
 
-    List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID, String sessionId);
+    List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID,List<CompanyRole> comRoles, List<CustomRole> cusRoles);
 
     List<BIPackageID> getAuthPackagesByUser(long userId);
 
-    List<BIPackageID> getAuthPackagesBySession(String sessionId);
+    List<BIPackageID> getAuthPackagesBySession(List<CompanyRole> comRoles, List<CustomRole> cusRoles);
 
     boolean hasAuthPackageByUser(long userId, String sessionId);
 

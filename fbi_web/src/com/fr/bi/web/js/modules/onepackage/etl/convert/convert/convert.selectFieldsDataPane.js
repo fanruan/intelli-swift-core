@@ -44,7 +44,7 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
                 return field["field_name"] == self.combo.getValue()[0]
             });
             self.fireEvent(BI.ConvertSelectFieldsDataPane.EVENT_LOADING);
-            BI.Utils.getConfDataByField(o.table, BI.isNull(field) ? null : field.field_name, {
+            BI.Utils.getSortableConfDataByField(o.table, BI.isNull(field) ? null : field.field_name, BI.isNull(field) ? null : field.field_type, {
                 type: BICst.REQ_DATA_TYPE.REQ_GET_ALL_DATA
             }, function(data){
                 self.button_tree.populate(self._createItemsByData(data));
@@ -78,7 +78,7 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
         var res = [];
         BI.each(items, function(idx, item){
             var lc_value =  BI.find(lc_values, function(idx, arr){
-                return arr[self.constants.initialValuePos] === item;
+                return arr[self.constants.initialValuePos] === item + "";
             });
             if(BI.isNotEmptyString(item) || BI.isNumber(item)){
                 res.push({

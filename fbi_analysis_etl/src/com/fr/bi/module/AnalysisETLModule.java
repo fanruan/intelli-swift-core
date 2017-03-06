@@ -40,6 +40,10 @@ import java.util.*;
 public class AnalysisETLModule extends AbstractModule {
     @Override
     public void start() {
+        // TODO BI-3640 集群版本禁用螺旋分析
+        if (ClusterEnv.isCluster()) {
+            return;
+        }
         registerManager();
         registerFilter();
         registerResources();

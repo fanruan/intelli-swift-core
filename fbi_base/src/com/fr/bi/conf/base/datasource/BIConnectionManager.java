@@ -1,5 +1,6 @@
 package com.fr.bi.conf.base.datasource;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.data.db.DataLinkInformation;
@@ -10,6 +11,7 @@ import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.MSSQLDialect;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.impl.Connection;
+import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
 import com.fr.file.XMLFileManager;
@@ -31,11 +33,12 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2016/3/18.
  */
-public class BIConnectionManager extends XMLFileManager implements BIConnectionProvider{
+public class BIConnectionManager extends XMLFileManager implements BIConnectionProvider {
     public static final String XML_TAG = "BIConnectionManager";
     private Map<String, BIConnection> connMap = new ConcurrentHashMap<String, BIConnection>();
     private Map<String, Connection> availableConnection = new HashMap<String, Connection>();
     private static BIConnectionManager manager;
+    private static BILogger logger = BILoggerFactory.getLogger(BIConnectionManager.class);
 
     private BIConnectionManager() {
 
@@ -44,7 +47,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     @Override
     public void updateAvailableConnection() {
         availableConnection.clear();
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String name = nameIt.next();
@@ -55,8 +58,8 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         }
     }
 
-    public static BIConnectionProvider getBIConnectionManager(){
-        return StableFactory.getMarkedObject(BIConnectionProvider.XML_TAG,BIConnectionProvider.class);
+    public static BIConnectionProvider getBIConnectionManager() {
+        return StableFactory.getMarkedObject(BIConnectionProvider.XML_TAG, BIConnectionProvider.class);
     }
 
     public static BIConnectionManager getInstance() {
@@ -75,7 +78,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         if (connMap.containsKey(name)) {
             return connMap.get(name).getSchema();
         }
-        Connection connection = DatasourceManager.getInstance().getConnection(name);
+        Connection connection = DatasourceManager.getProviderInstance().getConnection(name);
         if (needSchema(connection)) {
             String[] schemas = DataCoreUtils.getDatabaseSchema(connection);
             connMap.put(name, new BIConnection(name, schemas != null && schemas.length != 0 ? schemas[0] : StringUtils.EMPTY));
@@ -92,7 +95,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
     @Override
     public Connection getConnection(String name) {
-        return DatasourceManager.getInstance().getConnection(name);
+        return DatasourceManager.getProviderInstance().getConnection(name);
     }
 
     static {
@@ -142,7 +145,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     public void updateConnection(String linkData, String oldName) throws Exception {
         JSONObject linkDataJo = new JSONObject(linkData);
         String newName = linkDataJo.optString("name");
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         if (!ComparatorUtils.equals(oldName, newName)) {
             datasourceManager.renameConnection(oldName, newName);
         }
@@ -150,7 +153,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         dl.parseJSON(linkDataJo);
 
         Connection databaseConnection = dl.createDatabaseConnection();
-        datasourceManager.putConnection(newName,databaseConnection);
+        datasourceManager.putConnection(newName, databaseConnection);
         connMap.remove(oldName);
         connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null)));
         try {
@@ -167,7 +170,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
             return;
         }
         connMap.remove(name);
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String connectionName = nameIt.next();
@@ -193,34 +196,39 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
             return false;
         }
     }
+
     @Override
     public JSONObject createJSON() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
 
         int index = 0;
         while (nameIt.hasNext()) {
             String name = nameIt.next();
             Connection c = datasourceManager.getConnection(name);
-            JSONObject jo = c.toJSONObject();
-            jo.put("name", name);
-            if (c != null) {
-                if (isMicrosoftAccessDatabase(jo.optString("driver"),jo.optString("url"))) {
-                    continue;
+            try {
+                JSONObject jo = c.toJSONObject();
+                jo.put("name", name);
+                if (c != null) {
+                    if (isMicrosoftAccessDatabase(jo.optString("driver"), jo.optString("url"))) {
+                        continue;
+                    }
                 }
+                if (c.hasSchema()) {
+                    jo.put("schema", getSchema(name));
+                }
+                jsonObject.put("link" + index++, jo);
+            } catch (UnsupportedOperationException e) {
+                logger.warn("the connection: " + c.toString() + " does not implement the toJSONObject method");
             }
-            if(c.hasSchema()) {
-                jo.put("schema", getSchema(name));
-            }
-            jsonObject.put("link" + index++, jo);
         }
 
         return jsonObject;
     }
 
     @Override
-    public boolean isMicrosoftAccessDatabase(String driver,String url) {
+    public boolean isMicrosoftAccessDatabase(String driver, String url) {
         return "sun.jdbc.odbc.JdbcOdbcDriver".equals(driver) && url.indexOf("Microsoft Access Driver") > 0;
     }
 

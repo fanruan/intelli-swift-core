@@ -6,11 +6,14 @@ import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.exception.BICubeTableAbsentException;
+import com.finebi.integration.cube.gen.BIFieldIndexGeneratorTest;
+import com.finebi.integration.cube.gen.BIRelationIndexBuilderTest;
 import com.finebi.integration.cube.gen.BISourceDataTransportTest;
 import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
+import com.finebi.integration.cube.gen.BITablePathBuilderTest;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
@@ -37,8 +40,8 @@ public class ICubeTableServiceTest extends BICubeTestBase {
         try {
             tableService = manager.getTableIndex(BIMemoryDataSourceFactory.generateTableA());
         } catch (BICubeTableAbsentException e) {
-            BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
-            transportTest.transport(BIMemoryDataSourceFactory.generateTableA());
+            BITablePathBuilderTest tablePathBuilder = new BITablePathBuilderTest();
+            tablePathBuilder.buildTablePath();
         }
 
     }
