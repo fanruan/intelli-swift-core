@@ -162,6 +162,8 @@ BI.GridTable = BI.inherit(BI.Widget, {
         });
         this._width = o.width - BI.GridTableScrollbar.SIZE;
         this._height = o.height - BI.GridTableScrollbar.SIZE;
+        this.header = this._getHeader();
+        this.items = this._getItems();
         if (o.items.length > 0) {
             this._populate();
         }
@@ -210,6 +212,50 @@ BI.GridTable = BI.inherit(BI.Widget, {
         items[2].left = regionSize;
         this.scrollBarLayout.attr("items", items);
         this.scrollBarLayout.resize();
+    },
+
+    _getHeader: function () {
+        var o = this.options;
+        var freezeColLength = this._getFreezeColLength();
+        var leftHeader = [], rightHeader = [];
+        BI.each(o.header, function (i, cols) {
+            leftHeader[i] = [];
+            rightHeader[i] = [];
+            BI.each(cols, function (j, col) {
+                var cell = {
+                    type: "bi.grid_table_cell",
+                    cell: col
+                };
+                if (j < freezeColLength) {
+                    leftHeader[i].push(cell);
+                } else {
+                    rightHeader[i].push(cell);
+                }
+            });
+        });
+        return [leftHeader, rightHeader];
+    },
+
+    _getItems: function () {
+        var o = this.options;
+        var freezeColLength = this._getFreezeColLength();
+        var leftItems = [], rightItems = [];
+        BI.each(o.items, function (i, cols) {
+            leftItems[i] = [];
+            rightItems[i] = [];
+            BI.each(cols, function (j, col) {
+                var cell = {
+                    type: "bi.grid_table_cell",
+                    cell: col
+                };
+                if (j < freezeColLength) {
+                    leftItems[i].push(cell);
+                } else {
+                    rightItems[i].push(cell);
+                }
+            });
+        });
+        return [leftItems, rightItems];
     },
 
     _populateTable: function () {
@@ -316,41 +362,10 @@ BI.GridTable = BI.inherit(BI.Widget, {
         this.contextLayout.attr("items", items);
         this.contextLayout.resize();
 
-        var leftHeader = [], rightHeader = [], leftItems = [], rightItems = [];
-        BI.each(o.header, function (i, cols) {
-            leftHeader[i] = [];
-            rightHeader[i] = [];
-            BI.each(cols, function (j, col) {
-                var cell = {
-                    type: "bi.grid_table_cell",
-                    cell: col
-                };
-                if (j < freezeColLength) {
-                    leftHeader[i].push(cell);
-                } else {
-                    rightHeader[i].push(cell);
-                }
-            });
-        });
-        BI.each(o.items, function (i, cols) {
-            leftItems[i] = [];
-            rightItems[i] = [];
-            BI.each(cols, function (j, col) {
-                var cell = {
-                    type: "bi.grid_table_cell",
-                    cell: col
-                };
-                if (j < freezeColLength) {
-                    leftItems[i].push(cell);
-                } else {
-                    rightItems[i].push(cell);
-                }
-            });
-        });
-        this.topLeftGrid.populate(leftHeader);
-        this.topRightGrid.populate(rightHeader);
-        this.bottomLeftGrid.populate(leftItems);
-        this.bottomRightGrid.populate(rightItems);
+        this.topLeftGrid.populate(this.header[0]);
+        this.topRightGrid.populate(this.header[1]);
+        this.bottomLeftGrid.populate(this.items[0]);
+        this.bottomRightGrid.populate(this.items[1]);
     },
 
     _populate: function () {
@@ -431,10 +446,12 @@ BI.GridTable = BI.inherit(BI.Widget, {
     populate: function (items, header) {
         if (items && this.options.items !== items) {
             this.options.items = items;
+            this.items = this._getItems();
             this._restore();
         }
         if (header && this.options.header !== header) {
             this.options.header = header;
+            this.header = this._getHeader();
             this._restore();
         }
         this._populate();
