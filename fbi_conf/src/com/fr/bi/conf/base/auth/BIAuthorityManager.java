@@ -71,13 +71,11 @@ public class BIAuthorityManager implements Serializable{
         return result;
     }
 
-    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID, BISessionProvider session) throws Exception {
+    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID,List<CompanyRole> comRoles,List<CustomRole> cusRoles) throws Exception {
         List<BIPackageAuthority> packAuths = this.packagesAuth.get(packageID);
         List<BIPackageAuthority> result = new ArrayList<BIPackageAuthority>();
         for (int i = 0; i < packAuths.size(); i++) {
             BIPackageAuthority auth = packAuths.get(i);
-            List<CompanyRole> comRoles = session.getCompanyRoles();
-            List<CustomRole> cusRoles = session.getCustomRoles();
             String roleName = auth.getRoleName();
             int roleType = auth.getRoleType();
             switch (roleType) {
@@ -138,7 +136,7 @@ public class BIAuthorityManager implements Serializable{
         return packageIDs;
     }
 
-    public List<BIPackageID> getAuthPackagesBySession(BISessionProvider session) throws Exception {
+    public List<BIPackageID> getAuthPackagesBySession(List<CompanyRole> comRoles,List<CustomRole> cusRoles) throws Exception {
         List<BIPackageID> packageIDs = new ArrayList<BIPackageID>();
         Iterator<Map.Entry<BIPackageID, List<BIPackageAuthority>>> iterator = this.packagesAuth.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -147,8 +145,6 @@ public class BIAuthorityManager implements Serializable{
             BIPackageID pId = packAuth.getKey();
             for (int i = 0; i < authorities.size(); i++) {
                 BIPackageAuthority auth = authorities.get(i);
-                List<CompanyRole> comRoles = session.getCompanyRoles();
-                List<CustomRole> cusRoles = session.getCustomRoles();
                 String roleName = auth.getRoleName();
                 int roleType = auth.getRoleType();
                 switch (roleType) {

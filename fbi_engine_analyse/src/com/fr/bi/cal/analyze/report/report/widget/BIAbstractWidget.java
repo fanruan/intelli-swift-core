@@ -217,15 +217,17 @@ public abstract class BIAbstractWidget implements BIWidget {
     private List<TargetFilter> getAuthFilter(long userId) {
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
         List<BIPackageID> authPacks;
+        BISessionProvider session = null;
         if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
-            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(sessionId);
+            session = (BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId);
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(session.getCompanyRoles(),session.getCustomRoles());
         } else {
             authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
         }
         for (int i = 0; i < authPacks.size(); i++) {
             List<BIPackageAuthority> packAuths;
             if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
-                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), sessionId);
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), session.getCompanyRoles(),session.getCustomRoles());
             } else {
                 packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
             }

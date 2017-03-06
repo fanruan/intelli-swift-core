@@ -16,7 +16,7 @@ import com.fr.json.JSONObject;
  */
 public class BIWebSQLPreviewUtils {
     public static JSONObject getPreviewData(String sql, String connectionName) throws JSONException {
-        com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
+        com.fr.data.impl.Connection dbc = DatasourceManager.getProviderInstance().getConnection(connectionName);
         DBTableData dbTableData = new DBTableData(dbc, sql);
         JSONObject jo = new JSONObject();
         try {

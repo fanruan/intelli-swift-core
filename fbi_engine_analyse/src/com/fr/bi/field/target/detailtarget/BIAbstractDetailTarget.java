@@ -39,6 +39,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();
+    @BIIgnoreField
     private ClusterLockObject columnDetailGetterLock = new ClusterLockObject();
     private List<BITableRelation> relationList = new ArrayList<BITableRelation>();
 
