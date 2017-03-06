@@ -245,7 +245,7 @@ public class StringControlWidget extends TableWidget {
             }
             String str = ob.toString();
             for (String keyword : keys) {
-                if (match(str, keyword.toLowerCase(), selectedValue, mode)) {
+                if (match(str, keyword, selectedValue, mode)) {
                     count++;
                     break;
                 }
@@ -265,7 +265,7 @@ public class StringControlWidget extends TableWidget {
                 continue;
             }
             for (String keyword : keys) {
-                if (match(ob.toString(), keyword.toLowerCase(), selectedValue, SearchMode.PY)) {
+                if (match(ob.toString(), keyword, selectedValue, SearchMode.PY)) {
                     count++;
                 }
             }
@@ -274,6 +274,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private boolean match(String value, String keyword, Set selectedValue, SearchMode mode) {
+        keyword = keyword.toLowerCase();
         if (selectedValue.contains(value)) {
             return false;
         }
@@ -341,7 +342,6 @@ public class StringControlWidget extends TableWidget {
             String str = ob.toString();
 
             for (String keyword : keys) {
-                keyword = keyword.toLowerCase();
                 if (match(str, keyword, selectedValue, SearchMode.PY)) {
                     if (matched >= start && matched < end) {
                         if (ComparatorUtils.equals(keyword, str)) {
@@ -374,7 +374,6 @@ public class StringControlWidget extends TableWidget {
             }
             String str = ob.toString();
             for (String keyword : keys) {
-                keyword = keyword.toLowerCase();
                 if (match(str, keyword, selectedValue, SearchMode.PY)) {
                     if (matched >= start && matched < end) {
                         if (ComparatorUtils.equals(keyword, str)) {
@@ -428,7 +427,6 @@ public class StringControlWidget extends TableWidget {
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
             for (String keyword : keys) {
-                keyword = keyword.toLowerCase();
                 if (match(str, keyword, selectedValue, mode)) {
                     if (matched >= start && matched < end) {
                         if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
@@ -459,7 +457,6 @@ public class StringControlWidget extends TableWidget {
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
             for (String keyword : keys) {
-                keyword = keyword.toLowerCase();
                 if (match(str, keyword, selectedValue, mode)) {
                     if (matched >= start && matched < end) {
                         if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
