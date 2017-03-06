@@ -48,9 +48,10 @@ FS.THEME.config4navigation.onAfterInit = function () {
                 BI.Popovers.create(id, newAnalysisBox, {width: 400, height: 320}).open(id);
                 newAnalysisBox.setTemplateNameFocus();
             });
+            var navWidth = $('#fs-frame-navi').width();
             header.addItem({
                 el: newAnalysis,
-                right: 220,
+                right: navWidth + 20,
                 top: 0,
                 bottom: 0
             });
@@ -73,11 +74,11 @@ FS.THEME.config4navigation.onAfterInit = function () {
                 });
                 header.addItem({
                     el: dataConfig,
-                    right: 220,
+                    right: navWidth + 20,
                     top: 0,
                     bottom: 0
                 });
-                header.attr("items")[0].right = 340;
+                header.attr("items")[0].right = navWidth + 140;
                 header.resize();
             }
         }
