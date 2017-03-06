@@ -211,6 +211,7 @@ public abstract class BIAbstractWidget implements BIWidget {
                 gvi = GVIUtils.AND(gvi, filter.createFilterIndex(row[i], targetKey, loader, userId));
             }
         }
+
         return gvi;
     }
 
