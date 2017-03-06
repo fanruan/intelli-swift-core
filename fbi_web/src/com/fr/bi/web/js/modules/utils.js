@@ -2834,10 +2834,28 @@
                 }
             });
 
+
             //联动过来的维度的过滤条件
+            function getLinkFatherWidget(wid, childId) {
+                var id;
+                var links = self.getWidgetLinkageByID(wid);
+                BI.some(links, function (i, link) {
+                    if (link.to === childId) {
+                        id = wid;
+                        return true;
+                    } else {
+                        id = getLinkFatherWidget(link.to, childId);
+                    }
+                });
+                return id;
+            }
+
+
             widget.linkages = {};
             BI.each(linkages, function (lTId, link) {
-                var pWidget = self.getWidgetCalculationByID(self.getWidgetIDByDimensionID(lTId));
+
+                var pWid = getLinkFatherWidget(self.getWidgetIDByDimensionID(lTId), wid);
+                var pWidget = self.getWidgetCalculationByID(pWid);
                 widget.linkages.linkedWidget = pWidget;
                 // filterValues.push({
                 //     filter_type: "8080",
