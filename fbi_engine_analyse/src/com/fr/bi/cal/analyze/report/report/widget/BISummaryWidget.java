@@ -64,6 +64,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     private int dimensionRelationIndex = 1;
     private int targetRelationIndex = 0;
 
+
     @Override
     public BIDimension[] getDimensions() {
         return dimensions == null ? new BIDimension[0] : dimensions;

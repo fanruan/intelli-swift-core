@@ -25,6 +25,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -951,6 +952,10 @@ public class CubeIndexLoader {
                 TargetGettingKey tkey = new TargetGettingKey(summary.createTargetKey(), target.getValue());
                 if (mergerInfo == null) {
                     GroupValueIndex gvi = widget.createFilterGVI(row, targetKey, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(targetKey));
+                    //联动过滤条件
+                    if (widget instanceof TableWidget) {
+                        gvi = GVIUtils.AND(gvi, ((TableWidget) widget).createLinkedFilterGVI(targetKey, session));
+                    }
                     NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(summary.createTableKey(), gvi, session.getLoader());
                     RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, expander, session, useRealData, widget);
                     List<TargetAndKey> list = new ArrayList<TargetAndKey>();
@@ -1001,7 +1006,7 @@ public class CubeIndexLoader {
         if (widget instanceof BISummaryWidget) {
             targetSort = ((BISummaryWidget) widget).getTargetSort();
         }
-        DimensionGroupFilter dimensionGroupFilter = new DimensionGroupFilter(mergerInfoList, targetFilterMap, rowDimension, usedTargets, stringTargetGettingKeyMap, session, targetSort, widget.showRowToTal() || widget.showColumnTotal(), calAllPage);
+        DimensionGroupFilter dimensionGroupFilter = new DimensionGroupFilter(widget, mergerInfoList, targetFilterMap, rowDimension, usedTargets, stringTargetGettingKeyMap, session, targetSort, widget.showRowToTal() || widget.showColumnTotal(), calAllPage);
         dimensionGroupFilter.setShouldRecalculateIndex(isCross);
         return dimensionGroupFilter;
     }
