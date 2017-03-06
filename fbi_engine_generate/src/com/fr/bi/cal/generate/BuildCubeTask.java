@@ -213,7 +213,7 @@ public class BuildCubeTask implements CubeTask {
                 for (String location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
                     BILoggerFactory.getLogger().error("error: the filePath is : " + location);
                 }
-                CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
+                CubeReadingTableIndexLoader.envChanged();
                 if (!replaceSuccess) {
                     logger.error("cube replace failed after " + i + " times try!It will try again in 5s");
                     Thread.sleep(5000);
@@ -233,7 +233,7 @@ public class BuildCubeTask implements CubeTask {
             return false;
         } finally {
             BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
-            CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
+            CubeReadingTableIndexLoader.envChanged();
         }
     }
 
