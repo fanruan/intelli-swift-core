@@ -261,7 +261,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             BI.each(da.data, function (idx, data) {
                 data.y = self.formatXYDataWithMagnify(data.y, 1);
                 if (BI.has(da, "settings")) {
-                    data.y = self._formatNumberLevel(da.settings.num_level || self.constants.NORMAL, data.y);
+                    data.y = self.formatXYDataWithMagnify(data.y, self.calcMagnify(da.settings.num_level || self.constants.NORMAL));
                 }
                 if (BI.has(da, "type") && da.type == "bubble") {
                     data.name = data.x;
@@ -295,10 +295,9 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 BI.each(it.data, function (i, da) {
                     da.y = self.formatXYDataWithMagnify(da.y, 1);
                     if (BI.has(it, "settings")) {
-                        da.y = self._formatNumberLevel(it.settings.num_level || self.constants.NORMAL, da.y);
+                        da.y = self.formatXYDataWithMagnify(da.y, self.calcMagnify(it.settings.num_level || self.constants.NORMAL));
                     }
                     if ((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0) {
-
                         self.max = da.y;
                     }
                     if ((BI.isNull(self.min) || BI.parseFloat(da.y) < BI.parseFloat(self.min)) && id === 0) {
@@ -318,12 +317,6 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             })
         });
         return items;
-    },
-
-    _formatNumberLevel: function (numberLevel, y) {
-        y = BI.parseFloat(y);
-        y = BI.contentFormat(BI.parseFloat(y.div(this.calcMagnify(numberLevel)).toFixed(2)), "#.####;-#.####");
-        return y;
     },
 
     populate: function (items, options) {
