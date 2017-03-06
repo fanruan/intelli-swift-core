@@ -367,6 +367,7 @@ public class StringControlWidget extends TableWidget {
         if (keys.length == 0) {
             keys = new String[]{""};
         }
+        outer:
         for (Object ob : list) {
             if (ob == null) {
                 continue;
@@ -383,7 +384,7 @@ public class StringControlWidget extends TableWidget {
                         }
                     } else if (matched >= end) {
                         hasNext = true;
-                        break;
+                        break outer;
                     }
                     matched++;
                     break;
@@ -422,6 +423,7 @@ public class StringControlWidget extends TableWidget {
         if (keys.length == 0) {
             keys = new String[]{""};
         }
+        outer:
         for (int i = array.size() - 1; i > 0; i--) {
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
@@ -436,7 +438,7 @@ public class StringControlWidget extends TableWidget {
                         }
                     } else if (matched >= end) {
                         hasNext = true;
-                        break;
+                        break outer;
                     }
                     matched++;
                     break;
