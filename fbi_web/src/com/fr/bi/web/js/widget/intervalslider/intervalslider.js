@@ -26,6 +26,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         this.enable = false;
         this.valueOne = "";
         this.valueTwo = "";
+        this.calculation = new BI.AccurateCalculationModel();
 
         this.backgroundTrack = BI.createWidget({
             type: "bi.layout",
@@ -342,9 +343,11 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         return this.grayTrack.element[0].scrollWidth
     },
 
-    _getValueByPercent: function (percent) {
-        var thousandth = BI.parseInt(percent * 10);
-        return (((this.max - this.min) * thousandth) / 1000 + this.min);
+    _getValueByPercent: function (percent) {//return (((max-min)*percent)/100+min)
+        var sub = this.calculation.accurateSubtraction(this.max, this.min);
+        var mul = this.calculation.accurateMultiplication(sub, percent);
+        var div = this.calculation.accurateDivisionTenExponent(mul, 2);
+        return this.calculation.accurateAddition(div, this.min);
     },
 
     _getPercentByValue: function (v) {

@@ -130,10 +130,10 @@ BI.ResizableTable = BI.inherit(BI.Widget, {
                 self.table.populate();
                 self._populate();
                 self.regionResizerHandler.element.removeClass("dragging");
-                mouseMoveTracker.releaseMouseMoves();
                 self.fireEvent(BI.Table.EVENT_TABLE_AFTER_REGION_RESIZE);
                 start = false;
             }
+            mouseMoveTracker.releaseMouseMoves();
         }, document);
         regionResizerHandler.element.on("mousedown", function (event) {
             defaultSize = size = self._getRegionSize();

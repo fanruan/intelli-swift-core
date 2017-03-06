@@ -9,6 +9,7 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.ExcelExportDataBuildFactory;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -84,10 +85,6 @@ public class TableWidget extends BISummaryWidget {
         }
         usedDimension = dimensions;
         return dimensions;
-    }
-
-    public Map<Integer, List<String>> getView() {
-        return view;
     }
 
     @Override
@@ -373,8 +370,8 @@ public class TableWidget extends BISummaryWidget {
     }
 
     @Override
-    public int getType() {
-        return BIReportConstant.WIDGET.TABLE;
+    public WidgetType getType() {
+        return WidgetType.TABLE;
     }
 
     public void setOperator(int operator) {
@@ -427,7 +424,7 @@ public class TableWidget extends BISummaryWidget {
 
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
-        return ExcelExportDataBuildFactory.createExprotData(this, dataJSON).createJSON();
+        return ExcelExportDataBuildFactory.createExportData(this, dataJSON.getJSONObject("data")).createJSON();
     }
 
     public Map<Integer, List<String>> getWidgetView() {
@@ -441,7 +438,6 @@ public class TableWidget extends BISummaryWidget {
     public int getFieldTypeByDimensionID(String dID) throws Exception {
         return getBITargetAndDimension(dID).createColumnKey().getFieldType();
     }
-
 
     private BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
         for (BIDimension dimension : getDimensions()) {

@@ -7,6 +7,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.constant.BIJSONConstant;
@@ -37,7 +38,7 @@ public class StringControlWidget extends TableWidget {
     private int data_type = -2;
     private int times = -1;
     private String selected_values;
-    private String keyword = StringUtils.EMPTY;
+    private String[] keywords = new String[0];
     private boolean needDoLoadGroup = false;
 
     @Override
@@ -55,18 +56,18 @@ public class StringControlWidget extends TableWidget {
             selected_value.addAll(Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray)));
         }
 
-        if(needDoLoadGroup){
+        if (needDoLoadGroup) {
             Node node = CubeIndexLoader.getInstance(session.getUserId()).loadGroup(this, getViewTargets(), getViewDimensions(), getViewDimensions(), getTargets(), -1, true, (BISession) session);
             List<Object> list = new ArrayList<Object>();
-            for(Node child : node.getChilds()){
+            for (Node child : node.getChilds()) {
                 list.add(child.getShowValue());
             }
             return getCustomGroupResult(list, selected_value, calculator);
-        }else{
+        } else {
             GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
-            ICubeColumnIndexReader reader = dimension.getSort().createGroupedMap(calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader()));
+            ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
 
-            if (dimension.getGroup()!= null && dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
+            if (dimension.getGroup() != null && dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
                 return getCustomGroupResult(gvi, reader, selected_value, calculator);
             } else {
                 ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
@@ -76,17 +77,11 @@ public class StringControlWidget extends TableWidget {
         }
     }
 
-    private enum SearchMode{
+    private enum SearchMode {
         PY, START_WITH
     }
 
-    private abstract class SimpleIntArray{
-        public abstract int get(int index);
-
-        public abstract int size();
-    }
-
-    private JSONObject switchGetResultMethod(ICubeColumnIndexReader reader, Set<String> selected_value, SimpleIntArray groupArray, SearchMode mode) throws JSONException{
+    private JSONObject switchGetResultMethod(ICubeColumnIndexReader reader, Set<String> selected_value, SimpleIntArray groupArray, SearchMode mode) throws JSONException {
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
             return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
         }
@@ -100,60 +95,34 @@ public class StringControlWidget extends TableWidget {
     //超过50w只搜索开头是
     private static final int START_WITH_LIMIT = 500000;
 
-    private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException{
+    private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException {
         SearchMode mode = SearchMode.PY;
         int start = 0, end = getter.getGroupSize();
-        if (getter.getGroupSize() > START_WITH_LIMIT){
+        final int[] limitStarts = new int[keywords.length];
+        int[] limitEnds = new int[keywords.length];
+        Arrays.fill(limitStarts, 0);
+        Arrays.fill(limitEnds, 0);
+        if (getter.getGroupSize() > START_WITH_LIMIT) {
+            Arrays.fill(limitEnds, end);
             mode = SearchMode.START_WITH;
-            start = ArrayLookupHelper.getStartIndex4StartWith(reader, keyword, comparator);
-            end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;}
-        SimpleIntArray groupArray;
-        if (gvi instanceof AllShowRoaringGroupValueIndex){
-            final int fstart = start, size = start == -1 ? 0 :  end - start;
-            groupArray = new SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    return index + fstart;
-                }
-                @Override
-                public int size() {
-                    return size;
-                }
-            };
-        } else {
-            final int[] groupIndex = new int[getter.getGroupSize()];
-            Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
-            gvi.Traversal(new SingleRowTraversalAction() {
-                @Override
-                public void actionPerformed(int row) {
-                    int groupRow = getter.getPositionOfGroupByRow(row);
-                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {groupIndex[groupRow] = groupRow;}
-                }
-            });
-            final IntArray array = new IntArray();
-            if (start != -1){
-                for (int i = start; i < end; i ++){
-                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE){array.add(i);}
-                }
+            for (int i = 0, len = keywords.length; i < len; i++) {
+                start = ArrayLookupHelper.getStartIndex4StartWith(reader, keywords[i], comparator);
+                end = ArrayLookupHelper.getEndIndex4StartWith(reader, keywords[i], comparator) + 1;
+                limitStarts[i] = start;
+                limitEnds[i] = end;
             }
-            groupArray = new SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    return array.get(index);
-                }
-                @Override
-                public int size() {
-                    return array.size;
-                }
-            };
+        } else {
+            if (limitEnds.length > 0) {
+                limitEnds[0] = end;
+            }
         }
+        SimpleIntArray groupArray = this.createGroupArray(start, end, limitStarts, limitEnds, getter, gvi);
         return switchGetResultMethod(reader, selected_value, groupArray, mode);
     }
 
     private JSONObject getCustomGroupResult(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, DimensionCalculator calculator) throws JSONException {
         List<Object> list = new ArrayList<Object>();
-        int sortType = this.getDimensions()[0].getSortType();
-        Iterator<Map.Entry<Object, GroupValueIndex>> it = (sortType == BIReportConstant.SORT.ASC ? reader.iterator() : reader.previousIterator());
+        Iterator<Map.Entry<Object, GroupValueIndex>> it = reader.iterator();
         while (it.hasNext()) {
             Map.Entry<Object, GroupValueIndex> entry = it.next();
             if (entry.getValue().hasSameValue(gvi)) {
@@ -182,19 +151,24 @@ public class StringControlWidget extends TableWidget {
     }
 
     private int getSearchCount(ICubeColumnIndexReader reader, Set selectedValue, SimpleIntArray array, SearchMode mode) {
-        if (selectedValue.isEmpty() && mode == SearchMode.START_WITH){
+        if (selectedValue.isEmpty() && mode == SearchMode.START_WITH) {
             return array.size();
         }
         int count = 0;
-        String keyword = this.keyword.toLowerCase();
         for (int i = 0; i < array.size(); i++) {
             Object ob = reader.getGroupValue(array.get(i));
             if (ob == null) {
                 continue;
             }
             String str = ob.toString();
-            if (match(str, keyword, selectedValue, mode)) {
-                count++;
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                if (match(str, keyword, selectedValue, mode)) {
+                    count++;
+                }
             }
         }
         return count;
@@ -202,13 +176,18 @@ public class StringControlWidget extends TableWidget {
 
     private int getSearchCount(Set selectedValue, List<Object> list) {
         int count = 0;
-        String keyword = this.keyword.toLowerCase();
-        for (Object ob : list){
+        for (Object ob : list) {
             if (ob == null) {
                 continue;
             }
-            if (match(ob.toString(), keyword, selectedValue, SearchMode.PY)) {
-                count++;
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                if (match(ob.toString(), keyword, selectedValue, SearchMode.PY)) {
+                    count++;
+                }
             }
         }
         return count;
@@ -221,7 +200,7 @@ public class StringControlWidget extends TableWidget {
         if (StringUtils.isEmpty(keyword)) {
             return true;
         }
-        if (mode == SearchMode.START_WITH){
+        if (mode == SearchMode.START_WITH) {
             return true;
         }
         String strPinyin = BIPhoneticismUtils.getPingYin(value).toLowerCase();
@@ -245,11 +224,86 @@ public class StringControlWidget extends TableWidget {
                 times = treeJo.getInt("times");
             }
             selected_values = treeJo.optString("selected_values", StringUtils.EMPTY);
-            keyword = treeJo.optString("keyword", StringUtils.EMPTY);
+            String keyword = treeJo.optString("keyword", "");
+            if (keyword.isEmpty()) {
+                if (treeJo.has("keywords")) {
+                    JSONArray keyArray = treeJo.optJSONArray("keywords");
+                    keywords = new String[keyArray.length()];
+                    for (int i = 0, len = keyArray.length(); i < len; i++) {
+                        keywords[i] = keyArray.optString(i, StringUtils.EMPTY);
+                    }
+                } else {
+                    keywords = new String[0];
+                }
+            } else {
+                keywords = new String[1];
+                keywords[0] = keyword;
+            }
         }
-        if(this.getTargets().length > 0){
+        if (this.getTargets().length > 0) {
             needDoLoadGroup = true;
         }
+    }
+
+    private boolean getReserveList(List<Object> list, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match) {
+        boolean hasNext = false;
+        for (int i = list.size() - 1; i > -1; i--) {
+            Object ob = list.get(i);
+            if (ob == null) {
+                continue;
+            }
+            String str = ob.toString();
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                if (match(str, keyword, selectedValue, SearchMode.PY)) {
+                    if (matched >= start && matched < end) {
+                        if (ComparatorUtils.equals(keyword, str)) {
+                            match.add(str);
+                        } else {
+                            find.add(str);
+                        }
+                    } else if (matched >= end) {
+                        hasNext = true;
+                        break;
+                    }
+                    matched++;
+                }
+            }
+        }
+        return hasNext;
+    }
+
+    private boolean getList(List<Object> list, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match) {
+        boolean hasNext = false;
+        for (Object ob : list) {
+            if (ob == null) {
+                continue;
+            }
+            String str = ob.toString();
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                if (match(str, keyword, selectedValue, SearchMode.PY)) {
+                    if (matched >= start && matched < end) {
+                        if (ComparatorUtils.equals(keyword, str)) {
+                            match.add(str);
+                        } else {
+                            find.add(str);
+                        }
+                    } else if (matched >= end) {
+                        hasNext = true;
+                        break;
+                    }
+                    matched++;
+                }
+            }
+        }
+        return hasNext;
     }
 
     private JSONObject getSearchResult(Set selectedValue, int start, int end, List<Object> list, DimensionCalculator calculator) throws JSONException {
@@ -259,26 +313,10 @@ public class StringControlWidget extends TableWidget {
         List<String> find = new ArrayList<String>();
         List<String> match = new ArrayList<String>();
         int matched = 0;
-        String key = this.keyword.toLowerCase();
-        for (Object ob : list){
-            if (ob == null) {
-                continue;
-            }
-
-            String str = ob.toString();
-            if (match(str, key, selectedValue, SearchMode.PY)) {
-                if (matched >= start && matched < end) {
-                    if (ComparatorUtils.equals(keyword, str)) {
-                        match.add(str);
-                    } else {
-                        find.add(str);
-                    }
-                } else if (matched >= end) {
-                    hasNext = true;
-                    break;
-                }
-                matched++;
-            }
+        if (getDimensions()[0].getSort().getSortType() == BIReportConstant.SORT.NUMBER_DESC || getDimensions()[0].getSort().getSortType() == BIReportConstant.SORT.DESC) {
+            hasNext = getReserveList(list, selectedValue, matched, start, end, find, match);
+        } else {
+            hasNext = getList(list, selectedValue, matched, start, end, find, match);
         }
         for (String s : match) {
             ja.put(s);
@@ -291,6 +329,62 @@ public class StringControlWidget extends TableWidget {
         return jo;
     }
 
+    private boolean getReserveListWithArray(ICubeColumnIndexReader reader, SimpleIntArray array, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match, SearchMode mode) {
+        boolean hasNext = false;
+        for (int i = array.size() - 1; i > 0; i--) {
+            Object ob = reader.getGroupValue(array.get(i));
+            String str = ob.toString();
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                if (match(str, keyword, selectedValue, mode)) {
+                    if (matched >= start && matched < end) {
+                        if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
+                            match.add(str);
+                        } else {
+                            find.add(str);
+                        }
+                    } else if (matched >= end) {
+                        hasNext = true;
+                        break;
+                    }
+                    matched++;
+                }
+            }
+        }
+        return hasNext;
+    }
+
+    private boolean getListWithArray(ICubeColumnIndexReader reader, SimpleIntArray array, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match, SearchMode mode) {
+        boolean hasNext = false;
+        for (int i = 0; i < array.size(); i++) {
+            Object ob = reader.getGroupValue(array.get(i));
+            String str = ob.toString();
+            String[] keys = keywords;
+            if (keys.length == 0) {
+                keys = new String[]{""};
+            }
+            for (String keyword : keys) {
+                if (match(str, keyword, selectedValue, mode)) {
+                    if (matched >= start && matched < end) {
+                        if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
+                            match.add(str);
+                        } else {
+                            find.add(str);
+                        }
+                    } else if (matched >= end) {
+                        hasNext = true;
+                        break;
+                    }
+                    matched++;
+                }
+            }
+        }
+        return hasNext;
+    }
+
 
     private JSONObject getSearchResult(ICubeColumnIndexReader reader, Set selectedValue, int start, int end, SimpleIntArray array, SearchMode mode) throws JSONException {
         JSONArray ja = JSONArray.create();
@@ -299,23 +393,10 @@ public class StringControlWidget extends TableWidget {
         List<String> find = new ArrayList<String>();
         List<String> match = new ArrayList<String>();
         int matched = 0;
-        String key = this.keyword.toLowerCase();
-        for (int i = 0; i < array.size(); i++) {
-            Object ob = reader.getGroupValue(array.get(i));
-            String str = ob.toString();
-            if (match(str, key, selectedValue, mode)) {
-                if (matched >= start && matched < end) {
-                    if (StringUtils.isNotEmpty(keyword) && ComparatorUtils.equals(keyword, str)) {
-                        match.add(str);
-                    } else {
-                        find.add(str);
-                    }
-                } else if (matched >= end) {
-                    hasNext = true;
-                    break;
-                }
-                matched++;
-            }
+        if (getDimensions()[0].getSort().getSortType() == BIReportConstant.SORT.NUMBER_DESC || getDimensions()[0].getSort().getSortType() == BIReportConstant.SORT.DESC) {
+            hasNext = getReserveListWithArray(reader, array, selectedValue, matched, start, end, find, match, mode);
+        } else {
+            hasNext = getListWithArray(reader, array, selectedValue, matched, start, end, find, match, mode);
         }
         for (String s : match) {
             ja.put(s);
@@ -329,8 +410,8 @@ public class StringControlWidget extends TableWidget {
     }
 
     @Override
-    public int getType() {
-        return BIReportConstant.WIDGET.STRING;
+    public WidgetType getType() {
+        return WidgetType.STRING;
     }
 
 }

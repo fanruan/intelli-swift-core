@@ -9,7 +9,7 @@ BIDezi.TreeLabelModel = BI.inherit(BI.Model, {
             type: BICst.WIDGET.TREE_LABEL,
             dimensions: {},
             view: {},
-            value: {}
+            value: []
         })
     },
 

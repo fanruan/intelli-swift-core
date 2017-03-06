@@ -3,23 +3,45 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manag
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.BIExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SumaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SummaryNormalTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SummaryTableDataBuilder;
 import com.fr.json.JSONObject;
+
+import java.util.*;
 
 /**
  * Created by Kary on 2017/2/26.
  */
 public class ExcelExportDataBuildFactory {
-    public static BIExcelTableData createExprotData(TableWidget widget, JSONObject dataJSON) throws Exception {
+    public static BIExcelTableData createExportData(TableWidget widget, JSONObject dataJSON) throws Exception {
         BIExcelDataBuilder builder;
-        if (dataJSON.has("t")){
-            builder = new SummaryTableDataBuilder(widget, dataJSON);
-        }else {
-           builder=new SummaryNormalTableDataBuilder(widget, dataJSON);
+        Map<Integer, List<String>> view = widget.getWidgetView();
+        Map<Integer, List<JSONObject>> dimAndTar = createViewMap(widget, view);
+        if (dataJSON.has("t")) {
+            builder = new SumaryCrossTableDataBuilder(dimAndTar, dataJSON);
+        } else {
+            builder = new SummaryNormalTableDataBuilder(dimAndTar, dataJSON);
         }
         SummaryTableDirector director = new SummaryTableDirector(builder);
         director.construct();
         return director.buildTableData();
     }
+
+    private static Map<Integer, List<JSONObject>> createViewMap(TableWidget widget, Map<Integer, List<String>> view) throws Exception {
+        Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
+        Iterator<Integer> iterator = view.keySet().iterator();
+        while (iterator.hasNext()) {
+            Integer next = iterator.next();
+            List<JSONObject> list = new ArrayList<JSONObject>();
+            List<String> ids = view.get(next);
+            for (String dId : ids) {
+                int type = widget.getFieldTypeByDimensionID(dId);
+                String text = widget.getDimensionNameByID(dId);
+                list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type));
+            }
+            dimAndTar.put(next, list);
+        }
+        return dimAndTar;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
@@ -24,8 +25,11 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -35,7 +39,9 @@ import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -240,8 +246,6 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             String region = regions.next();
             int regionValue = Integer.parseInt(region);
             if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) && regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
-//                if (ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-//                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)) {
                 for (int i = 0; i < view.getJSONArray(region).length(); i++) {
                     dimensionIds.put(view.getJSONArray(region).getString(i));
                 }
@@ -259,7 +263,6 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         }
         this.dimensions = dims.toArray(new BIDimension[dims.size()]);
         List<BISummaryTarget> tars = new ArrayList<BISummaryTarget>();
-
         // young BI-2332 指标数超过65后，计算指标值不对
         Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
         for (int j = 0; j < targetIds.length(); j++) {
@@ -352,53 +355,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
                     }
                     if (targetRelationJo.has("target_relation")) {
-                        Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
-                        if (relationMap == null) {
-                            relationMap = new LinkedHashMap<String, List<BITableRelation>>();
-                            relationsMap.put(dimensionId, relationMap);
-                        }
-                        JSONArray dimensionAndTargetPathsJa = targetRelationJo.getJSONArray("target_relation");
-                        List<BITableRelation> relationList = new ArrayList<BITableRelation>();
-                        //指标的关联关系
-                        JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
-                        JSONObject primaryKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("primaryKey");
-                        JSONObject foreignKeyJo = targetRelationsJa.optJSONObject(targetRelationsJa.length() - 1).optJSONObject("foreignKey");
-                        String primaryFieldId = primaryKeyJo.optString("field_id");
-                        String foreignFieldId = foreignKeyJo.optString("field_id");
-                        String primaryTableId = primaryKeyJo.has("table_id") ? primaryKeyJo.getString("table_id") : null;
-                        String foreignTableId = foreignKeyJo.has("table_id") ? foreignKeyJo.getString("table_id") : null;
-
-                        JSONObject srcJo = dims.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-//                        if (srcJo.has("target_relation")) {
-//                            JSONArray selfRelationJa = srcJo.getJSONArray("target_relation");
-//                            for (int i = 0; i < selfRelationJa.length(); i++) {
-//                                BITableRelation selfRelation = BITableRelationHelper.getRelation(selfRelationJa.getJSONObject(i));
-//                                if (BICubeConfigureCenter.getTableRelationManager().containTableRelation(userId, selfRelation)) {
-//                                    relationList.add(selfRelation);
-//                                }
-//                            }
-//                        }
-                        if (primaryTableId != null && foreignTableId != null) {
-                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreignTableId)))) {
-                                relationMap.put(targetId, relationList);
-                            } else {
-                                for (int j = 0; j < targetRelationsJa.length(); j++) {
-                                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
-                                }
-                                relationMap.put(targetId, relationList);
-                            }
-                        } else {
-                            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo()) && !srcJo.has("target_relation")) {
-                                relationMap.put(targetId, relationList);
-                            } else {
-                                for (int j = 0; j < targetRelationsJa.length(); j++) {
-                                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
-                                }
-                                relationMap.put(targetId, relationList);
-                            }
-                        }
-
-
+                        JSONArray dimensionAndTargetPathsJa = this.createDimensionAndTargetPathsJa(dimensionId, targetId, dims, targetRelationJo);
                         //多对多时纬度的关联关系
                         if (dimensionAndTargetPathsJa.length() > 1) {
                             Map<String, List<BITableRelation>> dimensionRelationMap = directToDimensionRelationsMap.get(dimensionId);
@@ -419,6 +376,47 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 }
             }
         }
+    }
+
+    private JSONArray createDimensionAndTargetPathsJa(String dimensionId, String targetId, JSONObject dims, JSONObject targetRelationJo) throws JSONException {
+        Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
+        if (relationMap == null) {
+            relationMap = new LinkedHashMap<String, List<BITableRelation>>();
+            relationsMap.put(dimensionId, relationMap);
+        }
+        JSONArray dimensionAndTargetPathsJa = targetRelationJo.getJSONArray("target_relation");
+        List<BITableRelation> relationList = new ArrayList<BITableRelation>();
+        //指标的关联关系
+        JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
+        JSONObject primaryKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("primaryKey");
+        JSONObject foreignKeyJo = targetRelationsJa.optJSONObject(targetRelationsJa.length() - 1).optJSONObject("foreignKey");
+        String primaryFieldId = primaryKeyJo.optString("field_id");
+        String foreignFieldId = foreignKeyJo.optString("field_id");
+        String primaryTableId = primaryKeyJo.has("table_id") ? primaryKeyJo.getString("table_id") : null;
+        String foreignTableId = foreignKeyJo.has("table_id") ? foreignKeyJo.getString("table_id") : null;
+
+        JSONObject srcJo = dims.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
+        if (primaryTableId != null && foreignTableId != null) {
+            if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreignTableId)))) {
+                relationMap.put(targetId, relationList);
+            } else {
+                for (int j = 0; j < targetRelationsJa.length(); j++) {
+                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
+                }
+                relationMap.put(targetId, relationList);
+            }
+        } else {
+            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo()) && !srcJo.has("target_relation")) {
+                relationMap.put(targetId, relationList);
+            } else {
+                for (int j = 0; j < targetRelationsJa.length(); j++) {
+                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
+                }
+                relationMap.put(targetId, relationList);
+            }
+        }
+
+        return dimensionAndTargetPathsJa;
     }
 
     /**
@@ -486,5 +484,100 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         }
         dimensionsMap.clear();
         dimensionsMap = refreshedDimensionsMap;
+    }
+
+    public abstract class SimpleIntArray {
+        public abstract int get(int index);
+
+        public abstract int size();
+    }
+
+    /**
+     * @param start
+     * @param end
+     * @param limitStarts start和end可以是数组
+     * @param limitEnds
+     * @param getter
+     * @param gvi
+     * @return
+     */
+    protected SimpleIntArray createGroupArray(int start, int end, final int[] limitStarts, final int[] limitEnds, final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+        if (gvi instanceof AllShowRoaringGroupValueIndex) {
+            int size = 0;
+            if (limitStarts.length == 0) {
+                size = end;
+            }
+            final int[] intevals = new int[limitStarts.length];
+            for (int i = 0, len = limitStarts.length; i < len; i++) {
+                size += (limitStarts[i] == -1 ? 0 : limitEnds[i] - limitStarts[i]);
+                intevals[i] = size;
+            }
+            final int fsize = size, fstart = start;
+            return new SimpleIntArray() {
+                @Override
+                public int get(int index) {
+                    for (int i = intevals.length - 1; i >= 0; i--) {
+                        if (i == 0) {
+                            return index + limitStarts[0];
+                        }
+                        if (index < intevals[i] && index >= intevals[i - 1]) {
+                            return index - intevals[i - 1] + limitStarts[i];
+                        }
+                    }
+                    return index + fstart;
+                }
+
+                @Override
+                public int size() {
+                    return fsize;
+                }
+            };
+        } else {
+            final int[] groupIndex = new int[getter.getGroupSize()];
+            Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
+            gvi.Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    int groupRow = getter.getPositionOfGroupByRow(row);
+                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                        groupIndex[groupRow] = groupRow;
+                    }
+                }
+            });
+            final IntArray array = new IntArray();
+            if (limitStarts.length > 0) {
+                for (int i = 0, len = limitStarts.length; i < len; i++) {
+                    start = limitStarts[i];
+                    end = limitEnds[i];
+                    if (start != -1) {
+                        for (int j = start; j < end; j++) {
+                            if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
+                                array.add(j);
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (start != -1) {
+                    for (int j = start; j < end; j++) {
+                        if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
+                            array.add(j);
+                        }
+                    }
+                }
+            }
+            return new SimpleIntArray() {
+                @Override
+                public int get(int index) {
+                    return array.get(index);
+                }
+
+                @Override
+                public int size() {
+                    return array.size;
+                }
+            };
+        }
+
     }
 }

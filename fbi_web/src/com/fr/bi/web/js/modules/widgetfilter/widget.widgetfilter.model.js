@@ -258,12 +258,18 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 }
                 return text;
             case BICst.WIDGET.TREE_LABEL:
-                BI.each(widgetValue, function (name, children) {
-                    var childNodes = getChildrenNode(children);
-                    text += name + (childNodes === "" ? "" : (":" + childNodes)) + "; ";
-                    if (childNodes === BICst.LIST_LABEL_TYPE.ALL || name === BICst.LIST_LABEL_TYPE.ALL) {
-                        text = "";
-                    }
+                var textValue = widgetValue.filter(function (values) {
+                    return values.indexOf(BICst.LIST_LABEL_TYPE.ALL) < 0;
+                });
+                if (textValue.length === 0) {
+                    return text;
+                }
+                textValue = descartes(textValue);
+                BI.each(textValue, function (index, values) {
+                    BI.each(values, function (idx, value) {
+                        text += value + (idx === 0 ? values.length > 1 ? ":" : "" : idx === values.length - 1 ? "" : ",");
+                    });
+                    text += ";"
                 });
                 if (text !== "") {
                     text = BI.i18nText("BI-In") + " " + text;
@@ -271,6 +277,16 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 return text;
             default:
                 return widgetValue;
+        }
+
+        function descartes(arr) {
+            return arr.reduce(function(a,b){
+                return a.map(function(x){
+                    return b.map(function(y){
+                        return x.concat(y);
+                    })
+                }).reduce(function(a,b){ return a.concat(b) },[])
+            }, [[]])
         }
     },
 

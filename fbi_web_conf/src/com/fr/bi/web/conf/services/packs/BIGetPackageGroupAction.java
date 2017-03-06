@@ -35,7 +35,6 @@ public class BIGetPackageGroupAction extends AbstractBIConfigureAction {
         JSONObject packagesJO = packageManager.createPackageJSON(userId);
         JSONObject groupsJO = packageManager.createGroupJSON(userId);
         JSONObject jo = new JSONObject();
-        jo.put("edit", true);   //管理分组
         if (!ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
             List<String> need2Remove = new ArrayList<String>();
             //业务包
@@ -57,11 +56,9 @@ public class BIGetPackageGroupAction extends AbstractBIConfigureAction {
 
             //分组
             dealWithGroups(groupsJO, packagesJO);
-            jo.put("edit", false);
         }
         jo.put("packages", packagesJO).put("groups", groupsJO);
         WebUtils.printAsJSON(res, jo);
-
     }
 
     /**
