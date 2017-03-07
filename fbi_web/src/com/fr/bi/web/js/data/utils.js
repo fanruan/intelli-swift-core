@@ -612,6 +612,7 @@ Data.Utils = {
                     obj.data = adjustData;
                     BI.isNotNull(type) && (obj.type = "bubble");
                     obj.name = widget.dimensions[targetIds[idx]].name;
+                    obj.settings = widget.dimensions[targetIds[idx]].settings;
                     return obj;
                 });
             }
@@ -1363,6 +1364,10 @@ Data.Utils = {
                 BI.each(data, function (idx, item) {
                     BI.each(item, function (id, it) {
                         BI.each(it.data, function (i, da) {
+                            da.y = _formatXYDataWithMagnify(da.y, 1);
+                            if (BI.has(it, "settings")) {
+                                da.y = _formatXYDataWithMagnify(da.y, _calcMagnify(it.settings.num_level || constants.NORMAL));
+                            }
                             if ((BI.isNull(max) || da.y > max) && id === 0) {
                                 max = da.y;
                             }
@@ -1451,7 +1456,12 @@ Data.Utils = {
         //公用方法
         function _formatDrillItems(items) {
             BI.each(items.series, function (idx, da) {
+                var hasArea = false;
                 BI.each(da.data, function (idx, data) {
+                    data.y = _formatXYDataWithMagnify(data.y, 1);
+                    if (BI.has(da, "settings")) {
+                        data.y = _formatXYDataWithMagnify(data.y, _calcMagnify(da.settings.num_level || constants.NORMAL));
+                    }
                     if (BI.has(da, "type") && da.type == "bubble") {
                         data.name = data.x;
                         data.size = data.y;
@@ -1459,10 +1469,19 @@ Data.Utils = {
                         data.name = data.x;
                         data.value = data.y;
                     }
+                    if(BI.has(da, "type") && da.type === "areaMap"){
+                        hasArea = true;
+                    }
                     if (BI.has(data, "drilldown")) {
                         _formatDrillItems(data.drilldown);
                     }
-                })
+                });
+                if(hasArea === false){
+                    items.series.push({
+                        type: "areaMap",
+                        data: []
+                    });
+                }
             })
         }
 
@@ -1621,7 +1640,7 @@ Data.Utils = {
             configs.plotOptions.tooltip.shared = true;
             configs.dTools.enabled = true;
             var formatterArray = [];
-            BI.backEach(items, function (idx, item) {
+            BI.each(items, function (idx, item) {
                 if (BI.has(item, "settings")) {
                     formatterArray.push(formatToolTipAndDataLabel(item.settings.format || constants.NORMAL, item.settings.num_level || constants.NORMAL,
                         item.settings.unit || "", item.settings.num_separators || constants.NUM_SEPARATORS));
@@ -1631,7 +1650,7 @@ Data.Utils = {
                 var tip = this.name;
                 BI.each(this.points, function (idx, point) {
                     var value = point.size || point.y;
-                    tip += ('<div>' + point.seriesName + ':' + (window.FR ? BI.contentFormat(value, formatterArray[idx]) : value) + '</div>');
+                    tip += ('<div>' + point.seriesName + ':' + BI.contentFormat(value, formatterArray[idx]) + '</div>');
                 });
                 return tip;
             };
@@ -1682,44 +1701,36 @@ Data.Utils = {
                 configs.rangeLegend.formatter = function () {
                     var to = this.to;
                     if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
-                        switch (items[0].settings.num_level || c.NORMAL) {
-                            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                                to += '';
-                                break;
-                            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                                to += BI.i18nText("BI-Wan");
-                                break;
-                            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                                to += BI.i18nText("BI-Million");
-                                break;
-                            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                                to += BI.i18nText("BI-Yi");
-                                break;
-                            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                                to = BI.contentFormat(BI.parseFloat(to), "#0%;-#0%");
-                                break;
-                        }
+                        var settings = items[0].settings;
+                        var legendFormat = formatToolTipAndDataLabel(settings.format || constants.NORMAL, settings.num_level || constants.NORMAL,
+                            settings.unit || "",settings.num_separators || constants.NUM_SEPARATORS);
+                        to = BI.contentFormat(to, legendFormat)
                     }
                     return to
                 }
             }
 
-            function formatToolTipAndDataLabel(format, numberLevel) {
+            function formatToolTipAndDataLabel(format, numberLevel, unit, num_separators) {
                 var formatter = '#.##';
                 switch (format) {
                     case constants.NORMAL:
                         formatter = '#.##';
+                        if (num_separators) formatter = '#,###.##';
                         break;
                     case constants.ZERO2POINT:
                         formatter = '#0';
+                        if (num_separators) formatter = '#,###';
                         break;
                     case constants.ONE2POINT:
                         formatter = '#0.0';
+                        if (num_separators) formatter = '#,###.0';
                         break;
                     case constants.TWO2POINT:
                         formatter = '#0.00';
+                        if (num_separators) formatter = '#,###.00';
                         break;
                 }
+
                 switch (numberLevel) {
                     case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
                         formatter += '';
@@ -1734,14 +1745,11 @@ Data.Utils = {
                         formatter += BI.i18nText("BI-Yi");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                        if (format === constants.NORMAL) {
-                            formatter = '#0%'
-                        } else {
-                            formatter += '%';
-                        }
+                        formatter += '%';
                         break;
                 }
-                return formatter;
+
+                return formatter + unit;
             }
 
             function getRangeStyle(styles, change, defaultColor) {

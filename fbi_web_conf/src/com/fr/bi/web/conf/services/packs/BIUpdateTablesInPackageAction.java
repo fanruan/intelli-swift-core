@@ -198,7 +198,8 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 boolean isExist = false;
                 for (BusinessTable oldTable : oldTables) {
                     CubeTableSource oldSource = oldTable.getTableSource();
-                    if (ComparatorUtils.equals(oldTable.getID(), newTable.getID()) && ComparatorUtils.equals(oldSource.getTableName(), tableSource.getTableName())) {
+                    if (ComparatorUtils.equals(oldTable.getID(), newTable.getID())
+                            && ComparatorUtils.equals(oldSource.getSourceID(), tableSource.getSourceID())) {
                         isExist = true;
                     }
                 }

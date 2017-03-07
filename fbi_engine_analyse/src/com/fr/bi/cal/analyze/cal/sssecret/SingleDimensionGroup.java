@@ -21,6 +21,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.operation.group.BIGroupUtils;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
@@ -155,8 +156,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     private boolean hasSpecialGroup() {
-        int groupType = column.getGroup().getType();
-        if (isCustomGroup(groupType)) {
+        if (BIGroupUtils.isCustomGroup(column.getGroup())) {
             return true;
         }
         if (column.getSortType() == BIReportConstant.SORT.CUSTOM) {
@@ -164,13 +164,6 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         }
         return false;
     }
-
-    private boolean isCustomGroup(int groupType) {
-        return groupType == BIReportConstant.GROUP.CUSTOM_GROUP
-                || groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP
-                || groupType == BIReportConstant.GROUP.AUTO_GROUP;
-    }
-
 
     private BusinessTable getRealTableKey4Calculate() {
         return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;

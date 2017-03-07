@@ -12,7 +12,9 @@ import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTree;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTreeBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.dimension.dimension.BIStringDimension;
@@ -55,9 +57,10 @@ public class DimensionGroupFilter {
     private boolean calAllPage;
     private boolean hasInSumMetrics;
     private long startTime = System.currentTimeMillis();
+    private BIWidget widget;
 
 
-    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum, boolean calAllPage) {
+    public DimensionGroupFilter(BIWidget widget, List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum, boolean calAllPage) {
         this.mergerInfoList = mergerInfoList;
         this.rowDimension = rowDimension;
         this.dimensionComparator = new Comparator[rowDimension.length];
@@ -72,6 +75,7 @@ public class DimensionGroupFilter {
         this.calAllPage = calAllPage;
         this.hasInSumMetrics = hasInSumMetrics();
         LoaderUtils.setAllExpander(mergerInfoList);
+        this.widget = widget;
     }
 
     private boolean hasInSumMetrics() {
@@ -243,7 +247,14 @@ public class DimensionGroupFilter {
                 mergerInfoList.get(i).setSortedTree(sortedTreeBuilders[i].build());
             }
         }
+        saveFilter();
         return mergerInfoList;
+    }
+
+    private void saveFilter() {
+        if (widget != null && widget instanceof BISummaryWidget) {
+            session.setMergerInfoList(widget.getWidgetName(), mergerInfoList);
+        }
     }
 
     private void applyFilterIndexes(GroupValueIndex[] groupValueIndexes) {
@@ -817,4 +828,6 @@ public class DimensionGroupFilter {
     public void setShouldRecalculateIndex(boolean shouldRecalculateIndex) {
         this.shouldRecalculateIndex = shouldRecalculateIndex;
     }
+
+
 }

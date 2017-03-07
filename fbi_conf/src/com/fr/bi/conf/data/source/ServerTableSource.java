@@ -111,7 +111,7 @@ public class ServerTableSource extends DBTableSource {
     }
 
     protected TableData getTableData() {
-        return DatasourceManager.getInstance().getTableData(getTableName());
+        return DatasourceManager.getProviderInstance().getTableData(getTableName());
     }
 
     @Override

@@ -328,6 +328,23 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         return null;
     }
 
+
+
+    @Override
+    public BITableRelationPath getFirstAnalysisAvailablePath(long userId, BusinessTable primaryTable, BusinessTable juniorTable) {
+        userId = UserControl.getInstance().getSuperManagerID();
+        try {
+            Set<BITableRelationPath> availablePath = this.getAnalysisAllAvailablePath(userId, primaryTable, juniorTable);
+            Iterator<BITableRelationPath> pathIterator = availablePath.iterator();
+            while (pathIterator.hasNext()) {
+                return pathIterator.next();
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return null;
+    }
+
     @Override
     public BITableContainer getCommonSonTables(long userId, Set<BusinessTable> tables) {
         return null;

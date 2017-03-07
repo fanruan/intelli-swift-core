@@ -20,7 +20,7 @@ public class BIGetConnectionNamesAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         JSONArray ja = new JSONArray();
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator names = datasourceManager.getConnectionNameIterator();
         while (names.hasNext()) {
             String name = (String) names.next();
