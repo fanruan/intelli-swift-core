@@ -135,7 +135,7 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
 //                    field.put("isCircle", ((BIBusinessField)BusinessTableHelper.getSpecificField(table, field.getString("field_name"))).isCircle());
                     nFields.put(field);
                 } catch (BIFieldAbsentException exception) {
-                    BILoggerFactory.getLogger().error(exception.getMessage(), exception);
+                    BILoggerFactory.getLogger(BIGetTablesOfOnePackageAction.class).error(exception.getMessage(), exception);
                 }
 
             }

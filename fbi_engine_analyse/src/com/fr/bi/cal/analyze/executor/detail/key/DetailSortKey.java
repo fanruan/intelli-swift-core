@@ -5,12 +5,14 @@ import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by 小灰灰 on 2015/10/13.
  */
-public class DetailSortKey {
+public class DetailSortKey implements Serializable{
+    private static final long serialVersionUID = -1180298933522940712L;
     private List<BIDetailTarget> sortList;
 
     private GroupValueIndex gvi;

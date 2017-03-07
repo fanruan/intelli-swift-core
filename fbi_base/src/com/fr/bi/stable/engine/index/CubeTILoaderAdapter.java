@@ -11,6 +11,7 @@ import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
  * Created by 小灰灰 on 2016/1/22.
  */
 public class CubeTILoaderAdapter implements ICubeDataLoader {
+    private static final long serialVersionUID = 3470450353302271347L;
     private final RuntimeException NULL_EXCEPTION = new NullTableIndexException();
 
     /**

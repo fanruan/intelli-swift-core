@@ -4,12 +4,13 @@ import com.fr.bi.conf.manager.excelview.SingleUserBIExcelViewManager;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Created by Young's on 2016/4/20.
  */
-public interface BIExcelViewManagerProvider {
+public interface BIExcelViewManagerProvider extends Serializable{
     String XML_TAG = "BIExcelViewManager";
 
     SingleUserBIExcelViewManager getExcelViewManager(long userId);

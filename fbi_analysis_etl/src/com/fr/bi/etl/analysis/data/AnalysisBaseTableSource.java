@@ -32,9 +32,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2015/12/21.
  */
-public class AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeTableSource {
+public class
+AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeTableSource {
+    private static final long serialVersionUID = 2465659786011088351L;
     @BIIgnoreField
-    private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
+    private /*transient*/ Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
     @BICoreField
     protected BIWidget widget;
     protected int etlType;

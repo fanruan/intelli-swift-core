@@ -202,34 +202,70 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
 
     @Override
     public void clear() {
-        detailDataService.clear();
-        indexDataService.clear();
-        groupDataService.clear();
-        cubeVersion.clear();
-        cubeColumnPositionOfGroupService.clear();
-        relationManagerService.clear();
+        if (detailDataService != null) {
+            detailDataService.clear();
+        }
+        if (indexDataService != null) {
+            indexDataService.clear();
+        }
+        if (groupDataService != null) {
+            groupDataService.clear();
+        }
+        if (cubeVersion != null) {
+            cubeVersion.clear();
+        }
+        if (cubeColumnPositionOfGroupService != null) {
+            cubeColumnPositionOfGroupService.clear();
+        }
+        if (relationManagerService != null) {
+            relationManagerService.clear();
+        }
     }
 
     @Override
     public void forceReleaseWriter() {
-        detailDataService.forceReleaseWriter();
-        indexDataService.forceReleaseWriter();
-        groupDataService.forceReleaseWriter();
-        cubeVersion.forceReleaseWriter();
-        cubeColumnPositionOfGroupService.forceReleaseWriter();
-        relationManagerService.forceReleaseWriter();
+        if (detailDataService != null) {
+            detailDataService.forceReleaseWriter();
+        }
+        if (indexDataService != null) {
+            indexDataService.forceReleaseWriter();
+        }
+        if (groupDataService != null) {
+            groupDataService.forceReleaseWriter();
+        }
+        if (cubeVersion != null) {
+            cubeVersion.forceReleaseWriter();
+        }
+        if (cubeColumnPositionOfGroupService != null) {
+            cubeColumnPositionOfGroupService.forceReleaseWriter();
+        }
+        if (relationManagerService != null) {
+            relationManagerService.forceReleaseWriter();
+        }
     }
 
     @Override
     public void forceReleaseReader() {
-        detailDataService.forceReleaseReader();
-        indexDataService.forceReleaseReader();
-        groupDataService.forceReleaseReader();
-        cubeVersion.forceReleaseReader();
-        cubeColumnPositionOfGroupService.forceReleaseReader();
-        relationManagerService.forceReleaseReader();
-    }
 
+        if (detailDataService != null) {
+            detailDataService.forceReleaseReader();
+        }
+        if (indexDataService != null) {
+            indexDataService.forceReleaseReader();
+        }
+        if (groupDataService != null) {
+            groupDataService.forceReleaseReader();
+        }
+        if (cubeVersion != null) {
+            cubeVersion.forceReleaseReader();
+        }
+        if (cubeColumnPositionOfGroupService != null) {
+            cubeColumnPositionOfGroupService.forceReleaseReader();
+        }
+        if (relationManagerService != null) {
+            relationManagerService.forceReleaseReader();
+        }
+    }
 
     @Override
     public T getOriginalObjectValueByRow(int rowNumber) {

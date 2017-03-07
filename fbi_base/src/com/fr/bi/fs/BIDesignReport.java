@@ -5,11 +5,13 @@ import com.fr.base.BaseXMLUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 
 /**
  * Created by 小灰灰 on 2015/7/16.
  */
-public class BIDesignReport {
+public class BIDesignReport implements Serializable{
+    private static final long serialVersionUID = 1654906613327753967L;
     private BIDesignSetting setting;
 
     public BIDesignReport(BIDesignSetting var1) {

@@ -3,7 +3,7 @@ package com.finebi.cube.gen.oper.observer;
 import com.finebi.cube.gen.mes.BICubeBuildFragmentTag;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
 import com.finebi.cube.gen.mes.BIStatusUtils;
-import com.finebi.cube.impl.operate.BIOperation;
+import com.finebi.cube.tools.operate.BIOperation;
 import com.finebi.cube.operate.IOperationID;
 import com.finebi.cube.router.fragment.IFragmentTag;
 import com.finebi.cube.router.topic.ITopicTag;

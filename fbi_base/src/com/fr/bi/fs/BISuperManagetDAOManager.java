@@ -11,6 +11,7 @@ import com.fr.general.GeneralContext;
 import com.fr.privilege.PrivilegeManager;
 import com.fr.stable.EnvChangedListener;
 import com.fr.stable.Primitive;
+import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -25,14 +26,22 @@ public class BISuperManagetDAOManager extends XMLFileManager implements BIReport
     private EmbeddedTableData sysBITableData;
 
     private BISuperManagetDAOManager() {
-       readXMLFile();
+        readXMLFile();
     }
 
     private Map<Long, BIReportNode> sysBINode_idMap = new Hashtable<Long, BIReportNode>();
 
+    public static BIReportDAO getBISuperManagetDAOManager() {
+        return StableFactory.getMarkedObject(BIReportDAO.class.getName(), BIReportDAO.class);
+    }
+
     public static BISuperManagetDAOManager getInstance() {
-        manager =  BIConstructorUtils.constructObject(BISuperManagetDAOManager.class, manager);
-        return manager;
+        synchronized (BISuperManagetDAOManager.class) {
+            if (manager == null) {
+                manager = BIConstructorUtils.constructObject(BISuperManagetDAOManager.class, manager);
+            }
+            return manager;
+        }
     }
 
 
@@ -88,7 +97,7 @@ public class BISuperManagetDAOManager extends XMLFileManager implements BIReport
 
     @Override
     public void saveOrUpdate(BIReportNode node) throws Exception {
-        long id = node.getId() < 0 ? BIDAOUtils.generateID(sysBINode_idMap) : node.getId();
+        long id = node.getId() < 0 ? BIDAOUtils.getBIDAOManager().generateID(sysBINode_idMap) : node.getId();
         node.setId(id);
         sysBINode_idMap.put(new Long(id), node);
         saveSysBITableData();
@@ -193,8 +202,8 @@ public class BISuperManagetDAOManager extends XMLFileManager implements BIReport
     }
 
     private void saveSysBITableData() throws Exception {
-        synchronized (BISuperManagetDAOManager.class){
-            sysBITableData = BIDAOUtils.initEmbeddedTableData();
+        synchronized (BISuperManagetDAOManager.class) {
+            sysBITableData = BIDAOUtils.getBIDAOManager().initEmbeddedTableData();
             Iterator iter = this.sysBINode_idMap.entrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry entry = (Map.Entry) iter.next();
@@ -205,12 +214,12 @@ public class BISuperManagetDAOManager extends XMLFileManager implements BIReport
                 rowList.add(brn.getPath());
                 rowList.add(brn.getDisplayName());
                 Date d = brn.getCreatetime();
-                if(d == null){
+                if (d == null) {
                     d = new Date();
                 }
                 rowList.add(String.valueOf(d.getTime()));
                 d = brn.getLastModifyTime();
-                if(d == null){
+                if (d == null) {
                     d = new Date();
                 }
                 rowList.add(String.valueOf(d.getTime()));
@@ -223,9 +232,9 @@ public class BISuperManagetDAOManager extends XMLFileManager implements BIReport
     }
 
     private EmbeddedTableData getSysBITabledata() {
-        synchronized (BISuperManagetDAOManager.class){
+        synchronized (BISuperManagetDAOManager.class) {
             if (sysBITableData == null) {
-                sysBITableData = BIDAOUtils.initEmbeddedTableData();
+                sysBITableData = BIDAOUtils.getBIDAOManager().initEmbeddedTableData();
             }
             return sysBITableData;
         }

@@ -24,6 +24,7 @@ import java.util.*;
  */
 public class StringDimensionCalculator extends AbstractDimensionCalculator {
     private transient ICubeColumnIndexReader customMap;
+    private static final long serialVersionUID = 7475835494164777419L;
 
     public StringDimensionCalculator(BIDimension dimension, BusinessField column, List<BITableSourceRelation> relations) {
         super(dimension, column, relations);

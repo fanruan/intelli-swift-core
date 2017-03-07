@@ -19,6 +19,7 @@ public class TimestampDealer extends AbstractDealer<Long> {
             date = rs.getTimestamp(rsColumn);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
         if (date != null) {
             return date.getTime();

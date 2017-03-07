@@ -34,7 +34,7 @@ public class BIGetReportAndFolderAction extends ActionNoSessionCMD {
             ja.put(folderList.get(i).createJSONConfig());
         }
 
-        List<BIReportNode> nodeList = BIDAOUtils.findByUserID(userId);
+        List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(userId);
         BISortUtils.sortByModifyTime(nodeList);
         if (nodeList == null) {
             nodeList = new ArrayList<BIReportNode>();
@@ -57,7 +57,7 @@ public class BIGetReportAndFolderAction extends ActionNoSessionCMD {
     }
 
     private JSONArray getSharedUsers(long reportId, long createBy) throws Exception{
-        List<User> users = BIDAOUtils.getSharedUsersByReport(reportId, createBy);
+        List<User> users = BIDAOUtils.getBIDAOManager().getSharedUsersByReport(reportId, createBy);
         JSONArray ja = new JSONArray();
         if(users != null) {
             for(int i = 0; i < users.size(); i++){

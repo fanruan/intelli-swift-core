@@ -22,6 +22,7 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -322,7 +323,8 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
 
     }
 
-    private class NameText {
+    private class NameText implements Serializable{
+        private static final long serialVersionUID = 1087026856042746444L;
         private String origin;
         private String originText;
 

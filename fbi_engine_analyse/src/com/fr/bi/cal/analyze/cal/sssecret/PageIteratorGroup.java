@@ -4,12 +4,14 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PageIteratorGroup {
+public class PageIteratorGroup implements Serializable {
 
+    private static final long serialVersionUID = -5143454742110936232L;
     private Map<GroupKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
 
     private Map<GroupKey, IRootDimensionGroup> columnMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();

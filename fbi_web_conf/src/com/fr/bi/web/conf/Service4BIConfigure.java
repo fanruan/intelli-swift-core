@@ -65,7 +65,6 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetTransFromDBAction(),
 
             new BIModifyGlobalUpdateSettingAction(),
-            new BIGetCubeGenerateStatusAction(),
             new BISetCubeGenerateAction(),
             new BIGetCubeTaskListAction(),
             new BIAddSingleTableUpdateTaskAction(),
@@ -121,7 +120,9 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BISimpleAPIDemoAction(),
             new BIGetCubeTaskLogsSDKAction(),
             new BISetTransportThreadPoolSizeAction(),
-            new BIGetTransportThreadPoolSizeAction()
+            new BIGetTransportThreadPoolSizeAction(),
+            new BISetMinCubeFreeHDSpaceRateAction(),
+            new BIGetMinCubeFreeHDSpaceRateAction()
     };
 
     /**

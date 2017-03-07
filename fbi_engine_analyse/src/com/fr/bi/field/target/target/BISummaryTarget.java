@@ -18,6 +18,7 @@ import java.util.Map;
  * @author Daniel
  */
 public abstract class BISummaryTarget extends BIAbstractTarget {
+    private static final long serialVersionUID = 6939140333031697910L;
     @BICoreField
     private TargetFilter filter;
 

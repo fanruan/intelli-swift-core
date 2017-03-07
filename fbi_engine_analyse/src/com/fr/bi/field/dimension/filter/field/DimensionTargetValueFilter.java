@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DimensionTargetValueFilter extends AbstractDimensionFilter {
+    private static final long serialVersionUID = -1997814106859466790L;
     @BICoreField
     private FilterValue filterValue;
     @BICoreField

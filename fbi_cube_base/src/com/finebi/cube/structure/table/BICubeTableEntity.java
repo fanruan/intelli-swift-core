@@ -28,6 +28,7 @@ import java.util.*;
  */
 public class BICubeTableEntity implements CubeTableEntityService {
 
+    private static final long serialVersionUID = -6166087552875875738L;
     protected ITableKey tableKey;
     protected ICubeResourceRetrievalService resourceRetrievalService;
     protected ICubeTableColumnManagerService columnManager;
@@ -144,7 +145,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
         Object value = originalDataValue.getValue();
 
         ICubeFieldSource field = getAllFields().get(columnIndex);
-        ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));
+        ICubeColumnEntityService columnService = getColumnManager().getColumn(BIColumnKey.covertColumnKey(field));
         try {
             if (!isIncrease) {
                 columnService.addOriginalDataValue(rowNumber, value);
@@ -189,7 +190,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     public Set<BIColumnKey> getCubeColumnInfo() {
-        return columnManager.getCubeColumnInfo();
+        return getColumnManager().getCubeColumnInfo();
     }
 
     @Override
@@ -226,7 +227,14 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public CubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException {
-        return columnManager.getColumn(columnKey);
+        return getColumnManager().getColumn(columnKey);
+    }
+
+    private ICubeTableColumnManagerService getColumnManager() {
+        if (columnManager == null || columnManager.getCubeColumnInfo().size() == 0) {
+            columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
+        }
+        return columnManager;
     }
 
     @Override

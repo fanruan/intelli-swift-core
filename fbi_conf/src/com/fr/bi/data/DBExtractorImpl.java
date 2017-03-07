@@ -152,15 +152,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
             String query = getDeployModeSql(queryString, dialect, sql);
             BILoggerFactory.getLogger().info("Start Query sql:" + query);
             stmt = createStatement(conn, dialect);
-            try {
-                rs = stmt.executeQuery(query);
-            } catch (Exception e) {
-                DBUtils.closeStatement(stmt);
-                sql.setSelect("");
-                query = dealWithSqlCharSet(sql.toString(), connection);
-                stmt = createStatement(conn, dialect);
-                rs = stmt.executeQuery(query);
-            }
+            rs = stmt.executeQuery(query);
             logger.info("sql: " + sql.toString() + " query cost:" + DateUtils.timeCostFrom(t));
             row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row, sql.toString());
             logger.info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));

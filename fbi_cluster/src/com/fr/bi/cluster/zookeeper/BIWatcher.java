@@ -1,10 +1,12 @@
 package com.fr.bi.cluster.zookeeper;
 
-import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.general.ComparatorUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+
+import java.net.InetAddress;
 
 /**
  * Created by Connery on 2015/3/10.
@@ -20,7 +22,6 @@ public abstract class BIWatcher implements Watcher {
     protected BIWatcher() {
         isWatcherRegistered = false;
     }
-
 
     public void setWatcherRegistered(boolean value) {
         this.isWatcherRegistered = value;
@@ -56,16 +57,16 @@ public abstract class BIWatcher implements Watcher {
         try {
             zk.exists(getFocusedEventPath(), this);
         } catch (KeeperException e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } catch (InterruptedException e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } catch (Exception ex) {
-             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 
 
-    public void init(ZooKeeperWrapper zk) throws KeeperException, InterruptedException, Exception {
+    public void init(ZooKeeperWrapper zk) throws Exception {
         this.zk = zk;
         ensureNodePathExists();
         watch();
@@ -79,7 +80,7 @@ public abstract class BIWatcher implements Watcher {
      * @throws KeeperException
      * @throws InterruptedException
      */
-    public void ensureNodePathExists() throws KeeperException, InterruptedException, Exception {
+    public void ensureNodePathExists() throws Exception {
         String path = getFocusedEventPath();
         if (path != null || !path.isEmpty()) {
             if (path.charAt(0) == '/') {
@@ -98,14 +99,22 @@ public abstract class BIWatcher implements Watcher {
         }
     }
 
-    private void ensurePathExists(String path) throws KeeperException, InterruptedException, Exception {
+    protected void ensurePathExists(String path) throws Exception {
         Stat s = zk.exists(path, this);
         if (s == null) {
             zk.create(path, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         }
     }
 
-    public void rewriteData(byte[] data, int version) throws KeeperException, InterruptedException, Exception {
+    protected void ensurePathExistsTemp(String path, String serverIp) throws Exception {
+        Stat s = zk.exists(path, this);
+        if (s == null) {
+            serverIp = (ComparatorUtils.equals("", serverIp) ? InetAddress.getLocalHost().getHostAddress() : serverIp);
+            zk.create(path, serverIp.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+        }
+    }
+
+    public void rewriteData(byte[] data, int version) throws Exception {
         zk.setData(getFocusedEventPath(), data, version);
     }
 

@@ -7,6 +7,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.base.utils.BIWebUtils;
+import com.fr.bi.web.report.utils.BIFSReportManager;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
@@ -28,8 +29,10 @@ public class BIInitDeziPaneAction extends ActionNoSessionCMD {
      */
     public static void dealWithWebPage(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String reportId = WebUtils.getHTTPRequestParameter(req, BIBaseConstant.REPORT_ID);
-        BIReportNode node = BIDAOUtils.findByID(Long.parseLong(reportId), ServiceUtils.getCurrentUserID(req));
-        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+//        BIReportNode node = BIFSReportManager.getBIFSReportManager().findReportNode(Long.parseLong(reportId), ServiceUtils.getCurrentUserID(req));
+        BIReportNode node = BIDAOUtils.getBIDAOManager().findByID(Long.parseLong(reportId), ServiceUtils.getCurrentUserID(req));
+//        JSONObject reportSetting = BIFSReportManager.getBIFSReportManager().getBIReportNodeJSON(node);
+        JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(node);
         BIWebUtils.dealWithWebPage(req, res, new BIWeblet(node), reportSetting, node);
     }
 

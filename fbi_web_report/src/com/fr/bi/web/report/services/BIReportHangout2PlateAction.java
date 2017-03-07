@@ -30,9 +30,9 @@ public class BIReportHangout2PlateAction extends ActionNoSessionCMD {
         JSONObject jo = entry.createJSONConfig();
         try {
             long createBy = reportJO.getLong("createBy");
-            BIReportNode reportNode = BIDAOUtils.findByID(reportJO.getLong("reportId"), createBy);
+            BIReportNode reportNode = BIDAOUtils.getBIDAOManager().findByID(reportJO.getLong("reportId"), createBy);
             reportNode.setStatus(BIReportConstant.REPORT_STATUS.HANGOUT);
-            BIDAOUtils.saveOrUpDate(reportNode, createBy);
+            BIDAOUtils.getBIDAOManager().saveOrUpDate(reportNode, createBy);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }

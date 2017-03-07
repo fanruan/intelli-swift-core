@@ -21,12 +21,6 @@ import java.util.Set;
  * Created by kary on 16/7/14.
  */
 public class CubeUpdateUtils {
-
-    /*是否需要更新cube*/
-    public static boolean cubeStatusCheck(long userId) {
-        return false;
-    }
-
     /**
      * 获得配置部分存在，但是在cube中缺少的表
      *

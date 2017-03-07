@@ -8,6 +8,7 @@ import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
+import com.fr.bi.cal.analyze.cal.index.loader.MergerInfo;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
@@ -17,13 +18,12 @@ import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
+import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.utils.BIModuleUtils;
-import com.fr.bi.fs.BIReportNode;
-import com.fr.bi.fs.BIReportNodeLock;
-import com.fr.bi.fs.BIReportNodeLockDAO;
+import com.fr.bi.fs.*;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -61,6 +61,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BISession extends BIAbstractSession {
 
+    private static final long serialVersionUID = 7928902437685692328L;
     private boolean isEdit;
     private boolean isRealTime;
     private BIReportNode node;
@@ -81,6 +82,8 @@ public class BISession extends BIAbstractSession {
     private List<CustomRole> customRoles = new ArrayList<CustomRole>();
     private List<CompanyRole> companyRoles = new ArrayList<CompanyRole>();
 
+    private Map<String, List<MergerInfo>> mergerInfoList = new ConcurrentHashMap<String, List<MergerInfo>>();
+
     public BISession(String remoteAddress, BIWeblet let, long userId) {
         super(remoteAddress, let, userId);
     }
@@ -97,6 +100,7 @@ public class BISession extends BIAbstractSession {
         GeneralContext.setLanguage(1);
         updateTime();
         initRoles();
+
     }
 
     //TODO : 这边userid 也要把loader什么的换下，在这边实现起来不好
@@ -110,6 +114,24 @@ public class BISession extends BIAbstractSession {
 
     public void removeBookByName(String widgetName) {
 
+    }
+
+    //通过updatesession，更新模板锁的时间
+    public void updateReportNodeLockTime() {
+        BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        if (lockDAO == null) {
+            return;
+        }
+        lockDAO.updateLock(sessionID, node.getUserId(), node.getId());
+    }
+
+    //通过updatesession，更新配置锁的时间
+    public void updateConfigLockTime() {
+        BIFineDBConfigLockDAO lockDAO = StableFactory.getMarkedObject(BIFineDBConfigLockDAO.class.getName(), BIFineDBConfigLockDAO.class);
+        if (lockDAO == null) {
+            return;
+        }
+        lockDAO.updateLock(sessionID, node.getUserId());
     }
 
     /**
@@ -146,15 +168,20 @@ public class BISession extends BIAbstractSession {
                 List<BIReportNodeLock> locks = lockDAO.getLock(node.getUserId(), node.getId());
                 boolean doForce = true;
                 for (BIReportNodeLock l : locks) {
-                    SessionIDInfor ss = SessionDealWith.getSessionIDInfor(l.getSessionId());
-                    if (ss instanceof BISession) {
-                        long t = ((BISession) ss).lastTime;
-                        //45- 30 超过15-45秒还没反應可能是没有心跳
-                        if (System.currentTimeMillis() - t < TIME_OUT) {
-                            doForce = false;
-                            break;
-                        }
+                    long t = 0;
+                    if (ClusterEnv.isCluster()) {
+                        t = l.getLockedTime();
+                    } else {
+                        //                    集群模式下，无法获得远程机器的session，将时间和锁绑定
+                        SessionIDInfor ss = SessionDealWith.getSessionIDInfor(l.getSessionId());
+                        t = ((BISession) ss).lastTime;
                     }
+                    //45- 30 超过15-45秒还没反應可能是没有心跳
+                    if (System.currentTimeMillis() - t < 45000) {
+                        doForce = false;
+                        break;
+                    }
+
 
                 }
                 if (doForce) {
@@ -193,7 +220,7 @@ public class BISession extends BIAbstractSession {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -552,5 +579,13 @@ public class BISession extends BIAbstractSession {
      */
     public BIReportNode getReportNode() {
         return node;
+    }
+
+    public List<MergerInfo> getMergerInfoList(String widgetName) {
+        return mergerInfoList.get(widgetName);
+    }
+
+    public void setMergerInfoList(String widgetName, List<MergerInfo> mergerInfoList) {
+        this.mergerInfoList.put(widgetName, mergerInfoList);
     }
 }

@@ -45,9 +45,9 @@ public class BITemplateFolderRenameAction extends ActionNoSessionCMD {
                 }
                 break;
             case RENAME_REPORT:
-                BIReportNode reportNode = BIDAOUtils.findByID(Long.parseLong(id), userId);
+                BIReportNode reportNode = BIDAOUtils.getBIDAOManager().findByID(Long.parseLong(id), userId);
                 reportNode.setReportName(newName);
-                BIDAOUtils.saveOrUpDate(reportNode, userId);
+                BIDAOUtils.getBIDAOManager().saveOrUpDate(reportNode, userId);
                 break;
         }
     }

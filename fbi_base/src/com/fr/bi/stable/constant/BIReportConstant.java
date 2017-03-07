@@ -546,7 +546,7 @@ public class BIReportConstant {
         }
 
         @Override
-        public String toString(){
+        public String toString() {
             return String.valueOf(this.status);
         }
     }
@@ -558,6 +558,7 @@ public class BIReportConstant {
             public static final int ONE2POINT = 3;
             public static final int TWO2POINT = 4;
         }
+
         public static final class NUM_LEVEL {
             public static final int NORMAL = 1;
             public static final int TEN_THOUSAND = 2;
@@ -565,6 +566,7 @@ public class BIReportConstant {
             public static final int YI = 4;
             public static final int PERCENT = 5;
         }
+
         public static final class ICON_STYLE {
             public static final int NONE = 1;
             public static final int POINT = 2;
@@ -578,4 +580,8 @@ public class BIReportConstant {
         public static final int VIEW = 2;
     }
 
+    public static final class HISTORY_VERSION {
+        public final static double VERSION_4_0 = 4.0;
+        public final static double VERSION_4_1 = 4.01;
+    }
 }

@@ -16,6 +16,7 @@ import java.util.*;
  */
 public class MultiChartWidget extends TableWidget {
 
+    private static final long serialVersionUID = 8274724387345770447L;
     private int type;
     private String subType;
     private Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();

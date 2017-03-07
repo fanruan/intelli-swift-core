@@ -186,7 +186,6 @@ public class BIModuleUtils {
         }
     }
 
-
     public static CubeTableSource getActualDBTableSource(CubeTableSource tableSource) {
         for (BusinessTable table : BICubeConfigureCenter.getPackageManager().getAllTables(UserControl.getInstance().getSuperManagerID())) {
             try {

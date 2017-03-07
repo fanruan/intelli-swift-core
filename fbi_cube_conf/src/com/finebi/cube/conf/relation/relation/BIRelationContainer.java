@@ -13,6 +13,8 @@ import java.util.Set;
  * Created by Connery on 2016/1/12.
  */
 public class BIRelationContainer extends BISetContainer<BITableRelation> implements IRelationContainer {
+    private static final long serialVersionUID = -7925929957355996767L;
+
     @Override
     public boolean isEmpty() {
         return super.isEmpty();

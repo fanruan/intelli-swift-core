@@ -2,6 +2,7 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.tools.BILogManagerTestFactory;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationTestTool;
 import com.fr.bi.conf.log.BITableErrorLog;

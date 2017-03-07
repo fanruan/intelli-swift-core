@@ -18,7 +18,7 @@ import java.util.Set;
 public class BIAnalysisTableHelper {
 
     public static double getTableGeneratingProcessById(String tableId, long userId){
-        double percent;
+       double percent;
         try {
             BusinessTable table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
             percent = getPercent((AnalysisCubeTableSource) table.getTableSource(), userId);

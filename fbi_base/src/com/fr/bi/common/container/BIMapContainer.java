@@ -18,6 +18,7 @@ import java.util.Set;
  * @author Connery on 2015/12/7.
  */
 public abstract class BIMapContainer<K, V> implements Serializable {
+    private static final long serialVersionUID = -5655177173038553296L;
     /**
      * TODO 当前生成XML依据set和get方法来的，而这里如果设为final的话没有set方法
      * TODO 以后通过标签指定，或者依据get方法。再设为final

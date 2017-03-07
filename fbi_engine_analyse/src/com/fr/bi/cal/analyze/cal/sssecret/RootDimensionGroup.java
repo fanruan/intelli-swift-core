@@ -751,14 +751,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         List<BIPackageID> authPacks;
         String sessionId = session.getSessionID();
         if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
-            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(sessionId);
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(session.getCompanyRoles(),session.getCustomRoles());
         } else {
             authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
         }
         for (int i = 0; i < authPacks.size(); i++) {
             List<BIPackageAuthority> packAuths;
             if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
-                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), sessionId);
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), session.getCompanyRoles(),session.getCustomRoles());
             } else {
                 packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
             }

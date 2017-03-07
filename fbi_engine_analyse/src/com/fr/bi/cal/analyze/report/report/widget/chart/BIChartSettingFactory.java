@@ -131,7 +131,7 @@ public class BIChartSettingFactory {
             }
             return chartSetting.getConvertedDataAndSettings(data, types, op);
         }catch (Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return new JSONObject();
     }

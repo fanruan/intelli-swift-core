@@ -19,9 +19,9 @@ public class RetryNTimes implements RetryPolicy {
     @Override
     public boolean allowRetry(int currentCount, long elapsedTimeMs, Sleeper sleeper) {
         if (currentCount < maxTimes) {
-//            System.out.println("等待："+getSleepTime(currentCount, elapsedTimeMs)+"秒");
+            System.out.println("wait:"+getSleepTime(currentCount, elapsedTimeMs)+"milseconds");
             sleeper.sleep(getSleepTime(currentCount, elapsedTimeMs), TimeUnit.MILLISECONDS);
-//            System.out.println("等待结束");
+            System.out.println("wait over");
             return true;
         }
         return false;

@@ -11,6 +11,8 @@ import com.finebi.cube.structure.column.BIColumnKey;
  * @since 4.0
  */
 public class BICubeRelation extends BIBasicRelation<ITableKey, BIColumnKey> {
+    private static final long serialVersionUID = 5327046609553351146L;
+
     public BICubeRelation() {
     }
 

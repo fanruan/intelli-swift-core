@@ -14,6 +14,8 @@ import com.finebi.cube.common.log.BILoggerFactory;
  */
 public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<Long, MANAGER> {
 
+    private static final long serialVersionUID = -7890676855475278578L;
+
     @Override
     public MANAGER constructValue(Long key) {
         MANAGER manager = constructUserManagerValue(key);
@@ -48,8 +50,8 @@ public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<
 
     public void persistUserData(long key) {
         try {
-            XMLConfigureGenerator generator = new XMLConfigureGenerator(persistUserDataName(key) + ".xml", getValue(key), managerTag());
-            synchronized (generator) {
+            synchronized (this) {
+                XMLConfigureGenerator generator = new XMLConfigureGenerator(persistUserDataName(key) + ".xml", getValue(key), managerTag());
                 FRContext.getCurrentEnv().writeResource(generator);
             }
         } catch (Exception e) {

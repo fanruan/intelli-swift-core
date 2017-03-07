@@ -1,6 +1,5 @@
 package com.fr.bi.cluster.wrapper;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -15,40 +14,21 @@ public class ZooKeeperHandler {
     private ZooKeeperConfig config;
     private Watcher watcher;
 
+    public synchronized ZooKeeper getZooKeeper() {
+        if (zkHandler.getState() == ZooKeeper.States.CLOSED) {
+            reconnect();
+        }else {
+            waitUntilConnected(zkHandler);
+        }
+        return zkHandler;
+    }
+
     public ZooKeeperHandler(ZooKeeperConfig config, Watcher watcher) {
         connect(config, watcher);
 
     }
 
-    public static void waitUntilConnected(ZooKeeper zooKeeper) {
-        CountDownLatch connectedLatch = new CountDownLatch(1);
-        Watcher watcher = new ConnectedWatcher(connectedLatch);
-        zooKeeper.register(watcher);
-        if (ZooKeeper.States.CONNECTING == zooKeeper.getState()) {
-            try {
-                connectedLatch.await();
-            } catch (InterruptedException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-    }
-
-    public ZooKeeper getZooKeeper() {
-        if (zkHandler.getState() == ZooKeeper.States.CLOSED) {
-//            System.out.println("当前Zookeeper客户端状态为：" + zkHandler.getState() + "，正在重新连接");
-            reconnect();
-        }
-        waitUntilConnected(zkHandler);
-//        System.out.println("当前Zookeeper客户端状态为：" + zkHandler.getState());
-        return zkHandler;
-    }
-
-    public void reconnect(ZooKeeperConfig config, Watcher watcher) {
-        connect(config, watcher);
-    }
-
     public void reconnect() {
-//        System.out.println("正在重新连接");
         connect(config, watcher);
     }
 
@@ -57,7 +37,20 @@ public class ZooKeeperHandler {
             zkHandler = new ZooKeeper(config.getConnectString(), config.getTickTime(), watcher);
             this.config = config;
         } catch (Exception ex) {
-             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+            ex.printStackTrace();
+        }
+    }
+
+    private void waitUntilConnected(ZooKeeper zooKeeper) {
+        CountDownLatch connectedLatch = new CountDownLatch(1);
+        watcher = new ConnectedWatcher(connectedLatch);
+        zooKeeper.register(watcher);
+        if (ZooKeeper.States.CONNECTING == zooKeeper.getState()) {
+            try {
+                connectedLatch.await();
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 
@@ -73,6 +66,9 @@ public class ZooKeeperHandler {
         public void process(WatchedEvent event) {
             if (event.getState() == Event.KeeperState.SyncConnected) {
                 connectedLatch.countDown();
+            }
+            if (event.getState() == Event.KeeperState.Disconnected){
+
             }
         }
     }

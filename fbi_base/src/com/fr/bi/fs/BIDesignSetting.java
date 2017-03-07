@@ -1,5 +1,7 @@
 package com.fr.bi.fs;
 
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.report.update.ReportSettingUpdateManager;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLFileReader;
@@ -20,7 +22,16 @@ public class BIDesignSetting implements XMLable, XMLFileReader {
     }
 
     public BIDesignSetting() {
+    }
 
+    public void updateSetting() {
+        try {
+            if (null != reportSetting) {
+                this.reportSetting = ReportSettingUpdateManager.getInstance().updateReportSettings(this).getReportSetting().toString();
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -62,6 +73,5 @@ public class BIDesignSetting implements XMLable, XMLFileReader {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-
 
 }

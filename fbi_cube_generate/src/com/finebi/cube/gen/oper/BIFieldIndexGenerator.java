@@ -1,5 +1,8 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.utils.BICubeLogExceptionInfo;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.map.map2.ExternalIntArrayMapFactory;
@@ -14,6 +17,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.manager.PerformancePlugManager;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -22,7 +26,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -97,7 +100,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        logger.info(BIStringUtils.append(logFileInfo(), " start building field index main task"));
+        logger.info(BIStringUtils.append(logFileInfo(), " start building field index main task") +
+                BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID()));
+        BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_START, System.currentTimeMillis());
         Stopwatch stopwatch = Stopwatch.createStarted();
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
         try {
@@ -108,7 +113,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
                 buildTableIndex();
             }
             logger.info(BIStringUtils.append(logFileInfo(), " finish building field index main task,elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
-
+            BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_END, System.currentTimeMillis());
             try {
                 biLogManager.infoColumn(tableSource.getPersistentTable(), hostBICubeFieldSource.getFieldName(), stopwatch.elapsed(TimeUnit.SECONDS), Long.valueOf(UserControl.getInstance().getSuperManagerID()));
             } catch (Exception e) {
@@ -121,6 +126,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             } catch (Exception e1) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
+            BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_END, System.currentTimeMillis());
+            BICubeLogExceptionInfo exceptionInfo = new BICubeLogExceptionInfo(System.currentTimeMillis(), "Field Index Build", e.getMessage(), e, tableSource.getSourceID(), hostBICubeFieldSource.getFieldName());
+            BILogHelper.cacheCubeLogTableException(tableSource.getSourceID(), exceptionInfo);
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {

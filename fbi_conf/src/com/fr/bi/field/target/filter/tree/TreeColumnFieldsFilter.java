@@ -34,6 +34,7 @@ import java.util.Set;
 
 
 public class TreeColumnFieldsFilter extends AbstractTargetFilter {
+    private static final long serialVersionUID = -4880291982326784688L;
     private static String XML_TAG = "TreeColumnFieldsFilter";
     @BICoreField
     private BusinessField[] keys;
