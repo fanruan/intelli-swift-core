@@ -2851,12 +2851,11 @@
             }
 
 
-            widget.linkages = {};
+            widget.linkedWidget = {};
             BI.each(linkages, function (lTId, link) {
-
                 var pWid = getLinkFatherWidget(self.getWidgetIDByDimensionID(lTId), wid);
                 var pWidget = self.getWidgetCalculationByID(pWid);
-                widget.linkages.linkedWidget = pWidget;
+                widget.linkedWidget = pWidget;
                 // filterValues.push({
                 //     filter_type: "8080",
                 //     filter_value: pWidget
