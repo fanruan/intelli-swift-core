@@ -15,7 +15,7 @@ import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
-import com.fr.bi.cluster.manager.ClusterManager;
+import com.fr.bi.cluster.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
@@ -29,8 +29,8 @@ import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
-import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.records.BICubeTaskRecordManager;
+import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.fs.*;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
@@ -57,7 +57,6 @@ import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.MemoryConnection;
 import com.fr.file.DatasourceManager;
-import com.fr.file.DatasourceManagerProvider;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
@@ -74,9 +73,16 @@ import java.util.Locale;
  * Created by 小灰灰 on 2015/12/15.
  */
 public class BICoreModule extends AbstractModule {
+
+    private static boolean isInit = true;
+
     @Override
     public void start() {
-        registerClusterIfNeed();
+
+        if (isInit) {
+            isInit = false;
+            registerClusterIfNeed();
+        }
         registerProviders();
         initDataSourcePool();
         registerSystemManager();
@@ -164,7 +170,6 @@ public class BICoreModule extends AbstractModule {
             return new BIUpdateSettingManager();
         }
     }
-
 
     public BILogManagerProvider getBILogManager() {
         if (ClusterEnv.isCluster()) {
@@ -472,7 +477,6 @@ public class BICoreModule extends AbstractModule {
         if (ClusterEnv.isCluster()) {
             try {
                 ClusterManager.getInstance().initClusterEnv();
-                ClusterAdapter.registerBIClusterManagerInterface(ClusterManager.getInstance());
             } catch (Exception ex) {
                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }

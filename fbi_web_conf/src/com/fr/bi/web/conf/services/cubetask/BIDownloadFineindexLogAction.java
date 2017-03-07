@@ -18,6 +18,9 @@ public class BIDownloadFineindexLogAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         File logFile = new File(new File((FRContext.getCurrentEnv()).getWebReportPath()).getParentFile().getParentFile(), File.separator + "logs" + File.separator + "FineIndex.log");
+        if (!logFile.exists()) {
+            logFile = new File(System.getProperty("catalina.home") + File.separator + "bin" + File.separator + "logs" + File.separator + "FineIndex.log");
+        }
         NetworkHelper.setCacheSettings(res);
         ExportUtils.setTextContext(res, "FineIndex");
         InputStream is = new FileInputStream(logFile);
