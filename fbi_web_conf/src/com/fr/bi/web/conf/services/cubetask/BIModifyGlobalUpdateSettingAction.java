@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -31,9 +32,9 @@ public class BIModifyGlobalUpdateSettingAction extends AbstractBIConfigureAction
         try {
             BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE, source, userId);
             BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
-            StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManager.class).resetCubeGenerationHour(userId);
+            CubeGenerationManager.getCubeManager().resetCubeGenerationHour(userId);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 }

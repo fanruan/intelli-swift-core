@@ -106,8 +106,8 @@ public class BIGetTransFromDBAction extends AbstractBIConfigureAction {
         jo.put(BIJSONConstant.JSON_KEYS.VALUE, trans);
         String tableJsonString = WebUtils.getHTTPRequestParameter(req, BIJSONConstant.JSON_KEYS.TABLES);
         Map<String, DBTableSource> sourceMap = getDBSource(tableJsonString, userId);
-        TableData translatedTableNameTableData = DatasourceManager.getInstance().getTableData(SERVER_TABLE_NAME);
-        TableData translatedFieldNameTableData = DatasourceManager.getInstance().getTableData(SERVER_FIELD_NAME);
+        TableData translatedTableNameTableData = DatasourceManager.getProviderInstance().getTableData(SERVER_TABLE_NAME);
+        TableData translatedFieldNameTableData = DatasourceManager.getProviderInstance().getTableData(SERVER_FIELD_NAME);
         if (translatedTableNameTableData != null && translatedFieldNameTableData != null) {
             Calculator c = Calculator.createCalculator();
             DataModel model4TableName = translatedTableNameTableData.createDataModel(c);
@@ -169,8 +169,8 @@ public class BIGetTransFromDBAction extends AbstractBIConfigureAction {
 
 
     private boolean checkExistOfEmbbededTableData() throws TableDataException {
-        TableData translatedTableNameTableData = DatasourceManager.getInstance().getTableData(SERVER_TABLE_NAME);
-        TableData translatedFieldNameTableData = DatasourceManager.getInstance().getTableData(SERVER_FIELD_NAME);
+        TableData translatedTableNameTableData = DatasourceManager.getProviderInstance().getTableData(SERVER_TABLE_NAME);
+        TableData translatedFieldNameTableData = DatasourceManager.getProviderInstance().getTableData(SERVER_FIELD_NAME);
         if (translatedTableNameTableData != null && translatedFieldNameTableData != null) {
             Calculator c = Calculator.createCalculator();
             DataModel model4TableName = translatedTableNameTableData.createDataModel(c);

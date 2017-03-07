@@ -114,7 +114,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     @Override
     public void addTask(AnalysisCubeTableSource source, BIUser user) {
         SingleUserETLTableCubeManager manager = createManager(source, user);
-            manager.addTask();
+        manager.addTask();
     }
 
     @Override

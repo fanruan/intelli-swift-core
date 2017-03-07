@@ -10,6 +10,7 @@ import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
 import com.fr.stable.FCloneable;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
  *
  * @author Daniel-pc
  */
-public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService {
+public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService,Serializable {
 
     /**
      * 返回Widget的ID

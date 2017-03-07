@@ -3,6 +3,7 @@ package com.finebi.cube.gen.oper;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeLocation;
@@ -25,10 +26,7 @@ import com.fr.general.DateUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class created on 2016/4/5.
@@ -41,6 +39,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
     protected Set<CubeTableSource> allSources;
     protected CubeTableEntityService tableEntityService;
     protected Cube cube;
+    protected CubeChooser cubeChooser;
     protected List<ITableKey> parents = null;
     protected long version = 0;
 
@@ -52,6 +51,17 @@ public abstract class BISourceDataTransport extends BIProcessor {
         this.version = version;
         initThreadPool();
     }
+
+    public BISourceDataTransport(Cube cube, Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        this.tableSource = tableSource;
+        this.allSources = allSources;
+        this.cube = cube;
+        this.cubeChooser = new CubeChooser(cube, integrityCube, tablesNeed2GenerateMap);
+        tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+        this.version = version;
+        initThreadPool();
+    }
+
 
     @Override
     protected void initThreadPool() {
@@ -116,9 +126,9 @@ public abstract class BISourceDataTransport extends BIProcessor {
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
         } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger(BISourceDataTransport.class).error(e.getMessage(), e);
         } catch (URISyntaxException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger(BISourceDataTransport.class).error(e.getMessage(), e);
         }
         BILoggerFactory.getLogger().info("table name: " + tableSource.getTableName() + " update copy files cost time:" + DateUtils.timeCostFrom(t));
     }
@@ -160,5 +170,9 @@ public abstract class BISourceDataTransport extends BIProcessor {
             BILoggerFactory.getLogger(this.getClass()).warn(BIStringUtils.append("the table: ", tableSource.getTableName(), "tableId: ", tableSource.getSourceID(), "may has some absent fields"));
         }
         return flag;
+    }
+
+    protected String fetchTableInfo() {
+        return BILogHelper.logTableSource(tableSource, " ");
     }
 }

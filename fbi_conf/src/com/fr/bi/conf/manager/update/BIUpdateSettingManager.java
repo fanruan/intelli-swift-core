@@ -13,6 +13,8 @@ import java.util.Map;
  * Created by Young's on 2016/4/25.
  */
 public class BIUpdateSettingManager extends BISystemDataManager<SingleUserBIUpdateSettingManager> implements BIUpdateFrequencyManagerProvider {
+    private static final long serialVersionUID = 7607737437949032737L;
+
     @Override
     public SingleUserBIUpdateSettingManager constructUserManagerValue(Long userId) {
         return new SingleUserBIUpdateSettingManager();

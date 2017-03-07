@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.datasource.BIDataSourceManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
@@ -14,28 +15,36 @@ import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
-import com.fr.bi.cluster.manager.ClusterManager;
+import com.fr.bi.cluster.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
+import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.conf.base.datasource.BIConnectionProvider;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
+import com.fr.bi.conf.fs.FBIConfig;
+import com.fr.bi.conf.fs.FBIConfigProvider;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
 import com.fr.bi.conf.records.BICubeTaskRecordManager;
+import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.fs.*;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
+import com.fr.bi.services.Service4BIH5;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.tool.BIReadReportProvider;
+import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.mobile.Service4BIMobile;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
 import com.fr.bi.web.report.Service4BIReport;
 import com.fr.bi.web.report.services.finecube.Service4FineCube;
+import com.fr.bi.web.report.utils.BIFSReportManager;
 import com.fr.cluster.rpc.RPC;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -64,11 +73,18 @@ import java.util.Locale;
  * Created by 小灰灰 on 2015/12/15.
  */
 public class BICoreModule extends AbstractModule {
+
+    private static boolean isInit = true;
+
     @Override
     public void start() {
+
+        if (isInit) {
+            isInit = false;
+            registerClusterIfNeed();
+        }
         registerProviders();
         initDataSourcePool();
-        registerClusterIfNeed();
         registerSystemManager();
         registDAO();
         registerResources();
@@ -97,23 +113,238 @@ public class BICoreModule extends AbstractModule {
 
 
     private void registerProviders() {
-        StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, new BIUpdateSettingManager());
+        StableFactory.registerMarkedObject(BIFSReportProvider.XML_TAG, getBIFSReportManager());
+        StableFactory.registerMarkedObject(BIDAOProvider.XML_TAG, getBIDAO());
+        StableFactory.registerMarkedObject(BIReadReportProvider.XML_TAG, getBIReadReport());
+        StableFactory.registerMarkedObject(BIReportDAO.class.getName(), getBIReportDAO());
+
+        StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, getBIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
-        StableFactory.registerMarkedObject(BIAuthorityManageProvider.XML_TAG, new BISystemAuthorityManager());
+        StableFactory.registerMarkedObject(BIAuthorityManageProvider.XML_TAG, getBISystemAuthorityManager());
         StableFactory.registerMarkedObject(ICubeDataLoaderCreator.XML_TAG, com.finebi.cube.api.BICubeManager.getInstance());
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
         StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, getConnectionManagerProvider());
         StableFactory.registerMarkedObject(BICubeManagerProvider.XML_TAG, getCubeManagerProvider());
-        StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());
+        StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, getBILogManager());
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
-        StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, new BIExcelViewManager());
-        StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, new BISystemCubeConfManager());
+        StableFactory.registerMarkedObject(BIConnectionProvider.XML_TAG, getConnectionManager());
         StableFactory.registerMarkedObject(UpdateFrequencyManager.XML_TAG, new UpdateFrequencyManager());
+        StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, getExcelViewManager());
+        StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, getBICubeConfManager());
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManager());
+        StableFactory.registerMarkedObject(FBIConfigProvider.XML_TAG, getFBIConfigManager());
 
+    }
+
+    public FBIConfigProvider getFBIConfigManager(){
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                FBIConfig provider = FBIConfig.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (FBIConfigProvider) RPC.getProxy(FBIConfig.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return FBIConfig.getInstance();
+        }
+    }
+
+    public BIUpdateFrequencyManagerProvider getBIUpdateSettingManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIUpdateFrequencyManagerProvider provider = new BIUpdateSettingManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIUpdateFrequencyManagerProvider) RPC.getProxy(BIUpdateSettingManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BIUpdateSettingManager();
+        }
+    }
+
+    public BILogManagerProvider getBILogManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BILogManager provider = new BILogManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BILogManagerProvider) RPC.getProxy(BILogManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BILogManager();
+        }
+    }
+
+    public BIReportDAO getBIReportDAO() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BISuperManagetDAOManager provider = BISuperManagetDAOManager.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIReportDAO) RPC.getProxy(BISuperManagetDAOManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return BISuperManagetDAOManager.getInstance();
+        }
+    }
+
+    protected BIAuthorityManageProvider getBISystemAuthorityManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BISystemAuthorityManager provider = new BISystemAuthorityManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIAuthorityManageProvider) RPC.getProxy(BISystemAuthorityManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BISystemAuthorityManager();
+        }
+    }
+
+    protected BIReadReportProvider getBIReadReport() {
+//        if (ClusterEnv.isCluster()) {
+//            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+//                BIReadReportUtils provider = BIReadReportUtils.getInstance();
+//                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+//                return provider;
+//            } else {
+//                return (BIReadReportProvider) RPC.getProxy(BIReadReportUtils.class,
+//                        ClusterAdapter.getManager().getHostManager().getIp(),
+//                        ClusterAdapter.getManager().getHostManager().getPort());
+//            }
+//        } else {
+        return BIReadReportUtils.getInstance();
+//        }
+    }
+
+    protected BIDAOProvider getBIDAO() {
+//        if (ClusterEnv.isCluster()) {
+//            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+//                BIDAOUtils provider = BIDAOUtils.getInstance();
+//                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+//                return provider;
+//            } else {
+//                return (BIDAOProvider) RPC.getProxy(BIDAOUtils.class,
+//                        ClusterAdapter.getManager().getHostManager().getIp(),
+//                        ClusterAdapter.getManager().getHostManager().getPort());
+//            }
+//        } else {
+        return BIDAOUtils.getInstance();
+//        }
+    }
+
+    protected BIFSReportProvider getBIFSReportManager() {
+//        if (ClusterEnv.isCluster()) {
+//            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+//                BIFSReportManager provider = BIFSReportManager.getInstance();
+//                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+//                return provider;
+//            } else {
+//                return (BIFSReportProvider) RPC.getProxy(BIFSReportManager.class,
+//                        ClusterAdapter.getManager().getHostManager().getIp(),
+//                        ClusterAdapter.getManager().getHostManager().getPort());
+//            }
+//        } else {
+        return BIFSReportManager.getInstance();
+//        }
+    }
+
+    protected BIConnectionProvider getConnectionManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIConnectionManager provider = BIConnectionManager.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIConnectionProvider) RPC.getProxy(BIConnectionManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return BIConnectionManager.getInstance();
+        }
+    }
+
+    protected SingleTableUpdateManager getSingleTableUpdateManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                SingleTableUpdateManager provider = new SingleTableUpdateManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (SingleTableUpdateManager) RPC.getProxy(SingleTableUpdateManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new SingleTableUpdateManager();
+        }
+    }
+
+    protected UpdateFrequencyManager getUpdateFrequencyManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                UpdateFrequencyManager provider = new UpdateFrequencyManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (UpdateFrequencyManager) RPC.getProxy(UpdateFrequencyManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new UpdateFrequencyManager();
+        }
+    }
+
+    protected BICubeConfManagerProvider getBICubeConfManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BISystemCubeConfManager provider = new BISystemCubeConfManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BICubeConfManagerProvider) RPC.getProxy(BISystemCubeConfManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BISystemCubeConfManager();
+        }
+    }
+
+    protected BIExcelViewManagerProvider getExcelViewManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIExcelViewManager provider = new BIExcelViewManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIExcelViewManagerProvider) RPC.getProxy(BIExcelViewManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BIExcelViewManager();
+        }
     }
 
     protected BICubeManagerProvider getCubeManagerProvider() {
@@ -154,35 +385,35 @@ public class BICoreModule extends AbstractModule {
     }
 
     private BITableRelationConfigurationProvider generateConnectionManager() {
-
         if (ClusterEnv.isCluster()) {
-//            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-//                BITableRelationConfigurationProvider provider = new BIConnectionManager();
-//                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
-//                return provider;
-//            } else {
-//                return (BITableRelationConfigurationProvider) RPC.getProxy(BIConnectionManager.class,
-//                        ClusterAdapter.getManager().getHostManager().getIp(),
-//                        ClusterAdapter.getManager().getHostManager().getPort());
-//            }
-            return null;
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BISystemTableRelationManager provider = new BISystemTableRelationManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BITableRelationConfigurationProvider) RPC.getProxy(BISystemTableRelationManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+//            return null;
         } else {
             return new BISystemTableRelationManager();
         }
     }
 
+
     private BISystemPackageConfigurationProvider generateBusiPackManager() {
         if (ClusterEnv.isCluster()) {
-//            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-//                BIBusiPackManager provider = new BIBusiPackManager();
-//                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
-//                return provider;
-//            } else {
-//                return (BISystemPackageConfigurationProvider) RPC.getProxy(BIBusiPackManager.class,
-//                        ClusterAdapter.getManager().getHostManager().getIp(),
-//                        ClusterAdapter.getManager().getHostManager().getPort());
-//            }
-            return null;
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BISystemPackageConfigurationManager provider = new BISystemPackageConfigurationManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BISystemPackageConfigurationProvider) RPC.getProxy(BISystemPackageConfigurationManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+//            return null;
         } else {
             return new BISystemPackageConfigurationManager();
         }
@@ -224,7 +455,7 @@ public class BICoreModule extends AbstractModule {
 
 
     private void initDataSourcePool() {
-        synchronized (DatasourceManager.getInstance()) {
+        synchronized (DatasourceManager.getProviderInstance()) {
             Iterator<String> iterator = DatasourceManager.getProviderInstance().getConnectionNameIterator();
             while (iterator.hasNext()) {
                 String name = iterator.next();
@@ -233,7 +464,7 @@ public class BICoreModule extends AbstractModule {
             }
             try {
                 MemoryConnection.getConnectionMap().clear();
-                FRContext.getCurrentEnv().writeResource(DatasourceManager.getInstance());
+                FRContext.getCurrentEnv().writeResource(DatasourceManager.getProviderInstance());
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
@@ -241,13 +472,18 @@ public class BICoreModule extends AbstractModule {
     }
 
 
+
     private void registerClusterIfNeed() {
         if (ClusterEnv.isCluster()) {
             try {
                 ClusterManager.getInstance().initClusterEnv();
-                ClusterAdapter.registerBIClusterManagerInterface(ClusterManager.getInstance());
             } catch (Exception ex) {
                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+            }
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BILoggerFactory.getLogger(BICoreModule.class).info("-------------------------master---------------------------");
+            } else {
+                BILoggerFactory.getLogger(BICoreModule.class).info("-------------------------slaver---------------------------");
             }
         } else {
             ClusterAdapter.registerBIClusterManagerInterface(EmptyClusterManager.getInstance());
@@ -326,7 +562,9 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registDAO() {
-        dropBIReportNodeLockDAOTable();
+        if ((!ClusterEnv.isCluster()) || (ClusterAdapter.getManager().getHostManager().isSelf())) {
+            dropBIReportNodeLockDAOTable();
+        }
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(TableDataDAOControl.class.getName(), TableDataBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.getInstance());
@@ -375,7 +613,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MOBILE_JS, ResourceHelper.getMobileJs());
     }
 
-    public void loadResources (Locale[] locales) {
+    public void loadResources(Locale[] locales) {
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_THIRD_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
@@ -415,7 +653,9 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIMobile(),
                 new Service4BIBase(),
 
-                new Service4FineCube()
+                new Service4FineCube(),
+
+                new Service4BIH5()
         };
     }
 

@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.relation.path;
 
-import com.finebi.cube.conf.relation.BITableRelationTestTool;
-import com.finebi.cube.conf.relation.BITableTestTool;
+import com.finebi.cube.tool.BITableRelationTestTool;
+import com.finebi.cube.tool.BITableTestTool;
 import junit.framework.TestCase;
 
 /**

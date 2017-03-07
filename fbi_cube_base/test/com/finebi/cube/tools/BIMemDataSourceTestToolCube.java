@@ -4,6 +4,8 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.conf.data.source.ETLTableSource;
+import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
@@ -21,7 +23,7 @@ import java.util.*;
  * @author Connery
  * @since 4.0
  */
-public class BIMemDataSourceTestToolCube implements CubeTableSource {
+public class BIMemDataSourceTestToolCube extends ETLTableSource {
     public List<String> stringData = new ArrayList<String>();
     public List<Long> dateData = new ArrayList<Long>();
     public List<Double> floatData = new ArrayList<Double>();
@@ -34,9 +36,12 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     }
 
     public BIMemDataSourceTestToolCube() {
-
         initialStatic();
+    }
 
+    public BIMemDataSourceTestToolCube(List<IETLOperator> operators, List<CubeTableSource> parents) {
+        super(operators, parents);
+        initialRandom();
     }
 
     private void initialRandom() {
@@ -699,6 +704,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
         return "MemoryTable";
     }
 
+
     @Override
     public Map<Integer, Set<CubeTableSource>> createGenerateTablesMap() {
         return null;
@@ -808,7 +814,7 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         return super.clone();
     }
 }

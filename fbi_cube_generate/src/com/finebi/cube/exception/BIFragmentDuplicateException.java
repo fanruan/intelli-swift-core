@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BIFragmentDuplicateException extends Exception {
+    private static final long serialVersionUID = 2691047486899522938L;
+
     public BIFragmentDuplicateException() {
     }
 

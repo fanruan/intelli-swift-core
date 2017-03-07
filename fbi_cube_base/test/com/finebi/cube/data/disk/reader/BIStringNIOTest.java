@@ -1,22 +1,10 @@
 package com.finebi.cube.data.disk.reader;
 
-import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
-import com.finebi.cube.data.disk.reader.primitive.BIByteNIOReader;
-import com.finebi.cube.data.disk.reader.primitive.BIIntegerNIOReader;
-import com.finebi.cube.data.disk.reader.primitive.BILongNIOReader;
-import com.finebi.cube.data.disk.writer.BIByteArrayNIOWriter;
-import com.finebi.cube.data.disk.writer.BIStringNIOWriter;
-import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
-import com.finebi.cube.data.disk.writer.primitive.BIIntegerNIOWriter;
-import com.finebi.cube.data.disk.writer.primitive.BILongNIOWriter;
-import com.finebi.cube.data.input.primitive.ICubeByteReader;
-import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
-import com.finebi.cube.data.input.primitive.ICubeLongReader;
-import com.finebi.cube.data.output.primitive.ICubeByteWriter;
-import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
-import com.finebi.cube.data.output.primitive.ICubeLongWriter;
-import com.fr.bi.stable.utils.algorithem.BIRandomUitils;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.data.disk.writer.BIStringNIOWriter;
+import com.finebi.cube.provider.BIStringNIOProvider;
+import com.finebi.cube.provider.BIProjectPathProvider;
+import com.fr.bi.stable.utils.algorithem.BIRandomUitils;
 import com.fr.general.ComparatorUtils;
 import junit.framework.TestCase;
 
@@ -35,17 +23,11 @@ public class BIStringNIOTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        String start = BIDiskWriterReaderTest.projectPath + File.separator + "start";
-        String length = BIDiskWriterReaderTest.projectPath + File.separator + "length";
-        String content = BIDiskWriterReaderTest.projectPath + File.separator + "content";
-        ICubeLongWriter startPositionRecorder = new BILongNIOWriter(start);
-        ICubeIntegerWriter lengthRecorder = new BIIntegerNIOWriter(length);
-        ICubeByteWriter contentRecorder = new BIByteNIOWriter(content);
-        writer = new BIStringNIOWriter(new BIByteArrayNIOWriter(startPositionRecorder, lengthRecorder, contentRecorder));
-        ICubeLongReader startPositionRecorderReader = new BILongNIOReader(start);
-        ICubeIntegerReader lengthRecorderReader = new BIIntegerNIOReader(length);
-        ICubeByteReader contentRecorderReader = new BIByteNIOReader(content);
-        reader = new BIStringNIOReader(new BIByteArrayNIOReader(startPositionRecorderReader, lengthRecorderReader, contentRecorderReader));
+        String start = BIProjectPathProvider.projectPath + File.separator + "start";
+        String length = BIProjectPathProvider.projectPath + File.separator + "length";
+        String content = BIProjectPathProvider.projectPath + File.separator + "content";
+        writer = BIStringNIOProvider.BIStringNIOWriterProvider(start, length, content);
+        reader = BIStringNIOProvider.BIStringNIOReaderProvider(start, length, content);
     }
 
     public void testSpeed() {

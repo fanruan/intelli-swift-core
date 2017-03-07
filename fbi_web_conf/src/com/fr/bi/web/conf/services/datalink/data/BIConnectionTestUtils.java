@@ -41,12 +41,11 @@ public class BIConnectionTestUtils {
         return jo;
     }
 
-    protected JDBCDatabaseConnection fetchConnection(String configData) throws Exception {
+    protected com.fr.data.impl.Connection fetchConnection(String configData) throws Exception {
         JSONObject linkDataJo = new JSONObject(configData);
         DataLinkInformation dl = new DataLinkInformation();
         dl.parseJSON(linkDataJo);
-        JDBCDatabaseConnection c = dl.createJDBCDatabaseConnection();
-        BIDBUtils.dealWithJDBCConnection(c);
+        com.fr.data.impl.Connection c = dl.createDatabaseConnection();
         return c;
     }
 
@@ -56,7 +55,7 @@ public class BIConnectionTestUtils {
      * @return 是否
      * @throws Exception
      */
-    private boolean isTestLinkSuccessful(JDBCDatabaseConnection jdbcDatabaseConnection) throws Exception {
+    private boolean isTestLinkSuccessful(com.fr.data.impl.Connection jdbcDatabaseConnection) throws Exception {
         try {
             jdbcDatabaseConnection.testConnection();
             return true;

@@ -29,7 +29,7 @@ public class BIGetReportAndFolder4ReuseAction extends ActionNoSessionCMD {
             ja.put(folderList.get(i).createJSONConfig());
         }
 
-        List<BIReportNode> nodeList = BIDAOUtils.findByUserID(userId);
+        List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(userId);
         BISortUtils.sortByModifyTime(nodeList);
         if (nodeList == null) {
             nodeList = new ArrayList<BIReportNode>();

@@ -496,7 +496,7 @@
                 //组件表头上指标的排序和过滤
                 //BI-3341 看测试哪边的数据不知道为什么表头上的sort存了个空对象，而实际上对表头指标选择排序方式无论如何也不会出现空对象
                 //先在这边加个判断
-                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort) && BI.isNotEmptyObject(widget.sort)){
+                if (BI.has(widget, "sort") && BI.isNotNull(widget.sort) && BI.isNotEmptyObject(widget.sort)) {
                     obj.sort = BI.extend({}, widget.sort, {
                         sort_target: createDimensionsAndTargets(widget.sort.sort_target).id
                     })
@@ -1118,7 +1118,7 @@
         getWSCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.custom_scale) ? ws.custom_scale :
-                {}
+            {}
         },
 
         getWSShowZoomByID: function (wid) {
@@ -2430,7 +2430,7 @@
                 );
             }
 
-            function checkValueValid(type, value){
+            function checkValueValid(type, value) {
                 switch (type) {
                     case BICst.WIDGET.NUMBER:
                         return !(BI.isEmptyString(value.min) && BI.isEmptyString(value.max));
@@ -2571,7 +2571,7 @@
                 if (BI.isNull(groupValue) && BI.isNull(groupType)) {
                     //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
                     var sIndex = value.indexOf("-");
-                    if(sIndex === -1){  //空分组
+                    if (sIndex === -1) {  //空分组
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
                             filter_value: {},
@@ -2605,13 +2605,13 @@
                         };
                         min = newMin;
                     }
-                    if(BI.isNull(groupMap[value])){
+                    if (BI.isNull(groupMap[value])) {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
                             filter_value: {},
                             _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                         }
-                    }else{
+                    } else {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
                             filter_value: groupMap[value],
@@ -2620,13 +2620,13 @@
                     }
                 }
                 if (groupType === BICst.GROUP.ID_GROUP) {
-                    if(BI.isNull(value) || BI.isEmptyString(value)){
+                    if (BI.isNull(value) || BI.isEmptyString(value)) {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
                             filter_value: {},
                             _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                         };
-                    }else{
+                    } else {
                         return {
                             filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
                             filter_value: {
@@ -2683,7 +2683,7 @@
                         },
                         _src: {field_id: BI.Utils.getFieldIDByDimensionID(dId)}
                     }
-                } else if(BI.isNull(value) || BI.isEmptyString(value)){
+                } else if (BI.isNull(value) || BI.isEmptyString(value)) {
                     return {
                         filter_type: BICst.TARGET_FILTER_NUMBER.IS_NULL,
                         filter_value: {},
@@ -2834,9 +2834,34 @@
                 }
             });
 
+
             //联动过来的维度的过滤条件
+            function getLinkFatherWidget(wid, childId) {
+                var id;
+                var links = self.getWidgetLinkageByID(wid);
+                BI.some(links, function (i, link) {
+                    if (link.to === childId) {
+                        id = wid;
+                        return true;
+                    } else {
+                        id = getLinkFatherWidget(link.to, childId);
+                    }
+                });
+                return id;
+            }
+
+
+            widget.linkages = {};
             BI.each(linkages, function (lTId, link) {
-                filterValues = filterValues.concat(self.getDimensionsFilterByTargetId(lTId));
+
+                var pWid = getLinkFatherWidget(self.getWidgetIDByDimensionID(lTId), wid);
+                var pWidget = self.getWidgetCalculationByID(pWid);
+                widget.linkages.linkedWidget = pWidget;
+                // filterValues.push({
+                //     filter_type: "8080",
+                //     filter_value: pWidget
+                // });
+                // filterValues = filterValues.concat(self.getDimensionsFilterByTargetId(lTId));
             });
 
             //日期类型的过滤条件
@@ -2915,8 +2940,8 @@
             });
 
             //gis地图按分组表来算，而非交叉表
-            if(widget.type === BICst.WIDGET.GIS_MAP){
-                if(BI.isNotEmptyArray(widget.view[BICst.REGION.DIMENSION2])){
+            if (widget.type === BICst.WIDGET.GIS_MAP) {
+                if (BI.isNotEmptyArray(widget.view[BICst.REGION.DIMENSION2])) {
                     widget.view[BICst.REGION.DIMENSION1] = widget.view[BICst.REGION.DIMENSION1] || [];
                     widget.view[BICst.REGION.DIMENSION1] = BI.concat(widget.view[BICst.REGION.DIMENSION1], widget.view[BICst.REGION.DIMENSION2]);
                     widget.view[BICst.REGION.DIMENSION2] = [];
@@ -3182,7 +3207,7 @@
                     } else if (BI.isNotNull(wValue.start)) {
                         var s = parseComplexDate(wValue.start);
                         delete filterValue.start;
-                        if(BI.isNotNull(s)){
+                        if (BI.isNotNull(s)) {
                             filterValue.end = s - 1;
                         } else {
                             delete filterValue.end;
@@ -3190,7 +3215,7 @@
                     } else if (BI.isNotNull(wValue.end)) {
                         var e = parseComplexDate(wValue.end);
                         delete filterValue.end;
-                        if(BI.isNotNull(e)){
+                        if (BI.isNotNull(e)) {
                             filterValue.end = e;
                         }
                         filterValue.start = parseComplexDate(wValue.end);
@@ -3248,10 +3273,10 @@
             return;
         }
 
-        if((filterType === BICst.TARGET_FILTER_NUMBER.BELONG_VALUE ||
+        if ((filterType === BICst.TARGET_FILTER_NUMBER.BELONG_VALUE ||
             BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE) &&
             (BI.isEmptyString(filterValue.min) && BI.isEmptyString(filterValue.max))
-        ){
+        ) {
             return;
         }
 

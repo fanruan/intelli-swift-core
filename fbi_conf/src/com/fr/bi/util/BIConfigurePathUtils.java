@@ -55,7 +55,7 @@ public class BIConfigurePathUtils {
         if (!file.exists()) {
             try {
                 boolean success = file.mkdirs();
-                if(!success) {
+                if (!success) {
                     return "";
                 }
                 return file.getAbsolutePath();
@@ -70,7 +70,7 @@ public class BIConfigurePathUtils {
         if (!file.isDirectory()) {
             return "";
         }
-        if(file.list().length > 0) {
+        if (file.list().length > 0) {
             return "warning";
         }
         return file.getAbsolutePath();
@@ -102,7 +102,11 @@ public class BIConfigurePathUtils {
      *
      */
     public static String createUserETLBasePath() {
-        File basePathFile = new File(createBasePath());
+        return getUserETLBasePath(createBasePath());
+    }
+
+    public static String getUserETLBasePath(String cubeBasePath) {
+        File basePathFile = new File(cubeBasePath);
         File parentFile = null;
 
         if (basePathFile.getParentFile() != null) {

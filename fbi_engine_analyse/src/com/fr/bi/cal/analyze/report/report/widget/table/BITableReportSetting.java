@@ -14,6 +14,7 @@ import java.util.Map;
  * Created by GUY on 2015/4/9.
  */
 public class BITableReportSetting extends BIAbstractTableSetting {
+    private static final long serialVersionUID = -8748078323275198680L;
     @BICoreField
     protected String[] summary;
     @BICoreField

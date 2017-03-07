@@ -9,6 +9,8 @@ import com.fr.bi.base.BIBasicIdentity;
  * @since 4.0
  */
 public class BIPackageID extends BIBasicIdentity {
+    private static final long serialVersionUID = 4133458968080462289L;
+
     public BIPackageID(String id) {
         super(id);
     }

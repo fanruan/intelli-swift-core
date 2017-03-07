@@ -40,7 +40,7 @@ public class BIShareTemplateSaveAction extends ActionNoSessionCMD {
             }
             result.put("result", true);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         WebUtils.printAsJSON(res, result);
     }

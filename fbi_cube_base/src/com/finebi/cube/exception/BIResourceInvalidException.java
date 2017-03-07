@@ -8,6 +8,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BIResourceInvalidException extends Exception {
+    private static final long serialVersionUID = 6231804348616260327L;
+
     public BIResourceInvalidException(String message) {
         super(message);
     }

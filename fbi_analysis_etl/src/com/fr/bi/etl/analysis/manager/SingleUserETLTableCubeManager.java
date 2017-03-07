@@ -27,9 +27,9 @@ import java.io.File;
  *
  */
 public class SingleUserETLTableCubeManager implements Release {
-	
+
 	private FixedQueueThread<UserETLUpdateTask> updateTask;
-	
+
 	private ThreadUnitedQueue<ETLTableObject> tq = new ThreadUnitedQueue<ETLTableObject>();
 
     private UserCubeTableSource source;

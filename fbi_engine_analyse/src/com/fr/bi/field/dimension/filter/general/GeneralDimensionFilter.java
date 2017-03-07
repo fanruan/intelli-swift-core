@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class GeneralDimensionFilter extends AbstractDimensionFilter {
+    private static final long serialVersionUID = 1061666444640573392L;
     @BICoreField
     protected DimensionFilter[] childs;
 

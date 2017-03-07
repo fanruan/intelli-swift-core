@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 /**
  * Created by wang on 2016/11/17.
+ * 非单元测试
  */
 public class TestMap {
     public static void doClean(final MappedByteBuffer buffer) {

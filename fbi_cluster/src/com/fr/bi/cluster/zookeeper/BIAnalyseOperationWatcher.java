@@ -32,7 +32,7 @@ public class BIAnalyseOperationWatcher extends BIWatcher {
 
     @Override
     public void eventProcessor(WatchedEvent event) {
-        FSConfig.getInstance();
+        FSConfig.getProviderInstance();
     }
 
 

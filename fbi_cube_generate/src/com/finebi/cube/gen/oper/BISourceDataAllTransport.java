@@ -2,6 +2,8 @@ package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.utils.BICubeLogExceptionInfo;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
@@ -9,6 +11,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -21,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -30,15 +34,17 @@ import java.util.TreeSet;
 public class BISourceDataAllTransport extends BISourceDataTransport {
     private static final Logger logger = LoggerFactory.getLogger(BISourceDataAllTransport.class);
 
-    public BISourceDataAllTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
-        super(cube, tableSource, allSources, parentTableSource, version);
+    public BISourceDataAllTransport(Cube cube, Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        super(cube, integrityCube, tableSource, allSources, parentTableSource, version, tablesNeed2GenerateMap);
     }
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task"));
+        logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
+                BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
         tableEntityService.recordCurrentExecuteTime();
+        BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START, System.currentTimeMillis());
         long t = System.currentTimeMillis();
         try {
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
@@ -58,6 +64,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             tableEntityService.forceReleaseWriter();
             long tableCostTime = System.currentTimeMillis() - t;
             System.out.println("tableName: " + tableSource.getTableName() + " tableSourceId: " + tableSource.getSourceID() + " table usage:" + DateUtils.timeCostFrom(t));
+            BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
@@ -70,14 +77,14 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             } catch (Exception e1) {
                 BILoggerFactory.getLogger().error(e1.getMessage(), e1);
             }
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
+            BICubeLogExceptionInfo exceptionInfo = new BICubeLogExceptionInfo(System.currentTimeMillis(), "Transport Exception", e.getMessage(), e, tableSource.getSourceID());
+            BILogHelper.cacheCubeLogTableException(tableSource.getSourceID(), exceptionInfo);
+            BILoggerFactory.getLogger(BISourceDataAllTransport.class).error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
-    private String fetchTableInfo() {
-        return BIStringUtils.append(tableSource.getTableName(), " ,", tableSource.getSourceID());
-    }
 
     private long transport() {
         List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
@@ -95,7 +102,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
-        }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube));
+        }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cubeChooser));
     }
 
 

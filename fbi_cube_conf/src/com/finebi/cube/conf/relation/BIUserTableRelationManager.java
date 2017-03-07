@@ -49,7 +49,7 @@ public class BIUserTableRelationManager implements Release {
         return tableRelationshipService;
     }
 
-    protected BIUserTableRelationManager(long userId) {
+    public BIUserTableRelationManager(long userId) {
         userId = UserControl.getInstance().getSuperManagerID();
         biUser = new BIUser(userId);
         oldAnalyserHandler = BIFactoryHelper.getObject(BITableRelationAnalysisService.class);
@@ -258,7 +258,7 @@ public class BIUserTableRelationManager implements Release {
                     try {
                         oldAnalyserHandler.addRelation(relation);
                     } catch (BIRelationDuplicateException e) {
-                        BILoggerFactory.getLogger().error(e.getMessage());
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }

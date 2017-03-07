@@ -16,10 +16,13 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
+import java.io.Serializable;
+
 /**
  * Created by 小灰灰 on 2015/7/9.
  */
-public class SumByGroupDimension implements JSONTransform, BICoreService {
+public class SumByGroupDimension implements JSONTransform, BICoreService ,Serializable{
+    private static final long serialVersionUID = 5066447062508906061L;
     @BICoreField
     private String name;
     @BICoreField
@@ -146,7 +149,7 @@ public class SumByGroupDimension implements JSONTransform, BICoreService {
         try {
             gJson = group.createJSON();
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         sb.append(", group=").append(gJson);
         sb.append(", nameText='").append(nameText).append('\'');

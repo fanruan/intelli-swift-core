@@ -21,6 +21,7 @@ public class UsePartOperator extends AbstractCreateTableETLOperator {
 
     public static final String XML_TAG = "UsePartOperator";
     private static final int NOT_CONTAINS = 2;
+    private static final long serialVersionUID = -3962024132423989307L;
 
 
     @BICoreField

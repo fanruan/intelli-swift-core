@@ -4,7 +4,7 @@ import com.fr.bi.fs.BIDesignReport;
 import com.fr.bi.fs.BIDesignSetting;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.web.report.utils.BIFSReportUtils;
+import com.fr.bi.web.report.utils.BIFSReportManager;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
@@ -48,7 +48,7 @@ public class BIAddReportAction extends ActionNoSessionCMD {
             popConfig = reportJO.toString();
         }
         BIDesignReport report = new BIDesignReport(new BIDesignSetting(popConfig));
-        long reportId = BIFSReportUtils.createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
+        long reportId = BIFSReportManager.getBIFSReportManager().createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
 
 //        //保存到文件夹
 //        BIReportNode reportNode = BIDAOUtils.findByID(reportId, userId);

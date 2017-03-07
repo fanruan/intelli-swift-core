@@ -17,8 +17,8 @@ public class StringDealer extends AbstractDealer<String> {
             return rs.getString(rsColumn);
         } catch (SQLException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
 }

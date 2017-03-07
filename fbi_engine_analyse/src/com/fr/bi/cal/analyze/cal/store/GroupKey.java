@@ -6,8 +6,11 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIHashCodeUtils;
 import com.fr.general.ComparatorUtils;
 
-public class GroupKey {
+import java.io.Serializable;
 
+public class GroupKey implements Serializable{
+
+    private static final long serialVersionUID = -3510836520510552712L;
     private DimensionCalculator[] key;
     private BusinessTable targetTableKey;
     private ResultFilter resultFilter;

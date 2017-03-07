@@ -34,6 +34,7 @@ import java.util.*;
 public class StringControlWidget extends TableWidget {
 
     private static final int STEP = 100;
+    private static final long serialVersionUID = 8869194713947245611L;
     private int data_type = -2;
     private int times = -1;
     private String selected_values;
@@ -200,8 +201,7 @@ public class StringControlWidget extends TableWidget {
 
     private JSONObject getCustomGroupResult(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, DimensionCalculator calculator) throws JSONException {
         List<Object> list = new ArrayList<Object>();
-        int sortType = this.getDimensions()[0].getSortType();
-        Iterator<Map.Entry<Object, GroupValueIndex>> it = (sortType == BIReportConstant.SORT.ASC ? reader.iterator() : reader.previousIterator());
+        Iterator<Map.Entry<Object, GroupValueIndex>> it = reader.iterator();
         while (it.hasNext()) {
             Map.Entry<Object, GroupValueIndex> entry = it.next();
             if (entry.getValue().hasSameValue(gvi)) {

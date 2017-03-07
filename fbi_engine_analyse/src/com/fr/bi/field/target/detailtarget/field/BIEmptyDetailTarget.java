@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class BIEmptyDetailTarget extends BIAbstractDetailTarget {
 
+    private static final long serialVersionUID = -7865220675953704763L;
+
     public BIEmptyDetailTarget(String name) {
         this.setValue(name);
     }

@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class GeneralORDimensionFilter extends GeneralDimensionFilter {
 
+    private static final long serialVersionUID = 5257377024724929244L;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

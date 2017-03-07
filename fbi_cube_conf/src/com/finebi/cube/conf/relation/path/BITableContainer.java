@@ -12,6 +12,8 @@ import java.util.Set;
  */
 public class BITableContainer extends BISetContainer<BusinessTable> {
 
+    private static final long serialVersionUID = -5158311039578276490L;
+
     protected void addBITable(BusinessTable table) throws BITableDuplicateException {
         if (!contain(table)) {
             add(table);

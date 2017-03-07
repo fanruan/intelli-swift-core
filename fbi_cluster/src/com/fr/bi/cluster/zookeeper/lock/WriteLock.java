@@ -136,7 +136,7 @@ public class WriteLock extends ProtocolSupport {
                     // do nothing
                 } catch (KeeperException e) {
                     LOG.warn("Caught: " + e, e);
-                    throw (RuntimeException) new RuntimeException(e.getMessage()).
+                    throw (RuntimeException) new RuntimeException(e.getMessage(),e).
                             initCause(e);
                 } finally {
                     if (callback != null) {

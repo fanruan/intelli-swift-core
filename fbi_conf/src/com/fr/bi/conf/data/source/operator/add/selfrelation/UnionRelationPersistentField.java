@@ -6,6 +6,8 @@ import com.fr.bi.stable.data.db.PersistentField;
  * Created by User on 2016/1/14.
  */
 public class UnionRelationPersistentField extends PersistentField {
+    private static final long serialVersionUID = -5354455478848377449L;
+
     public UnionRelationPersistentField(String columnName, int type, int columnSize) {
         super(columnName, type, columnSize);
     }

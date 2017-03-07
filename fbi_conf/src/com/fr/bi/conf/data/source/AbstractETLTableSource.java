@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
@@ -194,30 +195,36 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
 
     @Override
     public IPersistentTable getPersistentTable() {
-        if (dbTable == null) {
-            dbTable = createBITable();
+        try {
+            if (dbTable == null) {
+                dbTable = createBITable();
 
-            if (isAllAddColumnOperator()) {
-                for (S source : parents) {
-                    IPersistentTable p = source.getPersistentTable();
-                    for (int i = 0; i < p.getFieldSize(); i++) {
-                        dbTable.addColumn(p.getField(i));
+                if (isAllAddColumnOperator()) {
+                    for (S source : parents) {
+                        IPersistentTable p = source.getPersistentTable();
+                        for (int i = 0; i < p.getFieldSize(); i++) {
+                            dbTable.addColumn(p.getField(i));
+                        }
+                    }
+                }
+                IPersistentTable[] ptables = new IPersistentTable[parents.size()];
+                for (int i = 0; i < ptables.length; i++) {
+                    ptables[i] = parents.get(i).getPersistentTable();
+                }
+                for (int i = 0; i < oprators.size(); i++) {
+                    IPersistentTable ctable = oprators.get(i).getBITable(ptables);
+                    Iterator<PersistentField> it = ctable.getFieldList().iterator();
+                    while (it.hasNext()) {
+                        PersistentField column = it.next();
+                        dbTable.addColumn(column);
                     }
                 }
             }
-            IPersistentTable[] ptables = new IPersistentTable[parents.size()];
-            for (int i = 0; i < ptables.length; i++) {
-                ptables[i] = parents.get(i).getPersistentTable();
-            }
-            for (int i = 0; i < oprators.size(); i++) {
-                IPersistentTable ctable = oprators.get(i).getBITable(ptables);
-                Iterator<PersistentField> it = ctable.getFieldList().iterator();
-                while (it.hasNext()) {
-                    PersistentField column = it.next();
-                    dbTable.addColumn(column);
-                }
-            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(AbstractETLTableSource.class).error("Get ETL persistentTable Error, the error tableSource is: " + BILogHelper.logTableSource(this, ""));
+            dbTable = null;
         }
+
         return dbTable;
     }
 
@@ -363,5 +370,4 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
     private boolean reuseTableSource(CubeTableSource tableSource) {
         return tableSource instanceof DBTableSource && !(tableSource instanceof ServerTableSource);
     }
-
 }

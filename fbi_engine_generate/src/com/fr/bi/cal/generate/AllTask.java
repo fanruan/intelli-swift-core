@@ -24,6 +24,8 @@ import java.util.Set;
 public class AllTask extends AbstractCubeTask {
 
 
+    private static final long serialVersionUID = 6294212076030791622L;
+
     public AllTask(long userId) {
         super(userId);
     }

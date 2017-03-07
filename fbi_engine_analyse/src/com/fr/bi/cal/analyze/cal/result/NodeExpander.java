@@ -4,6 +4,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,9 +13,10 @@ import java.util.Map;
  *
  * @author Daniel
  */
-public class NodeExpander {
+public class NodeExpander implements Serializable {
 
     public static final NodeAllExpander ALL_EXPANDER = new NodeAllExpander();
+    private static final long serialVersionUID = 8243791897427634617L;
     protected NodeExpander parent;
     private boolean expandAll;
     private int len;

@@ -13,6 +13,7 @@ import java.io.IOException;
  * Created by 小灰灰 on 2016/10/13.
  */
 public class IDGroupValueIndex extends AbstractGroupValueIndex {
+    private static final long serialVersionUID = 6042740418289521447L;
     protected int id;
     protected IDGroupValueIndex(){
 

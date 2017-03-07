@@ -1,7 +1,10 @@
 package com.finebi.cube.conf.pack.imp;
 
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.pack.IPackagesManagerService;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -11,14 +14,18 @@ import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -30,6 +37,8 @@ import java.util.Set;
  */
 public class BISystemPackageConfigurationManager extends BISystemDataManager<BIUserPackageConfigurationManager> implements BISystemPackageConfigurationProvider {
 
+
+    private static final long serialVersionUID = 6464728021843147436L;
 
     @Override
     public BIUserPackageConfigurationManager constructUserManagerValue(Long userId) {
@@ -115,7 +124,10 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     public void addPackage(long userId, BIBusinessPackage biBusinessPackage) throws BIPackageDuplicateException {
         getUserGroupConfigManager(userId).getPackageConfigManager().addPackage(biBusinessPackage);
     }
-
+    @Override
+    public void updatePackage(long userId, BIBusinessPackage newBusinessPackage) throws BIPackageDuplicateException, BIPackageAbsentException {
+        getUserGroupConfigManager(userId).getPackageConfigManager().updatePackage(newBusinessPackage);
+    }
     @Override
     public Boolean containPackage(long userId, BIBusinessPackage biPackage) {
         return getUserGroupConfigManager(userId).getPackageConfigManager().containPackage(biPackage);
@@ -256,4 +268,36 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisAllTables();
     }
 
+    private JSONObject createTablesJsonObject(JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception {
+        JSONObject jo = new JSONObject();
+        JSONArray ja = new JSONArray();
+        if (tableIdsJA != null) {
+            for (int i = 0; i < tableIdsJA.length(); i++) {
+                String tId = tableIdsJA.optJSONObject(i).optString("id");
+                JSONObject idJo = new JSONObject();
+                idJo.put("id", tId);
+                JSONArray usedFields = usedFieldsJO.optJSONArray(tId);
+                idJo.put("used_fields", usedFields);
+                JSONObject table = tableDataJO.getJSONObject(tId);
+                idJo.put("fields", table.getJSONArray("fields"));
+                ja.put(idJo);
+            }
+        }
+        return jo.put("data", ja);
+    }
+    @Override
+    public void parseSinglePackageJSON(long userId, BIPackageID packageId, JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception {
+        BIBusinessPackage pack = (BIBusinessPackage) getPackage(userId,packageId);
+        pack.parseJSON(createTablesJsonObject(tableIdsJA, usedFieldsJO, tableDataJO));
+
+    }
+    @Override
+    public void packageAddTableSource(long userId, BIPackageID packageId,String tableId,CubeTableSource source,boolean enSureFields) throws BIPackageAbsentException, BITableAbsentException, BIKeyDuplicateException {
+        BIBusinessPackage pack = (BIBusinessPackage) getPackage(userId,packageId);
+        BusinessTable table = pack.getSpecificTable(new BITableID(tableId));
+        if (enSureFields){
+            ((AbstractTableSource) source).getRecordedFields();
+        }
+        BICubeConfigureCenter.getDataSourceManager().addTableSource(table, source);
+    }
 }

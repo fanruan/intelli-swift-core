@@ -4,10 +4,12 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by Young's on 2016/5/19.
  */
-public interface BICubeConfManagerProvider {
+public interface BICubeConfManagerProvider extends Serializable{
     String XML_TAG = "BICubeConfManagerProvider";
 
     String getCubePath();

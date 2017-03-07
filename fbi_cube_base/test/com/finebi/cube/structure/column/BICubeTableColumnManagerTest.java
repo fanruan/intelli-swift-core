@@ -38,30 +38,45 @@ public class BICubeTableColumnManagerTest extends BICubeTestBase {
         try {
             BICubeDateColumn date = (BICubeDateColumn) managerService.getColumn(BIColumnKey.covertColumnKey(DBFieldTestTool.generateDATE()));
             date.addOriginalDataValue(0, time);
+            date.forceReleaseWriter();
+            date.forceReleaseReader();
 
             BIColumnKey year = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR);
             BICubeYearColumn yearColumn = (BICubeYearColumn) managerService.getColumn(year);
             assertEquals(Integer.valueOf(2016), yearColumn.getOriginalValueByRow(0));
+            yearColumn.forceReleaseWriter();
+            yearColumn.forceReleaseReader();
 
             BIColumnKey month = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_MONTH);
             BICubeMonthColumn monthColumn = (BICubeMonthColumn) managerService.getColumn(month);
-            assertEquals(Integer.valueOf(3), monthColumn.getOriginalValueByRow(0));
+            assertEquals(Integer.valueOf(4), monthColumn.getOriginalValueByRow(0));
+            monthColumn.forceReleaseReader();
+            monthColumn.forceReleaseWriter();
 
             BIColumnKey week = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_WEEK);
             BICubeWeekColumn weekColumn = (BICubeWeekColumn) managerService.getColumn(week);
-            assertEquals(Integer.valueOf(5), weekColumn.getOriginalValueByRow(0));
+            assertEquals(Integer.valueOf(4), weekColumn.getOriginalValueByRow(0));
+            weekColumn.forceReleaseReader();
+            weekColumn.forceReleaseWriter();
 
             BIColumnKey day = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_DAY);
             BICubeDayColumn dayColumn = (BICubeDayColumn) managerService.getColumn(day);
             assertEquals(Integer.valueOf(7), dayColumn.getOriginalValueByRow(0));
+            dayColumn.forceReleaseReader();
+            dayColumn.forceReleaseWriter();
 
             BIColumnKey season = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_SEASON);
             BICubeSeasonColumn seasonColumn = (BICubeSeasonColumn) managerService.getColumn(season);
             assertEquals(Integer.valueOf(2), seasonColumn.getOriginalValueByRow(0));
+            seasonColumn.forceReleaseReader();
+            seasonColumn.forceReleaseWriter();
 
             BIColumnKey ymd = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY);
             BICubeYearMonthDayColumn yearMonthDayColumn = (BICubeYearMonthDayColumn) managerService.getColumn(ymd);
             assertEquals(Long.valueOf(1459958400000l), yearMonthDayColumn.getOriginalValueByRow(0));
+            yearMonthDayColumn.forceReleaseReader();
+            yearMonthDayColumn.forceReleaseWriter();
+
         } catch (BICubeColumnAbsentException e) {
             e.printStackTrace();
             assertTrue(false);
