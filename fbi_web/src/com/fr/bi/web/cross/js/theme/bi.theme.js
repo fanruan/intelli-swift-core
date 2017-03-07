@@ -44,7 +44,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
                 BI.Popovers.create(id, newAnalysisBox, {width: 400, height: 320}).open(id);
                 newAnalysisBox.setTemplateNameFocus();
             });
-            newAnalysis.element.css({position: "relative", float: "right"});
+            newAnalysis.element.css({"position": "relative", "float": "right"});
             $nav.after(newAnalysis.element);
             if (FS.isAdmin()) {
                 var dataConfig = BI.createWidget({
@@ -63,7 +63,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
                         src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane'
                     });
                 });
-                dataConfig.element.css({position: "relative", float: "right"});
+                dataConfig.element.css({"position": "relative", "float": "right"});
                 $nav.after(dataConfig.element);
             }
         }
