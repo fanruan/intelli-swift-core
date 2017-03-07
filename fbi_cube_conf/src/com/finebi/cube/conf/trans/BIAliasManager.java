@@ -47,10 +47,10 @@ public class BIAliasManager extends BISystemDataManager<UserAliasManager> implem
             }
             putKeyValue(userId,value);
         } catch (BIKeyAbsentException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e);
         } catch (BIKeyDuplicateException e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
     }
     @Override
