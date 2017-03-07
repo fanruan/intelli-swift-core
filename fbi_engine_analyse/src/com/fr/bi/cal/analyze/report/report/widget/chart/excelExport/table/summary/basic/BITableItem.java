@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.BIExcelItemData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableItem;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Kary on 2017/2/13.
  */
-public class BITableItem implements BIExcelItemData {
+public class BITableItem implements ITableItem {
 
     private String dId;
     private String text;

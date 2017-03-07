@@ -1,8 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BITableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils.ExportDataHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils.SummaryTableStyleHelper;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -34,13 +35,13 @@ public class SummaryComplexTableBuilder extends SummaryAbstractTableDataBuilder 
         for (Integer integer : dimAndTar.keySet()) {
             //行表头、列表头都只需要第一个分组中使用中的维度
             List<JSONObject> list = dimAndTar.get(integer);
-            if (ExportDataHelper.isDimensionRegion1ByRegionType(integer.intValue()) && list.size() > 0) {
+            if (BITableExportDataHelper.isDimensionRegion1ByRegionType(integer.intValue()) && list.size() > 0) {
                 for (JSONObject jsonObject : list) {
                     dimIds.add(jsonObject.getString("dId"));
                 }
                 return;
             }
-            if (ExportDataHelper.isDimensionRegion1ByRegionType(integer.intValue()) && list.size() > 0) {
+            if (BITableExportDataHelper.isDimensionRegion1ByRegionType(integer.intValue()) && list.size() > 0) {
                 for (JSONObject jsonObject : list) {
                     crossDimIds.add(jsonObject.getString("dId"));
                 }
@@ -168,11 +169,13 @@ public class SummaryComplexTableBuilder extends SummaryAbstractTableDataBuilder 
         int count = 0;
         int rowLength = getLargestLengthOfRowRegions();
         int clolLength = getLargestLengthOfColRegions();
-        JSONObject lastDimHeader = this.headers.getJSONObject(dimIds.size() - 1);
+        JSONObject lastDimHeader = this.headers.get(dimIds.size() - 1).createJSON();
         JSONObject lastCrossDimHeader = crossHeaders.getJSONObject(crossDimIds.size() - 1);
 // FIXME: 2017/3/6
         while (count < rowLength - dimIds.size()) {
-            this.headers.put(dimIds.size(), lastCrossDimHeader);
+            BITableHeader header = new BITableHeader();
+            header.parseJson(lastCrossDimHeader);
+            this.headers.set(dimIds.size(), header);
         }
         count = 0;
         while (count < rowLength - crossDimIds.size()) {
@@ -366,7 +369,7 @@ public class SummaryComplexTableBuilder extends SummaryAbstractTableDataBuilder 
         List<JSONArray> rowRegions = new ArrayList<JSONArray>();
         for (Integer regionId : dimAndTar.keySet()) {
             JSONArray temp = new JSONArray();
-            if (ExportDataHelper.isDimensionRegion1ByRegionType(regionId)) {
+            if (BITableExportDataHelper.isDimensionRegion1ByRegionType(regionId)) {
                 List<JSONObject> list = dimAndTar.get(regionId);
                 for (JSONObject object : list) {
                     temp.put(object.getString("dId"));
@@ -382,7 +385,7 @@ public class SummaryComplexTableBuilder extends SummaryAbstractTableDataBuilder 
         List<JSONArray> colRegions = new ArrayList<JSONArray>();
         for (Integer regionId : dimAndTar.keySet()) {
             JSONArray temp = new JSONArray();
-            if (ExportDataHelper.isDimensionRegion2ByRegionType(regionId)) {
+            if (BITableExportDataHelper.isDimensionRegion2ByRegionType(regionId)) {
                 List<JSONObject> list = dimAndTar.get(regionId);
                 for (JSONObject object : list) {
                     temp.put(object.getString("dId"));

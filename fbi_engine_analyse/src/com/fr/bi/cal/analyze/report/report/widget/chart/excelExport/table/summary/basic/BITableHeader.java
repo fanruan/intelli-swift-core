@@ -1,12 +1,13 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.BIExcelHeader;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableHeader;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
  * Created by Kary on 2017/2/13.
  */
-public class BITableHeader implements BIExcelHeader {
+public class BITableHeader implements ITableHeader {
     private String text;
     private String title;
     private String tag;
@@ -84,5 +85,29 @@ public class BITableHeader implements BIExcelHeader {
         jo.put("text",getText());
         jo.put("type",getType());
         return jo;
+    }
+    @Override
+    public void parseJson(JSONObject json) throws JSONException {
+        if (json.has("title")){
+            setTitle(json.getString("title"));
+        }
+        if (json.has("tag")){
+            setTag(json.getString("tag"));
+        }
+        if (json.has("dId")){
+            setdID(json.getString("dId"));
+        }
+        if (json.has("style")){
+            BITableItemStyle style = new BITableItemStyle();
+            style.parse(json.getJSONObject("style"));
+            setStyle(style);
+        }
+        if (json.has("text")){
+            setText(json.getString("text"));
+        }
+        if (json.has("type")){
+            setType(json.getString("type"));
+        }
+
     }
 }

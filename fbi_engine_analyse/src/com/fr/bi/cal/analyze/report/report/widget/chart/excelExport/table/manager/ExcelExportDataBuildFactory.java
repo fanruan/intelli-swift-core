@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager;
 
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.BIExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SumaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SummaryNormalTableDataBuilder;
@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class ExcelExportDataBuildFactory {
     public static BIExcelTableData createExportData(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
-        BIExcelDataBuilder builder;
+        IExcelDataBuilder builder;
         if (dataJSON.has("t")) {
             builder = new SumaryCrossTableDataBuilder(dimAndTar, dataJSON);
         } else {
