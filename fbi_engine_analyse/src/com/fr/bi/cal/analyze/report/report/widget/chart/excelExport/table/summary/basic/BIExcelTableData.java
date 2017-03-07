@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Created by Kary on 2017/2/13.
- * todo 模块化，少用json
+ * todo 少用json
  */
 public class BIExcelTableData implements JSONCreator {
     private List<BITableHeader> headers;
