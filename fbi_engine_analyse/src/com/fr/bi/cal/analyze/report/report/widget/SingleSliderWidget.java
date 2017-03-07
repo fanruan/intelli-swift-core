@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
@@ -24,7 +25,7 @@ import java.util.*;
  * Created by zcf on 2017/1/20.
  */
 public class SingleSliderWidget extends TableWidget {
-    private int type;
+    private WidgetType type;
     private double minMin;
     private double maxMax;
 
@@ -32,7 +33,7 @@ public class SingleSliderWidget extends TableWidget {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if (jo.has("type")) {
-            type = jo.getInt("type");
+            type = WidgetType.parse(jo.getInt("type"));
         }
     }
 
@@ -70,59 +71,11 @@ public class SingleSliderWidget extends TableWidget {
 
     private MaxAndMin createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException {
         int start = 0, end = getter.getGroupSize();
-        SingleSliderWidget.SimpleIntArray groupArray;
-        if (gvi instanceof AllShowRoaringGroupValueIndex) {
-            final int fstart = start, size = start == -1 ? 0 : end - start;
-            groupArray = new SingleSliderWidget.SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    return index + fstart;
-                }
+        SimpleIntArray groupArray = this.createGroupArray(start, end, new int[0], new int[0], getter, gvi);
 
-                @Override
-                public int size() {
-                    return size;
-                }
-            };
-        } else {
-            groupArray = createGroupArray(start, end, getter, gvi);
-        }
         Object min = reader.getGroupValue(groupArray.get(groupArray.get(0)));
         Object max = reader.getGroupValue(groupArray.get(groupArray.get(groupArray.size() - 1)));
         return new MaxAndMin(Double.valueOf(max.toString()), Double.valueOf(min.toString()));
-    }
-
-    private SimpleIntArray createGroupArray(int start, int end, final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
-        final int[] groupIndex = new int[getter.getGroupSize()];
-        Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
-        gvi.Traversal(new SingleRowTraversalAction() {
-            @Override
-            public void actionPerformed(int row) {
-                int groupRow = getter.getPositionOfGroupByRow(row);
-                if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
-                    groupIndex[groupRow] = groupRow;
-                }
-            }
-        });
-        final IntArray array = new IntArray();
-        if (start != -1) {
-            for (int i = start; i < end; i++) {
-                if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE) {
-                    array.add(i);
-                }
-            }
-        }
-        return new SimpleIntArray() {
-            @Override
-            public int get(int index) {
-                return array.get(index);
-            }
-
-            @Override
-            public int size() {
-                return array.size;
-            }
-        };
     }
 
     @Override
@@ -136,8 +89,8 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     @Override
-    public int getType() {
-        return type;
+    public WidgetType getType() {
+        return this.type;
     }
 
     private class MaxAndMin {
@@ -158,9 +111,4 @@ public class SingleSliderWidget extends TableWidget {
         }
     }
 
-    private abstract class SimpleIntArray {
-        public abstract int get(int index);
-
-        public abstract int size();
-    }
 }

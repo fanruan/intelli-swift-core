@@ -9,6 +9,7 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.ExcelExportDataBuildFactory;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -369,8 +370,8 @@ public class TableWidget extends BISummaryWidget {
     }
 
     @Override
-    public int getType() {
-        return BIReportConstant.WIDGET.TABLE;
+    public WidgetType getType() {
+        return WidgetType.TABLE;
     }
 
     public void setOperator(int operator) {

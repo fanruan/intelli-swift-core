@@ -169,10 +169,20 @@ BI.ReusePane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         BI.Utils.getWidgetsByTemplateId(id, function(data){
             var result = [];
-            BI.map(data, function(wId, widget){
+            var widget = [], control = [];
+            BI.each(data, function(wid, w){
+                w.id = wid;
+                if(BI.Utils.isControlWidgetByWidgetType(w.type)){
+                    control.push(w);
+                }else{
+                    widget.push(w);
+                }
+            })
+            var sortableData = BI.concat(BI.sortBy(control, "name"), BI.sortBy(widget, "name"));
+            BI.each(sortableData, function(wId, widget){
                 if(!BI.contains(self.constants.CONTROL_TYPE, widget.type)){
                     result.push({
-                        id: wId,
+                        id: widget.id,
                         pId: id,
                         isParent: false,
                         layer: layer,
@@ -203,7 +213,7 @@ BI.ReusePane = BI.inherit(BI.Widget, {
                 self.items = [];
                 self.sharedItems = [];
                 BI.each(items, function(idx, item){
-                    if(item.id != currentTemplateId && item.isMine === true){
+                    if((item.id != currentTemplateId && item.isMine === true) || !BI.has(item, "buildUrl")){
                         self.items.push(item);
                     }
                     if(item.isMine === false){

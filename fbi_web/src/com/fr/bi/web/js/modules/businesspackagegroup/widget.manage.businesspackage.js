@@ -106,7 +106,7 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
     },
 
 
-    populate: function (groupedItems, allPackages, eidt) {
+    populate: function (groupedItems, allPackages) {
         var self = this, o = this.options;
         var groupedFieldItems = [];
         var unGroupedFieldItem = {};
@@ -138,9 +138,6 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
             }
         });
         self.groupPane.populate([unGroupedFieldItem], groupedFieldItems);
-        if (eidt === false) {
-            this.topButtons.setVisible(false);
-        }
     },
 
     getValue: function () {
@@ -154,7 +151,7 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
         BI.delay(function () {
             self.groupPane.element.scrollTop(BI.MAX);
         }, 30);
-    },
+    }
 });
 BI.BusinessPackageManage.EVENT_CHANGE = "EVENT_CHANGE";
 BI.BusinessPackageManage.EVENT_CLICK_DELETE = "EVENT_CLICK_DELETE";

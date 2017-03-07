@@ -162,7 +162,6 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
         return expanderItems;
     },
 
-
     createGroupWidget: function (groupItem) {
         var self = this, o = this.options;
         var groupWidget = BI.createWidget({

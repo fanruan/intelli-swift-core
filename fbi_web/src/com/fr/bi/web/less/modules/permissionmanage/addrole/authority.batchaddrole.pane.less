@@ -1,5 +1,9 @@
 @import "../../../bibase";
 .bi-authority-batch-add-role-pane{
+  background: @color-bi-background-default;
+  & .selected-packages{
+    border-right: 1px solid @color-bi-border-normal;
+  }
   & .empty-tip{
     font-size: @font-size-16;
     color: @color-bi-text-tips;
@@ -7,10 +11,6 @@
   & .role-item{
     border: 1px solid @color-bi-border-normal;
     .border-radius(2px);
-    &.active{
-      color: @color-bi-text;
-      background: @color-bi-background-highlight;
-    }
   }
   & .overwrite-tip{
     font-size: @font-size-14;

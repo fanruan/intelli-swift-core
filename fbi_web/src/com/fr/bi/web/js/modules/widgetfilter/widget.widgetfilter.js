@@ -141,12 +141,15 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
         });
 
         //表头上设置的过滤条件，还要加上所有dimension的过滤条件
+        var wType = BI.Utils.getWidgetTypeByID(wId);
         var dimIds = BI.Utils.getAllDimDimensionIDs(wId);
         BI.each(dimIds, function (i, dimId) {
             if (BI.Utils.isDimensionUsable(dimId)) {
                 var fValue = BI.Utils.getDimensionFilterValueByID(dimId);
                 if (BI.isNotEmptyObject(fValue)) {
-                    items.push(self.model.parseDimensionFilter(dimId, fValue));
+                    items.push(wType === BICst.WIDGET.DETAIL ?
+                        self.model.parseTargetFilter(dimId, fValue) :
+                        self.model.parseDimensionFilter(dimId, fValue));
                 }
             }
         });

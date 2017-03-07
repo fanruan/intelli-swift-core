@@ -4,11 +4,9 @@ import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.fs.FSConfig;
 import com.fr.fs.base.entity.CompanyRole;
-import com.fr.fs.control.CompanyRoleControl;
-import com.fr.fs.control.CustomRoleControl;
-import com.fr.fs.control.DepartmentControl;
-import com.fr.fs.control.PostControl;
+import com.fr.fs.control.*;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -27,27 +25,37 @@ public class BIGetPackageAuthorityAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
 
         BIAuthorityManageProvider authorityManager = BIConfigureManagerCenter.getAuthorityManager();
-        List<CompanyRole> roles = CompanyRoleControl.getInstance().getAllCompanyRole();
 
         JSONArray rolesJA = new JSONArray();
-        for(int i = 0; i < roles.size(); i++) {
-            CompanyRole role = roles.get(i);
-            JSONObject roleJO = role.createJSONConfig();
-            String departName = DepartmentControl.getInstance().getDepartmentShowName(role.getDepartmentId(), ",");
-            String postName = PostControl.getInstance().getPostName(role.getPostId());
-            if(departName != null && postName != null) {
-                roleJO.put("department_name", departName);
-                roleJO.put("post_name", postName);
-                roleJO.put("role_type", BIBaseConstant.ROLE_TYPE.COMPANY);
-                rolesJA.put(roleJO);
-            }
-        }
 
-        JSONArray customRoles = CustomRoleControl.getInstance().getAllCustomRoleInfo();
-        for(int i = 0; i < customRoles.length(); i++) {
-            JSONObject role = customRoles.getJSONObject(i);
-            role.put("role_type", BIBaseConstant.ROLE_TYPE.CUSTOM);
-            rolesJA.put(role);
+        if (userId == UserControl.getInstance().getSuperManagerID()) {
+            List<CompanyRole> roles = CompanyRoleControl.getInstance().getAllCompanyRole();
+            for (int i = 0; i < roles.size(); i++) {
+                CompanyRole role = roles.get(i);
+                JSONObject roleJO = role.createJSONConfig();
+                String departName = DepartmentControl.getInstance().getDepartmentShowName(role.getDepartmentId(), ",");
+                String postName = PostControl.getInstance().getPostName(role.getPostId());
+                if (departName != null && postName != null) {
+                    roleJO.put("departmentname", departName);
+                    roleJO.put("postname", postName);
+                    roleJO.put("role_type", BIBaseConstant.ROLE_TYPE.COMPANY);
+                    rolesJA.put(roleJO);
+                }
+            }
+
+            JSONArray customRoles = CustomRoleControl.getInstance().getAllCustomRoleInfo();
+            for (int i = 0; i < customRoles.length(); i++) {
+                JSONObject role = customRoles.getJSONObject(i);
+                role.put("role_type", BIBaseConstant.ROLE_TYPE.CUSTOM);
+                rolesJA.put(role);
+            }
+        } else if (FSConfig.getProviderInstance().getAuthorizeAttr().isGradeAuthority()) {
+            rolesJA = UserControl.getInstance().getAllDepAndCRoleInfo(userId);
+            for (int i = 0; i < rolesJA.length(); i++) {
+                JSONObject roleJO = rolesJA.getJSONObject(i);
+                roleJO.put("role_type", roleJO.opt("departmentname") != null ?
+                        BIBaseConstant.ROLE_TYPE.COMPANY : BIBaseConstant.ROLE_TYPE.CUSTOM);
+            }
         }
 
         JSONObject jo = new JSONObject();
