@@ -5,10 +5,10 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.operation.group.BIGroupUtils;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 
@@ -104,7 +104,7 @@ class ValueIterator {
     }
 
     private Iterator getIter(int index, GroupValueIndex gvi) {
-        if (isCustomGroup(groups[index])) {
+        if (BIGroupUtils.isCustomGroup(groups[index])) {
             return createMapIterator(index, gvi);
         }
         ICubeValueEntryGetter getter = getters[index];
@@ -133,13 +133,5 @@ class ValueIterator {
         return map.entrySet().iterator();
     }
 
-    private boolean isCustomGroup(IGroup group) {
-        if (group == null) {
-            return false;
-        }
-        int groupType = group.getType();
-        return groupType != BIReportConstant.GROUP.NO_GROUP
-                || groupType != BIReportConstant.GROUP.ID_GROUP;
-    }
 
 }
