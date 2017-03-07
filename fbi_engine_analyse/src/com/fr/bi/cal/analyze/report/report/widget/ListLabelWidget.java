@@ -89,7 +89,51 @@ public class ListLabelWidget extends BISummaryWidget {
             start = ArrayLookupHelper.getStartIndex4StartWith(reader, keyword, comparator);
             end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;
         }
-        SimpleIntArray groupArray = this.createGroupArray(start, end, getter, gvi);
+        SimpleIntArray groupArray;
+        if (gvi instanceof AllShowRoaringGroupValueIndex){
+            final int fstart = start, size = start == -1 ? 0 :  end - start;
+            groupArray = new SimpleIntArray() {
+                @Override
+                public int get(int index) {
+                    return index + fstart;
+                }
+
+                @Override
+                public int size() {
+                    return size;
+                }
+            };
+        } else {
+            final int[] groupIndex = new int[getter.getGroupSize()];
+            Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
+            gvi.Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    int groupRow = getter.getPositionOfGroupByRow(row);
+                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                        groupIndex[groupRow] = groupRow;
+                    }
+                }
+            });
+            final IntArray array = new IntArray();
+            if (start != -1){
+                for (int i = start; i < end; i ++){
+                    if (groupIndex[i] != NIOConstant.INTEGER.NULL_VALUE){
+                        array.add(i);
+                    }
+                }
+            }
+            groupArray = new SimpleIntArray() {
+                @Override
+                public int get(int index) {
+                    return array.get(index);
+                }
+                @Override
+                public int size() {
+                    return array.size;
+                }
+            };
+        }
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
             return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
         }
