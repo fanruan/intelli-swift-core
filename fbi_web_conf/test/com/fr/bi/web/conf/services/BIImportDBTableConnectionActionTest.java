@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.web.conf.utils.BIImportDBTableConnectionRelationTool;
 import junit.framework.TestCase;
 
@@ -16,8 +17,8 @@ import java.util.Set;
  */
 public class BIImportDBTableConnectionActionTest extends TestCase {
 
-    Map<String, DBTableSource> newTableSources = new java.util.HashMap<String, DBTableSource>();
-    Map<String, DBTableSource> allTableSources = new java.util.HashMap<String, DBTableSource>();
+    Map<String, AbstractTableSource> newTableSources = new java.util.HashMap<String, AbstractTableSource>();
+    Map<String, AbstractTableSource> allTableSources = new java.util.HashMap<String, AbstractTableSource>();
     Map<String, String> allFieldIdMap = new HashMap<String, String>();
     BIImportDBTableConnectionRelationTool stub = new BIImportDBTableTestTool();
     Set<BITableRelation> relations = new HashSet<BITableRelation>();
