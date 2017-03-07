@@ -155,19 +155,20 @@ public class StringControlWidget extends TableWidget {
             return array.size();
         }
         int count = 0;
+        String[] keys = keywords;
+        if (keys.length == 0) {
+            keys = new String[]{""};
+        }
         for (int i = 0; i < array.size(); i++) {
             Object ob = reader.getGroupValue(array.get(i));
             if (ob == null) {
                 continue;
             }
             String str = ob.toString();
-            String[] keys = keywords;
-            if (keys.length == 0) {
-                keys = new String[]{""};
-            }
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, mode)) {
                     count++;
+                    break;
                 }
             }
         }
@@ -176,17 +177,18 @@ public class StringControlWidget extends TableWidget {
 
     private int getSearchCount(Set selectedValue, List<Object> list) {
         int count = 0;
+        String[] keys = keywords;
+        if (keys.length == 0) {
+            keys = new String[]{""};
+        }
         for (Object ob : list) {
             if (ob == null) {
                 continue;
             }
-            String[] keys = keywords;
-            if (keys.length == 0) {
-                keys = new String[]{""};
-            }
             for (String keyword : keys) {
                 if (match(ob.toString(), keyword, selectedValue, SearchMode.PY)) {
                     count++;
+                    break;
                 }
             }
         }
@@ -194,6 +196,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private boolean match(String value, String keyword, Set selectedValue, SearchMode mode) {
+        keyword = keyword.toLowerCase();
         if (selectedValue.contains(value)) {
             return false;
         }
@@ -247,16 +250,17 @@ public class StringControlWidget extends TableWidget {
 
     private boolean getReserveList(List<Object> list, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match) {
         boolean hasNext = false;
+        String[] keys = keywords;
+        if (keys.length == 0) {
+            keys = new String[]{""};
+        }
+        outer:
         for (int i = list.size() - 1; i > -1; i--) {
             Object ob = list.get(i);
             if (ob == null) {
                 continue;
             }
             String str = ob.toString();
-            String[] keys = keywords;
-            if (keys.length == 0) {
-                keys = new String[]{""};
-            }
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, SearchMode.PY)) {
                     if (matched >= start && matched < end) {
@@ -267,9 +271,10 @@ public class StringControlWidget extends TableWidget {
                         }
                     } else if (matched >= end) {
                         hasNext = true;
-                        break;
+                        break outer;
                     }
                     matched++;
+                    break;
                 }
             }
         }
@@ -278,15 +283,16 @@ public class StringControlWidget extends TableWidget {
 
     private boolean getList(List<Object> list, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match) {
         boolean hasNext = false;
+        String[] keys = keywords;
+        if (keys.length == 0) {
+            keys = new String[]{""};
+        }
+        outer:
         for (Object ob : list) {
             if (ob == null) {
                 continue;
             }
             String str = ob.toString();
-            String[] keys = keywords;
-            if (keys.length == 0) {
-                keys = new String[]{""};
-            }
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, SearchMode.PY)) {
                     if (matched >= start && matched < end) {
@@ -297,9 +303,10 @@ public class StringControlWidget extends TableWidget {
                         }
                     } else if (matched >= end) {
                         hasNext = true;
-                        break;
+                        break outer;
                     }
                     matched++;
+                    break;
                 }
             }
         }
@@ -331,13 +338,14 @@ public class StringControlWidget extends TableWidget {
 
     private boolean getReserveListWithArray(ICubeColumnIndexReader reader, SimpleIntArray array, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match, SearchMode mode) {
         boolean hasNext = false;
+        String[] keys = keywords;
+        if (keys.length == 0) {
+            keys = new String[]{""};
+        }
+        outer:
         for (int i = array.size() - 1; i > 0; i--) {
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
-            String[] keys = keywords;
-            if (keys.length == 0) {
-                keys = new String[]{""};
-            }
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, mode)) {
                     if (matched >= start && matched < end) {
@@ -348,9 +356,10 @@ public class StringControlWidget extends TableWidget {
                         }
                     } else if (matched >= end) {
                         hasNext = true;
-                        break;
+                        break outer;
                     }
                     matched++;
+                    break;
                 }
             }
         }
@@ -359,13 +368,14 @@ public class StringControlWidget extends TableWidget {
 
     private boolean getListWithArray(ICubeColumnIndexReader reader, SimpleIntArray array, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match, SearchMode mode) {
         boolean hasNext = false;
+        String[] keys = keywords;
+        if (keys.length == 0) {
+            keys = new String[]{""};
+        }
+        outer:
         for (int i = 0; i < array.size(); i++) {
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
-            String[] keys = keywords;
-            if (keys.length == 0) {
-                keys = new String[]{""};
-            }
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, mode)) {
                     if (matched >= start && matched < end) {
@@ -376,9 +386,10 @@ public class StringControlWidget extends TableWidget {
                         }
                     } else if (matched >= end) {
                         hasNext = true;
-                        break;
+                        break outer;
                     }
                     matched++;
+                    break;
                 }
             }
         }
