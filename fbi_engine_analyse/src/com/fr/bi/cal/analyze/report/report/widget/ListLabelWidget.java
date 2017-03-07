@@ -89,7 +89,7 @@ public class ListLabelWidget extends BISummaryWidget {
             start = ArrayLookupHelper.getStartIndex4StartWith(reader, keyword, comparator);
             end = ArrayLookupHelper.getEndIndex4StartWith(reader, keyword, comparator) + 1;
         }
-        SimpleIntArray groupArray = this.createGroupArray(start, end, getter, gvi);
+        SimpleIntArray groupArray = this.createGroupArray(start, end, new int[0], new int[0], getter, gvi);
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
             return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
         }
