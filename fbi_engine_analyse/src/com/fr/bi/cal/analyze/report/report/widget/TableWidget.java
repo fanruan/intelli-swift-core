@@ -240,12 +240,11 @@ public class TableWidget extends BISummaryWidget {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        if (jo.has("linkages")) {
-            JSONObject linkagesJSON = jo.getJSONObject("linkages");
-            if (linkagesJSON.has("linkedWidget")) {
-                this.linkedWidget = (TableWidget) BIWidgetFactory.parseWidget(linkagesJSON.getJSONObject("linkedWidget"), userId);
+        if (jo.has("linkedWidget")) {
+            JSONObject linkedWidgetJSON = jo.getJSONObject("linkedWidget");
+            if (linkedWidgetJSON.length() > 0) {
+                this.linkedWidget = (TableWidget) BIWidgetFactory.parseWidget(linkedWidgetJSON, userId);
             }
-
         }
 
         if (jo.has("view")) {
