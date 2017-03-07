@@ -348,7 +348,7 @@ public class TableWidget extends BISummaryWidget {
             }
             for (MergerInfo mergerInfo : mergerInfoList) {
                 if (mergerInfo.getTargetAndKeyList().get(0).getCalculator().createTableKey().equals(targetKey)) {
-                    return GVIUtils.AND(fatherWidgetLinkedFilterGVI, mergerInfo.getFilterIndex());
+                    return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getGroupValueIndex()));
                 }
             }
         }
