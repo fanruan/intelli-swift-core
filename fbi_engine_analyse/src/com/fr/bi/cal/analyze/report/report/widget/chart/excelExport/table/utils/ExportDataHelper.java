@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils;
 
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
@@ -34,6 +35,10 @@ public class ExportDataHelper {
         }
         throw new Exception();
     }
-
-
+public static boolean isDimensionRegion1ByRegionType(int regionType){
+       return regionType>= Integer.parseInt(BIReportConstant.REGION.DIMENSION1)&&regionType<Integer.parseInt(BIReportConstant.REGION.DIMENSION2);
+}
+    public static boolean isDimensionRegion2ByRegionType(int regionType){
+        return regionType>= Integer.parseInt(BIReportConstant.REGION.DIMENSION2)&&regionType<Integer.parseInt(BIReportConstant.REGION.TARGET1);
+    }
 }

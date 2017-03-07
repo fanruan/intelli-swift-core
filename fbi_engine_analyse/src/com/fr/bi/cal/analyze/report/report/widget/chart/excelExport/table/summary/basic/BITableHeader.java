@@ -6,22 +6,32 @@ import com.fr.json.JSONObject;
 /**
  * Created by Kary on 2017/2/13.
  */
-public class BIExcelTableHeader implements BIExcelHeader {
+public class BITableHeader implements BIExcelHeader {
     private String text;
     private String title;
     private String tag;
     private String dID;
-    private JSONObject style;
+    private BITableItemStyle style;
+    private String type;
 
-    public BIExcelTableHeader(String text, String title, String tag, String dID, JSONObject style) {
+    public BITableHeader(String text, String title, String tag, String dID, BITableItemStyle style) {
         this.text = text;
         this.title = title;
         this.tag = tag;
         this.dID = dID;
         this.style = style;
+
     }
 
-    public BIExcelTableHeader() {
+    public BITableHeader() {
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getText() {
@@ -56,11 +66,11 @@ public class BIExcelTableHeader implements BIExcelHeader {
         this.dID = dID;
     }
 
-    public JSONObject getStyle() {
+    public BITableItemStyle getStyle() {
         return style;
     }
 
-    public void setStyle(JSONObject style) {
+    public void setStyle(BITableItemStyle style) {
         this.style = style;
     }
 
@@ -70,7 +80,9 @@ public class BIExcelTableHeader implements BIExcelHeader {
         jo.put("title", getTitle());
         jo.put("tag", getTag());
         jo.put("dId", getdID());
-        jo.put("style", getStyle());
+        jo.put("style", null!=getStyle()?getStyle().createJSON():"");
+        jo.put("text",getText());
+        jo.put("type",getType());
         return jo;
     }
 }

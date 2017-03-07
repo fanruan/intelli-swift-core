@@ -25,4 +25,20 @@ public class BIExcelTableData implements JSONCreator {
     public JSONObject createJSON() throws Exception {
         return new JSONObject();
     }
+
+    public JSONArray getHeaders() {
+        return headers;
+    }
+
+    public JSONArray getItems() {
+        return items;
+    }
+
+    public JSONArray getCrossHeaders() {
+        return crossHeaders;
+    }
+
+    public JSONArray getCrossItems() {
+        return crossItems;
+    }
 }
