@@ -190,7 +190,7 @@ public class ComplexGroupNoneExecutor extends AbstractComplexNodeExecutor {
         }
 
 
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
 
         return nodeMap;
     }

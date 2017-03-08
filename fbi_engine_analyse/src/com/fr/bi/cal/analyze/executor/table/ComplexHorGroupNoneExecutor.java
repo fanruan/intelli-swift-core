@@ -177,8 +177,7 @@ public class ComplexHorGroupNoneExecutor extends AbstractComplexNodeExecutor {
         } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return nodeMap;
     }
 

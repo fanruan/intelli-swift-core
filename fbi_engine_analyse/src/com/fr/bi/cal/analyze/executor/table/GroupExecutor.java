@@ -623,7 +623,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                     }
                     createCells(iter, start, currentRowNum);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
                     iter.finish();
                 }
@@ -731,7 +731,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
 //        }
 
 //        return cbcells;
-        return null;
+        return new CBCell[0][0];
     }
 
     /**

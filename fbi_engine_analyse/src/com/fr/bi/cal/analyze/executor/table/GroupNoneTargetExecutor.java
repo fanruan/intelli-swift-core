@@ -165,7 +165,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
     }
 
     public DetailCellIterator createCellIterator4Excel() throws Exception {
-        return null;
+        return new DetailCellIterator(0, 0);
     }
 
     /**
@@ -225,7 +225,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
 //            }
 //        }
 //        return cbcells;
-        return null;
+        return new CBCell[0][0];
     }
 
     /* (non-Javadoc)

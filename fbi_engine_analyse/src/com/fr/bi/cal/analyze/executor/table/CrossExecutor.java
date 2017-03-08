@@ -106,7 +106,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
 //            }
 //        }
 //        return cbcells;
-        return null;
+        return new CBCell[0][0];
     }
 
     private boolean hasLeftChild(NewCrossRoot node) {

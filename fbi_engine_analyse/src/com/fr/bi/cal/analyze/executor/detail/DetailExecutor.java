@@ -78,7 +78,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     };
                     travel(action, gvi);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
                     iter.finish();
                 }
@@ -90,7 +90,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     @Override
     public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
-        return  null;
+        return  new CBCell[0][0];
     }
 
     @Override

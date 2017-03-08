@@ -670,10 +670,7 @@ public class CubeIndexLoader {
         return nodeMap;
     }
 
-    private void loadRegionComplexPageGroup(boolean isHor, TableWidget widget, BISummaryTarget[] usedTarget,
-                                            BIDimension[] dimensionArray, BIDimension[] allDimension, BISummaryTarget[] sumTarget,
-                                            TargetGettingKey[] keys, boolean useRealData, NodeExpander nodeExpanderPara,
-                                            BISession session, Map<Integer, Node> nodeMap, int i) throws Exception {
+    private void loadRegionComplexPageGroup(boolean isHor, TableWidget widget, BISummaryTarget[] usedTarget, BIDimension[] dimensionArray, BIDimension[] allDimension, BISummaryTarget[] sumTarget, TargetGettingKey[] keys, boolean useRealData, NodeExpander nodeExpanderPara, BISession session, Map<Integer, Node> nodeMap, int i) throws Exception {
         int calPage = -1;
         BIDimension[] rowDimension = dimensionArray;
         List<TargetCalculator> targetCalculators = new ArrayList<TargetCalculator>();
