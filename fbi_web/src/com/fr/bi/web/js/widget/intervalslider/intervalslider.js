@@ -395,6 +395,10 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     reset: function () {
         this._setVisible(false);
         this.enable = false;
+        this.valueOne = "";
+        this.valueTwo = "";
+        this.min = NaN;
+        this.max = NaN;
         this._setBlueTrackWidth(0);
     },
 
