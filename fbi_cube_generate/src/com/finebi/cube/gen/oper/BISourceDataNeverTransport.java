@@ -32,7 +32,7 @@ public class BISourceDataNeverTransport extends BISourceDataTransport {
             BILoggerFactory.getLogger(BISourceDataNeverTransport.class).info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
                     BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
             BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START, System.currentTimeMillis());
-//            copyFromOldCubes();
+            copyFromOldCubes();
             recordTableInfo();
             tableEntityService.addVersion(version);
             tableEntityService.clear();
