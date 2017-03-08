@@ -24,21 +24,6 @@ public class BILoggerTest extends TestCase {
     }
 
 
-    public void testMapClearGC() {
-        int counter = 0;
-        while (true) {
-            counter++;
-            Map<String, Map<String, String>> outMap = new ConcurrentHashMap<String, Map<String, String>>();
-            Map<String, String> innerMap = new ConcurrentHashMap<String, String>();
-            innerMap.put("innerKey", "value");
-            outMap.put("outerKey", innerMap);
-            outMap.clear();
-            if (counter % 100 == 0) {
-                System.out.println("Free memory after count " + counter + "is" + getFreeMemory() + "M");
-            }
-        }
-    }
-
     private long getFreeMemory() {
         return Runtime.getRuntime().freeMemory() / (1024 * 1024);
     }

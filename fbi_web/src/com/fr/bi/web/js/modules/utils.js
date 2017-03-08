@@ -2118,6 +2118,7 @@
             var targetIds = this.getAllTargetDimensionIDs(this.getWidgetIDByDimensionID(dId));
             BI.each(targetIds, function (idx, targetId) {
                 dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
+                dimensions[targetId].filter_value = {};
                 if (!BI.has(view, BICst.REGION.TARGET1)) {
                     view[BICst.REGION.TARGET1] = [];
                 }
@@ -2146,6 +2147,7 @@
             var targetIds = this.getAllTargetDimensionIDs(this.getWidgetIDByDimensionID(dId));
             BI.each(targetIds, function (idx, targetId) {
                 widget.dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
+                widget.dimensions[targetId].filter_value = {};
                 if (!BI.has(widget.view, BICst.REGION.TARGET1)) {
                     widget.view[BICst.REGION.TARGET1] = [];
                 }
@@ -2851,12 +2853,11 @@
             }
 
 
-            widget.linkages = {};
+            widget.linkedWidget = {};
             BI.each(linkages, function (lTId, link) {
-
                 var pWid = getLinkFatherWidget(self.getWidgetIDByDimensionID(lTId), wid);
                 var pWidget = self.getWidgetCalculationByID(pWid);
-                widget.linkages.linkedWidget = pWidget;
+                widget.linkedWidget = pWidget;
                 // filterValues.push({
                 //     filter_type: "8080",
                 //     filter_value: pWidget
