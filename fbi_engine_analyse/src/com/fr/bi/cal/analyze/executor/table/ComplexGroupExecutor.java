@@ -6,6 +6,7 @@ import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -91,7 +92,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
             keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
         }
         Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(false, widget, createTarget4Calculate(), rowData, allDimensions,
-                allSumTarget, keys, paging.getOprator(), widget.useRealData(), session, complexExpander, true);
+                allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, true);
         if (nodeMap.isEmpty()) {
             return null;
         }
@@ -143,6 +144,11 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
     }
 
 
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 构建cells
      *
@@ -157,7 +163,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
         int collen = rowData.getMaxArrayLength();
         int columnLen = collen + usedSumTarget.length;
 
-        boolean needAll = paging.getOprator() < Node.NONE_PAGE_LEVER;
+        boolean needAll = paging.getOperator() < Node.NONE_PAGE_LEVER;
         Iterator<Map.Entry<Integer, Node>> iterator = nodeMap.entrySet().iterator();
         Node[] trees = new Node[nodeMap.size()];
         Integer[] integers = new Integer[nodeMap.size()];
@@ -187,7 +193,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
             BIDimension[] rowDimension = rowData.getDimensionArray(integers[i]);
             NodeExpander nodeExpander = complexExpander.getYExpander(i);
 
-            if (paging.getOprator() < Node.NONE_PAGE_LEVER) {
+            if (paging.getOperator() < Node.NONE_PAGE_LEVER) {
                 GroupExecutor.dealWithNode(node, cbcells, startRow, 0, rowDimension, usedSumTarget, keys, rowDimension.length - 1, 0, rowData, widget.getChartSetting());
             } else {
                 GroupExecutor.dealWithNode(node, nodeExpander, cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, keys, new ArrayList<String>(), rowDimension.length - 1, 0, rowData, widget.getChartSetting());

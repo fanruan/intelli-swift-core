@@ -127,7 +127,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return jo;
     }
 
-    public List<List> getData() {
+    public List<List>  getData() {
         if (target == null) {
             return new ArrayList<List>();
         }

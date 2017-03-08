@@ -1,12 +1,12 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
-import com.fr.bi.cal.analyze.cal.result.CrossExpander;
-import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
+import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -32,18 +32,19 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
+import java.awt.Rectangle;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
  */
 public class GroupExecutor extends AbstractNodeExecutor {
     private Rectangle rectangle;
+    private int page = 1;
+    private final static int EXCEL_ROW_MODE_VALUE = ExportConstants.MAX_ROWS_2007 - 1;
 
     public GroupExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
         super(widget, paging, session, expander);
@@ -67,7 +68,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 cell.setColumnSpan(1);
                 cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT));
                 cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-                java.util.List<CBCell> cellList = new ArrayList<CBCell>();
+                List<CBCell> cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
                 //TODO CBBoxElement需要整合减少内存
                 CBBoxElement cbox = new CBBoxElement(cellList);
@@ -112,7 +113,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cell.setColumnSpan(1);
             cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            java.util.List<CBCell> cellList = new ArrayList<CBCell>();
+            List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
             //TODO CBBoxElement需要整合减少内存
             CBBoxElement cbox = new CBBoxElement(cellList);
@@ -189,7 +190,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             }
             cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, tempRow % 2 == 1));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            java.util.List<CBCell> cellList = new ArrayList<CBCell>();
+            List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
             BITargetAndDimension rowCol = rowColumn[column];
@@ -233,7 +234,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             }
             cell.setStyle(BITableStyle.getInstance().getYSumStringCellStyle(total));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            java.util.List<CBCell> cellList = new ArrayList<CBCell>();
+            List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
             cbox.setName(rowColumn[column].getValue());
@@ -248,7 +249,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
 
     private static void dealWithExpandNodeMetrics(Node node, CBCell[][] cbcells, BIDimension[] rowColumn, BITarget[] sumColumn, TargetGettingKey[] keys, int total, int tempRow, DetailChartSetting chartSetting) {
         CBCell cell;
-        java.util.List<CBCell> cellList;
+        List<CBCell> cellList;
         CBBoxElement cbox;
         Node t;
         JSONArray ja;
@@ -309,10 +310,10 @@ public class GroupExecutor extends AbstractNodeExecutor {
                              final ArrayList<String> indexList, int total, int hasNumber, BIComplexExecutData rowData, DetailChartSetting chartSetting) {
 
         if (isLastDimension(column, rowColumn)) {
-            if (column == 0) {
-                dealWithNoChildNode(node, cbcells, row, column, rowColumn, sumColumn, keys, chartSetting);
-                return;
-            }
+//            if (column == 0) {
+//                dealWithNoChildNode(node, cbcells, row, column, rowColumn, sumColumn, keys, chartSetting);
+//                return;
+//            }
             dealWithNoChildNode(node, cbcells, row, column, rowColumn, sumColumn, keys, chartSetting);
             return;
         }
@@ -341,7 +342,6 @@ public class GroupExecutor extends AbstractNodeExecutor {
      */
     public static void dealWithNodeNoChild(Node node, CBCell[][] cbcells, int row, int column,
                                            BIDimension[] rowColumn,
-
                                            BITarget[] sumColumn, TargetGettingKey[] keys, int total, int hasNumber, DetailChartSetting chartSetting) {
         int rowLength = rowColumn.length;
         int tempRow = row;
@@ -359,7 +359,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 cell.setColumnSpan(1);
                 cell.setStyle(BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
                 cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-                java.util.List<CBCell> cellList = new ArrayList<CBCell>();
+                List<CBCell> cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
                 //TODO CBBoxElement需要整合减少内存
                 CBBoxElement cbox = new CBBoxElement(cellList);
@@ -426,7 +426,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cell.setRowSpan(rowSpan);
             cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, tempRow % 2 == 1));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            java.util.List<CBCell> cellList = new ArrayList<CBCell>();
+            List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
             int columnSpan = rowData.getColumnRowSpan(column, rowLength);
@@ -475,7 +475,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         cell.setColumnSpan(column == 0 ? (noneChildSpan + hasNumber) : noneChildSpan);
         cell.setStyle(BITableStyle.getInstance().getYSumStringCellStyle(total));
         cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-        java.util.List<CBCell> cellList = new ArrayList<CBCell>();
+        List<CBCell> cellList = new ArrayList<CBCell>();
         cellList.add(cell);
         //TODO CBBoxElement需要整合减少内存
         CBBoxElement cbox = new CBBoxElement(cellList);
@@ -490,7 +490,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
 
     private static void dealWithMetrics(Node node, CBCell[][] cbcells, BIDimension[] rowColumn, BITarget[] sumColumn, TargetGettingKey[] keys, int total, int tempRow, DetailChartSetting chartSetting) {
         CBCell cell;
-        java.util.List<CBCell> cellList;
+        List<CBCell> cellList;
         CBBoxElement cbox;
         Node t;
         JSONArray ja;
@@ -547,8 +547,6 @@ public class GroupExecutor extends AbstractNodeExecutor {
                                          BIDimension[] rowColumn,
                                          BITarget[] sumColumn, TargetGettingKey[] keys, int total,
                                          int hasNumber, BIComplexExecutData rowData, DetailChartSetting chartSetting) {
-
-
         int tempRow = row;
         tempRow = dealWidthNodeChildren(node, cbcells, row, column,
                 rowColumn, sumColumn, keys, total, hasNumber, tempRow, rowData, chartSetting);
@@ -577,7 +575,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
      */
     public static void dealWithNode(Node node, CBCell[][] cbcells, int row, int column,
                                     BIDimension[] rowColumn,
-                                    BITarget[] sumColumn, TargetGettingKey[] keys, int total, int hasNumber, BIComplexExecutData rowData, DetailChartSetting chartSetting) {
+                                    BITarget[] sumColumn, TargetGettingKey[] keys, int total, int hasNumber,
+                                    BIComplexExecutData rowData, DetailChartSetting chartSetting) {
 
         if (isLastDimension(column, rowColumn)) {
             dealWithNodeNoChild(node, cbcells, row, column,
@@ -592,6 +591,91 @@ public class GroupExecutor extends AbstractNodeExecutor {
         return column - rowColumn.length == 0;
     }
 
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        widget.setComplexExpander(new ComplexAllExpander());
+        Node tree = getCubeNode();
+        if (tree == null) {
+            return new DetailCellIterator(0, 0);
+        }
+        final int rowLength = usedDimensions.length;
+        final int summaryLength = usedSumTarget.length;
+        int columnLen = rowLength + summaryLength;
+        DetailChartSetting chartSetting = widget.getChartSetting();
+        TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
+        for (int i = 0; i < summaryLength; i++) {
+            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(),
+                    usedSumTarget[i].getValue());
+        }
+        int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
+        final boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
+        rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
+        final DetailCellIterator iter = new DetailCellIterator(columnLen + widget.isOrder(), rowLen + 1);
+        new Thread() {
+            public void run() {
+                try {
+                    final FinalInt start = new FinalInt();
+                    int currentRowNum = 0;
+                    List<CBCell> cells = generateTitle(useTargetSort, rowLength, summaryLength,
+                            widget.isOrder(), widget.getChartSetting());
+                    Iterator<CBCell> it = cells.iterator();
+                    while (it.hasNext()) {
+                        iter.getIteratorByPage(start.value).addCell(it.next());
+                    }
+                    createCells(iter, start, currentRowNum);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    iter.finish();
+                }
+            }
+        }.start();
+        return iter;
+    }
+
+    private void createCells(DetailCellIterator iter, FinalInt start, int currentRowNum) throws Exception {
+        Node n = getCubeNode();
+        while (n.getFirstChild() != null) {
+            n = n.getFirstChild();
+        }
+        BIDimension[] rows = widget.getViewDimensions();
+        while (n != null) {
+            List rowList = new ArrayList();
+            Node temp = n;
+            for (TargetGettingKey key : widget.getTargetsKey()) {
+                rowList.add(temp.getSummaryValue(key));
+            }
+            int i = rows.length;
+            while (temp.getParent() != null) {
+                Object data = temp.getData();
+                BIDimension dim = rows[--i];
+                Object v = dim.getValueByType(data);
+                rowList.add(0, v);
+                temp = temp.getParent();
+            }
+            if (!rowList.isEmpty()) {
+                currentRowNum++;
+                int newRow = currentRowNum & EXCEL_ROW_MODE_VALUE;
+                if (newRow == 0) {
+                    iter.getIteratorByPage(start.value).finish();
+                    start.value++;
+                }
+                createCells4Row(iter.getIteratorByPage(start.value), rowList, currentRowNum);
+            }
+            n = n.getSibling();
+        }
+    }
+
+    private void createCells4Row(StreamPagedIterator iter, List rowList, int currentRowNum) {
+        for (int i = 0; i < rowList.size(); i++) {
+            CBCell cell = new CBCell(rowList.get(i));
+            cell.setColumn(i);
+            cell.setRow(currentRowNum);
+            cell.setRowSpan(1);
+            cell.setColumnSpan(1);
+            iter.addCell(cell);
+        }
+    }
+
     /**
      * 创建cell
      *
@@ -600,67 +684,75 @@ public class GroupExecutor extends AbstractNodeExecutor {
      */
     @Override
     public CBCell[][] createCellElement() throws Exception {
-        Node tree = getCubeNode();
-        if (tree == null) {
-            return new CBCell[][]{new CBCell[0]};
-        }
-        int rowLength = usedDimensions.length;
-        int summaryLength = usedSumTarget.length;
-        int columnLen = rowLength + summaryLength;
-        DetailChartSetting chartSetting = widget.getChartSetting();
-        TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
-        for (int i = 0; i < summaryLength; i++) {
-            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
-        }
-        //导出就全部展开吧
-        int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
-        //+1是标题
-        CBCell[][] cbcells;
-        boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
+//        Node tree = getCubeNode();
+//        if (tree == null) {
+//            return new CBCell[][]{new CBCell[0]};
+//        }
+//        int rowLength = usedDimensions.length;
+//        int summaryLength = usedSumTarget.length;
+//        int columnLen = rowLength + summaryLength;
+//        DetailChartSetting chartSetting = widget.getChartSetting();
+//        TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
+//        for (int i = 0; i < summaryLength; i++) {
+//            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
+//        }
+//        //导出就全部展开吧
+//        int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
+//        //+1是标题
+//        CBCell[][] cbcells;
+//        boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
+//
+//        if (tree.getChildLength() == 0) {
+//            cbcells = new CBCell[columnLen][rowLen + 1];
+//            rectangle = new Rectangle(rowLength, 1, columnLen - 1, rowLen);
+//            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, 0, widget.getChartSetting());
+//        } else {
+//            cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
+//            rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
+//            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, widget.isOrder(), widget.getChartSetting());
+//        }
+//
+//        if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
+//            dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, keys,
+//                    usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChartSetting());
+//        } else {
+//            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions,
+//                    usedSumTarget, keys, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(),
+//                    new BIComplexExecutData(usedDimensions), widget.getChartSetting());
+//        }
+//
+//        if (widget.isOrder() == 1 && tree.getChildLength() != 0) {
+//            createNumberCellTitle(cbcells, 0);
+//            if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
+//                createAllNumberCellElement(cbcells, 1);
+//            } else {
+//                createAllNumberCellElement(cbcells, paging.getCurrentPage());
+//            }
+//        }
 
-        if (tree.getChildLength() == 0) {
-            cbcells = new CBCell[columnLen][rowLen + 1];
-            rectangle = new Rectangle(rowLength, 1, columnLen - 1, rowLen);
-            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, 0, widget.getChartSetting());
-        } else {
-            cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
-            rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
-            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, widget.isOrder(), widget.getChartSetting());
-        }
-
-        if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-            dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, keys, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChartSetting());
-        } else {
-            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, keys, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChartSetting());
-        }
-
-        if (widget.isOrder() == 1 && tree.getChildLength() != 0) {
-            createNumberCellTitle(cbcells, 0);
-            if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-                createAllNumberCellElement(cbcells, 1);
-            } else {
-                createAllNumberCellElement(cbcells, paging.getCurrentPage());
-            }
-        }
-
-        return cbcells;
+//        return cbcells;
+        return null;
     }
 
     /**
      * 生成表头
      *
-     * @param cbcells
      * @param useTargetSort
      * @param rowLength
      * @param summaryLength
      */
-    private void generateTitle(CBCell[][] cbcells, boolean useTargetSort, int rowLength, int summaryLength, int hasNumber, DetailChartSetting chartSetting) {
-
-        generateDimensionTitle(cbcells, useTargetSort, rowLength, hasNumber);
-        generateMetricTitle(cbcells, rowLength, summaryLength, hasNumber, chartSetting);
+    private List<CBCell> generateTitle(boolean useTargetSort, int rowLength, int summaryLength, int hasNumber, DetailChartSetting chartSetting) {
+        List<CBCell> cells = new LinkedList<CBCell>();
+        if (hasNumber == 1) {
+            cells.add(createNumberCellTitle(0));
+        }
+        generateDimensionTitle(cells, useTargetSort, rowLength, hasNumber);
+        generateMetricTitle(cells, rowLength, summaryLength, hasNumber, chartSetting);
+        return cells;
     }
 
-    private void generateMetricTitle(CBCell[][] cbcells, int rowLength, int summaryLength, int hasNumber, DetailChartSetting chartSetting) {
+    private void generateMetricTitle(List<CBCell> cbcells, int rowLength, int summaryLength, int hasNumber,
+                                     DetailChartSetting chartSetting) {
         for (int i = 0; i < summaryLength; i++) {
             BIAbstractTargetAndDimension dimension = usedSumTarget[i];
             String dimensionName = dimension.getText();
@@ -676,7 +768,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cell.setColumnSpan(1);
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            java.util.List<CBCell> cellList = new ArrayList<CBCell>();
+            List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
             BITarget rowCol = usedSumTarget[i];
@@ -684,17 +776,18 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cbox.setType(CellConstant.CBCELL.TARGETTITLE_Y);
             cbox.setSortTargetName(rowCol.getValue());
             cbox.setSortTargetValue("[]");
-            if (widget.getTargetSort() != null && ComparatorUtils.equals(widget.getTargetSort().getName(), usedSumTarget[i].getValue())) {
+            if (widget.getTargetSort() != null && ComparatorUtils.equals(widget.getTargetSort().getName(),
+                    usedSumTarget[i].getValue())) {
                 cbox.setSortType((Integer) widget.getTargetSort().getObject());
             } else {
                 cbox.setSortType(BIReportConstant.SORT.NONE);
             }
             cell.setBoxElement(cbox);
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
+            cbcells.add(cell);
         }
     }
 
-    private void generateDimensionTitle(CBCell[][] cbcells, boolean useTargetSort, int rowLength, int hasNumber) {
+    private void generateDimensionTitle(List<CBCell> cbcells, boolean useTargetSort, int rowLength, int hasNumber) {
         for (int i = 0; i < rowLength; i++) {
             CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
             cell.setColumn(i + hasNumber);
@@ -703,7 +796,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cell.setColumnSpan(1);
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            java.util.List<CBCell> cellList = new ArrayList<CBCell>();
+            List<CBCell> cellList = new ArrayList<CBCell>();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
             BIDimension rowCol = usedDimensions[i];
@@ -715,7 +808,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 cbox.setSortType(BIReportConstant.SORT.NONE);
             }
             cell.setBoxElement(cbox);
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
+            cbcells.add(cell);
         }
     }
 
@@ -766,7 +859,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
      */
     @Override
 
-    public Node getCubeNode() throws Exception{
+    public Node getCubeNode() throws Exception {
         if (session == null) {
             return null;
         }
@@ -777,10 +870,10 @@ public class GroupExecutor extends AbstractNodeExecutor {
             return null;
         }
         long start = System.currentTimeMillis();
-
-        int calpage = paging.getOprator();
+        int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
-        Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
+        Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
+                allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node();
         }

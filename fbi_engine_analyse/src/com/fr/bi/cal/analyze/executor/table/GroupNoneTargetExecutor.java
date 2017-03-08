@@ -1,28 +1,35 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
+import com.fr.bi.field.BITargetAndDimensionUtils;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.CellConstant;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -157,6 +164,10 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
         return new JSONArray(currentIndex).toString();
     }
 
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 构建cells
      *
@@ -165,55 +176,56 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
      */
     @Override
     public CBCell[][] createCellElement() throws Exception {
-        Node tree = getCubeNode();
-        if (tree == null) {
-            return new CBCell[][]{new CBCell[0]};
-        }
-        int rowLength = usedDimensions.length;
-        int summaryLength = usedSumTarget.length;
-        int columnLen = rowLength + summaryLength;
-        //导出就全部展开吧
-        int rowLen = paging.getOprator() < Node.NONE_PAGE_LEVER ? tree.getTotalLength() : tree.getTotalLength(expander.getYExpander());
-        if (paging.getOprator() >= Node.NONE_PAGE_LEVER && tree.getChildLength() == 0) {
-            rowLen = 0;
-        }
-        //+1是标题
-        CBCell[][] cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
-
-        for (int i = 0; i < rowLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
-            cell.setColumn(i + widget.isOrder());
-            cell.setRow(0);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, false));
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            List<CBCell> cellList = new ArrayList<CBCell>();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            BIDimension rowCol = usedDimensions[i];
-            cbox.setName(rowCol.getValue());
-            cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_Y);
-            if (rowCol.getSortTarget() == null) {
-                cbox.setSortType(usedDimensions[i].getSortType());
-            }
-            cell.setBoxElement(cbox);
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
-        }
-        if (paging.getOprator() < Node.NONE_PAGE_LEVER) {
-            dealWithNode(tree, cbcells, 1, 0, paging.getOprator(), usedDimensions, usedSumTarget, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
-        } else {
-            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
-        }
-        if (widget.isOrder() == 1) {
-            createNumberCellTitle(cbcells, 0);
-            if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-                createAllNumberCellElement(cbcells, 1);
-            } else {
-                createAllNumberCellElement(cbcells, paging.getCurrentPage());
-            }
-        }
-        return cbcells;
+//        Node tree = getCubeNode();
+//        if (tree == null) {
+//            return new CBCell[][]{new CBCell[0]};
+//        }
+//        int rowLength = usedDimensions.length;
+//        int summaryLength = usedSumTarget.length;
+//        int columnLen = rowLength + summaryLength;
+//        //导出就全部展开吧
+//        int rowLen = paging.getOperator() < Node.NONE_PAGE_LEVER ? tree.getTotalLength() : tree.getTotalLength(expander.getYExpander());
+//        if (paging.getOperator() >= Node.NONE_PAGE_LEVER && tree.getChildLength() == 0) {
+//            rowLen = 0;
+//        }
+//        //+1是标题
+//        CBCell[][] cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
+//
+//        for (int i = 0; i < rowLength; i++) {
+//            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
+//            cell.setColumn(i + widget.isOrder());
+//            cell.setRow(0);
+//            cell.setRowSpan(1);
+//            cell.setColumnSpan(1);
+//            cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, false));
+//            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+//            List<CBCell> cellList = new ArrayList<CBCell>();
+//            cellList.add(cell);
+//            CBBoxElement cbox = new CBBoxElement(cellList);
+//            BIDimension rowCol = usedDimensions[i];
+//            cbox.setName(rowCol.getValue());
+//            cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_Y);
+//            if (rowCol.getSortTarget() == null) {
+//                cbox.setSortType(usedDimensions[i].getSortType());
+//            }
+//            cell.setBoxElement(cbox);
+//            cbcells[cell.getColumn()][cell.getRow()] = cell;
+//        }
+//        if (paging.getOperator() < Node.NONE_PAGE_LEVER) {
+//            dealWithNode(tree, cbcells, 1, 0, paging.getOperator(), usedDimensions, usedSumTarget, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
+//        } else {
+//            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
+//        }
+//        if (widget.isOrder() == 1) {
+//            createNumberCellTitle(cbcells, 0);
+//            if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
+//                createAllNumberCellElement(cbcells, 1);
+//            } else {
+//                createAllNumberCellElement(cbcells, paging.getCurrentPage());
+//            }
+//        }
+//        return cbcells;
+        return null;
     }
 
     /* (non-Javadoc)
@@ -230,7 +242,7 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
         if (rowLength + summaryLength + columnLen == 0) {
             return null;
         }
-        int calpage = paging.getOprator();
+        int calpage = paging.getOperator();
         long start = System.currentTimeMillis();
         Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageGroup(false, widget, new BISummaryTarget[0], usedDimensions, allDimensions, new BISummaryTarget[0], calpage, widget.useRealData(), session, expander.getYExpander());
         if (tree == null) {
