@@ -424,7 +424,8 @@ public class TableWidget extends BISummaryWidget {
 
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
-        return ExcelExportDataBuildFactory.createExportData(this, dataJSON.getJSONObject("data")).createJSON();
+        Map<Integer, List<JSONObject>> viewMap = ExcelExportDataBuildFactory.createViewMap(this);
+        return ExcelExportDataBuildFactory.createExportData(viewMap, dataJSON).createJSON();
     }
 
     public Map<Integer, List<String>> getWidgetView() {

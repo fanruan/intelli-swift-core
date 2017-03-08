@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.BIExcelItemData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableItem;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Kary on 2017/2/13.
  */
-public class BIExcelTableItem implements BIExcelItemData {
+public class BITableItem implements ITableItem {
 
     private String dId;
     private String text;
@@ -17,14 +17,14 @@ public class BIExcelTableItem implements BIExcelItemData {
     private boolean isCross;
     private boolean needExpand;
     private boolean isExpanded;
-    private List<BIExcelTableItem> children;
+    private List<BITableItem> children;
     private JSONArray clicked;
     private boolean isSum;
     private String style;
     private String type;
     private String tag;
 
-    public BIExcelTableItem() {
+    public BITableItem() {
     }
 
     public void setdId(String dId) {
@@ -51,7 +51,7 @@ public class BIExcelTableItem implements BIExcelItemData {
         isExpanded = expanded;
     }
 
-    public void setChildren(List<BIExcelTableItem> children) {
+    public void setChildren(List<BITableItem> children) {
         this.children = children;
     }
 
@@ -99,7 +99,7 @@ public class BIExcelTableItem implements BIExcelItemData {
         return isExpanded;
     }
 
-    public List<BIExcelTableItem> getChildren() {
+    public List<BITableItem> getChildren() {
         return children;
     }
 
@@ -122,69 +122,6 @@ public class BIExcelTableItem implements BIExcelItemData {
     public String getTag() {
         return tag;
     }
-
-    private BIExcelTableItem(ItemBuilder builder) {
-        this.dId = builder.dId;
-        this.text = builder.text;
-        this.value = builder.value;
-        this.isCross = builder.isCross;
-        this.needExpand = builder.needExpand;
-        this.isExpanded = builder.isExpanded;
-        this.children = builder.children;
-        this.clicked = builder.clicked;
-        this.isSum = builder.isSum;
-        this.style = builder.style;
-        this.type = builder.type;
-        this.tag = builder.tag;
-    }
-
-
-    public static class ItemBuilder {
-        private String dId;
-        private String text;
-        private JSONArray value;
-        private boolean isCross;
-        private boolean needExpand;
-        private boolean isExpanded;
-        private List<BIExcelTableItem> children;
-        private JSONArray clicked;
-        private boolean isSum;
-        private String style;
-        private String type;
-        private String tag;
-
-        public ItemBuilder(String dId, String text, JSONArray value) {
-            this.dId = dId;
-            this.text = text;
-            this.value = value;
-        }
-
-
-        public ItemBuilder setNeedExpanded(boolean expanded) {
-            this.needExpand = expanded;
-            return this;
-        }
-
-        public ItemBuilder setClicked(JSONArray clicked) {
-            this.clicked = clicked;
-            return this;
-        }
-
-        public ItemBuilder setChildren(List<BIExcelTableItem> children) {
-            this.children = children;
-            return this;
-        }
-
-        public ItemBuilder setStyle(String style) {
-            this.style = style;
-            return this;
-        }
-
-        public BIExcelTableItem build() {
-            return new BIExcelTableItem(this);
-        }
-    }
-
 
     @Override
     public String toString() {
@@ -212,6 +149,8 @@ public class BIExcelTableItem implements BIExcelItemData {
         jo.put("type", type);
         jo.put("values", value);
         jo.put("children", children);
+        jo.put("isSum",isSum);
+        jo.put("isCross",isCross);
         return jo;
     }
 

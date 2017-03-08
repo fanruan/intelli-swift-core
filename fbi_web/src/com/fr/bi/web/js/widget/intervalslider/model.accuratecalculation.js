@@ -106,12 +106,24 @@ BI.AccurateCalculationModel = BI.inherit(BI.Widget, {
 
         var decimalResult = (BI.parseInt(stringNumber1.numDecimal) + BI.parseInt(stringNumber2.numDecimal)).toString();
 
-        if (!(decimalResult === "0" || decimalResult.length === stringNumber1.numDecimal.length)) {
-            integerResult++;//进一
-            decimalResult = decimalResult.slice(1);
+        if (decimalResult !== "0") {
+            if (decimalResult.length <= stringNumber1.numDecimal.length) {
+                decimalResult = addZero(decimalResult, stringNumber1.numDecimal.length)
+            } else {
+                integerResult++;//进一
+                decimalResult = decimalResult.slice(1);
+            }
         }
         var result = integerResult + "." + decimalResult;
         return BI.parseFloat(result);
+
+        function addZero(resultTemp, length) {
+            var diff = length - resultTemp.length;
+            for (var i = 0; i < diff; i++) {
+                resultTemp = "0" + resultTemp;
+            }
+            return resultTemp
+        }
     },
 
     _accurateMultiplication: function (num1, num2) {//乘法分配律
