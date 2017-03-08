@@ -5,5 +5,5 @@ import com.fr.json.JSONCreator;
 /**
  * Created by Kary on 2017/2/26.
  */
-public interface BIExcelHeader extends JSONCreator{
+public interface ITableItem extends JSONCreator{
 }

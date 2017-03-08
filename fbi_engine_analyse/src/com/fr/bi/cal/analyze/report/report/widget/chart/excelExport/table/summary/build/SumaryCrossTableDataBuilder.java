@@ -48,20 +48,21 @@ public class SumaryCrossTableDataBuilder extends SummaryAbstractTableDataBuilder
         return tableDataForExport;
 
     }
+
     protected void refreshDimsInfo() throws JSONException {
         if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.DIMENSION1))) {
             for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION1))) {
-                    dimIds.add(s.getString("dId"));
+                dimIds.add(s.getString("dId"));
             }
         }
         if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.DIMENSION2))) {
             for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION2))) {
-                    crossDimIds.add(s.getString("dId"));
+                crossDimIds.add(s.getString("dId"));
             }
         }
         if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.TARGET1))) {
             for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.TARGET1))) {
-                    targetIds.add(s.getString("dId"));
+                targetIds.add(s.getString("dId"));
             }
         }
     }
