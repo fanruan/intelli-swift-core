@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source.operator.create;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
@@ -17,6 +18,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -141,7 +143,13 @@ public class TableColumnRowTransOperator extends AbstractCreateTableETLOperator 
                             }
                             firstLineWrited = true;
                         }
-                        Integer lcNameIndex = lcNameMap.get(ti.getColumnDetailReader(new IndexKey(lc_name)).getValue(rowIndices));
+                        String indexOfMap = StringUtils.EMPTY;
+                        try {
+                            indexOfMap =  JSONObject.valueToString(ti.getColumnDetailReader(new IndexKey(lc_name)).getValue(rowIndices));
+                        } catch (JSONException e) {
+                            BILoggerFactory.getLogger(TableColumnRowTransOperator.class).error("column can't convert to String by JSONObject",e);
+                        }
+                        Integer lcNameIndex = lcNameMap.get(indexOfMap);
                         if (lcNameIndex != null) {
                             for (int i = 0; i < columns.size(); i++) {
                                 int cindex = lcNameIndex + i * lcCount + startIndex;
