@@ -75,6 +75,7 @@ import java.util.Locale;
 public class BICoreModule extends AbstractModule {
 
     private static boolean isInit = true;
+    private static boolean isFirstTimeInit = true;
 
     @Override
     public void start() {
@@ -89,6 +90,7 @@ public class BICoreModule extends AbstractModule {
         registDAO();
         registerResources();
         registerTableAddColumn();
+        isFirstTimeInit = false;
     }
 
     @Override
@@ -139,7 +141,7 @@ public class BICoreModule extends AbstractModule {
 
     }
 
-    public FBIConfigProvider getFBIConfigManager(){
+    public FBIConfigProvider getFBIConfigManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
                 FBIConfig provider = FBIConfig.getInstance();
@@ -472,7 +474,6 @@ public class BICoreModule extends AbstractModule {
     }
 
 
-
     private void registerClusterIfNeed() {
         if (ClusterEnv.isCluster()) {
             try {
@@ -562,7 +563,7 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registDAO() {
-        if ((!ClusterEnv.isCluster()) || (ClusterAdapter.getManager().getHostManager().isSelf())) {
+        if ((!ClusterEnv.isCluster()) || (ClusterAdapter.getManager().getHostManager().isSelf() && isFirstTimeInit)) {
             dropBIReportNodeLockDAOTable();
         }
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
