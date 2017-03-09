@@ -68,7 +68,7 @@ public class BIUpdateOneTableAction extends AbstractBIConfigureAction {
         String tableId = tableJO.getString("id");
         BusinessTable table;
         if (isNew && packageId != null) {
-            table = new BIBusinessTable(new BITableID(tableId), tableJO.getString("table_name"));
+            table = new BIBusinessTable(new BITableID(tableId), tableJO.optString("table_name", "ETL"));
             BICubeConfigureCenter.getPackageManager().addTable(userId, new BIPackageID(packageId), (BIBusinessTable) table);
         } else {
             table = BusinessTableHelper.getBusinessTable(new BITableID(tableId));

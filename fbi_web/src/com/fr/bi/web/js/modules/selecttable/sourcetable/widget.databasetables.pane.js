@@ -321,6 +321,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
             width: 498,
             height: 100,
             cls: "test-fail-detail-info",
+            scrolly: true,
             items: [{
                 type: "bi.label",
                 text: message,
