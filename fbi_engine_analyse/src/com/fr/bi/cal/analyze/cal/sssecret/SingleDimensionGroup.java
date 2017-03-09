@@ -19,6 +19,7 @@ import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
+import com.fr.bi.stable.operation.group.BIGroupUtils;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
 import java.util.ArrayList;
@@ -116,20 +117,13 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
 
     private boolean hasSpecialGroup(DimensionCalculator column) {
-        int groupType = column.getGroup().getType();
-        if (isCustomGroup(groupType)) {
+        if (BIGroupUtils.isCustomGroup(column.getGroup())) {
             return true;
         }
         if (column.getSortType() == BIReportConstant.SORT.CUSTOM) {
             return true;
         }
         return false;
-    }
-
-    private boolean isCustomGroup(int groupType) {
-        return groupType == BIReportConstant.GROUP.CUSTOM_GROUP
-                || groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP
-                || groupType == BIReportConstant.GROUP.AUTO_GROUP;
     }
 
 
