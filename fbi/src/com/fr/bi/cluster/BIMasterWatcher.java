@@ -1,16 +1,19 @@
 package com.fr.bi.cluster;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cluster.manager.TextClusterHostManager;
 import com.fr.bi.cluster.manager.ZooKeeperClusterHostManager;
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.bi.cluster.zookeeper.BIWatcher;
 import com.fr.bi.module.BICoreModule;
-import com.fr.general.ComparatorUtils;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.data.Stat;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 /**
  * Created by Lucifer on 2017-3-3.
@@ -23,7 +26,9 @@ public class BIMasterWatcher extends BIWatcher {
 
     private static String MASTER_PATH = "/cluster/master";
 
-    private String LOCAL_IP_ADDRESS = "127.0.0.1";
+    private long CAMPAIGN_SLEEP_TIME = 3000L;
+
+    private long LOAD_SLEEP_TIME = 10000L;
 
     public BIMasterWatcher() {
     }
@@ -34,17 +39,9 @@ public class BIMasterWatcher extends BIWatcher {
 
         Stat s = zk.exists(MASTER_PATH, this);
         if (s == null) {
-            String serverIp = "";
-            if (ClusterManager.getInstance().getHostManager() instanceof TextClusterHostManager) {
-                //如果是配置，则根据配置，获取master
-                if (((TextClusterHostManager) ClusterManager.getInstance().getHostManager()).isConfig()) {
-                    serverIp = ClusterManager.getInstance().getHostManager().getIp();
-                    if (ComparatorUtils.equals(serverIp, LOCAL_IP_ADDRESS)) {
-                        serverIp = "";
-                    }
-                }
-            }
-            ensureNodePathExists(serverIp);
+            ensureNodePathExists();
+        } else {
+            updateMasterInfo(false);
         }
         watch();
     }
@@ -54,8 +51,8 @@ public class BIMasterWatcher extends BIWatcher {
         return MASTER_PATH;
     }
 
-
-    public void ensureNodePathExists(String serverIp) throws Exception {
+    @Override
+    public void ensureNodePathExists() throws Exception {
         String path = getFocusedEventPath();
         if (path != null || !path.isEmpty()) {
             if (path.charAt(0) == '/') {
@@ -68,7 +65,18 @@ public class BIMasterWatcher extends BIWatcher {
                 for (int i = 0; i < foldNames.length; i++) {
                     childPath += foldNames[i];
                     if (i == foldNames.length - 1) {
-                        ensurePathExistsTemp(childPath, serverIp);
+                        try {
+                            String rpcPort = ClusterManager.getInstance().getHostManager().getLocalRpcPort();
+
+                            String masterInfo = getAddress().getHostAddress() + ":" + rpcPort;
+                            getAddress();
+                            ensurePathExistsTemp(childPath, masterInfo);
+                            updateMasterInfo(true);
+                        } catch (KeeperException ke) {
+                            BILoggerFactory.getLogger(BIMasterWatcher.class).info("Campaign for master failed! Stay slaver!");
+                            updateMasterInfo(false);
+                            return;
+                        }
                     } else {
                         ensurePathExists(childPath);
                     }
@@ -78,49 +86,71 @@ public class BIMasterWatcher extends BIWatcher {
         }
     }
 
+    private InetAddress getAddress() {
+        try {
+            BILoggerFactory.getLogger(BIMasterWatcher.class).info("=================================");
+            for (Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces(); interfaces.hasMoreElements(); ) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                if (networkInterface.isLoopback() || networkInterface.isVirtual() || !networkInterface.isUp()) {
+                    continue;
+                }
+                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress inetAddress = addresses.nextElement();
+                    if (inetAddress instanceof Inet4Address) {
+                        return inetAddress;
+                    }
+                }
+            }
+        } catch (SocketException e) {
+        }
+        return null;
+    }
+
     @Override
     public void eventProcessor(WatchedEvent event) {
         try {
+            //检测到节点消失，处罚竞选master事件。若是节点创建事件，则更新master信息
             if (event.getType().equals(Event.EventType.NodeDeleted)) {
-                System.out.print("Master is shut down ! Vote for new master!");
+                BILoggerFactory.getLogger(BIMasterWatcher.class).info("Master is shut down ! Campaign for new master!");
                 if (zk.exists(MASTER_PATH, false) == null) {
-                    ensureNodePathExists("");
-                }
-            } else if (event.getType().equals(Event.EventType.NodeCreated)
-                    || event.getType().equals(Event.EventType.NodeDataChanged)) {
-                //更新master ip、self等信息。
-                ZooKeeperClusterHostManager newHostManager = new ZooKeeperClusterHostManager();
-                ClusterHostManagerInterface oldHostManager = ClusterManager.getInstance().getHostManager();
-
-                try {
-                    String data = new String(zk.getData(MASTER_PATH, false, new Stat()));
-                    String serverIp = InetAddress.getLocalHost().getHostAddress();
-                    newHostManager.setIp(data);
-                    if (ComparatorUtils.equals(data, serverIp)) {
-                        newHostManager.setSelf(true);
-                    } else {
-                        newHostManager.setSelf(false);
-                    }
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger(BIMasterWatcher.class).error(e.getMessage(), e);
-                    newHostManager.setIp(oldHostManager.getIp());
-                    newHostManager.setSelf(oldHostManager.isSelf());
-                }
-
-                ClusterManager.getInstance().setHostManager(newHostManager);
-                //切换hostManager后，根据是否master对BICoreModule重载。
-                if (ClusterManager.getInstance().getHostManager().isSelf()) {
-                    BILoggerFactory.getLogger(BIMasterWatcher.class).info("-------------------------switch to master-------------------------");
+                    ensureNodePathExists();
                 } else {
-                    BILoggerFactory.getLogger(BIMasterWatcher.class).info("-------------------------switch to slaver-------------------------");
+                    updateMasterInfo(false);
                 }
-                BICoreModule biCoreModule = new BICoreModule();
-                biCoreModule.start();
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger(BIMasterWatcher.class).error(e.getMessage(), e);
         }
     }
 
+    private void updateMasterInfo(boolean isMaster) throws Exception {
+        //更新master ip、self等信息。
+        ZooKeeperClusterHostManager newHostManager = new ZooKeeperClusterHostManager();
+        ClusterHostManagerInterface oldHostManager = ClusterManager.getInstance().getHostManager();
+
+        try {
+            String[] datas = new String(zk.getData(MASTER_PATH, false, new Stat())).split(":");
+            newHostManager.setIp(datas[0]);
+            newHostManager.setPort(Integer.valueOf(datas[1]));
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BIMasterWatcher.class).error(e.getMessage(), e);
+            newHostManager.setIp(oldHostManager.getIp());
+            newHostManager.setPort(oldHostManager.getPort());
+        }
+        newHostManager.setLocalRpcPort(oldHostManager.getLocalRpcPort());
+        newHostManager.setSelf(isMaster);
+        ClusterManager.getInstance().setZooKeeperClusterHostManager(newHostManager);
+
+        //切换hostManager后，根据是否master对BICoreModule重载。
+        if (ClusterManager.getInstance().getHostManager().isSelf()) {
+            BILoggerFactory.getLogger(BIMasterWatcher.class).info("----------------switch to master-------------------");
+        } else {
+            BILoggerFactory.getLogger(BIMasterWatcher.class).info("----------------switch to slaver-------------------");
+            Thread.sleep(LOAD_SLEEP_TIME);
+        }
+        BICoreModule biCoreModule = new BICoreModule();
+        biCoreModule.start();
+    }
 
 }
