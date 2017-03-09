@@ -10,6 +10,7 @@ import java.util.UUID;
 public class ReportNodeTree {
     private ReportNode root;
     private Set<ReportNode> nodeTree = new HashSet<ReportNode>();
+
     public ReportNode getRoot() {
         return root;
     }
@@ -19,19 +20,22 @@ public class ReportNodeTree {
     }
 
     public ReportNodeTree() {
-        root=new ReportNode();
-        root.setId(UUID.randomUUID().toString());
+        root = new ReportNode();
+        root.setId("root"+UUID.randomUUID().toString());
         nodeTree.add(root);
     }
 
-    public void addNode(ReportNode parent, ReportNode node) {
-        if (null != parent) {
-            nodeTree.add(parent);
-            node.setParent(parent);
-        } else {
+    public void addNode(ReportNode node, ReportNode newNode) {
+        if (null == newNode) {
             node.setParent(root);
+            nodeTree.add(node);
+        } else if (null == node) {
+            newNode.setParent(root);
+            nodeTree.add(newNode);
+        } else {
+            newNode.setParent(node);
+            nodeTree.add(newNode);
         }
-        nodeTree.add(node);
     }
 
     public ReportNode getNode(String nodeId) {
@@ -43,9 +47,9 @@ public class ReportNodeTree {
         return null;
     }
 
-   public boolean isNodeExisted(String nodeId) {
+    public boolean isNodeExisted(String nodeId) {
         for (ReportNode itemNode : nodeTree) {
-            if (itemNode.getdId().equals(nodeId)) {
+            if (itemNode.getId().equals(nodeId)) {
                 return true;
             }
         }

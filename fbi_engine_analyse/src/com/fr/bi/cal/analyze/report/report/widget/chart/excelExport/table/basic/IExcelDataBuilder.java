@@ -6,7 +6,7 @@ import com.fr.json.JSONException;
 /**
  * Created by Kary on 2017/2/26.
  */
-public interface BIExcelDataBuilder {
+public interface IExcelDataBuilder {
     void initAttrs() throws JSONException;
 
     void createHeadersAndItems() throws Exception;
