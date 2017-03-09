@@ -267,10 +267,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             type: "bi.absolute",
             element: filter,
             items: [{
-                el:{
+                el: {
                     type: "bi.horizontal_auto",
                     height: 10,
-                    items:[this.triangle]
+                    items: [this.triangle]
                 },
                 left: 0,
                 right: 0,
@@ -317,8 +317,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(self.model.get("name"));
+                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&widget="
+                        + window.encodeURIComponent(JSON.stringify(BI.Utils.getWidgetCalculationByID(wId)));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY:
                     self.model.copy();
@@ -376,8 +376,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     right: 0,
                     top: 0,
                     bottom: 0
-                },{
-                    el:this.del,
+                }, {
+                    el: this.del,
                     bottom: 0,
                     left: widgetCombo.combo.options.width / 2
                 }],

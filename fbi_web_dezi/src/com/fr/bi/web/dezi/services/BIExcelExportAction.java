@@ -1,14 +1,18 @@
 package com.fr.bi.web.dezi.services;
 
 import com.fr.base.FRContext;
+import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.io.BIExcel2007Exporter;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.conf.report.BIReport;
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
 import com.fr.data.NetworkHelper;
 import com.fr.general.DateUtils;
 import com.fr.general.DeclareRecordType;
 import com.fr.io.exporter.AppExporter;
+import com.fr.json.JSONObject;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.core.ReportUtils;
 import com.fr.stable.StringUtils;
@@ -44,15 +48,21 @@ public class BIExcelExportAction extends AbstractBIDeziAction {
             ErrorHandlerHelper.getErrorHandler().error(req, res, "Reportlet SessionID: \"" + sessionID + "\" time out.");
             return;
         }
+        long userId = sessionIDInfor.getUserIdFromSession(req);
 
-        String blockid = WebUtils.getHTTPRequestParameter(req, "name");
-        if (StringUtils.isEmpty(blockid)) {
-            return;
-        }
+        String widgetString = WebUtils.getHTTPRequestParameter(req, "widget");
+        JSONObject widgetJSON = new JSONObject(widgetString);
+        String widgetName = widgetJSON.optString("name");
+        widgetJSON.put("sessionID", sessionID);
+        BIWidget widget = BIWidgetFactory.parseWidget(widgetJSON, userId);
+        BIReport biReport = sessionIDInfor.getBIReport();
+        int index = biReport.getWidgetIndexByName(widgetName);
+        biReport.setWidget(index, widget);
+
         long t = System.currentTimeMillis();
         NetworkHelper.setCacheSettings(res);
-        ResultWorkBook resultBook = sessionIDInfor.getExportBookByName(blockid);
-        String fileName = Browser.resolve(req).getEncodedFileName4Download(blockid.replaceAll(",", "_").replaceAll("\\s", "_"));
+        ResultWorkBook resultBook = sessionIDInfor.getExportBookByName(widgetName);
+        String fileName = Browser.resolve(req).getEncodedFileName4Download(widgetName.replaceAll(",", "_").replaceAll("\\s", "_"));
         ExportUtils.setExcel2007Content(res, fileName);
         if (resultBook != null) {
             export(req, res, resultBook, t);
@@ -84,6 +94,6 @@ public class BIExcelExportAction extends AbstractBIDeziAction {
             // alex:有些Exporter在export里面可能会已经做了out.close操作,为了不打印IOException,这里catch到之后不输出
         }
         long t1 = System.currentTimeMillis();
-        BILoggerFactory.getLogger().info("Export Excel: cost: " + DateUtils.miliisecondCostAsString(t1 - t) );
+        BILoggerFactory.getLogger().info("Export Excel: cost: " + DateUtils.miliisecondCostAsString(t1 - t));
     }
 }
