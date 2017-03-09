@@ -42,27 +42,6 @@ def list=[
 //指定源码所在位置：
 sourceSets{
 	main.java.srcDirs=list
-	instrumentTest.java.srcDirs=[
-		//"fbi/test",
-		"fbi_base/test",
-		//"fbi_engine_finereport/test",
-		"fbi_conf/test", 
-		"fbi_engine_base/Test",
-		"fbi_engine_generate/test",
-		"fbi_engine_analyse/test",
-		//"fbi_engine_cache/test",
-		"fbi_cluster/test",
-		"fbi_web/test",
-		//"fbi_web_base/test",
-		"fbi_web_conf/test",
-		//"fbi_web_dezi/test",
-		//"fbi_web_report/test",
-		"fbi_analysis_etl/test",
-		"fbi_cube_base/test",
-		"fbi_cube_conf/test",
-		"fbi_cube_generate/test"
-	]
-
 
 }
 
