@@ -19,6 +19,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.services.session.BIConfSessionUtils;
 import com.fr.bi.web.conf.utils.BIWriteConfigResourcesUtils;
+import com.fr.data.NetworkHelper;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -38,7 +39,7 @@ public class BIUpdateOneTableAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        String sessionId = WebUtils.getHTTPRequestParameter(req, "sessionID");
+        String sessionId = NetworkHelper.getHTTPRequestSessionIDParameter(req);
         String translationsStr = WebUtils.getHTTPRequestParameter(req, "translations");
         String tableStr = WebUtils.getHTTPRequestParameter(req, "table");
         String updateSettingStr = WebUtils.getHTTPRequestParameter(req, "updateSettings");
