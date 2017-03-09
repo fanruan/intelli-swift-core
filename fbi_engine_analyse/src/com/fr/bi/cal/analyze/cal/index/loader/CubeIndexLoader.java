@@ -51,6 +51,7 @@ public class CubeIndexLoader {
     private static Map<Long, CubeIndexLoader> userMap = new ConcurrentHashMap<Long, CubeIndexLoader>();
     private static LazyCalculateContainer<NodeAndPageInfo> lazyContainer = new LazyCalculateContainer<NodeAndPageInfo>();
     private long userId;
+
     /**
      * TODO 暂时先用这个，后面再优化
      */
@@ -263,6 +264,7 @@ public class CubeIndexLoader {
     public void releaseIndexs() {
 //        CubeReadingTableIndexLoader.envChanged();
     }
+
     private void checkRegisteration(BISummaryTarget[] allTargets, BIDimension[] allDimensions) {
         if (checkSupport(allTargets)) {
             return;
@@ -613,7 +615,7 @@ public class CubeIndexLoader {
         checkRegisteration(sumTarget, allDimension);
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, sumTarget);
         List<TargetCalculator> targetCalculator = new ArrayList<TargetCalculator>();
-        List<FormulaCalculator> calculateTargets =  new ArrayList<FormulaCalculator>();
+        List<FormulaCalculator> calculateTargets = new ArrayList<FormulaCalculator>();
         PageIteratorGroup pg = null;
 
         String widgetName = widget.getWidgetName();
@@ -684,8 +686,7 @@ public class CubeIndexLoader {
             session.setPageIteratorGroup(useRealData, widget.getWidgetName(), pg, i);
         }
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, sumTarget);
-        NodeAndPageInfo nodeInfo = createPageGroupNode(widget, usedTargets, rowDimension, calPage, nodeExpander, session,
-                calculateTargets, targetCalculators, isHor ? createColumnOperator(calPage, widget) : createRowOperator(calPage, widget), pg, false, isHor);
+        NodeAndPageInfo nodeInfo = createPageGroupNode(widget, usedTargets, rowDimension, calPage, nodeExpander, session, calculateTargets, targetCalculators, isHor ? createColumnOperator(calPage, widget) : createRowOperator(calPage, widget), pg, false, isHor);
         Node node = nodeInfo.getNode();
         if (usedTarget.length == 0) {
             node = node.createResultFilterNode(rowDimension, null);
@@ -724,12 +725,11 @@ public class CubeIndexLoader {
 
     /**
      * 处理计算指标
-     *
      */
     private NodeAndPageInfo createPageGroupNode(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, int page,
                                                 NodeExpander expander, BISession session, List<FormulaCalculator> formulaCalculateTargets,
                                                 List<TargetCalculator> calculators, Operator op
-            , PageIteratorGroup pg, boolean isCross, boolean isHor) throws Exception{
+            , PageIteratorGroup pg, boolean isCross, boolean isHor) throws Exception {
         int summaryLength = usedTargets.length;
         int rowLength = rowDimension.length;
         for (int i = 0; i < summaryLength; i++) {
@@ -742,13 +742,13 @@ public class CubeIndexLoader {
             LoaderUtils.classifyTarget(usedTargets, formulaCalculateTargets);
         }
         NodeDimensionIterator iterator = isHor ? pg.getColumnIterator() : pg.getRowIterator();
-        if (needCreateNewIterator(page) || iterator == null){
+        if (needCreateNewIterator(page) || iterator == null) {
             iterator = new TreeIterator(rowLength);
         }
         op.moveIterator(iterator);
         NodeAndPageInfo info = PerformancePlugManager.getInstance().isExtremeConcurrency() ?
                 lazyContainer.get(new WidgetKey(widget.fetchObjectCore(), isCross, isHor, expander, op, iterator.getStartIndex(), widget.getAuthFilter(userId)),
-                new NodeAndPageInfoCreator(iterator, page, op, widget, usedTargets, rowDimension, isCross, isHor, session, expander))
+                        new NodeAndPageInfoCreator(iterator, page, op, widget, usedTargets, rowDimension, isCross, isHor, session, expander))
                 : new NodeAndPageInfoCreator(iterator, page, op, widget, usedTargets, rowDimension, isCross, isHor, session, expander).create();
         if (isHor) {
             pg.setColumnIterator(info.getIterator());
@@ -802,7 +802,7 @@ public class CubeIndexLoader {
                 iterator = iterator.createClonedIterator();
             }
             iterator.setExpander(expander);
-            return GroupUtils.createNextPageMergeNode(iterator, op,  isHor ? widget.showColumnTotal() : widget.showRowToTal(), isCross);
+            return GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), isCross);
         }
     }
 
