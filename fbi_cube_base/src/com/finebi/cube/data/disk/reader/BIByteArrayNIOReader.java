@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.reader;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.input.ICubeByteArrayReader;
 import com.finebi.cube.data.input.primitive.ICubeByteReader;
@@ -20,6 +21,8 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
 
     private ICubeByteReader contentReader;
 
+    private static BILogger logger = BILoggerFactory.getLogger(BIByteArrayNIOReader.class);
+
     public BIByteArrayNIOReader(ICubeLongReader positionReader, ICubeIntegerReader lengthReader, ICubeByteReader contentReader) {
         this.positionReader = positionReader;
         this.lengthReader = lengthReader;
@@ -38,7 +41,7 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         } catch (Exception e) {
-            BILoggerFactory.getLogger(BIByteArrayNIOReader.class).info(e.getMessage(),e);
+            BILoggerFactory.getLogger(BIByteArrayNIOReader.class).info(e.getMessage(), e);
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         }
@@ -52,14 +55,14 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         return isNull(b) ? null : b;
     }
 
-    public BIByteDataInput getByteStream(int row) throws BIResourceInvalidException{
+    public BIByteDataInput getByteStream(int row) throws BIResourceInvalidException {
         long start;
         int size;
         try {
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         } catch (Exception e) {
-            BILoggerFactory.getLogger(BIByteArrayNIOReader.class).info(e.getMessage()+" retry again!",e);
+            logger.info(e.getMessage() + " retry again! The invalid reader is lengthReader or positionReader", e);
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         }
@@ -88,12 +91,12 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         try {
             start = positionReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         try {
             size = lengthReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return start + size;
     }

@@ -6,7 +6,6 @@ import com.fr.bi.cluster.manager.ZooKeeperClusterHostManager;
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.bi.cluster.zookeeper.BIWatcher;
 import com.fr.bi.module.BICoreModule;
-import com.fr.engine.compare.CompareUtils;
 import com.fr.general.ComparatorUtils;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.data.Stat;
@@ -97,7 +96,7 @@ public class BIMasterWatcher extends BIWatcher {
                     String data = new String(zk.getData(MASTER_PATH, false, new Stat()));
                     String serverIp = InetAddress.getLocalHost().getHostAddress();
                     newHostManager.setIp(data);
-                    if (CompareUtils.isEqual(data, serverIp)) {
+                    if (ComparatorUtils.equals(data, serverIp)) {
                         newHostManager.setSelf(true);
                     } else {
                         newHostManager.setSelf(false);
