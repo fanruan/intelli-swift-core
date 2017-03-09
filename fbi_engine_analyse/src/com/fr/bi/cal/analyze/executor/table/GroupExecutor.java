@@ -638,42 +638,57 @@ public class GroupExecutor extends AbstractNodeExecutor {
             n = n.getFirstChild();
         }
         BIDimension[] rows = widget.getViewDimensions();
+        Object[] dimensionNames = new Object[rows.length];
         while (n != null) {
             List rowList = new ArrayList();
             Node temp = n;
             for (TargetGettingKey key : widget.getTargetsKey()) {
                 rowList.add(temp.getSummaryValue(key));
             }
+            currentRowNum++;
+            int newRow = currentRowNum & EXCEL_ROW_MODE_VALUE;
+            if (newRow == 0) {
+                iter.getIteratorByPage(start.value).finish();
+                start.value++;
+            }
+            StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+            //维度第一次出现即addCell
             int i = rows.length;
             while (temp.getParent() != null) {
+                int rowSpan = temp.getTotalLength();
                 Object data = temp.getData();
                 BIDimension dim = rows[--i];
                 Object v = dim.getValueByType(data);
-                rowList.add(0, v);
+                if (v != dimensionNames[i] || (i == rows.length -1)) {
+                    createCells4Dimension(pagedIterator, v, rowSpan, currentRowNum, i);
+                    dimensionNames[i] = v;
+                }
                 temp = temp.getParent();
             }
-            if (!rowList.isEmpty()) {
-                currentRowNum++;
-                int newRow = currentRowNum & EXCEL_ROW_MODE_VALUE;
-                if (newRow == 0) {
-                    iter.getIteratorByPage(start.value).finish();
-                    start.value++;
-                }
-                createCells4Row(iter.getIteratorByPage(start.value), rowList, currentRowNum);
-            }
+
+            createCells4Row(pagedIterator, rowList, currentRowNum, rows.length);
             n = n.getSibling();
         }
     }
 
-    private void createCells4Row(StreamPagedIterator iter, List rowList, int currentRowNum) {
+    private void createCells4Row(StreamPagedIterator pagedIterator, List rowList, int currentRowNum, int dimLen) {
         for (int i = 0; i < rowList.size(); i++) {
             CBCell cell = new CBCell(rowList.get(i));
-            cell.setColumn(i);
+            cell.setColumn(i + dimLen);
             cell.setRow(currentRowNum);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
-            iter.addCell(cell);
+            pagedIterator.addCell(cell);
         }
+    }
+
+    private void createCells4Dimension(StreamPagedIterator pagedIterator, Object v, int rowSpan, int currentRow, int currentColumn) {
+        CBCell cell = new CBCell(v);
+        cell.setRow(currentRow);
+        cell.setColumn(currentColumn);
+        cell.setRowSpan(rowSpan);
+        cell.setColumnSpan(1);
+        pagedIterator.addCell(cell);
     }
 
     /**
