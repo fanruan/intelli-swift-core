@@ -41,7 +41,7 @@
 
     FS.Plugin.PrivilegeManageTabProvider.items.push({
         // tab视图
-        tab: function (contentWidth, contentHeight, viewOnly, hasTool, onCustomSelect) {
+        tab: function (viewOnly, hasTool) {
             var tools = [{
                 name: 'view',
                 onToolClick: function (e, treeNode, isSelect) {
@@ -99,8 +99,6 @@
                 title: BI.i18nText("BI-Data_Setting"),
                 content: {
                     type: 'fstabletree',
-                    height: contentHeight,
-                    width: contentWidth,
                     treeID: BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY,
                     setting: dataSetting,
                     widgetName: BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY
@@ -178,7 +176,7 @@
                     case BICst.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE:
                         return BI.i18nText("BI-Cube_Updates_Setting");
                     case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION:
-                        return BI.i18nText("BI-Database");
+                        return BI.i18nText("BI-Get_Database_Data");
                     case BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.SERVER_CONNECTION:
                         return BI.i18nText("BI-Server_Dataset");
                 }

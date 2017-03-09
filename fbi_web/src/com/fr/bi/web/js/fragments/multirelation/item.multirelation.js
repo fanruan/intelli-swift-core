@@ -16,7 +16,8 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
         BI.MultirelationItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.checkbox = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.checkbox",
+            warningTitle: BI.i18nText("BI-Has_No_Full_Path_Auth")
         });
 
         this.checkbox.on(BI.Controller.EVENT_CHANGE, function (type, value, obj) {
@@ -24,6 +25,10 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
             o.onEventChange(o.relations, type, value, self);
             self.fireEvent(BI.Controller.EVENT_CHANGE, type, value, self);
         });
+
+        if (this._hasNoAbsolutePathAuth()) {
+            this.checkbox.setEnable(false);
+        }
 
         this.textGroup = BI.createWidget({
             type: "bi.button_group",
@@ -51,6 +56,15 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
                 el: this.textGroup
             }]
         })
+    },
+
+    _hasNoAbsolutePathAuth: function () {
+        var relations = this.options.relations;
+        return BI.some(relations, function (i, rel) {
+            var foreignFieldId = rel.foreignKey.field_id;
+            var primaryFieldId = rel.primaryKey.field_id;
+            return !BI.Utils.isFieldExistById4Conf(foreignFieldId) || !BI.Utils.isFieldExistById4Conf(primaryFieldId);
+        });
     },
 
     _createItems: function () {

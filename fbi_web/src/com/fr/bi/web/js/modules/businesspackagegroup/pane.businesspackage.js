@@ -435,7 +435,6 @@ BI.BusinessPackageGroupPane = BI.inherit(BI.Widget, {
                 });
             }
         }
-
     },
 
     setGroupName: function (newName, oldName) {
