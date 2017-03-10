@@ -423,7 +423,7 @@ public class StringControlWidget extends TableWidget {
             keys = new String[]{""};
         }
         outer:
-        for (int i = array.size() - 1; i > 0; i--) {
+        for (int i = array.size() - 1; i > -1; i--) {
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
             for (String keyword : keys) {
