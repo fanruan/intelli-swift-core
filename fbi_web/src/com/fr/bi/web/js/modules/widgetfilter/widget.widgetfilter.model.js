@@ -33,7 +33,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         var type = v.type, value = v.value;
         var date = new Date();
         var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
-        if (BI.isNull(type) && isValidDate(v)) {
+        if(BI.isNull(type) && BI.isNotNull(v.year)) {
             return new Date(v.year, v.month, v.day);
         }
         switch (type) {
@@ -94,10 +94,6 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             case BICst.MULTI_DATE_CALENDAR:
                 return new Date(value.year, value.month, value.day);
 
-        }
-
-        function isValidDate(v) {
-            return BI.isNotNull(v.year) && BI.isNotNull(v.month) && BI.isNotNull(v.day);
         }
     },
 
