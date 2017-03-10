@@ -10,11 +10,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
         right: 400
     });
     BI.requestAsync("fr_bi", "get_design_config_auth", {mode: Consts.BIEDIT}, function (res) {
-        var $header = $('#fs-frame-header');
-        var header = BI.createWidget({
-            type: "bi.absolute",
-            element: $header
-        });
+        var $nav = $('#fs-frame-navi');
         if (FS.isAdmin() || res.design === BICst.REPORT_AUTH.EDIT) {
             var newAnalysis = BI.createWidget({
                 type: "bi.icon_text_item",
@@ -38,7 +34,7 @@ FS.THEME.config4navigation.onAfterInit = function () {
                     }, function (res, model) {
                         if (BI.isNotNull(res) && BI.isNotNull(res.reportId)) {
                             FS.tabPane.addItem({
-                                id: res.reportId,
+                                id: BICst.BI_REPORT_TAB + res.reportId,
                                 title: data.reportName,
                                 src: FR.servletURL + "?op=fr_bi&cmd=init_dezi_pane&reportId=" + res.reportId + "&edit=_bi_edit_",
                                 showFavorite: "no"
@@ -49,12 +45,8 @@ FS.THEME.config4navigation.onAfterInit = function () {
                 BI.Popovers.create(id, newAnalysisBox, {width: 400, height: 320}).open(id);
                 newAnalysisBox.setTemplateNameFocus();
             });
-            header.addItem({
-                el: newAnalysis,
-                right: 220,
-                top: 0,
-                bottom: 0
-            });
+            newAnalysis.element.css({"position": "relative", "float": "right"});
+            $nav.after(newAnalysis.element);
         }
         if (FS.isAdmin() || res.config === true) {
             var dataConfig = BI.createWidget({
@@ -74,16 +66,8 @@ FS.THEME.config4navigation.onAfterInit = function () {
                     showFavorite: "no"
                 });
             });
-            header.addItem({
-                el: dataConfig,
-                right: 220,
-                top: 0,
-                bottom: 0
-            });
-            if (header.attr("items").length > 1) {
-                header.attr("items")[0].right = 340;
-            }
-            header.resize();
+            dataConfig.element.css({"position": "relative", "float": "right"});
+            $nav.after(dataConfig.element);
         }
     });
 };

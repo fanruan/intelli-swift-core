@@ -9,62 +9,66 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
     },
 
     _init: function () {
-        var self = this;
         BI.BusinessPackageManage.superclass._init.apply(this, arguments);
-        var addButton = BI.createWidget({
-            type: "bi.button",
-            value: BI.i18nText("BI-Add_Grouping"),
-            level: "ignore",
-            height: 26
-        });
-
-        var groupButton = BI.createWidget({
-            type: "bi.button",
-            value: BI.i18nText("BI-Batch_Grouping"),
-            level: "common",
-            height: 26
-        });
-
-
-        this.topButtons = BI.createWidget({
-            type: "bi.right",
-            hgap: 10,
-            items: [
-                groupButton,
-                addButton
-            ]
-        });
-
-        this.groupPane = BI.createWidget({
-            type: "bi.business_package_ungroup_and_group_pane",
-            enableCheckGroup: true,
-            forceNotSelected: true
-        });
-
         BI.createWidget({
             type: "bi.vtape",
             element: this.element,
             items: [
                 {
                     height: 40,
-                    el: this.topButtons
+                    el: {
+                        type: "bi.right",
+                        hgap: 10,
+                        items: this._createSettingItems()
+                    }
                 }, {
-                    el: self.groupPane
+                    el: this._createGroupPane()
                 }
-
-
             ]
         });
+    },
 
-        addButton.on(BI.Button.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BusinessPackageManage.EVENT_GROUP_ADD);
-            self._scrollToBottom();
+    _createSettingItems: function () {
+        var self = this, items = [];
+        if (BI.Utils.hasAddPackageGroupAuth()) {
+            var addButton = BI.createWidget({
+                type: "bi.button",
+                value: BI.i18nText("BI-Add_Grouping"),
+                level: "ignore",
+                height: 26
+            });
+
+            addButton.on(BI.Button.EVENT_CHANGE, function () {
+                self.fireEvent(BI.BusinessPackageManage.EVENT_GROUP_ADD);
+                self._scrollToBottom();
+            });
+            items.push(addButton);
+        }
+        if (BI.Utils.hasBatchSetPackageGroupAuth()) {
+            var groupButton = BI.createWidget({
+                type: "bi.button",
+                value: BI.i18nText("BI-Batch_Grouping"),
+                level: "common",
+                height: 26
+            });
+
+            groupButton.on(BI.Button.EVENT_CHANGE, function () {
+                self.fireEvent(BI.BusinessPackageManage.EVENT_BATCH_GROUP);
+            });
+            items.push(groupButton);
+        }
+        return items;
+    },
+
+    _createGroupPane: function () {
+        var self = this;
+        this.groupPane = BI.createWidget({
+            type: "bi.business_package_ungroup_and_group_pane",
+            enableCheckGroup: true,
+            forceNotSelected: true,
+            nodeType: BI.Utils.hasEditPackageGroupAuth() ?
+                "bi.arrow_group_node_delete" : "bi.arrow_group_node"
         });
-
-        groupButton.on(BI.Button.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BusinessPackageManage.EVENT_BATCH_GROUP);
-        });
-
 
         this.groupPane.on(BI.BusinessUngroupAndGroupPane.EVENT_CLICK_DELETE, function () {
             self.fireEvent(BI.BusinessPackageManage.EVENT_CLICK_DELETE);
@@ -89,13 +93,11 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BusinessPackageManage.EVENT_GROUP_NAME_CONFIRM)
         });
 
-
         this.groupPane.on(BI.BusinessUngroupAndGroupPane.EVENT_EDITOR_CONFIRM, function (packageName, packageID) {
             self.fireEvent(BI.BusinessPackageManage.EVENT_EDITOR_CONFIRM, packageName, packageID)
-        })
-
+        });
+        return this.groupPane;
     },
-
 
     addGroupWidget: function (groupName) {
         this.groupPane.addGroupWidget(groupName);
@@ -104,7 +106,6 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
     addFieldWidget: function (widgetID, fieldName, groupName) {
         this.groupPane.addFieldWidget(widgetID, fieldName, groupName);
     },
-
 
     populate: function (groupedItems, allPackages) {
         var self = this, o = this.options;
@@ -142,8 +143,7 @@ BI.BusinessPackageManage = BI.inherit(BI.Widget, {
 
     getValue: function () {
         var self = this;
-        var result = self.groupPane.createItemFromGroupMap();
-        return result;
+        return self.groupPane.createItemFromGroupMap();
     },
 
     _scrollToBottom: function () {
