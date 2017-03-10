@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.executor.table;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -44,6 +45,11 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         this.colDimension = usedColumn;
     }
 
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 注释
      *
@@ -51,55 +57,56 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
      */
     @Override
     public CBCell[][] createCellElement() throws Exception {
-        NewCrossRoot node = getCubeNode();
-        if (node == null) {
-            return new CBCell[0][0];
-        }
-        //int page = widget.getVerticalCalculateAllPage();
-        int len = usedSumTarget.length;
-        Map<String, TargetGettingKey> targetsMap = new HashMap<String, TargetGettingKey>();
-        TargetGettingKey[] keys = new TargetGettingKey[len];
-        for (int i = 0; i < len; i++) {
-            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
-            targetsMap.put(usedSumTarget[i].getValue(), keys[i]);
-        }
-
-        CBCell[][] cbcells = null;
-        int rowPlus = 0;
-        if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-            cbcells = new CBCell[((keys.length == 0 || !widget.getChartSetting().showColTotal()) ? node.getTop().getTotalLength() : node.getTop().getTotalLengthWithSummary())
-                    * Math.max(1, keys.length) + rowDimension.length + widget.isOrder()]
-                    [((keys.length == 0 || !widget.getChartSetting().showRowTotal()) ? node.getLeft().getTotalLength() : node.getLeft().getTotalLengthWithSummary()) + colDimension.length + 1];
-        } else {
-            cbcells = new CBCell[(keys.length == 0 ? node.getTop().getTotalLength(expander.getXExpander()) : node.getTop().getTotalLengthWithSummary(expander.getXExpander()))
-                    * Math.max(1, keys.length) + rowDimension.length + widget.isOrder()]
-                    [(keys.length == 0 ? node.getLeft().getTotalLength(expander.getYExpander()) : node.getLeft().getTotalLengthWithSummary(expander.getYExpander())) + colDimension.length + 1 + rowPlus];
-        }
-        boolean isColTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
-        boolean isRowTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(rowDimension);
-        generateTitleCell(cbcells, isColTargetSort, isRowTargetSort);
-        if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-            GroupExecutor.dealWithNode(node.getLeft(), NodeExpander.ALL_EXPANDER, cbcells, colDimension.length + 1, 0, paging.getOprator(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChartSetting());
-            HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
-            if (hasLeftChild(node)) {
-                dealWithNode(node.getLeft(), new NodeAllExpander(rowDimension.length - 1), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChartSetting());
-            }
-        } else {
-            GroupExecutor.dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, colDimension.length + 1, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChartSetting());
-            HorGroupExecutor.dealWithNode(node.getTop(), expander.getXExpander(), cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
-            if (hasLeftChild(node)) {
-                dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChartSetting());
-            }
-        }
-        if (widget.isOrder() == 1) {
-            createNumberCellTitle(cbcells, colDimension.length);
-            if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
-                createAllNumberCellElement(cbcells, 1);
-            } else {
-                createAllNumberCellElement(cbcells, paging.getCurrentPage());
-            }
-        }
-        return cbcells;
+//        NewCrossRoot node = getCubeNode();
+//        if (node == null) {
+//            return new CBCell[0][0];
+//        }
+//        //int page = widget.getVerticalCalculateAllPage();
+//        int len = usedSumTarget.length;
+//        Map<String, TargetGettingKey> targetsMap = new HashMap<String, TargetGettingKey>();
+//        TargetGettingKey[] keys = new TargetGettingKey[len];
+//        for (int i = 0; i < len; i++) {
+//            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
+//            targetsMap.put(usedSumTarget[i].getValue(), keys[i]);
+//        }
+//
+//        CBCell[][] cbcells = null;
+//        int rowPlus = 0;
+//        if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
+//            cbcells = new CBCell[((keys.length == 0 || !widget.getChartSetting().showColTotal()) ? node.getTop().getTotalLength() : node.getTop().getTotalLengthWithSummary())
+//                    * Math.max(1, keys.length) + rowDimension.length + widget.isOrder()]
+//                    [((keys.length == 0 || !widget.getChartSetting().showRowTotal()) ? node.getLeft().getTotalLength() : node.getLeft().getTotalLengthWithSummary()) + colDimension.length + 1];
+//        } else {
+//            cbcells = new CBCell[(keys.length == 0 ? node.getTop().getTotalLength(expander.getXExpander()) : node.getTop().getTotalLengthWithSummary(expander.getXExpander()))
+//                    * Math.max(1, keys.length) + rowDimension.length + widget.isOrder()]
+//                    [(keys.length == 0 ? node.getLeft().getTotalLength(expander.getYExpander()) : node.getLeft().getTotalLengthWithSummary(expander.getYExpander())) + colDimension.length + 1 + rowPlus];
+//        }
+//        boolean isColTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
+//        boolean isRowTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(rowDimension);
+//        generateTitleCell(cbcells, isColTargetSort, isRowTargetSort);
+//        if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
+//            GroupExecutor.dealWithNode(node.getLeft(), NodeExpander.ALL_EXPANDER, cbcells, colDimension.length + 1, 0, paging.getOperator(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChartSetting());
+//            HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
+//            if (hasLeftChild(node)) {
+//                dealWithNode(node.getLeft(), new NodeAllExpander(rowDimension.length - 1), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChartSetting());
+//            }
+//        } else {
+//            GroupExecutor.dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, colDimension.length + 1, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChartSetting());
+//            HorGroupExecutor.dealWithNode(node.getTop(), expander.getXExpander(), cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
+//            if (hasLeftChild(node)) {
+//                dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChartSetting());
+//            }
+//        }
+//        if (widget.isOrder() == 1) {
+//            createNumberCellTitle(cbcells, colDimension.length);
+//            if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
+//                createAllNumberCellElement(cbcells, 1);
+//            } else {
+//                createAllNumberCellElement(cbcells, paging.getCurrentPage());
+//            }
+//        }
+//        return cbcells;
+        return new CBCell[0][0];
     }
 
     private boolean hasLeftChild(NewCrossRoot node) {
@@ -165,7 +172,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             return pos;
         }
         //pos如果不为0说明是汇总的格子
-        dealWithCrossNode(left.getValue(), paging.getOprator() < Node.NONE_PAGE_LEVER ? new NodeAllExpander(colDimension.length - 1) : expander.getXExpander(), cbcells, row + pos, column, keys, colDimension.length, pos != 0, total, chartSetting);
+        dealWithCrossNode(left.getValue(), paging.getOperator() < Node.NONE_PAGE_LEVER ? new NodeAllExpander(colDimension.length - 1) : expander.getXExpander(), cbcells, row + pos, column, keys, colDimension.length, pos != 0, total, chartSetting);
         pos++;
         return pos;
     }
@@ -344,7 +351,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
             targetsMap.put(usedSumTarget[i].getValue(), keys[i]);
         }
-        int calpage = paging.getOprator();
+        int calpage = paging.getOperator();
 
         NewCrossRoot node = CubeIndexLoader.getInstance(session.getUserId()).loadPageCrossGroup(createTarget4Calculate(), rowDimension, colDimension, allSumTarget, calpage, widget.useRealData(), session, expander, widget);
 
