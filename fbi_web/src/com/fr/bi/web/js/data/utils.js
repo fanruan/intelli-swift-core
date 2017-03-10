@@ -612,7 +612,7 @@ Data.Utils = {
                     obj.data = adjustData;
                     BI.isNotNull(type) && (obj.type = "bubble");
                     obj.name = widget.dimensions[targetIds[idx]].name;
-                    obj.settings = widget.dimensions[targetIds[idx]].settings;
+                    obj.settings = widget.dimensions[targetIds[idx]].settings || {};
                     return obj;
                 });
             }
