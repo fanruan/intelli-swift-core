@@ -3,11 +3,8 @@ package com.fr.bi.cluster.zookeeper;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.general.ComparatorUtils;
-import com.fr.web.cluster.ClusterManager;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
-
-import java.net.InetAddress;
 
 /**
  * Created by Connery on 2015/3/10.
@@ -101,7 +98,7 @@ public abstract class BIWatcher implements Watcher {
     }
 
     protected void ensurePathExists(String path) throws Exception {
-        Stat s = zk.exists(path, this);
+        Stat s = zk.exists(path, false);
         if (s == null) {
             zk.create(path, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         }
