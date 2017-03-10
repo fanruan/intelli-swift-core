@@ -3,6 +3,7 @@ package com.fr.bi.cluster.zookeeper;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.general.ComparatorUtils;
+import com.fr.web.cluster.ClusterManager;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
@@ -106,12 +107,8 @@ public abstract class BIWatcher implements Watcher {
         }
     }
 
-    protected void ensurePathExistsTemp(String path, String serverIp) throws Exception {
-        Stat s = zk.exists(path, this);
-        if (s == null) {
-            serverIp = (ComparatorUtils.equals("", serverIp) ? InetAddress.getLocalHost().getHostAddress() : serverIp);
-            zk.create(path, serverIp.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-        }
+    protected void ensurePathExistsTemp(String path, String masterInfo) throws Exception {
+        zk.create(path, masterInfo.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
     }
 
     public void rewriteData(byte[] data, int version) throws Exception {
