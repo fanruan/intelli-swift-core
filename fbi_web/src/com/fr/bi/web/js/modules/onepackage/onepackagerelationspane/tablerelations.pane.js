@@ -15,7 +15,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         this.model = new BI.PackageTableRelationsPaneModel({});
         var self = this;
         this.relationView = BI.createWidget({
-            type: "bi.relation_view"
+            type: "bi.relation_view",
+            packageId: this.options.packageId
         });
         this.relationView.on(BI.RelationView.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, v);

@@ -20,13 +20,32 @@ BI.RelationViewItem = BI.inherit(BI.BasicButton, {
         BI.RelationViewItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.element.hover(o.hoverIn, o.hoverOut);
-        BI.createWidget({
+        var items = [];
+        var value = o.value;
+        var isPrimary = BI.Utils.isPrimaryKeyByFieldId4Conf(value);
+        if (isPrimary) {
+            items.push({
+                type: "bi.icon",
+                width: 16,
+                height: 16,
+                title: BI.i18nText("BI-Primary_Key")
+            });
+        }
+        items.push({
             type: "bi.label",
-            element: this.element,
             text: o.text,
             value: o.value,
-            height: o.height
-        })
+            height: o.height,
+            textAlign: "left",
+            width: isPrimary ? 70 : 90
+        });
+        BI.createWidget({
+            type: "bi.vertical_adapt",
+            element: this.element,
+            items: items,
+            cls: "primary-key-font",
+            lgap: 5
+        });
     },
 
     enableHover: function (opt) {
