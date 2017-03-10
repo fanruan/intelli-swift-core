@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 public class BIReportSavingAction extends AbstractBIDeziAction {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String s) throws Exception {
-        String createBy = WebUtils.getHTTPRequestParameter(req, "createBy");
         String id = WebUtils.getHTTPRequestParameter(req, BIBaseConstant.REPORT_ID);
         String reportName = WebUtils.getHTTPRequestParameter(req, "reportName");
         String popConfig = WebUtils.getHTTPRequestParameter(req, "popConfig");
+        String createBy = WebUtils.getHTTPRequestParameter(req, "createBy");
 
         long reportId = StableUtils.string2Number(id).longValue();
         long userId = StableUtils.string2Number(createBy).longValue();
