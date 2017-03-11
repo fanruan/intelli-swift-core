@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -816,7 +817,7 @@ public class HorGroupExecutor extends GroupExecutor {
         }
         long start = System.currentTimeMillis();
 
-        int calpage = paging.getOprator();
+        int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(true, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getXExpander());
         if (tree == null) {
@@ -872,6 +873,10 @@ public class HorGroupExecutor extends GroupExecutor {
         return cbcells;
     }
 
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 创建cell
      *
@@ -891,7 +896,7 @@ public class HorGroupExecutor extends GroupExecutor {
             usedSumTargetKeys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
             targetsMap.put(usedSumTarget[i].getValue(), usedSumTargetKeys[i]);
         }
-        int calpage = paging.getOprator();
+        int calpage = paging.getOperator();
 
         NewCrossRoot tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageCrossGroup(createTarget4Calculate(), new BIDimension[0], colDimension, allSumTarget, calpage, widget.useRealData(), session, expander, widget);
 
@@ -910,7 +915,7 @@ public class HorGroupExecutor extends GroupExecutor {
             keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
         }
         CBCell[][] cbcells = createCBCells(tree, rowLength, colLength, summaryLength);
-        if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
+        if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
             dealWithNode(tree.getTop(), cbcells, 0, 1, colDimension, usedSumTarget, keys, colDimension.length - 1, new BIComplexExecutData(colDimension), widget.getChartSetting());
         } else {
             dealWithNode(tree.getTop(), expander.getXExpander(), cbcells, 0, 1, colDimension, usedSumTarget, keys, new ArrayList<String>(), colDimension.length - 1, false, new IntList(), false, null, widget, new BIComplexExecutData(colDimension), widget.getChartSetting());

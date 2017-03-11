@@ -6,6 +6,7 @@ import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -76,6 +77,11 @@ public class ComplexGroupNoneExecutor extends AbstractComplexNodeExecutor {
         return super.getSouthEastRectangle();
     }
 
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 构建cells
      *
@@ -90,7 +96,7 @@ public class ComplexGroupNoneExecutor extends AbstractComplexNodeExecutor {
         int collen = rowData.getMaxArrayLength();
         int columnLen = collen + usedSumTarget.length;
 
-        boolean needAll = paging.getOprator() < Node.NONE_PAGE_LEVER;
+        boolean needAll = paging.getOperator() < Node.NONE_PAGE_LEVER;
         Iterator<Map.Entry<Integer, Node>> iterator = nodeMap.entrySet().iterator();
         Node[] trees = new Node[nodeMap.size()];
         Integer[] integers = new Integer[nodeMap.size()];
@@ -113,7 +119,7 @@ public class ComplexGroupNoneExecutor extends AbstractComplexNodeExecutor {
             BIDimension[] rowDimension = rowData.getDimensionArray(integers[i]);
 
             NodeExpander nodeExpander = complexExpander.getYExpander(integers[i]);
-            if (paging.getOprator() < Node.NONE_PAGE_LEVER) {
+            if (paging.getOperator() < Node.NONE_PAGE_LEVER) {
                 GroupNoneTargetExecutor.dealWithNode(node, cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, rowDimension.length - 1, 0, rowData);
 
             } else {
@@ -178,13 +184,13 @@ public class ComplexGroupNoneExecutor extends AbstractComplexNodeExecutor {
 
         Map<Integer, Node> nodeMap = null;
         try {
-            nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(false, widget, new BISummaryTarget[0], rowData, allDimensions, allSumTarget, new TargetGettingKey[0], paging.getOprator(), widget.useRealData(), session, complexExpander, true);
+            nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(false, widget, new BISummaryTarget[0], rowData, allDimensions, allSumTarget, new TargetGettingKey[0], paging.getOperator(), widget.useRealData(), session, complexExpander, true);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
 
-        System.out.println(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
 
         return nodeMap;
     }

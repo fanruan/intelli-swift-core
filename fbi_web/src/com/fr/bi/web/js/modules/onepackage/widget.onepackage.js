@@ -403,12 +403,9 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         etl.on(BI.ETL.EVENT_CANCEL, function () {
             BI.Layers.remove(self._constant.ETL_LAYER);
         });
-        etl.on(BI.ETL.EVENT_CUBE_SAVE, function (info, table, callback) {
+        etl.on(BI.ETL.EVENT_CUBE_SAVE, function (table) {
             self.model.changeTableInfo(tableId, table);
             self._refreshTablesInPackage();
-            BI.Utils.generateCubeByTable(info.tableInfo, function () {
-                callback();
-            });
         });
     },
 

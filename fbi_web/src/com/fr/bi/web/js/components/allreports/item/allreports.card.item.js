@@ -138,7 +138,7 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
         card.on(BI.IconButton.EVENT_CHANGE, function () {
             if (BI.isNotNull(window.top.FS) && BI.isNotNull(window.top.FS.tabPane)) {
                 window.top.FS.tabPane.addItem({
-                    id: report.id,
+                    id: BICst.BI_REPORT_TAB + report.id,
                     title: report.text,
                     src: FR.servletURL + report.buildUrl,
                     showFavorite: "no"

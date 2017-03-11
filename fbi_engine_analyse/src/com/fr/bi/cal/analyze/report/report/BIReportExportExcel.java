@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.report.report;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.base.ScreenResolution;
-import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
+import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.report.BIReportor;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -242,7 +242,7 @@ public class BIReportExportExcel {
                     case TABLE:
                     case CROSS_TABLE:
                     case COMPLEX_TABLE:
-                        ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
+                        ((TableWidget) widget).setComplexExpander(new ComplexAllExpander());
                         ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
                         break;
                     case DETAIL:

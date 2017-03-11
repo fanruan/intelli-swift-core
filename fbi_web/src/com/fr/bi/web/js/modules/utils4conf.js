@@ -709,8 +709,50 @@ BI.extend(BI.Utils, {
         if (BI.isNotNull(tableId)) {
             return translations[tableId]
         }
+    },
+
+    //权限相关 目前功能逻辑大部分都是根据是否为管理员  --- start ---
+    _getAuthByPage: function (page) {
+        return Data.SharingPool.get("authNodes", page);
+    },
+
+    hasDataLinkPageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE);
+    },
+
+    hasPackManagerPageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE);
+    },
+
+    hasMultiPathSettingPageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING);
+    },
+
+    hasPackageAuthorityPageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY);
+    },
+
+    hasFineIndexUpdatePageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE);
+    },
+
+    hasEditPackageGroupAuth: function () {
+        return this.isAdmin4Conf();
+    },
+
+    hasAddPackageGroupAuth: function () {
+        return this.isAdmin4Conf();
+    },
+
+    hasBatchSetPackageGroupAuth: function () {
+        return this.isAdmin4Conf();
+    },
+
+    hasBatchSetPackAuthorityAuth: function () {
+        return this.isAdmin4Conf();
     }
 
+    //权限相关   --- end ---
 });
 
 

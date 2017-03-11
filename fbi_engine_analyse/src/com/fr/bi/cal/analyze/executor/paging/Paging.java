@@ -5,7 +5,7 @@ package com.fr.bi.cal.analyze.executor.paging;
  */
 public class Paging {
 
-    private int oprator = 0;//刷新的操作
+    private int operator = 0;//刷新的操作
     private int current = 1;//当前页
     private long totalSize;//总行数
     private int pageSize;//每页行数
@@ -67,15 +67,15 @@ public class Paging {
         return getStartRow() + getCurrentSize();
     }
 
-    public int getOprator() {
-        return oprator;
+    public int getOperator() {
+        return operator;
     }
 
-    public void setOprator(int oprator) {
-        this.oprator = oprator;
+    public void setOperator(int operator) {
+        this.operator = operator;
     }
 
     public boolean isAllPage() {
-        return oprator == -1;
+        return operator == -1;
     }
 }

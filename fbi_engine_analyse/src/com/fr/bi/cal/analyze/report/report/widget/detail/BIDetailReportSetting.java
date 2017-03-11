@@ -39,8 +39,8 @@ public class BIDetailReportSetting implements BIDetailSetting {
                 if (style.has("freeze")) {
                     freeze = style.optBoolean("freeze", false);
                 }
-                if (style.has("number")) {
-                    number = style.optInt("number", 0);
+                if (style.has("showNumber")) {
+                    number = style.optBoolean("showNumber", false) ? 1 : 0;
                 }
             }
         }

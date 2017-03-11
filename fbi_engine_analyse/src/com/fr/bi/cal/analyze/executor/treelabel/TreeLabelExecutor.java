@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.executor.treelabel;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeLabelWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -30,6 +31,11 @@ public class TreeLabelExecutor extends BIAbstractExecutor<JSONObject> {
 
     }
 
+
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
 
     @Override
     public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
