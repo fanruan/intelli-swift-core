@@ -53,10 +53,7 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
             var self = this, opts = this.options;
             this.storeTriggerValue = "";
             var date = new Date();
-            this.storeValue = {
-                year: date.getFullYear(),
-                month: date.getMonth()
-            };
+            this.storeValue = null;
             this.trigger = BI.createWidget({
                 type: 'bi.date_trigger',
                 min: this.constants.DATE_MIN_VALUE,
@@ -96,10 +93,7 @@ BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_DAY_TODAY] = BI.i18nText("BI-Multi
                     self.storeValue = self.trigger.getValue();
                     self.setValue(self.trigger.getValue());
                 } else if (BI.isEmptyString(dateObj)) {
-                    self.storeValue = {
-                        year: date.getFullYear(),
-                        month: date.getMonth()
-                    };
+                    self.storeValue = null;
                     self.trigger.setValue();
                 }
                 self.fireEvent(BI.MultiDateCombo.EVENT_CONFIRM);

@@ -389,6 +389,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if (BI.has(data, "s")) {
             return BI.map(data.s, function (idx, value) {
                 var y = (BI.isFinite(value) ? value : 0);
+                y = (BI.isNull(self.cataDid) && BI.isNull(self.seriesDid)) ? y : "";
                 return {
                     name: BI.Utils.getDimensionNameByID(targetIds[idx]),
                     data: [{
