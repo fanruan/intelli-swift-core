@@ -21,9 +21,7 @@ BI.RelationViewItem = BI.inherit(BI.BasicButton, {
         var self = this, o = this.options;
         this.element.hover(o.hoverIn, o.hoverOut);
         var items = [];
-        var value = o.value;
-        var isPrimary = BI.Utils.isPrimaryKeyByFieldId4Conf(value);
-        if (isPrimary) {
+        if (o.isPrimary) {
             items.push({
                 type: "bi.icon",
                 width: 16,
@@ -37,7 +35,7 @@ BI.RelationViewItem = BI.inherit(BI.BasicButton, {
             value: o.value,
             height: o.height,
             textAlign: "left",
-            width: isPrimary ? 70 : 90
+            width: o.isPrimary ? 70 : 90
         });
         BI.createWidget({
             type: "bi.vertical_adapt",
