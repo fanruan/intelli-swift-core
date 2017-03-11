@@ -73,9 +73,7 @@ BI.RelationView = BI.inherit(BI.Widget, {
         });
     },
 
-    _previewRelationTable: function (target, show) {
-        var relationTables = BI.Utils.getRelationTablesByTableId4Conf(target);
-        relationTables.push(target);
+    previewRelationTables: function(relationTables, show) {
         if (!show) {
             BI.each(this.storeViews, function (i, view) {
                 view.toggleRegion(true);
@@ -102,11 +100,6 @@ BI.RelationView = BI.inherit(BI.Widget, {
                 }
             });
         });
-    },
-
-    _isCurrentPackageTable: function (tableId) {
-        var tableIds = BI.Utils.getTablesIdByPackageId4Conf(this.options.packageId);
-        return tableIds.contains(tableId);
     },
 
     populate: function (items) {
@@ -174,7 +167,7 @@ BI.RelationView = BI.inherit(BI.Widget, {
                     text: items.length > 0 ? items[0].regionText : "",
                     handler: items.length > 0 ? items[0].regionHandler : BI.emptyFn,
                     items: items,
-                    belongPackage: self._isCurrentPackageTable(region)
+                    belongPackage: items.length > 0 ? items[0].belongPackage : true
                 });
                 if (BI.isNotNull(items[0]) && BI.isNotNull(items[0].keyword)) {
                     views[i][j].doRedMark(items[0].keyword);
@@ -186,7 +179,7 @@ BI.RelationView = BI.inherit(BI.Widget, {
                     self._hoverOut(v);
                 });
                 views[i][j].on(BI.RelationViewRegionContainer.EVENT_PREVIEW, function (v) {
-                    self._previewRelationTable(region, v)
+                    self.fireEvent(BI.RelationView.EVENT_PREVIEW, region, v);
                 });
                 indexes[region] = {i: i, j: j};
                 horizontal.push(views[i][j]);
@@ -322,4 +315,5 @@ BI.RelationView = BI.inherit(BI.Widget, {
     }
 });
 BI.RelationView.EVENT_CHANGE = "RelationView.EVENT_CHANGE";
+BI.RelationView.EVENT_PREVIEW = "EVENT_PREVIEW";
 $.shortcut('bi.relation_view', BI.RelationView);

@@ -21,6 +21,11 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         this.relationView.on(BI.RelationView.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, v);
         });
+        this.relationView.on(BI.RelationView.EVENT_PREVIEW, function (tableId, show) {
+            var relationTables = BI.Utils.getRelationTablesByTableId4Conf(tableId);
+            relationTables.push(tableId);
+            this.previewRelationTables(relationTables, show);
+        });
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
@@ -68,7 +73,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                                     regionTitle: self.model.getTableTranName(tId),
                                     value: primaryId,
                                     text: self.model.getFieldTranName(primaryId),
-                                    title: self.model.getFieldTranName(primaryId)
+                                    title: self.model.getFieldTranName(primaryId),
+                                    belongPackage: self._isCurrentPackageTable(tId)
                                 },
                                 foreign: {
                                     region: foreignTableId,
@@ -77,7 +83,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                                     value: foreignId,
                                     text: self.model.getFieldTranName(foreignId),
                                     title: self.model.getFieldTranName(foreignId),
-                                    regionHandler: regionHandler
+                                    regionHandler: regionHandler,
+                                    belongPackage: self._isCurrentPackageTable(foreignId)
                                 }
                             });
                         }
@@ -91,7 +98,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                         region: tId,
                         regionText: self.model.getTableTranName(tId),
                         regionTitle: self.model.getTableTranName(tId),
-                        regionHandler: regionHandler
+                        regionHandler: regionHandler,
+                        belongPackage: self._isCurrentPackageTable(tId)
                     }
                 });
             } else {
@@ -140,7 +148,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                                     value: primaryId,
                                     text: self.model.getFieldTranName(primaryId),
                                     title: self.model.getFieldTranName(primaryId),
-                                    regionHandler: regionHandler
+                                    regionHandler: regionHandler,
+                                    belongPackage: self._isCurrentPackageTable(primaryTableId)
                                 },
                                 foreign: {
                                     region: BI.UUID(),
@@ -159,7 +168,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                                 value: primaryId,
                                 text: self.model.getFieldTranName(primaryId),
                                 title: self.model.getFieldTranName(primaryId),
-                                regionHandler: regionHandler
+                                regionHandler: regionHandler,
+                                belongPackage: self._isCurrentPackageTable(primaryTableId)
                             };
                             var foreignItem = {
                                 region: foreignTableId,
@@ -168,7 +178,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                                 value: foreignId,
                                 text: self.model.getFieldTranName(foreignId),
                                 title: self.model.getFieldTranName(foreignId),
-                                regionHandler: regionHandler
+                                regionHandler: regionHandler,
+                                belongPackage: self._isCurrentPackageTable(foreignTableId)
                             };
                             if (!BI.contains(self.model.getTableIds(), foreignTableId)) {
                                 delete foreignItem.regionHandler;
@@ -256,6 +267,11 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         });
     },
 
+    _isCurrentPackageTable: function (tableId) {
+        var tableIds = BI.Utils.getTablesIdByPackageId4Conf(this.options.packageId);
+        return tableIds.contains(tableId);
+    },
+
     refresh: function (items) {
         this.relationView.populate(items);
     },
@@ -269,7 +285,7 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
         });
     },
 
-    getCacheItems: function() {
+    getCacheItems: function () {
         return BI.deepClone(this.cacheItems);
     },
 
