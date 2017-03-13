@@ -11,12 +11,9 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
-<<<<<<< HEAD
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.ExcelExportDataBuildFactory;
-=======
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -40,13 +37,7 @@ import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.web.core.SessionDealWith;
 
-<<<<<<< HEAD
 import java.util.*;
-=======
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import java.util.concurrent.ConcurrentHashMap;
 
 
