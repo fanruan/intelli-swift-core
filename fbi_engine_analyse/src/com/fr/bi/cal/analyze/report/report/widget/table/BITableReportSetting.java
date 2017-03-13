@@ -14,6 +14,7 @@ import java.util.Map;
  * Created by GUY on 2015/4/9.
  */
 public class BITableReportSetting extends BIAbstractTableSetting {
+    private static final long serialVersionUID = -8748078323275198680L;
     @BICoreField
     protected String[] summary;
     @BICoreField
@@ -70,8 +71,8 @@ public class BITableReportSetting extends BIAbstractTableSetting {
             if (jo1.has("tableStyle")) {
                 tableStyle = jo1.optInt("tableStyle");
             }
-            if (jo1.has("number")) {
-                number = jo1.optInt("number", 0);
+            if (jo1.has("showNumber")) {
+                number = jo1.optBoolean("showNumber", false) ? 1 : 0 ;
             }
         }
     }

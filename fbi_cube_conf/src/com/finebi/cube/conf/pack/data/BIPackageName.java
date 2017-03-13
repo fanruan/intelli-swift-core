@@ -9,6 +9,7 @@ import com.fr.bi.base.BIName;
  * @since 4.0
  */
 public class BIPackageName extends BIName {
+    private static final long serialVersionUID = -8246876373658350155L;
     public static BIPackageName DEFAULT = new BIPackageName("BI_EMPTY_NAME");
 
     public BIPackageName(String name) {

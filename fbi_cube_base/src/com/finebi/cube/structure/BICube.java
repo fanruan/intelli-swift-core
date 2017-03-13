@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BICube implements Cube {
     private static BILogger logger = BILoggerFactory.getLogger(BICube.class);
+    private static final long serialVersionUID = -5241804642657280524L;
     private ICubeResourceRetrievalService resourceRetrievalService;
     private ICubeResourceDiscovery discovery;
     private BICubeVersion cubeVersion;
@@ -86,6 +87,22 @@ public class BICube implements Cube {
             throw BINonValueUtils.illegalArgument(relation.toString() + " the relation is so terrible");
         }
         return getCubeRelation(tableKey, relationPath);
+    }
+
+    @Override
+    public ICubeRelationEntityService getCubeRelationWriter(ITableKey tableKey, BICubeRelation relation) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
+        BICubeTablePath relationPath = new BICubeTablePath();
+        try {
+            relationPath.addRelationAtHead(relation);
+        } catch (BITablePathConfusionException e) {
+            throw BINonValueUtils.illegalArgument(relation.toString() + " the relation is so terrible");
+        }
+        return (ICubeRelationEntityService) getCubeTableWriter(tableKey).getRelationIndexGetter(relationPath);
+    }
+
+    @Override
+    public ICubeRelationEntityService getCubeRelationWriter(ITableKey tableKey, BICubeTablePath relationPath) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
+        return (ICubeRelationEntityService) getCubeTableWriter(tableKey).getRelationIndexGetter(relationPath);
     }
 
     @Override

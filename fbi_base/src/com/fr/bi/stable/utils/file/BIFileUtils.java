@@ -62,7 +62,7 @@ public class BIFileUtils {
     public static List deleteFiles(File f) {
         List removedFailedFiles = new ArrayList();
         File[] files = f.listFiles();
-        if (null!=files) {
+        if (null != files) {
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
                     deleteFiles(files[i]);
@@ -72,7 +72,7 @@ public class BIFileUtils {
                     }
                 }
             }
-            if(!f.delete()) {
+            if (!f.delete()) {
                 removedFailedFiles.add(f.getAbsolutePath());
             }
         }
@@ -147,6 +147,13 @@ public class BIFileUtils {
     public static void copyFile(File source, File dest) throws IOException {
         FileChannel in = null, out = null;
         try {
+            if (!source.exists()) {
+                BILoggerFactory.getLogger(BIFileUtils.class).warn("the source file is not exist: " + source.getAbsolutePath());
+                return;
+            }
+            if (!dest.exists()) {
+                dest.createNewFile();
+            }
             in = new RandomAccessFile(source, "r").getChannel();
             out = new RandomAccessFile(dest, "rw").getChannel();
             long currentSize = 0;

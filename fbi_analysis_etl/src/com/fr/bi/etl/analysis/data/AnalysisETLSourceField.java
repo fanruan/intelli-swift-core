@@ -5,10 +5,13 @@ import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 import com.fr.stable.StringUtils;
 
+import java.io.Serializable;
+
 /**
  * Created by 小灰灰 on 2016/5/12.
  */
-public class AnalysisETLSourceField implements JSONTransform{
+public class AnalysisETLSourceField implements JSONTransform,Serializable{
+    private static final long serialVersionUID = 4134942806350474094L;
     private String fieldName;
     private int fieldType;
     private int group = -1;

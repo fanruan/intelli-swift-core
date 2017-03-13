@@ -22,6 +22,7 @@ import java.util.Set;
  * Created by 小灰灰 on 2016/3/17.
  */
 public class ColumnNameFilter extends ColumnFieldFilter {
+    private static final long serialVersionUID = 4974930130620929976L;
     private String columnName;
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {

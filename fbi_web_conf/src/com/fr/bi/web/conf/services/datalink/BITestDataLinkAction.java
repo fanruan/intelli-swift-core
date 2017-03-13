@@ -45,12 +45,11 @@ public class BITestDataLinkAction extends AbstractBIConfigureAction {
         WebUtils.printAsJSON(res, jo);
     }
 
-    private JDBCDatabaseConnection fetchConnection(String configData) throws Exception {
+    private com.fr.data.impl.Connection fetchConnection(String configData) throws Exception {
         JSONObject linkDataJo = new JSONObject(configData);
         DataLinkInformation dl = new DataLinkInformation();
         dl.parseJSON(linkDataJo);
-        JDBCDatabaseConnection c = dl.createJDBCDatabaseConnection();
-        BIDBUtils.dealWithJDBCConnection(c);
+        com.fr.data.impl.Connection c = dl.createDatabaseConnection();
         return c;
     }
 

@@ -12,6 +12,8 @@ import com.fr.bi.etl.analysis.data.UserETLTableSource;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.file.XMLFileManager;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
@@ -20,9 +22,12 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+import java.io.File;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -52,6 +57,32 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     }
 
 
+    private void removeUseLessPath() {
+        Set<String> paths = new HashSet<String>();
+        for(Entry<String, String> entry : cubePathMap.entrySet()) {
+            paths.add(BIConfigurePathUtils.createUserETLTablePath(entry.getKey(), entry.getValue()));
+        }
+        File root = new File(BIConfigurePathUtils.createUserETLBasePath());
+        removeFiles(root, paths);
+    }
+
+    private static void removeFiles(File root, Set<String> paths) {
+        if(root.exists()){
+            if(root.isDirectory()) {
+                if(!paths.contains(root.getAbsolutePath())){
+                    File[] fs = root.listFiles();
+                    for (File f : fs) {
+                        removeFiles(f, paths);
+                    }
+                    root.delete();
+                }
+            } else {
+                root.delete();
+            }
+        }
+    }
+
+
     public void invokeUpdate(String md5, long userId) {
         synchronized (threadMap) {
             for (Entry<String, SingleUserETLTableCubeManager> entry : threadMap.entrySet()) {
@@ -77,12 +108,13 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
                 manager.getSource().refreshWidget();
             }
         }
+        resetErrorStatus();
     }
 
     @Override
     public void addTask(AnalysisCubeTableSource source, BIUser user) {
         SingleUserETLTableCubeManager manager = createManager(source, user);
-            manager.addTask();
+        manager.addTask();
     }
 
     @Override
@@ -100,6 +132,10 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 
     public boolean isAvailable(AnalysisCubeTableSource source, BIUser user) {
         return createManager(source, user).isAvailable();
+    }
+
+    public int getThreadPoolCubeCount(AnalysisCubeTableSource source, BIUser user) {
+        return createManager(source, user).getThreadPoolCubeCount();
     }
 
     private SingleUserETLTableCubeManager createManager(AnalysisCubeTableSource source, BIUser user) {
@@ -139,6 +175,18 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 
     }
 
+
+    public void resetErrorStatus() {
+        Iterator<Entry<String, SingleUserETLTableCubeManager>> iter = threadMap.entrySet().iterator();
+        while (iter.hasNext()) {
+            Entry<String, SingleUserETLTableCubeManager> entry = iter.next();
+            SingleUserETLTableCubeManager manager = entry.getValue();
+            if (manager != null) {
+                manager.resetErrorStatus();
+            }
+        }
+    }
+
     @Override
     public void releaseCurrentThread(String key) {
         SingleUserETLTableCubeManager manager = threadMap.get(key);
@@ -150,6 +198,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     public UserETLCubeManager() {
         synchronized (cubePathMap) {
             readXMLFile();
+            removeUseLessPath();
         }
     }
 
@@ -190,6 +239,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         synchronized (cubePathMap) {
             cubePathMap.clear();
             readXMLFile();
+            removeUseLessPath();
         }
     }
 
@@ -251,7 +301,20 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
     @Override
     public boolean checkVersion(AnalysisCubeTableSource source, BIUser user) {
         SingleUserETLTableCubeManager manager = createManager(source, user);
-        return manager.checkVersion();
+        boolean f =  manager.checkVersion();
+        if(!f) {
+            manager.addTask();
+        }
+        return  f;
+    }
+
+    public long getTableVersion(AnalysisCubeTableSource source, BIUser user) {
+        SingleUserETLTableCubeManager manager = createManager(source, user);
+        try {
+            return getTableIndex(source, user).getTableVersion(new IndexKey(StringUtils.EMPTY));
+        } finally {
+            manager.releaseCurrentThread();
+        }
     }
 
 }

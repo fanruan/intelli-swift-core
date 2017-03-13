@@ -3,21 +3,21 @@ package com.fr.bi.conf.data.source;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.data.source.operator.create.TableFilterOperator;
 import com.fr.bi.conf.data.source.operator.create.UsePartOperator;
+import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BICollectionUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -155,7 +155,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
         while (it.hasNext()) {
             CubeTableSource parentSource = it.next();
             if (reuseTableSource(parentSource)) {
-                parentSource = getActualDBTableSource(parentSource);
+                parentSource = BIModuleUtils.getActualDBTableSource(parentSource);
             }
             List<Set<CubeTableSource>> parent = parentSource.createGenerateTablesList();
             if (!parent.isEmpty()) {
@@ -195,30 +195,36 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
 
     @Override
     public IPersistentTable getPersistentTable() {
-        if (dbTable == null) {
-            dbTable = createBITable();
+        try {
+            if (dbTable == null) {
+                dbTable = createBITable();
 
-            if (isAllAddColumnOperator()) {
-                for (S source : parents) {
-                    IPersistentTable p = source.getPersistentTable();
-                    for (int i = 0; i < p.getFieldSize(); i++) {
-                        dbTable.addColumn(p.getField(i));
+                if (isAllAddColumnOperator()) {
+                    for (S source : parents) {
+                        IPersistentTable p = source.getPersistentTable();
+                        for (int i = 0; i < p.getFieldSize(); i++) {
+                            dbTable.addColumn(p.getField(i));
+                        }
+                    }
+                }
+                IPersistentTable[] ptables = new IPersistentTable[parents.size()];
+                for (int i = 0; i < ptables.length; i++) {
+                    ptables[i] = parents.get(i).getPersistentTable();
+                }
+                for (int i = 0; i < oprators.size(); i++) {
+                    IPersistentTable ctable = oprators.get(i).getBITable(ptables);
+                    Iterator<PersistentField> it = ctable.getFieldList().iterator();
+                    while (it.hasNext()) {
+                        PersistentField column = it.next();
+                        dbTable.addColumn(column);
                     }
                 }
             }
-            IPersistentTable[] ptables = new IPersistentTable[parents.size()];
-            for (int i = 0; i < ptables.length; i++) {
-                ptables[i] = parents.get(i).getPersistentTable();
-            }
-            for (int i = 0; i < oprators.size(); i++) {
-                IPersistentTable ctable = oprators.get(i).getBITable(ptables);
-                Iterator<PersistentField> it = ctable.getFieldList().iterator();
-                while (it.hasNext()) {
-                    PersistentField column = it.next();
-                    dbTable.addColumn(column);
-                }
-            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(AbstractETLTableSource.class).error("Get ETL persistentTable Error, the error tableSource is: " + BILogHelper.logTableSource(this, ""));
+            dbTable = null;
         }
+
         return dbTable;
     }
 
@@ -363,14 +369,5 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
 
     private boolean reuseTableSource(CubeTableSource tableSource) {
         return tableSource instanceof DBTableSource && !(tableSource instanceof ServerTableSource);
-    }
-
-    private CubeTableSource getActualDBTableSource(CubeTableSource tableSource) {
-        for (BusinessTable table : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
-            if (table.getTableSource().equals(tableSource)) {
-                return table.getTableSource();
-            }
-        }
-        return tableSource;
     }
 }

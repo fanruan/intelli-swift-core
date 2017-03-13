@@ -14,13 +14,15 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Created by young
  */
-public class BIAuthorityManager {
+public class BIAuthorityManager implements Serializable{
 
+    private static final long serialVersionUID = 4326589720210810024L;
     private long version = new Date().getTime();   //版本
 
     private Map<BIPackageID, List<BIPackageAuthority>> packagesAuth = new HashMap<BIPackageID, List<BIPackageAuthority>>();
@@ -69,13 +71,11 @@ public class BIAuthorityManager {
         return result;
     }
 
-    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID, BISessionProvider session) throws Exception {
+    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID,List<CompanyRole> comRoles,List<CustomRole> cusRoles) throws Exception {
         List<BIPackageAuthority> packAuths = this.packagesAuth.get(packageID);
         List<BIPackageAuthority> result = new ArrayList<BIPackageAuthority>();
         for (int i = 0; i < packAuths.size(); i++) {
             BIPackageAuthority auth = packAuths.get(i);
-            List<CompanyRole> comRoles = session.getCompanyRoles();
-            List<CustomRole> cusRoles = session.getCustomRoles();
             String roleName = auth.getRoleName();
             int roleType = auth.getRoleType();
             switch (roleType) {
@@ -136,7 +136,7 @@ public class BIAuthorityManager {
         return packageIDs;
     }
 
-    public List<BIPackageID> getAuthPackagesBySession(BISessionProvider session) throws Exception {
+    public List<BIPackageID> getAuthPackagesBySession(List<CompanyRole> comRoles,List<CustomRole> cusRoles) throws Exception {
         List<BIPackageID> packageIDs = new ArrayList<BIPackageID>();
         Iterator<Map.Entry<BIPackageID, List<BIPackageAuthority>>> iterator = this.packagesAuth.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -145,8 +145,6 @@ public class BIAuthorityManager {
             BIPackageID pId = packAuth.getKey();
             for (int i = 0; i < authorities.size(); i++) {
                 BIPackageAuthority auth = authorities.get(i);
-                List<CompanyRole> comRoles = session.getCompanyRoles();
-                List<CustomRole> cusRoles = session.getCustomRoles();
                 String roleName = auth.getRoleName();
                 int roleType = auth.getRoleType();
                 switch (roleType) {

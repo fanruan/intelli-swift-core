@@ -3,10 +3,12 @@ package com.finebi.cube.structure;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.common.inter.Release;
 
+import java.io.Serializable;
+
 /**
  * Created by 小灰灰 on 2016/6/28.
  */
-public interface ICubeColumnPositionOfGroupService extends Release ,ICubeResourceForceRelease {
+public interface ICubeColumnPositionOfGroupService extends Release ,ICubeResourceForceRelease,Serializable {
     /**
      * 给每一个原始值添加在分组中的位置
      *

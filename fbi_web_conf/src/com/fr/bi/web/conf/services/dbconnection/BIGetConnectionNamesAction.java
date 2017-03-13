@@ -6,7 +6,11 @@ import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+<<<<<<< HEAD
 import com.fr.bi.web.conf.utils.BIWebConfUtils;
+=======
+import com.fr.data.impl.Connection;
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
@@ -15,7 +19,6 @@ import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.web.utils.WebUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ public class BIGetConnectionNamesAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONArray ja = new JSONArray();
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator names = datasourceManager.getConnectionNameIterator();
         boolean isAdmin = ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID());
         Set<BIDataConfigAuthority> authorities = BIConfigureManagerCenter.getDataConfigAuthorityManager().getDataConfigAuthoritiesByUserId(userId);
@@ -49,6 +52,7 @@ public class BIGetConnectionNamesAction extends AbstractBIConfigureAction {
         }
         while (names.hasNext()) {
             String name = (String) names.next();
+<<<<<<< HEAD
             BIConnection connection = BIConnectionManager.getInstance().getBIConnection(name);
             if (isAdmin || ComparatorUtils.equals(connection.getCreateBy(), userId) || authNames.contains(name)) {
                 JDBCDatabaseConnection conn = datasourceManager.getConnection(name, JDBCDatabaseConnection.class);
@@ -57,6 +61,13 @@ public class BIGetConnectionNamesAction extends AbstractBIConfigureAction {
                         continue;
                     }
                     ja.put(name);
+=======
+
+            Connection conn = datasourceManager.getConnection(name);
+            if (conn != null) {
+                if (conn instanceof JDBCDatabaseConnection && ComparatorUtils.equals(conn.getDriver(), "sun.jdbc.odbc.JdbcOdbcDriver") && ((JDBCDatabaseConnection) conn).getURL().indexOf("Microsoft Access Driver") > 0) {
+                    continue;
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                 }
             }
         }

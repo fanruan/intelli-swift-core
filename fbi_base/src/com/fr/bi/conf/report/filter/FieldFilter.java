@@ -8,11 +8,13 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONCreator;
 
+import java.io.Serializable;
+
 /**
  * 过滤的父接口
  * Created by GUY on 2015/4/20.
  */
-public interface FieldFilter extends ParseJSONWithUID, JSONCreator,BICoreService {
+public interface FieldFilter extends ParseJSONWithUID, JSONCreator,BICoreService ,Serializable{
 
     /**
      * 创建维度到指标的过滤条件

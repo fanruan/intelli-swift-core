@@ -37,11 +37,12 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
         v = v || [];
         var self = this, o = this.options;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId),
-            titles = [],
-            data = {
-                floors: -1,
-                selectedValues: v
-            };
+            titles = [];
+        v = v.slice(0, dimensions.length);
+        var data = {
+            floors: -1,
+            selectedValues: v
+        };
         if (BI.isEmptyArray(dimensions)) {
             self.treeLabel.populate({
                 items: [],

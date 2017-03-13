@@ -59,6 +59,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         BI.each(config.yAxis, function (idx, axis) {
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
+<<<<<<< HEAD
                     BI.extend(axis, self.leftAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.leftYNumberLevel, idx, axis.formatter);
                     break;
@@ -69,6 +70,51 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                 case self.constants.RIGHT_AXIS_SECOND:
                     BI.extend(axis, self.right2AxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.rightY2NumberLevel, idx, axis.formatter);
+=======
+                    title = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
+                    axis.title.rotation = self.constants.ROTATION;
+                    BI.extend(axis, {
+                        lineWidth: self.config.line_width,
+                        showLabel: self.config.show_label,
+                        enableTick: self.config.enable_tick,
+                        reversed: self.config.left_y_axis_reversed,
+                        enableMinorTick: self.config.enable_minor_tick,
+                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
+                    });
+                    self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
+                    break;
+                case self.constants.RIGHT_AXIS:
+                    title = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
+                    axis.title.rotation = self.constants.ROTATION;
+                    BI.extend(axis, {
+                        lineWidth: self.config.line_width,
+                        showLabel: self.config.show_label,
+                        enableTick: self.config.enable_tick,
+                        reversed: self.config.right_y_axis_reversed,
+                        enableMinorTick: self.config.enable_minor_tick,
+                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)
+                    });
+                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
+                    break;
+                case self.constants.RIGHT_AXIS_SECOND:
+                    title = self.getXYAxisUnit(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
+                    axis.title.text = self.config.show_right_y_axis_second_title === true ? self.config.right_y_axis_second_title + title : title;
+                    axis.title.rotation = self.constants.ROTATION;
+                    BI.extend(axis, {
+                        lineWidth: self.config.line_width,
+                        showLabel: self.config.show_label,
+                        enableTick: self.config.enable_tick,
+                        reversed: self.config.right_y_axis_second_reversed,
+                        enableMinorTick: self.config.enable_minor_tick,
+                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_second_style, self.config.right_y_axis_second_number_level, self.config.right2_num_separators)
+                    });
+                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_second_number_level, idx, axis.formatter);
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                     break;
                 default:
                     break;

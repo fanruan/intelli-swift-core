@@ -2,7 +2,7 @@ package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
+import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -12,6 +12,7 @@ import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BIWeblet;
+import com.fr.bi.cluster.utils.ClusterLockObject;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
@@ -20,6 +21,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.stable.StringUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +30,21 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2016/4/12.
  */
-public class UserWidget {
+public class UserWidget implements Serializable {
 
+    private static final long serialVersionUID = 2202469219214676310L;
     private int maxRow = Integer.MAX_VALUE;
     @BICoreField
     private BIWidget widget;
     @BICoreField
     private long userId;
     @BIIgnoreField
-    private Object lock = new Object();
+    private ClusterLockObject lock = new ClusterLockObject();
 
     @BIIgnoreField
-    private UserSession session;
+    private transient UserSession session;
     @BIIgnoreField
-    private transient Map<Integer, List> tempValue = new ConcurrentHashMap<Integer, List>();
+    private /*transient*/ Map<Integer, List> tempValue = new ConcurrentHashMap<Integer, List>();
 
     public UserWidget(BIWidget widget, long userId) {
         this.widget = widget;
@@ -118,7 +121,7 @@ public class UserWidget {
     private List<List> getNextValue(UserSession session, int op) {
         List<List> values = new ArrayList<List>();
         try {
-            ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
+            ((TableWidget) widget).setComplexExpander(new ComplexAllExpander());
             ((TableWidget) widget).setOperator(op);
             Node n = (Node) ((TableWidget) widget).getExecutor(session).getCubeNode();
             while (n.getFirstChild() != null) {
@@ -182,6 +185,8 @@ public class UserWidget {
     }
 
     private class UserSession extends BISession {
+
+        private static final long serialVersionUID = -6365288173994213351L;
 
         public UserSession() {
             super(StringUtils.EMPTY, new BIWeblet(), userId);

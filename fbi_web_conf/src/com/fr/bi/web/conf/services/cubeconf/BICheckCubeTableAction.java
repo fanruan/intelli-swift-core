@@ -34,7 +34,7 @@ public class BICheckCubeTableAction extends AbstractBIConfigureAction {
             jo.put("exists", tableExisted);
         } catch (Exception e) {
             jo.put("exists", false);
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         WebUtils.printAsJSON(res, jo);
     }

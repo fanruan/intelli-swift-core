@@ -480,7 +480,8 @@ var _JS = [
     "detail/mvc.intervalslider.js",
     "detail/mvc.stringlist.js",
     "detail/mvc.treelist.js",
-    "detail/mvc.datapane.js"
+    "detail/mvc.datapane.js",
+    "detail/mvc.editor.number.finetuning.js"
 ];
 
 
@@ -710,7 +711,8 @@ var _Routes = {
     "/interval_slider": "IntervalSliderView",
     "/string_list": "StringListView",
     "/tree_list": "TreeListView",
-    "/data_pane": "DataPaneView"
+    "/data_pane": "DataPaneView",
+    "/finetuning_number_editor": "FinetuningNumberEditorView"
 };
 
 var _Models = {};
@@ -1255,6 +1257,9 @@ _Models.detail = [{
 }, {
     id: 39,
     text: "螺旋分析tab控件"
+}, {
+    id: 40,
+    text: "数值微调器"
 },
 
 
@@ -1634,6 +1639,10 @@ _Models.detail = [{
         pId: 39,
         text: "螺旋分析tab控件",
         value: "dynamic_group_tab"
+    }, {
+        pId: 40,
+        text: "数值微调器",
+        value: "finetuning_number_editor"
     }];
 _Models.component = [];
 _Models.module = [];

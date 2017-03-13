@@ -4,10 +4,13 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
+import java.io.Serializable;
+
 /**
  * Created by Young's on 2016/4/25.
  */
-public class TimeFrequency implements JSONTransform {
+public class TimeFrequency implements JSONTransform,Serializable {
+    private static final long serialVersionUID = -457266689095798658L;
     private int updateFrequency = DBConstant.UPDATE_FREQUENCY.EVER_DAY;
     private int updateTime;
     private int updateType = DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;

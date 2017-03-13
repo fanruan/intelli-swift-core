@@ -501,7 +501,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             }
             removedList.add(removedListReader.getSpecificValue(i));
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return removedList;
     }
@@ -724,9 +724,14 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             removeListReader.clear();
             removeListReader = null;
         }
-        parentFieldProperty.forceRelease();
-        version.forceRelease();
-//        clear();
+        if (parentFieldProperty != null) {
+            parentFieldProperty.forceReleaseWriter();
+            parentFieldProperty = null;
+        }
+        if (version != null) {
+            (version).forceReleaseWriter();
+            version = null;
+        }
     }
 
     @Override

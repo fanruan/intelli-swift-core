@@ -3,11 +3,12 @@ package com.finebi.cube.api;
 
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
 
-public interface ICubeColumnIndexReader<T> {
+public interface ICubeColumnIndexReader<T> extends Serializable {
 
     GroupValueIndex[] getGroupIndex(T[] groupValues);
 

@@ -1,9 +1,9 @@
 package com.fr.bi.web.conf.services.dbconnection;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.DBConstant;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.TableProcedure;
@@ -37,7 +37,7 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
         JSONObject groupJo = new JSONObject();
         groupJo.put("group_name", "0");
         JSONArray groupArray = new JSONArray();
-        Iterator names = DatasourceManager.getInstance().getTableDataNameIterator();
+        Iterator names = DatasourceManager.getProviderInstance().getTableDataNameIterator();
         while (names.hasNext()) {
             JSONObject table = new JSONObject();
             table.put("value", names.next());
@@ -60,16 +60,16 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
         if (isServerTableData(connectionName)) {
             dealWithServerTableData(ja);
         } else {
-            com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
+            com.fr.data.impl.Connection dbc = DatasourceManager.getProviderInstance().getConnection(connectionName);
             TableProcedure[] tps = new TableProcedure[0];
             TableProcedure[] views = new TableProcedure[0];
-            String schemaName = BIConnectionManager.getInstance().getSchema(connectionName);
+            String schemaName = BIConnectionManager.getBIConnectionManager().getSchema(connectionName);
             try {
                 if (schemaName != null) {
                     jo.put("schema", schemaName);
                     //无schema的同样需要取
                     String[] schemas = DataCoreUtils.getDatabaseSchema(dbc);
-                    if(StringUtils.isNotEmpty(schemaName) || schemas.length == 0) {
+                    if (StringUtils.isNotEmpty(schemaName) || schemas.length == 0) {
                         TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schemaName, true);
                         tps = ArrayUtils.addAll(tps, sqlTables);
                         views = ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schemaName));
@@ -80,10 +80,10 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
                 }
             } catch (Exception e) {
                 jo.put("error", e.getMessage());
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
-
-            TableProcedure[] result = ArrayUtils.addAll(tps, views);
+            //遇到重复的表，过滤掉
+            TableProcedure[] result = duplicateRemove(tps, views);
             Map<String, ArrayList<TableProcedure>> tpMap = splitTableProcedureBySchema(result);
             Set<String> set = tpMap.keySet();
             for (String schema : set) {
@@ -92,6 +92,25 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
         }
         jo.put("items", ja);
         WebUtils.printAsJSON(res, jo);
+    }
+
+    private TableProcedure[] duplicateRemove(TableProcedure[] tps, TableProcedure[] views) {
+        TableProcedure[] tmpViews = new TableProcedure[0];
+        for (TableProcedure procedure : views) {
+            if (!existInTables(procedure, tps)) {
+                tmpViews = ArrayUtils.add(views, procedure);
+            }
+        }
+        return ArrayUtils.addAll(tps, tmpViews);
+    }
+
+    private boolean existInTables(TableProcedure procedure, TableProcedure[] sqlTables) {
+        for (TableProcedure table : sqlTables) {
+            if (ComparatorUtils.equals(procedure.getSchema(), table.getSchema()) && ComparatorUtils.equals(procedure.getName(), table.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void dealWithOneSchema(String schema, Map<String, ArrayList<TableProcedure>> tpMap, JSONArray ja) {

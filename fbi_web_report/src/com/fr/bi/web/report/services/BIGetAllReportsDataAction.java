@@ -38,7 +38,8 @@ public class BIGetAllReportsDataAction extends ActionNoSessionCMD {
             JSONArray allEntry = EntryControl.getInstance().getRootNode().createAllEntryJSONArray(UserControl.getInstance().getSuperManagerID(), true);
             for (int i = 0; i < userList.size(); i++) {//管理员查看所有模板，只选择有模板的用户
                 User u = userList.get(i);
-                List<BIReportNode> singleUserReports = BIDAOUtils.findByUserID(u.getId());
+                users.put(u.createEditInfoJSONConfig());
+                List<BIReportNode> singleUserReports = BIDAOUtils.getBIDAOManager().findByUserID(u.getId());
                 if (singleUserReports.size() > 0) {
                     userHasBIReportNode.add(u);//添加有模板的用户
                     users.put(u.createEditInfoJSONConfig());

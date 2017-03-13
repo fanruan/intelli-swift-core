@@ -156,6 +156,9 @@ public interface BITableRelationConfigurationProvider {
      */
     BITableRelationPath getFirstAvailablePath(long userId, BusinessTable primaryTable, BusinessTable juniorTable) throws BITableUnreachableException;
 
+
+
+    BITableRelationPath getFirstAnalysisAvailablePath(long userId,BusinessTable primaryTable,BusinessTable juniorTable);
     /**
      * 获得表集合中的公共子类表
      *

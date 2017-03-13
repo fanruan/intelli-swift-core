@@ -8,6 +8,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BICubeTableAbsentException extends RuntimeException {
+    private static final long serialVersionUID = -3367726368589372411L;
+
     public BICubeTableAbsentException(String message) {
         super(message);
     }

@@ -27,7 +27,7 @@ public abstract class BICubeColumnBasicTest<T> extends TestCase {
     }
 
     public void testCubeColumnGroupSort() {
-
+        column.forceReleaseWriter();
         checkCubeColumnGroupSort(column);
     }
 
@@ -37,5 +37,7 @@ public abstract class BICubeColumnBasicTest<T> extends TestCase {
 
     public abstract void checkCubeColumnGroupSort(ICubeColumnEntityService<T> column);
 
-
+    public void test() {
+    }
 }
+

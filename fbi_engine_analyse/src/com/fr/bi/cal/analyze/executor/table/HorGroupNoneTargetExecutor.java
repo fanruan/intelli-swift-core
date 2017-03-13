@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -143,6 +144,10 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
         return new JSONArray(currentIndex).toString();
     }
 
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 构建cells
      *
@@ -159,12 +164,12 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
         int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
         //导出就全部展开吧
-        int rowLen = paging.getOprator() < Node.NONE_PAGE_LEVER ? tree.getTotalLength() : tree.getTotalLength(expander.getXExpander());
+        int rowLen = paging.getOperator() < Node.NONE_PAGE_LEVER ? tree.getTotalLength() : tree.getTotalLength(expander.getXExpander());
         //+1是标题
         CBCell[][] cbcells = new CBCell[rowLen + 1][columnLen];
 
         generateTitle(cbcells, columnLen);
-        if (paging.getOprator() < Node.NONE_PAGE_LEVER) {
+        if (paging.getOperator() < Node.NONE_PAGE_LEVER) {
             dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, usedDimensions.length - 1, new BIComplexExecutData(usedDimensions));
         } else {
             dealWithNode(tree, expander.getXExpander(), cbcells, 1, 0, usedDimensions, usedSumTarget, new ArrayList<String>(), usedDimensions.length - 1, new BIComplexExecutData(usedDimensions));
@@ -211,7 +216,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
             return null;
         }
         long start = System.currentTimeMillis();
-        int calpage = paging.getOprator();
+        int calpage = paging.getOperator();
         Node tree = CubeIndexLoader.getInstance(session.getUserId()).loadPageGroup(true, widget, new BISummaryTarget[0], usedDimensions, allDimensions, new BISummaryTarget[0], calpage, widget.useRealData(), session, expander.getXExpander());
         if (tree == null) {
             tree = new Node();

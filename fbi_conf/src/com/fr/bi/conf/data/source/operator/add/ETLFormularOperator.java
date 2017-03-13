@@ -8,6 +8,8 @@ import com.fr.stable.StringUtils;
  * Created by 小灰灰 on 2016/5/9.
  */
 public class ETLFormularOperator extends FieldFormulaOperator{
+    private static final long serialVersionUID = -8941193053242111775L;
+
     public ETLFormularOperator(long userId) {
         super(userId);
     }

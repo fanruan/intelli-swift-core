@@ -45,7 +45,7 @@ public class BIGetAllHangoutReportsAction extends ActionNoSessionCMD {
             ja.put(folderList.get(i).createJSONConfig());
         }
 
-        List<BIReportNode> nodeList = BIDAOUtils.findByUserID(userId);
+        List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(userId);
         BISortUtils.sortByModifyTime(nodeList);
         if (nodeList == null) {
             nodeList = new ArrayList<BIReportNode>();
@@ -63,7 +63,7 @@ public class BIGetAllHangoutReportsAction extends ActionNoSessionCMD {
             if (!ComparatorUtils.equals(userId, uId)) {
                 String userName = users.get(i).getRealname();
                 usersJO.put(String.valueOf(uId), userName);
-                List<BIReportNode> reports = BIDAOUtils.findByUserID(uId);
+                List<BIReportNode> reports = BIDAOUtils.getBIDAOManager().findByUserID(uId);
                 JSONArray reportsJA = new JSONArray();
                 for (int j = 0; j < reports.size(); j++) {
                     BIReportNode node = reports.get(j);

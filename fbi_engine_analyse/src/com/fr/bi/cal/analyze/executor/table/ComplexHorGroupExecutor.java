@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.field.BITargetAndDimensionUtils;
@@ -89,6 +90,11 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
         return null;
     }
 
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 构建cells
      *
@@ -114,7 +120,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
         }
         int rowLen = usedSumTarget.length + rowData.getMaxArrayLength();
         //导出就全部展开吧
-        int columnLen = paging.getOprator() < Node.NONE_PAGE_LEVER ? getNodesTotalLength(trees) : getNodesTotalLength(trees, complexExpander, integers);
+        int columnLen = paging.getOperator() < Node.NONE_PAGE_LEVER ? getNodesTotalLength(trees) : getNodesTotalLength(trees, complexExpander, integers);
 
         CBCell[][] cbcells = new CBCell[columnLen + 1][rowLen];
 
@@ -131,12 +137,12 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
 
             BIDimension[] colDimension = rowData.getDimensionArray(integers[i]);
             NodeExpander nodeExpander = complexExpander.getXExpander(integers[i]);
-            if (paging.getOprator() < Node.NONE_PAGE_LEVER) {
+            if (paging.getOperator() < Node.NONE_PAGE_LEVER) {
                 HorGroupExecutor.dealWithNode(tree, cbcells, 0, startColumn, colDimension, usedSumTarget, keys, colDimension.length - 1, rowData, widget.getChartSetting());
             } else {
                 HorGroupExecutor.dealWithNode(tree, nodeExpander, cbcells, 0, startColumn, colDimension, usedSumTarget, keys, new ArrayList<String>(), colDimension.length - 1, false, new IntList(), false, null, widget, rowData, widget.getChartSetting());
             }
-            startColumn += paging.getOprator() < Node.NONE_PAGE_LEVER ? tree.getTotalLengthWithSummary() : tree.getTotalLengthWithSummary(nodeExpander);
+            startColumn += paging.getOperator() < Node.NONE_PAGE_LEVER ? tree.getTotalLengthWithSummary() : tree.getTotalLengthWithSummary(nodeExpander);
         }
         geneEmptyCells(cbcells);
         return cbcells;
@@ -269,7 +275,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
             keys[s] = new TargetGettingKey(usedSumTarget[s].createSummaryCalculator().createTargetKey(), usedSumTarget[s].getValue());
         }
         Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(true, widget, createTarget4Calculate(), rowData, allDimensions,
-                allSumTarget, keys, paging.getOprator(), widget.useRealData(), session, complexExpander, false);
+                allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, false);
 
 
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");

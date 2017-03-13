@@ -9,6 +9,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.operation.group.BIGroupUtils;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 
@@ -95,13 +96,16 @@ class ValueIterator {
                 valuesAndGVIs[i + 1] = new ValuesAndGVI(values, entry.getValue().AND(valuesAndGVIs[i].gvi));
             } else {
                 move(i - 1);
+                if (next == null) {
+                    return;
+                }
             }
         }
         next = valuesAndGVIs[valuesAndGVIs.length - 1];
     }
 
     private Iterator getIter(int index, GroupValueIndex gvi) {
-        if (isCustomGroup(groups[index])) {
+        if (BIGroupUtils.isCustomGroup(groups[index])) {
             return createMapIterator(index, gvi);
         }
         ICubeValueEntryGetter getter = getters[index];

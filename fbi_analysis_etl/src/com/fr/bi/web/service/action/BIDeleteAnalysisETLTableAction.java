@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.utils.BILogHelper;
+import com.fr.bi.base.BIBusinessPackagePersistThread;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
@@ -20,6 +21,12 @@ import javax.servlet.http.HttpServletResponse;
  * edit by kary 2016/12/22  修改删除逻辑，没被其他表用到的source才会被删除
  */
 public class BIDeleteAnalysisETLTableAction extends AbstractAnalysisETLAction {
+
+
+    static BIBusinessPackagePersistThread biBusinessPackagePersistThread = new BIBusinessPackagePersistThread();
+    static {
+        biBusinessPackagePersistThread.start();
+    }
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         final long userId = ServiceUtils.getCurrentUserID(req);
@@ -35,14 +42,14 @@ public class BIDeleteAnalysisETLTableAction extends AbstractAnalysisETLAction {
         }
         BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).removeTransName(tableId);
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-        new Thread() {
+        biBusinessPackagePersistThread.triggerWork(new BIBusinessPackagePersistThread.Action(){
             @Override
-            public void run() {
+            public void work() {
                 BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
                 BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
                 BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
             }
-        }.start();
+        });
 
     }
 

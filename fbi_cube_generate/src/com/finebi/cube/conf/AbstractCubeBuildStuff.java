@@ -17,13 +17,17 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
+import com.fr.bi.stable.structure.queue.FixedExecutor;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.data.impl.Connection;
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by kary on 16/7/11.
@@ -79,14 +83,8 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     public boolean preConditionsCheck() {
         BILoggerFactory.getLogger().info("***************space check start*****************");
         boolean spaceCheck = getSpaceCheckResult();
-        BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck);
-        BILoggerFactory.getLogger().info("***************system properties start*****************");
-        boolean envCheck = envCheck();
-        BILoggerFactory.getLogger().info("***************system properties result: " + spaceCheck);
-        BILoggerFactory.getLogger().info("***************connection check start*****************");
-        boolean connectionCheck = getConnectionCheck();
-        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
-        return spaceCheck && connectionCheck;
+        BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck + " *****************");
+        return spaceCheck;
     }
 
     public Set<CubeTableSource> getSystemTableSources() {
@@ -114,22 +112,15 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
      */
     @Override
     public boolean replaceOldCubes() {
-        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
+        ICubeConfiguration tCubeConf = BICubeConfiguration.getTempConf(Long.toString(userId));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
         ICubeConfiguration advancedTempConf = BICubeConfiguration.getAdvancedTempConf(Long.toString(userId));
         String advancedPath = advancedConf.getRootURI().getPath();
-        String tCubePath = tempConf.getRootURI().getPath();
+        String tCubePath = tCubeConf.getRootURI().getPath();
         String tempFolderPath = advancedTempConf.getRootURI().getPath();
         try {
             if (new File(advancedPath).exists()) {
-                if (new File(tempFolderPath).exists()) {
-                    boolean tempFolderDelete = BIFileUtils.delete(new File(tempFolderPath));
-                    if (!tempFolderDelete) {
-                        BILoggerFactory.getLogger().error("delete tempFolder failed");
-                        return false;
-                    }
-                }
-                boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
+                boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath + System.currentTimeMillis()));
                 if (!renameFolder) {
                     BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
                     return false;
@@ -142,18 +133,38 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
                     return false;
                 }
             }
-            //tCube替换（重命名）成功后删除tempFolder
-            if (new File(tempFolderPath).exists()) {
-                boolean deleteTempFolder = BIFileUtils.delete(new File(tempFolderPath));
-                if (!deleteTempFolder) {
-                    BILoggerFactory.getLogger().error("delete tempFolder failed ");
-                }
-            }
+
+            //删除除了advanced 跟tCube之外的temp文件夹
+            deleteTempFolders();
+
             return true;
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             return false;
         }
+    }
+
+    protected void deleteTempFolders() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        String tCubePath = BICubeConfiguration.getTempConf(Long.toString(userId)).getRootURI().getPath();
+        String advancedPath = BICubeConfiguration.getConf(Long.toString(userId)).getRootURI().getPath();
+
+        File advancedFile = new File(advancedPath);
+        if (advancedFile.getParentFile().exists()) {
+            File[] files = advancedFile.getParentFile().listFiles();
+
+            for (final File file : files) {
+                if (!file.getAbsolutePath().equals(advancedFile.getAbsolutePath()) && !file.getAbsolutePath().equals(new File(tCubePath).getAbsolutePath())) {
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            BIFileUtils.delete(file);
+                        }
+                    });
+                }
+            }
+        }
+
     }
 
     protected UpdateSettingSource setUpdateTypes(CubeTableSource source) {
@@ -211,7 +222,22 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return configHelper.convertPath(path);
     }
 
-    protected Set<BITableSourceRelation> removeDuplicateRelations(Set<BITableSourceRelation> tableRelations) {
+    protected Set<BITableSourceRelation> filterRelations(Set<BITableSourceRelation> tableRelations) {
+        Set<BITableSourceRelation> relations = removeDuplicateRelations(tableRelations);
+        return removeSelfRelations(relations);
+    }
+
+    private Set<BITableSourceRelation> removeSelfRelations(Set<BITableSourceRelation> tableRelations) {
+        Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
+        for (BITableSourceRelation relation : tableRelations) {
+            if (!ComparatorUtils.equals(relation.getPrimaryTable().getSourceID(), relation.getForeignTable().getSourceID())) {
+                set.add(relation);
+            }
+        }
+        return set;
+    }
+
+    private Set<BITableSourceRelation> removeDuplicateRelations(Set<BITableSourceRelation> tableRelations) {
         Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
         Map sourceIdMap = new HashMap<String, BITableSourceRelation>();
         for (BITableSourceRelation relation : tableRelations) {

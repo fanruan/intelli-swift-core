@@ -1,6 +1,7 @@
 package com.fr.bi.web.report.services.authuser;
 
 import com.fr.bi.conf.fs.FBIConfig;
+import com.fr.fs.FSConfig;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
@@ -11,7 +12,6 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -20,7 +20,6 @@ import java.util.List;
 public class BIGetAllAuthUserListAction extends ActionNoSessionCMD {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        PrintWriter writer = WebUtils.createPrintWriter(res);
         long userid = ServiceUtils.getCurrentUserID(req);
         String keyword = WebUtils.getHTTPRequestParameter(req, "keyword");
         if (keyword == null) {
@@ -28,7 +27,13 @@ public class BIGetAllAuthUserListAction extends ActionNoSessionCMD {
             keyword = filter == null ? "" : filter;
         }
         int mode = WebUtils.getHTTPRequestIntParameter(req, "mode");
-        List userlist = UserControl.getInstance().findAllAuthUser(userid);
+        List<User> userlist;
+        if (!FSConfig.getProviderInstance().getAuthorizeAttr().isGradeAuthority()) {
+            //未开启分集授权可以取得所有用户
+            userlist = UserControl.getInstance().findAllUser();
+        } else {
+            userlist = UserControl.getInstance().findAllAuthUser(userid);
+        }
         JSONArray allUsers = new JSONArray();
         for (int i = 0, len = userlist.size(); i < len; i++) {
             User user = (User) userlist.get(i);
@@ -68,10 +73,10 @@ public class BIGetAllAuthUserListAction extends ActionNoSessionCMD {
      * @param username 用户
      */
     private boolean isUserAllowedBILogin(String username, int mode) {
-//        if (FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(mode) == 0) {
+//        if (FBIConfig.getProviderInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(mode) == 0) {
 //            return true;
 //        }
-        if (FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserJoByMode(mode).has(username)) {
+        if (FBIConfig.getProviderInstance().getUserAuthorAttr().getBIAuthUserJoByMode(mode).has(username)) {
             return true;
         }
         return false;

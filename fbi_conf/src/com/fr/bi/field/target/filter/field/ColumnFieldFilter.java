@@ -31,6 +31,7 @@ import java.util.Set;
 
 
 public class ColumnFieldFilter extends ColumnFilter {
+    private static final long serialVersionUID = -4193472724461641733L;
     /**
      *
      */

@@ -514,4 +514,8 @@ public class BIReportConstant {
         public static final int VIEW = 2;
     }
 
+    public static final class HISTORY_VERSION {
+        public final static double VERSION_4_0 = 4.0;
+        public final static double VERSION_4_1 = 4.01;
+    }
 }
