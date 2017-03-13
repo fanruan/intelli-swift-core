@@ -62,11 +62,11 @@ public class Node implements SummaryContainer, BINode {
     //TODO 低效的算法， 放在result无所谓
     private transient Map<TopNKey, Double> topNLineMap;
 
-    public Node (){
+    public Node() {
         childs = new ChildsMap<Node>();
     }
 
-    public Node (Object data){
+    public Node(Object data) {
         this();
         this.setData(data);
     }
@@ -162,8 +162,8 @@ public class Node implements SummaryContainer, BINode {
     @Override
     public Map<TargetGettingKey, GroupValueIndex> getTargetIndexValueMap() {
         if (targetIndexValueMap == null) {
-            synchronized (this){
-                if (targetIndexValueMap == null){
+            synchronized (this) {
+                if (targetIndexValueMap == null) {
                     targetIndexValueMap = new ConcurrentHashMap<TargetGettingKey, GroupValueIndex>(1);
                 }
             }
@@ -788,9 +788,9 @@ public class Node implements SummaryContainer, BINode {
     }
 
     protected Map getNotNullSummaryValue() {
-        if (summaryValue == null){
-            synchronized (this){
-                if (summaryValue == null){
+        if (summaryValue == null) {
+            synchronized (this) {
+                if (summaryValue == null) {
                     summaryValue = new ConcurrentHashMap(1);
                 }
             }
@@ -799,7 +799,7 @@ public class Node implements SummaryContainer, BINode {
     }
 
     public void setSummaryValue(Map summaryValueMap) {
-        if (summaryValueMap != null){
+        if (summaryValueMap != null) {
             getNotNullSummaryValue().putAll(summaryValueMap);
         }
     }
@@ -862,7 +862,9 @@ public class Node implements SummaryContainer, BINode {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
+            if (this == o) {
+                return true
+            } ;
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
