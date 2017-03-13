@@ -45,13 +45,13 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
 
         this.format = BI.createWidget({
-            type: "bi.segment",
-            items: BICst.TARGET_STYLE_FORMAT,
-            width: 220
+            type: "bi.fine_tuning_number_editor",
+            width: 148,
+            height: 28
         });
         this.format.setValue(styleSettings.format);
 
-        this.format.on(BI.Segment.EVENT_CHANGE, function () {
+        this.format.on(BI.FineTuningNumberEditor.EVENT_CONFIRM, function () {
             example.setText(self._switchLabel());
             example.setTitle(self._switchLabel());
         });
@@ -144,7 +144,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         var example = BI.createWidget({
             type: "bi.label",
             height: 25,
-            width: 110
+            width: 150
         });
 
         example.setText(this._switchLabel());
@@ -175,7 +175,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
+                    text: BI.i18nText("BI-Decimal_Digits"),
                     cls: "style-name",
                     height: this.constants.LABEL_HEIGHT,
                     width: this.constants.LABEL_WIDTH,
@@ -200,7 +200,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
     },
 
     _switchLabel: function() {
-        return BI.TargetStyleSetting.formatNumber(this.numLevel.getValue()[0], this.format.getValue()[0],
+        return BI.TargetStyleSetting.formatNumber(this.numLevel.getValue()[0], this.format.getValue(),
         this.separators.isSelected(), this.unit.getValue());
     },
 
@@ -210,7 +210,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 
     getValue: function(){
         return {
-            format: this.format.getValue()[0],
+            format: this.format.getValue(),
             numLevel: this.numLevel.getValue()[0],
             unit: this.unit.getValue(),
             iconStyle: this.iconStyle.getValue()[0],
@@ -224,26 +224,15 @@ BI.TargetStyleSetting.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.target_style_setting", BI.TargetStyleSetting);
 BI.extend(BI.TargetStyleSetting, {
     formatNumberLevelAndSeparators: function (type, separators) {
-        var formatter;
         switch (type) {
-            case BICst.TARGET_STYLE.FORMAT.NORMAL:
-                formatter = '#.##';
-                if (separators) {formatter = '#,###.##'}
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
-                formatter = '#0';
-                if (separators) {formatter = '#,###'}
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                formatter = '#0.0';
-                if (separators) {formatter = '#,###.0'}
-                break;
-            case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                formatter = '#0.00';
-                if (separators) {formatter = '#,###.00'}
-                break;
+            case -1:
+                return separators ? '#,###.##' : "#.##";
+            case 0:
+                return separators ? '#,###' : "#0";
+            default:
+                var formatter = separators ? "#,###." : '#0.';
+                return formatter + BI.makeArray(type, "0").join('');
         }
-        return formatter
     },
 
     getUnit: function (numberLevelType, axisUnit) {

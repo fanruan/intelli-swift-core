@@ -146,6 +146,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[this.constants.CordonPos][0] = {
                     el: items[this.constants.CordonPos][0],
                     children: [{
+                        text: BI.i18nText("BI-Style_And_NumberLevel"),
+                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                    }, {
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }, {
@@ -176,6 +179,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[this.constants.CordonPos][0] = {
                     el: items[this.constants.CordonPos][0],
                     children: [{
+                        text: BI.i18nText("BI-Style_And_NumberLevel"),
+                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                    }, {
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }, {
@@ -199,6 +205,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[this.constants.CordonPos][0] = {
                     el: items[this.constants.CordonPos][0],
                     children: [{
+                        text: BI.i18nText("BI-Style_And_NumberLevel"),
+                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                    }, {
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Vertical") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }, {
@@ -224,6 +233,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[this.constants.CordonPos][0] = {
                     el: items[this.constants.CordonPos][0],
                     children: [{
+                        text: BI.i18nText("BI-Style_And_NumberLevel"),
+                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                    }, {
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }, {
@@ -248,10 +260,13 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[this.constants.CordonPos][0] = {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
-                        value: BICst.TARGET_COMBO.STYLE_SETTING,
+                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL,
                         cls: ""
                     },
                     children: [{
+                        text: BI.i18nText("BI-Style_And_NumberLevel"),
+                        value: BICst.TARGET_COMBO.STYLE_SETTING
+                    }, {
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }]
@@ -314,6 +329,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 items[this.constants.CordonPos][0] = {
                     el: items[this.constants.CordonPos][0],
                     children: [{
+                        text: BI.i18nText("BI-Style_And_NumberLevel"),
+                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                    }, {
                         text: BI.i18nText("BI-Cordon") + "(" + text + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     }, {
@@ -340,19 +358,15 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.RECT_TREE:
-                BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
-                items[1][0] = {
-                        text: BI.i18nText("BI-Style_And_NumberLevel"),
-                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
-                };
-                break;
-            case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
-                BI.removeAt(items, 1);
+                items[1][0] = {
+                        text: BI.i18nText("BI-Style_And_NumberLevel"),
+                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                };
                 break;
             default:
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);

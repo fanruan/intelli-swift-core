@@ -38,13 +38,14 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
 
         this.format = BI.createWidget({
-            type: "bi.segment",
-            items: BICst.TARGET_STYLE_FORMAT,
-            width: 184
+            type: "bi.fine_tuning_number_editor",
+            width: 148,
+            height: 28
         });
+
         this.format.setValue(styleSettings.format);
 
-        this.format.on(BI.Segment.EVENT_CHANGE, function () {
+        this.format.on(BI.FineTuningNumberEditor.EVENT_CONFIRM, function () {
             example.setText(self._switchLabel());
             example.setTitle(self._switchLabel());
         });
@@ -89,7 +90,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         var example = BI.createWidget({
             type: "bi.label",
             height: 25,
-            width: 100
+            width: 150
         });
 
         example.setText(this._switchLabel());
@@ -119,7 +120,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
+                    text: BI.i18nText("BI-Decimal_Digits"),
                     cls: "style-name",
                     height: this.constants.LABEL_HEIGHT,
                     textAlign: "left"
@@ -132,7 +133,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
     },
 
     _switchLabel: function() {
-        return BI.TargetStyleSetting.formatNumber(this.numLevel.getValue()[0], this.format.getValue()[0],
+        return BI.TargetStyleSetting.formatNumber(this.numLevel.getValue()[0], this.format.getValue(),
             this.separators.isSelected(), this.unit.getValue());
     },
 
@@ -142,7 +143,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
 
     getValue: function(){
         return {
-            format: this.format.getValue()[0],
+            format: this.format.getValue(),
             numLevel: this.numLevel.getValue()[0],
             numSeparators: this.separators.isSelected(),
             unit: this.unit.getValue()
