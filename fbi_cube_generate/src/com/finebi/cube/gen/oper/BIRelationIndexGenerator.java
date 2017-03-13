@@ -22,6 +22,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
@@ -39,6 +40,9 @@ import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -210,7 +214,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
              * 表间关联对象
              */
             tableRelation = (BICubeRelationEntity) cube.getCubeRelation(primaryTableKey, relation);
-            final BICubeRelationEntity finalTableRelation = tableRelation;
             GroupValueIndex nullIndex = GVIFactory.createAllEmptyIndexGVI();
             /**
              * 主表的行数
@@ -233,6 +236,9 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 c = generateComparatorByType(primaryColumn.getClassType(), foreignColumn.getClassType());
             }
             int[] reverse = new int[foreignTable.getRowCount()];
+            //pony要连续写，只能先全部存内存，索引太大了，所以先转化成压缩的byte[]存内存。
+            //即使建了笛卡儿积的索引，因为重复的主键都指向同一个对象，内存也不会膨胀太多。
+            final byte[][] relationIndexBytes = new byte[primaryTable.getRowCount()][];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
             Stopwatch stopwatch = Stopwatch.createStarted();
             GroupValueIndex allShowIndex = getTableShowIndex(primaryTable);
@@ -257,11 +263,11 @@ public class BIRelationIndexGenerator extends BIProcessor {
                     pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
                         @Override
                         public void actionPerformed(int row) {
-                            finalTableRelation.addRelationIndex(row, GVIFactory.createAllEmptyIndexGVI());
+                            relationIndexBytes[row] =  GVIFactory.createAllEmptyIndexGVI().getBytes();
                         }
                     });
                 } else if (result == 0) {
-                    matchRelation(tableRelation, foreignGroupValueIndex, reverse, pGroupValueIndex);
+                    matchRelation(relationIndexBytes, foreignGroupValueIndex, reverse, pGroupValueIndex);
                     foreignIndex++;
                     foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
                     foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
@@ -269,12 +275,11 @@ public class BIRelationIndexGenerator extends BIProcessor {
                     while (foreignIndex < foreignGroupSize && c.compare(primaryColumnValue, foreignColumnValue) > 0) {
                         nullIndex.or(foreignGroupValueIndex);
                         foreignIndex++;
-
                         foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
                         foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
                     }
                     if (c.compare(primaryColumnValue, foreignColumnValue) == 0) {
-                        matchRelation(tableRelation, foreignGroupValueIndex, reverse, pGroupValueIndex);
+                        matchRelation(relationIndexBytes, foreignGroupValueIndex, reverse, pGroupValueIndex);
                         foreignIndex++;
                         foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
                         foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
@@ -282,7 +287,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                         pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
                             @Override
                             public void actionPerformed(int row) {
-                                finalTableRelation.addRelationIndex(row, GVIFactory.createAllEmptyIndexGVI());
+                                relationIndexBytes[row] =  GVIFactory.createAllEmptyIndexGVI().getBytes();
                             }
                         });
                     }
@@ -298,6 +303,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
             }
             nullIndex.or(foreignGroupValueIndex);
+            buildIndex(tableRelation, relationIndexBytes);
             buildReverseIndex(tableRelation, reverse);
             tableRelation.addRelationNULLIndex(0, nullIndex);
             tableRelation.addVersion(System.currentTimeMillis());
@@ -354,7 +360,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         }
     }
 
-    private void matchRelation(BICubeRelationEntity tableRelation, GroupValueIndex foreignGroupValueIndex, int[] reverse, GroupValueIndex pGroupValueIndex) {
+    private void matchRelation(byte[][] relationIndexBytes, GroupValueIndex foreignGroupValueIndex, int[] reverse, GroupValueIndex pGroupValueIndex) {
         final IntArray array = new IntArray();
         pGroupValueIndex.Traversal(new TraversalAction() {
             @Override
@@ -362,8 +368,9 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 array.addAll(data);
             }
         });
+        byte[] bytes = foreignGroupValueIndex.getBytes();
         for (int i = 0; i < array.size; i++) {
-            tableRelation.addRelationIndex(array.get(i), foreignGroupValueIndex);
+            relationIndexBytes[array.get(i)] = bytes;
 
             try {
                 initReverseIndex(reverse, array.get(i), foreignGroupValueIndex);
@@ -391,6 +398,13 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 }
             }
         });
+    }
+
+    private void buildIndex(BICubeRelationEntity tableRelation, byte[][] relationIndex) {
+        //pony为了不破坏结构，先用ByteGroupValueIndex来传byte[]
+        for (int i = 0; i < relationIndex.length; i++) {
+            tableRelation.addRelationIndex(i, new ByteGroupValueIndex(relationIndex[i]));
+        }
     }
 
     private void buildReverseIndex(ICubeRelationEntityService tableRelation, int[] index) {
@@ -423,6 +437,109 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
     private boolean isNumberColumn(int columnType) {
         return columnType == DBConstant.CLASS.LONG || columnType == DBConstant.CLASS.INTEGER || columnType == DBConstant.CLASS.DOUBLE;
+    }
+
+    private class ByteGroupValueIndex implements GroupValueIndex{
+        private byte[] bytes;
+
+        public ByteGroupValueIndex(byte[] bytes) {
+            this.bytes = bytes;
+        }
+
+        @Override
+        public byte[] getBytes() {
+            return bytes;
+        }
+
+        @Override
+        public GroupValueIndex AND(GroupValueIndex valueIndex) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GroupValueIndex OR(GroupValueIndex valueIndex) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GroupValueIndex ANDNOT(GroupValueIndex index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GroupValueIndex NOT(int rowCount) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addValueByIndex(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isAllEmpty() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void Traversal(TraversalAction action) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void Traversal(SingleRowTraversalAction action) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean BrokenableTraversal(BrokenTraversalAction action) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isOneAt(int rowIndex) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getRowsCountWithData() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean hasSameValue(GroupValueIndex parentIndex) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void write(DataOutput out) throws IOException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void readFields(DataInput in) throws IOException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GroupValueIndex or(GroupValueIndex index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GroupValueIndex and(GroupValueIndex index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GroupValueIndex andnot(GroupValueIndex index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GroupValueIndex clone() {
+            throw new UnsupportedOperationException();
+        }
     }
 
 }

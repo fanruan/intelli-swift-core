@@ -8,6 +8,7 @@ import com.finebi.cube.tools.BICubeRelationTestTool;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 
 /**
@@ -75,12 +76,12 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
         try {
             generateRelationIndex(relation, tableA, tableB, 1, 2);
             CubeRelationEntityGetterService relationService = cube.getCubeRelation(BITableKeyUtils.convert(tableA), relation);
-            assertEquals(relationService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{0}));
-            assertEquals(relationService.getBitmapIndex(1), RoaringGroupValueIndex.createGroupValueIndex(new int[]{2, 4, 6}));
-            assertEquals(relationService.getBitmapIndex(2), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
-            assertEquals(relationService.getBitmapIndex(3), RoaringGroupValueIndex.createGroupValueIndex(new int[]{3}));
-            assertEquals(relationService.getBitmapIndex(4), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
-            assertEquals(relationService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 5}));
+            assertEquals(relationService.getBitmapIndex(0), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{0}));
+            assertEquals(relationService.getBitmapIndex(1), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{2, 4, 6}));
+            assertEquals(relationService.getBitmapIndex(2), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{}));
+            assertEquals(relationService.getBitmapIndex(3), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{3}));
+            assertEquals(relationService.getBitmapIndex(4), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{}));
+            assertEquals(relationService.getNULLIndex(0), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{1, 5}));
 
         } catch (Exception e) {
             e.printStackTrace();
