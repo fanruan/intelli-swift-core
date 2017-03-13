@@ -173,7 +173,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                         relationItem: op.relationItem
                     });
                 }
-<<<<<<< HEAD
 
                 var dimensions = self.model.cat("dimensions");
                 if(BI.isArray(dId)){
@@ -190,14 +189,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                     return null;
                 }else{
                     createSubVessel(dId);
-=======
-                if (!dimensionsVessel[dId]) {
-                    dimensionsVessel[dId] = BI.createWidget({
-                        type: "bi.layout"
-                    });
-                    self.addSubVessel(dId, dimensionsVessel[dId]);
-                    var dimensions = self.model.cat("dimensions");
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                     if (!BI.has(dimensions, dId)) {
                         self.model.set("addDimension", {
                             dId: dId,
@@ -216,12 +207,8 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                         self.addSubVessel(dimensionId, dimensionsVessel[dimensionId]);
                     }
                 }
-<<<<<<< HEAD
-=======
                 //self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
                 return dimensionsVessel[dId];
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
-
             }
         });
 

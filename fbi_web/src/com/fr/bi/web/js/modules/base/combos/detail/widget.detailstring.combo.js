@@ -59,36 +59,7 @@ BI.DetailStringDimensionCombo = BI.inherit(BI.Widget, {
             type: "bi.down_list_combo",
             element: this.element,
             height: 25,
-<<<<<<< HEAD
             iconCls: "detail-dimension-set-font"
-=======
-            iconCls: "detail-dimension-set-font",
-            items: [
-                [{
-                    text: BI.i18nText("BI-Filter_Setting"),
-                    value: BICst.DETAIL_STRING_COMBO.FILTER,
-                    cls: "filter-h-font"
-                }],
-                [{
-                    text: BI.i18nText("BI-Hyperlink"),
-                    value: BICst.DETAIL_STRING_COMBO.HYPERLINK,
-                    cls: "hyper-link-font"
-                }],
-                [{
-                    text: BI.i18nText("BI-Remove"),
-                    value: BICst.DETAIL_STRING_COMBO.DELETE,
-                    cls: "delete-h-font"
-                }],
-                [{
-                    text: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
-                    title: BI.i18nText("BI-This_Target_From") + ":" + tableName + "."  + fieldName,
-                    tipType: "success",
-                    cls: "dimension-from-font",
-                    value: BICst.DETAIL_STRING_COMBO.INFO,
-                    disabled: true
-                }]
-            ]
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         });
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.DetailStringDimensionCombo.EVENT_CHANGE, v);

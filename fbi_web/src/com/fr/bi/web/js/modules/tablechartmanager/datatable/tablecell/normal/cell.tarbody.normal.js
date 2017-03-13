@@ -251,39 +251,18 @@ BI.extend(BI.TargetBodyNormalCell, {
             return text;
         }
         var num = BI.parseFloat(text);
+
         switch (dot) {
-            case BICst.TARGET_STYLE.FORMAT.NORMAL:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.##;-#,###.##')
-                } else {
-                    num = BI.contentFormat(num, '#.##;-#.##')
-                }
-                return num;
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###;-#,###')
-                } else {
-                    num = BI.contentFormat(num, '#0;-#0')
-                }
-                return num;
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.0;-#,###.0')
-                } else {
-                    num = BI.contentFormat(num, '#.0;-#.0')
-                }
-                return num;
-            case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.00;-#,###.00')
-                } else {
-                    num = BI.contentFormat(num, '#.00;-#.00')
-                }
-                return num;
+            case -1:
+                return separators ? BI.contentFormat(num, '#,###.##;-#,###.##') : BI.contentFormat(num, "#.##;-#.##");
+            case 0:
+                return separators ? BI.contentFormat(num, '#,###;-#,###') : BI.contentFormat(num, "#0;-#0");
+            default:
+                var formatter = separators ? "#,###." : '#.';
+                var res = formatter + BI.makeArray(dot, "0").join('');
+                var finalFormatter = res + ";-" + res;
+                return BI.contentFormat(num, finalFormatter);
         }
-        return BI.contentFormat(num, '#.##;-#.##');
     },
     parseNumByLevel: function (text, numLevel) {
         if (text === Infinity || text !== text || !BI.isNumber(text)) {

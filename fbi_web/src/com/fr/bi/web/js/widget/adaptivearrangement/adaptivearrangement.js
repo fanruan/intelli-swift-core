@@ -106,11 +106,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         item.element.css("zIndex", ++this.zIndex);
         item.element.mousedown(function () {
-<<<<<<< HEAD
             if (!item.element.hasClass("selected")) {
-=======
-            if(!item.element.hasClass("selected")){
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                 item.element.css("zIndex", ++self.zIndex);
                 BI.each(self.getAllRegions(), function (i, region) {
                     region.el.element.removeClass("selected");
