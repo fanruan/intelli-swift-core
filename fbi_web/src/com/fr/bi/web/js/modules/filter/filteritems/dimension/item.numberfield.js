@@ -82,19 +82,11 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         }
     },
 
-<<<<<<< HEAD
     _buildConditions: function () {
         var self = this, o = this.options;
         o.filter_type = this._checkFilterType();
         if (BI.isNull(o.dId)) {
             return [];
-=======
-    _buildConditions: function(){
-        var self = this, o = this.options;
-        o.filter_type = this._checkFilterType();
-        if(BI.isNull(o.dId)){
-            return[];
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         }
         var fieldName = BI.Utils.getDimensionNameByID(o.dId);
         this.fieldButton = BI.createWidget({

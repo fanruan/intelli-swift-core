@@ -5,7 +5,6 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -132,17 +131,6 @@ class ValueIterator {
             }
         }
         return map.entrySet().iterator();
-    }
-
-
-
-    private boolean isCustomGroup(IGroup group) {
-        if (group == null) {
-            return false;
-        }
-        int groupType = group.getType();
-        return groupType != BIReportConstant.GROUP.NO_GROUP
-                || groupType != BIReportConstant.GROUP.ID_GROUP;
     }
 
 }

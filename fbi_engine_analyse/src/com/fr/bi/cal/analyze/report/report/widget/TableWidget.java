@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.index.loader.MergerInfo;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
@@ -26,7 +25,6 @@ import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateT
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -433,18 +431,18 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public GroupValueIndex createLinkedFilterGVI(BusinessTable targetKey, BISession session) {
-        if (linkedWidget != null) {
-            GroupValueIndex fatherWidgetLinkedFilterGVI = linkedWidget.createLinkedFilterGVI(targetKey, session);
-            List<MergerInfo> mergerInfoList = session.getMergerInfoList(this.linkedWidget.getWidgetName());
-            if (mergerInfoList == null) {
-                return null;
-            }
-            for (MergerInfo mergerInfo : mergerInfoList) {
-                if (mergerInfo.getTargetAndKeyList().get(0).getCalculator().createTableKey().equals(targetKey)) {
-                    return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getGroupValueIndex()));
-                }
-            }
-        }
+//        if (linkedWidget != null) {
+//            GroupValueIndex fatherWidgetLinkedFilterGVI = linkedWidget.createLinkedFilterGVI(targetKey, session);
+//            List<MergerInfo> mergerInfoList = session.getMergerInfoList(this.linkedWidget.getWidgetName());
+//            if (mergerInfoList == null) {
+//                return null;
+//            }
+//            for (MergerInfo mergerInfo : mergerInfoList) {
+//                if (mergerInfo.getTargetAndKeyList().get(0).getCalculator().createTableKey().equals(targetKey)) {
+//                    return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getGroupValueIndex()));
+//                }
+//            }
+//        }
         return null;
     }
 
