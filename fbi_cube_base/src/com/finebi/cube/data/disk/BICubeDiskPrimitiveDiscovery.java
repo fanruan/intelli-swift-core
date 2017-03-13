@@ -31,7 +31,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     private boolean releasingResource = false;
 
     public boolean isReleasingResource() {
-        synchronized (this){
+        synchronized (this) {
             return releasingResource;
         }
     }
@@ -128,7 +128,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
             try {
                 for (Map.Entry<String, NIOResourceManager> entry : fileResourceMap.entrySet()) {
                     NIOHandlerManager reader = entry.getValue().getReaderHandlerManager();
-                    if (isAvailable(reader)&& (!reader.isHandlerEmpty())) {
+                    if (isAvailable(reader) && (!reader.isHandlerEmpty())) {
                         locations.add(entry.getKey() + "-reader");
                     }
                     NIOHandlerManager writer = entry.getValue().getWriterHandlerManager();

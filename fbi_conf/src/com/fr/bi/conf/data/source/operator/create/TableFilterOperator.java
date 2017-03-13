@@ -148,6 +148,7 @@ public class TableFilterOperator extends AbstractCreateTableETLOperator {
 
     public class FieldState implements JSONTransform, XMLable {
         public static final String XML_TAG = "FieldState";
+        private static final long serialVersionUID = 1761052567432090844L;
         private String field_name;
         private boolean state;
 

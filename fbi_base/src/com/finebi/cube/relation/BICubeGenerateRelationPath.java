@@ -36,7 +36,7 @@ public class BICubeGenerateRelationPath {
             copyPath.removeLastRelation();
             dependRelationPathSet.add(copyPath);
         } catch (BITablePathEmptyException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
     }

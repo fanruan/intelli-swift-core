@@ -1,6 +1,9 @@
 package com.fr.bi.conf.data.source;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILogExceptionInfo;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.data.source.operator.OperatorFactory;
@@ -55,7 +58,7 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
         super.parseJSON(jo, userId);
         oprators = OperatorFactory.createOperatorsByJSON(jo, userId);
         JSONArray tables = jo.getJSONArray("tables");
-        for(int i = 0; i < tables.length(); i++) {
+        for (int i = 0; i < tables.length(); i++) {
             parents.add(TableSourceFactory.createTableSource(tables.getJSONObject(i), userId));
         }
     }
@@ -74,8 +77,17 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
         long index = 0;
         while (it.hasNext()) {
             IETLOperator op = it.next();
-            index = op.writeSimpleIndex(travel, parents, loader);
+            try {
+                index = op.writeSimpleIndex(travel, parents, loader);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(this.getClass()).error("ETLTableSource Read Error. The error table info is: " + BILogHelper.logCubeLogTableSourceInfo(this.getSourceID()) + "\n the parent table info is: " + getOperatorParentTableInfo(parents));
+                BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), op.getClass().toString() + "The error ETL table info is: " + BILogHelper.logCubeLogTableSourceInfo(this.getSourceID()) + "\n The error Parent Info is: " + getOperatorParentTableInfo(parents), e.getMessage(), e);
+                BILogHelper.cacheCubeLogTableException(this.getSourceID(), exceptionInfo);
+                throw new RuntimeException(e);
+            }
+
         }
+
         return index;
     }
 
@@ -95,6 +107,22 @@ public class ETLTableSource extends AbstractETLTableSource<IETLOperator, CubeTab
             set.add(this);
         }
         return set;
+    }
+
+
+    private String getOperatorParentTableInfo(List<? extends CubeTableSource> parents) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < parents.size(); i++) {
+            int j = i + 1;
+            sb.append("\n");
+            sb.append("*******************Parent Table " + j + "*******************");
+            if (parents.get(i) instanceof ETLTableSource) {
+                sb.append(" parent etl table name is: " + ((ETLTableSource) parents.get(i)).getTempName());
+            } else {
+                sb.append("parent table name is:" + parents.get(i).getTableName());
+            }
+        }
+        return sb.toString();
     }
 
 }

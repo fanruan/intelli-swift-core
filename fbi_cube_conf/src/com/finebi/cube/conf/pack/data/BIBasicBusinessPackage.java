@@ -6,6 +6,8 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.BITableID;
 
+import java.io.Serializable;
+
 /**
  * This class created on 2016/5/23.
  *
@@ -15,6 +17,8 @@ import com.fr.bi.stable.data.BITableID;
  * ID唯一确定
  */
 public class BIBasicBusinessPackage extends BIBusinessPackage<BusinessTable> {
+
+    private static final long serialVersionUID = -6604278889886431176L;
 
     public BIBasicBusinessPackage(BIPackageID ID, BIPackageName name, BIUser owner, long position) {
         super(ID, name, owner, position);

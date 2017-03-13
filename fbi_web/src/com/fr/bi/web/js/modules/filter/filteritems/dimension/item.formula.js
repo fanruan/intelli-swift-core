@@ -38,6 +38,7 @@ BI.DimensionFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
+            scrolly: false,
             items: [{
                 type: "bi.td",
                 columnSize: [this._constant.FIELD_NAME_BUTTON_WIDTH, "", this._constant.ICON_BUTTON_WIDTH],

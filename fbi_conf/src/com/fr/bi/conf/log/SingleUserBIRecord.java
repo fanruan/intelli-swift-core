@@ -28,9 +28,11 @@ public class SingleUserBIRecord implements BIRecord {
     private long userId;
     private Set<CubeTableSource> cubeTableSourceSet;
     private Set<BITableSourceRelationPath> biTableSourceRelationPathSet;
+    private ProcessCalculator processCalculator;
 
     SingleUserBIRecord(long userId) {
         this.userId = userId;
+        processCalculator = new ProcessCalculatorImpl();
     }
 
     /**
@@ -310,7 +312,7 @@ public class SingleUserBIRecord implements BIRecord {
         Set<BIConnectionErrorLog> pathLog = new HashSet<BIConnectionErrorLog>();
         for (BIConnectionLog log : connectionLogMap.values()) {
             if (log.getType() == BILogConstant.PATH_LOG_TYPE.ERROR) {
-                pathLog.add((BIConnectionErrorLog)log);
+                pathLog.add((BIConnectionErrorLog) log);
             }
         }
         return pathLog;
@@ -463,6 +465,9 @@ public class SingleUserBIRecord implements BIRecord {
         while (citer.hasNext()) {
             connection_log.put(citer.next().createJSON());
         }
+
+        res.put("process", processCalculator.calculateProcess(res));
+
         return res;
     }
 

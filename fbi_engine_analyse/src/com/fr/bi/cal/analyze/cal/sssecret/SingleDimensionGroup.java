@@ -18,7 +18,12 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+<<<<<<< HEAD
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
+=======
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.operation.group.BIGroupUtils;
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
 import java.util.ArrayList;
@@ -114,10 +119,15 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         return getIterByAllCal(index);
     }
 
+<<<<<<< HEAD
 
     private boolean hasSpecialGroup(DimensionCalculator column) {
         int groupType = column.getGroup().getType();
         if (isCustomGroup(groupType)) {
+=======
+    private boolean hasSpecialGroup() {
+        if (BIGroupUtils.isCustomGroup(column.getGroup())) {
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
             return true;
         }
         if (column.getSortType() == BIReportConstant.SORT.CUSTOM) {
@@ -126,6 +136,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         return false;
     }
 
+<<<<<<< HEAD
     private boolean isCustomGroup(int groupType) {
         return groupType == BIReportConstant.GROUP.CUSTOM_GROUP
                 || groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP
@@ -136,6 +147,10 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     private Iterator<Map.Entry<Object, GroupValueIndex>> getIterByAllCal(int index) {
         boolean asc = !(columns[index].getSortType() == BIReportConstant.SORT.DESC || columns[index].getSortType() == BIReportConstant.SORT.NUMBER_DESC);
         return DimensionIteratorCreator.createValueMapIterator(getters[index], gvis[index], asc);
+=======
+    private BusinessTable getRealTableKey4Calculate() {
+        return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
     }
 
     @Override

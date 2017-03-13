@@ -12,6 +12,8 @@ import com.fr.json.JSONObject;
  * Created by User on 2016/6/3.
  */
 public class EmptyColumnFilter extends ColumnNameFilter {
+    private static final long serialVersionUID = -892004839796050284L;
+
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
 

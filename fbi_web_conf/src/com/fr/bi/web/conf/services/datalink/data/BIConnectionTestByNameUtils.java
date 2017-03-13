@@ -14,7 +14,7 @@ public class BIConnectionTestByNameUtils extends BIConnectionTestUtils {
 
     @Override
     protected JDBCDatabaseConnection fetchConnection(String configData) throws Exception {
-        DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();
         while (nameIt.hasNext()) {
             String n = nameIt.next();

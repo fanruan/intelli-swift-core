@@ -102,6 +102,7 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     public void forceReleaseReader() {
         if (cubeReader != null) {
             cubeReader.forceRelease();
+            cubeReader = null;
         }
     }
 

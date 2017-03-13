@@ -11,6 +11,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
  * Created by GUY on 2015/4/9.
  */
 public class NoSort extends AbstractSort {
+    private static final long serialVersionUID = 7034100945555967685L;
     protected transient IComparator comparator = ComparatorFacotry.getComparator(getSortType());
 
     @Override

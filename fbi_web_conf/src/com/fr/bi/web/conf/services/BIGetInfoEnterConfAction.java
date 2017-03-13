@@ -58,7 +58,7 @@ public class BIGetInfoEnterConfAction extends AbstractBIConfigureAction {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return fields;
     }

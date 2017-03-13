@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BICubeRelationAbsentException extends Exception {
+    private static final long serialVersionUID = 9137980565122686549L;
+
     public BICubeRelationAbsentException(String message) {
         super(message);
     }

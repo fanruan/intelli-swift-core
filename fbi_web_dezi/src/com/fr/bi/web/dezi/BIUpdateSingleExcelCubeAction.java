@@ -1,10 +1,10 @@
 package com.fr.bi.web.dezi;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.base.FRContext;
-import com.fr.bi.cal.generate.CubeBuildManager;
-import com.fr.bi.conf.data.source.ExcelTableSource;
+import com.fr.bi.cal.generate.CubeBuildHelper;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
@@ -22,7 +22,11 @@ import java.io.File;
  */
 public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
 
+
     public static final String CMD = "update_excel_table_cube_by_table_id";
+
+    private static final long userId = -999;//貌似只能用管理员的权限进行单表更新，不然用户数据更新不了
+
     private static String DATA_PATH = FRContext.getCurrentEnv().getPath() + BIBaseConstant.EXCELDATA.EXCEL_DATA_PATH;
     private static final int SUCCESS = 0;
     private static final int FILE_USING_ERROR = 1;
@@ -36,7 +40,9 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
 
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
+
         final long userId = ServiceUtils.getCurrentUserID(req);
+
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
         String newExcelFullName = WebUtils.getHTTPRequestParameter(req, "newExcelFullName");
         newExcelFullName = newExcelFullName.trim();
@@ -75,6 +81,10 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
     }
 
     private void updateExcelTableDate(long userId, CubeTableSource tableSource) {
-        new CubeBuildManager().addSingleTableTask(userId, tableSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        try {
+            CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, tableSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        } catch (InterruptedException e) {
+            BILoggerFactory.getLogger(this.getClass()).error("update excel single table error: " + e.getMessage(), e);
+        }
     }
 }

@@ -2,6 +2,13 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
+<<<<<<< HEAD
+=======
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.table.BIBusinessTable;
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
@@ -9,14 +16,37 @@ import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
+<<<<<<< HEAD
+=======
+import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
+import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
+import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
+import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
+import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
+import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
+import com.fr.bi.field.target.filter.TargetFilterFactory;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.data.BITable;
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+<<<<<<< HEAD
+=======
+import com.fr.bi.stable.exception.BITableUnreachableException;
+import com.fr.bi.stable.gvi.GVIUtils;
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.cache.list.IntList;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
+import com.fr.web.core.SessionDealWith;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -223,7 +253,123 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
+<<<<<<< HEAD
         return ng.createSingleDimensionGroup(columns[deep], getters[deep], data, mergeIteratorCreators[deep], useRealData);
+=======
+        ISingleDimensionGroup sg;
+        if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
+            sg = ng.createNoneTargetSingleDimensionGroup(cks, cks[deep], data, deep, getters[deep], getCKGvigetter(data, deep), useRealData);
+        } else {
+            sg = ng.createSingleDimensionGroup(cks, cks[deep], data, deep, getters[deep], useRealData);
+        }
+        return sg;
+    }
+
+    protected GroupValueIndex getCKGvigetter(GroupConnectionValue gv, int deep) {
+        DimensionCalculator ck = cks[deep];
+        GroupValueIndex gvi = iter.createFilterGvi(ck);
+        int i = deep;
+        GroupConnectionValue v = gv;
+        while (i != 0) {
+            i--;
+            DimensionCalculator ckp = cks[i];
+            Object value = v.getData();
+            if (value == null || ckp.getRelationList() == null) {
+                v = v.getParent();
+                continue;
+            }
+            if (ckp instanceof DateDimensionCalculator) {
+                Set<BIDateValue> currentSet = new HashSet<BIDateValue>();
+                /**
+                 * 螺旋分析这里会出现空字符串
+                 */
+                if (value instanceof Number) {
+                    currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
+                } else {
+                    currentSet.add(null);
+                }
+
+                DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
+                GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
+                if (pgvi != null) {
+                    gvi = getCKGroupValueIndex(ck, gvi, pgvi);
+                }
+            } else if (ckp instanceof StringDimensionCalculator) {
+                if (value == BIBaseConstant.EMPTY_NODE_DATA) {
+                    v = v.getParent();
+                    continue;
+                }
+                Set currentSet = ((StringDimensionCalculator) ckp).createFilterValueSet((String) value, session.getLoader());
+                StringINFilterValue stf = new StringINFilterValue(currentSet);
+                BITableRelationPath firstPath = null;
+                try {
+                    firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
+                } catch (BITableUnreachableException e) {
+                    continue;
+                }
+                if (ComparatorUtils.equals(ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo())) {
+                    firstPath = new BITableRelationPath();
+                }
+                if (firstPath == null) {
+                    continue;
+                }
+                GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
+                        ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+                gvi = getCKGroupValueIndex(ck, gvi, pgvi);
+            } else if (ckp instanceof NumberDimensionCalculator) {
+                if (value == BIBaseConstant.EMPTY_NODE_DATA) {
+                    v = v.getParent();
+                    continue;
+                }
+                BITableRelationPath firstPath = null;
+                try {
+                    firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
+                } catch (BITableUnreachableException e) {
+                    continue;
+                }
+                if (ComparatorUtils.equals(ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo())) {
+                    firstPath = new BITableRelationPath();
+                }
+                if (firstPath == null) {
+                    continue;
+                }
+                ckp.setRelationList(BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
+                GroupValueIndex pgvi = ckp.createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
+                gvi = getCKGroupValueIndex(ck, gvi, pgvi);
+            }
+            if (widget instanceof TableWidget) {
+                GroupValueIndex filterGvi = ((TableWidget) widget).getFilter().createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+                if (filterGvi != null) {
+                    gvi = filterGvi.AND(gvi);
+                }
+            }
+            v = v.getParent();
+        }
+        return gvi;
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
+    }
+
+    private GroupValueIndex getCKGroupValueIndex(DimensionCalculator ck, GroupValueIndex gvi, GroupValueIndex pgvi) {
+        gvi = gvi.AND(pgvi);
+        GroupValueIndex authGVI = getAuthGroupValueIndex(ck);
+        gvi = gvi.AND(authGVI);
+        return gvi;
+    }
+
+    private GroupValueIndex getAuthGroupValueIndex(DimensionCalculator ck) {
+        Long userId = session.getUserId();
+        GroupValueIndex authGVI = null;
+        if (userId != UserControl.getInstance().getSuperManagerID()) {
+            List<TargetFilter> filters = getAuthFilter(userId);
+            for (int k = 0; k < filters.size(); k++) {
+                if (authGVI == null) {
+                    authGVI = filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId);
+                } else {
+                    authGVI = GVIUtils.OR(authGVI, filters.get(k).createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), userId));
+                }
+            }
+        }
+        return authGVI;
     }
 
     protected Object[] getParentsValuesByGv(GroupConnectionValue groupConnectionValue, int deep) {
@@ -277,5 +423,36 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected IRootDimensionGroup createNew(){
         return new RootDimensionGroup();
+    }
+
+    private List<TargetFilter> getAuthFilter(long userId) {
+        List<TargetFilter> filters = new ArrayList<TargetFilter>();
+        List<BIPackageID> authPacks;
+        String sessionId = session.getSessionID();
+        if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesBySession(session.getCompanyRoles(),session.getCustomRoles());
+        } else {
+            authPacks = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+        }
+        for (int i = 0; i < authPacks.size(); i++) {
+            List<BIPackageAuthority> packAuths;
+            if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthBySession(authPacks.get(i), session.getCompanyRoles(),session.getCustomRoles());
+            } else {
+                packAuths = BIConfigureManagerCenter.getAuthorityManager().getPackageAuthByID(authPacks.get(i), userId);
+            }
+            for (int j = 0; j < packAuths.size(); j++) {
+                BIPackageAuthority auth = packAuths.get(j);
+                if (auth.getFilter() != null) {
+                    try {
+                        TargetFilter filter = TargetFilterFactory.parseFilter(auth.getFilter(), userId);
+                        filters.add(filter);
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
+        return filters;
     }
 }

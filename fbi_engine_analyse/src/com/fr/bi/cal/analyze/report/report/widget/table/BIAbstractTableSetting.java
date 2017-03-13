@@ -14,6 +14,7 @@ import java.util.Iterator;
  * Created by GUY on 2015/4/9.
  */
 public abstract class BIAbstractTableSetting implements BITableSetting {
+    private static final long serialVersionUID = 4556313379761261578L;
     protected HashMap<String, String[]> groups_of_dimensions = new HashMap<String, String[]>();
 
     protected HashMap<String, String[]> groups_of_targets = new HashMap<String, String[]>();

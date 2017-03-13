@@ -75,11 +75,11 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
                 //daniel:改成1ms，最垃圾的磁盘也读完了
                 Thread.currentThread().sleep(1);
             } catch (InterruptedException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             }
             unMap();
         } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         } finally {
             readWriteLock.writeLock().unlock();
         }

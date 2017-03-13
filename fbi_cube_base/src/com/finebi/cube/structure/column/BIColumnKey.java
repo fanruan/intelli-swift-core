@@ -15,6 +15,7 @@ import java.util.*;
  * @since 4.0
  */
 public final class BIColumnKey implements BIKey {
+    private static final long serialVersionUID = 5948106164576657284L;
     private final String columnName;
     private final String columnType;
     private final String columnSubType;

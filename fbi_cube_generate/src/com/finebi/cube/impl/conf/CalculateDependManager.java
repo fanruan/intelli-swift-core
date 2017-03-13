@@ -65,7 +65,7 @@ public class CalculateDependManager implements CalculateDependTool {
                     }
                 }
             } catch (BITablePathEmptyException e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
             BICubeGenerateRelationPath biCubeGenerateRelationPath = new BICubeGenerateRelationPath(path, pathDepends);
             cubeGenerateRelationPathSet.add(biCubeGenerateRelationPath);

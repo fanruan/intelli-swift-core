@@ -22,12 +22,14 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONParser;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class TreeFilterValue implements JSONParser, BICoreService {
+public class TreeFilterValue implements JSONParser, BICoreService ,Serializable{
+    private static final long serialVersionUID = 6334839986962467694L;
     private static String XML_TAG = "TreeFilterValue";
     @BICoreField
     private String value;

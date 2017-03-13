@@ -15,16 +15,19 @@ import java.sql.Types;
 public class BITableMapper {
 
     public static class BI_REPORT_NODE_LOCK {
+//        public static final String REPORT_NODE_LOCK_ID = "reportNodeLockId";
         public static final String FIELD_USERID = "userId";
         public static final String REPORT_ID = "reportId";
         public static final String SESSIONID = "sessionId";
+        public static final String LOCKED_TIME = "lockedTime";
 
         public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(BIReportNodeLock.class, new FieldColumnMapper[]{
                 new PrimaryKeyFCMapper("id", Types.BIGINT, new ColumnSize(10)),
                 new CommonFieldColumnMapper(FIELD_USERID, Types.BIGINT, new ColumnSize(10), false),
                 new CommonFieldColumnMapper(REPORT_ID, Types.BIGINT, new ColumnSize(10), false),
-                new CommonFieldColumnMapper(SESSIONID, Types.VARCHAR, new ColumnSize(50), false),
-        }, new String[][]{new String[]{FIELD_USERID, REPORT_ID, SESSIONID}});
+                new CommonFieldColumnMapper(LOCKED_TIME, Types.BIGINT, new ColumnSize(10), false),
+                new CommonFieldColumnMapper(SESSIONID, Types.VARCHAR, new ColumnSize(50),false),
+        }, new String[][]{new String[]{/*REPORT_NODE_LOCK_ID,*/FIELD_USERID, REPORT_ID,LOCKED_TIME, SESSIONID}});
     }
 
     public static class BI_CONF_TABLE_LOCK {
@@ -38,6 +41,21 @@ public class BITableMapper {
                 new CommonFieldColumnMapper(TABLE_ID, Types.VARCHAR, new ColumnSize(50), false),
                 new CommonFieldColumnMapper(SESSION_ID, Types.VARCHAR, new ColumnSize(50), false),
         }, new String[][]{new String[]{USER_ID, TABLE_ID, SESSION_ID}});
+    }
+
+    public static class BI_BUSINESS_PACK_CONFIG_LOCK {
+        public static final String LOCK_NAME = "lockName";
+        public static final String LOCK_USERID = "userId";
+        public static final String SESSIONID = "sessionId";
+
+        public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(
+                BIFineDBConfigLock.class, new FieldColumnMapper[]{
+                new PrimaryKeyFCMapper("id", Types.BIGINT, new ColumnSize(10)),
+                new CommonFieldColumnMapper(LOCK_USERID, Types.BIGINT, new ColumnSize(10), false),
+                new CommonFieldColumnMapper(LOCK_NAME, Types.VARCHAR, new ColumnSize(50), false),
+                new CommonFieldColumnMapper(SESSIONID, Types.VARCHAR, new ColumnSize(50), false),
+
+        }, new String[][]{new String[]{LOCK_USERID,LOCK_NAME,SESSIONID}});
     }
 
     /**

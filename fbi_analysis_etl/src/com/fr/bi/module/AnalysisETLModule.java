@@ -13,6 +13,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisBaseTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLTableSource;
 import com.fr.bi.etl.analysis.manager.*;
+import com.fr.bi.etl.analysis.monitor.web.Service4AnalysisETLMonitor;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBottomNFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmallOrEqualsCLFilter;
@@ -42,6 +43,10 @@ import java.util.*;
 public class AnalysisETLModule extends AbstractModule {
     @Override
     public void start() {
+        // TODO BI-3640 集群版本禁用螺旋分析
+        if (ClusterEnv.isCluster()) {
+            return;
+        }
         registerManager();
         registerFilter();
         registerResources();
@@ -73,8 +78,16 @@ public class AnalysisETLModule extends AbstractModule {
     private void registerStyleFiles() {
 
         StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
+
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ETLResourcesHelper.getDefaultJs());
+
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ETLResourcesHelper.getDefaultCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ETLResourcesHelper.getAnimateCss());
+        StableFactory.registerJavaScriptFiles(ETLResourcesHelper.MONITOR_JS, ETLResourcesHelper.getMonitorJS());
+        StableFactory.registerStyleFiles(ETLResourcesHelper.MONITOR_CSS, ETLResourcesHelper.getMonitorCss());
+        StableFactory.registerStyleFiles(ETLResourcesHelper.MONITOR_CSS, ETLResourcesHelper.getAnimateCss());
     }
 
     private void registerJavaScriptFiles() {
@@ -174,11 +187,41 @@ public class AnalysisETLModule extends AbstractModule {
     private void registerManager() {
         StableFactory.registerMarkedObject(BIAnalysisBusiPackManagerProvider.XML_TAG, getBusiPackProvider());
         StableFactory.registerMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, getDataSourceProvider());
-        StableFactory.registerMarkedObject(UserETLCubeManagerProvider.class.getName(), new UserETLCubeManager());
-        StableFactory.registerMarkedObject(BIAnalysisETLAliasManager.class.getName(), new BIAnalysisETLAliasManager());
+        StableFactory.registerMarkedObject(UserETLCubeManager.class.getName(), new UserETLCubeManager());
+        StableFactory.registerMarkedObject(UserETLCubeManagerProvider.class.getName(), getUserETLCubeManagerProvider());
+        StableFactory.registerMarkedObject(BIAliasManagerProvider.class.getName(),/* new BIAnalysisETLAliasManager()*/getBIAliasManagerProvider());
         StableFactory.registerMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), UserETLCubeDataLoaderCreator.getInstance());
     }
-
+    private BIAliasManagerProvider getBIAliasManagerProvider() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIAnalysisETLAliasManager provider = new BIAnalysisETLAliasManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIAliasManagerProvider) RPC.getProxy(BIAnalysisETLAliasManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BIAnalysisETLAliasManager();
+        }
+    }
+    private UserETLCubeManagerProvider getUserETLCubeManagerProvider() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                UserETLCubeManager provider = new UserETLCubeManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (UserETLCubeManagerProvider) RPC.getProxy(UserETLCubeManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new UserETLCubeManager();
+        }
+    }
     private BIAnalysisBusiPackManagerProvider getBusiPackProvider() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -186,7 +229,7 @@ public class AnalysisETLModule extends AbstractModule {
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
-                return (BIAnalysisBusiPackManagerProvider) RPC.getProxy(BIAnalysisBusiPackManagerProvider.class,
+                return (BIAnalysisBusiPackManagerProvider) RPC.getProxy(AnalysisBusiPackManager.class,
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
@@ -202,7 +245,7 @@ public class AnalysisETLModule extends AbstractModule {
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
-                return (BIAnalysisDataSourceManagerProvider) RPC.getProxy(BIAnalysisDataSourceManagerProvider.class,
+                return (BIAnalysisDataSourceManagerProvider) RPC.getProxy(AnalysisDataSourceManager.class,
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
@@ -214,7 +257,8 @@ public class AnalysisETLModule extends AbstractModule {
     @Override
     public Service[] service4Register() {
         return new Service[]{
-                new Service4AnalysisETL()
+                new Service4AnalysisETL(),
+                new Service4AnalysisETLMonitor()
         };
     }
 }

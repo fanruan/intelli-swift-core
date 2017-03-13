@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by twome on 2016/12/14.
+ * Created by roy on 2016/12/14.
  */
 public class BISetTransportThreadPoolSizeAction extends AbstractBIConfigureAction {
     @Override

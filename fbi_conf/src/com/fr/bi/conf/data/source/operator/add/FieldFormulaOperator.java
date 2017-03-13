@@ -1,7 +1,9 @@
 package com.fr.bi.conf.data.source.operator.add;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILogExceptionInfo;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.fr.base.Utils;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
@@ -90,6 +92,8 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
                 BILoggerFactory.getLogger(FieldFormulaOperator.class).error("incorrect formula");
                 BILoggerFactory.getLogger(FieldFormulaOperator.class).error(BIStringUtils.append(e.getMessage() + "", e.getClass().toString()));
                 BILoggerFactory.getLogger(FieldFormulaOperator.class).error(BIStringUtils.append("The formula:", formula));
+                BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "The Table is: " + BILogHelper.logCubeLogTableSourceInfo(ti.getId()) + "The formula is: " + formula, e.getMessage(), e);
+                BILogHelper.cacheCubeLogTableException(this.getBITable().getTableName(), exceptionInfo, true);
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }
@@ -97,7 +101,7 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
     }
 
     private Object getValueByColumnType(Object value) {
-        if(null == value){
+        if (null == value) {
             return null;
         }
         switch (columnType) {

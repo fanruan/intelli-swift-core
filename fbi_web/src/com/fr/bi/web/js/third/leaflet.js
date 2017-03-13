@@ -8332,7 +8332,7 @@
 
                     for(var fontStyle in labelStyle){
                         //ie789的color属性只能是16进制的值
-                        if(fontStyle == 'color'){
+                        if(fontStyle == 'color' && labelStyle.color != 'inherit'){
                             div.style.color = ColorUtils.colorToHex(labelStyle.color);
                         }else {
                             div.style[fontStyle] = labelStyle[fontStyle];

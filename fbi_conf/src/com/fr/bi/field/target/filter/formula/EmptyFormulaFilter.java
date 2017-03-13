@@ -14,6 +14,8 @@ import com.fr.json.JSONObject;
  */
 public class EmptyFormulaFilter extends FormulaFilter {
 
+    private static final long serialVersionUID = -637724424543199212L;
+
     @Override
     public JSONObject createJSON() throws Exception {
         return new JSONObject().put(BIJSONConstant.JSON_KEYS.FILTER_TYPE, BIReportConstant.FILTER_TYPE.EMPTY_FORMULA);

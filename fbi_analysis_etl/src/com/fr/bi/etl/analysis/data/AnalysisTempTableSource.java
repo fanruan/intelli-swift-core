@@ -4,6 +4,9 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.monitor.SimpleTable;
+import com.fr.bi.etl.analysis.monitor.TableRelation;
+import com.fr.bi.etl.analysis.monitor.TableRelationTree;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -25,6 +28,7 @@ import java.util.Set;
 public class AnalysisTempTableSource extends AbstractCubeTableSource implements AnalysisCubeTableSource {
 
     private static final String UNSUPPORT = "Temp Source do not support";
+    private static final long serialVersionUID = -1685272601094693644L;
 
     private List<AnalysisCubeTableSource> sourceList;
 
@@ -64,6 +68,14 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
     @Override
     public void reSetWidgetDetailGetter() {
+    }
+
+    @Override
+    public void getParentAnalysisBaseTableIds(Set<SimpleTable> set) {
+    }
+
+    public TableRelationTree getAllProcessAnalysisTablesWithRelation() {
+        return TableRelationTree.EMPTY;
     }
 
     @Override

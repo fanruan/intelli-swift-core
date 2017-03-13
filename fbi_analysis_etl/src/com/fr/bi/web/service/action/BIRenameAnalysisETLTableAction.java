@@ -1,5 +1,6 @@
 package com.fr.bi.web.service.action;
 
+import com.fr.bi.base.BIBusinessPackagePersistThread;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.fs.web.service.ServiceUtils;
@@ -12,6 +13,12 @@ import javax.servlet.http.HttpServletResponse;
  * Created by 小灰灰 on 2016/5/13.
  */
 public class BIRenameAnalysisETLTableAction extends AbstractAnalysisETLAction{
+
+
+    private static BIBusinessPackagePersistThread biBusinessPackagePersistThread = new BIBusinessPackagePersistThread();
+    static {
+        biBusinessPackagePersistThread.start();
+    }
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         final long userId = ServiceUtils.getCurrentUserID(req);
@@ -21,13 +28,13 @@ public class BIRenameAnalysisETLTableAction extends AbstractAnalysisETLAction{
         BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId).setDescribe(describe);
         BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-        new Thread(){
+        biBusinessPackagePersistThread.triggerWork(new BIBusinessPackagePersistThread.Action(){
             @Override
-            public void run() {
+            public void work() {
                 BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
                 BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
             }
-        }.start();
+        });
     }
 
     @Override

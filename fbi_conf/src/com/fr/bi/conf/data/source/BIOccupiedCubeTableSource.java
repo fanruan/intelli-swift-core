@@ -31,6 +31,7 @@ import java.util.*;
  * @since 4.0
  */
 public class BIOccupiedCubeTableSource implements CubeTableSource {
+    private static final long serialVersionUID = -4049101345978357041L;
     private CubeTableSource hostTableSource;
 
     public BIOccupiedCubeTableSource(CubeTableSource hostTableSource) {

@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.input.primitive.ICubeDoubleReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 
@@ -11,7 +12,7 @@ import java.nio.MappedByteBuffer;
  * Created by 小灰灰 on 2016/9/30.
  */
 public class BIDoubleSingleFileNIOReader extends BIBaseSingleFileNIOReader implements ICubeDoubleReader {
-    private DoubleBuffer doubleBuffer ;
+    private DoubleBuffer doubleBuffer;
     private DoubleBuffer fakeBuffer;
 
     public BIDoubleSingleFileNIOReader(File cacheFile) {
@@ -19,17 +20,18 @@ public class BIDoubleSingleFileNIOReader extends BIBaseSingleFileNIOReader imple
     }
 
     public double getSpecificValue(long filePosition) throws BIResourceInvalidException {
-        checkBuffer();
         try {
-            return doubleBuffer.get((int)filePosition);
+            return doubleBuffer.get((int) filePosition);
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the file is: "+baseFile , e);
-        }
-    }
-
-    private void checkBuffer() {
-        if (doubleBuffer == null){
+            BILoggerFactory.getLogger(this.getClass()).error("The error filePosition is: " + (int) filePosition + " and the doubleBuffer capacity is: " + doubleBuffer.capacity());
+            throw new RuntimeException("the file is: " + baseFile, e);
+        } catch (NullPointerException e) {
             initBuffer();
+            if (doubleBuffer == null) {
+                BILoggerFactory.getLogger(this.getClass()).error("the isValid status is: " + isValid);
+                throw new RuntimeException("the file is released: " + baseFile, e);
+            }
+            return getSpecificValue(filePosition);
         }
     }
 
@@ -46,7 +48,7 @@ public class BIDoubleSingleFileNIOReader extends BIBaseSingleFileNIOReader imple
                 doubleBuffer.clear();
                 doubleBuffer = null;
             }
-            if (fakeBuffer != null){
+            if (fakeBuffer != null) {
                 fakeBuffer.clear();
                 fakeBuffer = null;
             }

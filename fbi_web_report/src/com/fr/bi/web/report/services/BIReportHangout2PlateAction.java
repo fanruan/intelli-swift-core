@@ -7,7 +7,6 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.EntryControl;
 import com.fr.fs.web.service.ServiceUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.utils.WebUtils;
@@ -31,15 +30,10 @@ public class BIReportHangout2PlateAction extends ActionNoSessionCMD {
         JSONObject jo = entry.createJSONConfig();
         try {
             long createBy = reportJO.getLong("createBy");
-            BIReportNode reportNode = BIDAOUtils.findByID(reportJO.getLong("reportId"), createBy);
-            if (ComparatorUtils.equals(userId, createBy) || ComparatorUtils.equals(reportNode.getStatus(), BIReportConstant.REPORT_STATUS.APPLYING)) {
-                reportNode.setStatus(BIReportConstant.REPORT_STATUS.HANGOUT);
-                BIDAOUtils.saveOrUpDate(reportNode, createBy);
-            } else {
-                jo.put("error", "not applying hangout!");
-            }
+            BIReportNode reportNode = BIDAOUtils.getBIDAOManager().findByID(reportJO.getLong("reportId"), createBy);
+            reportNode.setStatus(BIReportConstant.REPORT_STATUS.HANGOUT);
+            BIDAOUtils.getBIDAOManager().saveOrUpDate(reportNode, createBy);
         } catch (Exception e) {
-            jo.put("error", e.getMessage());
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         WebUtils.printAsJSON(res, jo);

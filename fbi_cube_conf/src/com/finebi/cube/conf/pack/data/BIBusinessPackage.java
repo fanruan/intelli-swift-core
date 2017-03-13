@@ -25,6 +25,7 @@ import java.util.*;
  */
 public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetContainer<T> implements JSONTransform, FCloneable, IBusinessPackageGetterService<T> {
 
+    private static final long serialVersionUID = -2748440779794435591L;
     protected BIUser owner;
     protected BIPackageName name;
     protected long position;
@@ -197,7 +198,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
                 }
             }
             add(table);
-            BILoggerFactory.getLogger(BIBusinessPackage.class).info("The table " + i + ":\n" + logTable(table));
+//            BILoggerFactory.getLogger(BIBusinessPackage.class).info("The table " + i + ":\n" + logTable(table));
 
         }
         BILoggerFactory.getLogger(BIBusinessPackage.class).info("*********save package table end********");

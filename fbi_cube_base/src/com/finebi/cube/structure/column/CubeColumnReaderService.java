@@ -11,6 +11,8 @@ import com.finebi.cube.structure.ICubeVersion;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
+import java.io.Serializable;
+
 /**
  * Cube中列的可读接口
  * This class created on 2016/3/2.
@@ -18,7 +20,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
  * @author Connery
  * @since 4.0
  */
-public interface CubeColumnReaderService<T> extends ICubeIndexDataGetterService,ICubeVersion, Release {
+public interface CubeColumnReaderService<T> extends ICubeIndexDataGetterService,ICubeVersion, Release,Serializable {
 
     /**
      * 获得分组值对应的位置。

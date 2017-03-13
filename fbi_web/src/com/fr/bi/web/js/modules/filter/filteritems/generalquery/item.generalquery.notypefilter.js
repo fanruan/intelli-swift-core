@@ -52,6 +52,10 @@ BI.GeneralQueryNoTypeFilterItem = BI.inherit(BI.AbstractFilterItem, {
             element: this.element,
             items: [this.itemContainer],
             scrolly: false
+<<<<<<< HEAD
+=======
+
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         });
     },
 

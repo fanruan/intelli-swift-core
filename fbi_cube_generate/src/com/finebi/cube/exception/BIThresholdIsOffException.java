@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BIThresholdIsOffException extends Exception {
+    private static final long serialVersionUID = 2242056678482919609L;
+
     public BIThresholdIsOffException() {
     }
 

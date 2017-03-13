@@ -9,7 +9,9 @@ import com.fr.bi.base.provider.ParseJSONWithUID;
 import com.fr.bi.common.BICoreService;
 import com.fr.js.NameJavaScriptGroup;
 
-public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BICoreService {
+import java.io.Serializable;
+
+public interface BITargetAndDimension extends ParseJSONWithUID, NameProvider, BICoreService,Serializable {
 
     boolean useHyperLink();
 

@@ -114,7 +114,7 @@ public class SQLTableSource extends ServerTableSource {
 
     @Override
     public Connection getConnection() {
-        return DatasourceManager.getInstance().getConnection(sqlConnection);
+        return DatasourceManager.getProviderInstance().getConnection(sqlConnection);
     }
 
     @Override

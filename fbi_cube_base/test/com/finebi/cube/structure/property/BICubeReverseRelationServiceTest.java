@@ -3,7 +3,7 @@ package com.finebi.cube.structure.property;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
-import com.finebi.cube.location.BICubeConfigurationTest;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
@@ -24,18 +24,17 @@ public class BICubeReverseRelationServiceTest extends TestCase{
     private ICubeConfiguration cubeConfiguration;
     private ICubeResourceLocation location;
 
-    public BICubeReverseRelationServiceTest() {
+    @Override
+    protected void setUp() throws Exception {
+
         try {
-            cubeConfiguration = new BICubeConfigurationTest();
+            cubeConfiguration = new BICubeConfigurationTool();
             retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
             location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
             cubeReverseRelationService = new BICubeReverseRelationService(location, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         } catch (BICubeResourceAbsentException e) {
             assertFalse(true);
         }
-    }
-    @Override
-    protected void setUp() throws Exception {
         super.setUp();
         ICubeResourceLocation location = retrievalService.retrieveResource(new BITableKey(BITableSourceTestTool.getDBTableSourceD()));
         File file = new File(location.getAbsolutePath());
@@ -51,8 +50,9 @@ public class BICubeReverseRelationServiceTest extends TestCase{
             cubeReverseRelationService.addReverseRow(1, new Integer(1));
             assertTrue(cubeReverseRelationService.isWriterAvailable());
             assertFalse(cubeReverseRelationService.isReaderAvailable());
+            cubeReverseRelationService.forceReleaseWriter();
             assertEquals(cubeReverseRelationService.getReverseRow(1), 1);
-            assertTrue(cubeReverseRelationService.isWriterAvailable());
+            assertFalse(cubeReverseRelationService.isWriterAvailable());
             assertTrue(cubeReverseRelationService.isReaderAvailable());
         } catch (Exception e) {
             assertFalse(true);

@@ -7,6 +7,7 @@ import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.function.DATE;
 import com.fr.stable.CodeUtils;
+import com.fr.stable.bridge.StableFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,8 +17,21 @@ import java.util.Map;
 /**
  * Created by 小灰灰 on 2015/8/4.
  */
-public class BIDAOUtils {
+public class BIDAOUtils implements BIDAOProvider{
+    public static final String XML_TAG = "BIDAOUtils";
+    private static BIDAOUtils manager;
 
+    public static BIDAOProvider getBIDAOManager(){
+        return StableFactory.getMarkedObject(BIDAOProvider.XML_TAG,BIDAOProvider.class);
+    }
+    public static BIDAOUtils getInstance() {
+        synchronized (BIDAOUtils.class) {
+            if (manager == null) {
+                manager = new BIDAOUtils();
+            }
+            return manager;
+        }
+    }
     private final static TableDataDAOControl.ColumnColumn[] COLUMNS = {
             new TableDataDAOControl.ColumnColumn("id", String.class),
             new TableDataDAOControl.ColumnColumn("parentid", String.class),
@@ -52,7 +66,7 @@ public class BIDAOUtils {
 
     private static BIReportDAO getReportDao(long userId) {
         if (userId == UserControl.getInstance().getSuperManagerID()) {
-            return BISuperManagetDAOManager.getInstance();
+            return BISuperManagetDAOManager.getBISuperManagetDAOManager();
         }
         if (userId < 0) {
             return null;
@@ -60,14 +74,16 @@ public class BIDAOUtils {
         return UserControl.getInstance().getOpenDAO(BIReportDAO.class);
     }
 
-    public static List<BIReportNode> findByUserID(long userId) throws Exception {
+    @Override
+    public List<BIReportNode> findByUserID(long userId) throws Exception {
         BIReportDAO dao = getReportDao(userId);
         if (dao == null) {
             return null;
         }
         return dao.findByUserID(userId);
     }
-    public static List<BIReportNode> findByParentID(long userId, String parentId) throws Exception {
+    @Override
+    public List<BIReportNode> findByParentID(long userId, String parentId) throws Exception {
         BIReportDAO dao = getReportDao(userId);
         if (dao == null) {
             return null;
@@ -75,7 +91,8 @@ public class BIDAOUtils {
         return dao.findByParentID(parentId);
     }
 
-    public static BIReportNode findByID(long id, long userId) throws Exception {
+    @Override
+    public BIReportNode findByID(long id, long userId) throws Exception {
         BIReportDAO dao = getReportDao(userId);
         if (dao == null) {
             return null;
@@ -83,7 +100,8 @@ public class BIDAOUtils {
         return dao.findByID(id);
     }
 
-    public static void saveOrUpDate(BIReportNode node, long userId) throws Exception {
+    @Override
+    public void saveOrUpDate(BIReportNode node, long userId) throws Exception {
         BIReportDAO dao = getReportDao(userId);
         if (dao != null) {
             node.updateLastModifyTime();
@@ -91,7 +109,8 @@ public class BIDAOUtils {
         }
     }
 
-    public static List<BIReportNode> getBIReportNodesByShare2User(long userId) throws Exception {
+    @Override
+    public List<BIReportNode> getBIReportNodesByShare2User(long userId) throws Exception {
         if (userId == UserControl.getInstance().getSuperManagerID()) {
             return java.util.Collections.EMPTY_LIST;
         }
@@ -102,12 +121,13 @@ public class BIDAOUtils {
         List<BIReportNode> nodes = new ArrayList<BIReportNode>();
         for(int i = 0; i < sharedReports.size(); i++) {
             BISharedReportNode sNode = sharedReports.get(i);
-            nodes.add(BIDAOUtils.findByID(sNode.getReportId(), UserControl.getInstance().getUser(sNode.getCreateByName())));
+            nodes.add(findByID(sNode.getReportId(), UserControl.getInstance().getUser(sNode.getCreateByName())));
         }
         return nodes;
     }
 
-    public static List<User> getSharedUsersByReport(long reportId, long createBy) {
+    @Override
+    public List<User> getSharedUsersByReport(long reportId, long createBy) {
         List<User> users = null;
         try {
             users = UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).findUsersByReport(reportId, createBy);
@@ -117,7 +137,8 @@ public class BIDAOUtils {
         return users;
     }
 
-    public static boolean deleteBIReportById(long userId, long id) throws Exception {
+    @Override
+    public boolean deleteBIReportById(long userId, long id) throws Exception {
         BIReportNode node = null;
         boolean isDeleted = false;
         BIReportDAO dao = getReportDao(userId);
@@ -142,7 +163,8 @@ public class BIDAOUtils {
         return isDeleted;
     }
 
-    public static long generateID(Map idMap) {
+    @Override
+    public long generateID(Map idMap) {
         long i = 1;
         while (idMap.get(new Long(i)) != null) {
             i++;
@@ -150,15 +172,18 @@ public class BIDAOUtils {
         return i;
     }
 
-    public static EmbeddedTableData initEmbeddedTableData() {
+    @Override
+    public EmbeddedTableData initEmbeddedTableData() {
         return initTableData(COLUMNS);
     }
 
-    public static EmbeddedTableData initTableDataEmbeddedTableData() {
+    @Override
+    public EmbeddedTableData initTableDataEmbeddedTableData() {
         return initTableData(TABLEDATA_COLUMNS);
     }
 
-    private static EmbeddedTableData initTableData(TableDataDAOControl.ColumnColumn[] columns) {
+    @Override
+    public EmbeddedTableData initTableData(TableDataDAOControl.ColumnColumn[] columns) {
         EmbeddedTableData emb = new EmbeddedTableData();
         for (int i = 0; i < columns.length; i++) {
             emb.addColumn(columns[i].getName(), columns[i].getClazz());
@@ -166,7 +191,8 @@ public class BIDAOUtils {
         return emb;
     }
 
-    public static EmbeddedTableData initTableDataSharedEmbeddedTableData() {
+    @Override
+    public EmbeddedTableData initTableDataSharedEmbeddedTableData() {
         return initTableData(TABLEDATA_SHARED_COLUMNS);
     }
 
