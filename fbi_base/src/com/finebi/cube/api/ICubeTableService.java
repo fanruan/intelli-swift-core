@@ -10,6 +10,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.stable.collections.array.IntArray;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * Created by GUY on 2015/3/19.
  */
-public interface ICubeTableService extends Release {
+public interface ICubeTableService extends Release,Serializable {
 
     ICubeTableService NULL_TABLE_INDEX = new TableIndexAdapter();
 

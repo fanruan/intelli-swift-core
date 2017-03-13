@@ -22,8 +22,11 @@ public class BISessionUtils {
         //随便取一个了
         if(locks.size() > 0) {
             BIReportNodeLock lock = locks.get(0);
-            BISession session = getSession(lock.getSessionId());
-            long userId = session.getUserId();
+//            BISession session = getSession(lock.getSessionId());
+//            long userId = session.getUserId();
+//            userName = lock.getSessionId();
+            long userId = lock.getUserId();
+            lock.updateLockedTime();
             userName = UserControl.getInstance().getUser(userId).getUsername();
         }
         return userName;

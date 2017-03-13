@@ -9,10 +9,11 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.stable.operation.sort.ISort;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public interface BIDetailTarget extends BITargetAndDimension, Release {
+public interface BIDetailTarget extends BITargetAndDimension, Release,Serializable {
 
     /**
      * 创建索引map

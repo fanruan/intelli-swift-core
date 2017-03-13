@@ -18,6 +18,7 @@ public class DoubleDealer extends AbstractDealer<Double> {
             v = rs.getDouble(rsColumn);
         } catch (SQLException e1) {
             BILoggerFactory.getLogger().error(e1.getMessage(), e1);
+            throw new RuntimeException(e1);
         }
         if (v == 0) {
             try {

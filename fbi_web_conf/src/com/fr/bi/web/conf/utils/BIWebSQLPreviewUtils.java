@@ -16,7 +16,7 @@ import com.fr.json.JSONObject;
  */
 public class BIWebSQLPreviewUtils {
     public static JSONObject getPreviewData(String sql, String connectionName) throws JSONException {
-        com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
+        com.fr.data.impl.Connection dbc = DatasourceManager.getProviderInstance().getConnection(connectionName);
         DBTableData dbTableData = new DBTableData(dbc, sql);
         JSONObject jo = new JSONObject();
         try {
@@ -42,7 +42,7 @@ public class BIWebSQLPreviewUtils {
             jo.put("field_names", fieldNameArray);
             jo.put("data", dataArray);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
             jo.put("error", e.getMessage());
         }
         return jo;

@@ -57,7 +57,7 @@ public class BIMapInfoManager {
             editFileNames(innerMapPath, "map", "map", "MAP_", 0, true);
             editFileNames(customMapPath, "image", "image", "MAP_", 0, false);
         } catch (JSONException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 
@@ -81,7 +81,7 @@ public class BIMapInfoManager {
         List<String> children = new ArrayList<String>();
         for(File f : files){
             String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
-            String currentName = (StringUtils.isEmpty(parentName) ? fileName : parentName + File.separator + fileName);
+            String currentName = StringUtils.isEmpty(parentName) ? fileName : parentName + "/" + fileName;
             if(isInner){
                 innerMapName.put(fileName, prev + currentName);
                 innerMapTypeName.put(prev + currentName, fileName);
@@ -101,8 +101,8 @@ public class BIMapInfoManager {
             customMapParentChildrenRelation.put(parentName, children);
         }
         for(File f : dirs){
-            String currentName = (StringUtils.isEmpty(parentName) ? f.getName() : parentName + File.separator + f.getName());
-            String currentPath = StringUtils.isEmpty(parentPath) ? f.getName() : parentPath + File.separator + f.getName();
+            String currentName = StringUtils.isEmpty(parentName) ? f.getName() : parentName + "/" + f.getName();
+            String currentPath = StringUtils.isEmpty(parentPath) ? f.getName() : parentPath + "/" + f.getName();
             editFileNames(f.getAbsolutePath(), currentPath, currentName, prev, layer + 1, isInner);
 
         }

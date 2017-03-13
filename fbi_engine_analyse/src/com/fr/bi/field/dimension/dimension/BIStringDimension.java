@@ -13,6 +13,8 @@ import java.util.List;
 
 public class BIStringDimension extends BIAbstractDimension {
 
+    private static final long serialVersionUID = 2681260120920492652L;
+
     public BIStringDimension() {
     }
 

@@ -23,12 +23,12 @@ public class BITemplateHangoutAction extends ActionNoSessionCMD {
         String status = WebUtils.getHTTPRequestParameter(req, "status");
         JSONObject jo = new JSONObject();
         try {
-            BIReportNode reportNode = BIDAOUtils.findByID(Long.parseLong(id), userId);
+            BIReportNode reportNode = BIDAOUtils.getBIDAOManager().findByID(Long.parseLong(id), userId);
             reportNode.setStatus(Integer.parseInt(status));
-            BIDAOUtils.saveOrUpDate(reportNode, userId);
+            BIDAOUtils.getBIDAOManager().saveOrUpDate(reportNode, userId);
             jo.put("result", true);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         WebUtils.printAsJSON(res, jo);
     }

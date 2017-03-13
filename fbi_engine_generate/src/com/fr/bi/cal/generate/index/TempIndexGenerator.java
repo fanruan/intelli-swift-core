@@ -3,7 +3,7 @@ package com.fr.bi.cal.generate.index;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.io.File;
 
@@ -23,7 +23,7 @@ public class TempIndexGenerator extends IndexGenerator {
 
     @Override
     protected void createTableCube() {
-        this.cube = new TableCubeFile(BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()) + File.separator + pathSuffix);
+        this.cube = new TableCubeFile(BIBaseConstant.CACHE.getCacheDirectory() + BIConfigurePathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()) + File.separator + pathSuffix);
 
     }
 }

@@ -1,6 +1,7 @@
 package com.finebi.cube.structure.table;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.finebi.cube.ICubeConfiguration;
@@ -30,7 +31,7 @@ public class BICubeTableEntityTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        cubeConfiguration = new BICubeConfigurationTest();
+        cubeConfiguration = new BICubeConfigurationTool();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         tableEntity = new BICubeTableEntity(BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()), retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
@@ -41,7 +42,7 @@ public class BICubeTableEntityTest extends TestCase {
         fields.add(DBFieldTestTool.generateDATE());
         fields.add(DBFieldTestTool.generateSTRING());
         tableEntity.recordTableStructure(fields);
-        assertTrue(tableEntity.tableDataAvailable());
+        assertFalse(tableEntity.tableDataAvailable());
     }
 
     public void testFieldData() {
@@ -61,7 +62,7 @@ public class BICubeTableEntityTest extends TestCase {
             tableEntity.recordTableStructure(fields);
             CubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
 
-            assertTrue(tableEntity.tableDataAvailable());
+            assertFalse(tableEntity.tableDataAvailable());
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
@@ -79,7 +80,7 @@ public class BICubeTableEntityTest extends TestCase {
             List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>();
             fields.add(DBFieldTestTool.generateDATE());
             tableEntity.recordTableStructure(fields);
-            assertTrue(tableEntity.tableDataAvailable());
+            assertFalse(tableEntity.tableDataAvailable());
 
 
             fields.clear();
@@ -96,7 +97,7 @@ public class BICubeTableEntityTest extends TestCase {
             tableEntity.recordTableStructure(fields);
             CubeColumnReaderService readerService = tableEntity.getColumnDataGetter(BIDateColumnTool.generateYearMonthDay(DBFieldTestTool.generateTIME()));
 
-            assertTrue(tableEntity.tableDataAvailable());
+            assertFalse(tableEntity.tableDataAvailable());
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
@@ -104,7 +105,7 @@ public class BICubeTableEntityTest extends TestCase {
     }
 
     public void testField() {
-        assertTrue(tableEntity.tableDataAvailable());
+        assertFalse(tableEntity.tableDataAvailable());
     }
 
 

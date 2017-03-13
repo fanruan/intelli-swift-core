@@ -3,7 +3,10 @@ package com.fr.bi.web.dezi.web;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.dezi.*;
-import com.fr.bi.web.dezi.services.*;
+import com.fr.bi.web.dezi.services.BIExcelExportAction;
+import com.fr.bi.web.dezi.services.BIGetTempCubeGeneratingStatusAction;
+import com.fr.bi.web.dezi.services.BIGlobalExportAction;
+import com.fr.bi.web.dezi.services.BIStartGenerateTempCubeAction;
 import com.fr.bi.web.dezi.services.report.BIUpdateSessionAction;
 import com.fr.bi.web.report.services.BIInitDeziPaneAction;
 import com.fr.fs.FSContext;
@@ -43,6 +46,9 @@ public class Service4BIDezi implements Service {
             new BIGetFieldMinMaxValueAction(),
 
             new BIUpdateSingleExcelCubeAction(),
+
+            new BIDeziSaveFileGetExcelDateAction(),
+
             new BIExcelExportAction(),
 
             new BIGlobalExportAction(),

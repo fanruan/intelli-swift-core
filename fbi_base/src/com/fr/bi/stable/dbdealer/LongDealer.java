@@ -17,7 +17,8 @@ public class LongDealer extends AbstractDealer<Long> {
         try {
             v = rs.getLong(rsColumn);
         } catch (SQLException e1) {
-            BILoggerFactory.getLogger().error(e1.getMessage(), e1);
+            BILoggerFactory.getLogger(LongDealer.class).error(e1.getMessage(), e1);
+            throw new RuntimeException(e1);
         }
         if (v == 0) {
             try {

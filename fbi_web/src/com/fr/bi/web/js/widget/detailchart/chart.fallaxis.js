@@ -175,11 +175,19 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         if (BI.isEmptyArray(colors)) {
             colors = ["rgb(152, 118, 170)", "rgb(0, 157, 227)"];
         }
+<<<<<<< HEAD
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (i, t) {
                 if (t.y < 0) {
                     tables.push([t.x, t.y, sum + t.y, t]);
                 } else {
+=======
+        BI.each(items, function(idx, item){
+            BI.each(item.data, function(i, t){
+                if(t.y < 0){
+                    tables.push([t.x, t.y, sum + t.y, t]);
+                }else{
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                     tables.push([t.x, t.y, sum, t]);
                 }
                 sum += t.y;
@@ -188,6 +196,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
 
         return [BI.map(BI.makeArray(2, null), function (idx, item) {
             return {
+<<<<<<< HEAD
                 "data": BI.map(tables, function (id, cell) {
                     var axis = {};
                     if (idx === 1) {
@@ -195,6 +204,14 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                             x: cell[0],
                             y: Math.abs(cell[2 - idx])
                         });
+=======
+                "data": BI.map(tables, function(id, cell){
+                    var axis = BI.extend({}, cell[3], {
+                        x: cell[0],
+                        y: Math.abs(cell[2 - idx])
+                    });
+                    if(idx === 1){
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                         axis.color = cell[2 - idx] < 0 ? colors[1] : colors[0];
                     } else {
                         axis = BI.extend(cell[3], {

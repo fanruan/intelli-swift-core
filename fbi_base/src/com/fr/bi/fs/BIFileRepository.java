@@ -59,10 +59,10 @@ public class BIFileRepository {
     public String getBIDirName(long id) throws Exception {
         String name;
         if (id == UserControl.getInstance().getSuperManagerID()
-                || FSConfig.getInstance().getControl().getControlType() == FSConstants.CONTROL.HSQLDAO) {
+                || FSConfig.getProviderInstance().getControl().getControlType() == FSConstants.CONTROL.HSQLDAO) {
             name = String.valueOf(id);
         } else {
-            name = FSConfig.getInstance().getControl().getUserDAO().findByID(id).getUsername();
+            name = FSConfig.getProviderInstance().getControl().getUserDAO().findByID(id).getUsername();
         }
         return name;
     }

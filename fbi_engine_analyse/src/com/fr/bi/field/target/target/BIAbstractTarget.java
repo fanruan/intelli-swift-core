@@ -17,7 +17,7 @@ public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget
         this.summaryType = summaryType;
     }
 
-    public int getSuamryType() {
+    public int getSummaryType() {
         return summaryType;
     }
 

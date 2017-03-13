@@ -8,6 +8,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BIBuildReaderException extends Exception {
+    private static final long serialVersionUID = 7335176294029810372L;
+
     public BIBuildReaderException(String message) {
         super(message);
     }

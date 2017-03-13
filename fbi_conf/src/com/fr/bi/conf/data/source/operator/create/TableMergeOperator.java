@@ -17,6 +17,7 @@ import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 import com.fr.stable.StringUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,7 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
     public static final String XML_TAG = "TableMergeOperator";
     private static final int MERGE_TYPE_UNION = 5;
     private static final int MERGE_TYPE_RIGNT_JOIN = 2;
+    private static final long serialVersionUID = 4018571793760759447L;
     @BICoreField
     private int mergeType;
     @BICoreField
@@ -113,7 +115,8 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
         }
     }
 
-    private class MergeColumn implements JSONTransform, BICoreService{
+    private class MergeColumn implements JSONTransform, BICoreService,Serializable{
+        private static final long serialVersionUID = 3502025384165438863L;
         @BICoreField
         private String name;
         @BICoreField
@@ -163,7 +166,8 @@ public class TableMergeOperator extends AbstractCreateTableETLOperator{
         }
     }
 
-    private class SingleColumn implements JSONTransform{
+    private class SingleColumn implements JSONTransform,Serializable{
+        private static final long serialVersionUID = -3786268276103820058L;
         private String name;
         private int type;
         private int index;

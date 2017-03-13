@@ -7,12 +7,11 @@ import com.fr.bi.cluster.zookeeper.exception.NotInitializeException;
 import com.fr.bi.cluster.zookeeper.watcher.BIWorker;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.FRLogger;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by Connery on 2015/3/28.
@@ -25,14 +24,17 @@ public class BIMasterController implements BIMissionListener, Watcher {
     private ZooKeeperWrapper zk;
     private BIMissionDispatcher dispatcher;
     private BIMissionMonitor monitor;
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
 //    private static final Logger LOG = LoggerFactory.getLogger(BIClusterMissionManager.class);
     private boolean isInitialized;
 
     public BIMasterController(ZooKeeperWrapper zk) {
         this.zk = zk;
-
     }
-
+    public BIMasterController(ZooKeeperWrapper zk,CountDownLatch countDownLatch) {
+        this.zk = zk;
+        this.countDownLatch = countDownLatch;
+    }
     public void registerMissionListener(BIMissionListener listener) {
         monitor.registerListener(listener);
     }
@@ -45,6 +47,10 @@ public class BIMasterController implements BIMissionListener, Watcher {
         isInitialized = true;
     }
 
+    public CountDownLatch getCountDownLatch() {
+        return countDownLatch;
+    }
+
     /**
      * 一定要确保worker路径下有工作节点存在，才能初始化。
      * 否则，监听worker节点，等到子节点出现，再初始化。
@@ -52,17 +58,25 @@ public class BIMasterController implements BIMissionListener, Watcher {
     public void startWork() {
         List children = null;
         try {
+            if(zk.exists(BIWorker.PARENT_PATH, false)==null){
+                try {
+                    zk.create(BIWorker.PARENT_PATH, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                } catch (Exception ex) {
+                    BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+//                LOG.error("Zookeeper已经存在" + PARENT_PATH + "路径，报错信息：" + ex.toString());
+                }
+            }
             children = zk.getChildren(BIWorker.PARENT_PATH, false);
         } catch (Exception ex) {
-             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger(BIMasterController.class).error(ex.getMessage(), ex);
         }
         if (children != null && !children.isEmpty()) {
             init();
         } else {
             try {
-                zk.exists(BIWorker.PARENT_PATH, this);
+                zk.getChildren(BIWorker.PARENT_PATH, this);
             } catch (Exception ex) {
-                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger(BIMasterController.class).error(ex.getMessage(), ex);
             }
         }
     }
@@ -70,6 +84,8 @@ public class BIMasterController implements BIMissionListener, Watcher {
     @Override
     public void process(WatchedEvent event) {
 //        LOG.info("worker路径下存在工作节点");
+        BILoggerFactory.getLogger(BIMasterController.class).info("worker路径下存在工作节点");
+        this.countDownLatch.countDown();
         init();
         checkMission();
     }
@@ -102,12 +118,12 @@ public class BIMasterController implements BIMissionListener, Watcher {
             try {
                 mission = dispatcher.dispatcherMission();
             } catch (KeeperException ex) {
-                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger(BIMasterController.class).error(ex.getMessage(), ex);
             } catch (NotInitializeException ex) {
-                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger(BIMasterController.class).error(ex.getMessage(), ex);
 
             } catch (InterruptedException ex) {
-                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger(BIMasterController.class).error(ex.getMessage(), ex);
 
             }
             if (mission != null && !mission.isEmpty()) {

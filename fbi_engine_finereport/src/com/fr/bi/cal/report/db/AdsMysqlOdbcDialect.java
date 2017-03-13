@@ -58,7 +58,7 @@ public class AdsMysqlOdbcDialect extends AbstractDialect {
             }
             return (TableProcedure[]) sqlTableList.toArray(new TableProcedure[sqlTableList.size()]);
         } catch (Exception e) {
-            FRContext.getLogger().error(e.getMessage());
+            FRContext.getLogger().error(e.getMessage(),e);
         } finally {
             release(connection, statement, resultSet);
         }
@@ -102,7 +102,7 @@ public class AdsMysqlOdbcDialect extends AbstractDialect {
             }
 
         } catch (SQLException e) {
-            FRContext.getLogger().error(e.getMessage());
+            FRContext.getLogger().error(e.getMessage(),e);
         }
 
         return result;

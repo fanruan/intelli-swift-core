@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 public class BIGetLimitBIUserCountAction extends ActionNoSessionCMD {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        JSONObject jo = FBIConfig.getInstance().getUserAuthorAttr().createAuthLimitJo();
+        JSONObject jo = FBIConfig.getProviderInstance().getUserAuthorAttr().createAuthLimitJo();
         WebUtils.printAsJSON(res, jo);
     }
 

@@ -1,7 +1,7 @@
 package com.fr.bi.fs;
 
-import com.fr.base.FRContext;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.FRContext;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.XMLFileManager;
@@ -49,7 +49,7 @@ public class BITableDataDAOManager extends XMLFileManager {
         long userId = node.getUserId();
         User tdUser = TableDataSyncDB.getInstance().findUserByUserId(userId);
         if (tdUser != null) {
-            long id = node.getId() < 0 ? BIDAOUtils.generateID(tdBIReport_idMap) : node.getId();
+            long id = node.getId() < 0 ? BIDAOUtils.getBIDAOManager().generateID(tdBIReport_idMap) : node.getId();
             node.setId(id);
             node.setUsername(tdUser.getUsername());
             tdBIReport_idMap.put(id, node);
@@ -72,7 +72,7 @@ public class BITableDataDAOManager extends XMLFileManager {
 
     public void writeTableDataBIReportMap(Set<Map.Entry<Long, BIReportNode>> set) {
         synchronized (BITableDataDAOManager.class) {
-            this.biReportTableData = BIDAOUtils.initTableDataEmbeddedTableData();
+            this.biReportTableData = BIDAOUtils.getBIDAOManager().initTableDataEmbeddedTableData();
             for (Map.Entry<Long, BIReportNode> entry : set) {
                 BIReportNode tdNode = entry.getValue();
                 List<String> rowList = new ArrayList<String>();
@@ -183,17 +183,20 @@ public class BITableDataDAOManager extends XMLFileManager {
             while (iterator.hasNext()) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 BISharedReportNode node = (BISharedReportNode) entry.getValue();
-                long shareToId = TableDataSyncDB.getInstance().findUserByUserName(node.getShareToName()).getId();
-                if (node.getReportId() == reportId && ComparatorUtils.equals(createUser.getUsername(), node.getCreateByName())) {
-                    if (isReset) {
-                        iterator.remove();
-                    } else if (ArrayUtils.contains(userIds, shareToId)) {
-                        userIds = ArrayUtils.remove(userIds, ArrayUtils.indexOf(userIds, shareToId));
+                User shareToUser = TableDataSyncDB.getInstance().findUserByUserName(node.getShareToName());
+                if (shareToUser != null) {
+                    long shareToId = shareToUser.getId();
+                    if (node.getReportId() == reportId && ComparatorUtils.equals(createUser.getUsername(), node.getCreateByName())) {
+                        if (isReset) {
+                            iterator.remove();
+                        } else if (ArrayUtils.contains(userIds, shareToId)) {
+                            userIds = ArrayUtils.remove(userIds, ArrayUtils.indexOf(userIds, shareToId));
+                        }
                     }
                 }
             }
             for (long userId : userIds) {
-                BISharedReportNode newNode = new BISharedReportNode(BIDAOUtils.generateID(tdBISharedReport_idMap));
+                BISharedReportNode newNode = new BISharedReportNode(BIDAOUtils.getBIDAOManager().generateID(tdBISharedReport_idMap));
                 newNode.setReportId(reportId);
                 newNode.setCreateByName(createUser.getUsername());
                 newNode.setShareToName(TableDataSyncDB.getInstance().findUserByUserId(userId).getUsername());
@@ -211,7 +214,7 @@ public class BITableDataDAOManager extends XMLFileManager {
      */
     public void writeTableDataBISharedReportMap(Set<Map.Entry<Long, BISharedReportNode>> set) {
         synchronized (BITableDataDAOManager.class) {
-            this.biSharedReportTableData = BIDAOUtils.initTableDataSharedEmbeddedTableData();
+            this.biSharedReportTableData = BIDAOUtils.getBIDAOManager().initTableDataSharedEmbeddedTableData();
             for (Map.Entry<Long, BISharedReportNode> entry : set) {
                 BISharedReportNode tdNode = entry.getValue();
                 List<String> rowList = new ArrayList<String>();
@@ -337,7 +340,7 @@ public class BITableDataDAOManager extends XMLFileManager {
                 }
             }
         } catch (Exception e) {
-            FRContext.getLogger().error(e.getMessage());
+            FRContext.getLogger().error(e.getMessage(),e);
         }
     }
 
@@ -362,14 +365,14 @@ public class BITableDataDAOManager extends XMLFileManager {
                 }
             }
         } catch (Exception e) {
-            FRContext.getLogger().error(e.getMessage());
+            FRContext.getLogger().error(e.getMessage(),e);
         }
     }
 
     public EmbeddedTableData getBIReportTabledata() {
         synchronized (BITableDataDAOManager.class) {
             if (biReportTableData == null) {
-                biReportTableData = BIDAOUtils.initTableDataEmbeddedTableData();
+                biReportTableData = BIDAOUtils.getBIDAOManager().initTableDataEmbeddedTableData();
             }
             return biReportTableData;
         }
@@ -378,7 +381,7 @@ public class BITableDataDAOManager extends XMLFileManager {
     public EmbeddedTableData getBISharedReportTableData() {
         synchronized (BITableDataDAOManager.class) {
             if (biSharedReportTableData == null) {
-                biSharedReportTableData = BIDAOUtils.initTableDataSharedEmbeddedTableData();
+                biSharedReportTableData = BIDAOUtils.getBIDAOManager().initTableDataSharedEmbeddedTableData();
             }
             return biSharedReportTableData;
         }

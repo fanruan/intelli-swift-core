@@ -49,14 +49,14 @@ public class BIImportDBTableConnectionRelationTool {
 
     public boolean putConnection(String connectionName, Map<String, java.sql.Connection> connMap) throws Exception {
         if (!connMap.containsKey(connectionName)) {
-            com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
+            com.fr.data.impl.Connection dbc = DatasourceManager.getProviderInstance().getConnection(connectionName);
             if (dbc == null) {
                 return false;
             }
             try {
                 connMap.put(connectionName, dbc.createConnection());
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
                 return false;
             }
         }

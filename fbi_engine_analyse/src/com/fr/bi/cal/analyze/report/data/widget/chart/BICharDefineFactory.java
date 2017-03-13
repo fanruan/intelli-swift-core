@@ -9,7 +9,7 @@ import com.fr.bi.stable.constant.BIExcutorConstant.CHART;
 public class BICharDefineFactory {
 
     public static BIChartDefine getChartDefine(int type) {
-        return FBIConfig.getInstance().getChartStyleAttr().getChartStyle() == 0 ? get3DChartDefine(type) : get2DChartDefine(type);
+        return FBIConfig.getProviderInstance().getChartStyleAttr().getChartStyle() == 0 ? get3DChartDefine(type) : get2DChartDefine(type);
     }
 
     private static  BIChartDefine get2DChartDefine(int type) {

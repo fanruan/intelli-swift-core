@@ -4,20 +4,20 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONParser;
 import com.fr.stable.StringUtils;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.io.Serializable;
 
 /**
  * Created by User on 2016/9/6.
  * chart get的setting属性
  */
-public class DetailChartSetting implements JSONParser {
-
+public class DetailChartSetting implements JSONParser,Serializable {
     private JSONObject settings = JSONObject.create();
     private JSONObject dimensions = JSONObject.create();
     private Map<String, Integer> numberLevelMap = new HashMap<String, Integer>();
+    private static final long serialVersionUID = -230718308683962961L;
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("settings")) {

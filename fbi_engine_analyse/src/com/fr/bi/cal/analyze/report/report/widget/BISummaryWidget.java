@@ -47,6 +47,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BISummaryWidget extends BIAbstractWidget {
+    private static final long serialVersionUID = -4264115812022703958L;
     @BICoreField
     protected BISummaryTarget[] targets;
     @BICoreField
@@ -68,6 +69,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     private int maxRow = PagingFactory.PAGE_PER_GROUP_20;    //单页最大行数
     private int dimensionRelationIndex = 1;
     private int targetRelationIndex = 0;
+
 
     @Override
     public BIDimension[] getDimensions() {
@@ -446,6 +448,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     }
 
     private class TargetSort extends NameObject {
+        private static final long serialVersionUID = -3319190000338485415L;
+
         public TargetSort(String s, Object o) {
             super(s, o);
         }

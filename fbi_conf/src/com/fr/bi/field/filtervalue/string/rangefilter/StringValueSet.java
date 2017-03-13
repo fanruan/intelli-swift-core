@@ -6,14 +6,16 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.BICoreService;
 import com.fr.general.ComparatorUtils;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/1/6.
  */
-public class StringValueSet implements BICoreService{
+public class StringValueSet implements BICoreService,Serializable{
     public static final int CONTAINS = 1;
+    private static final long serialVersionUID = 7735531976604940179L;
     @BICoreField
     private Set<String> values = new HashSet<String>();
     @BICoreField

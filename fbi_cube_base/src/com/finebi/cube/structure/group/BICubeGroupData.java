@@ -249,9 +249,11 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     public void forceReleaseReader() {
         if (isGroupReaderAvailable()) {
             groupReader.forceRelease();
+            groupReader = null;
         }
         if (isLengthReaderAvailable()) {
             groupLengthReader.forceRelease();
+            groupLengthReader = null;
         }
     }
 

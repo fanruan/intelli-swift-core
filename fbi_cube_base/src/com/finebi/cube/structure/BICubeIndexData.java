@@ -37,7 +37,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
             nullIndexLocation = currentLocation.buildChildLocation("fbi_null");
         } catch (URISyntaxException e) {
             BINonValueUtils.beyondControl(e);
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 

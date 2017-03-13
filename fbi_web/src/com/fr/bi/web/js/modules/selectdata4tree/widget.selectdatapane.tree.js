@@ -36,6 +36,12 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
                 var ids = BI.Utils.getTableIDsOfPackageID(packageId);
                 return BI.map(ids, function (i, id) {
                     return BI.Utils.getConnectionNameByTableId(id) === BICst.TABLE_TYPE_EXCEL ? {
+<<<<<<< HEAD
+=======
+                        id: id,
+                        type: "bi.tree_select_data_level0_excel_node"
+                    } : {
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                         id: id,
                         type: "bi.tree_select_data_level0_excel_node",
                         warningTitle: BI.i18nText("BI-Added_Data_Unavailable")

@@ -29,6 +29,7 @@ import java.util.Set;
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = IPackagesManagerService.class)
 public class BIPackageContainer extends BISetContainer<BIBusinessPackage> implements IPackagesManagerService {
+    private static final long serialVersionUID = -7680738383217554028L;
     protected BIUser user;
 
     public BIPackageContainer(long userId) {

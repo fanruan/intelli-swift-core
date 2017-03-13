@@ -31,7 +31,7 @@ public class BIGetWidgetFromTemplateAction extends ActionNoSessionCMD {
         long currentLoginUserId = ServiceUtils.getCurrentUserID(req);
         BIReportNode node = null;
         if (id != null) {
-            node = BIDAOUtils.findByID(Long.parseLong(id), userId);
+            node = BIDAOUtils.getBIDAOManager().findByID(Long.parseLong(id), userId);
         }
 
         if (currentLoginUserId < 0 && currentLoginUserId != UserControl.getInstance().getSuperManagerID()) {
@@ -40,7 +40,7 @@ public class BIGetWidgetFromTemplateAction extends ActionNoSessionCMD {
         if (node == null) {
             throw new Exception("can't find the report! might be delete or move!");
         }
-        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+        JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(node);
 
         WebUtils.printAsJSON(res, reportSetting.optJSONObject("widgets"));
     }

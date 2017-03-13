@@ -5,13 +5,15 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Young's on 2016/4/25.
  */
-public class UpdateSettingSource implements JSONTransform {
+public class UpdateSettingSource implements JSONTransform,Serializable {
+    private static final long serialVersionUID = 771953160507452333L;
     private int updateType = DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
 
     private String partAddSQL;

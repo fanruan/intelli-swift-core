@@ -8,7 +8,10 @@ import com.finebi.cube.calculator.bidouble.MaxCalculator;
 import com.finebi.cube.calculator.bidouble.MinCalculator;
 import com.finebi.cube.calculator.bidouble.SumCalculator;
 import com.finebi.cube.calculator.biint.GroupSizeCalculator;
+import com.finebi.cube.common.log.BILogExceptionInfo;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -41,6 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 4.0
  */
 public class BICubeTableAdapter implements ICubeTableService {
+    private static final long serialVersionUID = 4703907908750398733L;
     private Cube cube;
     private BITableKey tableKey;
     private CubeTableEntityGetterService primaryTable;
@@ -354,6 +358,9 @@ public class BICubeTableAdapter implements ICubeTableService {
                 return BIColumnKey.covertColumnKey(field);
             }
         } catch (BIKeyAbsentException e) {
+            BILoggerFactory.getLogger(BICubeTableAdapter.class).error("Get Column Key error, the error Column is: " + biKey.getKey() + " the error table is: " + BILogHelper.logCubeLogTableSourceInfo(this.tableKey.getSourceID()));
+            BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "Get Column Key From Table: " + BILogHelper.logCubeLogTableSourceInfo(this.tableKey.getSourceID()) + " The Absent Column is: " + biKey.getKey(), e.getMessage(), e);
+            BILogHelper.cacheCubeLogTableException(this.tableKey.getSourceID(), exceptionInfo);
             throw BINonValueUtils.beyondControl(e);
         }
     }
@@ -404,7 +411,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public String getId() {
-        return null;
+        return tableKey.getSourceID();
     }
 
     @Override

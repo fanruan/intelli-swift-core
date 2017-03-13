@@ -14,7 +14,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.BICollectionUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +23,8 @@ import java.util.Set;
 
 public class AllTask extends AbstractCubeTask {
 
+
+    private static final long serialVersionUID = 6294212076030791622L;
 
     public AllTask(long userId) {
         super(userId);
@@ -63,7 +65,7 @@ public class AllTask extends AbstractCubeTask {
     @Override
     protected IndexGenerator createGenerator(CubeTableSource source) {
         String md5 = source.fetchObjectCore().getID().getIdentityValue();
-        TableCubeFile cube = new TableCubeFile(BIPathUtils.createTablePath(md5, biUser.getUserId()));
+        TableCubeFile cube = new TableCubeFile(BIConfigurePathUtils.createTablePath(md5, biUser.getUserId()));
         if (!checkCubeVersion(cube)) {
             TableUpdate action = BICubeConfigureCenter.getTableUpdateManager().getSingleTableUpdateAction(source.getPersistentTable());
             switch (action.getUpdateType()) {
