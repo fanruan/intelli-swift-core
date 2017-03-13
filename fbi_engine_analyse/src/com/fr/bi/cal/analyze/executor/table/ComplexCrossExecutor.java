@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.executor.table;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -107,6 +108,11 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
         return jo;
     }
 
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 注释
      *
@@ -137,7 +143,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
                 nodes.add(roots[i]);
             }
         }
-        boolean needAllPage = paging.getOprator() < Node.NONE_PAGE_LEVER;
+        boolean needAllPage = paging.getOperator() < Node.NONE_PAGE_LEVER;
         if (needAllPage) {
             cbcells = new CBCell[getTotalNodeColumnLength(nodes, hasTarget) * (Math.max(1, keys.length)) + rowData.getMaxArrayLength()][
                     getTotalNodeRowLength(nodes, hasTarget, integers) + columnData.getMaxArrayLength() + 1];
@@ -382,7 +388,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
             return pos;
         }
         //pos如果不为0说明是汇总的格子
-        dealWithCrossNode(left.getValue(), paging.getOprator() < Node.NONE_PAGE_LEVER ? new NodeAllExpander(colDimension.length - 1) : expander.getXExpander(), cbcells,
+        dealWithCrossNode(left.getValue(), paging.getOperator() < Node.NONE_PAGE_LEVER ? new NodeAllExpander(colDimension.length - 1) : expander.getXExpander(), cbcells,
                 rowDimension, colDimension, row + pos, column, keys, colDimension.length, pos != 0, total, chartSetting);
         pos++;
         return pos;

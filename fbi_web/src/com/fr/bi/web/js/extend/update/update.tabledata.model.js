@@ -2,62 +2,71 @@
  * Created by Young's on 2016/4/22.
  */
 BI.UpdateTableDataModel = BI.inherit(FR.OB, {
-    _init: function(){
+    _init: function () {
         BI.UpdateTableDataModel.superclass._init.apply(this, arguments);
         this.table = this.options.table;
     },
 
-    getId: function(){
+    getId: function () {
         return this.table.id;
     },
 
-    getTableName: function() {
+    getTableName: function () {
         var translations = this.table.translations;
         var id = this.table.id;
         return translations[id];
     },
 
-    getSourceTables: function(){
+    getSourceTables: function () {
         //找到所有基础表
         var sourceTables = [];
-        function getbts(table){
-            if(BI.isNotNull(table.etl_type)) {
-                BI.each(table.tables, function(i, t){
+
+        function getbts(table) {
+            if (BI.isNotNull(table.etl_type)) {
+                BI.each(table.tables, function (i, t) {
                     getbts(t);
                 })
-            } else {
+            } else if (!isExist(table)) {
                 sourceTables.push(table);
             }
         }
+
+        function isExist(table) {
+            return BI.some(sourceTables, function (i, t) {
+                return t.connection_name === table.connection_name &&
+                    t.table_name === table.table_name;
+            })
+        }
+
         getbts(this.table);
         return sourceTables;
     },
 
-    getSourceTableIds: function(){
+    getSourceTableIds: function () {
         var tables = this.getSourceTables();
         var tableIds = [];
-        BI.each(tables, function(i, table){
+        BI.each(tables, function (i, table) {
             tableIds.push(table.md5);
         });
         return tableIds;
     },
 
-    getUpdateSettingBySourceTableId: function(sourceTableId) {
+    getUpdateSettingBySourceTableId: function (sourceTableId) {
         var updateSettings = this.table.update_settings;
         return updateSettings[sourceTableId];
     },
 
-    getTableBySourceTableId: function(sourceTableId) {
+    getTableBySourceTableId: function (sourceTableId) {
         var sourceTable = {};
-        BI.each(this.getSourceTables(), function(i, table) {
-            if(table.md5 === sourceTableId) {
+        BI.each(this.getSourceTables(), function (i, table) {
+            if (table.md5 === sourceTableId) {
                 sourceTable = table;
             }
         });
         return sourceTable;
     },
 
-    getAllSettings: function(){
+    getAllSettings: function () {
         return this.table.update_settings;
     }
 });
