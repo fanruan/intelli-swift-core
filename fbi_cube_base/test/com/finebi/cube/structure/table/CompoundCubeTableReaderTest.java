@@ -1,14 +1,7 @@
 package com.finebi.cube.structure.table;
 
 import com.finebi.cube.BICubeTestBase;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.tools.*;
-import com.finebi.cube.utils.BITableKeyUtils;
-import com.fr.bi.stable.data.source.CubeTableSource;
-import com.finebi.cube.common.log.BILoggerFactory;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.finebi.cube.tools.BIMemDataSourceTestToolCube;
 
 /**
  * This class created on 2016/6/20.
@@ -25,5 +18,8 @@ public class CompoundCubeTableReaderTest extends BICubeTestBase {
         tableSource = new BIMemDataSourceTestToolCube();
     }
 
+    @Override
+    public void testVoid() {
 
+    }
 }

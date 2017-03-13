@@ -41,5 +41,9 @@ BICst.ETL_OPERATOR = {
 
 BICst.DATA_CONFIG_TAB = "__bi_data_config_tab__";
 
+<<<<<<< HEAD
 BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY = "__bi_data_config_authority_cache_key__";
 BICst.BI_REPORT_TAB = "__bi_report_tab__";
+=======
+BICst.CHECK_ANALYSIS_STATUS_INTERVAL = "__check_analysis_status_interval__";
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092

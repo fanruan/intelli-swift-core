@@ -24,7 +24,7 @@ import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.utils.BIRelationUtils;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 
@@ -49,8 +49,8 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         CubeTableSource cubeTableSource = null;
         cubeTableSource = start;
 
-        oldCube = new TableCubeFile(BIPathUtils.createTablePath(cubeTableSource.getSourceID(), userId));
-        currentCube = new TableCubeFile(BIPathUtils.createTableTempPath(cubeTableSource.getSourceID(), userId));
+        oldCube = new TableCubeFile(BIConfigurePathUtils.createTablePath(cubeTableSource.getSourceID(), userId));
+        currentCube = new TableCubeFile(BIConfigurePathUtils.createTableTempPath(cubeTableSource.getSourceID(), userId));
 
     }
 

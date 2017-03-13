@@ -1,7 +1,7 @@
 package com.finebi.cube.conf.pack;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.data.BIBusinessPackageTestTool;
+import com.finebi.cube.tool.BIBusinessPackageTestTool;
 import com.finebi.cube.conf.pack.data.BIGroupTagName;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;

@@ -7,10 +7,16 @@ import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.monitor.SimpleSourceTable;
+import com.fr.bi.etl.analysis.monitor.SimpleTable;
+import com.fr.bi.etl.analysis.monitor.TableRelation;
+import com.fr.bi.etl.analysis.monitor.TableRelationTree;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -22,8 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator, AnalysisCubeTableSource> implements AnalysisCubeTableSource {
 
+    private static final long serialVersionUID = -5120907831984540281L;
     @BIIgnoreField
-    private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
+    private /*transient*/ Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
 
     private int invalidIndex = -1;
 
@@ -35,6 +42,23 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
     public List<AnalysisETLSourceField> getFieldsList() {
         return fieldList;
     }
+
+    @Override
+    public void getParentAnalysisBaseTableIds(Set<SimpleTable> set) {
+        for(AnalysisCubeTableSource source : getParents()) {
+            source.getParentAnalysisBaseTableIds(set);
+        }
+    }
+
+    public TableRelationTree getAllProcessAnalysisTablesWithRelation() {
+        TableRelationTree tree = new TableRelationTree(new SimpleSourceTable(this));
+        for(AnalysisCubeTableSource source : getParents()) {
+            TableRelationTree parent = source.getAllProcessAnalysisTablesWithRelation();
+            tree.addParent(parent);
+        }
+        return tree;
+    }
+
 
     @Override
     public Set<BIWidget> getWidgets() {

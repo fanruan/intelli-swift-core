@@ -5,6 +5,7 @@ package com.fr.bi.stable.engine.index.key;
  */
 public class IndexTypeKey extends IndexKey {
 
+    private static final long serialVersionUID = -2935597841851172521L;
     protected int type;
 
     public IndexTypeKey(String index, int type) {

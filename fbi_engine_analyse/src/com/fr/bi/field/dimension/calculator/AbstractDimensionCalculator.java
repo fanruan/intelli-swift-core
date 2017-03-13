@@ -30,6 +30,7 @@ import java.util.List;
  * Created by 小灰灰 on 2015/6/24.
  */
 public abstract class AbstractDimensionCalculator implements DimensionCalculator, BICoreService {
+    private static final long serialVersionUID = -6446885372549577895L;
     protected List<BITableSourceRelation> relations;
     protected List<BITableSourceRelation> directToDimenRelations;
     protected BIDimension dimension;

@@ -4,8 +4,12 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+<<<<<<< HEAD
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.relation.BITableRelation;
+=======
+import com.finebi.cube.conf.utils.BILogHelper;
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
@@ -86,12 +90,11 @@ public class BusinessTableHelper {
                 return field;
             }
         }
-        String tableId = table.getID().getIdentityValue();
-        String tableName = BICubeConfigureCenter.getAliasManager().getAliasName(tableId, UserControl.getInstance().getSuperManagerID());
-        throw new BIFieldAbsentException("-- warning from BI -- Please check business package : ' " + getPackageNameByTableId(tableId) + " ' , table : ' " + tableName + " ' (id : " + tableId + ") , the field ' " + fieldName + " ' is missing ! " + " try to click the refresh button !");
+        BILoggerFactory.getLogger(BusinessTableHelper.class).error("get field from businessTable error, the error table info: " + BILogHelper.logBusinessTable(table) + "the field name is: " + fieldName + " Please refresh the table and try again");
+        throw new BIFieldAbsentException();
     }
 
-    private static String getPackageNameByTableId(String tableId) {
+    public static String getPackageNameByTableId(String tableId) {
         try {
             Set<IBusinessPackageGetterService> allPackages = BICubeConfigureCenter.getPackageManager().getAllPackages(UserControl.getInstance().getSuperManagerID());
             for (IBusinessPackageGetterService pack : allPackages) {
@@ -103,7 +106,6 @@ public class BusinessTableHelper {
             BILoggerFactory.getLogger(BusinessTableHelper.class).error(e.getMessage(), e);
         }
         return null;
-
     }
 
     private static void addToRemoveList(IRelationContainer primaryContainer, List<BITableRelation> removeList) throws BIRelationAbsentException, BITableAbsentException {

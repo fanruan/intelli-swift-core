@@ -63,7 +63,11 @@ BI.ColorPickerEditor = BI.inherit(BI.Widget, {
                 self.lastColor = self.getValue();
                 self.setValue("");
             } else {
+<<<<<<< HEAD
                 self.setValue(self.lastColor || "#fffffff");
+=======
+                self.setValue(self.lastColor || "#000000");
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
             }
             if (self.R.isValid() && self.G.isValid() && self.B.isValid()) {
                 self.colorShow.element.css("background-color", self.getValue());

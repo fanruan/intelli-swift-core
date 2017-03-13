@@ -20,6 +20,7 @@ import java.util.Map;
  * Created by GUY on 2015/4/9.
  */
 public abstract class AbstractSort implements ISort, BICoreService {
+    private static final long serialVersionUID = -1430205674420942611L;
     @BICoreField
     protected String[] reg;
     @BICoreField

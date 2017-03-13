@@ -4,7 +4,11 @@
 BI.UpdateExcelFailPane = BI.inherit(BI.Widget, {
     _constant: {
         WIDTH: 460,
+<<<<<<< HEAD
         HEIGHT: 120,
+=======
+        HEIGHT: 140,
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         TITLE_HEIGHT: 35,
         LABEL_HEIGHT: 20,
         BUTTON_HEIGHT: 14,
@@ -27,10 +31,18 @@ BI.UpdateExcelFailPane = BI.inherit(BI.Widget, {
         var labelSecondLine = this._createLabel(BI.i18nText("BI-Upload_Excel_Format"));
         var labelThirdLine = this._createLabel(BI.i18nText("BI-Update_Excel_First_Sheet"));
         var labelFourthLine = this._createLabel(BI.i18nText("BI-Upload_Excel_Name_Value"));
+<<<<<<< HEAD
 
         var text = BI.createWidget({
             type: "bi.vertical",
             items: [title, labelFirstLine, labelSecondLine, labelThirdLine, labelFourthLine]
+=======
+        var labelFifthLine = this._createLabel(BI.i18nText("BI-Excel_Field_Not_Change"));
+
+        var text = BI.createWidget({
+            type: "bi.vertical",
+            items: [title, labelFirstLine, labelSecondLine, labelThirdLine, labelFourthLine, labelFifthLine]
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         });
 
         var button = BI.createWidget({

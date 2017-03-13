@@ -6,13 +6,15 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
+import java.io.Serializable;
+
 /**
  * This class created on 2016/5/21.
  *
  * @author Connery
  * @since 4.0
  */
-public interface BusinessField extends JSONTransform, Cloneable {
+public interface BusinessField extends JSONTransform, Cloneable,Serializable {
     void setTableBelongTo(BusinessTable tableBelongTo);
 
     String getFieldName();

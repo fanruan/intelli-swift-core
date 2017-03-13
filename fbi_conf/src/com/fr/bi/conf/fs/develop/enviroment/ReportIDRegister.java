@@ -1,6 +1,7 @@
 package com.fr.bi.conf.fs.develop.enviroment;
 
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.conf.fs.develop.DeveloperConfig;
 import com.fr.stable.StableUtils;
 import org.w3c.dom.Document;
@@ -48,7 +49,7 @@ public class ReportIDRegister {
             root = this.document.createElement("report");
             this.document.appendChild(root);
         } catch (ParserConfigurationException e) {
-            System.out.println(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 
@@ -66,15 +67,15 @@ public class ReportIDRegister {
             PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
             StreamResult result = new StreamResult(pw);
             transformer.transform(source, result);
-            System.out.println(fileName + " 文件成功!");
+            BILoggerFactory.getLogger().error(fileName + " 文件成功!");
         } catch (TransformerConfigurationException e) {
-            System.out.println(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         } catch (TransformerException e) {
-            System.out.println(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 

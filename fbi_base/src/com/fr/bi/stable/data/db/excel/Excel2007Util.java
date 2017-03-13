@@ -11,7 +11,8 @@ import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.PackageAccess;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,9 +77,28 @@ public class Excel2007Util extends AbstractExcel2007Util {
             currentRowData = new ArrayList<Object>();
             //首行 确定字段名
             if (i == 0) {
+
                 dealWithExcelFieldName(oneRow);
             } else if (i == 1) {
                 dealWithExcelFieldType(oneRow);
+                columnNames = new String[columnCount];
+                for (int j = 0; j < columnCount; j++) {
+                    String cName;
+                    try {
+                        cName = GeneralUtils.objectToString(oneRow[j]);
+                    } catch (Exception e) {
+                        cName = StringUtils.EMPTY;
+                    }
+                    String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
+                    Pattern p = Pattern.compile(regEx);
+                    Matcher m = p.matcher(cName);
+                    cName = m.replaceAll(StringUtils.EMPTY).trim();
+                    columnNames[j] = cName;
+                    if (ComparatorUtils.equals(StringUtils.EMPTY, cName)) {
+                        columnNames[j] = Inter.getLocText("BI-Field");
+                    }
+                }
+                createDistinctColumnNames();
             } else {
                 for (int j = 0; j < columnCount; j++) {
                     String v;

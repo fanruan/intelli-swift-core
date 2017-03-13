@@ -23,6 +23,7 @@ import java.util.Map;
 
 
 public class FormulaValueFilter extends AbstractDimensionFilter {
+    private static final long serialVersionUID = 5476492048737290774L;
     @BIIgnoreField
     private static Calculator c = Calculator.createCalculator();
     @BICoreField

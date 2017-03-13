@@ -29,6 +29,7 @@ import java.util.*;
  * @since 4.0
  */
 public class CompoundCubeTableReader implements CubeTableEntityService {
+    private static final long serialVersionUID = -4117510045396401762L;
     private BICubeTableEntity hostTable;
     /**
      * 上次Table对象

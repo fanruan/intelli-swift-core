@@ -1,11 +1,13 @@
 package com.fr.bi.stable.data.key.date;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 /**
  * Created by GUY on 2015/2/11.
  */
-public class BIDay {
+public class BIDay implements Serializable {
+    private static final long serialVersionUID = 6717658315497913730L;
     public static BIDay NULL = new BIDay(-1, -1, -1);
 
     private int year;

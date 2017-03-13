@@ -15,6 +15,7 @@ import com.fr.json.JSONObject;
  */
 public abstract class AbstractDimensionFilter implements DimensionFilter {
 
+    private static final long serialVersionUID = -1136067827261929823L;
     private DimensionFilter traversingResultFilter;
 
     @Override

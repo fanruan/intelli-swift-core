@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class IllegalRelationPathException extends Exception {
+    private static final long serialVersionUID = 168488372849433744L;
+
     public IllegalRelationPathException() {
     }
 

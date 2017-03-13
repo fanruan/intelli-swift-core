@@ -22,13 +22,15 @@ import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Young's on 2016/5/19.
  */
-public class BICubeConfManager {
+public class BICubeConfManager implements Serializable{
+    private static final long serialVersionUID = -3881933831838060227L;
     private String cubePath;
     private String loginField;
 

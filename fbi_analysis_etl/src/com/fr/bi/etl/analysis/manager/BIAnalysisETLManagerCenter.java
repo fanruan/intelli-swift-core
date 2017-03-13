@@ -17,10 +17,12 @@ public class BIAnalysisETLManagerCenter {
     }
 
     public static UserETLCubeManagerProvider getUserETLCubeManagerProvider(){
+        return StableFactory.getMarkedObject(UserETLCubeManager.class.getName(), UserETLCubeManager.class);
+    }
+    public static UserETLCubeManagerProvider getUserETLCubeCheckManagerProvider(){
         return StableFactory.getMarkedObject(UserETLCubeManagerProvider.class.getName(), UserETLCubeManagerProvider.class);
     }
-
     public static BIAliasManagerProvider getAliasManagerProvider(){
-        return StableFactory.getMarkedObject(BIAnalysisETLAliasManager.class.getName(), BIAliasManagerProvider.class);
+        return StableFactory.getMarkedObject(BIAliasManagerProvider.class.getName(), BIAliasManagerProvider.class);
     }
 }

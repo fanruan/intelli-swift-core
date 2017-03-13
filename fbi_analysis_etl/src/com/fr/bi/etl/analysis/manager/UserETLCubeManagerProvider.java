@@ -38,6 +38,9 @@ public interface UserETLCubeManagerProvider extends Release {
 	 */
 	boolean isAvailable(AnalysisCubeTableSource source, BIUser user);
 
+
+    int getThreadPoolCubeCount(AnalysisCubeTableSource source, BIUser user);
+
     void envChanged();
 
     void releaseCurrentThread();
@@ -49,5 +52,7 @@ public interface UserETLCubeManagerProvider extends Release {
     void refresh();
 
     void addTask(AnalysisCubeTableSource source, BIUser user);
+
+    long getTableVersion(AnalysisCubeTableSource source, BIUser user);
 
 }

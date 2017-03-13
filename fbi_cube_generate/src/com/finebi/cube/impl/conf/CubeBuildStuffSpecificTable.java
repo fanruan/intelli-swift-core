@@ -302,7 +302,7 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
         try {
             BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return true;
     }
@@ -330,6 +330,7 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
         }
         return map;
     }
+
 
     public String getCubeTaskId() {
         return BIStringUtils.append(specificTable.getSourceID(), specificBasicTableID);

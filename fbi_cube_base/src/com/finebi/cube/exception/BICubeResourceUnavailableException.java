@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BICubeResourceUnavailableException extends Exception {
+    private static final long serialVersionUID = 3288045782447888924L;
+
     public BICubeResourceUnavailableException(String message) {
         super(message);
     }
