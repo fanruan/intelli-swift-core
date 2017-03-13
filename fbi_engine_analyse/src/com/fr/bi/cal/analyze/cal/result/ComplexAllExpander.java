@@ -8,7 +8,6 @@ public class ComplexAllExpander extends ComplexExpander {
     @Override
     public NodeExpander getXExpander(int regionIndex) {
         return NodeExpander.ALL_EXPANDER;
-
     }
 
     @Override
