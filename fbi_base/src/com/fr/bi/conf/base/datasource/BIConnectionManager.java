@@ -261,7 +261,6 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
     @Override
     public JSONObject createJSON() throws JSONException {
-        throw new BIRuntimeException("Code Conflicts!");
         JSONObject jsonObject = new JSONObject();
         DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator<String> nameIt = datasourceManager.getConnectionNameIterator();

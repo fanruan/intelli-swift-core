@@ -215,144 +215,139 @@ public class BIRelationIndexGenerator extends BIProcessor {
             ITableKey foreignTableKey = relation.getForeignTable();
             primaryTable = cubeChooser.getCubeTable(primaryTableKey);
             foreignTable = cubeChooser.getCubeTable(foreignTableKey);
-
-            /**
-             * 关联的主字段对象
-             */
+            //关联的主字段对象
             primaryColumn = (ICubeColumnEntityService) primaryTable.getColumnDataGetter(primaryKey);
-            /**
-             * 关联的子字段对象
-             */
+            //关联的子字段对象
             foreignColumn = (ICubeColumnEntityService) foreignTable.getColumnDataGetter(foreignKey);
-            /**
-             * 表间关联对象
-             */
-//            tableRelation = (BICubeRelationEntity) cube.getCubeRelationWriter(primaryTableKey, relation);
+            //表间关联对象
             tableRelation = (BICubeRelationEntity) cube.getCubeRelation(primaryTableKey, relation);
-            GroupValueIndex nullIndex = GVIFactory.createAllEmptyIndexGVI();
-            /**
-             * 主表的行数
-             */
-            int primaryGroupSize = primaryColumn.sizeOfGroup();
-            int foreignGroupSize = foreignColumn.sizeOfGroup();
-
-            int foreignIndex = 0;
-            Object foreignColumnValue;
-            GroupValueIndex foreignGroupValueIndex;
-            if (foreignGroupSize == 0) {
-                foreignColumnValue = null;
-                foreignGroupValueIndex = GVIFactory.createAllEmptyIndexGVI();
-            } else {
-                foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
-                foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
-            }
             Comparator c = primaryColumn.getGroupComparator();
             if (isNumberColumn(primaryColumn.getClassType()) && isNumberColumn(foreignColumn.getClassType())) {
                 c = generateComparatorByType(primaryColumn.getClassType(), foreignColumn.getClassType());
             }
-            int[] reverse = new int[foreignTable.getRowCount()];
-            //pony要连续写，只能先全部存内存，索引太大了，所以先转化成压缩的byte[]存内存。
-            //即使建了笛卡儿积的索引，因为重复的主键都指向同一个对象，内存也不会膨胀太多。
-            final byte[][] relationIndexBytes = new byte[primaryTable.getRowCount()][];
-            Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
-            Stopwatch stopwatch = Stopwatch.createStarted();
-            GroupValueIndex allShowIndex = getTableShowIndex(primaryTable);
-            for (int index = 0; index < primaryGroupSize; index++) {
-                /**
-                 * 关联主字段的value值
-                 */
-                Object primaryColumnValue = primaryColumn.getGroupObjectValue(index);
-                /**
-                 * value值在主表的索引
-                 */
-                GroupValueIndex pGroupValueIndex = primaryColumn.getBitmapIndex(index);
-                /**
-                 * 过滤掉removeList里面记录的索引
-                 */
-                pGroupValueIndex = pGroupValueIndex.AND(allShowIndex);
-                int result = c.compare(primaryColumnValue, foreignColumnValue);
-                /**
-                 * 小于0说明主表的id在子表找不到，大于0说明子表的id在主表找不到
-                 */
-                if (result < 0) {
-                    pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
-                        @Override
-                        public void actionPerformed(int row) {
-                            relationIndexBytes[row] =  GVIFactory.createAllEmptyIndexGVI().getBytes();
-                        }
-                    });
-                } else if (result == 0) {
+            buildIndex(primaryTable, foreignTable, primaryColumn, foreignColumn, tableRelation, c);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl("The relation:" + logRelation() + ",error message" + e.getMessage(), e);
+        } finally {
+            release(primaryTable, foreignTable, primaryColumn, foreignColumn, tableRelation, pTableAdapter);
+        }
+    }
+
+    private void release(CubeTableEntityGetterService primaryTable, CubeTableEntityGetterService foreignTable, ICubeColumnEntityService primaryColumn, ICubeColumnEntityService foreignColumn, BICubeRelationEntity tableRelation, BICubeTableAdapter pTableAdapter) {
+        if (primaryTable != null) {
+            primaryTable.forceReleaseWriter();
+            primaryTable.clear();
+        }
+        if (foreignTable != null) {
+            foreignTable.forceReleaseWriter();
+            foreignTable.clear();
+        }
+        if (primaryColumn != null) {
+            primaryColumn.forceReleaseWriter();
+            primaryColumn.clear();
+        }
+        if (foreignColumn != null) {
+            foreignColumn.forceReleaseWriter();
+            foreignColumn.clear();
+        }
+        if (tableRelation != null) {
+            tableRelation.forceReleaseWriter();
+            tableRelation.clear();
+        }
+        if (cube != null) {
+            cube.clear();
+        }
+        if (null != pTableAdapter) {
+            pTableAdapter.clear();
+        }
+    }
+
+    //pony要连续写，只能先全部存内存，索引太大了，所以先转化成压缩的byte[]存内存。
+    //即使建了笛卡儿积的索引，因为重复的主键都指向同一个对象，内存也不会膨胀太多。
+    private void buildIndex(CubeTableEntityGetterService primaryTable, CubeTableEntityGetterService foreignTable, ICubeColumnEntityService primaryColumn, ICubeColumnEntityService foreignColumn, BICubeRelationEntity tableRelation, Comparator c) throws BICubeIndexException {
+        //主表的分组数
+        int primaryGroupSize = primaryColumn.sizeOfGroup();
+        int foreignGroupSize = foreignColumn.sizeOfGroup();
+        //关联外表字段的value值
+        Object foreignColumnValue;
+        //value值在外表的索引
+        GroupValueIndex foreignGroupValueIndex;
+        if (foreignGroupSize == 0) {
+            foreignColumnValue = null;
+            foreignGroupValueIndex = GVIFactory.createAllEmptyIndexGVI();
+        } else {
+            foreignColumnValue = foreignColumn.getGroupObjectValue(0);
+            foreignGroupValueIndex = foreignColumn.getBitmapIndex(0);
+        }
+        int[] reverse = new int[foreignTable.getRowCount()];
+        final byte[][] relationIndexBytes = new byte[primaryTable.getRowCount()][];
+        Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
+        GroupValueIndex allShowIndex = getTableShowIndex(primaryTable);
+        GroupValueIndex nullIndex = buildIndex(primaryColumn, foreignColumn, c, primaryGroupSize, foreignGroupSize, foreignColumnValue, foreignGroupValueIndex, reverse, relationIndexBytes, allShowIndex);
+        buildIndex(tableRelation, relationIndexBytes);
+        buildReverseIndex(tableRelation, reverse);
+        tableRelation.addRelationNULLIndex(0, nullIndex);
+        tableRelation.addVersion(System.currentTimeMillis());
+    }
+
+    private GroupValueIndex buildIndex(ICubeColumnEntityService primaryColumn, ICubeColumnEntityService foreignColumn, Comparator c,
+                                       int primaryGroupSize, int foreignGroupSize, Object foreignColumnValue, GroupValueIndex foreignGroupValueIndex,
+                                       int[] reverse, final byte[][] relationIndexBytes, GroupValueIndex allShowIndex) throws BICubeIndexException {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        GroupValueIndex nullIndex = GVIFactory.createAllEmptyIndexGVI();
+        Object primaryColumnValue;
+        GroupValueIndex pGroupValueIndex;
+        int foreignIndex = 0;
+        for (int index = 0; index < primaryGroupSize; index++) {
+            primaryColumnValue = primaryColumn.getGroupObjectValue(index);
+            pGroupValueIndex = primaryColumn.getBitmapIndex(index);
+            pGroupValueIndex = pGroupValueIndex.AND(allShowIndex);
+            int result = c.compare(primaryColumnValue, foreignColumnValue);
+            /**
+             * 小于0说明主表的id在子表找不到，大于0说明子表的id在主表找不到
+             */
+            if (result < 0) {
+                notMatch(relationIndexBytes, pGroupValueIndex);
+            } else if (result == 0) {
+                matchRelation(relationIndexBytes, foreignGroupValueIndex, reverse, pGroupValueIndex);
+                foreignIndex++;
+                foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
+                foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
+            } else {
+                while (foreignIndex < foreignGroupSize && c.compare(primaryColumnValue, foreignColumnValue) > 0) {
+                    nullIndex.or(foreignGroupValueIndex);
+                    foreignIndex++;
+                    foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
+                    foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
+                }
+                if (c.compare(primaryColumnValue, foreignColumnValue) == 0) {
                     matchRelation(relationIndexBytes, foreignGroupValueIndex, reverse, pGroupValueIndex);
                     foreignIndex++;
                     foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
                     foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
                 } else {
-                    while (foreignIndex < foreignGroupSize && c.compare(primaryColumnValue, foreignColumnValue) > 0) {
-                        nullIndex.or(foreignGroupValueIndex);
-                        foreignIndex++;
-                        foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
-                        foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
-                    }
-                    if (c.compare(primaryColumnValue, foreignColumnValue) == 0) {
-                        matchRelation(relationIndexBytes, foreignGroupValueIndex, reverse, pGroupValueIndex);
-                        foreignIndex++;
-                        foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
-                        foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
-                    } else {
-                        pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
-                            @Override
-                            public void actionPerformed(int row) {
-                                relationIndexBytes[row] =  GVIFactory.createAllEmptyIndexGVI().getBytes();
-                            }
-                        });
-                    }
-                }
-
-                if (CubeConstant.LOG_SEPERATOR_ROW != 0 && index % CubeConstant.LOG_SEPERATOR_ROW == 0) {
-                    logger.info(BIStringUtils.append(logRelation(), "read ", String.valueOf(index), " rows field value and time elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
+                    notMatch(relationIndexBytes, pGroupValueIndex);
                 }
             }
-            while (foreignIndex < foreignGroupSize - 1) {
-                nullIndex.or(foreignGroupValueIndex);
-                foreignIndex++;
-                foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
-            }
-            nullIndex.or(foreignGroupValueIndex);
-            buildIndex(tableRelation, relationIndexBytes);
-            buildReverseIndex(tableRelation, reverse);
-            tableRelation.addRelationNULLIndex(0, nullIndex);
-            tableRelation.addVersion(System.currentTimeMillis());
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl("The relation:" + logRelation() + ",error message" + e.getMessage(), e);
-        } finally {
-            if (primaryTable != null) {
-                primaryTable.forceReleaseWriter();
-                primaryTable.clear();
-            }
-            if (foreignTable != null) {
-                foreignTable.forceReleaseWriter();
-                foreignTable.clear();
-            }
-            if (primaryColumn != null) {
-                primaryColumn.forceReleaseWriter();
-                primaryColumn.clear();
-            }
-            if (foreignColumn != null) {
-                foreignColumn.forceReleaseWriter();
-                foreignColumn.clear();
-            }
-            if (tableRelation != null) {
-                tableRelation.forceReleaseWriter();
-                tableRelation.clear();
-            }
-            if (cube != null) {
-                cube.clear();
-            }
-            if (null != pTableAdapter) {
-                pTableAdapter.clear();
+            if (CubeConstant.LOG_SEPERATOR_ROW != 0 && index % CubeConstant.LOG_SEPERATOR_ROW == 0) {
+                logger.info(BIStringUtils.append(logRelation(), "read ", String.valueOf(index), " rows field value and time elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
             }
         }
+        while (foreignIndex < foreignGroupSize - 1) {
+            nullIndex.or(foreignGroupValueIndex);
+            foreignIndex++;
+            foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+        }
+        return nullIndex.or(foreignGroupValueIndex);
+    }
 
+    private void notMatch(final byte[][] relationIndexBytes, GroupValueIndex pGroupValueIndex) {
+        pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                relationIndexBytes[row] = GVIFactory.createAllEmptyIndexGVI().getBytes();
+            }
+        });
     }
 
     private Object getForeignColumnValue(int foreignIndex, int foreignGroupSize, ICubeColumnEntityService foreignColumn) {
@@ -454,7 +449,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         return columnType == DBConstant.CLASS.LONG || columnType == DBConstant.CLASS.INTEGER || columnType == DBConstant.CLASS.DOUBLE;
     }
 
-    private class ByteGroupValueIndex implements GroupValueIndex{
+    private class ByteGroupValueIndex implements GroupValueIndex {
         private byte[] bytes;
 
         public ByteGroupValueIndex(byte[] bytes) {
