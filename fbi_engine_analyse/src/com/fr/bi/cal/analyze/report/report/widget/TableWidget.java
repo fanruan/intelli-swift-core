@@ -135,7 +135,7 @@ public class TableWidget extends BISummaryWidget {
      */
     @Override
     public int isOrder() {
-        return data.isOrder();
+        return settings.isOrder();
     }
 
     public BIEngineExecutor getExecutor(BISession session) {
@@ -187,18 +187,17 @@ public class TableWidget extends BISummaryWidget {
     private BIEngineExecutor createNormalExecutor(BISession session, boolean hasTarget, BIDimension[] usedRows, BIDimension[] usedColumn, CrossExpander expander) {
         BIEngineExecutor executor;
         int summaryLen = getViewTargets().length;
+        //有列表头和指标
         boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
+        //有表头没有指标
         boolean b1 = usedColumn.length >= 0 && usedRows.length == 0 && summaryLen == 0;
         boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
-        boolean b3 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen == 0;
         if (b0) {
             executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b1) {
             executor = new HorGroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b2) {
             executor = new GroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
-        } else if (b3) {
-            executor = new GroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else {
             executor = new CrossExecutor(this, usedRows, usedColumn, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         }

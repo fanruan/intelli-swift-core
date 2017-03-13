@@ -347,7 +347,7 @@ public class CrossNode implements BICrossNode {
             CrossNode child = this.getTopChild(v).cloneWithTopChildNode((CrossHeader) top.getChild(i));
             n.addTopChild(child);
             if (t != null) {
-                CubeReadingUtils.setSibing(t, child);
+                CubeReadingUtils.setSibling(t, child);
             }
             t = child;
         }
@@ -368,7 +368,7 @@ public class CrossNode implements BICrossNode {
             CrossNode child = this.getTopChild(i).cloneWithTopChildNode();
             n.addTopChild(child);
             if (t != null) {
-                CubeReadingUtils.setSibing(t, child);
+                CubeReadingUtils.setSibling(t, child);
             }
             t = child;
         }
@@ -415,7 +415,7 @@ public class CrossNode implements BICrossNode {
             CrossNode temp_node = topChilds.get(i);
             CrossNode child = temp_node.createTopChildNewTargetValueNode(key);
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             n.addTopChild(child);
             tempNode = child;

@@ -336,7 +336,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createNewTargetValueNode(key);
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             n.addChild(child);
             tempNode = child;
@@ -380,7 +380,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createCloneNodeWithValue();
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -406,7 +406,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createCloneNodeWithValue();
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -434,7 +434,7 @@ public class Node implements SummaryContainer, BINode {
                 int e = position + clen < end ? clen : end - position;
                 Node child = c.createCloneNodeWithValue(s, e);
                 if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
+                    CubeReadingUtils.setSibling(tempNode, child);
                 }
                 newnode.addChild(child);
                 tempNode = child;
@@ -460,7 +460,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createCloneNodeWithValue();
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -484,7 +484,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createCrossHeader();
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -594,7 +594,7 @@ public class Node implements SummaryContainer, BINode {
                     continue;
                 }
                 if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
+                    CubeReadingUtils.setSibling(tempNode, child);
                 }
                 newnode.addChild(child);
                 tempNode = child;
@@ -641,7 +641,7 @@ public class Node implements SummaryContainer, BINode {
                     continue;
                 }
                 if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
+                    CubeReadingUtils.setSibling(tempNode, child);
                 }
                 newnode.addChild(child);
                 tempNode = child;
@@ -707,7 +707,7 @@ public class Node implements SummaryContainer, BINode {
             //清除兄弟关系
             temp_node.setSibling(null);
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -769,7 +769,7 @@ public class Node implements SummaryContainer, BINode {
             //清除兄弟关系
             temp_node.setSibling(null);
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;

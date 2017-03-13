@@ -31,6 +31,4 @@ public interface BITableSetting extends JSONParser, BICoreService {
 
     boolean useRealData();
 
-    int isOrder();
-
 }

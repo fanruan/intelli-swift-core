@@ -114,19 +114,8 @@ public class BITableReportSetting extends BIAbstractTableSetting {
         return column;
     }
 
-    @Override
-    public boolean useRealData() {
+    @Override public boolean useRealData() {
         return true;
-    }
-
-    /**
-     * 有无编号
-     *
-     * @return 编号
-     */
-    @Override
-    public int isOrder() {
-        return number;
     }
 
     /**
