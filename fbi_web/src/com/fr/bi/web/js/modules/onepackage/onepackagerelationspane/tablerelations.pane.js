@@ -254,8 +254,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                 if (BI.has(primKeyMap, fieldId)) {
                     rels = primKeyMap[fieldId];
                     BI.each(rels, function (i, rel) {
-                        if (!BI.contains(resultTables, rel.foreignKey.field_id)) {
-                            var tId = BI.Utils.getTableIdByFieldId4Conf(rel.foreignKey.field_id);
+                        var tId = BI.Utils.getTableIdByFieldId4Conf(rel.foreignKey.field_id);
+                        if (!BI.contains(resultTables, tId)) {
                             self._getAllRelationTablesByTables([tId], resultTables);
                         }
                     })
@@ -263,8 +263,8 @@ BI.PackageTableRelationsPane = BI.inherit(BI.Widget, {
                 if (BI.has(foreignKeyMap, fieldId)) {
                     rels = foreignKeyMap[fieldId];
                     BI.each(rels, function (i, rel) {
-                        if (!BI.contains(resultTables, rel.primaryKey.field_id)) {
-                            var tId = BI.Utils.getTableIdByFieldId4Conf(rel.primaryKey.field_id);
+                        var tId = BI.Utils.getTableIdByFieldId4Conf(rel.primaryKey.field_id);
+                        if (!BI.contains(resultTables, tId)) {
                             self._getAllRelationTablesByTables([tId], resultTables);
                         }
                     })
