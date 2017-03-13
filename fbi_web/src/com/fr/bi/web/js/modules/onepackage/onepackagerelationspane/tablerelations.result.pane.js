@@ -31,9 +31,10 @@ BI.PackageTableRelationResultPane = BI.inherit(BI.PackageTableRelationsPane, {
 
     populate: function (items, tableIds, keyword) {
         var resultItems = [];
+        this.resultPane.empty();
         BI.each(items, function (i, item) {
             var foreign = item.foreign || {}, primary = item.primary || {};
-            var res = BI.Func.getSearchResult([foreign, primary], keyword, "text");
+            var res = BI.Func.getSearchResult([foreign, primary], keyword, "regionText");
             var foundRes = res.finded;
             var matchIds = [];
             BI.each(foundRes, function (i, find) {
@@ -52,7 +53,6 @@ BI.PackageTableRelationResultPane = BI.inherit(BI.PackageTableRelationsPane, {
             }
         });
         if (resultItems.length === 0) {
-            this.resultPane.empty();
             this.resultPane.addItem({
                 el: {
                     type: "bi.label",
@@ -68,7 +68,8 @@ BI.PackageTableRelationResultPane = BI.inherit(BI.PackageTableRelationsPane, {
         }
         var resultPane = BI.createWidget({
             type: "bi.package_table_relations_pane",
-            element: this.element
+            element: this.element,
+            packageId: this.options.packageId
         });
         resultPane.refresh(resultItems);
     }

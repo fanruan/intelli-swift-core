@@ -121,6 +121,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             isAutoSync: false,
             popup: {
                 type: "bi.package_table_relation_result_pane",
+                packageId: self.model.getId(),
                 onStartSearch: function () {
                     addNewTableCombo.setEnable(false);
                     self.tabButtons.setEnable(false);
@@ -227,7 +228,8 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 return this.tableList;
             case BICst.TABLES_VIEW.RELATION:
                 this.relationView = BI.createWidget({
-                    type: "bi.package_table_relations_pane"
+                    type: "bi.package_table_relations_pane",
+                    packageId: self.model.getId()
                 });
                 this.relationView.on(BI.PackageTableRelationsPane.EVENT_CLICK_TABLE, function (id) {
                     self._onClickOneTable(id);
