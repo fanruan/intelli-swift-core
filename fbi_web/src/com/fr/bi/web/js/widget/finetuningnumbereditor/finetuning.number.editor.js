@@ -6,7 +6,7 @@ BI.FineTuningNumberEditor = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.FineTuningNumberEditor.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-fine-tuning-number-editor",
-            value: 0
+            value: -1
         })
     },
 
@@ -15,10 +15,10 @@ BI.FineTuningNumberEditor = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
-            value: o.value,
+            value: this._alertInEditorValue(o.value),
             errorText: BI.i18nText("BI-Please_Input_Natural_Number"),
             validationChecker: function(v){
-                return BI.isNaturalNumber(v);
+                return BI.isNaturalNumber(v) || self._alertOutEditorValue(v) === -1;
             }
         });
         this.editor.on(BI.TextEditor.EVENT_CONFIRM, function(){
@@ -65,19 +65,28 @@ BI.FineTuningNumberEditor = BI.inherit(BI.Widget, {
         });
     },
 
+    _alertOutEditorValue: function(v){
+        return v === BI.i18nText("BI-Auto") ? -1 : v;
+    },
+
+    _alertInEditorValue: function(v){
+        return BI.parseInt(v) === -1 ? BI.i18nText("BI-Auto") : v;
+    },
+
     //微调
     _finetuning: function(add){
-        var v = BI.parseInt(this.editor.getValue());
-        this.editor.setValue(v + add);
-        this.bottomBtn.setEnable(v !== 0);
+        var v = BI.parseInt(this._alertOutEditorValue(this.editor.getValue()));
+        this.editor.setValue(this._alertInEditorValue(v + add));
+        this.bottomBtn.setEnable((v + add) !== -1);
     },
 
     getValue: function () {
-        return this.editor.getValue();
+        var v = this.editor.getValue();
+        return this._alertOutEditorValue(v);
     },
 
     setValue: function (v) {
-        this.editor.setValue(v);
+        this.editor.setValue(this._alertInEditorValue(v));
         this._finetuning(0);
     }
 
