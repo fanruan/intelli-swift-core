@@ -151,6 +151,8 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
         });
 
         var widget = this.options.widget;
+        var width = widget.bounds.width / BI.Arrangement.PORTION;
+        var height = widget.bounds.height / BI.Arrangement.GRID_HEIGHT;
         var result = {
             type: widget.type,
             name: widget.name,
@@ -178,7 +180,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
             cursor: BICst.cursorUrl,
             cursorAt: {left: 0, top: 0},
             drag: function (e, ui) {
-                o.drag.apply(self, [widget.bounds, ui.position, result]);
+                o.drag.apply(self, [BI.extend(widget.bounds, {width: width, height: height}), ui.position, result]);
             },
             stop: function (e, ui) {
                 var dimensionsAndView = self._createDimensionsAndView(BI.deepClone(widget));
@@ -208,7 +210,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                     });
                     result.filter_value = filterValue;
                 }
-                o.stop.apply(self, [widget.bounds, ui.position, result]);
+                o.stop.apply(self, [BI.extend(widget.bounds, {width: width, height: height}), ui.position, result]);
                 BI.Utils.broadcastAllWidgets2Refresh();
             },
             helper: o.helper
