@@ -73,6 +73,35 @@ BI.RelationView = BI.inherit(BI.Widget, {
         });
     },
 
+    previewRelationTables: function(relationTables, show) {
+        if (!show) {
+            BI.each(this.storeViews, function (i, view) {
+                view.toggleRegion(true);
+                view.setPreviewSelected(false);
+            });
+            BI.each(this.lines, function (i, lines) {
+                BI.each(lines, function (j, line) {
+                    line.show();
+                });
+            });
+            return;
+        }
+        BI.each(this.storeViews, function (id, view) {
+            if (!relationTables.contains(id)) {
+                view.toggleRegion(false);
+            } else {
+                view.setPreviewSelected(true);
+            }
+        });
+        BI.each(this.lines, function (id, lines) {
+            BI.each(lines, function (cId, line) {
+                if (!relationTables.contains(id) || !relationTables.contains(cId)) {
+                    line.hide();
+                }
+            });
+        });
+    },
+
     populate: function (items) {
         var self = this, o = this.options, c = this._const;
         o.items = items || [];
@@ -132,21 +161,25 @@ BI.RelationView = BI.inherit(BI.Widget, {
             BI.each(items, function (j, region) {
                 var items = regions[region];
                 views[i][j] = storeViews[region] = BI.createWidget({
-                    type: "bi.relation_view_region",
+                    type: "bi.relation_view_region_container",
                     value: region,
                     header: items[0].regionTitle,
                     text: items.length > 0 ? items[0].regionText : "",
                     handler: items.length > 0 ? items[0].regionHandler : BI.emptyFn,
-                    items: items
+                    items: items,
+                    belongPackage: items.length > 0 ? items[0].belongPackage : true
                 });
                 if (BI.isNotNull(items[0]) && BI.isNotNull(items[0].keyword)) {
                     views[i][j].doRedMark(items[0].keyword);
                 }
-                views[i][j].on(BI.RelationViewRegion.EVENT_HOVER_IN, function (v) {
-                    self._hoverIn(v)
+                views[i][j].on(BI.RelationViewRegionContainer.EVENT_HOVER_IN, function (v) {
+                    self._hoverIn(v);
                 });
-                views[i][j].on(BI.RelationViewRegion.EVENT_HOVER_OUT, function (v) {
+                views[i][j].on(BI.RelationViewRegionContainer.EVENT_HOVER_OUT, function (v) {
                     self._hoverOut(v);
+                });
+                views[i][j].on(BI.RelationViewRegionContainer.EVENT_PREVIEW, function (v) {
+                    self.fireEvent(BI.RelationView.EVENT_PREVIEW, region, v);
                 });
                 indexes[region] = {i: i, j: j};
                 horizontal.push(views[i][j]);
@@ -282,4 +315,5 @@ BI.RelationView = BI.inherit(BI.Widget, {
     }
 });
 BI.RelationView.EVENT_CHANGE = "RelationView.EVENT_CHANGE";
+BI.RelationView.EVENT_PREVIEW = "EVENT_PREVIEW";
 $.shortcut('bi.relation_view', BI.RelationView);

@@ -179,7 +179,7 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
         }
 
         private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
-            if (level >= lastConstructedDimensionIndex){
+            if (level > lastConstructedDimensionIndex){
                 return;
             }
             SingleDimensionGroup rootGroup =  childDimensionGroup.createSingleDimensionGroup(columns[level], getters[level], null, mergeIteratorCreators[level], useRealData);

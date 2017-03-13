@@ -74,7 +74,6 @@ BI.BusinessUngroupAndGroupPane = BI.inherit(BI.Widget, {
         });
 
 
-
         this.groupedPane.on(BI.BusinessPackageGroupPane.EVENT_EMPTY_GROUP, function (fieldID, fieldName) {
             self.ungroupedPane.addFieldWidget(fieldID, fieldName, BI.i18nText("BI-Ungrouped_China"));
         });
@@ -234,7 +233,6 @@ BI.BusinessUngroupAndGroupPane = BI.inherit(BI.Widget, {
     setGroupedGroupName: function (newname, oldname) {
         this.groupedPane.setGroupName(newname, oldname);
     }
-
 
 });
 BI.BusinessUngroupAndGroupPane.EVENT_CHANGE = "EVENT_CHANGE";

@@ -1336,6 +1336,7 @@ public class BaseResourceHelper {
                 //关联视图
                 "com/fr/bi/web/js/widget/relationview/relationview.item.js",
                 "com/fr/bi/web/js/widget/relationview/relationview.region.js",
+                "com/fr/bi/web/js/widget/relationview/relationview.region.container.js",
                 "com/fr/bi/web/js/widget/relationview/relationview.js",
 
                 //预览表

@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.executor;
 
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.json.JSONObject;
 
@@ -8,6 +9,8 @@ import java.awt.*;
 
 public interface BIEngineExecutor<T> {
     static final String NONEVALUE = "--";
+
+    public DetailCellIterator createCellIterator4Excel() throws Exception;
 
     /**
      * 构建cells

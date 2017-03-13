@@ -4152,3 +4152,23 @@
   content: "\e6c2";
   color: "";
 }
+.relation-table-preview-font .b-font:before {
+  content: "\e65f";
+  color: #808080;
+}
+.relation-table-preview-font:hover .b-font:before,
+.relation-table-preview-font:focus .b-font:before,
+.relation-table-preview-font.hover .b-font:before {
+  content: "\e65f";
+  color: #009de3;
+}
+.relation-table-preview-font:active .b-font:before,
+.relation-table-preview-font.active .b-font:before {
+  content: "\e65f";
+  color: #009de3;
+}
+.relation-table-preview-font.native .b-font:before,
+.relation-table-preview-font.disabled .b-font:before {
+  content: "\e65f";
+  color: #808080;
+}

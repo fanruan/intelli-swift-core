@@ -14,19 +14,33 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
             text: "",
             value: "",
             header: "",
-            items: []
+            items: [],
+            belongPackage: true
         });
     },
 
     _init: function () {
         BI.RelationViewRegion.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+
+        this.preview = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "relation-table-preview-font",
+            width: 25,
+            height: 25,
+            stopPropagation: true
+        });
+        this.preview.on(BI.IconButton.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RelationViewRegion.EVENT_PREVIEW, this.isSelected());
+        });
+
         this.title = BI.createWidget({
             type: "bi.label",
-            cls: "relation-view-region-title",
             height: 25,
+            width: 70,
             text: o.text,
-            value: o.value
+            value: o.value,
+            textAlign: "left"
         });
         //title放body上
         if (BI.isKey(o.header)) {
@@ -34,6 +48,7 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
                 container: "body"
             })
         }
+
         this.button_group = BI.createWidget({
             type: "bi.button_group",
             items: this._createItems(o.items),
@@ -47,8 +62,12 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
             element: this.element,
             items: [{
                 type: "bi.vertical",
-                cls: "relation-view-region-container",
-                items: [this.title, this.button_group]
+                cls: "relation-view-region-container " + (o.belongPackage ? "" : "other-package"),
+                items: [{
+                    type: "bi.vertical_adapt",
+                    cls: "relation-view-region-title",
+                    items: [this.preview, this.title]
+                }, this.button_group]
             }],
             hgap: 25,
             vgap: 20
@@ -126,9 +145,13 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
 
     setValue: function (v) {
         this.button_group.setValue(v);
+    },
+
+    setPreviewSelected: function(v) {
+        this.preview.setSelected(v);
     }
 });
 BI.RelationViewRegion.EVENT_HOVER_IN = "RelationViewRegion.EVENT_HOVER_IN";
 BI.RelationViewRegion.EVENT_HOVER_OUT = "RelationViewRegion.EVENT_HOVER_OUT";
-BI.RelationViewRegion.EVENT_CHANGE = "RelationViewRegion.EVENT_CHANGE";
+BI.RelationViewRegion.EVENT_PREVIEW = "RelationViewRegion.EVENT_PREVIEW";
 $.shortcut('bi.relation_view_region', BI.RelationViewRegion);

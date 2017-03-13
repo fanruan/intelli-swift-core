@@ -39,11 +39,8 @@ public abstract class BITableExecutor<T> extends BIAbstractExecutor<T> {
 
 
     //创建序号格
-    protected static void createNumberCellTitle(CBCell[][] cbcells, int row) {
-        if (cbcells[0][row] != null) {
-            return;
-        }
-        CBCell cell = new CBCell(Inter.getLocText("BI-Row_Index"));
+    protected static CBCell createNumberCellTitle(int row) {
+        CBCell cell = new CBCell(Inter.getLocText("BI-Number_Index"));
         cell.setColumn(0);
         cell.setRow(row);
         cell.setRowSpan(1);
@@ -53,9 +50,9 @@ public abstract class BITableExecutor<T> extends BIAbstractExecutor<T> {
         java.util.List tcellList = new ArrayList();
         tcellList.add(cell);
         CBBoxElement cbox = new CBBoxElement(tcellList);
-        cbox.setName(Inter.getLocText("BI-Row_Index"));
+        cbox.setName(Inter.getLocText("BI-Number_Index"));
         cell.setBoxElement(cbox);
-        cbcells[cell.getColumn()][cell.getRow()] = cell;
+        return cell;
     }
 
     //创建汇总格
