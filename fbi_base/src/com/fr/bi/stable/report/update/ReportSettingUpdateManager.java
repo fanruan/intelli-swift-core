@@ -31,7 +31,7 @@ public class ReportSettingUpdateManager {
     }
 
     public BIDesignSetting updateReportSettings(BIDesignSetting setting) throws Exception {
-        JSONObject reportSettings = setting.getReportSetting();
+        JSONObject reportSettings = setting.getReportJSON();
         double fileVersion = getVersion(setting);
         Iterator<ReportConfVersionNode> iterator = versionNodes.iterator();
         while (iterator.hasNext()) {
@@ -52,7 +52,7 @@ public class ReportSettingUpdateManager {
      * 处理出现未记录版本号的情况
      */
     public double getVersion(BIDesignSetting setting) throws BIReportVersionAbsentException, JSONException {
-        JSONObject reportSettings = setting.getReportSetting();
+        JSONObject reportSettings = setting.getReportJSON();
         if (null == reportSettings || !reportSettings.has("version")) {
             return BIReportConstant.HISTORY_VERSION.VERSION_4_0;
         }
