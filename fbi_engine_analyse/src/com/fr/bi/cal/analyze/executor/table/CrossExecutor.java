@@ -94,23 +94,31 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         int rowIdx = 1;
         while (node != null) {
             columnIdx = 0;
-            if (node.getValue() != null) {
-                CrossNode temp = node.getValue();
-                createTargetsCells(iter, start, (CrossNode4Calculate) temp, rowIdx);
-                rowIdx++;
+            CrossNode temp = node.getValue();
+            int newRow = rowIdx & EXCEL_ROW_MODE_VALUE;
+            if (newRow == 0) {
+                iter.getIteratorByPage(start.value).finish();
+                start.value++;
             }
+            StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+            getTopChildren((CrossNode4Calculate) temp, pagedIterator, rowIdx);
+            //第一次出现表头时创建cell
+            int i = rowDimensions.length;
+            while (node.getParent() != null) {
+                int rowSpan = node.getTotalLength();
+                Object data = node.getData();
+                BIDimension dim = rowDimensions[--i];
+                Object v = dim.getValueByType(data);
+                if(v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
+                    CBCell cell = createCell4Dimension(v, rowIdx, rowSpan, i);
+                    pagedIterator.addCell(cell);
+                    dimensionNames[i] = v;
+                }
+                node = (CrossHeader) node.getParent();
+            }
+            rowIdx++;
             node = (CrossHeader) node.getSibling();
         }
-    }
-
-    private void createTargetsCells(DetailCellIterator iter, FinalInt start, CrossNode4Calculate temp, int rowIdx) {
-        int newRow = rowIdx & EXCEL_ROW_MODE_VALUE;
-        if (newRow == 0) {
-            iter.getIteratorByPage(start.value).finish();
-            start.value++;
-        }
-        StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-        getTopChildren(temp, pagedIterator, rowIdx);
     }
 
     private void getTopChildren(CrossNode4Calculate temp, StreamPagedIterator pagedIterator, int rowIdx) {
@@ -132,6 +140,15 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         cell.setRow(rowIdx);
         cell.setColumn(columnIdx);
         cell.setRowSpan(1);
+        cell.setColumnSpan(1);
+        return cell;
+    }
+
+    private CBCell createCell4Dimension(Object v, int rowIdx, int rowSpan, int columnIdx) {
+        CBCell cell = new CBCell(v);
+        cell.setRow(rowIdx);
+        cell.setColumn(columnIdx);
+        cell.setRowSpan(rowSpan);
         cell.setColumnSpan(1);
         return cell;
     }

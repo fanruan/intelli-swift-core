@@ -651,7 +651,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
             StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
             int targetsKeyIndex = 0;
             for (TargetGettingKey key : widget.getTargetsKey()) {
-                createCells4Row(pagedIterator, temp.getSummaryValue(key), rowDimensions.length, currentRowIdx, targetsKeyIndex);
+                CBCell cell = createCells4Row(temp.getSummaryValue(key), rowDimensions.length, currentRowIdx, targetsKeyIndex);
+                pagedIterator.addCell(cell);
                 targetsKeyIndex++;
             }
             //维度第一次出现即addCell
@@ -662,7 +663,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 BIDimension dim = rowDimensions[--i];
                 Object v = dim.getValueByType(data);
                 if (v != dimensionNames[i] || (i == rowDimensions.length -1)) {
-                    createCells4Dimension(pagedIterator, v, rowSpan, currentRowIdx, i);
+                    CBCell cell = createCells4Dimension(v, rowSpan, currentRowIdx, i);
+                    pagedIterator.addCell(cell);
                     dimensionNames[i] = v;
                 }
                 temp = temp.getParent();
@@ -671,22 +673,22 @@ public class GroupExecutor extends AbstractNodeExecutor {
         }
     }
 
-    private void createCells4Row(StreamPagedIterator pagedIterator, Object v, int dimLen, int currentRowIdx, int targetsKeyIndex) {
+    private CBCell createCells4Row(Object v, int dimLen, int currentRowIdx, int targetsKeyIndex) {
             CBCell cell = new CBCell(v);
             cell.setColumn(targetsKeyIndex + dimLen);
             cell.setRow(currentRowIdx);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
-            pagedIterator.addCell(cell);
+            return cell;
     }
 
-    private void createCells4Dimension(StreamPagedIterator pagedIterator, Object v, int rowSpan, int currentRowIdx, int currentColumn) {
+    private CBCell createCells4Dimension(Object v, int rowSpan, int currentRowIdx, int currentColumn) {
         CBCell cell = new CBCell(v);
         cell.setRow(currentRowIdx);
         cell.setColumn(currentColumn);
         cell.setRowSpan(rowSpan);
         cell.setColumnSpan(1);
-        pagedIterator.addCell(cell);
+        return cell;
     }
 
     /**
