@@ -10,26 +10,38 @@ import java.util.Queue;
 public class StreamPagedIterator<T> implements Iterator<T> {
 
     private int maxCount = 1 << 14;
-    private int halfCount = maxCount >> 1;
+    //通知开始生产的数量，队列里面小于一定数量就通知加的线程开始增加，不要等到空了wait住
+    private int produceCount = maxCount >> 1;
+    //通知开始消费的数量，队列里面大于一定的数量就开始唤醒waitfor方法里面等待消费的线程
+    private int consumeCount = maxCount - 1;
+    //是不是正在消费
+    private volatile boolean isWorking = true;
     private volatile Queue<T> queue = new LinkedList<T>();
     private volatile boolean isEnd = false;
 
-    public void setMaxCount(int maxCount) {
-        this.maxCount = maxCount;
-        this.halfCount = maxCount >> 1;
+    public StreamPagedIterator() {
     }
 
+    public StreamPagedIterator(int maxCount, int produceCount, int consumeCount) {
+        this.maxCount = maxCount;
+        this.produceCount = produceCount;
+        this.consumeCount = consumeCount;
+    }
+
+
     private void waitFor() {
-        if(queue.size() == halfCount) {
+        if (queue.size() == produceCount) {
             synchronized (this) {
                 this.notify();
             }
         }
-        if(queue.isEmpty()) {
+        if (queue.isEmpty()) {
             synchronized (this) {
                 while (isRealEmpty() && (!isEnd)) {
                     try {
+                        isWorking = false;
                         this.wait();
+                        isWorking = true;
                     } catch (Exception e) {
                     }
                 }
@@ -38,7 +50,7 @@ public class StreamPagedIterator<T> implements Iterator<T> {
     }
 
     private boolean isRealEmpty() {
-        synchronized (queue){
+        synchronized (queue) {
             return queue.isEmpty();
         }
     }
@@ -71,9 +83,9 @@ public class StreamPagedIterator<T> implements Iterator<T> {
     }
 
     public void addCell(T cellElement) {
-        if(queue.size() > maxCount) {
+        if (queue.size() > maxCount) {
             synchronized (this) {
-                if(queue.size() > maxCount) {
+                if (queue.size() > maxCount) {
                     try {
                         this.wait();
                     } catch (Exception e) {
@@ -84,8 +96,9 @@ public class StreamPagedIterator<T> implements Iterator<T> {
         synchronized (queue) {
             queue.add(cellElement);
         }
-        synchronized (this) {
-            if (queue.size() > (maxCount - 1)){
+        //如果消费线程wait住了，并且超过了消费阈值就唤醒消费线程
+        if (queue.size() > consumeCount) {
+            synchronized (this) {
                 this.notify();
             }
         }
