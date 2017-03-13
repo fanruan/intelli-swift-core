@@ -19,7 +19,7 @@ public class BIGetAuthUserListAction extends ActionNoSessionCMD {
         if (keyword == null) {
             keyword = "";
         }
-        JSONArray ja = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(userMode, keyword);
+        JSONArray ja = FBIConfig.getProviderInstance().getUserAuthorAttr().getUserAuthJaByMode(userMode, keyword);
         WebUtils.printAsJSON(res, ja);
     }
 

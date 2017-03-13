@@ -1,15 +1,18 @@
 package com.fr.bi.cal;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
-import com.fr.bi.base.provider.AllUserTravel;
+import com.fr.bi.cal.generate.CubeBuildHelper;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
-import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
+import com.fr.stable.StringUtils;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -65,11 +68,6 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public boolean checkCubeStatus(long userId) {
         return getCubeManager(userId).checkCubeStatus();
-    }
-
-    @Override
-    public Status getStatus(long userId) {
-        return getCubeManager(userId).getStatus();
     }
 
     @Override
@@ -158,19 +156,6 @@ public class BICubeManager implements BICubeManagerProvider {
         getCubeManager(userId).resetCubeGenerationHour();
     }
 
-    /**
-     * 生成cube
-     */
-    @Override
-    public void generateCubes() {
-        BIUserUtils.allUserTravelAction(new AllUserTravel() {
-
-            @Override
-            public void start(long userId) {
-                getCubeManager(userId).generateCubes();
-            }
-        });
-    }
 
     @Override
     public void envChanged() {
@@ -186,16 +171,25 @@ public class BICubeManager implements BICubeManagerProvider {
     }
 
     @Override
-    public boolean isReplacing(long userId) {
-        return getCubeManager(userId).isReplacing();
+    public boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType) {
+        try {
+            if (StringUtils.isEmpty(baseTableSourceId)) {
+                CubeBuildHelper.getInstance().CubeBuildStaff(userId);
+            } else {
+                CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, baseTableSourceId, updateType);
+            }
+            BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+            BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
+            BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+            return true;
+        } catch (Exception e) {
+            CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
+            BILoggerFactory.getLogger(this.getClass()).error("cube task build failed" + "\n" + e.getMessage(), e);
+            return false;
+        } finally {
+            CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
+        }
+
     }
 
-    @Override
-    public boolean hasBuildingTask() {
-        boolean result = false;
-        for (long userId : userMap.keySet()) {
-            result = (result || getCubeManager(userId).isTaskBuilding());
-        }
-        return result;
-    }
 }

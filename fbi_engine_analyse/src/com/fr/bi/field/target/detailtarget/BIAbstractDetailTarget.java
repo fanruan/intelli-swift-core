@@ -4,6 +4,7 @@ import com.finebi.cube.api.*;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.cluster.utils.ClusterLockObject;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -28,16 +29,18 @@ import java.util.Map;
 
 
 public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BIDetailTarget {
+    private static final long serialVersionUID = -8312854279862416396L;
     @BICoreField
     protected TargetFilter filter;
     @BIIgnoreField
-    protected ICubeColumnDetailGetter columnDetailGetter;
-    protected ICubeColumnDetailGetter copyColumnDetailGetter;
+    protected transient ICubeColumnDetailGetter columnDetailGetter;
+    @BIIgnoreField
+    protected transient ICubeColumnDetailGetter copyColumnDetailGetter;
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();
-
-    private Object columnDetailGetterLock = new Object();
+    @BIIgnoreField
+    private ClusterLockObject columnDetailGetterLock = new ClusterLockObject();
     private List<BITableRelation> relationList = new ArrayList<BITableRelation>();
 
 

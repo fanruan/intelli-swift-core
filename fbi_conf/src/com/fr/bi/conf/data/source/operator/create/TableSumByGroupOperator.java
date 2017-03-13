@@ -101,11 +101,11 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
                 } else if (parent.getField(dimensions[i].getName()).getBIType() == DBConstant.COLUMN.NUMBER) {
                     PersistentField pfield = parent.getField(getDimensions()[i].getName());
                     /**
-                     * 数值类型自定义分组，类型要为String类型
+                     * 数值aaaa类型自定义分组，类型要为String类型
                      */
                     persistentTable.addColumn(generateSumNumberGroup(getDimensions()[i], pfield));
                 } else {
-                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), parent.getField(dimensions[i].getName()).getSqlType(), parent.getField(dimensions[i].getName()).getColumnSize()));
+                    persistentTable.addColumn(new PersistentField(getDimensions()[i].getNameText(), parent.getField(dimensions[i].getName()).getSqlType(), parent.getField(dimensions[i].getName()).getColumnSize(), parent.getField(dimensions[i].getName()).getScale()));
                 }
             }
             for (int i = 0; i < getTargets().length; i++) {
@@ -145,7 +145,7 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         }
         BIKey[] keys = new BIKey[getDimensions().length];
         IGroup[] groups = new IGroup[getDimensions().length];
-        for (int i = 0; i < groups.length; i++){
+        for (int i = 0; i < groups.length; i++) {
             keys[i] = getDimensions()[i].createKey();
             groups[i] = getDimensions()[i].getGroup();
         }
@@ -162,7 +162,7 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
 
     private void write(ICubeTableService ti, ValuesAndGVI valuesAndGVI, int index, Traversal<BIDataValue> travel) {
         int col = 0;
-        for (int i = 0; i < valuesAndGVI.values.length; i++){
+        for (int i = 0; i < valuesAndGVI.values.length; i++) {
             travel.actionPerformed(new BIDataValue(index, col, getDimensions()[i].getKeyValue(valuesAndGVI.values[i])));
             col++;
         }

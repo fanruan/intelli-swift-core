@@ -9,6 +9,7 @@ import com.fr.bi.stable.operation.sort.comp.IComparator;
  * Created by GUY on 2015/4/9.
  */
 public class CustomSort extends AbstractSort {
+    private static final long serialVersionUID = -5154834050959118534L;
     protected transient IComparator comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.CUSTOM);
 
 

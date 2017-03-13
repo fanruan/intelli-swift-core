@@ -1,5 +1,6 @@
 package com.fr.bi.web.base.operation;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONArray;
 
 /**

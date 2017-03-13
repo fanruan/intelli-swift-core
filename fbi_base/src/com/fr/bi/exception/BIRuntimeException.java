@@ -7,6 +7,8 @@ package com.fr.bi.exception;
  * @since Advanced FineBI Analysis 1.0
  */
 public class BIRuntimeException extends RuntimeException {
+    private static final long serialVersionUID = 2509484930893559300L;
+
     public BIRuntimeException() {
     }
 

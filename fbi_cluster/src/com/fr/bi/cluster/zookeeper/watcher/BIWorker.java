@@ -93,7 +93,7 @@ public class BIWorker extends BIWatcher {
             task.init(content);
         } catch (Exception ex) {
 //            LOG.error("Worker:" + getPrefix() + "");
-             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger(BIWorker.class).error(ex.getMessage(), ex);
         }
         return task;
     }

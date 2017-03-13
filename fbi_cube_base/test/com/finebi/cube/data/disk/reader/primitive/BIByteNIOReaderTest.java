@@ -1,8 +1,8 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
 import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
+import com.finebi.cube.provider.BIProjectPathProvider;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -14,7 +14,7 @@ import java.io.File;
  * @since 4.0
  */
 public class BIByteNIOReaderTest extends TestCase {
-    public static String NIO_PATH_TEST = BIDiskWriterReaderTest.projectPath + File.separator + "file";
+    public static String NIO_PATH_TEST = BIProjectPathProvider.projectPath + File.separator + "file";
 
     public void testSpeed() {
         try {

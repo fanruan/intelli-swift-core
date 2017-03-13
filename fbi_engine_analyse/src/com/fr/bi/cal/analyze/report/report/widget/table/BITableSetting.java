@@ -3,10 +3,12 @@ package com.fr.bi.cal.analyze.report.report.widget.table;
 import com.fr.bi.common.BICoreService;
 import com.fr.json.JSONParser;
 
+import java.io.Serializable;
+
 /**
  * Created by GUY on 2015/4/9.
  */
-public interface BITableSetting extends JSONParser, BICoreService {
+public interface BITableSetting extends JSONParser, BICoreService ,Serializable{
 
     /**
      * 获取行内容

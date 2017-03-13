@@ -33,6 +33,7 @@ import java.util.Map;
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = BusinessTable.class)
 public class BIBusinessTable implements BusinessTable {
 
+    private static final long serialVersionUID = 4785993127179278858L;
     protected BITableID ID;
     protected String tableName;
     protected List<BusinessField> fields;

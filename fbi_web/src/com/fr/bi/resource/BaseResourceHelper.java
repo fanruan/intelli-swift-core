@@ -581,6 +581,8 @@ public class BaseResourceHelper {
                 "com/fr/bi/web/css/widget/timesetting/timesetting.day.css",
                 "com/fr/bi/web/css/widget/timesetting/timesetting.hour.css",
 
+                "com/fr/bi/web/css/widget/finetuningnumbereditor/finetuning.number.editor.css",
+
                 /**
                  * components
                 */
@@ -1336,6 +1338,7 @@ public class BaseResourceHelper {
                 //关联视图
                 "com/fr/bi/web/js/widget/relationview/relationview.item.js",
                 "com/fr/bi/web/js/widget/relationview/relationview.region.js",
+                "com/fr/bi/web/js/widget/relationview/relationview.region.container.js",
                 "com/fr/bi/web/js/widget/relationview/relationview.js",
 
                 //预览表
@@ -1389,6 +1392,8 @@ public class BaseResourceHelper {
                 "com/fr/bi/web/js/widget/interactivearrangement/interactivearrangement.js",
 
                 "com/fr/bi/web/js/widget/uploadfile/progress.uploadfile.js",
+
+                "com/fr/bi/web/js/widget/finetuningnumbereditor/finetuning.number.editor.js",
 
                 /**
                  * 以下是部件

@@ -6,4 +6,5 @@ package com.fr.bi.field.target.detailtarget.formula;
 public class BINumberFormulaDetailTarget extends AbstractFormularDetailTarget {
 
 
+    private static final long serialVersionUID = 2216195812998274282L;
 }

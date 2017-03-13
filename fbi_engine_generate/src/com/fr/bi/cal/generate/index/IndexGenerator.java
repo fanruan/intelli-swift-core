@@ -11,7 +11,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.utils.file.BIPathUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
 
@@ -22,6 +22,7 @@ import java.util.Arrays;
  */
 public class IndexGenerator implements CubeGenerator, java.util.concurrent.Callable<Object>, CubeGenerateStatusProvider {
 
+    private static final long serialVersionUID = -128732121637843698L;
     protected CubeTableSource source;
 
     protected TableCubeFile cube;
@@ -51,7 +52,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
     }
 
     protected void createTableCube() {
-        cube = new TableCubeFile(BIPathUtils.createTableTempPath(source.fetchObjectCore().getID().getIdentityValue(), biUser.getUserId()) + pathSuffix);
+        cube = new TableCubeFile(BIConfigurePathUtils.createTableTempPath(source.fetchObjectCore().getID().getIdentityValue(), biUser.getUserId()) + pathSuffix);
     }
 
     @Override

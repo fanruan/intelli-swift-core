@@ -32,6 +32,7 @@ public class BIFSSetConfigAction extends AbstractBIBaseAction {
     @Override
     public void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res)
             throws Exception {
+<<<<<<< HEAD
         JSONObject mainBackground = new JSONObject(WebUtils.getHTTPRequestParameter(req, "mainBackground"));
         JSONObject widgetBackground = new JSONObject(WebUtils.getHTTPRequestParameter(req, "widgetBackground"));
         JSONObject titleBackground = new JSONObject(WebUtils.getHTTPRequestParameter(req, "titleBackground"));
@@ -47,8 +48,16 @@ public class BIFSSetConfigAction extends AbstractBIBaseAction {
         chartStyleAttr.setWidgetBackground(new BIWidgetBackgroundAttr(widgetBackground.optString("value", ""), widgetBackground.optInt("type", 1)));
 //        FBIConfig.getInstance().getChartStyleAttr().setDefaultStyle(Integer.parseInt(WebUtils.getHTTPRequestParameter(req, "defaultStyle")));
         ChartPreStyleServerManager.getInstance().setCurrentStyle(WebUtils.getHTTPRequestParameter(req, "defaultColor"));
+=======
+        BIChartStyleAttr chartStyleAttr =  FBIConfig.getProviderInstance().getChartStyleAttr();
+        chartStyleAttr.setChartStyle(Integer.parseInt(WebUtils.getHTTPRequestParameter(req, "chartStyle")));
+        FBIConfig.getProviderInstance().setChartStyleAttr(chartStyleAttr);
+//        FBIConfig.getProviderInstance().getChartStyleAttr().setDefaultStyle(Integer.parseInt(WebUtils.getHTTPRequestParameter(req, "defaultStyle")));
+        ChartPreStyleServerManager.getProviderInstance().setCurrentStyle(WebUtils.getHTTPRequestParameter(req, "defaultColor"));
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 
         FRContext.getCurrentEnv().writeResource(ChartPreStyleServerManager.getInstance());
-        FRContext.getCurrentEnv().writeResource(FBIConfig.getInstance());
+//        FRContext.getCurrentEnv().writeResource(FBIConfig.getInstance());
+        FBIConfig.getProviderInstance().writeResource();
     }
 }

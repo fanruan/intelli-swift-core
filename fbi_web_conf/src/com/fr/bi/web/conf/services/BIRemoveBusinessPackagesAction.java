@@ -1,11 +1,11 @@
 package com.fr.bi.web.conf.services;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.pack.data.BIPackageID;
-import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
@@ -20,7 +20,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
@@ -43,8 +43,7 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
         try {
             BICubeConfigureCenter.getPackageManager().persistData(userId);
             BIConfigureManagerCenter.getAuthorityManager().persistData(userId);
-            BICubeManager biCubeManager= StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
-            biCubeManager.resetCubeGenerationHour(userId);
+            StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManagerProvider.class).resetCubeGenerationHour(userId);
         } catch (Exception e) {
             FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
         }
@@ -63,27 +62,14 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
         BIConfigureManagerCenter.getAuthorityManager().removeAuthPackage(new BIPackageID(packageId));
         try {
             Iterator tableIt = BICubeConfigureCenter.getPackageManager().getPackage(userId, new BIPackageID(packageId)).getBusinessTables().iterator();
-            ArrayList<BITableRelation> removeList = new ArrayList<BITableRelation>();
             while (tableIt.hasNext()) {
                 BusinessTable table = (BusinessTable) tableIt.next();
-                if (BICubeConfigureCenter.getTableRelationManager().containTablePrimaryRelation(userId, table)) {
-                    IRelationContainer primaryContainer = BICubeConfigureCenter.getTableRelationManager().getPrimaryRelation(userId, table);
-                    addToRemoveList(primaryContainer, removeList);
-                }
-
-                if (BICubeConfigureCenter.getTableRelationManager().containTableForeignRelation(userId, table)) {
-                    IRelationContainer foreignContainer = BICubeConfigureCenter.getTableRelationManager().getForeignRelation(userId, table);
-                    addToRemoveList(foreignContainer, removeList);
-                }
-
-            }
-            for (int i = 0; i < removeList.size(); i++) {
-                BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, removeList.get(i));
+                BusinessTableHelper.removeTableRelation(table, userId);
             }
             saveUpdateSettings(packageId, userId);
             BICubeConfigureCenter.getPackageManager().removePackage(userId, new BIPackageID(packageId));
-        } catch (BIPackageAbsentException e) {
-
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -94,15 +80,5 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
             BIConfigureManagerCenter.getUpdateFrequencyManager().removeUpdateSetting(table.getTableSource().getSourceID(),userId);
         }
         BIConfigureManagerCenter.getUpdateFrequencyManager().persistData(userId);
-    }
-
-    private void addToRemoveList(IRelationContainer primaryContainer, List<BITableRelation> removeList) throws BIRelationAbsentException, BITableAbsentException {
-        Iterator it = primaryContainer.getContainer().iterator();
-        while (it.hasNext()) {
-            BITableRelation relation = (BITableRelation) it.next();
-            if (!removeList.contains(relation)) {
-                removeList.add(relation);
-            }
-        }
     }
 }

@@ -24,6 +24,7 @@ import com.fr.fs.control.UserControl;
  * @since 4.0
  */
 public class BIUserCubeManager implements ICubeDataLoader {
+    private static final long serialVersionUID = -4501814849071798215L;
     private BIUser user;
     private Cube cube;
 

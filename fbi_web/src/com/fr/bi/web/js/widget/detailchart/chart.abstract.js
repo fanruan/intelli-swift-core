@@ -268,8 +268,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
+<<<<<<< HEAD
     formatNumberLevelAndSeparators: function (type, separators) {
         var formatter;
+=======
+    formatTickInXYaxis: function (type, number_level, separators, isCompareBar) {
+        var formatter = '#.##';
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         switch (type) {
             case this.constants.NORMAL:
                 formatter = '#.##';
@@ -305,6 +310,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         if (BI.isEmpty(accumulationObj) || BI.isEmpty(items) || type !== BICst.SERIES_ACCUMULATION.EXIST) {
             return items;
         }
+<<<<<<< HEAD
         BI.each(accumulations, function (idx, accumulation) {
             accumulation.stack = idx + BI.UUID();
         });
@@ -322,6 +328,14 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                     data.stack = accumulations[0].stack;
                 }
             })
+=======
+        formatter += ";-" + formatter;
+        if(isCompareBar) {
+            return function () {
+                arguments[0] = arguments[0] > 0 ? arguments[0] : (-1) * arguments[0];
+                return BI.contentFormat(arguments[0], formatter);
+            }
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         }
         ;
         return items;

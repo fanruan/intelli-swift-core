@@ -1,9 +1,9 @@
 package com.finebi.cube.impl.pubsub;
 
-import com.finebi.cube.impl.message.BIMessageTestTool;
-import com.finebi.cube.impl.router.fragment.BIFragmentTagTestTool;
-import com.finebi.cube.impl.router.status.BIStatusTestTool;
-import com.finebi.cube.impl.router.topic.BITopicTagTestTool;
+import com.finebi.cube.tools.BIMessageTestTool;
+import com.finebi.cube.tools.BIFragmentTagTestTool;
+import com.finebi.cube.tools.BIStatusTestTool;
+import com.finebi.cube.tools.BITopicTagTestTool;
 import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 

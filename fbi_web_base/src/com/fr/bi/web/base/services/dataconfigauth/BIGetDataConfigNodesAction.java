@@ -56,7 +56,7 @@ public class BIGetDataConfigNodesAction extends AbstractBIBaseAction {
         ja.put(packagePage);
 
         JSONObject serverJO = new JSONObject();
-        serverJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.NODE);
+        serverJO.put("pId", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.DATA_CONNECTION);
         serverJO.put("id", DBConstant.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.SERVER_CONNECTION); //业务包管理->服务器数据集
         ja.put(serverJO);
         JSONObject packConnNodeJO = new JSONObject();

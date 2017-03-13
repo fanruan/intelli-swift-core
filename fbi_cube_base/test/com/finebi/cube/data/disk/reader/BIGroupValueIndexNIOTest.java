@@ -1,23 +1,11 @@
 package com.finebi.cube.data.disk.reader;
 
-import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
-import com.finebi.cube.data.disk.reader.primitive.BIByteNIOReader;
-import com.finebi.cube.data.disk.reader.primitive.BIIntegerNIOReader;
-import com.finebi.cube.data.disk.reader.primitive.BILongNIOReader;
-import com.finebi.cube.data.disk.writer.BIByteArrayNIOWriter;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.disk.writer.BIGroupValueIndexNIOWriter;
-import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
-import com.finebi.cube.data.disk.writer.primitive.BIIntegerNIOWriter;
-import com.finebi.cube.data.disk.writer.primitive.BILongNIOWriter;
-import com.finebi.cube.data.input.primitive.ICubeByteReader;
-import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
-import com.finebi.cube.data.input.primitive.ICubeLongReader;
-import com.finebi.cube.data.output.primitive.ICubeByteWriter;
-import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
-import com.finebi.cube.data.output.primitive.ICubeLongWriter;
+import com.finebi.cube.provider.BIGroupValueIndexNIOProvider;
+import com.finebi.cube.provider.BIProjectPathProvider;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import junit.framework.TestCase;
 
@@ -36,17 +24,11 @@ public class BIGroupValueIndexNIOTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        String start = BIDiskWriterReaderTest.projectPath + File.separator + "start";
-        String length = BIDiskWriterReaderTest.projectPath + File.separator + "length";
-        String content = BIDiskWriterReaderTest.projectPath + File.separator + "content";
-        ICubeLongWriter startPositionRecorder = new BILongNIOWriter(start);
-        ICubeIntegerWriter lengthRecorder = new BIIntegerNIOWriter(length);
-        ICubeByteWriter contentRecorder = new BIByteNIOWriter(content);
-        writer = new BIGroupValueIndexNIOWriter(new BIByteArrayNIOWriter(startPositionRecorder, lengthRecorder, contentRecorder));
-        ICubeLongReader startPositionRecorderReader = new BILongNIOReader(start);
-        ICubeIntegerReader lengthRecorderReader = new BIIntegerNIOReader(length);
-        ICubeByteReader contentRecorderReader = new BIByteNIOReader(content);
-        reader = new BIGroupValueIndexNIOReader(new BIByteArrayNIOReader(startPositionRecorderReader, lengthRecorderReader, contentRecorderReader));
+        String start = BIProjectPathProvider.projectPath + File.separator + "start";
+        String length = BIProjectPathProvider.projectPath + File.separator + "length";
+        String content = BIProjectPathProvider.projectPath + File.separator + "content";
+        writer = BIGroupValueIndexNIOProvider.BIGroupValueIndexNIOWriterProvider(start, length, content);
+        reader = BIGroupValueIndexNIOProvider.BIGroupValueIndexNIOReaderProvider(start, length, content);
     }
 
     public void testSpeed() {
@@ -90,7 +72,8 @@ public class BIGroupValueIndexNIOTest extends TestCase {
             /**
              * Expect Exception
              */
-            assertTrue(false);
+            return;
         }
+        assertTrue(false);
     }
 }

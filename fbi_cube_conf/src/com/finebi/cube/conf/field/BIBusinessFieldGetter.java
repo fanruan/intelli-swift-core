@@ -19,6 +19,8 @@ import com.fr.json.JSONObject;
  * @since 4.0
  */
 public class BIBusinessFieldGetter implements BusinessField {
+    private static final long serialVersionUID = -5848541108524022183L;
+
     public BIBusinessFieldGetter() {
     }
 

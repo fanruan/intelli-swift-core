@@ -415,6 +415,9 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
 
         NewCrossRoot node = CubeIndexLoader.getInstance(session.getUserId()).loadPageCrossGroup(createTarget4Calculate(), rowDimension, colDimension, allSumTarget, calpage, widget.useRealData(), session, expander, widget);
 
+        if (widget.useTargetSort()) {
+            node = node.createSortedNode(widget.getTargetSort(), targetsMap);
+        }
         clearNullSummary(node.getLeft(), keys);
         clearNullSummary(node.getTop(), keys);
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");

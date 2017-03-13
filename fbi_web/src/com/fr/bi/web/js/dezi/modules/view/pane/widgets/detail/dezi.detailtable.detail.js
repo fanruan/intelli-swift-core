@@ -173,6 +173,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                         relationItem: op.relationItem
                     });
                 }
+<<<<<<< HEAD
 
                 var dimensions = self.model.cat("dimensions");
                 if(BI.isArray(dId)){
@@ -189,6 +190,14 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                     return null;
                 }else{
                     createSubVessel(dId);
+=======
+                if (!dimensionsVessel[dId]) {
+                    dimensionsVessel[dId] = BI.createWidget({
+                        type: "bi.layout"
+                    });
+                    self.addSubVessel(dId, dimensionsVessel[dId]);
+                    var dimensions = self.model.cat("dimensions");
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                     if (!BI.has(dimensions, dId)) {
                         self.model.set("addDimension", {
                             dId: dId,
@@ -207,6 +216,11 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                         self.addSubVessel(dimensionId, dimensionsVessel[dimensionId]);
                     }
                 }
+<<<<<<< HEAD
+=======
+                //self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
+                return dimensionsVessel[dId];
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 
             }
         });
@@ -284,6 +298,7 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
             BI.has(changed, "filter_value") ||
             (BI.has(changed, "target_relation"))) {
             this.tablePopulate();
+            this._refreshDimensions();
         }
         if (BI.has(changed, "settings")) {
             var diffs = BI.deepDiff(changed.settings, prev.settings);
@@ -291,6 +306,15 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
                 this.tablePopulate();
             }
         }
+    },
+
+    _refreshDimensions: function () {
+        var self = this;
+        BI.each(self.model.cat("view"), function (regionType, dids) {
+            BI.each(dids, function (i, dId) {
+                self.skipTo(regionType + "/" + dId, dId, "dimensions." + dId, {}, {force: true});
+            });
+        });
     },
 
 
@@ -324,5 +348,6 @@ BIDezi.DetailTableDetailView = BI.inherit(BI.View, {
         this.dimensionsManager.populate();
         this._refreshDimensions();
         this.tablePopulate();
+        this._refreshDimensions();
     }
 });

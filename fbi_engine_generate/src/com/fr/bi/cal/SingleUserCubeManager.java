@@ -42,14 +42,6 @@ public class SingleUserCubeManager {
         }
     }
 
-
-    /**
-     * 生成cube
-     */
-    public void generateCubes() {
-        runner.generateCubes();
-    }
-
     public CubeBuildStuffComplete getGeneratingObject() {
         return runner.getCubeGeneratingObjects();
     }
@@ -68,10 +60,6 @@ public class SingleUserCubeManager {
 
     public boolean hasTask() {
         return runner.hasTask();
-    }
-
-    public boolean isTaskBuilding() {
-        return runner.isTaskBuilding();
     }
 
     public boolean hasWaitingCheckTask() {

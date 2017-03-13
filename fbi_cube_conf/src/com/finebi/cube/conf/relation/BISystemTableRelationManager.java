@@ -28,6 +28,7 @@ import java.util.Set;
  * Created by Connery on 2016/1/12.
  */
 public class BISystemTableRelationManager extends BISystemDataManager<BIUserTableRelationManager> implements BITableRelationConfigurationProvider {
+    private static final long serialVersionUID = 7984645297624233358L;
     private static String OBJ_TAG = "UserTableRelationManager";
 
 
@@ -317,6 +318,23 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         userId = UserControl.getInstance().getSuperManagerID();
         try {
             Set<BITableRelationPath> availablePath = this.getAllAvailablePath(userId, primaryTable, juniorTable);
+            Iterator<BITableRelationPath> pathIterator = availablePath.iterator();
+            while (pathIterator.hasNext()) {
+                return pathIterator.next();
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+
+
+    @Override
+    public BITableRelationPath getFirstAnalysisAvailablePath(long userId, BusinessTable primaryTable, BusinessTable juniorTable) {
+        userId = UserControl.getInstance().getSuperManagerID();
+        try {
+            Set<BITableRelationPath> availablePath = this.getAnalysisAllAvailablePath(userId, primaryTable, juniorTable);
             Iterator<BITableRelationPath> pathIterator = availablePath.iterator();
             while (pathIterator.hasNext()) {
                 return pathIterator.next();

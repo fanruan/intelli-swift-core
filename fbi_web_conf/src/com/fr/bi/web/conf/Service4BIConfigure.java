@@ -66,9 +66,15 @@ public class Service4BIConfigure implements Service {
             new BIGetPreviewTableDataConfAction(),
             new BIImportDBTableConnectionAction(),
 
+
             new BIModifyUpdateSettingAction(),
             new BIGetUpdateSettingAction(),
             new BIGetCubeGenerateStatusAction(),
+
+            new BIGetTransFromDBAction(),
+
+            new BIModifyGlobalUpdateSettingAction(),
+
             new BISetCubeGenerateAction(),
             new BIGetCubeTaskListAction(),
             new BIAddSingleTableUpdateTaskAction(),
@@ -139,7 +145,9 @@ public class Service4BIConfigure implements Service {
             new BISimpleAPIDemoAction(),
             new BIGetCubeTaskLogsSDKAction(),
             new BISetTransportThreadPoolSizeAction(),
-            new BIGetTransportThreadPoolSizeAction()
+            new BIGetTransportThreadPoolSizeAction(),
+            new BISetMinCubeFreeHDSpaceRateAction(),
+            new BIGetMinCubeFreeHDSpaceRateAction()
     };
 
     /**

@@ -28,7 +28,6 @@ public class BIAnalysisETLGetGeneratingStatusAction extends AbstractAnalysisETLA
         WebUtils.printAsJSON(res, jo);
     }
 
-
     @Override
     public String getCMD() {
         return "get_cube_status";

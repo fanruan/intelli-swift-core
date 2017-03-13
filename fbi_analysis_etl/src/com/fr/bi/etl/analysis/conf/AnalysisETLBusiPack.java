@@ -12,6 +12,8 @@ import com.fr.general.ComparatorUtils;
  */
 public class AnalysisETLBusiPack extends BIBusinessPackage<AnalysisBusiTable> {
 
+    private static final long serialVersionUID = 4650915166372400932L;
+
     public AnalysisETLBusiPack(String id, String name, BIUser user, long position) {
         super(new BIPackageID(id), new BIPackageName(name), user, position);
     }

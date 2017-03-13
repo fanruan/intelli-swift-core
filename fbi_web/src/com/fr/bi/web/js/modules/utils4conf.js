@@ -9,10 +9,6 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("isAdmin");
     },
 
-    getCurrentPackageId4Conf: function () {
-        return BI.firstKey(Data.SharingPool.cat(BICst.CURRENT_EDITING_PACKAGE));
-    },
-
     //转义 表名和字段名
     getTransNameById4Conf: function (id) {
         return Data.SharingPool.cat("translations")[id];
@@ -217,7 +213,6 @@ BI.extend(BI.Utils, {
     //获取关联字段
     getRelationFieldsByFieldId4Conf: function (fieldId) {
         var relations = Data.SharingPool.cat("relations");
-        var translations = Data.SharingPool.cat("translations");
         var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
         var currentPrimKey = primKeyMap[fieldId] || [], currentForKey = foreignKeyMap[fieldId];
         var self = this, relationIds = [], rId;
@@ -238,6 +233,32 @@ BI.extend(BI.Utils, {
             }
         });
         return relationIds;
+    },
+
+    getRelationTablesByTableId4Conf: function (tableId) {
+        var self = this;
+        var relations = Data.SharingPool.cat("relations");
+        var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
+        var relationTables = [];
+
+        function dealWithPFKeys(keyMap) {
+            BI.each(keyMap, function (fieldId, maps) {
+                BI.each(maps, function (i, map) {
+                    var pKey = map.primaryKey, fKey = map.foreignKey;
+                    var pTId = self.getTableIdByFieldId4Conf(pKey.field_id), fTId = self.getTableIdByFieldId4Conf(fKey.field_id);
+                    if (pTId === tableId) {
+                        relationTables.push(fTId);
+                    }
+                    if (fTId === tableId) {
+                        relationTables.push(pTId);
+                    }
+                });
+            });
+        }
+
+        dealWithPFKeys(primKeyMap);
+        dealWithPFKeys(foreignKeyMap);
+        return BI.uniq(relationTables);
     },
 
     //是否是主键字段
@@ -616,6 +637,46 @@ BI.extend(BI.Utils, {
 
     },
 
+<<<<<<< HEAD
+=======
+    getUpdatePreviewSqlResult: function (data, callback, complete) {
+        Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    getConfDataByField: function (table, fieldName, filterConfig, callback, complete) {
+        Data.Req.reqFieldsDataByData({
+            table: table,
+            fieldName: fieldName,
+            fieldType: BICst.COLUMN.STRING,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        }, complete);
+    },
+
+    getSortableConfDataByField: function (table, fieldName, fieldType, filterConfig, callback, complete) {
+        Data.Req.reqFieldsDataByData({
+            table: table,
+            fieldName: fieldName,
+            fieldType: fieldType,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        }, complete);
+    },
+
+    getConfDataByFieldId: function (fieldId, filterConfig, callback, complete) {
+        Data.Req.reqFieldsDataByFieldId({
+            field_id: fieldId,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        }, complete);
+    },
+
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
     getAllPackageIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("packages"));
     },
@@ -709,8 +770,50 @@ BI.extend(BI.Utils, {
         if (BI.isNotNull(tableId)) {
             return translations[tableId]
         }
+    },
+
+    //权限相关 目前功能逻辑大部分都是根据是否为管理员  --- start ---
+    _getAuthByPage: function (page) {
+        return Data.SharingPool.get("authNodes", page);
+    },
+
+    hasDataLinkPageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.DATA_CONNECTION.PAGE);
+    },
+
+    hasPackManagerPageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.PACKAGE_MANAGER.PAGE);
+    },
+
+    hasMultiPathSettingPageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.MULTI_PATH_SETTING);
+    },
+
+    hasPackageAuthorityPageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.PACKAGE_AUTHORITY);
+    },
+
+    hasFineIndexUpdatePageAuth: function () {
+        return this._getAuthByPage(BICst.DATA_CONFIG_AUTHORITY.FINE_INDEX_UPDATE);
+    },
+
+    hasEditPackageGroupAuth: function () {
+        return this.isAdmin4Conf();
+    },
+
+    hasAddPackageGroupAuth: function () {
+        return this.isAdmin4Conf();
+    },
+
+    hasBatchSetPackageGroupAuth: function () {
+        return this.isAdmin4Conf();
+    },
+
+    hasBatchSetPackAuthorityAuth: function () {
+        return this.isAdmin4Conf();
     }
 
+    //权限相关   --- end ---
 });
 
 

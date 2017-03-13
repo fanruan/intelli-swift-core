@@ -10,6 +10,7 @@ import java.util.ArrayList;
  */
 public class BIComplexTableReportSetting extends BITableReportSetting {
 
+    private static final long serialVersionUID = 1281436989506025657L;
     private ArrayList<ArrayList<String>> complex_x_dimension;
     private ArrayList<ArrayList<String>> complex_y_dimension;
 
