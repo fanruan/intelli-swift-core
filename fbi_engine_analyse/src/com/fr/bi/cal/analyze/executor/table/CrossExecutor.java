@@ -70,9 +70,9 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             public void run() {
                 try {
                     FinalInt start = new FinalInt();
-                    int currentRow = 0;
-//                    generateTitleCell(iter.getIteratorByPage(start.value), isColTargetSort, isRowTargetSort, currentRow);
-                    createCells(iter, start);
+                    int rowIdx = 0;
+                    rowIdx++;
+                    createCells(iter, start, rowIdx);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -83,7 +83,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         return iter;
     }
 
-    private void createCells(DetailCellIterator iter, FinalInt start) throws Exception {
+    private void createCells(DetailCellIterator iter, FinalInt start, int rowIdx) throws Exception {
         CrossHeader node = getCubeNode().getLeft();
         while (node.getChildLength() != 0) {
             node = (CrossHeader) node.getFirstChild();
@@ -91,7 +91,6 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
 
         BIDimension[] rowDimensions = widget.getViewDimensions();
         Object[] dimensionNames = new Object[rowDimensions.length];
-        int rowIdx = 1;
         while (node != null) {
             columnIdx = 0;
             CrossNode temp = node.getValue();
