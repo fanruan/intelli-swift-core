@@ -8,6 +8,7 @@ import com.finebi.cube.tools.BICubeRelationTestTool;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 
 /**
@@ -17,6 +18,9 @@ import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
  * @since 4.0
  */
 public class BIRelationIndexBuilderTest extends BICubeTestBase {
+    private static final int PMD4 = 4;
+    private static final int PMD5 = 5;
+    private static final int PMD6 = 6;
     private BIRelationIndexGenerator indexGenerator;
     CubeTableSource tableA;
     CubeTableSource tableB;
@@ -44,7 +48,6 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
         try {
             setUp();
         } catch (Exception e) {
-            e.printStackTrace();
             assertTrue(false);
         }
         BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
@@ -63,7 +66,6 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
         try {
             setUp();
         } catch (Exception e) {
-            e.printStackTrace();
             assertTrue(false);
         }
 
@@ -75,18 +77,12 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
         try {
             generateRelationIndex(relation, tableA, tableB, 1, 2);
             CubeRelationEntityGetterService relationService = cube.getCubeRelation(BITableKeyUtils.convert(tableA), relation);
-            assertTrue(relationService.getBitmapIndex(0).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0}))
-                    || relationService.getBitmapIndex(0).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0})));
-            assertTrue(relationService.getBitmapIndex(1).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{2, 4, 6}))
-                    || relationService.getBitmapIndex(1).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{2, 4, 6})));
-            assertTrue(relationService.getBitmapIndex(2).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{}))
-                    || relationService.getBitmapIndex(2).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{})));
-            assertTrue(relationService.getBitmapIndex(3).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{3}))
-                    || relationService.getBitmapIndex(3).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{3})));
-            assertTrue(relationService.getBitmapIndex(4).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{}))
-                    || relationService.getBitmapIndex(4).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{})));
-            assertTrue(relationService.getNULLIndex(0).hasSameValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 5}))
-                    || relationService.getNULLIndex(0).equals(RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 5})));
+            assertEquals(relationService.getBitmapIndex(0), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{0}));
+            assertEquals(relationService.getBitmapIndex(1), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{2, 4, PMD6}));
+            assertEquals(relationService.getBitmapIndex(2), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{}));
+            assertEquals(relationService.getBitmapIndex(3), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{3}));
+            assertEquals(relationService.getBitmapIndex(PMD4), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{}));
+            assertEquals(relationService.getNULLIndex(0), GVIFactory.createGroupValueIndexBySimpleIndex(new int[]{1, PMD5}));
 
         } catch (Exception e) {
             e.printStackTrace();

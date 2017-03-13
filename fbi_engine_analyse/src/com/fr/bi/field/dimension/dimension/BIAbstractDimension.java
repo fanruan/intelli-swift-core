@@ -125,11 +125,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public String toString(Object v) {
-<<<<<<< HEAD
         return v == null ? StringUtils.EMPTY : v.toString();
-=======
-        return v == null ? "" : v.toString();
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
     }
 
     @Override
