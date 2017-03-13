@@ -3,8 +3,8 @@ package com.finebi.cube.impl.pubsub;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITagDuplicateException;
 import com.finebi.cube.exception.BIThresholdIsOffException;
-import com.finebi.cube.impl.message.BIMessageTestTool;
-import com.finebi.cube.impl.router.topic.BITopicTagTestTool;
+import com.finebi.cube.tools.BIMessageTestTool;
+import com.finebi.cube.tools.BITopicTagTestTool;
 import junit.framework.TestCase;
 
 /**

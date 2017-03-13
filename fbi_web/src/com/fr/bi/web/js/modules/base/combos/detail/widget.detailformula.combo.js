@@ -49,7 +49,31 @@ BI.DetailFormulaDimensionCombo = BI.inherit(BI.Widget, {
             type: "bi.down_list_combo",
             element: this.element,
             height: 25,
+<<<<<<< HEAD
             iconCls: "detail-dimension-set-font"
+=======
+            iconCls: "detail-dimension-set-font",
+            items: [
+                [{
+                    text: BI.i18nText("BI-Style_Setting"),
+                    value: BICst.DETAIL_FORMULA_COMBO.FORM_SETTING
+                }],
+                [{
+                    text: BI.i18nText("BI-Modify_Cal_Formula"),
+                    value: BICst.DETAIL_FORMULA_COMBO.UPDATE_FORMULA
+                }],
+                [{
+                    text: BI.i18nText("BI-Hyperlink"),
+                    value: BICst.DETAIL_FORMULA_COMBO.HYPERLINK,
+                    cls: "hyper-link-font"
+                }],
+                [{
+                    text: BI.i18nText("BI-Remove"),
+                    value: BICst.DETAIL_FORMULA_COMBO.DELETE,
+                    cls: "delete-h-font"
+                }]
+            ]
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         });
         this.combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
             self.fireEvent(BI.DetailFormulaDimensionCombo.EVENT_CHANGE, v);

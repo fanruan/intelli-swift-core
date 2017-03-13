@@ -18,6 +18,7 @@ import java.util.List;
  */
 public abstract class AbstractETLOperator implements IETLOperator {
 
+    private static final long serialVersionUID = 1642178405376794890L;
     //    protected transient String md5;
     protected BIUser user;
 

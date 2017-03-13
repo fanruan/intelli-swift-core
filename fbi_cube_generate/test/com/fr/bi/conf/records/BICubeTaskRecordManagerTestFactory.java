@@ -1,6 +1,6 @@
 package com.fr.bi.conf.records;
 
-import com.finebi.cube.conf.BILogManagerTestFactory;
+import com.finebi.cube.tools.BILogManagerTestFactory;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;

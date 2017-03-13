@@ -2,6 +2,7 @@ package com.fr.bi.common.container;
 
 import com.fr.bi.stable.utils.program.BICollectionUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -9,7 +10,8 @@ import java.util.Iterator;
  * 容器类，线程安全的
  * Created by Connery on 2015/12/28.
  */
-public abstract class BICollectionContainer<T> implements Cloneable {
+public abstract class BICollectionContainer<T> implements Cloneable,Serializable {
+    private static final long serialVersionUID = 953366154679673459L;
     protected Collection<T> container;
 
     protected BICollectionContainer() {

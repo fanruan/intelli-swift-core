@@ -288,9 +288,12 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             }
         }
         if (writeLeft) {
-            while (rValueIterator.hasNext()) {
-                rTotalGvi.or(rValueIterator.next().gvi);
-            }
+                if (rValuesAndGVI != null && !rValuesAndGVI.gvi.isAllEmpty()) {
+                    rTotalGvi.or(rValuesAndGVI.gvi);
+                }
+                while (rValueIterator.hasNext()) {
+                    rTotalGvi.or(rValueIterator.next().gvi);
+                }
         }
         return writeLeft ? writeLeftIndex(rTotalGvi, rti, lLen, index, travel, parents) : index;
     }

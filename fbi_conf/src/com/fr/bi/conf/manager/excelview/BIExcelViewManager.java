@@ -14,6 +14,8 @@ import java.util.Map;
  */
 public class BIExcelViewManager extends BISystemDataManager<SingleUserBIExcelViewManager> implements BIExcelViewManagerProvider {
 
+    private static final long serialVersionUID = -8131499784554883877L;
+
     @Override
     public SingleUserBIExcelViewManager getExcelViewManager(long userId) {
         try {

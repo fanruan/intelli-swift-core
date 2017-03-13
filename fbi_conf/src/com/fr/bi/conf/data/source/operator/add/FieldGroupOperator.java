@@ -1,13 +1,16 @@
 package com.fr.bi.conf.data.source.operator.add;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILogExceptionInfo;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.operation.group.data.string.StringGroupInfo;
 import com.fr.bi.stable.operation.group.group.CustomGroup;
@@ -64,7 +67,6 @@ public class FieldGroupOperator extends AbstractAddColumnOperator {
     }
 
 
-
     @Override
     public IPersistentTable getBITable(IPersistentTable[] tables) {
         IPersistentTable persistentTable = getBITable();
@@ -87,12 +89,19 @@ public class FieldGroupOperator extends AbstractAddColumnOperator {
         int rowCount = ti.getRowCount();
         ICubeColumnDetailGetter getter = ti.getColumnDetailReader(new IndexKey(targetFieldName));
         for (int row = 0; row < rowCount; row++) {
-            Object v = getter.getValue(row);
-            Object value = resMap.get(v);
-            if (value == null ){
-                value =  group.ungroup2Other() ? group.getUngroup2OtherName() : v;
+            try {
+                Object v = getter.getValue(row);
+                Object value = resMap.get(v);
+                if (value == null) {
+                    value = group.ungroup2Other() ? group.getUngroup2OtherName() : v;
+                }
+                travel.actionPerformed(new BIDataValue(row, startCol, value));
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(FieldGroupOperator.class).error("The FieldGroupOperator error, the error Table is: " + BILogHelper.logCubeLogTableSourceInfo(ti.getId()));
+                BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "The operator is: FieldGroupOperator. The Table is: " + BILogHelper.logCubeLogTableSourceInfo(ti.getId()), e.getMessage(), e);
+                BILogHelper.cacheCubeLogTableException(ti.getId(), exceptionInfo);
             }
-            travel.actionPerformed(new BIDataValue(row, startCol, value));
+
         }
         return rowCount;
 

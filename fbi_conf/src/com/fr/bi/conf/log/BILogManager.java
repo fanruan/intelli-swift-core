@@ -1,11 +1,11 @@
 package com.fr.bi.conf.log;
 
 
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
@@ -71,7 +71,7 @@ public class BILogManager implements BILogManagerProvider {
 
     @Override
     public long getEndTime(long userId) {
-        if (null==getInstance(userId).getCubeEnd()){
+        if (null == getInstance(userId).getCubeEnd()) {
             return new Date().getTime();
         }
         return getInstance(userId).getCubeEnd().getTime();

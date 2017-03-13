@@ -28,11 +28,6 @@ public interface BICubeManagerProvider {
     void resetCubeGenerationHour(long userId);
 
     /**
-     * 生成cube
-     */
-    void generateCubes();
-
-    /**
      * 增加任务
      *
      * @param task 任务
@@ -69,12 +64,7 @@ public interface BICubeManagerProvider {
 
     boolean checkCubeStatus(long userId);
 
-    Status getStatus(long userId);
-
     void setStatus(long userId, Status status);
 
-    boolean isReplacing(long userId);
-
-    boolean hasBuildingTask();
-
+    boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType);
 }

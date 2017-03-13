@@ -2,6 +2,7 @@ package com.fr.bi.web.conf.services.packs;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -49,7 +50,7 @@ public class BIUpdatePackageGroupAction extends
         try {
             BICubeConfigureCenter.getPackageManager().persistData(userId);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
-            BICubeManager biCubeManager= StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
+            BICubeManagerProvider biCubeManager= CubeGenerationManager.getCubeManager();
             biCubeManager.resetCubeGenerationHour(userId);
         } catch (Exception e) {
             FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);

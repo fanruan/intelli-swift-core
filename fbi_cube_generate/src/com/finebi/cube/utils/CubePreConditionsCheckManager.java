@@ -3,6 +3,7 @@ package com.finebi.cube.utils;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.structure.Cube;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.data.impl.Connection;
 import com.fr.general.ComparatorUtils;
@@ -21,7 +22,21 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
         }
         double dirSize = getDirSize(file);
         double availableSpace = getAvailableSpace(file);
-        return (availableSpace > dirSize * 2);
+        double needSpace = dirSize * PerformancePlugManager.getInstance().getMinCubeFreeHDSpaceRate();
+        BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).info("The Cube Space is: " + getHDSpace(dirSize) + "M");
+        BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).info("The Min Cube Necessary Space is: " + getHDSpace(needSpace) + "M");
+        BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).info("The free HD Space is: " + getHDSpace(availableSpace) + "M");
+        if (availableSpace > needSpace) {
+            return true;
+        } else {
+            BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).error("\n" + "You need more HD Space to generate Cube");
+            return false;
+        }
+
+    }
+
+    private double getHDSpace(double availableSpace) {
+        return availableSpace / (1024 * 1024);
     }
 
     @Override

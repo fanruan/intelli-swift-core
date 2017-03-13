@@ -80,10 +80,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         tis = new ICubeTableService[metricGroupInfoList.size()];
         for (int i = 0; i < metricGroupInfoList.size(); i++) {
             DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
-            tis[i] = session.getLoader().getTableIndex(metricGroupInfoList.get(i).getMetric().getTableSource());
             for (int j = 0; j < rs.length; j++) {
+                ICubeTableService ti = session.getLoader().getTableIndex(getSource(rs[j]));
                 columns[j][i] = rs[j];
-                getters[j][i] =  session.getLoader().getTableIndex(getSource(rs[j])).getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
+                getters[j][i] = ti.getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
+                tis[i] = ti;
             }
         }
     }
@@ -161,10 +162,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
      * @param list     当前的游标
      */
     public ReturnStatus getNext(GroupConnectionValue gv,
-                                 int[] index,
-                                 int deep,
-                                 NodeExpander expander,
-                                 IntList list) {
+                                int[] index,
+                                int deep,
+                                NodeExpander expander,
+                                IntList list) {
         if (expander == null) {
             return ReturnStatus.GroupEnd;
         }

@@ -5,6 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.cal.generate.CubeBuildHelper;
 import com.fr.bi.cal.generate.EmptyCubeTask;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
@@ -39,9 +40,11 @@ public class BICheckCubeTableStatusAction extends AbstractBIConfigureAction {
             } else {
                 taskId = BIStringUtils.append(baseTableSourceId, baseTableSourceId);
             }
-            CubeTask cubeTask = getCubeTask(taskId);
+            CubeTask cubeTask = new EmptyCubeTask(taskId);
             BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-            jo.put("hasTask", cubeManager.hasTask(cubeTask, userId) || cubeManager.hasBuildingTask());
+            boolean hasWaitingTables = CubeBuildHelper.getInstance().hasWaitingTables();
+            boolean hasTask = cubeManager.hasTask(cubeTask, userId);
+            jo.put("hasTask", hasTask || hasWaitingTables);
         } catch (Exception e) {
             jo.put("hasTask", false);
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
@@ -56,15 +59,6 @@ public class BICheckCubeTableStatusAction extends AbstractBIConfigureAction {
             }
         }
         return null;
-    }
-
-    private CubeTask getCubeTask(final String taskId) {
-        return new EmptyCubeTask() {
-            @Override
-            public String getTaskId() {
-                return taskId;
-            }
-        };
     }
 
     @Override

@@ -36,6 +36,7 @@ import java.util.*;
  */
 public class CompoundCubeTableReaderNode implements CubeTableEntityService {
 
+    private static final long serialVersionUID = 6706265224623557416L;
     private List<CubeTableEntityService> currentLevelTables = new ArrayList<CubeTableEntityService>();
     private CubeTableEntityService masterTable = null;
     protected ICubeResourceDiscovery discovery;

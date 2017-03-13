@@ -637,6 +637,46 @@ BI.extend(BI.Utils, {
 
     },
 
+<<<<<<< HEAD
+=======
+    getUpdatePreviewSqlResult: function (data, callback, complete) {
+        Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    getConfDataByField: function (table, fieldName, filterConfig, callback, complete) {
+        Data.Req.reqFieldsDataByData({
+            table: table,
+            fieldName: fieldName,
+            fieldType: BICst.COLUMN.STRING,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        }, complete);
+    },
+
+    getSortableConfDataByField: function (table, fieldName, fieldType, filterConfig, callback, complete) {
+        Data.Req.reqFieldsDataByData({
+            table: table,
+            fieldName: fieldName,
+            fieldType: fieldType,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        }, complete);
+    },
+
+    getConfDataByFieldId: function (fieldId, filterConfig, callback, complete) {
+        Data.Req.reqFieldsDataByFieldId({
+            field_id: fieldId,
+            filterConfig: filterConfig
+        }, function (data) {
+            callback(data.value, data.hasNext);
+        }, complete);
+    },
+
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
     getAllPackageIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("packages"));
     },

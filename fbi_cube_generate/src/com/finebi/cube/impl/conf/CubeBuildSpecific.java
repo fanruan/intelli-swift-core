@@ -267,25 +267,28 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
 
     protected Set<CubeTableSource> choseTables() {
         Set<CubeTableSource> tables = new HashSet<CubeTableSource>();
-        tables.addAll(tableInConstruction);
+//        tables.addAll(tableInConstruction);
+        tables.addAll(calculateTablesNeedNotGenerate());
+        tables = set2Set(calculateTableSource(tables));
+        return filterDuplicateTable(tables);
+    }
+
+
+    private Set<CubeTableSource> calculateTablesNeedNotGenerate() {
+        Set<CubeTableSource> tables = new HashSet<CubeTableSource>();
         for (BITableSourceRelation relation : relationInConstruction) {
-            tables.add(relation.getForeignTable());
             tables.add(relation.getPrimaryTable());
         }
         for (BITableSourceRelationPath path : pathInConstruction) {
             try {
-                for (BITableSourceRelation relation : path.getAllRelations()) {
-                    tables.add(relation.getForeignTable());
-                    tables.add(relation.getPrimaryTable());
-                }
-                tables.add(path.getLastRelation().getForeignTable());
+                tables.add(path.getFirstRelation().getPrimaryTable());
             } catch (BITablePathEmptyException e) {
                 logger.error(e.getMessage(), e);
                 continue;
             }
         }
-        tables = set2Set(calculateTableSource(tables));
-        return filterDuplicateTable(tables);
+        tables.removeAll(tableInConstruction);
+        return tables;
     }
 
     @Override
@@ -304,7 +307,7 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
                 copyTableFile(tempResourceRetrieval, advancedResourceRetrieval, source);
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return true;
     }

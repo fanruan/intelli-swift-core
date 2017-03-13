@@ -1,6 +1,7 @@
 package com.fr.bi.web.report.services.authuser;
 
 import com.fr.base.FRContext;
+import com.fr.bi.conf.fs.BIUserAuthorAttr;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -28,14 +29,16 @@ public class BISetAuthUserAction extends ActionNoSessionCMD {
         Boolean success = false;
         if (StringUtils.isNotBlank(userName)) {
             Boolean remove = Boolean.parseBoolean(WebUtils.getHTTPRequestParameter(req, "remove"));
+            BIUserAuthorAttr userAuthorAttr = FBIConfig.getProviderInstance().getUserAuthorAttr();
             if (remove) {
                 //移除
-                FBIConfig.getInstance().getUserAuthorAttr().removeUserByMode(userName, mode);
+                userAuthorAttr.removeUserByMode(userName, mode);
             } else {
                 //增加、修改
-                FBIConfig.getInstance().getUserAuthorAttr().addUserByMode(userName, fullName, mode);
+                userAuthorAttr.addUserByMode(userName, fullName, mode);
             }
-            FRContext.getCurrentEnv().writeResource(FBIConfig.getInstance());
+            FBIConfig.getProviderInstance().setUserAuthorAttr(userAuthorAttr);
+            FBIConfig.getProviderInstance().writeResource();
             success = true;
         }
         return success;

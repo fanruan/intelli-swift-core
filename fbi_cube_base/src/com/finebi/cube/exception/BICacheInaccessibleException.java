@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BICacheInaccessibleException extends Exception {
+    private static final long serialVersionUID = 8495899405912287302L;
+
     public BICacheInaccessibleException(String message) {
         super(message);
     }

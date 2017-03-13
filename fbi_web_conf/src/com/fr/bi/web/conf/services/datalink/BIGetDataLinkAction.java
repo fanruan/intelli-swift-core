@@ -29,6 +29,7 @@ public class BIGetDataLinkAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject jo = new JSONObject();
+<<<<<<< HEAD
         JSONObject linksJO = BIConnectionManager.getInstance().createJSON();
         if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
             jo.put("links", linksJO);
@@ -58,6 +59,9 @@ public class BIGetDataLinkAction extends AbstractBIConfigureAction {
         }
 
         WebUtils.printAsJSON(res, jo);
+=======
+        WebUtils.printAsJSON(res, jo.put("links", BIConnectionManager.getBIConnectionManager().createJSON()));
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
     }
 
 }

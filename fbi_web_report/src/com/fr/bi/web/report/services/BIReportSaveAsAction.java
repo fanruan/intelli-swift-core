@@ -6,7 +6,7 @@ import com.fr.bi.fs.BIDesignSetting;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.tool.BIReadReportUtils;
-import com.fr.bi.web.report.utils.BIFSReportUtils;
+import com.fr.bi.web.report.utils.BIFSReportManager;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
@@ -39,14 +39,14 @@ public class BIReportSaveAsAction extends ActionNoSessionCMD {
         if (config != null) {
             JSONObject reportSetting = new JSONObject(config);
             BIDesignReport report = new BIDesignReport(new BIDesignSetting(reportSetting.toString()));
-            long newId = BIFSReportUtils.createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
+            long newId = BIFSReportManager.getBIFSReportManager().createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
             jo.put(BIBaseConstant.REPORT_ID, newId);
         } else {
-            BIReportNode node = BIDAOUtils.findByID(Long.parseLong(reportId), Long.parseLong(createBy));
+            BIReportNode node = BIDAOUtils.getBIDAOManager().findByID(Long.parseLong(reportId), Long.parseLong(createBy));
             if (node != null) {
-                JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+                JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(node);
                 BIDesignReport report = new BIDesignReport(new BIDesignSetting(reportSetting.toString()));
-                long newId = BIFSReportUtils.createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
+                long newId = BIFSReportManager.getBIFSReportManager().createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
                 jo.put(BIBaseConstant.REPORT_ID, newId);
             } else {
                 jo.put("message", "can not find report: " + reportName);

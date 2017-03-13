@@ -35,7 +35,7 @@ BI.Calendar = BI.inherit(BI.Widget, {
         De.setFullYear(log.ymd[0], log.ymd[1], 1);
         log.FDay = De.getDay();
 
-        log.PDay = Date._MD[M === 0 ? 11 : M - 1] - log.FDay + 1;
+        log.PDay = MD[M === 0 ? 11 : M - 1] - log.FDay + 1;
         log.NDay = 1;
 
         var items = [];

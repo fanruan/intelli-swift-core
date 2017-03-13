@@ -63,11 +63,33 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                     formatNumberLevelInYaxis(self.config.leftYNumberLevel, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
+<<<<<<< HEAD
                     BI.extend(axis, self.rightAxisSetting(self.config, true));
                     axis.reversed = true;
                     formatNumberLevelInYaxis(self.config.rightYNumberLevel, idx, axis.formatter);
                     break;
             }
+=======
+                    title = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    axis.title.rotation = self.constants.ROTATION;
+                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
+                    BI.extend(axis, {
+                        reversed: true,
+                        lineWidth: self.config.line_width,
+                        showLabel: self.config.show_label,
+                        enableTick: self.config.enable_tick,
+                        enableMinorTick: self.config.enable_minor_tick,
+                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)
+                    });
+                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
+                    break;
+            }
+            var res = _calculateValueNiceDomain(0, self.maxes[idx]);
+            axis.max = res[1].mul(2);
+            axis.min = res[0].mul(2);
+            axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
+>>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         });
 
         BI.extend(config.xAxis[0], self.catSetting(this.config));

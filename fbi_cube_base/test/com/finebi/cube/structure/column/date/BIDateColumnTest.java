@@ -49,6 +49,7 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.addOriginalDataValue(0, time);
             BIColumnKey year = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR);
             BICubeYearColumn yearColumn = (BICubeYearColumn) managerService.getColumn(year);
+            date.forceReleaseWriter();
             assertEquals(Integer.valueOf(2016), yearColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
             e.printStackTrace();
@@ -62,7 +63,8 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.addOriginalDataValue(0, time);
             BIColumnKey month = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_MONTH);
             BICubeMonthColumn monthColumn = (BICubeMonthColumn) managerService.getColumn(month);
-            assertEquals(Integer.valueOf(3), monthColumn.getOriginalValueByRow(0));
+            date.forceReleaseWriter();
+            assertEquals(Integer.valueOf(4), monthColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
             e.printStackTrace();
             assertTrue(false);
@@ -75,7 +77,8 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.addOriginalDataValue(0, time);
             BIColumnKey week = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_WEEK);
             BICubeWeekColumn weekColumn = (BICubeWeekColumn) managerService.getColumn(week);
-            assertEquals(Integer.valueOf(5), weekColumn.getOriginalValueByRow(0));
+            date.forceReleaseWriter();
+            assertEquals(Integer.valueOf(4), weekColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
             e.printStackTrace();
             assertTrue(false);
@@ -88,6 +91,7 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.addOriginalDataValue(0, time);
             BIColumnKey day = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_DAY);
             BICubeDayColumn dayColumn = (BICubeDayColumn) managerService.getColumn(day);
+            date.forceReleaseWriter();
             assertEquals(Integer.valueOf(7), dayColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
             e.printStackTrace();
@@ -101,6 +105,7 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.addOriginalDataValue(0, time);
             BIColumnKey season = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_SEASON);
             BICubeSeasonColumn seasonColumn = (BICubeSeasonColumn) managerService.getColumn(season);
+            date.forceReleaseWriter();
             assertEquals(Integer.valueOf(2), seasonColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
             e.printStackTrace();
@@ -114,6 +119,7 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.addOriginalDataValue(0, time);
             BIColumnKey ymd = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY);
             BICubeYearMonthDayColumn yearMonthDayColumn = (BICubeYearMonthDayColumn) managerService.getColumn(ymd);
+            date.forceReleaseWriter();
             assertEquals(Long.valueOf(1459958400000l), yearMonthDayColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
             e.printStackTrace();
@@ -138,7 +144,7 @@ public class BIDateColumnTest extends BICubeTestBase {
             String relationLocation = service.getResourceLocation().getAbsolutePath();
             String[] values = new String[]{tableKey.getSourceID(), ymd.getKey(), BICubePathUtils.convert(BITableSourceRelationPathTestTool.getABCDPath()).getSourceID()};
             String name = BIMD5Utils.getMD5String(values);
-            assertFalse(relationLocation.contains(name));
+            assertTrue(relationLocation.contains(name));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

@@ -73,19 +73,17 @@ public class GroupUtils {
             NoneDimensionGroup group = gcv.getCurrentValue();
             if (group != null) {
                 List<TargetAndKey>[] summaryLists = group.getSummaryLists();
-                node.setSummaryValue(group.getSummaryValue());
                 GroupValueIndex[] gvis = group.getGvis();
-                if (gvis != null){
-                    ICubeTableService[] tis = group.getTis();
-                    for (int i = 0; i < summaryLists.length; i++) {
-                        List<TargetAndKey> targetAndKeys = summaryLists[i];
-                        for (TargetAndKey targetAndKey : targetAndKeys) {
-                            BISingleThreadCal singleThreadCal = createSinlgeThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex);
-                            if (MultiThreadManagerImpl.isMultiCall()) {
-                                MultiThreadManagerImpl.getInstance().getExecutorService().add(singleThreadCal);
-                            } else {
-                                singleThreadCal.cal();
-                            }
+                node.setSummaryValue(group.getSummaryValue());
+                ICubeTableService[] tis = group.getTis();
+                for (int i = 0; i < summaryLists.length; i++) {
+                    List<TargetAndKey> targetAndKeys = summaryLists[i];
+                    for (TargetAndKey targetAndKey : targetAndKeys) {
+                        BISingleThreadCal singleThreadCal = createSingleThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex);
+                        if (MultiThreadManagerImpl.isMultiCall()) {
+                            MultiThreadManagerImpl.getInstance().getExecutorService().add(singleThreadCal);
+                        } else {
+                            singleThreadCal.cal();
                         }
                     }
                 }
@@ -93,7 +91,7 @@ public class GroupUtils {
         }
     }
 
-    private static BISingleThreadCal createSinlgeThreadCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean shouldSetIndex) {
+    private static BISingleThreadCal createSingleThreadCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean shouldSetIndex) {
         if (shouldSetIndex) {
             return new SummaryIndexCal(ti, node, targetAndKey, gvi, loader);
         } else {

@@ -208,13 +208,12 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     @Override
     public boolean jumpCurrentOne(MetricMergeResult para) throws TerminateExecutorException {
-//        for (GroupValueIndex gvi : para.getGvis()) {
-//            if (!indexIsAllEmpty(gvi)) {
-//                return false;
-//            }
-//        }
-//        return true;
-        return false;
+        for (GroupValueIndex gvi : para.getGvis()) {
+            if (!indexIsAllEmpty(gvi)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean indexIsAllEmpty(GroupValueIndex gvi) {

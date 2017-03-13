@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class BIDateDetailTarget extends BIStringDetailTarget {
 
+    private static final long serialVersionUID = -3300500860997448514L;
+
     /**
      * 取值
      *

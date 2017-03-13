@@ -105,12 +105,17 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
                 var search = BI.Func.getSearchResult(items, keyword);
                 items = search.matched.concat(search.finded);
             }
+            var searchedSelectedValues = [];
             var values = self.storeValue.value;
             if (BI.isNotNull(values)) {
                 var filter = BI.makeObject(values, true);
                 items = BI.filter(items, function (i, ob) {
-                    return !filter[ob.value];
+                    var isSelected = filter[ob.value];
+                    isSelected && searchedSelectedValues.push(ob.value);
+                    return !isSelected;
                 });
+                self.storeValue.value = BI.uniq(BI.concat(searchedSelectedValues, values));
+                self.setValue(self.storeValue);
             }
             callback(items);
         }

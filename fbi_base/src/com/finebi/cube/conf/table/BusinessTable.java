@@ -6,6 +6,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ import java.util.List;
  * @author Connery
  * @since 4.0
  */
-public interface BusinessTable extends JSONTransform, Cloneable {
+public interface BusinessTable extends JSONTransform, Cloneable,Serializable {
     BITableID getID();
 
     Object clone() throws CloneNotSupportedException;
