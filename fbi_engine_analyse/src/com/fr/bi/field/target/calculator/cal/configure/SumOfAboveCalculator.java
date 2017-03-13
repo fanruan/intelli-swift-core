@@ -30,14 +30,9 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
         if (key == null) {
             return;
         }
-<<<<<<< HEAD
         BINode tempNode = node;
-        for (int i = 0; i < start_group; i++) {
-=======
-        LightNode tempNode = node;
         int deep = getActualStart_Group(start_group, tempNode);
         for (int i = 0; i < deep; i++) {
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
             if (tempNode.getFirstChild() == null) {
                 break;
             }

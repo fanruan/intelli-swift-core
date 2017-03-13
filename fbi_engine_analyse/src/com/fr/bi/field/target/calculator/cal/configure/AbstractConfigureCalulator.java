@@ -92,30 +92,14 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
         return null;
     }
 
-    protected int getCalDeep(LightNode rank_node) {
+    protected int getCalDeep(BINode rank_node) {
         int deep = 0;
-<<<<<<< HEAD
-        if (rank_node instanceof BINode) {
-            BINode node = (BINode) rank_node;
-            while (node.getFirstChild() != null) {
-                deep++;
-                node = node.getFirstChild();
-            }
-        } else if (rank_node instanceof BICrossNode) {
-            BICrossNode node = (BICrossNode) rank_node;
-            while (node.getLeftFirstChild() != null) {
-                deep++;
-                node = node.getLeftFirstChild();
-            }
-        } else {
-            return 1;
-=======
-        LightNode node = rank_node;
+        BINode node = rank_node;
         while (node.getFirstChild() != null) {
             deep++;
             node = node.getFirstChild();
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         }
+
         return deep;
     }
 
@@ -129,7 +113,7 @@ public abstract class AbstractConfigureCalulator extends CalCalculator {
         return deep;
     }
 
-    protected int getActualStart_Group(int start_group, LightNode rank_node) {
+    protected int getActualStart_Group(int start_group, BINode rank_node) {
         return start_group == 0 ? 0 : getCalDeep(rank_node) - 1;
     }
 

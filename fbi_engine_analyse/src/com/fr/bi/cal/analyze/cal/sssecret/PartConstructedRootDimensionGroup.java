@@ -34,12 +34,6 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
     private int sortType;
     private List<CalCalculator> configureRelatedCalculators;
     private DimensionFilter[] calculateMetricsDimensionFilters;
-    //线程池是否已经计算完成
-    private volatile boolean completed;
-    //是否已经全部加到线程池
-    private volatile boolean allAdded;
-    //已经完成计算的数量
-    private AtomicInteger count;
 
     public PartConstructedRootDimensionGroup() {
     }
@@ -75,55 +69,39 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
         if(columns.length == 0){
             return;
         }
-        SingleDimensionGroup rootGroup =  root.createSingleDimensionGroup(columns[0], getters[0], null, mergeIteratorCreators[0], useRealData);
-        int index = 0;
-        MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
-        BIMultiThreadExecutor executor = null;
         if (MultiThreadManagerImpl.getInstance().isMultiCall()){
-            executor = MultiThreadManagerImpl.getInstance().getExecutorService();
+            multiThreadBuild();
+        } else {
+            singleThreadBuild();
         }
-        count = new AtomicInteger(0);
-        //不是多线程，或者没有子节点都表示线程池的计算已经结束
-        completed = result == MetricMergeResult.NULL || !MultiThreadManagerImpl.getInstance().isMultiCall();
-        allAdded = false;
-        while (result != MetricMergeResult.NULL){
-            rootNode.addChild(result);
-            SingleChildCal cal = new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), 1);
-            if (executor != null){
-                executor.add(cal);
-            } else {
-                cal.cal();
-            }
-            index++;
-            result = rootGroup.getMetricMergeResultByWait(index);
-        }
-        allAdded = true;
-        completed = completed || count.get() == rootNode.getChildLength();
-        //如果多线程计算没有结束，就等结束
-        if (!completed){
-            executor.wakeUp();
-            synchronized (this){
-                if (!completed){
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                    }
-                }
-            }
-        }
-        sum(rootNode);
         sumCalculateMetrics();
         root.setChildren(rootNode.getChilds());
     }
 
-    private void checkComplete(){
-        //如果已经计算完了加入线程池的计算，并且所有计算都已经加入线程池了，就说明计算完了，唤醒下等待的线程。
-        if (count.incrementAndGet() == rootNode.getChildLength() && allAdded){
-            synchronized (this){
-                completed = true;
-                this.notify();
-            }
+    private void singleThreadBuild() {
+        cal(rootNode, root, 0);
+    }
+
+    private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
+        if (level >= lastConstructedDimensionIndex){
+            return;
         }
+        SingleDimensionGroup rootGroup =  childDimensionGroup.createSingleDimensionGroup(columns[level], getters[level], null, mergeIteratorCreators[level], useRealData);
+        int index = 0;
+        MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
+        while (result != MetricMergeResult.NULL){
+            node.addChild(result);
+            if (level < lastConstructedDimensionIndex){
+                cal(result, rootGroup.getChildDimensionGroup(index), level + 1);
+            }
+            index++;
+            result = rootGroup.getMetricMergeResultByWait(index);
+        }
+        sum(node);
+    }
+
+    private void multiThreadBuild() {
+        new MultiThreadBuilder().build();
     }
 
     private void sumCalculateMetrics() {
@@ -161,41 +139,116 @@ public class PartConstructedRootDimensionGroup extends RootDimensionGroup {
         return super.createSingleDimensionGroup(data, ng, deep);
     }
 
-    private class SingleChildCal implements BISingleThreadCal{
-        private MetricMergeResult node;
-        private NoneDimensionGroup childDimensionGroup;
-        private int level;
+    private class MultiThreadBuilder{
+        //每一层维度计算完成的数量
+        private AtomicInteger[] count;
+        //每一层维度被丢进线程池的数量
+        private AtomicInteger[] size;
 
-        public SingleChildCal(MetricMergeResult result, NoneDimensionGroup childDimensionGroup, int level) {
-            this.node = result;
-            this.childDimensionGroup = childDimensionGroup;
-            this.level = level;
-        }
+        private BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().getExecutorService();
 
-        @Override
-        public void cal() {
-            cal(node, childDimensionGroup, level);
-            checkComplete();
-        }
-
-        private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
-            if (level > lastConstructedDimensionIndex){
-                return;
+        public void build(){
+            int dimensionSize = lastConstructedDimensionIndex + 1;
+            count = new AtomicInteger[dimensionSize];
+            size = new AtomicInteger[dimensionSize];
+            for (int i = 0; i < dimensionSize; i++) {
+                count[i] = new AtomicInteger(0);
+                size[i] = new AtomicInteger(0);
             }
-            SingleDimensionGroup rootGroup =  childDimensionGroup.createSingleDimensionGroup(columns[level], getters[level], null, mergeIteratorCreators[level], useRealData);
+            SingleDimensionGroup rootGroup =  root.createSingleDimensionGroup(columns[0], getters[0], null, mergeIteratorCreators[0], useRealData);
             int index = 0;
             MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
             while (result != MetricMergeResult.NULL){
-                node.addChild(result);
-                if (level < lastConstructedDimensionIndex){
-                    cal(result, rootGroup.getChildDimensionGroup(index), level + 1);
-                }
+                rootNode.addChild(result);
+                size[0].incrementAndGet();
+                executor.add(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), 0));
                 index++;
                 result = rootGroup.getMetricMergeResultByWait(index);
             }
-            sum(node);
+            //如果多线程计算没有结束，就等结束
+            if (!allCompleted()) {
+                executor.wakeUp();
+                synchronized (this) {
+                    if (!allCompleted()) {
+                        try {
+                            this.wait();
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+            }
+            sum(rootNode);
         }
+
+        private boolean allCompleted() {
+            for (int i = 0; i < count.length; i++) {
+                if (count[i].get() != size[i].get() || !currentLevelAllAdded(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void checkComplete(int level) {
+            if (currentLevelAllAdded(level)) {
+                //完成了一个维度必须唤醒下线程，要不肯能会wait住死掉。
+                executor.wakeUp();
+                synchronized (this) {
+                    //全部完成了就唤醒下wait的主线程
+                    if (allCompleted()) {
+                        this.notify();
+                    }
+                }
+            }
+        }
+
+        //当前层的迭代器是否都执行完了
+        private boolean currentLevelAllAdded(int level) {
+            //最后一层没有迭代器
+            if (level > lastConstructedDimensionIndex) {
+                return false;
+            }
+            //执行完的迭代器的数量不等于0，并且等于上一层的丢进线程池的计算数量。
+            return count[level].get() != 0 && count[level].get() == size[level].get();
+        }
+
+        private class SingleChildCal implements BISingleThreadCal{
+            private MetricMergeResult node;
+            private NoneDimensionGroup childDimensionGroup;
+            private int level;
+
+            public SingleChildCal(MetricMergeResult result, NoneDimensionGroup childDimensionGroup, int level) {
+                this.node = result;
+                this.childDimensionGroup = childDimensionGroup;
+                this.level = level;
+            }
+
+            @Override
+            public void cal() {
+                cal(node, childDimensionGroup, level);
+                checkComplete(level);
+            }
+
+            private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
+                if(level < lastConstructedDimensionIndex){
+                    SingleDimensionGroup rootGroup =  childDimensionGroup.createSingleDimensionGroup(columns[level + 1], getters[level + 1], null, mergeIteratorCreators[level + 1], useRealData);
+                    int index = 0;
+                    MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
+                    while (result != MetricMergeResult.NULL){
+                        node.addChild(result);
+                        executor.add(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), level + 1));
+                        size[level + 1].incrementAndGet();
+                        index++;
+                        result = rootGroup.getMetricMergeResultByWait(index);
+                    }
+                }
+                sum(node);
+                count[level].incrementAndGet();
+            }
+        }
+
     }
+
 
     @Override
     public IRootDimensionGroup createClonedRoot() {

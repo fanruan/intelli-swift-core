@@ -30,6 +30,12 @@ public class GVIFactory {
     }
 
     public static GroupValueIndex createGroupValueIndexBySimpleIndex(int... list) {
+        if (list.length == 1){
+            return new IDGroupValueIndex(list[0]);
+        }
+        if(list.length == 0){
+            return createAllEmptyIndexGVI();
+        }
         return RoaringGroupValueIndex.createGroupValueIndex(list);
     }
 

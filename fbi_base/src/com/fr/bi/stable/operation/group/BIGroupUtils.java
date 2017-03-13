@@ -3,7 +3,7 @@ package com.fr.bi.stable.operation.group;
 import com.fr.bi.stable.constant.BIReportConstant;
 
 /**
- * Created by 小灰灰 on 2017/3/6.
+ * Created by 小灰灰 on 2017/3/9.
  */
 public class BIGroupUtils {
     public static boolean isCustomGroup(IGroup group) {

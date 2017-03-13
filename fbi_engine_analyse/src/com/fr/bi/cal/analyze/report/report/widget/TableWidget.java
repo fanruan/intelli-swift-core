@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.index.loader.MergerInfo;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
@@ -11,12 +10,9 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
-<<<<<<< HEAD
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.ExcelExportDataBuildFactory;
-=======
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -29,7 +25,6 @@ import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateT
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -40,13 +35,10 @@ import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.web.core.SessionDealWith;
 
-<<<<<<< HEAD
 import java.util.*;
-=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -443,18 +435,18 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public GroupValueIndex createLinkedFilterGVI(BusinessTable targetKey, BISession session) {
-        if (linkedWidget != null) {
-            GroupValueIndex fatherWidgetLinkedFilterGVI = linkedWidget.createLinkedFilterGVI(targetKey, session);
-            List<MergerInfo> mergerInfoList = session.getMergerInfoList(this.linkedWidget.getWidgetName());
-            if (mergerInfoList == null) {
-                return null;
-            }
-            for (MergerInfo mergerInfo : mergerInfoList) {
-                if (mergerInfo.getTargetAndKeyList().get(0).getCalculator().createTableKey().equals(targetKey)) {
-                    return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getGroupValueIndex()));
-                }
-            }
-        }
+//        if (linkedWidget != null) {
+//            GroupValueIndex fatherWidgetLinkedFilterGVI = linkedWidget.createLinkedFilterGVI(targetKey, session);
+//            List<MergerInfo> mergerInfoList = session.getMergerInfoList(this.linkedWidget.getWidgetName());
+//            if (mergerInfoList == null) {
+//                return null;
+//            }
+//            for (MergerInfo mergerInfo : mergerInfoList) {
+//                if (mergerInfo.getTargetAndKeyList().get(0).getCalculator().createTableKey().equals(targetKey)) {
+//                    return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getGroupValueIndex()));
+//                }
+//            }
+//        }
         return null;
     }
 
