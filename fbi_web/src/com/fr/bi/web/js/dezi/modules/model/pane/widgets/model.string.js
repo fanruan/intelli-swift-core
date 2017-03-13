@@ -58,14 +58,10 @@ BIDezi.StringWidgetModel = BI.inherit(BI.Model, {
             if (BI.isNotNull(key)) {
                 var sort = this.get("changeSort");
                 dimensions[key].sort = {type: sort.type, target_id: key};
-<<<<<<< HEAD
-                var value = this.get("value").value || [];
-=======
 
                 var selectedValue = this.get("value").value || [];
                 var value = BI.Func.getSearchResult(selectedValue);
                 value = BI.concat(value.matched, value.finded);
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                 if (sort.type === BICst.SORT.DESC) {
                     value = value.reverse();
                 }
