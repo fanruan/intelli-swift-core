@@ -2,7 +2,7 @@ package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
+import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -118,7 +118,7 @@ public class UserWidget {
     private List<List> getNextValue(UserSession session, int op) {
         List<List> values = new ArrayList<List>();
         try {
-            ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
+            ((TableWidget) widget).setComplexExpander(new ComplexAllExpander());
             ((TableWidget) widget).setOperator(op);
             Node n = (Node) ((TableWidget) widget).getExecutor(session).getCubeNode();
             while (n.getFirstChild() != null) {

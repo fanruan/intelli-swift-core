@@ -5,6 +5,8 @@ import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.exception.NoneRegisterationException;
 import com.fr.bi.cal.analyze.exception.TooManySummaryException;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
+import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
+import com.fr.bi.cal.analyze.executor.detail.StreamCellCase;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -37,7 +39,7 @@ public class CubeTableExecutor extends SheetExecutor {
     private TemplateElementCase elementCase;
     private TableWidget widget;
     private Calculator cal;
-    private CBCell[][] cbcells;
+    private DetailCellIterator iter;
     private Report report;
     private BISession session;
     // page from 1 ~ max
@@ -88,10 +90,10 @@ public class CubeTableExecutor extends SheetExecutor {
 
     private void execute() throws Exception {
         if (session == null) {
-            cbcells = new CBCell[][]{new CBCell[0]};
+            return;
         }
         BIEngineExecutor exe = widget.getExecutor(session);
-        cbcells = exe.createCellElement();
+        iter = exe.createCellIterator4Excel();
         southEastRectangle = exe.getSouthEastRectangle();
     }
 
@@ -112,14 +114,8 @@ public class CubeTableExecutor extends SheetExecutor {
             // 直接抛Runtime的
             throw new RuntimeException(e);
         }
-        block.setCellCase(new CBCellCase(cbcells));
+        block.setCellCase(new StreamCellCase(iter));
         block.setSouthEastRectangle(southEastRectangle);
-        for (int i = 0, len = cbcells.length; i < len; i++) {
-            for (int j = 0, jlen = cbcells[i].length; j < jlen; j++) {
-                block.shrinkTOFitColumnWidthForCellElement(cbcells[i][j]);
-            }
-        }
-        FRContext.getLogger().log(Level.WARNING, DateUtils.timeCostFrom(startTime) + " beb time");
         release();
         return block;
     }
@@ -137,7 +133,6 @@ public class CubeTableExecutor extends SheetExecutor {
         elementCase = null;
         widget = null;
         cal = null;
-        cbcells = null;
         report = null;
     }
 
@@ -152,7 +147,7 @@ public class CubeTableExecutor extends SheetExecutor {
             // 直接抛Runtime的
             throw new RuntimeException(e);
         }
-        sheet.setCellCase(new CBCellCase(cbcells));
+        sheet.setCellCase(new StreamCellCase(iter));
 
         return sheet;
     }

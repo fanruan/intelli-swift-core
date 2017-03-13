@@ -3,8 +3,6 @@ package com.fr.bi.cal.analyze.executor.detail;
 import com.fr.bi.cal.report.io.BIExportUtils;
 import com.fr.report.cell.Cell;
 import com.fr.report.cellcase.CellCase;
-import com.fr.stable.ExportConstants;
-import com.fr.web.core.utils.ExportUtils;
 
 import java.util.Iterator;
 

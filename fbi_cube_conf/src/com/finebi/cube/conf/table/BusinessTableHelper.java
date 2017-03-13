@@ -4,14 +4,20 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
+import com.finebi.cube.conf.relation.relation.IRelationContainer;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.exception.BIRelationAbsentException;
+import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -98,5 +104,31 @@ public class BusinessTableHelper {
         }
         return null;
 
+    }
+
+    private static void addToRemoveList(IRelationContainer primaryContainer, List<BITableRelation> removeList) throws BIRelationAbsentException, BITableAbsentException {
+        Iterator it = primaryContainer.getContainer().iterator();
+        while (it.hasNext()) {
+            BITableRelation relation = (BITableRelation) it.next();
+            if (!removeList.contains(relation)) {
+                removeList.add(relation);
+            }
+        }
+    }
+
+    public static void removeTableRelation(BusinessTable table, long userId) throws Exception {
+        ArrayList<BITableRelation> removeList = new ArrayList<BITableRelation>();
+        if (BICubeConfigureCenter.getTableRelationManager().containTablePrimaryRelation(userId, table)) {
+            IRelationContainer primaryContainer = BICubeConfigureCenter.getTableRelationManager().getPrimaryRelation(userId, table);
+            addToRemoveList(primaryContainer, removeList);
+        }
+
+        if (BICubeConfigureCenter.getTableRelationManager().containTableForeignRelation(userId, table)) {
+            IRelationContainer foreignContainer = BICubeConfigureCenter.getTableRelationManager().getForeignRelation(userId, table);
+            addToRemoveList(foreignContainer, removeList);
+        }
+        for (int i = 0; i < removeList.size(); i++) {
+            BICubeConfigureCenter.getTableRelationManager().removeTableRelation(userId, removeList.get(i));
+        }
     }
 }

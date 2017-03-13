@@ -8,7 +8,7 @@ import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
-import com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder;
+import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
@@ -77,7 +77,7 @@ public class BISession extends BIAbstractSession {
 
     //统计组建的分页信息
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
-    private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> partpageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
+    private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> partPageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
 
     //young 当前用户（普通）的角色信息
     private List<CustomRole> customRoles = new ArrayList<CustomRole>();
@@ -239,7 +239,7 @@ public class BISession extends BIAbstractSession {
                 case TABLE:
                 case CROSS_TABLE:
                 case COMPLEX_TABLE:
-                    ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
+                    ((TableWidget) widget).setComplexExpander(new ComplexAllExpander());
                     ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
                     break;
                 case DETAIL:
@@ -324,7 +324,7 @@ public class BISession extends BIAbstractSession {
         super.release();
         detailIndexMap.clear();
         detailValueMap.clear();
-        partpageGroup.clear();
+        partPageGroup.clear();
         pageGroup.clear();
         releaseLock();
         FRLogManager.setSession(null);
@@ -365,7 +365,7 @@ public class BISession extends BIAbstractSession {
 
 
     public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetName, int i) {
-        Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pmap = useRealData ? pageGroup : partpageGroup;
+        Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pmap = useRealData ? pageGroup : partPageGroup;
         if (!pmap.containsKey(widgetName)) {
             throw new RuntimeException("error! page not found");
         }
@@ -378,7 +378,7 @@ public class BISession extends BIAbstractSession {
     }
 
     public void setPageIteratorGroup(boolean useRealData, String widgetName, PageIteratorGroup pg, int i) {
-        Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pmap = useRealData ? pageGroup : partpageGroup;
+        Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pmap = useRealData ? pageGroup : partPageGroup;
         ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetName);
         if (map == null) {
             pmap.put(widgetName, new ConcurrentHashMap<Object, PageIteratorGroup>());

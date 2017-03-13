@@ -67,7 +67,7 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
         this.uploadButton.on(BI.UploadExcelButton.EVENT_AFTER_UPLOAD, function (files) {
             self.model.setFile(files[files.length - 1], function (firstRowHasMerge) {
                 if (firstRowHasMerge === true) {
-                    BI.Msg.alert(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Excel_First_Row_Has_Merge_Cell"));
+                    BI.Msg.alert(BI.i18nText("BI-Upload_Failed"), BI.i18nText("BI-Excel_First_Row_Has_Merge_Cell"));
                 } else {
                     self._refreshAfterUpload();
                 }

@@ -28,7 +28,12 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
             type: "bi.vtape",
             element: this.element,
             items: [{
-                el: this._buildNorth(),
+                el: {
+                    type: "bi.left",
+                    items: this._createTitleToolItems(),
+                    lgap: 10,
+                    vgap: 10
+                },
                 height: 50
             }, {
                 el: this.tree,
@@ -46,7 +51,7 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
     setSelect: function (v) {
         this.tree.setSelect(v);
         this.tree.setValue([]);
-        this.switchButton.setText(v === BI.SwitchTree.SelectType.MultiSelect ?
+        BI.isNotNull(this.switchButton) && this.switchButton.setText(v === BI.SwitchTree.SelectType.MultiSelect ?
             BI.i18nText("BI-Out_Muti_Setting") : BI.i18nText("BI-Muti_Setting"));
     },
 
@@ -54,33 +59,31 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
         return this.tree.getValue();
     },
 
-    _buildNorth: function () {
-        var self = this;
-        this.switchButton = BI.createWidget({
-            type: "bi.button",
-            text: BI.i18nText("BI-Muti_Setting"),
+    _createTitleToolItems: function () {
+        var self = this, items = [];
+        items.push({
+            type: "bi.label",
+            text: BI.i18nText("BI-Package_List"),
             height: 30,
-            level: "ignore"
+            cls: "package-list-title"
         });
-        this.switchButton.on(BI.Button.EVENT_CHANGE, function () {
-            self.tree.switchSelect();
-            self.tree.setValue([]);
-            this.setText(self.tree.getSelect() === BI.SwitchTree.SelectType.MultiSelect ?
-                BI.i18nText("BI-Out_Muti_Setting") : BI.i18nText("BI-Muti_Setting"));
-            self.fireEvent(BI.AuthorityPackagesTree.EVENT_TYPE_CHANGE);
-        });
-
-        return BI.createWidget({
-            type: "bi.left",
-            items: [{
-                type: "bi.label",
-                text: BI.i18nText("BI-Package_List"),
+        if (BI.Utils.hasBatchSetPackAuthorityAuth()) {
+            this.switchButton = BI.createWidget({
+                type: "bi.button",
+                text: BI.i18nText("BI-Muti_Setting"),
                 height: 30,
-                cls: "package-list-title"
-            }, this.switchButton],
-            lgap: 10,
-            vgap: 10
-        });
+                level: "ignore"
+            });
+            this.switchButton.on(BI.Button.EVENT_CHANGE, function () {
+                self.tree.switchSelect();
+                self.tree.setValue([]);
+                this.setText(self.tree.getSelect() === BI.SwitchTree.SelectType.MultiSelect ?
+                    BI.i18nText("BI-Out_Muti_Setting") : BI.i18nText("BI-Muti_Setting"));
+                self.fireEvent(BI.AuthorityPackagesTree.EVENT_TYPE_CHANGE);
+            });
+            items.push(this.switchButton);
+        }
+        return items;
     },
 
     populate: function () {
