@@ -59,13 +59,13 @@ public class CubeChooser implements Cube {
             if (cube.exist(tableKey)) {
                 return cube.getCubeTable(tableKey);
             } else if (integrityCube != null && integrityCube.exist(tableKey)) {
-                logger.warn("The table need to be generate but not exists in the tCube, try to get data from Advanced cube, table info is: " + BILogHelper.logCubeLogTableSourceInfo(tableKey.getSourceID()));
+                logger.warn("The table need to be generate but not exists in the tCube, try to get data from Advanced cube,the tableSourceID is: " + tableKey.getSourceID() + " table info is: " + BILogHelper.logCubeLogTableSourceInfo(tableKey.getSourceID()));
                 return integrityCube.getCubeTable(tableKey);
             } else {
-                throw BINonValueUtils.beyondControl("The table disappear, the table info is: " + BILogHelper.logCubeLogTableSourceInfo(tableKey.getSourceID()));
+                throw BINonValueUtils.beyondControl("The table disappear,the tableSourceID is:" + tableKey.getSourceID() + " the table info is: " + BILogHelper.logCubeLogTableSourceInfo(tableKey.getSourceID()));
             }
         } else {
-            logger.info("The table need not to be generate,try to get data from Advanced cube, table info is: " + BILogHelper.logCubeLogTableSourceInfo(tableKey.getSourceID()));
+            logger.info("The table need not to be generate,try to get data from Advanced cube,the tableSourceID is: " + tableKey.getSourceID() + " table info is: " + BILogHelper.logCubeLogTableSourceInfo(tableKey.getSourceID()));
             if (integrityCube != null && integrityCube.exist(tableKey)) {
                 return integrityCube.getCubeTable(tableKey);
             } else {

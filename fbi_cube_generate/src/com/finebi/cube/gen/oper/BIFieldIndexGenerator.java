@@ -61,6 +61,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     protected BIColumnKey targetColumnKey;
     protected ICubeColumnEntityService<T> columnEntityService;
     protected Cube cube;
+    protected CubeChooser cubeChooser;
     protected long rowCount;
     private final String CACHE = "caches";
     private final String BASEPATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + CACHE;
@@ -73,9 +74,18 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         initThreadPool();
     }
 
+    public BIFieldIndexGenerator(Cube cube, Cube integrityCube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        this.tableSource = tableSource;
+        this.hostBICubeFieldSource = hostBICubeFieldSource;
+        this.cube = cube;
+        this.cubeChooser = new CubeChooser(cube, integrityCube, tablesNeed2GenerateMap);
+        this.targetColumnKey = targetColumnKey;
+        initThreadPool();
+    }
+
     private void initial() {
         try {
-            CubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
+            CubeTableEntityGetterService tableEntityService = cubeChooser.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
             rowCount = tableEntityService.getRowCount();
         } catch (Exception e) {

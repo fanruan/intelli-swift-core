@@ -3,9 +3,9 @@ package com.fr.bi.field.target.target;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -18,6 +18,7 @@ import com.fr.stable.StringUtils;
 public class BICounterTarget extends BISummaryTarget {
 
     private String distinct_field_name;
+
 
     /**
      * 将JSON对象转换成java对象
@@ -81,6 +82,11 @@ public class BICounterTarget extends BISummaryTarget {
         }
 
         return true;
+    }
+
+    @Override
+    public int getSummaryType() {
+        return BIReportConstant.SUMMARY_TYPE.COUNT;
     }
 
     @Override

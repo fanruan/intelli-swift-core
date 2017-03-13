@@ -89,7 +89,7 @@ public class DimensionGroupFilter {
 
     private boolean hasInSumMetric(BISummaryTarget target) {
         return target != null && (target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.SUM &&
-                target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.COUNT);
+                target.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT);
     }
 
     private NodeDimensionIterator[] getNodeIterators(List<MergerInfo> mergerInfoList) {
