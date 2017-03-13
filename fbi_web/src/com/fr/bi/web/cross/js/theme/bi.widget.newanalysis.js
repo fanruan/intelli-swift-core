@@ -1,6 +1,6 @@
 BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
     _const: {
-        ROOT_CREATE_BY_ME: -1
+        ROOT_CREATE_BY_ME: "-1"
     },
     _defaultConfig: function () {
         return BI.extend(BI.NewAnalysisFloatBox.superclass._defaultConfig.apply(this, arguments), {});
