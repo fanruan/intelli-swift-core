@@ -348,7 +348,7 @@ public class CrossHeader extends Node implements Serializable {
             //清除兄弟关系
             temp_node.setSibling(null);
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;

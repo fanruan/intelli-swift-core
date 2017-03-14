@@ -28,13 +28,9 @@ public class BIModifyDataLinkAction extends AbstractBIConfigureAction {
         } else if (ComparatorUtils.equals(actionType, "update")) {
             String linkData = WebUtils.getHTTPRequestParameter(req, "linkData");
             String oldName = WebUtils.getHTTPRequestParameter(req, "oldName");
-<<<<<<< HEAD
-            BIConnectionManager.getInstance().updateConnection(userId, linkData, oldName);
-=======
             BIConnectionManager.getBIConnectionManager().updateConnection(linkData, oldName);
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
+
         }
-//        BIConnectionManager.getInstance().updateAvailableConnection();
     }
 
     @Override
