@@ -5,17 +5,17 @@ package com.fr.bi.cal.analyze.cal.result;
 
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
+import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Daniel
@@ -289,6 +289,69 @@ public class CrossHeader extends Node implements Serializable {
         }
         if (tempNode == null && childs.size() > 0) {
             return null;
+        }
+        return newnode;
+    }
+
+    /**
+     * 创建值排序后的左节点
+     *
+     * @param targetSort ??这是什么 @pony
+     * @param targetsMap 所有的指标
+     * @param top        上节点
+     * @return 排序后的左方节点
+     */
+    public CrossHeader createSortedNodeWithTopValue(NameObject targetSort,
+                                                    Map<String, TargetGettingKey> targetsMap, CrossHeader top) {
+        return createTargetSortedNodeWithTopValue(targetSort, targetsMap, top);
+    }
+
+    private CrossHeader createTargetSortedNodeWithTopValue(NameObject targetSort,
+                                                           Map<String, TargetGettingKey> targetsMap, CrossHeader top) {
+        CrossHeader newnode = createNewNode();
+        if (value == null) {
+            return newnode;
+        }
+        newnode.value = this.value.cloneWithTopChildNode(top);
+        ChildsMap childs = this.childs;
+        CrossHeader tempNode = null;
+        String sort_target = targetSort.getName();
+        List<CrossHeader> childNodes = childs.getNodeList();
+        final TargetGettingKey target_key = sort_target != null ? targetsMap.get(sort_target) : null;
+        final int sortType = (Integer) targetSort.getObject();
+        if (target_key != null) {
+            Collections.sort(childNodes, new Comparator<CrossHeader>() {
+                @Override
+                public int compare(CrossHeader o1, CrossHeader o2) {
+                    Number v1 = o1.getSummaryValue(target_key);
+                    Number v2 = o2.getSummaryValue(target_key);
+                    if (v1 == v2) {
+                        return 0;
+                    }
+                    if (v1 == null) {
+                        return 1;
+                    }
+                    if (v2 == null) {
+                        return -1;
+                    }
+                    if (v1.doubleValue() == v2.doubleValue()) {
+                        return 0;
+                    }
+                    boolean v = v1.doubleValue() < v2.doubleValue();
+                    return (sortType == BIReportConstant.SORT.ASC) == v ? -1 : 1;
+                }
+            });
+        }
+        for (int i = 0; i < childNodes.size(); i++) {
+            CrossHeader temp_node = childNodes.get(i);
+            CrossHeader child = temp_node.createTargetSortedNodeWithTopValue(targetSort, targetsMap, top);
+            //清除兄弟关系
+            temp_node.setSibling(null);
+            if (tempNode != null) {
+                CubeReadingUtils.setSibing(tempNode, child);
+            }
+            newnode.addChild(child);
+            tempNode = child;
         }
         return newnode;
     }
