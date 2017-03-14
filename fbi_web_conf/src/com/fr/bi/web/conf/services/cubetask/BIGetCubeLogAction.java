@@ -1,6 +1,7 @@
 package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.conf.CubeGenerationManager;
+import com.fr.bi.cal.generate.CubeBuildHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -22,7 +23,9 @@ public class BIGetCubeLogAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject cubeLog = BIConfigureManagerCenter.getLogManager().createJSON(userId);
-        cubeLog.put("hasTask", CubeGenerationManager.getCubeManager().hasTask(userId));
+        boolean hasWaitingTables = CubeBuildHelper.getInstance().hasWaitingTables();
+        boolean hasGeneratingTask = CubeGenerationManager.getCubeManager().hasTask(userId);
+        cubeLog.put("hasTask", hasGeneratingTask ||hasWaitingTables);
         WebUtils.printAsJSON(res, cubeLog);
     }
 }
