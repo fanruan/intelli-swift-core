@@ -372,12 +372,12 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             cell.setRow(i);
             cell.setColumnSpan(Math.max(1, this.rowDimension.length + widget.isOrder()));
             cell.setRowSpan(1);
-            cell.setValue(((BIAbstractDimension) colDimension[i]).getText());
+            cell.setValue(colDimension[i].getText());
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(i));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(((BIAbstractDimension) colDimension[i]).getText());
+            cbox.setName(colDimension[i].getText());
             cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_X);
             if (!isColTargetSort) {
                 cbox.setSortType(colDimension[i].getSortType());
