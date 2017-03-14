@@ -60,6 +60,7 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
 
         var confirmCombo = BI.createWidget({
             type: "bi.bubble_combo",
+            cls: "select-bubble-combo",
             el: {
                 type: "bi.button",
                 level: 'ignore',

@@ -10,3 +10,6 @@
   border-left: 1px solid #eaeaea;
   border-top: 1px solid #eaeaea;
 }
+.bi-analysis-etl-operator-title .select-bubble-combo .bubble-combo-triangle-bottom {
+  z-index: 1;
+}
