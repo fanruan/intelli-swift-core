@@ -70,6 +70,11 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
         return getTransManager(userId).getTransName(id);
     }
 
+    @Override
+    public void removeAliasName(String id, long userId) {
+        getTransManager(userId).removeTransName(id);
+    }
+
     public JSONObject getAliasJSON(long userID) {
         try {
             JSONObject jo = getTransManager(userID).createJSON();
