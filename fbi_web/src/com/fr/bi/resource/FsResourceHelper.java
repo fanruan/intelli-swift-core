@@ -428,35 +428,6 @@ public class FsResourceHelper {
                 //可切换单选复选的树
                 "com/fr/bi/web/js/widget/switchtree/switchtree.js",
 
-                //图控件
-                "com/fr/bi/web/js/widget/detailchart/chart.abstract.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.accumulatearea.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.accumulateaxis.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.accumulatebar.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.accumulateradar.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.area.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.axis.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.multiaxis.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.multiaxiscombine.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.bar.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.bubble.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.dashboard.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.donut.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.forcebubble.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.line.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.percentaccumulateaxis.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.percentaccumulatearea.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.compareaxis.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.comparebar.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.comparearea.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.fallaxis.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.rangearea.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.map.js",
-                "com/fr/bi/web/js/widget/detailchart/chart.gismap.js",
-
 
                 //mask
                 "com/fr/bi/web/js/widget/base/mask/loading.mask.js",

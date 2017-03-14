@@ -175,16 +175,6 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //格式和数量级
-        this.leftYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
-        });
 
         //单位
         this.leftYUnit = BI.createWidget({
@@ -196,17 +186,6 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.leftYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
-        });
-
-        this.leftYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
@@ -296,9 +275,6 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
@@ -309,9 +285,6 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYSeparator]
@@ -565,8 +538,6 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.radarChartType.setValue(BI.Utils.getWSRadarChartTypeByID(wId));
 
-        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
-        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSChartLeftYShowCustomScaleByID(wId));
         this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
         this.leftYCustomScale.setVisible(BI.Utils.getWSChartLeftYShowCustomScaleByID(wId));
@@ -605,8 +576,6 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             chartStyle: this.chartStyle.getValue()[0],
             radarChartType: this.radarChartType.getValue()[0],
 
-            leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
-            leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
             leftYShowCustomScale: this.leftYShowCustomScale.isSelected(),
             leftYCustomScale: this.leftYCustomScale.getValue(),
             leftYSeparator: this.leftYSeparator.isSelected(),

@@ -637,8 +637,6 @@ BI.extend(BI.Utils, {
 
     },
 
-<<<<<<< HEAD
-=======
     getUpdatePreviewSqlResult: function (data, callback, complete) {
         Data.Req.reqUpdatePreviewSqlResult(data, function (res) {
             callback(res);
@@ -676,7 +674,6 @@ BI.extend(BI.Utils, {
         }, complete);
     },
 
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
     getAllPackageIDs4Conf: function () {
         return BI.keys(Data.SharingPool.cat("packages"));
     },

@@ -42,7 +42,7 @@ public class BIGetReportAndFolder4ReuseAction extends ActionNoSessionCMD {
         }
 
         //分享给我的
-        List<BIReportNode> sharedNodeList = BIDAOUtils.getBIReportNodesByShare2User(userId);
+        List<BIReportNode> sharedNodeList = BIDAOUtils.getBIDAOManager().getBIReportNodesByShare2User(userId);
         BISortUtils.sortByModifyTime(sharedNodeList);
         if (sharedNodeList == null) {
             sharedNodeList = new ArrayList<BIReportNode>();

@@ -17,6 +17,7 @@ public class DetailChartSetting implements JSONParser,Serializable {
     private JSONObject settings = JSONObject.create();
     private JSONObject dimensions = JSONObject.create();
     private Map<String, Integer> numberLevelMap = new HashMap<String, Integer>();
+
     private static final long serialVersionUID = -230718308683962961L;
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
@@ -27,7 +28,7 @@ public class DetailChartSetting implements JSONParser,Serializable {
             dimensions = jo.getJSONObject("dimensions");
         }
         Iterator it = dimensions.keys();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             String id = it.next().toString();
             numberLevelMap.put(id, getTargetSettingsByTarget(id).optInt("num_level", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL));
         }
@@ -35,6 +36,10 @@ public class DetailChartSetting implements JSONParser,Serializable {
 
     public JSONObject getDetailChartSetting() {
         return settings;
+    }
+
+    public int isOrder() {
+        return settings.optBoolean("showNumber", false) ? 1 : 0;
     }
 
     public boolean showRowTotal() {
@@ -54,7 +59,7 @@ public class DetailChartSetting implements JSONParser,Serializable {
         return getTargetSettingsByTarget(targetId).optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);
     }
 
-    private JSONObject getTargetSettingsByTarget (String targetId) {
+    private JSONObject getTargetSettingsByTarget(String targetId) {
         JSONObject targetSettings = new JSONObject();
         if (dimensions.has(targetId)) {
             JSONObject target = dimensions.optJSONObject(targetId);
@@ -62,7 +67,7 @@ public class DetailChartSetting implements JSONParser,Serializable {
                 targetSettings = target.optJSONObject("settings");
             }
         }
-        return  targetSettings;
+        return targetSettings;
     }
 
     public String getUnitByTargetId(String targetId) {

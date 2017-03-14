@@ -75,13 +75,9 @@ public class BIGetImportedExcelData {
                 }
                 dataJa.put(oneJa);
             }
-<<<<<<< HEAD
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
-=======
         }catch (Exception e){
             BILoggerFactory.getLogger().error(e.getMessage(),e);
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
+
             return jo;
         }
 

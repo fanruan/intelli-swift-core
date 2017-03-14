@@ -4,12 +4,9 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
-<<<<<<< HEAD
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.relation.BITableRelation;
-=======
 import com.finebi.cube.conf.utils.BILogHelper;
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;

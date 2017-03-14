@@ -354,6 +354,16 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         return (v - this.min) * 100 / (this.max - this.min);
     },
 
+    _setDraggableEnable: function (enable) {
+        if (enable) {
+            this.sliderOne.element.draggable("enable");
+            this.sliderTwo.element.draggable("enable")
+        } else {
+            this.sliderOne.element.draggable("disable");
+            this.sliderTwo.element.draggable("disable")
+        }
+    },
+
     getValue: function () {
         if (this.valueOne <= this.valueTwo) {
             return {min: this.valueOne, max: this.valueTwo}
@@ -365,11 +375,15 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     setMinAndMax: function (v) {
         var minNumber = BI.parseFloat(v.min);
         var maxNumber = BI.parseFloat(v.max);
-        if ((!isNaN(minNumber)) && (!isNaN(maxNumber)) && (maxNumber > minNumber )) {
+        if ((!isNaN(minNumber)) && (!isNaN(maxNumber)) && (maxNumber >= minNumber )) {
             this.min = minNumber;
             this.max = maxNumber;
             this.valueOne = minNumber;
             this.valueTwo = maxNumber;
+            this._setDraggableEnable(true);
+        }
+        if (maxNumber === minNumber) {
+            this._setDraggableEnable(false);
         }
     },
 

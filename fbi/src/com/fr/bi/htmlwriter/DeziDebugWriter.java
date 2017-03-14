@@ -1,6 +1,5 @@
 package com.fr.bi.htmlwriter;
 
-import com.fr.bi.resource.ResourceHelper;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
@@ -14,8 +13,8 @@ import java.util.List;
  */
 public class DeziDebugWriter {
     public static void main(String args []) {
-        String [] bases = ResourceHelper.getBaseJs();
-        String [] modules = ResourceHelper.getCommonJs();
+        String [] bases = new String[0];
+        String [] modules = new String [0];
 
         String path = System.getProperty("user.dir");
         File nuclear = new File(new File(path).getParentFile(), "nuclear");
