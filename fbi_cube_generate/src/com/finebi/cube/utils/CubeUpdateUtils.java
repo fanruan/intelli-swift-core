@@ -111,7 +111,7 @@ public class CubeUpdateUtils {
             for (BITableRelationPath path : paths) {
                 if (path.size() >= 2) {
                     BITableSourceRelationPath sourcePath = converter.convertPath(path);
-                    if (!BICubePathUtils.isPathExisted(sourcePath, cubeConfiguration)) {
+                    if (sourcePath != null && !BICubePathUtils.isPathExisted(sourcePath, cubeConfiguration)) {
                         absentPaths.add(sourcePath);
                     }
                 }
