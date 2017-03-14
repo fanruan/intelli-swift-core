@@ -263,6 +263,9 @@ BIDezi.IntervalSliderWidgetView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev, context, options) {
+        if (options.notrefresh === true) {
+            return;
+        }
         if (BI.has(changed, "bounds")) {
         }
         if (BI.has(changed, "dimension") || BI.has(changed, "value") || BI.has(changed, "view")) {
