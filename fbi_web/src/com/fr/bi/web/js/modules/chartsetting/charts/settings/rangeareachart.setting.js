@@ -281,21 +281,12 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Num_Level"),
-                    lgap: constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
-                    type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYUnit]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
-                    cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYSeparator]

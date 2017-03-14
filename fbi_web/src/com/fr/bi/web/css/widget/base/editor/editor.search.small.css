@@ -8,6 +8,9 @@
 .bi-small-search-editor .bi-editor .bi-input {
   font-size: 12px;
 }
+.bi-small-search-editor .bi-editor .bi-label {
+  font-size: 12px;
+}
 .bi-small-search-editor .close-font {
   font-size: 18px;
 }

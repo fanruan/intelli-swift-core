@@ -27,36 +27,41 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
         });
 
         this.saveButton.on(BI.Button.EVENT_CHANGE, function(){
-            self.confirmCombo.showView();
             if (self.controller.getSheetLength() > 1){
+                self.confirmCombo.showView();
                 popupTab.setSelect(c.MULTI_SHEET);
             } else if (BI.isNull(self.controller.getId())){
+                self.confirmCombo.showView();
                 popupTab.setSelect(c.RENAME);
                 self.pane.populate(self.controller.getTableDefaultName());
-                self.confirmCombo.showView();
                 self.pane.setTemplateNameFocus();
             } else {
                 popupTab.setSelect(c.WARNING);
                 BI.ETLReq.reqCheckTableInUse(self.controller.getModelJSON(), function(data){
                     var items = data["usedTemplate"] || [];
-                    items = BI.map(items, function(idx, name){
-                        return {
+                    if(BI.isEmptyArray(items)){
+                        self.controller.doSave();
+                    }else{
+                        self.confirmCombo.showView();
+                        items = BI.map(items, function(idx, name){
+                            return {
+                                type: "bi.label",
+                                text: name,
+                                title: name,
+                                cls: "delete-label",
+                                textAlign: "center",
+                                width: 360
+                            }
+                        });
+                        popupTab.getSelectedTab().populate(BI.concat([{
                             type: "bi.label",
-                            text: name,
-                            title: name,
+                            whiteSpace: "normal",
+                            text: BI.i18nText("BI-Current_Edit_May_Interfere_Other_Template_Confirm_To_Continue"),
                             cls: "delete-label",
                             textAlign: "center",
                             width: 360
-                        }
-                    });
-                    popupTab.getSelectedTab().populate(BI.concat([{
-                        type: "bi.label",
-                        whiteSpace: "normal",
-                        text: BI.i18nText("BI-Current_Edit_May_Interfere_Other_Template_Confirm_To_Continue"),
-                        cls: "delete-label",
-                        textAlign: "center",
-                        width: 360
-                    }], items));
+                        }], items));
+                    }
                 })
             }
             self.controller.resetPoolCurrentUsedTables();

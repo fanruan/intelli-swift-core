@@ -71,7 +71,7 @@ BI.FunctionPane = BI.inherit(BI.Widget, {
                 searcher: self.searchFunctionTree
             },
             height: 25,
-            width: 150
+            width: 160
         });
 
 
