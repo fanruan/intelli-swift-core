@@ -9,15 +9,9 @@ FS.THEME.config4navigation.onAfterInit = function () {
     $('#fs-frame-reg').css({
         right: 400
     });
-<<<<<<< HEAD
     BI.requestAsync("fr_bi", "get_design_config_auth", {mode: Consts.BIEDIT}, function (res) {
         var $nav = $('#fs-frame-navi');
         if (FS.isAdmin() || res.design === BICst.REPORT_AUTH.EDIT) {
-=======
-    BI.requestAsync("fr_bi", "get_user_edit_auth", {mode: Consts.BIEDIT}, function(res) {
-        if (FS.isAdmin() || res.result === BICst.REPORT_AUTH.EDIT) {
-            var $nav = $('#fs-frame-navi');
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
             var newAnalysis = BI.createWidget({
                 type: "bi.icon_text_item",
                 cls: "new-analysis-font bi-new-analysis-button",
@@ -53,7 +47,6 @@ FS.THEME.config4navigation.onAfterInit = function () {
             });
             newAnalysis.element.css({"position": "relative", "float": "right"});
             $nav.after(newAnalysis.element);
-<<<<<<< HEAD
         }
         if (FS.isAdmin() || res.config === true) {
             var dataConfig = BI.createWidget({
@@ -75,28 +68,6 @@ FS.THEME.config4navigation.onAfterInit = function () {
             });
             dataConfig.element.css({"position": "relative", "float": "right"});
             $nav.after(dataConfig.element);
-=======
-            if (FS.isAdmin()) {
-                var dataConfig = BI.createWidget({
-                    type: "bi.icon_text_item",
-                    cls: "data-config-font bi-data-config-button",
-                    text: BI.i18nText("BI-Data_Setting"),
-                    height: 60,
-                    width: 120,
-                    iconWidth: 20,
-                    iconHeight: 20
-                });
-                dataConfig.on(BI.IconTextItem.EVENT_CHANGE, function () {
-                    FS.tabPane.addItem({
-                        id: BICst.DATA_CONFIG_TAB,
-                        title: BI.i18nText('BI-Data_Setting'),
-                        src: FR.servletURL + '?op=fr_bi_configure&cmd=init_configure_pane'
-                    });
-                });
-                dataConfig.element.css({"position": "relative", "float": "right"});
-                $nav.after(dataConfig.element);
-            }
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         }
     });
 };

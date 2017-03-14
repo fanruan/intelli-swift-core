@@ -23,11 +23,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         });
 
         this.table = BI.createWidget({
-<<<<<<< HEAD
-            type: "bi.page_table",
-=======
             type: "bi.page_detail_table",
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
             isNeedFreeze: null,
             isNeedMerge: false,
             summaryCellStyleGetter: function (isLast) {
@@ -41,15 +37,9 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 return BI.SummaryTableHelper.getHeaderStyles(self._getThemeColor(), self._getTableStyle());
             },
             el: {
-<<<<<<< HEAD
-                type: "bi.sequence_table",
-                el: {
-                    type: "bi.adaptive_table",
-=======
                 type: "bi.sequence_detail_table",
                 el: {
                     type: "bi.adaptive_detail_table",
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                     el: {
                         type: "bi.resizable_table",
                         el: {
@@ -58,11 +48,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     }
                 },
                 sequence: {
-<<<<<<< HEAD
-                    type: "bi.sequence_table_list_number",
-=======
                     type: "bi.sequence_detail_table_list_number",
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                     pageSize: 100
                 }
             },
@@ -173,10 +159,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                         });
                     });
                     var items = self._createTableItems(json.value);
-<<<<<<< HEAD
                     var rowSize = BI.Utils.getWSRowHeightByID(widgetId);
-=======
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                     self.pager.setCount(row);
                     self.pager.setAllPages(Math.ceil(row / size));
                     self.pager.setValue(vPage);
@@ -189,11 +172,8 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     self.table.attr("isNeedFreeze", true);
                     self.table.attr("freezeCols", self._getFreezeCols());
                     self.table.attr("showSequence", BI.Utils.getWSShowNumberByID(widgetId));
-<<<<<<< HEAD
                     self.table.attr("headerRowSize", rowSize);
                     self.table.attr("rowSize", rowSize);
-=======
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                     callback(items, [header]);
                 } catch (e) {
                     self.errorPane.setErrorInfo("error happens during populate chart: " + e);
