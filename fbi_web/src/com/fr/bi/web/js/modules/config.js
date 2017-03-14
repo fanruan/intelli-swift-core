@@ -1,7 +1,9 @@
 //放置用户可以配置的常量
 
 //full week names
-BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Monday"),
+BICst.FULL_WEEK_NAMES = [
+    BI.i18nText("BI-Sunday"),
+    BI.i18nText("BI-Monday"),
     BI.i18nText("BI-Tuesday"),
     BI.i18nText("BI-Wednesday"),
     BI.i18nText("BI-Thursday"),
@@ -11,6 +13,7 @@ BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Monday"),
 
 //full month names
 BICst.FULL_MONTH_NAMES = [
+    BI.i18nText("BI-January"),
     BI.i18nText("BI-January"),
     BI.i18nText("BI-February"),
     BI.i18nText("BI-March"),
@@ -25,7 +28,9 @@ BICst.FULL_MONTH_NAMES = [
     BI.i18nText("BI-December")];
 
 //full quarter names
-BICst.FULL_QUARTER_NAMES = [BI.i18nText("BI-Quarter_1"),
+BICst.FULL_QUARTER_NAMES = [
+    BI.i18nText("BI-Quarter_1"),
+    BI.i18nText("BI-Quarter_1"),
     BI.i18nText("BI-Quarter_2"),
     BI.i18nText("BI-Quarter_3"),
     BI.i18nText("BI-Quarter_4")];
