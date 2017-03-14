@@ -23,7 +23,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         });
 
         this.table = BI.createWidget({
-            type: "bi.page_detail_table",
+            type: "bi.page_table",
             isNeedFreeze: null,
             isNeedMerge: false,
             summaryCellStyleGetter: function (isLast) {
@@ -37,9 +37,9 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                 return BI.SummaryTableHelper.getHeaderStyles(self._getThemeColor(), self._getTableStyle());
             },
             el: {
-                type: "bi.sequence_detail_table",
+                type: "bi.sequence_table",
                 el: {
-                    type: "bi.adaptive_detail_table",
+                    type: "bi.adaptive_table",
                     el: {
                         type: "bi.resizable_table",
                         el: {
@@ -48,7 +48,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     }
                 },
                 sequence: {
-                    type: "bi.sequence_detail_table_list_number",
+                    type: "bi.sequence_table_list_number",
                     pageSize: 100
                 }
             },
