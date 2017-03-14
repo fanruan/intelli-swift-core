@@ -593,7 +593,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
 
     public DetailCellIterator createCellIterator4Excel() throws Exception {
         widget.setComplexExpander(new ComplexAllExpander());
-        Node tree = getCubeNode();
+        final Node tree = getCubeNode();
         if (tree == null) {
             return new DetailCellIterator(0, 0);
         }
@@ -607,7 +607,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                     usedSumTarget[i].getValue());
         }
         int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
-        final boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
+//        final boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
         rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
         final DetailCellIterator iter = new DetailCellIterator(columnLen + widget.isOrder(), rowLen + 1);
         new Thread() {
@@ -615,13 +615,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 try {
                     FinalInt start = new FinalInt();
                     int currentRow = 0;
-                    List<CBCell> cells = generateTitle(useTargetSort, rowLength, summaryLength,
-                            widget.isOrder(), widget.getChartSetting());
-                    Iterator<CBCell> it = cells.iterator();
-                    while (it.hasNext()) {
-                        iter.getIteratorByPage(start.value).addCell(it.next());
-                    }
-                    createCells(iter, start, currentRow);
+                    generateTitle(iter.getIteratorByPage(start.value));
+                    createCells(tree, iter, start, currentRow);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -632,8 +627,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         return iter;
     }
 
-    private void createCells(DetailCellIterator iter, FinalInt start, int currentRowIdx) throws Exception {
-        Node n = getCubeNode();
+    private void createCells(Node n, DetailCellIterator iter, FinalInt start, int currentRowIdx) {
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
         }
@@ -662,7 +656,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 Object data = temp.getData();
                 BIDimension dim = rowDimensions[--i];
                 Object v = dim.getValueByType(data);
-                if (v != dimensionNames[i] || (i == rowDimensions.length -1)) {
+                if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
                     CBCell cell = createCells4Dimension(v, rowSpan, currentRowIdx, i);
                     pagedIterator.addCell(cell);
                     dimensionNames[i] = v;
@@ -674,12 +668,12 @@ public class GroupExecutor extends AbstractNodeExecutor {
     }
 
     private CBCell createCells4Row(Object v, int dimLen, int currentRowIdx, int targetsKeyIndex) {
-            CBCell cell = new CBCell(v);
-            cell.setColumn(targetsKeyIndex + dimLen);
-            cell.setRow(currentRowIdx);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            return cell;
+        CBCell cell = new CBCell(v);
+        cell.setColumn(targetsKeyIndex + dimLen);
+        cell.setRow(currentRowIdx);
+        cell.setRowSpan(1);
+        cell.setColumnSpan(1);
+        return cell;
     }
 
     private CBCell createCells4Dimension(Object v, int rowSpan, int currentRowIdx, int currentColumn) {
@@ -699,131 +693,54 @@ public class GroupExecutor extends AbstractNodeExecutor {
      */
     @Override
     public CBCell[][] createCellElement() throws Exception {
-//        Node tree = getCubeNode();
-//        if (tree == null) {
-//            return new CBCell[][]{new CBCell[0]};
-//        }
-//        int rowLength = usedDimensions.length;
-//        int summaryLength = usedSumTarget.length;
-//        int columnLen = rowLength + summaryLength;
-//        DetailChartSetting chartSetting = widget.getChartSetting();
-//        TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
-//        for (int i = 0; i < summaryLength; i++) {
-//            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
-//        }
-//        //导出就全部展开吧
-//        int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
-//        //+1是标题
-//        CBCell[][] cbcells;
-//        boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
-//
-//        if (tree.getChildLength() == 0) {
-//            cbcells = new CBCell[columnLen][rowLen + 1];
-//            rectangle = new Rectangle(rowLength, 1, columnLen - 1, rowLen);
-//            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, 0, widget.getChartSetting());
-//        } else {
-//            cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
-//            rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
-//            generateTitle(cbcells, useTargetSort, rowLength, summaryLength, widget.isOrder(), widget.getChartSetting());
-//        }
-//
-//        if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
-//            dealWithNode(tree, cbcells, 1, 0, usedDimensions, usedSumTarget, keys,
-//                    usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions), widget.getChartSetting());
-//        } else {
-//            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions,
-//                    usedSumTarget, keys, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(),
-//                    new BIComplexExecutData(usedDimensions), widget.getChartSetting());
-//        }
-//
-//        if (widget.isOrder() == 1 && tree.getChildLength() != 0) {
-//            createNumberCellTitle(cbcells, 0);
-//            if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
-//                createAllNumberCellElement(cbcells, 1);
-//            } else {
-//                createAllNumberCellElement(cbcells, paging.getCurrentPage());
-//            }
-//        }
-
-//        return cbcells;
         return new CBCell[0][0];
     }
 
     /**
      * 生成表头
      *
-     * @param useTargetSort
-     * @param rowLength
-     * @param summaryLength
+     * @param pagedIterator
      */
-    private List<CBCell> generateTitle(boolean useTargetSort, int rowLength, int summaryLength, int hasNumber, DetailChartSetting chartSetting) {
-        List<CBCell> cells = new LinkedList<CBCell>();
-        if (hasNumber == 1) {
-            cells.add(createNumberCellTitle(0));
+    private void generateTitle(StreamPagedIterator pagedIterator) throws Exception {
+        if(widget.isOrder() != 0) {
+            pagedIterator.addCell(createNumberCellTitle(0));
         }
-        generateDimensionTitle(cells, useTargetSort, rowLength, hasNumber);
-        generateMetricTitle(cells, rowLength, summaryLength, hasNumber, chartSetting);
-        return cells;
-    }
-
-    private void generateMetricTitle(List<CBCell> cbcells, int rowLength, int summaryLength, int hasNumber,
-                                     DetailChartSetting chartSetting) {
-        for (int i = 0; i < summaryLength; i++) {
-            BIAbstractTargetAndDimension dimension = usedSumTarget[i];
-            String dimensionName = dimension.getText();
-            String dId = dimension.getValue();
-            String levelAndUnit = ExecutorUtils.formatLevelAndUnit(chartSetting.getNumberLevelByTargetId(dId), chartSetting.getUnitByTargetId(dId));
-            if (!ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY)) {
-                dimensionName = dimensionName + "(" + levelAndUnit + ")";
-            }
-            CBCell cell = new CBCell(dimensionName);
-            cell.setColumn(rowLength + i + hasNumber);
+        int columnIdx = widget.isOrder();
+        for (int i = 0; i < usedDimensions.length; i++) {
+            CBCell cell = new CBCell(usedDimensions[i].getText());
             cell.setRow(0);
+            cell.setColumn(columnIdx++);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            List<CBCell> cellList = new ArrayList<CBCell>();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            BITarget rowCol = usedSumTarget[i];
-            cbox.setName(rowCol.getValue());
-            cbox.setType(CellConstant.CBCELL.TARGETTITLE_Y);
-            cbox.setSortTargetName(rowCol.getValue());
-            cbox.setSortTargetValue("[]");
-            if (widget.getTargetSort() != null && ComparatorUtils.equals(widget.getTargetSort().getName(),
-                    usedSumTarget[i].getValue())) {
-                cbox.setSortType((Integer) widget.getTargetSort().getObject());
-            } else {
-                cbox.setSortType(BIReportConstant.SORT.NONE);
-            }
-            cell.setBoxElement(cbox);
-            cbcells.add(cell);
+//            List<CBCell> cellList = new ArrayList<CBCell>();
+//            cellList.add(cell);
+//            CBBoxElement cbox = new CBBoxElement(cellList);
+//            BITarget rowCol = usedSumTarget[i];
+//            cbox.setName(rowCol.getValue());
+//            cbox.setType(CellConstant.CBCELL.TARGETTITLE_Y);
+//            cbox.setSortTargetName(rowCol.getValue());
+//            cbox.setSortTargetValue("[]");
+//            if (widget.getTargetSort() != null && ComparatorUtils.equals(widget.getTargetSort().getName(),
+//                    usedSumTarget[i].getValue())) {
+//                cbox.setSortType((Integer) widget.getTargetSort().getObject());
+//            } else {
+//                cbox.setSortType(BIReportConstant.SORT.NONE);
+//            }
+//            cell.setBoxElement(cbox);
+            pagedIterator.addCell(cell);
         }
-    }
 
-    private void generateDimensionTitle(List<CBCell> cbcells, boolean useTargetSort, int rowLength, int hasNumber) {
-        for (int i = 0; i < rowLength; i++) {
-            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
-            cell.setColumn(i + hasNumber);
+        for (int i = 0; i < usedSumTarget.length; i++) {
+            CBCell cell = new CBCell(usedSumTarget[i].getText());
             cell.setRow(0);
             cell.setRowSpan(1);
+            cell.setColumn(columnIdx++);
             cell.setColumnSpan(1);
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            List<CBCell> cellList = new ArrayList<CBCell>();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            BIDimension rowCol = usedDimensions[i];
-            cbox.setName(rowCol.getValue());
-            cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_Y);
-            if (!useTargetSort) {
-                cbox.setSortType(usedDimensions[i].getSortType());
-            } else {
-                cbox.setSortType(BIReportConstant.SORT.NONE);
-            }
-            cell.setBoxElement(cbox);
-            cbcells.add(cell);
+            pagedIterator.addCell(cell);
         }
     }
 
