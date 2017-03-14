@@ -45,9 +45,9 @@ public class H5InitAction extends ActionNoSessionCMD {
         long templateCreateUserId = Long.parseLong(createUserId);
         BIReportNode node = null;
         if (id != null) {
-            node = BIDAOUtils.findByID(Long.parseLong(id), templateCreateUserId);
+            node = BIDAOUtils.getBIDAOManager().findByID(Long.parseLong(id), templateCreateUserId);
         }
-        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+        JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(node);
         dealWithPane(req, res, new BIWeblet(node), reportSetting, node);
     }
 
