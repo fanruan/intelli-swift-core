@@ -108,7 +108,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
                 Object data = node.getData();
                 BIDimension dim = rowDimensions[--i];
                 Object v = dim.getValueByType(data);
-                if(v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
+                if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
                     CBCell cell = createCell4Dimension(v, rowIdx, rowSpan, i);
                     pagedIterator.addCell(cell);
                     dimensionNames[i] = v;
@@ -394,12 +394,12 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             cell.setRow(colDimension.length);
             cell.setColumnSpan(1);
             cell.setRowSpan(1);
-            cell.setValue(((BIAbstractDimension) rowDimension[i]).getText());
+            cell.setValue(rowDimension[i].getText());
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(1));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(((BIAbstractDimension) rowDimension[i]).getText());
+            cbox.setName(rowDimension[i].getText());
             cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_Y);
             if (!isRowTargetSort) {
                 cbox.setSortType(rowDimension[i].getSortType());
