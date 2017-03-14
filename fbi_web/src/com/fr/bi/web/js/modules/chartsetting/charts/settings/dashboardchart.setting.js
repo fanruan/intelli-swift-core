@@ -330,10 +330,6 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.dashboardPointer]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Num_Level"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
                 }, {
