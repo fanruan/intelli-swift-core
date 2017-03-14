@@ -32,11 +32,11 @@ BI.ValueChooserCombo = BI.inherit(BI.Widget, {
             type: 'bi.multi_select_combo',
             element: this.element,
             itemsCreator: BI.bind(this._itemsCreator, this),
-            valueFormatter: function(v){
+            valueFormatter: function (v) {
                 var text = v;
-                if(BI.isNotNull(self.items)) {
-                    BI.some(self.items, function(i, item){
-                        if(item.value === v) {
+                if (BI.isNotNull(self.items)) {
+                    BI.some(self.items, function (i, item) {
+                        if (item.value === v) {
                             text = item.text;
                             return true;
                         }
@@ -76,10 +76,14 @@ BI.ValueChooserCombo = BI.inherit(BI.Widget, {
             call(this.items);
         }
         function call(items) {
+            var keywords = (options.keywords || []).slice();
             if (options.keyword) {
-                var search = BI.Func.getSearchResult(items, options.keyword);
-                items = search.matched.concat(search.finded);
+                keywords.push(options.keyword);
             }
+            BI.each(keywords, function (i, kw) {
+                var search = BI.Func.getSearchResult(items, kw);
+                items = search.matched.concat(search.finded);
+            });
             if (options.selected_values) {//过滤
                 var filter = BI.makeObject(options.selected_values, true);
                 items = BI.filter(items, function (i, ob) {
