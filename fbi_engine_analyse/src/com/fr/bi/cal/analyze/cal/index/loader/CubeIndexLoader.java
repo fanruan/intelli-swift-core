@@ -833,23 +833,14 @@ public class CubeIndexLoader {
                 MetricGroupInfo metricGroupInfo = map.get(groupKey);
                 if (metricGroupInfo == null) {
                     GroupValueIndex gvi = widget.createFilterGVI(row, targetKey, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(targetKey));
-
-                    metricGroupInfo = new MetricGroupInfo(row, gvi, summary.createTableKey());
-                    metricGroupInfo.addTargetAndKey(new TargetAndKey(target.getName(), summary, summary.createTargetGettingKey()));
-                    map.put(groupKey, metricGroupInfo);
-                    mergerInfoList.add(metricGroupInfo);
-
                     //联动过滤条件
                     if (widget instanceof TableWidget) {
                         gvi = GVIUtils.AND(gvi, ((TableWidget) widget).createLinkedFilterGVI(targetKey, session));
                     }
-                    NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(summary.createTableKey(), gvi, session.getLoader());
-                    RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, expander, session, useRealData, widget);
-                    List<TargetAndKey> list = new ArrayList<TargetAndKey>();
-                    list.add(new TargetAndKey(summary, tkey));
-                    mergerInfo = new MergerInfo(bdt, gvi, rootDimensionGroup, root, targetKey, list, session, rowDimension, expander, widget, groupKey);
-                    map.put(groupKey, mergerInfo);
-                    mergerInfoList.add(mergerInfo);
+                    metricGroupInfo = new MetricGroupInfo(row, gvi, summary.createTableKey());
+                    metricGroupInfo.addTargetAndKey(new TargetAndKey(target.getName(), summary, summary.createTargetGettingKey()));
+                    map.put(groupKey, metricGroupInfo);
+                    mergerInfoList.add(metricGroupInfo);
 
                 } else {
                     metricGroupInfo.addTargetAndKey(new TargetAndKey(target.getName(), summary, summary.createTargetGettingKey()));
@@ -875,39 +866,8 @@ public class CubeIndexLoader {
         List<MetricGroupInfo> list = new ArrayList<MetricGroupInfo>();
         list.add(metricGroupInfo);
         return getRootDimensionGroup(widget, usedTargets, rowDimension, session, list, isCross, isHor, page);
-
-        NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(BIBusinessTable.createEmptyTable(), gvi, session.getLoader());
-        RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, expander, session, useRealData, widget);
-        List<TargetAndKey> list = new ArrayList<TargetAndKey>();
-        list.add(new TargetAndKey(summary, summary.createTargetGettingKey()));
-        GroupKey groupKey = new GroupKey(summary.createTableKey(), row);
-        MergerInfo mergerInfo = new MergerInfo(null, gvi, rootDimensionGroup, root, summary.createTableKey(), list, session, rowDimension, expander, widget, groupKey);
-        List<MergerInfo> mergerInfoList = new ArrayList<MergerInfo>();
-        mergerInfoList.add(mergerInfo);
-        createNewRowMap(widget, usedTargets, sumTarget, rowDimension, rowMap, session, mergerInfoList, isCross, calAllPage);
-        return mergerInfoList;
     }
 
-    private void createNewRowMap(BIWidget widget, BISummaryTarget[] usedTargets, BISummaryTarget[] sumTarget, BIDimension[] rowDimension, Map<GroupKey, IRootDimensionGroup> rowMap, BISession session, List<MergerInfo> mergerInfoList, boolean isCross, boolean calAllPage) {
-        DimensionGroupFilter filter = createDimensionGroupFilter(widget, usedTargets, sumTarget, rowDimension, session, mergerInfoList, isCross, calAllPage);
-        List<MergerInfo> filterMergerInfo = filter.calculateAllDimensionFilter();
-        for (MergerInfo mergerInfo : filterMergerInfo) {
-            rowMap.put(mergerInfo.getGroupKey(), mergerInfo.createFinalRootDimensionGroup());
-        }
-    }
-
-    private DimensionGroupFilter createDimensionGroupFilter(BIWidget widget, BISummaryTarget[] usedTargets, BISummaryTarget[] sumTarget, BIDimension[] rowDimension, BISession session, List<MergerInfo> mergerInfoList, boolean isCross, boolean calAllPage) {
-        Map<String, TargetCalculator> stringTargetGettingKeyMap = CommonUtils.getStringTargetGettingKeyMap(sumTarget, session);
-        Map<String, DimensionFilter> targetFilterMap = getResultFilterMap(widget);
-        NameObject targetSort = null;
-        if (widget instanceof BISummaryWidget) {
-            targetSort = ((BISummaryWidget) widget).getTargetSort();
-        }
-        DimensionGroupFilter dimensionGroupFilter = new DimensionGroupFilter(widget, mergerInfoList, targetFilterMap, rowDimension, usedTargets, stringTargetGettingKeyMap, session, targetSort, widget.showRowToTal() || widget.showColumnTotal(), calAllPage);
-        dimensionGroupFilter.setShouldRecalculateIndex(isCross);
-        return dimensionGroupFilter;
-
-    }
 
     private IRootDimensionGroup getRootDimensionGroup(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension,
                                                       BISession session, List<MetricGroupInfo> metricGroupInfoList, boolean shouldSetIndex,

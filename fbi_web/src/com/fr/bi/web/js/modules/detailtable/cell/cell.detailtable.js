@@ -90,15 +90,9 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var type = BI.Utils.getDimensionTypeByID(dId);
 
-<<<<<<< HEAD
         var format = styleSettings.format, numLevel = styleSettings.numLevel,
             iconStyle = styleSettings.iconStyle, mark = styleSettings.mark,
             numSeparators = styleSettings.numSeparators;
-=======
-        var format = styleSettings.format, numLevel = styleSettings.num_level,
-            iconStyle = styleSettings.icon_style, mark = styleSettings.mark,
-            numSeparators = styleSettings.num_separators;
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
 
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);

@@ -5,8 +5,6 @@ import com.fr.bi.field.target.key.cal.configuration.BIRankCalTargetKey;
 import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.operation.sort.comp.ASCComparator;
-import com.fr.bi.stable.operation.sort.comp.DSCComparator;
 import com.fr.bi.stable.operation.sort.comp.RankConfASCComparator;
 import com.fr.bi.stable.operation.sort.comp.RankConfDSCComparator;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -35,15 +33,9 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
         if (key == null) {
             return;
         }
-<<<<<<< HEAD
         BINode tempNode = node;
-        for (int i = 0; i < start_group; i++) {
-=======
-        LightNode tempNode = node;
-
         int deep = getActualStart_Group(start_group, tempNode);
         for (int i = 0; i < deep; i++) {
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
             if (tempNode.getFirstChild() == null) {
                 break;
             }

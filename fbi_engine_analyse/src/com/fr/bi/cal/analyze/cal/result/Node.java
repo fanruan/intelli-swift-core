@@ -62,11 +62,11 @@ public class Node implements SummaryContainer, BINode {
     //TODO 低效的算法， 放在result无所谓
     private transient Map<TopNKey, Double> topNLineMap;
 
-    public Node (){
+    public Node() {
         childs = new ChildsMap<Node>();
     }
 
-    public Node (Object data){
+    public Node(Object data) {
         this();
         this.setData(data);
     }
@@ -162,8 +162,8 @@ public class Node implements SummaryContainer, BINode {
     @Override
     public Map<TargetGettingKey, GroupValueIndex> getTargetIndexValueMap() {
         if (targetIndexValueMap == null) {
-            synchronized (this){
-                if (targetIndexValueMap == null){
+            synchronized (this) {
+                if (targetIndexValueMap == null) {
                     targetIndexValueMap = new ConcurrentHashMap<TargetGettingKey, GroupValueIndex>(1);
                 }
             }
@@ -336,7 +336,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createNewTargetValueNode(key);
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             n.addChild(child);
             tempNode = child;
@@ -380,7 +380,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createCloneNodeWithValue();
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -406,7 +406,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createCloneNodeWithValue();
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -434,7 +434,7 @@ public class Node implements SummaryContainer, BINode {
                 int e = position + clen < end ? clen : end - position;
                 Node child = c.createCloneNodeWithValue(s, e);
                 if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
+                    CubeReadingUtils.setSibling(tempNode, child);
                 }
                 newnode.addChild(child);
                 tempNode = child;
@@ -460,7 +460,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createCloneNodeWithValue();
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -484,7 +484,7 @@ public class Node implements SummaryContainer, BINode {
             Node temp_node = childs.get(i);
             Node child = temp_node.createCrossHeader();
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -594,7 +594,7 @@ public class Node implements SummaryContainer, BINode {
                     continue;
                 }
                 if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
+                    CubeReadingUtils.setSibling(tempNode, child);
                 }
                 newnode.addChild(child);
                 tempNode = child;
@@ -641,7 +641,7 @@ public class Node implements SummaryContainer, BINode {
                     continue;
                 }
                 if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
+                    CubeReadingUtils.setSibling(tempNode, child);
                 }
                 newnode.addChild(child);
                 tempNode = child;
@@ -707,7 +707,7 @@ public class Node implements SummaryContainer, BINode {
             //清除兄弟关系
             temp_node.setSibling(null);
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -769,7 +769,7 @@ public class Node implements SummaryContainer, BINode {
             //清除兄弟关系
             temp_node.setSibling(null);
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             newnode.addChild(child);
             tempNode = child;
@@ -788,9 +788,9 @@ public class Node implements SummaryContainer, BINode {
     }
 
     protected Map getNotNullSummaryValue() {
-        if (summaryValue == null){
-            synchronized (this){
-                if (summaryValue == null){
+        if (summaryValue == null) {
+            synchronized (this) {
+                if (summaryValue == null) {
                     summaryValue = new ConcurrentHashMap(1);
                 }
             }
@@ -799,7 +799,7 @@ public class Node implements SummaryContainer, BINode {
     }
 
     public void setSummaryValue(Map summaryValueMap) {
-        if (summaryValueMap != null){
+        if (summaryValueMap != null) {
             getNotNullSummaryValue().putAll(summaryValueMap);
         }
     }
@@ -862,7 +862,9 @@ public class Node implements SummaryContainer, BINode {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
+            if (this == o) {
+                return true;
+            } ;
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }

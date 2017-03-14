@@ -24,43 +24,43 @@ import java.util.TreeSet;
  */
 public class CubeReadingUtils {
 
-    public static void setSibing(BINode last, BINode first) {
+    public static void setSibling(BINode last, BINode first) {
         BINode lastChild = last.getLastChild();
         BINode firstChild = first.getFirstChild();
         if (lastChild != null && firstChild != null) {
             lastChild.setSibling(firstChild);
-            setSibing(lastChild, firstChild);
+            setSibling(lastChild, firstChild);
         }
     }
 
     /**
      * @param node
      */
-    private static void setSibing(Node node) {
+    private static void setSibling(Node node) {
         Node temp = null;
         for (int i = 0; i < node.getChildLength(); i++) {
             Node n = node.getChild(i);
-            setSibing(n);
+            setSibling(n);
             if (temp != null) {
                 temp.setSibling(n);
-                setSibing(temp, n);
+                setSibling(temp, n);
             }
             temp = n;
         }
     }
 
-    public static void setSibing(CrossNode last, CrossNode first) {
+    public static void setSibling(CrossNode last, CrossNode first) {
         CrossNode lastChild = last.getLeftLastChild();
         CrossNode firstChild = first.getLeftFirstChild();
         if (lastChild != null && firstChild != null) {
             lastChild.setBottomSibling(firstChild);
-            setSibing(lastChild, firstChild);
+            setSibling(lastChild, firstChild);
         }
         lastChild = last.getTopLastChild();
         firstChild = first.getTopFirstChild();
         if (lastChild != null && firstChild != null) {
             lastChild.setRightSibling(firstChild);
-            setSibing(lastChild, firstChild);
+            setSibling(lastChild, firstChild);
         }
     }
 
@@ -74,7 +74,7 @@ public class CubeReadingUtils {
      */
 
     public static TableData createChartTableData(Node node, BIDimension[] rows, BISummaryTarget[] summary) {
-        setSibing(node);
+        setSibling(node);
         EmbeddedTableData resData = new EmbeddedTableData();
         for (int i = 0, len = rows.length; i < len; i++) {
             resData.addColumn(rows[i].getValue(), String.class);

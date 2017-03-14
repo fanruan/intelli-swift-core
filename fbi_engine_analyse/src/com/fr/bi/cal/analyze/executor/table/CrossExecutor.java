@@ -1,9 +1,11 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
+import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -27,6 +29,7 @@ import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
 
 import java.util.*;
@@ -35,7 +38,8 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
 
     private BIDimension[] rowDimension;
     private BIDimension[] colDimension;
-
+    private int columnIdx = 0;
+    private final static int EXCEL_ROW_MODE_VALUE = ExportConstants.MAX_ROWS_2007 - 1;
 
     public CrossExecutor(TableWidget widget, BIDimension[] usedRows,
                          BIDimension[] usedColumn,
@@ -47,7 +51,105 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
 
     @Override
     public DetailCellIterator createCellIterator4Excel() throws Exception {
-        return null;
+        final NewCrossRoot node = getCubeNode();
+        if (node == null) {
+            return new DetailCellIterator(0, 0);
+        }
+
+        int len = usedSumTarget.length;
+        TargetGettingKey[] keys = new TargetGettingKey[len];
+        boolean isWholeCol = keys.length == 0 || !widget.getChartSetting().showColTotal();
+        boolean isWholeRow = keys.length == 0 || !widget.getChartSetting().showRowTotal();
+        int columnLen = (isWholeCol ? node.getTop().getTotalLength() :
+                node.getTop().getTotalLengthWithSummary()) * Math.max(1, keys.length) + rowDimension.length + widget.isOrder();
+        int rowLen = (isWholeRow ? node.getLeft().getTotalLength() :
+                node.getLeft().getTotalLengthWithSummary()) + colDimension.length + 1;
+
+        final DetailCellIterator iter = new DetailCellIterator(columnLen, rowLen);
+        new Thread() {
+            public void run() {
+                try {
+                    FinalInt start = new FinalInt();
+                    int rowIdx = 0;
+                    rowIdx++;
+                    createCells(iter, start, rowIdx);
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                } finally {
+                    iter.finish();
+                }
+            }
+        }.start();
+        return iter;
+    }
+
+    private void createCells(DetailCellIterator iter, FinalInt start, int rowIdx) throws Exception {
+        CrossHeader node = getCubeNode().getLeft();
+        while (node.getChildLength() != 0) {
+            node = (CrossHeader) node.getFirstChild();
+        }
+
+        BIDimension[] rowDimensions = widget.getViewDimensions();
+        Object[] dimensionNames = new Object[rowDimensions.length];
+        while (node != null) {
+            columnIdx = 0;
+            CrossNode temp = node.getValue();
+            int newRow = rowIdx & EXCEL_ROW_MODE_VALUE;
+            if (newRow == 0) {
+                iter.getIteratorByPage(start.value).finish();
+                start.value++;
+            }
+            StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+            getTopChildren((CrossNode4Calculate) temp, pagedIterator, rowIdx);
+            //第一次出现表头时创建cell
+            int i = rowDimensions.length;
+            while (node.getParent() != null) {
+                int rowSpan = node.getTotalLength();
+                Object data = node.getData();
+                BIDimension dim = rowDimensions[--i];
+                Object v = dim.getValueByType(data);
+                if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
+                    CBCell cell = createCell4Dimension(v, rowIdx, rowSpan, i);
+                    pagedIterator.addCell(cell);
+                    dimensionNames[i] = v;
+                }
+                node = (CrossHeader) node.getParent();
+            }
+            rowIdx++;
+            node = (CrossHeader) node.getSibling();
+        }
+    }
+
+    private void getTopChildren(CrossNode4Calculate temp, StreamPagedIterator pagedIterator, int rowIdx) {
+        if (temp.getTopFirstChild() != null) {
+            int topChildrenLen = temp.getTopChildLength();
+            for (int i = 0; i < topChildrenLen; i++) {
+                getTopChildren((CrossNode4Calculate) temp.getTopChild(i), pagedIterator, rowIdx);
+            }
+        } else {
+            for (TargetGettingKey key : widget.getTargetsKey()) {
+                pagedIterator.addCell(createCell4Target(temp.getSummaryValue(key), columnIdx, rowIdx));
+                columnIdx++;
+            }
+        }
+    }
+
+    private CBCell createCell4Target(Object v, int columnIdx, int rowIdx) {
+        CBCell cell = new CBCell(v);
+        cell.setRow(rowIdx);
+        cell.setColumn(columnIdx);
+        cell.setRowSpan(1);
+        cell.setColumnSpan(1);
+        return cell;
+    }
+
+    private CBCell createCell4Dimension(Object v, int rowIdx, int rowSpan, int columnIdx) {
+        CBCell cell = new CBCell(v);
+        cell.setRow(rowIdx);
+        cell.setColumn(columnIdx);
+        cell.setRowSpan(rowSpan);
+        cell.setColumnSpan(1);
+        return cell;
     }
 
     /**
@@ -57,56 +159,30 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
      */
     @Override
     public CBCell[][] createCellElement() throws Exception {
-//        NewCrossRoot node = getCubeNode();
-//        if (node == null) {
-//            return new CBCell[0][0];
-//        }
-//        //int page = widget.getVerticalCalculateAllPage();
-//        int len = usedSumTarget.length;
-//        Map<String, TargetGettingKey> targetsMap = new HashMap<String, TargetGettingKey>();
-//        TargetGettingKey[] keys = new TargetGettingKey[len];
-//        for (int i = 0; i < len; i++) {
-//            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
-//            targetsMap.put(usedSumTarget[i].getValue(), keys[i]);
-//        }
-//
-//        CBCell[][] cbcells = null;
-//        int rowPlus = 0;
-//        if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
-//            cbcells = new CBCell[((keys.length == 0 || !widget.getChartSetting().showColTotal()) ? node.getTop().getTotalLength() : node.getTop().getTotalLengthWithSummary())
-//                    * Math.max(1, keys.length) + rowDimension.length + widget.isOrder()]
-//                    [((keys.length == 0 || !widget.getChartSetting().showRowTotal()) ? node.getLeft().getTotalLength() : node.getLeft().getTotalLengthWithSummary()) + colDimension.length + 1];
-//        } else {
-//            cbcells = new CBCell[(keys.length == 0 ? node.getTop().getTotalLength(expander.getXExpander()) : node.getTop().getTotalLengthWithSummary(expander.getXExpander()))
-//                    * Math.max(1, keys.length) + rowDimension.length + widget.isOrder()]
-//                    [(keys.length == 0 ? node.getLeft().getTotalLength(expander.getYExpander()) : node.getLeft().getTotalLengthWithSummary(expander.getYExpander())) + colDimension.length + 1 + rowPlus];
-//        }
-//        boolean isColTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
-//        boolean isRowTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(rowDimension);
-//        generateTitleCell(cbcells, isColTargetSort, isRowTargetSort);
-//        if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
-//            GroupExecutor.dealWithNode(node.getLeft(), NodeExpander.ALL_EXPANDER, cbcells, colDimension.length + 1, 0, paging.getOperator(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChartSetting());
-//            HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
-//            if (hasLeftChild(node)) {
-//                dealWithNode(node.getLeft(), new NodeAllExpander(rowDimension.length - 1), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChartSetting());
-//            }
-//        } else {
-//            GroupExecutor.dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, colDimension.length + 1, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChartSetting());
-//            HorGroupExecutor.dealWithNode(node.getTop(), expander.getXExpander(), cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
-//            if (hasLeftChild(node)) {
-//                dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChartSetting());
-//            }
-//        }
-//        if (widget.isOrder() == 1) {
-//            createNumberCellTitle(cbcells, colDimension.length);
-//            if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
-//                createAllNumberCellElement(cbcells, 1);
-//            } else {
-//                createAllNumberCellElement(cbcells, paging.getCurrentPage());
-//            }
-//        }
-//        return cbcells;
-        return new CBCell[0][0];
+        NewCrossRoot node = getCubeNode();
+        if (node == null) {
+            return new CBCell[0][0];
+        }
+        //int page = widget.getVerticalCalculateAllPage();
+        int len = usedSumTarget.length;
+        TargetGettingKey[] keys = new TargetGettingKey[len];
+
+        CBCell[][] cbcells = new CBCell[((keys.length == 0 || !widget.getChartSetting().showColTotal()) ? node.getTop().getTotalLength() : node.getTop().getTotalLengthWithSummary())
+                * Math.max(1, keys.length) + rowDimension.length + widget.isOrder()]
+                [((keys.length == 0 || !widget.getChartSetting().showRowTotal()) ? node.getLeft().getTotalLength() : node.getLeft().getTotalLengthWithSummary()) + colDimension.length + 1];
+        boolean isColTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
+        boolean isRowTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(rowDimension);
+        GroupExecutor.dealWithNode(node.getLeft(), NodeExpander.ALL_EXPANDER, cbcells, colDimension.length + 1, 0,
+                paging.getOperator(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(),
+                rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChartSetting());
+        HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0,
+                rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{},
+                new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort,
+                rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
+        if (hasLeftChild(node)) {
+            dealWithNode(node.getLeft(), new NodeAllExpander(rowDimension.length - 1), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChartSetting());
+        }
+        return cbcells;
     }
 
     private boolean hasLeftChild(NewCrossRoot node) {
@@ -296,12 +372,12 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             cell.setRow(i);
             cell.setColumnSpan(Math.max(1, this.rowDimension.length + widget.isOrder()));
             cell.setRowSpan(1);
-            cell.setValue(((BIAbstractDimension) colDimension[i]).getText());
+            cell.setValue(colDimension[i].getText());
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(i));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(((BIAbstractDimension) colDimension[i]).getText());
+            cbox.setName(colDimension[i].getText());
             cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_X);
             if (!isColTargetSort) {
                 cbox.setSortType(colDimension[i].getSortType());
@@ -318,12 +394,12 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             cell.setRow(colDimension.length);
             cell.setColumnSpan(1);
             cell.setRowSpan(1);
-            cell.setValue(((BIAbstractDimension) rowDimension[i]).getText());
+            cell.setValue(rowDimension[i].getText());
             cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(1));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(((BIAbstractDimension) rowDimension[i]).getText());
+            cbox.setName(rowDimension[i].getText());
             cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_Y);
             if (!isRowTargetSort) {
                 cbox.setSortType(rowDimension[i].getSortType());
@@ -339,7 +415,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     @Override
-    public NewCrossRoot getCubeNode() throws Exception{
+    public NewCrossRoot getCubeNode() throws Exception {
         long start = System.currentTimeMillis();
         if (getSession() == null) {
             return null;

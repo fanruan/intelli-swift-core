@@ -4,12 +4,13 @@ import com.fr.base.FRContext;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.fun.ErrorHandler;
+import com.fr.stable.fun.impl.AbstractErrorHandler;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class JSONErrorHandler implements ErrorHandler {
+public class JSONErrorHandler extends AbstractErrorHandler {
 
     @Override
     public void error(HttpServletRequest req, HttpServletResponse res,

@@ -11,8 +11,7 @@ public class MergeSummaryCallList implements Callable {
     private StreamPagedIterator<BISingleThreadCal> iterator;
 
     public MergeSummaryCallList() {
-        iterator = new StreamPagedIterator<BISingleThreadCal>();
-        iterator.setMaxCount(1 << 10);
+        iterator = new StreamPagedIterator<BISingleThreadCal>(Integer.MAX_VALUE, 1<< 9, 1<< 10);
     }
 
     public void add(BISingleThreadCal cal){

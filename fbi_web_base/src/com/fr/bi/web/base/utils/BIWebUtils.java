@@ -215,10 +215,10 @@ public class BIWebUtils {
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
         map.put("plateConfig", plateConfig);
-<<<<<<< HEAD
+
         dealWithVersions(userId, map);
         boolean biEdit = pop == null || ComparatorUtils.equals(WebUtils.getHTTPRequestParameter(req, "edit"), "_bi_edit_");
-=======
+
         //cube版本号、权限版本号、多路径版本号
         map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + ""
                 + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + ""
@@ -226,8 +226,7 @@ public class BIWebUtils {
         //jar包版本
         map.put("__v__", GeneralUtils.readBuildNO());
         map.put("isCluster", ClusterEnv.isCluster());
-        boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
+
         boolean isEdit = sessionIDInfo.setEdit(biEdit);
         if (biEdit && !isEdit) {
             map.put("lockedBy", BISessionUtils.getCurrentEditingUserByReport(node.getId(), node.getUserId()));

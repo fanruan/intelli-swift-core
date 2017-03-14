@@ -6,6 +6,7 @@ package com.fr.bi.cal.analyze.cal.result;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.general.NameObject;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -64,6 +65,22 @@ public class NewCrossRoot {
         left.buildLeftRelation(top);
         return new NewCrossRoot(left, top);
 
+    }
+
+
+    /**
+     * 获取排序的节点
+     *
+     * @param targetSort 排序信息
+     * @param targetsMap 所有指标
+     * @return 新节点
+     */
+    public NewCrossRoot createSortedNode(NameObject targetSort,
+                                         Map<String, TargetGettingKey> targetsMap) {
+        CrossHeader top = (CrossHeader) this.top.createSortedNode(targetSort, targetsMap);
+        CrossHeader left = this.left.createSortedNodeWithTopValue(targetSort, targetsMap, top);
+        left.buildLeftRelation(top);
+        return new NewCrossRoot(left, top);
     }
 
     /**

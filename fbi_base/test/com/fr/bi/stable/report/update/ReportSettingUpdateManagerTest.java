@@ -39,11 +39,11 @@ public class ReportSettingUpdateManagerTest extends TestCase {
     }
 
     public void testUpdate() throws Exception {
-        JSONObject settingsA = manager.updateReportSettings(getDesignSetting(0.0)).getReportSetting();
+        JSONObject settingsA = manager.updateReportSettings(getDesignSetting(0.0)).getReportJSON();
         assertTrue(settingsA.has("version1.0") && settingsA.has("version2.0") && settingsA.has("version3.0"));
-        JSONObject settingsB = manager.updateReportSettings(getDesignSetting(1.0)).getReportSetting();
+        JSONObject settingsB = manager.updateReportSettings(getDesignSetting(1.0)).getReportJSON();
         assertTrue(settingsB.has("version2.0") && settingsB.has("version3.0"));
-        JSONObject settingsC = manager.updateReportSettings(getDesignSetting(1.0)).getReportSetting();
+        JSONObject settingsC = manager.updateReportSettings(getDesignSetting(1.0)).getReportJSON();
         assertTrue(settingsC.has("version3.0"));
     }
 

@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -17,7 +18,7 @@ import java.util.*;
 public class MultiChartWidget extends TableWidget {
 
     private static final long serialVersionUID = 8274724387345770447L;
-    private int type;
+    private WidgetType type;
     private String subType;
     private Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
     private Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
@@ -51,7 +52,7 @@ public class MultiChartWidget extends TableWidget {
             vjo.put(BIReportConstant.REGION.TARGET1, ja);
         }
         if(jo.has("type")){
-            type = jo.getInt("type");
+            type = WidgetType.parse(jo.getInt("type"));
         }
         if(jo.has("sub_type")){
             subType = jo.getString("sub_type");
@@ -68,7 +69,7 @@ public class MultiChartWidget extends TableWidget {
         createDimensionAndTargetMap();
     }
 
-    private void createDimensionAndTargetMap() {
+    public void createDimensionAndTargetMap() {
         for(BIDimension dimension : this.getDimensions()){
             for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
                 Integer key = entry.getKey();
@@ -96,11 +97,11 @@ public class MultiChartWidget extends TableWidget {
     }
 
     @Override
-    public int getType() {
+    public WidgetType getType() {
         return type;
     }
 
-    private void parseView(JSONObject jo) throws Exception {
+    public void parseView(JSONObject jo) throws Exception {
         Iterator it = jo.keys();
         while (it.hasNext()) {
             Integer region = Integer.parseInt(it.next().toString());

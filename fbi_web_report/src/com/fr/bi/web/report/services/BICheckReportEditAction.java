@@ -44,7 +44,7 @@ public class BICheckReportEditAction extends ActionNoSessionCMD {
     }
 
     private void getFolderEditing(long userId, String id, JSONArray editUsers) throws Exception {
-        List<BIReportNode> reports = BIDAOUtils.findByParentID(userId, id);
+        List<BIReportNode> reports = BIDAOUtils.getInstance().findByParentID(userId, id);
         List<BITemplateFolderNode> folders = HSQLBITemplateFolderDAO.getInstance().findTemplateFolderByParentId(id);
         if (reports != null) {
             for (int i = 0; i < reports.size(); i++) {
