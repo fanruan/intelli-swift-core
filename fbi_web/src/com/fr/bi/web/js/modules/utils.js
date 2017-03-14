@@ -1045,42 +1045,6 @@
                 BICst.DEFAULT_CHART_SETTING.innerRadius;
         },
 
-        getWSChartLeftYNumberFormatByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.leftYNumberFormat) ? ws.leftYNumberFormat :
-                BICst.DEFAULT_CHART_SETTING.leftYNumberFormat;
-        },
-
-        getWSChartRightYNumberFormatByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.rightYNumberFormat) ? ws.rightYNumberFormat :
-                BICst.DEFAULT_CHART_SETTING.rightYNumberFormat;
-        },
-
-        getWSChartRightY2NumberFormatByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.rightY2NumberFormat) ? ws.rightY2NumberFormat :
-                BICst.DEFAULT_CHART_SETTING.rightY2NumberFormat;
-        },
-
-        getWSChartRightYNumberLevelByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.rightYNumberLevel) ? ws.rightYNumberLevel :
-                BICst.DEFAULT_CHART_SETTING.rightYNumberLevel;
-        },
-
-        getWSChartRightY2NumberLevelByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.rightY2NumberLevel) ? ws.rightY2NumberLevel :
-                BICst.DEFAULT_CHART_SETTING.rightY2NumberLevel;
-        },
-
-        getWSChartLeftYNumberLevelByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.leftYNumberLevel) ? ws.leftYNumberLevel :
-                BICst.DEFAULT_CHART_SETTING.leftYNumberLevel;
-        },
-
         getWSChartDashboardPointerByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.dashboardPointer) ? ws.dashboardPointer :
