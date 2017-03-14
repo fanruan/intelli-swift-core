@@ -70,9 +70,9 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             public void run() {
                 try {
                     FinalInt start = new FinalInt();
-                    int rowIdx = 0;
-                    rowIdx++;
-                    createCells(iter, start, rowIdx);
+                    StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+                    generateColDimensionsTitle(pagedIterator, 0);
+                    generateTargetCells(iter, start, colDimension.length + 1);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -83,7 +83,76 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         return iter;
     }
 
-    private void createCells(DetailCellIterator iter, FinalInt start, int rowIdx) throws Exception {
+    private void generateColDimensionsTitle(StreamPagedIterator pagedIterator, int rowIdx) throws Exception {
+        CrossHeader top = getCubeNode().getTop();
+        int colDimLen = 0;
+
+        while (colDimLen < colDimension.length) {
+            CBCell cell = new CBCell(colDimension[colDimLen].getText());
+            cell.setRow(rowIdx);
+            cell.setColumn(widget.isOrder());
+            cell.setRowSpan(1);
+            cell.setColumnSpan(rowDimension.length);
+            pagedIterator.addCell(cell);
+            top = (CrossHeader) top.getFirstChild();
+            getColDimensionsTitle(pagedIterator, top, rowIdx);
+            rowIdx++;
+            colDimLen++;
+        }
+
+        for(int i = 0; i < rowDimension.length; i++) {
+            CBCell cell = new CBCell(rowDimension[i].getText());
+            cell.setRow(rowIdx);
+            cell.setColumn(i);
+            cell.setRowSpan(1);
+            cell.setColumnSpan(1);
+            pagedIterator.addCell(cell);
+        }
+        if(widget.getViewTargets().length > 1) {
+            getTargetsTitle(pagedIterator, top, rowIdx);
+        }
+    }
+
+    private void getColDimensionsTitle(StreamPagedIterator pagedIterator, CrossHeader top, int rowIdx) {
+        int columnIdx = rowDimension.length + widget.isOrder();
+        int targetNum = widget.getViewTargets().length;
+
+        CrossHeader temp = top;
+        while (temp != null) {
+            int columnSpan = temp.getTotalLength() * targetNum;
+            Object data = temp.getData();
+            BIDimension dim = widget.getViewDimensions()[0];
+            Object v = dim.getValueByType(data);
+            CBCell cell = new CBCell(v);
+            cell.setRow(rowIdx);
+            cell.setColumn(columnIdx);
+            cell.setRowSpan(colDimension.length + 1);
+            cell.setColumnSpan(columnSpan);
+            pagedIterator.addCell(cell);
+            columnIdx += columnSpan;
+            temp = (CrossHeader) temp.getSibling();
+        }
+    }
+
+    private void getTargetsTitle(StreamPagedIterator pagedIterator, CrossHeader top, int rowIdx) {
+        CrossHeader temp = top;
+        int columnIdx = rowDimension.length + widget.isOrder();
+        while (temp != null) {
+            for (int i = 0; i < top.getTotalLength(); i++) {
+                for(int j = 0; j < usedSumTarget.length; j++) {
+                    CBCell cell = new CBCell(usedSumTarget[j].getText());
+                    cell.setRow(rowIdx);
+                    cell.setColumn(columnIdx++);
+                    cell.setRowSpan(1);
+                    cell.setColumnSpan(1);
+                    pagedIterator.addCell(cell);
+                }
+            }
+            temp = (CrossHeader) temp.getSibling();
+        }
+    }
+
+    private void generateTargetCells(DetailCellIterator iter, FinalInt start, int rowIdx) throws Exception {
         CrossHeader node = getCubeNode().getLeft();
         while (node.getChildLength() != 0) {
             node = (CrossHeader) node.getFirstChild();
@@ -92,7 +161,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         BIDimension[] rowDimensions = widget.getViewDimensions();
         Object[] dimensionNames = new Object[rowDimensions.length];
         while (node != null) {
-            columnIdx = 0;
+            columnIdx = rowDimension.length + widget.isOrder();
             CrossNode temp = node.getValue();
             int newRow = rowIdx & EXCEL_ROW_MODE_VALUE;
             if (newRow == 0) {
@@ -103,9 +172,10 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             getTopChildren((CrossNode4Calculate) temp, pagedIterator, rowIdx);
             //第一次出现表头时创建cell
             int i = rowDimensions.length;
-            while (node.getParent() != null) {
-                int rowSpan = node.getTotalLength();
-                Object data = node.getData();
+            CrossHeader parent = node;
+            while (parent.getParent() != null) {
+                int rowSpan = parent.getTotalLength();
+                Object data = parent.getData();
                 BIDimension dim = rowDimensions[--i];
                 Object v = dim.getValueByType(data);
                 if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
@@ -113,7 +183,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
                     pagedIterator.addCell(cell);
                     dimensionNames[i] = v;
                 }
-                node = (CrossHeader) node.getParent();
+                parent = (CrossHeader) parent.getParent();
             }
             rowIdx++;
             node = (CrossHeader) node.getSibling();
@@ -364,9 +434,10 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         return ja.toString();
     }
 
-    private void generateTitleCell(CBCell[][] cells, boolean isColTargetSort, boolean isRowTargetSort) {
+    private void generateTitleCell(boolean isColTargetSort, boolean isRowTargetSort) {
+        int colLength = rowDimension.length + widget.isOrder();
+        CBCell[][] cells = new CBCell[colLength][colDimension.length];
         for (int i = 0; i < colDimension.length; i++) {
-            BIAbstractDimension dimension = ((BIAbstractDimension) colDimension[i]);
             CBCell cell = new CBCell();
             cell.setColumn(0);
             cell.setRow(i);
