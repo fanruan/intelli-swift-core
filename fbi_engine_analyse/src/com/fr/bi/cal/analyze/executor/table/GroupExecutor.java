@@ -613,15 +613,15 @@ public class GroupExecutor extends AbstractNodeExecutor {
         new Thread() {
             public void run() {
                 try {
-                    final FinalInt start = new FinalInt();
-                    int currentRowNum = 0;
+                    FinalInt start = new FinalInt();
+                    int currentRow = 0;
                     List<CBCell> cells = generateTitle(useTargetSort, rowLength, summaryLength,
                             widget.isOrder(), widget.getChartSetting());
                     Iterator<CBCell> it = cells.iterator();
                     while (it.hasNext()) {
                         iter.getIteratorByPage(start.value).addCell(it.next());
                     }
-                    createCells(iter, start, currentRowNum);
+                    createCells(iter, start, currentRow);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -632,63 +632,63 @@ public class GroupExecutor extends AbstractNodeExecutor {
         return iter;
     }
 
-    private void createCells(DetailCellIterator iter, FinalInt start, int currentRowNum) throws Exception {
+    private void createCells(DetailCellIterator iter, FinalInt start, int currentRowIdx) throws Exception {
         Node n = getCubeNode();
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
         }
-        BIDimension[] rows = widget.getViewDimensions();
-        Object[] dimensionNames = new Object[rows.length];
+        BIDimension[] rowDimensions = widget.getViewDimensions();
+        Object[] dimensionNames = new Object[rowDimensions.length];
         while (n != null) {
-            List rowList = new ArrayList();
             Node temp = n;
-            for (TargetGettingKey key : widget.getTargetsKey()) {
-                rowList.add(temp.getSummaryValue(key));
-            }
-            currentRowNum++;
-            int newRow = currentRowNum & EXCEL_ROW_MODE_VALUE;
+
+            currentRowIdx++;
+            int newRow = currentRowIdx & EXCEL_ROW_MODE_VALUE;
             if (newRow == 0) {
                 iter.getIteratorByPage(start.value).finish();
                 start.value++;
             }
             StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+            int targetsKeyIndex = 0;
+            for (TargetGettingKey key : widget.getTargetsKey()) {
+                CBCell cell = createCells4Row(temp.getSummaryValue(key), rowDimensions.length, currentRowIdx, targetsKeyIndex);
+                pagedIterator.addCell(cell);
+                targetsKeyIndex++;
+            }
             //维度第一次出现即addCell
-            int i = rows.length;
+            int i = rowDimensions.length;
             while (temp.getParent() != null) {
                 int rowSpan = temp.getTotalLength();
                 Object data = temp.getData();
-                BIDimension dim = rows[--i];
+                BIDimension dim = rowDimensions[--i];
                 Object v = dim.getValueByType(data);
-                if (v != dimensionNames[i] || (i == rows.length -1)) {
-                    createCells4Dimension(pagedIterator, v, rowSpan, currentRowNum, i);
+                if (v != dimensionNames[i] || (i == rowDimensions.length -1)) {
+                    CBCell cell = createCells4Dimension(v, rowSpan, currentRowIdx, i);
+                    pagedIterator.addCell(cell);
                     dimensionNames[i] = v;
                 }
                 temp = temp.getParent();
             }
-
-            createCells4Row(pagedIterator, rowList, currentRowNum, rows.length);
             n = n.getSibling();
         }
     }
 
-    private void createCells4Row(StreamPagedIterator pagedIterator, List rowList, int currentRowNum, int dimLen) {
-        for (int i = 0; i < rowList.size(); i++) {
-            CBCell cell = new CBCell(rowList.get(i));
-            cell.setColumn(i + dimLen);
-            cell.setRow(currentRowNum);
+    private CBCell createCells4Row(Object v, int dimLen, int currentRowIdx, int targetsKeyIndex) {
+            CBCell cell = new CBCell(v);
+            cell.setColumn(targetsKeyIndex + dimLen);
+            cell.setRow(currentRowIdx);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
-            pagedIterator.addCell(cell);
-        }
+            return cell;
     }
 
-    private void createCells4Dimension(StreamPagedIterator pagedIterator, Object v, int rowSpan, int currentRow, int currentColumn) {
+    private CBCell createCells4Dimension(Object v, int rowSpan, int currentRowIdx, int currentColumn) {
         CBCell cell = new CBCell(v);
-        cell.setRow(currentRow);
+        cell.setRow(currentRowIdx);
         cell.setColumn(currentColumn);
         cell.setRowSpan(rowSpan);
         cell.setColumnSpan(1);
-        pagedIterator.addCell(cell);
+        return cell;
     }
 
     /**

@@ -125,7 +125,7 @@ public class CrossHeader extends Node implements Serializable {
             header.dealWithNode(index);
             n.addLeftChild(child);
             if (t != null) {
-                CubeReadingUtils.setSibing(t, child);
+                CubeReadingUtils.setSibling(t, child);
             }
             t = child;
         }
@@ -147,7 +147,7 @@ public class CrossHeader extends Node implements Serializable {
             top.dealWithChildTop(child, node);
             child.dealWithChildLeft(top, node);
             if (temp != null) {
-                CubeReadingUtils.setSibing(temp, node);
+                CubeReadingUtils.setSibling(temp, node);
             }
             temp = node;
         }
@@ -167,7 +167,7 @@ public class CrossHeader extends Node implements Serializable {
             baseNode.addTopChild(node);
             child.dealWithChildTop(left, node);
             if (temp != null) {
-                CubeReadingUtils.setSibing(temp, node);
+                CubeReadingUtils.setSibling(temp, node);
             }
             temp = node;
         }
@@ -188,7 +188,7 @@ public class CrossHeader extends Node implements Serializable {
             top.dealWithChildTop4Calculate(child, node, calculators);
             child.dealWithChildLeft4Calculate(top, node, calculators);
             if (temp != null) {
-                CubeReadingUtils.setSibing(temp, node);
+                CubeReadingUtils.setSibling(temp, node);
             }
             temp = node;
         }
@@ -213,7 +213,7 @@ public class CrossHeader extends Node implements Serializable {
             baseNode.addTopChild(node);
             child.dealWithChildTop4Calculate(left, node, calculators);
             if (temp != null) {
-                CubeReadingUtils.setSibing(temp, node);
+                CubeReadingUtils.setSibling(temp, node);
             }
             temp = node;
         }
@@ -281,7 +281,7 @@ public class CrossHeader extends Node implements Serializable {
                     continue;
                 }
                 if (tempNode != null) {
-                    CubeReadingUtils.setSibing(tempNode, child);
+                    CubeReadingUtils.setSibling(tempNode, child);
                 }
                 newnode.addChild(child);
                 tempNode = child;
@@ -309,7 +309,7 @@ public class CrossHeader extends Node implements Serializable {
             CrossHeader temp_node = (CrossHeader) childs.get(i);
             CrossHeader child = temp_node.createNewTargetValueNode(key);
             if (tempNode != null) {
-                CubeReadingUtils.setSibing(tempNode, child);
+                CubeReadingUtils.setSibling(tempNode, child);
             }
             n.addChild(child);
             tempNode = child;
