@@ -101,7 +101,7 @@ public class BICubeOperationManager {
             registeredFieldIndex.clear();
             tableSourceWatchers.clear();
             generateTransportBuilder(tableSourceSet, tablesNeed2GenerateMap);
-            generateFieldIndexBuilder(tableSourceSet);
+            generateFieldIndexBuilder(tableSourceSet, tablesNeed2GenerateMap);
             generateDataSourceFinishBuilder(tableSourceSet);
             subscribeDataSourceFinish();
         }
@@ -229,14 +229,14 @@ public class BICubeOperationManager {
     }
 
 
-    private void generateFieldIndexBuilder(Set<List<Set<CubeTableSource>>> tableSourceSet) {
+    private void generateFieldIndexBuilder(Set<List<Set<CubeTableSource>>> tableSourceSet, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
         Iterator<List<Set<CubeTableSource>>> it = tableSourceSet.iterator();
         while (it.hasNext()) {
-            generateSingleFieldIndex(it.next());
+            generateSingleFieldIndex(it.next(), tablesNeed2GenerateMap);
         }
     }
 
-    private void generateSingleFieldIndex(List<Set<CubeTableSource>> tableSourceSet) {
+    private void generateSingleFieldIndex(List<Set<CubeTableSource>> tableSourceSet, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
         Iterator<Set<CubeTableSource>> it = tableSourceSet.iterator();
         while (it.hasNext()) {
             Set<CubeTableSource> sameLevelTable = it.next();
@@ -252,7 +252,7 @@ public class BICubeOperationManager {
                             BIColumnKey targetColumnKey = columnKeyIterator.next();
                             BIOperation<Object> operation = new BIOperation<Object>(
                                     tableSource.getSourceID() + "_" + targetColumnKey.getFullName(),
-                                    getFieldIndexBuilder(cube, tableSource, field, targetColumnKey));
+                                    getFieldIndexBuilder(cube, integrityCube, tableSource, field, targetColumnKey, tablesNeed2GenerateMap));
                             ITopicTag topicTag = BITopicUtils.generateTopicTag(tableSource);
                             operation.setOperationTopicTag(topicTag);
                             operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(topicTag, targetColumnKey.getFullName()));
@@ -470,8 +470,8 @@ public class BICubeOperationManager {
         return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
     }
 
-    protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
-        return new BIFieldIndexGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
+    protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, Cube integrityCube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        return new BIFieldIndexGenerator(cube, integrityCube, tableSource, BICubeFieldSource, targetColumnKey, tablesNeed2GenerateMap);
     }
 
     protected BITableSourceBuildWatcher getTableWatcherBuilder(CubeTableEntityService tableEntityService) {

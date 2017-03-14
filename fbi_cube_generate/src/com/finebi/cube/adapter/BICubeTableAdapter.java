@@ -388,6 +388,7 @@ public class BICubeTableAdapter implements ICubeTableService {
                 return map.get(key);
             }
         }
+        BILoggerFactory.getLogger(this.getClass()).error("the field: " + biKey.getKey() + "is not found in the table: " + BILogHelper.logCubeLogTableSourceInfo(this.getId()));
         throw new BIKeyAbsentException();
     }
 

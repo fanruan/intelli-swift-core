@@ -35,16 +35,15 @@ public class BICubeOperationManagerTestTool extends BICubeOperationManager {
     }
 
 
-
     @Override
-    protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
-        return new BIFieldIndexBuilderTestTool(cube, tableSource, BICubeFieldSource, targetColumnKey);
+    protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, Cube integrityCube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        return new BIFieldIndexBuilderTestTool(cube, integrityCube, tableSource, BICubeFieldSource, targetColumnKey, tablesNeed2GenerateMap);
     }
 
 
     @Override
-    protected BISourceDataTransport getDataTransportBuilder(Cube cube,Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource updateSetting,Map<String, CubeTableSource> tablesNeed2GenerateMap) {
-        return new bisourcedatatransportTestTool(cube,integrityCube, tableSource, allSources, parent,tablesNeed2GenerateMap);
+    protected BISourceDataTransport getDataTransportBuilder(Cube cube, Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource updateSetting, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        return new bisourcedatatransportTestTool(cube, integrityCube, tableSource, allSources, parent, tablesNeed2GenerateMap);
     }
 
 

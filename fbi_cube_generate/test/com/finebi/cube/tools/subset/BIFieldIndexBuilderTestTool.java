@@ -8,6 +8,8 @@ import com.finebi.cube.tools.BICubeBuildProbeTool;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
+import java.util.Map;
+
 /**
  * This class created on 2016/4/13.
  *
@@ -26,11 +28,13 @@ public class BIFieldIndexBuilderTestTool extends BIFieldIndexGenerator {
 //        }
         return null;
     }
+
     @Override
     public void release() {
 
     }
-    public BIFieldIndexBuilderTestTool(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
-        super(cube, tableSource, hostBICubeFieldSource, targetColumnKey);
+
+    public BIFieldIndexBuilderTestTool(Cube cube, Cube integrityCube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        super(cube, integrityCube, tableSource, hostBICubeFieldSource, targetColumnKey, tablesNeed2GenerateMap);
     }
 }

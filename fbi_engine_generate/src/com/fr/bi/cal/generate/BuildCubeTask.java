@@ -79,7 +79,6 @@ public class BuildCubeTask implements CubeTask {
     private int retryNTimes;
 
 
-
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
         this.cubeBuildStuff = cubeBuildStuff;
         this.biUser = biUser;
@@ -255,7 +254,7 @@ public class BuildCubeTask implements CubeTask {
             tablesNeed2GenerateMap.put(tableSource.getSourceID(), tableSource);
         }
         operationManager.setVersionMap(cubeBuildStuff.getVersions());
-        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource(),tablesNeed2GenerateMap);
+        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource(), tablesNeed2GenerateMap);
         logTableDepend(cubeBuildStuff.getDependTableResource());
         operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet(), tablesNeed2GenerateMap);
         logRelationDepend(cubeBuildStuff.getCubeGenerateRelationSet());
