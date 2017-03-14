@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -17,7 +18,7 @@ import java.util.*;
 public class MultiChartWidget extends TableWidget {
 
     private static final long serialVersionUID = 8274724387345770447L;
-    private int type;
+    private WidgetType type;
     private String subType;
     private Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
     private Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
@@ -51,66 +52,26 @@ public class MultiChartWidget extends TableWidget {
             vjo.put(BIReportConstant.REGION.TARGET1, ja);
         }
         if(jo.has("type")){
-            type = jo.getInt("type");
+            type = WidgetType.parse(jo.getInt("type"));
         }
         if(jo.has("sub_type")){
             subType = jo.getString("sub_type");
         }
-        if(jo.has("clicked")){
-            JSONObject c = jo.getJSONObject("clicked");
-            Iterator it = c.keys();
-            while (it.hasNext()){
-                String key = it.next().toString();
-                clicked.put(key, c.getJSONArray(key));
-            }
-        }
+//        if(jo.has("clicked")){
+//            JSONObject c = jo.getJSONObject("clicked");
+//            Iterator it = c.keys();
+//            while (it.hasNext()){
+//                String key = it.next().toString();
+//                clicked.put(key, c.getJSONArray(key));
+//            }
+//        }
         super.parseJSON(jo, userId);
         createDimensionAndTargetMap();
     }
 
-    private void createDimensionAndTargetMap() {
-        for(BIDimension dimension : this.getDimensions()){
-            for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
-                Integer key = entry.getKey();
-                if(key <= Integer.parseInt(BIReportConstant.REGION.DIMENSION2)){
-                    List<String> dIds = entry.getValue();
-                    if(dIds.contains(dimension.getValue())){
-                        dimensionsIdMap.put(dimension.getValue(), dimension);
-                        break;
-                    }
-                }
-            }
-        }
-        for(BISummaryTarget target : this.getTargets()){
-            for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
-                Integer key = entry.getKey();
-                if(key >= Integer.parseInt(BIReportConstant.REGION.TARGET1)){
-                    List<String> dIds = entry.getValue();
-                    if(dIds.contains(target.getValue())){
-                        targetsIdMap.put(target.getValue(), target);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
     @Override
-    public int getType() {
+    public WidgetType getType() {
         return type;
-    }
-
-    private void parseView(JSONObject jo) throws Exception {
-        Iterator it = jo.keys();
-        while (it.hasNext()) {
-            Integer region = Integer.parseInt(it.next().toString());
-            List<String> dimensionIds = new ArrayList<String>();
-            view.put(region, dimensionIds);
-            JSONArray tmp =  jo.getJSONArray(region.toString());
-            for(int j = 0; j < tmp.length(); j++){
-                dimensionIds.add(tmp.getString(j));
-            }
-        }
     }
 
     public BIDimension getCategoryDimension(){

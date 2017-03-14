@@ -82,7 +82,6 @@ public class StringControlWidget extends TableWidget {
         PY, START_WITH
     }
 
-<<<<<<< HEAD
     private JSONObject switchGetResultMethod(ICubeColumnIndexReader reader, Set<String> selected_value, SimpleIntArray groupArray, SearchMode mode) throws JSONException {
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
             return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
@@ -92,12 +91,6 @@ public class StringControlWidget extends TableWidget {
         } else {
             return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, groupArray, mode);
         }
-=======
-    private abstract class SimpleIntArray {
-        public abstract int get(int index);
-
-        public abstract int size();
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
     }
 
     //超过50w只搜索开头是
@@ -118,99 +111,7 @@ public class StringControlWidget extends TableWidget {
                 end = ArrayLookupHelper.getEndIndex4StartWith(reader, keywords[i], comparator) + 1;
                 limitStarts[i] = start;
                 limitEnds[i] = end;
-<<<<<<< HEAD
             }
-=======
-            }
-        } else {
-            if (limitEnds.length > 0) {
-                limitEnds[0] = end;
-            }
-        }
-        SimpleIntArray groupArray;
-        if (gvi instanceof AllShowRoaringGroupValueIndex) {
-            int size = 0;
-            if (keywords.length == 0) {
-                size = end;
-            }
-            final int[] intevals = new int[keywords.length];
-            for (int i = 0, len = keywords.length; i < len; i++) {
-                size += (limitStarts[i] == -1 ? 0 : limitEnds[i] - limitStarts[i]);
-                intevals[i] = size;
-            }
-            final int fsize = size, fstart = start;
-            groupArray = new SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    for (int i = intevals.length - 1; i >= 0; i--) {
-                        if (i == 0) {
-                            return index + limitStarts[0];
-                        }
-                        if (index < intevals[i] && index >= intevals[i - 1]) {
-                            return index - intevals[i - 1] + limitStarts[i];
-                        }
-                    }
-                    return index + fstart;
-                }
-
-                @Override
-                public int size() {
-                    return fsize;
-                }
-            };
-        } else {
-            final int[] groupIndex = new int[getter.getGroupSize()];
-            Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
-            gvi.Traversal(new SingleRowTraversalAction() {
-                @Override
-                public void actionPerformed(int row) {
-                    int groupRow = getter.getPositionOfGroupByRow(row);
-                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
-                        groupIndex[groupRow] = groupRow;
-                    }
-                }
-            });
-            final IntArray array = new IntArray();
-            if (keywords.length > 0) {
-                for (int i = 0, len = keywords.length; i < len; i++) {
-                    start = limitStarts[i];
-                    end = limitEnds[i];
-                    if (start != -1) {
-                        for (int j = start; j < end; j++) {
-                            if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
-                                array.add(j);
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (start != -1) {
-                    for (int j = start; j < end; j++) {
-                        if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
-                            array.add(j);
-                        }
-                    }
-                }
-            }
-
-            groupArray = new SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    return array.get(index);
-                }
-
-                @Override
-                public int size() {
-                    return array.size;
-                }
-            };
-        }
-        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
-            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
-        }
-        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1) {
-            return getSearchResult(reader, selected_value, 0, groupArray.size(), groupArray, mode);
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         } else {
             if (limitEnds.length > 0) {
                 limitEnds[0] = end;
@@ -288,10 +189,7 @@ public class StringControlWidget extends TableWidget {
             for (String keyword : keys) {
                 if (match(ob.toString(), keyword, selectedValue, SearchMode.PY)) {
                     count++;
-<<<<<<< HEAD
                     break;
-=======
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                 }
             }
         }
@@ -345,10 +243,6 @@ public class StringControlWidget extends TableWidget {
                 keywords = new String[1];
                 keywords[0] = keyword;
             }
-<<<<<<< HEAD
-=======
-
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
         }
         if (this.getTargets().length > 0) {
             needDoLoadGroup = true;
@@ -368,7 +262,6 @@ public class StringControlWidget extends TableWidget {
                 continue;
             }
             String str = ob.toString();
-<<<<<<< HEAD
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, SearchMode.PY)) {
                     if (matched >= start && matched < end) {
@@ -389,29 +282,6 @@ public class StringControlWidget extends TableWidget {
         return hasNext;
     }
 
-=======
-
-            for (String keyword : keys) {
-                if (match(str, keyword, selectedValue, SearchMode.PY)) {
-                    if (matched >= start && matched < end) {
-                        if (ComparatorUtils.equals(keyword, str)) {
-                            match.add(str);
-                        } else {
-                            find.add(str);
-                        }
-                    } else if (matched >= end) {
-                        hasNext = true;
-                        break outer;
-                    }
-                    matched++;
-                    break;
-                }
-            }
-        }
-        return hasNext;
-    }
-
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
     private boolean getList(List<Object> list, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match) {
         boolean hasNext = false;
         String[] keys = keywords;
@@ -474,11 +344,7 @@ public class StringControlWidget extends TableWidget {
             keys = new String[]{""};
         }
         outer:
-<<<<<<< HEAD
         for (int i = array.size() - 1; i > 0; i--) {
-=======
-        for (int i = array.size() - 1; i > -1; i--) {
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
             Object ob = reader.getGroupValue(array.get(i));
             String str = ob.toString();
             for (String keyword : keys) {
