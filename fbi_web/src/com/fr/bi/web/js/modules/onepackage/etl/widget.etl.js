@@ -233,7 +233,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             title: BI.i18nText("BI-Save"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT,
             handler: function () {
-                self.fireEvent(BI.ETL.EVENT_SAVE, self.model.getValue());
+                    self.fireEvent(BI.ETL.EVENT_SAVE, self.model.getValue());
             }
         });
         var removeButton = BI.createWidget({
