@@ -20,12 +20,9 @@ import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
-
 import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManager;
-
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.base.datasource.BIConnectionProvider;
-
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.fs.FBIConfigProvider;
@@ -34,22 +31,13 @@ import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
 import com.fr.bi.conf.records.BICubeTaskRecordManager;
-
-import com.fr.bi.conf.tablelock.BIConfTableLock;
+import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
 import com.fr.bi.fs.*;
 import com.fr.bi.resource.*;
 import com.fr.bi.stable.utils.BIDBUtils;
-
-import com.fr.bi.conf.report.BIFSReportProvider;
-import com.fr.bi.fs.*;
-import com.fr.bi.resource.ResourceConstants;
-import com.fr.bi.resource.ResourceHelper;
-import com.fr.bi.services.Service4BIH5;
-import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.tool.BIReadReportProvider;
 import com.fr.bi.tool.BIReadReportUtils;
-
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
@@ -639,8 +627,6 @@ public class BICoreModule extends AbstractModule {
 
         BaseResourceHelper.FormulaTransmitter.transmit(BaseResourceHelper.getFormulaCollectionJS(), locales);
 
-        ResourceHelper.FormulaTransmitter.transmit(ResourceHelper.getFormulaCollectionJS(), locales);
-
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_THIRD_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
@@ -671,9 +657,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIDezi(),
                 new Service4BIBase(),
 
-                new Service4FineCube(),
-
-                new Service4BIH5()
+                new Service4FineCube()
         };
     }
 

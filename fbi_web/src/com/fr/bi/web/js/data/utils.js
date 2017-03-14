@@ -362,15 +362,9 @@ Data.Utils = {
                     if(BI.has(left, "c")){
                         data = BI.map(left.c, function (idx, obj) {
                             var value = obj.n, x = obj.n;
-<<<<<<< HEAD
                             if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
                                 var date = new Date(BI.parseInt(x));
                                 x = date.print("%Y-%X-%d");
-=======
-                            var seriesValue = obj.s.c[id].s[0];
-                            if (BI.isNotNull(cataGroup)) {
-                                x = _getFormatDateText(cataGroup.type, x);
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                             }
                             return {
                                 "x": x,
@@ -401,15 +395,9 @@ Data.Utils = {
                 return BI.map(columnSizeArray, function (idx, value) {
                     var adjustData = BI.map(data.c, function (id, item) {
                         var value = item.n, x = item.n;
-<<<<<<< HEAD
-                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                            var date = new Date(BI.parseInt(x));
-                            x = date.print("%Y-%X-%d");
-=======
                         var seriesValue = item.s[idx];
                         if (BI.isNotNull(cataGroup)) {
                             x = _getFormatDateText(cataGroup.type, x);
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                         }
                         return {
                             x: x,
@@ -1737,13 +1725,6 @@ Data.Utils = {
                     case BICst.SCALE_SETTING.CUSTOM:
                         if (styles.length !== 0) {
                             BI.each(styles, function (idx, style) {
-<<<<<<< HEAD
-                                range.push({
-                                    color: style.color,
-                                    from: style.range.min,
-                                    to: style.range.max
-                                });
-=======
                                 if(style.range.max) {
                                     range.push({
                                         color: style.color || "rgba(255,255,255,0)",
@@ -1758,7 +1739,6 @@ Data.Utils = {
                                         to: to,
                                     });
                                 }
->>>>>>> 67b55d486e769f445942f15883303ca839ffd092
                                 color = style.color;
                                 conditionMax = style.range.max
                             });
