@@ -1,9 +1,9 @@
 package com.finebi.cube.conf.relation.relation;
 
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
-import com.finebi.cube.relation.BITableRelation;
 import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
@@ -22,7 +22,8 @@ public class BIRelationContainerManager implements BIRelationContainerService {
 
     @Override
     public void addRelation(BITableRelation relation) throws BIRelationDuplicateException {
-        if (!contain(relation)) {
+        boolean isSelfCircle = isSelfCircleRelation(relation);
+        if (!contain(relation) && !isSelfCircle) {
             allRelations.add(relation);
         } else {
             throw new BIRelationDuplicateException();
@@ -43,7 +44,20 @@ public class BIRelationContainerManager implements BIRelationContainerService {
 
     @Override
     public BIRelationContainer getRelationContainer() {
-        return allRelations;
+        BIRelationContainer relations = new BIRelationContainer();
+        Iterator<BITableRelation> iterator = allRelations.getContainer().iterator();
+        while (iterator.hasNext()) {
+            BITableRelation relation = iterator.next();
+            boolean isSelfCircleRelation = isSelfCircleRelation(relation);
+            if (!isSelfCircleRelation) {
+                relations.add(relation);
+            }
+        }
+        return relations;
+    }
+
+    private boolean isSelfCircleRelation(BITableRelation relation) {
+        return ComparatorUtils.equals(relation.getPrimaryTable().getTableSource().getSourceID(), relation.getForeignTable().getTableSource().getSourceID());
     }
 
     @Override
