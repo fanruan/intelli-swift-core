@@ -3,9 +3,7 @@ package com.fr.bi.conf.base.datasource;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
-import com.fr.bi.exception.BIRuntimeException;
 import com.fr.bi.stable.data.db.DataLinkInformation;
-import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -196,34 +194,25 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
     @Override
     public void updateConnection(String linkData, String oldName) throws Exception {
-        throw new BIRuntimeException("Code Conflicts!");
+        JSONObject linkDataJo = new JSONObject(linkData);
+        String newName = linkDataJo.optString("name");
+        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
+        if (!ComparatorUtils.equals(oldName, newName)) {
+            datasourceManager.renameConnection(oldName, newName);
+        }
+        DataLinkInformation dl = new DataLinkInformation();
+        dl.parseJSON(linkDataJo);
 
-//        JSONObject linkDataJo = new JSONObject(linkData);
-//        String newName = linkDataJo.optString("name");
-//        DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
-//        if (!ComparatorUtils.equals(oldName, newName)) {
-//            datasourceManager.renameConnection(oldName, newName);
-//        }
-//
-//        BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
-//        datasourceManager.putConnection(newName, jdbcDatabaseConnection);
-//        long createBy = getCreateBy(oldName, userId);
-//        long initTime = getInitTime(oldName);
-//
-//        DataLinkInformation dl = new DataLinkInformation();
-//        dl.parseJSON(linkDataJo);
-//
-//        Connection databaseConnection = dl.createDatabaseConnection();
-//        datasourceManager.putConnection(newName, databaseConnection);
-//
-//        connMap.remove(oldName);
-//        connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null), createBy, initTime));
-//        try {
-//            FRContext.getCurrentEnv().writeResource(datasourceManager);
-//            FRContext.getCurrentEnv().writeResource(this);
-//        } catch (Exception e) {
-//            BILoggerFactory.getLogger().error(e.getMessage(), e);
-//        }
+        Connection databaseConnection = dl.createDatabaseConnection();
+        datasourceManager.putConnection(newName, databaseConnection);
+        connMap.remove(oldName);
+        connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null)));
+        try {
+            FRContext.getCurrentEnv().writeResource(datasourceManager);
+            FRContext.getCurrentEnv().writeResource(this);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
     }
 
     @Override
