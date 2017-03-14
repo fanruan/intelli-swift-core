@@ -28,7 +28,9 @@ BICst.FULL_MONTH_NAMES = [
     BI.i18nText("BI-December")];
 
 //full quarter names
-BICst.FULL_QUARTER_NAMES = [BI.i18nText("BI-Quarter_1"),
+BICst.FULL_QUARTER_NAMES = [
+    BI.i18nText("BI-Quarter_1"),
+    BI.i18nText("BI-Quarter_1"),
     BI.i18nText("BI-Quarter_2"),
     BI.i18nText("BI-Quarter_3"),
     BI.i18nText("BI-Quarter_4")];
