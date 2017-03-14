@@ -1,16 +1,12 @@
 package com.fr.bi.h5.services;
 
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.analyze.session.BIWeblet;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.fs.web.service.ServiceUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.web.ParameterConsts;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -39,16 +35,16 @@ public class H5InitAction extends ActionNoSessionCMD {
      * @return 注释
      */
     public static void dealWithWebPage(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String id = WebUtils.getHTTPRequestParameter(req, "id");
-        long currentLoginUserId = ServiceUtils.getCurrentUserID(req);
-        String createUserId = WebUtils.getHTTPRequestParameter(req, "createBy");
-        long templateCreateUserId = Long.parseLong(createUserId);
-        BIReportNode node = null;
-        if (id != null) {
-            node = BIDAOUtils.getBIDAOManager().findByID(Long.parseLong(id), templateCreateUserId);
-        }
-        JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(node);
-        dealWithPane(req, res, new BIWeblet(node), reportSetting, node);
+//        String id = WebUtils.getHTTPRequestParameter(req, "id");
+//        long currentLoginUserId = ServiceUtils.getCurrentUserID(req);
+//        String createUserId = WebUtils.getHTTPRequestParameter(req, "createBy");
+//        long templateCreateUserId = Long.parseLong(createUserId);
+//        BIReportNode node = null;
+//        if (id != null) {
+//            node = BIDAOUtils.findByID(Long.parseLong(id), templateCreateUserId);
+//        }
+//        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+//        dealWithPane(req, res, new BIWeblet(node), reportSetting, node);
     }
 
     private static void dealWithPane(HttpServletRequest req,
