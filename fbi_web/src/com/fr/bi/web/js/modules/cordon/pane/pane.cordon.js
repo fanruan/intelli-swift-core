@@ -94,64 +94,64 @@ BI.CordonPane = BI.inherit(BI.Widget, {
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         this.numberLevel = BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.magnify = 1;
-        switch (type) {
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.FALL_AXIS:
-            case BICst.WIDGET.LINE:
-            case BICst.WIDGET.AREA:
-            case BICst.WIDGET.ACCUMULATE_AREA:
-            case BICst.WIDGET.COMPARE_AREA:
-            case BICst.WIDGET.RANGE_AREA:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                if(BI.Utils.isTargetRegion1ByRegionType(regionType)){
-                    this.numberLevel = BI.Utils.getWSChartLeftYNumberLevelByID(wId);
-                }
-                if(BI.Utils.isTargetRegion2ByRegionType(regionType)){
-                    this.numberLevel = BI.Utils.getWSChartRightYNumberLevelByID(wId);
-                }
-                if(BI.Utils.isTargetRegion3ByRegionType(regionType)){
-                    this.numberLevel = BI.Utils.getWSRightYAxis2NumLevelByID(wId);
-                }
-                break;
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.COMPARE_BAR:
-                if(BI.Utils.isTargetRegion1ByRegionType(regionType) || BI.Utils.isTargetRegion2ByRegionType(regionType)){
-                    this.numberLevel = BI.Utils.getWSXAxisNumLevelByID(wId);
-                }
-                break;
-            case BICst.WIDGET.SCATTER:
-            case BICst.WIDGET.BUBBLE:
-                if(BI.Utils.isTargetRegion1ByRegionType(regionType)){
-                    this.numberLevel = BI.Utils.getWSChartLeftYNumberLevelByID(wId);
-                }
-                if(BI.Utils.isTargetRegion2ByRegionType(regionType)){
-                    this.numberLevel = BI.Utils.getWSXAxisNumLevelByID(wId);
-                }
-                break;
-        }
-        switch (this.numberLevel) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                this.magnify = 0.01;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                this.magnify = 1;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                this.magnify = 10000;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                this.magnify = 1000000;
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                this.magnify = 100000000;
-                break;
-        }
+        //switch (type) {
+        //    case BICst.WIDGET.AXIS:
+        //    case BICst.WIDGET.ACCUMULATE_AXIS:
+        //    case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+        //    case BICst.WIDGET.COMPARE_AXIS:
+        //    case BICst.WIDGET.FALL_AXIS:
+        //    case BICst.WIDGET.LINE:
+        //    case BICst.WIDGET.AREA:
+        //    case BICst.WIDGET.ACCUMULATE_AREA:
+        //    case BICst.WIDGET.COMPARE_AREA:
+        //    case BICst.WIDGET.RANGE_AREA:
+        //    case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+        //    case BICst.WIDGET.COMBINE_CHART:
+        //    case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+        //        if(BI.Utils.isTargetRegion1ByRegionType(regionType)){
+        //            this.numberLevel = BI.Utils.getWSChartLeftYNumberLevelByID(wId);
+        //        }
+        //        if(BI.Utils.isTargetRegion2ByRegionType(regionType)){
+        //            this.numberLevel = BI.Utils.getWSChartRightYNumberLevelByID(wId);
+        //        }
+        //        if(BI.Utils.isTargetRegion3ByRegionType(regionType)){
+        //            this.numberLevel = BI.Utils.getWSChartRightY2NumberLevelByID(wId);
+        //        }
+        //        break;
+        //    case BICst.WIDGET.BAR:
+        //    case BICst.WIDGET.ACCUMULATE_BAR:
+        //    case BICst.WIDGET.COMPARE_BAR:
+        //        if(BI.Utils.isTargetRegion1ByRegionType(regionType) || BI.Utils.isTargetRegion2ByRegionType(regionType)){
+        //            this.numberLevel = BI.Utils.getWSChartLeftYNumberLevelByID(wId);
+        //        }
+        //        break;
+        //    case BICst.WIDGET.SCATTER:
+        //    case BICst.WIDGET.BUBBLE:
+        //        if(BI.Utils.isTargetRegion1ByRegionType(regionType)){
+        //            this.numberLevel = BI.Utils.getWSChartLeftYNumberLevelByID(wId);
+        //        }
+        //        if(BI.Utils.isTargetRegion2ByRegionType(regionType)){
+        //            this.numberLevel = BI.Utils.getWSChartRightYNumberLevelByID(wId);
+        //        }
+        //        break;
+        //}
+        //switch (this.numberLevel) {
+        //    case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+        //        this.magnify = 0.01;
+        //        break;
+        //    case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+        //        this.magnify = 1;
+        //        break;
+        //    case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+        //        this.magnify = 10000;
+        //        break;
+        //    case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+        //        this.magnify = 1000000;
+        //        break;
+        //    case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+        //        this.magnify = 100000000;
+        //        break;
+        //}
         var items = [];
         BI.each(cordon, function(idx, cor){
             items.push({

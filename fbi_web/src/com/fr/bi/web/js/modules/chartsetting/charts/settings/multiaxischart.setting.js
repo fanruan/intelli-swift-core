@@ -150,16 +150,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //数量级
-        this.leftYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
-        });
 
         //单位
         this.leftYUnit = BI.createWidget({
@@ -171,17 +161,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.leftYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
-        });
-
-        this.leftYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -313,9 +292,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
@@ -326,9 +302,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYSeparator]
@@ -367,17 +340,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        this.rightYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.rightYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
-        });
-
         this.rightYUnit = BI.createWidget({
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
@@ -387,17 +349,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.rightYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
-        });
-
-        this.rightYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.rightYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -527,9 +478,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
@@ -540,9 +488,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightYNumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.rightYSeparator]
@@ -581,17 +526,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        this.rightY2NumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.rightY2NumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
-        });
-
         this.rightY2Unit = BI.createWidget({
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
@@ -601,17 +535,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.rightY2Unit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
-        });
-
-        this.rightY2NumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.rightY2NumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -741,9 +664,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightY2NumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     lgap: constant.SIMPLE_H_GAP,
@@ -755,9 +675,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightY2NumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.rightY2Separator]
@@ -1221,8 +1138,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartSyle.setValue(BI.Utils.getWSChartStyleByID(wId));
 
-        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
-        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
@@ -1239,8 +1154,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
         this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
 
-        this.rightYNumberFormat.setValue(BI.Utils.getWSChartRightYNumberFormatByID(wId));
-        this.rightYNumberLevel.setValue(BI.Utils.getWSChartRightYNumberLevelByID(wId));
         this.rightYUnit.setValue(BI.Utils.getWSChartRightYUnitByID(wId));
         this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
         this.rightYTitle.setValue(titleRY);
@@ -1257,8 +1170,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYTitleStyle.setVisible(this.rightYShowTitle.isSelected());
         this.rightYLabelStyle.setVisible(this.rightYShowLabel.isSelected());
 
-        this.rightY2NumberFormat.setValue(BI.Utils.getWSChartRightY2NumberFormatByID(wId));
-        this.rightY2NumberLevel.setValue(BI.Utils.getWSChartRightY2NumberLevelByID(wId));
         this.rightY2Unit.setValue(BI.Utils.getWSChartRightYAxis2UnitByID(wId));
         this.rightY2ShowTitle.setSelected(BI.Utils.getWSChartRightY2ShowTitleByID(wId));
         this.rightY2Title.setValue(titleRY2);
@@ -1317,8 +1228,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             chartColor: this.chartColor.getValue()[0],
             chartStyle: this.chartSyle.getValue()[0],
 
-            leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
-            leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
             leftYUnit: this.leftYUnit.getValue(),
             leftYShowTitle: this.leftYShowTitle.isSelected(),
             leftYTitle: this.leftYTitle.getValue(),
@@ -1331,8 +1240,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             leftYLineColor: this.leftYLineColor.getValue(),
             leftYTitleStyle: this.leftYTitleStyle.getValue(),
 
-            rightYNumberFormat: this.rightYNumberFormat.getValue()[0],
-            rightYNumberLevel: this.rightYNumberLevel.getValue()[0],
             rightYUnit: this.rightYUnit.getValue(),
             rightYShowTitle: this.rightYShowTitle.isSelected(),
             rightYTitle: this.rightYTitle.getValue(),
@@ -1345,8 +1252,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             rightYLineColor: this.rightYLineColor.getValue(),
             rightYTitleStyle: this.rightYTitleStyle.getValue(),
 
-            rightY2NumberFormat: this.rightY2NumberFormat.getValue()[0],
-            rightY2NumberLevel: this.rightY2NumberLevel.getValue()[0],
             rightY2Unit: this.rightY2Unit.getValue(),
             rightY2ShowTitle: this.rightY2ShowTitle.isSelected(),
             rightY2Title: this.rightY2Title.getValue(),

@@ -143,16 +143,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //数量级和单位
-        this.leftYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
 
-        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
-        });
 
         this.leftYUnit = BI.createWidget({
             type: "bi.sign_editor",
@@ -166,16 +157,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
-        this.leftYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
 
-        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
-        });
 
         //千分符
         this.leftYSeparator = BI.createWidget({
@@ -351,9 +333,6 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
@@ -462,7 +441,6 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.maxScale.setValue(BI.Utils.getWSChartMaxScaleByID(wId));
         this.showPercentage.setValue(BI.Utils.getWSChartShowPercentageByID(wId));
 
-        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSDashboardUnitByID(wId));
         this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
 
@@ -484,7 +462,6 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             maxScale: this.maxScale.getValue(),
             showPercentage: this.showPercentage.getValue()[0],
 
-            leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
             leftYUnit: this.leftYUnit.getValue(),
             leftYSeparator: this.leftYSeparator.isSelected(),
 

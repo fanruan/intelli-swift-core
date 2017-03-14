@@ -150,16 +150,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //格式和数量级
-        this.leftYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
-        });
 
         //单位
         this.leftYUnit = BI.createWidget({
@@ -171,17 +161,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.leftYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
-        });
-
-        this.leftYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -301,9 +280,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
@@ -314,9 +290,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYSeparator]
@@ -352,17 +325,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        this.rightYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.rightYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
-        });
-
         this.rightYUnit = BI.createWidget({
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
@@ -372,17 +334,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.rightYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
-        });
-
-        this.rightYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.rightYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -502,9 +453,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
@@ -515,9 +463,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightYNumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.rightYSeparator]
@@ -955,9 +900,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
         this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
         this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
@@ -972,8 +915,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
         this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
 
-        this.rightYNumberFormat.setValue(BI.Utils.getWSChartRightYNumberFormatByID(wId));
-        this.rightYNumberLevel.setValue(BI.Utils.getWSChartRightYNumberLevelByID(wId));
         this.rightYUnit.setValue(BI.Utils.getWSChartRightYUnitByID(wId));
         this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
         this.rightYTitle.setValue(titleRY);
@@ -1030,8 +971,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             chartStyle: this.chartStyle.getValue()[0],
             widgetBG: this.widgetBG.getValue(),
 
-            leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
-            leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
             leftYUnit: this.leftYUnit.getValue(),
             leftYShowTitle: this.leftYShowTitle.isSelected(),
             leftYTitle: this.leftYTitle.getValue(),
@@ -1043,8 +982,6 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             leftYLineColor: this.leftYLineColor.getValue(),
             leftYTitleStyle: this.leftYTitleStyle.getValue(),
 
-            rightYNumberFormat: this.rightYNumberFormat.getValue()[0],
-            rightYNumberLevel: this.rightYNumberLevel.getValue()[0],
             rightYUnit: this.rightYUnit.getValue(),
             rightYShowTitle: this.rightYShowTitle.isSelected(),
             rightYTitle: this.rightYTitle.getValue(),

@@ -152,16 +152,6 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //数量级
-        this.leftYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
-        });
 
         //单位
         this.leftYUnit = BI.createWidget({
@@ -176,16 +166,6 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
         });
 
-        this.leftYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
-        });
 
         //千分符
         this.leftYSeparator = BI.createWidget({
@@ -304,9 +284,6 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
@@ -317,9 +294,6 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYSeparator]
@@ -726,10 +700,8 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
-        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYTitle.setValue(titleLY);
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSChartLeftYShowCustomScaleByID(wId));
         this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
@@ -782,8 +754,6 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             chartStyle: this.chartStyle.getValue()[0],
             widgetBG: this.widgetBG.getValue(),
 
-            leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
-            leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
             leftYUnit: this.leftYUnit.getValue(),
             leftYShowTitle: this.leftYShowTitle.isSelected(),
             leftYTitle: this.leftYTitle.getValue(),

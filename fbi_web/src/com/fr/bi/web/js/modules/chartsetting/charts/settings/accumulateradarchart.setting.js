@@ -147,16 +147,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //数量级
-        this.leftYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
-        });
 
         //单位
         this.leftYUnit = BI.createWidget({
@@ -172,16 +162,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //格式
-        this.leftYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
 
-        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
-        });
 
         //千分符
         this.leftYSeparator = BI.createWidget({
@@ -269,9 +250,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Num_Level"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
@@ -282,9 +260,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYSeparator]
@@ -540,9 +515,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.radarChartType.setValue(BI.Utils.getWSRadarChartTypeByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
         this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
         this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
@@ -580,9 +553,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             radarChartType: this.radarChartType.getValue()[0],
             widgetBG: this.widgetBG.getValue(),
 
-            leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
             leftYUnit: this.leftYUnit.getValue(),
-            leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
             leftYSeparator: this.leftYSeparator.isSelected(),
             leftYShowLabel: this.leftYShowLabel.isSelected(),
             leftYLabelStyle: this.leftYLabelStyle.getValue(),

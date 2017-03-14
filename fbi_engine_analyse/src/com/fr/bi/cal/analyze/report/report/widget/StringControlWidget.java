@@ -82,10 +82,15 @@ public class StringControlWidget extends TableWidget {
         PY, START_WITH
     }
 
-    private abstract class SimpleIntArray {
-        public abstract int get(int index);
-
-        public abstract int size();
+    private JSONObject switchGetResultMethod(ICubeColumnIndexReader reader, Set<String> selected_value, SimpleIntArray groupArray, SearchMode mode) throws JSONException {
+        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
+            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
+        }
+        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1) {
+            return getSearchResult(reader, selected_value, 0, groupArray.size(), groupArray, mode);
+        } else {
+            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, groupArray, mode);
+        }
     }
 
     //超过50w只搜索开头是
@@ -112,92 +117,8 @@ public class StringControlWidget extends TableWidget {
                 limitEnds[0] = end;
             }
         }
-        SimpleIntArray groupArray;
-        if (gvi instanceof AllShowRoaringGroupValueIndex) {
-            int size = 0;
-            if (keywords.length == 0) {
-                size = end;
-            }
-            final int[] intevals = new int[keywords.length];
-            for (int i = 0, len = keywords.length; i < len; i++) {
-                size += (limitStarts[i] == -1 ? 0 : limitEnds[i] - limitStarts[i]);
-                intevals[i] = size;
-            }
-            final int fsize = size, fstart = start;
-            groupArray = new SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    for (int i = intevals.length - 1; i >= 0; i--) {
-                        if (i == 0) {
-                            return index + limitStarts[0];
-                        }
-                        if (index < intevals[i] && index >= intevals[i - 1]) {
-                            return index - intevals[i - 1] + limitStarts[i];
-                        }
-                    }
-                    return index + fstart;
-                }
-
-                @Override
-                public int size() {
-                    return fsize;
-                }
-            };
-        } else {
-            final int[] groupIndex = new int[getter.getGroupSize()];
-            Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
-            gvi.Traversal(new SingleRowTraversalAction() {
-                @Override
-                public void actionPerformed(int row) {
-                    int groupRow = getter.getPositionOfGroupByRow(row);
-                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
-                        groupIndex[groupRow] = groupRow;
-                    }
-                }
-            });
-            final IntArray array = new IntArray();
-            if (keywords.length > 0) {
-                for (int i = 0, len = keywords.length; i < len; i++) {
-                    start = limitStarts[i];
-                    end = limitEnds[i];
-                    if (start != -1) {
-                        for (int j = start; j < end; j++) {
-                            if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
-                                array.add(j);
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (start != -1) {
-                    for (int j = start; j < end; j++) {
-                        if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
-                            array.add(j);
-                        }
-                    }
-                }
-            }
-
-            groupArray = new SimpleIntArray() {
-                @Override
-                public int get(int index) {
-                    return array.get(index);
-                }
-
-                @Override
-                public int size() {
-                    return array.size;
-                }
-            };
-        }
-        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
-            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
-        }
-        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1) {
-            return getSearchResult(reader, selected_value, 0, groupArray.size(), groupArray, mode);
-        } else {
-            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, groupArray, mode);
-        }
+        SimpleIntArray groupArray = this.createGroupArray(start, end, limitStarts, limitEnds, getter, gvi);
+        return switchGetResultMethod(reader, selected_value, groupArray, mode);
     }
 
     private JSONObject getCustomGroupResult(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, DimensionCalculator calculator) throws JSONException {
@@ -268,6 +189,7 @@ public class StringControlWidget extends TableWidget {
             for (String keyword : keys) {
                 if (match(ob.toString(), keyword, selectedValue, SearchMode.PY)) {
                     count++;
+                    break;
                 }
             }
         }
@@ -321,7 +243,6 @@ public class StringControlWidget extends TableWidget {
                 keywords = new String[1];
                 keywords[0] = keyword;
             }
-
         }
         if (this.getTargets().length > 0) {
             needDoLoadGroup = true;
@@ -341,7 +262,6 @@ public class StringControlWidget extends TableWidget {
                 continue;
             }
             String str = ob.toString();
-
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, SearchMode.PY)) {
                     if (matched >= start && matched < end) {

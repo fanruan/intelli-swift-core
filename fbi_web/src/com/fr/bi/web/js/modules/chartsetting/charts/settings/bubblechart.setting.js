@@ -316,17 +316,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        this.rightYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.rightYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
         this.rightYUnit = BI.createWidget({
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
@@ -336,17 +325,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.rightYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.rightYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.rightYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -468,9 +446,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     lgap: constant.SIMPLE_H_GAP,
@@ -482,9 +457,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightYNumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.rightYSeparator]
@@ -521,16 +493,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //数量级
-        this.leftYNumberLevel = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
 
-        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
 
         //单位
         this.leftYUnit = BI.createWidget({
@@ -542,17 +505,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.leftYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
-        });
-
-        this.leftYNumberFormat = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -675,9 +627,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberLevel]
-                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     lgap: constant.SIMPLE_H_GAP,
@@ -689,9 +638,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.leftYNumberFormat]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYSeparator]
@@ -1013,8 +959,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.bubbleSizeTo.setValue(BI.Utils.getWSChartBubbleSizeToByID(wId));
 
         //x轴
-        this.rightYNumberFormat.setValue(BI.Utils.getWSChartRightYNumberFormatByID(wId));
-        this.rightYNumberLevel.setValue(BI.Utils.getWSChartRightYNumberLevelByID(wId));
         this.rightYUnit.setValue(BI.Utils.getWSChartRightYUnitByID(wId));
         this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
         this.rightYTitle.setValue(titleX);
@@ -1030,8 +974,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYTitleStyle.setVisible(this.rightYShowTitle.isSelected());
 
         //y轴
-        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
-        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
@@ -1080,8 +1022,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             bubbleSizeFrom: this.bubbleSizeFrom.getValue(),
             bubbleSizeTo: this.bubbleSizeTo.getValue(),
 
-            rightYNumberFormat: this.rightYNumberFormat.getValue()[0],
-            rightYNumberLevel: this.rightYNumberLevel.getValue()[0],
             rightYUnit: this.rightYUnit.getValue(),
             rightYShowTitle: this.rightYShowTitle.isSelected(),
             rightYTitle: this.rightYTitle.getValue(),
@@ -1093,8 +1033,6 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             rightYLineColor: this.rightYLineColor.getValue(),
             rightYTitleStyle: this.rightYTitleStyle.getValue(),
 
-            leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
-            leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
             leftYUnit: this.leftYUnit.getValue(),
             leftYShowTitle: this.leftYShowTitle.isSelected(),
             leftYTitle: this.leftYTitle.getValue(),
