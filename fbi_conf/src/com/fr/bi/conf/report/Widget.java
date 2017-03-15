@@ -3,7 +3,7 @@ package com.fr.bi.conf.report;
 /**
  * Created by eason on 2017/2/27.
  */
-public enum WidgetType {
+public enum Widget {
     NONE(-1),
 
     TABLE(0x1),//分组表
@@ -74,7 +74,7 @@ public enum WidgetType {
 
     private int type;
 
-    WidgetType(int type){
+    Widget(int type){
         this.type = type;
     }
 
@@ -82,17 +82,23 @@ public enum WidgetType {
         return this.type;
     }
 
-    private static WidgetType[] types;
+    private static Widget[] types;
 
-    public static WidgetType parse(int type){
+    public static Widget parse(int type){
         if(types == null){
-            types = WidgetType.values();
+            types = Widget.values();
         }
-        for(WidgetType widgetType : types){
-            if(widgetType.getType() == type){
-                return widgetType;
+        for(Widget widget : types){
+            if(widget.getType() == type){
+                return widget;
             }
         }
         return NONE;
+    }
+
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.type);
     }
 }

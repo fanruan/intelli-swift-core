@@ -14,8 +14,7 @@ import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.Widget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -263,8 +262,8 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
     @Override
-    public WidgetType getType() {
-        return WidgetType.DETAIL;
+    public Widget getType() {
+        return Widget.DETAIL;
     }
 
     @Override

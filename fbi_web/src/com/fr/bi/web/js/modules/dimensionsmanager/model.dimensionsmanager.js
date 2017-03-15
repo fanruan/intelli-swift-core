@@ -110,9 +110,9 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                     }
                     return;
                 }
-                if ((newType === BICst.WIDGET.COMPARE_AXIS || newType === BICst.WIDGET.COMPARE_AREA ||
+                if ((newType === BICst.WIDGET.COMPARE_COLUMN || newType === BICst.WIDGET.COMPARE_AREA ||
                     newType === BICst.WIDGET.COMPARE_BAR || newType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
-                    newType === BICst.WIDGET.RANGE_AREA || newType === BICst.WIDGET.FALL_AXIS ||
+                    newType === BICst.WIDGET.RANGE_AREA || newType === BICst.WIDGET.FALL_COLUMN ||
                     newType === BICst.WIDGET.BUBBLE || newType === BICst.WIDGET.FORCE_BUBBLE ||
                     newType === BICst.WIDGET.SCATTER) && BI.Utils.isTargetRegionByRegionType(regionId)) {
                     if (BI.Utils.isTargetRegion1ByRegionType(regionId)) {
@@ -152,7 +152,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                 self.dimensionsMap[newType][dId] = dimensions[dId];
             });
         });
-        if (newType === BICst.WIDGET.PIE || newType === BICst.WIDGET.DONUT || newType === BICst.WIDGET.DASHBOARD) {
+        if (newType === BICst.WIDGET.PIE || newType === BICst.WIDGET.DONUT || newType === BICst.WIDGET.GAUGE) {
             var selecttargetCount = 0;
             BI.any(self.viewMap[newType][BICst.REGION.TARGET1], function (idx, dId) {
                 if (self.dimensionsMap[newType][dId].used === true) {

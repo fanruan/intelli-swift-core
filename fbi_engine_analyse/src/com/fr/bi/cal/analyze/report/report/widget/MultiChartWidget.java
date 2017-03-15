@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.Widget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -18,7 +18,7 @@ import java.util.*;
 public class MultiChartWidget extends TableWidget {
 
     private static final long serialVersionUID = 8274724387345770447L;
-    private WidgetType type;
+    private Widget type;
     private String subType;
     private Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
     private Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
@@ -52,7 +52,7 @@ public class MultiChartWidget extends TableWidget {
             vjo.put(BIReportConstant.REGION.TARGET1, ja);
         }
         if(jo.has("type")){
-            type = WidgetType.parse(jo.getInt("type"));
+            type = Widget.parse(jo.getInt("type"));
         }
         if(jo.has("sub_type")){
             subType = jo.getString("sub_type");
@@ -70,7 +70,7 @@ public class MultiChartWidget extends TableWidget {
     }
 
     @Override
-    public WidgetType getType() {
+    public Widget getType() {
         return type;
     }
 

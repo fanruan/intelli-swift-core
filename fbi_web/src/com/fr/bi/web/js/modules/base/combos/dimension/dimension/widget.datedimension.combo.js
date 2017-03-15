@@ -104,10 +104,10 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
     _rebuildItems: function () {
         var chartTypes = [
             BICst.WIDGET.ACCUMULATE_AREA,
-            BICst.WIDGET.ACCUMULATE_AXIS,
+            BICst.WIDGET.ACCUMULATE_COLUMN,
             BICst.WIDGET.ACCUMULATE_BAR,
             BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
-            BICst.WIDGET.PERCENT_ACCUMULATE_AXIS
+            BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN
         ];
         var items = BI.DimensionDateCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
         var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);

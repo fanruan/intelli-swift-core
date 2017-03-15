@@ -92,10 +92,10 @@ class LayoutContainer extends Component {
                 break;
 
             case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.ACCUMULATE_COLUMN:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BICst.WIDGET.COMPARE_COLUMN:
+            case BICst.WIDGET.FALL_COLUMN:
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
@@ -110,7 +110,7 @@ class LayoutContainer extends Component {
             case BICst.WIDGET.DONUT :
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
-            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.GAUGE:
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.SCATTER:

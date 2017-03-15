@@ -103,7 +103,7 @@ BI.CountTargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
     _assertChartType: function (val) {
         val || (val = {});
         if(BI.isNull(val.type)){
-            val.type = BICst.WIDGET.AXIS;
+            val.type = BICst.WIDGET.COLUMN;
         }
         return val;
     },

@@ -225,16 +225,16 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
 
     _setRefreshButtonVisible: function (type) {
         switch (type) {
-            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_COLUMN:
             case BICst.WIDGET.ACCUMULATE_AREA:
-            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.COLUMN:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_COLUMN:
             case BICst.WIDGET.COMPARE_AREA:
-            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.FALL_COLUMN:
             case BICst.WIDGET.RANGE_AREA:
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:

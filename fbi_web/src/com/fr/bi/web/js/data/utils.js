@@ -50,7 +50,7 @@ Data.Utils = {
             BI.each(da, function (id, d) {
                 if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
                     var chart = widget.dimensions[targetIds[count] || targetIds[0]].style_of_chart || {};
-                    t.push(chart.type || BICst.WIDGET.AXIS);
+                    t.push(chart.type || BICst.WIDGET.COLUMN);
                 } else {
                     t.push(type);
                 }
@@ -65,7 +65,7 @@ Data.Utils = {
             var i = BI.UUID();
             var type = types[idx];
             BI.each(item, function (id, it) {
-                (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
+                (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_COLUMN) && BI.extend(it, {stack: i});
             });
         });
         if (type === BICst.WIDGET.MAP) {
@@ -120,17 +120,17 @@ Data.Utils = {
 
         function parseChartData(data) {
             switch (type) {
-                case BICst.WIDGET.ACCUMULATE_AXIS:
+                case BICst.WIDGET.ACCUMULATE_COLUMN:
                 case BICst.WIDGET.ACCUMULATE_AREA:
                 case BICst.WIDGET.ACCUMULATE_RADAR:
-                case BICst.WIDGET.AXIS:
+                case BICst.WIDGET.COLUMN:
                 case BICst.WIDGET.LINE:
                 case BICst.WIDGET.AREA:
-                case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
                 case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-                case BICst.WIDGET.COMPARE_AXIS:
+                case BICst.WIDGET.COMPARE_COLUMN:
                 case BICst.WIDGET.COMPARE_AREA:
-                case BICst.WIDGET.FALL_AXIS:
+                case BICst.WIDGET.FALL_COLUMN:
                 case BICst.WIDGET.RANGE_AREA:
                 case BICst.WIDGET.BAR:
                 case BICst.WIDGET.ACCUMULATE_BAR:
@@ -141,7 +141,7 @@ Data.Utils = {
                 case BICst.WIDGET.PIE:
                 case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 case BICst.WIDGET.FORCE_BUBBLE:
-                case BICst.WIDGET.DASHBOARD:
+                case BICst.WIDGET.GAUGE:
                     return formatDataForAxis(data);
                 case BICst.WIDGET.BUBBLE:
                     return formatDataForBubble(data);
@@ -534,7 +534,7 @@ Data.Utils = {
                         if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                             switch (type) {
                                 case BICst.WIDGET.BUBBLE:
-                                case BICst.WIDGET.AXIS:
+                                case BICst.WIDGET.COLUMN:
                                 case BICst.WIDGET.PIE:
                                 default:
                                     res = {
@@ -824,12 +824,12 @@ Data.Utils = {
         var max = null;
         var min = null;
         switch (type) {
-            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_COLUMN:
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
                     var type = [];
                     BI.each(axisItems, function (id, item) {
-                        type.push(BICst.WIDGET.AXIS);
+                        type.push(BICst.WIDGET.COLUMN);
                     });
                     t.push(type);
                 });
@@ -840,7 +840,7 @@ Data.Utils = {
                     });
                 });
                 var opts = formatItems(items, t);
-                return formatConfigForAccumulateAxisArea(opts[1], opts[0], BICst.WIDGET.AXIS);
+                return formatConfigForAccumulateAxisArea(opts[1], opts[0], BICst.WIDGET.COLUMN);
             case BICst.WIDGET.ACCUMULATE_AREA:
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
@@ -875,7 +875,7 @@ Data.Utils = {
                 });
                 var opts = formatItems(items, t);
                 return formatConfigForAccumulateRadar(opts[1], opts[0]);
-            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.COLUMN:
             case BICst.WIDGET.COMBINE_CHART:
                 var opts = formatItems(data, types);
                 return formatConfigForAxis(opts[1], opts[0]);
@@ -901,12 +901,12 @@ Data.Utils = {
                 });
                 var opts = formatItems(data, t);
                 return formatConfigForArea(opts[1], opts[0]);
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
                     var type = [];
                     BI.each(axisItems, function (id, item) {
-                        type.push(BICst.WIDGET.AXIS);
+                        type.push(BICst.WIDGET.COLUMN);
                     });
                     t.push(type);
                 });
@@ -917,7 +917,7 @@ Data.Utils = {
                     });
                 });
                 var opts = formatItems(items, t);
-                return formatConfigForPercent(opts[1], opts[0], BICst.WIDGET.AXIS);
+                return formatConfigForPercent(opts[1], opts[0], BICst.WIDGET.COLUMN);
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
@@ -935,12 +935,12 @@ Data.Utils = {
                 });
                 var opts = formatItems(items, t);
                 return formatConfigForPercent(opts[1], opts[0], BICst.WIDGET.AREA);
-            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_COLUMN:
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
                     var type = [];
                     BI.each(axisItems, function (id, item) {
-                        type.push(BICst.WIDGET.AXIS);
+                        type.push(BICst.WIDGET.COLUMN);
                     });
                     t.push(type);
                 });
@@ -975,13 +975,13 @@ Data.Utils = {
                 });
                 var opts = formatItems(data, t);
                 return formatConfigForCompare(opts[1], opts[0], t);
-            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.FALL_COLUMN:
                 var items = [];
                 var t = [];
                 BI.each(data, function (idx, axisItems) {
                     var type = [];
                     BI.each(axisItems, function (id, item) {
-                        type.push(BICst.WIDGET.AXIS);
+                        type.push(BICst.WIDGET.COLUMN);
                     });
                     t.push(type);
                 });
@@ -1217,7 +1217,7 @@ Data.Utils = {
                 });
                 var opts = formatItems(data, t);
                 return formatConfigForForceBubble(opts[1], opts[0]);
-            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.GAUGE:
                 var items = data;
                 if (data.length === 0) {
                 } else {
@@ -1276,7 +1276,7 @@ Data.Utils = {
                 BI.each(items, function (idx, axisItems) {
                     var type = [];
                     BI.each(axisItems, function (id, item) {
-                        type.push(BICst.WIDGET.DASHBOARD);
+                        type.push(BICst.WIDGET.GAUGE);
                     });
                     t.push(type);
                 });
@@ -5769,11 +5769,11 @@ Data.Utils = {
                     case BICst.WIDGET.SCATTER:
                         item = BI.extend({"type": "scatter"}, items);
                         break;
-                    case BICst.WIDGET.AXIS:
-                    case BICst.WIDGET.ACCUMULATE_AXIS:
-                    case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-                    case BICst.WIDGET.COMPARE_AXIS:
-                    case BICst.WIDGET.FALL_AXIS:
+                    case BICst.WIDGET.COLUMN:
+                    case BICst.WIDGET.ACCUMULATE_COLUMN:
+                    case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+                    case BICst.WIDGET.COMPARE_COLUMN:
+                    case BICst.WIDGET.FALL_COLUMN:
                         item = BI.extend({"type": "column"}, items);
                         break;
                     case BICst.WIDGET.LINE:
@@ -5796,7 +5796,7 @@ Data.Utils = {
                     case BICst.WIDGET.PIE:
                         item = BI.extend({"type": "pie"}, items);
                         break;
-                    case BICst.WIDGET.DASHBOARD:
+                    case BICst.WIDGET.GAUGE:
                         item = BI.extend({"type": "gauge"}, items);
                         break;
                     case BICst.WIDGET.MAP:

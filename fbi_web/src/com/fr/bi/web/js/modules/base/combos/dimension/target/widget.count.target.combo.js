@@ -33,11 +33,11 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Column_Chart"),
-                    value: BICst.WIDGET.AXIS,
+                    value: BICst.WIDGET.COLUMN,
                     cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Stacked_Chart"),
-                    value: BICst.WIDGET.ACCUMULATE_AXIS,
+                    value: BICst.WIDGET.ACCUMULATE_COLUMN,
                     cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Line_Chart"),
@@ -137,11 +137,11 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.options.dId));
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         switch (wType) {
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.COLUMN:
+            case BICst.WIDGET.ACCUMULATE_COLUMN:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BICst.WIDGET.COMPARE_COLUMN:
+            case BICst.WIDGET.FALL_COLUMN:
                 items[this.constants.CordonPos][0].cls = "";
                 items[this.constants.CordonPos][0] = {
                     el: items[this.constants.CordonPos][0],
@@ -280,7 +280,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     },
                     children: [{
                         text: BI.i18nText("BI-Column_Chart"),
-                        value: BICst.WIDGET.AXIS,
+                        value: BICst.WIDGET.COLUMN,
                         cls: "dot-e-font"
                     }, {
                         text: BI.i18nText("BI-Line_Chart"),
@@ -357,8 +357,8 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_PIE:
-            case BICst.WIDGET.RECT_TREE:
-            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.TREE_MAP:
+            case BICst.WIDGET.GAUGE:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.ACCUMULATE_RADAR:
@@ -394,7 +394,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     _assertChartType: function (val) {
         val || (val = {});
         if (BI.isNull(val.type)) {
-            val.type = BICst.WIDGET.AXIS;
+            val.type = BICst.WIDGET.COLUMN;
         }
         return val;
     },

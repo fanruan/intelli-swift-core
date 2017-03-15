@@ -131,8 +131,8 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
         ];
 
         switch (usedTargets.type) {
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.COLUMN:
+            case BICst.WIDGET.ACCUMULATE_COLUMN:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AREA:
@@ -140,17 +140,17 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 nodes = this._createTwoAxis(nodes, usedTargets, BI.i18nText("BI-Left_Value_Axis"), BI.i18nText("BI-Right_Value_Axis"));
                 break;
             case BICst.WIDGET.BAR:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.FALL_COLUMN:
                 nodes = this._createOneAxis(nodes, usedTargets, BI.i18nText("BI-Value_Axis"));
                 break;
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 nodes = this._createOneAxis(nodes, usedTargets, BI.i18nText("BI-Target"));
                 break;
-            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_COLUMN:
             case BICst.WIDGET.COMPARE_AREA:
                 nodes = this._createTwoAxis(nodes, usedTargets, BI.i18nText("BI-Positive_Value_Axis"), BI.i18nText("BI-Negative_Value_Axis"));
                 break;

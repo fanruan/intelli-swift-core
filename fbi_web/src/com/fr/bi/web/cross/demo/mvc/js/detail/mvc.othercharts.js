@@ -133,7 +133,7 @@ OtherChartsView = BI.inherit(BI.View, {
         c5.setTypes([[BICst.WIDGET.RADAR]]);
         c5.populate(items1);
         //瀑布图
-        c6.setTypes([[BICst.WIDGET.DASHBOARD]]);
+        c6.setTypes([[BICst.WIDGET.GAUGE]]);
         c6.populate(items1);
         BI.createWidget({
             type: "bi.vertical",

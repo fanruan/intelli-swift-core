@@ -6,7 +6,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.types.VanColumnWidget;
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.Widget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -20,15 +20,15 @@ import java.util.HashMap;
  */
 public class BIWidgetFactory {
 
-    private static HashMap<WidgetType, Class<? extends VanChartWidget>> vancharts = new HashMap<WidgetType, Class<? extends VanChartWidget>>();
+    private static HashMap<Widget, Class<? extends VanChartWidget>> vancharts = new HashMap<Widget, Class<? extends VanChartWidget>>();
 
     static {
-        vancharts.put(WidgetType.COLUMN, VanColumnWidget.class);
-        vancharts.put(WidgetType.BAR, VanColumnWidget.class);
+        vancharts.put(Widget.COLUMN, VanColumnWidget.class);
+        vancharts.put(Widget.BAR, VanColumnWidget.class);
     }
 
 
-    public static BIWidget createVanChartWidget(WidgetType type){
+    public static BIWidget createVanChartWidget(Widget type){
         try {
 
             return vancharts.get(type).newInstance();
@@ -57,12 +57,12 @@ public class BIWidgetFactory {
             view = new JSONObject();
         }
         JSONArray viewTargets = getViewTarget(view);
-        BIWidget widget = newWidgetByType(WidgetType.parse(jo.optInt("type")), viewTargets);
+        BIWidget widget = newWidgetByType(Widget.parse(jo.optInt("type")), viewTargets);
         widget.parseJSON(jo, userId);
         return widget;
     }
 
-    public static BIWidget newWidgetByType(WidgetType type, JSONArray viewTargets) throws Exception {
+    public static BIWidget newWidgetByType(Widget type, JSONArray viewTargets) throws Exception {
         BIWidget biWidget;
         switch (type) {
             case TABLE:

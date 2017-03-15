@@ -7,10 +7,9 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.report.report.widget.tree.*;
 import com.fr.bi.cal.analyze.report.report.widget.treelabel.GetTreeLabelExecutor;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.Widget;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -22,7 +21,6 @@ import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
@@ -237,8 +235,8 @@ public class TreeLabelWidget extends BIAbstractWidget{
     }
 
     @Override
-    public WidgetType getType() {
-        return WidgetType.TREE_LABEL;
+    public Widget getType() {
+        return Widget.TREE_LABEL;
     }
 
     @Override

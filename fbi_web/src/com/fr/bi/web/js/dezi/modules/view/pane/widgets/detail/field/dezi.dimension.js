@@ -143,7 +143,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(this.model.get("id")));
         if (wType === BICst.WIDGET.ACCUMULATE_AREA ||
             wType === BICst.WIDGET.ACCUMULATE_BAR ||
-            wType === BICst.WIDGET.ACCUMULATE_AXIS ||
+            wType === BICst.WIDGET.ACCUMULATE_COLUMN ||
             wType === BICst.WIDGET.COMBINE_CHART) {
             this.chartTypeIcon.setVisible(true);
         } else {
@@ -190,7 +190,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             this.usedRadio.setEnable(false);
             formatDisabledTitle(BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension"));
         }
-        if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
+        if ((wType === BICst.WIDGET.GAUGE || wType === BICst.WIDGET.PIE)
             && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(this.model.get("id")))
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);

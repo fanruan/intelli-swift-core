@@ -44,15 +44,15 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 return "drag-complex-small-icon";
             case BICst.WIDGET.DETAIL:
                 return "drag-detail-small-icon";
-            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.COLUMN:
                 return "drag-axis-small-icon";
-            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_COLUMN:
                 return "drag-axis-accu-small-icon";
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
                 return "drag-axis-percent-accu-small-icon";
-            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_COLUMN:
                 return "drag-axis-compare-small-icon";
-            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.FALL_COLUMN:
                 return "drag-axis-fall-small-icon";
             case BICst.WIDGET.BAR:
                 return "drag-bar-small-icon";
@@ -66,7 +66,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 return "drag-map-china-small-icon";
             case BICst.WIDGET.GIS_MAP:
                 return "drag-map-gis-small-icon";
-            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.GAUGE:
                 return "drag-dashboard-small-icon";
             case BICst.WIDGET.DONUT:
                 return "drag-donut-small-icon";

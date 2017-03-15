@@ -90,19 +90,19 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMPLEX_TABLE:
                 type = "bi.complex_table_regions_manager";
                 break;
-            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.COLUMN:
                 type = "bi.axis_regions_manager";
                 break;
-            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_COLUMN:
                 type = "bi.accumulate_axis_regions_manager";
                 break;
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
                 type = "bi.percent_accumulate_axis_regions_manager";
                 break;
-            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_COLUMN:
                 type = "bi.compare_axis_regions_manager";
                 break;
-            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.FALL_COLUMN:
                 type = "bi.fall_axis_regions_manager";
                 break;
             case BICst.WIDGET.BAR:
@@ -129,10 +129,10 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.HEAT_MAP:
                 type = "bi.heat_map_regions_manager";
                 break;
-            case BICst.WIDGET.RECT_TREE:
+            case BICst.WIDGET.TREE_MAP:
                 type = "bi.rect_tree_regions_manager";
                 break;
-            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.GAUGE:
                 type = "bi.dashboard_regions_manager";
                 break;
             case BICst.WIDGET.DONUT:

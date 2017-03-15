@@ -46,11 +46,11 @@ BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Column_Chart"),
-                    value: BICst.WIDGET.AXIS,
+                    value: BICst.WIDGET.COLUMN,
                     cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Stacked_Chart"),
-                    value: BICst.WIDGET.ACCUMULATE_AXIS,
+                    value: BICst.WIDGET.ACCUMULATE_COLUMN,
                     cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Line_Chart"),
@@ -98,7 +98,7 @@ BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
 
     _assertChartType: function (val) {
         val || (val = {});
-        val.type || (val.type = BICst.WIDGET.AXIS);
+        val.type || (val.type = BICst.WIDGET.COLUMN);
         return val;
     },
 
@@ -121,7 +121,7 @@ BI.TargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
         //             },
         //             children: [{
         //                 text: BI.i18nText("BI-Column_Chart"),
-        //                 value: BICst.WIDGET.AXIS,
+        //                 value: BICst.WIDGET.COLUMN,
         //                 cls: "dot-e-font"
         //             }, {
         //                 text: BI.i18nText("BI-Line_Chart"),

@@ -47,7 +47,7 @@ ChartsView = BI.inherit(BI.View, {
             width: 600,
             height: 400,
             items: [data],
-            types: [[BICst.WIDGET.AXIS, BICst.WIDGET.AXIS]]
+            types: [[BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN]]
         });
 
         BI.createWidget({

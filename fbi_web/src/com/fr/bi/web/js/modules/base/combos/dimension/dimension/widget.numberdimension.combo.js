@@ -59,10 +59,10 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
     _rebuildItems :function(){
         var chartTypes = [
             BICst.WIDGET.ACCUMULATE_AREA,
-            BICst.WIDGET.ACCUMULATE_AXIS,
+            BICst.WIDGET.ACCUMULATE_COLUMN,
             BICst.WIDGET.ACCUMULATE_BAR,
             BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
-            BICst.WIDGET.PERCENT_ACCUMULATE_AXIS
+            BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN
         ];
         var items = BI.DimensionNumberCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
         if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
@@ -74,11 +74,11 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
         var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         switch (wType) {
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.COLUMN:
+            case BICst.WIDGET.ACCUMULATE_COLUMN:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BICst.WIDGET.COMPARE_COLUMN:
+            case BICst.WIDGET.FALL_COLUMN:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AREA:

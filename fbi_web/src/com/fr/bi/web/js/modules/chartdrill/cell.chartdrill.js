@@ -130,7 +130,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             case BICst.WIDGET.SCATTER:
                 value = v.zValue;
                 break;
-            case BICst.WIDGET.RECT_TREE:
+            case BICst.WIDGET.TREE_MAP:
                 var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
                 value = ((BI.Utils.isDimensionRegion1ByRegionType(regionType) || BI.isEmpty(v.parents)) ? v.xValue : v.parents[0].xValue);
                 break;

@@ -1,5 +1,6 @@
 package com.fr.bi.cstwriter;
 
+import com.fr.bi.conf.report.Widget;
 import com.fr.bi.stable.constant.*;
 
 import java.io.File;
@@ -8,7 +9,7 @@ import java.io.File;
  * Created by 小灰灰 on 2015/10/23.
  */
 public class BIConstantWriter {
-    private static final Class[] CLS = {BIReportConstant.class, BIJSONConstant.class, DBConstant.class, FunctionConstant.class};
+    private static final Class[] CLS = {BIReportConstant.class, Widget.class, BIJSONConstant.class, DBConstant.class, FunctionConstant.class};
 
     private static final Class[] EYLCLS = {com.fr.bi.etl.analysis.Constants.class};
 

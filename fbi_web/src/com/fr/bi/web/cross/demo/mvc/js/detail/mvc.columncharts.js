@@ -135,22 +135,22 @@ ColumnChartsView = BI.inherit(BI.View, {
             height: 300
         });
         //柱形图组合，多轴多系列
-        c1.setTypes([[BICst.WIDGET.AXIS, BICst.WIDGET.AXIS, BICst.WIDGET.AXIS],[BICst.WIDGET.AXIS, BICst.WIDGET.AXIS, BICst.WIDGET.AXIS]]);
+        c1.setTypes([[BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN],[BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN]]);
         c1.populate(items);
         //柱形图组合，单轴轴多系列
-        c2.setTypes([[BICst.WIDGET.AXIS, BICst.WIDGET.AXIS, BICst.WIDGET.AXIS]]);
+        c2.setTypes([[BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN]]);
         c2.populate(items1);
         //堆积柱状图，多轴多系列
-        c3.setTypes([[BICst.WIDGET.AXIS, BICst.WIDGET.AXIS, BICst.WIDGET.AXIS],[BICst.WIDGET.AXIS, BICst.WIDGET.AXIS, BICst.WIDGET.AXIS]]);
+        c3.setTypes([[BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN],[BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN]]);
         c3.populate(stackedItems);
         //百分比堆积柱状，单轴多系列
-        c4.setTypes([[BICst.WIDGET.AXIS, BICst.WIDGET.AXIS, BICst.WIDGET.AXIS]]);
+        c4.setTypes([[BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN]]);
         c4.populate(stackByPercentItems1);
         //对比柱形图，多轴多系列
-        c5.setTypes([[BICst.WIDGET.AXIS, BICst.WIDGET.AXIS, BICst.WIDGET.AXIS],[BICst.WIDGET.REVERSED_AXIS, BICst.WIDGET.REVERSED_AXIS, BICst.WIDGET.REVERSED_AXIS]]);
+        c5.setTypes([[BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN],[BICst.WIDGET.REVERSED_AXIS, BICst.WIDGET.REVERSED_AXIS, BICst.WIDGET.REVERSED_AXIS]]);
         c5.populate(compareitems);
         //瀑布图
-        c6.setTypes([[BICst.WIDGET.AXIS, BICst.WIDGET.AXIS]]);
+        c6.setTypes([[BICst.WIDGET.COLUMN, BICst.WIDGET.COLUMN]]);
         c6.populate(items3);
         BI.createWidget({
             type: "bi.vertical",

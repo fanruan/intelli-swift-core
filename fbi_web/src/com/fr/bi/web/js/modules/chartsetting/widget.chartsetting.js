@@ -62,8 +62,8 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.COLUMN:
+            case BICst.WIDGET.ACCUMULATE_COLUMN:
             case BICst.WIDGET.COMBINE_CHART:
                 this.chartSetting = BI.createWidget({
                     type: "bi.axis_charts_setting",
@@ -73,7 +73,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
                 this.chartSetting = BI.createWidget({
                     type: "bi.percent_chart_setting",
@@ -132,7 +132,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_COLUMN:
                 this.chartSetting = BI.createWidget({
                     type: "bi.compare_column_chart_setting",
                     wId: wId
@@ -168,7 +168,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.FALL_COLUMN:
                 this.chartSetting = BI.createWidget({
                     type: "bi.fall_axis_chart_setting",
                     wId: wId
@@ -213,7 +213,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.GAUGE:
                 this.chartSetting = BI.createWidget({
                     type: "bi.dashboard_chart_setting",
                     wId: wId
@@ -258,7 +258,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
                 break;
-            case BICst.WIDGET.RECT_TREE:
+            case BICst.WIDGET.TREE_MAP:
                 this.chartSetting = BI.createWidget({
                     type: "bi.rect_tree_chart_setting",
                     wId: wId
