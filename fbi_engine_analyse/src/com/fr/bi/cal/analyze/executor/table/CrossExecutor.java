@@ -214,11 +214,6 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         return new CBCell[0][0];
     }
 
-    private boolean hasLeftChild(NewCrossRoot node) {
-        return node.getLeft().getValue().getLeftChildLength() != 0;
-    }
-
-
     private BISummaryTarget[] createTarget4Calculate() {
         ArrayList<BITarget> list = new ArrayList<BITarget>();
         for (int i = 0; i < usedSumTarget.length; i++) {
