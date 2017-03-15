@@ -253,9 +253,9 @@ BI.extend(BI.TargetBodyNormalCell, {
         var num = BI.parseFloat(text);
 
         switch (dot) {
-            case -1:
+            case BICst.TARGET_STYLE.FORMAT.NORMAL:
                 return separators ? BI.contentFormat(num, '#,###.##;-#,###.##') : BI.contentFormat(num, "#.##;-#.##");
-            case 0:
+            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
                 return separators ? BI.contentFormat(num, '#,###;-#,###') : BI.contentFormat(num, "#0;-#0");
             default:
                 var formatter = separators ? "#,###." : '#.';
