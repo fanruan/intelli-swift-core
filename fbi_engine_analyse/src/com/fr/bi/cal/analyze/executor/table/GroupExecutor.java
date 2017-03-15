@@ -627,75 +627,6 @@ public class GroupExecutor extends AbstractNodeExecutor {
         return iter;
     }
 
-    private void createCells(Node n, DetailCellIterator iter, FinalInt start, int currentRowIdx) {
-        while (n.getFirstChild() != null) {
-            n = n.getFirstChild();
-        }
-        BIDimension[] rowDimensions = widget.getViewDimensions();
-        Object[] dimensionNames = new Object[rowDimensions.length];
-        while (n != null) {
-            Node temp = n;
-
-            currentRowIdx++;
-            int newRow = currentRowIdx & EXCEL_ROW_MODE_VALUE;
-            if (newRow == 0) {
-                iter.getIteratorByPage(start.value).finish();
-                start.value++;
-            }
-            StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-            int targetsKeyIndex = 0;
-            for (TargetGettingKey key : widget.getTargetsKey()) {
-                CBCell cell = createCells4Row(temp.getSummaryValue(key), rowDimensions.length, currentRowIdx, targetsKeyIndex);
-                pagedIterator.addCell(cell);
-                targetsKeyIndex++;
-            }
-            //维度第一次出现即addCell
-            int i = rowDimensions.length;
-            while (temp.getParent() != null) {
-                int rowSpan = temp.getTotalLength();
-                Object data = temp.getData();
-                BIDimension dim = rowDimensions[--i];
-                Object v = dim.getValueByType(data);
-                if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
-                    CBCell cell = createCells4Dimension(v, rowSpan, currentRowIdx, i);
-                    pagedIterator.addCell(cell);
-                    dimensionNames[i] = v;
-                }
-                temp = temp.getParent();
-            }
-            n = n.getSibling();
-        }
-    }
-
-    private CBCell createCells4Row(Object v, int dimLen, int currentRowIdx, int targetsKeyIndex) {
-        CBCell cell = new CBCell(v);
-        cell.setColumn(targetsKeyIndex + dimLen);
-        cell.setRow(currentRowIdx);
-        cell.setRowSpan(1);
-        cell.setColumnSpan(1);
-        return cell;
-    }
-
-    private CBCell createCells4Dimension(Object v, int rowSpan, int currentRowIdx, int currentColumn) {
-        CBCell cell = new CBCell(v);
-        cell.setRow(currentRowIdx);
-        cell.setColumn(currentColumn);
-        cell.setRowSpan(rowSpan);
-        cell.setColumnSpan(1);
-        return cell;
-    }
-
-    /**
-     * 创建cell
-     *
-     * @return cell数组
-     * @throws NoneAccessablePrivilegeException
-     */
-    @Override
-    public CBCell[][] createCellElement() throws Exception {
-        return new CBCell[0][0];
-    }
-
     /**
      * 生成表头
      *
@@ -742,6 +673,91 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
             pagedIterator.addCell(cell);
         }
+    }
+
+    private void createCells(Node n, DetailCellIterator iter, FinalInt start, int currentRowIdx) {
+        while (n.getFirstChild() != null) {
+            n = n.getFirstChild();
+        }
+        BIDimension[] rowDimensions = widget.getViewDimensions();
+        Object[] dimensionNames = new Object[rowDimensions.length];
+        int orderIdx = 1;
+        while (n != null) {
+            Node temp = n;
+
+            currentRowIdx++;
+            int newRow = currentRowIdx & EXCEL_ROW_MODE_VALUE;
+            if (newRow == 0) {
+                iter.getIteratorByPage(start.value).finish();
+                start.value++;
+            }
+            StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+            int targetsKeyIndex = 0;
+            for (TargetGettingKey key : widget.getTargetsKey()) {
+                CBCell cell = createCells4Row(temp.getSummaryValue(key), rowDimensions.length, currentRowIdx, targetsKeyIndex);
+                pagedIterator.addCell(cell);
+                targetsKeyIndex++;
+            }
+
+            //维度第一次出现即addCell
+            int i = rowDimensions.length;
+            while (temp.getParent() != null) {
+                int rowSpan = temp.getTotalLength();
+                Object data = temp.getData();
+                BIDimension dim = rowDimensions[--i];
+                Object v = dim.getValueByType(data);
+                if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
+                    CBCell cell = createCells4Dimension(v, rowSpan, currentRowIdx, i);
+                    pagedIterator.addCell(cell);
+                    if(i == 0 && widget.isOrder() == 1) {
+                        pagedIterator.addCell(createOrderNum(orderIdx++, rowSpan, currentRowIdx, i));
+                    }
+                    dimensionNames[i] = v;
+                }
+                temp = temp.getParent();
+            }
+            n = n.getSibling();
+        }
+    }
+
+    private CBCell createCells4Row(Object v, int dimLen, int currentRowIdx, int targetsKeyIndex) {
+        CBCell cell = new CBCell(v);
+        cell.setColumn(targetsKeyIndex + dimLen);
+        cell.setRow(currentRowIdx);
+//        cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, currentRowIdx % 2 == 0));
+        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+        cell.setRowSpan(1);
+        cell.setColumnSpan(1);
+        return cell;
+    }
+
+    private CBCell createCells4Dimension(Object v, int rowSpan, int currentRowIdx, int currentColumn) {
+        CBCell cell = new CBCell(v);
+        cell.setRow(currentRowIdx);
+        cell.setColumn(currentColumn);
+        cell.setRowSpan(rowSpan);
+        cell.setColumnSpan(1);
+        return cell;
+    }
+
+    private CBCell createOrderNum (Object v, int rowIdx, int rowSpan, int columnIdx) {
+        CBCell cell = new CBCell(v);
+        cell.setRow(rowIdx);
+        cell.setColumn(columnIdx);
+        cell.setRowSpan(rowSpan);
+        cell.setColumnSpan(1);
+        return cell;
+    }
+
+    /**
+     * 创建cell
+     *
+     * @return cell数组
+     * @throws NoneAccessablePrivilegeException
+     */
+    @Override
+    public CBCell[][] createCellElement() throws Exception {
+        return new CBCell[0][0];
     }
 
     private BISummaryTarget[] createTarget4Calculate() {
