@@ -1,0 +1,23 @@
+@import "../../../bibase";
+
+.bi-sheet-tab-dynamic-button {
+  background: @background-color-light;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-top: 1px solid @color-bi-border-normal;
+  & .bi-dynamic-tab-button {
+    padding-left: 10px;
+
+  }
+
+  & .bi-icon-button-scroll {
+    border:1px solid @background-color-light;
+    &:hover {
+      border-color: @color-bi-border-normal;
+    }
+  }
+
+  & .bi-sheet-tab-dynamic-horizontal {
+    margin-top: -1px;
+  }
+}

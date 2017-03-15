@@ -1,0 +1,34 @@
+@import "../../../bibase";
+@import "../../../animate";
+.bi-analysis-etl-top-pointer-pane {
+  background-color :@background-color-default;
+  border-left: 1px solid @border-color-line;
+  .bi-analysis-etl-top-pointer-pane-item {
+    top:-1px;
+    border-left: 1px solid @border-color-line;
+    border-right: 1px solid @border-color-line;
+    border-top: 1px solid @border-color-line;
+    border-bottom: 1px solid @border-color-line;
+    background-color :@background-color-default;
+  }
+
+  & .top-pointer{
+    background-color: @color-bi-background-default;
+  }
+
+  & .x-pointer-top {
+    z-index:1;
+    & svg path {
+      stroke:@border-color-line;
+      fill:@background-color-default;
+    }
+  }
+
+  & .disable {
+    background: @background-color-default;
+    .opacity(0.5)
+  }
+}
+//.transition(bi-animate-pointer-height-resize, height);
+.bi-animate(bi-animate-pointer-height-resize, position-left-0-300, '{height:0}', '{height:310px}', 0.5s);
+

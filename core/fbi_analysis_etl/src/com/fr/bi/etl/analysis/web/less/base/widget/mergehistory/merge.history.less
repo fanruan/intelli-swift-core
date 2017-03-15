@@ -1,0 +1,30 @@
+@import "../../../bibase";
+
+.bi-analysis-etl-merge-history {
+
+  & .border {
+      .border-radius(2px);
+      border:1px solid @border-color-line;
+      background:@background-color-default;
+  }
+
+
+  & .single_operator {
+    &:active, &.active {
+      background-color: @background-color-highlight;
+    }
+  }
+
+  & .title {
+     font-size:@font-size-14;
+  }
+
+  & .content {
+    border-bottom:1px solid @border-color-line
+  }
+
+  & .disable {
+    background: @background-color-default;
+    .opacity(0.5)
+  }
+}

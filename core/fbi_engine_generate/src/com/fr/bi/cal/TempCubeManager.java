@@ -1,0 +1,147 @@
+package com.fr.bi.cal;
+
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.impl.conf.CubeBuildStuffRealTime;
+import com.fr.bi.base.BIUser;
+import com.fr.bi.cal.generate.BuildInstantCubeTask;
+import com.fr.bi.cal.stable.engine.TempCubeTask;
+import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
+import com.fr.bi.common.inter.Release;
+import com.fr.bi.stable.engine.CubeTask;
+import com.fr.bi.stable.utils.BIUserUtils;
+import com.fr.fs.control.UserControl;
+
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+/**
+ * 实时报表cube管理
+ *
+ * @author guy
+ */
+public class TempCubeManager implements Release {
+
+    private static Map<TempCubeTask, TempCubeManager> cubeMap = new ConcurrentHashMap<TempCubeTask, TempCubeManager>();
+    private CubeBuildStuffRealTime cubeBuildTool;
+    private CubeBuildStuffRealTime cubeBuildToolGenerating;
+    private Queue<CubeBuildStuffRealTime> generater;
+    private TempCubeTask task;
+    private CubeThread cubeThread;
+    private Release release;
+    private CubeTempModelReadingTableIndexLoader loader;
+
+
+    public TempCubeManager(TempCubeTask task, CubeTempModelReadingTableIndexLoader loader) {
+        this.task = task;
+        this.cubeThread = new CubeThread();
+        this.generater = new ConcurrentLinkedQueue<CubeBuildStuffRealTime>();
+        this.loader = loader;
+        this.cubeThread.start();
+    }
+
+    public static void release(TempCubeTask task) {
+        if (cubeMap.get(task) != null) {
+            cubeMap.get(task).clear();
+        }
+        cubeMap.remove(task);
+    }
+
+    public void finishGenerateCube() {
+        if (release != null) {
+            release.clear();
+        }
+        if (loader != null) {
+            synchronized (loader) {
+                loader.notify();
+            }
+
+        }
+    }
+
+    public static TempCubeManager getInstance(TempCubeTask task, CubeTempModelReadingTableIndexLoader loader) {
+        synchronized (TempCubeManager.class) {
+            Long key = task.getUserId();
+            boolean useAdministrtor = BIUserUtils.isAdministrator(task.getUserId());
+            if (useAdministrtor) {
+                key = UserControl.getInstance().getSuperManagerID();
+            }
+            task.setUserId(key);
+            TempCubeManager manager = cubeMap.get(task);
+            if (manager == null) {
+                manager = new TempCubeManager(task, loader);
+                cubeMap.put(task, manager);
+            }
+            return manager;
+        }
+    }
+
+    public CubeBuildStuffRealTime getCubeBuildTool() {
+        if (cubeBuildTool == null) {
+            cubeBuildTool = cubeBuildToolGenerating;
+        }
+        return cubeBuildTool;
+    }
+
+    public CubeBuildStuffRealTime getCubeBuildToolGenerating() {
+        return cubeBuildToolGenerating;
+    }
+
+    public boolean addLoader(CubeBuildStuffRealTime cubeBuildTool, Release release) {
+        this.generater.add(cubeBuildTool);
+        synchronized (cubeThread) {
+            this.cubeBuildToolGenerating = cubeBuildTool;
+            this.cubeThread.notifyAll();
+            if (this.release == null) {
+                this.release = release;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void clear() {
+        if (cubeBuildTool != null) {
+            cubeBuildTool = null;
+        }
+        if (cubeBuildToolGenerating != null) {
+            cubeBuildToolGenerating = null;
+        }
+        if (cubeThread != null) {
+            cubeThread = null;
+        }
+    }
+
+    private class CubeThread extends Thread {
+
+        private volatile boolean stop = false;
+
+        private CubeThread() {
+        }
+
+        @Override
+        public void run() {
+            p:
+            while (!stop) {
+                if (generater.size() == 0) {
+                    synchronized (this) {
+                        try {
+                            if (generater.isEmpty()) {
+                                this.wait();
+                            }
+                        } catch (InterruptedException e) {
+                            continue;
+                        }
+                    }
+                }
+                cubeBuildToolGenerating = generater.poll();
+                BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
+                CubeTask cubeGenerateTask = new BuildInstantCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating, TempCubeManager.this);
+                cubeManager.addTask(cubeGenerateTask, task.getUserId());
+                cubeBuildTool = cubeBuildToolGenerating;
+            }
+        }
+    }
+}

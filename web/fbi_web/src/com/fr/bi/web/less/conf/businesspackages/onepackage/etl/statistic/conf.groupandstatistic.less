@@ -1,0 +1,52 @@
+@import "../../../../../bibase";
+
+.bi-etl-group-and-statistic{
+  background: @color-bi-background-gray;
+  & .group-statistic-north{
+    & .group-statistic-north-label{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      font-weight: bold;
+    }
+  }
+
+  & .group-statistic-table-name{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .table-name-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+  }
+  & .group-statistic-operator-pane{
+    background-color: @color-bi-background-default;
+    & .dimension-region{
+      & .bi-region-nav{
+        background: @color-dimension-background;
+        border-bottom: 1px solid @color-dimension-region-border;
+      }
+    }
+    & .target-region{
+      & .bi-region-nav{
+        background: @color-target-background;
+        border-bottom: 1px solid @color-target-region-border;
+      }
+    }
+  }
+  & .group-statistic-preview-result{
+    & .group-statistic-result-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .group-statistic-result-tip{
+      color: @color-bi-text-gray;
+      font-size: @font-size-16;
+    }
+  }
+  & .select_single_table_field{
+    border: 1px solid @color-bi-border-normal;
+  }
+}
