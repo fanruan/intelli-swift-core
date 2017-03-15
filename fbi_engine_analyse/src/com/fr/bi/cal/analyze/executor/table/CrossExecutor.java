@@ -19,7 +19,6 @@ import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.BITargetAndDimensionUtils;
-import com.fr.bi.field.dimension.dimension.BIAbstractDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
