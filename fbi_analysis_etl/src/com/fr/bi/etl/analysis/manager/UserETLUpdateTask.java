@@ -43,6 +43,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Daniel
@@ -120,7 +121,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
             Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
             while (columnKeyIterator.hasNext()) {
                 BIColumnKey targetColumnKey = columnKeyIterator.next();
-                new BIFieldIndexGenerator(cube, source, field, targetColumnKey).mainTask(null);
+                new BIFieldIndexGenerator(cube,cube, source, field, targetColumnKey,new ConcurrentHashMap<String, CubeTableSource>()).mainTask(null);
             }
         }
         tableEntityService.forceReleaseWriter();

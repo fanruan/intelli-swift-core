@@ -38,7 +38,10 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
     public GroupValueIndex getIndexByRow(int row, SingleUserNIOReadManager manager) {
         return this.createGroupByType(new IndexKey(""), new ArrayList<BITableSourceRelation>(), manager).getGroupIndex(new Object[]{detail.get(row)})[0];
     }
-
+    @Override
+    public long getGroupCount(BIKey key) {
+        return createGroupByType(key, new ArrayList<BITableSourceRelation>(), null).sizeOfGroup();
+    }
     @Override
     public ICubeColumnIndexReader createGroupByType(BIKey key, List<BITableSourceRelation> relationList, SingleUserNIOReadManager manager) {
 
