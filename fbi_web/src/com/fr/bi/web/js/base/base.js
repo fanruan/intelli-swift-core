@@ -1218,7 +1218,7 @@ if (!window.BI) {
          * @param {Function} callback 回调函数
          * @param {Function} complete 回调
          */
-        requestAsync: function (op, cmd, data, callback, complete) {
+        requestAsync: function (op, cmd, data, callback, complete, wrong) {
             data = data || {};
             if (!BI.isKey(op)) {
                 op = 'fr_bi_dezi';
@@ -1231,9 +1231,6 @@ if (!window.BI) {
                 url: url,
                 type: 'POST',
                 data: data,
-                error: function () {
-                    // BI.Msg.toast(BI.i18nText("BI-Ajax_Error"));
-                },
                 success: function (res) {
                     if (BI.isFunction(callback)) {
                         callback(res);
