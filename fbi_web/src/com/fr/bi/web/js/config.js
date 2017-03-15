@@ -30,6 +30,16 @@ $(function () {
         }
     });
 
+    //注册控件
+    BI.Plugin.registerWidget("bi.grid_table", function (ob) {
+        //IE下滚动条滑动效果不好，禁止掉
+        if (BI.isIE() || BI.isFireFox()) {
+            return BI.extend(ob, {type: "bi.quick_grid_table"});
+        } else {
+            return ob;
+        }
+    });
+
     // BI.Plugin.registerWidget("bi.detail_table", function (ob) {
     //     if (BI.isChrome() || BI.isSafari() || BI.isFireFox()) {
     //         ob.type = "bi.detail_table_react";

@@ -2336,6 +2336,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/table/table.grid.cell.js",
                 "com/fr/bi/web/js/base/module/table/table.grid.scrollbar.js",
                 "com/fr/bi/web/js/base/module/table/table.grid.js",
+                "com/fr/bi/web/js/base/module/table/table.grid.quick.js",
                 "com/fr/bi/web/js/base/module/table/table.resizable.cell.js",
                 "com/fr/bi/web/js/base/module/table/table.resizable.js",
 
