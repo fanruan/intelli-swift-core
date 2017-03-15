@@ -57,7 +57,6 @@ public abstract class AbstractCubeTask implements CubeTask {
         start = new Date();
         cubeBuild = new CubeBuildStuffComplete(biUser);
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
-        BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }
 
     @Override
@@ -69,7 +68,6 @@ public abstract class AbstractCubeTask implements CubeTask {
             relations.add(relation.getRelation());
         }
         BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), relations);
-        BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
     }
 
 

@@ -19,7 +19,6 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.conf.data.source.TableSourceUtils;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -266,7 +265,6 @@ public class CubeBuildHelper {
         if (!conditionsMeet) {
             String errorMessage = "preConditions check failed!";
             BILoggerFactory.getLogger(CubeBuildHelper.class).error(errorMessage);
-            BIConfigureManagerCenter.getLogManager().logEnd(userId);
         }
         return conditionsMeet;
     }

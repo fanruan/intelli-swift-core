@@ -138,29 +138,14 @@ BI.CubeLog = BI.inherit(BI.Widget, {
 
     _refreshProcess: function (data) {
         var self = this;
-        if (BI.isNotNull(data.allRelationInfo)) {
-            var allFields = 0, generated = 0;
-            BI.each(data.allTableInfo, function (tName, size) {
-                allFields += size;
-            });
-            generated += data.connections.length;
-            BI.each(data.tables, function (i, table) {
-                generated += table.column.length;
-            });
-            var process = Math.ceil(data.process * 100);
-            if (data.hasTask === true) {
-                if (allFields === 0) {
-                    return;
-                }
-            }
-            this.processBar.setValue(process);
+        var process = Math.floor(data.process * 100);
+        this.processBar.setValue(process);
             if (process < 100) {
-                this._showBar();
-            } else {
-                BI.delay(function () {
-                    self._showFinish();
-                }, 300);
-            }
+            this._showBar();
+        } else {
+            BI.delay(function () {
+                self._showFinish();
+            }, 300);
         }
     },
 
