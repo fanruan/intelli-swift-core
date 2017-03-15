@@ -35,6 +35,14 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
         usedDimensions = widget.getViewTopDimensions();
     }
 
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        final Node node = getCubeNode();
+        int rowLength = usedSumTarget.length;
+        int columnLength = node.getTotalLength() + widget.isOrder() + 1;
+        final DetailCellIterator iter = new DetailCellIterator(columnLength, rowLength);
+        return iter;
+    }
+
     /**
      * 处理节点
      *
@@ -144,10 +152,6 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
         return new JSONArray(currentIndex).toString();
     }
 
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
-        return null;
-    }
-
     /**
      * 构建cells
      *
@@ -212,7 +216,7 @@ public class HorGroupNoneTargetExecutor extends AbstractNodeExecutor {
         int rowLength = usedDimensions.length;
         int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
-        if (rowLength + summaryLength + columnLen == 0) {
+        if (columnLen == 0) {
             return null;
         }
         long start = System.currentTimeMillis();

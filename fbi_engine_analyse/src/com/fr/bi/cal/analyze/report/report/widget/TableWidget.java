@@ -147,7 +147,7 @@ public class TableWidget extends BISummaryWidget {
     public BIEngineExecutor getExecutor(BISession session) {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
-        boolean hasTarget = calculateTarget || getViewTargets().length > 0;
+        boolean hasTarget = calculateTarget || getViewTargets().length >= 0;
         if (this.table_type == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
@@ -195,13 +195,9 @@ public class TableWidget extends BISummaryWidget {
         int summaryLen = getViewTargets().length;
         //有列表头和指标
         boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
-        //有表头没有指标
-        boolean b1 = usedColumn.length >= 0 && usedRows.length == 0 && summaryLen == 0;
         boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
         if (b0) {
             executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
-        } else if (b1) {
-            executor = new HorGroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b2) {
             executor = new GroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else {
