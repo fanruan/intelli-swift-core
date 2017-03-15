@@ -1,5 +1,8 @@
 package com.fr.bi.cal.analyze.executor.utils;
 
+import com.fr.base.Style;
+import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
@@ -63,5 +66,17 @@ public class ExecutorUtils {
                 levelAndUnit = unit;
         }
         return levelAndUnit;
+    }
+
+    public static CBCell createCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan, Style style) {
+        CBCell cell = new CBCell(v);
+        cell.setRow(rowIdx);
+        cell.setRowSpan(rowSpan);
+        cell.setColumn(columnIdx);
+        cell.setColumnSpan(columnSpan);
+        cell.setStyle(style);
+        //默认CellGUIAttr
+        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+        return cell;
     }
 }

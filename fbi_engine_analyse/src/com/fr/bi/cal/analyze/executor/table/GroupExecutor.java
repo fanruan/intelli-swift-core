@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
@@ -633,18 +634,14 @@ public class GroupExecutor extends AbstractNodeExecutor {
      * @param pagedIterator
      */
     private void generateTitle(StreamPagedIterator pagedIterator) throws Exception {
+        Style style = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
         if(widget.isOrder() != 0) {
-            pagedIterator.addCell(createNumberCellTitle(0));
+            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, 1, 0, 1, style);
+            pagedIterator.addCell(cell);
         }
         int columnIdx = widget.isOrder();
         for (int i = 0; i < usedDimensions.length; i++) {
-            CBCell cell = new CBCell(usedDimensions[i].getText());
-            cell.setRow(0);
-            cell.setColumn(columnIdx++);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+            CBCell cell = ExecutorUtils.createCell(usedDimensions[i].getText(), 0, 1, columnIdx++, 1, style);
 //            List<CBCell> cellList = new ArrayList<CBCell>();
 //            cellList.add(cell);
 //            CBBoxElement cbox = new CBBoxElement(cellList);
@@ -664,29 +661,24 @@ public class GroupExecutor extends AbstractNodeExecutor {
         }
 
         for (int i = 0; i < usedSumTarget.length; i++) {
-            CBCell cell = new CBCell(usedSumTarget[i].getText());
-            cell.setRow(0);
-            cell.setRowSpan(1);
-            cell.setColumn(columnIdx++);
-            cell.setColumnSpan(1);
-            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+            CBCell cell = ExecutorUtils.createCell(usedSumTarget[i].getText(), 0, 1, columnIdx++, 1, style);
             pagedIterator.addCell(cell);
         }
     }
 
-    private void createCells(Node n, DetailCellIterator iter, FinalInt start, int currentRowIdx) {
+    private void createCells(Node n, DetailCellIterator iter, FinalInt start, int rowIdx) {
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
         }
         BIDimension[] rowDimensions = widget.getViewDimensions();
+        int[] oddEven = new int[rowDimensions.length];
         Object[] dimensionNames = new Object[rowDimensions.length];
         int orderIdx = 1;
         while (n != null) {
             Node temp = n;
 
-            currentRowIdx++;
-            int newRow = currentRowIdx & EXCEL_ROW_MODE_VALUE;
+            rowIdx++;
+            int newRow = rowIdx & EXCEL_ROW_MODE_VALUE;
             if (newRow == 0) {
                 iter.getIteratorByPage(start.value).finish();
                 start.value++;
@@ -694,7 +686,10 @@ public class GroupExecutor extends AbstractNodeExecutor {
             StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
             int targetsKeyIndex = 0;
             for (TargetGettingKey key : widget.getTargetsKey()) {
-                CBCell cell = createCells4Row(temp.getSummaryValue(key), rowDimensions.length, currentRowIdx, targetsKeyIndex);
+                int columnIdx = targetsKeyIndex + rowDimensions.length + widget.isOrder();
+                Object data = temp.getSummaryValue(key);
+                Style style = BITableStyle.getInstance().getDimensionCellStyle(data instanceof Number, (rowIdx + 1) % 2 == 0);
+                CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
                 pagedIterator.addCell(cell);
                 targetsKeyIndex++;
             }
@@ -707,10 +702,13 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 BIDimension dim = rowDimensions[--i];
                 Object v = dim.getValueByType(data);
                 if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
-                    CBCell cell = createCells4Dimension(v, rowSpan, currentRowIdx, i);
+                    oddEven[i]++;
+                    Style style = BITableStyle.getInstance().getDimensionCellStyle(v instanceof Number, (oddEven[i] + 1) % 2 == 0);
+                    CBCell cell = ExecutorUtils.createCell(v, rowIdx, rowSpan, i + widget.isOrder(), 1, style);
                     pagedIterator.addCell(cell);
                     if(i == 0 && widget.isOrder() == 1) {
-                        pagedIterator.addCell(createOrderNum(orderIdx++, rowSpan, currentRowIdx, i));
+                        CBCell orderCell = ExecutorUtils.createCell(orderIdx++, rowIdx, rowSpan, 0, 1, style);
+                        pagedIterator.addCell(orderCell);
                     }
                     dimensionNames[i] = v;
                 }
@@ -718,35 +716,6 @@ public class GroupExecutor extends AbstractNodeExecutor {
             }
             n = n.getSibling();
         }
-    }
-
-    private CBCell createCells4Row(Object v, int dimLen, int currentRowIdx, int targetsKeyIndex) {
-        CBCell cell = new CBCell(v);
-        cell.setColumn(targetsKeyIndex + dimLen);
-        cell.setRow(currentRowIdx);
-//        cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, currentRowIdx % 2 == 0));
-        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-        cell.setRowSpan(1);
-        cell.setColumnSpan(1);
-        return cell;
-    }
-
-    private CBCell createCells4Dimension(Object v, int rowSpan, int currentRowIdx, int currentColumn) {
-        CBCell cell = new CBCell(v);
-        cell.setRow(currentRowIdx);
-        cell.setColumn(currentColumn);
-        cell.setRowSpan(rowSpan);
-        cell.setColumnSpan(1);
-        return cell;
-    }
-
-    private CBCell createOrderNum (Object v, int rowIdx, int rowSpan, int columnIdx) {
-        CBCell cell = new CBCell(v);
-        cell.setRow(rowIdx);
-        cell.setColumn(columnIdx);
-        cell.setRowSpan(rowSpan);
-        cell.setColumnSpan(1);
-        return cell;
     }
 
     /**
