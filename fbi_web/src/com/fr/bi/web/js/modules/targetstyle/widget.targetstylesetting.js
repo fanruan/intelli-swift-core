@@ -225,9 +225,9 @@ $.shortcut("bi.target_style_setting", BI.TargetStyleSetting);
 BI.extend(BI.TargetStyleSetting, {
     formatNumberLevelAndSeparators: function (type, separators) {
         switch (type) {
-            case -1:
+            case BICst.TARGET_STYLE.FORMAT.NORMAL:
                 return separators ? '#,###.##' : "#.##";
-            case 0:
+            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
                 return separators ? '#,###' : "#0";
             default:
                 var formatter = separators ? "#,###." : '#0.';
