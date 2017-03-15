@@ -5,13 +5,17 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.conf.report.Widget;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -23,6 +27,7 @@ import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
@@ -260,8 +265,8 @@ public class ListLabelWidget extends BISummaryWidget {
     }
 
     @Override
-    public Widget getType() {
-        return Widget.STRING;
+    public WidgetType getType() {
+        return WidgetType.STRING;
     }
 
     @Override

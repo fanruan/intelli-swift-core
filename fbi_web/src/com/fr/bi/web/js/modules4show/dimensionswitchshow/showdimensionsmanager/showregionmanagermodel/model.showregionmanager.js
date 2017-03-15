@@ -27,8 +27,8 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 this.regionName[BICst.REGION.DIMENSION2] = BI.i18nText("BI-Column_Header");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Target");
                 break;
-            case BICst.WIDGET.COLUMN:
-            case BICst.WIDGET.ACCUMULATE_COLUMN:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.ACCUMULATE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
@@ -37,11 +37,11 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Left_Value_Axis");
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-Right_Value_Axis");
                 break;
-            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BICst.WIDGET.TREE_MAP:
+            case BICst.WIDGET.RECT_TREE:
                 this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
                 this.regionName[BICst.REGION.DIMENSION2] = BI.i18nText("BI-Series");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Left_Value_Axis");
@@ -51,13 +51,13 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 this.regionName[BICst.REGION.DIMENSION2] = BI.i18nText("BI-Series");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Value_Axis");
                 break;
-            case BICst.WIDGET.COMPARE_COLUMN:
+            case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
                 this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Positive_Value_Axis");
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-Negative_Value_Axis");
                 break;
-            case BICst.WIDGET.FALL_COLUMN:
+            case BICst.WIDGET.FALL_AXIS:
                 this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Value_Axis");
                 break;
@@ -85,7 +85,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_PIE:
-            case BICst.WIDGET.GAUGE:
+            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.PARETO:
@@ -127,10 +127,10 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 this.regionType[BICst.REGION.DIMENSION1] = BICst.REGION_TYPE.REGION_DIMENSION;
                 break;
             case BICst.WIDGET.TABLE:
-            case BICst.WIDGET.FALL_COLUMN:
+            case BICst.WIDGET.FALL_AXIS:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_PIE:
-            case BICst.WIDGET.GAUGE:
+            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.PARETO:
@@ -140,10 +140,10 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
             case BICst.WIDGET.CROSS_TABLE:
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.BAR:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.TREE_MAP:
+            case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
@@ -158,8 +158,8 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 this.regionType[BICst.REGION.DIMENSION2] = BICst.REGION_TYPE.REGION_WRAPPER_DIMENSION;
                 this.regionType[BICst.REGION.TARGET1] = BICst.REGION_TYPE.REGION_WRAPPER_TARGET;
                 break;
-            case BICst.WIDGET.COLUMN:
-            case BICst.WIDGET.ACCUMULATE_COLUMN:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.ACCUMULATE_AREA:
                 this.regionType[BICst.REGION.DIMENSION1] = BICst.REGION_TYPE.REGION_DIMENSION;
@@ -173,7 +173,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 this.regionType[BICst.REGION.TARGET1] = BICst.REGION_TYPE.REGION_WRAPPER_TARGET_SETTING;
                 this.regionType[BICst.REGION.TARGET2] = BICst.REGION_TYPE.REGION_WRAPPER_TARGET_SETTING;
                 break;
-            case BICst.WIDGET.COMPARE_COLUMN:
+            case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
             case BICst.WIDGET.COMPARE_BAR:
             case BICst.WIDGET.RANGE_AREA:

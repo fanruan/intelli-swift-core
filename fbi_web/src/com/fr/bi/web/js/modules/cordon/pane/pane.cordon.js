@@ -95,11 +95,11 @@ BI.CordonPane = BI.inherit(BI.Widget, {
         this.numberLevel = BICst.TARGET_STYLE.NUM_LEVEL.NORMAL;
         this.magnify = 1;
         //switch (type) {
-        //    case BICst.WIDGET.COLUMN:
-        //    case BICst.WIDGET.ACCUMULATE_COLUMN:
-        //    case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
-        //    case BICst.WIDGET.COMPARE_COLUMN:
-        //    case BICst.WIDGET.FALL_COLUMN:
+        //    case BICst.WIDGET.AXIS:
+        //    case BICst.WIDGET.ACCUMULATE_AXIS:
+        //    case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+        //    case BICst.WIDGET.COMPARE_AXIS:
+        //    case BICst.WIDGET.FALL_AXIS:
         //    case BICst.WIDGET.LINE:
         //    case BICst.WIDGET.AREA:
         //    case BICst.WIDGET.ACCUMULATE_AREA:

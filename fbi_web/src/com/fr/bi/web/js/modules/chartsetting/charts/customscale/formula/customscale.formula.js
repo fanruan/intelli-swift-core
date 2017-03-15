@@ -155,8 +155,8 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
         var text = [BI.i18nText("BI-DOT_MAX"), BI.i18nText("BI-DOT_MIN"), BI.i18nText("BI-DOT_AVERAGE")];
 
         switch (items.type) {
-            case BICst.WIDGET.COLUMN:
-            case BICst.WIDGET.ACCUMULATE_COLUMN:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AREA:
@@ -165,15 +165,15 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
                     BI.i18nText("BI-Right_Value_Axis"));
                 break;
             case BICst.WIDGET.BAR:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.FALL_COLUMN:
+            case BICst.WIDGET.FALL_AXIS:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 return this._createOneTargetMap(true, text, items, BI.i18nText("BI-Value_Axis"));
                 break;
-            case BICst.WIDGET.COMPARE_COLUMN:
+            case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
                 return this._createTwoTargetsMap(true, text, items, BI.i18nText("BI-Positive_Value_Axis"),
                     BI.i18nText("BI-Negative_Value_Axis"));
@@ -202,8 +202,8 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
         var text = [BI.i18nText("BI-DOT_MAX"), BI.i18nText("BI-DOT_MIN"), BI.i18nText("BI-DOT_AVERAGE")];
 
         switch (items.type) {
-            case BICst.WIDGET.COLUMN:
-            case BICst.WIDGET.ACCUMULATE_COLUMN:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AREA:
@@ -212,15 +212,15 @@ BI.CustomScaleFormula = BI.inherit(BI.Widget, {
                     BI.i18nText("BI-Right_Value_Axis"));
                 break;
             case BICst.WIDGET.BAR:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.FALL_COLUMN:
+            case BICst.WIDGET.FALL_AXIS:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 return this._createOneTargetMap(false, text, items, BI.i18nText("BI-Value_Axis"));
                 break;
-            case BICst.WIDGET.COMPARE_COLUMN:
+            case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
                 return this._createTwoTargetsMap(false, text, items, BI.i18nText("BI-Positive_Value_Axis"),
                     BI.i18nText("BI-Negative_Value_Axis"));

@@ -21,8 +21,8 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.PIE:
-            case BICst.WIDGET.GAUGE:
-            case BICst.WIDGET.COLUMN:
+            case BICst.WIDGET.DASHBOARD:
+            case BICst.WIDGET.AXIS:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.BUBBLE:

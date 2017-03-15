@@ -99,32 +99,32 @@ BICst.DASHBOARD_WIDGETS = [[{
 }, {
     text: BI.i18nText("BI-Column_Chart"),
     title: BI.i18nText("BI-Column_Chart"),
-    value: BICst.WIDGET.COLUMN,
+    value: BICst.WIDGET.AXIS,
     cls: "drag-axis-icon",
     children: [{
         text: BI.i18nText("BI-Column_Chart"),
         title: BI.i18nText("BI-Column_Chart"),
-        value: BICst.WIDGET.COLUMN,
+        value: BICst.WIDGET.AXIS,
         cls: "drag-axis-icon"
     }, {
         text: BI.i18nText("BI-Stacked_Chart"),
         title: BI.i18nText("BI-Stacked_Chart"),
-        value: BICst.WIDGET.ACCUMULATE_COLUMN,
+        value: BICst.WIDGET.ACCUMULATE_AXIS,
         cls: "drag-axis-accu-icon"
     }, {
         text: BI.i18nText("BI-Percent_Accumulate_Axis"),
         title: BI.i18nText("BI-Percent_Accumulate_Axis"),
-        value: BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN,
+        value: BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
         cls: "drag-axis-percent-accu-icon"
     }, {
         text: BI.i18nText("BI-Compare_Axis"),
         title: BI.i18nText("BI-Compare_Axis"),
-        value: BICst.WIDGET.COMPARE_COLUMN,
+        value: BICst.WIDGET.COMPARE_AXIS,
         cls: "drag-axis-compare-icon"
     }, {
         text: BI.i18nText("BI-Fall_Axis"),
         title: BI.i18nText("BI-Fall_Axis"),
-        value: BICst.WIDGET.FALL_COLUMN,
+        value: BICst.WIDGET.FALL_AXIS,
         cls: "drag-axis-fall-icon"
     }, {
         text: BI.i18nText("BI-Pareto"),
@@ -244,7 +244,7 @@ BICst.DASHBOARD_WIDGETS = [[{
 }, {
     text: BI.i18nText("BI-Dashboard_Chart"),
     title: BI.i18nText("BI-Dashboard_Chart"),
-    value: BICst.WIDGET.GAUGE,
+    value: BICst.WIDGET.DASHBOARD,
     cls: "drag-dashboard-icon"
 }, {
     text: BI.i18nText("BI-Radar"),
@@ -291,7 +291,7 @@ BICst.DASHBOARD_WIDGETS = [[{
 }, {
     text: BI.i18nText("BI-Rect_Tree_Chart"),
     title: BI.i18nText("BI-Rect_Tree_Chart"),
-    value: BICst.WIDGET.TREE_MAP,
+    value: BICst.WIDGET.RECT_TREE,
     cls: "drag-rect-tree-icon"
 }], [{
     text: BI.i18nText("BI-Detail_Table"),
@@ -445,7 +445,7 @@ BICst.SUSPENSION_MAP_TYPE = [{
     cls: "dot-e-font"
 }, {
     text: BI.i18nText("BI-Suspension_Column_Chart"),
-    value: BICst.WIDGET.COLUMN,
+    value: BICst.WIDGET.AXIS,
     cls: "dot-e-font"
 }];
 
@@ -1743,23 +1743,23 @@ BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.CROSS_TABLE] = "drag-cross-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPLEX_TABLE] = "drag-complex-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DETAIL] = "drag-detail-icon";
 
-BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COLUMN] = "drag-axis-icon";
-BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_COLUMN] = "drag-axis-accu-icon";
-BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN] = "drag-axis-percent-accu-icon";
-BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPARE_COLUMN] = "drag-axis-compare-icon";
-BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FALL_COLUMN] = "drag-axis-fall-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.AXIS] = "drag-axis-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_AXIS] = "drag-axis-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_AXIS] = "drag-axis-percent-accu-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPARE_AXIS] = "drag-axis-compare-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FALL_AXIS] = "drag-axis-fall-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.BAR] = "drag-bar-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.ACCUMULATE_BAR] = "drag-bar-accu-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.COMPARE_BAR] = "drag-bar-compare-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.PIE] = "drag-pie-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MULTI_PIE] = "drag-multi-pie-icon";
 
-BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.TREE_MAP] = "drag-rect-tree-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.RECT_TREE] = "drag-rect-tree-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.MAP] = "drag-map-china-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.GIS_MAP] = "drag-map-gis-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.HEAT_MAP] = "drag-map-heat-icon";
 
-BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.GAUGE] = "drag-dashboard-icon";
+BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DASHBOARD] = "drag-dashboard-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.DONUT] = "drag-donut-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.BUBBLE] = "drag-bubble-icon";
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.FORCE_BUBBLE] = "drag-bubble-force-icon";

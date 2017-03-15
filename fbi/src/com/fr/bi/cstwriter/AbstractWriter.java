@@ -23,28 +23,11 @@ public abstract class AbstractWriter {
         BIFileUtils.createFile(f);
         BufferedWriter writer = new BufferedWriter(new FileWriter(f));
         for (Class c : cls){
-            if(c.isEnum()){
-                writeEnum(writer, c, suf);
-            }else{
-                writeClass(writer, c, suf);
-            }
+            writeClass(writer, c, suf);
             writer.newLine();
         }
         writer.flush();
         writer.close();
-    }
-
-    private void writeEnum(BufferedWriter writer, Class c, String suf) throws IOException, IllegalAccessException {
-        writer.write(suf + getSub() + c.getSimpleName().toUpperCase() + " = " + "{};");
-        writer.newLine();
-        for (Field f :c.getDeclaredFields()){
-            try{
-                writeFieldValue(writer, f, suf +getSub() + c.getSimpleName().toUpperCase());
-                writer.newLine();
-            } catch (Exception e){
-
-            }
-        }
     }
 
     private void writeClass(BufferedWriter writer, Class c, String suf) throws IOException, IllegalAccessException {

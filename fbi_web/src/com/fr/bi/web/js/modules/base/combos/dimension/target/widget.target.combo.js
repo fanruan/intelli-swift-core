@@ -50,11 +50,11 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 },
                 children: [{
                     text: BI.i18nText("BI-Column_Chart"),
-                    value: BICst.WIDGET.COLUMN,
+                    value: BICst.WIDGET.AXIS,
                     cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Stacked_Chart"),
-                    value: BICst.WIDGET.ACCUMULATE_COLUMN,
+                    value: BICst.WIDGET.ACCUMULATE_AXIS,
                     cls: "dot-e-font"
                 }, {
                     text: BI.i18nText("BI-Line_Chart"),
@@ -130,7 +130,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     _assertChartType:function(val){
         val || (val = {});
-        val.type || (val.type = BICst.WIDGET.COLUMN);
+        val.type || (val.type = BICst.WIDGET.AXIS);
         return val;
     },
 
@@ -148,11 +148,11 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             return did === o.dId;
         });
         switch (wType) {
-            case BICst.WIDGET.COLUMN:
-            case BICst.WIDGET.ACCUMULATE_COLUMN:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
-            case BICst.WIDGET.COMPARE_COLUMN:
-            case BICst.WIDGET.FALL_COLUMN:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
                 item[this.constants.CordonPos][0] = {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
@@ -316,7 +316,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     },
                     children: [{
                         text: BI.i18nText("BI-Column_Chart"),
-                        value: BICst.WIDGET.COLUMN,
+                        value: BICst.WIDGET.AXIS,
                         cls: "dot-e-font"
                     }, {
                         text: BI.i18nText("BI-Line_Chart"),
@@ -402,8 +402,8 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_PIE:
-            case BICst.WIDGET.TREE_MAP:
-            case BICst.WIDGET.GAUGE:
+            case BICst.WIDGET.RECT_TREE:
+            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.ACCUMULATE_RADAR:

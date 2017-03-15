@@ -54,7 +54,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
                         switch (type) {
                             case BICst.WIDGET.BUBBLE:
-                            case BICst.WIDGET.COLUMN:
+                            case BICst.WIDGET.AXIS:
                             case BICst.WIDGET.PIE:
                             default:
                                 res = {
@@ -474,17 +474,17 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     parseChartData: function (data) {
         var self = this, o = this.options;
         switch (BI.Utils.getWidgetTypeByID(o.wId)) {
-            case BICst.WIDGET.ACCUMULATE_COLUMN:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.ACCUMULATE_AREA:
             case BICst.WIDGET.ACCUMULATE_RADAR:
-            case BICst.WIDGET.COLUMN:
+            case BICst.WIDGET.AXIS:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BICst.WIDGET.COMPARE_COLUMN:
+            case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
-            case BICst.WIDGET.FALL_COLUMN:
+            case BICst.WIDGET.FALL_AXIS:
             case BICst.WIDGET.RANGE_AREA:
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
@@ -494,7 +494,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-            case BICst.WIDGET.GAUGE:
+            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
                 return this._formatDataForAxis(data);
 
@@ -574,7 +574,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     BI.each(da, function (id, d) {
                         if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
                             var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
-                            t.push(chart.type || BICst.WIDGET.COLUMN);
+                            t.push(chart.type || BICst.WIDGET.AXIS);
                         } else {
                             t.push(type);
                         }
@@ -589,7 +589,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     var i = BI.UUID();
                     var type = types[idx];
                     BI.each(item, function (id, it) {
-                        (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_COLUMN) && BI.extend(it, {stack: i});
+                        (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
                     });
                 });
                 if (type === BICst.WIDGET.MAP) {

@@ -5,15 +5,19 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.conf.report.Widget;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.report.poly.TemplateBlock;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
@@ -21,7 +25,7 @@ import java.util.*;
  * Created by zcf on 2017/1/20.
  */
 public class SingleSliderWidget extends TableWidget {
-    private Widget type;
+    private WidgetType type;
     private double minMin;
     private double maxMax;
 
@@ -29,7 +33,7 @@ public class SingleSliderWidget extends TableWidget {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if (jo.has("type")) {
-            type = Widget.parse(jo.getInt("type"));
+            type = WidgetType.parse(jo.getInt("type"));
         }
     }
 
@@ -85,7 +89,7 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     @Override
-    public Widget getType() {
+    public WidgetType getType() {
         return this.type;
     }
 

@@ -12,7 +12,7 @@ import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.Widget;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.manager.PerformancePlugManager;
@@ -75,7 +75,7 @@ public class BIReportExportExcel {
         while (it.hasNext()) {
             JSONObject widgetJSON = widgetsJSON.getJSONObject((String) it.next());
             int type = widgetJSON.optInt("type");
-            if (Widget.CONTENT.getType() <= type && type <= Widget.WEB.getType()) {
+            if (WidgetType.CONTENT.getType() <= type && type <= WidgetType.WEB.getType()) {
                 specialWidgets.put(widgetJSON);
             } else {
                 JSONObject exp = new JSONObject("{ type: true, value: [[]]}");
@@ -110,7 +110,7 @@ public class BIReportExportExcel {
         if (specialWidgets.length() != 0) {
             for (int i = 0; i < specialWidgets.length(); i++) {
                 JSONObject jo = specialWidgets.getJSONObject(i);
-                switch (Widget.parse(jo.optInt("type"))) {
+                switch (WidgetType.parse(jo.optInt("type"))) {
                     case CONTENT:
                         polyECBlock.addFloatElement(renderContentWidget(specialWidgets.getJSONObject(i)));
                         break;
@@ -323,42 +323,42 @@ public class BIReportExportExcel {
         return (widget.getViewDimensions().length + widget.getViewTargets().length) != 0;
     }
 
-    private String getDefaultImage(Widget type, String imageFolder) throws IOException {
-        Map<Widget, String> map = new HashMap<Widget, String>();
-        map.put(Widget.ACCUMULATE_COLUMN, "/column_accu.png");
-        map.put(Widget.ACCUMULATE_AREA, "/area_accu.png");
-        map.put(Widget.ACCUMULATE_RADAR, "/radar_accu.png");
-        map.put(Widget.COLUMN, "/column.png");
-        map.put(Widget.LINE, "/line.png");
-        map.put(Widget.AREA, "/area.png");
-        map.put(Widget.PERCENT_ACCUMULATE_COLUMN, "/column_percent.png");
-        map.put(Widget.PERCENT_ACCUMULATE_AREA, "/area_percent.png");
-        map.put(Widget.COMPARE_COLUMN, "/column_compare.png");
-        map.put(Widget.COMPARE_AREA, "/area_compare.png");
-        map.put(Widget.FALL_COLUMN, "/column_fall.png");
-        map.put(Widget.RANGE_AREA, "/area_range.png");
-        map.put(Widget.BAR, "/bar.png");
-        map.put(Widget.ACCUMULATE_BAR, "/bar_accu.png");
-        map.put(Widget.COMPARE_BAR, "/bar_compare.png");
-        map.put(Widget.COMBINE_CHART, "/combine.png");
-        map.put(Widget.DONUT, "/donut.png");
-        map.put(Widget.RADAR, "/radar.png");
-        map.put(Widget.PIE, "/pie.png");
-        map.put(Widget.MULTI_AXIS_COMBINE_CHART, "/combine_m.png");
-        map.put(Widget.FORCE_BUBBLE, "/bubble_force.png");
-        map.put(Widget.GAUGE, "/gauge.png");
-        map.put(Widget.BUBBLE, "/bubble.png");
-        map.put(Widget.SCATTER, "/scatter.png");
-        map.put(Widget.MAP, "/map.png");
-        map.put(Widget.GIS_MAP, "/map_gis.png");
-        map.put(Widget.TABLE, "/table_group.png");
-        map.put(Widget.CROSS_TABLE, "/table_cross.png");
-        map.put(Widget.COMPLEX_TABLE, "/table_complex.png");
-        map.put(Widget.FUNNEL, "/funnel.png");
-        map.put(Widget.PARETO, "");
-        map.put(Widget.HEAT_MAP, "/funnel.png");
-        map.put(Widget.MULTI_PIE, "/multi_pie.png");
-        map.put(Widget.TREE_MAP, "/tree_map.png");
+    private String getDefaultImage(WidgetType type, String imageFolder) throws IOException {
+        Map<WidgetType, String> map = new HashMap<WidgetType, String>();
+        map.put(WidgetType.ACCUMULATE_COLUMN, "/column_accu.png");
+        map.put(WidgetType.ACCUMULATE_AREA, "/area_accu.png");
+        map.put(WidgetType.ACCUMULATE_RADAR, "/radar_accu.png");
+        map.put(WidgetType.COLUMN, "/column.png");
+        map.put(WidgetType.LINE, "/line.png");
+        map.put(WidgetType.AREA, "/area.png");
+        map.put(WidgetType.PERCENT_ACCUMULATE_COLUMN, "/column_percent.png");
+        map.put(WidgetType.PERCENT_ACCUMULATE_AREA, "/area_percent.png");
+        map.put(WidgetType.COMPARE_COLUMN, "/column_compare.png");
+        map.put(WidgetType.COMPARE_AREA, "/area_compare.png");
+        map.put(WidgetType.FALL_COLUMN, "/column_fall.png");
+        map.put(WidgetType.RANGE_AREA, "/area_range.png");
+        map.put(WidgetType.BAR, "/bar.png");
+        map.put(WidgetType.ACCUMULATE_BAR, "/bar_accu.png");
+        map.put(WidgetType.COMPARE_BAR, "/bar_compare.png");
+        map.put(WidgetType.COMBINE_CHART, "/combine.png");
+        map.put(WidgetType.DONUT, "/donut.png");
+        map.put(WidgetType.RADAR, "/radar.png");
+        map.put(WidgetType.PIE, "/pie.png");
+        map.put(WidgetType.MULTI_AXIS_COMBINE_CHART, "/combine_m.png");
+        map.put(WidgetType.FORCE_BUBBLE, "/bubble_force.png");
+        map.put(WidgetType.GAUGE, "/gauge.png");
+        map.put(WidgetType.BUBBLE, "/bubble.png");
+        map.put(WidgetType.SCATTER, "/scatter.png");
+        map.put(WidgetType.MAP, "/map.png");
+        map.put(WidgetType.GIS_MAP, "/map_gis.png");
+        map.put(WidgetType.TABLE, "/table_group.png");
+        map.put(WidgetType.CROSS_TABLE, "/table_cross.png");
+        map.put(WidgetType.COMPLEX_TABLE, "/table_complex.png");
+        map.put(WidgetType.FUNNEL, "/funnel.png");
+        map.put(WidgetType.PARETO, "");
+        map.put(WidgetType.HEAT_MAP, "/funnel.png");
+        map.put(WidgetType.MULTI_PIE, "/multi_pie.png");
+        map.put(WidgetType.TREE_MAP, "/tree_map.png");
         return coderBase64(IOUtils.readImage(imageFolder + map.get(type)));
     }
 

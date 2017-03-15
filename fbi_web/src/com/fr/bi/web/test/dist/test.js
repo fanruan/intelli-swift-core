@@ -14,7 +14,7 @@ function environment() {
     var dimensions = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}};
     var widgets = {
         1: {
-            type: BICst.WIDGET.COLUMN,
+            type: BICst.WIDGET.AXIS,
             dimensions: dimensions,
             view: {10000: ["1", "2"], 20000: ["3"], 30000: ["4", "5"]},
             bounds: {

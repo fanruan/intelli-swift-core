@@ -279,16 +279,16 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         dims[d].used = false;
                     });
                     //饼图和仪表盘有多个指标的时候，维度框不勾选且灰化= =
-                    if (type === BICst.WIDGET.PIE || type === BICst.WIDGET.GAUGE) {
+                    if (type === BICst.WIDGET.PIE || type === BICst.WIDGET.DASHBOARD) {
                         BI.each(view[BICst.REGION.DIMENSION1], function (i, d) {
                             dims[d].used = false;
                         });
                     }
                     //对比柱状/面积/条形图,范围面积,瀑布,气泡,力学,散点,漏斗,多层饼, 矩形树图这些指标区域是单选的
-                    if (type === BICst.WIDGET.COMPARE_COLUMN || type === BICst.WIDGET.COMPARE_AREA ||
-                        type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_COLUMN ||
+                    if (type === BICst.WIDGET.COMPARE_AXIS || type === BICst.WIDGET.COMPARE_AREA ||
+                        type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_AXIS ||
                         type === BICst.WIDGET.BUBBLE || type === BICst.WIDGET.FORCE_BUBBLE || type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
-                        type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.MULTI_PIE || type === BICst.WIDGET.TREE_MAP || type === BICst.WIDGET.PARETO ||
+                        type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.MULTI_PIE || type === BICst.WIDGET.RECT_TREE || type === BICst.WIDGET.PARETO ||
                         type === BICst.WIDGET.FUNNEL) {
                         var preTar1Select = [], preTar2Select = [], preTar3Select = [];
                         BI.each(preDims, function (dId, dim) {
@@ -486,8 +486,8 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         }
                     }
                 });
-                if (wType === BICst.WIDGET.COMPARE_COLUMN || wType === BICst.WIDGET.COMPARE_AREA ||
-                    wType === BICst.WIDGET.COMPARE_BAR || wType === BICst.WIDGET.RANGE_AREA || wType === BICst.WIDGET.FALL_COLUMN ||
+                if (wType === BICst.WIDGET.COMPARE_AXIS || wType === BICst.WIDGET.COMPARE_AREA ||
+                    wType === BICst.WIDGET.COMPARE_BAR || wType === BICst.WIDGET.RANGE_AREA || wType === BICst.WIDGET.FALL_AXIS ||
                     wType === BICst.WIDGET.BUBBLE || wType === BICst.WIDGET.FORCE_BUBBLE || wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
                     wType === BICst.WIDGET.SCATTER) {
                     BI.each(view, function (region, dims) {

@@ -69,7 +69,7 @@ public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService,Se
 
     BIPolyWorkSheet createWorkSheet(BISessionProvider session);
 
-    Widget getType();
+    WidgetType getType();
 
     /**
      * 显示汇总行

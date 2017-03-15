@@ -261,7 +261,7 @@ BIShow.TargetView = BI.inherit(BI.View, {
             this.usedCheck.setEnable(false);
             this.usedRadio.setEnable(false);
         }
-        if ((wType === BICst.WIDGET.GAUGE || wType === BICst.WIDGET.PIE)
+        if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
             && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(this.model.get("id")))
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
@@ -274,8 +274,8 @@ BIShow.TargetView = BI.inherit(BI.View, {
         var wId = BI.Utils.getWidgetIDByDimensionID(tId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
         if (wType === BICst.WIDGET.FORCE_BUBBLE ||
-            wType === BICst.WIDGET.FALL_COLUMN ||
-            wType === BICst.WIDGET.COMPARE_COLUMN ||
+            wType === BICst.WIDGET.FALL_AXIS ||
+            wType === BICst.WIDGET.COMPARE_AXIS ||
             wType === BICst.WIDGET.COMPARE_BAR ||
             wType === BICst.WIDGET.RANGE_AREA ||
             wType === BICst.WIDGET.COMPARE_AREA ||

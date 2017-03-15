@@ -36,11 +36,11 @@ BI.ShowDimensionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.TABLE:
             case BICst.WIDGET.CROSS_TABLE:
             case BICst.WIDGET.COMPLEX_TABLE:
-            case BICst.WIDGET.COLUMN:
-            case BICst.WIDGET.ACCUMULATE_COLUMN:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
-            case BICst.WIDGET.COMPARE_COLUMN:
-            case BICst.WIDGET.FALL_COLUMN:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
@@ -48,8 +48,8 @@ BI.ShowDimensionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
-            case BICst.WIDGET.TREE_MAP:
-            case BICst.WIDGET.GAUGE:
+            case BICst.WIDGET.RECT_TREE:
+            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:

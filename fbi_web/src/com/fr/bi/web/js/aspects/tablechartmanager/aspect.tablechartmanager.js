@@ -94,7 +94,7 @@ BI.TableChartManagerAspect = function () {
             case BICst.WIDGET.SCATTER:
                 !(dim1Size > 0 && tar1Size > 0 && tar2Size > 0) && (cls = "scatter-tip-background");
                 break;
-            case BICst.WIDGET.COLUMN:
+            case BICst.WIDGET.AXIS:
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "axis-tip-background");
                 break;
             case BICst.WIDGET.LINE:
@@ -103,7 +103,7 @@ BI.TableChartManagerAspect = function () {
             case BICst.WIDGET.AREA:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "area-tip-background");
                 break;
-            case BICst.WIDGET.ACCUMULATE_COLUMN:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "axis-accu-tip-background");
                 break;
             case BICst.WIDGET.ACCUMULATE_AREA:
@@ -112,19 +112,19 @@ BI.TableChartManagerAspect = function () {
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "radar-accu-tip-background");
                 break;
-            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "axis-percent-tip-background");
                 break;
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "area-percent-tip-background");
                 break;
-            case BICst.WIDGET.COMPARE_COLUMN:
+            case BICst.WIDGET.COMPARE_AXIS:
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "axis-compare-tip-background");
                 break;
             case BICst.WIDGET.COMPARE_AREA:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "area-compare-tip-background");
                 break;
-            case BICst.WIDGET.FALL_COLUMN:
+            case BICst.WIDGET.FALL_AXIS:
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = "axis-fall-tip-background");
                 break;
             case BICst.WIDGET.RANGE_AREA:
@@ -175,10 +175,10 @@ BI.TableChartManagerAspect = function () {
             case BICst.WIDGET.MULTI_PIE:
                 tar1Size === 0 && (cls = "multi-pie-tip-background");
                 break;
-            case BICst.WIDGET.TREE_MAP:
+            case BICst.WIDGET.RECT_TREE:
                 tar1Size === 0 && (cls = "rect-tree-tip-background");
                 break;
-            case BICst.WIDGET.GAUGE:
+            case BICst.WIDGET.DASHBOARD:
                 tar1Size === 0 && (cls = "dashboard-tip-background");
                 break;
         }

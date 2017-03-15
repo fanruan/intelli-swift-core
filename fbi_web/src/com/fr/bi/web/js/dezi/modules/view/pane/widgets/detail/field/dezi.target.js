@@ -306,7 +306,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             this.usedCheck.setEnable(false);
             this.usedRadio.setEnable(false);
         }
-        if ((wType === BICst.WIDGET.GAUGE || wType === BICst.WIDGET.PIE)
+        if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
             && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(this.model.get("id")))
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
@@ -353,8 +353,8 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         var wId = BI.Utils.getWidgetIDByDimensionID(tId);
         var wType = BI.Utils.getWidgetTypeByID(wId);
         if (wType === BICst.WIDGET.FORCE_BUBBLE ||
-            wType === BICst.WIDGET.FALL_COLUMN ||
-            wType === BICst.WIDGET.COMPARE_COLUMN ||
+            wType === BICst.WIDGET.FALL_AXIS ||
+            wType === BICst.WIDGET.COMPARE_AXIS ||
             wType === BICst.WIDGET.COMPARE_BAR ||
             wType === BICst.WIDGET.RANGE_AREA ||
             wType === BICst.WIDGET.COMPARE_AREA ||
@@ -362,7 +362,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             wType === BICst.WIDGET.SCATTER ||
             wType === BICst.WIDGET.BUBBLE ||
             wType === BICst.WIDGET.MULTI_PIE ||
-            wType === BICst.WIDGET.TREE_MAP ||
+            wType === BICst.WIDGET.RECT_TREE ||
             wType === BICst.WIDGET.FUNNEL ||
             wType === BICst.WIDGET.PARETO) {
             this.usedCheck.setVisible(false);
@@ -476,11 +476,11 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.GIS_MAP:
-            case BICst.WIDGET.COLUMN:
-            case BICst.WIDGET.ACCUMULATE_COLUMN:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_COLUMN:
-            case BICst.WIDGET.COMPARE_COLUMN:
-            case BICst.WIDGET.FALL_COLUMN:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.FALL_AXIS:
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AREA:
@@ -493,12 +493,12 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.SCATTER:
-            case BICst.WIDGET.GAUGE:
+            case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.MULTI_PIE:
-            case BICst.WIDGET.TREE_MAP:
+            case BICst.WIDGET.RECT_TREE:
                 var popup = BI.createWidget({
                     type: "bi.target_style_setting_for_map",
                     dId: this.model.get("id")

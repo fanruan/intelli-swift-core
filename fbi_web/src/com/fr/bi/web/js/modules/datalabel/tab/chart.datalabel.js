@@ -136,7 +136,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
                 };
             }
         }
-        this.combineChart.populate(data, this.config, [BICst.WIDGET.COLUMN]);
+        this.combineChart.populate(data, this.config, [BICst.WIDGET.AXIS]);
     }
 });
 BI.DataLabelChart.EVENT_CHANGE = "BI.DataLabelChart.EVENT_CHANGE";
