@@ -81,7 +81,6 @@ public class BIPlate extends AbstractFSPlate {
         /*载入定时任务*/
         TimerRunner timerRunner = new TimerRunner(UserControl.getInstance().getSuperManagerID());
         timerRunner.reGenerateTimeTasks();
-        BIConfigureManagerCenter.getLogManager().logEnd(UserControl.getInstance().getSuperManagerID());
         addBITableColumn4NewConnection();
         addSharedTableColumn4NewConnection();
 

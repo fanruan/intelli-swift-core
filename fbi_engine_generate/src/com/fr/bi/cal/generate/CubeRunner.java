@@ -42,7 +42,6 @@ public class CubeRunner {
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
     private CubeBuildStuffComplete object;
     private static final Logger logger = BILoggerFactory.getLogger(CubeRunner.class);
-
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);
         init();
@@ -145,6 +144,7 @@ public class CubeRunner {
 
     private void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
+        BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         BackUpUtils.backup();
     }
 
@@ -164,7 +164,6 @@ public class CubeRunner {
             BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
         }
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
-        /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
         BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
     }
 
