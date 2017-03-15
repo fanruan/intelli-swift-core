@@ -38,10 +38,10 @@ public class BuildInstantCubeTask extends BuildCubeTask {
                 cube.addVersion(System.currentTimeMillis());
                 long start = System.currentTimeMillis();
                 manager.finishGenerateCube();
-                BILoggerFactory.getLogger().info("InstanceCube successful! Cost :" + DateUtils.timeCostFrom(start));
+                BILoggerFactory.getLogger().info("Instance FineIndex successful! Cost :" + DateUtils.timeCostFrom(start));
 
             } else {
-                message = "Cube build failed ,the Cube files will not be replaced ";
+                message = "FineIndex build failed ,the FineIndex files will not be replaced ";
                 BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
                 BILoggerFactory.getLogger().error(message);
             }

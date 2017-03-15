@@ -187,9 +187,9 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
     }
 
     protected int loadOldValue() {
-        BILoggerFactory.getLogger().info("now loading：" + dataSource.fetchObjectCore() + " old cube");
+        BILoggerFactory.getLogger().info("now loading：" + dataSource.fetchObjectCore() + " old FineIndex");
         new TableCubeFile(BIConfigurePathUtils.createTableTempPath(dataSource.fetchObjectCore().getID().getIdentityValue(), loader.getUserId())).copyDetailValue(cube, loader.getNIOReaderManager(), oldTi.getRowCount());
-        BILoggerFactory.getLogger().info("loading：" + dataSource.fetchObjectCore() + " old cube finished");
+        BILoggerFactory.getLogger().info("loading：" + dataSource.fetchObjectCore() + " old FineIndex finished");
         return oldTi.getRowCount();
     }
 }

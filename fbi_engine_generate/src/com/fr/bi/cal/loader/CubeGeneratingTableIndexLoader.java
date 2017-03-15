@@ -119,7 +119,7 @@ public class CubeGeneratingTableIndexLoader extends CubeAbstractLoader {
                         ti = new BITableIndex(path, getNIOReaderManager());
                     }
                 } catch (Exception e) {
-                    BILoggerFactory.getLogger().error("Can`t Find Cube Of Table : " + core.toString() + ", Please Check Your Database Connection");
+                    BILoggerFactory.getLogger().error("Can`t Find FineIndex Of Table : " + core.toString() + ", Please Check Your Database Connection");
                 }
                 return ti;
             }

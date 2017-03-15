@@ -14,14 +14,14 @@ import com.finebi.cube.message.IMessage;
 public class BICubeBuildFinishWatcherTestTool extends BICubeBuildFinishWatcher {
     @Override
     public void process(IMessage lastReceiveMessage) {
-        System.out.println("Cube Build Finish");
+        System.out.println("FineIndex Build Finish");
         try {
             messagePublish.publicFinishMessage(generateFinishBody(""));
         } catch (BIDeliverFailureException e) {
             e.printStackTrace();
         }
 
-        BICubeBuildProbeTool.INSTANCE.getFlag().put("Cube Build Finish", 51);
+        BICubeBuildProbeTool.INSTANCE.getFlag().put("FineIndex Build Finish", 51);
 //        try {
 //            Thread.sleep(100);
 //        } catch (InterruptedException e) {

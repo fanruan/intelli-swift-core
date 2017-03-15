@@ -134,7 +134,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
     @Override
     public void generateCube() {
         long start = System.currentTimeMillis();
-        BILoggerFactory.getLogger().info("now generating:" + source.toString() + " Cube:");
+        BILoggerFactory.getLogger().info("now generating:" + source.toString() + " FineIndex:");
         setPercent(0);
         cube.delete();
         generateSimpleCube();
