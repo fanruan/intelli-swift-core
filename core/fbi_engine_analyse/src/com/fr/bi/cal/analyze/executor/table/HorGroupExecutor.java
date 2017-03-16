@@ -480,8 +480,8 @@ public class HorGroupExecutor extends GroupExecutor {
                 int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
                 Object v = node.getSummaryValue(keys[i]);
                 v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
-                Style style = BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT));
-                cell = ExecutorUtils.createCell(v, columnData.getMaxArrayLength() + i, 1, tempCol + p, 1, style);
+                Style dataStyle = BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT));
+                cell = ExecutorUtils.createCell(v, columnData.getMaxArrayLength() + i, 1, tempCol + p, 1, dataStyle);
                 List<CBCell> cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
                 CBBoxElement cbox = new CBBoxElement(cellList);//TODO CBBoxElement需要整合减少内存
