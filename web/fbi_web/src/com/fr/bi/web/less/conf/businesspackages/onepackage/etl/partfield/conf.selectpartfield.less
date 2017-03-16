@@ -1,0 +1,36 @@
+@import "../../../../../bibase";
+
+.bi-etl-selectpartfield{
+  background: @color-bi-background-gray;
+  & .part-field-north{
+    & .part-field-north-label{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      font-weight: bold;
+    }
+  }
+  & .part-field-table-name{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .table-name-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+  }
+  & .part-field-operator-pane{
+    background-color: @color-bi-background-default;
+  }
+  & .part-field-preview-result{
+    & .part-field-result-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .part-field-result-tip{
+      color: @color-bi-text-gray;
+      font-size: @font-size-16;
+    }
+  }
+}

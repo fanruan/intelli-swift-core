@@ -1,0 +1,512 @@
+/**
+ * 自适应布局
+ *
+ * Created by GUY on 2016/3/8.
+ * @class BI.Fit
+ * @extends BI.Widget
+ */
+BI.Fit = BI.inherit(BI.Widget, {
+
+    _defaultConfig: function () {
+        return BI.extend(BI.Fit.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-fit",
+            widgetCreator: BI.emptyFn
+        });
+    },
+
+    _init: function () {
+        BI.Fit.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
+        this.arrangement = BI.createWidget({
+            type: "bi.interactive_arrangement",
+            layoutType: o.layoutType,
+            cls: "fit-dashboard",
+            items: o.items
+        });
+        this.arrangement.on(BI.InteractiveArrangement.EVENT_RESIZE, function () {
+            self.fireEvent(BI.Fit.EVENT_CHANGE, arguments);
+        });
+
+        this.noWidgetTip = BI.createWidget({
+            type: "bi.center_adapt",
+            items: [{
+                type: "bi.vertical",
+                items: [{
+                    //等视觉给图
+                    type: "bi.layout"
+                }, {
+                    type: "bi.label",
+                    cls: "no-widgets",
+                    text: BI.i18nText("BI-Please_Drag_Element_Left_To_Add")
+                }]
+            }]
+        });
+
+        this.store = {};
+
+        var nav = this._createNav();
+
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.arrangement,
+                left: 140,
+                right: 0,
+                bottom: 0,
+                top: 0
+            }, {
+                el: this.noWidgetTip,
+                left: 140,
+                right: 0,
+                bottom: 0,
+                top: 0
+            }, {
+                el: nav,
+                left: 20,
+                top: 10,
+                bottom: 10
+            }]
+        });
+
+        this.layoutCombo = BI.createWidget({
+            type: "bi.text_value_combo",
+            items: BICst.DASHBOARD_LAYOUT_ARRAY,
+            width: 120,
+            height: 24,
+            cls: "layout-combo"
+        });
+        this.layoutCombo.setValue(o.layoutType);
+        this.layoutCombo.on(BI.TextValueCombo.EVENT_CHANGE, function (v) {
+            self._changeLayoutType(v);
+            self.fireEvent(BI.Fit.EVENT_CHANGE);
+        });
+
+        return BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: {
+                    type: "bi.right_vertical_adapt",
+                    height: 30,
+                    items: [this.layoutCombo],
+                    hgap: 10
+                },
+                right: 0,
+                top: -30
+            }]
+        });
+    },
+
+    _changeLayoutType: function (layoutType) {
+        var self = this;
+        BI.each(this.store, function (i, wi) {
+            switch (layoutType) {
+                case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                    wi.element.draggable('option', 'helper', function () {
+                        var helper = self.arrangement.getHelper();
+                        return helper.element;
+                    });
+                    wi.element.draggable('option', 'cursorAt', {left: 0, top: 0});
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.FREE:
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
+                    wi.element.draggable('option', 'helper', 'original');
+                    wi.element.draggable('option', 'cursorAt', false);
+                    break;
+            }
+        });
+        this.arrangement.setLayoutType(layoutType);
+    },
+
+    _createItem: function (id, size, position, info) {
+        var self = this, o = this.options;
+        id || (id = BI.UUID());
+        if (BI.isNotNull(this.store[id])) {
+            var widget = this.store[id];
+        } else {
+            var widget = this.store[id] = BI.createWidget({
+                type: "bi.fit_widget",
+                widgetCreator: function () {
+                    return o.widgetCreator(id, info, size, position);
+                },
+                id: id
+            });
+            widget.element.draggable({
+                //cursorAt: {left: 0, top: 0},
+                cursor: BICst.cursorUrl,
+                handle: ".fit-widget-drag-bar",
+                cursor: BICst.cursorUrl,
+                start: function (e, ui) {
+                    self._startDrag(id, ui.position, e);
+                },
+                drag: function (e, ui) {
+                    var r;
+                    switch (self.getLayoutType()) {
+                        case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                            r = size || {};
+                            break;
+                        case BI.Arrangement.LAYOUT_TYPE.FREE:
+                            r = self.arrangement.getRegionByName(id);
+                            break;
+                        case BI.Arrangement.LAYOUT_TYPE.GRID:
+                            r = self.arrangement.getRegionByName(id);
+                            break;
+                    }
+                    self._drag(id, ui.position, {
+                        width: r.width,
+                        height: r.height
+                    });
+                },
+                stop: function (e, ui) {
+                    self._stopDrag(id, ui.position, widget);
+                }
+                //helper: function (e) {
+                //    var helper = self.arrangement.getHelper();
+                //    return helper.element;
+                //}
+            });
+
+            widget.on(BI.BasicButton.EVENT_CHANGE, function () {
+                BI.Broadcasts.send(BICst.BROADCAST.WIDGET_SELECTED_PREFIX);
+            });
+
+            //widget.getDraggable().element.draggable({
+            //    // cursor: "move",
+            //    cursorAt: {left: 0, top: 0},
+            //    start: function (e, ui) {
+            //        self._startDrag(id, ui.position, e);
+            //    },
+            //    drag: function (e, ui) {
+            //        self._drag(id, size || {}, ui.position);
+            //    },
+            //    stop: function (e, ui) {
+            //        self._stopDrag(widget);
+            //    },
+            //    helper: function (e) {
+            //        var helper = self.arrangement.getHelper();
+            //        return helper.element;
+            //    }
+            //});
+        }
+        return widget;
+    },
+
+    _startDrag: function (id, position, e) {
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                this.arrangement.deleteRegion(id);
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                break;
+        }
+    },
+
+    _drag: function (id, position, size) {
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                this.arrangement.setPosition({
+                    left: position.left,
+                    top: position.top
+                }, {
+                    width: size.width,
+                    height: size.height
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
+                this.arrangement.draw(position, size, id);
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
+                break;
+        }
+    },
+
+    _stopDrag: function (id, position, widget) {
+        var flag = false;
+        this.arrangement.stopDraw();
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                if (!(flag = this.arrangement.addRegion({
+                        el: widget
+                    }))) {
+                    this.arrangement.revoke();
+                }
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
+                flag = true;
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top,
+                    stop: true
+                });
+                flag = true;
+                break;
+        }
+        if (flag === true) {
+            this.fireEvent(BI.Fit.EVENT_CHANGE);
+        }
+    },
+
+    _startDragIcon: function () {
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                break;
+        }
+    },
+
+    _dragIcon: function (size, position, opt) {
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                this.arrangement.setPosition({
+                    left: position.left,
+                    top: position.top
+                }, {
+                    width: size.width,
+                    height: size.height
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                this.arrangement.setPosition({
+                    left: position.left,
+                    top: position.top
+                }, {
+                    width: size.width,
+                    height: size.height
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                this.arrangement.setPosition({
+                    left: position.left,
+                    top: position.top
+                }, {
+                    width: size.width,
+                    height: size.height
+                });
+                break;
+        }
+    },
+
+    _stopDragIcon: function (size, position, opt) {
+        var flag = false;
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                flag = this.arrangement.addRegion({
+                    el: this._createItem(BI.UUID(), size, position, opt)
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                flag = this.arrangement.addRegion({
+                    el: this._createItem(BI.UUID(), size, position, opt)
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                flag = this.arrangement.addRegion({
+                    el: this._createItem(BI.UUID(), size, position, opt)
+                });
+                break;
+        }
+        if (flag === true) {
+            this._changeLayoutType(this.getLayoutType());
+            this._checkWidgetsExist();
+            this.fireEvent(BI.Fit.EVENT_CHANGE);
+        }
+    },
+
+    _createNav: function () {
+        var self = this;
+        var dragGroup = BI.createWidget({
+            type: "bi.drag_icon_group",
+            drag: function (size, position, opt) {
+                var clientWidth = self.arrangement.getClientWidth();
+                var one = clientWidth / BI.Arrangement.PORTION;
+                size.width = size.width * one;
+                size.height = size.height * BI.Arrangement.GRID_HEIGHT;
+                self._dragIcon(size, position, opt);
+            },
+            stop: function (size, position, opt) {
+                var clientWidth = self.arrangement.getClientWidth();
+                var one = clientWidth / BI.Arrangement.PORTION;
+                size.width = size.width * one;
+                size.height = size.height * BI.Arrangement.GRID_HEIGHT;
+                if (self.arrangement.setPosition(position, size)) {
+                    self._stopDragIcon(size, position, opt);
+                }
+            },
+            helper: function () {
+                var helper = self.arrangement.getHelper();
+                return helper.element;
+            }
+        });
+        return dragGroup;
+    },
+
+    _checkWidgetsExist: function () {
+        var widgets = Data.SharingPool.cat("widgets");
+        this.noWidgetTip.setVisible(BI.size(widgets) === 0);
+    },
+
+    setLayoutType: function (type) {
+        this.layoutCombo.setValue(type);
+        var old = this.getLayoutType();
+        this.arrangement.setLayoutType(type);
+        if (old !== type) {
+            this.fireEvent(BI.Fit.EVENT_CHANGE);
+        }
+    },
+
+    getLayoutType: function () {
+        return this.arrangement.getLayoutType();
+    },
+
+    getLayoutRatio: function () {
+        return this.arrangement.getLayoutRatio();
+    },
+
+    getAllRegions: function () {
+        var regions = this.arrangement.getAllRegions();
+        var result = [];
+        BI.each(regions, function (i, region) {
+            result.push({
+                id: region.id,
+                left: region.left,
+                top: region.top,
+                width: region.width,
+                height: region.height
+            })
+        });
+        return result;
+    },
+
+    getValue: function () {
+        return {
+            layoutRatio: this.getLayoutRatio(),
+            layoutType: this.getLayoutType(),
+            regions: this.getAllRegions()
+        }
+    },
+
+    copyRegion: function (id, newId) {
+        var flag = false;
+        var region = this.arrangement.getRegionByName(id);
+        var offset = this.arrangement._getScrollOffset();
+        var el = this._createItem(newId, {
+            width: region.width,
+            height: region.height
+        });
+        if (!(flag = this.arrangement.addRegion({
+                el: el,
+                width: region.width,
+                height: region.height
+            }, {
+                left: region.left - offset.left + region.width / 2 + 1,
+                top: region.top - offset.top + region.height / 2 + 1
+            }))) {
+            if (!(flag = this.arrangement.addRegion({
+                    el: el,
+                    width: region.width,
+                    height: region.height
+                }, {
+                    left: region.left - offset.left + region.width / 2,
+                    top: region.top - offset.top + region.height / 4 - 1
+                }))) {
+                if (!(flag = this.arrangement.addRegion({
+                        el: el,
+                        width: region.width,
+                        height: region.height
+                    }, {
+                        left: region.left - offset.left + region.width / 2,
+                        top: region.top - offset.top + region.height * 3 / 4 + 1
+                    }))) {
+                }
+            }
+        }
+        if (flag === true) {
+            this._changeLayoutType(this.getLayoutType());
+            this.fireEvent(BI.Fit.EVENT_CHANGE);
+        }
+        return flag;
+    },
+
+    deleteRegion: function (id) {
+        var flag = this.arrangement.deleteRegion(id);
+        if (flag === true) {
+            this._checkWidgetsExist();
+            this.fireEvent(BI.Fit.EVENT_CHANGE);
+        }
+        return flag;
+    },
+
+    populate: function () {
+        var self = this;
+        var layoutType = BI.Utils.getLayoutType();
+        var layoutRatio = BI.Utils.getLayoutRatio();
+        var result = [];
+        var widgets = Data.SharingPool.cat("widgets");
+        this._checkWidgetsExist();
+        BI.each(widgets, function (id, widget) {
+            var bounds = widget.bounds || {};
+            var item = self._createItem(id, bounds);
+            result.push({
+                el: item,
+                left: bounds.left,
+                top: bounds.top,
+                width: bounds.width,
+                height: bounds.height
+            });
+        });
+        this._changeLayoutType(layoutType);
+        this.setLayoutType(layoutType);
+        this.arrangement.populate(result);
+        BI.nextTick(function () {
+            self.arrangement.zoom(layoutRatio);
+            self.fireEvent(BI.Fit.EVENT_CHANGE);
+        });
+    },
+
+    destroy: function () {
+        this.arrangement.destroy();
+        BI.Fit.superclass.destroy.apply(this, arguments);
+    }
+});
+BI.Fit.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut('bi.fit', BI.Fit);

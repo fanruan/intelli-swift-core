@@ -1,0 +1,23 @@
+@import "../../bibase";
+
+.bi-template-manager{
+  min-width: 600px;
+  & .template-manager-pane{
+    border: 1px solid @color-bi-border-normal;
+    & .report-folder-list{
+      border-top: 1px solid @color-bi-border-line;
+    }
+  }
+  & .bi-template-manager-file-item-search{
+    border: 1px solid @color-bi-border-normal;
+  }
+  & .folder-report-view{
+    .border-radius(4px);
+    & .folder-view{
+      background: @color-bi-background-default;
+      &.active{
+        background: @color-bi-background-highlight;
+      }
+    }
+  }
+}

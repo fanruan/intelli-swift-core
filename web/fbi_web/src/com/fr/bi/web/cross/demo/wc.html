@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5, IE=EmulateIE7, chrome=1">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>${layoutType}</title>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=zh_CN"></script>
+
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=base.css&cmd=refresh"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=modules.css&cmd=refresh"/>
+    <link rel="stylesheet" type="text/css"
+          href="${servletURL}?op=resource&resource=/com/fr/bi/web/cross/demo/mvc/css/mvc.css"/>
+
+
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=data.js&version=${__version__}&__pre__=true"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=formula.js&version=${__version__}&__pre__=true"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&cmd=refresh"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js&cmd=refresh"></script>
+
+
+    <script type="text/javascript">
+        $(function () {
+            BI.createWidget({
+                type: "bi.absolute",
+                element: "body",
+                items: [{
+                    el: {
+                        type: "bi.button",
+                        text: "测试",
+                        height: 25,
+                        width: 100
+                    },
+                    left: 100,
+                    top: 100
+                }]
+            })
+        });
+    </script>
+</head>
+
+<body>
+
+</body>
+</html>

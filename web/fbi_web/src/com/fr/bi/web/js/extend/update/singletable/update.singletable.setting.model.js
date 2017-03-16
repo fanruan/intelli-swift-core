@@ -1,0 +1,93 @@
+/**
+ * Created by Young's on 2016/4/25.
+ */
+BI.UpdateSingleTableSettingModel = BI.inherit(FR.OB, {
+    _init: function () {
+        BI.UpdateSingleTableSettingModel.superclass._init.apply(this, arguments);
+        var updateSetting = this.options.update_setting;
+        this.table = this.options.table;
+        this.currentTable = this.options.currentTable;
+        this.updateType = BICst.SINGLE_TABLE_UPDATE_TYPE.ALL;
+        this.addSql = "";
+        this.deleteSql = "";
+        this.modifySql = "";
+        // this.togetherNever = BICst.SINGLE_TABLE_UPDATE.TOGETHER;
+        this.timeList = [];
+        if (BI.isNotNull(updateSetting)) {
+            this.updateType = updateSetting.update_type;
+            // this.togetherNever = updateSetting.together_never;
+            this.addSql = updateSetting.add_sql;
+            this.deleteSql = updateSetting.delete_sql;
+            this.modifySql = updateSetting.modify_sql;
+            this.timeList = updateSetting.time_list;
+        }
+
+    },
+
+    setUpdateType: function (updateType) {
+        this.updateType = updateType;
+    },
+
+    setAddSql: function (addSql) {
+        this.addSql = addSql;
+    },
+
+    setDeleteSql: function (deleteSql) {
+        this.deleteSql = deleteSql;
+    },
+
+    setModifySql: function (modifySql) {
+        this.modifySql = modifySql;
+    },
+
+    setTimeList: function (timeList) {
+        this.timeList = timeList;
+    },
+
+
+    getId: function () {
+        return this.table.id;
+    },
+
+    getTableName: function () {
+        return this.table.table_name;
+    },
+
+    getFields: function () {
+        return this.table.fields;
+    },
+
+    getUpdateType: function () {
+        return this.updateType;
+    },
+
+    getAddSql: function () {
+        return BI.deepClone(this.addSql);
+    },
+
+    getDeleteSql: function () {
+        return BI.deepClone(this.deleteSql);
+    },
+
+    getModifySql: function () {
+        return BI.deepClone(this.modifySql);
+    },
+
+    getTimeList: function () {
+        return BI.deepClone(this.timeList);
+    },
+
+    getTable: function () {
+        return this.table;
+    },
+
+    getValue: function () {
+        return {
+            update_type: this.updateType,
+            add_sql: this.addSql,
+            delete_sql: this.deleteSql,
+            modify_sql: this.modifySql,
+            time_list: this.timeList
+        }
+    }
+});

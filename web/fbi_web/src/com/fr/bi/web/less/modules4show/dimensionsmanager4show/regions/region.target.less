@@ -1,0 +1,17 @@
+@import "../../../bibase";
+
+.bi-target-region{
+  border: 1px solid @color-target-region-border;
+  & .region-north{
+    background: @color-target-background;
+    border-bottom: 1px solid @color-target-region-border;
+    & .region-north-title{
+      font-size: @font-size-14;
+      color: @color-bi-text-gray;
+    }
+  }
+  & .target-container{
+    background: @color-target-background;
+    .border-radius(2px);
+  }
+}
