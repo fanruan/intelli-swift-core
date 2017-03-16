@@ -64,7 +64,8 @@ BI.GeneralQueryUsedFieldsPane = BI.inherit(BI.Widget, {
         var allFields = BI.Utils.getAllUsedFieldIds();
         var items = [];
         BI.each(allFields, function(i, fId){
-            if(BI.Utils.getFieldTypeByID(fId) !== BICst.COLUMN.COUNTER) {
+            if(BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.STRING || BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.NUMBER ||
+                BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.DATE) {
                 items.push({
                     type: "bi.general_query_select_data_item",
                     value: fId,
