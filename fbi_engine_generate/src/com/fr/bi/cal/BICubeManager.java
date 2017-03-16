@@ -184,7 +184,7 @@ public class BICubeManager implements BICubeManagerProvider {
             return true;
         } catch (Exception e) {
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
-            BILoggerFactory.getLogger(this.getClass()).error("FineIndex task build failed" + "\n" + e.getMessage(), e);
+            BILoggerFactory.getLogger(this.getClass()).error("cube task build failed" + "\n" + e.getMessage(), e);
             return false;
         } finally {
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);

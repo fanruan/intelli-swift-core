@@ -16,7 +16,7 @@ public class BIGetTransportThreadPoolSizeAction extends AbstractBIConfigureActio
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         try {
-            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the FineIndex TransportThreadPool size is" + PerformancePlugManager.getInstance().getBiTransportThreadPoolSize()));
+            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the cube TransportThreadPool size is" + PerformancePlugManager.getInstance().getBiTransportThreadPoolSize()));
         } catch (Exception e) {
             WebUtils.printAsJSON(res, new JSONObject().put("message:", BIPrintUtils.outputException(e)));
         }

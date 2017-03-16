@@ -24,7 +24,7 @@ import java.util.*;
 public class MemoryCubeFile extends AbstractCubeFile {
     private ICubeFieldSource[] BICubeFieldSources;
     private int rowCount;
-    private static final String UNSUPPORT = "Memory FineIndex Not Support Link";
+    private static final String UNSUPPORT = "Memory Cube Not Support Link";
 
     public MemoryCubeFile(ICubeFieldSource[] BICubeFieldSources) {
         this.BICubeFieldSources = BICubeFieldSources;

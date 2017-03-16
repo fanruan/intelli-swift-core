@@ -148,14 +148,14 @@ public class BuildCubeTask implements CubeTask {
                     BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
                 } else {
-                    message = "FineIndex replace failed ,the FineIndex files will not be replaced ";
+                    message = "Cube replace failed ,the Cube files will not be replaced ";
                     BILoggerFactory.getLogger().error(message);
                 }
                 BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_END, System.currentTimeMillis());
             } else {
                 try {
                     BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-                    message = "FineIndex build failed ,the FineIndex files will not be replaced ";
+                    message = "Cube build failed ,the Cube files will not be replaced ";
                     BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
                     BILoggerFactory.getLogger().error(message);
                 } catch (Exception e) {
@@ -180,7 +180,7 @@ public class BuildCubeTask implements CubeTask {
             } else {
                 try {
                     Thread.sleep(5000);
-                    BILoggerFactory.getLogger().info("FineIndex thread is busy currently.Monitor will check it again after 5s ");
+                    BILoggerFactory.getLogger().info("Cube thread is busy currently.Monitor will check it again after 5s ");
                 } catch (InterruptedException e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
@@ -191,7 +191,7 @@ public class BuildCubeTask implements CubeTask {
 
     private boolean replaceOldCubes() {
         try {
-            logger.info("Start Replacing Old FineIndex, Stop All Analysis");
+            logger.info("Start Replacing Old Cubes, Stop All Analysis");
             boolean replaceSuccess = false;
             for (int i = 0; i < retryNTimes; i++) {
                 if (Thread.currentThread().isInterrupted()) {
@@ -202,7 +202,7 @@ public class BuildCubeTask implements CubeTask {
                     try {
                         ZooKeeperManager.getInstance().getZooKeeper().setData(BICubeStatusWatcher.CUBE_STATUS, "finish".getBytes(), -1);
                     } catch (Exception e) {
-                        BILoggerFactory.getLogger().error("notify FineIndex build finish message failed! retry again ", e);
+                        BILoggerFactory.getLogger().error("notify cube build finish message failed! retry again ", e);
                         continue;
                     }
 //                等待所有机器释放nio资源
@@ -215,7 +215,7 @@ public class BuildCubeTask implements CubeTask {
                 }
                 CubeReadingTableIndexLoader.envChanged();
                 if (!replaceSuccess) {
-                    logger.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
+                    logger.error("cube replace failed after " + i + " times try!It will try again in 5s");
                     Thread.sleep(5000);
                 } else {
                     break;
@@ -223,7 +223,7 @@ public class BuildCubeTask implements CubeTask {
             }
             return replaceSuccess;
         } catch (Exception e) {
-            String message = " FineIndex build failed ! caused by \n" + e.getMessage();
+            String message = " cube build failed ! caused by \n" + e.getMessage();
             logger.error(message, e);
             try {
                 BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
@@ -273,7 +273,7 @@ public class BuildCubeTask implements CubeTask {
 
     private void logCubeTaskType() {
         StringBuffer msg = new StringBuffer();
-        msg.append(" FineIndex update start. Update type: " + getTaskType().name());
+        msg.append(" Cube update start. Update type: " + getTaskType().name());
         logger.info(BIDateUtils.getCurrentDateTime() + msg);
     }
 

@@ -78,7 +78,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START, System.currentTimeMillis());
         long t = System.currentTimeMillis();
         try {
-            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " copy old FineIndex files"));
+            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " copy old cube files"));
             copyFromOldCubes();
             tableEntityService.recordCurrentExecuteTime();
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));

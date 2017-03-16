@@ -65,7 +65,7 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             } else {
                 BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable sourceId" + hostTable.tableKey.getSourceID());
             }
-            throw new BICubeTableAbsentException("Please generate FineIndex firstly ,The Table:" + hostTable.tableKey.getSourceID() + " absent");
+            throw new BICubeTableAbsentException("Please generate Cube firstly ,The Table:" + hostTable.tableKey.getSourceID() + " absent");
         }
         if (isParentAvailable()) {
             for (ICubeFieldSource field : parentTable.getFieldInfo()) {

@@ -20,7 +20,7 @@ public class BISetThreadPoolSizeAction extends AbstractBIConfigureAction {
         try {
             ;
             PerformancePlugManager.getInstance().setThreadPoolSize(Integer.parseInt(size));
-            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the FineIndex ThreadPool size has been set:" + PerformancePlugManager.getInstance().getThreadPoolSize()));
+            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the cube ThreadPool size has been set:" + PerformancePlugManager.getInstance().getThreadPoolSize()));
         } catch (Exception e) {
             WebUtils.printAsJSON(res, new JSONObject().put("message:", BIPrintUtils.outputException(e)));
         }
