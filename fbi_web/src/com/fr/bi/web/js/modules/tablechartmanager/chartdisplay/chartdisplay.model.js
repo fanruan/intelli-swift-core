@@ -269,13 +269,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _getFormatDateText: function(type, text){
         switch (type) {
             case BICst.GROUP.S:
-                text = BICst.FULL_QUARTER_NAMES[text - 1];
+                text = BICst.FULL_QUARTER_NAMES[text];
                 break;
             case BICst.GROUP.M:
-                text = BICst.FULL_MONTH_NAMES[text - 1];
+                text = BICst.FULL_MONTH_NAMES[text];
                 break;
             case BICst.GROUP.W:
-                text = BICst.FULL_WEEK_NAMES[text - 1];
+                text = BICst.FULL_WEEK_NAMES[text];
                 break;
             case BICst.GROUP.YMD:
                 var date = new Date(BI.parseInt(text));
