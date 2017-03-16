@@ -119,7 +119,7 @@
                          i = 0;
                      i < length;
                      i++
-                ) {
+                ){
                     upload.addEventListener(
                         split[i].substring(2),
                         (function (event) {
@@ -205,7 +205,7 @@
                                 if (handler.file.type.indexOf('image') != -1) {
                                     attachO.attach_type = "image";
                                 }
-                                attachO.filename = handler.file.fileName;
+                                attachO.filename = FR.cjkDecode(handler.file.fileName);
                                 if (handler.maxlength == 1) {
                                     handler.attach_array[0] = attachO;
                                     //                                   handler.attach_array.push(attachO);
