@@ -4,10 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
-import com.finebi.cube.impl.conf.CubeBuildStuffEmptyTable;
-import com.finebi.cube.impl.conf.CubeBuildStuffSpecificTable;
-import com.finebi.cube.impl.conf.CubeBuildStuffSupplement;
+import com.finebi.cube.impl.conf.*;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -38,7 +35,7 @@ public class CubeBuildHelper {
     }
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-    private LinkedBlockingQueue<SingleTableTask> taskQueue = new LinkedBlockingQueue(100);
+    private LinkedBlockingQueue<TableTask> taskQueue = new LinkedBlockingQueue(100);
     private boolean isCubeBuilding = false;
 
     private CubeBuildHelper() {
@@ -46,24 +43,30 @@ public class CubeBuildHelper {
                 new Runnable() {
                     @Override
                     public void run() {
-                        while (true) {
+                        while(true) {
                             try {
-                                SingleTableTask taskInfo = taskQueue.take();
+                                if(!taskQueue.isEmpty()) {
+                                    Thread.sleep(20000l);
+                                }
+                                TableTask taskInfo = taskQueue.take();
                                 isCubeBuilding = true;
-                                long userId = taskInfo.getUserId();
-                                String baseTableSourceId = taskInfo.getBaseTableSourceId();
-                                int updateType = taskInfo.getUpdateType();
-                                BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);
+                                BILoggerFactory.getLogger().info("Update table ID:" + taskInfo.baseTableSourceIdToString());
                                 int times = 0;
                                 for (int i = 0; i < 100; i++) {
                                     if (!cubeManager.hasTask()) {
-                                        CubeBuildSingleTable(userId, baseTableSourceId, updateType);
+                                        if (taskInfo instanceof SingleTableTask) {
+                                            CubeBuildSingleTable(((SingleTableTask) taskInfo).getUserId(),
+                                                    ((SingleTableTask) taskInfo).getBaseTableSourceId(), ((SingleTableTask) taskInfo).getUpdateType());
+                                        } else if (taskInfo instanceof CustomTableTask) {
+                                            CubeBuildCustomTables(((CustomTableTask) taskInfo).getUserId(),
+                                                    ((CustomTableTask) taskInfo).getBaseTableSourceIdList(), ((CustomTableTask) taskInfo).getUpdateTypeList());
+                                        }
                                         isCubeBuilding = false;
                                         break;
                                     }
                                     long timeDelay = i * 5000;
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("Cube is generating, wait to add SingleTable Cube Task until finished, retry times : " + i);
-                                    BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + baseTableSourceId);
+                                    BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
                                     try {
                                         Thread.sleep(timeDelay);
                                     } catch (InterruptedException e) {
@@ -73,7 +76,7 @@ public class CubeBuildHelper {
                                 }
                                 if (times == 100) {
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
-                                    BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + baseTableSourceId);
+                                    BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
                                     isCubeBuilding = false;
                                 }
                             } catch (Exception e) {
@@ -92,7 +95,80 @@ public class CubeBuildHelper {
     }
 
 
-    private class SingleTableTask {
+    private interface TableTask {
+        String baseTableSourceIdToString();
+
+    }
+
+    /**
+     * 自定义更新表task
+     */
+    private class CustomTableTask implements TableTask {
+        private long userId;
+        private List<String> baseTableSourceIdList;
+        private List<Integer> updateTypeList;
+
+        public CustomTableTask(long userId, String baseTableSourceId, Integer updateType) {
+            this.userId = userId;
+            if (baseTableSourceIdList == null || updateTypeList == null) {
+                baseTableSourceIdList = new ArrayList<String>();
+                updateTypeList = new ArrayList<Integer>();
+            }
+            baseTableSourceIdList.add(baseTableSourceId);
+            updateTypeList.add(updateType);
+        }
+
+        public CustomTableTask(long userId, List<String> baseTableSourceIdList, List<Integer> updateTypeList) {
+            this.userId = userId;
+            this.baseTableSourceIdList = baseTableSourceIdList;
+            this.updateTypeList = updateTypeList;
+        }
+
+        public TableTask taskMerge(long userId, String baseTableSourceId, Integer updateType) {
+            if (baseTableSourceIdList == null || updateTypeList == null) {
+                baseTableSourceIdList = new ArrayList<String>();
+                updateTypeList = new ArrayList<Integer>();
+            }
+            baseTableSourceIdList.add(baseTableSourceId);
+            updateTypeList.add(updateType);
+            return this;
+        }
+
+        public void taskMerge(SingleTableTask singleTableTask) {
+            if (baseTableSourceIdList == null || updateTypeList == null) {
+                baseTableSourceIdList = new ArrayList<String>();
+                updateTypeList = new ArrayList<Integer>();
+            }
+            baseTableSourceIdList.add(singleTableTask.getBaseTableSourceId());
+            updateTypeList.add(singleTableTask.getUpdateType());
+        }
+
+        public long getUserId() {
+            return userId;
+        }
+
+        public List<String> getBaseTableSourceIdList() {
+            return baseTableSourceIdList;
+        }
+
+        public List<Integer> getUpdateTypeList() {
+            return updateTypeList;
+        }
+
+        @Override
+        public String baseTableSourceIdToString() {
+            StringBuffer print = new StringBuffer();
+            for (String baseTableSourceId : baseTableSourceIdList) {
+                print.append(baseTableSourceId + ",");
+            }
+            return print.toString();
+        }
+    }
+
+    /**
+     * 单表更新任务
+     */
+    private class SingleTableTask implements TableTask {
         private long userId;
         private String baseTableSourceId;
         private int updateType;
@@ -114,16 +190,105 @@ public class CubeBuildHelper {
         private int getUpdateType() {
             return updateType;
         }
+
+        @Override
+        public String baseTableSourceIdToString() {
+            return baseTableSourceId;
+        }
     }
 
-    public void addSingleTableTask2Queue(long userId, String baseTableSourceId, int updateType) throws InterruptedException {
-        taskQueue.put(new SingleTableTask(userId, baseTableSourceId, updateType));
+    public synchronized void addSingleTableTask2Queue(long userId, String baseTableSourceId, int updateType) throws InterruptedException {
+        if (taskQueue.isEmpty()) {
+            taskQueue.put(new CustomTableTask(userId, baseTableSourceId, updateType));
+        } else {
+            TableTask task = taskQueue.take();
+            if (task instanceof CustomTableTask) {
+                taskQueue.put(((CustomTableTask) task).taskMerge(userId, baseTableSourceId, updateType));
+            } else if (task instanceof SingleTableTask) {
+
+            }
+        }
     }
 
     public boolean hasWaitingTables() {
         return taskQueue.size() > 0 || isCubeBuilding;
     }
 
+    /**
+     * 自定义表更新
+     *
+     * @param userId
+     * @param baseTableSourceIds
+     * @param updateTypes
+     */
+    public void CubeBuildCustomTables(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes) {
+        BILoggerFactory.getLogger().info("Update tables ID:" + baseTableSourceIds.toArray());
+        List<CubeBuildStuff> cubeBuildList = buildCustomTable(userId, baseTableSourceIds, updateTypes);
+        for (CubeBuildStuff cubeBuild : cubeBuildList) {
+            cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
+        }
+    }
+
+    public List<CubeBuildStuff> buildCustomTable(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes) {
+        List<CubeBuildStuff> cubeBuildStuffList = new ArrayList<CubeBuildStuff>();
+
+        Map<CubeTableSource, Set<String>> tableBaseSourceIdMap = new HashMap<CubeTableSource, Set<String>>();
+        Map<String, Set<CubeTableSource>> baseSourceIdTableMap = new HashMap<String, Set<CubeTableSource>>();
+        Map<String, Set<Integer>> baseSourceIdUpdateTypeMap = new HashMap<String, Set<Integer>>();
+
+        for (int i = 0; i < baseTableSourceIds.size(); i++) {
+            List<BusinessTable> tableList = getTablesContainsSourceId(userId, baseTableSourceIds.get(i), updateTypes.get(i));
+            List<CubeTableSource> tableSourceList = getTableSourcesFromBusinessTables(tableList, userId, baseTableSourceIds.get(i));
+            for (CubeTableSource tableSource : tableSourceList) {
+                if (tableBaseSourceIdMap.containsKey(tableSource)) {
+                    tableBaseSourceIdMap.get(tableSource).add(baseTableSourceIds.get(i));
+                } else {
+                    tableBaseSourceIdMap.put(tableSource, new HashSet<String>());
+                    tableBaseSourceIdMap.get(tableSource).add(baseTableSourceIds.get(i));
+                }
+
+                if (baseSourceIdTableMap.containsKey(baseTableSourceIds.get(i))) {
+                    baseSourceIdTableMap.get(baseTableSourceIds.get(i)).add(tableSource);
+                } else {
+                    baseSourceIdTableMap.put(baseTableSourceIds.get(i), new HashSet<CubeTableSource>());
+                    baseSourceIdTableMap.get(baseTableSourceIds.get(i)).add(tableSource);
+                }
+
+                if (baseSourceIdUpdateTypeMap.containsKey(baseTableSourceIds.get(i))) {
+                    baseSourceIdUpdateTypeMap.get(baseTableSourceIds.get(i)).add(updateTypes.get(i));
+                } else {
+                    baseSourceIdUpdateTypeMap.put(baseTableSourceIds.get(i), new HashSet<Integer>());
+                    baseSourceIdUpdateTypeMap.get(baseTableSourceIds.get(i)).add(updateTypes.get(i));
+                }
+
+            }
+
+        }
+
+        cubeBuildStuffList.add(getCubeBuildStuffCustomTables(userId, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap));
+        return cubeBuildStuffList;
+    }
+
+    private CubeBuildStuff getCubeBuildStuffCustomTables(long userId, Map<CubeTableSource, Set<String>> tableBaseSourceIdMap,
+                                                         Map<String, Set<CubeTableSource>> baseSourceIdTableMap,
+                                                         Map<String, Set<Integer>> baseSourceIdUpdateTypeMap) {
+        return new CubeBuildCustomTables(
+                userId,
+                tableBaseSourceIdMap,
+                baseSourceIdTableMap,
+                baseSourceIdUpdateTypeMap,
+                getAbsentTable(userId),
+                getAbsentRelation(userId),
+                getAbsentPath(userId));
+    }
+
+    /**
+     * 单表 更新
+     *
+     * @param userId
+     * @param baseTableSourceId
+     * @param updateType
+     */
     public void CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);
         List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, baseTableSourceId, updateType);
