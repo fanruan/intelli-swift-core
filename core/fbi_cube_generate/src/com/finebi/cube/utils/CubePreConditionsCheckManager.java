@@ -23,13 +23,13 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
         double dirSize = getDirSize(file);
         double availableSpace = getAvailableSpace(file);
         double needSpace = dirSize * PerformancePlugManager.getInstance().getMinCubeFreeHDSpaceRate();
-        BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).info("The Cube Space is: " + getHDSpace(dirSize) + "M");
-        BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).info("The Min Cube Necessary Space is: " + getHDSpace(needSpace) + "M");
+        BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).info("The FineIndex Space is: " + getHDSpace(dirSize) + "M");
+        BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).info("The Min FineIndex Necessary Space is: " + getHDSpace(needSpace) + "M");
         BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).info("The free HD Space is: " + getHDSpace(availableSpace) + "M");
         if (availableSpace > needSpace) {
             return true;
         } else {
-            BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).error("\n" + "You need more HD Space to generate Cube");
+            BILoggerFactory.getLogger(CubePreConditionsCheckManager.class).error("\n" + "You need more HD Space to generate FineIndex");
             return false;
         }
 

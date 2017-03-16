@@ -98,7 +98,7 @@ public abstract class BIWatcher implements Watcher {
     }
 
     protected void ensurePathExists(String path) throws Exception {
-        Stat s = zk.exists(path, this);
+        Stat s = zk.exists(path, false);
         if (s == null) {
             zk.create(path, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         }

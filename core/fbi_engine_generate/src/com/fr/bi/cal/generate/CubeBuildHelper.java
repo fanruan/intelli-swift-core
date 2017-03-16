@@ -43,9 +43,9 @@ public class CubeBuildHelper {
                 new Runnable() {
                     @Override
                     public void run() {
-                        while(true) {
+                        while (true) {
                             try {
-                                if(!taskQueue.isEmpty()) {
+                                if (!taskQueue.isEmpty()) {
                                     Thread.sleep(20000l);
                                 }
                                 TableTask taskInfo = taskQueue.take();
@@ -65,7 +65,7 @@ public class CubeBuildHelper {
                                         break;
                                     }
                                     long timeDelay = i * 5000;
-                                    BILoggerFactory.getLogger(CubeBuildHelper.class).info("Cube is generating, wait to add SingleTable Cube Task until finished, retry times : " + i);
+                                    BILoggerFactory.getLogger(CubeBuildHelper.class).info("FineIndex is generating, wait to add SingleTable FineIndex Task until finished, retry times : " + i);
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
                                     try {
                                         Thread.sleep(timeDelay);
@@ -75,7 +75,7 @@ public class CubeBuildHelper {
                                     times++;
                                 }
                                 if (times == 100) {
-                                    BILoggerFactory.getLogger(CubeBuildHelper.class).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
+                                    BILoggerFactory.getLogger(CubeBuildHelper.class).info("up to add SingleTable FineIndex Task retry times, Please add SingleTable Task again");
                                     BILoggerFactory.getLogger(CubeBuildHelper.class).info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
                                     isCubeBuilding = false;
                                 }
@@ -348,7 +348,7 @@ public class CubeBuildHelper {
      * @param userId
      */
     public void CubeBuildStaffComplete(long userId) {
-        BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append(BIDateUtils.getCurrentDateTime(), " Cube all update start"));
+        BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append(BIDateUtils.getCurrentDateTime(), " FineIndex all update start"));
         CubeBuildStuff cubeBuild = new CubeBuildStuffComplete(new BIUser(userId));
         CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
         cubeManager.addTask(task, userId);
@@ -362,16 +362,16 @@ public class CubeBuildHelper {
          */
         StringBuffer msg = new StringBuffer();
         if (isPart(userId)) {
-            msg.append(" Cube part update start" + "\n");
+            msg.append(" FineIndex part update start" + "\n");
             Set<CubeTableSource> absentTables = getAbsentTable(userId);
             Set<BITableSourceRelation> absentRelations = getAbsentRelation(userId);
             Set<BITableSourceRelationPath> absentPaths = getAbsentPath(userId);
             cubeBuild = new CubeBuildStuffSupplement(userId, absentTables, absentRelations, absentPaths);
         } else if (isUpdateMeta(userId)) {
-            msg.append(" Cube update meta data");
+            msg.append(" FineIndex update meta data");
             cubeBuild = new CubeBuildStuffEmptyTable(userId);
         } else {
-            msg.append(" Cube all update start");
+            msg.append(" FineIndex all update start");
             cubeBuild = new CubeBuildStuffComplete(new BIUser(userId));
             BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " preCondition checking……");
         }

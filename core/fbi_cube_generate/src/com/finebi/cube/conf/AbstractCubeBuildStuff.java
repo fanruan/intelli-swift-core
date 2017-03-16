@@ -129,7 +129,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
             if (new File(tCubePath).exists()) {
                 boolean renameFolder = BIFileUtils.renameFolder(new File(tCubePath), new File(advancedPath));
                 if (!renameFolder) {
-                    BILoggerFactory.getLogger().error("rename tCube to Advanced failed");
+                    BILoggerFactory.getLogger().error("rename FineIndex to Advanced failed");
                     return false;
                 }
             }
