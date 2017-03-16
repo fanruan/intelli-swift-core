@@ -1,0 +1,91 @@
+@import "bi-extra-core";
+
+.fs-share-template {
+}
+
+.fs-bi-role-box {
+}
+
+.fs-bi-share-template-role-default-text {
+  color: @color-share-template-default-text-dark
+}
+
+.fs-bi-user-tree {
+  border-radius: 2px;
+  border: 1px solid @color-share-template-border-normal;
+}
+
+.fs-bi-user-box {
+}
+
+.fs-bi-user-box-count-text {
+  color: @color-share-template-user-box-text-count;
+}
+
+.fs-share-queryBox {
+  border-radius: 2px;
+  position: relative;
+  float: right;
+  color: @color-fs-bi-queryBox-icon;
+  background-color: @color-share-template-background-default;
+  padding: 0;
+  font-size: 16px;
+  margin: 0 11px;
+  input {
+    height: 30px;
+    border: 0;
+    vertical-align: middle;
+    background: 0;
+  }
+}
+
+.fs-bi-search-input {
+  color: @color-share-template-input-highlight;
+}
+
+.fs-user-item {
+  border-radius: 2px;
+  font-size: 12px;
+  color: #1a1a1a;
+  background-color: @color-share-template-background-active;
+  padding-left: 10px;
+  padding-right: 20px;
+  &:hover {
+    background-color: @color-share-template-background-dark;
+  }
+}
+
+.fs-bi-del-con-when-item-hover {
+  &:after {
+    color: @color-share-template-delete-icon-hover;
+    border-radius: 2px;
+    content: '\e60f';
+    float: right;
+    font-size: 16px;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 5px;
+    margin-top: 5px;
+  }
+  &:hover {
+    &:after {
+      color: @color-share-template-delete-icon-hover;
+      background-color: @color-share-template-background-default;
+      border: 1px solid @color-share-template-delete-icon-border-hover;
+    }
+  }
+}
+
+.fs-bi-del-con {
+  &:after {
+    color: @color-share-template-delete-icon-normal;
+    border-radius: 2px;
+    content: '\e60f';
+    float: right;
+    font-size: 16px;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 5px;
+    margin-top: 5px;
+  }
+}

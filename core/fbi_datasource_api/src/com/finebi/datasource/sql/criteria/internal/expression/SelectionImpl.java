@@ -1,0 +1,45 @@
+
+package com.finebi.datasource.sql.criteria.internal.expression;
+
+import com.finebi.datasource.sql.criteria.internal.ParameterContainer;
+import com.finebi.datasource.sql.criteria.internal.ValueHandlerFactory;
+import com.finebi.datasource.sql.criteria.internal.CriteriaBuilderImpl;
+import com.finebi.datasource.sql.criteria.internal.SelectionImplementor;
+
+import com.finebi.datasource.api.criteria.Selection;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * The Hibernate implementation of the JPA {@link Selection}
+ * contract.
+ *
+ * @author Steve Ebersole
+ */
+public abstract class SelectionImpl<X>
+		extends AbstractTupleElement<X>
+		implements SelectionImplementor<X>, ParameterContainer, Serializable {
+	public SelectionImpl(CriteriaBuilderImpl criteriaBuilder, Class<X> javaType) {
+		super( criteriaBuilder, javaType );
+	}
+
+	public Selection<X> alias(String alias) {
+		setAlias( alias );
+		return this;
+	}
+
+	public boolean isCompoundSelection() {
+		return false;
+	}
+
+	public List<ValueHandlerFactory.ValueHandler> getValueHandlers() {
+		return getValueHandler() == null
+				? null
+				: Collections.singletonList( (ValueHandlerFactory.ValueHandler) getValueHandler() );
+	}
+
+	public List<Selection<?>> getCompoundSelectionItems() {
+		throw new IllegalStateException( "Not a compound selection" );
+	}
+}

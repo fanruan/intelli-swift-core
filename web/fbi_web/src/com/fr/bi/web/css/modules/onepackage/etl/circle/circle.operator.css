@@ -1,0 +1,11 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-circle-self .operator-label-text {
+  font-size: 14px;
+  color: #808080;
+}
+.bi-circle-self .bi-circle-level-pane .operator-level-pane-label {
+  font-size: 14px;
+  color: #808080;
+}

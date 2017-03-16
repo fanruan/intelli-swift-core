@@ -1,0 +1,28 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-unsetting-match-relation-target-region {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-unsetting-match-relation-target-region .target-region-title {
+  border-bottom: 1px solid #d4dadd;
+  background-color: #fef6de;
+}
+.bi-unsetting-match-relation-target-region .target-region-title .region-title-label {
+  max-width: 250px;
+  color: #e85050;
+}
+.bi-unsetting-match-relation-target-region .target-region-button {
+  max-width: 150px;
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-unsetting-match-relation-target-region .target-region-button:active,
+.bi-unsetting-match-relation-target-region .target-region-button.active {
+  border: 1px solid #178cdf;
+}

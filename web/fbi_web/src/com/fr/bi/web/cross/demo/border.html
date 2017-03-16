@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5, IE=EmulateIE7, chrome=1">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>${layoutType}</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.fs.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=toolbar.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=core.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=widget.js&inter=${__locale__}"></script>
+    <style type="text/css">
+        .north-mark {
+            background-color: green;
+            border: 1px solid green;
+            border-radius: 3px 3px 0 0 ;
+        }
+        .center-mark {
+            background-color: #007aff;
+            border: 1px solid #007aff;
+            border-radius: 0 0 3px 3px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var w = BI.createWidget({
+                renderEl : $("#container"),
+                type : 'bi.border',
+                items : {
+                    north : {
+                        el : {
+                            type : 'bi.label',
+                            text : '测试',
+                            cls : 'north-mark'
+                        },
+                        height : 40
+                    },
+                    center : {
+                        el : {
+                            type : 'bi.label',
+                            text : '中间',
+                            cls : 'center-mark'
+                        }
+                    }
+                }
+            });
+            var scale = false;
+            $('#scale').click(function() {
+                $('#container').css({
+                    width : scale ? 200 : 400,
+                    height : scale ? 200 : 400
+                });
+                scale = !scale;
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+<button id="scale">放大布局区域</button>
+<div id="container" style="position:relative;width:200px; height: 200px; top: 40px; left: 40px; background: papayawhip"></div>
+</body>
+</html>

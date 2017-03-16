@@ -1,0 +1,44 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-history-tab {
+  background: #f4f4f4;
+}
+.bi-history-tab .bi-analysis-tab-operator {
+  background: #f4f4f4;
+}
+.bi-history-tab .bi-history-tab-button-group {
+  background: #f4f4f4;
+  border: 1px solid #eaeaea;
+}
+.bi-history-tab .bi-history-tab-button-group .bi-history-tab-title {
+  font-size: 14px;
+  color: #808080;
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button {
+  font-size: 13px;
+}
+.bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button.active,
+.bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button:active {
+  background: #f4f4f4;
+  color: #1a1a1a;
+}
+.bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button.active .delete-field-font,
+.bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button:active .delete-field-font {
+  display: none!important;
+}
+.bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button.active .select_tag,
+.bi-history-tab .bi-history-tab-fake-model .bi-history-tab-button:active .select_tag {
+  background: #f4f4f4;
+}
+.bi-history-tab .histroy-tab-east {
+  background-color: #ffffff;
+  border-top: 1px solid #eaeaea;
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-history-tab .histroy-tab-bottom {
+  background-color: #f4f4f4;
+}

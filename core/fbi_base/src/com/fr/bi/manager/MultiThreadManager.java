@@ -1,0 +1,1 @@
+package com.fr.bi.manager;import java.util.concurrent.ExecutorService;/** * Created by Hiram on 2015/5/14. */public interface MultiThreadManager {    void refreshExecutorService();    ExecutorService getExecutorService();    ExecutorService createNewExecutorServer();    void awaitExecutor();}

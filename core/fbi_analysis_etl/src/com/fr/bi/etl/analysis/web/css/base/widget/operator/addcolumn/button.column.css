@@ -1,0 +1,41 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-analysis-etl-operator-button-column {
+  font-size: 13px;
+  color: #1a1a1a;
+}
+.bi-analysis-etl-operator-button-column.active,
+.bi-analysis-etl-operator-button-column:active,
+.bi-analysis-etl-operator-button-column.hover,
+.bi-analysis-etl-operator-button-column:hover {
+  background: #d8f2fd;
+}
+.bi-analysis-etl-operator-button-column .delete {
+  transition: transform 0.5s ease;
+  -webkit-transition: -webkit-transform 0.5s ease;
+  -moz-transition: -moz-transform 0.5s ease;
+  -o-transition: -o-transform 0.5s ease;
+}
+.bi-analysis-etl-operator-button-column .delete:hover,
+.bi-analysis-etl-operator-button-column .delete.hover {
+  transform: rotate(90deg) scale(1.2);
+  -webkit-transform: rotate(90deg) scale(1.2);
+  -moz-transform: rotate(90deg) scale(1.2);
+  -o-transform: rotate(90deg) scale(1.2);
+}
+.bi-analysis-etl-operator-button-column .set {
+  transition: transform 0.5s ease;
+  -webkit-transition: -webkit-transform 0.5s ease;
+  -moz-transition: -moz-transform 0.5s ease;
+  -o-transition: -o-transform 0.5s ease;
+}
+.bi-analysis-etl-operator-button-column .set:hover,
+.bi-analysis-etl-operator-button-column .set.hover {
+  transform: rotate(90deg) scale(1.2);
+  -webkit-transform: rotate(90deg) scale(1.2);
+  -moz-transform: rotate(90deg) scale(1.2);
+  -o-transform: rotate(90deg) scale(1.2);
+}

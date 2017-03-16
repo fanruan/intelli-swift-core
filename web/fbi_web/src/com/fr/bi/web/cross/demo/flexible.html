@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5, IE=EmulateIE7, chrome=1">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>${layoutType}</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.fs.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=toolbar.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.fs.js&inter=${__locale__}"></script>
+    <style type="text/css">
+        .test {
+            width: 100px;
+            height: 100px;
+            background: #ff0000;
+            float: left;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.drag').draggable({
+                proxy: function(source) {
+                    var type = $(source).data('type');
+                    var p = $('<div style="width:20px; height: 20px; background: #ffffff; border: 2px solid darkgray">').appendTo('body');
+                    return p;
+                },
+                revert:true,
+                cursor:'auto',
+                deltaX : -10,
+                deltaY : -10,
+                onStartDrag:function(){
+                    $(this).draggable('options').cursor='not-allowed';
+                    $(this).draggable('proxy').addClass('dp');
+                },
+                onStopDrag:function(){
+                    $(this).draggable('options').cursor='auto';
+                }
+            });
+            var flexible = new BI.FlexibleLayout({
+                accept : '.bi-widget-item',
+                renderEl : $('#container')
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+<div>
+    <div class="bi-widget-item drag" style="width: 100px; height: 100px; background: #ff0000"></div>
+    <div class="bi-widget-item drag" style="width: 100px; height: 100px; background: green"></div>
+</div>
+
+<div id="container" style="width:200px; height: 200px; top: 40px; left: 40px; background: papayawhip"></div>
+</body>
+</html>

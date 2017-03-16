@@ -1,0 +1,1 @@
+package com.fr.bi.cluster.zookeeper;import org.apache.zookeeper.ZooDefs;import org.apache.zookeeper.data.ACL;import java.util.ArrayList;/** * Created by Hiram on 2015/2/28. */public class ZooKeeperConstant {    public final static ArrayList<ACL> DEFAULT_ACL = ZooDefs.Ids.OPEN_ACL_UNSAFE;}

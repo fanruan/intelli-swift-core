@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>FR.BIDezi</title>
+	<style type="text/css">
+		html {
+			height:100%;
+			width:100%;
+		}
+	
+		body {
+			margin:0px;
+			font-family: 微软雅黑;
+			color: #666666;
+			height:100%;
+			width:100%;
+		}
+	
+		table {
+			width:100%;
+			height:100%;
+		}
+		
+		div#frame {
+			width:615px;
+			height:100%;	
+			margin: auto;
+		}
+		
+		div#icon {
+			width:100px;
+			height:100px;
+			background:url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/lock_big.png') no-repeat center;
+			_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/lock_big.png');
+			margin:auto;
+		}
+		
+		h1 {
+			font-size:36px;
+			font-weight:normal;
+			margin:0px 0px 10px 0px;
+		}
+		
+		h1,p {
+			text-align:center;
+		}
+		
+		p {
+			margin:10px 0px 0px 0px;
+			font-size:24px;
+		}
+		
+	</style>
+</head>
+
+
+<body>
+<table>
+<tr>
+<td>
+<div id="frame">
+<table>
+	<tr>
+		<td>
+		<div id="icon"></div>
+		</td>
+		<td>
+			<h1>${message}</h1>
+			<p>${help}</p>
+		</td>
+	</tr>
+
+</table>
+</div>
+</td>
+</tr>
+</table>
+
+</body>
+</html>

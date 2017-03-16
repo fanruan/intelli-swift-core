@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_base"/>
+	<classpathentry kind="src" path="/fbi_engine_finereport"/>
+	<classpathentry kind="src" path="/fbi_conf"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_engine_analyse"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_engine_base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_engine_generate"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_web"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_web_dezi"/>
+	<classpathentry kind="src" path="/fbi_web_conf"/>
+	<classpathentry kind="src" path="/fbi_web_report"/>
+	<classpathentry kind="src" path="/fbi_web_base"/>
+	<classpathentry kind="src" path="/fbi_cluster"/>
+	<classpathentry kind="lib" path="/lib/report/fr-core-8.0.jar"/>
+	<classpathentry kind="lib" path="/lib/report/fr-report-8.0.jar"/>
+	<classpathentry kind="lib" path="/lib/rubbish/servlet-api.jar"/>
+	<classpathentry kind="src" path="/fservice"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

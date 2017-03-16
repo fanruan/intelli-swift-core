@@ -1,0 +1,35 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-select-table-etl-pane .etl-tables {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-select-table-etl-pane .etl-tables .etl-table-button {
+  background: #ffffff;
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-select-table-etl-pane .etl-tables .etl-table-button.active {
+  background: #58cc7d;
+  color: #ffffff;
+}
+.bi-select-table-etl-pane .etl-tables .etl-table-button.disabled {
+  background: #e1f4e7;
+  color: #1a1a1a !important;
+}
+.bi-select-table-etl-pane .etl-tables .operator-left-triangle {
+  border-top: 25px solid #ffffff;
+  border-right: 16px solid #d8f2fd;
+}
+.bi-select-table-etl-pane .etl-tables .operator-center {
+  background: #d8f2fd;
+}
+.bi-select-table-etl-pane .etl-tables .operator-right-triangle {
+  border-bottom: 25px solid #ffffff;
+  border-left: 16px solid #d8f2fd;
+}

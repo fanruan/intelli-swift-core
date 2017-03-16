@@ -1,0 +1,14 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-authority-single-set-pane .authority-set-title {
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-authority-single-set-pane .authority-set-title .package-title {
+  font-size: 14px;
+  color: #808080;
+}
+.bi-authority-single-set-pane .select-package-empty-tip {
+  font-size: 16px;
+  color: #c4c6c6;
+}

@@ -1,0 +1,1 @@
+package com.fr.bi.field.filtervalue.string;/** * Created by Hiram on 2014/12/31. */public class StringFilterValueUtils {    public static String toString(Object value) {        return value == null ? null : value.toString();    }}

@@ -1,0 +1,19 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-design .left {
+  border-right: 1px solid #cccccc;
+}
+.bi-design .left .left-title {
+  font-size: 18px;
+  color: #ffffff;
+  background: #0088cc;
+}
+.bi-design .top {
+  color: #999999;
+  border-bottom: 1px solid #cccccc;
+}
+.bi-design .bottom {
+  color: #999999;
+  border-top: 1px solid #cccccc;
+}

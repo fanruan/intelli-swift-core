@@ -1,0 +1,39 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-etl-selectpartfield {
+  background: #f4f4f4;
+}
+.bi-etl-selectpartfield .part-field-north .part-field-north-label {
+  color: #808080;
+  font-size: 14px;
+  font-weight: bold;
+}
+.bi-etl-selectpartfield .part-field-table-name {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-etl-selectpartfield .part-field-table-name .table-name-text {
+  color: #808080;
+  font-size: 14px;
+}
+.bi-etl-selectpartfield .part-field-operator-pane {
+  background-color: #ffffff;
+}
+.bi-etl-selectpartfield .part-field-preview-result {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-etl-selectpartfield .part-field-preview-result .part-field-result-text {
+  color: #808080;
+  font-size: 14px;
+  border-bottom: 1px solid #d4dadd;
+}
+.bi-etl-selectpartfield .part-field-preview-result .part-field-result-tip {
+  color: #808080;
+  font-size: 16px;
+}

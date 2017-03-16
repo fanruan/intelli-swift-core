@@ -1,0 +1,74 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.icon-add .b-font:before {
+  content: "\e649";
+  color: #ffffff;
+}
+.icon-add.native .b-font:before,
+.icon-add.disabled .b-font:before {
+  content: "\e649";
+  color: #ffffff;
+}
+.icon-analysis-table .b-font:before {
+  content: "\e65b";
+  color: #808080;
+}
+.icon-analysis-table.native .b-font:before,
+.icon-analysis-table.disabled .b-font:before {
+  content: "\e65b";
+  color: #808080;
+}
+.icon-analysis-table-set .b-font:before {
+  content: "\e678";
+  color: #808080;
+}
+.icon-analysis-table-set.native .b-font:before,
+.icon-analysis-table-set.disabled .b-font:before {
+  content: "\e678";
+  color: #808080;
+}
+.more-equal-arrow-font .b-font:before {
+  content: "\e6aa";
+  color: #009de3;
+}
+.more-equal-arrow-font.native .b-font:before,
+.more-equal-arrow-font.disabled .b-font:before {
+  content: "\e6aa";
+  color: #009de3;
+}
+.more-arrow-font .b-font:before {
+  content: "\e6a8";
+  color: #009de3;
+}
+.more-arrow-font.native .b-font:before,
+.more-arrow-font.disabled .b-font:before {
+  content: "\e6a8";
+  color: #009de3;
+}
+.more-font .b-font:before {
+  content: "\e6a7";
+  color: #009de3;
+}
+.more-font.native .b-font:before,
+.more-font.disabled .b-font:before {
+  content: "\e6a7";
+  color: #009de3;
+}
+.more-equal-font .b-font:before {
+  content: "\e6a9";
+  color: #009de3;
+}
+.more-equal-font.native .b-font:before,
+.more-equal-font.disabled .b-font:before {
+  content: "\e6a9";
+  color: #009de3;
+}
+.not-equal-font .b-font:before {
+  content: "\e6a6";
+  color: #009de3;
+}
+.not-equal-font.native .b-font:before,
+.not-equal-font.disabled .b-font:before {
+  content: "\e6a6";
+  color: #009de3;
+}

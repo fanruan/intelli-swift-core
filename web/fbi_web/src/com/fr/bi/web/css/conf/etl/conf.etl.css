@@ -1,0 +1,184 @@
+/****��Ӽ����ȵ�--�����ֱ����Ҫspace****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.etl_table_relation_canvas {
+  position: absolute;
+  left: 0px;
+}
+/***************************************BIConf.BIEtlBasePreivewPane*****************************/
+.fr-bi-base-preview-pane {
+  width: 100%;
+  height: 100%;
+}
+.fr-bi-base-preview-pane-button-mask {
+  z-index: 100;
+  position: absolute;
+  top: 50%;
+  margin-top: -30px;
+  left: 50%;
+  margin-left: -40px;
+}
+/***************************************BIConf.BIEtlBasePreivewPane*****************************/
+/***************************BIConf.BIFullTableInforPane***********************/
+.fr-bi-full-table-infro-add-table-button {
+  float: right;
+  right: 20px;
+  margin-top: 7px;
+}
+/***************************BIConf.BIFullTableInforPane***********************/
+/***************************BIConf.BIEltTableNode***********************************/
+.fr-bi-etl-table-node {
+  position: absolute;
+  z-index: 1;
+}
+.fr-bi-etl-table-layer:first-child {
+  margin-top: 0px;
+}
+.fr-bi-etl-table-layer {
+  margin-bottom: 110px;
+  height: 20px;
+  /*position: relative;*/
+}
+.fr-bi-etl-table-layer-one-button {
+  position: absolute;
+}
+/***************************BIConf.BIEltTableNode***********************************/
+/***************************BIConf.BIEtlManagePane*****************************/
+.fr-bi-etl-manage-pane {
+  width: 100%;
+  height: 100%;
+}
+.etl-structure-north {
+  background: #fafafa;
+  border-bottom: 1px solid #cccccc;
+}
+.etl-structure-north > div {
+  margin-left: 20px;
+  float: left;
+  font: bold 13px Microsoft YaHei, simson ,arial,tahoma,verdana,helvetica;
+  line-height: 37px;
+}
+.fr-bi-one-table-center-vertical-line {
+  height: 100%;
+  width: 1px;
+  background: #cccccc;
+  position: absolute;
+  left: 40%;
+}
+.etl-structure-south {
+  padding-top: 17px;
+  background: #fafafa;
+  border: 1px solid #cccccc;
+}
+.fr-bi-full-table-infor-pane {
+  background: #ffffff;
+}
+.fr-bi-full-table-infor-pane .fr-bi-one-table-base-structure-center {
+  margin: 0px 0px 18px 0px;
+}
+.fr-bi-one-table-base-structure-center-east {
+  width: 60%;
+  height: 100%;
+  float: right;
+  overflow: auto;
+  /*text-align: center;*/
+  position: relative;
+}
+.fr-bi-one-table-base-structure-center-east-box {
+  overflow: auto;
+  position: absolute !important;
+  left: 20px;
+  right: 20px;
+  top: 25px;
+  bottom: 25px;
+}
+.fr-bi-one-table-center-east-box {
+  margin: 20px;
+}
+.fr-bi-one-table-base-structure-center-west {
+  width: 40%;
+  height: 100%;
+  float: left;
+  overflow: auto;
+  position: relative;
+}
+.fr-bi-one-table-base-structure-center-west-box {
+  margin: 20px 35px 35px 35px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+/*.fr-bi-one-table-base-structure-center-west .absolute-full-size {
+    position: absolute;
+}*/
+.fr-bi-one-table-center-west-box {
+  margin: 20px;
+}
+.fr-bi-one-table-base-structure-cancel-button {
+  float: left;
+  position: relative;
+  left: 35px;
+}
+.fr-bi-one-table-base-structure-save-button {
+  float: right;
+  position: relative;
+  right: 20px;
+}
+.fr-bi-etl-table-content-box {
+  position: absolute;
+  top: 60px;
+  bottom: 0px;
+  padding: 2px 0px;
+  width: 100%;
+}
+/***************************BIConf.BIEtlManagePane*****************************/
+/***************************BIConf.BIEtlSelectDataPane*****************************/
+.fr-bi-etl-select-data-pane-center .bi-white-button .bi-white-button-selected,
+.fr-bi-etl-select-data-pane-center .bi-white-button.bi-white-button-disabled {
+  border: 1px solid transparent ;
+  background: #666666;
+  color: #ffffff ;
+}
+.fr-bi-etl-select-data-pane-north-text {
+  line-height: 40px;
+  font-size: 15px;
+  margin-left: 10px;
+}
+.fr-bi-etl-select-data-pane-south-hint {
+  float: right;
+  margin-right: 40px;
+  margin-top: 4px;
+}
+.fr-bi-etl-select-data-pane-add-table-button {
+  float: right;
+  right: 20px;
+  top: 8px;
+}
+/***************************BIConf.BIEtlSelectDataPane*****************************/
+/***************************BIConf.BIEtlBaseLeftPane*****************************/
+/***************************BIConf.BIEtlBaseLeftPane*****************************/
+/***************************BIConf.EtlPreviewPane*****************************/
+.fr-bi-etl-preview-pane {
+  width: 100%;
+  height: 100%;
+}
+#etl_preview p {
+  margin: 0px 0px 5px 0px;
+}
+.fr-bi-etl-preview-pane-button {
+  position: absolute;
+  left: 50%;
+  margin-left: -100px;
+  margin-top: -10px;
+  top: 50%;
+}
+/***************************BIConf.EtlPreviewPane*****************************/
+.etl-table-card-table-name {
+  margin-bottom: 30px;
+}
+.fr-bi-etl-manage-pane-table-name-wrapper {
+  width: 100%;
+}
+.etl-edit-td {
+  cursor: text;
+  padding-left: 10px;
+}

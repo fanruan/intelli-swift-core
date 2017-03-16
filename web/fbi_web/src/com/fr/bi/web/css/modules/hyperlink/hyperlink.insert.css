@@ -1,0 +1,28 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-hyper-link-insert .select-field {
+  border: 1px solid #d4dadd;
+}
+.bi-hyper-link-insert .select-field .select-field-item:hover,
+.bi-hyper-link-insert .select-field .select-field-item.hover {
+  background-color: #f4f4f4;
+}
+.bi-hyper-link-insert .select-field .select-field-item:active,
+.bi-hyper-link-insert .select-field .select-field-item.active {
+  background-color: #f4f4f4;
+}
+.bi-hyper-link-insert .select-field .select-field-item.disabled,
+.bi-hyper-link-insert .select-field .select-field-item.disabled:hover,
+.bi-hyper-link-insert .select-field .select-field-item.disabled:active {
+  background-color: #ffffff;
+}
+.bi-hyper-link-insert .hyper-link-text-area {
+  border: 1px solid #d4dadd;
+}
+.bi-hyper-link-insert .hyper-link-text-area .param {
+  color: white;
+  padding: 1px ;
+  margin: 1px 0px;
+  background: #009de3;
+}

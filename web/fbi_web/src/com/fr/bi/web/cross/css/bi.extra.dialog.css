@@ -1,0 +1,31 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****添加计算宽度的--运算符直接需要space****/
+.fs-dialog-mask {
+  background-color: #1a1a1a;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.fs-dialog-title {
+  background-color: #f4f4f4;
+  color: #808080;
+  font-size: 16px;
+}
+.fs-dialog-button {
+  color: #808080;
+  font-size: 16px;
+  cursor: pointer;
+}
+.fs-dialog-content {
+  background-color: #ffffff;
+}
+.fs-share-dialog-content {
+  background-color: #f4f4f4;
+}
+.fs-dialog-label {
+  color: #808080;
+  font-size: 14px;
+}
+.fs-dialog-text {
+  font-size: 14px;
+}

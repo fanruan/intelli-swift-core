@@ -1,0 +1,27 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-widget-attribute-setter .widget-attribute-setter-container {
+  background: #f3f3f3;
+}
+.bi-widget-attribute-setter .widget-attr-west .widget-select-data-pane {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-widget-attribute-setter .widget-top-name {
+  font-size: 14px;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-top-wrapper {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-widget-attribute-setter .widget-attr-center .widget-center-wrapper {
+  background: #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}

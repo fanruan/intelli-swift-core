@@ -1,0 +1,1 @@
+package com.fr.bi.cal.analyze.executor.table;/** * Created by Hiram on 2014/12/17. */public class ExecutorCommonUtils {    public static boolean isAllPage(int page) {        return page == -1;    }}

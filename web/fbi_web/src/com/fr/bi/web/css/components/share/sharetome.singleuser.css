@@ -1,0 +1,37 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-share-to-me-single-user {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-share-to-me-single-user .user-name {
+  font-size: 14px;
+  color: #808080;
+  background: #f4f4f4;
+}
+.bi-share-to-me-single-user .report-item-list {
+  border-top: 1px solid #eaeaea;
+}
+.bi-share-to-me-single-user .report-item-list:hover {
+  background: #f4f4f4;
+}
+.bi-share-to-me-single-user .report-item-list .report-name {
+  font-size: 14px;
+  color: #1a1a1a;
+}
+.bi-share-to-me-single-user .report-item-list .time-text {
+  color: #808080;
+}
+.bi-share-to-me-single-user .report-item-list .normal-mark {
+  font-size: 16px;
+}
+.bi-share-to-me-single-user .report-item-card:hover {
+  background: #f4f4f4;
+}
+.bi-share-to-me-single-user .report-item-card .report-name {
+  font-size: 14px;
+  color: #1a1a1a;
+}

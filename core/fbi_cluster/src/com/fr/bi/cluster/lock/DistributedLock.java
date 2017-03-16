@@ -1,0 +1,1 @@
+package com.fr.bi.cluster.lock;import com.fr.bi.cluster.exception.DistributedException;/** * Created by Hiram on 2015/2/28. */public interface DistributedLock {    public void lock() throws DistributedException;    public void unlock() throws DistributedException;}

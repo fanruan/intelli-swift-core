@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5, IE=EmulateIE7, chrome=1">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>${layoutType}</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.fs.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=toolbar.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.fs.js&inter=${__locale__}"></script>
+    <style type="text/css">
+
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var $container = $('<div style="position:absolute; top:200px; left:5px; width:250px; height : 40px">').appendTo('body');
+            var first = FR.createWidget({
+                renderEl : $container,
+                type: 'fs.segment',
+                valueField: 'text',
+                items: [{text: '第一个'}, {text: '第二个'}, {text: '第三个'}]
+            });
+            window.sg = new FS.Segment({
+                renderEl: $('#container'),
+                width: 300,
+                items: [
+                    {
+                        text: '2D',
+                        value: '0'
+                    },
+                    {
+                        text: '3D',
+                        value: '1'
+                    },
+                    {
+                        text: '4D',
+                        value: '2'
+                    },
+                    {
+                        text: '好人ssas按时大大ssss啊',
+                        value: '3'
+                    }
+                ],
+                handler: function (index) {
+                    var text = this.options.items[index].text;
+                }
+            });
+            $('#get').click(function () {
+                alert(sg.getValue());
+            });
+            $('#set').click(function () {
+                sg.setValue('1');
+            });
+            $('#set2').click(function () {
+                sg.setValue(0);
+            });
+        });
+    </script>
+</head>
+
+<body>
+<button id="get">Get Value</button>
+<button id="set">Set Value To 3D</button>
+<button id="set2">Set Value To 2D</button>
+
+<div id="container" style="width:300px; height: 100px; top: 40px; left: 40px"></div>
+</body>
+</html>

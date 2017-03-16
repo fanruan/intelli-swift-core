@@ -1,0 +1,20 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****添加计算宽度的--运算符直接需要space****/
+div.fs-quick-list {
+  border-radius: 2px;
+  border: 1px solid #d4dadd;
+}
+div.fs-quick-list-item {
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 30px;
+}
+div.fs-quick-list-item-hover {
+  background-color: #f4f4f4;
+  color: #009de3;
+}
+div.fs-quick-list-item-selected {
+  background-color: #f4f4f4;
+  color: #009de3;
+}

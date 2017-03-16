@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5, IE=EmulateIE7, chrome=1">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>${layoutType}</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.fs.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=toolbar.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.fs.js&inter=${__locale__}"></script>
+    <style type="text/css">
+        .north-mark {
+            background-color: green;
+            border: 1px solid purple;
+            width : 170px;
+            height: 200px;
+
+        }
+        .center-mark {
+            background-color: #007aff;
+            border: 1px solid purple;
+            width: 170px;
+            height: 200px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var w = BI.createWidget({
+                renderEl: $("#container"),
+                type: 'bi.gird',
+                columns : 2,
+                rows : 1,
+                items : [
+                    {
+                        el : {
+                            type : 'bi.layout',
+                            cls : 'north-mark'
+                        },
+                        column : 0,
+                        row : 0
+                    },
+                    {
+                        el : {
+                            type : 'bi.layout',
+                            cls : 'center-mark'
+                        },
+                        column : 1,
+                        row : 0
+                    }
+                ]
+            });
+            var n = 1;
+            $('#add').click(function() {
+                w.addItem({
+                    type : 'bi.label',
+                    text : '测试' + n ++,
+                    cls : 'north-mark'
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+<button id="add">添加组件</button>
+<div id="container" style="position:relative;width:400px; height: 200px; top: 40px; left: 40px; background: papayawhip"></div>
+</body>
+</html>

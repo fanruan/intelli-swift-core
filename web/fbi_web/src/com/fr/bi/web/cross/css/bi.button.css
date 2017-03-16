@@ -1,0 +1,31 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****添加计算宽度的--运算符直接需要space****/
+.fs-button {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #009de3;
+  background-color: #009de3;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer !important;
+}
+.fs-button.button-common {
+  color: #ffffff;
+}
+.fs-button.button-ignore {
+  color: #1a1a1a;
+  background-color: #ffffff;
+  border-color: #d4dadd;
+}
+.fs-button.button-success {
+  color: #ffffff;
+  background-color: #58cc7d;
+  border-color: #58cc7d;
+}
+.fs-button.button-warning {
+  color: #ffffff;
+  background-color: #e85050;
+  border-color: #e85050;
+}

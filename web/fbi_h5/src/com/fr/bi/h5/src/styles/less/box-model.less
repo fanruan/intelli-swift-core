@@ -1,0 +1,26 @@
+.box-sizing(@box-model){
+  -webkit-box-sizing: @box-model;/*Safari3.2+*/
+  -moz-box-sizing: @box-model;/*Firefox3.5+*/
+  -ms-box-sizing: @box-model;/*IE8*/
+  box-sizing: @box-model;/*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
+}
+.clearfix() {
+  *zoom: 1;
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+    line-height: 0;
+  }
+  &:after {
+    clear: both;
+  }
+}
+.calc( @expression) {
+  /*Firefox*/
+  width: -moz-calc(@expression);
+  /*chrome safari*/
+  width: -webkit-calc(@expression);
+  /*Standard */
+  width: calc(@expression);
+}

@@ -1,0 +1,16 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-linkage-filter-item {
+  border-bottom: 1px solid #d4dadd;
+  border-right: 1px solid #d4dadd;
+}
+.bi-linkage-filter-item .chart-type-font {
+  font-size: 20px;
+}
+.bi-linkage-filter-item .single-filter {
+  background: #eefbff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}

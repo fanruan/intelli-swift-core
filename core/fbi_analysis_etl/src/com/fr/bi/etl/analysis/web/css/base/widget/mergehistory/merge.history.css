@@ -1,0 +1,27 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-analysis-etl-merge-history .border {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #eaeaea;
+  background: #ffffff;
+}
+.bi-analysis-etl-merge-history .single_operator:active,
+.bi-analysis-etl-merge-history .single_operator.active {
+  background-color: #009de3;
+}
+.bi-analysis-etl-merge-history .title {
+  font-size: 14px;
+}
+.bi-analysis-etl-merge-history .content {
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-analysis-etl-merge-history .disable {
+  background: #ffffff;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}

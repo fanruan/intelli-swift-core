@@ -1,0 +1,26 @@
+@import "../../../../../bibase";
+
+.bi-dimension-region {
+  & .dimensions-container {
+    min-height: 37px;
+  }
+  & .dimension-container {
+    background: @color-dimension-background;
+    .border-radius(2px);
+  }
+
+  & .region-empty-tip{
+    color: @color-bi-text-dark;
+    font-size: @font-size-14;
+  }
+
+  & .forbidden-mask{
+    background: @color-bi-background-black;
+    .opacity(0.05);
+    z-index: 1;
+  }
+  & .region-drop-area{
+    .border-radius(2px);
+    border: 1px dashed @color-dimension-region-border;
+  }
+}

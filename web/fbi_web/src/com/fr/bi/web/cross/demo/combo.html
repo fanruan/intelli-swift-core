@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=5, IE=EmulateIE7, chrome=1">
+    <meta name="author" content="FineReport">
+    <meta name="Copyright" content="FineReport">
+    <meta name="description" content="FineReport--Web Reporting Tool">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>${layoutType}</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.fs.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=toolbar.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.fs.js&inter=${__locale__}"></script>
+    <style type="text/css">
+        * {
+            font-family: "Open Sans","Tahoma", "Hiragino Sans GB";
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var combo = new FS.ComboBox({
+                renderEl : $('#container'),
+                width : 200,
+                height : 100,
+                items: [{
+                    text: "第一项"
+                }, {
+                    text: "第二项"
+                }, {
+                    text: "第三项"
+                }, {
+                    text: "第四项"
+                }, {
+                    text: "第五项"
+                }, {
+                    text: "第六项"
+                }, {
+                    text: "第七项"
+                }, {
+                    text: "第八项"
+                }, {
+                    text: "第九项"
+                }, {
+                    text: "第十项"
+                }, {
+                    text: "第XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX项"
+                }]
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+<div id="container" style="position: absolute;width:200px; height: 60px; top: 40px; left: 40px"></div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>BI unit tests</title>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=zh_CN"></script>
+
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=base.css&cmd=refresh"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=modules.css&cmd=refresh"/>
+
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=data.js&version=${__version__}&__pre__=true"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=formula.js&version=${__version__}&__pre__=true"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&cmd=refresh"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js&cmd=refresh"></script>
+
+    <link href="${servletURL}?op=resource&resource=/com/fr/bi/web/cross/demo/lib/jasmine.css" rel="stylesheet"
+          type="text/css">
+    <script src="${servletURL}?op=resource&resource=/com/fr/bi/web/cross/demo/lib/jasmine.js"></script>
+    <script src="${servletURL}?op=resource&resource=/com/fr/bi/web/cross/demo/lib/jasmine-html.js"></script>
+    <script src="${servletURL}?op=resource&resource=/com/fr/bi/web/cross/demo/lib/boot.js"></script>
+    <script src="${servletURL}?op=resource&resource=/com/fr/bi/web/test/dist/test.js"></script>
+</head>
+<body>
+<div id="wrapper" style="position: absolute;left:0;right:0;top:0;bottom:0; z-index:-1;"></div>
+</body>
+</html>

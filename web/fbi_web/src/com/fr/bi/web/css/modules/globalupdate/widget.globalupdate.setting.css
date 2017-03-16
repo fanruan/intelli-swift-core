@@ -1,0 +1,18 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-global-update-setting {
+  min-height: 100px;
+  border: 1px solid #a3d6e8;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-global-update-setting .add-time-toolbar {
+  background: #eefbff;
+  border-bottom: 1px solid #a3d6e8;
+}
+.bi-global-update-setting .add-time-toolbar .add-time-comment {
+  font-size: 14px;
+  color: #808080;
+}

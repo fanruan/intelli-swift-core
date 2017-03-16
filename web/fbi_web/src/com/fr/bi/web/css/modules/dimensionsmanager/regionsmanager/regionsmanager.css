@@ -1,0 +1,33 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-regions-manager > .center-element {
+  max-height: 200px;
+  max-width: 280px;
+}
+.bi-regions-manager .dimension-region-manager {
+  border: 1px solid #a3d6e8;
+}
+.bi-regions-manager .dimension-region-manager .dimension-region {
+  border: 1px solid #a3d6e8;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-regions-manager .dimension-region-manager .drag-tool {
+  border-right: 1px solid #a3d6e8;
+  cursor: move;
+}
+.bi-regions-manager .target-region-manager {
+  border: 1px solid #9fd3ae;
+}
+.bi-regions-manager .target-region-manager .target-region {
+  border: 1px solid #9fd3ae;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-regions-manager .target-region-manager .drag-tool {
+  border-right: 1px solid #9fd3ae;
+  cursor: move;
+}

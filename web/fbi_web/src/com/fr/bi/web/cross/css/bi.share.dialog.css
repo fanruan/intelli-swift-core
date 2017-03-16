@@ -1,0 +1,70 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****添加计算宽度的--运算符直接需要space****/
+.fs-bi-share-template-role-default-text {
+  color: #c4c6c6;
+}
+.fs-bi-user-tree {
+  border-radius: 2px;
+  border: 1px solid #d4dadd;
+}
+.fs-bi-user-box-count-text {
+  color: #74b2e2;
+}
+.fs-share-queryBox {
+  border-radius: 2px;
+  position: relative;
+  float: right;
+  color: #383838;
+  background-color: #ffffff;
+  padding: 0;
+  font-size: 16px;
+  margin: 0 11px;
+}
+.fs-share-queryBox input {
+  height: 30px;
+  border: 0;
+  vertical-align: middle;
+  background: 0;
+}
+.fs-bi-search-input {
+  color: #f07d0a;
+}
+.fs-user-item {
+  border-radius: 2px;
+  font-size: 12px;
+  color: #1a1a1a;
+  background-color: #f4f4f4;
+  padding-left: 10px;
+  padding-right: 20px;
+}
+.fs-user-item:hover {
+  background-color: #d4dadd;
+}
+.fs-bi-del-con-when-item-hover:after {
+  color: #e85050;
+  border-radius: 2px;
+  content: '\e60f';
+  float: right;
+  font-size: 16px;
+  height: 20px;
+  line-height: 20px;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+.fs-bi-del-con-when-item-hover:hover:after {
+  color: #e85050;
+  background-color: #ffffff;
+  border: 1px solid #d4dadd;
+}
+.fs-bi-del-con:after {
+  color: #808080;
+  border-radius: 2px;
+  content: '\e60f';
+  float: right;
+  font-size: 16px;
+  height: 20px;
+  line-height: 20px;
+  margin-right: 5px;
+  margin-top: 5px;
+}

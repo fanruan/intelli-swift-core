@@ -1,0 +1,24 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-join-preview-table-header-cell {
+  min-width: 80px;
+}
+.bi-join-preview-table-header-cell .result-table {
+  background: #d9f2fc;
+}
+.bi-join-preview-table-header-cell .table-color0 {
+  background: #fef6df;
+}
+.bi-join-preview-table-header-cell .table-color1 {
+  background: #daf3dc;
+}
+.bi-join-preview-table-header-cell .table-color2 {
+  background: #d6f7f0;
+}
+.bi-join-preview-table-header-cell .table-color3 {
+  background: #e8e6fe;
+}
+.bi-join-preview-table-header-cell .table-color4 {
+  background: #fee9e9;
+}

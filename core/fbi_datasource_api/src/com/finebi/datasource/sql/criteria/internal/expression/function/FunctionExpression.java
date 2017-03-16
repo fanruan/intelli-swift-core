@@ -1,0 +1,26 @@
+
+package com.finebi.datasource.sql.criteria.internal.expression.function;
+import com.finebi.datasource.api.criteria.Expression;
+
+/**
+ * Contract for expressions which model a SQL function call.
+ *
+ * @param <T> The type of the function result.
+ *
+ * @author Steve Ebersole
+ */
+public interface FunctionExpression<T> extends Expression<T> {
+	/**
+	 * Retrieve the name of the function.
+	 *
+	 * @return The function name.
+	 */
+	public String getFunctionName();
+
+	/**
+	 * Is this function a value aggregator (like a <tt>COUNT</tt> or <tt>MAX</tt> function e.g.)?
+	 *
+	 * @return True if this functions does aggregation.
+	 */
+	public boolean isAggregation();
+}

@@ -1,0 +1,28 @@
+@import "../../bibase";
+.bi-hyper-link-insert{
+  & .select-field{
+    border: 1px solid @border-color-normal;
+    & .select-field-item{
+      &:hover, &.hover {
+        background-color: @background-color-active;
+      }
+      &:active, &.active {
+        background-color: @background-color-active;
+      }
+      &.disabled {
+        &, &:hover, &:active {
+          background-color: @color-bi-background-default;
+        }
+      }
+    }
+  }
+  & .hyper-link-text-area{
+    border: 1px solid @border-color-normal;
+    & .param{
+      color: white;
+      padding: 1px ;
+      margin: 1px 0px;
+      background: @color-bi-text-highlight;
+    }
+  }
+}

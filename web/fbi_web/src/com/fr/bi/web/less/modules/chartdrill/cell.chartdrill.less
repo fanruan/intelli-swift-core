@@ -1,0 +1,27 @@
+@import "../../bibase";
+.bi-chart-drill-cell{
+  max-width: 180px;
+  & .up-drill-button{
+    background: @color-bi-background-highlight;
+    color: @color-bi-text;
+    .border-corner-left-radius(2px, 2px);
+    &.disabled{
+      color: @color-bi-text-disabled;
+      background: @color-bi-background-gray;
+    }
+  }
+  & .down-drill-button{
+    background: @color-bi-background-highlight;
+    .border-corner-right-radius(2px, 2px);
+    color: @color-bi-text;
+    &.disabled{
+      color: @color-bi-text-disabled;
+      background: @color-bi-background-gray;
+    }
+  }
+  & .dimension-name{
+    color: @color-bi-text-gray;
+    border-top: 1px solid @color-bi-border-line;
+    border-bottom: 1px solid @color-bi-border-line;
+  }
+}

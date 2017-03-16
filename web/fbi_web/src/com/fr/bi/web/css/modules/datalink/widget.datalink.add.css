@@ -1,0 +1,31 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-add-data-link .item-label {
+  font-size: 13px;
+  color: #1a1a1a;
+}
+.bi-add-data-link .item-input {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  background: #ffffff;
+}
+.bi-add-data-link .data-link-code {
+  border-bottom: 1px solid #eaeaea;
+  font-size: 16px;
+  color: #808080;
+}
+.bi-add-data-link .data-link-combo {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-add-data-link .data-link-item:hover {
+  background: #f4f4f4;
+}
+.bi-add-data-link .data-link-item.active {
+  color: #009de3;
+}

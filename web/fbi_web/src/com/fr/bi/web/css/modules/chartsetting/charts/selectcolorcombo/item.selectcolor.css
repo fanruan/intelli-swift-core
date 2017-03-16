@@ -1,0 +1,28 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-chart-setting-select-color-item {
+  border: 1px solid #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-chart-setting-select-color-item:hover,
+.bi-chart-setting-select-color-item.hover {
+  border-color: #d4dadd;
+}
+.bi-chart-setting-select-color-item:active,
+.bi-chart-setting-select-color-item.active {
+  border-color: #178cdf;
+}
+.bi-chart-setting-select-color-item.disabled,
+.bi-chart-setting-select-color-item.disabled:hover,
+.bi-chart-setting-select-color-item.disabled:active {
+  color: #c4c6c6 !important;
+  background-color: #ffffff !important;
+}
+.bi-chart-setting-select-color-item.disabled .bi-high-light,
+.bi-chart-setting-select-color-item.disabled:hover .bi-high-light,
+.bi-chart-setting-select-color-item.disabled:active .bi-high-light {
+  color: #c4c6c6 !important;
+}

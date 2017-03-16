@@ -1,0 +1,32 @@
+/****��Ӽ����ȵ�--�����ֱ����Ҫspace****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-database-table {
+  border-radius: 2px;
+  color: #009de3;
+  border: 1px solid #d4dadd;
+  background: #ffffff;
+}
+.bi-database-table.bi-normal-table {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/one_pack/one_package.png') no-repeat -35px -60px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/one_pack/one_package.png');
+  _background: none;
+}
+.bi-database-table.bi-etl-table {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/one_pack/one_package.png') no-repeat -35px -60px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/one_pack/one_package.png');
+  _background: none;
+}
+.bi-database-table.bi-excel-table {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/one_pack/one_package.png') no-repeat -35px -60px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/one_pack/one_package.png');
+  _background: none;
+}
+.bi-database-table.bi-sql-table {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/one_pack/one_package.png') no-repeat -35px -60px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/dezi/one_pack/one_package.png');
+  _background: none;
+}
+.bi-database-table.bi-table-ha-button.active {
+  border: 1px solid #009de3;
+}

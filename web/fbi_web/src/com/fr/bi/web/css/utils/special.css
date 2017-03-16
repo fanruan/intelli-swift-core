@@ -1,0 +1,53 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+ul.CodeMirror-hints {
+  z-index: 1000000000;
+}
+.view-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 100000;
+}
+.ui-effects-transfer {
+  background: #ff6600;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 2px #8e8e8e;
+  z-index: 1000000000;
+}
+.ui-sortable-place-holder {
+  border: 1px dashed #58cc7d !important;
+}
+.dragged {
+  position: absolute;
+  top: 0;
+  opacity: 0.5;
+  z-index: 200000000;
+}
+.ui-resizable-s {
+  bottom: 0;
+}
+.ui-resizable > .ui-resizable-s:hover {
+  border-bottom: 1px solid #009de3;
+}
+.ui-resizable > .ui-resizable-e:hover {
+  border-right: 1px solid #009de3;
+}
+.ui-resizable.ui-resizable-disabled > .ui-resizable-s:hover {
+  border: none;
+}
+.ui-resizable.ui-resizable-disabled > .ui-resizable-e:hover {
+  border: none;
+}
+.ui-resizable-se {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag_helper.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag_helper.png');
+  _background: none;
+}

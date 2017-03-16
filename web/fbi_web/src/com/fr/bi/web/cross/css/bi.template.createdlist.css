@@ -1,0 +1,34 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+/****添加计算宽度的--运算符直接需要space****/
+.bi-template-list-view {
+  background: #ffffff;
+}
+.fs-move-dialog-text {
+  color: #009de3;
+}
+.fs-multi-select-bar {
+  border-bottom: 1px solid #d4dadd;
+  border-left: 1px solid #d4dadd;
+  border-top: 1px solid #d4dadd;
+}
+.fs-file-manager-new-folder-item {
+  border-left: 1px solid #d4dadd;
+  border-right: 1px solid #d4dadd;
+  border-top: 1px solid #d4dadd;
+}
+.fs-template-file-manager {
+  border: 1px solid #d4dadd;
+}
+.fs-template-list-item-operator-error .bi-input {
+  color: #f07d0a;
+}
+.fs-template-list-item-operator-error .sign-editor-text {
+  color: #f07d0a;
+}
+.fs-template-list-new-folder-error .bi-input {
+  color: #f07d0a;
+}
+.fs-template-list-new-folder-error .sign-editor-text {
+  color: #f07d0a;
+}
