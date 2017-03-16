@@ -468,8 +468,7 @@ public class HorGroupExecutor extends GroupExecutor {
         cbcells[cell.getColumn()][cell.getRow()] = cell;
     }
 
-    static void dealWithNodeExpanderIsCross(Node node, CBCell[][] cbcells, int row, int column, BIDimension[] colColumn, BITarget[] sumColumn, TargetGettingKey[] keys,
-                                            int total, TableWidget widget, int tempCol, BIComplexExecutData columnData, DetailChartSetting chartSetting) {
+    static void dealWithNodeExpanderIsCross(Node node, CBCell[][] cbcells, int row, int column, BIDimension[] colColumn, BITarget[] sumColumn, TargetGettingKey[] keys, int total, TableWidget widget, int tempCol, BIComplexExecutData columnData, DetailChartSetting chartSetting) {
         int columnLength = colColumn.length;
         CBCell cell = null;
         boolean isSortTitle = row == 0;
@@ -481,13 +480,8 @@ public class HorGroupExecutor extends GroupExecutor {
                 int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
                 Object v = node.getSummaryValue(keys[i]);
                 v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
-                cell = new CBCell(v);
-                cell.setRow(columnData.getMaxArrayLength() + i);
-                cell.setColumn(tempCol + p);
-                cell.setRowSpan(1);
-                cell.setColumnSpan(1);
-                cell.setStyle(BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
-                cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+                Style style = BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT));
+                cell = ExecutorUtils.createCell(v, columnData.getMaxArrayLength() + i, 1, tempCol + p, 1, style);
                 List<CBCell> cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
                 CBBoxElement cbox = new CBBoxElement(cellList);//TODO CBBoxElement需要整合减少内存
