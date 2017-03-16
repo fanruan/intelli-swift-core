@@ -133,7 +133,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
             height: this.constants.LABEL_HEIGHT
         });
         markTab.setSelect(styleSettings.iconStyle === BICst.TARGET_STYLE.ICON_STYLE.NONE ?
-                            this.constants.HIDE_MARK : this.constants.SHOW_MARK);
+            this.constants.HIDE_MARK : this.constants.SHOW_MARK);
 
         this.conditions = BI.createWidget({
             type: "bi.target_condition_style_setting",
@@ -201,7 +201,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 
     _switchLabel: function() {
         return BI.TargetStyleSetting.formatNumber(this.numLevel.getValue()[0], this.format.getValue(),
-        this.separators.isSelected(), this.unit.getValue());
+            this.separators.isSelected(), this.unit.getValue());
     },
 
     end: function(){
@@ -225,9 +225,9 @@ $.shortcut("bi.target_style_setting", BI.TargetStyleSetting);
 BI.extend(BI.TargetStyleSetting, {
     formatNumberLevelAndSeparators: function (type, separators) {
         switch (type) {
-            case -1:
+            case BICst.TARGET_STYLE.FORMAT.NORMAL:
                 return separators ? '#,###.##' : "#.##";
-            case 0:
+            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
                 return separators ? '#,###' : "#0";
             default:
                 var formatter = separators ? "#,###." : '#0.';
