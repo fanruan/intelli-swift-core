@@ -60,7 +60,7 @@ BI.PretreatedTable = BI.inherit(BI.Widget, {
                                 return title + "(" + BI.i18nText("BI-Week_XingQi") + ")";
                                 break;
                             case BICst.GROUP.YMD:
-                                return title + "(" + BI.i18nText("BI-Date") + ")";
+                                return title + "(" + BI.i18nText("BI-Basic_Date") + ")";
                                 break;
                             case BICst.GROUP.YMDHMS:
                                 return title + "(" + BI.i18nText("BI-Time_ShiKe") + ")";

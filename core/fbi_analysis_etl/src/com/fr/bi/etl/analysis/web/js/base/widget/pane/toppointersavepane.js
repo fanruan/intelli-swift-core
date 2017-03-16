@@ -35,7 +35,7 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
         var self = this;
         this.cancel = BI.createWidget({
             type:"bi.button",
-            text:BI.i18nText("BI-Cancel"),
+            text:BI.i18nText("BI-Basic_Cancel"),
             level:'ignore',
             width:this._constant.buttonWidth,
             height:this._constant.buttonHeight,
@@ -89,7 +89,7 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
                         change();
                     }
                 }, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         self.confirmCombo.hideView();

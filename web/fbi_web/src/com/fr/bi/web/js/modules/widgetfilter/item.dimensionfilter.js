@@ -59,7 +59,7 @@ BI.DimensionFilterItem = BI.inherit(BI.Widget, {
                 value = v.value;
                 break;
             case BICst.DIMENSION_FILTER_STRING.CONTAIN:
-                relation = BI.i18nText("BI-Contain");
+                relation = BI.i18nText("BI-Basic_Contain");
                 value = filter.filter_value;
                 break;
             case BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN:
@@ -112,7 +112,7 @@ BI.DimensionFilterItem = BI.inherit(BI.Widget, {
                 relation = BI.i18nText("BI-Not_Null");
                 break;
             case BICst.DIMENSION_FILTER_DATE.CONTAIN:
-                relation = BI.i18nText("BI-Contain");
+                relation = BI.i18nText("BI-Basic_Contain");
                 break;
             case BICst.DIMENSION_FILTER_DATE.NOT_CONTAIN:
                 relation = BI.i18nText("BI-Not_Contain");

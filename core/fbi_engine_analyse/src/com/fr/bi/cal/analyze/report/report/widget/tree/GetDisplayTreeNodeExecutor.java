@@ -95,7 +95,7 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
         if (children == 0) {
             obj.put("text", name);
         } else {
-            obj.put("text", name + "( " + Inter.getLocText("BI-Altogether") + children + Inter.getLocText("BI-Count") + " )");
+            obj.put("text", name + "( " + Inter.getLocText("BI-Basic_Altogether") + children + Inter.getLocText("BI-Basic_Count") + " )");
         }
         obj.put("open", true);
         result.put(obj);

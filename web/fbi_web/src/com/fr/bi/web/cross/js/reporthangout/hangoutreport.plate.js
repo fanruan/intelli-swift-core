@@ -19,7 +19,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
     },
 
     rebuildNorth: function (north) {
-        var text = (BI.isNotNull(this.options.report) ? BI.i18nText("BI-Modify") : BI.i18nText("BI-Add")) + "BI"
+        var text = (BI.isNotNull(this.options.report) ? BI.i18nText("BI-Modify") : BI.i18nText("BI-Basic_Add")) + "BI"
         BI.createWidget({
             type: "bi.label",
             element: north,
@@ -123,7 +123,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Describe"),
+                    text: BI.i18nText("BI-Basic_Describe"),
                     height: 30,
                     width: 90,
                     textAlign: "left",
@@ -212,7 +212,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
 
     end: function () {
         if (BI.isNull(this.reportsCombo.getValue()) || this.reportsCombo.getValue().length === 0) {
-            BI.Msg.alert(BI.i18nText("BI-Attention"), BI.i18nText("BI-Please_Select_Report"), function () {
+            BI.Msg.alert(BI.i18nText("BI-Basic_Attention"), BI.i18nText("BI-Please_Select_Report"), function () {
             });
             return;
         }

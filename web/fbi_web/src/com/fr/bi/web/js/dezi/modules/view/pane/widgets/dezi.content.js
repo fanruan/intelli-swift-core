@@ -41,7 +41,7 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
                 width: 24,
                 height: 24,
                 cls: "img-shutdown-font delete-button",
-                title: BI.i18nText("BI-Delete")
+                title: BI.i18nText("BI-Basic_Delete")
             },
             popup: {
                 type: "bi.bubble_bar_popup_view",
@@ -51,7 +51,7 @@ BIDezi.ContentWidgetView = BI.inherit(BI.View, {
                         self.model.destroy();
                     }
                 }, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         self.del.hideView();

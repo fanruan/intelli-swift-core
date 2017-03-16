@@ -23,7 +23,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
             type :'bi.button',
             height : self._constants.BUTTON_HEIGHT,
             width : self._constants.BUTTON_WIDTH,
-            text : BI.i18nText('BI-Edit') + BI.i18nText('BI-Formula')
+            text : BI.i18nText('BI-Basic_Edit') + BI.i18nText('BI-Basic_Formula')
         });
         self.fieldItems = [[], [], []];
         BI.each(o[ETLCst.FIELDS], function (i, item) {
@@ -95,7 +95,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
     },
 
     populate : function () {
-        this.label.setText((BI.isNull(this.storedValue) || BI.isEmptyString(this.storedValue)) ? BI.i18nText('BI-(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
+        this.label.setText((BI.isNull(this.storedValue) || BI.isEmptyString(this.storedValue)) ? BI.i18nText('BI-Basic_(Empty)') : BI.Utils.getTextFromFormulaValue(this.storedValue, this.fieldItems));
     },
     
     getValue: function () {

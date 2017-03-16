@@ -114,7 +114,7 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                             self.model.set("delete", info.id);
                         }
                     }, {
-                        value: BI.i18nText("BI-Cancel"),
+                        value: BI.i18nText("BI-Basic_Cancel"),
                         level: "ignore",
                         handler: function () {
                             deleteCombo.hideView();
@@ -176,7 +176,7 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                     }
                 }, {
                     type: "bi.icon_button",
-                    title: BI.i18nText("BI-Copy"),
+                    title: BI.i18nText("BI-Basic_Copy"),
                     cls: "data-link-copy-font icon-font",
                     handler: function () {
                         self.model.set("copy", info.id);

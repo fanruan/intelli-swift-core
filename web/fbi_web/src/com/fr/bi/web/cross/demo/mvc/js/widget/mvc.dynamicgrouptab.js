@@ -15,8 +15,8 @@ DynamicGroupTabView = BI.inherit(BI.View, {
             type:"bi.button",
             width: 90,
             level: 'ignore',
-            text: BI.i18nText("BI-add_sheet"),
-            title: BI.i18nText("BI-add_sheet")
+            text: BI.i18nText("BI-Add_sheet"),
+            title: BI.i18nText("BI-Add_sheet")
         });
         addButton.on(BI.Button.EVENT_CHANGE, function(){
             self.tab.addItems([{

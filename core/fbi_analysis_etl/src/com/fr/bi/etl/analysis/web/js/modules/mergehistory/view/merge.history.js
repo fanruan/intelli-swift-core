@@ -75,8 +75,8 @@ BI.MergeHistory = BI.inherit(BI.MVCWidget,  {
                                     type:"bi.button",
                                     level:"ignore",
                                     height:30,
-                                    text:BI.i18nText("BI-Close"),
-                                    title:BI.i18nText("BI-Close"),
+                                    text:BI.i18nText("BI-Basic_Close"),
+                                    title:BI.i18nText("BI-Basic_Close"),
                                     handler : function () {
                                         self.fireEvent(BI.MergeHistory.CANCEL)
                                     }

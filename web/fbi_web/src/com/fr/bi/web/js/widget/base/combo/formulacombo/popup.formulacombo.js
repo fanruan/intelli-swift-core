@@ -39,7 +39,7 @@ BI.FormulaComboPopup = BI.inherit(BI.Widget, {
             type: "bi.button",
             level: "ignore",
             height: this._constant.BUTTON_HEIGHT,
-            text: BI.i18nText("BI-Cancel")
+            text: BI.i18nText("BI-Basic_Cancel")
         });
 
         this.formula.on(BI.FormulaInsert.EVENT_CHANGE, function () {

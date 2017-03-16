@@ -24,8 +24,8 @@ BI.TimeoutToast = BI.inherit(BI.Tip, {
                 cls: "cancel-button",
                 width: 60,
                 height: 22,
-                text: BI.i18nText("BI-Cancel"),
-                title: BI.i18nText("BI-Cancel"),
+                text: BI.i18nText("BI-Basic_Cancel"),
+                title: BI.i18nText("BI-Basic_Cancel"),
                 handler: function () {
                     self.cancelAllRequests();
                 }
@@ -45,7 +45,7 @@ BI.TimeoutToast = BI.inherit(BI.Tip, {
                 cls: "close-font",
                 width: 20,
                 height: 20,
-                title: BI.i18nText("BI-Close"),
+                title: BI.i18nText("BI-Basic_Close"),
                 handler: function () {
                     self.toast.element.slideUp(500);
                 }

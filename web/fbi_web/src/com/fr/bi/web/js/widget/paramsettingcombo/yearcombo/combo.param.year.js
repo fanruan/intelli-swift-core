@@ -67,7 +67,7 @@ BI.YearParamCombo = BI.inherit(BI.Widget, {
         v = v || {};
         return v.fvalue + BI.i18nText("BI-Year") +
             (v.foffset === 0 ? BI.i18nText("BI-Qian_First") : BI.i18nText("BI-Hou_Last")) +
-            BI.i18nText("BI-De") + BI.i18nText("BI-Year_Fen");
+            BI.i18nText("BI-Basic_De") + BI.i18nText("BI-Year_Fen");
     },
 
     getCalculationValue: function () {

@@ -20,12 +20,12 @@ ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP = {
         operatorType:ETLCst.ANALYSIS_ETL_PAGES.SELECT_NONE_DATA
     },
     FILTER : {
-        text:BI.i18nText("BI-Filter"),
+        text:BI.i18nText("BI-Basic_Filter"),
         value:ETLCst.ETL_TYPE.FILTER,
         operatorType:ETLCst.ANALYSIS_ETL_PAGES.FILTER
     },
     GROUP : {
-        text:BI.i18nText("BI-group_summary"),
+        text:BI.i18nText("BI-Group_summary"),
         value:ETLCst.ETL_TYPE.GROUP_SUMMARY,
         operatorType:ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY
     },
@@ -71,7 +71,7 @@ ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL = null;
 ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR = "error";
 
 ETLCst.ANALYSIS_ADD_COLUMN_TYPE = [[{
-    text:BI.i18nText("BI-Formula"),
+    text:BI.i18nText("BI-Basic_Formula"),
     value:BICst.ETL_ADD_COLUMN_TYPE.FORMULA
 }],[{
     el:{
@@ -131,7 +131,7 @@ ETLCst.ANALYSIS_ADD_COLUMN_TYPE = [[{
         value:BICst.ETL_ADD_COLUMN_TYPE.SINGLE_VALUE
     }]
 }], [{
-    text:BI.i18nText("BI-Convert"),
+    text:BI.i18nText("BI-Basic_Convert"),
     value:BICst.ETL_ADD_COLUMN_TYPE.VALUE_CONVERT
 }]]
 ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE = {};
@@ -149,7 +149,7 @@ ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE_ITEMS = [{
     text:BI.i18nText("BI-Month"),
     value:ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE.MONTH
 },{
-    text:BI.i18nText("BI-Day"),
+    text:BI.i18nText("BI-Basic_Day"),
     value:ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE.DAY
 }]
 ETLCst.ANALYSIS_ADD_COLUMN_TYPE_ACCEPT_FIELDS = {};

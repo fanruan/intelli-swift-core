@@ -18,14 +18,14 @@ BI.DimensionStringComboShow = BI.inherit(BI.AbstractDimensionComboShow, {
         return [
             [{
                 el: {
-                    text: BI.i18nText("BI-Ascend"),
+                    text: BI.i18nText("BI-Basic_Ascend"),
                     value: BICst.DIMENSION_STRING_COMBO.ASCEND,
                     iconCls1: ""
                 },
                 children: []
             }, {
                 el: {
-                    text: BI.i18nText("BI-Descend"),
+                    text: BI.i18nText("BI-Basic_Descend"),
                     value: BICst.DIMENSION_STRING_COMBO.DESCEND,
                     iconCls1: ""
                 },

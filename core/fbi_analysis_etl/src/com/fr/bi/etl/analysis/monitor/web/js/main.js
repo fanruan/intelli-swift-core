@@ -52,7 +52,7 @@ BI.extend(BI.Monitor, {
         this.ajaxSingleData(id, function (data) {
             var button = BI.createWidget({
                 type:"bi.button",
-                value: BI.i18nText("BI-Close"),
+                value: BI.i18nText("BI-Basic_Close"),
                 width: BI.Monitor.constants.TABLE_WIDTH,
                 height: BI.Monitor.constants.TABLE_HEIGHT
             });

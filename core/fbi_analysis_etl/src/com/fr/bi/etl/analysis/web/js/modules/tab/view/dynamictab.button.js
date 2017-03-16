@@ -41,8 +41,8 @@ BI.DynamicTabButton = FR.extend(BI.Widget, {
         this.addSheetButton = BI.createWidget({
             type:"bi.button",
             level: 'ignore',
-            text: BI.i18nText("BI-add_sheet"),
-            title: BI.i18nText("BI-add_sheet")
+            text: BI.i18nText("BI-Add_sheet"),
+            title: BI.i18nText("BI-Add_sheet")
         })
         this.addSheetButton.on(BI.Button.EVENT_CHANGE, function(v){
             //self.controller.addNewSheet();

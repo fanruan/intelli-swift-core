@@ -57,7 +57,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
                             type: "bi.right",
                             items: [{
                                 type: "bi.button",
-                                text: BI.i18nText("BI-Close"),
+                                text: BI.i18nText("BI-Basic_Close"),
                                 height: 28,
                                 handler: function () {
                                     self.combo.hideView();

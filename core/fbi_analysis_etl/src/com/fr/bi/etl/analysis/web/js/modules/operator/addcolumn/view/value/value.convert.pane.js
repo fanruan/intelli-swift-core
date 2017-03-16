@@ -59,7 +59,7 @@ BI.AnalysisETLOperatorAddColumnValueConvertPane = BI.inherit(BI.MVCWidget, {
                         {
                             type : 'bi.label',
                             cls : 'label-name',
-                            text : BI.i18nText('BI-Field') + BI.i18nText('BI-Choose'),
+                            text : BI.i18nText('BI-Basic_Field') + BI.i18nText('BI-Basic_Choose'),
                             width : self._constants.LABEL_WIDTH,
                             textAlign : 'left'
                         },
@@ -76,7 +76,7 @@ BI.AnalysisETLOperatorAddColumnValueConvertPane = BI.inherit(BI.MVCWidget, {
                             type : 'bi.label',
                             cls : 'label-name',
                             width : self._constants.LABEL_WIDTH,
-                            text : BI.i18nText('BI-Type') + BI.i18nText('BI-Choose'),
+                            text : BI.i18nText('BI-Type') + BI.i18nText('BI-Basic_Choose'),
                             textAlign : 'left'
                         },
                         {

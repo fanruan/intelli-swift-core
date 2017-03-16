@@ -108,7 +108,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                         el: {
                             type: "bi.label",
                             textAlign: "left",
-                            text: BI.i18nText("BI-Dimension"),
+                            text: BI.i18nText("BI-Basic_Dimension"),
                             height: this.constants.buttonHeight,
                             cls: "setting-tip-label"
                         },

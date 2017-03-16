@@ -4,7 +4,7 @@ Date._DN = [BI.i18nText("BI-Sunday"),
     BI.i18nText("BI-Tuesday"),
     BI.i18nText("BI-Wednesday"),
     BI.i18nText("BI-Thursday"),
-    BI.i18nText("BI-Friday"),
+    BI.i18nText("BI-Basic_Friday"),
     BI.i18nText("BI-Saturday"),
     BI.i18nText("BI-Sunday")];
 

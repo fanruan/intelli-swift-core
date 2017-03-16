@@ -47,7 +47,7 @@ BI.BusinessPackageButton = BI.inherit(BI.BasicButton, {
                         self.fireEvent(BI.BusinessPackageButton.EVENT_CLICK_DELETE, self);
                     }
                 }, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         self.deleteCombo.hideView();

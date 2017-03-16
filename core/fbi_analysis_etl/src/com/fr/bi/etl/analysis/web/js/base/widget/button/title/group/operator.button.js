@@ -46,7 +46,7 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
                             self.fireEvent(BI.AnalysisOperatorButton.EVENT_OPERATOR_CHANGE, button, true);
                         }
                     }, {
-                        value: BI.i18nText("BI-Cancel"),
+                        value: BI.i18nText("BI-Basic_Cancel"),
                         level: "ignore",
                         handler: function () {
                             combo.hideView();

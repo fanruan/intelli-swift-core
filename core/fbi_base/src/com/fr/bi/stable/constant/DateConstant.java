@@ -21,7 +21,7 @@ public class DateConstant {
             case Calendar.THURSDAY:
                 return Inter.getLocText("BI-Thursday");
             case Calendar.FRIDAY:
-                return Inter.getLocText("BI-Friday");
+                return Inter.getLocText("BI-Basic_Friday");
             case Calendar.SATURDAY:
                 return Inter.getLocText("BI-Saturday");
             case Calendar.SUNDAY:

@@ -49,7 +49,7 @@ BI.DataImageImageSet = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var headerLabel = BI.createWidget({
             type: "bi.label",
-            text: BI.i18nText("BI-Added"),
+            text: BI.i18nText("BI-Basic_Added"),
             cls: "header-label"
         });
         var headerButton = BI.createWidget({

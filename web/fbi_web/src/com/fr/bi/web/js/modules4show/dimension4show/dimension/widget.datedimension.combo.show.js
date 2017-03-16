@@ -18,7 +18,7 @@ BI.DimensionDateComboShow = BI.inherit(BI.AbstractDimensionComboShow, {
     defaultItems: function () {
         return [
             [{
-                text: BI.i18nText("BI-Date"),
+                text: BI.i18nText("BI-Basic_Date"),
                 value: BICst.DIMENSION_DATE_COMBO.DATE,
                 cls: "dot-e-font"
             }, {
@@ -40,14 +40,14 @@ BI.DimensionDateComboShow = BI.inherit(BI.AbstractDimensionComboShow, {
             }],
             [{
                 el:{
-                    text: BI.i18nText("BI-Ascend"),
+                    text: BI.i18nText("BI-Basic_Ascend"),
                     value: BICst.DIMENSION_DATE_COMBO.ASCEND,
                     iconCls1: ""
                 },
                 children:[]
             }, {
                 el:{
-                    text: BI.i18nText("BI-Descend"),
+                    text: BI.i18nText("BI-Basic_Descend"),
                     value: BICst.DIMENSION_DATE_COMBO.DESCEND,
                     iconCls1: ""
                 },

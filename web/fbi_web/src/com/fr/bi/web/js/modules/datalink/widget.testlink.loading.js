@@ -79,7 +79,7 @@ BI.TestLinkLoadingMask = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.button",
                 level: "ignore",
-                text: BI.i18nText("BI-Cancel"),
+                text: BI.i18nText("BI-Basic_Cancel"),
                 height: 28,
                 width: 90,
                 handler: function(){
@@ -135,7 +135,7 @@ BI.TestLinkLoadingMask = BI.inherit(BI.Widget, {
                 });
                 var cancelButton = BI.createWidget({
                     type: "bi.button",
-                    text: BI.i18nText("BI-Cancel"),
+                    text: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     width: 90,
                     height: 28,

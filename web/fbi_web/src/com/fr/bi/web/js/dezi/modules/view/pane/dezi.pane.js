@@ -28,7 +28,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             type: "bi.icon_text_icon_item",
             iconCls1: "toolbar-global-export",
             iconCls2: "pull-down-font",
-            text: BI.i18nText("BI-Export"),
+            text: BI.i18nText("BI-Basic_Export"),
             readonly: true,
             height: 30,
             width: 80

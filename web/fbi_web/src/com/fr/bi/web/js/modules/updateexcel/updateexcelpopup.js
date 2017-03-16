@@ -256,7 +256,7 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
         var cancel = BI.createWidget({
             type: "bi.button",
             level: 'ignore',
-            text: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
             height: c.BOTTOM_BUTTON_HEIGHT,
             width: c.BOTTOM_BUTTON_WIDTH
         });

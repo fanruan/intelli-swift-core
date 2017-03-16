@@ -245,7 +245,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                 left: [{
                     type: "bi.button",
                     level: "ignore",
-                    text: BI.i18nText("BI-Cancel"),
+                    text: BI.i18nText("BI-Basic_Cancel"),
                     height: this.constants.ETL_PANE_BUTTON_HEIGHT,
                     handler: function () {
                         self.fireEvent(BI.ETL.EVENT_CANCEL);
@@ -283,7 +283,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                         self.fireEvent(BI.ETL.EVENT_REMOVE);
                     }
                 }, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         removeCombo.hideView();
@@ -611,7 +611,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         });
         etlTablesPane.on(BI.ETLTablesPane.EVENT_CLICK_OPERATOR, function (table, isFinal) {
             if (isFinal === false) {
-                BI.Msg.confirm(BI.i18nText("BI-Attention"), BI.i18nText("BI-Modify_ETL_Operator_Comment"), function (v) {
+                BI.Msg.confirm(BI.i18nText("BI-Basic_Attention"), BI.i18nText("BI-Modify_ETL_Operator_Comment"), function (v) {
                     v === true && self._reopenETLOperator(table);
                 });
                 return;
@@ -620,7 +620,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         });
         etlTablesPane.on(BI.ETLTablesPane.EVENT_CHANGE, function (tId, etlType, isFinal) {
             if (isFinal === false && etlType !== BICst.ETL_MANAGE_TABLE_PREVIEW) {
-                BI.Msg.confirm(BI.i18nText("BI-Attention"), BI.i18nText("BI-Add_ETL_Operator_Comment"), function (v) {
+                BI.Msg.confirm(BI.i18nText("BI-Basic_Attention"), BI.i18nText("BI-Add_ETL_Operator_Comment"), function (v) {
                     v === true && self._etlOperator(etlType, tId);
                 });
                 return;

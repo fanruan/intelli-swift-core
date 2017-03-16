@@ -134,7 +134,7 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
 
         this.groupPane.on(BI.BusinessPackageManage.EVENT_GROUP_ADD, function () {
             var groups = self.model.get("groups");
-            var groupName = BI.Func.createDistinctName(groups, BI.i18nText('BI-Grouping'));
+            var groupName = BI.Func.createDistinctName(groups, BI.i18nText('BI-Basic_Grouping'));
             self.groupPane.addGroupWidget(groupName);
             self.model.set("groups", self.groupPane.getValue());
         });

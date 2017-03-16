@@ -36,7 +36,7 @@ BI.ETLLoadingMask = BI.inherit(BI.Widget, {
                         type:"bi.button",
                         level:"ignore",
                         width:120,
-                        text: BI.i18nText("BI-Cancel"),
+                        text: BI.i18nText("BI-Basic_Cancel"),
                         handler : function () {
                             card.showCardByName(self._constants.CANCELING)
                         }
@@ -47,7 +47,7 @@ BI.ETLLoadingMask = BI.inherit(BI.Widget, {
                 el:{
                     type: "bi.label",
                     cls: "loading-bar-label",
-                    text: BI.i18nText("BI-Canceling"),
+                    text: BI.i18nText("BI-Basic_Canceling"),
                     height: 30
                 },
                 cardName:this._constants.CANCELING

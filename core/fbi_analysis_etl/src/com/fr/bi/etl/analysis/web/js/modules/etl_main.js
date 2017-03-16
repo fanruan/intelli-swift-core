@@ -112,7 +112,7 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [this.confirmButton, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         self.confirmCombo.hideView();
@@ -135,7 +135,7 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
             height: this._constant.buttonHeight,
             width: this._constant.buttonWidth,
             level:"ignore",
-            text:BI.i18nText("BI-Cancel"),
+            text:BI.i18nText("BI-Basic_Cancel"),
             handler : function(e){
                 self.controller.doCancel()
             }

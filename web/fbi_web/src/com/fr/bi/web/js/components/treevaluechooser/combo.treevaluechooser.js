@@ -151,7 +151,7 @@ BI.TreeValueChooserCombo = BI.inherit(BI.Widget, {
             result.push({
                 id: node.id,
                 pId: node.pId,
-                text: node.text + (llen > 0 ? ("(" + BI.i18nText("BI-Altogether") + llen + BI.i18nText("BI-Count") + ")") : ""),
+                text: node.text + (llen > 0 ? ("(" + BI.i18nText("BI-Basic_Altogether") + llen + BI.i18nText("BI-Basic_Count") + ")") : ""),
                 value: node.value,
                 open: true
             });

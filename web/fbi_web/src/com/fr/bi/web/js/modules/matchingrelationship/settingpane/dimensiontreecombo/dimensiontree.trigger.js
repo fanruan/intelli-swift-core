@@ -46,7 +46,7 @@ BI.DimensionTreeTrigger = BI.inherit(BI.Trigger, {
             height: o.height,
             textLgap: 5,
             direction: BI.Direction.Right,
-            text: BI.i18nText("BI-Change")
+            text: BI.i18nText("BI-Basic_Change")
         });
 
         this.wrap = BI.createWidget({

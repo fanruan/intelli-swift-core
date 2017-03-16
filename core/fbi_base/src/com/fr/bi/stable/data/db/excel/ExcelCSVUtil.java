@@ -120,7 +120,7 @@ public class ExcelCSVUtil {
                     cName = m.replaceAll(StringUtils.EMPTY).trim();
                     columnNames[j] = cName;
                     if (ComparatorUtils.equals(StringUtils.EMPTY, cName)) {
-                        columnNames[j] = Inter.getLocText("BI-Field");
+                        columnNames[j] = Inter.getLocText("BI-Basic_Field");
                     }
                 }
                 createDistinctColumnNames();

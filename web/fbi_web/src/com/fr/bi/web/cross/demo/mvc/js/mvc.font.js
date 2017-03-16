@@ -65,7 +65,7 @@ FontView = BI.inherit(BI.View, {
                             right: [{
                                 el: {
                                     type: "bi.button",
-                                    text: BI.i18nText("BI-Exit"),
+                                    text: BI.i18nText("BI-Basic_Exit"),
                                     height: 30,
                                     handler: function () {
                                         self.notifyParentEnd();

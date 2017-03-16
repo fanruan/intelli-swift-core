@@ -96,7 +96,7 @@ BI.DrillFilterItem = BI.inherit(BI.Widget, {
         var drills = BI.Utils.getDrillByID(wId);
         this.wrapper.addItem({
             type: "bi.label",
-            text: BI.i18nText("BI-Drill"),
+            text: BI.i18nText("BI-Basic_Drill"),
             height: 30
         });
         BI.each(drills, function(dId, values){          //第一层放的是下钻开始的dId

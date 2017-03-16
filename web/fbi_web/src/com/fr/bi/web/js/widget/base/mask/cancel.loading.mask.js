@@ -16,7 +16,7 @@ BI.LoadingCancelMask = BI.inherit(BI.Widget, {
             level: "ignore",
             width: 100,
             height: 30,
-            text: BI.i18nText("BI-Cancel")
+            text: BI.i18nText("BI-Basic_Cancel")
         });
         cancelButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.LoadingCancelMask.EVENT_VALUE_CANCEL);

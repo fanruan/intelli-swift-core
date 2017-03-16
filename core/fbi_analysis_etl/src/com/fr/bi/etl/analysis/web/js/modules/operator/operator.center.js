@@ -16,7 +16,7 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
                 type:"bi.center_adapt",
                 items:[{
                     type:"bi.button",
-                    text:BI.i18nText('BI-Edit'),
+                    text:BI.i18nText('BI-Basic_Edit'),
                     width:120
                 }]
             },

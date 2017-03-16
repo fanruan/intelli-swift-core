@@ -35,11 +35,11 @@ BI.SortFilterTargetCombo = BI.inherit(BI.Widget, {
             el: trigger,
             items: [
                 [{
-                    text: BI.i18nText("BI-Ascend"),
+                    text: BI.i18nText("BI-Basic_Ascend"),
                     value: BICst.SORT.ASC,
                     cls: "dot-e-font"
                 }, {
-                    text: BI.i18nText("BI-Descend"),
+                    text: BI.i18nText("BI-Basic_Descend"),
                     value: BICst.SORT.DESC,
                     cls: "dot-e-font"
                 }, {

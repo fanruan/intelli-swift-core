@@ -86,7 +86,7 @@ BI.ReportHangoutPathChooser = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Describe"),
+                    text: BI.i18nText("BI-Basic_Describe"),
                     height: 30,
                     width: 90,
                     textAlign: "left",
@@ -130,7 +130,7 @@ BI.ReportHangoutPathChooser = BI.inherit(BI.BarPopoverSection, {
         });
         var cancel = BI.createWidget({
             type: 'bi.button',
-            text: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
             height: 30,
             level: 'ignore',
             handler: function (v) {

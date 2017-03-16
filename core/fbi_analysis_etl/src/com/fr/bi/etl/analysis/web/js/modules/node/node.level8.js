@@ -83,7 +83,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                         })
                     }
                 }, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         self.confirmCombo.hideView();
@@ -164,13 +164,13 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
 
     _createItemList : function (){
         return [[{
-            text: BI.i18nText("BI-Edit"),
+            text: BI.i18nText("BI-Basic_Edit"),
             value:ETLCst.ANALYSIS_TABLE_SET.EDIT
         }], [{
             text: BI.i18nText("BI-Rename"),
             value:ETLCst.ANALYSIS_TABLE_SET.RENAME
         }], [{
-            text: BI.i18nText("BI-Copy"),
+            text: BI.i18nText("BI-Basic_Copy"),
             value:ETLCst.ANALYSIS_TABLE_SET.COPY
         }], [{
             text: BI.i18nText("BI-Remove"),

@@ -116,7 +116,7 @@ BI.SingleTableTimeSettingItem = BI.inherit(BI.Widget, {
             items: {
                 left: [this.frequency, this.hour, this.day, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Doing"),
+                    text: BI.i18nText("BI-Basic_Doing"),
                     height: 30
                 }, this.updateType],
                 right: [remove]

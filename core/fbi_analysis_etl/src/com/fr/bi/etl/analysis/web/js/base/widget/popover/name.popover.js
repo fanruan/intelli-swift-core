@@ -75,7 +75,7 @@ BI.ETLTableNamePopover = BI.inherit(BI.ETLTableRenamePopover, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Group") + ' :',
+                    text: BI.i18nText("BI-Basic_Group") + ' :',
                     height: self._constants.LABEL_HEIGHT,
                     width: self._constants.LABEL_WIDTH,
                     textAlign: "left",
@@ -94,7 +94,7 @@ BI.ETLTableNamePopover = BI.inherit(BI.ETLTableRenamePopover, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Describe") + ' :',
+                    text: BI.i18nText("BI-Basic_Describe") + ' :',
                     height: self._constants.LABEL_HEIGHT,
                     width: self._constants.LABEL_WIDTH,
                     textAlign: "left",

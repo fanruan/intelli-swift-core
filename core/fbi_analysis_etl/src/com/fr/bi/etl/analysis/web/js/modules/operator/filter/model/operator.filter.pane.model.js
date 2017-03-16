@@ -16,7 +16,7 @@ BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.MVCModel, {
                 newItems.push(item);
                 if (!invalid[0]){
                     if (field.field_type !== item.field_type){
-                        invalid = [true, BI.i18nText('BI-Filter') + field.field_name + BI.i18nText('BI-Illegal_Field_Type')];
+                        invalid = [true, BI.i18nText('BI-Basic_Filter') + field.field_name + BI.i18nText('BI-Illegal_Field_Type')];
                     } else {
                         invalid = self._checkItem(item, parent[ETLCst.FIELDS]);
                     }
@@ -38,7 +38,7 @@ BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.MVCModel, {
                     }))
                 })
                 if (BI.isNotNull(lostField)){
-                    msg = BI.i18nText('BI-Filter')  + BI.i18nText('BI-Formula_Valid') + lostField
+                    msg = BI.i18nText('BI-Basic_Filter')  + BI.i18nText('BI-Formula_Valid') + lostField
                     return true;
                 }
             }

@@ -94,7 +94,7 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
                 type: "bi.label",
                 textAlign: "center",
                 cls: 'param-label',
-                text: BI.i18nText("BI-De"),
+                text: BI.i18nText("BI-Basic_De"),
                 width: this.constants.itemWidth,
                 height: this.constants.itemHeight
             }, {

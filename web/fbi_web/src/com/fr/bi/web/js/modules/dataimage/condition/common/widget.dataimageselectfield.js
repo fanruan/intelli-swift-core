@@ -32,8 +32,8 @@ BI.DataImageFilterSelectField = BI.inherit(BI.Widget, {
                 }, {
                     id: self._constant.OTHER_FIELD,
                     type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Dimension") + "/" + BI.i18nText("BI-Target"),
-                    value: BI.i18nText("BI-Dimension") + "/" + BI.i18nText("BI-Target"),
+                    text: BI.i18nText("BI-Basic_Dimension") + "/" + BI.i18nText("BI-Target"),
+                    value: BI.i18nText("BI-Basic_Dimension") + "/" + BI.i18nText("BI-Target"),
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.CLASSIFY,
                     open: true
