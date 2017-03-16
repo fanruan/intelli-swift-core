@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=GBK">
+    <meta http-equiv="Page-Enter" content="revealTrans(duration=5.0,transition=3)">
+
+    <title>FR.BIDezi</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=base.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=modules.css"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=analysis_etl.css"/>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=zh_CN"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.chart.js"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=core.js"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=data.js&version=&__pre__=true"></script>
+    <script type="text/javascript"
+            src="${servletURL}?op=emb&resource=formula.js&version=&__pre__=true"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&cmd=refresh"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js&cmd=refresh"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=dezi.js&cmd=refresh"></script>
+
+    <style> .border { border:1px solid } </style>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            BI.createWidget({
+                type:"bi.vertical",
+                element:$("div.b"),
+                cls:"border",
+                height:800,
+                width:600,
+                items:[{
+                    type: "bi.etl_branch_relation",
+                    width:600,
+                    hgap:50,
+                    vgap:80,
+                    items: [{
+                        id:1,
+                        el:{
+                                type:"bi.label",
+                                cls:"border",
+                                text:"A",
+                                width:60
+                        },
+                        pId:null
+                    }, {
+                        id:2,
+                        el:{
+                                type:"bi.label",
+                                cls:"border",
+                                text:"B",
+                                height:30
+                        },
+                        pId:1
+                    }, {
+                        id:3,
+                        el:{
+                                type:"bi.label",
+                                cls:"border",
+                                text:"C",
+                                width:150,
+                                height:50
+                        },
+                        pId:2
+                    },{
+                        id:4,
+                        el:{
+                                type:"bi.label",
+                                cls:"border",
+                                text:"D",
+                                width:60,
+                                height:60
+                        },
+                        pId:1
+                    },{
+                        id:5,
+                        el:{
+                                type:"bi.label",
+                                cls:"border",
+                                text:"E",
+                                width:110,
+                                height:40
+                        },
+                        pId:3
+                    }]
+                }]
+            })
+        });
+    </script>
+</head>
+<body>
+<div class="a">
+</div>
+<div class="b" style=>
+</div>
+</body>
+</html>

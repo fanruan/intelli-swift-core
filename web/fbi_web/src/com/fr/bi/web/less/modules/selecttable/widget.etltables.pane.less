@@ -1,0 +1,31 @@
+@import "../../bibase";
+.bi-select-table-etl-pane{
+  & .etl-tables{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .etl-table-button{
+      background: @color-bi-background-default;
+      border: 1px solid @color-bi-border-normal;
+      .border-radius(2px);
+      &.active{
+        background: @color-bi-background-success;
+        color: @color-bi-text;
+      }
+      &.disabled{
+        background: @color-bi-toast-success-background;
+        color: @color-bi-text-black !important;
+      }
+    }
+    & .operator-left-triangle{
+      border-top: 25px solid @color-bi-background-default;
+      border-right: 16px solid @color-etl-operator;
+    }
+    & .operator-center{
+      background: @color-etl-operator;
+    }
+    & .operator-right-triangle{
+      border-bottom: 25px solid @color-bi-background-default;
+      border-left: 16px solid @color-etl-operator;
+    }
+  }
+}
