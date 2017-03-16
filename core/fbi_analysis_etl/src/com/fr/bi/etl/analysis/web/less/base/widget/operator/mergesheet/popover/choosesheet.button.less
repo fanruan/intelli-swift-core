@@ -1,0 +1,31 @@
+@import "../../../../../bibase";
+@import "../../../../../lib/font";
+@import "../../../../../animate";
+
+.bi-analysis-etl-operator-merge-choose-sheet-button {
+  border:1px solid @border-color-line;
+  border-top:none;
+  font-size: @font-size-14;
+
+  &:first-child {
+    border-top: 1px solid @border-color-line;
+  }
+
+  .transition(label, color);
+
+  &:hover, &.hover {
+    .font(mark, check-mark-font,@background-color-active);
+  }
+
+  .font(mark, @font-check-mark, @font-color-white);
+
+  .transition-hover-css3(mark, scale(1.2));
+
+  &:active, &.active {
+    color:@font-color-highlight;
+    .font(mark, @font-check-mark, @font-color-highlight)
+  }
+
+
+}
+

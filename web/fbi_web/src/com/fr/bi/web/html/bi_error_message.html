@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>FR.BIDezi</title>
+	<link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css"/>
+	<link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=widget.css"/>
+	<style type="text/css">
+		.fr-bi-loading-bar {
+		background:url('/WebReport/ReportServer?op=resource&resource=/com/fr/bi/web/images/conf/loading_bar.gif') no-repeat center;
+		height:13px;
+		width:208px;
+		margin:0px 0px 20px 0px;
+		}
+		.fr-bi-warning-icon {
+		background:url('/WebReport/ReportServer?op=resource&resource=/com/fr/bi/web/images/conf/warning.png') no-repeat center;
+		_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/WebReport/ReportServer?op=resource&resource=/com/fr/bi/web/images/conf/warning.png');
+		_background:none;
+		height:32px;
+		width:32px;
+		}
+	</style>
+	<script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			if('${removeLoadingView}' == 'yes') {
+				$('.fr-bi-loading-bar').remove();
+			}
+			if('${reload}' == 'true'){
+				$.ajax({
+					url : FR.servletURL + "?op=fr_bi_dezi&cmd=kz_check",
+					sync : false,
+					type : "POST",
+					timeout:3600000,
+					error : function(res, status) {
+						window.location.reload();
+					},
+					complete : function(res, status){
+						window.location.reload();
+					}
+				})
+			}
+		});
+	</script>
+</head>
+<body>
+<table class="fr-bi-table-4-vertical-align fr-bi-table-4-vertical-align-enabled" style="width: 100%;" cellspacing="0" cellpadding="0"><tr><td>
+<div style="text-align: center;"><div class="fr-bi-loading-bar" style="width: 100%;"></div><div class="font-type-20 font-bold fr-bi-text-color-type6">${message}</div></div>
+</td></tr></table>
+</body>
+</html>

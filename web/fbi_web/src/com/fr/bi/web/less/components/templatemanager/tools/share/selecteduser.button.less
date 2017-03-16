@@ -1,0 +1,12 @@
+@import "../../../../bibase";
+.bi-selected-user-button{
+  background: @color-bi-background-gray;
+  .border-radius(2px);
+  color: @color-bi-text-black;
+  &:hover{
+    background: @color-bi-background-light;
+    & .delete-button{
+      color: @color-bi-background-delete;
+    }
+  }
+}

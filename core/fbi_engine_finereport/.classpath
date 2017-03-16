@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fbi_base"/>
+	<classpathentry kind="lib" path="/lib/report/fr-report-8.0.jar" sourcepath="D:/FineReport/trunk/finereport"/>
+	<classpathentry kind="lib" path="/lib/report/fr-core-8.0.jar"/>
+	<classpathentry kind="lib" path="/lib/report/fr-third-8.0.jar"/>
+	<classpathentry kind="lib" path="/lib/excel/poi2007_fat.jar"/>
+	<classpathentry kind="lib" path="/lib/rubbish/servlet-api.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

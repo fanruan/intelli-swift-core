@@ -1,0 +1,92 @@
+/**
+ * @class BI.AbstractDimension
+ * @extends BI.Widget
+ * @author windy
+ */
+BI.AbstractDimension = BI.inherit(BI.Widget, {
+
+    constants: {
+        DIMENSION_BUTTON_HEIGHT: 25,
+        COMBO_WIDTH: 25,
+        LABEL_GAP : 5,
+        INVALID_NAME: "INVALID_NAME_IN_SUM"
+    },
+
+    _defaultConfig: function () {
+        return BI.extend(BI.AbstractDimension.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-etl-dimension",
+            info: {},
+            table: {}
+        })
+    },
+
+    _init: function () {
+        BI.AbstractDimension.superclass._init.apply(this, arguments);
+        var self = this, o = this.options;
+
+        this.nameEditor = BI.createWidget({
+            type: "bi.sign_style_editor",
+            cls: "etl-dimension-name",
+            height:25,
+            errorText: BI.i18nText("BI-Field_Name_Can_Not_Be_Same"),
+            validationChecker:function(v){
+                return self._checkDimensionName(v);
+            }
+        });
+
+        this.nameEditor.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            o.model.setDimensionNameById(o.dId, self.nameEditor.getValue());
+        });
+
+        this.combo = this._createCombo();
+
+        BI.createWidget({
+            type:"bi.default",
+            element: this.element,
+            tagName:"li",
+            height:25,
+            items:[{
+                type:"bi.htape",
+                height:25,
+                items:[{
+                    el:this.nameEditor
+                },{
+                    el:this.combo,
+                    width: this.constants.COMBO_WIDTH
+                }]
+            }]
+        });
+        this.populate(o.info);
+    },
+
+    _createCombo: function () {
+        return BI.createWidget();
+    },
+
+    _checkDimensionName: function(name){
+        var o = this.options;
+        var currId = o.dId;
+        var dims = o.model.getDimension();
+        var valid = true;
+        BI.any(dims, function(idx, dim){
+            if(currId !== idx && dim.name === name){
+                valid = false;
+                return true;
+            }
+        });
+        return valid;
+    },
+
+    checkStatus: function(){
+        var o = this.options;
+        this.nameEditor.setState(o.model.getTextByType(o.dId, o.groupOrSummary, o.fieldType));
+    },
+
+    populate: function(){
+        var o = this.options;
+        this.nameEditor.setValue(o.model.getDimensionNameById(o.dId));
+        this.checkStatus();
+    }
+});
+
+BI.AbstractDimension.EVENT_DESTROY = "EVENT_DESTROY";
