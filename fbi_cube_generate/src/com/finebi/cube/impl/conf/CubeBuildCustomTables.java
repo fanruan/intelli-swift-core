@@ -269,7 +269,7 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
 
         Map<CubeTableSource, UpdateSettingSource> map = new HashMap<CubeTableSource, UpdateSettingSource>();
         for (CubeTableSource source : this.getSingleSourceLayers()) {
-            UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), userId);
+            UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSetting(source.getSourceID(), userId);
             if (updateSettingSource == null) {
                 updateSettingSource = new UpdateSettingSource();
             }
