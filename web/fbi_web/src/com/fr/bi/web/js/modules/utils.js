@@ -586,7 +586,6 @@
         isSpecialWidgetByWidgetType: function (widgetType) {
             return widgetType === BICst.WIDGET.CONTENT ||
                 widgetType === BICst.WIDGET.IMAGE ||
-                widgetType === BICst.WIDGET.DETAIL ||
                 widgetType === BICst.WIDGET.WEB;
         },
 
