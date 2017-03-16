@@ -1,0 +1,16 @@
+@import "../../../../../../bibase";
+
+.bi-circle-tab-region {
+  & .field-region-title{
+    font-size: @font-size-14;
+    color: @font-color-gray;
+  }
+  & .field-region-button {
+    background-color: @background-color-default;
+    .border-radius(2px);
+    &:active, &.active{
+      background-color: @color-bi-background-highlight;
+      color: @color-bi-background-default;
+    }
+  }
+}

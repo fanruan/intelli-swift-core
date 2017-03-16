@@ -1,0 +1,64 @@
+@import "../../../../../bibase";
+
+.bi-etl-union{
+  background: @color-bi-background-gray;
+  & .union-north{
+    & .union-north-label{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      font-weight: bold;
+    }
+  }
+  & .union-table-name{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .table-name-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+    }
+    & .union-table-name-editor{
+      .border-radius(2px);
+      color: @color-bi-text-gray;
+      border: 1px solid @color-bi-border-normal;
+    }
+  }
+  & .union-type-group{
+    .border-radius(2px);
+    background: @color-bi-background-default;
+    & .union-type-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+    & .bi-union-type-button:hover,.active{
+      background: @color-bi-background-gray;
+    }
+  }
+  & .union-merge-field{
+    .border-radius(2px);
+    background: @color-bi-background-default;
+    & .add-merge-field{
+      & .merge-field-text{
+        color: @color-bi-text-gray;
+        font-size: @font-size-14;
+      }
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+  }
+  & .union-preview-result{
+    background: @color-bi-background-default;
+    .border-radius(2px);
+    & .merge-result-text{
+      color: @color-bi-text-gray;
+      font-size: @font-size-14;
+      border-bottom: 1px solid @color-bi-border-normal;
+    }
+    & .union-result-tip{
+      color: @color-bi-text-gray;
+      font-size: @font-size-16;
+    }
+    & .original-table-name{
+      font-size: @font-size-14;
+    }
+  }
+}

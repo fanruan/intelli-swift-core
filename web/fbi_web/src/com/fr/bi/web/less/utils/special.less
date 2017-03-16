@@ -1,0 +1,65 @@
+@import "../bibase";
+@import "../image";
+@import "../lib/icon";
+
+//codeMirror
+
+ul.CodeMirror-hints {
+  z-index: @zIndex-tip;
+}
+
+.view-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: @zIndex-layer;
+}
+
+//transfer
+.ui-effects-transfer {
+  background: rgb(255, 102, 0);
+  .opacity(0.2);
+  .border-radius(5px);
+  border: 2px rgb(142, 142, 142);
+  z-index: @zIndex-tip;
+}
+
+.ui-sortable-place-holder {
+  border: 1px dashed @color-bi-border-success !important;
+}
+
+.dragged {
+  position: absolute;
+  top: 0;
+  opacity: 0.5;
+  z-index: 200000000;
+}
+
+.ui-resizable-s {
+  bottom: 0;
+}
+
+.ui-resizable {
+  & > .ui-resizable-s:hover {
+    border-bottom: 1px solid @color-bi-background-highlight;
+  }
+
+  & > .ui-resizable-e:hover {
+    border-right: 1px solid @color-bi-background-highlight;
+  }
+  &.ui-resizable-disabled {
+    & > .ui-resizable-s:hover {
+      border: none;
+    }
+
+    & > .ui-resizable-e:hover {
+      border: none;
+    }
+  }
+}
+
+.ui-resizable-se {
+  .imagePath(@icon-drag-helper);
+}

@@ -1,0 +1,23 @@
+@import "../../../../../bibase";
+
+.bi-target-body-normal-cell {
+  .target-linkage-label {
+    text-decoration: underline;
+  }
+  & .target-cell-text, & .target-linkage-label {
+    .user-select(initial);
+  }
+  & .cell-detail-table-popup-button {
+
+  }
+  & .bi-linkage-list {
+    background-color: @background-color-default;
+    border: 1px solid @border-color-line;
+    z-index: @zIndex-tip;
+    & .bi-linkage-list-item {
+      &:hover {
+        background-color: @color-bi-background-gray;
+      }
+    }
+  }
+}
