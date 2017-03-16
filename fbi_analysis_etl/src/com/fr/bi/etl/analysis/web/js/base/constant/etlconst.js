@@ -1,4 +1,3 @@
-ETLCst = window.ETLCst || {}
 ETLCst.ETL_TYPE = {};
 ETLCst.ETL_TYPE.SELECT_DATA = 1;
 ETLCst.ETL_TYPE.SELECT_NONE_DATA = 2;
@@ -17,5 +16,6 @@ ETLCst.ITEMS = "items";
 ETLCst.PACK_ID = "myetlidbuxudonga";
 ETLCst.GENERATED_PERCENT = "generated_percent";
 ETLCst.ALL_TABLE_GENERATED_PERCENT = "all_table_generated_percent";
+ETLCst.ALL_TABLE_GENERATED_HEALTH = "all_table_generated_health";
 ETLCst.SYSTEM_TIME = "__system_time-3e1d05defe78__";
 
