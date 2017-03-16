@@ -153,6 +153,7 @@ BI.LinkageModel = BI.inherit(FR.OB, {
         }
         var wType = BI.Utils.getWidgetTypeByID(wId);
         if (BI.Utils.isControlWidgetByWidgetId(wId) ||
+            BI.Utils.isSpecailWidgetByWidgetId(wId) ||
             wType === BICst.WIDGET.RESET ||
             wType === BICst.WIDGET.QUERY) {
             return false;
@@ -162,6 +163,15 @@ BI.LinkageModel = BI.inherit(FR.OB, {
             return true;
         }
         return !this._isRelationsIntersect(currentRelations, this._getWidgetRelations(wId));
+    },
+
+    isWidgetShouldDisable: function (wId) {
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        return BI.Utils.isControlWidgetByWidgetId(wId) ||
+            BI.Utils.isInstantControlWidgetByWidgetId(wId) ||
+            BI.Utils.isSpecailWidgetByWidgetId(wId) ||
+            wType === BICst.WIDGET.RESET ||
+            wType === BICst.WIDGET.QUERY;
     },
 
     getLinkedWidgetsByTargetId: function (tId) {
@@ -190,9 +200,9 @@ BI.LinkageModel = BI.inherit(FR.OB, {
 
     getExistLinkageByWidgetId: function (from, to, parents, result) {
         var self = this, childIds = this._initChildren(from);
-        if(BI.isNotEmptyArray(childIds)) {
+        if (BI.isNotEmptyArray(childIds)) {
             BI.each(childIds, function (idx, cId) {
-                if(cId === to) {
+                if (cId === to) {
                     result.push(BI.concat(parents, [from, to]));
                 } else {
                     self.getExistLinkageByWidgetId(cId, to, BI.concat(parents, from), result);

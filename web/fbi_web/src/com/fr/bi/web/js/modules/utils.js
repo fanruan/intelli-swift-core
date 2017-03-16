@@ -578,6 +578,17 @@
                 widgetType === BICst.WIDGET.INTERVAL_SLIDER;
         },
 
+        isSpecailWidgetByWidgetId: function (wid) {
+            var widgetType = this.getWidgetTypeByID(wid);
+            return this.isSpecialWidgetByWidgetType(widgetType);
+        },
+
+        isSpecialWidgetByWidgetType: function (widgetType) {
+            return widgetType === BICst.WIDGET.CONTENT ||
+                widgetType === BICst.WIDGET.IMAGE ||
+                widgetType === BICst.WIDGET.WEB;
+        },
+
         isQueryControlExist: function () {
             var self = this, isQueryExist = false;
             BI.some(this.getAllWidgetIDs(), function (i, wId) {
