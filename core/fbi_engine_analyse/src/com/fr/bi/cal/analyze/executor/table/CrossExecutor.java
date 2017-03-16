@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
@@ -17,15 +18,13 @@ import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
-import com.fr.bi.field.BITargetAndDimensionUtils;
-import com.fr.bi.field.dimension.dimension.BIAbstractDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -70,9 +69,9 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             public void run() {
                 try {
                     FinalInt start = new FinalInt();
-                    int rowIdx = 0;
-                    rowIdx++;
-                    createCells(iter, start, rowIdx);
+                    StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+                    generateTitle(pagedIterator, 0);
+                    generateCells(iter, start, colDimension.length + 1);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -83,16 +82,74 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         return iter;
     }
 
-    private void createCells(DetailCellIterator iter, FinalInt start, int rowIdx) throws Exception {
+    private void generateTitle(StreamPagedIterator pagedIterator, int rowIdx) throws Exception {
+        CrossHeader top = getCubeNode().getTop();
+        int colDimLen = 0;
+        Style style = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
+        if (widget.isOrder() == 1) {
+            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, colDimension.length + 1, 0, 1, style);
+            pagedIterator.addCell(cell);
+        }
+        while (colDimLen < colDimension.length) {
+            CBCell cell = ExecutorUtils.createCell(colDimension[colDimLen].getText(), rowIdx, 1, widget.isOrder(), rowDimension.length, style);
+            pagedIterator.addCell(cell);
+            top = (CrossHeader) top.getFirstChild();
+            getColDimensionsTitle(pagedIterator, top, rowIdx, style);
+            rowIdx++;
+            colDimLen++;
+        }
+
+        for (int i = 0; i < rowDimension.length; i++) {
+            CBCell cell = ExecutorUtils.createCell(rowDimension[i].getText(), rowIdx, 1, i + widget.isOrder(), 1, style);
+            pagedIterator.addCell(cell);
+        }
+        if (widget.getViewTargets().length > 1) {
+            getTargetsTitle(pagedIterator, top, rowIdx, style);
+        }
+    }
+
+    private void getColDimensionsTitle(StreamPagedIterator pagedIterator, CrossHeader top, int rowIdx, Style style) {
+        int columnIdx = rowDimension.length;
+        int targetNum = widget.getViewTargets().length;
+
+        CrossHeader temp = top;
+        while (temp != null) {
+            int columnSpan = temp.getTotalLength() * targetNum;
+            Object data = temp.getData();
+            BIDimension dim = widget.getViewDimensions()[rowIdx];
+            Object v = dim.getValueByType(data);
+            CBCell cell = ExecutorUtils.createCell(v, rowIdx, colDimension.length + 1, columnIdx + widget.isOrder(), columnSpan, style);
+            pagedIterator.addCell(cell);
+            columnIdx += columnSpan;
+            temp = (CrossHeader) temp.getSibling();
+        }
+    }
+
+    private void getTargetsTitle(StreamPagedIterator pagedIterator, CrossHeader top, int rowIdx, Style style) {
+        CrossHeader temp = top;
+        int columnIdx = rowDimension.length + widget.isOrder();
+        while (temp != null) {
+            for (int i = 0; i < top.getTotalLength(); i++) {
+                for (int j = 0; j < usedSumTarget.length; j++) {
+                    CBCell cell = ExecutorUtils.createCell(usedSumTarget[j].getText(), rowIdx, 1, columnIdx++, 1, style);
+                    pagedIterator.addCell(cell);
+                }
+            }
+            temp = (CrossHeader) temp.getSibling();
+        }
+    }
+
+    private void generateCells(DetailCellIterator iter, FinalInt start, int rowIdx) throws Exception {
         CrossHeader node = getCubeNode().getLeft();
         while (node.getChildLength() != 0) {
             node = (CrossHeader) node.getFirstChild();
         }
 
         BIDimension[] rowDimensions = widget.getViewDimensions();
+        int[] oddEven = new int[rowDimensions.length];
         Object[] dimensionNames = new Object[rowDimensions.length];
         while (node != null) {
-            columnIdx = 0;
+            columnIdx = rowDimension.length + widget.isOrder();
             CrossNode temp = node.getValue();
             int newRow = rowIdx & EXCEL_ROW_MODE_VALUE;
             if (newRow == 0) {
@@ -103,17 +160,24 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             getTopChildren((CrossNode4Calculate) temp, pagedIterator, rowIdx);
             //第一次出现表头时创建cell
             int i = rowDimensions.length;
-            while (node.getParent() != null) {
-                int rowSpan = node.getTotalLength();
-                Object data = node.getData();
+            CrossHeader parent = node;
+            while (parent.getParent() != null) {
+                int rowSpan = parent.getTotalLength();
+                Object data = parent.getData();
                 BIDimension dim = rowDimensions[--i];
                 Object v = dim.getValueByType(data);
                 if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
-                    CBCell cell = createCell4Dimension(v, rowIdx, rowSpan, i);
+                    oddEven[i]++;
+                    Style style = BITableStyle.getInstance().getDimensionCellStyle(false, (oddEven[i] + 1) % 2 == 0);
+                    CBCell cell = ExecutorUtils.createCell(v, rowIdx, rowSpan, i + widget.isOrder(), 1, style);
                     pagedIterator.addCell(cell);
+                    if (i == 0 && widget.isOrder() == 1) {
+                        CBCell orderCell = ExecutorUtils.createCell(oddEven[0], rowIdx, rowSpan, 0, 1, style);
+                        pagedIterator.addCell(orderCell);
+                    }
                     dimensionNames[i] = v;
                 }
-                node = (CrossHeader) node.getParent();
+                parent = (CrossHeader) parent.getParent();
             }
             rowIdx++;
             node = (CrossHeader) node.getSibling();
@@ -128,28 +192,14 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             }
         } else {
             for (TargetGettingKey key : widget.getTargetsKey()) {
-                pagedIterator.addCell(createCell4Target(temp.getSummaryValue(key), columnIdx, rowIdx));
+                Object v = temp.getSummaryValue(key);
+                boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
+                Style style = BITableStyle.getInstance().getNumberCellStyle(v, (rowIdx + 1) % 2 == 1, isPercent);
+                CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, columnIdx, 1, style);
+                pagedIterator.addCell(cell);
                 columnIdx++;
             }
         }
-    }
-
-    private CBCell createCell4Target(Object v, int columnIdx, int rowIdx) {
-        CBCell cell = new CBCell(v);
-        cell.setRow(rowIdx);
-        cell.setColumn(columnIdx);
-        cell.setRowSpan(1);
-        cell.setColumnSpan(1);
-        return cell;
-    }
-
-    private CBCell createCell4Dimension(Object v, int rowIdx, int rowSpan, int columnIdx) {
-        CBCell cell = new CBCell(v);
-        cell.setRow(rowIdx);
-        cell.setColumn(columnIdx);
-        cell.setRowSpan(rowSpan);
-        cell.setColumnSpan(1);
-        return cell;
     }
 
     /**
@@ -159,36 +209,8 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
      */
     @Override
     public CBCell[][] createCellElement() throws Exception {
-        NewCrossRoot node = getCubeNode();
-        if (node == null) {
-            return new CBCell[0][0];
-        }
-        //int page = widget.getVerticalCalculateAllPage();
-        int len = usedSumTarget.length;
-        TargetGettingKey[] keys = new TargetGettingKey[len];
-
-        CBCell[][] cbcells = new CBCell[((keys.length == 0 || !widget.getChartSetting().showColTotal()) ? node.getTop().getTotalLength() : node.getTop().getTotalLengthWithSummary())
-                * Math.max(1, keys.length) + rowDimension.length + widget.isOrder()]
-                [((keys.length == 0 || !widget.getChartSetting().showRowTotal()) ? node.getLeft().getTotalLength() : node.getLeft().getTotalLengthWithSummary()) + colDimension.length + 1];
-        boolean isColTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
-        boolean isRowTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(rowDimension);
-        GroupExecutor.dealWithNode(node.getLeft(), NodeExpander.ALL_EXPANDER, cbcells, colDimension.length + 1, 0,
-                paging.getOperator(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(),
-                rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChartSetting());
-        HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0,
-                rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{},
-                new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort,
-                rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChartSetting());
-        if (hasLeftChild(node)) {
-            dealWithNode(node.getLeft(), new NodeAllExpander(rowDimension.length - 1), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChartSetting());
-        }
-        return cbcells;
+        return new CBCell[0][0];
     }
-
-    private boolean hasLeftChild(NewCrossRoot node) {
-        return node.getLeft().getValue().getLeftChildLength() != 0;
-    }
-
 
     private BISummaryTarget[] createTarget4Calculate() {
         ArrayList<BITarget> list = new ArrayList<BITarget>();
@@ -364,9 +386,10 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         return ja.toString();
     }
 
-    private void generateTitleCell(CBCell[][] cells, boolean isColTargetSort, boolean isRowTargetSort) {
+    private void generateTitleCell(boolean isColTargetSort, boolean isRowTargetSort) {
+        int colLength = rowDimension.length + widget.isOrder();
+        CBCell[][] cells = new CBCell[colLength][colDimension.length];
         for (int i = 0; i < colDimension.length; i++) {
-            BIAbstractDimension dimension = ((BIAbstractDimension) colDimension[i]);
             CBCell cell = new CBCell();
             cell.setColumn(0);
             cell.setRow(i);

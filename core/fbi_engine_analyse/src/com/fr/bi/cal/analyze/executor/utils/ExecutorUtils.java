@@ -1,5 +1,8 @@
 package com.fr.bi.cal.analyze.executor.utils;
 
+import com.fr.base.Style;
+import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
@@ -10,6 +13,9 @@ import com.fr.stable.StringUtils;
  */
 public class ExecutorUtils {
     static final String NONE_VALUE = StringUtils.EMPTY;
+    static final int TEN_THOUSAND = 10000;
+    static final int MILLION = 1000000;
+    static final int YI = 100000000;
 
     public static Object formatExtremeSumValue(Object value, int numLevel) {
         if (value == null) {
@@ -24,13 +30,13 @@ public class ExecutorUtils {
             } else {
                 switch (numLevel) {
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        value = (Double) value / 10000;
+                        value = (Double) value / TEN_THOUSAND;
                         break;
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        value = (Double) value / 1000000;
+                        value = (Double) value / MILLION;
                         break;
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
-                        value = (Double) value / 100000000;
+                        value = (Double) value / YI;
                         break;
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
 //                        value = (Double) value * 100;     //在excel单元格格式中设置
@@ -48,13 +54,13 @@ public class ExecutorUtils {
                 levelAndUnit = unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                levelAndUnit = Inter.getLocText("BI-Wan") +  unit;
+                levelAndUnit = Inter.getLocText("BI-Basic_Wan") +  unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
-                levelAndUnit = Inter.getLocText("BI-Million") +  unit;
+                levelAndUnit = Inter.getLocText("BI-Basic_Million") +  unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
-                levelAndUnit = Inter.getLocText("BI-YI") +  unit;
+                levelAndUnit = Inter.getLocText("BI-Basic_Yi") +  unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 levelAndUnit = "%" +  unit;
@@ -63,5 +69,17 @@ public class ExecutorUtils {
                 levelAndUnit = unit;
         }
         return levelAndUnit;
+    }
+
+    public static CBCell createCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan, Style style) {
+        CBCell cell = new CBCell(v);
+        cell.setRow(rowIdx);
+        cell.setRowSpan(rowSpan);
+        cell.setColumn(columnIdx);
+        cell.setColumnSpan(columnSpan);
+        cell.setStyle(style);
+        //默认CellGUIAttr
+        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+        return cell;
     }
 }

@@ -242,13 +242,13 @@ BI.extend(BI.TargetStyleSetting, {
                 unit = "";
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                unit = BI.i18nText("BI-Wan");
+                unit = BI.i18nText("BI-Basic_Wan");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                unit = BI.i18nText("BI-Million");
+                unit = BI.i18nText("BI-Basic_Million");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                unit = BI.i18nText("BI-Yi");
+                unit = BI.i18nText("BI-Basic_Yi");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 unit += '%';
