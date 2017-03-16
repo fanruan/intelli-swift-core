@@ -46,8 +46,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     }
 
-
-
     public DetailCellIterator createCellIterator4Excel() {
         final GroupValueIndex gvi = createDetailViewGvi();
         int count = gvi.getRowsCountWithData();
@@ -59,7 +57,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     final FinalInt start = new FinalInt();
                     List<CBCell> cells = createCellTitle(CellConstant.CBCELL.TARGETTITLE_Y);
                     Iterator<CBCell> it = cells.iterator();
-                    while(it.hasNext()) {
+                    while (it.hasNext()) {
                         iter.getIteratorByPage(start.value).addCell(it.next());
                     }
                     TableRowTraversal action = new TableRowTraversal() {
@@ -67,7 +65,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                         public boolean actionPerformed(BIRowValue row) {
                             int currentRow = (int) row.getRow() + 1;
                             int newRow = currentRow & EXCEL_ROW_MODE_VALUE;
-                            if(newRow == 0) {
+                            if (newRow == 0) {
                                 iter.getIteratorByPage(start.value).finish();
                                 start.value++;
                             }
@@ -90,7 +88,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     @Override
     public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
-        return  new CBCell[0][0];
+        return new CBCell[0][0];
     }
 
     @Override
@@ -127,7 +125,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return jo;
     }
 
-    public List<List>  getData() {
+    public List<List> getData() {
         if (target == null) {
             return new ArrayList<List>();
         }
@@ -142,8 +140,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     return x;
                 }
                 List list = new ArrayList();
-                for (int i = 0; i < row.getValues().length; i++){
-                    if (viewDimension[i].isUsed()){
+                for (int i = 0; i < row.getValues().length; i++) {
+                    if (viewDimension[i].isUsed()) {
                         list.add(row.getValues()[i]);
                     }
                 }

@@ -176,55 +176,6 @@ public class GroupNoneTargetExecutor extends AbstractNodeExecutor {
      */
     @Override
     public CBCell[][] createCellElement() throws Exception {
-//        Node tree = getCubeNode();
-//        if (tree == null) {
-//            return new CBCell[][]{new CBCell[0]};
-//        }
-//        int rowLength = usedDimensions.length;
-//        int summaryLength = usedSumTarget.length;
-//        int columnLen = rowLength + summaryLength;
-//        //导出就全部展开吧
-//        int rowLen = paging.getOperator() < Node.NONE_PAGE_LEVER ? tree.getTotalLength() : tree.getTotalLength(expander.getYExpander());
-//        if (paging.getOperator() >= Node.NONE_PAGE_LEVER && tree.getChildLength() == 0) {
-//            rowLen = 0;
-//        }
-//        //+1是标题
-//        CBCell[][] cbcells = new CBCell[columnLen + widget.isOrder()][rowLen + 1];
-//
-//        for (int i = 0; i < rowLength; i++) {
-//            CBCell cell = new CBCell(((BIAbstractTargetAndDimension) usedDimensions[i]).getText());
-//            cell.setColumn(i + widget.isOrder());
-//            cell.setRow(0);
-//            cell.setRowSpan(1);
-//            cell.setColumnSpan(1);
-//            cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, false));
-//            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-//            List<CBCell> cellList = new ArrayList<CBCell>();
-//            cellList.add(cell);
-//            CBBoxElement cbox = new CBBoxElement(cellList);
-//            BIDimension rowCol = usedDimensions[i];
-//            cbox.setName(rowCol.getValue());
-//            cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_Y);
-//            if (rowCol.getSortTarget() == null) {
-//                cbox.setSortType(usedDimensions[i].getSortType());
-//            }
-//            cell.setBoxElement(cbox);
-//            cbcells[cell.getColumn()][cell.getRow()] = cell;
-//        }
-//        if (paging.getOperator() < Node.NONE_PAGE_LEVER) {
-//            dealWithNode(tree, cbcells, 1, 0, paging.getOperator(), usedDimensions, usedSumTarget, usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
-//        } else {
-//            dealWithNode(tree, expander.getYExpander(), cbcells, 1, 0, paging.getCurrentPage(), usedDimensions, usedSumTarget, new ArrayList<String>(), usedDimensions.length - 1, widget.isOrder(), new BIComplexExecutData(usedDimensions));
-//        }
-//        if (widget.isOrder() == 1) {
-//            createNumberCellTitle(cbcells, 0);
-//            if (ExecutorCommonUtils.isAllPage(paging.getOperator())) {
-//                createAllNumberCellElement(cbcells, 1);
-//            } else {
-//                createAllNumberCellElement(cbcells, paging.getCurrentPage());
-//            }
-//        }
-//        return cbcells;
         return new CBCell[0][0];
     }
 
