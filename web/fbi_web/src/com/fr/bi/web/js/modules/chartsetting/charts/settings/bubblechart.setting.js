@@ -257,7 +257,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Chart"),
+                text: BI.i18nText("BI-Basic_Chart"),
                 textHeight: constant.SINGLE_LINE_HEIGHT,
                 lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
@@ -295,7 +295,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                         text: BI.i18nText("BI-Bubble_Size")
                     }, this.bubbleSizeFrom, {
                         type: "bi.label",
-                        text: "px <" + BI.i18nText("BI-Diameter") + "≤"
+                        text: "px <" + BI.i18nText("BI-Basic_Diameter") + "≤"
                     }, this.bubbleSizeTo, {
                         type: "bi.label",
                         text: "px"

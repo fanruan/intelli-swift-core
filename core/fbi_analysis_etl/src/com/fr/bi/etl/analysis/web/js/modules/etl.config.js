@@ -7,7 +7,7 @@ BICst.ETL_FILTER_STRING_COMBO = [[{
     value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }],[{
-    text: BI.i18nText("BI-Contain"),
+    text: BI.i18nText("BI-Basic_Contain"),
     value: BICst.TARGET_FILTER_STRING.CONTAIN,
     cls: "dot-e-font"
 },{
@@ -39,7 +39,7 @@ BICst.ETL_FILTER_STRING_COMBO = [[{
     value: BICst.TARGET_FILTER_STRING.NOT_NULL,
     cls: "dot-e-font"
 }],[{
-    text: BI.i18nText("BI-Formula"),
+    text: BI.i18nText("BI-Basic_Formula"),
     value: BICst.FILTER_TYPE.FORMULA,
     cls: "dot-e-font"
 }]];
@@ -57,7 +57,7 @@ BICst.ETL_FILTER_NUMBER_COMBO = [[{
     value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }],[{
-    text: BI.i18nText("BI-Equal"),
+    text: BI.i18nText("BI-Basic_Equal"),
     value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
     cls: "dot-e-font"
 }, {
@@ -89,7 +89,7 @@ BICst.ETL_FILTER_NUMBER_COMBO = [[{
     value: BICst.TARGET_FILTER_NUMBER.NOT_NULL,
     cls: "dot-e-font"
 }],[{
-    text: BI.i18nText("BI-Formula"),
+    text: BI.i18nText("BI-Basic_Formula"),
     value: BICst.FILTER_TYPE.FORMULA,
     cls: "dot-e-font"
 }]];
@@ -145,11 +145,11 @@ BICst.ETL_FILTER_DATE_COMBO = [[{
     value: BICst.FILTER_DATE.LESS_THAN,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Equal")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Date'),
+    text: BI.i18nText("BI-Basic_Equal")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Basic_Date'),
     value: BICst.FILTER_DATE.DAY_EQUAL_TO,
     cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Not_Equal_To")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Date'),
+    text: BI.i18nText("BI-Not_Equal_To")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Basic_Date'),
     value: BICst.FILTER_DATE.DAY_NOT_EQUAL_TO,
     cls: "dot-e-font"
 }], [{
@@ -161,7 +161,7 @@ BICst.ETL_FILTER_DATE_COMBO = [[{
     value: BICst.FILTER_DATE.NOT_NULL,
     cls: "dot-e-font"
 }],[{
-    text: BI.i18nText("BI-Formula"),
+    text: BI.i18nText("BI-Basic_Formula"),
     value: BICst.FILTER_TYPE.FORMULA,
     cls: "dot-e-font"
 }]];

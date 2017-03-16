@@ -94,7 +94,7 @@ BI.Circle = BI.inherit(BI.Widget, {
         var cancel = BI.createWidget({
             type:"bi.button",
             level:"ignore",
-            text:BI.i18nText("BI-Cancel"),
+            text:BI.i18nText("BI-Basic_Cancel"),
             height: this.constants.CIRCLE_BUTTON_HEIGHT
         });
 

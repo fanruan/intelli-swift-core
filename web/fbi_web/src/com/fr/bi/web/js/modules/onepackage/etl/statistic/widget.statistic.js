@@ -157,7 +157,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
         var cancel = BI.createWidget({
             type:"bi.button",
             level:"ignore",
-            text:BI.i18nText("BI-Cancel"),
+            text:BI.i18nText("BI-Basic_Cancel"),
             height: this.constants.GROUP_STATISTIC_BUTTON_HEIGHT
         });
 
@@ -217,7 +217,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
         this.regions[BICst.REGION.DIMENSION1] = BI.createWidget({
             type: "bi.string_region",
             cls: "dimension-region",
-            titleName: BI.i18nText("BI-Group"),
+            titleName: BI.i18nText("BI-Basic_Group"),
             regionType: BICst.REGION.DIMENSION1
         });
 

@@ -59,7 +59,7 @@ BI.CordonPane = BI.inherit(BI.Widget, {
         return BI.createWidget({
             type: "bi.panel",
             element:this.element,
-            title: BI.i18nText("BI-Cordon"),
+            title: BI.i18nText("BI-Basic_Cordon"),
             titleButtons: [this.button],
             el: this.button_group,
             logic:{
@@ -79,7 +79,7 @@ BI.CordonPane = BI.inherit(BI.Widget, {
     addItem: function(){
         this.button_group.addItems([{
             type: "bi.cordon_item",
-            cordon_name: BI.i18nText("BI-Cordon") + (this.buttons.length + 1),
+            cordon_name: BI.i18nText("BI-Basic_Cordon") + (this.buttons.length + 1),
             cordon_number_level: this.numberLevel,
             height: this.constants.itemHeight
         }]);

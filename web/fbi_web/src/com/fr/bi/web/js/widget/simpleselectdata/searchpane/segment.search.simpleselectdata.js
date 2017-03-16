@@ -11,7 +11,7 @@ BI.SimpleSelectDataSearchSegment = BI.inherit(BI.Widget, {
             baseCls: "bi-single-select-data-search-segment",
             height: 30,
             items: [{
-                text: BI.i18nText("BI-Field"),
+                text: BI.i18nText("BI-Basic_Field"),
                 selected: true,
                 value: BI.SelectDataSearchSegment.SECTION_FIELD
             }, {

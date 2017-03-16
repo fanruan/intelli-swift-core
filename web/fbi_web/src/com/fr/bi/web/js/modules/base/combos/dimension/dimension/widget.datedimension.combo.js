@@ -24,21 +24,21 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
         return [
             [{
                 el: {
-                    text: BI.i18nText("BI-Ascend"),
+                    text: BI.i18nText("BI-Basic_Ascend"),
                     value: BICst.DIMENSION_DATE_COMBO.ASCEND,
                     iconCls1: "dot-e-font"
                 },
                 children: []
             }, {
                 el: {
-                    text: BI.i18nText("BI-Descend"),
+                    text: BI.i18nText("BI-Basic_Descend"),
                     value: BICst.DIMENSION_DATE_COMBO.DESCEND,
                     iconCls1: "dot-e-font"
                 },
                 children: []
             }],
             [{
-                text: BI.i18nText("BI-Date"),
+                text: BI.i18nText("BI-Basic_Date"),
                 value: BICst.DIMENSION_DATE_COMBO.DATE,
                 cls: "dot-e-font"
             }, {
@@ -82,7 +82,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 value: BICst.DIMENSION_DATE_COMBO.RENAME
             }],
             [{
-                text: BI.i18nText("BI-Copy"),
+                text: BI.i18nText("BI-Basic_Copy"),
                 value: BICst.DIMENSION_DATE_COMBO.COPY,
                 cls: "copy-h-font"
             }],

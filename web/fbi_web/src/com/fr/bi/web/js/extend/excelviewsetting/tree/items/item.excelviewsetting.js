@@ -42,7 +42,7 @@ BI.ExcelViewSettingItem = BI.inherit(BI.BasicButton, {
             cls: "widget-combo-clear-font remove-button",
             width: 16,
             height: 16,
-            title: BI.i18nText("BI-Clear")
+            title: BI.i18nText("BI-Basic_Clear")
         });
         removeButton.on(BI.IconButton.EVENT_CHANGE, function () {
             o.clearOneCell(o.value);

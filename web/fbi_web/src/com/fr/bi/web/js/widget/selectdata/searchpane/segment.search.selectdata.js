@@ -49,7 +49,7 @@ BI.SelectDataSearchSegment = BI.inherit(BI.Widget, {
             height: 20,
             cls: "search-segment-field-table",
             items: [{
-                text: BI.i18nText("BI-Field"),
+                text: BI.i18nText("BI-Basic_Field"),
                 selected: true,
                 value: BI.SelectDataSearchSegment.SECTION_FIELD
             }, {

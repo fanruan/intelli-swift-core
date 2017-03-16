@@ -84,7 +84,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.MVCWidget, {
         this.registerSimpleWidget(this.selectPane)
         this.saveButton = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-finish_add"),
+            text: BI.i18nText("BI-Finish_add"),
             height: 30,
             handler: function () {
                 self.controller.changeEditState()
@@ -92,7 +92,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.MVCWidget, {
         })
         this.cancelButton = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
             height: 30,
             level: 'ignore',
             handler: function () {

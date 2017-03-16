@@ -7,7 +7,7 @@ BIDezi.NumberCustomGroupView = BI.inherit(BI.BarFloatSection, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.NumberCustomGroupView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-number-custom-group-view",
-            btns: [BI.i18nText(BI.i18nText("BI-Save")), BI.i18nText("BI-Cancel")]
+            btns: [BI.i18nText(BI.i18nText("BI-Save")), BI.i18nText("BI-Basic_Cancel")]
         })
     },
 

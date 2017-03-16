@@ -380,7 +380,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
             type: "bi.button",
             height: 30,
             level: "ignore",
-            text: BI.i18nText("BI-Cancel")
+            text: BI.i18nText("BI-Basic_Cancel")
         });
         cancel.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.Linkage.EVENT_CANCEL);

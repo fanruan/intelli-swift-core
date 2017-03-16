@@ -100,8 +100,8 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             title: BI.i18nText("BI-Rename"),
             extraCls:"rename-font"
         },{
-            text: BI.i18nText("BI-Copy"),
-            title: BI.i18nText("BI-Copy"),
+            text: BI.i18nText("BI-Basic_Copy"),
+            title: BI.i18nText("BI-Basic_Copy"),
             value:ETLCst.ANALYSIS_TABLE_SET.COPY,
             extraCls:"widget-copy-h-font"
         },{

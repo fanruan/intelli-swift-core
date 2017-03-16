@@ -53,12 +53,12 @@ BI.YearMonthParamCombo = BI.inherit(BI.Widget, {
         v = v || {};
         var value = v.value;
         var midText = (value.foffset === 0 ? BI.i18nText("BI-Qian_First") : BI.i18nText("BI-Hou_Last")) +
-            BI.i18nText("BI-De") + (value.soffset === 0 ? BI.i18nText("BI-Qian_First") : BI.i18nText("BI-Hou_Last")) + value.svalue;
+            BI.i18nText("BI-Basic_De") + (value.soffset === 0 ? BI.i18nText("BI-Qian_First") : BI.i18nText("BI-Hou_Last")) + value.svalue;
         switch (v.type) {
             case BICst.YEAR:
                 return value.fvalue + BI.i18nText("BI-Year") +
                     (value.foffset === 0 ? BI.i18nText("BI-Qian_First") : BI.i18nText("BI-Hou_Last")) +
-                    BI.i18nText("BI-De") + BI.i18nText("BI-Year_Fen");
+                    BI.i18nText("BI-Basic_De") + BI.i18nText("BI-Year_Fen");
             case BICst.YEAR_MONTH:
                 return value.fvalue + BI.i18nText("BI-Year") + midText + BI.i18nText("BI-Month_De");
         }

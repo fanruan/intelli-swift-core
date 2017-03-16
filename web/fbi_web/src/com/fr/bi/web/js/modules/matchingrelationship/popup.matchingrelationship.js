@@ -72,7 +72,7 @@ BI.MatchingRelationPopup = BI.inherit(BI.BarPopoverSection, {
         });
         this.cancel = BI.createWidget({
             type: 'bi.button',
-            text: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
             height: 30,
             value: 1,
             level: 'ignore',

@@ -74,7 +74,7 @@ $.extend(BI, {
                     controlItems.push({
                         el: {
                             type: 'bi.button',
-                            text: BI.i18nText("BI-Cancel"),
+                            text: BI.i18nText("BI-Basic_Cancel"),
                             height: 30,
                             level: 'ignore',
                             handler: function () {

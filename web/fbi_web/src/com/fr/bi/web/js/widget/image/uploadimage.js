@@ -89,7 +89,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             el: {
                 type: "bi.icon_button",
                 cls: "upload-image-icon-button img-shutdown-font",
-                title: BI.i18nText("BI-Delete"),
+                title: BI.i18nText("BI-Basic_Delete"),
                 height: 24,
                 width: 24
             },
@@ -101,7 +101,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
                         self.fireEvent(BI.UploadImage.EVENT_DESTROY);
                     }
                 }, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         self.del.hideView();

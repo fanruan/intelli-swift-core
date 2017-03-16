@@ -171,12 +171,12 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 value: BICst.DASHBOARD_WIDGET_EXCEL
             }],
             [{
-                text: BI.i18nText("BI-Copy"),
+                text: BI.i18nText("BI-Basic_Copy"),
                 cls: "widget-combo-copy",
                 value: BICst.DASHBOARD_WIDGET_COPY
             }],
             [{
-                text: BI.i18nText("BI-Delete"),
+                text: BI.i18nText("BI-Basic_Delete"),
                 cls: "widget-combo-delete",
                 value: BICst.DASHBOARD_WIDGET_DELETE
             }]
@@ -237,12 +237,12 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 value: BICst.DASHBOARD_WIDGET_EXCEL
             }],
             [{
-                text: BI.i18nText("BI-Copy"),
+                text: BI.i18nText("BI-Basic_Copy"),
                 cls: "widget-combo-copy",
                 value: BICst.DASHBOARD_WIDGET_COPY
             }],
             [{
-                text: BI.i18nText("BI-Delete"),
+                text: BI.i18nText("BI-Basic_Delete"),
                 cls: "widget-combo-delete",
                 value: BICst.DASHBOARD_WIDGET_DELETE
             }]
@@ -263,12 +263,12 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             }],
             [{
                 value: BICst.DASHBOARD_CONTROL_RANG_ASC,
-                text: BI.i18nText("BI-Ascend"),
+                text: BI.i18nText("BI-Basic_Ascend"),
                 selected: sort.type === BICst.SORT.ASC,
                 cls: "dot-e-font"
             }, {
                 value: BICst.DASHBOARD_CONTROL_RANG_DESC,
-                text: BI.i18nText("BI-Descend"),
+                text: BI.i18nText("BI-Basic_Descend"),
                 selected: sort.type === BICst.SORT.DESC,
                 cls: "dot-e-font"
             }],
@@ -284,7 +284,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             }],
             [{
                 value: BICst.DASHBOARD_WIDGET_COPY,
-                text: BI.i18nText("BI-Copy"),
+                text: BI.i18nText("BI-Basic_Copy"),
                 cls: "widget-combo-copy"
             }],
             [{
@@ -314,7 +314,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             }],
             [{
                 value: BICst.DASHBOARD_WIDGET_COPY,
-                text: BI.i18nText("BI-Copy"),
+                text: BI.i18nText("BI-Basic_Copy"),
                 cls: "widget-combo-copy"
             }],
             [{

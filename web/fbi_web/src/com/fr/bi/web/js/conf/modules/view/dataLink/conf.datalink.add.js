@@ -56,7 +56,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
         this.databaseCombo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self._onDatabaseChange(self.databaseCombo.getValue()[0]);
         });
-        var database = this._createItemWrap( BI.i18nText("BI-Database"), this.databaseCombo);
+        var database = this._createItemWrap( BI.i18nText("BI-Basic_Database"), this.databaseCombo);
 
         //驱动器
         this.driverCombo = BI.createWidget({
@@ -68,7 +68,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
         this.driverCombo.on(BI.TextValueCombo.EVENT_CHANGE, function(){
             self._onDriverChange(self.driverCombo.getValue()[0]);
         });
-        var driver = this._createItemWrap( BI.i18nText("BI-Driver"), this.driverCombo);
+        var driver = this._createItemWrap( BI.i18nText("BI-Basic_Driver"), this.driverCombo);
 
         //URL
         this.urlInput = BI.createWidget({
@@ -200,7 +200,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
                     type: "bi.right",
                     items: [this.saveButton, {
                         type: "bi.button",
-                        text: BI.i18nText("BI-Cancel"),
+                        text: BI.i18nText("BI-Basic_Cancel"),
                         level: "ignore",
                         height: 28,
                         handler: function(){

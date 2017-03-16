@@ -34,8 +34,8 @@ BI.IconMarkStyleSetting = BI.inherit(BI.Widget, {
 
         this.leftMark = BI.createWidget({
             type: "bi.label",
-            text: " ( -" + BI.i18nText("BI-Endless")+ ", " + mark + this.level + " ) ",
-            title: " ( -" + BI.i18nText("BI-Endless")+ ", " + mark + this.level + " ) ",
+            text: " ( -" + BI.i18nText("BI-Basic_Endless")+ ", " + mark + this.level + " ) ",
+            title: " ( -" + BI.i18nText("BI-Basic_Endless")+ ", " + mark + this.level + " ) ",
             height: this.constants.LABEL_HEIGHT,
             width: this.constants.LABEL_WIDTH
         });
@@ -54,10 +54,10 @@ BI.IconMarkStyleSetting = BI.inherit(BI.Widget, {
         });
         this.centerMark.setValue(mark);
         this.centerMark.on(BI.SignEditor.EVENT_CHANGE, function(){
-            self.leftMark.setText("( -" + BI.i18nText("BI-Endless")+ ", " + this.getValue() + self.level + " ) ");
-            self.rightMark.setText(" ( " + this.getValue() + self.level + ", +" + BI.i18nText("BI-Endless")+ " )");
-            self.leftMark.setTitle("( -" + BI.i18nText("BI-Endless")+ ", " + this.getValue() + self.level + " ) ");
-            self.rightMark.setTitle(" ( " + this.getValue() + self.level + ", +" + BI.i18nText("BI-Endless")+ " )");
+            self.leftMark.setText("( -" + BI.i18nText("BI-Basic_Endless")+ ", " + this.getValue() + self.level + " ) ");
+            self.rightMark.setText(" ( " + this.getValue() + self.level + ", +" + BI.i18nText("BI-Basic_Endless")+ " )");
+            self.leftMark.setTitle("( -" + BI.i18nText("BI-Basic_Endless")+ ", " + this.getValue() + self.level + " ) ");
+            self.rightMark.setTitle(" ( " + this.getValue() + self.level + ", +" + BI.i18nText("BI-Basic_Endless")+ " )");
         });
         this.centerUnit = BI.createWidget({
             type: "bi.label",
@@ -71,8 +71,8 @@ BI.IconMarkStyleSetting = BI.inherit(BI.Widget, {
         });
         this.rightMark = BI.createWidget({
             type: "bi.label",
-            text: " ( " + mark + this.level + ", +" + BI.i18nText("BI-Endless")+ " )",
-            title: " ( " + mark + this.level + ", +" + BI.i18nText("BI-Endless")+ " )",
+            text: " ( " + mark + this.level + ", +" + BI.i18nText("BI-Basic_Endless")+ " )",
+            title: " ( " + mark + this.level + ", +" + BI.i18nText("BI-Basic_Endless")+ " )",
             height: this.constants.LABEL_HEIGHT,
             width: this.constants.LABEL_WIDTH
         });
@@ -136,10 +136,10 @@ BI.IconMarkStyleSetting = BI.inherit(BI.Widget, {
             }
         });
         this.centerUnit.setText(this.level);
-        this.leftMark.setText("( -" + BI.i18nText("BI-Endless")+ ", " + this.centerMark.getValue() + this.level + " ) ");
-        this.rightMark.setText(" ( " + this.centerMark.getValue() + this.level + ", +" + BI.i18nText("BI-Endless")+ " )");
-        this.leftMark.setTitle("( -" + BI.i18nText("BI-Endless")+ ", " + this.centerMark.getValue() + this.level + " ) ");
-        this.rightMark.setTitle(" ( " + this.centerMark.getValue() + this.level + ", +" + BI.i18nText("BI-Endless")+ " )");
+        this.leftMark.setText("( -" + BI.i18nText("BI-Basic_Endless")+ ", " + this.centerMark.getValue() + this.level + " ) ");
+        this.rightMark.setText(" ( " + this.centerMark.getValue() + this.level + ", +" + BI.i18nText("BI-Basic_Endless")+ " )");
+        this.leftMark.setTitle("( -" + BI.i18nText("BI-Basic_Endless")+ ", " + this.centerMark.getValue() + this.level + " ) ");
+        this.rightMark.setTitle(" ( " + this.centerMark.getValue() + this.level + ", +" + BI.i18nText("BI-Basic_Endless")+ " )");
     },
 
     getValue: function(){

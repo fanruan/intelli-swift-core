@@ -17,7 +17,7 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
         switch (filter.filter_type) {
             //number
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO:
-                relation = BI.i18nText("BI-Equal");
+                relation = BI.i18nText("BI-Basic_Equal");
                 value = filter.filter_value;
                 break;
             case BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO:
@@ -52,7 +52,7 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
                 value = v.value;
                 break;
             case BICst.TARGET_FILTER_STRING.CONTAIN:
-                relation = BI.i18nText("BI-Contain");
+                relation = BI.i18nText("BI-Basic_Contain");
                 value = filter.filter_value;
                 break;
             case BICst.TARGET_FILTER_STRING.NOT_CONTAIN:
@@ -95,7 +95,7 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
             case BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE:
                 break;
             case BICst.FILTER_DATE.EQUAL_TO:
-                relation = BI.i18nText("BI-Equal");
+                relation = BI.i18nText("BI-Basic_Equal");
                 value = model.getDateText(filter.filter_value);
                 break;
             case BICst.FILTER_DATE.NOT_EQUAL_TO:
@@ -115,7 +115,7 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
                 relation = BI.i18nText("BI-Later_Than");
                 break;
             case BICst.FILTER_DATE.CONTAINS:
-                relation = BI.i18nText("BI-Contain");
+                relation = BI.i18nText("BI-Basic_Contain");
                 break;
 
         }

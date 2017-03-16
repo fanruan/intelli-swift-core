@@ -150,8 +150,8 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.MVCWidget, {
                                 left:[{
                                     type:"bi.button",
                                     height:30,
-                                    text:BI.i18nText("BI-Cancel"),
-                                    title:BI.i18nText("BI-Cancel"),
+                                    text:BI.i18nText("BI-Basic_Cancel"),
+                                    title:BI.i18nText("BI-Basic_Cancel"),
                                     handler : function () {
                                         BI.Layers.hide(ETLCst.ANALYSIS_MERGE_LAYER)
                                        self.controller.doCancel()

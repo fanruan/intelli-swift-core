@@ -5,7 +5,7 @@ BI.AnalysisETLMainController = BI.inherit(BI.MVCController, {
 
     doCancel : function (widget, model) {
         var self = this;
-        BI.Msg.confirm(BI.i18nText("BI-Cancel"), BI.i18nText("BI-Etl_Cancel_Warning"), function (v) {
+        BI.Msg.confirm(BI.i18nText("BI-Basic_Cancel"), BI.i18nText("BI-Etl_Cancel_Warning"), function (v) {
             if(v === true) {
                 self._hideView(widget);
                 self.resetPoolCurrentUsedTables();

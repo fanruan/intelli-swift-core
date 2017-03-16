@@ -71,7 +71,7 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [confirmButton, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         confirmCombo.hideView();

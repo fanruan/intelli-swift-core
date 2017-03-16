@@ -83,7 +83,7 @@ BI.Convert = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 cls: "convert-north-label",
-                text: BI.i18nText("BI-Row_Column_Transformation") + BI.i18nText("BI-Configuration"),
+                text: BI.i18nText("BI-Row_Column_Transformation") + BI.i18nText("BI-Basic_Configuration"),
                 height: this.constants.CONVERT_NORTH_HEIGHT
             }],
 
@@ -277,7 +277,7 @@ BI.Convert = BI.inherit(BI.Widget, {
         var cancel = BI.createWidget({
             type: "bi.button",
             level: "ignore",
-            text: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
             height: this.constants.CONVERT_BUTTON_HEIGHT
         });
 

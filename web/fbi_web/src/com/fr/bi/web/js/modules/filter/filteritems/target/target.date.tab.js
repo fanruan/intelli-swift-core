@@ -68,7 +68,7 @@ BI.TargetDateTab = BI.inherit(BI.Widget, {
             element: this.element,
             items: [combo, {
                 type: "bi.label",
-                text: BI.i18nText("BI-De"),
+                text: BI.i18nText("BI-Basic_De"),
                 textAlign: "center",
                 height: 30,
                 lgap: 5,

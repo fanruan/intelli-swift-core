@@ -174,7 +174,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
                         });
                     }
                 }, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         deleteCombo.hideView();

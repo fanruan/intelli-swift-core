@@ -173,8 +173,8 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                         }, {
                             el: {
                                 type: "bi.label",
-                                text: BI.i18nText("BI-Date"),
-                                title: BI.i18nText("BI-Date"),
+                                text: BI.i18nText("BI-Basic_Date"),
+                                title: BI.i18nText("BI-Basic_Date"),
                                 height: 30,
                                 lgap: 5,
                                 whiteSpace: "nowrap",

@@ -54,7 +54,7 @@ BI.AnalysisETLOperatorFilterSingleColumn = FR.extend(BI.Widget, {
     _createValueItems : function (data) {
         var items = [];
         var contentHeight = this.options.height - 30 - 10;
-        var text = data.type !== BICst.FILTER_TYPE.OR ? BI.i18nText("BI-And") : BI.i18nText("BI-Or")
+        var text = data.type !== BICst.FILTER_TYPE.OR ? BI.i18nText("BI-Basic_And") : BI.i18nText("BI-Or")
         var self = this;
         BI.each(data.value, function(idx, item){
             items.push({

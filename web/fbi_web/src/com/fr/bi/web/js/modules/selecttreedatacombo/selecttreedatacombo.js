@@ -28,8 +28,8 @@ BI.SelectTreeDataCombo = BI.inherit(BI.Widget, {
                         //if (op.times === 1) {
                         //    if (nodes.length === 0) {
                         //        jsonData.items = [{
-                        //            value: BI.i18nText("BI-(Empty)"),
-                        //            text: BI.i18nText("BI-(Empty)"),
+                        //            value: BI.i18nText("BI-Basic_(Empty)"),
+                        //            text: BI.i18nText("BI-Basic_(Empty)"),
                         //            id: BI.UUID(),
                         //            nocheck: true
                         //        }]

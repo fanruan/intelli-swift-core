@@ -282,6 +282,6 @@ BI.extend(BI.TargetStyleSetting, {
         var format = this.formatNumberLevelAndSeparators(type, separators);
         format += this.getUnit(numberLevel, axisUnit);
         format += ';-' + format;
-        return BI.i18nText('BI-Example') + '：' + BI.contentFormat(num.div(this.calcMagnify(numberLevel)), format )
+        return BI.i18nText('BI-Basic_Example') + '：' + BI.contentFormat(num.div(this.calcMagnify(numberLevel)), format )
     },
 });

@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
  * Created by Young's on 2016/7/26.
  */
 public class ExcelCSVUtil {
+    private static final int READLENGTH = 8;
 
     private String[] columnNames = new String[0];
     private int[] columnTypes = new int[0];
@@ -65,7 +66,8 @@ public class ExcelCSVUtil {
                 int row = 0;
                 while (true) {
                     String ln = r.readLine();
-                    if (ln == null || (isPreview && row > BIBaseConstant.PREVIEW_COUNT)) {
+                    boolean preview = isPreview && row > BIBaseConstant.PREVIEW_COUNT;
+                    if (ln == null || preview) {
                         break;
                     }
                     for (CSVTokenizer it = new CSVTokenizer(ln); it.hasMoreTokens(); ) {
@@ -120,7 +122,7 @@ public class ExcelCSVUtil {
                     cName = m.replaceAll(StringUtils.EMPTY).trim();
                     columnNames[j] = cName;
                     if (ComparatorUtils.equals(StringUtils.EMPTY, cName)) {
-                        columnNames[j] = Inter.getLocText("BI-Field");
+                        columnNames[j] = Inter.getLocText("BI-Basic_Field");
                     }
                 }
                 createDistinctColumnNames();
@@ -166,20 +168,20 @@ public class ExcelCSVUtil {
     public static String codeString(String filePath) throws Exception {
 
         BufferedInputStream bin = new BufferedInputStream(new FileInputStream(filePath));
-        int p = (bin.read() << 8) + bin.read();
+        int p = (bin.read() << READLENGTH) + bin.read();
         String code = null;
         //其中的 0xefbb、0xfffe、0xfeff、0x5c75这些都是这个文件的前面两个字节的16进制数
         switch (p) {
-            case 0xefbb:
+            case BIBaseConstant.CODETYPE.UTF8:
                 code = "UTF-8";
                 break;
-            case 0xfffe:
+            case BIBaseConstant.CODETYPE.UNICODE:
                 code = "Unicode";
                 break;
-            case 0xfeff:
+            case BIBaseConstant.CODETYPE.UTF16BE:
                 code = "UTF-16BE";
                 break;
-            case 0x5c75:
+            case BIBaseConstant.CODETYPE.ANSIORASCII:
                 code = "ANSI|ASCII";
                 break;
             default:

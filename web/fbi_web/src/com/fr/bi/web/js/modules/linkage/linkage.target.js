@@ -23,7 +23,7 @@ BI.LinkageTarget = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var name = "";
         BI.each(o.cids, function (idx, cid) {
-            name += BI.Utils.getDimensionNameByID(cid) + BI.i18nText("BI-Colon") + " ";
+            name += BI.Utils.getDimensionNameByID(cid) + BI.i18nText("BI-Basic_Colon") + " ";
         });
         name += BI.Utils.getDimensionNameByID(o.from);
         var nameLabel = BI.createWidget({

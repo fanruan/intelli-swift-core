@@ -125,7 +125,7 @@ BI.ConfNumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
         var o = this.options;
         var item = {
             type: "bi.conf_number_custom_group_item",
-            group_name: BI.i18nText("BI-Grouping") + (this.buttons.length + 1),
+            group_name: BI.i18nText("BI-Basic_Grouping") + (this.buttons.length + 1),
             height: this.constants.itemHeight
         };
         if (this.buttons.length === 0) {

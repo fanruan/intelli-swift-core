@@ -78,7 +78,7 @@ BI.FilterData = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 cls: "filter-north-label",
-                text: BI.i18nText("BI-Filter") + BI.i18nText("BI-Management"),
+                text: BI.i18nText("BI-Basic_Filter") + BI.i18nText("BI-Management"),
                 height: this.constants.FILTER_NORTH_HEIGHT
             }],
             hgap: this.constants.FILTER_GAP_TWENTY
@@ -91,7 +91,7 @@ BI.FilterData = BI.inherit(BI.Widget, {
         var cancel = BI.createWidget({
             type: "bi.button",
             level: "ignore",
-            text: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
             height: this.constants.FILTER_BUTTON_HEIGHT
         });
 

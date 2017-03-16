@@ -33,7 +33,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
 
         this.finishLable = BI.createWidget({
             type: "bi.label",
-            text: BI.i18nText("BI-Completed"),
+            text: BI.i18nText("BI-Basic_Completed"),
             cls: "finish-label"
         });
         this._showFinish();

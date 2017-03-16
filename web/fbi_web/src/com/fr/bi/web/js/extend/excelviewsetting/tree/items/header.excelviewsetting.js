@@ -24,13 +24,13 @@ BI.ExcelViewSettingHeader = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 hgap: 10,
                 textAlign: BI.HorizontalAlign.Left,
-                text: BI.i18nText("BI-Field"),
+                text: BI.i18nText("BI-Basic_Field"),
                 height: o.height
             }, {
                 type: "bi.label",
                 hgap: 10,
                 textAlign: BI.HorizontalAlign.Left,
-                text: BI.i18nText("BI-Cell"),
+                text: BI.i18nText("BI-Basic_Cell"),
                 cls: "excel-view-setting-header-cell",
                 height: o.height,
                 width: 80

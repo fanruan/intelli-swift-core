@@ -74,7 +74,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 items: [this.widgetTitle]
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Background"),
+                text: BI.i18nText("BI-Basic_Background"),
                 cls: "line-title",
             },{
                 type: "bi.vertical_adapt",
@@ -102,7 +102,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Chart"),
+                text: BI.i18nText("BI-Basic_Chart"),
                 lgap: 5,
                 textAlign: "left",
                 textHeight: 60,

@@ -79,7 +79,7 @@ BI.MultiAxisCombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
         var header = BI.createWidget({
             type: "bi.region_header",
             height: 26,
-            titleName: BI.i18nText("BI-Category"),
+            titleName: BI.i18nText("BI-Basic_Category"),
             dimensionCreator: o.dimensionCreator,
             wId: o.wId,
             viewType: BICst.REGION.DIMENSION1

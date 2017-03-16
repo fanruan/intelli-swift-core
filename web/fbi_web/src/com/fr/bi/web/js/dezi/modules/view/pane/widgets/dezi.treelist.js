@@ -170,7 +170,7 @@ BIDezi.TreeListView = BI.inherit(BI.View, {
                         self.model.destroy();
                     }
                 }, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         self.del.hideView();

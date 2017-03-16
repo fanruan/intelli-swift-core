@@ -66,11 +66,11 @@ BI.FineTuningNumberEditor = BI.inherit(BI.Widget, {
     },
 
     _alertOutEditorValue: function(v){
-        return v === BI.i18nText("BI-Auto") ? -1 : v;
+        return v === BI.i18nText("BI-Basic_Auto") ? -1 : v;
     },
 
     _alertInEditorValue: function(v){
-        return BI.parseInt(v) === -1 ? BI.i18nText("BI-Auto") : v;
+        return BI.parseInt(v) === -1 ? BI.i18nText("BI-Basic_Auto") : v;
     },
 
     //微调

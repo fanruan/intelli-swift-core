@@ -45,7 +45,7 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
 
         this.cancelButton = BI.createWidget({
             type: "bi.button",
-            value: BI.i18nText("BI-Cancel"),
+            value: BI.i18nText("BI-Basic_Cancel"),
             height: 30
         });
 

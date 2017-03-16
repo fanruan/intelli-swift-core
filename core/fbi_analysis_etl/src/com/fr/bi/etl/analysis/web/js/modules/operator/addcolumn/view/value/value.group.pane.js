@@ -37,7 +37,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
         })
         self.button = BI.createWidget({
             type: "bi.button",
-            text : BI.i18nText('BI-Add'),
+            text : BI.i18nText('BI-Basic_Add'),
             height: self._constants.ITEM_HEIGHT,
             handler : function () {
                 self.controller.addCondition();

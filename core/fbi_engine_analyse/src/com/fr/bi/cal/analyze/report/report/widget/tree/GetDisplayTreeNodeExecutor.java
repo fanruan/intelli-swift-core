@@ -90,12 +90,14 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
     public void createOneJson(JSONArray result, String name, String pId, String id, int children) throws JSONException {
         JSONObject obj = new JSONObject();
+        String str1 = Inter.getLocText("BI-Basic_Altogether");
+        String str2 = Inter.getLocText("BI-Basic_Count");
         obj.put("id", id);
         obj.put("pId", pId);
         if (children == 0) {
             obj.put("text", name);
         } else {
-            obj.put("text", name + "( " + Inter.getLocText("BI-Altogether") + children + Inter.getLocText("BI-Count") + " )");
+            obj.put("text", name + "( " + str1 + children + str2 + " )");
         }
         obj.put("open", true);
         result.put(obj);

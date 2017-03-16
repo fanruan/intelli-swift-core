@@ -201,7 +201,7 @@ BI.Join = BI.inherit(BI.Widget, {
         var cancelButton = BI.createWidget({
             type: "bi.button",
             level: "ignore",
-            text: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
             height: this.constants.JOIN_BUTTON_HEIGHT
         });
         cancelButton.on(BI.Button.EVENT_CHANGE, function () {

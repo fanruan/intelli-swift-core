@@ -536,7 +536,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             return;
         }
         this.processBar.setValue(100);
-        this.processBar.setText(BI.i18nText("BI-Completed"));
+        this.processBar.setText(BI.i18nText("BI-Basic_Completed"));
         BI.delay(function () {
             self.processBar.setVisible(false);
             self.processBar.setValue(0);

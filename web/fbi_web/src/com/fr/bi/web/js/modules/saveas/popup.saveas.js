@@ -114,7 +114,7 @@ BI.SaveAsPopup = BI.inherit(BI.Widget, {
             this.cancelButton = BI.createWidget({
                 type: "bi.button",
                 level: "ignore",
-                text: BI.i18nText("BI-Cancel"),
+                text: BI.i18nText("BI-Basic_Cancel"),
                 height: 30,
                 handler: function () {
                     o.cancel();

@@ -33,7 +33,7 @@ BI.FilterExpander = BI.inherit(BI.AbstractFilterItem, {
         var self = this, o = this.options;
         var value = o.value, text = "";
         if (value === BICst.FILTER_TYPE.AND) {
-            text = BI.i18nText("BI-And");
+            text = BI.i18nText("BI-Basic_And");
         } else {
             text = BI.i18nText("BI-Or");
         }

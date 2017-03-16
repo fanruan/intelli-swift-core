@@ -300,7 +300,7 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
         var cancel = BI.createWidget({
             type: "bi.button",
             level: "ignore",
-            text: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
             height: this.constants.ADD_GROUP_FIELD_BUTTON_HEIGHT
         });
 

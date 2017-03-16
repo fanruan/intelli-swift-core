@@ -114,7 +114,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Chart"),
+                text: BI.i18nText("BI-Basic_Chart"),
                 lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
@@ -657,7 +657,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.rightY2Unit]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
+                    text: BI.i18nText("BI-Basic_Format"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",

@@ -47,7 +47,7 @@ BI.ETLTablePreview = BI.inherit(BI.BarPopoverSection, {
                 right: [{
                     type: "bi.button",
                     level: "ignore",
-                    text: BI.i18nText("BI-Close"),
+                    text: BI.i18nText("BI-Basic_Close"),
                     height: 30,
                     handler: function () {
                         self.close();

@@ -134,7 +134,7 @@ BIDezi.TreeListDetailView=BI.inherit(BI.View,{
                 el: {
                     type: "bi.button_group",
                     items: BI.createItems([{
-                        text: BI.i18nText("BI-Data"),
+                        text: BI.i18nText("BI-Basic_Data"),
                         selected: true
                     }], {
                         type: "bi.line_segment_button",

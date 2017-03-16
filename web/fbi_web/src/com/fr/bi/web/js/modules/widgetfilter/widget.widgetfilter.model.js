@@ -220,11 +220,11 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.QUARTER:
                 var year = widgetValue.year, quarter = widgetValue.quarter;
                 if (BI.isNumeric(year) && BI.isNumeric(quarter)) {
-                    text = year + " " + BI.i18nText("BI-Di") + quarter + BI.i18nText("BI-Quarter");
+                    text = year + " " + BI.i18nText("BI-Basic_Di") + quarter + BI.i18nText("BI-Quarter");
                 } else if (BI.isNumeric(year)) {
                     text = year;
                 } else if (BI.isNumeric(quarter)) {
-                    text = BI.i18nText("BI-Di") + quarter + BI.i18nText("BI-Quarter");
+                    text = BI.i18nText("BI-Basic_Di") + quarter + BI.i18nText("BI-Quarter");
                 }
                 return text;
             case BICst.WIDGET.YEAR:

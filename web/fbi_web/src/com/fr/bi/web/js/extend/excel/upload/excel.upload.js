@@ -208,7 +208,7 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
                 left: [{
                     type: "bi.button",
                     level: "ignore",
-                    text: BI.i18nText("BI-Cancel"),
+                    text: BI.i18nText("BI-Basic_Cancel"),
                     height: this.constants.EXCEL_UPLOAD_BUTTON_HEIGHT,
                     handler: function () {
                         self.fireEvent(BI.ExcelUpload.EVENT_CANCEL);

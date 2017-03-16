@@ -154,7 +154,7 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
             width: self._constants.BUTTON_WIDTH,
             height: self._constants.BUTTON_HEIGHT,
             level: 'ignore',
-            text : BI.i18nText('BI-Clears') + BI.i18nText('BI-Filter')
+            text : BI.i18nText('BI-Basic_Clears') + BI.i18nText('BI-Basic_Filter')
         });
         this.clearButton.on(BI.Button.EVENT_CHANGE, function(){
             self._clearValue();
