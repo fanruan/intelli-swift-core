@@ -79,8 +79,8 @@ public class DimensionGroupFilter {
     }
 
     private boolean hasInSumMetrics() {
-        for (MergerInfo info : mergerInfoList) {
-            if (hasInSumMetric(info.biDimensionTarget)) {
+        for (BISummaryTarget usedTarget : usedTargets) {
+            if (hasInSumMetric(usedTarget)) {
                 return true;
             }
         }
