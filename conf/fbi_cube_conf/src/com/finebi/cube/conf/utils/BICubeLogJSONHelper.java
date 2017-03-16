@@ -57,7 +57,7 @@ public class BICubeLogJSONHelper extends BILogHelper {
                 try {
                     tableExceptionInfoJSON.put(entry.getKey(), exceptionInfoStringArray);
                 } catch (JSONException e) {
-                    BILoggerFactory.getLogger(BICubeLogJSONHelper.class).error("create cube log exception json error \n " + e.getMessage(), e);
+                    BILoggerFactory.getLogger(BICubeLogJSONHelper.class).error("create FineIndex log exception json error \n " + e.getMessage(), e);
                 }
             }
         }
@@ -73,7 +73,7 @@ public class BICubeLogJSONHelper extends BILogHelper {
                 try {
                     tableNormalInfoJSON.put(tableSourceId, entry.getValue());
                 } catch (JSONException e) {
-                    BILoggerFactory.getLogger(BICubeLogJSONHelper.class).error("create cube log normal json error \n " + e.getMessage(), e);
+                    BILoggerFactory.getLogger(BICubeLogJSONHelper.class).error("create FineIndex log normal json error \n " + e.getMessage(), e);
                 }
             }
         }

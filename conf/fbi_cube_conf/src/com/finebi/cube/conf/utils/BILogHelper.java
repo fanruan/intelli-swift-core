@@ -230,12 +230,12 @@ public class BILogHelper {
             if (exceptionList instanceof Vector) {
                 return (Vector<BILogExceptionInfo>) exceptionList;
             } else {
-                BILoggerFactory.getLogger(BILogHelper.class).warn("The cubeLogExceptionList is not a Vector,the tableSourceId is: " + key + ", create a new Vector instead");
+                BILoggerFactory.getLogger(BILogHelper.class).warn("The FineIndexLogExceptionList is not a Vector,the tableSourceId is: " + key + ", create a new Vector instead");
                 return new Vector<BILogExceptionInfo>();
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger(BILogHelper.class).warn(e.getMessage(), e);
-            BILoggerFactory.getLogger(BILogHelper.class).warn("Get cubeLogExceptionList error, the tableSourceId is: " + key + ", create a new Vector Instead");
+            BILoggerFactory.getLogger(BILogHelper.class).warn("Get FineIndexLogExceptionList error, the tableSourceId is: " + key + ", create a new Vector Instead");
             return new Vector<BILogExceptionInfo>();
         }
     }
@@ -274,7 +274,7 @@ public class BILogHelper {
                 BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, subTag, cubeTableNormalInfoMap);
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(BILogHelper.class).warn("Cache Cube Info Error,the error tableSourceId is: " + tableSourceID);
+            BILoggerFactory.getLogger(BILogHelper.class).warn("Cache FineIndex Info Error,the error tableSourceId is: " + tableSourceID);
             BILoggerFactory.getLogger(BILogHelper.class).warn(e.getMessage(), e);
         }
 
@@ -330,7 +330,7 @@ public class BILogHelper {
                 BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO, subTag, cubeExceptionMap);
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(BILogHelper.class).warn("Cache Cube Exception Error, the error tableSourceId is; " + key);
+            BILoggerFactory.getLogger(BILogHelper.class).warn("Cache FineIndex Exception Error, the error tableSourceId is; " + key);
             BILoggerFactory.getLogger(BILogHelper.class).warn(e.getMessage(), e);
         }
 
@@ -346,12 +346,12 @@ public class BILogHelper {
             if (normalInfoMap instanceof Map) {
                 return (ConcurrentCacheHashMap<String, Object>) normalInfoMap;
             } else {
-                BILoggerFactory.getLogger(BILogHelper.class).warn("The cubeLogNormalInfoMap is not a Map, the tableSourceID is: " + tableSourceID + ", create a new Map instead");
+                BILoggerFactory.getLogger(BILogHelper.class).warn("The FineIndexLogNormalInfoMap is not a Map, the tableSourceID is: " + tableSourceID + ", create a new Map instead");
                 return new ConcurrentCacheHashMap<String, Object>();
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger(BILogHelper.class).warn(e.getMessage(), e);
-            BILoggerFactory.getLogger(BILogHelper.class).warn("Get cubeLogNormalInfoMap error, the tableSourceId is: " + tableSourceID + ", create a new Map instead");
+            BILoggerFactory.getLogger(BILogHelper.class).warn("Get FineIndexLogNormalInfoMap error, the tableSourceId is: " + tableSourceID + ", create a new Map instead");
             return new ConcurrentCacheHashMap<String, Object>();
         }
     }

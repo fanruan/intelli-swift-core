@@ -21,10 +21,10 @@ class FinishObserverProcessor extends BIProcessor<String> {
     public String mainTask(IMessage lastReceiveMessage) {
         if (lastReceiveMessage.isStopStatus()) {
             success = false;
-            return "***********************warning:the cube build failure*****************************";
+            return "***********************warning:the FineIndex build failure*****************************";
 
         }
-        return "catch the Message about finish status of cube Building";
+        return "catch the Message about finish status of FineIndex Building";
     }
 
     @Override

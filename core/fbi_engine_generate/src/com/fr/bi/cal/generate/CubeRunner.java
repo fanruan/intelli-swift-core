@@ -182,8 +182,8 @@ public class CubeRunner {
     }
 
     public void setStatue(Status statue) {
-        logger.info("previous cube status :" + getStatue());
-        logger.info("change cube status to :" + statue.name());
+        logger.info("previous FineIndex status :" + getStatue());
+        logger.info("change FineIndex status to :" + statue.name());
         this.statue = statue;
     }
 
@@ -205,7 +205,7 @@ public class CubeRunner {
     }
 
     private void recordLogs(CubeTask cubeTask, BILogManagerProvider logManager) {
-        logger.info("start persist cube task logs……");
+        logger.info("start persist FineIndex task logs……");
         BICubeTaskRecord record = new BICubeTaskRecord(cubeTask.getTaskType(), logManager.getStart(biUser.getUserId()), logManager.getEndTime(biUser.getUserId()), getStatue());
         record.setErrorTableLogs(logManager.getErrorTables(biUser.getUserId()));
         Set<BITableSourceRelationPath> allRelationPathSet = logManager.getAllRelationPathSet(biUser.getUserId());
