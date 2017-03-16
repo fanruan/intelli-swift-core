@@ -13,6 +13,9 @@ import com.fr.stable.StringUtils;
  */
 public class ExecutorUtils {
     static final String NONE_VALUE = StringUtils.EMPTY;
+    static final int TEN_THOUSAND = 10000;
+    static final int MILLION = 1000000;
+    static final int YI = 100000000;
 
     public static Object formatExtremeSumValue(Object value, int numLevel) {
         if (value == null) {
@@ -27,13 +30,13 @@ public class ExecutorUtils {
             } else {
                 switch (numLevel) {
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        value = (Double) value / 10000;
+                        value = (Double) value / TEN_THOUSAND;
                         break;
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        value = (Double) value / 1000000;
+                        value = (Double) value / MILLION;
                         break;
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
-                        value = (Double) value / 100000000;
+                        value = (Double) value / YI;
                         break;
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
 //                        value = (Double) value * 100;     //在excel单元格格式中设置
