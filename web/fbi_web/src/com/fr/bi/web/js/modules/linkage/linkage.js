@@ -542,7 +542,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
                     type: "bi.absolute",
                     cls: "linkage-widget-self"
                 });
-            } else if (BI.Utils.isControlWidgetByWidgetId(wId) || BI.Utils.isInstantControlWidgetByWidgetId(wId)) {
+            } else if (this.model.isWidgetShouldDisable(wId)) {
                 var mask = BI.createWidget({
                     type: "bi.absolute",
                     cls: "linkage-widget-control",
@@ -606,7 +606,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
         BI.each(linkageList, function (idx, linkages) {
             var temp = [];
             BI.each(linkages, function (i, link) {
-                switch(i) {
+                switch (i) {
                     case 0:
                         temp.push({
                             el: {
