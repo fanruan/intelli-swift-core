@@ -16,7 +16,7 @@ public class BIGetThreadPoolSizeAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         try {
-            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the cube ThreadPool size is" + PerformancePlugManager.getInstance().getThreadPoolSize()));
+            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the FineIndex ThreadPool size is" + PerformancePlugManager.getInstance().getThreadPoolSize()));
         } catch (Exception e) {
             WebUtils.printAsJSON(res, new JSONObject().put("message:", BIPrintUtils.outputException(e)));
         }

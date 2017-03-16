@@ -51,7 +51,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         if (columnKey2ColumnMap.containsKey(columnKey)) {
             return columnKey2ColumnMap.get(columnKey);
         } else {
-            throw new BICubeColumnAbsentException("Please register Cube Column Service firstly");
+            throw new BICubeColumnAbsentException("Please register FineIndex Column Service firstly");
         }
     }
 

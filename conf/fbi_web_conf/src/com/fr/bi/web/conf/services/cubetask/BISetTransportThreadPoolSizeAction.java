@@ -19,7 +19,7 @@ public class BISetTransportThreadPoolSizeAction extends AbstractBIConfigureActio
 
         try {
             PerformancePlugManager.getInstance().setBiTransportThreadPoolSize(Integer.parseInt(size));
-            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the cube TransportThreadPool size has been set:" + PerformancePlugManager.getInstance().getBiTransportThreadPoolSize()));
+            WebUtils.printAsJSON(res, new JSONObject().put("message:", "the FineIndex TransportThreadPool size has been set:" + PerformancePlugManager.getInstance().getBiTransportThreadPoolSize()));
         } catch (Exception e) {
             WebUtils.printAsJSON(res, new JSONObject().put("message:", BIPrintUtils.outputException(e)));
         }
