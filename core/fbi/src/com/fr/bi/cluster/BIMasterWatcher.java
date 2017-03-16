@@ -2,18 +2,13 @@ package com.fr.bi.cluster;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cluster.manager.ZooKeeperClusterHostManager;
+import com.fr.bi.cluster.utils.IPAddressUtils;
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.bi.cluster.zookeeper.BIWatcher;
 import com.fr.bi.module.BICoreModule;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.data.Stat;
-
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
 
 /**
  * Created by Lucifer on 2017-3-3.
@@ -25,8 +20,6 @@ import java.util.Enumeration;
 public class BIMasterWatcher extends BIWatcher {
 
     private static String MASTER_PATH = "/cluster/master";
-
-    private long CAMPAIGN_SLEEP_TIME = 3000L;
 
     private long LOAD_SLEEP_TIME = 10000L;
 
@@ -68,8 +61,7 @@ public class BIMasterWatcher extends BIWatcher {
                         try {
                             String rpcPort = ClusterManager.getInstance().getHostManager().getLocalRpcPort();
 
-                            String masterInfo = getAddress().getHostAddress() + ":" + rpcPort;
-                            getAddress();
+                            String masterInfo = IPAddressUtils.getAddress().getHostAddress() + ":" + rpcPort;
                             ensurePathExistsTemp(childPath, masterInfo);
                             updateMasterInfo(true);
                         } catch (KeeperException ke) {
@@ -84,27 +76,6 @@ public class BIMasterWatcher extends BIWatcher {
                 }
             }
         }
-    }
-
-    private InetAddress getAddress() {
-        try {
-            BILoggerFactory.getLogger(BIMasterWatcher.class).info("=================================");
-            for (Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces(); interfaces.hasMoreElements(); ) {
-                NetworkInterface networkInterface = interfaces.nextElement();
-                if (networkInterface.isLoopback() || networkInterface.isVirtual() || !networkInterface.isUp()) {
-                    continue;
-                }
-                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
-                while (addresses.hasMoreElements()) {
-                    InetAddress inetAddress = addresses.nextElement();
-                    if (inetAddress instanceof Inet4Address) {
-                        return inetAddress;
-                    }
-                }
-            }
-        } catch (SocketException e) {
-        }
-        return null;
     }
 
     @Override
