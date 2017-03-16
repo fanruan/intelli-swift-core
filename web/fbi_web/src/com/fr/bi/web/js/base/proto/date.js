@@ -60,8 +60,6 @@ Date._TT = {};
 
 Date._TT["PREV_YEAR"] = FR.i18n.Prev_Year;
 Date._TT["PREV_MONTH"] = FR.i18n.Prev_Month;
-Date._TT["GO_TODAY"] = "至今天";
-Date._TT["Date"] = "日历";
 Date._TT["NEXT_MONTH"] = FR.i18n.Next_Month;
 Date._TT["NEXT_YEAR"] = FR.i18n.Next_Year;
 Date._TT["SEL_DATE"] = FR.i18n.Select_Date;
@@ -109,7 +107,7 @@ Date.prototype.getMonthDays = function (month) {
     if (typeof month == "undefined") {
         month = this.getMonth();
     }
-    if (((0 == (year % 4)) && ( (0 != (year % 100)) || (0 == (year % 400)))) && month == 1) {
+    if (((0 === (year % 4)) && ( (0 !== (year % 100)) || (0 === (year % 400)))) && month === 1) {
         return 29;
     } else {
         return Date._MD[month];
@@ -231,7 +229,7 @@ Date.prototype.print = function (str) {
     var pm = (hr >= 12);
     var ir = (pm) ? (hr - 12) : hr;
     var dy = this.getDayOfYear();
-    if (ir == 0) {
+    if (ir === 0) {
         ir = 12;
     }
     var min = this.getMinutes();
@@ -451,7 +449,7 @@ Date.parseDateTime = function (str, fmt) {
     if (isNaN(sec)) {
         sec = today.getSeconds();
     }
-    if (y != 0) {
+    if (y !== 0) {
         return new Date(y, m, d, hr, min, sec);
     }
     y = 0;
@@ -474,17 +472,17 @@ Date.parseDateTime = function (str, fmt) {
             }
         } else if (parseInt(a[i], 10) <= 12 && m == -1) {
             m = a[i] - 1;
-        } else if (parseInt(a[i], 10) > 31 && y == 0) {
+        } else if (parseInt(a[i], 10) > 31 && y === 0) {
             y = parseInt(a[i], 10);
             (y < 100) && (y += (y > 29) ? 1900 : 2000);
-        } else if (d == 0) {
+        } else if (d === 0) {
             d = a[i];
         }
     }
-    if (y == 0) {
+    if (y === 0) {
         y = today.getFullYear();
     }
-    if (m != -1 && d != 0) {
+    if (m !== -1 && d !== 0) {
         return new Date(y, m, d, hr, min, sec);
     }
     return today;

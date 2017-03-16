@@ -106,7 +106,7 @@ NumberIntervalCustomGroupChildView = BI.inherit(BI.BarFloatSection, {
 
         this.cancelButton = BI.createWidget({
             type:"bi.button",
-            text:BI.i18nText("BI-Basic_Cancel"),
+            text:BI.i18nText("BI-Cancel"),
             height:30,
             level: 'ignore',
             readonly:false,

@@ -492,4 +492,11 @@ public class BIBaseConstant {
         public static final int USER_ETL = 0xa;
 
     }
+
+    public static final class CODETYPE {
+        public static final int UTF8 = 0xefbb;
+        public static final int UNICODE = 0xfffe;
+        public static final int UTF16BE = 0xfeff;
+        public static final int ANSIORASCII = 0x5c75;
+    }
 }

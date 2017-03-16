@@ -16,6 +16,9 @@ import java.util.*;
  * Created by User on 2015/10/5.
  */
 public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
+    private static final int childrenLength = 20;
+    private static final int floor = 4;
+
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
@@ -67,7 +70,7 @@ public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
     private List<String> randomData(String[] parentValues) {
         List<String> res = new ArrayList<String>();
         String v = StableUtils.join(parentValues, ",");
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < childrenLength; i++) {
             res.add(v + "_" + i);
         }
         return res;
@@ -75,14 +78,14 @@ public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
 
     public void doCheck(JSONArray result, String[] parents, int floors, JSONObject selectedValues) throws JSONException {
         JSONArray names = selectedValues.names();
-        if (floors >= 4) {
+        if (floors >= floor) {
             return;
         }
         if (names == null || names.length() == 0) {
             List<String> vl = randomData(parents);
             for (String aVl : vl) {
                 String id = getID(aVl);
-                createOneJson(result, aVl, getPID(id), id, floors == 3 ? 0 : 20);
+                createOneJson(result, aVl, getPID(id), id, floors == 3 ? 0 : childrenLength);
                 String[] newParents = new String[parents.length + 1];
                 for (int j = 0; j < parents.length; j++) {
                     newParents[j] = parents[j];
@@ -111,7 +114,7 @@ public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
             return 0;
         }
         if (children.names() == null) {
-            return 20;
+            return childrenLength;
         }
         return children.names().length();
     }
@@ -127,12 +130,14 @@ public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
 
     public void createOneJson(JSONArray result, String name, String pId, String id, int children) throws JSONException {
         JSONObject obj = new JSONObject();
+        String str1 = Inter.getLocText("BI-Basic_Altogether");
+        String str2 = Inter.getLocText("BI-Basic_Count");
         obj.put("id", id);
         obj.put("pId", pId);
         if (children == 0) {
             obj.put("text", name);
         } else {
-            obj.put("text", name + "( " + Inter.getLocText("BI-Basic_Altogether") + children + Inter.getLocText("BI-Basic_Count") + " )");
+            obj.put("text", name + "( " + str1 + children + str2 + " )");
         }
         obj.put("open", true);
         result.put(obj);

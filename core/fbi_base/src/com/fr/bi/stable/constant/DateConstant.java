@@ -10,25 +10,6 @@ import java.util.Calendar;
  * Created by GUY on 2015/3/12.
  */
 public class DateConstant {
-    public static String getWeekString(int m) {
-        switch (m) {
-            case Calendar.MONDAY:
-                return Inter.getLocText("BI-Monday");
-            case Calendar.TUESDAY:
-                return Inter.getLocText("BI-Tuesday");
-            case Calendar.WEDNESDAY:
-                return Inter.getLocText("BI-Wednesday");
-            case Calendar.THURSDAY:
-                return Inter.getLocText("BI-Thursday");
-            case Calendar.FRIDAY:
-                return Inter.getLocText("BI-Basic_Friday");
-            case Calendar.SATURDAY:
-                return Inter.getLocText("BI-Saturday");
-            case Calendar.SUNDAY:
-                return Inter.getLocText("BI-Sunday");
-        }
-        return "SB";
-    }
 
     /**
      * 时间分类
