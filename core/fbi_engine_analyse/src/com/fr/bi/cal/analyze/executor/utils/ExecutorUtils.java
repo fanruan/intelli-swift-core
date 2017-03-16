@@ -54,13 +54,13 @@ public class ExecutorUtils {
                 levelAndUnit = unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                levelAndUnit = Inter.getLocText("BI-Wan") +  unit;
+                levelAndUnit = Inter.getLocText("BI-Basic_Wan") +  unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
-                levelAndUnit = Inter.getLocText("BI-Million") +  unit;
+                levelAndUnit = Inter.getLocText("BI-Basic_Million") +  unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
-                levelAndUnit = Inter.getLocText("BI-YI") +  unit;
+                levelAndUnit = Inter.getLocText("BI-Basic_Yi") +  unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 levelAndUnit = "%" +  unit;

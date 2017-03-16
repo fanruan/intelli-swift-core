@@ -1687,13 +1687,13 @@ Data.Utils = {
                         formatter += '';
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        formatter += BI.i18nText("BI-Wan");
+                        formatter += BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        formatter += BI.i18nText("BI-Million");
+                        formatter += BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        formatter += BI.i18nText("BI-Yi");
+                        formatter += BI.i18nText("BI-Basic_Yi");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                         formatter += '%';
@@ -2024,13 +2024,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -2247,13 +2247,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -2445,13 +2445,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.DASHBOARD_AXIS) {
@@ -2812,13 +2812,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -3115,13 +3115,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -3310,13 +3310,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -3505,13 +3505,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -3698,13 +3698,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -3899,13 +3899,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -4208,13 +4208,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -4397,13 +4397,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -4695,13 +4695,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -4938,13 +4938,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -5068,13 +5068,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -5197,13 +5197,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -5389,13 +5389,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
@@ -5667,13 +5667,13 @@ Data.Utils = {
                         unit = "";
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        unit = BI.i18nText("BI-Wan");
+                        unit = BI.i18nText("BI-Basic_Wan");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        unit = BI.i18nText("BI-Million");
+                        unit = BI.i18nText("BI-Basic_Million");
                         break;
                     case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        unit = BI.i18nText("BI-Yi");
+                        unit = BI.i18nText("BI-Basic_Yi");
                         break;
                 }
                 if (position === constants.X_AXIS) {
