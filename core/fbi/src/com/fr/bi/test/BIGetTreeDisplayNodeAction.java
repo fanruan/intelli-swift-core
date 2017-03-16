@@ -16,8 +16,8 @@ import java.util.*;
  * Created by User on 2015/10/5.
  */
 public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
-    private static final int childrenLength = 20;
-    private static final int floor = 4;
+    private static final int CHILDRENLENGTH = 20;
+    private static final int FLOOR = 4;
 
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -70,7 +70,7 @@ public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
     private List<String> randomData(String[] parentValues) {
         List<String> res = new ArrayList<String>();
         String v = StableUtils.join(parentValues, ",");
-        for (int i = 0; i < childrenLength; i++) {
+        for (int i = 0; i < CHILDRENLENGTH; i++) {
             res.add(v + "_" + i);
         }
         return res;
@@ -78,14 +78,14 @@ public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
 
     public void doCheck(JSONArray result, String[] parents, int floors, JSONObject selectedValues) throws JSONException {
         JSONArray names = selectedValues.names();
-        if (floors >= floor) {
+        if (floors >= FLOOR) {
             return;
         }
         if (names == null || names.length() == 0) {
             List<String> vl = randomData(parents);
             for (String aVl : vl) {
                 String id = getID(aVl);
-                createOneJson(result, aVl, getPID(id), id, floors == 3 ? 0 : childrenLength);
+                createOneJson(result, aVl, getPID(id), id, floors == 3 ? 0 : CHILDRENLENGTH);
                 String[] newParents = new String[parents.length + 1];
                 for (int j = 0; j < parents.length; j++) {
                     newParents[j] = parents[j];
@@ -114,7 +114,7 @@ public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
             return 0;
         }
         if (children.names() == null) {
-            return childrenLength;
+            return CHILDRENLENGTH;
         }
         return children.names().length();
     }

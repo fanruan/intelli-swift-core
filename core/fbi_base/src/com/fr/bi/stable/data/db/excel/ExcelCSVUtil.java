@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  * Created by Young's on 2016/7/26.
  */
 public class ExcelCSVUtil {
-    private static final int readLength = 8;
+    private static final int READLENGTH = 8;
 
     private String[] columnNames = new String[0];
     private int[] columnTypes = new int[0];
@@ -168,7 +168,7 @@ public class ExcelCSVUtil {
     public static String codeString(String filePath) throws Exception {
 
         BufferedInputStream bin = new BufferedInputStream(new FileInputStream(filePath));
-        int p = (bin.read() << readLength) + bin.read();
+        int p = (bin.read() << READLENGTH) + bin.read();
         String code = null;
         //其中的 0xefbb、0xfffe、0xfeff、0x5c75这些都是这个文件的前面两个字节的16进制数
         switch (p) {
