@@ -857,7 +857,6 @@ public class BaseResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/flex/wrapper/flex.wrapper.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/flex/wrapper/flex.wrapper.vertical.center.js",
 
-                "com/fr/bi/web/js/data/utils.js",
                 //filter
                 "com/fr/bi/web/js/data/filter/filtervalue.factory.js",
                 "com/fr/bi/web/js/data/filter/filter.factory.js",

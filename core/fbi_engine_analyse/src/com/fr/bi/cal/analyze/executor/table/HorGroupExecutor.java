@@ -1,10 +1,13 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.Style;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
+import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -47,7 +50,87 @@ public class HorGroupExecutor extends GroupExecutor {
         colDimension = usedDimensions;
     }
 
-    //
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        final Node node = getCubeNode();
+        int rowLength = colDimension.length + usedSumTarget.length;
+        int columnLength = node.getTotalLength() + widget.isOrder() + 1;
+        final DetailCellIterator iter = new DetailCellIterator(columnLength, rowLength);
+        new Thread() {
+            public void run() {
+                try {
+                    FinalInt start = new FinalInt();
+                    StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+                    if (node.getFirstChild() != null) {
+                        generateTitle(pagedIterator);
+                    }
+                    generateCells(pagedIterator);
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                } finally {
+                    iter.finish();
+                }
+            }
+        }.start();
+        return iter;
+    }
+
+    public void generateTitle(StreamPagedIterator pagedIterator) throws Exception {
+        Node node = getCubeNode();
+        int colDimIdx = 0;
+        Style style = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
+        if (widget.isOrder() == 1) {
+            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, colDimension.length, 0, 1, style);
+            pagedIterator.addCell(cell);
+        }
+        while (colDimIdx < colDimension.length) {
+            CBCell cell = ExecutorUtils.createCell(colDimension[colDimIdx].getText(), colDimIdx, 1, widget.isOrder(), 1, style);
+            pagedIterator.addCell(cell);
+            node = node.getFirstChild();
+            Node temp = node;
+            int columnIdx = widget.isOrder() + 1;
+            BIDimension dim = colDimension[colDimIdx];
+            while (temp != null) {
+                Object data = temp.getData();
+                Object v = dim.getValueByType(data);
+                CBCell dimCell = ExecutorUtils.createCell(v, colDimIdx, 1, columnIdx, temp.getTotalLength(), style);
+                pagedIterator.addCell(dimCell);
+                columnIdx += temp.getTotalLength();
+                temp = temp.getSibling();
+            }
+            colDimIdx++;
+        }
+    }
+
+    private void generateCells(StreamPagedIterator pagedIterator) throws Exception {
+        Node node = getCubeNode();
+        int rowIdx = colDimension.length;
+        TargetGettingKey[] keys = widget.getTargetsKey();
+        while (node.getFirstChild() != null) {
+            node = node.getFirstChild();
+        }
+
+        for (int i = 0; i < usedSumTarget.length; i++) {
+            int columnIdx = widget.isOrder() + 1;
+            Style headStyle = BITableStyle.getInstance().getDimensionCellStyle(false, (i + 1) % 2 == 1);
+            if (widget.isOrder() == 1) {
+                CBCell orderCell = ExecutorUtils.createCell(i + 1, rowIdx + i, 1, 0, 1, headStyle);
+                pagedIterator.addCell(orderCell);
+            }
+            Object targetName = usedSumTarget[i].getText();
+            CBCell targetNameCell = ExecutorUtils.createCell(targetName, rowIdx + i, 1, widget.isOrder(), 1, headStyle);
+            pagedIterator.addCell(targetNameCell);
+            Node temp = node;
+            while (temp != null) {
+                Object data = temp.getSummaryValue(keys[i]);
+                boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
+                Style style = BITableStyle.getInstance().getNumberCellStyle(data, (i + 1) % 2 == 1, isPercent);
+                CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx++, 1, style);
+                pagedIterator.addCell(cell);
+                temp = temp.getSibling();
+            }
+        }
+    }
+
     static void dealWithNodeNoChild(Node node, CBCell[][] cbcells, int row, int column,
                                     BIDimension[] colColumn,
                                     BITarget[] sumColumn, TargetGettingKey[] keys,
@@ -189,7 +272,7 @@ public class HorGroupExecutor extends GroupExecutor {
         }
     }
 
-    static private void createCellWhileNoSumColumnLength(int maxColumnLength, int tempCol, boolean isSortTitle, boolean isTargetSort, BIDimension sortDimension, CBCell[][] cbcells){
+    static private void createCellWhileNoSumColumnLength(int maxColumnLength, int tempCol, boolean isSortTitle, boolean isTargetSort, BIDimension sortDimension, CBCell[][] cbcells) {
         CBCell cell = new CBCell(StringUtils.EMPTY);
         cell.setRow(maxColumnLength);
         cell.setColumn(tempCol);
@@ -256,9 +339,9 @@ public class HorGroupExecutor extends GroupExecutor {
     }
 
     static private void createCellForNodeExpander(String name, int row, int tempCol, int rowSpan, int colSpan,
-                                                    int columnLength, ArrayList<String> currentIndex, BIDimension[] colColumn,
-                                                    int dimensionIndex, NodeExpander expander, BIComplexExecutData rowData,
-                                                    Node tempNode, CBCell[][] cbcells){
+                                                  int columnLength, ArrayList<String> currentIndex, BIDimension[] colColumn,
+                                                  int dimensionIndex, NodeExpander expander, BIComplexExecutData rowData,
+                                                  Node tempNode, CBCell[][] cbcells) {
         CBCell cell = new CBCell(name);
         currentIndex.add(name == null ? StringUtils.EMPTY : name);
         cell.setRow(row);
@@ -323,7 +406,7 @@ public class HorGroupExecutor extends GroupExecutor {
                 rowSpan = rowData.getNoneChildSpan(row, columnLength);
             }
             createCellForNodeExpander(name, row, tempCol, rowSpan, colSpan,
-            columnLength, currentIndex, colColumn, dimensionIndex, expander, rowData, tempNode, cbcells);
+                    columnLength, currentIndex, colColumn, dimensionIndex, expander, rowData, tempNode, cbcells);
             IntList list = null;
             try {
                 list = (IntList) deepList.clone();
@@ -339,7 +422,7 @@ public class HorGroupExecutor extends GroupExecutor {
 
     static private void addCellToCellList(BITarget[] sumColumn, int p, DetailChartSetting chartSetting, CBCell cell, int row,
                                           int tempCol, BIComplexExecutData columnData, int columnLength, int total, BIDimension[] colColumn,
-                                          boolean isSortTitle, TableWidget widget, Node node, CBCell[][] cbcells){
+                                          boolean isSortTitle, TableWidget widget, Node node, CBCell[][] cbcells) {
         BIAbstractTarget target = (BIAbstractTarget) sumColumn[p];
         String dimensionName = target.getText();
         String dId = target.getValue();
@@ -385,32 +468,28 @@ public class HorGroupExecutor extends GroupExecutor {
         cbcells[cell.getColumn()][cell.getRow()] = cell;
     }
 
-    static void dealWithNodeExpanderIsCross(Node node, CBCell[][] cbcells, int row, int column, BIDimension[] colColumn, BITarget[] sumColumn, TargetGettingKey[] keys,
-                                            int total, TableWidget widget, int tempCol, BIComplexExecutData columnData, DetailChartSetting chartSetting) {
+    static void dealWithNodeExpanderIsCross(Node node, CBCell[][] cbcells, int row, int column, BIDimension[] colColumn, BITarget[] sumColumn, TargetGettingKey[] keys, int total, TableWidget widget, int tempCol, BIComplexExecutData columnData, DetailChartSetting chartSetting) {
         int columnLength = colColumn.length;
         CBCell cell = null;
         boolean isSortTitle = row == 0;
         for (int p = 0; p < sumColumn.length; p++) {
             addCellToCellList(sumColumn, p, chartSetting, cell, row,
-            tempCol, columnData, columnLength, total, colColumn,
-            isSortTitle, widget, node, cbcells);
+                    tempCol, columnData, columnLength, total, colColumn,
+                    isSortTitle, widget, node, cbcells);
             for (int i = 0, len = keys.length; i < len; i++) {
                 int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
                 Object v = node.getSummaryValue(keys[i]);
                 v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
-                cell = new CBCell(v);
-                cell.setRow(columnData.getMaxArrayLength() + i);
-                cell.setColumn(tempCol + p);
-                cell.setRowSpan(1);
-                cell.setColumnSpan(1);
-                cell.setStyle(BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT)));
-                cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+                Style dataStyle = BITableStyle.getInstance().getYTotalCellStyle(v, total, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT));
+                cell = ExecutorUtils.createCell(v, columnData.getMaxArrayLength() + i, 1, tempCol + p, 1, dataStyle);
                 List<CBCell> cellList = new ArrayList<CBCell>();
                 cellList.add(cell);
                 CBBoxElement cbox = new CBBoxElement(cellList);//TODO CBBoxElement需要整合减少内存
                 BITarget sumCol = sumColumn[i];
                 TargetStyle style = sumCol.getStyle();
-                if (style != null) {style.changeCellStyle(cell);}
+                if (style != null) {
+                    style.changeCellStyle(cell);
+                }
                 cbox.setName(sumCol.getValue());
                 cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
                 Node t = node;
@@ -418,14 +497,18 @@ public class HorGroupExecutor extends GroupExecutor {
                 int k = 0;
                 while (t.getParent() != null) {
                     t = t.getParent();
-                    k++;}
+                    k++;
+                }
                 k--;
                 t = node;
                 while (k != -1 && t != null) {
-                    try {ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
-                    } catch (JSONException e) {}
+                    try {
+                        ja.put(new JSONObject().put(colColumn[k].getValue(), colColumn[k].toFilterObject(t.getData())));
+                    } catch (JSONException e) {
+                    }
                     t = t.getParent();
-                    k--;}
+                    k--;
+                }
                 cbox.setDimensionJSON(ja.toString());
                 cell.setBoxElement(cbox);
                 cbcells[cell.getColumn()][cell.getRow()] = cell;
@@ -435,7 +518,7 @@ public class HorGroupExecutor extends GroupExecutor {
 
     static private void addCellToCBCell(TargetGettingKey[] keys, DetailChartSetting chartSetting, Node node, CBCell cell, BIComplexExecutData columnData,
                                         int tempCol, int total, List<CBCell> cellList, CBBoxElement cbox, BITarget[] sumColumn, BIDimension[] colColumn,
-                                        CBCell[][] cbcells){
+                                        CBCell[][] cbcells) {
         for (int i = 0, len = keys.length; i < len; i++) {
             int numLevel = chartSetting.getNumberLevelByTargetId(keys[i].getTargetName());
             Object v = node.getSummaryValue(keys[i]);
@@ -676,7 +759,7 @@ public class HorGroupExecutor extends GroupExecutor {
     }
 
     private static void prepare4dealWithNodeChildrenLenDY1(BIDimension[] colColumn, int row, int tempCol, BIComplexExecutData rowData,
-                                                           int total, Node node, CBCell[][] cbcells){
+                                                           int total, Node node, CBCell[][] cbcells) {
         int columnLength = colColumn.length;
         CBCell cell = new CBCell(Inter.getLocText("BI-Summary_Values"));
         cell.setRow(row);
@@ -805,7 +888,7 @@ public class HorGroupExecutor extends GroupExecutor {
     }
 
     @Override
-    public Node getCubeNode() throws Exception{
+    public Node getCubeNode() throws Exception {
         if (session == null) {
             return null;
         }
@@ -827,7 +910,7 @@ public class HorGroupExecutor extends GroupExecutor {
         return tree;
     }
 
-    private CBCell[][] createCBCells(NewCrossRoot tree, int rowLength, int colLength, int summaryLength){
+    private CBCell[][] createCBCells(NewCrossRoot tree, int rowLength, int colLength, int summaryLength) {
         int collen = tree.getTop().getTotalLengthWithSummary();
         CBCell[][] cbcells = new CBCell[collen + Math.min(tree.getTop().getChildLength(), 1) + widget.isOrder()][rowLength];
         boolean isTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
@@ -844,8 +927,11 @@ public class HorGroupExecutor extends GroupExecutor {
             BITargetAndDimension rowCol = colDimension[i];
             cbox.setName(rowCol.getValue());
             cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_X);
-            if (!isTargetSort) {cbox.setSortType(colDimension[i].getSortType());
-            } else {cbox.setSortType(BIReportConstant.SORT.NONE);}
+            if (!isTargetSort) {
+                cbox.setSortType(colDimension[i].getSortType());
+            } else {
+                cbox.setSortType(BIReportConstant.SORT.NONE);
+            }
             cell.setBoxElement(cbox);
             cbcells[cell.getColumn()][cell.getRow()] = cell;
         }
@@ -866,15 +952,13 @@ public class HorGroupExecutor extends GroupExecutor {
             cbox.setSortTargetValue("[]");
             if (widget.getTargetSort() != null && ComparatorUtils.equals(widget.getTargetSort().getName(), usedSumTarget[i].getText())) {
                 cbox.setSortType((Integer) widget.getTargetSort().getObject());
-            } else {cbox.setSortType(BIReportConstant.SORT.NONE);}
+            } else {
+                cbox.setSortType(BIReportConstant.SORT.NONE);
+            }
             cell.setBoxElement(cbox);
             cbcells[cell.getColumn()][cell.getRow()] = cell;
         }
         return cbcells;
-    }
-
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
-        return null;
     }
 
     /**

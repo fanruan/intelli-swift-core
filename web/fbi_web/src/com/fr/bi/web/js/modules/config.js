@@ -1651,13 +1651,13 @@ BICst.TARGET_STYLE_LEVEL = [{
     text: BI.i18nText("BI-Count"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
 }, {
-    text: BI.i18nText("BI-Wan"),
+    text: BI.i18nText("BI-Basic_Wan"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND
 }, {
-    text: BI.i18nText("BI-Million"),
+    text: BI.i18nText("BI-Basic_Million"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.MILLION
 }, {
-    text: BI.i18nText("BI-Yi"),
+    text: BI.i18nText("BI-Basic_Yi"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.YI
 }, {
     text: "%",
@@ -1668,13 +1668,13 @@ BICst.TARGET_STYLE_LEVEL_SHORT = [{
     text: BI.i18nText("BI-Normal"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
 }, {
-    text: BI.i18nText("BI-Wan"),
+    text: BI.i18nText("BI-Basic_Wan"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND
 }, {
-    text: BI.i18nText("BI-Million"),
+    text: BI.i18nText("BI-Basic_Million"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.MILLION
 }, {
-    text: BI.i18nText("BI-Yi"),
+    text: BI.i18nText("BI-Basic_Yi"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.YI
 }, {
     text: "%",
@@ -1685,13 +1685,13 @@ BICst.TARGET_STYLE_LEVEL = [{
     text: BI.i18nText("BI-Count"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
 }, {
-    text: BI.i18nText("BI-Wan"),
+    text: BI.i18nText("BI-Basic_Wan"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND
 }, {
-    text: BI.i18nText("BI-Million"),
+    text: BI.i18nText("BI-Basic_Million"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.MILLION
 }, {
-    text: BI.i18nText("BI-Yi"),
+    text: BI.i18nText("BI-Basic_Yi"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.YI
 }, {
     text: "%",

@@ -5,13 +5,6 @@ if (!window.FR) {
 FR.serverURL = document.location.href;
 FR.servletURL = "";
 
-BI.i18nText4Mobile = {
-    'BI-Count': '个',
-    'BI-Wan': '万',
-    'BI-Million': '百万',
-    'BI-Yi': '亿'
-};
-
 FR.i18n = BI.i18n = {
     Monday: 'Monday',
     Tuesday: 'Tuesday',
