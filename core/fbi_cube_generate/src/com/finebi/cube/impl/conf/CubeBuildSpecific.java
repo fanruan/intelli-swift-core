@@ -53,9 +53,8 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
             tableID.add(tableSource.getSourceID());
         }
         for (BITableRelation relation : configHelper.getSystemTableRelations()) {
-            if (tableID.contains(relation.getPrimaryTable().getTableSource().getSourceID())) {
-                relationsAboutTable.add(configHelper.convertRelation(relation));
-            } else if (tableID.contains(relation.getForeignTable().getTableSource().getSourceID())) {
+            if (tableID.contains(relation.getPrimaryTable().getTableSource().getSourceID())
+                    || tableID.contains(relation.getForeignTable().getTableSource().getSourceID())) {
                 relationsAboutTable.add(configHelper.convertRelation(relation));
             }
         }
@@ -307,7 +306,7 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
                 copyTableFile(tempResourceRetrieval, advancedResourceRetrieval, source);
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(),e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return true;
     }
