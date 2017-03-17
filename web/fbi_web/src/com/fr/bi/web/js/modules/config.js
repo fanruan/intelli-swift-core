@@ -1736,6 +1736,24 @@ BICst.PERCENTAGE_SHOW = [{
     value: BICst.PERCENTAGE.NOT_SHOW
 }];
 
+BICst.DATE_GROUP = {};
+BICst.DATE_GROUP[BICst.GROUP.Y] = BI.i18nText("BI-Year_Fen");
+BICst.DATE_GROUP[BICst.GROUP.S] = BI.i18nText("BI-Multi_Date_Quarter");
+BICst.DATE_GROUP[BICst.GROUP.M] = BI.i18nText("BI-Month_Fen");
+BICst.DATE_GROUP[BICst.GROUP.WEEK_COUNT] = BI.i18nText("BI-Week_Count");
+BICst.DATE_GROUP[BICst.GROUP.W] = BI.i18nText("BI-Week_XingQi");
+BICst.DATE_GROUP[BICst.GROUP.D] = BI.i18nText("BI-Day_Ri");
+BICst.DATE_GROUP[BICst.GROUP.HOUR] = BI.i18nText("BI-Hour_Sin");
+BICst.DATE_GROUP[BICst.GROUP.MINUTE] = BI.i18nText("BI-Minute");
+BICst.DATE_GROUP[BICst.GROUP.SECOND] = BI.i18nText("BI-Seconds");
+BICst.DATE_GROUP[BICst.GROUP.YS] = BI.i18nText("BI-Year_Quarter");
+BICst.DATE_GROUP[BICst.GROUP.YM] = BI.i18nText("BI-Year_Month");
+BICst.DATE_GROUP[BICst.GROUP.YW] = BI.i18nText("BI-Year_Week");
+BICst.DATE_GROUP[BICst.GROUP.YMD] = BI.i18nText("BI-YMD_Date");
+BICst.DATE_GROUP[BICst.GROUP.YMDH] = BI.i18nText("BI-YMDH");
+BICst.DATE_GROUP[BICst.GROUP.YMDHM] = BI.i18nText("BI-YMDHM");
+BICst.DATE_GROUP[BICst.GROUP.YMDHMS] = BI.i18nText("BI-Detail_Date");
+
 
 BICst.WIDGET_ICON_CLS_MAP = {};
 BICst.WIDGET_ICON_CLS_MAP[BICst.WIDGET.TABLE] = "drag-group-icon";

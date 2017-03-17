@@ -334,7 +334,7 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
                 self._setInnerValue(this.param);
                 break;
             default:
-                if (BI.isNull(v)) {
+                if (BI.isNull(v) || BI.isEmptyObject(v)) {
                     var date = new Date();
                     this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
                     this.ymd.setValue({

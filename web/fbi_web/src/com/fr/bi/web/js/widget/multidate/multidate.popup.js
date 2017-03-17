@@ -269,7 +269,7 @@
                     self._setInnerValue(this.day);
                     break;
                 default:
-                    if (BI.isNull(value)) {
+                    if (BI.isNull(value) || BI.isEmptyObject(value)) {
                         var date = new Date();
                         this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
                         this.ymd.setValue({
