@@ -1,3 +1,4 @@
+ETLCst = window.ETLCst || {};
 ETLCst.ETL_TYPE = {};
 ETLCst.ETL_TYPE.SELECT_DATA = 1;
 ETLCst.ETL_TYPE.SELECT_NONE_DATA = 2;
