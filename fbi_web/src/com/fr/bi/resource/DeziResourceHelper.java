@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Wang on 2017/1/18.
  */
 public class DeziResourceHelper {
-    private static String[] getDeziCssModule() {
+    public static String[] getDeziCssModule() {
         return new String[]{
                 //驾驶舱相关模块
                 "com/fr/bi/web/css/modules/base/combos/widget.combo.css",
@@ -847,8 +847,6 @@ public class DeziResourceHelper {
         List<String[]> jsList = new ArrayList<String[]>();
         jsList.add(getDeziAndShowJsModule());
         jsList.add(getDeziJsModule());
-        jsList.add(getDeziModelJs());
-        jsList.add(getDeziViewJs());
         jsList.add(new String[]{
                 "com/fr/bi/web/js/dezi/dezi.start.js",
                 "com/fr/bi/web/js/dezi/model.js",
@@ -857,6 +855,8 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/dezi.model.manage.js",
                 "com/fr/bi/web/js/dezi/modules/dezi.view.manage.js",
         });
+        jsList.add(getDeziModelJs());
+        jsList.add(getDeziViewJs());
         String[] result = new String[]{};
         for (String[] js : jsList) {
             result = ArrayUtils.addAll(result, js);

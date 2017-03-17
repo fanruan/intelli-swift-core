@@ -197,8 +197,6 @@ public class ShowResourceHelper {
         List<String[]> jsList = new ArrayList<String[]>();
         jsList.add(DeziResourceHelper.getDeziAndShowJsModule());
         jsList.add(getShowJsModule());
-        jsList.add(getShowModelJs());
-        jsList.add(getShowViewJs());
         jsList.add(new String[]{
                 "com/fr/bi/web/js/show/show.start.js",
                 "com/fr/bi/web/js/show/model.js",
@@ -209,6 +207,8 @@ public class ShowResourceHelper {
                 "com/fr/bi/web/js/show/modules/model/show.model.js",
                 "com/fr/bi/web/js/show/modules/model/pane/model.pane.js",
         });
+        jsList.add(getShowModelJs());
+        jsList.add(getShowViewJs());
         String[] result = new String[]{};
         for (String[] js : jsList) {
             result = ArrayUtils.addAll(result, js);
