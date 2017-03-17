@@ -2,6 +2,9 @@ package com.fr.bi.resource;
 
 import com.fr.stable.ArrayUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Wang on 2017/1/18.
  */
@@ -715,17 +718,9 @@ public class DeziResourceHelper {
         };
     }
 
-    public static String[] getDeziJs() {
-        String[] showAndDezi = getDeziAndShowJsModule();
-        String[] dezi = getDeziJsModule();
-        return (String[]) ArrayUtils.addAll(ArrayUtils.addAll(showAndDezi, dezi), new String[]{
 
-                "com/fr/bi/web/js/dezi/dezi.start.js",
-                "com/fr/bi/web/js/dezi/model.js",
-                "com/fr/bi/web/js/dezi/view.js",
-                "com/fr/bi/web/js/dezi/modules/dezi.floatbox.manage.js",
-                "com/fr/bi/web/js/dezi/modules/dezi.model.manage.js",
-                "com/fr/bi/web/js/dezi/modules/dezi.view.manage.js",
+    private static String[] getDeziModelJs() {
+        return new String[]{
                 "com/fr/bi/web/js/dezi/modules/model/dezi.model.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/model.pane.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.widget.js",
@@ -784,6 +779,11 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/customgroup/model.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/customsort/model.customsort.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/numbercustomgroup/model.number.custom.group.js",
+        };
+    }
+
+    private static String[] getDeziViewJs() {
+        return new String[]{
                 "com/fr/bi/web/js/dezi/modules/view/dezi.view.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/dezi.pane.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.widget.js",
@@ -840,6 +840,28 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customgroup/dezi.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customsort/dezi.customsort.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/numbercustomgroup/dezi.number.custom.group.js"
+        };
+    }
+
+    public static String[] getDeziJs() {
+        List<String[]> jsList = new ArrayList<String[]>();
+        jsList.add(getDeziAndShowJsModule());
+        jsList.add(getDeziJsModule());
+        jsList.add(getDeziModelJs());
+        jsList.add(getDeziViewJs());
+        jsList.add(new String[]{
+                "com/fr/bi/web/js/dezi/dezi.start.js",
+                "com/fr/bi/web/js/dezi/model.js",
+                "com/fr/bi/web/js/dezi/view.js",
+                "com/fr/bi/web/js/dezi/modules/dezi.floatbox.manage.js",
+                "com/fr/bi/web/js/dezi/modules/dezi.model.manage.js",
+                "com/fr/bi/web/js/dezi/modules/dezi.view.manage.js",
         });
+        String[] result = new String[]{};
+        for (String[] js : jsList) {
+            result = ArrayUtils.addAll(result, js);
+        }
+
+        return result;
     }
 }
