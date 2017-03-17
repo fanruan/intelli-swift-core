@@ -332,6 +332,7 @@ BI.GroupTable = BI.inherit(BI.Pane, {
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
+        this.table.attr("minColumnSize", this.model.getMinColumnSize());
         this.table.attr("regionColumnSize", this.model.getStoredRegionColumnSize());
         this.table.attr("headerRowSize", this.model.getHeaderRowSize());
         this.table.attr("rowSize", this.model.getRowSize());
