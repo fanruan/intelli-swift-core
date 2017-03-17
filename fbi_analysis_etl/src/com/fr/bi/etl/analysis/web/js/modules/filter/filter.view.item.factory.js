@@ -68,7 +68,7 @@ BI.ETLFilterViewItemFactory = {
                 right: [BI.createWidget({
                     type : 'bi.label',
                     cls : 'title',
-                    text : v.length +BI.i18nText("BI-Tiao") + BI.i18nText("BI-Basic_Data")
+                    text : v.length +BI.i18nText("BI-Base_Tiao") + BI.i18nText("BI-Basic_Data")
                 })]
             }
         }));
@@ -98,7 +98,7 @@ BI.ETLFilterViewItemFactory = {
                 right: [BI.createWidget({
                     type : 'bi.label',
                     cls : 'title',
-                    text : v.length +BI.i18nText("BI-Tiao") + BI.i18nText("BI-Basic_Data")
+                    text : v.length +BI.i18nText("BI-Base_Tiao") + BI.i18nText("BI-Basic_Data")
                 })]
             }
         }));
@@ -198,9 +198,9 @@ BI.ETLFilterViewItemFactory = {
             case BICst.FILTER_DATE.BELONG_DATE_RANGE :
                 return this._createItems([this._createDateRange(filterValue)], BI.i18nText("BI-ETL_Date_In_Range"));
             case BICst.FILTER_DATE.MORE_THAN :
-                return this._createItems([[fieldName ,  this._createItemByCls('more-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-Later_Than") + BI.i18nText('BI-Someone') + BI.i18nText('BI-Time') + ' :');
+                return this._createItems([[fieldName ,  this._createItemByCls('more-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-Later_Than") + BI.i18nText('BI-Base_Someone') + BI.i18nText('BI-Base_Time') + ' :');
             case BICst.FILTER_DATE.LESS_THAN :
-                return this._createItems([[fieldName ,  this._createItemByCls('less-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-Sooner_Than") + BI.i18nText('BI-Someone') + BI.i18nText('BI-Time') + ' :');
+                return this._createItems([[fieldName ,  this._createItemByCls('less-equal-font') , this._getDateText(filterValue)]], BI.i18nText("BI-Sooner_Than") + BI.i18nText('BI-Base_Someone') + BI.i18nText('BI-Base_Time') + ' :');
             case BICst.FILTER_DATE.DAY_EQUAL_TO :
                 return this._createItems([fieldName + ' = ' +this._getDateText(filterValue)]);
             case BICst.FILTER_DATE.DAY_NOT_EQUAL_TO :

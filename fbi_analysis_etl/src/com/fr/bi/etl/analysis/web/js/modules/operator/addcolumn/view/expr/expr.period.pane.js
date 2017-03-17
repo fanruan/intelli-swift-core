@@ -57,7 +57,7 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.MVCWidget, {
                     el : {
                         type : 'bi.label',
                         cls : 'label-name',
-                        text : BI.i18nText('BI-Formula_Time_Field') + BI.i18nText('BI-Setting'),
+                        text : BI.i18nText('BI-Formula_Time_Field') + BI.i18nText('BI-Base_Setting'),
                         textAlign : 'left'
                     },
                     left : 585,

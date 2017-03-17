@@ -73,7 +73,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
             case BICst.GROUP.Y :
                 return BI.i18nText("BI-Year_Fen");
             case BICst.GROUP.S :
-                return BI.i18nText("BI-Quarter");
+                return BI.i18nText("BI-Base_Quarter");
             case BICst.GROUP.M :
                 return BI.i18nText("BI-Multi_Date_Month");
             case BICst.GROUP.W :

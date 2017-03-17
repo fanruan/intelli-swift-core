@@ -36,7 +36,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         var deleteIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: 'delete-template-font template-item-icon',
-            title: BI.i18nText("BI-Remove"),
+            title: BI.i18nText("BI-Base_Remove"),
             invisible: true,
             stopPropagation: true
         });

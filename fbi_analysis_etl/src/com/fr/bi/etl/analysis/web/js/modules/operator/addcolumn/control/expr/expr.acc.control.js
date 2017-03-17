@@ -31,7 +31,7 @@ BI.AnalysisETLOperatorAddColumnExprAccController = BI.inherit(BI.MVCController, 
         widget.labels.empty();
         var group = model.get('group') || [];
         BI.each(group, function(i, item){
-            var text = BI.i18nText('BI-Same') + BI.i18nText('BI-Brackets_Value', item) + (i === group.length - 1 ? BI.i18nText('BI-Relation_In') : '');
+            var text = BI.i18nText('BI-Base_Same') + BI.i18nText('BI-Brackets_Value', item) + (i === group.length - 1 ? BI.i18nText('BI-Relation_In') : '');
             widget.labels.addItem(BI.createWidget({
                 type : 'bi.label',
                 textAlign : 'left',

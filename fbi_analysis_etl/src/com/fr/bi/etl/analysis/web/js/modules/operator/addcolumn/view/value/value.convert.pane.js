@@ -76,7 +76,7 @@ BI.AnalysisETLOperatorAddColumnValueConvertPane = BI.inherit(BI.MVCWidget, {
                             type : 'bi.label',
                             cls : 'label-name',
                             width : self._constants.LABEL_WIDTH,
-                            text : BI.i18nText('BI-Type') + BI.i18nText('BI-Basic_Choose'),
+                            text : BI.i18nText('BI-Base_Type') + BI.i18nText('BI-Basic_Choose'),
                             textAlign : 'left'
                         },
                         {
