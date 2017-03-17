@@ -26,7 +26,7 @@ BI.TargetFilterSelectField = BI.inherit(BI.Widget, {
                 var tablesStructure = [];
                 tablesStructure.push({
                     id: currentTableId,
-                    type: "bi.select_data_level0_node",
+                    type: "bi.select_data_level_node",
                     text: BI.Utils.getTableNameByID(currentTableId),
                     title: BI.Utils.getTableNameByID(currentTableId),
                     value: currentTableId,
@@ -36,7 +36,7 @@ BI.TargetFilterSelectField = BI.inherit(BI.Widget, {
                 BI.each(primaryRelationTableIds, function (i, tId) {
                     tablesStructure.push({
                         id: tId,
-                        type: "bi.select_data_level0_node",
+                        type: "bi.select_data_level_node",
                         text: BI.Utils.getTableNameByID(tId),
                         title: BI.Utils.getTableNameByID(tId),
                         value: tId,

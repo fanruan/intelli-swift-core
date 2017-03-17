@@ -132,9 +132,7 @@ public class CommonResourceHelper {
 
 
                 //业务包选择字段服务
-                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level0.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.js",
-                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level2.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.moredate.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.relationtables.js",

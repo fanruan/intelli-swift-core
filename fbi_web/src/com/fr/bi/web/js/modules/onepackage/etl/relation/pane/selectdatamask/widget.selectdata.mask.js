@@ -133,7 +133,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         BI.each(tableIds, function (i, id) {
             tablesStructure.push({
                 id: id,
-                type: "bi.select_data_level0_node",
+                type: "bi.select_data_level_node",
                 text: BI.Utils.getTransNameById4Conf(id),
                 title: BI.Utils.getTransNameById4Conf(id),
                 value: id,

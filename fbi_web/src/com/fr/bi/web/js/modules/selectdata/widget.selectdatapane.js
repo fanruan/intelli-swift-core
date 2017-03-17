@@ -28,7 +28,8 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                     return BI.map(tIds, function (i, id) {
                         return {
                             id: id,
-                            type: "bi.detail_select_data_level1_node"
+                            type: "bi.detail_select_data_level_node",
+                            layer: 1
                         }
                     })
                 }

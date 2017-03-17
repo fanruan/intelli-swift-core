@@ -49,7 +49,7 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
         BI.each(tables, function (id, table) {
             tablesStructure.push({
                 id: id,
-                type: "bi.select_data_level0_node",
+                type: "bi.select_data_level_node",
                 text: translations[id],
                 value: id,
                 isParent: true,

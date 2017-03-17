@@ -176,7 +176,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             text: BI.Utils.getTableNameByID(finded.pId) || BI.Utils.getFieldNameByID(finded.pId) || "",
                             title: title,
                             value: finded.pId,
-                            type: "bi.detail_select_data_level0_node",
+                            type: "bi.detail_select_data_level_node",
                             layer: 0
                         }, field2TableMap[finded.id || finded.value], {
                             isParent: true,
@@ -240,7 +240,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             tablesStructure.push(BI.extend({
                 id: table.id,
                 wId: o.wId,
-                type: "bi.detail_select_data_level0_node",
+                type: "bi.detail_select_data_level_node",
                 layer: 0,
                 text: showText,
                 title: self._getTitleByTableId(table.id),
@@ -277,7 +277,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         pId: BI.PackageSelectDataService.RELATION_TABLE,
                         type: "bi.relation_table_expander",
                         el: BI.extend({
-                            type: "bi.detail_select_data_level1_node",
+                            type: "bi.detail_select_data_level_node",
                             layer: 1,
                             wId: o.wId,
                             text: BI.Utils.getTableNameByID(table.id) || "",

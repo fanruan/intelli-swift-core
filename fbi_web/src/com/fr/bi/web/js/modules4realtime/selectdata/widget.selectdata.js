@@ -37,7 +37,7 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
                 return BI.map(ids, function (i, id) {
                     return {
                         id: id,
-                        type: "bi.detail_select_data_level0_node_4_realtime"
+                        type: "bi.detail_select_data_level_node_4_realtime"
                     }
                 })
             },

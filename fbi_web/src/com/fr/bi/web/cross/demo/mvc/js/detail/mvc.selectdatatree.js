@@ -13,7 +13,7 @@ SelectDataTreeView = BI.inherit(BI.View, {
         return this.expander = BI.createWidget({
             type: "bi.select_data_expander",
             el: {
-                type: "bi.select_data_level0_node",
+                type: "bi.select_data_level_node",
                 text: "可展开节点"
             },
             popup: {
@@ -109,14 +109,14 @@ SelectDataTreeView = BI.inherit(BI.View, {
                     populate([
                         {
                             id: 1,
-                            type: "bi.select_data_level0_node",
+                            type: "bi.select_data_level_node",
                             text: "合同回款信息",
                             value: 1,
                             isParent: true,
                             //open: true
                         }, {
                             id: 2,
-                            type: "bi.select_data_level0_node",
+                            type: "bi.select_data_level_node",
                             text: "合同信息",
                             value: 2,
                             isParent: true,
@@ -246,7 +246,7 @@ SelectDataTreeView = BI.inherit(BI.View, {
                 type: "bi.select_data_level1_item",
                 text: "第二层字段"
             }, {
-                type: "bi.select_data_level0_node",
+                type: "bi.select_data_level_node",
                 text: "第一层节点"
             }, {
                 type: "bi.select_data_level1_node",
