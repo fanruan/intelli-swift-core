@@ -124,7 +124,7 @@ BI.CalculateTargetAbstractPeriodRatePane = BI.inherit(BI.Widget, {
                                             type: "bi.vertical_adapt",
                                             items: [{
                                                 type: "bi.label",
-                                                value: BI.i18nText("BI-Minus"),
+                                                value: BI.i18nText("BI-Basic_Minus"),
                                                 textAlign: "center",
                                                 width: 30
                                             }]

@@ -164,7 +164,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text: BI.i18nText("BI-Style_And_NumberLevel"),
                         value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
                     }, {
-                        text: BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        text: BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal_Orientation") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     },{
                         text: BI.i18nText("BI-Data_Label"),
@@ -201,7 +201,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text: BI.i18nText("BI-Style_And_NumberLevel"),
                         value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
                     }, {
-                        text: BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        text: BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal_Orientation") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     },{
                         text: BI.i18nText("BI-Data_Label"),
@@ -263,7 +263,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text: BI.i18nText("BI-Style_And_NumberLevel"),
                         value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
                     }, {
-                        text: BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        text: BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal_Orientation") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     },{
                         text: BI.i18nText("BI-Data_Label"),
@@ -295,7 +295,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text: BI.i18nText("BI-Style_And_NumberLevel"),
                         value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
                     }, {
-                        text: BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        text: BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal_Orientation") + ")",
                         value: BICst.TARGET_COMBO.CORDON
                     },{
                         text: BI.i18nText("BI-Data_Label"),
@@ -337,10 +337,10 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 break;
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:
-                var text = BI.i18nText("BI-Horizontal");
+                var text = BI.i18nText("BI-Horizontal_Orientation");
                 switch (regionType) {
                     case BICst.REGION.TARGET1:
-                        text = BI.i18nText("BI-Horizontal");
+                        text = BI.i18nText("BI-Horizontal_Orientation");
                         break;
                     case BICst.REGION.TARGET2:
                         text = BI.i18nText("BI-Vertical");

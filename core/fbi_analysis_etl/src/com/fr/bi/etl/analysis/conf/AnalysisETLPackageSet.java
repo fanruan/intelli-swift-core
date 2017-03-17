@@ -21,7 +21,7 @@ import java.util.Set;
  * Created by 小灰灰 on 2015/12/23.
  */
 public class AnalysisETLPackageSet extends BIPackageContainer {
-    private static final String PACK_NAME = Inter.getLocText("BI-MYETL");
+    private static final String PACK_NAME = Inter.getLocText("BI-Basic_MYETL");
     private static final long serialVersionUID = -6841721407349147548L;
     private transient AnalysisETLBusiPack pack;
 

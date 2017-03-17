@@ -27,7 +27,7 @@ BI.ETLReq = {
         var mask = BI.createWidget({
             type: "bi.etl_loading_mask",
             masker: 'body',
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.requestAsync("fr_bi_analysis_etl", "get_used_tables", data, function (res) {
             if (mask != null) {
@@ -39,7 +39,7 @@ BI.ETLReq = {
                     var mask = BI.createWidget({
                         type: "bi.etl_loading_mask",
                         masker: 'body',
-                        text: BI.i18nText("BI-Loading")
+                        text: BI.i18nText("BI-Basic_Loading")
                     });
                     BI.requestAsync("fr_bi_analysis_etl", "delete_table", data, function () {
                         BI.Utils.afterDeleteTable(data.id);
@@ -58,7 +58,7 @@ BI.ETLReq = {
         var mask = BI.createWidget({
             type: "bi.etl_loading_mask",
             masker: 'body',
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.requestAsync("fr_bi_analysis_etl", "edit_table", data, function (res) {
             if (mask != null) {

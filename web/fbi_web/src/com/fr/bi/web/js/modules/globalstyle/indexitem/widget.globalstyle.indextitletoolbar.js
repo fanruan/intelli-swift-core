@@ -25,7 +25,7 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
 
         this.italic = BI.createWidget({
             type: "bi.icon_button",
-            title: BI.i18nText("BI-Italic"),
+            title: BI.i18nText("BI-Basic_Italic"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-italic-font"

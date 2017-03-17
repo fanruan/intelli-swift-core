@@ -272,7 +272,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         if (!isNaN(this.min) && !isNaN(this.max)) {
             this._setVisible(true);
             this.enable = true;
-            this.label.setErrorText(BI.i18nText("BI-Please_Enter") + this.min + "-" + this.max + BI.i18nText("BI-Basic_De") + BI.i18nText("BI-Number"));
+            this.label.setErrorText(BI.i18nText("BI-Please_Enter") + this.min + "-" + this.max + BI.i18nText("BI-Basic_De") + BI.i18nText("BI-Basic_Number"));
             if (BI.isNumeric(this.value) || BI.isNotEmptyString(this.value)) {
                 this.label.setValue(this.value);
                 this._setAllPosition(this._getPercentByValue(this.value));

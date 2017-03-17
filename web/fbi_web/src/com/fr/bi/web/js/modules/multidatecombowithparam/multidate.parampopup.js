@@ -260,7 +260,7 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
         } else {
             var date = obj.getCalculationValue();
             if(BI.isNull(date)){
-                date = BI.i18nText("BI-Null");
+                date = BI.i18nText("BI-Basic_Null");
             }else{
                 date = date.print("%Y-%x-%e");
             }

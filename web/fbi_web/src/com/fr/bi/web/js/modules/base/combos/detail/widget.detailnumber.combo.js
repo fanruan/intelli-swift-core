@@ -26,7 +26,7 @@ BI.DetailNumberDimensionCombo = BI.inherit(BI.Widget, {
                 cls: "filter-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Hyperlink"),
+                text: BI.i18nText("BI-Basic_Hyperlink"),
                 value: BICst.DETAIL_NUMBER_COMBO.HYPERLINK,
                 cls: "hyper-link-font"
             }],

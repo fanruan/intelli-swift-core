@@ -69,7 +69,7 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodPercentPane  = BI.inherit(BI.Analys
                     el : BI.createWidget({
                         type : 'bi.label',
                         cls : 'label-name',
-                        text : BI.i18nText('BI-Minus'),
+                        text : BI.i18nText('BI-Basic_Minus'),
                         textAlign : 'center',
                         height : self._constants.LABEL_HEIGHT
                     })

@@ -83,7 +83,7 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: self.element,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
             BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
                 var table = sourceTables[0];
@@ -409,7 +409,7 @@ BI.AddFormulaField = BI.inherit(BI.Widget, {
                 var mask = BI.createWidget({
                     type: "bi.loading_mask",
                     masker: self.element,
-                    text: BI.i18nText("BI-Loading")
+                    text: BI.i18nText("BI-Basic_Loading")
                 });
                 BI.Utils.getPreviewDataByTableAndFields(table, [], function (data) {
                     var item = self._createTableItems(data);

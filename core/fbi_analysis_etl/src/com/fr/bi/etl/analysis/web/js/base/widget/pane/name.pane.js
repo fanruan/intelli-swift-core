@@ -84,7 +84,7 @@ BI.ETLNamePane = BI.inherit(BI.Widget, {
                     hgap: self._constants.HGAP
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-MYETL"),
+                    text: BI.i18nText("BI-Basic_MYETL"),
                     height: self._constants.EDITOR_HEIGHT,
                     width: self._constants.EDITOR_WIDTH,
                     textAlign: "left",

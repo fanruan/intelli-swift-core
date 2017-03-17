@@ -301,7 +301,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                             var mask = BI.createWidget({
                                 type: "bi.loading_mask",
                                 masker: BICst.BODY_ELEMENT,
-                                text: BI.i18nText("BI-Loading")
+                                text: BI.i18nText("BI-Basic_Loading")
                             });
                             BI.Utils.checkTableInUse({
                                 id: self.model.getId()
@@ -687,7 +687,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: BICst.BODY_ELEMENT,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
             BI.Utils.saveFileGetExcelData(file.attach_id, function (data) {
                 //对比前一次fields，如果名称和个数都相同，更换full_file_name就好了
@@ -1038,7 +1038,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.element,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.checkTableExist(table, function (status) {
             callback(status);

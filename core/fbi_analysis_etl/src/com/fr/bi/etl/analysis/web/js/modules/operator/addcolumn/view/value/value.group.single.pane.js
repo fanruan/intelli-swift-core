@@ -60,7 +60,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
             },{
                 type : 'bi.label',
                 cls : 'label-name',
-                text : field.fieldType == BICst.COLUMN.NUMBER ? BI.i18nText('BI-Basic_Between') : BI.i18nText('BI-In'),
+                text : field.fieldType == BICst.COLUMN.NUMBER ? BI.i18nText('BI-Basic_Between') : BI.i18nText('BI-Basic_In'),
                 height : self._constants.ITEM_HEIGHT
             }, this.range,  {
                 type : 'bi.layout',

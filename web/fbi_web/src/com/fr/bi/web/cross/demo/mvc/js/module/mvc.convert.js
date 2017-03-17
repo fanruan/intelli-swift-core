@@ -26,7 +26,7 @@ ConvertView = BI.inherit(BI.View, {
                 self.loadingMasker = BI.createWidget({
                     type: "bi.loading_mask",
                     masker: self.west,
-                    text: BI.i18nText("BI-Loading")
+                    text: BI.i18nText("BI-Basic_Loading")
                 })
             }
         });

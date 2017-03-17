@@ -115,7 +115,7 @@
                 var mask = BI.createWidget({
                     type: "bi.loading_mask",
                     masker: this.element,
-                    text: BI.i18nText("BI-Loading")
+                    text: BI.i18nText("BI-Basic_Loading")
                 });
                 BI.requestAsync("fr_bi_base", "get_data_config_authorities", {}, function (res) {
                     Data.SharingPool.put(BICst.DATA_CONFIG_AUTHORITY_CACHE_KEY, res);

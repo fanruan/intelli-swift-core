@@ -146,7 +146,7 @@ ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE_ITEMS = [{
     text:BI.i18nText("BI-Quarter"),
     value:ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE.SEASON
 },{
-    text:BI.i18nText("BI-Month"),
+    text:BI.i18nText("BI-Basic_Month"),
     value:ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE.MONTH
 },{
     text:BI.i18nText("BI-Basic_Day"),

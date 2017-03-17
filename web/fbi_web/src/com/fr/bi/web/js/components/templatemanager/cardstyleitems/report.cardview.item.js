@@ -79,7 +79,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
                         return BI.i18nText("BI-Cancel_Apply_Hangout");
                     }
                     if (self.status === BICst.REPORT_STATUS.HANGOUT) {
-                        return BI.i18nText("BI-Hangouted");
+                        return BI.i18nText("BI-Has_Hangouted");
                     }
                 },
                 stopPropagation: true,
@@ -100,7 +100,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
                         return BI.i18nText("BI-Report_Hangout_Applying");
                     }
                     if (self.status === BICst.REPORT_STATUS.HANGOUT) {
-                        return BI.i18nText("BI-Hangouted");
+                        return BI.i18nText("BI-Has_Hangouted");
                     }
                 },
                 stopPropagation: true,

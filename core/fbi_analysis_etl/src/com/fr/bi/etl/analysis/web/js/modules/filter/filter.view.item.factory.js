@@ -156,7 +156,7 @@ BI.ETLFilterViewItemFactory = {
             case BICst.FILTER_TYPE.FORMULA :
                 return this._createItems([BI.Utils.getTextFromFormulaValue(filterValue, fieldItems)], BI.i18nText("BI-Basic_Formula"));
             case BICst.TARGET_FILTER_STRING.BELONG_VALUE :
-                return this._createMultiChooseItems(filterValue, BI.i18nText("BI-In"));
+                return this._createMultiChooseItems(filterValue, BI.i18nText("BI-Basic_In"));
             case BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE :
                 return this._createMultiChooseItems(filterValue, BI.i18nText("BI-Not_In"));
             case BICst.TARGET_FILTER_STRING.CONTAIN :
@@ -178,7 +178,7 @@ BI.ETLFilterViewItemFactory = {
             case BICst.TARGET_FILTER_NUMBER.BELONG_VALUE :
                 return this._createItems([this._createNumberRange(filterValue, fieldName)], BI.i18nText("BI-ETL_Number_IN"));
             case BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE :
-                return this._createItems([this._createNumberRange(filterValue, fieldName)], BI.i18nText("BI-Not") + BI.i18nText("BI-ETL_Number_IN"));
+                return this._createItems([this._createNumberRange(filterValue, fieldName)], BI.i18nText("BI-Basic_Not") + BI.i18nText("BI-ETL_Number_IN"));
             case BICst.TARGET_FILTER_NUMBER.EQUAL_TO :
                 return this._createItems([fieldName + ' = ' + (filterValue || '')]);
             case  BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO :

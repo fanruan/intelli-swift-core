@@ -17,7 +17,7 @@ BI.DimensionFilterItem = BI.inherit(BI.Widget, {
         switch (filter.filter_type) {
             //number
             case BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE:
-                relation = BI.i18nText("BI-In");
+                relation = BI.i18nText("BI-Basic_In");
                 value = model.getNumberRangeText(filter.filter_value);
                 break;
             case BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE:
@@ -49,13 +49,13 @@ BI.DimensionFilterItem = BI.inherit(BI.Widget, {
             case BICst.DIMENSION_FILTER_STRING.BELONG_VALUE:
                 var v = filter.filter_value;
                 var sType = v.type;
-                relation = sType === BI.Selection.All ? BI.i18nText("BI-Not_In") : BI.i18nText("BI-In");
+                relation = sType === BI.Selection.All ? BI.i18nText("BI-Not_In") : BI.i18nText("BI-Basic_In");
                 value = v.value;
                 break;
             case BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE:
                 var v = filter.filter_value;
                 var sType = v.type;
-                relation = sType === BI.Selection.All ? BI.i18nText("BI-In") : BI.i18nText("BI-Not_In");
+                relation = sType === BI.Selection.All ? BI.i18nText("BI-Basic_In") : BI.i18nText("BI-Not_In");
                 value = v.value;
                 break;
             case BICst.DIMENSION_FILTER_STRING.CONTAIN:
@@ -98,7 +98,7 @@ BI.DimensionFilterItem = BI.inherit(BI.Widget, {
                 break;
             //date
             case BICst.DIMENSION_FILTER_DATE.BELONG_VALUE:
-                relation = BI.i18nText("BI-In");
+                relation = BI.i18nText("BI-Basic_In");
                 value = model.getDateRangeText(filter.filter_value);
                 break;
             case BICst.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE:

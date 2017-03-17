@@ -14,7 +14,7 @@ BI.CustomGroupCombo = BI.inherit(BI.Single, {
 
         this.triggerButton = BI.createWidget({
             type: 'bi.button',
-            value: BI.i18nText("BI-Have_Selected") + 0 + BI.i18nText("BI-Item"),
+            value: BI.i18nText("BI-Have_Selected") + 0 + BI.i18nText("BI-Basic_Item"),
             level: 'ignore',
             readonly: false,
             height: 30

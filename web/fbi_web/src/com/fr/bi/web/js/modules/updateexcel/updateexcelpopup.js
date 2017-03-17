@@ -166,7 +166,7 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
                     type: "bi.loading_mask",
                     masker: self.element,
                     container: self.element,
-                    text: BI.i18nText("BI-Loading")
+                    text: BI.i18nText("BI-Basic_Loading")
                 });
             }, function () {
                 if (self.model.getValidation() === false) {

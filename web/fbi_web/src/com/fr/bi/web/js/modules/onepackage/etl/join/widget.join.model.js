@@ -21,7 +21,7 @@ BI.JoinModel = BI.inherit(FR.OB, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getTablesDetailInfoByTables(this.isReopen() ? this.getJoinTables() : [this.getTableInfo()], function (data) {
             self.fields = data[0].fields;

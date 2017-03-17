@@ -17,7 +17,7 @@ BI.AddFormulaFieldModel = BI.inherit(FR.OB, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
 
         //第一次打开用原始表,其他的用上次elt操作之后的table

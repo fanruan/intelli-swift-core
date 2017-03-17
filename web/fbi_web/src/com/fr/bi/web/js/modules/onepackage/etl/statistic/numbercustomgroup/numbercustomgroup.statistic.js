@@ -24,7 +24,7 @@ BI.NumberCustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
         this.loadingMsker = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.element,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
     },
 
@@ -34,7 +34,7 @@ BI.NumberCustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
             this.loadingMsker = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: this.element,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
         }
         o.model.getMinMaxValueForNumberCustomGroup(o.dId, function(res){

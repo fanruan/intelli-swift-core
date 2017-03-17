@@ -1,6 +1,6 @@
 // full day names
 Date._DN = [BI.i18nText("BI-Sunday"),
-    BI.i18nText("BI-Monday"),
+    BI.i18nText("BI-Basic_Monday"),
     BI.i18nText("BI-Tuesday"),
     BI.i18nText("BI-Wednesday"),
     BI.i18nText("BI-Thursday"),

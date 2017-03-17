@@ -16,7 +16,7 @@ BIConf.View = BI.inherit(BI.View, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getTranslationsRelationsFields(function (data) {
             Data.SharingPool.put("translations", data.translations);

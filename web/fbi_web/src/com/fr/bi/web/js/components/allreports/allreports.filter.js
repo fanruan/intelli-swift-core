@@ -341,9 +341,9 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
             value: BICst.REPORT_STATUS.NORMAL,
             title: BI.i18nText("BI-Not_Apply_Hangout")
         }, {
-            text: BI.i18nText("BI-Hangouted"),
+            text: BI.i18nText("BI-Has_Hangouted"),
             value: BICst.REPORT_STATUS.HANGOUT,
-            title: BI.i18nText("BI-Hangouted")
+            title: BI.i18nText("BI-Has_Hangouted")
         }];
         callback(items);
     },

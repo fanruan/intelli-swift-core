@@ -18,7 +18,7 @@ BI.HyperLinkPopup = BI.inherit(BI.BarPopoverSection, {
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text: BI.i18nText("BI-Hyperlink"),
+            text: BI.i18nText("BI-Basic_Hyperlink"),
             height: 50,
             textAlign: "left",
             lgap: 10

@@ -53,7 +53,7 @@ BI.PackageTablesMainPane = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.element,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getTablesByPackId(o.packId, function (tables) {
             self.tables = [];

@@ -144,7 +144,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
             items:[{
                 type: "bi.label",
                 cls: "group-statistic-north-label",
-                text: BI.i18nText("BI-Grouping_Count") + BI.i18nText("BI-Management"),
+                text: BI.i18nText("BI-Grouping_Count") + BI.i18nText("BI-Basic_Management"),
                 height: this.constants.GROUP_STATISTIC_NORTH_HEIGHT
             }],
             hgap: this.constants.GROUP_STATISTIC_GAP_TWENTY
@@ -179,7 +179,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: self.element,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
             BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
                 var table = sourceTables[0];
@@ -364,7 +364,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
                             self.previewLoadingMasker = BI.createWidget({
                                 type: "bi.loading_mask",
                                 masker: self.center,
-                                text: BI.i18nText("BI-Loading"),
+                                text: BI.i18nText("BI-Basic_Loading"),
                                 offset: {
                                     left: self.constants.GROUP_STATISTIC_GAP_TWENTY,
                                     top: self.constants.GROUP_STATISTIC_GAP_TEN,
@@ -537,7 +537,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
         this.loadingMasker = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.west,
-            text: BI.i18nText("BI-Loading"),
+            text: BI.i18nText("BI-Basic_Loading"),
             offset: {
                 left: self.constants.GROUP_STATISTIC_GAP_TWENTY,
                 top: self.constants.GROUP_STATISTIC_GAP_TEN,

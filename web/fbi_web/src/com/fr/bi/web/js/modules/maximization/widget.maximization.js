@@ -23,7 +23,7 @@ BI.Maximization = BI.inherit(BI.Widget, {
             element: this.element,
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT,
-            title: BI.i18nText("BI-Maximization"),
+            title: BI.i18nText("BI-Basic_Maximization"),
             cls: "widget-tools-maximization-font dashboard-title-detail"
         });
         maximization.on(BI.IconButton.EVENT_CHANGE, function () {

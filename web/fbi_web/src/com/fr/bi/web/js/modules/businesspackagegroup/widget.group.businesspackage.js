@@ -13,7 +13,7 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
         this.chosenLabel = BI.createWidget({
             type: "bi.label",
             textHeight: 30,
-            value: BI.i18nText("BI-Have_Selected") + 0 + BI.i18nText("BI-Item")
+            value: BI.i18nText("BI-Have_Selected") + 0 + BI.i18nText("BI-Basic_Item")
         });
 
         this.move2group = BI.createWidget({
@@ -216,7 +216,7 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
         var self = this;
         var chosenMap = self.groupPane.getSelectedFieldMap();
         var chosenNum = BI.size(chosenMap);
-        self.chosenLabel.setValue(BI.i18nText("BI-Have_Selected") + chosenNum + BI.i18nText("BI-Item"));
+        self.chosenLabel.setValue(BI.i18nText("BI-Have_Selected") + chosenNum + BI.i18nText("BI-Basic_Item"));
         self.chosenLabel.doRedMark(self.chosenLabel.getValue());
         if (chosenNum > 0) {
             self.move2group.setEnable(true);

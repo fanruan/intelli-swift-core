@@ -57,7 +57,7 @@ BI.DetailDateDimensionCombo = BI.inherit(BI.Widget, {
                 cls: "filter-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Hyperlink"),
+                text: BI.i18nText("BI-Basic_Hyperlink"),
                 value: BICst.DETAIL_DATE_COMBO.HYPERLINK,
                 cls: "hyper-link-font"
             }],

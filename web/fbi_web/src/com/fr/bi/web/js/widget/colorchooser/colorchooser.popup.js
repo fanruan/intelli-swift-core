@@ -97,7 +97,7 @@ BI.ColorChooserPopup = BI.inherit(BI.Widget, {
                 cls: "color-chooser-popup-more",
                 textAlign: "center",
                 height: 20,
-                text: BI.i18nText("BI-More") + "..."
+                text: BI.i18nText("BI-Basic_More") + "..."
             },
             popup: panel
         });

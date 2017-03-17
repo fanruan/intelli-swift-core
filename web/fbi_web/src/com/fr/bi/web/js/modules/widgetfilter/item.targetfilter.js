@@ -25,7 +25,7 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
                 value = filter.filter_value;
                 break;
             case BICst.TARGET_FILTER_NUMBER.BELONG_VALUE:
-                relation = BI.i18nText("BI-In");
+                relation = BI.i18nText("BI-Basic_In");
                 value = model.getNumberRangeText(filter.filter_value);
                 break;
             case BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE:
@@ -42,13 +42,13 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
             case BICst.TARGET_FILTER_STRING.BELONG_VALUE:
                 var v = filter.filter_value;
                 var sType = v.type;
-                relation = sType === BI.Selection.All ? BI.i18nText("BI-Not_In") : BI.i18nText("BI-In");
+                relation = sType === BI.Selection.All ? BI.i18nText("BI-Not_In") : BI.i18nText("BI-Basic_In");
                 value = v.value;
                 break;
             case BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE:
                 var v = filter.filter_value;
                 var sType = v.type;
-                relation = sType === BI.Selection.All ? BI.i18nText("BI-In") : BI.i18nText("BI-Not_In");
+                relation = sType === BI.Selection.All ? BI.i18nText("BI-Basic_In") : BI.i18nText("BI-Not_In");
                 value = v.value;
                 break;
             case BICst.TARGET_FILTER_STRING.CONTAIN:
@@ -83,7 +83,7 @@ BI.TargetFilterItem = BI.inherit(BI.Widget, {
                 break;
             //date
             case BICst.FILTER_DATE.BELONG_DATE_RANGE:
-                relation = BI.i18nText("BI-In");
+                relation = BI.i18nText("BI-Basic_In");
                 value = model.getDateRangeText(filter.filter_value);
                 break;
             case BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE:

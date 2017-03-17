@@ -114,9 +114,9 @@ BI.Param2DateItem = BI.inherit(BI.Single, {
     _getTextByDateType: function(){
         switch (this.options.value) {
             case BI.Param2DateItem.MONTH_WEEK:
-                return {ftext: BI.i18nText("BI-Month"), stext: BI.i18nText("BI-Week_Of_Week")};
+                return {ftext: BI.i18nText("BI-Basic_Month"), stext: BI.i18nText("BI-Week_Of_Week")};
             case BI.Param2DateItem.MONTH_DAY:
-                return {ftext: BI.i18nText("BI-Month"), stext: BI.i18nText("BI-Day_De")};
+                return {ftext: BI.i18nText("BI-Basic_Month"), stext: BI.i18nText("BI-Day_De")};
             case BI.Param2DateItem.YEAR_MONTH:
                 return {ftext: BI.i18nText("BI-Year"), stext: BI.i18nText("BI-Month_De_Month")};
             case BI.Param2DateItem.YEAR_DAY:

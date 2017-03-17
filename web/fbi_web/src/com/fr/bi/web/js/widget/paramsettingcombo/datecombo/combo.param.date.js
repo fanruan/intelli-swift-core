@@ -67,9 +67,9 @@ BI.DateParamCombo = BI.inherit(BI.Widget, {
             case BICst.YEAR_DAY:
                 return value.fvalue + BI.i18nText("BI-Year") + midText + BI.i18nText("BI-Day_De");
             case BICst.MONTH_WEEK:
-                return value.fvalue + BI.i18nText("BI-Month") + midText + BI.i18nText("BI-Week_De");
+                return value.fvalue + BI.i18nText("BI-Basic_Month") + midText + BI.i18nText("BI-Week_De");
             case BICst.MONTH_DAY:
-                return value.fvalue + BI.i18nText("BI-Month") + midText + BI.i18nText("BI-Day_De");
+                return value.fvalue + BI.i18nText("BI-Basic_Month") + midText + BI.i18nText("BI-Day_De");
         }
     },
 

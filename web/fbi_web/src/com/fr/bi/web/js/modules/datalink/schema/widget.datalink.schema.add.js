@@ -253,7 +253,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
         } else {
             this._toggleSchemaStatus(false);
         }
-        var schemaWrapper = this._createItemsWrapper(BI.i18nText("BI-Third_Step"), BI.i18nText("BI-Mode"), this.schemaCombo);
+        var schemaWrapper = this._createItemsWrapper(BI.i18nText("BI-Third_Step"), BI.i18nText("BI-Basic_Mode"), this.schemaCombo);
 
         BI.createWidget({
             type: "bi.vertical",
