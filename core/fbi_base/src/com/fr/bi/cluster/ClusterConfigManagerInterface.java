@@ -1,1 +1,0 @@
-package com.fr.bi.cluster;/** * Created by Hiram on 2015/2/27. */public interface ClusterConfigManagerInterface {    public void updateConfig();}
