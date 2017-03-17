@@ -287,10 +287,10 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                 return field.field_name === dimension._src.field_name
             })
             if (BI.isNull(f)){
-                msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
+                msg = BI.i18nText('BI-Group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
                 return true;
             } else if ((BI.isNull(dimension.group) || dimension.group.type !== BICst.GROUP.ID_GROUP) &&  f.field_type !== dimension._src.field_type){
-                msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
+                msg = BI.i18nText('BI-Group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
                 return true;
             }
         })
@@ -301,10 +301,10 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                     return field.field_name === dimension._src.field_name
                 })
                 if (BI.isNull(f)){
-                    msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
+                    msg = BI.i18nText('BI-Group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
                     return true;
                 } else if(dimension.group.type !== BICst.SUMMARY_TYPE.COUNT &&  f.field_type !== dimension._src.field_type) {
-                     msg = BI.i18nText('BI-group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
+                     msg = BI.i18nText('BI-Group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
                      return true;
                 }
             })

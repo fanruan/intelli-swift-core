@@ -43,13 +43,13 @@ BI.CordonItem = BI.inherit(BI.Single,{
         var text = "";
         switch (o.cordon_number_level) {
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                text = BI.i18nText("BI-Wan");
+                text = BI.i18nText("BI-Basic_Wan");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                text = BI.i18nText("BI-Million");
+                text = BI.i18nText("BI-Basic_Million");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                text = BI.i18nText("BI-Yi");
+                text = BI.i18nText("BI-Basic_Yi");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 text = "%";

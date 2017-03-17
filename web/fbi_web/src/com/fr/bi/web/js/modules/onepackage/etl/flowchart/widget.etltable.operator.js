@@ -51,7 +51,7 @@ BI.ETLTableOperator = BI.inherit(BI.BasicButton, {
             case BICst.ETL_OPERATOR.CONVERT:
                 return BI.i18nText("BI-Row_Column_Transformation");
             case BICst.ETL_OPERATOR.FILTER:
-                return BI.i18nText("BI-Filter");
+                return BI.i18nText("BI-Basic_Filter");
             case BICst.ETL_OPERATOR.FORMULA:
                 return BI.i18nText("BI-Add_Formula_Column");
             case BICst.ETL_OPERATOR.GROUP:

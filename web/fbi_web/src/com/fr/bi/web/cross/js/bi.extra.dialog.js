@@ -133,7 +133,7 @@ FS.Dialog = BI.inherit(BI.Widget, {
                     {
                         el: {
                             type: 'fs.button',
-                            text: BI.i18nText("BI-Cancel"),
+                            text: BI.i18nText("BI-Basic_Cancel"),
                             level: 'ignore',
                             width: 90,
                             height: 30,

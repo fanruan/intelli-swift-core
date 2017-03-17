@@ -24,8 +24,8 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                 return [{
                     id: BICst.DATACOLUMN.XANDY,
                     type: "bi.select_data_level0_item",
-                    text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
-                    title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
+                    text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-Basic_And") + BI.i18nText("BI-Uppercase_Y_Axis"),
+                    title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-Basic_And") + BI.i18nText("BI-Uppercase_Y_Axis"),
                     fieldType: BICst.DATACOLUMN.XANDY,
                     value: BICst.DATACOLUMN.XANDY,
                     isParent: false
@@ -48,8 +48,8 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                 }, {
                     id: self._constant.DIMENSION_FIELD,
                     type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Dimension"),
-                    value: BI.i18nText("BI-Dimension"),
+                    text: BI.i18nText("BI-Basic_Dimension"),
+                    value: BI.i18nText("BI-Basic_Dimension"),
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.SERIES,
                     open: true

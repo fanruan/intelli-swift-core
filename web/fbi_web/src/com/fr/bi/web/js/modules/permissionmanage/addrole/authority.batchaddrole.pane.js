@@ -79,7 +79,7 @@ BI.AuthorityBatchAddRolePane = BI.inherit(BI.Widget, {
                                 left: [{
                                     type: "bi.button",
                                     level: "ignore",
-                                    text: BI.i18nText("BI-Cancel"),
+                                    text: BI.i18nText("BI-Basic_Cancel"),
                                     height: 30,
                                     handler: function () {
                                         self.fireEvent(BI.AuthorityBatchAddRolePane.EVENT_CANCEL);

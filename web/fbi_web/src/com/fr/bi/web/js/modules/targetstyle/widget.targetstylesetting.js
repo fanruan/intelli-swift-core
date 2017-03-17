@@ -242,13 +242,13 @@ BI.extend(BI.TargetStyleSetting, {
                 unit = "";
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                unit = BI.i18nText("BI-Wan");
+                unit = BI.i18nText("BI-Basic_Wan");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                unit = BI.i18nText("BI-Million");
+                unit = BI.i18nText("BI-Basic_Million");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                unit = BI.i18nText("BI-Yi");
+                unit = BI.i18nText("BI-Basic_Yi");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 unit += '%';
@@ -282,6 +282,6 @@ BI.extend(BI.TargetStyleSetting, {
         var format = this.formatNumberLevelAndSeparators(type, separators);
         format += this.getUnit(numberLevel, axisUnit);
         format += ';-' + format;
-        return BI.i18nText('BI-Example') + '：' + BI.contentFormat(num.div(this.calcMagnify(numberLevel)), format )
+        return BI.i18nText('BI-Basic_Example') + '：' + BI.contentFormat(num.div(this.calcMagnify(numberLevel)), format )
     },
 });

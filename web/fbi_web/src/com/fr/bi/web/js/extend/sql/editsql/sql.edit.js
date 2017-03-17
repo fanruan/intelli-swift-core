@@ -223,7 +223,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                 });
                 var cancelButton = BI.createWidget({
                     type: "bi.button",
-                    text: BI.i18nText("BI-Cancel"),
+                    text: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     width: 90,
                     height: 28,
@@ -275,7 +275,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                             height: 126
                         }, {
                             type: "bi.label",
-                            text: BI.i18nText("BI-Preview") + BI.i18nText("BI-Failed"),
+                            text: BI.i18nText("BI-Preview") + BI.i18nText("BI-Basic_Failed"),
                             cls: "preview-fail-comment"
                         }, {
                             type: "bi.horizontal_float",
@@ -330,7 +330,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                 left: [{
                     type: "bi.button",
                     level: "ignore",
-                    text: BI.i18nText("BI-Cancel"),
+                    text: BI.i18nText("BI-Basic_Cancel"),
                     height: this.constants.SQL_EDIT_BUTTON_HEIGHT,
                     handler: function () {
                         self.fireEvent(BI.EditSQL.EVENT_CANCEL);

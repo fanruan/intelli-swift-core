@@ -48,7 +48,7 @@
                 forceCenter: true,
                 cls: 'bi-multidate-popup-button',
                 shadow: true,
-                text: BI.i18nText("BI-Clear")
+                text: BI.i18nText("BI-Basic_Clear")
             });
             this.clearButton.on(BI.TextButton.EVENT_CHANGE, function () {
                 self.fireEvent(BI.MultiDatePopup.BUTTON_CLEAR_EVENT_CHANGE);

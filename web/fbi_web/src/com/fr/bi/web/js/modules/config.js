@@ -6,7 +6,7 @@ BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Monday"),
     BI.i18nText("BI-Tuesday"),
     BI.i18nText("BI-Wednesday"),
     BI.i18nText("BI-Thursday"),
-    BI.i18nText("BI-Friday"),
+    BI.i18nText("BI-Basic_Friday"),
     BI.i18nText("BI-Saturday"),
     BI.i18nText("BI-Sunday")];
 
@@ -14,17 +14,17 @@ BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Monday"),
 BICst.FULL_MONTH_NAMES = [
     BI.i18nText("BI-January"),
     BI.i18nText("BI-January"),
-    BI.i18nText("BI-February"),
+    BI.i18nText("BI-Basic_February"),
     BI.i18nText("BI-March"),
-    BI.i18nText("BI-April"),
+    BI.i18nText("BI-Basic_April"),
     BI.i18nText("BI-May"),
     BI.i18nText("BI-June"),
     BI.i18nText("BI-July"),
-    BI.i18nText("BI-August"),
+    BI.i18nText("BI-Basic_August"),
     BI.i18nText("BI-September"),
     BI.i18nText("BI-October"),
     BI.i18nText("BI-November"),
-    BI.i18nText("BI-December")];
+    BI.i18nText("BI-Basic_December")];
 
 //full quarter names
 BICst.FULL_QUARTER_NAMES = [BI.i18nText("BI-Quarter_1"),
@@ -468,7 +468,7 @@ BICst.STATISTICS_WIDGET_SETCOMBO_ITEMS = [{
     extraCls: "dashboard-widget-combo-export-excel-font"
 }, {
     value: BICst.DASHBOARD_WIDGET_COPY,
-    text: BI.i18nText("BI-Copy"),
+    text: BI.i18nText("BI-Basic_Copy"),
     extraCls: "copy-h-font"
 }, {
     value: BICst.DASHBOARD_WIDGET_DELETE,
@@ -495,7 +495,7 @@ BICst.TIME_CONTROL_SETCOMBO_ITEMS = [
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_COPY,
-        text: BI.i18nText("BI-Copy"),
+        text: BI.i18nText("BI-Basic_Copy"),
         cls: "widget-combo-copy"
     }],
     [{
@@ -524,7 +524,7 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_COPY,
-        text: BI.i18nText("BI-Copy"),
+        text: BI.i18nText("BI-Basic_Copy"),
         cls: "widget-combo-copy"
     }],
     [{
@@ -553,7 +553,7 @@ BICst.SINGLE_SLIDER_CONTROL_SETCOMBO_ITEMS = [
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_COPY,
-        text: BI.i18nText("BI-Copy"),
+        text: BI.i18nText("BI-Basic_Copy"),
         cls: "widget-combo-copy"
     }],
     [{
@@ -577,7 +577,7 @@ BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
     // }],
     // [{
     //     value: BICst.DASHBOARD_WIDGET_COPY,
-    //     text: BI.i18nText("BI-Copy"),
+    //     text: BI.i18nText("BI-Basic_Copy"),
     //     cls: "widget-combo-copy"
     // }],
     [{
@@ -641,7 +641,7 @@ BICst.TARGET_FILTER_STRING_COMBO = [[{
     value: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Contain"),
+    text: BI.i18nText("BI-Basic_Contain"),
     value: BICst.TARGET_FILTER_STRING.CONTAIN,
     cls: "dot-e-font"
 }, {
@@ -676,7 +676,7 @@ BICst.TARGET_FILTER_NUMBER_COMBO = [[{
     value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Equal"),
+    text: BI.i18nText("BI-Basic_Equal"),
     value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
     cls: "dot-e-font"
 }, {
@@ -711,7 +711,7 @@ BICst.DIMENSION_FILTER_STRING_COMBO = [[{
     value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Contain"),
+    text: BI.i18nText("BI-Basic_Contain"),
     value: BICst.DIMENSION_FILTER_STRING.CONTAIN,
     cls: "dot-e-font"
 }, {
@@ -788,7 +788,7 @@ BICst.DIMENSION_FILTER_DATE_COMBO = [[{
     value: BICst.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Contain"),
+    text: BI.i18nText("BI-Basic_Contain"),
     value: BICst.DIMENSION_FILTER_DATE.CONTAIN,
     cls: "dot-e-font"
 }, {
@@ -859,7 +859,7 @@ BICst.FILTER_DATE_COMBO = [[{
     value: BICst.FILTER_DATE.LATER_THAN,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Equal"),
+    text: BI.i18nText("BI-Basic_Equal"),
     value: BICst.FILTER_DATE.EQUAL_TO,
     cls: "dot-e-font"
 }, {
@@ -886,7 +886,7 @@ BICst.AUTH_FILTER_DATE_COMBO = [[{
     value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Equal"),
+    text: BI.i18nText("BI-Basic_Equal"),
     value: BICst.FILTER_DATE.EQUAL_TO,
     cls: "dot-e-font"
 }, {
@@ -912,7 +912,7 @@ BICst.DATA_SETTING_FILTER_DATE_COMBO = [[{
     value: BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Equal"),
+    text: BI.i18nText("BI-Basic_Equal"),
     value: BICst.FILTER_DATE.EQUAL_TO,
     cls: "dot-e-font"
 }, {
@@ -938,7 +938,7 @@ BICst.Date_Range_FILTER_COMBO = [{
 }];
 
 BICst.FILTER_CONDITION_TYPE = [{
-    text: BI.i18nText("BI-And"), value: BICst.FILTER_TYPE.AND
+    text: BI.i18nText("BI-Basic_And"), value: BICst.FILTER_TYPE.AND
 }, {
     text: BI.i18nText("BI-Or"), value: BICst.FILTER_TYPE.OR
 }];
@@ -973,7 +973,7 @@ BICst.AUTHORITY_FILTER_STRING_COMBO = [[{
         cls: "dot-e-font"
     }]
 }], [{
-    text: BI.i18nText("BI-Contain"),
+    text: BI.i18nText("BI-Basic_Contain"),
     value: BICst.TARGET_FILTER_STRING.CONTAIN,
     cls: "dot-e-font"
 }, {
@@ -1000,7 +1000,7 @@ BICst.AUTHORITY_FILTER_STRING_COMBO = [[{
 
 //auth number
 BICst.AUTHORITY_FILTER_NUMBER_COMBO = [[{
-    text: BI.i18nText("BI-Equal"),
+    text: BI.i18nText("BI-Basic_Equal"),
     value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
     cls: "dot-e-font"
 }, {
@@ -1061,10 +1061,10 @@ BICst.FILTER_ADD_CONDITION_COMBO = [{
 
 //自定义分组，自动分组
 BICst.NUMBER_INTERVAL_CUSTOM_GROUP = [{
-    text: BI.i18nText("BI-Custom"),
+    text: BI.i18nText("BI-Basic_Custom"),
     value: BICst.NUMBER_INTERVAL_CUSTOM_GROUP_CUSTOM
 }, {
-    text: BI.i18nText("BI-Auto"),
+    text: BI.i18nText("BI-Basic_Auto"),
     value: BICst.NUMBER_INTERVAL_CUSTOM_GROUP_AUTO
 }];
 
@@ -1086,7 +1086,7 @@ BICst.CONF_GROUP_NUMBER = [{
 }];
 
 BICst.CONF_GROUP_DATE = [{
-    text: BI.i18nText("BI-Date"),
+    text: BI.i18nText("BI-Basic_Date"),
     value: BICst.GROUP.YMD
 }, {
     text: BI.i18nText("BI-Year_Fen"),
@@ -1142,15 +1142,15 @@ BICst.CONF_STATISTIC_DATE = [{
 }];
 //选色
 BICst.CHART_COLORS = [{
-    header: BI.i18nText("BI-Default"),
+    header: BI.i18nText("BI-Basic_Default"),
     text: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
     value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
 }, {
-    header: BI.i18nText("BI-Bright"),
+    header: BI.i18nText("BI-Basic_Bright"),
     text: ["#9193ac", "#779ae3", "#e6a469", "#eddc80", "#9889d0"],
     value: ["#9193ac", "#779ae3", "#e6a469", "#eddc80", "#9889d0"]
 }, {
-    header: BI.i18nText("BI-Elegant"),
+    header: BI.i18nText("BI-Basic_Elegant"),
     text: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"],
     value: ["#f07d0a", "#009de3", "#58cc7d", "#e85050", "#9889d0"]
 }, {
@@ -1312,10 +1312,10 @@ BICst.DASHBOARD_CHART_STYLE_GROUP = [{
 }];
 
 BICst.CHART_SCALE_SETTING = [{
-    text: BI.i18nText("BI-Auto"),
+    text: BI.i18nText("BI-Basic_Auto"),
     value: BICst.SCALE_SETTING.AUTO
 }, {
-    text: BI.i18nText("BI-Custom"),
+    text: BI.i18nText("BI-Basic_Custom"),
     value: BICst.SCALE_SETTING.CUSTOM
 }];
 
@@ -1338,7 +1338,7 @@ BICst.DATA_LABEL_POSITION = [{
     cls: "datalabel-position-outer",
     value: BICst.DATA_LABEL.POSITION_OUTER,
 }, {
-    title: BI.i18nText("BI-Center"),
+    title: BI.i18nText("BI-Basic_Center"),
     cls: "datalabel-position-center",
     value: BICst.DATA_LABEL.POSITION_CENTER
 }];
@@ -1363,7 +1363,7 @@ BICst.DATA_LABEL_FILTER_NUMBER_COMBO = [[{
     value: BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Equal"),
+    text: BI.i18nText("BI-Basic_Equal"),
     value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
     cls: "dot-e-font"
 }, {
@@ -1402,7 +1402,7 @@ BICst.DATA_LABEL_FILTER_STRING_COMBO = [[{
     value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Contain"),
+    text: BI.i18nText("BI-Basic_Contain"),
     value: BICst.DIMENSION_FILTER_STRING.CONTAIN,
     cls: "dot-e-font"
 }, {
@@ -1451,7 +1451,7 @@ BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
 
 
 BICst.CAL_TARGET_TYPE = [{
-    text: BI.i18nText("BI-Formula"),
+    text: BI.i18nText("BI-Basic_Formula"),
     value: BICst.TARGET_TYPE.FORMULA
 }, {
     text: BI.i18nText("BI-Ranging"),
@@ -1648,16 +1648,16 @@ BICst.TARGET_STYLE_FORMAT = [{
 }];
 
 BICst.TARGET_STYLE_LEVEL = [{
-    text: BI.i18nText("BI-Count"),
+    text: BI.i18nText("BI-Basic_Count"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
 }, {
-    text: BI.i18nText("BI-Wan"),
+    text: BI.i18nText("BI-Basic_Wan"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND
 }, {
-    text: BI.i18nText("BI-Million"),
+    text: BI.i18nText("BI-Basic_Million"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.MILLION
 }, {
-    text: BI.i18nText("BI-Yi"),
+    text: BI.i18nText("BI-Basic_Yi"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.YI
 }, {
     text: "%",
@@ -1668,13 +1668,13 @@ BICst.TARGET_STYLE_LEVEL_SHORT = [{
     text: BI.i18nText("BI-Normal"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
 }, {
-    text: BI.i18nText("BI-Wan"),
+    text: BI.i18nText("BI-Basic_Wan"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND
 }, {
-    text: BI.i18nText("BI-Million"),
+    text: BI.i18nText("BI-Basic_Million"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.MILLION
 }, {
-    text: BI.i18nText("BI-Yi"),
+    text: BI.i18nText("BI-Basic_Yi"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.YI
 }, {
     text: "%",
@@ -1682,16 +1682,16 @@ BICst.TARGET_STYLE_LEVEL_SHORT = [{
 }];
 
 BICst.TARGET_STYLE_LEVEL = [{
-    text: BI.i18nText("BI-Count"),
+    text: BI.i18nText("BI-Basic_Count"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
 }, {
-    text: BI.i18nText("BI-Wan"),
+    text: BI.i18nText("BI-Basic_Wan"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND
 }, {
-    text: BI.i18nText("BI-Million"),
+    text: BI.i18nText("BI-Basic_Million"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.MILLION
 }, {
-    text: BI.i18nText("BI-Yi"),
+    text: BI.i18nText("BI-Basic_Yi"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.YI
 }, {
     text: "%",
@@ -1729,7 +1729,7 @@ BICst.CHART_LEGEND = [{
 }];
 
 BICst.PERCENTAGE_SHOW = [{
-    text: BI.i18nText("BI-Display"),
+    text: BI.i18nText("BI-Basic_Display"),
     value: BICst.PERCENTAGE.SHOW
 }, {
     text: BI.i18nText("BI-Hidden"),

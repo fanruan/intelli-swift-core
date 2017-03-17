@@ -31,7 +31,7 @@ PaneModulesView = BI.inherit(BI.View, {
             connect: "dimension-region-container",
             dimensionOrTargetClass: "bi-dimension-container",
             iconClass: 'region-row-icon',
-            titleName: BI.i18nText('BI-Category'),
+            titleName: BI.i18nText('BI-Basic_Category'),
             innerText: BI.i18nText('BI-Drag_Left_Field'),
             regionType: BICst.REGION.DIMENSION1
         }, {

@@ -68,7 +68,7 @@ BI.ETLFilterViewItemFactory = {
                 right: [BI.createWidget({
                     type : 'bi.label',
                     cls : 'title',
-                    text : v.length +BI.i18nText("BI-Tiao") + BI.i18nText("BI-Data")
+                    text : v.length +BI.i18nText("BI-Tiao") + BI.i18nText("BI-Basic_Data")
                 })]
             }
         }));
@@ -98,7 +98,7 @@ BI.ETLFilterViewItemFactory = {
                 right: [BI.createWidget({
                     type : 'bi.label',
                     cls : 'title',
-                    text : v.length +BI.i18nText("BI-Tiao") + BI.i18nText("BI-Data")
+                    text : v.length +BI.i18nText("BI-Tiao") + BI.i18nText("BI-Basic_Data")
                 })]
             }
         }));
@@ -154,13 +154,13 @@ BI.ETLFilterViewItemFactory = {
         var type = value.filter_type, filterValue = value.filter_value;
         switch (type){
             case BICst.FILTER_TYPE.FORMULA :
-                return this._createItems([BI.Utils.getTextFromFormulaValue(filterValue, fieldItems)], BI.i18nText("BI-Formula"));
+                return this._createItems([BI.Utils.getTextFromFormulaValue(filterValue, fieldItems)], BI.i18nText("BI-Basic_Formula"));
             case BICst.TARGET_FILTER_STRING.BELONG_VALUE :
                 return this._createMultiChooseItems(filterValue, BI.i18nText("BI-In"));
             case BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE :
                 return this._createMultiChooseItems(filterValue, BI.i18nText("BI-Not_In"));
             case BICst.TARGET_FILTER_STRING.CONTAIN :
-                return this._createItems([filterValue], BI.i18nText("BI-Contain"));
+                return this._createItems([filterValue], BI.i18nText("BI-Basic_Contain"));
             case BICst.TARGET_FILTER_STRING.NOT_CONTAIN :
                 return this._createItems([filterValue], BI.i18nText("BI-Not_Contain"));
             case BICst.TARGET_FILTER_STRING.BEGIN_WITH :

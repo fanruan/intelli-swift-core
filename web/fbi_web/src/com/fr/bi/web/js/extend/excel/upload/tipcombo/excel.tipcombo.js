@@ -36,7 +36,7 @@ BI.ExcelTipCombo = BI.inherit(BI.Widget, {
                 height: this.constants.TIP_POPUP_GAP
             },{
                 type: "bi.label",
-                text: BI.i18nText("BI-Attention"),
+                text: BI.i18nText("BI-Basic_Attention"),
                 textAlign: "left",
                 cls: "popup-tip-label",
                 height: this.constants.TIP_POPUP_COMMENT_HEIGHT
@@ -62,7 +62,7 @@ BI.ExcelTipCombo = BI.inherit(BI.Widget, {
                 height: this.constants.TIP_POPUP_COMMENT_HEIGHT
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Example"),
+                text: BI.i18nText("BI-Basic_Example"),
                 textAlign: "left",
                 cls: "popup-tip-label",
                 height: 25

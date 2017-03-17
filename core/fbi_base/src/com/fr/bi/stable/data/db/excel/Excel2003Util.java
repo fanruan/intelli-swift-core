@@ -32,7 +32,7 @@ public class Excel2003Util extends AbstractExcel2003Util {
             Matcher m = p.matcher(firstRow[i].toString());
             columnNames[i] = m.replaceAll(StringUtils.EMPTY).trim();
             if (ComparatorUtils.equals(StringUtils.EMPTY, columnNames[i])) {
-                columnNames[i] = Inter.getLocText("BI-Field") + (i + 1);
+                columnNames[i] = Inter.getLocText("BI-Basic_Field") + (i + 1);
             }
         }
     }

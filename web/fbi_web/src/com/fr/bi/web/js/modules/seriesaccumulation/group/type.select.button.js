@@ -12,8 +12,8 @@ BI.SelectAccumulateTypeButton = BI.inherit(BI.Widget, {
             title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Polyline") + ")",
             value: BICst.ACCUMULATE_TYPE.AREA_NORMAL
         }, {
-            text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Curve") + ")",
-            title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Curve") + ")",
+            text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Basic_Curve") + ")",
+            title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Basic_Curve") + ")",
             value: BICst.ACCUMULATE_TYPE.AREA_CURVE
         }, {
             text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Right_Angled_Polyline") + ")",

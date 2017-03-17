@@ -99,7 +99,7 @@ BI.NumberCustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
 
         this.cancelButton = BI.createWidget({
             type:"bi.button",
-            text:BI.i18nText("BI-Cancel"),
+            text:BI.i18nText("BI-Basic_Cancel"),
             height:30,
             level: 'ignore',
             readonly:false,

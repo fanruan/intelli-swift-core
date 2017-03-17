@@ -31,7 +31,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         });
         this.title = BI.createWidget({
             type: "bi.label",
-            text: o.title + BI.i18nText("BI-Colon"),
+            text: o.title + BI.i18nText("BI-Basic_Colon"),
             title: o.title,
             height: o.height
         });
@@ -129,7 +129,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
     },
 
     setTitle: function (title) {
-        this.title.setText(title + BI.i18nText("BI-Colon"));
+        this.title.setText(title + BI.i18nText("BI-Basic_Colon"));
         this.title.setTitle(title);
     },
 

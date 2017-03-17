@@ -27,7 +27,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
         });
         this.bold = BI.createWidget({
             type: "bi.icon_button",
-            title: BI.i18nText("BI-Bold"),
+            title: BI.i18nText("BI-Basic_Bold"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-bold-font"

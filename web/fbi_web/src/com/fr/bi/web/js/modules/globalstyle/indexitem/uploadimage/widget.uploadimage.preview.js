@@ -70,7 +70,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
 
                         var removeFile = BI.createWidget({
                             type: "bi.text_button",
-                            text: BI.i18nText("BI-Delete"),
+                            text: BI.i18nText("BI-Basic_Delete"),
                             cls: "remove-button",
                             height: 25
                         });

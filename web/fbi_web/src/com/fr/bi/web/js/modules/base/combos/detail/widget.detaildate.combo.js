@@ -27,7 +27,7 @@ BI.DetailDateDimensionCombo = BI.inherit(BI.Widget, {
         var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
         return [
             [{
-                text: BI.i18nText("BI-Date"),
+                text: BI.i18nText("BI-Basic_Date"),
                 value: BICst.DETAIL_DATE_COMBO.YMD,
                 cls: "dot-e-font"
             }, {

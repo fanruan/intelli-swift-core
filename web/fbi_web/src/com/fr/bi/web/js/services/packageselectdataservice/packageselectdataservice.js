@@ -476,7 +476,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             fieldStructure.push({
                 type: "bi.label",
                 value: BI.UUID(),
-                text: BI.i18nText("BI-(Empty)"),
+                text: BI.i18nText("BI-Basic_(Empty)"),
                 pId: tableId,
                 id: BI.UUID(),
                 wId: o.wId,
@@ -640,7 +640,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                                 name = BI.i18nText("BI-Week_XingQi") + "(" + name + ")";
                                 break;
                             case BICst.GROUP.YMD:
-                                name = BI.i18nText("BI-Date") + "(" + name + ")";
+                                name = BI.i18nText("BI-Basic_Date") + "(" + name + ")";
                                 break;
                             case BICst.GROUP.YMDHMS:
                                 name = BI.i18nText("BI-Time_ShiKe") + "(" + name + ")"

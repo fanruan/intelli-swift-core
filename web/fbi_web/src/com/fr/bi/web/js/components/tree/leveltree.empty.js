@@ -51,8 +51,8 @@ BI.EmptyLevelTree = BI.inherit(BI.Widget, {
         });
         BI.each(pIdMap, function(key){
             items.push({
-                value: BI.i18nText("BI-(Empty)"),
-                text: BI.i18nText("BI-(Empty)"),
+                value: BI.i18nText("BI-Basic_(Empty)"),
+                text: BI.i18nText("BI-Basic_(Empty)"),
                 pId: key,
                 id: BI.UUID(),
                 disabled: true

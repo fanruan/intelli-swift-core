@@ -24,7 +24,7 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
             type :'bi.button',
             height : self._constants.BUTTON_HEIGHT,
             width : self._constants.BUTTON_WIDTH,
-            text : BI.i18nText('BI-Edit') + BI.i18nText('BI-Grouping')
+            text : BI.i18nText('BI-Basic_Edit') + BI.i18nText('BI-Basic_Grouping')
         });
         self.button.on(BI.Button.EVENT_CHANGE,function(){
             var op ={
@@ -106,7 +106,7 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
                 type : 'bi.label',
                 textAlign : 'left',
                 height : 25,
-                text : BI.i18nText('BI-De') +  self._getTargetText()
+                text : BI.i18nText('BI-Basic_De') +  self._getTargetText()
             }))
         } else {
             self.labels.addItem(BI.createWidget({

@@ -27,7 +27,7 @@ BI.ETLFilterFormulaPopup = BI.inherit(BI.BarPopoverSection, {
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text:  BI.i18nText('BI-Formula'),
+            text:  BI.i18nText('BI-Basic_Formula'),
             textAlign: "left",
             height: self._constants.NORTH_HEIGHT
         });

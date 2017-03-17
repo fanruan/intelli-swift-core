@@ -15,7 +15,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
     _createRegionName: function (type) {
         switch (type) {
             case BICst.WIDGET.DETAIL:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Data");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Data");
                 break;
             case BICst.WIDGET.TABLE:
                 this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Row_Header");
@@ -32,7 +32,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.ACCUMULATE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.DIMENSION2] = BI.i18nText("BI-Series");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Left_Value_Axis");
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-Right_Value_Axis");
@@ -42,36 +42,36 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.RECT_TREE:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.DIMENSION2] = BI.i18nText("BI-Series");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Left_Value_Axis");
                 break;
             case BICst.WIDGET.BAR:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.DIMENSION2] = BI.i18nText("BI-Series");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Value_Axis");
                 break;
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Positive_Value_Axis");
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-Negative_Value_Axis");
                 break;
             case BICst.WIDGET.FALL_AXIS:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Value_Axis");
                 break;
             case BICst.WIDGET.RANGE_AREA:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Low_Value_Axis");
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-High_Value_Axis");
             case BICst.WIDGET.COMPARE_BAR:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Value_Axis_One");
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-Value_Axis_Two");
                 break;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Left_Value_Axis");
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-Right_Value_Axis_One");
                 this.regionName[BICst.REGION.TARGET3] = BI.i18nText("BI-Right_Value_Axis_Two");
@@ -79,7 +79,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.DIMENSION2] = BI.i18nText("BI-Series");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Target");
                 break;
@@ -89,7 +89,7 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.PARETO:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Target");
                 break;
             case BICst.WIDGET.MAP:
@@ -99,18 +99,18 @@ BI.ShowRegionManagerModel = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.HEAT_MAP:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Address");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Address");
                 this.regionName[BICst.REGION.DIMENSION2] = BI.i18nText("BI-Name_Title");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Region_Target");
                 break;
             case BICst.WIDGET.BUBBLE:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Y_Value");
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-X_Value");
                 this.regionName[BICst.REGION.TARGET3] = BI.i18nText("BI-Bubble_Size");
                 break;
             case BICst.WIDGET.SCATTER:
-                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Category");
+                this.regionName[BICst.REGION.DIMENSION1] = BI.i18nText("BI-Basic_Category");
                 this.regionName[BICst.REGION.TARGET1] = BI.i18nText("BI-Y_Value");
                 this.regionName[BICst.REGION.TARGET2] = BI.i18nText("BI-X_Value");
                 break;

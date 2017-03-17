@@ -192,7 +192,7 @@ FS.StyleSetting = BI.inherit(FR.Widget, {
             type: "bi.button_group",
             items: BI.createItems([{
                 cls: "axis-chart-style-normal-icon style-setting-style-button",
-                title: BI.i18nText("BI-Common"),
+                title: BI.i18nText("BI-Basic_Common"),
                 value: BICst.CHART_STYLE.STYLE_NORMAL
             }, {
                 cls: "axis-chart-style-gradual-icon style-setting-style-button",
@@ -217,9 +217,9 @@ FS.StyleSetting = BI.inherit(FR.Widget, {
         //    type: "bi.text_value_combo",
         //    cls: "style-setting-combo",
         //    height: 25,
-        //    text: BI.i18nText('BI-Common'),
+        //    text: BI.i18nText('BI-Basic_Common'),
         //    items: [{
-        //        text: BI.i18nText('BI-Common'), value: BICst.CHART_STYLE.STYLE_NORMAL
+        //        text: BI.i18nText('BI-Basic_Common'), value: BICst.CHART_STYLE.STYLE_NORMAL
         //    }, {
         //        text: BI.i18nText('BI-Top_Down_Shade'), value: BICst.CHART_STYLE.STYLE_GRADUAL
         //    }]

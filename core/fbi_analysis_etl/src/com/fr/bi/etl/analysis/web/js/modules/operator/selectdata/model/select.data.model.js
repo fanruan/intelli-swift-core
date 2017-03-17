@@ -79,7 +79,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
             case BICst.GROUP.W :
                 return BI.i18nText("BI-Week_XingQi");
             case BICst.GROUP.YMD :
-                return BI.i18nText("BI-Date");
+                return BI.i18nText("BI-Basic_Date");
         }
     },
 

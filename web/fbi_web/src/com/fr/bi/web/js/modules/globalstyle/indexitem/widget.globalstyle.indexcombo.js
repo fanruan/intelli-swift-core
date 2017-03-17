@@ -17,9 +17,9 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
             type: "bi.text_value_combo",
             width: 120,
             height: 30,
-            text: BI.i18nText("BI-Colors"),
+            text: BI.i18nText("BI-Basic_Colors"),
             items: [{
-                text: BI.i18nText("BI-Colors"),
+                text: BI.i18nText("BI-Basic_Colors"),
                 value: BICst.BACKGROUND_TYPE.COLOR
             }, {
                 text: BI.i18nText("BI-Pictures"),

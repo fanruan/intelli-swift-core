@@ -4,7 +4,7 @@
 BI.AnalysisETLOperatorAddColumnValueConvertController = BI.inherit(BI.MVCController, {
     _checkCanSave : function (widget, model) {
         if (BI.isNull(model.get('field'))){
-            widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Field')));
+            widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Basic_Field')));
         } else {
             widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
         }

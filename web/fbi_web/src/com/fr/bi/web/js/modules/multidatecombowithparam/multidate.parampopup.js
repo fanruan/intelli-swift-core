@@ -43,7 +43,7 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
         this.clearButton = BI.createWidget({
             type: "bi.text_button",
             cls: 'bi-multidate-popup-button',
-            text: BI.i18nText("BI-Clear"),
+            text: BI.i18nText("BI-Basic_Clear"),
             height: this.constants.buttonHeight - this.constants.border * 2,
             width: this.constants.buttonWidth
         });

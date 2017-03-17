@@ -64,8 +64,8 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
         var self = this;
         var cancel = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Cancel"),
-            title: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
+            title: BI.i18nText("BI-Basic_Cancel"),
             level: "ignore",
             height: 28,
             width: 90,

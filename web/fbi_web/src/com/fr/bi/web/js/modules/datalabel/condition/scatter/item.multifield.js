@@ -33,7 +33,7 @@ BI.ScatterMultiFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         }];
         var and = BI.createWidget({
             type: "bi.label",
-            text: BI.i18nText("BI-And")
+            text: BI.i18nText("BI-Basic_And")
         });
         var left = this._buildConditions();
         this.styleSetting = this._createStyle(o.style_setting);

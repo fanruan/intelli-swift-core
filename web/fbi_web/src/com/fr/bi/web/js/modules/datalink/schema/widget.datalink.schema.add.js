@@ -97,7 +97,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             self.model.setDriver(this.getValue());
             self.model.setURL(BICst.DATA_LINK_MANAGE.URLS[this.getValue()[0]]);
         });
-        var driverWrapper = this._createItemsWrapper(BI.i18nText("BI-First_Step"), BI.i18nText("BI-Driver"), driverCombo);
+        var driverWrapper = this._createItemsWrapper(BI.i18nText("BI-First_Step"), BI.i18nText("BI-Basic_Driver"), driverCombo);
 
         //URL
         var urlInput = BI.createWidget({
@@ -335,7 +335,7 @@ BI.AddSchemaDataLink = BI.inherit(BI.BarPopoverSection, {
             element: south,
             items: [{
                 type: "bi.button",
-                text: BI.i18nText("BI-Cancel"),
+                text: BI.i18nText("BI-Basic_Cancel"),
                 level: "ignore",
                 height: 28,
                 handler: function () {

@@ -21,7 +21,7 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
             type: "bi.detail_table_path_setting_switch",
             items: [{
                 type: "bi.text_button",
-                text: BI.i18nText("BI-Change"),
+                text: BI.i18nText("BI-Basic_Change"),
                 value: c.CHANGE_VALUE,
                 cls: "save-button",
                 textAlign: "center",

@@ -111,7 +111,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Chart"),
+                text: BI.i18nText("BI-Basic_Chart"),
                 lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
@@ -313,7 +313,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 textHeight: constant.SINGLE_LINE_HEIGHT,
-                text: BI.i18nText("BI-Dashboard"),
+                text: BI.i18nText("BI-Basic_Dashboard"),
                 textAlign: "left",
                 lgap: constant.SIMPLE_H_LGAP,
                 cls: "line-title"

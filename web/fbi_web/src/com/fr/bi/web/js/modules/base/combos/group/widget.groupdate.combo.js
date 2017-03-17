@@ -7,7 +7,7 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
     _defaultItems:function(){
         return [
             [{
-                text: BI.i18nText("BI-Date"),
+                text: BI.i18nText("BI-Basic_Date"),
                 value: BICst.STATISTICS_GROUP_DATE_COMBO.DATE,
                 cls: "dot-ha-font"
             }, {

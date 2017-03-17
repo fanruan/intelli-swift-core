@@ -14,7 +14,7 @@ BI.CopyLinkItem = BI.inherit(BI.Widget, {
 
         var itemsButton = BI.createWidget({
             type: "bi.icon_text_item",
-            text: BI.i18nText("BI-Copy") + BI.i18nText("BI-Links"),
+            text: BI.i18nText("BI-Basic_Copy") + BI.i18nText("BI-Links"),
             cls: 'toolbar-copy-link-font',
             stopPropagation: true,
             height: 30,
@@ -31,7 +31,7 @@ BI.CopyLinkItem = BI.inherit(BI.Widget, {
             },
 
             afterCopy: function () {
-                BI.Msg.toast(BI.i18nText("BI-Copy") + BI.i18nText("BI-Succeed"));
+                BI.Msg.toast(BI.i18nText("BI-Basic_Copy") + BI.i18nText("BI-Succeed"));
             }
         });
 

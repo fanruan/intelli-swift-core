@@ -136,7 +136,7 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
                 right: [{
                     type: "bi.button",
                     level: "ignore",
-                    text: BI.i18nText("BI-Cancel"),
+                    text: BI.i18nText("BI-Basic_Cancel"),
                     height: 28,
                     handler: function () {
                         self.close();

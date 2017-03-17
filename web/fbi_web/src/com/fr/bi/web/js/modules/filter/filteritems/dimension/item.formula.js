@@ -57,7 +57,7 @@ BI.DimensionFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         var self = this, o = this.options;
         this.fulfilLabel = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Fulfil"),
+            text: BI.i18nText("BI-Basic_Fulfil"),
             width: this._constant.FIELD_NAME_BUTTON_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
             textAlign: "left",

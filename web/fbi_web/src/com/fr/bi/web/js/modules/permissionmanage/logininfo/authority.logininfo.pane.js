@@ -110,7 +110,7 @@ BI.AuthorityLoginInfoPane = BI.inherit(BI.BarPopoverSection, {
         var cancelButton = BI.createWidget({
             type: "bi.button",
             level: "ignore",
-            text: BI.i18nText("BI-Cancel"),
+            text: BI.i18nText("BI-Basic_Cancel"),
             height: 30
         });
         cancelButton.on(BI.Button.EVENT_CHANGE, function(){

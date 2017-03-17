@@ -236,7 +236,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
                         self._removeSheet(v, widget, model)
                     }
                 }, {
-                    value: BI.i18nText("BI-Cancel"),
+                    value: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     handler: function () {
                         confirmCombo.hideView();

@@ -160,7 +160,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
             //计算指标
             var linkages = [];
             BI.each(linkedFrom, function (idx, linkage) {
-                var name = BI.i18nText("BI-An");
+                var name = BI.i18nText("BI-Basic_An");
                 BI.each(linkage.cids, function (i, cid) {
                     name += BI.Utils.getDimensionNameByID(cid) + "-";
                 });

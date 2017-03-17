@@ -58,7 +58,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                     text: BI.i18nText("BI-Relative")
                 }, this.tree, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-De")
+                    text: BI.i18nText("BI-Basic_De")
                 }],
                 tgap:5,
                 bgap: 50

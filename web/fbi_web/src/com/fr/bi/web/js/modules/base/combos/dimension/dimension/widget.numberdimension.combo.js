@@ -94,7 +94,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
-                items[this.constants.CordonPos][0].text = BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") +")";
+                items[this.constants.CordonPos][0].text = BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal") +")";
                 if(BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(o.dId))){
                     BI.removeAt(items, this.constants.CordonPos);
                 }
@@ -137,14 +137,14 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
         return [
             [{
                 el: {
-                    text: BI.i18nText("BI-Ascend"),
+                    text: BI.i18nText("BI-Basic_Ascend"),
                     value: BICst.DIMENSION_NUMBER_COMBO.ASCEND,
                     iconCls1: "dot-e-font"
                 },
                 children: []
             }, {
                 el: {
-                    text: BI.i18nText("BI-Descend"),
+                    text: BI.i18nText("BI-Basic_Descend"),
                     value: BICst.DIMENSION_NUMBER_COMBO.DESCEND,
                     iconCls1: "dot-e-font"
                 },
@@ -165,7 +165,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 cls: "dot-e-font"
             }],
             [{
-                text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Vertical") +")",
+                text: BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Vertical") +")",
                 value: BICst.DIMENSION_NUMBER_COMBO.CORDON,
                 cls: ""
             }],
@@ -189,7 +189,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 title: showFieldDisabled ? BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension") : BI.i18nText("BI-Show_Field")
             }],
             [{
-                text: BI.i18nText("BI-Copy"),
+                text: BI.i18nText("BI-Basic_Copy"),
                 value: BICst.DIMENSION_NUMBER_COMBO.COPY,
                 cls: "copy-h-font"
             }],

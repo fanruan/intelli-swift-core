@@ -74,7 +74,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 items: [this.widgetTitle]
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Background"),
+                text: BI.i18nText("BI-Basic_Background"),
                 cls: "line-title",
             },{
                 type: "bi.vertical_adapt",
@@ -102,7 +102,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Chart"),
+                text: BI.i18nText("BI-Basic_Chart"),
                 lgap: 5,
                 textAlign: "left",
                 textHeight: 60,
@@ -345,13 +345,13 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 this.mapStyles.setNumTip("");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                this.mapStyles.setNumTip(BI.i18nText("BI-Wan"));
+                this.mapStyles.setNumTip(BI.i18nText("BI-Basic_Wan"));
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                this.mapStyles.setNumTip(BI.i18nText("BI-Million"));
+                this.mapStyles.setNumTip(BI.i18nText("BI-Basic_Million"));
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                this.mapStyles.setNumTip(BI.i18nText("BI-Yi"));
+                this.mapStyles.setNumTip(BI.i18nText("BI-Basic_Yi"));
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 this.mapStyles.setNumTip(BI.i18nText("%"));

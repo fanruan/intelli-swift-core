@@ -93,7 +93,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         type: "bi.left",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("BI-Department"),
+                            text: BI.i18nText("BI-Basic_Department"),
                             cls: "filter-type",
                             height: 24,
                             hgap: 10

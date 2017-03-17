@@ -21,7 +21,7 @@ BI.CordonPopup = BI.inherit(BI.BarPopoverSection, {
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text: name + BI.i18nText("BI-De") + BI.i18nText("BI-Cordon"),
+            text: name + BI.i18nText("BI-Basic_De") + BI.i18nText("BI-Basic_Cordon"),
             height: 50,
             textAlign: "left",
             lgap: 10
