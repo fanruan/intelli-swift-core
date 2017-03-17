@@ -76,6 +76,17 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
         return columnSize;
     },
 
+    getMinColumnSize: function(){
+        var columnSize = [];
+        BI.each(this.minColumnSize, function (i, size) {
+            if (size < 80) {
+                size = 80;
+            }
+            columnSize.push(size);
+        });
+        return columnSize;
+    },
+
     getHeaderRowSize: function () {
         return this.headerRowSize;
     },
@@ -233,6 +244,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
 
         this.mergeCols = [];
         this.columnSize = BI.Utils.getWSColumnSizeByID(wId);
+        this.minColumnSize = [];
         this.headerRowSize = BI.Utils.getWSRowHeightByID(wId);
         this.footerRowSize = BI.Utils.getWSRowHeightByID(wId);
         this.rowSize = BI.Utils.getWSRowHeightByID(wId);
@@ -577,6 +589,7 @@ BI.GroupTableModel = BI.inherit(FR.OB, {
         if (this.columnSize.length !== dtIds.length) {
             //重置列宽
             this.columnSize = BI.SummaryTableHelper.getColumnWidthByColumns(this.columnContentCache);
+            this.minColumnSize = this.columnSize.slice();
         }
         this.columnContentCache = [];
     },

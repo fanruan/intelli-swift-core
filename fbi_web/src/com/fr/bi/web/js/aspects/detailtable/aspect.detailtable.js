@@ -54,15 +54,15 @@ BI.DetailTableAspect = function () {
             self.textLabel.setVisible(self.options.status === BICst.WIDGET_STATUS.EDIT);
             return false;
         }
-        if (!BI.Utils.isAllFieldsExistByWidgetID(self.options.wId)) {
-            assertTip();
-            self.mainPane.setVisible(true);
-            self.textLabel.setVisible(true);
-            self.textLabel.setText(BI.i18nText("BI-Data_Miss_Tip"));
-            self.contactAdmin.setVisible(true);
-            self.tipPane.element.removeClass().addClass("data-miss-background");
-            return false;
-        }
+        // if (!BI.Utils.isAllFieldsExistByWidgetID(self.options.wId)) {
+        //     assertTip();
+        //     self.mainPane.setVisible(true);
+        //     self.textLabel.setVisible(true);
+        //     self.textLabel.setText(BI.i18nText("BI-Data_Miss_Tip"));
+        //     self.contactAdmin.setVisible(true);
+        //     self.tipPane.element.removeClass().addClass("data-miss-background");
+        //     return false;
+        // }
         self.mainPane && self.mainPane.setVisible(false);
     })
 };
