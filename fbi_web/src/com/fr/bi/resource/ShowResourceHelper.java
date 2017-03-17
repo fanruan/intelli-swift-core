@@ -113,9 +113,9 @@ public class ShowResourceHelper {
     }
 
     public static String[] getShowJs() {
-        String[] dezi = DeziResourceHelper.getDeziJsModule();
+        String[] deziAndShow = DeziResourceHelper.getDeziAndShowJsModule();
         String[] show = getShowJsModule();
-        return (String[]) ArrayUtils.addAll(ArrayUtils.addAll(dezi, show), new String[]{
+        return (String[]) ArrayUtils.addAll(ArrayUtils.addAll(deziAndShow, show), new String[]{
 
                 "com/fr/bi/web/js/show/show.start.js",
                 "com/fr/bi/web/js/show/model.js",
