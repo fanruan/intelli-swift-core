@@ -39,7 +39,7 @@ BI.BusinessPackageGroup = BI.inherit(BI.Widget, {
 
         this.saveButton = BI.createWidget({
             type: "bi.button",
-            value: BI.i18nText("BI-Save"),
+            value: BI.i18nText("BI-Base_Save"),
             height: 30
         });
 

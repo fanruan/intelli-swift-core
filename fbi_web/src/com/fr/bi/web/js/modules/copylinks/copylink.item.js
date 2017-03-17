@@ -31,7 +31,7 @@ BI.CopyLinkItem = BI.inherit(BI.Widget, {
             },
 
             afterCopy: function () {
-                BI.Msg.toast(BI.i18nText("BI-Basic_Copy") + BI.i18nText("BI-Succeed"));
+                BI.Msg.toast(BI.i18nText("BI-Basic_Copy") + BI.i18nText("BI-Base_Succeed"));
             }
         });
 

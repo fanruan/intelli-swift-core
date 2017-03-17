@@ -234,7 +234,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         var previewButton = BI.createWidget({
             type: "bi.text_button",
             cls: "",
-            text: BI.i18nText("BI-Preview"),
+            text: BI.i18nText("BI-Base_Preview"),
             height: 35
         });
         previewButton.on(BI.TextButton.EVENT_CHANGE, function () {
@@ -262,7 +262,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     items: {
                         left: [{
                             type: "bi.label",
-                            text: BI.i18nText("BI-Parameter"),
+                            text: BI.i18nText("BI-Base_Parameter"),
                             height: 35,
                             cls: "param-comment"
                         }, lastUpdateParam, currentUpdateParam],

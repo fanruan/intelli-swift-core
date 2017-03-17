@@ -119,7 +119,7 @@ BI.AuthorityLoginInfoPane = BI.inherit(BI.BarPopoverSection, {
         
         var saveButton = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Save"),
+            text: BI.i18nText("BI-Base_Save"),
             height: 30
         });
         saveButton.on(BI.Button.EVENT_CHANGE, function(){

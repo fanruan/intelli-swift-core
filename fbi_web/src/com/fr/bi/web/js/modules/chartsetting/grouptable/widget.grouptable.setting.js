@@ -175,7 +175,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 cls: "line-title"
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Type"),
+                text: BI.i18nText("BI-Base_Type"),
                 cls: "attr-names",
                 lgap: 10
             }, this.tableFormGroup, {

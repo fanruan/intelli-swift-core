@@ -15,7 +15,7 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
                 value: BICst.STATISTICS_GROUP_DATE_COMBO.YEAR,
                 cls: "dot-ha-font"
             }, {
-                text: BI.i18nText("BI-Quarter"),
+                text: BI.i18nText("BI-Base_Quarter"),
                 value: BICst.STATISTICS_GROUP_DATE_COMBO.QUARTER,
                 cls: "dot-ha-font"
             }, {
@@ -28,12 +28,12 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
                 cls: "dot-ha-font"
             }],
             [{
-                text: BI.i18nText("BI-Rename"),
+                text: BI.i18nText("BI-Base_Rename"),
                 value: BICst.STATISTICS_GROUP_DATE_COMBO.RENAME,
                 cls: "widget-combo-rename-edit-font"
 
             }, {
-                text: BI.i18nText("BI-Remove"),
+                text: BI.i18nText("BI-Base_Remove"),
                 value: BICst.STATISTICS_GROUP_DATE_COMBO.DELETE,
                 cls: "delete-h-font"
             }]

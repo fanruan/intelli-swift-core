@@ -1,12 +1,12 @@
 // full day names
-Date._DN = [BI.i18nText("BI-Sunday"),
+Date._DN = [BI.i18nText("BI-Base_Sunday"),
     BI.i18nText("BI-Basic_Monday"),
-    BI.i18nText("BI-Tuesday"),
+    BI.i18nText("BI-Base_Tuesday"),
     BI.i18nText("BI-Wednesday"),
-    BI.i18nText("BI-Thursday"),
+    BI.i18nText("BI-Base_Thursday"),
     BI.i18nText("BI-Basic_Friday"),
-    BI.i18nText("BI-Saturday"),
-    BI.i18nText("BI-Sunday")];
+    BI.i18nText("BI-Base_Saturday"),
+    BI.i18nText("BI-Base_Sunday")];
 
 // short day names
 Date._SDN = [FR.i18n.Sun,

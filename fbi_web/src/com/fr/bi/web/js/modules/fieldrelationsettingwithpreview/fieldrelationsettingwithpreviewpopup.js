@@ -147,7 +147,7 @@ BI.FieldRelationSettingWithPreviewPopup = BI.inherit(BI.BarPopoverSection, {
                     items: [{
                         el: {
                             type: "bi.label",
-                            value: BI.i18nText("BI-Preview"),
+                            value: BI.i18nText("BI-Base_Preview"),
                             textHeight: 40
                         },
                         height: 40

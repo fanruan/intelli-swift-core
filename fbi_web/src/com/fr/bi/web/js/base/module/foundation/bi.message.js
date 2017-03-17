@@ -89,7 +89,7 @@ $.extend(BI, {
                 controlItems.push({
                     el: {
                         type: 'bi.button',
-                        text: BI.i18nText("BI-OK"),
+                        text: BI.i18nText("BI-Base_OK"),
                         height: 30,
                         handler: function () {
                             close();
@@ -115,7 +115,7 @@ $.extend(BI, {
                                             center: {
                                                 el: {
                                                     type: 'bi.label',
-                                                    text: title || BI.i18nText("BI-Prompt"),
+                                                    text: title || BI.i18nText("BI-Base_Prompt"),
                                                     textAlign: 'left',
                                                     hgap: 20,
                                                     height: 50

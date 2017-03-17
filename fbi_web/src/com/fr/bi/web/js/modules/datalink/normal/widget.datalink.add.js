@@ -126,7 +126,7 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
         password.on(BI.Editor.EVENT_CHANGE, function(){
             self.model.setPassword(this.getValue());
         });
-        var passwordWrapper = this._createItemWrap(BI.i18nText("BI-Password"), password);
+        var passwordWrapper = this._createItemWrap(BI.i18nText("BI-Base_Password"), password);
 
         //编码
         var codeLabel = BI.createWidget({
@@ -215,8 +215,8 @@ BI.AddDataLink = BI.inherit(BI.BarPopoverSection, {
         });
         this.saveButton = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Sure"),
-            title: BI.i18nText("BI-Sure"),
+            text: BI.i18nText("BI-Base_Sure"),
+            title: BI.i18nText("BI-Base_Sure"),
             height: 28,
             handler: function(){
                 var data = self.model.getValue();

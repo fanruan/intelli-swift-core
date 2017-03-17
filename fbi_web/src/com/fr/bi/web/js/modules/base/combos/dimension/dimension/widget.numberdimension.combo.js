@@ -194,7 +194,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 cls: "copy-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Remove"),
+                text: BI.i18nText("BI-Base_Remove"),
                 value: BICst.DIMENSION_NUMBER_COMBO.DELETE,
                 cls: "delete-h-font"
             }],

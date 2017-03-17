@@ -22,7 +22,7 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Basic_Colors"),
                 value: BICst.BACKGROUND_TYPE.COLOR
             }, {
-                text: BI.i18nText("BI-Pictures"),
+                text: BI.i18nText("BI-Base_Pictures"),
                 value: BICst.BACKGROUND_TYPE.IMAGE
             }]
         });

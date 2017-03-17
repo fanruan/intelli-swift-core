@@ -61,8 +61,8 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
 
         this.previewBtn = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Preview"),
-            title: BI.i18nText("BI-Preview")
+            text: BI.i18nText("BI-Base_Preview"),
+            title: BI.i18nText("BI-Base_Preview")
         });
         this.previewBtn.doHighLight();
         this.previewBtn.on(BI.TextButton.EVENT_CHANGE, function () {

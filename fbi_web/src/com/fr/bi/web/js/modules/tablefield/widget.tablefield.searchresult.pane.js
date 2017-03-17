@@ -57,7 +57,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Original_Field_Name")
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Type")
+                text: BI.i18nText("BI-Base_Type")
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Escape_Name")

@@ -49,7 +49,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         var title = BI.createWidget({
             type: "bi.label",
             cls: "pre-label",
-            text: BI.i18nText("BI-Preview")
+            text: BI.i18nText("BI-Base_Preview")
         });
         this.xAxis = [{type: "category"}];
         var type = this.createChartByType(o.chartType);

@@ -32,11 +32,11 @@ BI.DetailStringDimensionCombo = BI.inherit(BI.Widget, {
                 cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
             }],
             [{
-                text: BI.i18nText("BI-Rename"),
+                text: BI.i18nText("BI-Base_Rename"),
                 value: BICst.DETAIL_STRING_COMBO.RENAME
             }],
             [{
-                text: BI.i18nText("BI-Remove"),
+                text: BI.i18nText("BI-Base_Remove"),
                 value: BICst.DETAIL_STRING_COMBO.DELETE,
                 cls: "delete-h-font"
             }],

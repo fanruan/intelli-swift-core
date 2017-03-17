@@ -27,7 +27,7 @@ BI.CircleResultPane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.reConfig = BI.createWidget({
             type: "bi.button",
-            value: BI.i18nText("BI-Reconfiguration"),
+            value: BI.i18nText("BI-Base_Reconfiguration"),
             width: this.constants.buttonWidth,
             height: this.constants.buttonHeight
         });

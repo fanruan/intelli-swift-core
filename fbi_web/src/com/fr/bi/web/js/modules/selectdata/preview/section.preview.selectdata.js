@@ -24,7 +24,7 @@ BI.DetailSelectDataPreviewSection = BI.inherit(BI.BarPopoverSection, {
             type: "bi.label",
             element: north,
             textAlign: "left",
-            text: BI.i18nText("BI-Preview"),
+            text: BI.i18nText("BI-Base_Preview"),
             height: 50
         });
     },
@@ -60,7 +60,7 @@ BI.DetailSelectDataPreviewSection = BI.inherit(BI.BarPopoverSection, {
             }, {
                 el: {
                     type: "bi.button",
-                    text: BI.i18nText("BI-Sure"),
+                    text: BI.i18nText("BI-Base_Sure"),
                     height: 28,
                     handler: function(){
                         self.close();

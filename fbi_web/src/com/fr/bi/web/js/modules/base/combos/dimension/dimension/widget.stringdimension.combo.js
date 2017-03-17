@@ -75,7 +75,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 title: showFieldDisabled ? BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension") : BI.i18nText("BI-Show_Field")
             }],
             [{
-                text: BI.i18nText("BI-Rename"),
+                text: BI.i18nText("BI-Base_Rename"),
                 value: BICst.DIMENSION_STRING_COMBO.RENAME
             }],
             [{
@@ -84,7 +84,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 cls: "copy-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Remove"),
+                text: BI.i18nText("BI-Base_Remove"),
                 value: BICst.DIMENSION_STRING_COMBO.DELETE,
                 cls: "delete-h-font"
             }],

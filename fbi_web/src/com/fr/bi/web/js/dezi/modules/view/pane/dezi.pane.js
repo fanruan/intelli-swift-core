@@ -78,7 +78,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         this.redoButton = BI.createWidget({
             type: "bi.icon_text_item",
             cls: "toolbar-redo-font",
-            text: BI.i18nText("BI-Redo"),
+            text: BI.i18nText("BI-Base_Redo"),
             height: 30,
             width: 60
         });

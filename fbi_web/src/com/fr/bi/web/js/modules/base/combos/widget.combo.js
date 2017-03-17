@@ -133,7 +133,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 value: BICst.DASHBOARD_WIDGET_SHOW_NAME,
                 cls: isShowName ? "widget-combo-show-title-font" : ""
             }, {
-                text: BI.i18nText("BI-Rename"),
+                text: BI.i18nText("BI-Base_Rename"),
                 value: BICst.DASHBOARD_WIDGET_RENAME,
                 cls: "widget-combo-rename-edit-font",
                 disabled: !isShowName,
@@ -198,7 +198,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 value: BICst.DASHBOARD_WIDGET_SHOW_NAME,
                 cls: isShowName ? "widget-combo-show-title-font" : ""
             }, {
-                text: BI.i18nText("BI-Rename"),
+                text: BI.i18nText("BI-Base_Rename"),
                 value: BICst.DASHBOARD_WIDGET_RENAME,
                 cls: "widget-combo-rename-edit-font",
                 disabled: !isShowName,
@@ -279,7 +279,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             }],
             [{
                 value: BICst.DASHBOARD_WIDGET_RENAME,
-                text: BI.i18nText("BI-Rename"),
+                text: BI.i18nText("BI-Base_Rename"),
                 cls: "widget-combo-rename-edit-font"
             }],
             [{
@@ -309,7 +309,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             }],
             [{
                 value: BICst.DASHBOARD_WIDGET_RENAME,
-                text: BI.i18nText("BI-Rename"),
+                text: BI.i18nText("BI-Base_Rename"),
                 cls: "widget-combo-rename-edit-font"
             }],
             [{

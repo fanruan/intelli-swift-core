@@ -96,7 +96,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Base_Sure")),
                     handler: function () {
                         self.fireEvent(BI.UploadImage.EVENT_DESTROY);
                     }

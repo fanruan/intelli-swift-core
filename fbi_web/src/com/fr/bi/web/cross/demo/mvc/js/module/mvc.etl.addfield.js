@@ -151,12 +151,12 @@ ETLAddFieldFloatboxView = BI.inherit(BI.BarFloatSection, {
                     value: BICst.COLUMN.NUMBER
                 }, {
                     type: "bi.text_button",
-                    text: BI.i18nText("BI-Text"),
+                    text: BI.i18nText("BI-Base_Text"),
                     cls: "bi-segment-button",
                     value: BICst.COLUMN.STRING
                 }, {
                     type: "bi.text_button",
-                    text: BI.i18nText("BI-Time"),
+                    text: BI.i18nText("BI-Base_Time"),
                     cls: "bi-segment-button",
                     value: BICst.COLUMN.DATE
 

@@ -74,7 +74,7 @@ NumberIntervalCustomGroupChildView = BI.inherit(BI.BarFloatSection, {
         });
 
         this.group.on(BI.NumberIntervalCustomGroup.EVENT_VALID,function(){
-            self.saveButton.setValue(BI.i18nText("BI-Save"));
+            self.saveButton.setValue(BI.i18nText("BI-Base_Save"));
             self.saveButton.setEnable(true);
         });
 
@@ -94,7 +94,7 @@ NumberIntervalCustomGroupChildView = BI.inherit(BI.BarFloatSection, {
 
         this.saveButton = BI.createWidget({
             type:"bi.button",
-            text:BI.i18nText("BI-Save"),
+            text:BI.i18nText("BI-Base_Save"),
             height:30,
             level: 'common',
             readonly:false,

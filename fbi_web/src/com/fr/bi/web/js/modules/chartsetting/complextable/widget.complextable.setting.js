@@ -175,7 +175,7 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Type"),
+                text: BI.i18nText("BI-Base_Type"),
                 cls: "attr-names",
                 height: this.constant.SINGLE_LINE_HEIGHT
             }, this.tableFormGroup, {

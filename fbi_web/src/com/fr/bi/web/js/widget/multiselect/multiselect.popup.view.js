@@ -35,7 +35,7 @@ BI.MultiSelectPopupView = BI.inherit(BI.Widget, {
             minWidth: opts.minWidth,
             maxHeight: opts.maxHeight,
             element: this.element,
-            buttons: [BI.i18nText('BI-Basic_Clears'), BI.i18nText('BI-Sure')],
+            buttons: [BI.i18nText('BI-Basic_Clears'), BI.i18nText('BI-Base_Sure')],
             el: this.loader
         });
 

@@ -59,7 +59,7 @@ BI.DateIntervalParamCombo = BI.inherit(BI.Widget, {
                     (value.foffset === 0 ? BI.i18nText("BI-Qian_First") : BI.i18nText("BI-Hou_Last")) +
                     BI.i18nText("BI-Basic_De") + BI.i18nText("BI-Year_Fen");
             case BICst.YEAR_QUARTER:
-                return value.fvalue + BI.i18nText("BI-Year") + midText  + BI.i18nText("BI-Quarter");
+                return value.fvalue + BI.i18nText("BI-Year") + midText  + BI.i18nText("BI-Base_Quarter");
             case BICst.YEAR_MONTH:
                 return value.fvalue + BI.i18nText("BI-Year") + midText + BI.i18nText("BI-Month_Fen");
             case BICst.YEAR_WEEK:

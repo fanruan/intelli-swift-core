@@ -122,7 +122,7 @@ BI.ReportHangoutPathChooser = BI.inherit(BI.BarPopoverSection, {
         var self = this;
         var sure = BI.createWidget({
             type: 'bi.button',
-            text: BI.i18nText("BI-Sure"),
+            text: BI.i18nText("BI-Base_Sure"),
             height: 30,
             handler: function (v) {
                 self.end();

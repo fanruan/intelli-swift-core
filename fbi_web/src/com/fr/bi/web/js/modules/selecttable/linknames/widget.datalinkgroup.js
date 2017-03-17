@@ -65,7 +65,7 @@ BI.DataLinkGroup = BI.inherit(BI.Widget, {
             cls: "nav-title",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Package"),
+                text: BI.i18nText("BI-Base_Package"),
                 height: this.constants.NAV_TITLE_HEIGHT,
                 hgap: this.constants.GROUPS_GAP
             }]

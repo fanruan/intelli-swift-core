@@ -54,7 +54,7 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
         var renameIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: 'report-rename-font template-item-icon',
-            title: BI.i18nText("BI-Rename"),
+            title: BI.i18nText("BI-Base_Rename"),
             invisible: true,
             stopPropagation: true
         });
@@ -73,12 +73,12 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
             el: {
                 type: "bi.icon_button",
                 cls: 'remove-report-font template-item-icon',
-                title: BI.i18nText("BI-Remove")
+                title: BI.i18nText("BI-Base_Remove")
             },
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Base_Sure")),
                     handler: function () {
                         BI.requestAsync("fr_bi", "check_report_edit", {id: o.id}, function (res) {
                             if (BI.isNotNull(res.result) && res.result.length > 0) {

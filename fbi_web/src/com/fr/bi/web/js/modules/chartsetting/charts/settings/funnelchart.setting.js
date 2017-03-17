@@ -150,14 +150,14 @@ BI.FunnelChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.chartColor]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Style"),
+                    text: BI.i18nText("BI-Base_Style"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.chartStyle]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Style"),
+                    text: BI.i18nText("BI-Base_Style"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
@@ -247,7 +247,7 @@ BI.FunnelChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showDataLabel]
                 }/*, {
                  type: "bi.label",
-                 text: BI.i18nText("BI-Tooltip"),
+                 text: BI.i18nText("BI-Base_Tooltip"),
                  cls: "attr-names"
                  }, {
                  type: "bi.vertical_adapt",

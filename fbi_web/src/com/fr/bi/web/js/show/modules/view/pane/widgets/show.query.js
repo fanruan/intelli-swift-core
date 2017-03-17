@@ -16,7 +16,7 @@ BIShow.QueryView = BI.inherit(BI.View, {
         var self = this;
         var queryButton = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Query"),
+            text: BI.i18nText("BI-Base_Query"),
             forceCenter: true,
             cls: "query-or-reset-button"
         });
