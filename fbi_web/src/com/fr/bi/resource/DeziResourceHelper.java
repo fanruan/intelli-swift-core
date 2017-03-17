@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Wang on 2017/1/18.
  */
 public class DeziResourceHelper {
-    public static String[] getDeziCssModule() {
+    private static String[] getDeziCssModule() {
         return new String[]{
                 //驾驶舱相关模块
                 "com/fr/bi/web/css/modules/base/combos/widget.combo.css",
@@ -343,7 +343,7 @@ public class DeziResourceHelper {
         };
     }
 
-    public static String[] getDeziJsModule() {
+    private static String[] getDeziJsModule() {
         return new String[]{
                 "com/fr/bi/web/js/fragments/base/tabs/widget.datastyletab.js",
                 "com/fr/bi/web/js/fragments/base/items/widget.realdatacheckbox.js",
