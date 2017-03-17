@@ -1,4 +1,0 @@
-export const UPDATE_TEMPLATE = 'UPDATE_TEMPLATE';
-export const UPDATE_WIDGET = 'UPDATE_WIDGET';
-export const WIDGET_LINKAGE = 'WIDGET_LINKAGE';
-export const QUERY = 'QUERY';
