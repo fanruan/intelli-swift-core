@@ -225,7 +225,7 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
         // this.mask = BI.createWidget({
         //     type: "bi.loading_mask",
         //     masker: this.element,
-        //     text: BI.i18nText("BI-Loading")
+        //     text: BI.i18nText("BI-Basic_Loading")
         // });
         this.readData(true);
     }

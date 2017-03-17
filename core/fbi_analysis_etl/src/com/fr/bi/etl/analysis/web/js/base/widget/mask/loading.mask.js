@@ -25,7 +25,7 @@ BI.ETLLoadingMask = BI.inherit(BI.Widget, {
                 el:{
                     type: "bi.label",
                     cls: "loading-bar-label",
-                    text:  BI.i18nText("BI-Loading"),
+                    text:  BI.i18nText("BI-Basic_Loading"),
                     height: 30
                 },
                 cardName:this._constants.LOADING

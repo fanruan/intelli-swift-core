@@ -329,7 +329,7 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
         var self = this;
         var chosenMap = self.fieldPane.getSelectedFieldMap();
         var chosenNum = BI.size(chosenMap);
-        self.combo.setTriggerValue(BI.i18nText("BI-Have_Selected") + chosenNum + BI.i18nText("BI-Item"));
+        self.combo.setTriggerValue(BI.i18nText("BI-Have_Selected") + chosenNum + BI.i18nText("BI-Basic_Item"));
         self.combo.doRedMark(chosenNum);
         if (chosenNum > 0) {
             self.move2group.setEnable(true);

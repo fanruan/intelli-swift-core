@@ -63,7 +63,7 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
                                 cls:"bi-history-tab-title",
                                 items :[{
                                     type:"bi.label",
-                                    text: BI.i18nText("BI-History")
+                                    text: BI.i18nText("BI-History_Record")
                                 }]
                             },
                             height:40

@@ -163,7 +163,7 @@ BI.AuthorityLoginInfoPane = BI.inherit(BI.BarPopoverSection, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.element,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getTablesDetailInfoByTables([this.table], function(data){
             var fields = data[0].fields;

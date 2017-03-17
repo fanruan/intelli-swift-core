@@ -60,7 +60,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
         this.dataLinkTables = result.items;
         this.wrapper.empty();
         if(BI.isNotNull(result.schema)) {
-            this.schemaName.setText(BI.i18nText("BI-Mode") + ": " + result.schema);
+            this.schemaName.setText(BI.i18nText("BI-Basic_Mode") + ": " + result.schema);
         }
 
         //对于连接失败的
@@ -84,7 +84,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
                     right: 0
                 });
             } else {
-                var text = BI.i18nText("BI-Null");
+                var text = BI.i18nText("BI-Basic_Null");
                 //未设置模式
                 if(BI.isEmptyString(result.schema)) {
                     text = BI.i18nText("BI-Schema_Not_Set");
@@ -125,7 +125,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
                         type: "bi.left",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("BI-Mode"),
+                            text: BI.i18nText("BI-Basic_Mode"),
                             cls: "schema-mode",
                             height: 30
                         }, this.schemaCombo],

@@ -73,7 +73,7 @@ BI.AnalysisDetailSelectDataLevel0Node = BI.inherit(BI.Widget, {
                                 name += "(" + BI.i18nText("BI-Year") + ")";
                                 break;
                             case BICst.GROUP.M:
-                                name += "(" + BI.i18nText("BI-Month") + ")";
+                                name += "(" + BI.i18nText("BI-Basic_Month") + ")";
                                 break;
                             case BICst.GROUP.YMD:
                                 name += "(" + BI.i18nText("BI-Basic_Date") + ")";

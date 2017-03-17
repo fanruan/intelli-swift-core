@@ -197,7 +197,7 @@ BI.AllReportsCardItem = BI.inherit(BI.Widget, {
             return;
         }
         this.markIcon.setIcon("report-hangout-font");
-        this.markIcon.setTitle(BI.i18nText("BI-Hangouted"));
+        this.markIcon.setTitle(BI.i18nText("BI-Has_Hangouted"));
     },
 
     _onClickHangout: function(){

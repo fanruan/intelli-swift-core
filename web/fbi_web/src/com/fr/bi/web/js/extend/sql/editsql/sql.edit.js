@@ -310,7 +310,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: self.element,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
             BI.Utils.getTestConnectionByLinkName(self.model.getDataLinkName(), function (res) {
                 if (BI.isNull(res) || res.success === false) {
@@ -348,7 +348,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.element,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getTablesDetailInfoByTables([{
             connection_name: BICst.CONNECTION.SQL_CONNECTION,
@@ -375,7 +375,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_cancel_mask",
             masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         var cancel = false;
         mask.on(BI.LoadingCancelMask.EVENT_VALUE_CANCEL, function () {

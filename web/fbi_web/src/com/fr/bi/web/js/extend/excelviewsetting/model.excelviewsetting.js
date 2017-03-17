@@ -102,7 +102,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         this.clearRowCol();
         BI.requestAsync("fr_bi_configure", "save_upload_excel", {

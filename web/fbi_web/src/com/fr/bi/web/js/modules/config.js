@@ -1,8 +1,8 @@
 //放置用户可以配置的常量
 
 //full week names
-BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Monday"),
-    BI.i18nText("BI-Monday"),
+BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Basic_Monday"),
+    BI.i18nText("BI-Basic_Monday"),
     BI.i18nText("BI-Tuesday"),
     BI.i18nText("BI-Wednesday"),
     BI.i18nText("BI-Thursday"),
@@ -12,18 +12,18 @@ BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Monday"),
 
 //full month names
 BICst.FULL_MONTH_NAMES = [
-    BI.i18nText("BI-January"),
-    BI.i18nText("BI-January"),
+    BI.i18nText("BI-Basic_January"),
+    BI.i18nText("BI-Basic_January"),
     BI.i18nText("BI-Basic_February"),
-    BI.i18nText("BI-March"),
+    BI.i18nText("BI-Basic_March"),
     BI.i18nText("BI-Basic_April"),
-    BI.i18nText("BI-May"),
-    BI.i18nText("BI-June"),
-    BI.i18nText("BI-July"),
+    BI.i18nText("BI-Basic_May"),
+    BI.i18nText("BI-Basic_June"),
+    BI.i18nText("BI-Basic_July"),
     BI.i18nText("BI-Basic_August"),
     BI.i18nText("BI-September"),
     BI.i18nText("BI-October"),
-    BI.i18nText("BI-November"),
+    BI.i18nText("BI-Basic_November"),
     BI.i18nText("BI-Basic_December")];
 
 //full quarter names
@@ -227,8 +227,8 @@ BICst.DASHBOARD_WIDGETS = [[{
     value: BICst.WIDGET.DONUT,
     cls: "drag-donut-icon"
 }, {
-    text: BI.i18nText("BI-Map"),
-    title: BI.i18nText("BI-Map"),
+    text: BI.i18nText("BI-Basic_Map"),
+    title: BI.i18nText("BI-Basic_Map"),
     value: BICst.WIDGET.MAP,
     cls: "drag-map-china-icon"
 }, {
@@ -633,7 +633,7 @@ BICst.ETL_MANAGE_ITEMS = [{
 //过滤的几种类型
 //target string
 BICst.TARGET_FILTER_STRING_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
@@ -668,7 +668,7 @@ BICst.TARGET_FILTER_STRING_COMBO = [[{
 
 //target number
 BICst.TARGET_FILTER_NUMBER_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
@@ -703,7 +703,7 @@ BICst.BEFORE_AFTER_COMBO = [{
 
 //dimension string
 BICst.DIMENSION_FILTER_STRING_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
@@ -745,7 +745,7 @@ BICst.DIMENSION_FILTER_STRING_COMBO = [[{
 }]];
 
 BICst.DIMENSION_TAR_FILTER_NUMBER_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
@@ -780,7 +780,7 @@ BICst.DIMENSION_TAR_FILTER_NUMBER_COMBO = [[{
 
 //dimension date
 BICst.DIMENSION_FILTER_DATE_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.DIMENSION_FILTER_DATE.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
@@ -824,8 +824,8 @@ BICst.DIMENSION_FILTER_DATE_COMBO = [[{
 //date
 BICst.FILTER_DATE_COMBO = [[{
     el: {
-        text: BI.i18nText("BI-In"),
-        value: BI.i18nText("BI-In")
+        text: BI.i18nText("BI-Basic_In"),
+        value: BI.i18nText("BI-Basic_In")
     },
     children: [{
         text: BI.i18nText("BI-Periods_Time"),
@@ -878,7 +878,7 @@ BICst.FILTER_DATE_COMBO = [[{
 
 //auth date
 BICst.AUTH_FILTER_DATE_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
     cls: "dot-e-font"
 }, {
@@ -904,7 +904,7 @@ BICst.AUTH_FILTER_DATE_COMBO = [[{
 }]];
 
 BICst.DATA_SETTING_FILTER_DATE_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
     cls: "dot-e-font"
 }, {
@@ -946,7 +946,7 @@ BICst.FILTER_CONDITION_TYPE = [{
 //auth string
 BICst.AUTHORITY_FILTER_STRING_COMBO = [[{
     el: {
-        text: BI.i18nText("BI-In"),
+        text: BI.i18nText("BI-Basic_In"),
         value: BICst.TARGET_FILTER_STRING.BELONG_VALUE
     },
     children: [{
@@ -1009,7 +1009,7 @@ BICst.AUTHORITY_FILTER_NUMBER_COMBO = [[{
     cls: "dot-e-font"
 }], [{
     el: {
-        text: BI.i18nText("BI-In"),
+        text: BI.i18nText("BI-Basic_In"),
         value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE
     },
     children: [{
@@ -1165,7 +1165,7 @@ BICst.CHART_COLORS = [{
 
 //图值轴格式
 BICst.CHART_VALUE_AXIS_STYLE = [{
-    text: BI.i18nText("BI-Normal"),
+    text: BI.i18nText("BI-Basic_Normal"),
     value: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
 }, {
     text: "0",
@@ -1330,7 +1330,7 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
 }];
 
 BICst.DATA_LABEL_POSITION = [{
-    title: BI.i18nText("BI-Inner"),
+    title: BI.i18nText("BI-Basic_Inner"),
     cls: "datalabel-position-inner",
     value: BICst.DATA_LABEL.POSITION_INNER
 }, {
@@ -1344,7 +1344,7 @@ BICst.DATA_LABEL_POSITION = [{
 }];
 
 BICst.PIE_DATA_LABEL_POSITION = [{
-    title: BI.i18nText("BI-Inner"),
+    title: BI.i18nText("BI-Basic_Inner"),
     cls: "datalabel-position-inner",
     value: BICst.DATA_LABEL.POSITION_INNER
 }, {
@@ -1355,7 +1355,7 @@ BICst.PIE_DATA_LABEL_POSITION = [{
 
 //数据标签过滤
 BICst.DATA_LABEL_FILTER_NUMBER_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
@@ -1394,7 +1394,7 @@ BICst.DATA_LABEL_FILTER_NUMBER_COMBO = [[{
 ]];
 
 BICst.DATA_LABEL_FILTER_STRING_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
@@ -1634,7 +1634,7 @@ BICst.BUBBLE_DISPLAY_RULES = [{
 }];
 
 BICst.TARGET_STYLE_FORMAT = [{
-    text: BI.i18nText("BI-Normal"),
+    text: BI.i18nText("BI-Basic_Normal"),
     value: BICst.TARGET_STYLE.FORMAT.NORMAL
 }, {
     text: "0",
@@ -1665,7 +1665,7 @@ BICst.TARGET_STYLE_LEVEL = [{
 }];
 
 BICst.TARGET_STYLE_LEVEL_SHORT = [{
-    text: BI.i18nText("BI-Normal"),
+    text: BI.i18nText("BI-Basic_Normal"),
     value: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
 }, {
     text: BI.i18nText("BI-Basic_Wan"),
@@ -1718,7 +1718,7 @@ BICst.PIE_TOTAL_ANGLE = [{
 }];
 
 BICst.CHART_LEGEND = [{
-    text: BI.i18nText("BI-Hidden"),
+    text: BI.i18nText("BI-Basic_Hidden"),
     value: BICst.CHART_LEGENDS.NOT_SHOW
 }, {
     text: BI.i18nText("BI-Ju_xia"),
@@ -1732,9 +1732,27 @@ BICst.PERCENTAGE_SHOW = [{
     text: BI.i18nText("BI-Basic_Display"),
     value: BICst.PERCENTAGE.SHOW
 }, {
-    text: BI.i18nText("BI-Hidden"),
+    text: BI.i18nText("BI-Basic_Hidden"),
     value: BICst.PERCENTAGE.NOT_SHOW
 }];
+
+BICst.DATE_GROUP = {};
+BICst.DATE_GROUP[BICst.GROUP.Y] = BI.i18nText("BI-Year_Fen");
+BICst.DATE_GROUP[BICst.GROUP.S] = BI.i18nText("BI-Multi_Date_Quarter");
+BICst.DATE_GROUP[BICst.GROUP.M] = BI.i18nText("BI-Month_Fen");
+BICst.DATE_GROUP[BICst.GROUP.WEEK_COUNT] = BI.i18nText("BI-Week_Count");
+BICst.DATE_GROUP[BICst.GROUP.W] = BI.i18nText("BI-Week_XingQi");
+BICst.DATE_GROUP[BICst.GROUP.D] = BI.i18nText("BI-Day_Ri");
+BICst.DATE_GROUP[BICst.GROUP.HOUR] = BI.i18nText("BI-Hour_Sin");
+BICst.DATE_GROUP[BICst.GROUP.MINUTE] = BI.i18nText("BI-Basic_Minute");
+BICst.DATE_GROUP[BICst.GROUP.SECOND] = BI.i18nText("BI-Seconds");
+BICst.DATE_GROUP[BICst.GROUP.YS] = BI.i18nText("BI-Year_Quarter");
+BICst.DATE_GROUP[BICst.GROUP.YM] = BI.i18nText("BI-Year_Month");
+BICst.DATE_GROUP[BICst.GROUP.YW] = BI.i18nText("BI-Year_Week");
+BICst.DATE_GROUP[BICst.GROUP.YMD] = BI.i18nText("BI-YMD_Date");
+BICst.DATE_GROUP[BICst.GROUP.YMDH] = BI.i18nText("BI-YMDH");
+BICst.DATE_GROUP[BICst.GROUP.YMDHM] = BI.i18nText("BI-YMDHM");
+BICst.DATE_GROUP[BICst.GROUP.YMDHMS] = BI.i18nText("BI-Detail_Date");
 
 
 BICst.WIDGET_ICON_CLS_MAP = {};

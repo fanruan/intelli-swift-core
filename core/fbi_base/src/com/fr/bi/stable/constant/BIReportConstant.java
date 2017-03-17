@@ -60,6 +60,17 @@ public class BIReportConstant {
 
         public static final int ID_GROUP = 0xE;
 
+        public static final int HOUR = 0xF;
+        public static final int MINUTE = 0x10;
+        public static final int SECOND = 0x11;
+        public static final int WEEK_COUNT = 0x12;
+        public static final int D = 0x13;
+        public static final int YM = 0x14;
+        public static final int YW = 0x15;
+        public static final int YMDH = 0x16;
+        public static final int YMDHM = 0x17;
+        public static final int YS = 0x18;
+
     }
 
     public static final class DIMENSION_FILTER_STRING {

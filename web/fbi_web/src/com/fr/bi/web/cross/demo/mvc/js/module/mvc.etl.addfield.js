@@ -146,7 +146,7 @@ ETLAddFieldFloatboxView = BI.inherit(BI.BarFloatSection, {
             items: [
                 {
                     type: "bi.text_button",
-                    text: BI.i18nText("BI-Number"),
+                    text: BI.i18nText("BI-Basic_Number"),
                     cls: "bi-segment-button",
                     value: BICst.COLUMN.NUMBER
                 }, {

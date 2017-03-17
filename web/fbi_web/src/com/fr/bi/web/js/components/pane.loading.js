@@ -25,7 +25,7 @@ BI.LoadingPane = BI.inherit(BI.Pane, {
                 type: "bi.loading_mask",
                 masker: this,
                 container: this.options.container || this,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
         }
     },

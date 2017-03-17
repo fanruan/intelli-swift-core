@@ -260,7 +260,7 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
         } else {
             var date = obj.getCalculationValue();
             if(BI.isNull(date)){
-                date = BI.i18nText("BI-Null");
+                date = BI.i18nText("BI-Basic_Null");
             }else{
                 date = date.print("%Y-%x-%e");
             }
@@ -334,7 +334,7 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
                 self._setInnerValue(this.param);
                 break;
             default:
-                if (BI.isNull(v)) {
+                if (BI.isNull(v) || BI.isEmptyObject(v)) {
                     var date = new Date();
                     this.dateTab.setSelect(BICst.MULTI_DATE_YMD_CARD);
                     this.ymd.setValue({

@@ -75,7 +75,7 @@ BI.LoginInfoCombo = BI.inherit(BI.Widget, {
             });
             if (items.length === 0) {
                 items.push({
-                    text: BI.i18nText("BI-Null"),
+                    text: BI.i18nText("BI-Basic_Null"),
                     disabled: true
                 })
             }

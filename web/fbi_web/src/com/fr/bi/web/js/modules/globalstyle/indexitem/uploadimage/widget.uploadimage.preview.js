@@ -87,7 +87,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                             }, {
                                 el: {
                                     type: "bi.label",
-                                    text: BI.i18nText("BI-Modify"),
+                                    text: BI.i18nText("BI-Basic_Modify"),
                                     height: 25,
                                     cls: "modify-button"
                                 },

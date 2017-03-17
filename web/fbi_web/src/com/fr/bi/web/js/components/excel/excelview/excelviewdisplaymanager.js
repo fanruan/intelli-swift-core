@@ -102,7 +102,7 @@ BI.ExcelViewDisplayManager = BI.inherit(BI.Widget, {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: BICst.BODY_ELEMENT,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
             Data.Req.reqGetExcelHTMLView({fileId: this.excelId}, function (data) {
                 self.styleExcel.empty();

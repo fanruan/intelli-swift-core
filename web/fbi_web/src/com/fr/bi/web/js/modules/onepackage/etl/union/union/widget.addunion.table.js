@@ -72,7 +72,7 @@ BI.TableAddUnion = BI.inherit(BI.Widget, {
     _createFieldCombo: function (table, fArray, indexOfMerge, index, isValidOb) {
         var self = this;
         var tFields = [{
-            text: BI.i18nText("BI-Null"),
+            text: BI.i18nText("BI-Basic_Null"),
             value: BI.TableAddUnion.UNION_FIELD_NULL
         }];
         var allFields = this._getAllFieldsOfOneTable(table);

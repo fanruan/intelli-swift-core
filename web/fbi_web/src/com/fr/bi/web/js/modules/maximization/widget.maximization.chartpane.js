@@ -162,7 +162,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             self.tableChart.magnify();
         });
 
-        var minimize = this._createToolsButton("BI-minimization", "widget-tools-minimization-font");
+        var minimize = this._createToolsButton("BI-Basic_Minimization", "widget-tools-minimization-font");
         minimize.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.MaximizationChartPane.EVENT_CLOSE);
         });

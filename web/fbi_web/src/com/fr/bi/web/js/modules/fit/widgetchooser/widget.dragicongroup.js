@@ -43,7 +43,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
                     items.push(config[k]);
                 }
                 cfg = {
-                    text: BI.i18nText("BI-More"),
+                    text: BI.i18nText("BI-Basic_More"),
                     invalid: true,
                     value: c.valueMore,
                     cls: "widget-more chart-more-font",

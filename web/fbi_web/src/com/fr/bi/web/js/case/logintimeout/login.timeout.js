@@ -114,7 +114,7 @@ BI.LoginTimeOut = BI.inherit(BI.BarPopoverSection, {
 
         var loginButton = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Login"),
+            text: BI.i18nText("BI-Basic_Login"),
             cls: "login-button",
             width: 330,
             height: 50

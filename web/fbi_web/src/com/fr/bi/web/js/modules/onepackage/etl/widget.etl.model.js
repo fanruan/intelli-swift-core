@@ -510,7 +510,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         var table = this.getAllTables()[0][0];
         table.id = this.id;

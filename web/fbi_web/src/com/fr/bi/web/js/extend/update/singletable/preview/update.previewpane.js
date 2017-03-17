@@ -155,7 +155,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.tab,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getUpdatePreviewSqlResult({sql: sql, table: this.options.table}, function (res) {
             var data = res.data, fieldNames = res.field_names, sql = res.sql, error = res.error;

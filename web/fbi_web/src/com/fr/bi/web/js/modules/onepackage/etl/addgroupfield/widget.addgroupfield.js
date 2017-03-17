@@ -335,7 +335,7 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: self.element,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
             BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
                 var table = sourceTables[0];
@@ -415,7 +415,7 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
                 var mask = BI.createWidget({
                     type: "bi.loading_mask",
                     masker: self.element,
-                    text: BI.i18nText("BI-Loading")
+                    text: BI.i18nText("BI-Basic_Loading")
                 });
                 var table = self.model.getTableInfo();
                 BI.Utils.getPreviewDataByTableAndFields(table, [], function (data) {

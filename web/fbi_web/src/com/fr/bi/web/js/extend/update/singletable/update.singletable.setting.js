@@ -504,7 +504,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
     _getTextByUpdatingType: function () {
         return this.updatingType === BICst.SINGLE_TABLE_UPDATE_TYPE.PART ?
-            BI.i18nText("BI-Incremental") : BI.i18nText("BI-Full_Amount");
+            BI.i18nText("BI-Basic_Incremental") : BI.i18nText("BI-Full_Amount");
     },
 
     _startSingleUpdate: function (v) {

@@ -1,5 +1,5 @@
 BICst.ETL_FILTER_STRING_COMBO = [[{
-    text: BI.i18nText("BI-In"),
+    text: BI.i18nText("BI-Basic_In"),
     value: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
     cls: "dot-e-font"
 },{
@@ -53,7 +53,7 @@ BICst.ETL_FILTER_NUMBER_COMBO = [[{
     value: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
     cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Not") + BI.i18nText("BI-ETL_Number_IN"),
+    text: BI.i18nText("BI-Basic_Not") + BI.i18nText("BI-ETL_Number_IN"),
     value: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
     cls: "dot-e-font"
 }],[{

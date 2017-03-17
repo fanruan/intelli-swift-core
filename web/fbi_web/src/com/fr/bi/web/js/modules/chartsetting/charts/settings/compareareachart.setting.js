@@ -623,7 +623,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //显示横向网格线
         this.hShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Horizontal"),
+            value: BI.i18nText("BI-Horizontal_Orientation"),
             width: 60
         });
 

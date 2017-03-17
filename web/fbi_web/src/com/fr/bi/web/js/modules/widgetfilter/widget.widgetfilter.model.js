@@ -196,7 +196,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                     return text;
                 }
                 if (widgetValue.type === BI.Selection.Multi) {
-                    text = BI.i18nText("BI-In") + " " + widgetValue.value;
+                    text = BI.i18nText("BI-Basic_In") + " " + widgetValue.value;
                 } else if (widgetValue.type === BI.Selection.All) {
                     text = BI.i18nText("BI-Not_In") + " " + widgetValue.value;
                 }
@@ -254,7 +254,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                     text += name + (childNodes === "" ? "" : (":" + childNodes)) + "; ";
                 });
                 if (text !== "") {
-                    text = BI.i18nText("BI-In") + " " + text;
+                    text = BI.i18nText("BI-Basic_In") + " " + text;
                 }
                 return text;
             case BICst.WIDGET.TREE_LABEL:
@@ -272,7 +272,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                     text += ";"
                 });
                 if (text !== "") {
-                    text = BI.i18nText("BI-In") + " " + text;
+                    text = BI.i18nText("BI-Basic_In") + " " + text;
                 }
                 return text;
             default:

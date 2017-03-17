@@ -334,7 +334,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     },
 
     _setErrorText: function () {
-        var errorText = BI.i18nText("BI-Please_Enter") + this.min + "-" + this.max + BI.i18nText("BI-Basic_De") + BI.i18nText("BI-Number");
+        var errorText = BI.i18nText("BI-Please_Enter") + this.min + "-" + this.max + BI.i18nText("BI-Basic_De") + BI.i18nText("BI-Basic_Number");
         this.labelOne.setErrorText(errorText);
         this.labelTwo.setErrorText(errorText);
     },

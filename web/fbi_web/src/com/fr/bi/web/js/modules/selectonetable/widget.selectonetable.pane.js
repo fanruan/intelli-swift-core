@@ -57,7 +57,7 @@ BI.SelectOneTablePane = BI.inherit(BI.Widget, {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: self.element,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
             BI.Utils.getTablesDetailInfoByTables(allTables.sTables, function (tables) {
                 mask.destroy();

@@ -17,7 +17,7 @@ BI.CustomSortPane = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: self.element,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
 
         this.loader = BI.createWidget({

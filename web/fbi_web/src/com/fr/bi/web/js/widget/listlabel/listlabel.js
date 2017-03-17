@@ -26,7 +26,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.items = BI.clone(o.items);
         this.items.unshift({
-            text: BI.i18nText("BI-Nolimited"),
+            text: BI.i18nText("BI-Basic_Nolimited"),
             value: BICst.LIST_LABEL_TYPE.ALL
         });
         this.title = BI.createWidget({

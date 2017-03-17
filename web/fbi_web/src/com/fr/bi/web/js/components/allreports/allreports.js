@@ -247,7 +247,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.requestAsync("fr_bi", "get_all_reports_data", {}, function (data) {
             self.departs = data.departs;

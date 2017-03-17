@@ -330,7 +330,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //网格线设置
         this.hShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Horizontal"),
+            value: BI.i18nText("BI-Horizontal_Orientation"),
             width: 65
         });
 

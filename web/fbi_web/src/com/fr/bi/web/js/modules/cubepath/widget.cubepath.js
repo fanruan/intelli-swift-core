@@ -42,7 +42,7 @@ BI.CubePath = BI.inherit(BI.Widget, {
         pathInput.setVisible(false);
         var modifyButton = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Modify"),
+            text: BI.i18nText("BI-Basic_Modify"),
             height: this.constants.BUTTON_HEIGHT,
             width: this.constants.BUTTON_WIDTH
         });
@@ -67,7 +67,7 @@ BI.CubePath = BI.inherit(BI.Widget, {
                                 BI.Msg.toast(BI.i18nText("BI-Modify_Success"));
                                 pathLabel.setVisible(true);
                                 pathInput.setVisible(false);
-                                modifyButton.setText(BI.i18nText("BI-Modify"));
+                                modifyButton.setText(BI.i18nText("BI-Basic_Modify"));
                                 cancelButton.setVisible(false);
                                 tipLabel.setVisible(false);
                             });
@@ -95,7 +95,7 @@ BI.CubePath = BI.inherit(BI.Widget, {
             pathLabel.setText(self.path);
             pathLabel.setVisible(true);
             pathInput.setVisible(false);
-            modifyButton.setText(BI.i18nText("BI-Modify"));
+            modifyButton.setText(BI.i18nText("BI-Basic_Modify"));
             this.setVisible(false);
             tipLabel.setVisible(false);
         });

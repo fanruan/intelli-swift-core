@@ -34,7 +34,7 @@ BI.ReportHangoutPathChooser = BI.inherit(BI.BarPopoverSection, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: center,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.requestAsync("fs_entry", "getfolder", {}, function (data) {
             var items = self._formatItems(data);

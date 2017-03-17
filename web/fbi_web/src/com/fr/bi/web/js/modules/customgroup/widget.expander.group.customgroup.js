@@ -151,7 +151,7 @@ BI.CustomgroupGroupExpander = BI.inherit(BI.Widget, {
         if (BI.size(self.fieldWidgetMap) === 0) {
             self.emptyButton = BI.createWidget({
                 type: "bi.text_button",
-                value: BI.i18nText("BI-Null"),
+                value: BI.i18nText("BI-Basic_Null"),
                 cls: "item-custom-group",
                 hgap: 10,
                 height: 25,

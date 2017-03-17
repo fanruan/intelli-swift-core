@@ -18,7 +18,7 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.element,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getAllPackages(function(packs){
             self.packs = packs;

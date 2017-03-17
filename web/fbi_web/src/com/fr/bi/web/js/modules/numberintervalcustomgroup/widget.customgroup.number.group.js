@@ -26,7 +26,7 @@ BI.NumberIntervalCustomItemGroup = BI.inherit(BI.Widget, {
 
         this.buttongroup = BI.createWidget({
             type: "bi.list_pane",
-            tipText: BI.i18nText("BI-Null"),
+            tipText: BI.i18nText("BI-Basic_Null"),
             element: this.element,
             el: {
                 type: "bi.button_group",

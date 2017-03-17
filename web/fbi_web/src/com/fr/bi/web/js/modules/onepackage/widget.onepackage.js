@@ -499,7 +499,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getTableInfoByTableId4Conf({id: id}, function (res) {
             if (BI.isNotNull(res) && BI.isNotNull(res.lockedBy)) {

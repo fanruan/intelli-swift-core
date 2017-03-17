@@ -19,7 +19,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
     },
 
     rebuildNorth: function (north) {
-        var text = (BI.isNotNull(this.options.report) ? BI.i18nText("BI-Modify") : BI.i18nText("BI-Basic_Add")) + "BI"
+        var text = (BI.isNotNull(this.options.report) ? BI.i18nText("BI-Basic_Modify") : BI.i18nText("BI-Basic_Add")) + "BI"
         BI.createWidget({
             type: "bi.label",
             element: north,
@@ -47,7 +47,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: center,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.requestAsync("fr_bi", "get_all_hangout_reports", {}, function (data) {
             var allReports = data.all_reports, users = data.users;

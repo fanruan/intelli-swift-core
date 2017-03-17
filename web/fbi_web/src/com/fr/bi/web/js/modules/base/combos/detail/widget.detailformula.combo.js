@@ -21,7 +21,7 @@ BI.DetailFormulaDimensionCombo = BI.inherit(BI.Widget, {
                 value: BICst.DETAIL_FORMULA_COMBO.UPDATE_FORMULA
             }],
             [{
-                text: BI.i18nText("BI-Hyperlink"),
+                text: BI.i18nText("BI-Basic_Hyperlink"),
                 value: BICst.DETAIL_FORMULA_COMBO.HYPERLINK,
                 cls: "hyper-link-font"
             }],

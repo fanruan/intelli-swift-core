@@ -262,7 +262,7 @@ BI.extend(BI.Utils, {
                 return BI.createWidget({
                     type: "bi.etl_loading_mask",
                     masker: maskElement.element,
-                    text: BI.i18nText("BI-Loading")
+                    text: BI.i18nText("BI-Basic_Loading")
                 });
             });
         }

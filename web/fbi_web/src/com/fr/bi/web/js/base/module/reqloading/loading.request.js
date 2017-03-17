@@ -100,7 +100,7 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                     }, {
                         type: "bi.label",
                         cls: "loading-comment",
-                        text: BI.i18nText("BI-Loading"),
+                        text: BI.i18nText("BI-Basic_Loading"),
                         height: 30
                     }],
                     width: 208,
@@ -121,7 +121,7 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
                     }, {
                         type: "bi.label",
                         cls: "loading-comment",
-                        text: BI.i18nText("BI-Loading"),
+                        text: BI.i18nText("BI-Basic_Loading"),
                         height: 30
                     }, {
                         type: "bi.label",

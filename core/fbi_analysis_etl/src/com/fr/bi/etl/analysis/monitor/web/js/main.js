@@ -21,7 +21,7 @@ BI.extend(BI.Monitor, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: "body",
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         return BI.requestAsync("sppa_monitor", "check_all_table_health", {}, function (res) {
             callback(res);
@@ -34,7 +34,7 @@ BI.extend(BI.Monitor, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: "body",
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         return BI.requestAsync("sppa_monitor", "check_single_table_health", {
             id:id

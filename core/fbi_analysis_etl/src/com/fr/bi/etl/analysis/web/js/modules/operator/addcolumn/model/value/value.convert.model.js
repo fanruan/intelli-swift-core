@@ -6,7 +6,7 @@ BI.AnalysisETLOperatorAddColumnValueConvertModel = BI.inherit(BI.AnalysisETLOper
     _getTypePrefix: function (type) {
         switch (type){
             case BICst.COLUMN.NUMBER :
-                return BI.i18nText('BI-Number');
+                return BI.i18nText('BI-Basic_Number');
             case BICst.COLUMN.DATE :
                 return BI.i18nText('BI-Time');
             case BICst.COLUMN.STRING :

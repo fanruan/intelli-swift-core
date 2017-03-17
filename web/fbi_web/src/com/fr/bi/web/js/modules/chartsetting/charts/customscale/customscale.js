@@ -15,7 +15,7 @@ BI.CustomScale = BI.inherit(BI.Widget, {
 
         this.minScale = BI.createWidget({
             type: "bi.combo_custom_scale",
-            text: BI.i18nText("BI-Min"),
+            text: BI.i18nText("BI-Basic_Min"),
             wId: o.wId
         });
 
@@ -30,7 +30,7 @@ BI.CustomScale = BI.inherit(BI.Widget, {
 
         this.maxScale = BI.createWidget({
             type: "bi.combo_custom_scale",
-            text: BI.i18nText("BI-Max"),
+            text: BI.i18nText("BI-Basic_Max"),
             wId: o.wId
 
         });

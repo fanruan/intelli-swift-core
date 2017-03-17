@@ -94,7 +94,7 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
-                items[this.constants.CordonPos][0].text = BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal") +")";
+                items[this.constants.CordonPos][0].text = BI.i18nText("BI-Basic_Cordon") + "(" + BI.i18nText("BI-Horizontal_Orientation") +")";
                 if(BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(o.dId))){
                     BI.removeAt(items, this.constants.CordonPos);
                 }

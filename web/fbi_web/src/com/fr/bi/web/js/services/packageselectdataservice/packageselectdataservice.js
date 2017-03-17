@@ -8,8 +8,14 @@
  */
 BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     _const: {
-        FIELD_GAP: 25
+        FIELD_GAP: 25,
+        DATE_GROUP: [BICst.GROUP.Y, BICst.GROUP.S, BICst.GROUP.M,BICst.GROUP.WEEK_COUNT,
+            BICst.GROUP.W, BICst.GROUP.D, BICst.GROUP.HOUR, BICst.GROUP.MINUTE,
+            BICst.GROUP.SECOND],
+        COMBINE_DATE_GROUP: [BICst.GROUP.YS, BICst.GROUP.YM, BICst.GROUP.YW,
+            BICst.GROUP.YMD, BICst.GROUP.YMDH, BICst.GROUP.YMDHM, BICst.GROUP.YMDHMS]
     },
+
     _defaultConfig: function () {
         return BI.extend(BI.PackageSelectDataService.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-package-select-data-service",
@@ -707,6 +713,51 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }
     },
 
+    _createDateSubTypeItem: function(isRelation, isDetail, drag, field, text, title, groupType){
+        var o = this.options;
+        var fieldId = field.id || field.value;
+        var type = "bi.detail_select_data_level1_item";
+        var layer = 2;
+        switch ((isRelation << 1) | isDetail) {
+            //  !isRelation !isDetail
+            case 0:
+                type = "bi.detail_select_data_level1_item";
+                layer = 2;
+                break;
+            //  !isRelation isDetail
+            case 1:
+                type = "bi.detail_select_data_level1_item";
+                layer = 3;
+                break;
+            //  isRelation !isDetail
+            case 2:
+                type = "bi.detail_select_data_level2_item";
+                layer = 3;
+                break;
+            //  isRelation isDetail
+            case 3:
+                type = "bi.detail_select_data_level2_item";
+                layer = 4;
+                break;
+        }
+        return BI.extend({
+            wId: o.wId,
+            type: type,
+            fieldType: BICst.COLUMN.DATE,
+            drag: drag
+        }, field, {
+            id: fieldId + groupType,
+            pId: fieldId,
+            text: text,
+            title: title,
+            layer: layer,
+            value: {
+                field_id: fieldId,
+                group: {type: groupType}
+            }
+        })
+    },
+
     /**
      * 日期类型的字段展开
      * @param fieldId
@@ -714,107 +765,39 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
      * @private
      */
     _buildDateChildren: function (tableId, field, isRelation) {
-        var o = this.options;
+        var o = this.options, c = this._const, self = this;
+        isRelation = isRelation || false;
         var fieldId = field.id || field.value;
         var fieldName = field.text || BI.Utils.getFieldNameByID(fieldId) || "";
         var drag = this._createDrag(fieldName);
         var prefix = this._getTitleByFieldId(fieldId) + ".";
-
-        var children = [BI.extend({
-            wId: o.wId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            fieldType: BICst.COLUMN.DATE,
-            drag: drag
-        }, field, {
-            id: fieldId + BICst.GROUP.YMD,
+        var children =[];
+        BI.each(c.DATE_GROUP, function(idx, type){
+            children.push(self._createDateSubTypeItem(isRelation, false, drag, field,
+                BICst.DATE_GROUP[type], prefix + BICst.DATE_GROUP[type], type))
+        });
+        //如果要是的根节点收起，这个最叶子节点也收起，那么要将日期节点改成select_Data_expander
+        children.push({
+            id: BI.UUID(),
             pId: fieldId,
-            text: BI.i18nText("BI-Basic_Date"),
-            title: prefix + BI.i18nText("BI-Basic_Date"),
-            layer: isRelation ? 3 : 2,
-            value: {
-                field_id: fieldId,
-                group: {type: BICst.GROUP.YMD}
-            }
-        }), BI.extend({
-            wId: o.wId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            fieldType: BICst.COLUMN.DATE,
-            drag: drag
-        }, field, {
-            id: fieldId + BICst.GROUP.Y,
-            pId: fieldId,
-            text: BI.i18nText("BI-Year_Fen"),
-            title: prefix + BI.i18nText("BI-Year_Fen"),
-            layer: isRelation ? 3 : 2,
-            value: {
-                field_id: fieldId,
-                group: {type: BICst.GROUP.Y}
-            }
-        }), BI.extend({
-            wId: o.wId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            fieldType: BICst.COLUMN.DATE,
-            drag: drag
-        }, field, {
-            id: fieldId + BICst.GROUP.M,
-            pId: fieldId,
-            text: BI.i18nText("BI-Multi_Date_Month"),
-            title: prefix + BI.i18nText("BI-Multi_Date_Month"),
-            layer: isRelation ? 3 : 2,
-            value: {
-                field_id: fieldId,
-                group: {type: BICst.GROUP.M}
-            }
-        }), BI.extend({
-            wId: o.wId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            fieldType: BICst.COLUMN.DATE,
-            drag: drag
-        }, field, {
-            id: fieldId + BICst.GROUP.S,
-            pId: fieldId,
-            text: BI.i18nText("BI-Quarter"),
-            title: prefix + BI.i18nText("BI-Quarter"),
-            layer: isRelation ? 3 : 2,
-            value: {
-                field_id: fieldId,
-                group: {type: BICst.GROUP.S}
-            }
-        }), BI.extend({
-            wId: o.wId,
-            type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-            fieldType: BICst.COLUMN.DATE,
-            drag: drag
-        }, field, {
-            id: fieldId + BICst.GROUP.W,
-            pId: fieldId,
-            text: BI.i18nText("BI-Week_XingQi"),
-            title: prefix + BI.i18nText("BI-Week_XingQi"),
-            layer: isRelation ? 3 : 2,
-            value: {
-                field_id: fieldId,
-                group: {type: BICst.GROUP.W}
-            }
-        })];
-        //时刻加在明细表里面
-        if (o.showTime === true) {
-            children.push(BI.extend({
+            type: "bi.expander",
+            el: {
+                type: isRelation ? "bi.detail_select_data_level2_more_date_node":"bi.detail_select_data_level1_more_date_node",
                 wId: o.wId,
-                type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-                fieldType: BICst.COLUMN.DATE,
-                drag: drag
-            }, field, {
-                id: fieldId + BICst.GROUP.YMDHMS,
-                pId: fieldId,
-                text: BI.i18nText("BI-Time_ShiKe"),
-                title: prefix + BI.i18nText("BI-Time_ShiKe"),
-                layer: isRelation ? 3 : 2,
-                value: {
-                    field_id: fieldId,
-                    group: {type: BICst.GROUP.YMDHMS}
-                }
-            }));
-        }
+                text: BI.i18nText("BI-More_Group"),
+                title: BI.i18nText("BI-More_Group"),
+                value: BI.UUID(),
+                isParent: true,
+                open: false
+            },
+            popup: {
+                type: "bi.select_data_loader",
+                items: BI.map(c.COMBINE_DATE_GROUP, function(idx, type){
+                            return self._createDateSubTypeItem(isRelation, true, drag, field,
+                                BICst.DATE_GROUP[type], prefix + BICst.DATE_GROUP[type], type)
+                })
+            }
+        });
         return children;
     },
 

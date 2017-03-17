@@ -48,7 +48,7 @@ BI.Union = BI.inherit(BI.Widget, {
                         items: [{
                             type: "bi.label",
                             cls: "union-north-label",
-                            text: "Union" + BI.i18nText("BI-Management"),
+                            text: "Union" + BI.i18nText("BI-Basic_Management"),
                             height: this.constants.UNION_NORTH_HEIGHT
                         }],
                         hgap: this.constants.UNION_GAP_TWENTY
@@ -198,7 +198,7 @@ BI.Union = BI.inherit(BI.Widget, {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: self.element,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
             BI.Utils.getTablesDetailInfoByTables([data], function (sourceTables) {
                 var table = sourceTables[0];
@@ -324,7 +324,7 @@ BI.Union = BI.inherit(BI.Widget, {
                     var mask = BI.createWidget({
                         type: "bi.loading_mask",
                         masker: self.element,
-                        text: BI.i18nText("BI-Loading")
+                        text: BI.i18nText("BI-Basic_Loading")
                     });
                     var interval = setInterval(function(){
                         if(count === 0){
