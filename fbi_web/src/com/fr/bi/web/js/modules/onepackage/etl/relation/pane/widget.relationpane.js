@@ -14,7 +14,8 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         BI.RelationPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.RelationPaneModel({
-            field: o.field
+            field: o.field,
+            relations: o.relations
         });
         this._createRelationTree();
         var addRelationTable = BI.createWidget({
@@ -24,7 +25,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             width: 140
         });
         addRelationTable.on(BI.Button.EVENT_CHANGE, function () {
-            self._createSelectDataMask();
+            self._selectRelationField();
         });
         BI.createWidget({
             type: "bi.vertical",
@@ -38,8 +39,8 @@ BI.RelationPane = BI.inherit(BI.Widget, {
                 height: 60
             }]
         });
-        if (this.model.getRelationIds().length === 0) {
-            this._createSelectDataMask();
+        if (this.model.getRelationFields().length === 0) {
+            this._selectRelationField();
         }
         this._refreshBaseTablePrimaryKeyIcon();
     },
@@ -78,6 +79,13 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         })
     },
 
+    _selectRelationField: function (fieldId) {
+        var self = this;
+        this.model.assertCacheData(function() {
+            self._createSelectDataMask(fieldId);
+        });
+    },
+
     _createSelectDataMask: function (fieldId) {
         var self = this, maskId = BI.UUID();
         var mask = BI.Maskers.make(maskId, BICst.BODY_ELEMENT);
@@ -87,7 +95,9 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             element: mask,
             field: this.options.field,
             fieldId: fieldId,
-            maskId: maskId
+            maskId: maskId,
+            data: self.model.getCacheData(),
+            relations: this.options.relations
         });
         selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function () {
             BI.Maskers.remove(maskId);
@@ -103,7 +113,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
                 });
             }
             treeValue.push({
-                fieldId: v.field_id,
+                field: self.model.getFieldById(v.field_id),
                 relationType: self.model.getRelationType(fieldId)
             });
             self._refreshTree(treeValue);
@@ -112,13 +122,12 @@ BI.RelationPane = BI.inherit(BI.Widget, {
 
     _createRelationTree: function () {
         var self = this;
-        var relationIds = this.model.getRelationIds();
+        var relationFields = this.model.getRelationFields();
         var relationChildren = [];
-        BI.each(relationIds, function (i, rId) {
+        BI.each(relationFields, function (i, field) {
             relationChildren.push({
-                fieldId: rId,
-                relationType: self.model.getRelationType(rId),
-                model: self.model
+                field: field,
+                relationType: self.model.getRelationType(field.id)
             });
         });
         this.relationTree = BI.createWidget({
@@ -133,7 +142,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.RelationPane.EVENT_VALID);
                     break;
                 case BI.RelationSettingTable.CLICK_TABLE:
-                    self._createSelectDataMask(fieldId);
+                    self._selectRelationField(fieldId);
                     break;
                 case BI.RelationSettingTable.CLICK_REMOVE:
                     var treeValue = self.relationTree.getValue();
@@ -144,10 +153,11 @@ BI.RelationPane = BI.inherit(BI.Widget, {
     },
 
     _createBranchItems: function (relationChildren) {
+        var field = this.options.field;
         this.baseTableField = BI.createWidget({
             type: "bi.relation_table_field_button",
-            table_name: this.model.getTableNameByFieldId(this.model.getFieldId()),
-            field_name: this.model.getFieldNameByFieldId(this.model.getFieldId()),
+            table_name: field[BICst.JSON_KEYS.TABLE_TRAN_NAME],
+            field_name: this.model.getFieldNameByField(this.options.field),
             field_id: this.model.getFieldId()
         });
         return [{
@@ -157,8 +167,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
                 width: 180
             },
             children: BI.createItems(relationChildren, {
-                type: "bi.relation_setting_table",
-                model: this.model
+                type: "bi.relation_setting_table"
             })
         }];
     },

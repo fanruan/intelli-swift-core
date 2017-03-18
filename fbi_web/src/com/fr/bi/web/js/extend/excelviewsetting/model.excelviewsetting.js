@@ -32,16 +32,13 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         }
 
         this.tables = [];
-        var fields = [], allPrimaryFields = [];
+        var fields = [];
         BI.each(tableFields, function (i, fs) {
             BI.each(fs, function (j, field) {
-                var primaryFields = [];
                 fields.push({
                     field: translations[field.id] || field.field_name,
                     value: field.id
                 });
-                BI.Utils.getPrimaryFieldsByFieldId4Conf(field.id, primaryFields);
-                allPrimaryFields = allPrimaryFields.concat(primaryFields);
             });
         });
         this.tables.push({
@@ -51,27 +48,6 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
             fields: fields
         });
 
-        this._initPrimaryTableInfo(allPrimaryFields, tableId);
-    },
-
-    _initPrimaryTableInfo: function (primaryFields, baseTableId) {
-        var self = this;
-        BI.each(primaryFields, function (i, pId) {
-            var tableId = BI.Utils.getTableIdByFieldId4Conf(pId);
-            var fieldIds = BI.Utils.getFieldIdsByTableId4Conf(tableId);
-            var fields = [];
-            BI.each(fieldIds, function (i, fId) {
-                fields.push({
-                    field: BI.Utils.getTransNameById4Conf(fId) || BI.Utils.getFieldNameById4Conf(fId),
-                    value: fId
-                });
-            });
-            tableId !== baseTableId && self.tables.push({
-                value: tableId,
-                tableName: BI.Utils.getTransNameById4Conf(tableId),
-                fields: fields
-            })
-        });
     },
 
     _searchFieldByRowCol: function (row, col) {
@@ -125,10 +101,6 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         return this.positions;
     },
 
-    getAllFields: function () {
-        return this.allFields;
-    },
-
     getTables: function () {
         var self = this;
         var tables = BI.deepClone(this.tables);
@@ -140,6 +112,35 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
             })
         });
         return tables;
+    },
+
+    getTablesInfo: function (callback) {
+        var self = this;
+        var relations = this.options.relations;
+        var foreignKeyMap = relations.foreignKeyMap;
+        var primaryTables = [];
+        BI.each(foreignKeyMap, function (id, maps) {
+            BI.each(maps, function (i, map) {
+                primaryTables.push(map.primaryKey.table_id);
+            });
+        });
+        BI.Utils.getTablesInfoByIds4Conf({ids: BI.uniq(primaryTables)}, function (tables) {
+            BI.each(tables, function (i, table) {
+                var fields = [];
+                BI.each(table.fields, function (i, field) {
+                    fields.push({
+                        field: field.tran_name || field.field_name,
+                        value: field.id
+                    })
+                });
+                self.tables.push({
+                    value: table.id,
+                    tableName: table.tran_name,
+                    fields: fields
+                })
+            });
+            callback();
+        });
     },
 
     getNextField: function (field) {

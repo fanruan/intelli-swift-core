@@ -20,11 +20,11 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
             masker: this.element,
             text: BI.i18nText("BI-Basic_Loading")
         });
-        BI.Utils.getAllPackages(function(packs){
-            self.packs = packs;
-            var ids = BI.Utils.getAllPackageIDs4Conf();
-            self.selectDataPane.setPackage(ids[0]);
-        }, function() {
+        BI.Utils.getData4SelectField4Conf(function (data) {
+            self.cacheData = data;
+            var packages = data.packages || [];
+            self.selectDataPane.setPackage(BI.keys(packages)[0]);
+        }, function () {
             mask.destroy();
         });
 
@@ -35,7 +35,7 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
             showExcelView: false,
             showDateGroup: false,
             isDefaultInit: true,
-            packageCreator: function() {
+            packageCreator: function () {
                 return BI.Utils.getAllGroupedPackagesTree();
             },
             tablesCreator: function (packageId) {
@@ -45,17 +45,26 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
                 return self._getFieldsStructureByTableId(tableId, opt);
             }
         });
-        this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function(){
+        this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function () {
             self.fireEvent(BI.LoginInfoSelectSingleField.EVENT_CLICK_ITEM, arguments);
         });
+    },
+
+    _getTableIdByPackageId: function (packId) {
+        var packages = this.cacheData.packages;
+        var tableIds = [];
+        BI.each(packages[packId].tables, function (i, table) {
+            tableIds.push(table.id);
+        });
+        return tableIds;
     },
 
     _getTablesStructureByPackId: function (pId) {
         var self = this;
         var tablesStructure = [];
-        var translations = Data.SharingPool.get("translations");
-        var tables = self.packs[pId];
-        BI.each(tables, function(id, table){
+        var translations = this.cacheData.translations;
+        var tables = self._getTableIdByPackageId(pId);
+        BI.each(tables, function (i, id) {
             tablesStructure.push({
                 id: id,
                 type: "bi.select_data_level0_node",
@@ -71,24 +80,24 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
 
     _getFieldsStructureByTableId: function (tableId) {
         var fieldStructure = [];
-        BI.some(this.packs, function(pId, pack) {
-            return BI.some(pack, function (tId, fields) {
-                if (tableId === tId) {
-                    BI.each(fields, function (i, field) {
-                        if(field.field_type === BICst.COLUMN.STRING) {
-                            fieldStructure.push({
-                                id: field.id,
-                                pId: tableId,
-                                type: "bi.select_data_level0_item",
-                                fieldType: field.field_type,
-                                text: field.field_name,
-                                title: field.field_name,
-                                value: field
-                            })
-                        }
-                    });
-                }
-            });
+        var fields = this.cacheData.fields;
+        var translations = this.cacheData.translations;
+        BI.each(fields, function (i, field) {
+            if (tableId === field.table_id &&
+                field.field_type === BICst.COLUMN.STRING) {
+                var fieldName = translations[field.id] || field.field_name;
+                field[BICst.JSON_KEYS.TABLE_TRAN_NAME] = translations[field.table_id];
+                field[BICst.JSON_KEYS.FIELD_TRAN_NAME] = fieldName;
+                fieldStructure.push({
+                    id: field.id,
+                    pId: tableId,
+                    type: "bi.select_data_level0_item",
+                    fieldType: field.field_type,
+                    text: fieldName,
+                    title: fieldName,
+                    value: field
+                })
+            }
         });
         return fieldStructure;
     }

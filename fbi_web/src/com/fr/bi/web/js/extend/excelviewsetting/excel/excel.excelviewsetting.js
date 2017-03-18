@@ -68,11 +68,6 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
         });
     },
 
-    _getFieldNameByFieldId: function (fieldId) {
-        var allFields = this.options.all_fields;
-        return allFields[fieldId].field_name;
-    },
-
     getValue: function () {
 
     },

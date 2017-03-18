@@ -4,24 +4,24 @@
  * 多个关联表按钮（设置表关联）
  */
 BI.RelationTablesButton = BI.inherit(BI.BasicButton, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         var conf = BI.RelationTablesButton.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
             baseCls: (conf.baseCls || "") + " bi-relation-tables-button"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.RelationTablesButton.superclass._init.apply(this, arguments);
         var o = this.options;
-        var fieldId = o.fieldId, items = [];
-        BI.each(BI.Utils.getRelationFieldsByFieldId4Conf(fieldId), function(i, id) {
-            var tableId = BI.Utils.getTableIdByFieldId4Conf(id);
+        var fieldId = o.fieldId, relations = o.relations;
+        var items = [];
+        BI.each(BI.Utils.getRelationFieldsByFieldId4Conf(relations, fieldId), function(i, field) {
             items.push({
-                text: BI.Utils.getTransNameById4Conf(tableId)
+                text: field[BICst.JSON_KEYS.TABLE_TRAN_NAME]
             });
         });
-        if(BI.isEmptyArray(items)) {
+        if (BI.isEmptyArray(items)) {
             items.push({text: " "});
         }
 
@@ -30,7 +30,7 @@ BI.RelationTablesButton = BI.inherit(BI.BasicButton, {
             element: this.element,
             items: [{
                 type: "bi.vertical",
-                items: BI.createItems( items, {
+                items: BI.createItems(items, {
                     type: "bi.label",
                     height: 25,
                     whiteSpace: "normal",
@@ -41,9 +41,9 @@ BI.RelationTablesButton = BI.inherit(BI.BasicButton, {
         });
     },
 
-    doClick: function(){
+    doClick: function () {
         BI.RelationTablesButton.superclass.doClick.apply(this, arguments);
-        if(this.isValid()) {
+        if (this.isValid()) {
             this.fireEvent(BI.RelationTablesButton.EVENT_CHANGE);
         }
     }
