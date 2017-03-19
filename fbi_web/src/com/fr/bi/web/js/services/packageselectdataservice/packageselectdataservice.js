@@ -327,7 +327,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
-                var _type = "bi.detail_select_data_level1_item";
+                var _type = "bi.detail_select_data_level_item";
                 fieldStructure.push(fieldMap[fid] = {
                     id: fid,
                     pId: tableId,
@@ -347,7 +347,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     id: fid,
                     pId: tableId,
                     wId: o.wId,
-                    type: "bi.detail_select_data_level0_item",
+                    type: "bi.detail_select_data_level_item",
                     //isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
                     layer: 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
@@ -416,7 +416,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 id: fid,
                 pId: tableId,
                 wId: o.wId,
-                type: opt.isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+                type: "bi.detail_select_data_level_item",
                 layer: opt.isRelation ? 3 : 2,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
@@ -511,7 +511,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
-                var _type = opt.isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item";
+                var _type = "bi.detail_select_data_level_item";
                 if (opt.isRelation === true) {
                     fieldStructure.push({
                         id: fid,
@@ -554,7 +554,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     id: fid,
                     pId: tableId,
                     wId: o.wId,
-                    type: opt.isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
+                    type: "bi.detail_select_data_level_item",
                     layer: opt.isRelation ? 2 : 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
@@ -716,27 +716,27 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     _createDateSubTypeItem: function(isRelation, isDetail, drag, field, text, title, groupType){
         var o = this.options;
         var fieldId = field.id || field.value;
-        var type = "bi.detail_select_data_level1_item";
+        var type = "bi.detail_select_data_level_item";
         var layer = 2;
         switch ((isRelation << 1) | isDetail) {
             //  !isRelation !isDetail
             case 0:
-                type = "bi.detail_select_data_level1_item";
+                type = "bi.detail_select_data_level_item";
                 layer = 2;
                 break;
             //  !isRelation isDetail
             case 1:
-                type = "bi.detail_select_data_level1_item";
+                type = "bi.detail_select_data_level_item";
                 layer = 3;
                 break;
             //  isRelation !isDetail
             case 2:
-                type = "bi.detail_select_data_level2_item";
+                type = "bi.detail_select_data_level_item";
                 layer = 3;
                 break;
             //  isRelation isDetail
             case 3:
-                type = "bi.detail_select_data_level2_item";
+                type = "bi.detail_select_data_level_item";
                 layer = 4;
                 break;
         }

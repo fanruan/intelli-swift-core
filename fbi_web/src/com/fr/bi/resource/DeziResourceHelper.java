@@ -328,9 +328,7 @@ public class DeziResourceHelper {
                 //详细设置中的选择字段
                 "com/fr/bi/web/js/modules/selectdata/preview/pane.preview.selectdata.js",
                 "com/fr/bi/web/js/modules/selectdata/preview/section.preview.selectdata.js",
-                "com/fr/bi/web/js/modules/selectdata/treeitem/item.level0.js",
-                "com/fr/bi/web/js/modules/selectdata/treeitem/item.level1.js",
-                "com/fr/bi/web/js/modules/selectdata/treeitem/item.level2.js",
+                "com/fr/bi/web/js/modules/selectdata/treeitem/item.level.js",
                 "com/fr/bi/web/js/modules/selectdata/treeitem/node.level0.excel.js",
 
                 "com/fr/bi/web/js/modules/selectdata/treeitem4reusedimension/calctarget.item.level0.js",

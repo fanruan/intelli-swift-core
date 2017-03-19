@@ -52,7 +52,7 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
                         if(BI.contains(res.matched, BI.Utils.getFieldNameByID(fid)) && opt.isSearching === true){
                             result.push({
                                 id: fid,
-                                type: "bi.detail_select_data_level0_item"
+                                type: "bi.detail_select_data_level_item"
                             });
                         }
                     }

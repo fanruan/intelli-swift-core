@@ -1,16 +1,16 @@
 /**
  * Created by GUY on 2015/9/6.
- * @class BI.DetailSelectDataLevel1Item
+ * @class BI.DetailSelectDataLevelItem
  * @extends BI.Single
  */
-BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
+BI.DetailSelectDataLevelItem = BI.inherit(BI.Single, {
     _defaultConfig: function () {
-        return BI.extend(BI.DetailSelectDataLevel1Item.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-detail-select-data-level1-item bi-select-data-level1-item",
+        return BI.extend(BI.DetailSelectDataLevelItem.superclass._defaultConfig.apply(this, arguments), {
+            extraCls: "bi-detail-select-data-level0-item bi-select-data-level0-item",
             height: 25,
-            fieldType: BICst.COLUMN.STRING,
-            layer: 2,
+            layer: 1,
             hgap: 0,
+            fieldType: BICst.COLUMN.STRING,
             lgap: 0,
             rgap: 35
         })
@@ -32,21 +32,22 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
     },
 
     _init: function () {
-        BI.DetailSelectDataLevel1Item.superclass._init.apply(this, arguments);
+        BI.DetailSelectDataLevelItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var cType = o.isPrimaryKey ? {
-            iconCls1: "select-data-level1-item-button " + this._getFieldClass(o.fieldType),
+            cls: "select-data-level0-item-button",
+            iconCls1: this._getFieldClass(o.fieldType),
             iconCls2: "select-data-primary-key-font",
             type: "bi.blank_icon_icon_text_item"
         } : {
-            cls: "select-data-level1-item-button " + this._getFieldClass(o.fieldType),
+            cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
             type: "bi.blank_icon_text_item"
         };
         this.button = BI.createWidget(BI.extend({
             trigger: "mousedown",
+            blankWidth: o.layer * 20,
             text: o.text,
             value: o.value,
-            blankWidth: o.layer * 20,
             height: 25,
             textLgap: 10,
             textRgap: 5
@@ -58,6 +59,7 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
             self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.CLICK, self.getValue(), self);
         });
         this.button.element.draggable(o.drag);
+
 
         this.previewBtn = BI.createWidget({
             type: "bi.text_button",
@@ -114,17 +116,16 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
         });
         this.topLine.invisible();
         this.bottomLine.invisible();
-
         this.previewBtn.invisible();
         this.element.hover(function () {
-            if (BI.Utils.getFieldTypeByID(o.value.field_id || o.value) === BICst.COLUMN.COUNTER) {
+            if (BI.Utils.getFieldTypeByID(o.value) === BICst.COLUMN.COUNTER) {
                 return;
             }
             self.previewBtn.visible();
         }, function () {
             self.previewBtn.invisible();
         });
-
+        //标蓝
         BI.Utils.isSrcUsedBySrcID(o.id) === true && this.doHighLight();
         BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
             if (v === true) {
@@ -140,6 +141,12 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
                 self.setSelected(false);
             });
         });
+    },
+
+    setEnable: function (v) {
+        BI.DetailSelectDataLevelItem.superclass.setEnable.apply(this, arguments)
+        this.button.setEnable(v);
+        this.previewBtn.setEnable(v)
     },
 
     isSelected: function () {
@@ -193,4 +200,4 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
     }
 });
 
-$.shortcut("bi.detail_select_data_level1_item", BI.DetailSelectDataLevel1Item);
+$.shortcut("bi.detail_select_data_level_item", BI.DetailSelectDataLevelItem);
