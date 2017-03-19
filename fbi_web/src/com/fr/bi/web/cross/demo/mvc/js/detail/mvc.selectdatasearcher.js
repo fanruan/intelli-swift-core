@@ -27,13 +27,13 @@ SelectDataSearcherView = BI.inherit(BI.View, {
                     populate([
                         {
                             id: 1,
-                            type: "bi.select_data_level_node",
+                            type: "bi.select_data_level0_node",
                             text: "合同回款信息--" + packageName,
                             value: 1,
                             isParent: true
                         }, {
                             id: 2,
-                            type: "bi.select_data_level_node",
+                            type: "bi.select_data_level0_node",
                             text: "合同信息--" + packageName,
                             value: 2,
                             isParent: true
