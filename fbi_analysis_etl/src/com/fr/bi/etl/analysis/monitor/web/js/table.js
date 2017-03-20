@@ -51,11 +51,15 @@ BI.MonitorTable = BI.inherit(BI.Widget, {
         this.relations= [];
         var o = this.options;
         var text = o.name
-        if(o.t === 1) {
-            text = "Cube Table : "+ text;
-        }
+
         if(o.status ===  BI.Monitor.constants.ERROR){
-            text += " has been deleted!!"
+            if(o.t === 1) {
+                text = "Cube Table : "+ text + " has been deleted!!";
+            } else if(o.t === 2){
+                text = "SPPA Table : "+ text + " has been deleted!!";
+            } else {
+                text = "SPPA Table : "+ text + " can't generate because parent table has been delete !!"
+            }
         } else {
             text += "("+ o.count +" inuse cubes,"+o.percent * 100+"%)";
         }
@@ -72,7 +76,7 @@ BI.MonitorTable = BI.inherit(BI.Widget, {
             height:this.getHeight(),
             width:this.getWidth()
         })
-        if(o.createChild && o.t !== 1){
+        if(o.createChild && o.t !== 1 && o.t !== 2){
             label.on(BI.Button.EVENT_CHANGE, function(){
                 if(self.getStatus() !== BI.Monitor.constants.ERROR){
                     BI.Monitor.createSingleTableView(o.value)
