@@ -1125,13 +1125,10 @@ public class BaseResourceHelper {
                 "com/fr/bi/web/js/widget/timesetting/timesetting.hour.js",
 
                 //选择字段树
-                "com/fr/bi/web/js/widget/selectdata/tree/node/node.level0.js",
-                "com/fr/bi/web/js/widget/selectdata/tree/node/node.level1.js",
-                "com/fr/bi/web/js/widget/selectdata/tree/node/node.level2.js",
+                "com/fr/bi/web/js/widget/selectdata/tree/node/node.level.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level1.date.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/node/node.level2.date.js",
-                "com/fr/bi/web/js/widget/selectdata/tree/treeitem/item.level0.js",
-                "com/fr/bi/web/js/widget/selectdata/tree/treeitem/item.level1.js",
+                "com/fr/bi/web/js/widget/selectdata/tree/treeitem/item.level.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/loader.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/expander.selectdata.js",
                 "com/fr/bi/web/js/widget/selectdata/tree/tree.selectdata.js",

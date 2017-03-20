@@ -51,6 +51,58 @@ BI.DateGroupDimension = BI.inherit(BI.AbstractDimension, {
                     o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.W});
                     self.checkStatus();
                     break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.YS:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.YS});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.YMDHM:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.YMDHM});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.YMDH:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.YMDH});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.YW:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.YW});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.YM:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.YM});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.D:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.D});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.WEEK_COUNT:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.WEEK_COUNT});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.SECOND:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.SECOND});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.MINUTE:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.MINUTE});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.HOUR:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.HOUR});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.MD:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.MD});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.YMDHMS:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.YMDHMS});
+                    self.checkStatus();
+                    break;
+                case BICst.STATISTICS_GROUP_DATE_COMBO.YD:
+                    o.model.setDimensionGroupById(o.dId, {type: BICst.GROUP.YD});
+                    self.checkStatus();
+                    break;
                 case BICst.STATISTICS_GROUP_DATE_COMBO.RENAME:
                     self.nameEditor.focus();
                     break;

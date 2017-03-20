@@ -159,7 +159,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         BI.each(tableIds, function (i, id) {
             tablesStructure.push({
                 id: id,
-                type: "bi.select_data_level0_node",
+                type: "bi.select_data_level_node",
                 text: translations[id],
                 title: translations[id],
                 value: id,
@@ -194,7 +194,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                 fieldStructure.push({
                     id: field.id,
                     pId: tableId,
-                    type: "bi.select_data_level0_item",
+                    type: "bi.select_data_level_item",
                     fieldType: fieldType,
                     text: translations[field.id] || field.field_name,
                     title: translations[field.id] || field.field_name,

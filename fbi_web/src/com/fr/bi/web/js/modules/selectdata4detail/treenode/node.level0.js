@@ -16,7 +16,7 @@ BI.DetailDetailSelectDataLevel0Node = BI.inherit(BI.AbstractDetailDetailSelectDa
     _createNode: function () {
         var o = this.options;
         return BI.createWidget({
-            type: "bi.select_data_level0_node",
+            type: "bi.select_data_level_node",
             element: this.element,
             id: o.id,
             pId: o.pId,
