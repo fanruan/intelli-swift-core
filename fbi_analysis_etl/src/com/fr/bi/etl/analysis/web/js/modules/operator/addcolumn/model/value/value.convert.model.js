@@ -8,9 +8,9 @@ BI.AnalysisETLOperatorAddColumnValueConvertModel = BI.inherit(BI.AnalysisETLOper
             case BICst.COLUMN.NUMBER :
                 return BI.i18nText('BI-Basic_Number');
             case BICst.COLUMN.DATE :
-                return BI.i18nText('BI-Base_Time');
+                return BI.i18nText('BI-Basic_Time');
             case BICst.COLUMN.STRING :
-                return BI.i18nText('BI-Base_Text');
+                return BI.i18nText('BI-Basic_Text');
         }
     },
 

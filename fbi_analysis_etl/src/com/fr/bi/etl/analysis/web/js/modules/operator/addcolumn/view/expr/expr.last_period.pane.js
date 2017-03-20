@@ -22,7 +22,7 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodPane  = BI.inherit(BI.AnalysisETLOp
             type : 'bi.label',
             cls : 'label-name',
             width : self._constants.LABEL_WIDTH,
-            text : BI.i18nText('BI-Year_Fen') + '/'+ BI.i18nText('BI-Month_Fen') + '/'+ BI.i18nText('BI-Base_Quarter'),
+            text : BI.i18nText('BI-Year_Fen') + '/'+ BI.i18nText('BI-Month_Fen') + '/'+ BI.i18nText('BI-Basic_Quarter'),
             textAlign : 'right'
         },
             left : 500,

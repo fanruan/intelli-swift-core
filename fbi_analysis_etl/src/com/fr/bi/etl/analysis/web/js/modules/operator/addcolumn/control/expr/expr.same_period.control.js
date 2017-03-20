@@ -6,7 +6,7 @@ BI.AnalysisETLOperatorAddColumnExprSamePeriodController = BI.inherit(BI.Analysis
         if (BI.isNull(model.get('period'))){
             widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted',  BI.i18nText('BI-Year_Fen')));
         } else if (BI.isNull(model.get('monthSeason'))){
-            widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted',  BI.i18nText('BI-Month_Fen') + '/'+ BI.i18nText('BI-Base_Quarter')));
+            widget.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted',  BI.i18nText('BI-Month_Fen') + '/'+ BI.i18nText('BI-Basic_Quarter')));
         } else {
             BI.AnalysisETLOperatorAddColumnExprSamePeriodController.superclass._checkCanSave.apply(this, arguments);
         }

@@ -28,7 +28,7 @@ BI.ETLTableRenamePopover = BI.inherit(BI.BarPopoverSection, {
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text:  BI.i18nText('BI-Base_Rename'),
+            text:  BI.i18nText('BI-Basic_Rename'),
             textAlign: "left",
             height : self._constants.NORTH_HEIGHT
         });

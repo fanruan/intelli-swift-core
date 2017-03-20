@@ -113,7 +113,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
             fields.put(field.getFieldID().getIdentityValue(), filedJson);
             stringList.add(filedJson);
         }
-        fields.put(getID().getIdentity() + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Base_Records"), createCountField(userId));
+        fields.put(getID().getIdentity() + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"), createCountField(userId));
         countList.add(createCountField(userId));
         ja.put(stringList).put(numberList).put(dateList).put(countList);
         JSONObject result = new JSONObject();
@@ -126,11 +126,11 @@ public class AnalysisBusiTable extends BIBusinessTable {
     private JSONObject createCountField(long userId) throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("field_type", DBConstant.COLUMN.COUNTER);
-        jo.put("field_name", BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Base_Records"));
+        jo.put("field_name", BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
         jo.put("table_id", getID().getIdentity());
         jo.put("is_usable", true);
         //记录数的id先暂时用拼接
-        jo.put("id", jo.optString("table_id") + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Base_Records"));
+        jo.put("id", jo.optString("table_id") + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
         return jo;
     }
 

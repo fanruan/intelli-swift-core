@@ -288,7 +288,7 @@ BI.extend(BI.Monitor, {
             })
             var button = BI.createWidget({
                 type:"bi.button",
-                value: BI.i18nText("BI-Base_Refresh"),
+                value: BI.i18nText("BI-Basic_Refresh"),
                 width: BI.Monitor.constants.TABLE_WIDTH,
                 height: BI.Monitor.constants.TABLE_HEIGHT
             });

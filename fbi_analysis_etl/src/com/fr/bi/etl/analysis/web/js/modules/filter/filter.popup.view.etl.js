@@ -27,7 +27,7 @@ BI.ETLFilterPopupView = BI.inherit(BI.Widget, {
             maxWidth : self._constants.MAXWIDTH,
             height : self._constants.HEIGHT,
             element: this.element,
-            buttons: [BI.i18nText('BI-Basic_Cancel'), BI.i18nText('BI-Base_Sure')],
+            buttons: [BI.i18nText('BI-Basic_Cancel'), BI.i18nText('BI-Basic_Sure')],
             el: this.loader
         });
         this.popupView.on(BI.MultiPopupView.EVENT_CLICK_TOOLBAR_BUTTON, function (index) {
