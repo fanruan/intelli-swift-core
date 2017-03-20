@@ -60,10 +60,12 @@ BIShow.DetailTableDetailModel = BI.inherit(BI.Model, {
                 BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
             }
             if (BI.size(changed.dimensions) > BI.size(prev.dimensions)) {
-                var result = BI.find(changed.dimensions, function (did, dimension) {
+                var result = BI.filter(changed.dimensions, function (did, dimension) {
                     return !BI.has(prev.dimensions, did);
                 });
-                BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + result._src.id, true);
+                BI.each(result, function(idx, dimension){
+                    BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + dimension._src.id, true);
+                });
             }
         }
     },

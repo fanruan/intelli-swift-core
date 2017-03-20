@@ -23,11 +23,11 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
         this.etlCards = [];
     },
 
-    populate: function (linkNames) {
+    populate: function (result) {
         var self = this, o = this.options;
         var dataLinks = [], etl = [];
         //这边 value 拼了一下，不好
-        BI.each(linkNames, function (i, name) {
+        BI.each(result.links, function (i, name) {
             var text = name;
             if (name === BICst.CONNECTION.SERVER_CONNECTION) {
                 text = BI.i18nText("BI-Server_Data_Set");
@@ -43,8 +43,17 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
                 value: BICst.DATA_LINK.ETL + BI.i18nText("BI-Etl_Stream")
             })
         }
+        var packages = [];
+        BI.each(result.packages, function(id, pack) {
+            packages.push({
+                text: pack.name,
+                value: BICst.DATA_LINK.PACKAGES + pack.id
+            });
+        });
+        BI.sortBy(packages, "text");
         var items = {
             dataLinks: dataLinks,
+            packages: packages,
             etl: etl
         };
         var dataLinkGroup = BI.createWidget({
@@ -59,7 +68,7 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
             tab: dataLinkGroup,
             defaultShowIndex: false,
             cardCreator: function (v) {
-                return self._createLinksCards(v, linkNames);
+                return self._createLinksCards(v, result.links);
             }
         });
         if (BI.isNotEmptyArray(items.etl)) {

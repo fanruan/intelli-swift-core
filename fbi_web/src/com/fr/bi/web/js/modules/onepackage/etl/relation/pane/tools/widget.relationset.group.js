@@ -4,13 +4,13 @@
  * 表间关系设置：N-1、1-1、1-N 按钮组
  */
 BI.RelationSetGroup = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.RelationSetGroup.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-relation-set-group"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.RelationSetGroup.superclass._init.apply(this, arguments);
         var self = this;
         var groups = [{
@@ -30,7 +30,8 @@ BI.RelationSetGroup = BI.inherit(BI.Widget, {
                 type: "bi.single_select_item",
                 textAlign: "center",
                 width: 80,
-                height: 25
+                height: 25,
+                warningTitle: BI.i18nText("BI-No_Relation_Table_Edit_Auth")
             }),
             layouts: [{
                 type: "bi.vertical",
@@ -39,12 +40,13 @@ BI.RelationSetGroup = BI.inherit(BI.Widget, {
             }]
         });
         this.relationGroup.setValue(this.options.relationType);
-        this.relationGroup.on(BI.Controller.EVENT_CHANGE, function(){
+        this.relationGroup.setEnable(this.options.edit);
+        this.relationGroup.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         })
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.relationGroup.getValue();
     }
 });

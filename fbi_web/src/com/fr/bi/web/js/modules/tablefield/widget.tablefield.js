@@ -69,7 +69,7 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
      */
     _sortFields: function () {
         var self = this;
-        var fields = this.tableInfo.fields;
+        var fields = this.tableInfo.fields, translations = this.tableInfo.translations;
         var sortedFields = [], usedFields = [], noUsedFields = [];
         BI.each(fields, function (i, fieldArray) {
             BI.each(fieldArray, function (j, field) {
@@ -82,7 +82,7 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
         });
         var usedNoTrans = [];
         BI.each(usedFields, function (i, field) {
-            var tranName = BI.Utils.getTransNameById4Conf(field.id);
+            var tranName = translations[field.id];
             if (BI.isNotNull(tranName) && tranName !== "") {
                 sortedFields.push(field);
             } else {
@@ -92,7 +92,7 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
         sortedFields = sortedFields.concat(usedNoTrans);
         var noUsedNoTrans = [];
         BI.each(noUsedFields, function (i, field) {
-            var tranName = BI.Utils.getTransNameById4Conf(field.id);
+            var tranName = translations[field.id];
             if (BI.isNotNull(tranName) && tranName !== "") {
                 sortedFields.push(field);
             } else {
@@ -103,14 +103,24 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
         return sortedFields;
     },
 
-    _getUsedFieldsFromTableInfo: function (tableInfo) {
+    _getUsedFieldsFromTableInfo: function () {
         var usedFields = [];
-        BI.each(tableInfo.fields, function (i, fieldsArray) {
+        BI.each(this.tableInfo.fields, function (i, fieldsArray) {
             BI.each(fieldsArray, function (index, fieldObj) {
                 fieldObj.is_usable === true && fieldObj.is_enable === true && usedFields.push(fieldObj.id);
             })
         });
         return usedFields;
+    },
+
+    _isPrimaryKeyByFieldId: function (fieldId) {
+        var relations = this.tableInfo.relations;
+        var primKeyMap = relations.primKeyMap;
+        var currentPrimKey = primKeyMap[fieldId] || [];
+        return BI.some(currentPrimKey, function (i, maps) {
+            var pk = maps.primaryKey, fk = maps.foreignKey;
+            return pk.field_id === fieldId && fk.field_id !== fieldId;
+        });
     },
 
     /**
@@ -120,8 +130,7 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
      */
     _createTableItems: function () {
         var self = this, items = [];
-        this.usedFields = this._getUsedFieldsFromTableInfo(this.tableInfo);
-        this.translations = this.tableInfo.translations;
+        this.usedFields = this._getUsedFieldsFromTableInfo();
         this.isUsableArray = [];
         this.transNames = [];
         var sortedFields = this._sortFields();
@@ -136,7 +145,7 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
                     break;
             }
             var item = [];
-            if (BI.Utils.isPrimaryKeyByFieldId4Conf(field.id)) {
+            if (self._isPrimaryKeyByFieldId(field.id)) {
                 item.push({
                     type: "bi.left",
                     cls: "primary-key-font",
@@ -191,7 +200,8 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
         var self = this;
         var relationButton = BI.createWidget({
             type: "bi.relation_tables_button",
-            fieldId: fieldId
+            fieldId: fieldId,
+            relations: this.tableInfo.relations
         });
         relationButton.on(BI.RelationTablesButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableFieldInfo.EVENT_RELATION_CHANGE, fieldId);
@@ -200,8 +210,8 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
     },
 
     _createTranName: function (fieldId) {
-        var self = this;
-        var tranName = self.translations[fieldId] || "";
+        var self = this, translations = this.tableInfo.translations;
+        var tranName = translations[fieldId] || "";
         var transName = BI.createWidget({
             type: "bi.sign_editor",
             value: tranName,
@@ -210,7 +220,7 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
             errorText: BI.i18nText("BI-Trans_Name_Exist"),
             height: 25,
             validationChecker: function (v) {
-                return !BI.some(self.translations, function (id, name) {
+                return !BI.some(translations, function (id, name) {
                     return id !== fieldId && name === v;
                 });
             },
@@ -231,8 +241,8 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
         });
         transName.on(BI.SignEditor.EVENT_CHANGE, function () {
             transName.setTitle(transName.getValue());
-            self.translations[fieldId] = transName.getValue();
-            self.fireEvent(BI.TableFieldInfo.EVENT_TRANSLATION_CHANGE, self.translations);
+            translations[fieldId] = transName.getValue();
+            self.fireEvent(BI.TableFieldInfo.EVENT_TRANSLATION_CHANGE, translations);
         });
         this.transNames.push(transName);
         return transName;
