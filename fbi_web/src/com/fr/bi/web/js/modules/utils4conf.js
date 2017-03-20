@@ -14,26 +14,6 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.cat("translations")[id];
     },
 
-    updateTranName4Conf: function (id, tranName) {
-        var translation = Data.SharingPool.cat("translations");
-        translation[id] = tranName;
-    },
-
-    updateTranslationsByTableId4Conf: function (tableId, newTranslations) {
-        var fields = this.getFieldsByTableId4Conf(tableId);
-        var translations = Data.SharingPool.cat("translations");
-        delete translations[tableId];
-        BI.each(fields, function (i, field) {
-            delete translations[field.id];
-        });
-        BI.extend(translations, newTranslations);
-    },
-
-    updateFields4Conf: function (id, field) {
-        var fields = Data.SharingPool.cat("fields");
-        fields[id] = field;
-    },
-
     getFieldNameById4Conf: function (id) {
         var field = Data.SharingPool.cat("fields")[id];
         if (BI.isNotNull(field)) {
@@ -52,61 +32,8 @@ BI.extend(BI.Utils, {
         return fields;
     },
 
-    getFieldTypeById4Conf: function (id) {
-        var field = Data.SharingPool.cat("fields")[id];
-        if (BI.isNotNull(field)) {
-            return field.field_type;
-        }
-    },
-
-    getFieldUsableById4Conf: function (id) {
-        var field = Data.SharingPool.cat("fields")[id];
-        if (BI.isNotNull(field)) {
-            return field.is_usable;
-        }
-    },
-
-    getFieldIdByNameAndTableId4Conf: function (name, tableId) {
-        var fields = Data.SharingPool.cat("fields");
-        var id;
-        BI.some(fields, function (i, field) {
-            if (field.field_name === name && field.table_id === tableId) {
-                id = field.id;
-                return true;
-            }
-        });
-        return id;
-    },
-
     isFieldExistById4Conf: function (fieldId) {
         return BI.isNotNull(Data.SharingPool.cat("fields")[fieldId]);
-    },
-
-    //检查表名或者字段名的合法性
-    checkTranNameById4Conf: function (id, name) {
-        var fields = Data.SharingPool.cat("fields");
-        var translations = Data.SharingPool.cat("translations");
-        var isValid = true;
-        if (BI.isNotNull(fields[id])) {
-            var tableId = fields[id].table_id;
-            BI.some(fields, function (fId, field) {
-                if (fId !== id && tableId === field.table_id &&
-                    (name === field.field_name || name === translations[field.id])) {
-                    isValid = false;
-                    return true;
-                }
-            });
-        } else {
-            var packId = this.getPackageIdByTableId4Conf(id);
-            var tables = this.getTablesIdByPackageId4Conf(packId);
-            BI.some(tables, function (i, table) {
-                if (table.id !== id && name === translations[table.id]) {
-                    isValid = false;
-                    return true;
-                }
-            });
-        }
-        return isValid;
     },
 
     getPackageIdByTableId4Conf: function (tableId) {
@@ -133,18 +60,6 @@ BI.extend(BI.Utils, {
         return tableIds;
     },
 
-    updateTableIdsInPackage4Conf: function (packId, tableIds) {
-        var packages = Data.SharingPool.cat("packages");
-        if (BI.isNull(packages[packId])) {
-            packages[packId] = {};
-        }
-        var idsOB = [];
-        BI.each(tableIds, function (i, tId) {
-            idsOB.push({id: tId});
-        });
-        packages[packId].tables = idsOB;
-    },
-
     getTableIdByFieldId4Conf: function (fieldId) {
         var field = Data.SharingPool.cat("fields")[fieldId];
         if (BI.isNotNull(field)) {
@@ -163,116 +78,30 @@ BI.extend(BI.Utils, {
         return fieldIds;
     },
 
-    //同步读取到的关联
-    saveReadRelation4Conf: function (newRelations, fieldId) {
-        if (BI.isNotNull(fieldId)) {
-            this.removeRelationByFieldId4Conf(fieldId);
-        }
-        var relations = Data.SharingPool.cat("relations"),
-            connectionSet = relations.connectionSet,
-            primKeyMap = relations.primKeyMap,
-            foreignKeyMap = relations.foreignKeyMap;
-        BI.each(newRelations, function (i, read) {
-            var pk = read.primaryKey, fk = read.foreignKey;
-            var isExist = false;
-            BI.each(connectionSet, function (j, conn) {
-                var p = conn.primaryKey, f = conn.foreignKey;
-                if (p.field_id === pk.field_id && f.field_id === fk.field_id) {
-                    isExist = true;
-                }
-            });
-            //读取到的关联都是1:N的
-            if (isExist === false) {
-                connectionSet.push(read);
-                primKeyMap[pk.field_id] || (primKeyMap[pk.field_id] = []);
-                foreignKeyMap[fk.field_id] || (foreignKeyMap[fk.field_id] = []);
-                primKeyMap[pk.field_id].push(read);
-                foreignKeyMap[fk.field_id].push(read);
-            }
-        });
-    },
-
-    // 保存关联
-    saveRelations4Conf: function (nreRelations, fieldId) {
-        //先删除已存在的
-        if (BI.isNotNull(fieldId)) {
-            this.removeRelationByFieldId4Conf(fieldId);
-        }
-        var relations = Data.SharingPool.cat("relations");
-        var nConn = nreRelations.connectionSet, nPKMap = nreRelations.primKeyMap, nFKMap = nreRelations.foreignKeyMap;
-        var connectionSet = relations.connectionSet,
-            primKeyMap = relations.primKeyMap,
-            foreignKeyMap = relations.foreignKeyMap;
-        BI.each(nConn, function (i, conn) {
-            connectionSet.push((conn));
-        });
-        BI.extend(primKeyMap, nPKMap);
-        BI.extend(foreignKeyMap, nFKMap);
-    },
-
     //获取关联字段
-    getRelationFieldsByFieldId4Conf: function (fieldId) {
-        var relations = Data.SharingPool.cat("relations");
+    getRelationFieldsByFieldId4Conf: function (relations, fieldId) {
         var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
         var currentPrimKey = primKeyMap[fieldId] || [], currentForKey = foreignKeyMap[fieldId];
-        var self = this, relationIds = [], rId;
+        var relationFields = [], relationIds = [], rId;
 
         BI.each(currentPrimKey, function (i, maps) {
             var table = maps.primaryKey, relationTable = maps.foreignKey;
             //处理1:1 和 自循环
             var rId = relationTable.field_id;
-            if (table.field_id === fieldId && (!relationIds.contains(rId) || table.field_id === rId) && self.isFieldExistById4Conf(rId)) {
+            if (table.field_id === fieldId && (!relationIds.contains(rId) || table.field_id === rId)) {
                 relationIds.push(rId);
+                relationFields.push(relationTable);
             }
         });
         BI.each(currentForKey, function (i, maps) {
             var table = maps.foreignKey, relationTable = maps.primaryKey;
             rId = relationTable.field_id;
-            if (table.field_id === fieldId && !relationIds.contains(rId) && self.isFieldExistById4Conf(rId)) {
+            if (table.field_id === fieldId && !relationIds.contains(rId)) {
                 relationIds.push(rId);
+                relationFields.push(relationTable);
             }
         });
-        return relationIds;
-    },
-
-    getRelationTablesByTableId4Conf: function (tableId) {
-        var self = this;
-        var relations = Data.SharingPool.cat("relations");
-        var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
-        var relationTables = [];
-
-        function dealWithPFKeys(keyMap) {
-            BI.each(keyMap, function (fieldId, maps) {
-                BI.each(maps, function (i, map) {
-                    var pKey = map.primaryKey, fKey = map.foreignKey;
-                    var pTId = self.getTableIdByFieldId4Conf(pKey.field_id), fTId = self.getTableIdByFieldId4Conf(fKey.field_id);
-                    if (pTId === tableId) {
-                        relationTables.push(fTId);
-                    }
-                    if (fTId === tableId) {
-                        relationTables.push(pTId);
-                    }
-                });
-            });
-        }
-
-        dealWithPFKeys(primKeyMap);
-        dealWithPFKeys(foreignKeyMap);
-        return BI.uniq(relationTables);
-    },
-
-    //是否是主键字段
-    isPrimaryKeyByFieldId4Conf: function (fieldId) {
-        var self = this;
-        var relations = Data.SharingPool.cat("relations");
-        var primKeyMap = relations.primKeyMap;
-        var currentPrimKey = primKeyMap[fieldId] || [];
-        return BI.some(currentPrimKey, function (i, maps) {
-            var pk = maps.primaryKey, fk = maps.foreignKey;
-            return pk.field_id === fieldId && fk.field_id !== fieldId &&
-                self.isFieldExistById4Conf(pk.field_id) &&
-                self.isFieldExistById4Conf(fk.field_id);
-        });
+        return relationFields;
     },
 
     getPrimaryFieldsByFieldId4Conf: function (fieldId, primaryFields) {
@@ -376,8 +205,7 @@ BI.extend(BI.Utils, {
     },
 
     //关联类型
-    getRelationTypeById4Conf: function (baseFieldId, relationId) {
-        var relations = Data.SharingPool.cat("relations");
+    getRelationTypeById4Conf: function (baseFieldId, relationId, relations) {
         var primKeyMap = relations.primKeyMap;
         if (BI.isNotNull(primKeyMap[baseFieldId]) &&
             BI.isNotNull(primKeyMap[relationId])) {
@@ -529,8 +357,8 @@ BI.extend(BI.Utils, {
      * 获取所有业务包分组信息树结构
      * @returns {Array}
      */
-    getAllGroupedPackagesTreeJSON4Conf: function () {
-        var groups = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
+    getAllGroupedPackagesTreeJSON4Conf: function (data) {
+        var groups = data.groups, packages = data.packages;
         var packStructure = [], groupedPacks = [];
         BI.each(groups, function (id, group) {
             packStructure.push({
@@ -573,7 +401,8 @@ BI.extend(BI.Utils, {
      * @returns {Array}
      */
     getAllGroupedPackagesTree: function () {
-        var groupMap = Data.SharingPool.get("groups"), packages = Data.SharingPool.get("packages");
+        var groupMap = Data.SharingPool.get("authority_settings", "groups"),
+            packages = Data.SharingPool.get("authority_settings", "packages");
         var packStructure = [], groupedPacks = [];
         //排个序
         var groups = BI.sortBy(groupMap, function (id, item) {
@@ -808,6 +637,11 @@ BI.extend(BI.Utils, {
 
     hasBatchSetPackAuthorityAuth: function () {
         return this.isAdmin4Conf();
+    },
+
+    hasTableAuthByTableId4Conf: function (tableId) {
+        var packageId = this.getPackageIdByTableId4Conf(tableId);
+        return BI.isNotNull(packageId);
     }
 
     //权限相关   --- end ---
@@ -1098,6 +932,30 @@ BI.extend(BI.Utils, {
 
     updateTablesTranOfPackage: function (data, callback, complete) {
         Data.Req.reqUpdateTablesTranOfPackage(data, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    getRelationsDetail4Conf: function (callback, complete) {
+        Data.Req.reqGetRelationsDetail(function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    getData4SelectField4Conf: function (callback, complete) {
+        Data.Req.reqGetData4SelectField(function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    getLinksAndPackages4Conf: function (callback, complete) {
+        Data.Req.reqLinksAndPackages(function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    getTablesInfoByIds4Conf: function (data, callback, complete) {
+        Data.Req.reqTablesInfoByIds(data, function (res) {
             callback(res);
         }, complete);
     }

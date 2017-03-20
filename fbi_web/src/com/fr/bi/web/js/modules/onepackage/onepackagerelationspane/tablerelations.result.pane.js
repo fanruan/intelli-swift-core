@@ -68,8 +68,7 @@ BI.PackageTableRelationResultPane = BI.inherit(BI.PackageTableRelationsPane, {
         }
         var resultPane = BI.createWidget({
             type: "bi.package_table_relations_pane",
-            element: this.element,
-            packageId: this.options.packageId
+            element: this.element
         });
         resultPane.refresh(resultItems);
     }
