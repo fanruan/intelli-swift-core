@@ -155,7 +155,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.chartStyleGroup]
                 }, */{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Base_Type"),
+                    text: BI.i18nText("BI-Basic_Type"),
                     cls: "attr-names",
                 }, {
                     type: "bi.vertical_adapt",
@@ -192,7 +192,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //千分符
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Base_Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 

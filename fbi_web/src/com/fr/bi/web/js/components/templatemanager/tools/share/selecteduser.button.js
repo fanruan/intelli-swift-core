@@ -16,7 +16,7 @@ BI.SelectedUserButton = BI.inherit(BI.BasicButton, {
         var deleteButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "close-font",
-            title: BI.i18nText("BI-Base_Remove"),
+            title: BI.i18nText("BI-Basic_Remove"),
             width: 20,
             height: 20
         });

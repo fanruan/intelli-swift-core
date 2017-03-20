@@ -15,7 +15,7 @@ BI.SimpleSelectDataSearchSegment = BI.inherit(BI.Widget, {
                 selected: true,
                 value: BI.SelectDataSearchSegment.SECTION_FIELD
             }, {
-                text: BI.i18nText("BI-Base_Table"),
+                text: BI.i18nText("BI-Basic_Table"),
                 value: BI.SelectDataSearchSegment.SECTION_TABLE
             }]
         });

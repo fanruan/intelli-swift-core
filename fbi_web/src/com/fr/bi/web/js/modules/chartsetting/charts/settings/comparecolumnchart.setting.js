@@ -167,7 +167,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //千分符
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Base_Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 
@@ -331,7 +331,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.rightYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Base_Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 

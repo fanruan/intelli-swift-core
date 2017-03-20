@@ -53,7 +53,7 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
         this.okButton = BI.createWidget({
             type: "bi.text_button",
             cls: 'bi-multidate-popup-button',
-            text: BI.i18nText("BI-Base_OK"),
+            text: BI.i18nText("BI-Basic_OK"),
             height: this.constants.buttonHeight - this.constants.border * 2,
             width: this.constants.buttonWidth
         });

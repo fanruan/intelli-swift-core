@@ -44,7 +44,7 @@ BI.CircleLevelPane = BI.inherit(BI.LoadingPane, {
 
         this.saveButton = BI.createWidget({
             type: "bi.button",
-            value: BI.i18nText("BI-Base_Save"),
+            value: BI.i18nText("BI-Basic_Save"),
             height: this.constants.itemComboHeight,
             width: this.constants.buttonWidth
         });

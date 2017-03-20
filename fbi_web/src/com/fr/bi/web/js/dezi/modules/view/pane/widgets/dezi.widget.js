@@ -199,7 +199,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT,
             cls: "recover-chart-font-hightlight dashboard-title-detail",
-            title: BI.i18nText("BI-Base_Restore")
+            title: BI.i18nText("BI-Basic_Restore")
         });
         this.refreshChartButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self.tableChart.magnify();
@@ -337,7 +337,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Base_Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function () {
                         self.del.hideView();
                         self.model.destroy();

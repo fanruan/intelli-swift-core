@@ -73,7 +73,7 @@ BI.DimensionTreeCombo = BI.inherit(BI.Widget, {
                 || (BI.isEmpty(BI.Utils.getPathsFromTableAToTableB(dimensionTableId, tableIds[0])) && BI.contains(initialFieldIds, BI.Utils.getFieldIDByDimensionID(targetId)))) {
                 node = {
                     id: 0,
-                    text: BI.Utils.getTableNameByID(tId) + "(" + BI.i18nText("BI-Base_Recommend") + ")",
+                    text: BI.Utils.getTableNameByID(tId) + "(" + BI.i18nText("BI-Basic_Recommend") + ")",
                     cls: "recommend-node",
                     value: 0,
                     isParent: true,

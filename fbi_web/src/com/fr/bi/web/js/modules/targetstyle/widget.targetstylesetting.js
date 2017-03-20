@@ -58,7 +58,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 
         this.separators = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Base_Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 

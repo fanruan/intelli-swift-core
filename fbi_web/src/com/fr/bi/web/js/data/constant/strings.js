@@ -4,7 +4,7 @@ BICst.cursorUrl = "url('" + FR.servletURL + "?op=resource&resource=/com/fr/bi/we
 BICst.TABLE_TYPE_SQL = "__FR_BI_SQL__";
 BICst.TABLE_TYPE_EXCEL = "__FR_BI_EXCEL__";
 BICst.TABLE_TYPE_CONNECTION = "__FR_BI_CONNECTION__";
-BICst.PACKAGE = "BI-Base_Package";
+BICst.PACKAGE = "BI-Basic_Package";
 
 BICst.CURRENT_EDITING_PACKAGE = "__current__editing__package__";
 BICst.SELECT_TABLES_LAYER = "__select_tables_layer__";

@@ -17,7 +17,7 @@ BI.ControlDimensionCombo = BI.inherit(BI.Widget, {
     defaultItems: function () {
         return [
             [{
-                text: BI.i18nText("BI-Base_Remove"),
+                text: BI.i18nText("BI-Basic_Remove"),
                 value: BICst.CONTROL_COMBO.DELETE,
                 cls: "delete-h-font"
             }],

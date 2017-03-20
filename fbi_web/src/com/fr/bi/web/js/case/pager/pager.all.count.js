@@ -99,7 +99,7 @@ BI.AllCountPager = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 height: o.height,
-                text: BI.i18nText("BI-Base_Total"),
+                text: BI.i18nText("BI-Basic_Total"),
                 width: 15
             }, this.rowCount, {
                 type: "bi.label",

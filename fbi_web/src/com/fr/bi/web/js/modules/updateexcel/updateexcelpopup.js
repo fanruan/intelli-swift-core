@@ -245,7 +245,7 @@ BI.UpdateExcelPopup = BI.inherit(BI.Widget, {
 
         var confirm = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Base_OK"),
+            text: BI.i18nText("BI-Basic_OK"),
             height: c.BOTTOM_BUTTON_HEIGHT,
             width: c.BOTTOM_BUTTON_WIDTH
         });

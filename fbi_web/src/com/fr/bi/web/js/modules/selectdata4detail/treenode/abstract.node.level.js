@@ -104,7 +104,7 @@ BI.AbstractDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
                                 name += "(" + BI.i18nText("BI-Basic_Date") + ")";
                                 break;
                             case BICst.GROUP.S:
-                                name += "(" + BI.i18nText("BI-Base_Quarter") + ")";
+                                name += "(" + BI.i18nText("BI-Basic_Quarter") + ")";
                                 break;
                         }
                     }

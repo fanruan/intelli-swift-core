@@ -17,7 +17,7 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text: this.model.getTableName() + BI.i18nText("BI-Base_Setting"),
+            text: this.model.getTableName() + BI.i18nText("BI-Basic_Setting"),
             cls: "",
             textAlign: "left",
             lgap: 10,

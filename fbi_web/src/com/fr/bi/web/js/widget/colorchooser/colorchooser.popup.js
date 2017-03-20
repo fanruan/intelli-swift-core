@@ -78,7 +78,7 @@ BI.ColorChooserPopup = BI.inherit(BI.Widget, {
 
         var panel = BI.createWidget({
             type: "bi.popup_panel",
-            buttons: [BI.i18nText("BI-Basic_Cancel"), BI.i18nText("BI-Base_Save")],
+            buttons: [BI.i18nText("BI-Basic_Cancel"), BI.i18nText("BI-Basic_Save")],
             title: BI.i18nText("BI-Custom_Color"),
             el: this.customColorChooser,
             stopPropagation: false,

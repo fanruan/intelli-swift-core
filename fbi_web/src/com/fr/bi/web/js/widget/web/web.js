@@ -36,7 +36,7 @@ BI.WebPage = BI.inherit(BI.Widget, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Base_Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function () {
                         self.fireEvent(BI.WebPage.EVENT_DESTROY)
                     }

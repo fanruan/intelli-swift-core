@@ -62,7 +62,7 @@ BI.MatchingRelationPopup = BI.inherit(BI.BarPopoverSection, {
         var self = this;
         this.save = BI.createWidget({
             type: 'bi.button',
-            text: BI.i18nText("BI-Base_Save"),
+            text: BI.i18nText("BI-Basic_Save"),
             height: 30,
             value: 0,
             handler: function (v) {

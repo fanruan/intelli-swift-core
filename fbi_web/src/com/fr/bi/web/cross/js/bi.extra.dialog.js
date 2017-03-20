@@ -117,7 +117,7 @@ FS.Dialog = BI.inherit(BI.Widget, {
                         el: {
                             type: 'fs.button',
                             widgetName: "shareTemplateButton",
-                            text: BI.i18nText("BI-Base_OK"),
+                            text: BI.i18nText("BI-Basic_OK"),
                             width: 90,
                             height: 30,
                             handler: function () {

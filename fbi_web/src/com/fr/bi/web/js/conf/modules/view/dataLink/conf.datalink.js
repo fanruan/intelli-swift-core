@@ -104,12 +104,12 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                 el: {
                     type: "bi.icon_button",
                     cls: "data-link-remove-font icon-font",
-                    title: BI.i18nText("BI-Base_Remove")
+                    title: BI.i18nText("BI-Basic_Remove")
                 },
                 popup: {
                     type: "bi.bubble_bar_popup_view",
                     buttons: [{
-                        value: BI.i18nText(BI.i18nText("BI-Base_Sure")),
+                        value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                         handler: function () {
                             self.model.set("delete", info.id);
                         }
@@ -162,7 +162,7 @@ BIConf.DataLinkPaneView = BI.inherit(BI.View, {
                 type: "bi.center_adapt",
                 items: [{
                     type: "bi.icon_button",
-                    title: BI.i18nText("BI-Base_Setting"),
+                    title: BI.i18nText("BI-Basic_Setting"),
                     cls: "data-link-set-font icon-font",
                     handler: function () {
                         self.set("set", info.id);

@@ -16,7 +16,7 @@ BIDezi.ResetView = BI.inherit(BI.View, {
         var self = this;
         var resetButton = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Base_Reset"),
+            text: BI.i18nText("BI-Basic_Reset"),
             forceCenter: true,
             cls: "query-or-reset-button"
         });
@@ -34,7 +34,7 @@ BIDezi.ResetView = BI.inherit(BI.View, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Base_Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function () {
                         self.model.destroy();
                     }

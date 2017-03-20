@@ -75,7 +75,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text: this.model.getTableName() + BI.i18nText("BI-Base_Preview"),
+            text: this.model.getTableName() + BI.i18nText("BI-Basic_Preview"),
             height: 50,
             textAlign: "left"
         })
@@ -134,7 +134,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.vertical_adapt",
                 items: [{
                     type: "bi.button",
-                    text: BI.i18nText("BI-Base_Sure"),
+                    text: BI.i18nText("BI-Basic_Sure"),
                     height: 30,
                     handler: function () {
                         self.close();

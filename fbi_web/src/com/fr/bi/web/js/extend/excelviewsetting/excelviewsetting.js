@@ -42,7 +42,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
 
         var save = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Base_Save"),
+            text: BI.i18nText("BI-Basic_Save"),
             height: 28
         });
         save.on(BI.Button.EVENT_CHANGE, function () {
@@ -217,7 +217,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
                     items: {
                         left: [{
                             type: "bi.label",
-                            text: "excel" + BI.i18nText("BI-Base_Table") + ":",
+                            text: "excel" + BI.i18nText("BI-Basic_Table") + ":",
                             height: 30,
                             cls: "excel-view-setting-excel-toolbar-title"
                         }, this.excelName, this.uploadButton]

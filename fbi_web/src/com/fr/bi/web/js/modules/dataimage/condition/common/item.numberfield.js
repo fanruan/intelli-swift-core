@@ -76,8 +76,8 @@ BI.DataImageNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
 
         this.fieldButton = BI.createWidget({
             type: "bi.text_button",
-            text: this.isSelf ? BI.i18nText("BI-Base_Self") : fieldName,
-            title: this.isSelf ? BI.i18nText("BI-Base_Self") : fieldName,
+            text: this.isSelf ? BI.i18nText("BI-Basic_Self") : fieldName,
+            title: this.isSelf ? BI.i18nText("BI-Basic_Self") : fieldName,
             width: this._constant.FIELD_NAME_BUTTON_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
             textAlign: "left",

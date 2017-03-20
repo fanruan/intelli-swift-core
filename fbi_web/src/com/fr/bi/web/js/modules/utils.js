@@ -396,7 +396,7 @@
                 if (field.field_type === BICst.COLUMN.COUNTER) {
                     //记录数 表名+"记录数"fbi_Records
                     var tableName = this.getTableNameByID(field.table_id);
-                    fieldName = tableName + BI.i18nText("BI-Base_Records");
+                    fieldName = tableName + BI.i18nText("BI-Basic_Records");
                 }
             }
             return fieldName;

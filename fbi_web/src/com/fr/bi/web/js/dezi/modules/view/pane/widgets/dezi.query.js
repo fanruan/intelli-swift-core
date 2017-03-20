@@ -16,7 +16,7 @@ BIDezi.QueryView = BI.inherit(BI.View, {
         var self = this;
         var queryButton = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Base_Query"),
+            text: BI.i18nText("BI-Basic_Query"),
             forceCenter: true,
             cls: "query-or-reset-button"
         });
@@ -32,12 +32,12 @@ BIDezi.QueryView = BI.inherit(BI.View, {
                 cls: "close-font remove-button",
                 width: 20,
                 height: 20,
-                title: BI.i18nText("BI-Base_Remove")
+                title: BI.i18nText("BI-Basic_Remove")
             },
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Base_Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function () {
                         self.model.destroy();
                         BI.Utils.broadcastAllWidgets2Refresh();

@@ -52,7 +52,7 @@ BI.PretreatedTable = BI.inherit(BI.Widget, {
                             case BICst.GROUP.Y:
                                 return title + "(" + BI.i18nText("BI-Year_Fen") + ")";
                             case BICst.GROUP.S:
-                                return title + "(" + BI.i18nText("BI-Base_Quarter") + ")";
+                                return title + "(" + BI.i18nText("BI-Basic_Quarter") + ")";
                             case BICst.GROUP.M:
                                 return title + "(" + BI.i18nText("BI-Multi_Date_Month") + ")";
                                 break;

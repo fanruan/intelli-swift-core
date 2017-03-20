@@ -631,7 +631,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                                 name = BI.i18nText("BI-Year_Fen") + "(" + name + ")";
                                 break;
                             case BICst.GROUP.S:
-                                name = BI.i18nText("BI-Base_Quarter") + "(" + name + ")";
+                                name = BI.i18nText("BI-Basic_Quarter") + "(" + name + ")";
                                 break;
                             case BICst.GROUP.M:
                                 name = BI.i18nText("BI-Multi_Date_Month") + "(" + name + ")";

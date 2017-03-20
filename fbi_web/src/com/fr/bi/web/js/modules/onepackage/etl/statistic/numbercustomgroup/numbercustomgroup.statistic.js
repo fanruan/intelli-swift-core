@@ -66,7 +66,7 @@ BI.NumberCustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
         });
 
         this.group.on(BI.ConfNumberIntervalCustomGroup.EVENT_VALID,function(){
-            self.saveButton.setValue(BI.i18nText("BI-Base_Save"));
+            self.saveButton.setValue(BI.i18nText("BI-Basic_Save"));
             self.saveButton.setEnable(true);
         });
 
@@ -87,7 +87,7 @@ BI.NumberCustomGroupPopup = BI.inherit(BI.BarPopoverSection, {
 
         this.saveButton = BI.createWidget({
             type:"bi.button",
-            text:BI.i18nText("BI-Base_Save"),
+            text:BI.i18nText("BI-Basic_Save"),
             height:30,
             level: 'common',
             readonly:false,

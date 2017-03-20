@@ -120,8 +120,8 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
         });
         this.saveButton = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Base_OK"),
-            title: BI.i18nText("BI-Base_OK"),
+            text: BI.i18nText("BI-Basic_OK"),
+            title: BI.i18nText("BI-Basic_OK"),
             height: 28
         });
         this.saveButton.on(BI.Button.EVENT_CHANGE, function () {

@@ -7,7 +7,7 @@ BIShow.NumberCustomGroupView = BI.inherit(BI.BarFloatSection, {
     _defaultConfig: function () {
         return BI.extend(BIShow.NumberCustomGroupView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-number-custom-group-view",
-            btns: [BI.i18nText(BI.i18nText("BI-Base_Save")), BI.i18nText("BI-Basic_Cancel")]
+            btns: [BI.i18nText(BI.i18nText("BI-Basic_Save")), BI.i18nText("BI-Basic_Cancel")]
         })
     },
 
@@ -50,12 +50,12 @@ BIShow.NumberCustomGroupView = BI.inherit(BI.BarFloatSection, {
         });
 
         this.group.on(BI.NumberIntervalCustomGroup.EVENT_VALID, function () {
-            self.sure.setValue(BI.i18nText("BI-Base_Save"));
+            self.sure.setValue(BI.i18nText("BI-Basic_Save"));
             self.sure.setEnable(true);
         });
 
         this.group.on(BI.NumberIntervalCustomGroup.EVENT_EMPTY_GROUP, function () {
-            self.sure.setValue(BI.i18nText("BI-Base_Save"));
+            self.sure.setValue(BI.i18nText("BI-Basic_Save"));
             self.sure.setEnable(false);
         });
 

@@ -94,7 +94,7 @@ BI.CombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
         var header = BI.createWidget({
             type: "bi.region_header",
             height: 26,
-            titleName: BI.i18nText("BI-Base_Series"),
+            titleName: BI.i18nText("BI-Basic_Series"),
             dimensionCreator: o.dimensionCreator,
             wId: o.wId,
             viewType: BICst.REGION.DIMENSION2

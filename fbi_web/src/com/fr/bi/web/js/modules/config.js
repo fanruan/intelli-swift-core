@@ -3,12 +3,12 @@
 //full week names
 BICst.FULL_WEEK_NAMES = [BI.i18nText("BI-Basic_Monday"),
     BI.i18nText("BI-Basic_Monday"),
-    BI.i18nText("BI-Base_Tuesday"),
+    BI.i18nText("BI-Basic_Tuesday"),
     BI.i18nText("BI-Wednesday"),
-    BI.i18nText("BI-Base_Thursday"),
+    BI.i18nText("BI-Basic_Thursday"),
     BI.i18nText("BI-Basic_Friday"),
-    BI.i18nText("BI-Base_Saturday"),
-    BI.i18nText("BI-Base_Sunday")];
+    BI.i18nText("BI-Basic_Saturday"),
+    BI.i18nText("BI-Basic_Sunday")];
 
 //full month names
 BICst.FULL_MONTH_NAMES = [
@@ -21,8 +21,8 @@ BICst.FULL_MONTH_NAMES = [
     BI.i18nText("BI-Basic_June"),
     BI.i18nText("BI-Basic_July"),
     BI.i18nText("BI-Basic_August"),
-    BI.i18nText("BI-Base_September"),
-    BI.i18nText("BI-Base_October"),
+    BI.i18nText("BI-Basic_September"),
+    BI.i18nText("BI-Basic_October"),
     BI.i18nText("BI-Basic_November"),
     BI.i18nText("BI-Basic_December")];
 
@@ -47,7 +47,7 @@ BICst.DASHBOARD_LAYOUT_ARRAY = [{
 BICst.DETAIL_DATA_STYLE_TAB = [{
     text: BI.i18nText("BI-Type_Data"), value: BICst.DETAIL_TAB_TYPE_DATA
 }, {
-    text: BI.i18nText("BI-Base_Style"), value: BICst.DETAIL_TAB_STYLE
+    text: BI.i18nText("BI-Basic_Style"), value: BICst.DETAIL_TAB_STYLE
 }];
 
 //业务包字段/复用
@@ -68,9 +68,9 @@ BICst.DASHBOARD_TOOLBAR = [{
     title: BI.i18nText('BI-Undo'),
     cls: "toolbar-undo-font"
 }, {
-    text: BI.i18nText('BI-Base_Redo'),
+    text: BI.i18nText('BI-Basic_Redo'),
     value: BICst.DASHBOARD_TOOLBAR_REDO,
-    title: BI.i18nText('BI-Base_Redo'),
+    title: BI.i18nText('BI-Basic_Redo'),
     cls: "toolbar-redo-font"
 }];
 
@@ -127,8 +127,8 @@ BICst.DASHBOARD_WIDGETS = [[{
         value: BICst.WIDGET.FALL_AXIS,
         cls: "drag-axis-fall-icon"
     }, {
-        text: BI.i18nText("BI-Base_Pareto"),
-        title: BI.i18nText("BI-Base_Pareto"),
+        text: BI.i18nText("BI-Basic_Pareto"),
+        title: BI.i18nText("BI-Basic_Pareto"),
         value: BICst.WIDGET.PARETO,
         cls: "drag-pareto-icon"
     }]
@@ -247,13 +247,13 @@ BICst.DASHBOARD_WIDGETS = [[{
     value: BICst.WIDGET.DASHBOARD,
     cls: "drag-dashboard-icon"
 }, {
-    text: BI.i18nText("BI-Base_Radar"),
-    title: BI.i18nText("BI-Base_Radar"),
+    text: BI.i18nText("BI-Basic_Radar"),
+    title: BI.i18nText("BI-Basic_Radar"),
     value: BICst.WIDGET.RADAR,
     cls: "drag-radar-icon",
     children: [{
-        text: BI.i18nText("BI-Base_Radar"),
-        title: BI.i18nText("BI-Base_Radar"),
+        text: BI.i18nText("BI-Basic_Radar"),
+        title: BI.i18nText("BI-Basic_Radar"),
         value: BICst.WIDGET.RADAR,
         cls: "drag-radar-icon"
     }, {
@@ -279,8 +279,8 @@ BICst.DASHBOARD_WIDGETS = [[{
         cls: "drag-bubble-force-icon"
     }]
 }, {
-    text: BI.i18nText("BI-Base_Scatter"),
-    title: BI.i18nText("BI-Base_Scatter"),
+    text: BI.i18nText("BI-Basic_Scatter"),
+    title: BI.i18nText("BI-Basic_Scatter"),
     value: BICst.WIDGET.SCATTER,
     cls: "drag-scatter-icon"
 }, {
@@ -490,7 +490,7 @@ BICst.TIME_CONTROL_SETCOMBO_ITEMS = [
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
-        text: BI.i18nText("BI-Base_Rename"),
+        text: BI.i18nText("BI-Basic_Rename"),
         cls: "widget-combo-rename-edit-font"
     }],
     [{
@@ -519,7 +519,7 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
     }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
-        text: BI.i18nText("BI-Base_Rename"),
+        text: BI.i18nText("BI-Basic_Rename"),
         cls: "widget-combo-rename-edit-font"
     }],
     [{
@@ -548,7 +548,7 @@ BICst.SINGLE_SLIDER_CONTROL_SETCOMBO_ITEMS = [
     // }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
-        text: BI.i18nText("BI-Base_Rename"),
+        text: BI.i18nText("BI-Basic_Rename"),
         cls: "widget-combo-rename-edit-font"
     }],
     [{
@@ -589,8 +589,8 @@ BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
 
 //etl group
 BICst.ETL_MANAGE_ITEMS = [{
-    text: BI.i18nText("BI-Base_Preview") + "...",
-    title: BI.i18nText("BI-Base_Preview") + "...",
+    text: BI.i18nText("BI-Basic_Preview") + "...",
+    title: BI.i18nText("BI-Basic_Preview") + "...",
     value: BICst.ETL_MANAGE_TABLE_PREVIEW
 }, {
     text: BI.i18nText("BI-Table_Add_Formula"),
@@ -627,7 +627,7 @@ BICst.ETL_MANAGE_ITEMS = [{
     title: BI.i18nText("BI-Table_Add_Grouping_Column"),
     value: BICst.ETL_MANAGE_TABLE_NEW_GROUP
 }, {
-    text: BI.i18nText("BI-Base_Remove"), title: BI.i18nText("BI-Base_Remove"), value: BICst.ETL_MANAGE_TABLE_DELETE
+    text: BI.i18nText("BI-Basic_Remove"), title: BI.i18nText("BI-Basic_Remove"), value: BICst.ETL_MANAGE_TABLE_DELETE
 }];
 
 //过滤的几种类型
@@ -940,7 +940,7 @@ BICst.Date_Range_FILTER_COMBO = [{
 BICst.FILTER_CONDITION_TYPE = [{
     text: BI.i18nText("BI-Basic_And"), value: BICst.FILTER_TYPE.AND
 }, {
-    text: BI.i18nText("BI-Base_Or"), value: BICst.FILTER_TYPE.OR
+    text: BI.i18nText("BI-Basic_Or"), value: BICst.FILTER_TYPE.OR
 }];
 
 //auth string
@@ -1092,7 +1092,7 @@ BICst.CONF_GROUP_DATE = [{
     text: BI.i18nText("BI-Year_Fen"),
     value: BICst.GROUP.Y
 }, {
-    text: BI.i18nText("BI-Base_Quarter"),
+    text: BI.i18nText("BI-Basic_Quarter"),
     value: BICst.GROUP.S
 }, {
     text: BI.i18nText("BI-Month_Fen"),
@@ -1334,7 +1334,7 @@ BICst.DATA_LABEL_POSITION = [{
     cls: "datalabel-position-inner",
     value: BICst.DATA_LABEL.POSITION_INNER
 }, {
-    title: BI.i18nText("BI-Base_Outer"),
+    title: BI.i18nText("BI-Basic_Outer"),
     cls: "datalabel-position-outer",
     value: BICst.DATA_LABEL.POSITION_OUTER,
 }, {
@@ -1348,7 +1348,7 @@ BICst.PIE_DATA_LABEL_POSITION = [{
     cls: "datalabel-position-inner",
     value: BICst.DATA_LABEL.POSITION_INNER
 }, {
-    title: BI.i18nText("BI-Base_Outer"),
+    title: BI.i18nText("BI-Basic_Outer"),
     cls: "datalabel-position-outer",
     value: BICst.DATA_LABEL.POSITION_OUTER,
 }];
@@ -1379,7 +1379,7 @@ BICst.DATA_LABEL_FILTER_NUMBER_COMBO = [[{
     value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Base_Place"),
+    text: BI.i18nText("BI-Basic_Place"),
     value: BICst.DIMENSION_FILTER_NUMBER.TOP_N,
     cls: "dot-e-font"
 }, {
@@ -1454,7 +1454,7 @@ BICst.CAL_TARGET_TYPE = [{
     text: BI.i18nText("BI-Basic_Formula"),
     value: BICst.TARGET_TYPE.FORMULA
 }, {
-    text: BI.i18nText("BI-Base_Ranging"),
+    text: BI.i18nText("BI-Basic_Ranging"),
     value: BICst.TARGET_TYPE.RANK
 }, {
     text: BI.i18nText("BI-Group_Ranking"),
@@ -1517,7 +1517,7 @@ BICst.DATABASE = {
     SYBASE: "Sybase",
     DERBY: "Derby",
     POSTGRE: "Postgre",
-    OTHERS: BI.i18nText("BI-Base_Others")
+    OTHERS: BI.i18nText("BI-Basic_Others")
 };
 BICst.DATA_LINK_MANAGE = {
     CODES: [
@@ -1553,7 +1553,7 @@ BICst.DATA_LINK_MANAGE = {
         text: "Postgre",
         value: BICst.DATABASE.POSTGRE
     }, {
-        text: BI.i18nText("BI-Base_Others"),
+        text: BI.i18nText("BI-Basic_Others"),
         value: BICst.DATABASE.OTHERS
     }],
     URLS: {
@@ -1745,7 +1745,7 @@ BICst.DATE_GROUP[BICst.GROUP.W] = BI.i18nText("BI-Week_XingQi");
 BICst.DATE_GROUP[BICst.GROUP.D] = BI.i18nText("BI-Day_Ri");
 BICst.DATE_GROUP[BICst.GROUP.HOUR] = BI.i18nText("BI-Hour_Sin");
 BICst.DATE_GROUP[BICst.GROUP.MINUTE] = BI.i18nText("BI-Basic_Minute");
-BICst.DATE_GROUP[BICst.GROUP.SECOND] = BI.i18nText("BI-Base_Seconds");
+BICst.DATE_GROUP[BICst.GROUP.SECOND] = BI.i18nText("BI-Basic_Seconds");
 BICst.DATE_GROUP[BICst.GROUP.YS] = BI.i18nText("BI-Year_Quarter");
 BICst.DATE_GROUP[BICst.GROUP.YM] = BI.i18nText("BI-Year_Month");
 BICst.DATE_GROUP[BICst.GROUP.YW] = BI.i18nText("BI-Year_Week");

@@ -26,7 +26,7 @@ BI.DimensionDateComboShow = BI.inherit(BI.AbstractDimensionComboShow, {
                 value: BICst.DIMENSION_DATE_COMBO.YEAR,
                 cls: "dot-e-font"
             }, {
-                text: BI.i18nText("BI-Base_Quarter"),
+                text: BI.i18nText("BI-Basic_Quarter"),
                 value: BICst.DIMENSION_DATE_COMBO.QUARTER,
                 cls: "dot-e-font"
             }, {

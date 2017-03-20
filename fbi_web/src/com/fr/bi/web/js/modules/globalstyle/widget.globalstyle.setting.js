@@ -30,7 +30,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
 
         var save = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Base_Sure"),
+            text: BI.i18nText("BI-Basic_Sure"),
             height: this._const.HEIGHT,
             width: 90
         });

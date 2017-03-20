@@ -169,7 +169,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //左值轴千分符
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Base_Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 
@@ -355,7 +355,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //右值轴千分符
         this.rightYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Base_Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 

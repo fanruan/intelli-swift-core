@@ -71,7 +71,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
             }],
             [{
-                text: BI.i18nText("BI-Base_Rename"),
+                text: BI.i18nText("BI-Basic_Rename"),
                 value: BICst.TARGET_COMBO.RENAME
             }],
             [{
@@ -80,7 +80,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 cls: "copy-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Base_Remove"),
+                text: BI.i18nText("BI-Basic_Remove"),
                 value: BICst.TARGET_COMBO.DELETE,
                 cls: "delete-h-font"
             }],

@@ -103,7 +103,7 @@ BI.PlateHangoutReport = BI.inherit(BI.BarPopoverSection, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Base_Path"),
+                    text: BI.i18nText("BI-Basic_Path"),
                     height: 30,
                     width: 90,
                     textAlign: "left",

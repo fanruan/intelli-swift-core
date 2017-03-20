@@ -58,7 +58,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                     }],
                     right: [{
                         type: "bi.button",
-                        text: BI.i18nText("BI-Base_Refresh"),
+                        text: BI.i18nText("BI-Basic_Refresh"),
                         height: 28,
                         level: "ignore",
                         handler: function () {
@@ -198,9 +198,9 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         }
         var seconds = BI.parseInt(time / 1000);
         if (seconds > 60) {
-            return BI.parseInt(seconds / 60) + BI.i18nText("BI-Basic_Minute") + seconds % 60 + BI.i18nText("BI-Base_Seconds");
+            return BI.parseInt(seconds / 60) + BI.i18nText("BI-Basic_Minute") + seconds % 60 + BI.i18nText("BI-Basic_Seconds");
         }
-        return seconds + BI.i18nText("BI-Base_Seconds");
+        return seconds + BI.i18nText("BI-Basic_Seconds");
     },
 
     _formatItems: function (data) {
@@ -241,7 +241,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             if (undefined != er.tableName && '' != er.tableName) {
                 errorInfo = BI.i18nText("BI-Table_Name") + '-' + er.tableName + ':' + er.error_text;
             } else if (undefined != er.relation) {
-                errorInfo = BI.i18nText("BI-Base_Relations") + "-" +
+                errorInfo = BI.i18nText("BI-Basic_Relations") + "-" +
                     er.relation.primaryTableName + "." + er.relation.primaryFieldName + "->"
                     + er.relation.foreignTableName + "." + er.relation.foreignFieldName + ':' + er.error_text;
             }
@@ -300,7 +300,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             items.push({
                 id: BI.UUID(),
                 pId: BI.CubeLog.RELATION_NODE,
-                text: BI.i18nText("BI-Base_Relations") + "-" +
+                text: BI.i18nText("BI-Basic_Relations") + "-" +
                 re.primaryTableName + "." + re.primaryFieldName + "->"
                 + re.foreignTableName + "." + re.foreignFieldName +
                 BI.i18nText("BI-Generated_Time") + self._formatSecond(relation.time),

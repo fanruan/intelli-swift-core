@@ -7,7 +7,7 @@
 BI.BarFloatSection = BI.inherit(BI.FloatSection, {
     _defaultConfig: function () {
         return BI.extend(BI.BarFloatSection.superclass._defaultConfig.apply(this, arguments), {
-            btns: [BI.i18nText(BI.i18nText("BI-Base_Sure")), BI.i18nText("BI-Basic_Cancel")]
+            btns: [BI.i18nText(BI.i18nText("BI-Basic_Sure")), BI.i18nText("BI-Basic_Cancel")]
         })
     },
 
@@ -73,7 +73,7 @@ BI.BarFloatSection = BI.inherit(BI.FloatSection, {
 BI.BarPopoverSection = BI.inherit(BI.PopoverSection, {
     _defaultConfig: function () {
         return BI.extend(BI.BarPopoverSection.superclass._defaultConfig.apply(this, arguments), {
-            btns: [BI.i18nText(BI.i18nText("BI-Base_Sure")), BI.i18nText(BI.i18nText("BI-Basic_Cancel"))]
+            btns: [BI.i18nText(BI.i18nText("BI-Basic_Sure")), BI.i18nText(BI.i18nText("BI-Basic_Cancel"))]
         })
     },
 

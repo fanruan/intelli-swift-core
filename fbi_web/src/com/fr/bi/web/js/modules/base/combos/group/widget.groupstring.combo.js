@@ -16,11 +16,11 @@ BI.GroupStringCombo = BI.inherit(BI.Widget, {
                 cls: "dot-ha-font"
             }],
             [{
-                text: BI.i18nText("BI-Base_Rename"),
+                text: BI.i18nText("BI-Basic_Rename"),
                 value: BICst.STATISTICS_GROUP_STRING_COMBO.RENAME,
                 cls: "widget-combo-rename-edit-font"
             },{
-                text: BI.i18nText("BI-Base_Remove"),
+                text: BI.i18nText("BI-Basic_Remove"),
                 value: BICst.STATISTICS_GROUP_STRING_COMBO.DELETE,
                 cls: "delete-h-font"
             }]

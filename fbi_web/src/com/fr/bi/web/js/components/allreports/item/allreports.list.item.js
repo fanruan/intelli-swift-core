@@ -89,7 +89,7 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
                         type: "bi.horizontal",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("BI-Base_Role") + ":",
+                            text: BI.i18nText("BI-Basic_Role") + ":",
                             height: 30,
                             width: 40
                         }, {

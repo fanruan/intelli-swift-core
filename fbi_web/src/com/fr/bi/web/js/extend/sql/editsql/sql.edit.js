@@ -189,8 +189,8 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             case self.constants.PREVIEW_EMPTY:
                 this.previewButton = BI.createWidget({
                     type: "bi.button",
-                    text: BI.i18nText("BI-Base_Preview"),
-                    title: BI.i18nText("BI-Base_Preview"),
+                    text: BI.i18nText("BI-Basic_Preview"),
+                    title: BI.i18nText("BI-Basic_Preview"),
                     warningTitle: BI.i18nText("BI-Please_Enter_SQL"),
                     height: self.constants.SQL_EDIT_BUTTON_HEIGHT,
                     width: self.constants.SQL_EDIT_BUTTON_WIDTH,
@@ -275,7 +275,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                             height: 126
                         }, {
                             type: "bi.label",
-                            text: BI.i18nText("BI-Base_Preview") + BI.i18nText("BI-Basic_Failed"),
+                            text: BI.i18nText("BI-Basic_Preview") + BI.i18nText("BI-Basic_Failed"),
                             cls: "preview-fail-comment"
                         }, {
                             type: "bi.horizontal_float",
@@ -314,7 +314,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             });
             BI.Utils.getTestConnectionByLinkName(self.model.getDataLinkName(), function (res) {
                 if (BI.isNull(res) || res.success === false) {
-                    BI.Msg.confirm(BI.i18nText("BI-Base_Prompt"), BI.i18nText("BI-Can_Not_Connect_Connection") + "," + BI.i18nText("BI-Sure_Next_Step"), function (v) {
+                    BI.Msg.confirm(BI.i18nText("BI-Basic_Prompt"), BI.i18nText("BI-Can_Not_Connect_Connection") + "," + BI.i18nText("BI-Sure_Next_Step"), function (v) {
                         v === true && self._saveSql(true);
                     });
                 } else {
@@ -359,7 +359,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             var table = res[0];
             //还是看fields信息吧
             if ((!errorConnection && table.md5 === "Empty") || table.fields[0].length === 0) {
-                BI.Msg.confirm(BI.i18nText("BI-Base_Prompt"), BI.i18nText("BI-Error_SQL_Not_Next_Step") + "," + BI.i18nText("BI-Sure_Next_Step"), function (v) {
+                BI.Msg.confirm(BI.i18nText("BI-Basic_Prompt"), BI.i18nText("BI-Error_SQL_Not_Next_Step") + "," + BI.i18nText("BI-Sure_Next_Step"), function (v) {
                     v === true && self.fireEvent(BI.EditSQL.EVENT_SAVE, table);
                 });
             } else {

@@ -58,7 +58,7 @@
                 forceCenter: true,
                 cls: 'bi-multidate-popup-button',
                 shadow: true,
-                text: BI.i18nText("BI-Base_OK")
+                text: BI.i18nText("BI-Basic_OK")
             });
             this.okButton.on(BI.TextButton.EVENT_CHANGE, function () {
                 self.fireEvent(BI.MultiDatePopup.BUTTON_OK_EVENT_CHANGE);

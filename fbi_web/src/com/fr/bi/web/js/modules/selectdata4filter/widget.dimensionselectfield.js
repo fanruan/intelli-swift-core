@@ -35,8 +35,8 @@ BI.DimensionFilterSelectField = BI.inherit(BI.Widget, {
                 }, {
                     id: self._constant.TARGET_FIELD,
                     type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Base_Target"),
-                    value: BI.i18nText("BI-Base_Target"),
+                    text: BI.i18nText("BI-Basic_Target"),
+                    value: BI.i18nText("BI-Basic_Target"),
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.SERIES,
                     open: true

@@ -68,7 +68,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         });
         var reset = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Base_Reset"),
+            text: BI.i18nText("BI-Basic_Reset"),
             height: 25,
             width: 90
         });
@@ -102,7 +102,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         type: "bi.left",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("BI-Base_Role"),
+                            text: BI.i18nText("BI-Basic_Role"),
                             cls: "filter-type",
                             height: 24,
                             hgap: 10
@@ -120,7 +120,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         type: "bi.left",
                         items: [{
                             type: "bi.label",
-                            text: BI.i18nText("BI-Base_Status"),
+                            text: BI.i18nText("BI-Basic_Status"),
                             cls: "filter-type",
                             height: 24,
                             hgap: 10
