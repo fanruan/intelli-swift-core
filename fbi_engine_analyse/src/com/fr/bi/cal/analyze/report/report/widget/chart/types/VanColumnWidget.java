@@ -13,4 +13,7 @@ public class VanColumnWidget extends VanCartesianWidget{
         return createXYSeries(data);
     }
 
+    public String getSeriesType(){
+        return "column";
+    }
 }

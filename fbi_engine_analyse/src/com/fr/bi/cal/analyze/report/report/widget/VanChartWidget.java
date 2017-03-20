@@ -21,6 +21,8 @@ public abstract class VanChartWidget extends TableWidget {
 
     public abstract JSONArray createSeries(JSONObject data) throws JSONException;
 
+    public abstract String getSeriesType();
+
     public JSONObject createDataJSON(BISessionProvider session) throws Exception {
 
         JSONObject data = super.createDataJSON(session).getJSONObject("data");
@@ -45,10 +47,6 @@ public abstract class VanChartWidget extends TableWidget {
         options.put("legend", this.parseLegend(settings));
 
         return options;
-    }
-
-    public String getSeriesType(){
-        return "column";
     }
 
     protected JSONArray createXYSeries(JSONObject originData) throws JSONException{

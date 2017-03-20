@@ -10,6 +10,10 @@ import com.fr.json.JSONObject;
  */
 public abstract class VanCartesianWidget extends VanChartWidget {
 
+    public JSONArray createSeries(JSONObject data) throws JSONException {
+        return createXYSeries(data);
+    }
+
     public  JSONObject createOptions() throws JSONException{
 
         JSONObject settings = this.getChartSetting().getDetailChartSetting();

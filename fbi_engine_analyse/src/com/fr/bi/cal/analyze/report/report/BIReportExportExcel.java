@@ -325,20 +325,20 @@ public class BIReportExportExcel {
 
     private String getDefaultImage(WidgetType type, String imageFolder) throws IOException {
         Map<WidgetType, String> map = new HashMap<WidgetType, String>();
-        map.put(WidgetType.ACCUMULATE_COLUMN, "/column_accu.png");
-        map.put(WidgetType.ACCUMULATE_AREA, "/area_accu.png");
-        map.put(WidgetType.ACCUMULATE_RADAR, "/radar_accu.png");
+        map.put(WidgetType.STACKED_COLUMN, "/column_accu.png");
+        map.put(WidgetType.STACKED_AREA, "/area_accu.png");
+        map.put(WidgetType.STACKED_RADAR, "/radar_accu.png");
         map.put(WidgetType.COLUMN, "/column.png");
         map.put(WidgetType.LINE, "/line.png");
         map.put(WidgetType.AREA, "/area.png");
-        map.put(WidgetType.PERCENT_ACCUMULATE_COLUMN, "/column_percent.png");
-        map.put(WidgetType.PERCENT_ACCUMULATE_AREA, "/area_percent.png");
+        map.put(WidgetType.PERCENT_STACKED_COLUMN, "/column_percent.png");
+        map.put(WidgetType.PERCENT_STACKED_AREA, "/area_percent.png");
         map.put(WidgetType.COMPARE_COLUMN, "/column_compare.png");
         map.put(WidgetType.COMPARE_AREA, "/area_compare.png");
         map.put(WidgetType.FALL_COLUMN, "/column_fall.png");
         map.put(WidgetType.RANGE_AREA, "/area_range.png");
         map.put(WidgetType.BAR, "/bar.png");
-        map.put(WidgetType.ACCUMULATE_BAR, "/bar_accu.png");
+        map.put(WidgetType.STACKED_BAR, "/bar_accu.png");
         map.put(WidgetType.COMPARE_BAR, "/bar_compare.png");
         map.put(WidgetType.COMBINE_CHART, "/combine.png");
         map.put(WidgetType.DONUT, "/donut.png");
