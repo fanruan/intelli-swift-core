@@ -51,8 +51,9 @@ public class MonitorUtils {
             int maxLevel = extraRelation(res, positionHelper, levelHelper, relationMap);
             PositionCalculator calculator = new PositionCalculator(positionHelper, relationMap,  levelHelper, maxLevel);
             calculator.sort();
+            calHealth(maxLevel, levelHelper, userId, relationMap);
             JSONObject jo = JSONObject.create();
-            JSONArray jsonArray = getJsonArray(userId, res, relationMap);
+            JSONArray jsonArray = getJsonArray(userId, res);
             JSONArray relationArray = getRelationArray(relationMap);
             jo.put("data", jsonArray);
             jo.put("relation", relationArray);
@@ -97,13 +98,15 @@ public class MonitorUtils {
         maxLevel = getMaxLevelWithDelete(userId, res, relationMap, maxLevel, levelHelper, positionHelper, deletedTables);
         PositionCalculator calculator = new PositionCalculator(positionHelper, relationMap,  levelHelper, maxLevel);
         calculator.sort();
+        calHealth(maxLevel, levelHelper, userId, relationMap);
         JSONObject jo = JSONObject.create();
-        JSONArray jsonArray = getJsonArray(userId, res, relationMap);
+        JSONArray jsonArray = getJsonArray(userId, res);
         JSONArray relationArray = getRelationArray(relationMap);
         jo.put("data", jsonArray);
         jo.put("relation", relationArray);
         return jo;
     }
+
 
     private static int getMaxLevelWithDelete(long userId, List<BITablePosition> res, Map<SimpleTable, List<TableRelation>> relationMap, int maxLevel, Map<Integer, List<BITablePosition>> levelHelper, Map<SimpleTable, BITablePosition> positionHelper, Set<SimpleTable> deletedTables) {
         for(SimpleTable table : deletedTables) {
@@ -161,11 +164,23 @@ public class MonitorUtils {
         return relationArray;
     }
 
-    private static JSONArray getJsonArray(long userId, List<BITablePosition> res, Map<SimpleTable, List<TableRelation>> relationMap) throws Exception {
+
+    private static void calHealth(int maxLevel, Map<Integer, List<BITablePosition>> levelHelper, long userId, Map<SimpleTable, List<TableRelation>> relationMap) {
+        for(int i =0; i< maxLevel + 1; i++) {
+            List<BITablePosition> ps = levelHelper.get(i);
+            if(ps != null){
+                for(BITablePosition bp : ps){
+                    bp.getTable().calHealth(relationMap, userId);
+                }
+            }
+        }
+    }
+
+    private static JSONArray getJsonArray(long userId, List<BITablePosition> res) throws Exception {
         JSONArray jsonArray = JSONArray.create();
         for(BITablePosition p : res){
             JSONObject j = p.createJSON(userId);
-            j.put("h", p.getTable().getHealth(relationMap, userId));
+            j.put("h", p.getTable().getHealth());
             jsonArray.put(j);
         }
         return jsonArray;

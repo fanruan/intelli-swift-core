@@ -11,7 +11,9 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.etl.analysis.monitor.*;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -252,7 +254,16 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
                 CubeTableSource source = dim.createTableKey().getTableSource();
                 String id = dim.getStatisticElement().getTableBelongTo().getID().getIdentity();
                 if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
-                    set.add(new SimpleTable(id));
+                    try {
+                        //如果被删掉了就继续想上找
+                        if( BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(dim.createTableKey()) != null){
+                            set.add(new SimpleTable(id));
+                        } else {
+                            getParentAnalysisBaseTableIds(set);
+                        }
+                    } catch (BIKeyAbsentException e) {
+                        set.add(new UETable(id));
+                    }
                 } else {
                     set.add(new CubeTable(id));
                 }
