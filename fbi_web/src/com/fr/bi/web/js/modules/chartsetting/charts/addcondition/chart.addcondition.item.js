@@ -65,6 +65,10 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
         })
     },
 
+    isValid: function () {
+        return this.numberRange.isValid();
+    },
+
     getValue: function () {
         return {
             range: this.numberRange.getValue(),
@@ -76,6 +80,10 @@ BI.ChartAddConditionItem = BI.inherit(BI.Widget, {
     setNumTip: function (numTip) {
         this.numberRange.showNumTip();
         this.numberRange.setNumTip(numTip)
+    },
+
+    getNumTip: function () {
+        return this.numberRange.getNumTip();
     },
 
     setValue: function (v) {
