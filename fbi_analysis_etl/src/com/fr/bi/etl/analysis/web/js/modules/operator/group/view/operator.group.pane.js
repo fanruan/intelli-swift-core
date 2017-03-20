@@ -39,7 +39,7 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
         this.regions[BICst.REGION.TARGET1] = BI.createWidget({
             type:"bi.string_region",
             cls: "target-region",
-            titleName:BI.i18nText("BI-Statistic"),
+            titleName:BI.i18nText("BI-Basic_Statistic"),
             regionType: BICst.REGION.TARGET1
         });
 

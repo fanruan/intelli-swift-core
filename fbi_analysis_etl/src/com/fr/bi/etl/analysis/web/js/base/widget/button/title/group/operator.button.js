@@ -40,7 +40,7 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
                 popup: {
                     type: "bi.bubble_bar_popup_view",
                     buttons: [{
-                        value: BI.i18nText(BI.i18nText("BI-Sure")),
+                        value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                         handler: function () {
                             combo.hideView();
                             self.fireEvent(BI.AnalysisOperatorButton.EVENT_OPERATOR_CHANGE, button, true);

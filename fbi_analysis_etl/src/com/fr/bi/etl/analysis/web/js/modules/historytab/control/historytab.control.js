@@ -222,7 +222,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function () {
                         confirmCombo.hideView();
                         var v = button.getValue();

@@ -43,7 +43,7 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
         var confirmButton = BI.createWidget({
             type: "bi.button",
             height: 30,
-            value: BI.i18nText(BI.i18nText("BI-Sure")),
+            value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
             handler: function () {
                 self.fireEvent(BI.AnalysisOperatorTitle.EVENT_SAVE, pane.getValue(), pane.getDesc());
                 confirmCombo.hideView();
