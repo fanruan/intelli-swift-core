@@ -27,6 +27,8 @@ public class SimpleTable {
 
     private String id;
 
+    protected int health = -1;
+
     public SimpleTable(String id) {
         this.id = id;
     }
@@ -72,20 +74,33 @@ public class SimpleTable {
         return BIModuleUtils.getBusinessTableById(new BITableID(id)) == null;
     }
 
-    public int getHealth( Map<SimpleTable, List<TableRelation>> relationMap, long userId) {
+    public int getHealth() {
+        return health;
+    }
+
+
+    public int calHealth(Map<SimpleTable, List<TableRelation>> relationMap, long userId) {
         boolean health = BIAnalysisTableHelper.getTableHealthById(id, userId);
         int h = GOOD;
         List<TableRelation> relations = relationMap.get(this);
         if(relations.isEmpty()){
-            h = health ? GOOD : ERROR;
+            h = health ? GOOD : WARNING;
         } else {
-            for (TableRelation r : relations) {
-                if (r.getTop().isDeleted()) {
-                    h = WARNING;
+            h = calParent(health, h, relations);
+        }
+        this.health = h;
+        return h;
+    }
+
+    protected int calParent(boolean health, int h, List<TableRelation> relations) {
+        for (TableRelation r : relations) {
+            if (r.getTop().isDeleted()) {
+                h = r.getTop() instanceof CubeTable || r.getTop().health == ERROR ? ERROR :WARNING;
+                if(h == ERROR){
                     break;
-                } else {
-                    h = health ? GOOD : GENERATING;
                 }
+            } else {
+                h = health ? GOOD : GENERATING;
             }
         }
         return h;
