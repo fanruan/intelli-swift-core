@@ -315,34 +315,34 @@ BICst.DASHBOARD_WIDGETS = [[{
     cls: "drag-web-icon"
 }], [{//以下是控件
     text: BI.i18nText("BI-Text_Control"),
-    title: BI.i18nText("BI-Text_Control"),
+    title: BI.i18nText("BI-Text_Control_Title"),
     value: BICst.WIDGET.STRING,
     cls: "drag-string-icon",
     children: [{
         text: BI.i18nText("BI-Text_Control"),
-        title: BI.i18nText("BI-Text_Control"),
+        title: BI.i18nText("BI-Text_Control_Title"),
         value: BICst.WIDGET.STRING,
         cls: "drag-string-icon"
     }, {
         text: BI.i18nText("BI-List_Label_Con"),
-        title: BI.i18nText("BI-List_Label_Con"),
+        title: BI.i18nText("BI-List_Label_Con_Title"),
         value: BICst.WIDGET.LIST_LABEL,
         cls: "drag-list-label-icon"
     }, {
         text: BI.i18nText("BI-String_List"),
-        title: BI.i18nText("BI-String_List"),
+        title: BI.i18nText("BI-String_List_Title"),
         value: BICst.WIDGET.STRING_LIST,
         cls: "drag-string-list-icon"
     }]
 }, {
     text: BI.i18nText("BI-Numeric_Control"),
-    title: BI.i18nText("BI-Numeric_Control"),
+    title: BI.i18nText("BI-Numeric_Control_Title"),
     value: BICst.WIDGET.NUMBER,
     cls: "drag-number-icon",
     children: [
         {
             text: BI.i18nText("BI-Numeric_Control"),
-            title: BI.i18nText("BI-Numeric_Control"),
+            title: BI.i18nText("BI-Numeric_Control_Title"),
             value: BICst.WIDGET.NUMBER,
             cls: "drag-number-icon"
         },
@@ -354,82 +354,82 @@ BICst.DASHBOARD_WIDGETS = [[{
         // },
         {
             text: BI.i18nText("BI-Double_Value_Slider"),
-            title: BI.i18nText("BI-Double_Value_Slider"),
+            title: BI.i18nText("BI-Double_Value_Slider_Title"),
             value: BICst.WIDGET.INTERVAL_SLIDER,
             cls: "drag-interval-slider-icon"
         }
     ]
 }, {
     text: BI.i18nText("BI-Tree_Control"),
-    title: BI.i18nText("BI-Tree_Control"),
+    title: BI.i18nText("BI-Tree_Control_Title"),
     value: BICst.WIDGET.TREE,
     cls: "drag-tree-icon",
     children: [{
         text: BI.i18nText("BI-Tree_Control"),
-        title: BI.i18nText("BI-Tree_Control"),
+        title: BI.i18nText("BI-Tree_Control_Title"),
         value: BICst.WIDGET.TREE,
         cls: "drag-tree-icon"
     }, {
         text: BI.i18nText("BI-Tree_Label_Con"),
-        title: BI.i18nText("BI-Tree_Label_Con"),
+        title: BI.i18nText("BI-Tree_Label_Con_Title"),
         value: BICst.WIDGET.TREE_LABEL,
         cls: "drag-tree-label-icon"
     }, {
         text: BI.i18nText("BI-Tree_List"),
-        title: BI.i18nText("BI-Tree_List"),
+        title: BI.i18nText("BI-Tree_List_Title"),
         value: BICst.WIDGET.TREE_LIST,
         cls: "drag-tree-list-icon"
     }]
 }, {
     text: BI.i18nText("BI-Date_Range_Control"),
-    title: BI.i18nText("BI-Date_Range_Control"),
+    title: BI.i18nText("BI-Date_Range_Control_Title"),
     value: BICst.WIDGET.DATE,
     cls: "drag-date-range-icon",
     children: [
         {
             text: BI.i18nText("BI-Year_Control"),
-            title: BI.i18nText("BI-Year_Control"),
+            title: BI.i18nText("BI-Year_Control_Title"),
             value: BICst.WIDGET.YEAR,
             cls: "drag-year-icon"
         }, {
             text: BI.i18nText("BI-Year_Month_Con"),
-            title: BI.i18nText("BI-Year_Month_Con"),
+            title: BI.i18nText("BI-Year_Month_Con_Title"),
             value: BICst.WIDGET.MONTH,
             cls: "drag-year-month-icon"
         }, {
             text: BI.i18nText("BI-Year_Quarter_Con"),
-            title: BI.i18nText("BI-Year_Quarter_Con"),
+            title: BI.i18nText("BI-Year_Quarter_Con_Title"),
             value: BICst.WIDGET.QUARTER,
             cls: "drag-year-season-icon"
         }, {
             text: BI.i18nText("BI-Date_Control"),
-            title: BI.i18nText("BI-Date_Control"),
+            title: BI.i18nText("BI-Date_Control_Title"),
             value: BICst.WIDGET.YMD,
             cls: "drag-ymd-icon"
         }, {
             text: BI.i18nText("BI-Date_Pane_Control"),
-            title: BI.i18nText("BI-Date_Pane_Control"),
+            title: BI.i18nText("BI-Date_Pane_Control_Title"),
             value: BICst.WIDGET.DATE_PANE,
             cls: "drag-date-icon"
         }, {
             text: BI.i18nText("BI-Date_Range_Control"),
-            title: BI.i18nText("BI-Date_Range_Control"),
+            title: BI.i18nText("BI-Date_Range_Control_Title"),
             value: BICst.WIDGET.DATE,
             cls: "drag-date-range-icon"
         }]
 }, {
     text: BI.i18nText("BI-General_Query"),
-    title: BI.i18nText("BI-General_Query"),
+    title: BI.i18nText("BI-General_Query_Title"),
     value: BICst.WIDGET.GENERAL_QUERY,
     cls: "drag-general-query-icon"
 }, {
     text: BI.i18nText("BI-Query_Button"),
-    title: BI.i18nText("BI-Query_Button"),
+    title: BI.i18nText("BI-Query_Button_Title"),
     value: BICst.WIDGET.QUERY,
     cls: "drag-query-icon"
 }, {
     text: BI.i18nText("BI-Reset_Button"),
-    title: BI.i18nText("BI-Reset_Button"),
+    title: BI.i18nText("BI-Reset_Button_Title"),
     value: BICst.WIDGET.RESET,
     cls: "drag-reset-icon"
 }]];
@@ -1116,7 +1116,7 @@ BICst.CONF_GROUP_DATE = [{
 }, {
     text: BI.i18nText("BI-Basic_Seconds"),
     value: BICst.GROUP.SECOND
-},{
+}, {
     text: BI.i18nText("BI-Year_Quarter"),
     value: BICst.GROUP.YS
 }, {
