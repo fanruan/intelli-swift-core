@@ -163,7 +163,9 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Separators"),
-            width: 80
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYSeparator.on(BI.Controller.EVENT_CHANGE, function () {
@@ -360,7 +362,9 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);

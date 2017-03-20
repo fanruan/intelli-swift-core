@@ -168,7 +168,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Separators"),
-            width: 80
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYSeparator.on(BI.Controller.EVENT_CHANGE, function () {
@@ -179,7 +181,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowTitle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Title"),
-            width: 90
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYShowTitle.on(BI.Controller.EVENT_CHANGE, function () {
@@ -210,7 +214,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
-            width: 100
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -240,7 +246,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowCustomScale = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Scale_Customize"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYShowCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
@@ -287,7 +295,10 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.leftYSeparator]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.leftYShowTitle, this.leftYTitle]
+                    items: [this.leftYShowTitle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYTitle]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYTitleStyle]
@@ -332,7 +343,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Separators"),
-            width: 80
+            logic: {
+                dynamic: true
+            }
         });
 
         this.rightYSeparator.on(BI.Controller.EVENT_CHANGE, function () {
@@ -342,7 +355,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYShowTitle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Title"),
-            width: 90
+            logic: {
+                dynamic: true
+            }
         });
 
         this.rightYShowTitle.on(BI.Controller.EVENT_CHANGE, function () {
@@ -374,7 +389,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYShowLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
-            width: 100
+            logic: {
+                dynamic: true
+            }
         });
 
         this.rightYShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -405,7 +422,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYShowCustomScale = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Scale_Customize"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.rightYShowCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
@@ -452,7 +471,10 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.rightYSeparator]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.rightYShowTitle, this.rightYTitle]
+                    items: [this.rightYShowTitle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightYTitle]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.rightYShowLabel]
@@ -482,7 +504,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.catShowTitle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Title"),
-            width: 90
+            logic: {
+                dynamic: true
+            }
         });
 
         this.catShowTitle.on(BI.Controller.EVENT_CHANGE, function () {
@@ -514,7 +538,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.catShowLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
-            width: 100
+            logic: {
+                dynamic: true
+            }
         });
 
         this.catShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -611,7 +637,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.hShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal_Orientation"),
-            width: 65
+            logic: {
+                dynamic: true
+            }
         });
 
         this.hShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
@@ -632,7 +660,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
-            width: 65
+            logic: {
+                dynamic: true
+            }
         });
 
         this.vShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
@@ -654,7 +684,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Data_Label"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -675,7 +707,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataTable = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Data_Table"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.showDataTable.on(BI.Controller.EVENT_CHANGE, function () {
@@ -689,7 +723,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showZoom = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Zoom"),
-            width: 140
+            logic: {
+                dynamic: true
+            }
         });
 
         this.showZoom.on(BI.Controller.EVENT_CHANGE, function () {
@@ -778,7 +814,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
@@ -802,7 +840,9 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.miniModel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Minimalist_Model"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
 
         this.miniModel.on(BI.Controller.EVENT_CHANGE, function () {

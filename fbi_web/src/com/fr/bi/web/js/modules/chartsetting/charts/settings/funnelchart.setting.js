@@ -201,7 +201,9 @@ BI.FunnelChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Data_Label"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -263,7 +265,9 @@ BI.FunnelChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.FunnelChartSetting.EVENT_CHANGE);
