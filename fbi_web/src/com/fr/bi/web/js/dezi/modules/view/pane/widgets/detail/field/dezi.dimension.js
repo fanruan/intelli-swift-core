@@ -353,6 +353,43 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
     },
 
+    _getDateGroupByComboType: function(type){
+        switch (type) {
+            case BICst.DIMENSION_DATE_COMBO.DATE:
+                return BICst.GROUP.YMD;
+            case BICst.DIMENSION_DATE_COMBO.YEAR:
+                return BICst.GROUP.Y;
+            case BICst.DIMENSION_DATE_COMBO.QUARTER:
+                return BICst.GROUP.S;
+            case BICst.DIMENSION_DATE_COMBO.MONTH:
+                return BICst.GROUP.M;
+            case BICst.DIMENSION_DATE_COMBO.WEEK:
+                return BICst.GROUP.W;
+            case BICst.DIMENSION_DATE_COMBO.D:
+                return BICst.GROUP.D;
+            case BICst.DIMENSION_DATE_COMBO.WEEK_COUNT:
+                return BICst.GROUP.WEEK_COUNT;
+            case BICst.DIMENSION_DATE_COMBO.HOUR:
+                return BICst.GROUP.HOUR;
+            case BICst.DIMENSION_DATE_COMBO.MINUTE:
+                return BICst.GROUP.MINUTE;
+            case BICst.DIMENSION_DATE_COMBO.SECOND:
+                return BICst.GROUP.S;
+            case BICst.DIMENSION_DATE_COMBO.YS:
+                return BICst.GROUP.YS;
+            case BICst.DIMENSION_DATE_COMBO.YM:
+                return BICst.GROUP.YM;
+            case BICst.DIMENSION_DATE_COMBO.YW:
+                return BICst.GROUP.YW;
+            case BICst.DIMENSION_DATE_COMBO.YMDH:
+                return BICst.GROUP.YMDH;
+            case BICst.DIMENSION_DATE_COMBO.YMDHM:
+                return BICst.GROUP.YMDHM;
+            case BICst.DIMENSION_DATE_COMBO.YMDHMS:
+                return BICst.GROUP.YMDHMS;
+        }
+    },
+
     _createDateCombo: function () {
         var self = this;
         this.combo = BI.createWidget({
@@ -367,9 +404,6 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                 case BICst.DIMENSION_DATE_COMBO.LAT:
                     self.model.set("position", {type: BICst.GIS_POSITION_TYPE.LAT_FIRST});
                     break;
-                case BICst.DIMENSION_DATE_COMBO.DATE:
-                    self.model.set("group", {type: BICst.GROUP.YMD});
-                    break;
                 case BICst.DIMENSION_DATE_COMBO.YEAR:
                     self.model.set("group", {type: BICst.GROUP.Y});
                     break;
@@ -381,6 +415,12 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_DATE_COMBO.WEEK:
                     self.model.set("group", {type: BICst.GROUP.W});
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.D:
+                    self.model.set("group", {type: BICst.GROUP.D});
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.MORE_GROUP:
+                    self.model.set("group", {type: self._getDateGroupByComboType(s)});
                     break;
                 case BICst.DIMENSION_DATE_COMBO.ASCEND:
                     self.model.set("changeSort", {type: BICst.SORT.ASC, sort_target: s});

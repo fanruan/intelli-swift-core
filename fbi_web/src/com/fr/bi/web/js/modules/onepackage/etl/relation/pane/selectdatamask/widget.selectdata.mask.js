@@ -156,7 +156,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                 fieldStructure.push({
                     id: field.id,
                     pId: tableId,
-                    type: "bi.select_data_level0_item",
+                    type: "bi.select_data_level_item",
                     fieldType: fieldType,
                     text: BI.Utils.getTransNameById4Conf(field.id) || field.field_name,
                     title: BI.Utils.getTransNameById4Conf(field.id) || field.field_name,

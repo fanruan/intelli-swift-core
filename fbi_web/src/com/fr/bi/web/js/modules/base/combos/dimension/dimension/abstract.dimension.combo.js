@@ -265,11 +265,55 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.GROUP.W:
                 groupValue.value = this.typeConfig().WEEK;
                 break;
-            case BICst.GROUP.YMD:
-                groupValue.value = this.typeConfig().DATE;
-                break;
             case BICst.GROUP.S:
                 groupValue.value = this.typeConfig().QUARTER;
+                break;
+            case BICst.GROUP.D:
+                groupValue.value = this.typeConfig().D;
+                break;
+            case BICst.GROUP.YMD:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().DATE;
+                break;
+            case BICst.GROUP.WEEK_COUNT:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().WEEK_COUNT;
+                break;
+            case BICst.GROUP.HOUR:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().HOUR;
+                break;
+            case BICst.GROUP.MINUTE:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().MINUTE;
+                break;
+            case BICst.GROUP.SECOND:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().SECOND;
+                break;
+            case BICst.GROUP.YS:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().YS;
+                break;
+            case BICst.GROUP.YM:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().YM;
+                break;
+            case BICst.GROUP.YW:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().YW;
+                break;
+            case BICst.GROUP.YMDH:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().YMDH;
+                break;
+            case BICst.GROUP.YMDHM:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().YMDHM;
+                break;
+            case BICst.GROUP.YMDHMS:
+                groupValue.value = this.typeConfig().MORE_GROUP;
+                groupValue.childValue = this.typeConfig().YMDHMS;
                 break;
         }
 

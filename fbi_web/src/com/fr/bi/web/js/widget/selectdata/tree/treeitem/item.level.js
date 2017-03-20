@@ -1,16 +1,16 @@
 /**
  * Created by GUY on 2015/9/6.
- * @class BI.SelectDataLevel1Item
+ * @class BI.SelectDataLevelItem
  * @extends BI.Single
  */
-BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
+BI.SelectDataLevelItem = BI.inherit(BI.Single, {
     _defaultConfig: function () {
-        return BI.extend(BI.SelectDataLevel1Item.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-select-data-level1-item",
+        return BI.extend(BI.SelectDataLevelItem.superclass._defaultConfig.apply(this, arguments), {
+            extraCls: "bi-select-data-level0-item",
             height: 25,
-            layer: 2,
-            fieldType: BICst.COLUMN.STRING,
             hgap: 0,
+            layer: 1,
+            fieldType: BICst.COLUMN.STRING,
             lgap: 0,
             rgap: 0
         })
@@ -32,16 +32,16 @@ BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
     },
 
     _init: function () {
-        BI.SelectDataLevel1Item.superclass._init.apply(this, arguments);
+        BI.SelectDataLevelItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.button = BI.createWidget({
             type: "bi.blank_icon_text_item",
             trigger: "mousedown",
-            cls: "select-date-level1-item-button " + this._getFieldClass(o.fieldType),
+            cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
+            blankWidth: o.layer * 20,
             text: o.text,
             value: o.value,
             keyword: o.keyword,
-            blankWidth: o.layer * 20,
             height: 25,
             textLgap: 10,
             textRgap: 5
@@ -52,7 +52,6 @@ BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
             }
             self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.CLICK, self.getValue(), self);
         });
-
 
         this.topLine = BI.createWidget({
             type: "bi.layout",
@@ -86,7 +85,19 @@ BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
         });
         this.topLine.invisible();
         this.bottomLine.invisible();
+    },
 
+    setEnable: function (v) {
+        BI.SelectDataLevelItem.superclass.setEnable.apply(this, arguments)
+        this.button.setEnable(v);
+        try {
+            this.button.element.draggable(v ? "enable" : "disable");
+        } catch (e) {
+
+        }
+        if (!v) {
+            this.setSelected(false);
+        }
     },
 
     isSelected: function () {
@@ -140,4 +151,4 @@ BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
     }
 });
 
-$.shortcut("bi.select_data_level1_item", BI.SelectDataLevel1Item);
+$.shortcut("bi.select_data_level_item", BI.SelectDataLevelItem);

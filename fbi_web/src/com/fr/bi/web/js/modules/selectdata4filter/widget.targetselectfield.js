@@ -88,7 +88,7 @@ BI.TargetFilterSelectField = BI.inherit(BI.Widget, {
                         fieldStructure.push({
                             id: fid,
                             pId: tableId,
-                            type: "bi.select_data_level0_item",
+                            type: "bi.select_data_level_item",
                             fieldType: BI.Utils.getFieldTypeByID(fid),
                             text: fieldName,
                             title: fieldName
@@ -109,7 +109,8 @@ BI.TargetFilterSelectField = BI.inherit(BI.Widget, {
         BI.each(path, function (i, relations) {
             var text = self._createNameByRelations(relations);
             fields.push({
-                type: "bi.select_data_level1_item",
+                type: "bi.select_data_level_item",
+                layer: 2,
                 text: text,
                 title: text,
                 value: {

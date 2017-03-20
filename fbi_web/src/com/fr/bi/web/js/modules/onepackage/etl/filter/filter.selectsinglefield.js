@@ -35,7 +35,7 @@ BI.ConfFilterSelectSingleField = BI.inherit(BI.Widget, {
                     result.push({
                         id: fId,
                         pId: tableId,
-                        type: "bi.select_data_level0_item",
+                        type: "bi.select_data_level_item",
                         fieldType: field["field_type"],
                         text: field["field_name"],
                         value: {
