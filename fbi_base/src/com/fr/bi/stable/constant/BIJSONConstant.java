@@ -13,6 +13,7 @@ public class BIJSONConstant {
         public static final String FILTER_CONDITION = "condition";
         public static final String FILTER_AND_OR = "andor";
         public static final String FILTER_TYPE = "filter_type";
+        public static final String FIELD_ID = "field_id";
         public static final String FIELD_TYPE = "field_type";
         public static final String FIELD_VALUE = "field_value";
         public static final String FIELD_NAME = "field_name";
@@ -38,6 +39,21 @@ public class BIJSONConstant {
         public static final String TABLE_TYPE = "table_type";
 
         public static final String HAS_NEXT = "hasNext";
+
+        public static final String CONNECTION_NAME = "connection_name";
+        public static final String TABLE_NAME = "table_name";
+        public static final String TRAN_NAME = "tran_name";
+        public static final String TABLE_TRAN_NAME = "table_tran_name";
+        public static final String FIELD_TRAN_NAME = "field_tran_name";
+        public static final String GROUP_NAME = "group_name";
+        public static final String PACKAGE_NAME = "package_name";
+        public static final String RELATIONS = "relations";
+        public static final String TRANSLATIONS = "translations";
+        public static final String UPDATESETTING = "update_setting";
+        public static final String PACKAGE_ID = "package_id";
+        public static final String CONNECTION_SET = "connectionSet";
+        public static final String PRIMARY_KEY_MAP = "primKeyMap";
+        public static final String FOREIGN_KEY_MAP = "foreignKeyMap";
     }
 
     public static final class ETL_ADD_COLUMN_TYPE  {
