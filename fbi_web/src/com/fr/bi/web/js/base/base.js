@@ -10,7 +10,7 @@ if (!window.BI) {
 ;
 !(function ($, undefined) {
     _.extend(BI, {
-        version: "4.0"
+        version: "4.0.2"
     });
     var traverse = function (func, context) {
         return function (value, key, obj) {
@@ -85,9 +85,9 @@ if (!window.BI) {
             var el;
             options || (options = {});
             if (BI.isEmpty(item) && BI.isEmpty(options)) {
-                return BI.Plugin.getObject("bi.layout", BI.createWidget({
+                return BI.createWidget({
                     type: "bi.layout"
-                }));
+                });
             }
             if (BI.isWidget(item)) {
                 return item;
