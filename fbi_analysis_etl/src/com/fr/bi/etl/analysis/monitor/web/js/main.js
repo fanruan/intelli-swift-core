@@ -199,8 +199,8 @@ BI.extend(BI.Monitor, {
                 items:[{
                     type:"bi.label",
                     cls:"bi-monitor-table bi-monitor-table-2",
-                    value:"no cube or more than one cube inuse or parent table has been deleted",
-                    title:"no cube or more than one cube inuse or parent table has been deleted",
+                    value:"No Cube Or More Than One Cube",
+                    title:"No Cube Or More Than One Cube",
                     width:BI.Monitor.constants.TABLE_WIDTH * 2,
                     height: BI.Monitor.constants.TABLE_HEIGHT
                 }]
@@ -216,7 +216,7 @@ BI.extend(BI.Monitor, {
                 items:[{
                     type:"bi.label",
                     cls:"bi-monitor-table bi-monitor-table-0",
-                    value:"current table has been deleted",
+                    value:"Can't Generate",
                     width:BI.Monitor.constants.TABLE_WIDTH,
                     height: BI.Monitor.constants.TABLE_HEIGHT
                 }]

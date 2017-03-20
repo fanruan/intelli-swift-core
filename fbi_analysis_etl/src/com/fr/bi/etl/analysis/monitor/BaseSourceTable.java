@@ -45,25 +45,20 @@ public class BaseSourceTable extends SimpleTable {
         return source == null;
     }
 
-    public int getHealth(Map<SimpleTable, List<TableRelation>> relationMap, long userId) {
+    public int calHealth(Map<SimpleTable, List<TableRelation>> relationMap, long userId) {
         if(source == null){
+            this.health = ERROR;
             return ERROR;
         }
         int h = GOOD;
         try {
             boolean health = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable(source, new BIUser(userId));
             List<TableRelation> relations = relationMap.get(this);
-            for (TableRelation r : relations) {
-                if (r.getTop().isDeleted()) {
-                    h = health ? WARNING : ERROR;
-                    break;
-                } else {
-                    h = health ? GOOD : GENERATING;
-                }
-            }
+            h = calParent(health, h, relations);
         } catch (Exception e){
             h = WARNING;
         }
+        this.health = h;
         return h;
     }
 }
