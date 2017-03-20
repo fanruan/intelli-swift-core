@@ -7,6 +7,7 @@ BI.AnalysisETLDetailSelectDataLevel2Item = BI.inherit(BI.Single, {
         return BI.extend(BI.AnalysisETLDetailSelectDataLevel2Item.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-select-data-level1-item",
             height: 25,
+            layer: 3,
             fieldType: BICst.COLUMN.STRING,
             hgap: 0,
             lgap: 0,
@@ -46,7 +47,7 @@ BI.AnalysisETLDetailSelectDataLevel2Item = BI.inherit(BI.Single, {
             forceNotSelected:true,
             text: o.text,
             value: o.value,
-            blankWidth: 60,
+            blankWidth: o.layer * 3,
             height: 25,
             textLgap: 10,
             textRgap: 5
