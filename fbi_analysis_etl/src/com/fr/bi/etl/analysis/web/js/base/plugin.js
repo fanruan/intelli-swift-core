@@ -5,7 +5,7 @@ BI.Plugin.registerWidget("bi.detail_detail_select_data_level0_node", function(el
         return BI.extend({}, el, {type: "bi.analysis_detail_detail_select_data_level0_node"});
     }
 });
-BI.Plugin.registerWidget("bi.detail_select_data_level0_node", function(el){
+BI.Plugin.registerWidget("bi.detail_select_data_level_node", function(el){
     if (BI.Utils.getTableTypeByID(el['id']) == ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE){
         return BI.extend({}, el, {type: "bi.analysis_detail_select_data_level0_node"});
     }
