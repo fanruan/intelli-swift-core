@@ -572,7 +572,7 @@ BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS = [
     }],
     // [{
     //     value: BICst.DASHBOARD_WIDGET_RENAME,
-    //     text: BI.i18nText("BI-Base_Rename"),
+    //     text: BI.i18nText("BI-Basic_Rename"),
     //     cls: "widget-combo-rename-edit-font"
     // }],
     // [{

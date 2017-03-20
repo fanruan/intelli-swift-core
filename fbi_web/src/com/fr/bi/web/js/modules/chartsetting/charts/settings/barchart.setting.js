@@ -571,7 +571,7 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.dataLabelSetting]
                 }/*, {
                  type: "bi.label",
-                 text: BI.i18nText("BI-Base_Tooltip"),
+                 text: BI.i18nText("BI-Basic_Tooltip"),
                  cls: "attr-names"
                  }, {
                  type: "bi.vertical_adapt",
