@@ -51,8 +51,9 @@ public class CubeTable extends SimpleTable {
     }
 
     @Override
-    public int getHealth( Map<SimpleTable, List<TableRelation>> relationMap, long userId) {
-       return checkStatus(userId);
+    public int calHealth(Map<SimpleTable, List<TableRelation>> relationMap, long userId) {
+        this.health = checkStatus(userId);
+       return this.health;
     }
 
 }
