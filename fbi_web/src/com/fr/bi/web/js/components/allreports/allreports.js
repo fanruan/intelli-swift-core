@@ -40,7 +40,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
             width: 60,
             height: 25
         });
-        viewType.on(BI.Segment.EVENT_CHANGE, function(v){
+        viewType.on(BI.Segment.EVENT_CHANGE, function (v) {
             self.reportGroup.onViewTypeChange(v);
         });
         viewType.setValue(BI.AllReports.SHOW_LIST);
@@ -139,12 +139,12 @@ BI.AllReports = BI.inherit(BI.Widget, {
             type: "bi.all_reports_group",
             cls: "all-reports"
         });
-        this.reportGroup.on(BI.AllReportsGroup.EVENT_HANGOUT, function(report, data){
-            BI.some(self.reports, function(i, re){
-                if(re.id === report.id && re.createBy === report.createBy){
+        this.reportGroup.on(BI.AllReportsGroup.EVENT_HANGOUT, function (report, data) {
+            BI.some(self.reports, function (i, re) {
+                if (re.id === report.id && re.createBy === report.createBy) {
                     self.reports[i].status = BICst.REPORT_STATUS.HANGOUT;
                     return true;
-                } 
+                }
             });
             self._refreshHangoutCount();
             self.fireEvent(BI.AllReports.EVENT_HANGOUT, report, data);
@@ -155,7 +155,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
     //过滤reports
     _getReportFilterResult: function (isReset) {
         var self = this;
-        if(isReset === true) {
+        if (isReset === true) {
             this.reportGroup.populate(this.reports, this.roles, this.users);
             this.reportsCount.setText("");
             return;
@@ -194,7 +194,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
                     return;
                 }
             }
-            if (users.length > 0 && !users.contains(report.createBy)) {
+            if (users.length > 0 && !users.contains(self._getUserNameByUserId(report.createBy))) {
                 return;
             }
             if (status.length > 0 && !status.contains(report.status)) {
@@ -215,10 +215,10 @@ BI.AllReports = BI.inherit(BI.Widget, {
     _getDepartsByUserId: function (userId) {
         var departs = [];
         BI.each(this.roles, function (i, role) {
-            if (role.users.contains(userId)) {
-                if(BI.isNotNull(role.departmentid)){
-                    departs.push(role.departmentid.toString());
-                }
+            if (role.users.contains(userId) &&
+                BI.isNotNull(role.departmentname)) {
+                departs.push(role.departmentname);
+                departs.push(role.postname);
             }
         });
         return departs;
@@ -227,16 +227,28 @@ BI.AllReports = BI.inherit(BI.Widget, {
     _getRolesByUserId: function (userId) {
         var roles = [];
         BI.each(this.roles, function (i, role) {
-            if (role.users.contains(userId)) {
-                roles.push(role.id);
+            if (role.users.contains(userId) &&
+                BI.isNotNull(role.text)) {
+                roles.push(role.text);
             }
         });
         return roles;
     },
-    
-    _refreshHangoutCount: function(){
+
+    _getUserNameByUserId: function (userId) {
+        var userName = "";
+        BI.some(this.users, function (i, user) {
+            if (user.id === userId) {
+                userName = user.realname;
+                return true;
+            }
+        });
+        return userName;
+    },
+
+    _refreshHangoutCount: function () {
         var hangoutCount = 0;
-        BI.each(this.reports, function(i, report){
+        BI.each(this.reports, function (i, report) {
             report.status === BICst.REPORT_STATUS.APPLYING && hangoutCount++;
         });
         this.hangoutCount.setText(hangoutCount);

@@ -147,128 +147,43 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
     },
 
     _departCreator: function (op, callback) {
-        var items = [];
-        //坑爹说好的联动不做了。。。先注释了
-        // var sRole = this.role.getValue(), sUser = this.name.getValue();
-        // var sRoleType = sRole.type || BI.Selection.Multi, sRoleValue = sRole.value || [];
-        // var sUserType = sUser.type || BI.Selection.Multi, sUserValue = sUser.value || [];
-        // var selectedRoles = sRoleValue, selectedUsers = sUserValue;
-        // if (sRoleValue.length !== 0 && sRoleType === BI.Selection.All) {
-        //     BI.each(this.roles, function (i, role) {
-        //         selectedRoles = [];
-        //         if (!sRoleValue.contains(role.id)) {
-        //             selectedRoles.push(role.id);
-        //         }
-        //     });
-        // }
-        // if (sUserValue.length !== 0 && sUserType === BI.Selection.All) {
-        //     selectedUsers = [];
-        //     BI.each(this.users, function (i, user) {
-        //         if (!sRoleValue.contains(user.id)) {
-        //             selectedUsers.push(user.id);
-        //         }
-        //     });
-        // }
-        // //选中的角色中包含的部门，选中的用户所在的部门，交集
-        // var rFilter = [], uFilter = [];
-        // BI.each(this.roles, function (i, role) {
-        //     var dId = role.departmentid;
-        //     if (!rFilter.contains(dId) && selectedRoles.contains(role.id)) {
-        //         rFilter.push(dId);
-        //     }
-        //     BI.some(role.users, function (j, uId) {
-        //         if (!uFilter.contains(dId) && selectedUsers.contains(uId)) {
-        //             uFilter.push(dId);
-        //             return true;
-        //         }
-        //     });
-        // });
-        // var departIds = [];
-        // if (rFilter.length === 0 || uFilter.length === 0) {
-        //     departIds = rFilter.concat(uFilter);
-        // } else {
-        //     BI.each(rFilter, function (i, fId) {
-        //         if (uFilter.contains(fId)) {
-        //             departIds.push(fId);
-        //         }
-        //     });
-        // }
-
-        function formatItems(items) {
-            var result = [];
-            BI.each(items, function (i, item) {
-                if (BI.isNotNull(item.ChildNodes)) {
-                    result = result.concat(formatItems(item.ChildNodes));
+        var items = [], pIds = [], ids = [];
+        BI.each(this.roles, function (i, role) {
+            if (BI.isNotNull(role.departmentname) && BI.isNotNull(role.postname)) {
+                var pName = role.departmentname;
+                if (!pIds.contains(pName)) {
+                    pIds.push(pName)
+                    items.push({
+                        text: pName,
+                        title: pName,
+                        value: pName,
+                        id: pName
+                    });
                 }
-                result.push({
-                    text: item.text,
-                    value: item.id,
-                    title: item.text,
-                    id: item.id,
-                    pId: item.parentID
+                items.push({
+                    text: role.postname,
+                    title: role.postname,
+                    value: role.postname,
+                    id: role.postname,
+                    pId: pName
                 })
-            });
-            return result;
-        }
+            }
+        });
 
-        callback(formatItems(this.departs));
+        callback(items);
     },
 
     _rolesCreator: function (options, callback) {
         var items = [];
-        // var sDepart = this.depart.getValue(), sUser = this.name.getValue();
-        // var sDepartType = sDepart.type || BI.Selection.Multi, sUserType = sUser.type || BI.Selection.Multi;
-        // var sDepartValue = sDepart.value || [], sUserValue = sUser.value || [];
-        // var selectedDepart = sDepartValue, selectedUser = sUserValue;
-        // if (sDepartValue.length !== 0 && sDepartType === BI.Selection.All) {
-        //     selectedDepart = [];
-        //     BI.each(this.departs, function (i, depart) {
-        //         if (!sDepartValue.contains(depart.id)) {
-        //             selectedDepart.push(depart.id);
-        //         }
-        //     });
-        // }
-        // if (sUserValue.length !== 0 && sUserType === BI.Selection.All) {
-        //     selectedUser = [];
-        //     BI.each(this.departs, function (i, depart) {
-        //         if (!sUserValue.contains(depart.id)) {
-        //             selectedUser.push(depart.id);
-        //         }
-        //     });
-        // }
-        //
-        // //过滤条件
-        // var dFilter = [], uFilter = [];
-        // BI.each(this.roles, function (i, role) {
-        //     var roleId = role.id;
-        //     if (!dFilter.contains(roleId) && selectedDepart.contains(role.departmentid)) {
-        //         dFilter.push(roleId);
-        //     }
-        //     BI.some(role.users, function (j, user) {
-        //         if (!uFilter.contains(roleId) && selectedUser.contains(user.id)) {
-        //             uFilter.push(roleId);
-        //         }
-        //     });
-        // });
-        // var roleIds = [];
-        // if (dFilter.length === 0 || uFilter.length === 0) {
-        //     roleIds = dFilter.concat(uFilter);
-        // } else {
-        //     BI.each(dFilter, function (i, fId) {
-        //         if (uFilter.contains(fId)) {
-        //             roleIds.push(fId);
-        //         }
-        //     });
-        // }
 
         BI.each(this.roles, function (i, role) {
             var roleName = role.text;
             if (BI.isNotNull(role.departmentname)) {
-                roleName = role.departmentname + role.postname
+                return;
             }
             items.push({
                 text: roleName,
-                value: role.id,
+                value: roleName,
                 title: roleName
             });
         });
@@ -277,54 +192,12 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
 
     _usersCreator: function (options, callback) {
         var items = [];
-        // var sDepart = this.depart.getValue(), sRole = this.role.getValue();
-        // var sDepartType = sDepart.type || BI.Selection.Multi, sRoleType = sRole.type || BI.Selection.Multi;
-        // var sDepartValue = sDepart.value || [], sRoleValue = sRole.value || [];
-        // var selectedDepart = sDepartValue, selectedRole = sRoleValue;
-        // if (sDepartValue.length !== 0 && sDepartType === BI.Selection.All) {
-        //     selectedDepart = [];
-        //     BI.each(this.departs, function (i, depart) {
-        //         if (!sDepartValue.contains(depart.id)) {
-        //             selectedDepart.push(depart.id);
-        //         }
-        //     });
-        // }
-        // if (sRoleValue.length !== 0 && sRoleType === BI.Selection.All) {
-        //     selectedRole = [];
-        //     BI.each(this.roles, function (i, role) {
-        //         if (!sRoleValue.contains(role.id)) {
-        //             selectedRole.push(role.id);
-        //         }
-        //     });
-        // }
-        //
-        // //过滤条件
-        // var userIds = [];
-        // if (selectedDepart.length !== 0 || selectedRole.length !== 0) {
-        //     BI.each(this.roles, function (i, role) {
-        //         if (selectedDepart.length === 0 && selectedRole.contains(role.id)) {
-        //             BI.each(role.users, function(j, uId){
-        //                 !userIds.contains(uId) && (userIds.push(uId));
-        //             });
-        //         }
-        //         if(selectedRole.length === 0 && selectedDepart.contains(role.departmentid)){
-        //             BI.each(role.users, function(j, uId){
-        //                 !userIds.contains(uId) && (userIds.push(uId));
-        //             });
-        //         }
-        //         if(selectedDepart.contains(role.departmentid) && selectedRole.contains(role.id)){
-        //             BI.each(role.users, function(j, uId){
-        //                 !userIds.contains(uId) && (userIds.push(uId));
-        //             });
-        //         }
-        //     });
-        // }
-
         BI.each(this.users, function (i, user) {
             items.push({
                 text: user.realname,
-                value: user.id,
-                title: user.realname
+                value: user.realname,
+                title: user.realname,
+                id: user.id
             });
         });
 
@@ -361,8 +234,8 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
 
         function getAllChildIds(nodes) {
             var ids = [];
-            BI.each(nodes, function(i, node){
-                if(BI.isNotNull(node.ChildNodes)) {
+            BI.each(nodes, function (i, node) {
+                if (BI.isNotNull(node.ChildNodes)) {
                     ids = ids.concat(getAllChildIds(node.ChildNodes));
                 }
                 ids.push(node.id.toString());
@@ -372,12 +245,12 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
 
         function getChildNodes(id, nodes) {
             var childNodes = [];
-            BI.some(nodes, function(i, node){
-                if(node.id.toString() === id) {
+            BI.some(nodes, function (i, node) {
+                if (node.id.toString() === id) {
                     childNodes = node.ChildNodes || [];
                     return true;
                 }
-                if(BI.isNotNull(node.ChildNodes)) {
+                if (BI.isNotNull(node.ChildNodes)) {
                     childNodes = getChildNodes(id, node.ChildNodes);
                 }
             });
@@ -387,7 +260,7 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
         function getTreeIds(ob) {
             var ids = [];
             BI.each(ob, function (id, v) {
-                if(BI.isEmptyObject(v)) {
+                if (BI.isEmptyObject(v)) {
                     ids.push(id);
                     return;
                 }
@@ -398,16 +271,16 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
 
         var pIds = getTreeIds(sDepart);
         var selectedDepart = [];
-        BI.each(pIds, function(i, pId){
+        BI.each(pIds, function (i, pId) {
             selectedDepart.push(pId);
             selectedDepart = selectedDepart.concat(getAllChildIds(getChildNodes(pId, self.departs)));
         });
 
-        if (sRoleValue.length !== 0 && sRoleType === BI.Selection.All) {
+        if (sRoleType === BI.Selection.All) {
             selectedRole = [];
             BI.each(this.roles, function (i, role) {
-                if (!sRoleValue.contains(role.id)) {
-                    selectedRole.push(role.id);
+                if (BI.isNotNull(role.text) && !sRoleValue.contains(role.text)) {
+                    selectedRole.push(role.text);
                 }
             });
         }
