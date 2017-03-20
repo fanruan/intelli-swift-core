@@ -9,6 +9,7 @@ import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
 import com.fr.third.v2.org.apache.poi.ss.usermodel.BuiltinFormats;
 import com.fr.third.v2.org.apache.poi.ss.usermodel.DataFormatter;
+import com.fr.third.v2.org.apache.poi.ss.util.NumberToTextConverter;
 import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
 import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.XSSFReader;
 import com.fr.third.v2.org.apache.poi.xssf.model.StylesTable;
@@ -479,8 +480,8 @@ public abstract class AbstractExcel2007Util {
                 } catch (Exception e) {
                     cellValue = n;
                 }
-            } else if (this.formatIndex == SCINOTATION) {
-                cellValue = n;
+            } else if (isSciNotation()) {
+                cellValue = NumberToTextConverter.toText(Double.parseDouble(value.toString()));
             } else {
                 try {
                     cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
@@ -488,6 +489,10 @@ public abstract class AbstractExcel2007Util {
                     cellValue = n;
                 }
             }
+        }
+
+        private boolean isSciNotation() {
+            return this.formatIndex == SCINOTATION || this.value.toString().contains("E");
         }
 
         public void characters(char[] ch, int start, int length) throws SAXException {

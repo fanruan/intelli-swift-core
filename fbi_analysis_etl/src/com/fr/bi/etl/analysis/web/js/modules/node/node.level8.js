@@ -73,7 +73,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function () {
                         self.confirmCombo.hideView();
                         BI.createWidget({
@@ -167,13 +167,13 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
             text: BI.i18nText("BI-Basic_Edit"),
             value:ETLCst.ANALYSIS_TABLE_SET.EDIT
         }], [{
-            text: BI.i18nText("BI-Rename"),
+            text: BI.i18nText("BI-Basic_Rename"),
             value:ETLCst.ANALYSIS_TABLE_SET.RENAME
         }], [{
             text: BI.i18nText("BI-Basic_Copy"),
             value:ETLCst.ANALYSIS_TABLE_SET.COPY
         }], [{
-            text: BI.i18nText("BI-Remove"),
+            text: BI.i18nText("BI-Basic_Remove"),
             value:ETLCst.ANALYSIS_TABLE_SET.DELETE
         }]];
     },

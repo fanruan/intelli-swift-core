@@ -7,7 +7,7 @@ BI.TopPointerSavePaneController = BI.inherit(BI.MVCController, {
 
     refreshButtonsStatus : function (widget) {
         widget.cancel.setEnable(this._editing);
-        widget.save.setText(this._editing ? BI.i18nText("BI-Save") : BI.i18nText("BI-Basic_Edit"));
+        widget.save.setText(this._editing ? BI.i18nText("BI-Basic_Save") : BI.i18nText("BI-Basic_Edit"));
         if(this._editing === false) {
             widget.save.setEnable(true)
         }
