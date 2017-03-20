@@ -35,7 +35,7 @@ BI.TreeSelectDataLevel0ExcelNode = BI.inherit(BI.AbstractTreeSelectDataNode, {
     _createNode: function () {
         var o = this.options;
         return BI.createWidget({
-            type: "bi.select_data_level0_node",
+            type: "bi.select_data_level_node",
             id: o.id,
             pId: o.pId,
             open: o.open,

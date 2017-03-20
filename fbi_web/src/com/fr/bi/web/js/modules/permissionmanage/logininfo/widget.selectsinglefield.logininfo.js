@@ -67,7 +67,7 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
         BI.each(tables, function (i, id) {
             tablesStructure.push({
                 id: id,
-                type: "bi.select_data_level0_node",
+                type: "bi.select_data_level_node",
                 text: translations[id],
                 value: id,
                 isParent: true,
@@ -91,7 +91,7 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
                 fieldStructure.push({
                     id: field.id,
                     pId: tableId,
-                    type: "bi.select_data_level0_item",
+                    type: "bi.select_data_level_item",
                     fieldType: field.field_type,
                     text: fieldName,
                     title: fieldName,
