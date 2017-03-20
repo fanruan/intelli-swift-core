@@ -193,7 +193,7 @@ BI.MultiTreeCombo = BI.inherit(BI.Single, {
         var triggerBtn = BI.createWidget({
             type: "bi.trigger_icon_button",
             width: o.height,
-            height: o.height + 2,
+            height: o.height,
             cls: "multi-select-trigger-icon-button"
         });
         triggerBtn.on(BI.TriggerIconButton.EVENT_CHANGE, function () {

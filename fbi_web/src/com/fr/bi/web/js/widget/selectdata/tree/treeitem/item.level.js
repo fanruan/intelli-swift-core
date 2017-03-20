@@ -1,11 +1,11 @@
 /**
  * Created by GUY on 2015/9/6.
- * @class BI.SelectDataLevel0Item
+ * @class BI.SelectDataLevelItem
  * @extends BI.Single
  */
-BI.SelectDataLevel0Item = BI.inherit(BI.Single, {
+BI.SelectDataLevelItem = BI.inherit(BI.Single, {
     _defaultConfig: function () {
-        return BI.extend(BI.SelectDataLevel0Item.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.SelectDataLevelItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-select-data-level0-item",
             height: 25,
             hgap: 0,
@@ -32,7 +32,7 @@ BI.SelectDataLevel0Item = BI.inherit(BI.Single, {
     },
 
     _init: function () {
-        BI.SelectDataLevel0Item.superclass._init.apply(this, arguments);
+        BI.SelectDataLevelItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.button = BI.createWidget({
             type: "bi.blank_icon_text_item",
@@ -88,7 +88,7 @@ BI.SelectDataLevel0Item = BI.inherit(BI.Single, {
     },
 
     setEnable: function (v) {
-        BI.SelectDataLevel0Item.superclass.setEnable.apply(this, arguments)
+        BI.SelectDataLevelItem.superclass.setEnable.apply(this, arguments)
         this.button.setEnable(v);
         try {
             this.button.element.draggable(v ? "enable" : "disable");
@@ -151,4 +151,4 @@ BI.SelectDataLevel0Item = BI.inherit(BI.Single, {
     }
 });
 
-$.shortcut("bi.select_data_level0_item", BI.SelectDataLevel0Item);
+$.shortcut("bi.select_data_level_item", BI.SelectDataLevelItem);

@@ -36,11 +36,11 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         })
     },
     change: function (changed) {
-        if (changed.isShow){
+        if (changed.isShow) {
 
         }
     },
-    
+
     load: function () {
         this._refreshLoginInfo();
         this.packageTree.populate();
@@ -55,7 +55,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         this.readData(true);
     },
 
-    _buildUserField: function(){
+    _buildUserField: function () {
         var self = this;
         this.selectField = BI.createWidget({
             type: "bi.text_button",
@@ -63,7 +63,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             height: 30,
             cls: "select-field"
         });
-        this.selectField.on(BI.TextButton.EVENT_CHANGE, function(){
+        this.selectField.on(BI.TextButton.EVENT_CHANGE, function () {
             self._selectSingleField();
         });
 
@@ -80,7 +80,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             height: 30,
             cls: "select-field"
         });
-        this.setButton.on(BI.Button.EVENT_CHANGE, function(){
+        this.setButton.on(BI.Button.EVENT_CHANGE, function () {
             self._selectSingleField();
         });
 
@@ -90,7 +90,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             height: 30,
             cls: "select-field"
         });
-        this.clearButton.on(BI.TextButton.EVENT_CHANGE, function(){
+        this.clearButton.on(BI.TextButton.EVENT_CHANGE, function () {
             self._clearLoginField();
         });
 
@@ -107,7 +107,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         });
     },
 
-    _selectSingleField: function(){
+    _selectSingleField: function () {
         var self = this, maskId = BI.UUID();
         var mask = BI.Maskers.make(maskId, BICst.BODY_ELEMENT);
         BI.Maskers.show(maskId);
@@ -115,37 +115,36 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             type: "bi.login_info_select_data_with_mask",
             element: mask
         });
-        selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function(){
+        selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function () {
             BI.Maskers.remove(maskId);
         });
-        selectDataMask.on(BI.SelectDataWithMask.EVENT_CHANGE, function(v){
-            self._updateLoginField(v.id);
+        selectDataMask.on(BI.SelectDataWithMask.EVENT_CHANGE, function (field) {
+            self._updateLoginField(field);
             selectDataMask.destroy();
             BI.Maskers.remove(maskId);
         });
     },
-    
-    _clearLoginField: function(){
+
+    _clearLoginField: function () {
         var authoritySettings = Data.SharingPool.get("authority_settings");
         delete authoritySettings.login_field;
         Data.SharingPool.put("authority_settings", authoritySettings);
         this._refreshLoginInfo();
-        BI.Utils.saveLoginField({}, function(){});
-    },
-    
-    _updateLoginField: function(fieldId){
-        var authoritySettings = Data.SharingPool.get("authority_settings");
-        authoritySettings.login_field = fieldId;
-        Data.SharingPool.put("authority_settings", authoritySettings);
-        this._refreshLoginInfo();
-        BI.Utils.saveLoginField({"login_field": fieldId}, function(){});
+        BI.Utils.saveLoginField({}, BI.emptyFn);
     },
 
-    _refreshLoginInfo: function(){
+    _updateLoginField: function (field) {
+        var authoritySettings = Data.SharingPool.get("authority_settings");
+        authoritySettings.login_field = field;
+        Data.SharingPool.put("authority_settings", authoritySettings);
+        this._refreshLoginInfo();
+        BI.Utils.saveLoginField({"login_field": field.id}, BI.emptyFn);
+    },
+
+    _refreshLoginInfo: function () {
         var loginField = BI.Utils.getAuthorityLoginField();
-        var allFields = Data.SharingPool.get("fields");
-        if(BI.isNotNull(loginField) && BI.isNotNull(allFields[loginField])) {
-            this.loginField.setText(BI.Utils.getTableNameByFieldId4Conf(loginField) + "." + BI.Utils.getFieldNameById4Conf(loginField));
+        if (BI.isNotNull(loginField) && !BI.isEmpty(loginField)) {
+            this.loginField.setText(loginField[BICst.JSON_KEYS.TABLE_TRAN_NAME] + "." + loginField[BICst.JSON_KEYS.FIELD_TRAN_NAME]);
             this.loginField.setVisible(true);
             this.selectField.setVisible(false);
             this.setButton.setVisible(true);
@@ -166,25 +165,25 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         this.packageTree.on(BI.AuthorityPackagesTree.EVENT_TYPE_CHANGE, function () {
             self._onTreeTypeChange();
         });
-        this.packageTree.on(BI.AuthorityPackagesTree.EVENT_CHANGE, function(){
-             self.authorityTab.setValue(this.getValue());
+        this.packageTree.on(BI.AuthorityPackagesTree.EVENT_CHANGE, function () {
+            self.authorityTab.setValue(this.getValue());
         });
         return this.packageTree;
     },
 
     _buildAuthorityPane: function () {
-        var self=this;
+        var self = this;
         this.authorityTab = BI.createWidget({
             type: "bi.tab",
             tab: "",
             direction: "custom",
-            cardCreator: function(v){
+            cardCreator: function (v) {
                 switch (v) {
                     case BI.SwitchTree.SelectType.MultiSelect:
                         self.batchSet = BI.createWidget({
                             type: "bi.authority_batch_set_pane"
                         });
-                        self.batchSet.on(BI.AuthorityBatchSetPane.EVENT_CHANGE, function(){
+                        self.batchSet.on(BI.AuthorityBatchSetPane.EVENT_CHANGE, function () {
                             self.packageTree.setSelect(BI.SwitchTree.SelectType.SingleSelect);
                             self._onTreeTypeChange();
                         });
@@ -201,7 +200,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
         return this.authorityTab;
     },
 
-    _onTreeTypeChange: function(){
+    _onTreeTypeChange: function () {
         this.authorityTab.setSelect(this.packageTree.getSelectType());
         switch (this.packageTree.getSelectType()) {
             case BI.SwitchTree.SelectType.MultiSelect:

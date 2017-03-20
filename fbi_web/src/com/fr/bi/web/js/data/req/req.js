@@ -28,23 +28,6 @@ Data.Req = BIReq = {
         BI.requestAsync("fr_bi_configure", "cancel_edit_table", data, BI.emptyFn, BI.emptyFn);
     },
 
-    reqTablesDetailInfoByPackId: function (packName, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "get_detail_tables_of_one_package", {name: packName}, function (res) {
-            callback(res);
-        }, complete)
-    },
-
-    reqTableByConnSchemaTName: function (connName, schemaName, tableName, callback) {
-        var args = {
-            connection_name: connName,
-            schema_name: schemaName,
-            table_name: tableName
-        };
-        BI.requestAsync("fr_bi_configure", "get_table_field_by_table_info", args, function (res) {
-            callback(res);
-        })
-    },
-
     reqConnectionName: function (callback, complete) {
         BI.requestAsync("fr_bi_configure", "get_connection_names", "", function (res) {
             callback(res);
@@ -383,6 +366,30 @@ Data.Req = BIReq = {
 
     reqUpdateTablesTranOfPackage: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "update_tables_tran_of_package", data, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    reqGetRelationsDetail: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_relations_detail", {}, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    reqGetData4SelectField: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_data_4_select_field", {}, function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    reqLinksAndPackages: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_links_packages", {}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqTablesInfoByIds: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_tables_info_by_ids", data, function (res) {
             callback(res);
         }, complete);
     }

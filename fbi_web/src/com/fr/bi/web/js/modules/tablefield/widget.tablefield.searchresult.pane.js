@@ -93,6 +93,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
      */
     _sortFields: function (fields) {
         var self = this;
+        var translations = this.tableInfo.translations;
         var sortedFields = [], usedFields = [], noUsedFields = [];
         BI.each(fields, function (i, field) {
             if (self.usedFields.contains(field.id)) {
@@ -103,7 +104,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         });
         var usedNoTrans = [];
         BI.each(usedFields, function (i, field) {
-            var tranName = BI.Utils.getTransNameById4Conf(field.id);
+            var tranName = translations[field.id];
             if (BI.isNotNull(tranName) && tranName !== "") {
                 sortedFields.push(field);
             } else {
@@ -113,7 +114,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         sortedFields = sortedFields.concat(usedNoTrans);
         var noUsedNoTrans = [];
         BI.each(noUsedFields, function (i, field) {
-            var tranName = BI.Utils.getTransNameById4Conf(field.id);
+            var tranName = translations[field.id];
             if (BI.isNotNull(tranName) && tranName !== "") {
                 sortedFields.push(field);
             } else {
@@ -124,10 +125,23 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         return sortedFields;
     },
 
+    _isPrimaryKeyByFieldId: function (fieldId) {
+        var relations = this.tableInfo.relations;
+        var primaryKeys = relations[BICst.JSON_KEYS.PRIMARY_KEY_MAP];
+        var isPrimary = false;
+        BI.some(primaryKeys, function (i, key) {
+            var primaryKey = key.primaryKey;
+            if (primaryKey.field_id === fieldId) {
+                isPrimary = true;
+            }
+            return true;
+        });
+        return isPrimary;
+    },
+
     _createTableItems: function () {
         var self = this, items = [];
         this.usedFields = this.tableInfo.usedFields || [];
-        this.translations = this.tableInfo.translations;
         this.isUsableArray = [];
         var sortedFields = this._sortFields(this.matchResult).concat(this.tableInfo.fields);
         BI.each(sortedFields, function (i, field) {
@@ -141,7 +155,7 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
                     break;
             }
             var item = [];
-            if (BI.Utils.isPrimaryKeyByFieldId4Conf(field.id)) {
+            if (self._isPrimaryKeyByFieldId(field.id)) {
                 var fieldNameLabel = BI.createWidget({
                     type: "bi.label",
                     text: field["field_name"],
@@ -199,7 +213,8 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
         var self = this;
         var relationButton = BI.createWidget({
             type: "bi.relation_tables_button",
-            fieldId: fieldId
+            fieldId: fieldId,
+            relations: this.tableInfo.relations
         });
         relationButton.on(BI.RelationTablesButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableFieldInfo.EVENT_RELATION_CHANGE, fieldId);
@@ -209,7 +224,8 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
 
     _createTranName: function (fieldId) {
         var self = this;
-        var tranName = BI.Utils.getTransNameById4Conf(fieldId);
+        var translations = this.tableInfo.translations;
+        var tranName = translations[fieldId];
         var onTranslationsChange = this.options.onTranslationsChange;
         var transName = BI.createWidget({
             type: "bi.sign_editor",
@@ -219,13 +235,15 @@ BI.TableFieldInfoSearchResultPane = BI.inherit(BI.Widget, {
             errorText: BI.i18nText("BI-Trans_Name_Exist"),
             height: 25,
             validationChecker: function (v) {
-                return BI.Utils.checkTranNameById4Conf(fieldId, v);
+                return !BI.some(translations, function (id, name) {
+                    return id !== fieldId && name === v;
+                });
             }
         });
         transName.on(BI.SignEditor.EVENT_CHANGE, function () {
             transName.setTitle(transName.getValue());
-            self.translations[fieldId] = transName.getValue();
-            onTranslationsChange(self.translations);
+            translations[fieldId] = transName.getValue();
+            onTranslationsChange(translations);
         });
         return transName;
     },

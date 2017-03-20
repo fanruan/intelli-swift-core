@@ -1,18 +1,18 @@
 /**
  * Created by GUY on 2015/9/6.
- * @class BI.SelectDataLevel1Item
+ * @class BI.DetailSelectDataLevelItem
  * @extends BI.Single
  */
-BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
+BI.DetailSelectDataLevelItem = BI.inherit(BI.Single, {
     _defaultConfig: function () {
-        return BI.extend(BI.SelectDataLevel1Item.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-select-data-level1-item",
+        return BI.extend(BI.DetailSelectDataLevelItem.superclass._defaultConfig.apply(this, arguments), {
+            extraCls: "bi-detail-select-data-level0-item bi-select-data-level0-item",
             height: 25,
-            layer: 2,
-            fieldType: BICst.COLUMN.STRING,
+            layer: 1,
             hgap: 0,
+            fieldType: BICst.COLUMN.STRING,
             lgap: 0,
-            rgap: 0
+            rgap: 35
         })
     },
 
@@ -32,27 +32,48 @@ BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
     },
 
     _init: function () {
-        BI.SelectDataLevel1Item.superclass._init.apply(this, arguments);
+        BI.DetailSelectDataLevelItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.button = BI.createWidget({
-            type: "bi.blank_icon_text_item",
+        var cType = o.isPrimaryKey ? {
+            cls: "select-data-level0-item-button",
+            iconCls1: this._getFieldClass(o.fieldType),
+            iconCls2: "select-data-primary-key-font",
+            type: "bi.blank_icon_icon_text_item"
+        } : {
+            cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
+            type: "bi.blank_icon_text_item"
+        };
+        this.button = BI.createWidget(BI.extend({
             trigger: "mousedown",
-            cls: "select-date-level1-item-button " + this._getFieldClass(o.fieldType),
+            blankWidth: o.layer * 20,
             text: o.text,
             value: o.value,
-            keyword: o.keyword,
-            blankWidth: o.layer * 20,
             height: 25,
             textLgap: 10,
             textRgap: 5
-        });
+        }, cType));
         this.button.on(BI.Controller.EVENT_CHANGE, function (type) {
             if (type === BI.Events.CLICK) {
                 self.setSelected(self.isSelected());
             }
             self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.CLICK, self.getValue(), self);
         });
+        this.button.element.draggable(o.drag);
 
+
+        this.previewBtn = BI.createWidget({
+            type: "bi.text_button",
+            text: BI.i18nText("BI-Basic_Preview"),
+            title: BI.i18nText("BI-Basic_Preview")
+        });
+        this.previewBtn.doHighLight();
+        this.previewBtn.on(BI.TextButton.EVENT_CHANGE, function () {
+            BI.Popovers.create(self.getName(), BI.createWidget({
+                type: "bi.detail_select_data_preview_section",
+                text: o.text,
+                value: o.value
+            })).open(self.getName());
+        });
 
         this.topLine = BI.createWidget({
             type: "bi.layout",
@@ -82,11 +103,50 @@ BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
                 top: 0,
                 left: o.lgap,
                 right: o.rgap
+            }, {
+                el: {
+                    type: "bi.center_adapt",
+                    items: [this.previewBtn]
+                },
+                top: 0,
+                right: 0,
+                bottom: 0,
+                width: o.rgap
             }]
         });
         this.topLine.invisible();
         this.bottomLine.invisible();
+        this.previewBtn.invisible();
+        this.element.hover(function () {
+            if (BI.Utils.getFieldTypeByID(o.value) === BICst.COLUMN.COUNTER) {
+                return;
+            }
+            self.previewBtn.visible();
+        }, function () {
+            self.previewBtn.invisible();
+        });
+        //标蓝
+        BI.Utils.isSrcUsedBySrcID(o.id) === true && this.doHighLight();
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
+            if (v === true) {
+                self.doHighLight();
+            } else {
+                if (BI.Utils.isSrcUsedBySrcID(o.id) === false) {
+                    self.unHighLight();
+                }
+            }
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DROP_PREFIX, function (v) {
+            BI.defer(function () {
+                self.setSelected(false);
+            });
+        });
+    },
 
+    setEnable: function (v) {
+        BI.DetailSelectDataLevelItem.superclass.setEnable.apply(this, arguments)
+        this.button.setEnable(v);
+        this.previewBtn.setEnable(v)
     },
 
     isSelected: function () {
@@ -140,4 +200,4 @@ BI.SelectDataLevel1Item = BI.inherit(BI.Single, {
     }
 });
 
-$.shortcut("bi.select_data_level1_item", BI.SelectDataLevel1Item);
+$.shortcut("bi.detail_select_data_level_item", BI.DetailSelectDataLevelItem);

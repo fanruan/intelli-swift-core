@@ -1085,6 +1085,7 @@ BICst.CONF_GROUP_NUMBER = [{
     value: BICst.GROUP.CUSTOM_NUMBER_GROUP
 }];
 
+
 BICst.CONF_GROUP_DATE = [{
     text: BI.i18nText("BI-Basic_Date"),
     value: BICst.GROUP.YMD
@@ -1100,6 +1101,39 @@ BICst.CONF_GROUP_DATE = [{
 }, {
     text: BI.i18nText("BI-Week_XingQi"),
     value: BICst.GROUP.W
+}, {
+    text: BI.i18nText("BI-Day_Ri"),
+    value: BICst.GROUP.D
+}, {
+    text: BI.i18nText("BI-Week_Count"),
+    value: BICst.GROUP.WEEK_COUNT
+}, {
+    text: BI.i18nText("BI-Hour_Sin"),
+    value: BICst.GROUP.HOUR
+}, {
+    text: BI.i18nText("BI-Basic_Minute"),
+    value: BICst.GROUP.MINUTE
+}, {
+    text: BI.i18nText("BI-Basic_Seconds"),
+    value: BICst.GROUP.SECOND
+},{
+    text: BI.i18nText("BI-Year_Quarter"),
+    value: BICst.GROUP.YS
+}, {
+    text: BI.i18nText("BI-Year_Month"),
+    value: BICst.GROUP.YM
+}, {
+    text: BI.i18nText("BI-Year_Week"),
+    value: BICst.GROUP.YW
+}, {
+    text: BI.i18nText("BI-Basic_YMDH"),
+    value: BICst.GROUP.YMDH
+}, {
+    text: BI.i18nText("BI-Basic_YMDHM"),
+    value: BICst.GROUP.YMDHM
+}, {
+    text: BI.i18nText("BI-Detail_Date"),
+    value: BICst.GROUP.YMDHMS
 }];
 
 BICst.CONF_STATISTIC_STRING = [{
@@ -1750,8 +1784,8 @@ BICst.DATE_GROUP[BICst.GROUP.YS] = BI.i18nText("BI-Year_Quarter");
 BICst.DATE_GROUP[BICst.GROUP.YM] = BI.i18nText("BI-Year_Month");
 BICst.DATE_GROUP[BICst.GROUP.YW] = BI.i18nText("BI-Year_Week");
 BICst.DATE_GROUP[BICst.GROUP.YMD] = BI.i18nText("BI-YMD_Date");
-BICst.DATE_GROUP[BICst.GROUP.YMDH] = BI.i18nText("BI-YMDH");
-BICst.DATE_GROUP[BICst.GROUP.YMDHM] = BI.i18nText("BI-YMDHM");
+BICst.DATE_GROUP[BICst.GROUP.YMDH] = BI.i18nText("BI-Basic_YMDH");
+BICst.DATE_GROUP[BICst.GROUP.YMDHM] = BI.i18nText("BI-Basic_YMDHM");
 BICst.DATE_GROUP[BICst.GROUP.YMDHMS] = BI.i18nText("BI-Detail_Date");
 
 

@@ -44,7 +44,7 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                     return [{
                         id: o.dId,
                         pId: self._constant.SELF_FIELD,
-                        type: "bi.select_data_level0_item",
+                        type: "bi.select_data_level_item",
                         fieldType: BI.Utils.getFieldTypeByDimensionID(o.dId),
                         text: BI.i18nText("BI-Basic_Self"),
                         title: BI.i18nText("BI-Basic_Self"),
@@ -57,7 +57,7 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                         result.push({
                             id: dId,
                             pId: self._constant.OTHER_FIELD,
-                            type: "bi.select_data_level0_item",
+                            type: "bi.select_data_level_item",
                             fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
                             text: BI.Utils.getDimensionNameByID(dId),
                             title: BI.Utils.getDimensionNameByID(dId),
