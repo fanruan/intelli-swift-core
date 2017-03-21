@@ -7,6 +7,7 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.relation.*;
+import com.finebi.cube.utils.BIDataStructTranUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -215,7 +216,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
         try {
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSystemTableSources());
             setDependTableResource(depends);
-            setAllSingleSources(set2Set(depends));
+            setAllSingleSources(BIDataStructTranUtils.set2Set(depends));
             setTableRelationSet(BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId()));
             Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             setPrimaryKeyMap(primaryKeyMap);

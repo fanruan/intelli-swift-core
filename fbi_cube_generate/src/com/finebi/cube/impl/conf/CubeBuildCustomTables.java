@@ -1,7 +1,9 @@
 package com.finebi.cube.impl.conf;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.gen.oper.BIRelationIDUtils;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
@@ -13,6 +15,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.ComparatorUtils;
@@ -318,5 +321,17 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
     @Override
     public CubeTaskType getTaskType() {
         return CubeTaskType.SINGLE;
+    }
+
+    @Override
+    public boolean replaceOldCubes() {
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
+        try {
+            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return true;
     }
 }

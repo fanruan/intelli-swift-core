@@ -91,18 +91,6 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return this.allTableSources;
     }
 
-    public static Set<CubeTableSource> set2Set(Set<List<Set<CubeTableSource>>> set) {
-        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
-        Iterator<List<Set<CubeTableSource>>> outIterator = set.iterator();
-        while (outIterator.hasNext()) {
-            Iterator<Set<CubeTableSource>> middleIterator = outIterator.next().iterator();
-            while (middleIterator.hasNext()) {
-                result.addAll(middleIterator.next());
-            }
-        }
-        return result;
-    }
-
     /**
      * rename advanced to temp
      * rename tCube to advanced

@@ -35,7 +35,7 @@ public class CubeBuildHelper {
     }
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-    private LinkedBlockingQueue<TableTask> taskQueue = new LinkedBlockingQueue(100);
+    private LinkedBlockingQueue<TableTask> taskQueue = new LinkedBlockingQueue();
     private boolean isCubeBuilding = false;
 
     private CubeBuildHelper() {
@@ -45,9 +45,6 @@ public class CubeBuildHelper {
                     public void run() {
                         while (true) {
                             try {
-                                if (!taskQueue.isEmpty()) {
-                                    Thread.sleep(20000l);
-                                }
                                 TableTask taskInfo = taskQueue.take();
                                 isCubeBuilding = true;
                                 BILoggerFactory.getLogger().info("Update table ID:" + taskInfo.baseTableSourceIdToString());
@@ -198,14 +195,21 @@ public class CubeBuildHelper {
     }
 
     public synchronized void addSingleTableTask2Queue(long userId, String baseTableSourceId, int updateType) throws InterruptedException {
+        BILoggerFactory.getLogger().info("Add single table task to queue:" + baseTableSourceId);
         if (taskQueue.isEmpty()) {
             taskQueue.put(new CustomTableTask(userId, baseTableSourceId, updateType));
+            BILoggerFactory.getLogger().info("TaskQueue is empty ! Add single table task: " + baseTableSourceId + " , updateType : " + updateType);
         } else {
-            TableTask task = taskQueue.take();
-            if (task instanceof CustomTableTask) {
-                taskQueue.put(((CustomTableTask) task).taskMerge(userId, baseTableSourceId, updateType));
-            } else if (task instanceof SingleTableTask) {
-
+            TableTask task = taskQueue.poll();
+            if (task != null) {
+                if (task instanceof CustomTableTask) {
+                    taskQueue.put(((CustomTableTask) task).taskMerge(userId, baseTableSourceId, updateType));
+                }
+                BILoggerFactory.getLogger().info("TaskQueue is not empty!Merge single table task: " + baseTableSourceId + " , updateType : " + updateType
+                        + " to:" + task.baseTableSourceIdToString());
+            } else {
+                taskQueue.put(new CustomTableTask(userId, baseTableSourceId, updateType));
+                BILoggerFactory.getLogger().info("TaskQueue is empty!Add single table task: " + baseTableSourceId + " , updateType : " + updateType);
             }
         }
     }
