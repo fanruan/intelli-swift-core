@@ -16,7 +16,7 @@ BI.DetailDetailSelectDataLevel0Node4RealTime = BI.inherit(BI.AbstractDetailDetai
     _createNode: function () {
         var o = this.options;
         return BI.createWidget({
-            type: "bi.select_data_level0_node",
+            type: "bi.select_data_level_node",
             element: this.element,
             warningTitle: BI.i18nText("BI-Time_Only_Use_One_Table"),
             id: o.id,
@@ -28,4 +28,4 @@ BI.DetailDetailSelectDataLevel0Node4RealTime = BI.inherit(BI.AbstractDetailDetai
     }
 });
 
-$.shortcut("bi.detail_select_data_level0_node_4_realtime", BI.DetailDetailSelectDataLevel0Node4RealTime);
+$.shortcut("bi.detail_select_data_level_node_4_realtime", BI.DetailDetailSelectDataLevel0Node4RealTime);

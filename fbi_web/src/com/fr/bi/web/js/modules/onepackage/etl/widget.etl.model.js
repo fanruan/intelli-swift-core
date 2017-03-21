@@ -12,13 +12,16 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.updateSettings = o.updateSettings || {};
         this.allTableIds = [];
         this.allTables = [];
-        this.translations = {};
+        this.translations = o.translations;
+        this.relations = o.relations;
         this.tablesMap = {};
-        this.isNew = BI.isNull(BI.Utils.getTransNameById4Conf(this.id));
+        this.isNew = BI.isNull(this.translations);
+        if (this.isNew) {
+            this._initTranslationsAndRelations();
+        }
         if (BI.isNotNull(this.table)) {
             this._prepareData();
         }
-        this._initTranslations();
     },
 
     _prepareData: function () {
@@ -29,27 +32,14 @@ BI.ETLModel = BI.inherit(FR.OB, {
         this.allTables = [finalTable];
     },
 
-    //当前表的所有的转义信息
-    _initTranslations: function () {
-        var self = this;
-        if (!this.isNew) {
-            var tableName = BI.Utils.getTransNameById4Conf(this.id);
-            var connectionName = this.table.connection_name;
-            if (BI.isNull(tableName)) {
-                tableName = this._createDistinctNameByConnection(connectionName);
-            }
-            this.translations[this.id] = tableName;
-            BI.each(this.fields, function (i, fs) {
-                BI.each(fs, function (j, field) {
-                    var fieldName = BI.Utils.getTransNameById4Conf(field.id);
-                    if (BI.isNotNull(fieldName)) {
-                        self.translations[field.id] = fieldName;
-                    }
-                });
-            });
-        } else {
-            this.translations[this.id] = this._createDistinctNameByConnection(BI.isNotNull(this.table) ? this.table.connection_name : BICst.CONNECTION.ETL_CONNECTION);
-        }
+    _initTranslationsAndRelations: function () {
+        this.relations = {};
+        this.relations.connectionSet = [];
+        this.relations.primKeyMap = {};
+        this.relations.foreignKeyMap = {};
+        this.translations = {};
+        this.translations[this.id] = this._createDistinctNameByConnection(BI.isNotNull(this.table) ?
+            this.table.connection_name : BICst.CONNECTION.ETL_CONNECTION);
     },
 
     _createDistinctNameByConnection: function (connectionName) {
@@ -79,13 +69,16 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return this.translations;
     },
 
+    getRelations: function () {
+        return this.relations;
+    },
+
     setFields: function (fields) {
         var self = this;
         BI.each(fields, function (i, fs) {
             BI.each(fs, function (j, field) {
                 field.id = self._getCurrentFieldIdByFieldInfo(field);
-                field.is_usable = BI.isNotNull(BI.Utils.getFieldUsableById4Conf(field.id)) ?
-                    BI.Utils.getFieldUsableById4Conf(field.id) : true;
+                field.is_usable = BI.isNotNull(field.is_usable) ? field.is_usable : true;
                 field.table_id = self.id;
             });
         });
@@ -124,10 +117,11 @@ BI.ETLModel = BI.inherit(FR.OB, {
      * 行列转化用的，原始字段名和转义名的一一对应
      */
     constructFieldNameAndTranslationFieldNameRelation: function () {
+        var self = this;
         var fieldsIdName = [];
         BI.each(this.getFields(), function (idx, arr) {
             BI.each(arr, function (id, field) {
-                fieldsIdName[field.field_name] = BI.Utils.getTransNameById4Conf(field.id);
+                fieldsIdName[field.field_name] = self.translations[id];
             });
         });
         return fieldsIdName;
@@ -135,11 +129,16 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     //为了复用字段id
     _getCurrentFieldIdByFieldInfo: function (field) {
-        if (BI.Utils.isFieldExistById4Conf(field.id) ||
-            BI.isNotNull(this.translations[field.id])) {
-            return field.id;
-        }
-        return BI.Utils.getFieldIdByNameAndTableId4Conf(field.field_name, this.id) || BI.UUID();
+        var fieldId = BI.UUID();
+        BI.some(this.fields, function (i, fs) {
+            return BI.some(fs, function (j, f) {
+                if (f.field_name === field.field_name) {
+                    fieldId = f.id;
+                    return true;
+                }
+            });
+        });
+        return fieldId;
     },
 
     getAllTables: function () {
@@ -159,20 +158,73 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     getFieldById: function (id) {
-        var field;
+        var self = this, field;
         BI.each(this.fields, function (i, fs) {
             BI.each(fs, function (j, f) {
                 if (f.id === id) {
                     field = f;
+                    field[BICst.JSON_KEYS.FIELD_TRAN_NAME] = self.translations[id];
+                    field[BICst.JSON_KEYS.TABLE_TRAN_NAME] = self.translations[self.id];
                 }
             });
         });
         return field;
     },
 
+    _removeRelationByFieldId: function (fieldId) {
+        var connectionSet = this.relations.connectionSet,
+            primaryKeyMap = this.relations.primKeyMap,
+            foreignKeyMap = this.relations.foreignKeyMap;
+        var resultConnectionSet = [];
+        BI.each(connectionSet, function (i, keys) {
+            var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
+            if (!(primKey.field_id === fieldId || foreignKey.field_id === fieldId)) {
+                resultConnectionSet.push(connectionSet[i])
+            }
+        });
+        this.relations.connectionSet = resultConnectionSet;
+        BI.each(primaryKeyMap, function (kId, maps) {
+            if (kId === fieldId) {
+                delete primaryKeyMap[kId];
+            } else {
+                BI.remove(maps, function (i, keys) {
+                    return fieldId === keys.primaryKey.field_id || fieldId === keys.foreignKey.field_id;
+                });
+                if (primaryKeyMap[kId].length === 0) {
+                    delete primaryKeyMap[kId];
+                }
+            }
+        });
+        BI.each(foreignKeyMap, function (kId, maps) {
+            if (fieldId === kId) {
+                delete foreignKeyMap[kId];
+            } else {
+                BI.remove(maps, function (i, keys) {
+                    return fieldId === keys.primaryKey.field_id || fieldId === keys.foreignKey.field_id;
+                });
+                if (foreignKeyMap[kId].length === 0) {
+                    delete foreignKeyMap[kId];
+                }
+            }
+        });
+    },
+
     // relation不考虑取消的问题实时的保存
-    setRelations: function (relations, fieldId) {
-        BI.Utils.saveRelations4Conf(relations, fieldId);
+    setRelations: function (nreRelations, fieldId) {
+        //先删除已存在的
+        if (BI.isNotNull(fieldId)) {
+            this._removeRelationByFieldId(fieldId);
+        }
+        var relations = this.relations;
+        var nConn = nreRelations.connectionSet, nPKMap = nreRelations.primKeyMap, nFKMap = nreRelations.foreignKeyMap;
+        var connectionSet = relations.connectionSet,
+            primKeyMap = relations.primKeyMap,
+            foreignKeyMap = relations.foreignKeyMap;
+        BI.each(nConn, function (i, conn) {
+            connectionSet.push((conn));
+        });
+        BI.extend(primKeyMap, nPKMap);
+        BI.extend(foreignKeyMap, nFKMap);
         //同步到后台
         BI.Utils.updateRelation4Conf({
             id: fieldId,
@@ -262,28 +314,12 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     isValidTableTranName: function (name) {
-        var self = this;
-        var packId = this.packageId || BI.Utils.getPackageIdByTableId4Conf(this.id);
-        var tableIds = BI.Utils.getTablesIdByPackageId4Conf(packId);
-        var isValid = true;
-        BI.some(tableIds, function (i, tId) {
-            if (tId !== self.id && BI.Utils.getTransNameById4Conf(tId) === name) {
-                isValid = false;
-                return true;
-            }
-        });
-        return isValid;
+        var tableNames = this.options.tableNames || [];
+        return !tableNames.contains(name);
     },
 
     createDistinctTableTranName: function (id, v) {
-        var currentPackTrans = [];
-        var packId = this.packageId || BI.Utils.getPackageIdByTableId4Conf(this.id);
-        BI.each(BI.Utils.getTablesIdByPackageId4Conf(packId), function (i, tId) {
-            id !== tId && currentPackTrans.push({
-                name: BI.Utils.getTransNameById4Conf(tId)
-            })
-        });
-        return BI.Func.createDistinctName(currentPackTrans, v);
+        return BI.Func.createDistinctName(this.options.tableNames || [], v);
     },
 
     /**
@@ -425,8 +461,8 @@ BI.ETLModel = BI.inherit(FR.OB, {
                 tables[i] = BI.extend(table, {
                     id: id,
                     temp_name: isTemp ?
-                        (table.temp_name || BI.Utils.getTransNameById4Conf(id) || table.table_name) :
-                        (BI.Utils.getTransNameById4Conf(id) || table.table_name)
+                        (table.temp_name || self.translations[id] || table.table_name) :
+                        (self.translations[id] || table.table_name)
                 });
             }
             ids[id] = tables[i];
@@ -514,6 +550,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
         });
         var table = this.getAllTables()[0][0];
         table.id = this.id;
+        table.tran_name = this.translations[this.id];
         var data = {
             isNew: this.isNew,
             packageId: this.packageId,

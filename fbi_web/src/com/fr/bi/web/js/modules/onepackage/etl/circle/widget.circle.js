@@ -100,7 +100,7 @@ BI.Circle = BI.inherit(BI.Widget, {
 
         this.save = BI.createWidget({
             type:"bi.button",
-            text:BI.i18nText("BI-Save"),
+            text:BI.i18nText("BI-Basic_Save"),
             tipType: "warning",
             height: this.constants.CIRCLE_BUTTON_HEIGHT
         });
@@ -240,7 +240,7 @@ BI.Circle = BI.inherit(BI.Widget, {
                 case this.constants.SHOW_PREVIEW_BUTTON:
                     var previewButton = BI.createWidget({
                         type: "bi.button",
-                        text: BI.i18nText("BI-Preview"),
+                        text: BI.i18nText("BI-Basic_Preview"),
                         height: this.constants.PREVIEW_BUTTON_HEIGHT,
                         width: this.constants.PREVIEW_BUTTON_WIDTH
                     });

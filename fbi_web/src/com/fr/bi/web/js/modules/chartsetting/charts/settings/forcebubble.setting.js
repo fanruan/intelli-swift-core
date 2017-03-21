@@ -368,7 +368,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.legendStyle]
                 }/*, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Tooltip"),
+                    text: BI.i18nText("BI-Basic_Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
@@ -384,7 +384,9 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);

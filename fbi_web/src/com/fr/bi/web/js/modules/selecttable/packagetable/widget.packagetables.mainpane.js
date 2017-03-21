@@ -65,7 +65,7 @@ BI.PackageTablesMainPane = BI.inherit(BI.Widget, {
                     text: self._getTableTranName(id, table),
                     value: BI.extend(table, {
                         id: id,
-                        temp_name: BI.Utils.getTransNameById4Conf(id)
+                        temp_name: table.tran_name
                     }),
                     linkNames: o.linkNames,
                     connName: table.connection_name,
@@ -116,7 +116,7 @@ BI.PackageTablesMainPane = BI.inherit(BI.Widget, {
     _getTableTranName: function (id, table) {
         var tableNameText = table.table_name;
         //ETL 表
-        var tranName = BI.Utils.getTransNameById4Conf(id);
+        var tranName = table.tran_name;
         if (table.connection_name === BICst.CONNECTION.ETL_CONNECTION) {
             tableNameText = tranName;
         } else if (BI.isNotNull(tranName) && tranName !== tableNameText) {

@@ -24,7 +24,7 @@ BI.CustomGroupGroup2Other = BI.inherit(BI.Widget, {
         this.editor = BI.createWidget({
             type: "bi.editor",
             cls: "custom-group-editor",
-            value: BI.i18nText("BI-Others"),
+            value: BI.i18nText("BI-Basic_Others"),
             validationChecker: o.validationChecker,
             width: 88,
             height: 28,
@@ -64,8 +64,8 @@ BI.CustomGroupGroup2Other = BI.inherit(BI.Widget, {
             this.editor.setEnable(true);
         } else {
             this.checkbox.setSelected(false);
-            if(BI.contains(groupNames, BI.i18nText("BI-Others"))){
-                this.editor.setValue(BI.i18nText("BI-Others-One"));
+            if(BI.contains(groupNames, BI.i18nText("BI-Basic_Others"))){
+                this.editor.setValue(BI.i18nText("BI-Basic_Others-One"));
             }
             this.editor.setEnable(false);
         }

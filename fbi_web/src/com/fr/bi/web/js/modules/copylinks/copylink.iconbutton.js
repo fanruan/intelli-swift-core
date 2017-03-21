@@ -39,7 +39,7 @@ BI.CopyLingIconButton = BI.inherit(BI.Widget, {
                 return location.origin + FR.servletURL + o.buildUrl;
             },
             afterCopy: function () {
-                BI.Msg.toast(BI.i18nText("BI-Basic_Copy") + BI.i18nText("BI-Succeed"));
+                BI.Msg.toast(BI.i18nText("BI-Basic_Copy") + BI.i18nText("BI-Basic_Succeed"));
             }
         });
         this._setStopPropagation();

@@ -14,14 +14,14 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         BI.SelectDataWithMask.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.field = o.field;
-
+        var data = o.data;
         this.selectDataPane = BI.createWidget({
             type: "bi.package_select_data_service",
             showRelativeTables: false,
             showExcelView: false,
             showDateGroup: false,
             packageCreator: function () {
-                return BI.Utils.getAllGroupedPackagesTreeJSON4Conf();
+                return BI.Utils.getAllGroupedPackagesTreeJSON4Conf(data);
             },
             tablesCreator: function (packageId) {
                 return self._getTablesStructureByPackId(packageId);
@@ -94,7 +94,22 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             items: items
         });
 
-        this.selectDataPane.setPackage(BI.Utils.getPackageIdByTableId4Conf(this.field.table_id));
+        this.selectDataPane.setPackage(this._getPackageIdByTableId(this.field.table_id));
+    },
+
+    _getPackageIdByTableId: function (tableId) {
+        var packages = this.options.data.packages;
+        var packId;
+        BI.some(packages, function (pId, pack) {
+            var tables = pack.tables;
+            return BI.some(tables, function (i, table) {
+                if (table.id === tableId) {
+                    packId = pId;
+                    return true;
+                }
+            })
+        });
+        return packId;
     },
 
     _createSelectDataBottom: function () {
@@ -126,16 +141,27 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         });
     },
 
+    _getTableIdByPackageId: function(packId) {
+        var packages = this.options.data.packages;
+        var tableIds = [];
+        BI.each(packages[packId].tables, function (i, table) {
+            tableIds.push(table.id);
+        });
+        return tableIds;
+    },
+
     _getTablesStructureByPackId: function (pId) {
-        var self = this;
+        var self = this, o = this.options;
+        var data = o.data;
+        var translations = data.translations;
         var tablesStructure = [];
-        var tableIds = BI.Utils.getTablesIdByPackageId4Conf(pId);
+        var tableIds = this._getTableIdByPackageId(pId);
         BI.each(tableIds, function (i, id) {
             tablesStructure.push({
                 id: id,
-                type: "bi.select_data_level0_node",
-                text: BI.Utils.getTransNameById4Conf(id),
-                title: BI.Utils.getTransNameById4Conf(id),
+                type: "bi.select_data_level_node",
+                text: translations[id],
+                title: translations[id],
                 value: id,
                 isParent: true,
                 open: self._isTableOpen(id),
@@ -146,20 +172,32 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         return tablesStructure;
     },
 
+    _getFieldsByTableId: function (tableId) {
+        var allFields = this.options.data.fields;
+        var fields = [];
+        BI.each(allFields, function (id, field) {
+            if (field.table_id === tableId) {
+                fields.push(BI.deepClone(field));
+            }
+        });
+        return fields;
+    },
+
     _getFieldsStructureByTableId: function (tableId) {
         var fieldStructure = [];
         var fieldType = this.field.field_type;
-        var relationFields = BI.Utils.getRelationFieldsByFieldId4Conf(this.field.id);
-        var fields = BI.Utils.getFieldsByTableId4Conf(tableId);
+        var translations = this.options.data.translations;
+        var relationFields = BI.Utils.getRelationFieldsByFieldId4Conf(this.options.relations, this.field.id);
+        var fields =this._getFieldsByTableId(tableId);
         BI.each(fields, function (i, field) {
             if (field.field_type === fieldType) {
                 fieldStructure.push({
                     id: field.id,
                     pId: tableId,
-                    type: "bi.select_data_level0_item",
+                    type: "bi.select_data_level_item",
                     fieldType: fieldType,
-                    text: BI.Utils.getTransNameById4Conf(field.id) || field.field_name,
-                    title: BI.Utils.getTransNameById4Conf(field.id) || field.field_name,
+                    text: translations[field.id] || field.field_name,
+                    title: translations[field.id] || field.field_name,
                     value: {
                         field_id: field.id
                     },

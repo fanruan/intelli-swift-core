@@ -16,7 +16,7 @@ BI.DetailSelectDataLevel0ExcelNode = BI.inherit(BI.Widget, {
         BI.DetailSelectDataLevel0ExcelNode.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.node = BI.createWidget({
-            type: "bi.select_data_level0_node",
+            type: "bi.select_data_level_node",
             layer: o.layer,
             id: o.id,
             pId: o.pId,
@@ -97,7 +97,7 @@ BI.DetailSelectDataLevel0ExcelNode = BI.inherit(BI.Widget, {
                                 name += "(" + BI.i18nText("BI-Basic_Date") + ")";
                                 break;
                             case BICst.GROUP.S:
-                                name += "(" + BI.i18nText("BI-Quarter") + ")";
+                                name += "(" + BI.i18nText("BI-Basic_Quarter") + ")";
                                 break;
                         }
                     }

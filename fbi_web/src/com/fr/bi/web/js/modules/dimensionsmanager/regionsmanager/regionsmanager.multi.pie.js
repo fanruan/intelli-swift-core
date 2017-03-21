@@ -71,7 +71,7 @@ BI.MultiPieRegionsManager = BI.inherit(BI.RegionsManager, {
         var header = BI.createWidget({
             type: "bi.calculate_target_region_header",
             height: 26,
-            titleName: BI.i18nText("BI-Target"),
+            titleName: BI.i18nText("BI-Basic_Target"),
             dimensionCreator: o.dimensionCreator,
             wId: o.wId,
             viewType: BICst.REGION.TARGET1

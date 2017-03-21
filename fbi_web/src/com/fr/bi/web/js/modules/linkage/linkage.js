@@ -388,7 +388,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
         var save = BI.createWidget({
             type: "bi.button",
             height: 30,
-            text: BI.i18nText("BI-Sure")
+            text: BI.i18nText("BI-Basic_Sure")
         });
         save.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.Linkage.EVENT_CONFIRM);
