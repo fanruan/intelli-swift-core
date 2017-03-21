@@ -2,9 +2,6 @@ package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.common.log.BILogExceptionInfo;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeIndexException;
@@ -15,6 +12,7 @@ import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
+import com.finebi.cube.utils.BIRelationHelper;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
@@ -31,13 +29,15 @@ import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
-import com.fr.general.ComparatorUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -277,7 +277,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
         for (BICubeRelation relation : this.relationPath.getAllRelations()) {
             BITableSourceRelation tableRelation = null;
             try {
-                tableRelation = getTableRelation(relation);
+                tableRelation = BIRelationHelper.getTableRelation(relation);
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error("get relationColumnKey failed! relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
             }
@@ -285,55 +285,6 @@ public class BITablePathIndexBuilder extends BIProcessor {
             relations.add(tableRelation);
         }
         return new RelationColumnKey(field, relations);
-    }
-
-    private BITableSourceRelation getTableRelation(BICubeRelation relation) {
-        ICubeFieldSource primaryField = null;
-        ICubeFieldSource foreignField = null;
-        CubeTableSource primaryTable = null;
-        CubeTableSource foreignTable = null;
-        Set<CubeTableSource> allTableSource = getAllTableSource();
-        for (CubeTableSource cubeTableSource : allTableSource) {
-            if (ComparatorUtils.equals(relation.getPrimaryTable().getSourceID(), cubeTableSource.getSourceID())) {
-                primaryTable = cubeTableSource;
-                Set<CubeTableSource> primarySources = new HashSet<CubeTableSource>();
-                primarySources.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : primaryTable.getFacetFields(primarySources)) {
-                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getPrimaryField().getColumnName())) {
-                        primaryField = iCubeFieldSource;
-                    }
-                }
-                break;
-            }
-        }
-        for (CubeTableSource cubeTableSource : allTableSource) {
-            if (ComparatorUtils.equals(relation.getForeignTable().getSourceID(), cubeTableSource.getSourceID())) {
-                foreignTable = cubeTableSource;
-                Set<CubeTableSource> foreignSource = new HashSet<CubeTableSource>();
-                foreignSource.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : foreignTable.getFacetFields(foreignSource)) {
-                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getForeignField().getColumnName())) {
-                        foreignField = iCubeFieldSource;
-                    }
-                }
-                break;
-            }
-        }
-        BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(primaryField, foreignField, primaryTable, foreignTable);
-        return biTableSourceRelation;
-    }
-
-    private Set<CubeTableSource> getAllTableSource() {
-        Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
-        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(UserControl.getInstance().getSuperManagerID());
-        for (IBusinessPackageGetterService pack : packs) {
-            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
-            while (tIt.hasNext()) {
-                BIBusinessTable table = tIt.next();
-                cubeTableSourceSet.add(table.getTableSource());
-            }
-        }
-        return cubeTableSourceSet;
     }
 
     private String getTablePathInfo() {
@@ -364,4 +315,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
     }
 
 
+//    public void setCubeChooser(CubeCalculatorChooser cubeChooser) {
+//        this.cubeChooser = cubeChooser;
+//    }
 }

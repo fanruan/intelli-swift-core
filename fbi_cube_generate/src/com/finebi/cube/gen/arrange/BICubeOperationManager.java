@@ -11,19 +11,21 @@ import com.finebi.cube.gen.oper.watcher.BICubeBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIDataSourceBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BITableSourceBuildWatcher;
-import com.finebi.cube.tools.operate.BIOperation;
 import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.status.IStatusTag;
 import com.finebi.cube.router.topic.ITopicTag;
+import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
+import com.finebi.cube.tools.operate.BIOperation;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
+import com.finebi.cube.utils.BIRelationHelper;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
@@ -444,30 +446,18 @@ public class BICubeOperationManager {
         }
     }
 
-//    private com.fr.data.impl.Connection getConnection(CubeTableSource tableSource) {
-//        if (connectionMap != null && connectionMap.containsKey(tableSource)) {
-//            return connectionMap.get(tableSource);
-//        } else {
-//            return null;
-//        }
-//    }
-
-    /*为tableSource指定connection*/
-//    private CubeTableSource addConnection(CubeTableSource tableSource) {
-//        Connection connection = getConnection(tableSource);
-//        if (null != connection && (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL || tableSource.getType() == BIBaseConstant.TABLETYPE.DB)) {
-//            for (CubeTableSource source : connectionMap.keySet()) {
-//                if (source.getSourceID().equals(tableSource.getSourceID())) {
-//                    return source;
-//                }
-//            }
-//        }
-//        return tableSource;
-//    }
-
-
     protected BIRelationIndexGenerator getRelationBuilder(Cube cube, Cube integrityCube, BITableSourceRelation relation, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
-        return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
+//        return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
+        boolean containSelfCircleTable = containSelfCircleTable(BICubeRelationUtils.convert(relation));
+        if (containSelfCircleTable) {
+            return new BISelfCircleRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation));
+        } else {
+            return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
+        }
+    }
+
+    private boolean containSelfCircleTable(BICubeRelation relation) {
+        return BIRelationHelper.isRelationContainsSelfCircle(relation);
     }
 
     protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
