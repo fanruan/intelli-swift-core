@@ -24,6 +24,10 @@ public abstract class VanChartWidget extends TableWidget {
 
     public abstract String getSeriesType();
 
+    public JSONObject createPlotOptions() throws JSONException{
+        return JSONObject.create();
+    }
+
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = JSONObject.create();
 
@@ -72,6 +76,8 @@ public abstract class VanChartWidget extends TableWidget {
         }
 
         options.put("legend", this.parseLegend(settings));
+
+        options.put("plotOptions", this.createPlotOptions());
 
         return options;
     }

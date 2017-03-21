@@ -12,6 +12,11 @@ import com.fr.third.org.apache.poi.util.StringUtil;
  */
 public abstract class VanCartesianWidget extends VanChartWidget {
 
+    //面积图的三种形态
+    private static final int NORMAL = 1;
+    private static final int STEP = 2;
+    private static final int CURVE = 3;
+
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
 
@@ -63,6 +68,28 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return createXYSeries(data);
     }
 
+    public JSONObject createPlotOptions() throws JSONException{
+
+        JSONObject settings = this.getDetailChartSetting();
+
+        JSONObject plotOptions = super.createPlotOptions();
+
+        plotOptions.put("inverted", this.isInverted());
+
+        int lineType = settings.optInt("lineAreaChartType", NORMAL);
+        if(lineType == STEP){
+            plotOptions.put("step", true);
+        }else if(lineType == CURVE){
+            plotOptions.put("curve", true);
+        }
+
+        return plotOptions;
+    }
+
+    public boolean isInverted(){
+        return false;
+    }
+
     public  JSONObject createOptions() throws JSONException{
 
         JSONObject settings = this.getDetailChartSetting();
@@ -78,9 +105,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         options.put("xAxis", this.parseCategoryAxis(settings));
         options.put("yAxis", this.parseValueAxis(settings));
 
-        JSONObject plotOptions = JSONObject.create();
-
-        return options.put("plotOptions", plotOptions);
+        return options;
     }
 
     protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
