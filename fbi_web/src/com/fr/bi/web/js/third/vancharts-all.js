@@ -5095,7 +5095,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     //ie8以下不支持rem，仍然用px
     function convertToREMUseDefault16PX(style) {
         if(style) {
-            var size = style.fontSize;
+            var size = style.fontSize + '';
 
             if(isSupportSVG()) {
                 size = isNaN(parseFloat(size)) ? '0.75rem' : size;
