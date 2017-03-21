@@ -101,8 +101,8 @@ BI.SaveAsPopup = BI.inherit(BI.Widget, {
             var self = this;
             this.saveButton = BI.createWidget({
                 type: "bi.button",
-                text: BI.i18nText("BI-OK"),
-                title: BI.i18nText("BI-OK"),
+                text: BI.i18nText("BI-Basic_OK"),
+                title: BI.i18nText("BI-Basic_OK"),
                 height: 30,
                 handler: function () {
                     o.confirm({

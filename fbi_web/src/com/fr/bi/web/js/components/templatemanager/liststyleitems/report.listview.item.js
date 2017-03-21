@@ -137,7 +137,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
         var renameIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: 'report-rename-font template-item-icon',
-            title: BI.i18nText("BI-Rename"),
+            title: BI.i18nText("BI-Basic_Rename"),
             invisible: true,
             stopPropagation: true
         });
@@ -154,7 +154,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
         var deleteIcon = BI.createWidget({
             type: "bi.icon_button",
             cls: 'remove-report-font template-item-icon',
-            title: BI.i18nText("BI-Remove")
+            title: BI.i18nText("BI-Basic_Remove")
         });
         var deleteCombo = BI.createWidget({
             type: "bi.bubble_combo",
@@ -162,7 +162,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function () {
                         deleteCombo.hideView();
                         BI.requestAsync("fr_bi", "check_report_edit", {id: o.id, createBy: o.createBy}, function (res) {

@@ -87,7 +87,7 @@ BI.AuthorityBatchAddRolePane = BI.inherit(BI.Widget, {
                                 }],
                                 right: [{
                                     type: "bi.button",
-                                    text: BI.i18nText("BI-Sure"),
+                                    text: BI.i18nText("BI-Basic_Sure"),
                                     height: 30,
                                     handler: function () {
                                         self.fireEvent(BI.AuthorityBatchAddRolePane.EVENT_SAVE);

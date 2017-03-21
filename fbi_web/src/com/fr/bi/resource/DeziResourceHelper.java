@@ -2,9 +2,6 @@ package com.fr.bi.resource;
 
 import com.fr.stable.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Wang on 2017/1/18.
  */
@@ -212,8 +209,11 @@ public class DeziResourceHelper {
         });
     }
 
-    public static String[] getDeziAndShowJsModule() {
+    public static String[] getDeziJsModule() {
         return new String[]{
+                "com/fr/bi/web/js/fragments/base/tabs/widget.datastyletab.js",
+                "com/fr/bi/web/js/fragments/base/items/widget.realdatacheckbox.js",
+
                 "com/fr/bi/web/js/modules/base/combos/widget.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/dimension/abstract.dimensiontarget.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/dimension/dimension/abstract.dimension.combo.js",
@@ -238,115 +238,6 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/numberintervalcustomgroup/widget.customgroup.number.other.js",
                 "com/fr/bi/web/js/modules/numberintervalcustomgroup/widget.customgroup.number.tab.js",
                 "com/fr/bi/web/js/modules/numberintervalcustomgroup/widget.customgroup.number.panel.js",
-
-                //自定义排序
-                "com/fr/bi/web/js/modules/customsort/widget.pane.customsort.js",
-
-                //通用查询选字段
-                "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.selectdata.tab.js",
-                "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.selectdata.pane.js",
-                "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.js",
-                "com/fr/bi/web/js/modules/selectdata4generalquery/item/item.generalquery.selectdata.js",
-
-                //过滤界面的选择字段
-                "com/fr/bi/web/js/modules/selectdata4filter/widget.dimensionselectfield.js",
-                "com/fr/bi/web/js/modules/selectdata4filter/widget.targetselectfield.js",
-                "com/fr/bi/web/js/modules/selectdata4filter/node/node.level0.dimension.js",
-
-                //文本控件
-                "com/fr/bi/web/js/modules/selectdatacombo/widget.selectdatacombo.js",
-
-                //文本列表
-                "com/fr/bi/web/js/modules/selectdatastringlist/widget.selectdatastringlist.js",
-
-                //树控件
-                "com/fr/bi/web/js/modules/selecttreedatacombo/selecttreedatacombo.js",
-
-                //树列表
-                "com/fr/bi/web/js/modules/selecttreedatalist/selecttreedatalist.js",
-
-                //单值滑块
-                "com/fr/bi/web/js/modules/selectdataslider/selectdatasingleslider.js",
-
-                //区间滑块
-                "com/fr/bi/web/js/modules/selectdataslider/selectdataintervalslider.js",
-
-                //文本标签控件
-                "com/fr/bi/web/js/modules/selectlistlabel/widget.selectlistlabel.js",
-
-                //树标签控件
-                "com/fr/bi/web/js/modules/selecttreelabel/widget.selecttreelabel.js",
-
-                //带参数的复杂日期模块
-                "com/fr/bi/web/js/modules/multidatecombowithparam/item/item.level0.js",
-                "com/fr/bi/web/js/modules/multidatecombowithparam/item/item.level1.js",
-                "com/fr/bi/web/js/modules/multidatecombowithparam/item/item.param.js",
-                "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.parampane.js",
-                "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.parampopup.js",
-                "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.paramtrigger.js",
-                "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.paramcombo.js",
-                "com/fr/bi/web/js/modules/paramtimeinterval/timeinterval.param.js",
-
-                //表格的单元格
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablecell/normal/headercell.normal.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablecell/normal/cell.tarbody.normal.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablecell/normal/expandercell.normal.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.dimension.combo.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.target.combo.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.detail.combo.js",
-
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/helper/summarytable.helper.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.grouptable.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.crosstable.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.complextable.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/grouptable.model.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/crosstable.model.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/complextable.model.js",
-
-                "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
-
-                "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
-                "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
-
-                //明细表
-                "com/fr/bi/web/js/modules/detailtable/widget.detailtable.js",
-                "com/fr/bi/web/js/modules/detailtable/cell/header.detailtable.js",
-                "com/fr/bi/web/js/modules/detailtable/cell/cell.detailtable.js",
-
-                //组件上的过滤
-                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.model.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.linkagefilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.targetfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.dimensionfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.controlfilter.js",
-                "com/fr/bi/web/js/modules/widgetfilter/item.drillfilter.js",
-
-                //另存为
-                "com/fr/bi/web/js/modules/saveas/popup.saveas.js",
-
-                //图表钻取
-                "com/fr/bi/web/js/modules/chartdrill/button.pushdrill.js",
-                "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
-                "com/fr/bi/web/js/modules/chartdrill/widget.chartdrill.js",
-
-
-                //最大化
-                "com/fr/bi/web/js/modules/maximization/widget.maximization.chartpane.js",
-                "com/fr/bi/web/js/modules/maximization/widget.maximization.js",
-
-                "com/fr/bi/web/js/modules4realtime/constant.js",
-                "com/fr/bi/web/js/modules4realtime/config.js",
-                "com/fr/bi/web/js/modules4realtime/broadcast.js",
-                "com/fr/bi/web/js/modules4realtime/cache.js",
-                "com/fr/bi/web/js/modules4realtime/utils.js",
-        };
-    }
-
-    private static String[] getDeziJsModule() {
-        return new String[]{
-                "com/fr/bi/web/js/fragments/base/tabs/widget.datastyletab.js",
-                "com/fr/bi/web/js/fragments/base/items/widget.realdatacheckbox.js",
 
                 //详细设置相关模块
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/combo.tablecharttype.js",
@@ -431,6 +322,9 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/updateexcel/messagepane/failpane.js",
                 "com/fr/bi/web/js/modules/updateexcel/messagepane/successpane.js",
 
+                //自定义排序
+                "com/fr/bi/web/js/modules/customsort/widget.pane.customsort.js",
+
                 //详细设置中的选择字段
                 "com/fr/bi/web/js/modules/selectdata/preview/pane.preview.selectdata.js",
                 "com/fr/bi/web/js/modules/selectdata/preview/section.preview.selectdata.js",
@@ -461,6 +355,17 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4tree/widget.selectdatapane.tree.js",
 
 
+                //过滤界面的选择字段
+                "com/fr/bi/web/js/modules/selectdata4filter/widget.dimensionselectfield.js",
+                "com/fr/bi/web/js/modules/selectdata4filter/widget.targetselectfield.js",
+                "com/fr/bi/web/js/modules/selectdata4filter/node/node.level0.dimension.js",
+
+                //通用查询选字段
+                "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.selectdata.tab.js",
+                "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.selectdata.pane.js",
+                "com/fr/bi/web/js/modules/selectdata4generalquery/widget.generalquery.usedfields.pane.js",
+                "com/fr/bi/web/js/modules/selectdata4generalquery/item/item.generalquery.selectdata.js",
+
                 //文本控件选字段
                 "com/fr/bi/web/js/modules/selectstring/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectstring/pane.selectstring.js",
@@ -473,6 +378,30 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/selectdate/treeitem/item.level0.js",
                 "com/fr/bi/web/js/modules/selectdate/pane.selectdate.js",
 
+
+                //文本控件
+                "com/fr/bi/web/js/modules/selectdatacombo/widget.selectdatacombo.js",
+
+                //文本列表
+                "com/fr/bi/web/js/modules/selectdatastringlist/widget.selectdatastringlist.js",
+
+                //树控件
+                "com/fr/bi/web/js/modules/selecttreedatacombo/selecttreedatacombo.js",
+
+                //树列表
+                "com/fr/bi/web/js/modules/selecttreedatalist/selecttreedatalist.js",
+
+                //单值滑块
+                "com/fr/bi/web/js/modules/selectdataslider/selectdatasingleslider.js",
+
+                //区间滑块
+                "com/fr/bi/web/js/modules/selectdataslider/selectdataintervalslider.js",
+
+                //文本标签控件
+                "com/fr/bi/web/js/modules/selectlistlabel/widget.selectlistlabel.js",
+
+                //树标签控件
+                "com/fr/bi/web/js/modules/selecttreelabel/widget.selecttreelabel.js",
 
                 //系列堆积设置
                 "com/fr/bi/web/js/modules/seriesaccumulation/series.accumulation.js",
@@ -563,6 +492,42 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/pane/pane.calculate.target.sum.above.group.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/pane/pane.calculate.target.sum.above.js",
 
+
+                //带参数的复杂日期模块
+                "com/fr/bi/web/js/modules/multidatecombowithparam/item/item.level0.js",
+                "com/fr/bi/web/js/modules/multidatecombowithparam/item/item.level1.js",
+                "com/fr/bi/web/js/modules/multidatecombowithparam/item/item.param.js",
+                "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.parampane.js",
+                "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.parampopup.js",
+                "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.paramtrigger.js",
+                "com/fr/bi/web/js/modules/multidatecombowithparam/multidate.paramcombo.js",
+                "com/fr/bi/web/js/modules/paramtimeinterval/timeinterval.param.js",
+
+                //表格的单元格
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablecell/normal/headercell.normal.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablecell/normal/cell.tarbody.normal.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablecell/normal/expandercell.normal.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.dimension.combo.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.target.combo.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/combo/sortfilter.detail.combo.js",
+
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/helper/summarytable.helper.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.grouptable.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.crosstable.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tableview/widget.complextable.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/grouptable.model.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/crosstable.model.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/datatable/tablemodel/complextable.model.js",
+
+                "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
+
+                "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
+                "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
+
+                //明细表
+                "com/fr/bi/web/js/modules/detailtable/widget.detailtable.js",
+                "com/fr/bi/web/js/modules/detailtable/cell/header.detailtable.js",
+                "com/fr/bi/web/js/modules/detailtable/cell/cell.detailtable.js",
 
                 //指标和维度的匹配关系
                 "com/fr/bi/web/js/modules/matchingrelationship/popup.matchingrelationship.js",
@@ -684,14 +649,34 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/modules/targetstyle/combo/item.iconmark.js",
                 "com/fr/bi/web/js/modules/targetstyle/conditionitem/item.targetstylecondition.js",
 
+                //组件上的过滤
+                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/widget.widgetfilter.model.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.linkagefilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.targetfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.dimensionfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.controlfilter.js",
+                "com/fr/bi/web/js/modules/widgetfilter/item.drillfilter.js",
+
                 //明细表超级链接
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.insert.js",
                 "com/fr/bi/web/js/modules/hyperlink/hyperlink.popup.js",
+
+                //另存为
+                "com/fr/bi/web/js/modules/saveas/popup.saveas.js",
+
+                //图表钻取
+                "com/fr/bi/web/js/modules/chartdrill/button.pushdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
+                "com/fr/bi/web/js/modules/chartdrill/widget.chartdrill.js",
 
                 //excelview
                 "com/fr/bi/web/js/extend/excelview/excelview.cell.js",
                 "com/fr/bi/web/js/extend/excelview/excelview.js",
 
+                //最大化
+                "com/fr/bi/web/js/modules/maximization/widget.maximization.chartpane.js",
+                "com/fr/bi/web/js/modules/maximization/widget.maximization.js",
 
                 /**
                  * 实时报表
@@ -713,12 +698,24 @@ public class DeziResourceHelper {
                 //实时报表日期选择明细表
                 "com/fr/bi/web/js/modules4realtime/selectdata4detail/widget.selectdata.js",
 
+                "com/fr/bi/web/js/modules4realtime/constant.js",
+                "com/fr/bi/web/js/modules4realtime/config.js",
+                "com/fr/bi/web/js/modules4realtime/broadcast.js",
+                "com/fr/bi/web/js/modules4realtime/cache.js",
+                "com/fr/bi/web/js/modules4realtime/utils.js",
         };
     }
 
+    public static String[] getDeziJs() {
+        String[] dezi = getDeziJsModule();
+        return (String[]) ArrayUtils.addAll(dezi, new String[]{
 
-    private static String[] getDeziModelJs() {
-        return new String[]{
+                "com/fr/bi/web/js/dezi/dezi.start.js",
+                "com/fr/bi/web/js/dezi/model.js",
+                "com/fr/bi/web/js/dezi/view.js",
+                "com/fr/bi/web/js/dezi/modules/dezi.floatbox.manage.js",
+                "com/fr/bi/web/js/dezi/modules/dezi.model.manage.js",
+                "com/fr/bi/web/js/dezi/modules/dezi.view.manage.js",
                 "com/fr/bi/web/js/dezi/modules/model/dezi.model.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/model.pane.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.widget.js",
@@ -777,11 +774,6 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/customgroup/model.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/customsort/model.customsort.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/numbercustomgroup/model.number.custom.group.js",
-        };
-    }
-
-    private static String[] getDeziViewJs() {
-        return new String[]{
                 "com/fr/bi/web/js/dezi/modules/view/dezi.view.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/dezi.pane.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.widget.js",
@@ -838,28 +830,6 @@ public class DeziResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customgroup/dezi.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customsort/dezi.customsort.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/numbercustomgroup/dezi.number.custom.group.js"
-        };
-    }
-
-    public static String[] getDeziJs() {
-        List<String[]> jsList = new ArrayList<String[]>();
-        jsList.add(getDeziAndShowJsModule());
-        jsList.add(getDeziJsModule());
-        jsList.add(new String[]{
-                "com/fr/bi/web/js/dezi/dezi.start.js",
-                "com/fr/bi/web/js/dezi/model.js",
-                "com/fr/bi/web/js/dezi/view.js",
-                "com/fr/bi/web/js/dezi/modules/dezi.floatbox.manage.js",
-                "com/fr/bi/web/js/dezi/modules/dezi.model.manage.js",
-                "com/fr/bi/web/js/dezi/modules/dezi.view.manage.js",
         });
-        jsList.add(getDeziModelJs());
-        jsList.add(getDeziViewJs());
-        String[] result = new String[]{};
-        for (String[] js : jsList) {
-            result = ArrayUtils.addAll(result, js);
-        }
-
-        return result;
     }
 }

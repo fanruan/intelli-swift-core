@@ -174,7 +174,9 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Data_Label"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -232,7 +234,7 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.dataLabelSetting]
                 }/*, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Tooltip"),
+                    text: BI.i18nText("BI-Basic_Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
@@ -248,7 +250,9 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
@@ -258,7 +262,9 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.linkageSelection = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Select_Linkage_Manually"),
-            width: 150
+            logic: {
+                dynamic: true
+            }
         });
 
         this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function() {

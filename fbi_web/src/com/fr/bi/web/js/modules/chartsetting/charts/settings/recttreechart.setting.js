@@ -175,7 +175,9 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Data_Label"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -220,7 +222,7 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showDataLabel]
                 }/*, {
                  type: "bi.label",
-                 text: BI.i18nText("BI-Tooltip"),
+                 text: BI.i18nText("BI-Basic_Tooltip"),
                  cls: "attr-names"
                  }, {
                  type: "bi.vertical_adapt",
@@ -236,7 +238,9 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.RectTreeChartSetting.EVENT_CHANGE);
@@ -246,7 +250,9 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.linkageSelection = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Select_Linkage_Manually"),
-            width: 150
+            logic: {
+                dynamic: true
+            }
         });
 
         this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function () {
@@ -256,7 +262,9 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.clickZoom = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Click_Zoom"),
-            width: 150
+            logic: {
+                dynamic: true
+            }
         });
 
         this.clickZoom.on(BI.Controller.EVENT_CHANGE, function () {
@@ -281,7 +289,9 @@ BI.RectTreeChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.vertical",
             element: this.element,
             items: [widgetTitle, this.tableStyle, this.showElement, this.otherAttr],
-            hgap: 10
+            logic: {
+                dynamic: true
+            }
         })
     },
 

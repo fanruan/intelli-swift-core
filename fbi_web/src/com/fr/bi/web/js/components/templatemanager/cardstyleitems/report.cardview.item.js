@@ -38,7 +38,7 @@ BI.ReportCardViewItem = BI.inherit(BI.Single, {
         var deleteButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "remove-report-font tool-delete-icon",
-            title: BI.i18nText("BI-Remove"),
+            title: BI.i18nText("BI-Basic_Remove"),
             iconWidth: 20,
             iconHeight: 20,
             stopPropagation: true

@@ -34,8 +34,8 @@ BI.TimeoutToast = BI.inherit(BI.Tip, {
                 cls: "retry-button",
                 width: 60,
                 height: 22,
-                text: BI.i18nText("BI-Retry"),
-                title: BI.i18nText("BI-Retry"),
+                text: BI.i18nText("BI-Basic_Retry"),
+                title: BI.i18nText("BI-Basic_Retry"),
                 handler: function () {
                     self.toast.element.slideUp(500);
                     self._retryAll();

@@ -75,7 +75,7 @@ BI.CubePath = BI.inherit(BI.Widget, {
                     }
                 });
             } else {
-                this.setText(BI.i18nText("BI-OK"));
+                this.setText(BI.i18nText("BI-Basic_OK"));
                 cancelButton.setVisible(true);
                 tipLabel.setVisible(true);
                 pathInput.setVisible(true);
