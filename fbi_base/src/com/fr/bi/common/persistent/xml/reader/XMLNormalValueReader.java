@@ -28,7 +28,7 @@ public class XMLNormalValueReader extends XMLValueReader {
             String fieldName = xmLableReader.getAttrAsString(BIXMLTag.FIELD_NAME, "null");
             String persistentFieldClass = xmLableReader.getAttrAsString("class", "null");
 
-            String fieldClass = BIBeanHistoryManager.getCurrentClassName(persistentFieldClass);
+            String fieldClass = BIBeanHistoryManager.getCurrentClassName(persistentFieldClass, beanWrapper.getBeanHistoryFilePath());
 
             String uuid = xmLableReader.getAttrAsString(BIXMLTag.APPEND_INFO, "null");
             BIBeanXMLReaderWrapper wrapper;

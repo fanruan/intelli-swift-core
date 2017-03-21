@@ -81,7 +81,7 @@ public class XMLWriterTest extends TestCase {
             wrapper.setTagAvailable(true);
             wrapper.setProperty(false);
             XMLPersistentWriter object = new XMLPersistentWriter(wrapper);
-            File var3 = new File("E:\\temp\\" + name + ".xml");
+            File var3 = new File("/home/neil/" + name + ".xml");
             StableUtils.makesureFileExist(var3);
             XMLTools.writeOutputStreamXML(object, new FileOutputStream(var3));
         } catch (Exception e) {
@@ -169,9 +169,9 @@ public class XMLWriterTest extends TestCase {
 
     private Object get(Object object, String name) {
         try {
-            File var3 = new File("E:\\temp\\" + name + ".xml");
+            File var3 = new File("/home/neil/" + name + ".xml");
             StableUtils.makesureFileExist(var3);
-            XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object));
+            XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object,Thread.currentThread().getContextClassLoader().getResource("").getPath() + "bean_history_class_test.xml"));
             XMLTools.readInputStreamXML(reader, new FileInputStream(var3));
             return object;
         } catch (Exception e) {

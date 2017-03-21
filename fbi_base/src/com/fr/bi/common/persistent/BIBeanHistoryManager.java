@@ -19,12 +19,16 @@ import java.util.Map;
  */
 public class BIBeanHistoryManager {
 
-    protected static final String FILE_NAME = "bean_history_class.xml";
+    protected static final String DEFAULT_FILE_NAME = "bean_history_class.xml";
 
-    private static Map<String, List<String>> getClassMapping() {
+    public static String getDefaultFileName() {
+        return Thread.currentThread().getContextClassLoader().getResource("").getPath() + DEFAULT_FILE_NAME;
+    }
+
+    private static Map<String, List<String>> getClassMapping(String beanFilePath) {
         Map<String, List<String>> classMapping = new HashMap<String, List<String>>();
 
-        Document document = readFile();
+        Document document = readFile(beanFilePath);
         NodeList beanList = document.getElementsByTagName("bean");
         for (int i = 0; i < beanList.getLength(); i++) {
             Node bean = beanList.item(i);
@@ -35,8 +39,8 @@ public class BIBeanHistoryManager {
         return classMapping;
     }
 
-    public static String getCurrentClassName(String oldClass) {
-        Map<String, List<String>> classMapping = getClassMapping();
+    public static String getCurrentClassName(String oldClass, String beanFilePath) {
+        Map<String, List<String>> classMapping = getClassMapping(beanFilePath);
 
         for (Map.Entry<String, List<String>> entry : classMapping.entrySet()) {
             List<String> oldClasses = entry.getValue();
@@ -47,11 +51,11 @@ public class BIBeanHistoryManager {
         return oldClass;
     }
 
-    private static Document readFile() {
+    private static Document readFile(String beanFilePath) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            File file = new File(Thread.currentThread().getContextClassLoader().getResource("").getPath() + FILE_NAME);
+            File file = new File(beanFilePath);
             return db.parse(file);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
