@@ -480,8 +480,6 @@ public abstract class AbstractExcel2007Util {
                 } catch (Exception e) {
                     cellValue = n;
                 }
-            } else if (isSciNotation()) {
-                cellValue = NumberToTextConverter.toText(Double.parseDouble(value.toString()));
             } else {
                 try {
                     cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
@@ -489,10 +487,6 @@ public abstract class AbstractExcel2007Util {
                     cellValue = n;
                 }
             }
-        }
-
-        private boolean isSciNotation() {
-            return this.formatIndex == SCINOTATION || this.value.toString().contains("E");
         }
 
         public void characters(char[] ch, int start, int length) throws SAXException {
