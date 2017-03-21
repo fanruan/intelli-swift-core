@@ -15,6 +15,8 @@ public class GeneralANDDimensionFilter extends GeneralDimensionFilter {
 
     private static final long serialVersionUID = -2799299194841507402L;
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -17,6 +17,10 @@ public abstract class GeneralDimensionFilter extends AbstractDimensionFilter {
     @BICoreField
     protected DimensionFilter[] childs;
 
+    public void setChilds(DimensionFilter[] childs) {
+        this.childs = childs;
+    }
+
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         if (jo.has("filter_value")) {

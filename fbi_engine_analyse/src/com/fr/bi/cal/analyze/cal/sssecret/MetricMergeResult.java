@@ -24,6 +24,10 @@ public class MetricMergeResult extends Node {
         this.gvis = gvis;
     }
 
+    public void setGvis(GroupValueIndex[] gvis) {
+        this.gvis = gvis;
+    }
+
     public GroupValueIndex[] getGvis() {
         return gvis;
     }
