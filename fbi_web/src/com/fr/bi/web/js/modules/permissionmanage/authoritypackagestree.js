@@ -41,7 +41,6 @@ BI.AuthorityPackagesTree = BI.inherit(BI.Widget, {
             }],
             hgap: 10
         });
-        this.populate();
     },
 
     getSelectType: function () {

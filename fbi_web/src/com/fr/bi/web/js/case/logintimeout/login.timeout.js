@@ -72,7 +72,7 @@ BI.LoginTimeOut = BI.inherit(BI.BarPopoverSection, {
             inputType: "password",
             cls: "login-input",
             allowBlank: true,
-            watermark: BI.i18nText("BI-Password"),
+            watermark: BI.i18nText("BI-Basic_Password"),
             width: 300,
             height: 30
         });

@@ -22,7 +22,7 @@ BI.ConfFilterSelectSingleField = BI.inherit(BI.Widget, {
                 var tableName = o.table.table_name, tId = o.table.id;
                 return [{
                     id: tId,
-                    type: "bi.select_data_level0_node",
+                    type: "bi.select_data_level_node",
                     text: tableName,
                     value: tId,
                     open: true
@@ -35,7 +35,7 @@ BI.ConfFilterSelectSingleField = BI.inherit(BI.Widget, {
                     result.push({
                         id: fId,
                         pId: tableId,
-                        type: "bi.select_data_level0_item",
+                        type: "bi.select_data_level_item",
                         fieldType: field["field_type"],
                         text: field["field_name"],
                         value: {

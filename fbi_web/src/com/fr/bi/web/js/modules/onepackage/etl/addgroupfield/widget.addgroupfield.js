@@ -306,7 +306,7 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
 
         this.save = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Save"),
+            text: BI.i18nText("BI-Basic_Save"),
             height: this.constants.ADD_GROUP_FIELD_BUTTON_HEIGHT,
             disabled: true,
             tipType: "warning",
@@ -406,7 +406,7 @@ BI.AddGroupField = BI.inherit(BI.Widget, {
         if (BI.isNotNull(isGenerated) && isGenerated === true) {
             var previewButton = BI.createWidget({
                 type: "bi.button",
-                text: BI.i18nText("BI-Preview"),
+                text: BI.i18nText("BI-Basic_Preview"),
                 height: this.constants.ADD_GROUP_FIELD_BUTTON_HEIGHT,
                 width: this.constants.ADD_GROUP_FIELD_BUTTON_WIDTH
             });

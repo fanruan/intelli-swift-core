@@ -35,8 +35,8 @@ BI.DimensionFilterSelectField = BI.inherit(BI.Widget, {
                 }, {
                     id: self._constant.TARGET_FIELD,
                     type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Target"),
-                    value: BI.i18nText("BI-Target"),
+                    text: BI.i18nText("BI-Basic_Target"),
+                    value: BI.i18nText("BI-Basic_Target"),
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.SERIES,
                     open: true
@@ -48,7 +48,7 @@ BI.DimensionFilterSelectField = BI.inherit(BI.Widget, {
                     return [{
                         id: fieldId,
                         pId: self._constant.DIMENSION_FIELD,
-                        type: "bi.select_data_level0_item",
+                        type: "bi.select_data_level_item",
                         fieldType: BI.Utils.getFieldTypeByID(fieldId),
                         text: BI.Utils.getDimensionNameByID(o.dId),
                         title: BI.Utils.getDimensionNameByID(o.dId),
@@ -62,7 +62,7 @@ BI.DimensionFilterSelectField = BI.inherit(BI.Widget, {
                         result.push({
                             id: tId,
                             pId: self._constant.TARGET_FIELD,
-                            type: "bi.select_data_level0_item",
+                            type: "bi.select_data_level_item",
                             fieldType: BI.Utils.getFieldTypeByDimensionID(tId),
                             text: BI.Utils.getDimensionNameByID(tId),
                             title: BI.Utils.getDimensionNameByID(tId),

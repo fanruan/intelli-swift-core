@@ -23,7 +23,7 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
             tablesCreator: function () {
                 return [{
                     id: BICst.DATACOLUMN.XANDY,
-                    type: "bi.select_data_level0_item",
+                    type: "bi.select_data_level_item",
                     text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-Basic_And") + BI.i18nText("BI-Uppercase_Y_Axis"),
                     title: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-Basic_And") + BI.i18nText("BI-Uppercase_Y_Axis"),
                     fieldType: BICst.DATACOLUMN.XANDY,
@@ -31,7 +31,7 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                     isParent: false
                 }, {
                     id: BICst.DATACOLUMN.X,
-                    type: "bi.select_data_level0_item",
+                    type: "bi.select_data_level_item",
                     text: BI.i18nText("BI-Uppercase_X_Axis"),
                     title: BI.i18nText("BI-Uppercase_X_Axis"),
                     fieldType: BICst.DATACOLUMN.X,
@@ -39,7 +39,7 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                     isParent: false
                 }, {
                     id: BICst.DATACOLUMN.Y,
-                    type: "bi.select_data_level0_item",
+                    type: "bi.select_data_level_item",
                     text: BI.i18nText("BI-Uppercase_Y_Axis"),
                     title: BI.i18nText("BI-Uppercase_Y_Axis"),
                     fieldType: BICst.DATACOLUMN.Y,
@@ -62,7 +62,7 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                     result.push({
                         id: dId,
                         pId: self._constant.DIMENSION_FIELD,
-                        type: "bi.select_data_level0_item",
+                        type: "bi.select_data_level_item",
                         fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
                         text: BI.Utils.getDimensionNameByID(dId),
                         title: BI.Utils.getDimensionNameByID(dId),

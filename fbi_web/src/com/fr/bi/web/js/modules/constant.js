@@ -105,7 +105,22 @@ BICst.DIMENSION_DATE_COMBO = {
     SHOW_FIELD: 37,
     SERIES_ACCUMULATION_ATTRIBUTE: 38,
     NO_SERIES: 39,
-    SERIES_ACCUMULATION: 40
+    SERIES_ACCUMULATION: 40,
+
+    YD: 906,
+    MD: 907,
+    YMDHMS: 908,
+    HOUR: 909,
+    MINUTE: 910,
+    SECOND: 911,
+    WEEK_COUNT:912,
+    D: 913,
+    YM: 914,
+    YW: 915,
+    YMDH: 916,
+    YMDHM: 917,
+    YS: 918,
+    MORE_GROUP: 919
 };
 
 //指标下拉选项
@@ -203,11 +218,25 @@ BICst.STATISTICS_GROUP_DATE_COMBO = {
     MONTH: 903,
     WEEK: 904,
     DELETE: 905,
+    YD: 906,
+    MD: 907,
+    YMDHMS: 908,
+    HOUR: 909,
+    MINUTE: 910,
+    SECOND: 911,
+    WEEK_COUNT:912,
+    D: 913,
+    YM: 914,
+    YW: 915,
+    YMDH: 916,
+    YMDHM: 917,
+    YS: 918,
     No_Repeat_Count: 899,
     DISPLAY: 898,
     HIDDEN: 897,
     RENAME: 896,
-    RECORD_COUNT: 895
+    RECORD_COUNT: 895,
+    MORE_GROUP: 919
 };
 
 BICst.STATISTICS_GROUP_NUMBER_COMBO = {

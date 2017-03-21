@@ -39,8 +39,8 @@ BI.SelectTablePane = BI.inherit(BI.LoadingPane, {
             tables: o.tables,
             etl: o.etl
         });
-        BI.Utils.getConnectionNames(function (linkNames) {
-            self.tab.populate(linkNames);
+        BI.Utils.getLinksAndPackages4Conf(function (res) {
+            self.tab.populate(res);
         });
         this.tab.on(BI.DataLinksTab.EVENT_CHANGE, function () {
             self._setTableCount();

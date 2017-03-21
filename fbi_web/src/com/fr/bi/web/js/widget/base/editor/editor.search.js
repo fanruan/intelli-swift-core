@@ -8,7 +8,7 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
             baseCls: "bi-search-editor",
             height: 30,
             errorText: "",
-            watermark: BI.i18nText("BI-Search"),
+            watermark: BI.i18nText("BI-Basic_Search"),
             validationChecker: BI.emptyFn,
             quitChecker: BI.emptyFn
         });

@@ -51,7 +51,7 @@ BI.MapDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         this.showPercentage = BI.createWidget({
             type: "bi.multi_select_item",
             width: 75,
-            value: BI.i18nText("BI-Percentage")
+            value: BI.i18nText("BI-Basic_Percentage")
         });
 
         this.showPercentage.on(BI.Controller.EVENT_CHANGE, function() {

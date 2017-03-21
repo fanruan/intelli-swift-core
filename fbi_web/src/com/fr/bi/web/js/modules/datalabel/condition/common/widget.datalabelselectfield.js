@@ -24,16 +24,16 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                 return [{
                     id: self._constant.SELF_FIELD,
                     type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Self"),
-                    value: BI.i18nText("BI-Self"),
+                    text: BI.i18nText("BI-Basic_Self"),
+                    value: BI.i18nText("BI-Basic_Self"),
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.SERIES,
                     open: true
                 }, {
                     id: self._constant.OTHER_FIELD,
                     type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Basic_Dimension") + "/" + BI.i18nText("BI-Target"),
-                    value: BI.i18nText("BI-Basic_Dimension") + "/" + BI.i18nText("BI-Target"),
+                    text: BI.i18nText("BI-Basic_Dimension") + "/" + BI.i18nText("BI-Basic_Target"),
+                    value: BI.i18nText("BI-Basic_Dimension") + "/" + BI.i18nText("BI-Basic_Target"),
                     isParent: true,
                     fontType: BI.DimensionSelectDataLevel0Node.CLASSIFY,
                     open: true
@@ -44,10 +44,10 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                     return [{
                         id: o.dId,
                         pId: self._constant.SELF_FIELD,
-                        type: "bi.select_data_level0_item",
+                        type: "bi.select_data_level_item",
                         fieldType: BI.Utils.getFieldTypeByDimensionID(o.dId),
-                        text: BI.i18nText("BI-Self"),
-                        title: BI.i18nText("BI-Self"),
+                        text: BI.i18nText("BI-Basic_Self"),
+                        title: BI.i18nText("BI-Basic_Self"),
                         value: o.dId
                     }]
                 } else {
@@ -57,7 +57,7 @@ BI.DataLabelFilterSelectField = BI.inherit(BI.Widget, {
                         result.push({
                             id: dId,
                             pId: self._constant.OTHER_FIELD,
-                            type: "bi.select_data_level0_item",
+                            type: "bi.select_data_level_item",
                             fieldType: BI.Utils.getFieldTypeByDimensionID(dId),
                             text: BI.Utils.getDimensionNameByID(dId),
                             title: BI.Utils.getDimensionNameByID(dId),

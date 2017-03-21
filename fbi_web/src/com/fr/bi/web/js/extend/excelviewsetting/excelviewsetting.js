@@ -42,7 +42,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
 
         var save = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Save"),
+            text: BI.i18nText("BI-Basic_Save"),
             height: 28
         });
         save.on(BI.Button.EVENT_CHANGE, function () {
@@ -111,7 +111,6 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
         var self = this;
         this.tree = BI.createWidget({
             type: "bi.excel_view_setting_tree",
-            tables: this.model.getTables(),
             clearOneCell: function (fieldId) {
                 self.model.clearOneCell(fieldId);
                 self.populate();
@@ -147,8 +146,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
         var self = this;
         var toolbar = this._createExcelToolbar();
         this.excel = BI.createWidget({
-            type: "bi.excel_view_setting_excel",
-            all_fields: this.model.getAllFields()
+            type: "bi.excel_view_setting_excel"
         });
         this.excel.setExcel(this.model.getExcelFullName(), function () {
             self.excel.setValue(self.model.getPositions());
@@ -217,7 +215,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
                     items: {
                         left: [{
                             type: "bi.label",
-                            text: "excel" + BI.i18nText("BI-Table") + ":",
+                            text: "excel" + BI.i18nText("BI-Basic_Table") + ":",
                             height: 30,
                             cls: "excel-view-setting-excel-toolbar-title"
                         }, this.excelName, this.uploadButton]
@@ -250,8 +248,11 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-        this.tree.populate(this.model.getTables());
-        this.excel.setValue(this.model.getPositions());
+        var self = this;
+        this.model.getTablesInfo(function() {
+            self.tree.populate(self.model.getTables());
+            self.excel.setValue(self.model.getPositions());
+        });
     },
 
     getValue: function () {

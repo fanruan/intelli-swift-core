@@ -16,7 +16,19 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
         POSITION_BY_ADDRESS: BICst.DIMENSION_DATE_COMBO.ADDRESS,
         POSITION_BY_LNG_LAT: BICst.DIMENSION_DATE_COMBO.LNG_LAT,
         POSITION_BY_LNG: BICst.DIMENSION_DATE_COMBO.LNG,
-        POSITION_BY_LAT: BICst.DIMENSION_DATE_COMBO.LAT
+        POSITION_BY_LAT: BICst.DIMENSION_DATE_COMBO.LAT,
+        MORE_GROUP: BICst.DIMENSION_DATE_COMBO.MORE_GROUP,
+        D: BICst.DIMENSION_DATE_COMBO.D,
+        WEEK_COUNT: BICst.DIMENSION_DATE_COMBO.WEEK_COUNT,
+        HOUR: BICst.DIMENSION_DATE_COMBO.HOUR,
+        MINUTE: BICst.DIMENSION_DATE_COMBO.MINUTE,
+        SECOND: BICst.DIMENSION_DATE_COMBO.SECOND,
+        YM: BICst.DIMENSION_DATE_COMBO.YM,
+        YS: BICst.DIMENSION_DATE_COMBO.YS,
+        YW: BICst.DIMENSION_DATE_COMBO.YW,
+        YMDH: BICst.DIMENSION_DATE_COMBO.YMDH,
+        YMDHM: BICst.DIMENSION_DATE_COMBO.YMDHM,
+        YMDHMS: BICst.DIMENSION_DATE_COMBO.YMDHMS
     },
 
     defaultItems: function () {
@@ -38,15 +50,11 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 children: []
             }],
             [{
-                text: BI.i18nText("BI-Basic_Date"),
-                value: BICst.DIMENSION_DATE_COMBO.DATE,
-                cls: "dot-e-font"
-            }, {
                 text: BI.i18nText("BI-Year_Fen"),
                 value: BICst.DIMENSION_DATE_COMBO.YEAR,
                 cls: "dot-e-font"
             }, {
-                text: BI.i18nText("BI-Quarter"),
+                text: BI.i18nText("BI-Basic_Quarter"),
                 value: BICst.DIMENSION_DATE_COMBO.QUARTER,
                 cls: "dot-e-font"
             }, {
@@ -57,6 +65,57 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 text: BI.i18nText("BI-Week_XingQi"),
                 value: BICst.DIMENSION_DATE_COMBO.WEEK,
                 cls: "dot-e-font"
+            }, {
+                el: {
+                    text: BI.i18nText("BI-More_Group"),
+                    value: BICst.DIMENSION_DATE_COMBO.MORE_GROUP,
+                    cls: "dot-e-font"
+                },
+                children: [{
+                    text: BI.i18nText("BI-Week_Count"),
+                    value: BICst.DIMENSION_DATE_COMBO.WEEK_COUNT,
+                    cls: "dot-ha-font"
+                }, {
+                    text: BI.i18nText("BI-Hour_Sin"),
+                    value: BICst.DIMENSION_DATE_COMBO.HOUR,
+                    cls: "dot-ha-font"
+                }, {
+                    text: BI.i18nText("BI-Basic_Minute"),
+                    value: BICst.DIMENSION_DATE_COMBO.MINUTE,
+                    cls: "dot-ha-font"
+                }, {
+                    text: BI.i18nText("BI-Basic_Seconds"),
+                    value: BICst.DIMENSION_DATE_COMBO.SECOND,
+                    cls: "dot-ha-font"
+                },{
+                    text: BI.i18nText("BI-Year_Quarter"),
+                    value: BICst.DIMENSION_DATE_COMBO.YS,
+                    cls: "dot-ha-font"
+                }, {
+                    text: BI.i18nText("BI-Year_Month"),
+                    value: BICst.DIMENSION_DATE_COMBO.YM,
+                    cls: "dot-ha-font"
+                }, {
+                    text: BI.i18nText("BI-Year_Week"),
+                    value: BICst.DIMENSION_DATE_COMBO.YW,
+                    cls: "dot-ha-font"
+                }, {
+                    text: BI.i18nText("BI-Basic_YMD"),
+                    value: BICst.DIMENSION_DATE_COMBO.DATE,
+                    cls: "dot-ha-font"
+                }, {
+                    text: BI.i18nText("BI-Basic_YMDH"),
+                    value: BICst.DIMENSION_DATE_COMBO.YMDH,
+                    cls: "dot-ha-font"
+                }, {
+                    text: BI.i18nText("BI-Basic_YMDHM"),
+                    value: BICst.DIMENSION_DATE_COMBO.YMDHM,
+                    cls: "dot-ha-font"
+                }, {
+                    text: BI.i18nText("BI-Detail_Date"),
+                    value: BICst.DIMENSION_DATE_COMBO.YMDHMS,
+                    cls: "dot-ha-font"
+                }]
             }],
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),
@@ -78,7 +137,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 title: showFieldDisabled ? BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension") : BI.i18nText("BI-Show_Field")
             }],
             [{
-                text: BI.i18nText("BI-Rename"),
+                text: BI.i18nText("BI-Basic_Rename"),
                 value: BICst.DIMENSION_DATE_COMBO.RENAME
             }],
             [{
@@ -87,7 +146,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 cls: "copy-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Remove"),
+                text: BI.i18nText("BI-Basic_Remove"),
                 value: BICst.DIMENSION_DATE_COMBO.DELETE,
                 cls: "delete-h-font"
             }],

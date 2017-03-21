@@ -322,7 +322,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         var self = this;
         var finishButton = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-OK"),
+            text: BI.i18nText("BI-Basic_OK"),
             height: this._constant.BUTTON_HEIGHT,
             level: "common"
         });
@@ -372,7 +372,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         var selectTablePane = BI.createWidget({
             type: "bi.select_table_pane",
             element: BI.Layers.create(BICst.SELECT_TABLES_LAYER, BICst.BODY_ELEMENT),
-            tables: this.model.getTables(),
+            tables: this.model.getTables()
         });
         BI.Layers.show(BICst.SELECT_TABLES_LAYER);
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {
@@ -394,7 +394,8 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             type: "bi.etl",
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: tableId,
-            packageId: this.model.getId()
+            packageId: this.model.getId(),
+            tableNames: this.model.getOtherTableNames(tableId)
         });
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_SAVE, function (data) {
@@ -438,7 +439,8 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self._constant.ETL_LAYER),
                 id: tableId,
                 table: data,
-                packageId: self.model.getId()
+                packageId: self.model.getId(),
+                tableNames: self.model.getOtherTableNames(tableId)
             });
             BI.Layers.show(self._constant.ETL_LAYER);
             etl.on(BI.ETL.EVENT_SAVE, function (data) {
@@ -479,7 +481,8 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 element: BI.Layers.create(self._constant.ETL_LAYER),
                 id: tableId,
                 table: data,
-                packageId: self.model.getId()
+                packageId: self.model.getId(),
+                tableNames: self.model.getOtherTableNames(tableId)
             });
             BI.Layers.show(self._constant.ETL_LAYER);
             etl.on(BI.ETL.EVENT_SAVE, function (data) {
@@ -528,10 +531,8 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             element: BI.Layers.create(this._constant.ETL_LAYER),
             id: id,
             packageId: this.model.getId(),
-            table: data.table,
-            excelView: data.excelView,
-            updateSettings: data.updateSettings
-        });
+            tableNames: this.model.getOtherTableNames(id)
+        }, data);
         BI.Layers.show(this._constant.ETL_LAYER);
         etl.on(BI.ETL.EVENT_CUBE_SAVE, function (table) {
             self.model.changeTableInfo(id, table);

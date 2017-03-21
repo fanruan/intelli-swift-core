@@ -6,7 +6,7 @@
 BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
     _defaultConfig: function(){
         return BI.extend( BIConf.AddDataLinkView.superclass._defaultConfig.apply(this, arguments), {
-            btns:[BI.i18nText("BI-Sure"), BI.i18nText("BI-Test_Connection")]
+            btns:[BI.i18nText("BI-Basic_Sure"), BI.i18nText("BI-Test_Connection")]
         })
     },
 
@@ -105,7 +105,7 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
             cls: "item-input",
             allowBlank: true
         });
-        var password = this._createItemWrap(BI.i18nText("BI-Password"), this.password);
+        var password = this._createItemWrap(BI.i18nText("BI-Basic_Password"), this.password);
 
         //编码
         var codeLabel = BI.createWidget({
@@ -183,8 +183,8 @@ BIConf.AddDataLinkView = BI.inherit(BI.BarFloatSection, {
         });
         this.saveButton = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Sure"),
-            title: BI.i18nText("BI-Sure"),
+            text: BI.i18nText("BI-Basic_Sure"),
+            title: BI.i18nText("BI-Basic_Sure"),
             height: 28,
             handler: function(){
                 self.model.set(self._getLinkValue());

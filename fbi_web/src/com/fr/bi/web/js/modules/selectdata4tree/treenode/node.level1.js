@@ -16,7 +16,8 @@ BI.TreeSelectDataLevel1Node = BI.inherit(BI.AbstractTreeSelectDataNode, {
     _createNode: function () {
         var o = this.options;
         return BI.createWidget({
-            type: "bi.select_data_level1_node",
+            type: "bi.select_data_level_node",
+            layer: 1,
             element: this.element,
             id: o.id,
             pId: o.pId,
