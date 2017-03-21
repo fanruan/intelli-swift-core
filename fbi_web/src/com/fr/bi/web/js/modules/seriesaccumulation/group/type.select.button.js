@@ -8,8 +8,8 @@ BI.SelectAccumulateTypeButton = BI.inherit(BI.Widget, {
             title: BI.i18nText("BI-Stacked_Chart"),
             value: BICst.ACCUMULATE_TYPE.COLUMN
         }, {
-            text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Polyline") + ")",
-            title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Polyline") + ")",
+            text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Basic_Polyline") + ")",
+            title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Basic_Polyline") + ")",
             value: BICst.ACCUMULATE_TYPE.AREA_NORMAL
         }, {
             text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Basic_Curve") + ")",

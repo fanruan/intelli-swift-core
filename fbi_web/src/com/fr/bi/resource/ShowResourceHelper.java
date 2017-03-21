@@ -2,9 +2,6 @@ package com.fr.bi.resource;
 
 import com.fr.stable.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Wang on 2017/1/18.
  */
@@ -115,8 +112,20 @@ public class ShowResourceHelper {
         };
     }
 
-    private static String[] getShowModelJs() {
-        return new String[]{
+    public static String[] getShowJs() {
+        String[] dezi = DeziResourceHelper.getDeziJsModule();
+        String[] show = getShowJsModule();
+        return (String[]) ArrayUtils.addAll(ArrayUtils.addAll(dezi, show), new String[]{
+
+                "com/fr/bi/web/js/show/show.start.js",
+                "com/fr/bi/web/js/show/model.js",
+                "com/fr/bi/web/js/show/view.js",
+                "com/fr/bi/web/js/show/modules/show.floatbox.manage.js",
+                "com/fr/bi/web/js/show/modules/show.model.manage.js",
+                "com/fr/bi/web/js/show/modules/show.view.manage.js",
+                "com/fr/bi/web/js/show/modules/model/show.model.js",
+                "com/fr/bi/web/js/show/modules/model/pane/model.pane.js",
+
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.widget.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.detailtable.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.string.js",
@@ -149,11 +158,6 @@ public class ShowResourceHelper {
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/customgroup/model.customgroup.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/customsort/model.customsort.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/detail/field/numbercustomgroup/model.number.custom.group.js",
-        };
-    }
-
-    private static String[] getShowViewJs() {
-        return new String[]{
                 "com/fr/bi/web/js/show/modules/view/show.view.js",
                 "com/fr/bi/web/js/show/modules/view/pane/show.pane.js",
 
@@ -189,30 +193,7 @@ public class ShowResourceHelper {
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/customgroup/show.customgroup.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/customsort/show.customsort.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/detail/field/numbercustomgroup/show.number.custom.group.js"
-        };
-    }
 
-    public static String[] getShowJs() {
-
-        List<String[]> jsList = new ArrayList<String[]>();
-        jsList.add(DeziResourceHelper.getDeziAndShowJsModule());
-        jsList.add(getShowJsModule());
-        jsList.add(new String[]{
-                "com/fr/bi/web/js/show/show.start.js",
-                "com/fr/bi/web/js/show/model.js",
-                "com/fr/bi/web/js/show/view.js",
-                "com/fr/bi/web/js/show/modules/show.floatbox.manage.js",
-                "com/fr/bi/web/js/show/modules/show.model.manage.js",
-                "com/fr/bi/web/js/show/modules/show.view.manage.js",
-                "com/fr/bi/web/js/show/modules/model/show.model.js",
-                "com/fr/bi/web/js/show/modules/model/pane/model.pane.js",
         });
-        jsList.add(getShowModelJs());
-        jsList.add(getShowViewJs());
-        String[] result = new String[]{};
-        for (String[] js : jsList) {
-            result = ArrayUtils.addAll(result, js);
-        }
-        return result;
     }
 }

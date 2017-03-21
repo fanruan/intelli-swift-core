@@ -20,7 +20,7 @@ BI.DataImageStyleSet = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.triggerButton = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Pictures"),
+            text: BI.i18nText("BI-Basic_Pictures"),
             height: this._constant.BUTTON_HEIGHT,
             width: this._constant.TRIGGER_BUTTON_WIDTH
         });

@@ -32,7 +32,7 @@ BI.TargetLabelControl = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 textAlign: "left",
-                text: BI.i18nText("BI-Target"),
+                text: BI.i18nText("BI-Basic_Target"),
                 cls: "setting-tip-label",
                 width: this.constants.targetWidth
             }, this.line]

@@ -127,7 +127,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.chartColor]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Type"),
+                    text: BI.i18nText("BI-Basic_Type"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
@@ -167,7 +167,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //千分符
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             logic: {
                 dynamic: true
             }
@@ -451,7 +451,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.dataLabelSetting]
                 }, /*{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Tooltip"),
+                    text: BI.i18nText("BI-Basic_Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",

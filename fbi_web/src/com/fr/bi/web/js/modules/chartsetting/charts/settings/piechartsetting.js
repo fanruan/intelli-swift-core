@@ -186,7 +186,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.chartStyle]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Type"),
+                    text: BI.i18nText("BI-Basic_Type"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
@@ -306,7 +306,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.dataLabelSetting]
                 }/*, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Tooltip"),
+                    text: BI.i18nText("BI-Basic_Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",

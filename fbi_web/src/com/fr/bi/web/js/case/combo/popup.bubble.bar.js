@@ -8,7 +8,7 @@ BI.BubblePopupBarView = BI.inherit(BI.BubblePopupView, {
     _defaultConfig: function () {
         return BI.extend(BI.BubblePopupBarView.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-bubble-bar-popup-view",
-            buttons: [{value: BI.i18nText(BI.i18nText("BI-Sure"))}, {value: BI.i18nText("BI-Basic_Cancel"), level: "ignore"}]
+            buttons: [{value: BI.i18nText(BI.i18nText("BI-Basic_Sure"))}, {value: BI.i18nText("BI-Basic_Cancel"), level: "ignore"}]
         })
     },
     _init: function () {

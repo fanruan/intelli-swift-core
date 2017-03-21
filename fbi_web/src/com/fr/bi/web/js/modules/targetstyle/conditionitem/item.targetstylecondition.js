@@ -45,7 +45,7 @@ BI.TargetStyleConditionItem = BI.inherit(BI.Widget, {
             cls: "data-link-remove-font",
             width: this._constant.BUTTON_WIDTH,
             height: this._constant.BUTTON_HEIGHT,
-            title: BI.i18nText("BI-Remove"),
+            title: BI.i18nText("BI-Basic_Remove"),
             handler: function () {
                 o.onRemoveCondition(o.cid);
             }
