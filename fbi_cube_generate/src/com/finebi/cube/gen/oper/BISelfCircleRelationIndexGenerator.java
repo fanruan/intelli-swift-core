@@ -8,22 +8,23 @@ import com.finebi.cube.structure.BICubeRelationEntity;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.structure.column.BICubeStringColumn;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.finebi.cube.utils.BIRelationHelper;
 import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Kary on 2017/3/15.
  */
 public class BISelfCircleRelationIndexGenerator extends BIRelationIndexGenerator {
-    public BISelfCircleRelationIndexGenerator(Cube cube, Cube integrityCube, BICubeRelation relation) {
-        super(cube, integrityCube, relation, null);
+    public BISelfCircleRelationIndexGenerator(Cube cube, Cube integrityCube, BICubeRelation relation, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
+        super(cube, integrityCube, relation, tablesNeed2GenerateMap);
 //        super.setCubeChooser(new CubeCalculatorChooser(cube, integrityCube));
     }
 
@@ -51,8 +52,7 @@ public class BISelfCircleRelationIndexGenerator extends BIRelationIndexGenerator
                 for (ICubeFieldSource fieldSource : getSelfCircleParentFields()) {
                     BIColumnKey indexKey = BIColumnKey.covertColumnKey(fieldSource);
                     ICubeColumnEntityService currentColumn = (ICubeColumnEntityService) foreignTable.getColumnDataGetter(indexKey);
-//                    GroupValueIndex gvi = currentColumn.getBitmapIndex(position);
-                    GroupValueIndex gvi = ((BICubeStringColumn) currentColumn).getIndexByGroupValue(((BICubeStringColumn) foreignColumn).getGroupValue(position));
+                    GroupValueIndex gvi = currentColumn.getIndexByGroupValue(foreignColumn.getGroupObjectValue(position));
                     selfCircleGVI = selfCircleGVI.or(gvi);
                     //没必要继续往下走了
                     if (selfCircleGVI.getRowsCountWithData() == foreignTable.getRowCount()) {

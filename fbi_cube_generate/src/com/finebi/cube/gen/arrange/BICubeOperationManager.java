@@ -450,7 +450,7 @@ public class BICubeOperationManager {
 //        return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
         boolean containSelfCircleTable = containSelfCircleTable(BICubeRelationUtils.convert(relation));
         if (containSelfCircleTable) {
-            return new BISelfCircleRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation));
+            return new BISelfCircleRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation),tablesNeed2GenerateMap);
         } else {
             return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
         }
