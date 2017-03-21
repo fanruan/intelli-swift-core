@@ -15,9 +15,8 @@ BI.ComboCustomScale = BI.inherit(BI.Widget, {
 
         this.label = BI.createWidget({
             type: "bi.label",
-            cls: "combo-custom-scale-label",
             text: o.text,
-            textHeight: 25,
+            textHeight: 30,
             textAlign: "left"
         });
 

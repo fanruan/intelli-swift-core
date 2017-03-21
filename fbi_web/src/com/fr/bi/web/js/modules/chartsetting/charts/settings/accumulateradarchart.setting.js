@@ -168,7 +168,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Basic_Separators"),
-            width: 75
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYSeparator.on(BI.Controller.EVENT_CHANGE, function () {
@@ -179,7 +181,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
-            width: 90
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -211,7 +215,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowCustomScale = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Scale_Customize"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYShowCustomScale.on(BI.Controller.EVENT_CHANGE, function (v) {
@@ -306,7 +312,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.hShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal_Orientation"),
-            width: 60
+            logic: {
+                dynamic: true
+            }
         });
 
         this.hShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
@@ -329,7 +337,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
-            width: 60
+            logic: {
+                dynamic: true
+            }
         });
 
         this.vShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
@@ -352,7 +362,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Data_Label"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -382,7 +394,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.nullContinuity = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Null_Continue"),
-            width: 90
+            logic: {
+                dynamic: true
+            }
         });
 
         this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function () {
@@ -456,7 +470,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
@@ -466,7 +482,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.linkageSelection = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Select_Linkage_Manually"),
-            width: 150
+            logic: {
+                dynamic: true
+            }
         });
 
         this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function () {
