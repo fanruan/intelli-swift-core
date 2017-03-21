@@ -90,9 +90,9 @@ public class BICubeOperationManager {
         try {
             cubeBuildFinishOperation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
         } catch (BITopicAbsentException e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         } catch (BIRegisterIsForbiddenException e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
     }
 
@@ -172,13 +172,9 @@ public class BICubeOperationManager {
                  */
                 CubeTableSource tableSource = sameLevelTableIt.next();
                 if (!isGenerated(tableSource)) {
-//                    BIOperation<Object> operation = new BIOperation<Object>(
-//                            tableSource.getSourceID(),
-//                            getDataTransportBuilder(cube, addConnection(tableSource), originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
                             getDataTransportBuilder(cube, integrityCube, tableSource, originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource), tablesNeed2GenerateMap));
-
                     operation.setOperationTopicTag(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource));
                     try {
@@ -450,7 +446,7 @@ public class BICubeOperationManager {
 //        return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
         boolean containSelfCircleTable = containSelfCircleTable(BICubeRelationUtils.convert(relation));
         if (containSelfCircleTable) {
-            return new BISelfCircleRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation),tablesNeed2GenerateMap);
+            return new BISelfCircleRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
         } else {
             return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation), tablesNeed2GenerateMap);
         }
