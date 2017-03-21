@@ -10,7 +10,6 @@ BI.CubeLogTree = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CubeLogTree.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-cube-log-tree",
-            driver: BI.createWidget(),
             items: []
         });
     },
@@ -24,12 +23,10 @@ BI.CubeLogTree = BI.inherit(BI.Widget, {
             expander: {
                 type: "bi.cube_log_expander",
                 el: {
-                    type: "bi.cube_log_node",
-                    driver: this.options.driver
+                    type: "bi.cube_log_node"
                 },
                 popup: {
-                    type: "bi.cube_log_detail_pane",
-                    driver: this.options.driver
+                    type: "bi.custom_tree"
                 }
             },
             items: o.items,

@@ -15,8 +15,6 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
-        this._buildDriver();
-
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
@@ -32,22 +30,6 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         })
     },
 
-    _buildDriver: function () {
-        var self = this;
-        this.driver = BI.createWidget({
-            type: "bi.deal_with_cube_log_data_driver"
-        });
-
-        this.driver.on(BI.DealWithCubeLogDataDriver.EVENT_CUBE_UPDATING, function () {
-            self._setImmediateButtonStatus(false);
-        });
-
-        this.driver.on(BI.DealWithCubeLogDataDriver.EVENT_CUBE_UPDATE_COMPLETE, function () {
-            self._setImmediateButtonStatus(true);
-            self.cubeLog.setEnd();
-        })
-    },
-
     _buildImmediateButton: function () {
         var self = this;
         this.immediateButton = BI.createWidget({
@@ -59,9 +41,10 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
                 self.cubeLog.setStart();
                 BI.Utils.generateCube(function (data) {
                     if (data.result) {
-                        self.driver.populate();
+                        self._createCheckInterval();
                     } else {
                         self.cubeLog.setEnd();
+                        self._setImmediateButtonStatus(true);
                     }
                 });
             }
@@ -80,6 +63,36 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         })
     },
 
+    _checkCubeStatus: function () {
+        var self = this;
+        this.update({
+            noset: true,
+            success: function (data) {
+                if (data.hasTask === false) {
+                    self._setImmediateButtonStatus(true);
+                    self._clearCheckInterval();
+                } else {
+                    self._setImmediateButtonStatus(false);
+                }
+                self.cubeLog.refreshLog(data);
+            }
+        });
+    },
+
+    _createCheckInterval: function () {
+        var self = this;
+        this.interval = setInterval(function () {
+            self._checkCubeStatus();
+        }, 2000)
+    },
+
+    _clearCheckInterval: function () {
+        var self = this;
+        if (undefined != self.interval) {
+            clearInterval(self.interval);
+        }
+    },
+
     _buildTimeSetting: function () {
         return BI.createWidget({
             type: "bi.global_update_setting"
@@ -88,8 +101,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
 
     _buildLog: function () {
         return this.cubeLog = BI.createWidget({
-            type: "bi.cube_log",
-            driver: this.driver
+            type: "bi.cube_log"
         })
 
     },
@@ -106,7 +118,8 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
-        this.driver.populate();
+        this._checkCubeStatus();
+        this._createCheckInterval();
     },
 
     local: function () {
