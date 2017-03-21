@@ -148,7 +148,7 @@ BI.CustomScaleFormulaFieldTree = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
-                nodes = this._createOneAxis(nodes, usedTargets, BI.i18nText("BI-Target"));
+                nodes = this._createOneAxis(nodes, usedTargets, BI.i18nText("BI-Basic_Target"));
                 break;
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.COMPARE_AREA:

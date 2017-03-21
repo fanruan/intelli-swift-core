@@ -322,7 +322,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
         var self = this;
         var finishButton = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-OK"),
+            text: BI.i18nText("BI-Basic_OK"),
             height: this._constant.BUTTON_HEIGHT,
             level: "common"
         });

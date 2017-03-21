@@ -26,7 +26,7 @@ BI.ConfNumberIntervalCustomGroupOther = BI.inherit(BI.Widget, {
             type: "bi.editor",
             cls:"custom-group-editor",
             lgap:this.constants.lgap,
-            value: BI.i18nText("BI-Others"),
+            value: BI.i18nText("BI-Basic_Others"),
             width: this.constants.editorWidth,
             height: this.constants.editorHeight
         })
@@ -63,7 +63,7 @@ BI.ConfNumberIntervalCustomGroupOther = BI.inherit(BI.Widget, {
 
     setValue:function(v){
         this.checkbox.setSelected(BI.isNotNull(v));
-        this.editor.setValue(BI.isNotNull(v) ? v : BI.i18nText("BI-Others"));
+        this.editor.setValue(BI.isNotNull(v) ? v : BI.i18nText("BI-Basic_Others"));
         this.editor.setEnable(BI.isNotNull(v));
     }
 

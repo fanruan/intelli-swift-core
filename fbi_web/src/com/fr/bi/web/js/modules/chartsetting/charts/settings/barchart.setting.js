@@ -170,8 +170,10 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //千分符
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
-            width: 80
+            value: BI.i18nText("BI-Basic_Separators"),
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYSeparator.on(BI.Controller.EVENT_CHANGE, function () {
@@ -182,7 +184,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowTitle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Title"),
-            width: 90
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYShowTitle.on(BI.Controller.EVENT_CHANGE, function () {
@@ -212,7 +216,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
-            width: 100
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -243,7 +249,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowCustomScale = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Scale_Customize"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.leftYShowCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
@@ -291,7 +299,10 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.leftYSeparator]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.leftYShowTitle, this.leftYTitle]
+                    items: [this.leftYShowTitle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.leftYTitle]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftYTitleStyle]
@@ -324,7 +335,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.catShowTitle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Title"),
-            width: 90
+            logic: {
+                dynamic: true
+            }
         });
 
         this.catShowTitle.on(BI.Controller.EVENT_CHANGE, function () {
@@ -356,7 +369,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.catShowLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
-            width: 100
+            logic: {
+                dynamic: true
+            }
         });
 
         this.catShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -453,7 +468,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.hShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal_Orientation"),
-            width: 65
+            logic: {
+                dynamic: true
+            }
         });
 
         this.hShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
@@ -474,7 +491,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
-            width: 65
+            logic: {
+                dynamic: true
+            }
         });
 
         this.vShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
@@ -496,7 +515,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Data_Label"),
-            width: 115
+            logic: {
+                dynamic: true
+            }
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
@@ -571,7 +592,7 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.dataLabelSetting]
                 }/*, {
                  type: "bi.label",
-                 text: BI.i18nText("BI-Tooltip"),
+                 text: BI.i18nText("BI-Basic_Tooltip"),
                  cls: "attr-names"
                  }, {
                  type: "bi.vertical_adapt",
@@ -587,7 +608,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
@@ -597,7 +620,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.linkageSelection = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Select_Linkage_Manually"),
-            width: 150
+            logic: {
+                dynamic: true
+            }
         });
 
         this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function () {
@@ -622,7 +647,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.miniModel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Minimalist_Model"),
-            width: 170
+            logic: {
+                dynamic: true
+            }
         });
 
         this.miniModel.on(BI.Controller.EVENT_CHANGE, function () {

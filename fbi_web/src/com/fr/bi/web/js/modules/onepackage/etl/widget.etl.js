@@ -222,8 +222,8 @@ BI.ETL = BI.inherit(BI.Widget, {
         this.saveButton = BI.createWidget({
             type: "bi.button",
             level: "common",
-            text: BI.i18nText("BI-Save"),
-            title: BI.i18nText("BI-Save"),
+            text: BI.i18nText("BI-Basic_Save"),
+            title: BI.i18nText("BI-Basic_Save"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT,
             warningTitle: BI.bind(this._getWarningTitle, this)
         });
@@ -277,7 +277,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function () {
                         removeCombo.hideView();
                         self.fireEvent(BI.ETL.EVENT_REMOVE);
