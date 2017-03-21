@@ -13,6 +13,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TestBlockingQueue {
     public static LinkedBlockingQueue<Integer> queue = new LinkedBlockingQueue<Integer>(100);
     public static int times = 100;
+    public static int count = 20;
+
     public static void main(String[] args) {
         new PutThread().start();
         new TakeThread().start();
@@ -55,7 +57,7 @@ class PollThread extends Thread {
             } else {
                 BILoggerFactory.getLogger().info("PollThread:" + data);
             }
-            if (count == 20) {
+            if (count == TestBlockingQueue.count) {
                 break;
             }
         }

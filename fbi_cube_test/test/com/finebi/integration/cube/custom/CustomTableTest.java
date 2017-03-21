@@ -146,13 +146,10 @@ public class CustomTableTest extends TestCase {
         List<Integer> updateTypes = new ArrayList<>();
         baseTableSourceIds.add(CustomTableCreater.getTableSourceA().getSourceID());
         updateTypes.add(1);
-
         baseTableSourceIds.add(CustomTableCreater.getTableSourceB().getSourceID());
         updateTypes.add(2);
-
         baseTableSourceIds.add(CustomTableCreater.getTableSourceC().getSourceID());
         updateTypes.add(1);
-
         CustomTableTestTool.calc(baseTableSourceIds, updateTypes, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap);
         CubeBuildStuff stuff = new CubeBuildCustomTables(UserControl.getInstance().getSuperManagerID(), tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
                 new HashSet<>(), new HashSet<>(), new HashSet<>());
@@ -163,7 +160,6 @@ public class CustomTableTest extends TestCase {
         assertEquals(set.size(), 6);
         //A、B、AB
         assertEquals(stuff.getSingleSourceLayers().size(), 7);
-
         Map<CubeTableSource, UpdateSettingSource> updateTypeMap = stuff.getUpdateSettingSources();
         assertEquals(updateTypeMap.size(), 7);
         assertEquals(updateTypeMap.get(CustomTableCreater.getTableSourceA()).getUpdateType(), 1);
