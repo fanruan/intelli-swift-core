@@ -387,12 +387,13 @@ public abstract class AbstractExcel2007Util {
         }
 
         public void endElement(String uri, String localName, String name) throws SAXException {
+            int zero = 48;
             if (this.isTextTag(name)) {
                 this.vIsOpen = false;
                 switch (nextDataType) {
                     case BOOL:
                         char first = this.value.charAt(0);
-                        cellValue = first == 48 ? "FALSE" : "TRUE";
+                        cellValue = first == zero ? "FALSE" : "TRUE";
                         break;
                     case ERROR:
                         cellValue = "ERROR:" + this.value.toString();
@@ -449,13 +450,21 @@ public abstract class AbstractExcel2007Util {
                 tempRowDataList.add(tempData.toArray());
                 tempData = new ArrayList<String>();
                 lastColumnNumber = -1;
-            } else if (!"oddHeader".equals(name) && !"evenHeader".equals(name) && !"firstHeader".equals(name)) {
-                if ("oddFooter".equals(name) || "evenFooter".equals(name) || "firstFooter".equals(name)) {
+            } else if (notEqualSomething(name)) {
+                if (equalSomethong(name)) {
                     this.hfIsOpen = false;
                 }
             } else {
                 this.hfIsOpen = false;
             }
+        }
+
+        private boolean notEqualSomething(String name) {
+            return !"oddHeader".equals(name) && !"evenHeader".equals(name) && !"firstHeader".equals(name);
+        }
+
+        private boolean equalSomethong(String name) {
+            return "oddFooter".equals(name) || "evenFooter".equals(name) || "firstFooter".equals(name);
         }
 
         public void processSSTIndex() {
@@ -505,9 +514,10 @@ public abstract class AbstractExcel2007Util {
 
         private int nameToColumn(String name) {
             int column = -1;
+            int alphabet = 26;
             for (int i = 0; i < name.length(); ++i) {
                 int c = name.charAt(i);
-                column = (column + 1) * 26 + c - 'A';
+                column = (column + 1) * alphabet + c - 'A';
             }
             return column;
         }
