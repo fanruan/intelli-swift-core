@@ -176,7 +176,7 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Type"),
+                text: BI.i18nText("BI-Basic_Type"),
                 cls: "attr-names",
                 height: this.constant.SINGLE_LINE_HEIGHT
             }, this.tableFormGroup, {

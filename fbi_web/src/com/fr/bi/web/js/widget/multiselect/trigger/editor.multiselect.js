@@ -24,7 +24,7 @@ BI.MultiSelectEditor = BI.inherit(BI.Widget, {
             type: 'bi.state_editor',
             element: this.element,
             height: o.height,
-            watermark: BI.i18nText('BI-Search'),
+            watermark: BI.i18nText('BI-Basic_Search'),
             allowBlank: true
         });
 

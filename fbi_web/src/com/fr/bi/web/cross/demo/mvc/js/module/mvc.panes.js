@@ -39,7 +39,7 @@ PaneModulesView = BI.inherit(BI.View, {
             connect: "dimension-region-container",
             dimensionOrTargetClass: "bi-dimension-container",
             iconClass: 'region-column-icon',
-            titleName: BI.i18nText('BI-Series'),
+            titleName: BI.i18nText('BI-Basic_Series'),
             innerText: BI.i18nText('BI-Drag_Left_Field'),
             regionType: BICst.REGION.DIMENSION2
         }, {
@@ -55,7 +55,7 @@ PaneModulesView = BI.inherit(BI.View, {
             connect: "target-region-container",
             dimensionOrTargetClass: "target-container",
             iconClass: 'region-target-number-icon',
-            titleName: BI.i18nText('BI-Target'),
+            titleName: BI.i18nText('BI-Basic_Target'),
             innerText: BI.i18nText('BI-Drag_Left_Numberic_Field'),
             regionType: BICst.REGION.TARGET1
         }, {

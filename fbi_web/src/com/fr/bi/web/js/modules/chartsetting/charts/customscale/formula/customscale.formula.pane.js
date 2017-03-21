@@ -31,7 +31,7 @@ BI.CustomScaleFormulaPane = BI.inherit(BI.Widget, {
             type: "bi.button",
             level: "common",
             height: 30,
-            text: BI.i18nText("BI-OK")
+            text: BI.i18nText("BI-Basic_OK")
         });
 
         confirmButton.on(BI.Button.EVENT_CHANGE, function () {

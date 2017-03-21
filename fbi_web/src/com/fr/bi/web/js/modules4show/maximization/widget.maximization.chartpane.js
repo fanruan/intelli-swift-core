@@ -116,7 +116,7 @@ BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
     _createTools: function () {
         var self = this, wId = this.options.wId;
 
-        this.refresh = this._createToolsButton("BI-Restore", "recover-chart-font-hightlight");
+        this.refresh = this._createToolsButton("BI-Basic_Restore", "recover-chart-font-hightlight");
         this.refresh.on(BI.IconButton.EVENT_CHANGE, function () {
             self.tableChart.magnify();
         });

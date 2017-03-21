@@ -7,7 +7,7 @@ BI.OnePackageModel = BI.inherit(FR.OB, {
     constants: {
         addNewTableItems: [
             {
-                text: BI.i18nText("BI-Basic_Database") + "/" + BI.i18nText("BI-Package"),
+                text: BI.i18nText("BI-Basic_Database") + "/" + BI.i18nText("BI-Basic_Package"),
                 value: BICst.ADD_NEW_TABLE.DATABASE_OR_PACKAGE
             }, {
                 text: "ETL",

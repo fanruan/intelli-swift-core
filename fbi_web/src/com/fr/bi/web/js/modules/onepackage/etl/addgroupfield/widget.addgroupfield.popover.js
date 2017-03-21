@@ -113,7 +113,7 @@ BI.AddGroupFieldPopover = BI.inherit(BI.BarPopoverSection, {
                         items: [{
                             type: "bi.label",
                             cls: "bi-etl-add-group-field-float-box-label",
-                            value: BI.i18nText("BI-Base_Column") + ":",
+                            value: BI.i18nText("BI-Basic_Column") + ":",
                             width: this.constants.ETL_ADD_GROUP_FIELD_FLOAT_BOX_LABEL_WIDTH
                         }, {
                             el: this.fieldPaneButton

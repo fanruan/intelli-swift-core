@@ -76,7 +76,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
 
         this.setButton = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Setting"),
+            text: BI.i18nText("BI-Basic_Setting"),
             height: 30,
             cls: "select-field"
         });

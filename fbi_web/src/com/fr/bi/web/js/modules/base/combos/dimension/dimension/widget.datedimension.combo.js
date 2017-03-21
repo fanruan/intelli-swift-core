@@ -54,7 +54,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 value: BICst.DIMENSION_DATE_COMBO.YEAR,
                 cls: "dot-e-font"
             }, {
-                text: BI.i18nText("BI-Quarter"),
+                text: BI.i18nText("BI-Basic_Quarter"),
                 value: BICst.DIMENSION_DATE_COMBO.QUARTER,
                 cls: "dot-e-font"
             }, {
@@ -137,7 +137,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 title: showFieldDisabled ? BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension") : BI.i18nText("BI-Show_Field")
             }],
             [{
-                text: BI.i18nText("BI-Rename"),
+                text: BI.i18nText("BI-Basic_Rename"),
                 value: BICst.DIMENSION_DATE_COMBO.RENAME
             }],
             [{
@@ -146,7 +146,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 cls: "copy-h-font"
             }],
             [{
-                text: BI.i18nText("BI-Remove"),
+                text: BI.i18nText("BI-Basic_Remove"),
                 value: BICst.DIMENSION_DATE_COMBO.DELETE,
                 cls: "delete-h-font"
             }],
