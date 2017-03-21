@@ -61,7 +61,7 @@ BI.GroupDateCombo = BI.inherit(BI.Widget, {
                     value: BICst.STATISTICS_GROUP_DATE_COMBO.YW,
                     cls: "dot-ha-font"
                 }, {
-                    text: BI.i18nText("BI-Basic_YMD"),
+                    text: BI.i18nText("BI-YMD_Date"),
                     value: BICst.STATISTICS_GROUP_DATE_COMBO.DATE,
                     cls: "dot-ha-font"
                 }, {

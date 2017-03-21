@@ -129,33 +129,33 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
         var self = this;
         this.foreignFieldsMap = {};
         this.primaryFieldsMap = {};
-        this.degree = {};
+        this.degrees = {};
         BI.each(this.relations.connectionSet, function(idx, obj){
             var pId = obj.primaryKey.table_id, fId = obj.foreignKey.table_id;
-            if(BI.contains(this.tableIds, pId)){
+            if(BI.contains(self.tableIds, pId)){
                 if(!BI.has(self.primaryFieldsMap, pId)){
                     self.primaryFieldsMap[pId] = [];
                 }
                 self.primaryFieldsMap[pId].push(obj.primaryKey.field_id);
             }
-            if(BI.contains(this.tableIds, fId)){
+            if(BI.contains(self.tableIds, fId)){
                 if(!BI.has(self.foreignFieldsMap, fId)){
                     self.foreignFieldsMap[fId] = [];
                 }
                 self.foreignFieldsMap[fId].push(obj.foreignKey.field_id);
             }
             //顺便计算一下入度
-            if (!BI.has(self.degree, fId)) {
-                self.degree[fId] = 0;
+            if (!BI.has(self.degrees, fId)) {
+                self.degrees[fId] = 0;
             }
-            self.degree[fId]++;
+            self.degrees[fId]++;
         });
         //去重
-        BI.each(self.primaryFieldsMap, function(idx, tId){
-            self.primaryFieldsMap[tId] = BI.uniq(self.primaryFieldsMap[tId]);
+        BI.each(self.primaryFieldsMap, function(tId, arr){
+            self.primaryFieldsMap[tId] = BI.uniq(arr);
         });
-        BI.each(self.foreignFieldsMap, function(idx, tId){
-            self.foreignFieldsMap[tId] = BI.uniq(self.foreignFieldsMap[tId]);
+        BI.each(self.foreignFieldsMap, function(tId, arr){
+            self.foreignFieldsMap[tId] = BI.uniq(arr);
         });
     },
 
@@ -185,7 +185,7 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
                 if (BI.has(foreignKeyMap, fieldId)) {
                     rels = foreignKeyMap[fieldId];
                     BI.each(rels, function (i, rel) {
-                        var tId = rel.primaryKey.field_id;
+                        var tId = rel.primaryKey.table_id;
                         if (!BI.contains(resultTables, tId)) {
                             self._getAllRelationTablesByTables([tId], resultTables);
                         }
@@ -210,9 +210,6 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
         var self = this;
         this.cacheItems = [];
         var tableIds = this.getTableIds();
-        BI.each(tableIds, function (idx, tId) {
-            self.degree[tId] = 0;
-        });
         this._createFieldsMap();
         var relations = this.relations;
         var connectSet = relations.connectionSet;
@@ -227,8 +224,8 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
             if (BI.contains(distinctTableIds, tId)) {
                 return;
             }
-            var primFields = self.primaryFieldsMap[tId];
-            var foreFields = self.foreignFieldsMap[tId];
+            var primFields = self.primaryFieldsMap[tId] || [];
+            var foreFields = self.foreignFieldsMap[tId] || [];
             //其他业务包的表
             if (!BI.contains(self.tableIds, tId)) {
                 BI.each(connectSet, function (idx, obj) {
@@ -237,24 +234,28 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
                     var primTableId = obj.primaryKey.table_id;
                     var foreignTableId = obj.foreignKey.table_id;
                     if (tId === primTableId && BI.contains(tableIds, foreignTableId)) {
+                        var pTTranName = self.getKeyTableTranName(obj.primaryKey);
+                        var pFTranName = self.getKeyFieldTranName(obj.primaryKey);
+                        var fTTranName = self.getKeyTableTranName(obj.foreignKey);
+                        var fFTranName = self.getKeyFieldTranName(obj.foreignKey);
                         self.cacheItems.push({
                             primary: {
                                 region: tId,
-                                regionText: self.getKeyTableTranName(tId),
-                                regionTitle: self.getKeyTableTranName(tId),
+                                regionText: pTTranName,
+                                regionTitle: pTTranName,
                                 value: primaryId,
-                                text: self.getKeyFieldTranName(primaryId),
-                                title: self.getKeyFieldTranName(primaryId),
+                                text: pFTranName,
+                                title: pFTranName,
                                 belongPackage: self.isCurrentPackageTable(tId),
                                 isPrimary: true
                             },
                             foreign: {
-                                region: allFields[foreignId].table_id,
-                                regionText: self.getTableTranName(allFields[foreignId].table_id),
-                                regionTitle: self.getTableTranName(allFields[foreignId].table_id),
+                                region: foreignTableId,
+                                regionText: fTTranName,
+                                regionTitle: fTTranName,
                                 value: foreignId,
-                                text: self.getKeyFieldTranName(foreignId),
-                                title: self.getKeyFieldTranName(foreignId),
+                                text: fFTranName,
+                                title: fFTranName,
                                 regionHandler: regionHandler,
                                 belongPackage: self.isCurrentPackageTable(foreignTableId),
                                 isPrimary: false
@@ -268,8 +269,8 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
                 self.cacheItems.push({
                     primary: {
                         region: tId,
-                        regionText: self.getKeyFieldTranName(tId),
-                        regionTitle: self.getKeyFieldTranName(tId),
+                        regionText: self.getTableTranName(tId),
+                        regionTitle: self.getTableTranName(tId),
                         regionHandler: regionHandler,
                         belongPackage: self.isCurrentPackageTable(tId)
                     }
@@ -290,49 +291,53 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
                 var primaryTableId = rel.primaryKey.table_id;
                 //是未访问过的节点且入度未满
                 if (!BI.contains(visitSet, foreignTableId) && !BI.contains(distinctTableIds, tId) && calcDegree[foreignTableId] !== self.degrees[foreignTableId]) {
+                    var pTTranName = self.getKeyTableTranName(rel.primaryKey);
+                    var pFTranName = self.getKeyFieldTranName(rel.primaryKey);
+                    var fTTranName = self.getKeyTableTranName(rel.foreignKey);
+                    var fFTranName = self.getKeyFieldTranName(rel.foreignKey);
                     //自循环
                     if (primaryTableId === foreignTableId) {
                         items.push({
                             primary: {
                                 region: primaryTableId,
-                                regionText: self.getKeyTableTranName(primaryTableId),
-                                regionTitle: self.getKeyTableTranName(primaryTableId),
+                                regionText: pTTranName,
+                                regionTitle: pTTranName,
                                 value: primaryId,
-                                text: self.getKeyFieldTranName(primaryId),
-                                title: self.getKeyFieldTranName(primaryId),
+                                text: pFTranName,
+                                title: pFTranName,
                                 regionHandler: regionHandler,
                                 belongPackage: self.isCurrentPackageTable(primaryTableId),
                                 isPrimary: true
                             },
                             foreign: {
                                 region: BI.UUID(),
-                                regionText: self.getKeyTableTranName(allFields[foreignId].table_id),
-                                regionTitle: self.getKeyTableTranName(allFields[foreignId].table_id),
+                                regionText: fTTranName,
+                                regionTitle: fTTranName,
                                 value: foreignId,
-                                text: self.getKeyFieldTranName(foreignId),
-                                title: self.getKeyFieldTranName(foreignId),
+                                text: fFTranName,
+                                title: fFTranName,
                                 isPrimary: false
                             }
                         });
                     } else {
                         var primaryItem = {
                             region: primaryTableId,
-                            regionText: self.getKeyTableTranName(primaryTableId),
-                            regionTitle: self.getKeyTableTranName(primaryTableId),
+                            regionText: pTTranName,
+                            regionTitle: pTTranName,
                             value: primaryId,
-                            text: self.getKeyFieldTranName(primaryId),
-                            title: self.getKeyFieldTranName(primaryId),
+                            text: pFTranName,
+                            title: pFTranName,
                             regionHandler: regionHandler,
                             belongPackage: self.isCurrentPackageTable(primaryTableId),
                             isPrimary: true
                         };
                         var foreignItem = {
                             region: foreignTableId,
-                            regionText: self.getKeyTableTranName(foreignTableId),
-                            regionTitle: self.getKeyTableTranName(foreignTableId),
+                            regionText: fTTranName,
+                            regionTitle: fTTranName,
                             value: foreignId,
-                            text: self.getKeyFieldTranName(foreignId),
-                            title: self.getKeyFieldTranName(foreignId),
+                            text: fFTranName,
+                            title: fFTranName,
                             regionHandler: regionHandler,
                             belongPackage: self.isCurrentPackageTable(foreignTableId),
                             isPrimary: false
