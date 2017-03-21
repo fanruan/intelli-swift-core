@@ -5056,7 +5056,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
             size = size * getDefaultFontSize();
         }else if (size.indexOf('pt') != -1){
             size = parseFloat(size) * 4 / 3;
-        }else if (size.indexOf('px')){
+        }else{
             size = parseFloat(size);
         }
         return size;
