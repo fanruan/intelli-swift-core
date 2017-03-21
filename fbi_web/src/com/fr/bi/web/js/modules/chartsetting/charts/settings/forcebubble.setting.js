@@ -368,7 +368,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.legendStyle]
                 }/*, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Tooltip"),
+                    text: BI.i18nText("BI-Basic_Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",

@@ -169,7 +169,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //左值轴千分符
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 
@@ -355,7 +355,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //右值轴千分符
         this.rightYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 
@@ -804,7 +804,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showZoom]
                 }/*, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Tooltip"),
+                    text: BI.i18nText("BI-Basic_Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",

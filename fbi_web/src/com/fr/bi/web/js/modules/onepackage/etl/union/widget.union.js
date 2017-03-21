@@ -182,8 +182,8 @@ BI.Union = BI.inherit(BI.Widget, {
 
         this.saveButton = BI.createWidget({
             type:"bi.button",
-            text:BI.i18nText("BI-Save"),
-            title: BI.i18nText("BI-Save"),
+            text:BI.i18nText("BI-Basic_Save"),
+            title: BI.i18nText("BI-Basic_Save"),
             height: this.constants.UNION_BUTTON_HEIGHT
         });
         this.saveButton.on(BI.Button.EVENT_CHANGE,function(){
@@ -313,7 +313,7 @@ BI.Union = BI.inherit(BI.Widget, {
             case this.constants.SHOW_BUTTON:
                 var previewButton = BI.createWidget({
                     type: "bi.button",
-                    text: BI.i18nText("BI-Preview"),
+                    text: BI.i18nText("BI-Basic_Preview"),
                     height: this.constants.PREVIEW_BUTTON_HEIGHT,
                     width: this.constants.PREVIEW_BUTTON_WIDTH
                 });

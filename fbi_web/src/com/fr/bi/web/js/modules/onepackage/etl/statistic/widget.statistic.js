@@ -163,7 +163,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
 
         this.save = BI.createWidget({
             type:"bi.button",
-            text:BI.i18nText("BI-Save"),
+            text:BI.i18nText("BI-Basic_Save"),
             tipType: "warning",
             height: this.constants.GROUP_STATISTIC_BUTTON_HEIGHT
         });
@@ -224,7 +224,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
         this.regions[BICst.REGION.TARGET1] = BI.createWidget({
             type:"bi.string_region",
             cls: "target-region",
-            titleName:BI.i18nText("BI-Statistic"),
+            titleName:BI.i18nText("BI-Basic_Statistic"),
             regionType: BICst.REGION.TARGET1
         });
 
@@ -355,7 +355,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
                 case this.constants.SHOW_PREVIEW_BUTTON:
                     var previewButton = BI.createWidget({
                         type: "bi.button",
-                        text: BI.i18nText("BI-Preview"),
+                        text: BI.i18nText("BI-Basic_Preview"),
                         height: this.constants.PREVIEW_BUTTON_HEIGHT,
                         width: this.constants.PREVIEW_BUTTON_WIDTH
                     });

@@ -35,7 +35,7 @@ BI.FilterExpander = BI.inherit(BI.AbstractFilterItem, {
         if (value === BICst.FILTER_TYPE.AND) {
             text = BI.i18nText("BI-Basic_And");
         } else {
-            text = BI.i18nText("BI-Or");
+            text = BI.i18nText("BI-Basic_Or");
         }
         this.expander = BI.createWidget({
             type: "bi.text_button",

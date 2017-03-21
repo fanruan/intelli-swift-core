@@ -72,12 +72,12 @@ BI.AddFormulaFieldPopover = BI.inherit(BI.BarPopoverSection, {
                     value: BICst.COLUMN.NUMBER
                 }, {
                     type: "bi.text_button",
-                    text: BI.i18nText("BI-Text"),
+                    text: BI.i18nText("BI-Basic_Text"),
                     cls: "bi-segment-button",
                     value: BICst.COLUMN.STRING
                 }, {
                     type: "bi.text_button",
-                    text: BI.i18nText("BI-Time"),
+                    text: BI.i18nText("BI-Basic_Time"),
                     cls: "bi-segment-button",
                     value: BICst.COLUMN.DATE
 

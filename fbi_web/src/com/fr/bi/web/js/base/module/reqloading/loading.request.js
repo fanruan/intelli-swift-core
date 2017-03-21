@@ -75,8 +75,8 @@ BI.RequstLoading = BI.inherit(BI.Widget, {
         });
         var retry = BI.createWidget({
             type: "bi.button",
-            text: BI.i18nText("BI-Retry"),
-            title: BI.i18nText("BI-Retry"),
+            text: BI.i18nText("BI-Basic_Retry"),
+            title: BI.i18nText("BI-Basic_Retry"),
             level: "common",
             height: 28,
             width: 90,

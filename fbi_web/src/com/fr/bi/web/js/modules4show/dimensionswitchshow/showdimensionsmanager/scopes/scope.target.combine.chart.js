@@ -29,8 +29,8 @@ BI.ShowCombineChartTargetScope = BI.inherit(BI.Widget, {
                 iconWidth: 24,
                 iconHeight: 24
             }, {
-                text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Polyline") + ")",
-                title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Polyline") + ")",
+                text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Basic_Polyline") + ")",
+                title: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Basic_Polyline") + ")",
                 value: BICst.ACCUMULATE_TYPE.AREA_NORMAL,
                 iconClass: "area-chart-style-broken-icon",
                 iconWidth: 24,

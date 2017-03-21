@@ -167,7 +167,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //千分符
         this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 
@@ -346,7 +346,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.rightYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 
@@ -524,7 +524,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.rightY2Separator = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
+            value: BI.i18nText("BI-Basic_Separators"),
             width: 80
         });
 
@@ -989,7 +989,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.nullContinuity]
                 }/*, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Tooltip"),
+                    text: BI.i18nText("BI-Basic_Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
