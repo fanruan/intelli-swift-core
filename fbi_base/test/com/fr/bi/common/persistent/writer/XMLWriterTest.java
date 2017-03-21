@@ -8,6 +8,8 @@ import com.fr.bi.common.persistent.xml.writer.BIBeanXMLWriterWrapper;
 import com.fr.bi.common.persistent.xml.writer.XMLNormalValueWriter;
 import com.fr.bi.common.persistent.xml.writer.XMLPersistentWriter;
 import com.fr.bi.common.world.BookRack;
+import com.fr.bi.common.world.people.Person;
+import com.fr.bi.common.world.people.PersonOld1;
 import com.fr.bi.common.world.people.Student;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
@@ -401,4 +403,19 @@ public class XMLWriterTest extends TestCase {
     }
 
 
+    public void testChangeClassAndProperty() {
+        try {
+            generate(PersonOld1.getChenHe(), "PersonRenameTest");
+
+            Class person = Class.forName(Person.class.getName());
+            Object o = BIConstructorUtils.forceConstructObject(person);
+            o = get(o, "PersonRenameTest");
+
+            assertTrue(o != null && o instanceof Person);
+            assertTrue(((Person) o).getName().equals("ChenHe"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
 }

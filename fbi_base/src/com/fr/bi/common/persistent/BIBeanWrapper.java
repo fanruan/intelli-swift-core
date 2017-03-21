@@ -1,5 +1,6 @@
 package com.fr.bi.common.persistent;
 
+import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.stable.utils.program.BIBeanUtils;
 import com.fr.bi.stable.utils.program.BIFieldUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -86,7 +87,28 @@ public class BIBeanWrapper {
                 return field;
             }
         }
+        return getFieldByHistoryName(fieldName);
+    }
+
+    public Field getFieldByHistoryName(String name) {
+        Iterator<Field> it = getSelfAndInheritFields().iterator();
+        while (it.hasNext()) {
+            Field field = it.next();
+            PersistNameHistory persistNameHistory = field.getAnnotation(PersistNameHistory.class);
+            if (persistNameHistory != null && checkNameInHistory(name, persistNameHistory.historyNames())) {
+                return field;
+            }
+        }
         return null;
+    }
+
+    private boolean checkNameInHistory(String name, String[] historyNames) {
+        for (String historyName : historyNames) {
+            if (name.equals(historyName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
