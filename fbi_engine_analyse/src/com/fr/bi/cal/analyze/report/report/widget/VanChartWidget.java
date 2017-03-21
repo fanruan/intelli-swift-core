@@ -5,7 +5,6 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
-import com.fr.third.org.apache.poi.util.StringUtil;
 import com.fr.web.core.SessionDealWith;
 
 /**
@@ -45,6 +44,12 @@ public abstract class VanChartWidget extends TableWidget {
 
     }
 
+    protected JSONObject getDetailChartSetting() throws JSONException{
+        JSONObject settings = this.getChartSetting().getDetailChartSetting();
+
+        return settings.length() == 0 ? this.populateDefaultSettings() : settings;
+    }
+
     public JSONObject createDataJSON(BISessionProvider session) throws Exception {
 
         JSONObject data = super.createDataJSON(session).getJSONObject("data");
@@ -56,7 +61,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     public JSONObject createOptions() throws JSONException{
         JSONObject options = JSONObject.create();
-        JSONObject settings = this.getChartSetting().getDetailChartSetting();
+        JSONObject settings = this.getDetailChartSetting();
 
         if(settings.has("chartColor")){
             options.put("colors", settings.getJSONArray("chartColor"));

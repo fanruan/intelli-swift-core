@@ -65,7 +65,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     public  JSONObject createOptions() throws JSONException{
 
-        JSONObject settings = this.getChartSetting().getDetailChartSetting();
+        JSONObject settings = this.getDetailChartSetting();
 
         JSONObject options = super.createOptions();
 
