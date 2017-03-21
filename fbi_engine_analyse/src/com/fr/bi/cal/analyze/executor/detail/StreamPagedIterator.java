@@ -97,7 +97,7 @@ public class StreamPagedIterator<T> implements Iterator<T> {
             queue.add(cellElement);
         }
         //如果消费线程wait住了，并且超过了消费阈值就唤醒消费线程
-        if (queue.size() > consumeCount) {
+        if (queue.size() > consumeCount && !isWorking) {
             synchronized (this) {
                 this.notify();
             }
