@@ -6,14 +6,15 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
- * Created by eason on 2017/2/27.
+ * Created by eason on 2017/3/20.
  */
-public class VanBubbleWidget extends VanChartWidget{
-    public JSONArray createSeries(JSONObject data) throws JSONException{
-        return JSONArray.create();
+public class VanGaugeWidget extends VanChartWidget{
+
+    public JSONArray createSeries(JSONObject data) throws JSONException {
+        return this.createXYSeries(data);
     }
 
     public String getSeriesType(){
-        return "bubble";
+        return "gauge";
     }
 }

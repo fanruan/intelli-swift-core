@@ -4,6 +4,8 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
+import com.fr.third.org.apache.poi.util.StringUtil;
 import com.fr.web.core.SessionDealWith;
 
 /**
@@ -20,6 +22,8 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int LEFT = 5;
 
     public abstract JSONArray createSeries(JSONObject data) throws JSONException;
+
+    public abstract String getSeriesType();
 
     public JSONObject createDataJSON(BISessionProvider session) throws Exception {
 
@@ -47,14 +51,10 @@ public abstract class VanChartWidget extends TableWidget {
         return options;
     }
 
-    public String getSeriesType(){
-        return "column";
-    }
-
     protected JSONArray createXYSeries(JSONObject originData) throws JSONException{
         JSONArray series = JSONArray.create();
         String type = this.getSeriesType();
-        if (originData.has("t")) {
+        if (originData.has("t")) {//有列表头，多系列
             JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
             JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
             for (int i = 0; i < topC.length(); i++) {
@@ -69,7 +69,18 @@ public abstract class VanChartWidget extends TableWidget {
                 }
                 series.put(JSONObject.create().put("data", data).put("name", name).put("type", type));
             }
+        }else if(originData.has("c")){//单系列
+            JSONArray children = originData.getJSONArray("c");
+            JSONArray data = JSONArray.create();
+            for (int j = 0; j < children.length(); j++) {
+                JSONObject lObj = children.getJSONObject(j);
+                String x = lObj.getString("n");
+                double y = lObj.getJSONArray("s").getDouble(0);
+                data.put(JSONObject.create().put("x", x).put("y", y));
+            }
+            series.put(JSONObject.create().put("data", data).put("name", StringUtils.EMPTY).put("type", type));
         }
+
         return series;
     }
 
