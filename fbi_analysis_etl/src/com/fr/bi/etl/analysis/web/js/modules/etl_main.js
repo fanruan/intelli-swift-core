@@ -23,7 +23,7 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
             type:"bi.button",
             height: this._constant.buttonHeight,
             width: this._constant.buttonWidth,
-            text:BI.i18nText("BI-Save")
+            text:BI.i18nText("BI-Basic_Save")
         });
 
         this.saveButton.on(BI.Button.EVENT_CHANGE, function(){
@@ -70,7 +70,7 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
         this.confirmButton = BI.createWidget({
             type: "bi.button",
             height: 30,
-            value: BI.i18nText(BI.i18nText("BI-Sure")),
+            value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
             handler: function () {
                 self.confirmCombo.hideView();
                 switch (popupTab.getSelect()){

@@ -9,6 +9,7 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
             extraCls: "bi-select-data-level0-item",
             height: 25,
             hgap: 0,
+            layer: 1,
             fieldType: BICst.COLUMN.STRING,
             lgap: 0,
             rgap: 35
@@ -44,7 +45,7 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
             // trigger: "mousedown",
             cls: "select-data-level0-item-button " + this._getFieldClass(this._createNewType(o.fieldType, o.value["group"])),
             forceNotSelected:true,
-            blankWidth: 20,
+            blankWidth: o.layer * 20,
             text: o.text,
             value: o.value,
             height: 25,
@@ -56,8 +57,8 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
         });
         this.previewBtn = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Preview"),
-            title: BI.i18nText("BI-Preview")
+            text: BI.i18nText("BI-Basic_Preview"),
+            title: BI.i18nText("BI-Basic_Preview")
         });
         this.previewBtn.doHighLight();
         this.previewBtn.on(BI.TextButton.EVENT_CHANGE, function(){

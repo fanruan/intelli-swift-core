@@ -189,6 +189,28 @@ BI.extend(BI.Utils, {
                 return BICst.COLUMN.NUMBER;
             case BICst.GROUP.W :
                 return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.WEEK_COUNT :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.D :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.HOUR :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.MINUTE :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.SECOND :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.YM :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.YS :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.YW :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.YMDH :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.YMDHM :
+                return BICst.COLUMN.NUMBER;
+            case BICst.GROUP.YMDHMS :
+                return BICst.COLUMN.NUMBER;
             case BICst.GROUP.YMD :
                 return BICst.COLUMN.DATE;
         }

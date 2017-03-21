@@ -95,9 +95,9 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
 
     _createItemList : function (){
         return [{
-            text: BI.i18nText("BI-Rename"),
+            text: BI.i18nText("BI-Basic_Rename"),
             value:ETLCst.ANALYSIS_TABLE_SET.RENAME,
-            title: BI.i18nText("BI-Rename"),
+            title: BI.i18nText("BI-Basic_Rename"),
             extraCls:"rename-font"
         },{
             text: BI.i18nText("BI-Basic_Copy"),
@@ -105,8 +105,8 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
             value:ETLCst.ANALYSIS_TABLE_SET.COPY,
             extraCls:"widget-copy-h-font"
         },{
-            text: BI.i18nText("BI-Remove"),
-            title: BI.i18nText("BI-Remove"),
+            text: BI.i18nText("BI-Basic_Remove"),
+            title: BI.i18nText("BI-Basic_Remove"),
             value:ETLCst.ANALYSIS_TABLE_SET.DELETE,
             extraCls:"widget-delete-h-font"
         }];

@@ -115,7 +115,7 @@ ETLCst.ANALYSIS_ADD_COLUMN_TYPE = [[{
         text:BI.i18nText("BI-Cumulative_Value") +"/" + BI.i18nText("BI-Cumulative_Value_In_Group"),
         value:BICst.ETL_ADD_COLUMN_TYPE.EXPR_ACC
     },{
-        text:BI.i18nText("BI-Ranging") +"/" + BI.i18nText("BI-Group_Ranking"),
+        text:BI.i18nText("BI-Basic_Ranging") +"/" + BI.i18nText("BI-Group_Ranking"),
         value:BICst.ETL_ADD_COLUMN_TYPE.EXPR_RANK
     }]
 }],[{
@@ -143,7 +143,7 @@ ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE_ITEMS = [{
     text:BI.i18nText("BI-Year"),
     value:ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE.YEAR
 },{
-    text:BI.i18nText("BI-Quarter"),
+    text:BI.i18nText("BI-Basic_Quarter"),
     value:ETLCst.ANALYSIS_ADD_COLUMN_DATE_DIFF_TYPE.SEASON
 },{
     text:BI.i18nText("BI-Basic_Month"),
@@ -186,13 +186,13 @@ ETLCst.ANALYSIS_ADD_COLUMN_EXPR_RANK_TYPE_ITEMS = [{
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.DESC,
     groupType : BICst.TARGET_TYPE.RANK
 },{
-    text: BI.i18nText("BI-Asc_Group")+ BI.i18nText('BI-Ranging'),
+    text: BI.i18nText("BI-Asc_Group")+ BI.i18nText('BI-Basic_Ranging'),
     value: 'BI-Calculate_Target_Rank_Group_ASC',
     noneGroupText :'BI-Calculate_Target_Rank_No_Group_ASC',
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC,
     groupType : BICst.TARGET_TYPE.RANK_IN_GROUP
 }, {
-    text: BI.i18nText("BI-Des_Group") + BI.i18nText('BI-Ranging'),
+    text: BI.i18nText("BI-Des_Group") + BI.i18nText('BI-Basic_Ranging'),
     value: 'BI-Calculate_Target_Rank_Group_DESC',
     noneGroupText :'BI-Calculate_Target_Rank_No_Group_DESC',
     sortType: BICst.TARGET_TYPE.CAL_VALUE.RANK_TPYE.DESC,

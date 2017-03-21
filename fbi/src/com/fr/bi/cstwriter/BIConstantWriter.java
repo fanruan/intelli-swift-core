@@ -14,9 +14,9 @@ public class BIConstantWriter {
 
     public static void main(String[] args) throws Exception{
         String path = System.getProperty("user.dir");
-        File nuclear = new File(new File(path).getParentFile(), "nuclear");
-        new JSWriter().write(new File(nuclear, "web/fbi_web/src/com/fr/bi/web/js/data/constant/biconst.js"), "BICst", CLS);
-        new IOSWriter().write(new File(nuclear, "core/fbi/src/com/fr/bi/cstwriter/biconst.h"), "# define BI", CLS);
-        new JSWriter().write(new File(nuclear, "core/fbi_analysis_etl/src/com/fr/bi/etl/analysis/web/js/base/constant/etlconst.js"), "ETLCst", EYLCLS);
+        File parent = new File(new File(path).getParent());
+        new JSWriter().write(new File(parent, "nuclear-web/fbi_web/src/com/fr/bi/web/js/data/constant/biconst.js"), "BICst", CLS);
+        new IOSWriter().write(new File(parent, "nuclear-core/fbi/src/com/fr/bi/cstwriter/biconst.h"), "# define BI", CLS);
+        new JSWriter().write(new File(parent, "nuclear-core/fbi_analysis_etl/src/com/fr/bi/etl/analysis/web/js/base/constant/etlconst.js"), "ETLCst", EYLCLS);
     }
 }

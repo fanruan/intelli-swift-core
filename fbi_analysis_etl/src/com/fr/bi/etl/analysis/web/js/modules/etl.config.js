@@ -137,19 +137,19 @@ BICst.ETL_FILTER_DATE_COMBO = [[{
     value: BICst.FILTER_DATE.BELONG_DATE_RANGE,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Later_Than") + BI.i18nText('BI-Someone') + BI.i18nText('BI-Time'),
+    text: BI.i18nText("BI-Later_Than") + BI.i18nText('BI-Basic_Someone') + BI.i18nText('BI-Basic_Time'),
     value: BICst.FILTER_DATE.MORE_THAN,
     cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Sooner_Than") + BI.i18nText('BI-Someone') + BI.i18nText('BI-Time'),
+    text: BI.i18nText("BI-Sooner_Than") + BI.i18nText('BI-Basic_Someone') + BI.i18nText('BI-Basic_Time'),
     value: BICst.FILTER_DATE.LESS_THAN,
     cls: "dot-e-font"
 }], [{
-    text: BI.i18nText("BI-Basic_Equal")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Basic_Date'),
+    text: BI.i18nText("BI-Basic_Equal")+ BI.i18nText('BI-Basic_Someone') + BI.i18nText('BI-Basic_Date'),
     value: BICst.FILTER_DATE.DAY_EQUAL_TO,
     cls: "dot-e-font"
 }, {
-    text: BI.i18nText("BI-Not_Equal_To")+ BI.i18nText('BI-Someone') + BI.i18nText('BI-Basic_Date'),
+    text: BI.i18nText("BI-Not_Equal_To")+ BI.i18nText('BI-Basic_Someone') + BI.i18nText('BI-Basic_Date'),
     value: BICst.FILTER_DATE.DAY_NOT_EQUAL_TO,
     cls: "dot-e-font"
 }], [{

@@ -8,6 +8,7 @@ BI.AnalysisETLDetailSelectDataLevel1Item = BI.inherit(BI.Single, {
         return BI.extend(BI.AnalysisETLDetailSelectDataLevel1Item.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-select-data-level1-item",
             height: 25,
+            layer: 2,
             fieldType: BICst.COLUMN.STRING,
             hgap: 0,
             lgap: 0,
@@ -45,7 +46,7 @@ BI.AnalysisETLDetailSelectDataLevel1Item = BI.inherit(BI.Single, {
             forceNotSelected:true,
             text: o.text,
             value: o.value,
-            blankWidth: 40,
+            blankWidth: o.layer * 20,
             height: 25,
             textLgap: 10,
             textRgap: 5
@@ -55,8 +56,8 @@ BI.AnalysisETLDetailSelectDataLevel1Item = BI.inherit(BI.Single, {
         });
         this.previewBtn = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Preview"),
-            title: BI.i18nText("BI-Preview")
+            text: BI.i18nText("BI-Basic_Preview"),
+            title: BI.i18nText("BI-Basic_Preview")
         });
         this.previewBtn.doHighLight();
         this.previewBtn.on(BI.TextButton.EVENT_CHANGE, function(){

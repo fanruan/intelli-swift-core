@@ -58,7 +58,7 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
             type:"bi.button",
             width:this._constant.buttonWidth,
             height:this._constant.buttonHeight,
-            text:BI.i18nText("BI-Save"),
+            text:BI.i18nText("BI-Basic_Save"),
             handler : function(e){
                 if(!o.saveHandler(self.controller.isEditing())) {
                     if(self.controller.isEditing()){
@@ -83,7 +83,7 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
             popup: {
                 type: "bi.bubble_bar_popup_view",
                 buttons: [{
-                    value: BI.i18nText(BI.i18nText("BI-Sure")),
+                    value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function(){
                         self.confirmCombo.hideView();
                         change();
