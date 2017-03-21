@@ -31,7 +31,7 @@ BI.RelationSetGroup = BI.inherit(BI.Widget, {
                 textAlign: "center",
                 width: 80,
                 height: 25,
-                warningTitle: BI.i18nText("BI-No_Relation_Table_Edit_Auth")
+                warningTitle: BI.i18nText("BI-Basic_No_Relation_Table_Edit_Auth")
             }),
             layouts: [{
                 type: "bi.vertical",

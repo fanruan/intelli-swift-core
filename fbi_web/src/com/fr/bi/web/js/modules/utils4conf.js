@@ -67,17 +67,6 @@ BI.extend(BI.Utils, {
         }
     },
 
-    getFieldIdsByTableId4Conf: function (tableId) {
-        var fieldIds = [];
-        var fields = Data.SharingPool.cat("fields");
-        BI.each(fields, function (id, field) {
-            if (field.table_id === tableId && BI.isNotNull(field.id)) {
-                fieldIds.push(field.id);
-            }
-        });
-        return fieldIds;
-    },
-
     //获取关联字段
     getRelationFieldsByFieldId4Conf: function (relations, fieldId) {
         var primKeyMap = relations.primKeyMap, foreignKeyMap = relations.foreignKeyMap;
@@ -566,6 +555,20 @@ BI.extend(BI.Utils, {
         return Data.SharingPool.get("authority_settings", "login_field");
     },
 
+    setLoginField: function (field) {
+        var authoritySettings = Data.SharingPool.get("authority_settings");
+        authoritySettings.login_field = field;
+        Data.SharingPool.put("authority_settings", authoritySettings);
+        BI.Utils.saveLoginField({"login_field": field.id}, BI.emptyFn);
+    },
+
+    clearLoginField: function () {
+        var authoritySettings = Data.SharingPool.get("authority_settings");
+        delete authoritySettings.login_field;
+        Data.SharingPool.put("authority_settings", authoritySettings);
+        BI.Utils.saveLoginField({}, BI.emptyFn);
+    },
+
     getAuthorityRoles: function () {
         return Data.SharingPool.get("authority_settings", "all_roles");
     },
@@ -642,6 +645,10 @@ BI.extend(BI.Utils, {
     hasTableAuthByTableId4Conf: function (tableId) {
         var packageId = this.getPackageIdByTableId4Conf(tableId);
         return BI.isNotNull(packageId);
+    },
+
+    hasEditLoginFieldAuth: function () {
+        return this.isAdmin4Conf();
     }
 
     //权限相关   --- end ---

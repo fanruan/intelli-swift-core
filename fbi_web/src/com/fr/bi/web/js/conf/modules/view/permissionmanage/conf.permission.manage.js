@@ -94,15 +94,21 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
             self._clearLoginField();
         });
 
-        return BI.createWidget({
-            type: "bi.left",
-            cls: "login-info",
-            items: [{
+        var items = [];
+        if (BI.Utils.hasEditLoginFieldAuth()) {
+            items = [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Field_Of_Login_Name"),
                 height: 30,
                 cls: "login-info-text"
-            }, this.loginField, this.selectField, this.setButton, this.clearButton],
+            }, this.loginField, this.selectField,
+                this.setButton, this.clearButton];
+        }
+
+        return BI.createWidget({
+            type: "bi.left",
+            cls: "login-info",
+            items: items,
             rgap: 5
         });
     },
@@ -126,19 +132,13 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
     },
 
     _clearLoginField: function () {
-        var authoritySettings = Data.SharingPool.get("authority_settings");
-        delete authoritySettings.login_field;
-        Data.SharingPool.put("authority_settings", authoritySettings);
+        BI.Utils.clearLoginField();
         this._refreshLoginInfo();
-        BI.Utils.saveLoginField({}, BI.emptyFn);
     },
 
     _updateLoginField: function (field) {
-        var authoritySettings = Data.SharingPool.get("authority_settings");
-        authoritySettings.login_field = field;
-        Data.SharingPool.put("authority_settings", authoritySettings);
+        BI.Utils.setLoginField(field);
         this._refreshLoginInfo();
-        BI.Utils.saveLoginField({"login_field": field.id}, BI.emptyFn);
     },
 
     _refreshLoginInfo: function () {

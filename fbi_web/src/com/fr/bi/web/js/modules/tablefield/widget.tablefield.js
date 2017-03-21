@@ -177,7 +177,8 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
 
             item.push({
                 type: "bi.icon_button",
-                cls: "field-type " + typeCls
+                cls: "field-type " + typeCls,
+                forceNotSelected: true
             });
             item.push(self._createTranName(field.id, field.field_name));
             item.push(self._createRelationButton(field.id));
