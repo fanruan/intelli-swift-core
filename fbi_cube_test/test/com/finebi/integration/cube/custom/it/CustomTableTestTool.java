@@ -4,6 +4,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -21,8 +22,8 @@ public class CustomTableTestTool {
                              Map<String, Set<CubeTableSource>> baseSourceIdTableMap,
                              Map<String, Set<Integer>> baseSourceIdUpdateTypeMap) {
         for (int i = 0; i < baseTableSourceIds.size(); i++) {
-            List<BusinessTable> tableList = getTablesContainsSourceId(-999, baseTableSourceIds.get(i), updateTypes.get(i));
-            List<CubeTableSource> tableSourceList = getTableSourcesFromBusinessTables(tableList, -999, baseTableSourceIds.get(i));
+            List<BusinessTable> tableList = getTablesContainsSourceId(UserControl.getInstance().getSuperManagerID(), baseTableSourceIds.get(i), updateTypes.get(i));
+            List<CubeTableSource> tableSourceList = getTableSourcesFromBusinessTables(tableList, UserControl.getInstance().getSuperManagerID(), baseTableSourceIds.get(i));
             for (CubeTableSource tableSource : tableSourceList) {
                 if (tableBaseSourceIdMap.containsKey(tableSource)) {
                     tableBaseSourceIdMap.get(tableSource).add(baseTableSourceIds.get(i));

@@ -15,6 +15,7 @@ import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.fs.control.UserControl;
 import com.fr.stable.bridge.StableFactory;
 import junit.framework.TestCase;
 
@@ -54,7 +55,7 @@ public class CustomTableTest extends TestCase {
         baseTableSourceIds.add(CustomTableCreater.getTableSourceA().getSourceID());
         updateTypes.add(1);
         CustomTableTestTool.calc(baseTableSourceIds, updateTypes, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap);
-        CubeBuildStuff stuff = new CubeBuildCustomTables(-999, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
+        CubeBuildStuff stuff = new CubeBuildCustomTables(UserControl.getInstance().getSuperManagerID(), tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
                 new HashSet<>(), new HashSet<>(), new HashSet<>());
         //需要更新的表包括A、AB
         assertEquals(stuff.getDependTableResource().size(), 2);
@@ -101,7 +102,7 @@ public class CustomTableTest extends TestCase {
         updateTypes.add(2);
 
         CustomTableTestTool.calc(baseTableSourceIds, updateTypes, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap);
-        CubeBuildStuff stuff = new CubeBuildCustomTables(-999, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
+        CubeBuildStuff stuff = new CubeBuildCustomTables(UserControl.getInstance().getSuperManagerID(), tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
                 new HashSet<>(), new HashSet<>(), new HashSet<>());
         //需要更新的表包括A、B、AB、AC表
         assertEquals(stuff.getDependTableResource().size(), 4);
@@ -153,7 +154,7 @@ public class CustomTableTest extends TestCase {
         updateTypes.add(1);
 
         CustomTableTestTool.calc(baseTableSourceIds, updateTypes, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap);
-        CubeBuildStuff stuff = new CubeBuildCustomTables(-999, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
+        CubeBuildStuff stuff = new CubeBuildCustomTables(UserControl.getInstance().getSuperManagerID(), tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
                 new HashSet<>(), new HashSet<>(), new HashSet<>());
         //需要更新的表包括A、B、C、AB、BC、CD表
         assertEquals(stuff.getDependTableResource().size(), 6);
@@ -203,7 +204,7 @@ public class CustomTableTest extends TestCase {
         updateTypes.add(2);
 
         CustomTableTestTool.calc(baseTableSourceIds, updateTypes, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap);
-        CubeBuildStuff stuff = new CubeBuildCustomTables(-999, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
+        CubeBuildStuff stuff = new CubeBuildCustomTables(UserControl.getInstance().getSuperManagerID(), tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
                 new HashSet<>(), new HashSet<>(), new HashSet<>());
         //需要更新的表包括A、D、AB、CD表
         assertEquals(stuff.getDependTableResource().size(), 4);
@@ -252,7 +253,7 @@ public class CustomTableTest extends TestCase {
         updateTypes.add(0);
 
         CustomTableTestTool.calc(baseTableSourceIds, updateTypes, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap);
-        CubeBuildStuff stuff = new CubeBuildCustomTables(-999, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
+        CubeBuildStuff stuff = new CubeBuildCustomTables(UserControl.getInstance().getSuperManagerID(), tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
                 new HashSet<>(), new HashSet<>(), new HashSet<>());
         //需要更新的表包括A、AB表
         assertEquals(stuff.getDependTableResource().size(), 2);
@@ -295,7 +296,7 @@ public class CustomTableTest extends TestCase {
         updateTypes.add(2);
 
         CustomTableTestTool.calc(baseTableSourceIds, updateTypes, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap);
-        CubeBuildStuff stuff = new CubeBuildCustomTables(-999, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
+        CubeBuildStuff stuff = new CubeBuildCustomTables(UserControl.getInstance().getSuperManagerID(), tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
                 new HashSet<>(), new HashSet<>(), new HashSet<>());
         //需要更新的表包括A、AB表
         assertEquals(stuff.getDependTableResource().size(), 2);
