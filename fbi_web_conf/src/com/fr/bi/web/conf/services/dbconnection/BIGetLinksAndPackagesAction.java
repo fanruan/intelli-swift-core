@@ -1,14 +1,17 @@
 package com.fr.bi.web.conf.services.dbconnection;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.file.DatasourceManagerProvider;
-import com.fr.fs.control.UserControl;
-import com.fr.general.ComparatorUtils;
+import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -16,6 +19,7 @@ import com.fr.web.utils.WebUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Young's on 2017/3/17.
@@ -23,6 +27,7 @@ import java.util.Iterator;
 public class BIGetLinksAndPackagesAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        long userId = ServiceUtils.getCurrentUserID(req);
         JSONArray links = new JSONArray();
         DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
         Iterator<String> names = datasourceManager.getConnectionNameIterator();
@@ -30,7 +35,7 @@ public class BIGetLinksAndPackagesAction extends AbstractBIConfigureAction {
             String name = names.next();
             Connection conn = datasourceManager.getConnection(name);
             if (conn != null) {
-                if (conn instanceof JDBCDatabaseConnection && ComparatorUtils.equals(conn.getDriver(), "sun.jdbc.odbc.JdbcOdbcDriver") && ((JDBCDatabaseConnection) conn).getURL().indexOf("Microsoft Access Driver") > 0) {
+                if (conn instanceof JDBCDatabaseConnection && BIConnectionManager.getInstance().isMicrosoftAccessDatabase(conn.getDriver(), ((JDBCDatabaseConnection) conn).getURL())) {
                     continue;
                 }
                 links.put(name);
@@ -38,7 +43,12 @@ public class BIGetLinksAndPackagesAction extends AbstractBIConfigureAction {
         }
         links.put(DBConstant.CONNECTION.SERVER_CONNECTION);
 
-        JSONObject packages = BICubeConfigureCenter.getPackageManager().createPackageJSON(UserControl.getInstance().getSuperManagerID());
+        List<BIPackageID> packageIDs = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+        JSONObject packages = new JSONObject();
+        for (BIPackageID packageID : packageIDs) {
+            BIBusinessPackage biBusinessPackage = (BIBusinessPackage) BICubeConfigureCenter.getPackageManager().getPackage(userId, packageID);
+            packages.put(biBusinessPackage.getID().getIdentityValue(), biBusinessPackage.createJSON());
+        }
 
         JSONObject jo = new JSONObject();
         jo.put("links", links);

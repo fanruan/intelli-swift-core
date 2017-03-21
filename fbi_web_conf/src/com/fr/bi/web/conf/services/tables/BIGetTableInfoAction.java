@@ -85,7 +85,7 @@ public class BIGetTableInfoAction extends AbstractBIConfigureAction {
         }
         jo.put("excelView", excelViewJO);
 
-        jo.put(BIJSONConstant.JSON_KEYS.RELATIONS, getAllRelationsOfTable(table));
+        jo.put(BIJSONConstant.JSON_KEYS.RELATIONS, getAllRelationsOfTable(table, userId));
         jo.put(BIJSONConstant.JSON_KEYS.TRANSLATIONS, getAllTransOfTable(table));
 
         WebUtils.printAsJSON(res, jo);
@@ -122,25 +122,25 @@ public class BIGetTableInfoAction extends AbstractBIConfigureAction {
         return ja;
     }
 
-    private JSONObject getAllRelationsOfTable(BusinessTable businessTable) throws Exception {
-        long userId = UserControl.getInstance().getSuperManagerID();
-        Set<BITableRelation> foreignKeys = BICubeConfigureCenter.getTableRelationManager().getForeignRelation(userId, businessTable).getContainer();
-        Set<BITableRelation> primaryKeys = BICubeConfigureCenter.getTableRelationManager().getPrimaryRelation(userId, businessTable).getContainer();
+    private JSONObject getAllRelationsOfTable(BusinessTable businessTable, long userId) throws Exception {
+        long admin = UserControl.getInstance().getSuperManagerID();
+        Set<BITableRelation> foreignKeys = BICubeConfigureCenter.getTableRelationManager().getForeignRelation(admin, businessTable).getContainer();
+        Set<BITableRelation> primaryKeys = BICubeConfigureCenter.getTableRelationManager().getPrimaryRelation(admin, businessTable).getContainer();
 
         JSONObject jo = new JSONObject();
         JSONArray connJA = new JSONArray();
         for (BITableRelation relation : primaryKeys) {
             if (isValidRelationByFieldExist(relation)) {
-                connJA.put(BIWebConfUtils.createRelationJSONWithName(relation));
+                connJA.put(BIWebConfUtils.createRelationJSONWithName(relation, userId));
             }
         }
         for (BITableRelation relation : foreignKeys) {
             if (isValidRelationByFieldExist(relation)) {
-                connJA.put(BIWebConfUtils.createRelationJSONWithName(relation));
+                connJA.put(BIWebConfUtils.createRelationJSONWithName(relation, userId));
             }
         }
-        jo.put(BIJSONConstant.JSON_KEYS.PRIMARY_KEY_MAP, getPrimKeyMap(primaryKeys));
-        jo.put(BIJSONConstant.JSON_KEYS.FOREIGN_KEY_MAP, getForKeyMap(foreignKeys));
+        jo.put(BIJSONConstant.JSON_KEYS.PRIMARY_KEY_MAP, getPrimKeyMap(primaryKeys, userId));
+        jo.put(BIJSONConstant.JSON_KEYS.FOREIGN_KEY_MAP, getForKeyMap(foreignKeys, userId));
         jo.put(BIJSONConstant.JSON_KEYS.CONNECTION_SET, connJA);
         return jo;
     }
@@ -150,7 +150,7 @@ public class BIGetTableInfoAction extends AbstractBIConfigureAction {
                 BIWebConfUtils.isFieldExist(relation.getForeignKey());
     }
 
-    private JSONObject getPrimKeyMap(Set<BITableRelation> relations) throws Exception {
+    private JSONObject getPrimKeyMap(Set<BITableRelation> relations, long userId) throws Exception {
         JSONObject jo = new JSONObject();
         Map<String, JSONArray> tableRelationMap = new HashMap<String, JSONArray>();
         for (BITableRelation relation : relations) {
@@ -160,7 +160,7 @@ public class BIGetTableInfoAction extends AbstractBIConfigureAction {
                 if (tableRelationMap.containsKey(primaryId)) {
                     ja = tableRelationMap.get(primaryId);
                 }
-                ja.put(BIWebConfUtils.createRelationJSONWithName(relation));
+                ja.put(BIWebConfUtils.createRelationJSONWithName(relation, userId));
                 tableRelationMap.put(primaryId, ja);
             }
         }
@@ -173,7 +173,7 @@ public class BIGetTableInfoAction extends AbstractBIConfigureAction {
         return jo;
     }
 
-    private JSONObject getForKeyMap(Set<BITableRelation> relations) throws Exception {
+    private JSONObject getForKeyMap(Set<BITableRelation> relations, long userId) throws Exception {
         JSONObject jo = new JSONObject();
         Map<String, JSONArray> tableRelationMap = new HashMap<String, JSONArray>();
         for (BITableRelation relation : relations) {
@@ -183,7 +183,7 @@ public class BIGetTableInfoAction extends AbstractBIConfigureAction {
                 if (tableRelationMap.containsKey(foreignId)) {
                     ja = tableRelationMap.get(foreignId);
                 }
-                ja.put(BIWebConfUtils.createRelationJSONWithName(relation));
+                ja.put(BIWebConfUtils.createRelationJSONWithName(relation, userId));
                 tableRelationMap.put(foreignId, ja);
             }
         }
