@@ -299,12 +299,12 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
     private int calcUpdateType(Set<Integer> updateTypeSet) {
         if (updateTypeSet == null || updateTypeSet.isEmpty()) {
             return DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
+        } else if (updateTypeSet.contains(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL)) {
+            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
         } else if (updateTypeSet.contains(DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART)) {
             return DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART;
-        } else if (updateTypeSet.contains(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER)) {
-            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER;
         } else {
-            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
+            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER;
         }
     }
 

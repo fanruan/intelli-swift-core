@@ -237,4 +237,92 @@ public class CustomTableTest extends TestCase {
         assertEquals(dependRelationPathSet.size(), 1);
     }
 
+    //单表更新A 增量、全量、从不，合并后只更新全量
+    public void testCustomTableAAA() {
+        tableBaseSourceIdMap = new HashMap<>();
+        baseSourceIdTableMap = new HashMap<>();
+        baseSourceIdUpdateTypeMap = new HashMap<>();
+        List<String> baseTableSourceIds = new ArrayList<>();
+        List<Integer> updateTypes = new ArrayList<>();
+        baseTableSourceIds.add(CustomTableCreater.getTableSourceA().getSourceID());
+        updateTypes.add(2);
+        baseTableSourceIds.add(CustomTableCreater.getTableSourceA().getSourceID());
+        updateTypes.add(1);
+        baseTableSourceIds.add(CustomTableCreater.getTableSourceA().getSourceID());
+        updateTypes.add(0);
+
+        CustomTableTestTool.calc(baseTableSourceIds, updateTypes, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap);
+        CubeBuildStuff stuff = new CubeBuildCustomTables(-999, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
+                new HashSet<>(), new HashSet<>(), new HashSet<>());
+        //需要更新的表包括A、AB表
+        assertEquals(stuff.getDependTableResource().size(), 2);
+        Set<CubeTableSource> set = BIDataStructTranUtils.set2Set(stuff.getDependTableResource());
+        assertEquals(set.size(), 2);
+        assertEquals(stuff.getSingleSourceLayers().size(), 3);
+
+        Map<CubeTableSource, UpdateSettingSource> updateTypeMap = stuff.getUpdateSettingSources();
+        assertEquals(updateTypeMap.size(), 3);
+        assertEquals(updateTypeMap.get(CustomTableCreater.getTableSourceA()).getUpdateType(), 0);
+        assertEquals(updateTypeMap.get(CustomTableCreater.getSOTableSourceAB()).getUpdateType(), 0);
+
+        assertEquals(stuff.getTableSourceRelationSet().size(), 1);
+        assertEquals(stuff.getCubeGenerateRelationSet().size(), 1);
+        Set<CubeTableSource> dependTableSourceSet = new HashSet<>();
+        for (BICubeGenerateRelation biCubeGenerateRelation : stuff.getCubeGenerateRelationSet()) {
+            dependTableSourceSet.addAll(biCubeGenerateRelation.getDependTableSourceSet());
+        }
+        assertEquals(dependTableSourceSet.size(), 1);
+
+        assertEquals(stuff.getTableSourceRelationPathSet().size(), 1);
+        assertEquals(stuff.getCubeGenerateRelationPathSet().size(), 1);
+        Set<BITableSourceRelationPath> dependRelationPathSet = new HashSet<>();
+        for (BICubeGenerateRelationPath biCubeGenerateRelationPath : stuff.getCubeGenerateRelationPathSet()) {
+            dependRelationPathSet.addAll(biCubeGenerateRelationPath.getDependRelationPathSet());
+        }
+        assertEquals(dependRelationPathSet.size(), 1);
+    }
+
+    //单表更新A 增量、从不，合并后只更新增量
+    public void testCustomTableAA() {
+        tableBaseSourceIdMap = new HashMap<>();
+        baseSourceIdTableMap = new HashMap<>();
+        baseSourceIdUpdateTypeMap = new HashMap<>();
+        List<String> baseTableSourceIds = new ArrayList<>();
+        List<Integer> updateTypes = new ArrayList<>();
+        baseTableSourceIds.add(CustomTableCreater.getTableSourceA().getSourceID());
+        updateTypes.add(1);
+        baseTableSourceIds.add(CustomTableCreater.getTableSourceA().getSourceID());
+        updateTypes.add(2);
+
+        CustomTableTestTool.calc(baseTableSourceIds, updateTypes, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap);
+        CubeBuildStuff stuff = new CubeBuildCustomTables(-999, tableBaseSourceIdMap, baseSourceIdTableMap, baseSourceIdUpdateTypeMap,
+                new HashSet<>(), new HashSet<>(), new HashSet<>());
+        //需要更新的表包括A、AB表
+        assertEquals(stuff.getDependTableResource().size(), 2);
+        Set<CubeTableSource> set = BIDataStructTranUtils.set2Set(stuff.getDependTableResource());
+        assertEquals(set.size(), 2);
+        assertEquals(stuff.getSingleSourceLayers().size(), 3);
+
+        Map<CubeTableSource, UpdateSettingSource> updateTypeMap = stuff.getUpdateSettingSources();
+        assertEquals(updateTypeMap.size(), 3);
+        assertEquals(updateTypeMap.get(CustomTableCreater.getTableSourceA()).getUpdateType(), 1);
+        assertEquals(updateTypeMap.get(CustomTableCreater.getSOTableSourceAB()).getUpdateType(), 0);
+
+        assertEquals(stuff.getTableSourceRelationSet().size(), 1);
+        assertEquals(stuff.getCubeGenerateRelationSet().size(), 1);
+        Set<CubeTableSource> dependTableSourceSet = new HashSet<>();
+        for (BICubeGenerateRelation biCubeGenerateRelation : stuff.getCubeGenerateRelationSet()) {
+            dependTableSourceSet.addAll(biCubeGenerateRelation.getDependTableSourceSet());
+        }
+        assertEquals(dependTableSourceSet.size(), 1);
+
+        assertEquals(stuff.getTableSourceRelationPathSet().size(), 1);
+        assertEquals(stuff.getCubeGenerateRelationPathSet().size(), 1);
+        Set<BITableSourceRelationPath> dependRelationPathSet = new HashSet<>();
+        for (BICubeGenerateRelationPath biCubeGenerateRelationPath : stuff.getCubeGenerateRelationPathSet()) {
+            dependRelationPathSet.addAll(biCubeGenerateRelationPath.getDependRelationPathSet());
+        }
+        assertEquals(dependRelationPathSet.size(), 1);
+    }
+
 }
