@@ -311,6 +311,36 @@ Data.Req = BIReq = {
         }, complete)
     },
 
+    reqCubeLogGenerateTime: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_cube_log_generate_time_info", {}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqCubeLogErrorInfo: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_cube_log_exception_info", {}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqCubeLogTableTransportInfo: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_cube_log_table_transport_info", {}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqCubeLogTableFieldIndexInfo: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_cube_log_table_field_index_info", {}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
+    reqCubeLogRelationIndexInfo: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_cube_log_relation_index_info", {}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
     reqSavePackageAuthority: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "save_package_authority", data, function (res) {
             callback(res);

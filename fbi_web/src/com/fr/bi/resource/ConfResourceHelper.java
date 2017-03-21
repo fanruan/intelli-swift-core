@@ -454,6 +454,10 @@ public class ConfResourceHelper {
                 "com/fr/bi/web/js/modules/cubepath/widget.cubepath.confirm.js",
 
                 //cube日志
+                "com/fr/bi/web/js/modules/cubelog/pane/cubelogcharttablepane.js",
+                "com/fr/bi/web/js/modules/cubelog/pane/cubelogerrorpane.js",
+                "com/fr/bi/web/js/modules/cubelog/pane/cubelogdetailpane.js",
+                "com/fr/bi/web/js/modules/cubelog/driver/dealwithcubelogdatadriver.js",
                 "com/fr/bi/web/js/modules/cubelog/items/item.cubelog.js",
                 "com/fr/bi/web/js/modules/cubelog/items/title.item.wronginfo.cubelog.js",
                 "com/fr/bi/web/js/modules/cubelog/items/item.wronginfo.cubelog.js",
