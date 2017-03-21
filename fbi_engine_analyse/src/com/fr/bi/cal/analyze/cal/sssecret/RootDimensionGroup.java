@@ -80,11 +80,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         tis = new ICubeTableService[metricGroupInfoList.size()];
         for (int i = 0; i < metricGroupInfoList.size(); i++) {
             DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
+            tis[i] = session.getLoader().getTableIndex(metricGroupInfoList.get(i).getMetric().getTableSource());
             for (int j = 0; j < rs.length; j++) {
-                ICubeTableService ti = session.getLoader().getTableIndex(getSource(rs[j]));
                 columns[j][i] = rs[j];
-                getters[j][i] = ti.getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
-                tis[i] = ti;
+                getters[j][i] =  session.getLoader().getTableIndex(getSource(rs[j])).getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
             }
         }
     }
@@ -122,6 +121,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     @Override
     public NoneDimensionGroup getRoot() {
         return root;
+    }
+
+    public ICubeValueEntryGetter[][] getGetters() {
+        return getters;
+    }
+
+    public DimensionCalculator[][] getColumns() {
+        return columns;
     }
 
     public int[] getValueStartRow(Object[] value) {
