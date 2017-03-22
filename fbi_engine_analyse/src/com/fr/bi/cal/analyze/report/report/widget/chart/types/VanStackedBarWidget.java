@@ -3,9 +3,10 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 /**
  * Created by eason on 2017/2/27.
  */
-public class VanStackedBarWidget extends VanBarWidget{
+public class VanStackedBarWidget extends VanStackedColumnWidget{
 
-
-
+    public boolean isInverted(){
+        return true;
+    }
 
 }

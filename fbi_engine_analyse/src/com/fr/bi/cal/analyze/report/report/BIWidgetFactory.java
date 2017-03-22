@@ -54,7 +54,6 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.RADAR, VanRadarWidget.class);
         vancharts.put(WidgetType.STACKED_RADAR, VanStackedRadarWidget.class);
 
-
     }
 
 
