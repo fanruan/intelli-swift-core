@@ -8,6 +8,8 @@ import com.fr.bi.common.persistent.xml.writer.BIBeanXMLWriterWrapper;
 import com.fr.bi.common.persistent.xml.writer.XMLNormalValueWriter;
 import com.fr.bi.common.persistent.xml.writer.XMLPersistentWriter;
 import com.fr.bi.common.world.BookRack;
+import com.fr.bi.common.world.people.Person;
+import com.fr.bi.common.world.people.PersonOld1;
 import com.fr.bi.common.world.people.Student;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
@@ -28,6 +30,8 @@ import java.util.HashMap;
  * Created by Connery on 2015/12/31.
  */
 public class XMLWriterTest extends TestCase {
+
+    private static char invalidChar = 0x08;
 
     public void testArrayNull() {
         try {
@@ -79,7 +83,7 @@ public class XMLWriterTest extends TestCase {
             wrapper.setTagAvailable(true);
             wrapper.setProperty(false);
             XMLPersistentWriter object = new XMLPersistentWriter(wrapper);
-            File var3 = new File("E:\\temp\\" + name + ".xml");
+            File var3 = new File("./temp/" + name + ".xml");
             StableUtils.makesureFileExist(var3);
             XMLTools.writeOutputStreamXML(object, new FileOutputStream(var3));
         } catch (Exception e) {
@@ -167,9 +171,9 @@ public class XMLWriterTest extends TestCase {
 
     private Object get(Object object, String name) {
         try {
-            File var3 = new File("E:\\temp\\" + name + ".xml");
+            File var3 = new File("./temp/" + name + ".xml");
             StableUtils.makesureFileExist(var3);
-            XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object));
+            XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object, Thread.currentThread().getContextClassLoader().getResource("").getPath() + "bean_history_class_test.xml"));
             XMLTools.readInputStreamXML(reader, new FileInputStream(var3));
             return object;
         } catch (Exception e) {
@@ -304,9 +308,9 @@ public class XMLWriterTest extends TestCase {
 
     public void testGroupValueIndex() {
         int[] array = new int[3];
-        array[0] = 1;
-        array[1] = 3;
-        array[2] = 6;
+        array[0] = new Integer(1);
+        array[1] = new Integer(3);
+        array[2] = new Integer(6);
 
         GroupValueIndex groupValueIndex = RoaringGroupValueIndex.createGroupValueIndex(array);
         checkEquals(groupValueIndex, "testGroupValueIndex");
@@ -349,11 +353,11 @@ public class XMLWriterTest extends TestCase {
         StringBuffer sb = new StringBuffer();
         sb.append("abc").append("pn\u0003ô").append("  ").append("t\b");
 //        sb.append("abc").append("pn").append("  ").append("t\b");
-        char ch = (char) 0x08;
+        char ch = invalidChar;
         sb.append(ch).append("\r\n");
         String cont = sb.toString();
         cont.replace("\b", "");
-        System.out.printf(cont);
+//        System.out.printf(cont);
         test.value = cont;
 //        checkEquals(test, "testUseInvalidChar");
     }
@@ -401,4 +405,19 @@ public class XMLWriterTest extends TestCase {
     }
 
 
+    public void testChangeClassAndProperty() {
+        try {
+            generate(PersonOld1.getChenHe(), "PersonRenameTest");
+
+            Class person = Class.forName(Person.class.getName());
+            Object o = BIConstructorUtils.forceConstructObject(person);
+            o = get(o, "PersonRenameTest");
+
+            assertTrue(o != null && o instanceof Person);
+            assertTrue(((Person) o).getName().equals("ChenHe"));
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            assertTrue(false);
+        }
+    }
 }
