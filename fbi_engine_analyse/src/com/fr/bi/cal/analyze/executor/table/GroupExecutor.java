@@ -144,7 +144,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
                 int columnIdx = targetsKeyIndex + rowDimensions.length + widget.isOrder();
                 Object data = temp.getSummaryValue(key);
                 boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
-                Style style = BITableStyle.getInstance().getNumberCellStyle(data, (rowIdx + 1) % 2 == 1, isPercent);
+                Style style = BITableStyle.getInstance().getNumberCellStyle(data, rowIdx % 2 == 1, isPercent);
                 CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
                 pagedIterator.addCell(cell);
                 targetsKeyIndex++;
