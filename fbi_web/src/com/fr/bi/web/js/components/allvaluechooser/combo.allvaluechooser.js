@@ -64,10 +64,14 @@ BI.AllValueChooserCombo = BI.inherit(BI.Widget, {
             call(this.items);
         }
         function call(items) {
+            var keywords = (options.keywords || []).slice();
             if (options.keyword) {
-                var search = BI.Func.getSearchResult(items, options.keyword);
-                items = search.matched.concat(search.finded);
+                keywords.push(options.keyword);
             }
+            BI.each(keywords, function (i, kw) {
+                var search = BI.Func.getSearchResult(items, kw);
+                items = search.matched.concat(search.finded);
+            });
             if (options.selected_values) {//过滤
                 var filter = BI.makeObject(options.selected_values, true);
                 items = BI.filter(items, function (i, ob) {
