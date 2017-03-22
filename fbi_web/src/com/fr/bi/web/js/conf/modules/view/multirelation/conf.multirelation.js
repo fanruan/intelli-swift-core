@@ -49,7 +49,6 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         this.searcher = BI.createWidget({
             type: "bi.searcher",
             adapter: this.multiRelation,
-            searcher: this.searchMultiRelation,
             chooseType: BI.ButtonGroup.CHOOSE_TYPE_MULTI,
             width: 230,
             isAutoSync: true,
@@ -63,9 +62,10 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
                     var pathResult = [];
                     BI.each(item, function (idx, pathItem) {
                         BI.find(pathItem, function (index, relation) {
-                            var foreignId = relation.foreignKey.field_id;
-                            var fieldName = BI.Utils.getFieldNameById4Conf(foreignId);
-                            var tableName = BI.Utils.getTableNameByFieldId4Conf(foreignId);
+                            var fKey = relation.foreignKey;
+                            var foreignId = fKey.field_id;
+                            var fieldName = fKey[BICst.JSON_KEYS.FIELD_TRAN_NAME] || fKey.field_name;
+                            var tableName = fKey[BICst.JSON_KEYS.TABLE_TRAN_NAME] || fKey.table_name;
                             var result = BI.Func.getSearchResult([fieldName], op.keyword);
                             if (BI.size(result.finded) >= 1 || BI.size(result.matched) >= 1) {
                                 pathResult.push(BI.deepClone(pathItem));
@@ -83,9 +83,10 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
                                 return true
                             }
                             if (index === 0) {
-                                var primaryId = relation.primaryKey.field_id;
-                                fieldName = BI.Utils.getFieldNameById4Conf(primaryId);
-                                tableName = BI.Utils.getTableNameByFieldId4Conf(primaryId);
+                                var pKey = relations.primaryKey;
+                                var primaryId = pKey.field_id;
+                                fieldName = pKey[BICst.JSON_KEYS.FIELD_TRAN_NAME] || pKey.field_name;
+                                tableName = pKey[BICst.JSON_KEYS.TABLE_TRAN_NAME] || pKey.table_name;
                                 result = BI.Func.getSearchResult([fieldName], op.keyword);
                                 if (BI.size(result.finded) >= 1 || BI.size(result.matched) >= 1) {
                                     pathResult.push(BI.deepClone(pathItem));
@@ -220,7 +221,7 @@ BIConf.MultiRelationView = BI.inherit(BI.View, {
         var relations = self.model.get("relations");
         var availableRelations = self.model.get("availableRelations");
         relations = BI.sortBy(relations, function (i, item) {
-            return BI.Utils.getTableNameByFieldId4Conf(BI.lastObject(item[0]).foreignKey.field_id)
+            return BI.lastObject(item[0]).foreignKey[BICst.JSON_KEYS.TABLE_TRAN_NAME];
         });
         self.multiRelation.setRelations(relations);
         self.multiRelation.setValue(availableRelations);

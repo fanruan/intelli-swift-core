@@ -111,48 +111,6 @@ BI.extend(BI.Utils, {
         });
     },
 
-    //删除表删除相关关联 和 字段
-    removeRelationByTableId4Conf: function (tableId) {
-        var self = this;
-        var relations = Data.SharingPool.cat("relations");
-        var fields = Data.SharingPool.cat("fields");
-        var connectionSet = relations.connectionSet,
-            primaryKeyMap = relations.primKeyMap,
-            foreignKeyMap = relations.foreignKeyMap;
-        var resultConnectionSet = [];
-        BI.each(connectionSet, function (i, keys) {
-            var primKey = keys.primaryKey, foreignKey = keys.foreignKey;
-            if (!(self.getTableIdByFieldId4Conf(primKey.field_id) === tableId || self.getTableIdByFieldId4Conf(foreignKey.field_id) === tableId)) {
-                resultConnectionSet.push(connectionSet[i])
-            }
-        });
-        relations.connectionSet = resultConnectionSet;
-        BI.each(primaryKeyMap, function (kId, maps) {
-            if (self.getTableIdByFieldId4Conf(kId) === tableId) {
-                delete primaryKeyMap[kId];
-            } else {
-                BI.remove(maps, function (i, keys) {
-                    return tableId === self.getTableIdByFieldId4Conf(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId4Conf(keys.foreignKey.field_id);
-                });
-                if (primaryKeyMap[kId].length === 0) {
-                    delete primaryKeyMap[kId];
-                }
-            }
-        });
-        BI.each(foreignKeyMap, function (kId, maps) {
-            if (tableId === self.getTableIdByFieldId4Conf(kId)) {
-                delete foreignKeyMap[kId];
-            } else {
-                BI.remove(maps, function (i, keys) {
-                    return tableId === self.getTableIdByFieldId4Conf(keys.primaryKey.field_id) || tableId === self.getTableIdByFieldId4Conf(keys.foreignKey.field_id);
-                });
-                if (foreignKeyMap[kId].length === 0) {
-                    delete foreignKeyMap[kId];
-                }
-            }
-        });
-    },
-
     removeRelationByFieldId4Conf: function (fieldId) {
         var relations = Data.SharingPool.cat("relations");
         var fields = Data.SharingPool.cat("fields");

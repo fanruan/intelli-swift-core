@@ -320,7 +320,8 @@ $(function () {
                     position: "absolute",
                     top: "-9999px",
                     overflow: "scroll"
-                }).appendTo($("#container"));
+                // }).appendTo($("#container"));
+                }).appendTo($("body"));
                 this._scrollWidth = ul[0].offsetWidth - ul[0].clientWidth;
                 ul.destroy();
             }
