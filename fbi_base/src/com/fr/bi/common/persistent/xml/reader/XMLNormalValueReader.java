@@ -1,6 +1,7 @@
 package com.fr.bi.common.persistent.xml.reader;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.common.persistent.BIBeanHistoryManager;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.common.persistent.xml.BIXMLTag;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -25,7 +26,10 @@ public class XMLNormalValueReader extends XMLValueReader {
     protected void readerContent(XMLableReader xmLableReader) {
         try {
             String fieldName = xmLableReader.getAttrAsString(BIXMLTag.FIELD_NAME, "null");
-            String fieldClass = xmLableReader.getAttrAsString("class", "null");
+            String persistentFieldClass = xmLableReader.getAttrAsString("class", "null");
+
+            String fieldClass = BIBeanHistoryManager.getCurrentClassName(persistentFieldClass, beanWrapper.getBeanHistoryFilePath());
+
             String uuid = xmLableReader.getAttrAsString(BIXMLTag.APPEND_INFO, "null");
             BIBeanXMLReaderWrapper wrapper;
 
