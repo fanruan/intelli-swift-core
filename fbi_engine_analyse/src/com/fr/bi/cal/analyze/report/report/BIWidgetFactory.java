@@ -45,6 +45,7 @@ public class BIWidgetFactory {
 
         vancharts.put(WidgetType.PIE, VanPieWidget.class);
         vancharts.put(WidgetType.DONUT, VanDonutWidget.class);
+        vancharts.put(WidgetType.FUNNEL, VanFunnelWidget.class);
         vancharts.put(WidgetType.GAUGE, VanGaugeWidget.class);
 
         vancharts.put(WidgetType.BUBBLE, VanBubbleWidget.class);
@@ -53,7 +54,6 @@ public class BIWidgetFactory {
 
         vancharts.put(WidgetType.RADAR, VanRadarWidget.class);
         vancharts.put(WidgetType.STACKED_RADAR, VanStackedRadarWidget.class);
-
     }
 
 

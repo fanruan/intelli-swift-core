@@ -1,11 +1,15 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by User on 2016/4/25.
@@ -19,6 +23,10 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int RIGHT = 3;
     private static final int BOTTOM = 4;
     private static final int LEFT = 5;
+
+    //气泡图和散点图的指标个数
+    private static final int BUBBLE_COUNT = 3;
+    private static final int SCATTER_COUNT = 2;
 
     public abstract JSONArray createSeries(JSONObject data) throws JSONException;
 
@@ -110,6 +118,36 @@ public abstract class VanChartWidget extends TableWidget {
                 data.put(JSONObject.create().put("x", x).put("y", y));
             }
             series.put(JSONObject.create().put("data", data).put("name", StringUtils.EMPTY).put("type", type));
+        }
+
+        return series;
+    }
+
+    protected JSONArray createBubbleSeries(JSONObject originData) throws JSONException{
+        JSONArray series = JSONArray.create();
+        String type = this.getSeriesType();
+        int targetCount = type == "bubble" ? BUBBLE_COUNT : SCATTER_COUNT;
+
+        JSONArray children = originData.optJSONArray("c");
+
+        for(int i = 0, len = children.length(); i < len; i++){
+
+            JSONObject obj = children.optJSONObject(i);
+            JSONArray data = obj.optJSONArray("s");
+            int dataLen = data.length();
+
+            if(dataLen < targetCount){
+                continue;
+            }
+
+            double x = data.optDouble(0), y = data.optDouble(1), size = data.optDouble(2);
+
+            series.put(
+                JSONObject.create()
+                        .put("type", type)
+                        .put("name",  obj.optString("n"))
+                        .put("data", JSONArray.create().put(JSONObject.create().put("x", x).put("y", y).put("size", size)))
+            );
         }
 
         return series;
