@@ -1,11 +1,13 @@
 package com.fr.bi.common.world.people;
 
+import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.json.generator.anno.BIJSONElement;
 
 /**
  * Created by Connery on 2015/12/31.
  */
 public class Person {
+    @PersistNameHistory(historyNames = {"nameOld"})
     private String name;
     private int age;
     private Boolean male;

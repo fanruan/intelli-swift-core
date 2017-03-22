@@ -82,25 +82,13 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     @Override
     public boolean preConditionsCheck() {
         BILoggerFactory.getLogger().info("***************space check start*****************");
-        boolean spaceCheck = getSpaceCheckResult();
+        boolean spaceCheck = hasSpace();
         BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck + " *****************");
         return spaceCheck;
     }
 
     public Set<CubeTableSource> getSystemTableSources() {
         return this.allTableSources;
-    }
-
-    public static Set<CubeTableSource> set2Set(Set<List<Set<CubeTableSource>>> set) {
-        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
-        Iterator<List<Set<CubeTableSource>>> outIterator = set.iterator();
-        while (outIterator.hasNext()) {
-            Iterator<Set<CubeTableSource>> middleIterator = outIterator.next().iterator();
-            while (middleIterator.hasNext()) {
-                result.addAll(middleIterator.next());
-            }
-        }
-        return result;
     }
 
     /**
@@ -273,7 +261,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return set;
     }
 
-    private boolean getConnectionCheck() {
+    private boolean hasConnection() {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
         Set<Connection> connectionSet = new HashSet<Connection>();
         double[] SqlSourceTypes = {BIBaseConstant.TABLETYPE.DB, BIBaseConstant.TABLETYPE.SQL};
@@ -298,7 +286,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
 
     }
 
-    private boolean getSpaceCheckResult() {
+    private boolean hasSpace() {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
         ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
         return check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
