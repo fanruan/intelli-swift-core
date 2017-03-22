@@ -28,6 +28,6 @@ public class ReportVersionNodeFactory {
 
     private static ReportConfVersionNode createVersionNodeFor41() {
         ReportSettingsUpdateOperation operation = new ReportNullOperation();
-        return new ReportConfVersionNode(new ReportVersion(BIReportConstant.HISTORY_VERSION.VERSION_4_1, Double.valueOf(4.01)), operation);
+        return new ReportConfVersionNode(new ReportVersion(BIReportConstant.HISTORY_VERSION.VERSION_4_2, Double.valueOf(4.01)), operation);
     }
 }
