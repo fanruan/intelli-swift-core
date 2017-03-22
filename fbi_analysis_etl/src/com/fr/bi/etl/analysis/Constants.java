@@ -23,7 +23,7 @@ public class Constants {
     }
 
     public final static class SELF_CIRCLE{
-        public final static String LAYER="layer";
+        public final static String LAYER="层级";
     }
     public static final class ETL_TYPE {
         public static final int SELECT_DATA = 0x1;
