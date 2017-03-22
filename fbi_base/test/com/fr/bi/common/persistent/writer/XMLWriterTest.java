@@ -306,9 +306,9 @@ public class XMLWriterTest extends TestCase {
 
     public void testGroupValueIndex() {
         int[] array = new int[3];
-        array[0] = 1;
-        array[1] = 3;
-        array[2] = 6;
+        array[0] = new Integer(1);
+        array[1] = new Integer(3);
+        array[2] = new Integer(6);
 
         GroupValueIndex groupValueIndex = RoaringGroupValueIndex.createGroupValueIndex(array);
         checkEquals(groupValueIndex, "testGroupValueIndex");
@@ -351,11 +351,11 @@ public class XMLWriterTest extends TestCase {
         StringBuffer sb = new StringBuffer();
         sb.append("abc").append("pn\u0003ô").append("  ").append("t\b");
 //        sb.append("abc").append("pn").append("  ").append("t\b");
-        char ch = (char) 0x08;
+        char ch = new Character((char) 0x08).charValue();
         sb.append(ch).append("\r\n");
         String cont = sb.toString();
         cont.replace("\b", "");
-        System.out.printf(cont);
+//        System.out.printf(cont);
         test.value = cont;
 //        checkEquals(test, "testUseInvalidChar");
     }
@@ -414,7 +414,7 @@ public class XMLWriterTest extends TestCase {
             assertTrue(o != null && o instanceof Person);
             assertTrue(((Person) o).getName().equals("ChenHe"));
         } catch (Exception e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
