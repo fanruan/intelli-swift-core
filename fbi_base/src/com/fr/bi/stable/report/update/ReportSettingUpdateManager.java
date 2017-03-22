@@ -5,13 +5,11 @@ import com.fr.bi.exception.BIReportVersionAbsentException;
 import com.fr.bi.fs.BIDesignSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Kary on 2017/2/4.
@@ -32,13 +30,13 @@ public class ReportSettingUpdateManager {
 
     public BIDesignSetting updateReportSettings(BIDesignSetting setting) throws Exception {
         JSONObject reportSettings = setting.getReportJSON();
-        double fileVersion = getVersion(setting);
         Iterator<ReportConfVersionNode> iterator = versionNodes.iterator();
         while (iterator.hasNext()) {
             ReportConfVersionNode node = iterator.next();
-            boolean flag=fileVersion < node.getVersion()&&node.getVersion()<=Double.valueOf(BIReportConstant.VERSION);
+//            boolean flag = fileVersion < node.getVersion() && node.getVersion() <= Double.valueOf(BIReportConstant.VERSION);
+            boolean flag = getVersion(setting).getVersionSort() < node.getVersion().getVersionSort();
             if (flag) {
-                BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("profile files is updating ", String.valueOf(fileVersion) + "------>" + node.getVersion()));
+                BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("profile files is updating ", getVersion(setting).getVersionName() + "------>" + node.getVersion()));
                 reportSettings = node.getReportOperation().update(reportSettings);
             }
         }
@@ -51,13 +49,13 @@ public class ReportSettingUpdateManager {
      * @throws Exception 该版本号无法在历史记录里找到
      * 处理出现未记录版本号的情况
      */
-    public double getVersion(BIDesignSetting setting) throws BIReportVersionAbsentException, JSONException {
+    public ReportVersion getVersion(BIDesignSetting setting) throws BIReportVersionAbsentException, JSONException {
         JSONObject reportSettings = setting.getReportJSON();
         if (null == reportSettings || !reportSettings.has("version")) {
-            return BIReportConstant.HISTORY_VERSION.VERSION_4_0;
+            return new ReportVersion(BIReportConstant.HISTORY_VERSION.VERSION_4_0, Double.valueOf(BIReportConstant.HISTORY_VERSION.VERSION_4_0));
         }
         for (ReportConfVersionNode node : versionNodes) {
-            if (node.versionCompare(reportSettings)) {
+            if (ComparatorUtils.equals(reportSettings.getString("version") ,node.getVersion().getVersionName())) {
                 return node.getVersion();
             }
         }
@@ -75,9 +73,7 @@ public class ReportSettingUpdateManager {
     }
 
     private void initialNodeList() throws Exception {
-        versionNodes.add(ReportVersionNodeFactory.createVersionNode(BIReportConstant.HISTORY_VERSION.VERSION_4_0));
-        versionNodes.add(ReportVersionNodeFactory.createVersionNode(BIReportConstant.HISTORY_VERSION.VERSION_4_1));
-        Collections.sort(versionNodes);
+        versionNodes = ReportVersionNodeFactory.createVersionNodes();
     }
 
     protected void reSetNodeList(List nodeList) throws Exception {

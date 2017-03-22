@@ -57,6 +57,7 @@ public class BIReadReportUtils implements BIReadReportProvider {
         BIDesignSetting setting = (BIDesignSetting) BaseXMLUtils.readXMLFile(
                 BaseUtils.readResource(file.getAbsolutePath()),
                 new BIDesignSetting());
+        setting.updateSetting();
         return setting.getReportJSON();
     }
 }

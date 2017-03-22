@@ -11,24 +11,24 @@ import com.fr.json.JSONObject;
  * Created by kary on 2017/2/4.
  */
 public class ReportConfVersionNode implements Comparable<ReportConfVersionNode> {
-    private double version;
+    private ReportVersion version;
     private ReportSettingsUpdateOperation reportOperation;
 
-    public ReportConfVersionNode(double version, ReportSettingsUpdateOperation reportOperation) {
+    public ReportConfVersionNode(ReportVersion version, ReportSettingsUpdateOperation reportOperation) {
         this.version = version;
         this.reportOperation = reportOperation;
     }
 
     public boolean versionCompare(JSONObject settings) {
         try {
-            return settings.getDouble("version") == version;
+            return ComparatorUtils.equals(settings.getString("version") ,version.getVersionName());
         } catch (JSONException e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
         return false;
     }
 
-    public double getVersion() {
+    public ReportVersion getVersion() {
         return version;
     }
 
@@ -42,7 +42,7 @@ public class ReportConfVersionNode implements Comparable<ReportConfVersionNode> 
 
     @Override
     public int compareTo(ReportConfVersionNode o) {
-        if (this.getVersion() < o.getVersion()) {
+        if (this.getVersion().getVersionSort() < o.getVersion().getVersionSort()) {
             return -1;
         }
         return 1;
