@@ -11,9 +11,11 @@ import java.util.Map;
 
 /**
  * Created by 小灰灰 on 2017/1/11.
+ * 创建生成子节点的迭代器
  */
 public interface MergeIteratorCreator {
     Iterator<MetricMergeResult> createIterator(Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader);
 
+    //三无迭代器才必须有个child，为了跟之前样子一样
     boolean isSimple();
 }
