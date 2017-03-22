@@ -308,6 +308,7 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/css/theme/bi.chartpreview.css",
                 "/com/fr/bi/web/cross/css/theme/bi.stylesetting.css",
                 "/com/fr/bi/web/cross/css/theme/bi.theme.css",
+                "/com/fr/bi/web/cross/css/usermanager/bi.usermanager.css",
 
                 "/com/fr/bi/web/cross/css/reporthangout/hangoutreport.plate.css",
 
@@ -324,6 +325,7 @@ public class BIPlate extends AbstractFSPlate {
     @Override
     public String[] getPlateJavaScriptFiles4WebClient() {
         return (String[]) ArrayUtils.addAll(FsResourceHelper.getFsJs(), new String[]{
+                "/com/fr/bi/web/cross/js/usermanager/bi.usermanager.js",
                 "/com/fr/bi/web/cross/js/bi.user.manager.js",
                 "/com/fr/bi/web/cross/js/effect/create.by.me.js",
                 "/com/fr/bi/web/cross/js/effect/share.to.me.js",
