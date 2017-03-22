@@ -29,17 +29,28 @@ var Consts = {
 };
 
 FS.BIUSERMGR = {
+
     getUserItems: function () {
-        FR.$defaultImport('/com/fr/bi/web/cross/css/bi.user.manager.css', 'css');
-        //todo 这里结构不好，每次调用都是生成
         this._initAuthUserLimit();
         var items = [];
         items.push({
-            ui: this.userLimitTabConfig(Consts.BIEDIT),
+            ui: {
+                title: this._getTitleByMode(Consts.BIEDIT),
+                content: {
+                    type: "bi.fs_user_manager",
+                    mode: Consts.BIEDIT
+                }
+            },
             action: FR.emptyFn()
         });
         items.push({
-            ui: this.userLimitTabConfig(Consts.BIVIEW),
+            ui: {
+                title: this._getTitleByMode(Consts.BIVIEW),
+                content: {
+                    type: "bi.fs_user_manager",
+                    mode: Consts.BIVIEW
+                }
+            },
             action: FR.emptyFn()
         });
         return items;
@@ -78,6 +89,19 @@ FS.BIUSERMGR = {
                 return this.mobileUserAuthLimit;
             default :
                 return 0;
+        }
+    },
+
+    _getTitleByMode: function (mode) {
+        switch (mode) {
+            case Consts.BIEDIT:
+                return BI.i18nText("BI-BI_Edit_User");
+            case Consts.BIVIEW:
+                return BI.i18nText("BI-BI_View_User");
+            case Consts.BIMOBILE:
+                return BI.i18nText("BI-BI_Move_User");
+            default :
+                return BI.i18nText("BI-BI_Edit_User");
         }
     },
 
@@ -126,18 +150,18 @@ FS.BIUSERMGR = {
     _createUserPanel: function (isAuthorizedList, mode) {
         var self = this;
         var userPanelOptions = isAuthorizedList ? {
-            panelWidgetName: Consts.userLimitUnauthorizedPanelWD + mode,
-            panelTitle: FR.i18nText("FS-Mobile_Authorized_Users"),
-            listWidgetName: Consts.userLimitAuthorizedListWD + mode,
-            listPanelWidgetName: Consts.userLimitAuthorizedListPanelWD + mode,
-            listUrl: FR.servletURL + "?op=fr_bi&cmd=get_auth_user_list&mode=" + mode
-        } : {
-            panelWidgetName: Consts.userLimitAuthorizedPanelWD + mode,
-            panelTitle: FR.i18nText("FS-Mobile_Unauthorized_Users"),
-            listWidgetName: Consts.userLimitUnauthorizedListWD + mode,
-            listPanelWidgetName: Consts.userLimitUnauthorizedListPanelWD + mode,
-            listUrl: FR.servletURL + "?op=fr_bi&cmd=get_all_auth_user_list&mode=" + mode
-        };
+                panelWidgetName: Consts.userLimitUnauthorizedPanelWD + mode,
+                panelTitle: FR.i18nText("FS-Mobile_Authorized_Users"),
+                listWidgetName: Consts.userLimitAuthorizedListWD + mode,
+                listPanelWidgetName: Consts.userLimitAuthorizedListPanelWD + mode,
+                listUrl: FR.servletURL + "?op=fr_bi&cmd=get_auth_user_list&mode=" + mode
+            } : {
+                panelWidgetName: Consts.userLimitAuthorizedPanelWD + mode,
+                panelTitle: FR.i18nText("FS-Mobile_Unauthorized_Users"),
+                listWidgetName: Consts.userLimitUnauthorizedListWD + mode,
+                listPanelWidgetName: Consts.userLimitUnauthorizedListPanelWD + mode,
+                listUrl: FR.servletURL + "?op=fr_bi&cmd=get_all_auth_user_list&mode=" + mode
+            };
         var searchFunc = function (e) {
             if (self.searchId != null) {
                 clearTimeout(self.searchId);

@@ -23,7 +23,7 @@ BI.MultiRelationTitle=BI.inherit(BI.Widget,{
     },
 
     _getTableName: function (field) {
-        return BI.Utils.getTableNameByFieldId4Conf(field.field_id);
+        return field[BICst.JSON_KEYS.TABLE_TRAN_NAME];
     },
 
     _createText: function () {

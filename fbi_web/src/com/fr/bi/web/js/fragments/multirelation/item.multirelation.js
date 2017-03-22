@@ -61,9 +61,9 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
     _hasNoAbsolutePathAuth: function () {
         var relations = this.options.relations;
         return BI.some(relations, function (i, rel) {
-            var foreignFieldId = rel.foreignKey.field_id;
-            var primaryFieldId = rel.primaryKey.field_id;
-            return !BI.Utils.isFieldExistById4Conf(foreignFieldId) || !BI.Utils.isFieldExistById4Conf(primaryFieldId);
+            var fKey = rel.foreignKey;
+            var pKey = rel.primaryKey;
+            return !fKey.available || !pKey.available;
         });
     },
 
@@ -72,12 +72,11 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
         var items = [];
         BI.backAny(o.relations, function (i, rel) {
             var widgetItem = {};
-            var foreignFieldId = rel.foreignKey.field_id;
-            var primaryFieldId = rel.primaryKey.field_id;
+            var fKey = rel.foreignKey, pKey = rel.primaryKey;
             if (i === 0) {
                 widgetItem.type = "bi.multi_relation_table_field_item";
-                widgetItem.fieldName = BI.Utils.getFieldNameById4Conf(foreignFieldId);
-                widgetItem.tableName = BI.Utils.getTableNameByFieldId4Conf(foreignFieldId);
+                widgetItem.fieldName = fKey[BICst.JSON_KEYS.FIELD_TRAN_NAME] || fKey.field_name;
+                widgetItem.tableName = fKey[BICst.JSON_KEYS.TABLE_TRAN_NAME] || fKey.table_name;
                 items.push(BI.deepClone(widgetItem));
                 items.push({
                     type: "bi.label",
@@ -86,14 +85,14 @@ BI.MultirelationItem = BI.inherit(BI.Widget, {
                     textAlign: "center"
                 });
                 widgetItem.type = "bi.multi_relation_table_field_item";
-                widgetItem.fieldName = BI.Utils.getFieldNameById4Conf(primaryFieldId);
-                widgetItem.tableName = BI.Utils.getTableNameByFieldId4Conf(primaryFieldId);
+                widgetItem.fieldName = pKey[BICst.JSON_KEYS.FIELD_TRAN_NAME] || pKey.field_name;
+                widgetItem.tableName = pKey[BICst.JSON_KEYS.TABLE_TRAN_NAME] || pKey.table_name;
                 items.push(BI.deepClone(widgetItem));
                 return
             }
             widgetItem.type = "bi.multi_relation_table_field_item";
-            widgetItem.fieldName = BI.Utils.getFieldNameById4Conf(foreignFieldId);
-            widgetItem.tableName = BI.Utils.getTableNameByFieldId4Conf(foreignFieldId);
+            widgetItem.fieldName = fKey[BICst.JSON_KEYS.FIELD_TRAN_NAME] || fKey.field_name;
+            widgetItem.tableName = fKey[BICst.JSON_KEYS.TABLE_TRAN_NAME] || fKey.table_name;
             items.push(BI.deepClone(widgetItem));
             items.push({
                 type: "bi.label",

@@ -20,7 +20,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
 
     _init: function () {
         BI.ChartDisplay.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+
         this.vanChars = VanCharts.init(this.element[0]);
     },
 
@@ -31,11 +31,8 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
 
         BI.Utils.getWidgetDataByID(o.wId, {
             success: function (options) {
-
                 widget.loaded();
-
                 widget.vanChars.setOptions(options);
-
             }
         });
     },

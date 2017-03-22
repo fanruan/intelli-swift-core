@@ -319,7 +319,12 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     createDistinctTableTranName: function (id, v) {
-        return BI.Func.createDistinctName(this.options.tableNames || [], v);
+        var tableNames = this.options.tableNames || [];
+        var names = [];
+        BI.each(tableNames, function (i, name) {
+            names.push({name: name});
+        });
+        return BI.Func.createDistinctName(names, v);
     },
 
     /**

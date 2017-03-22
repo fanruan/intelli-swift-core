@@ -23,6 +23,7 @@ import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.bi.web.conf.utils.BIWebConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -149,14 +150,14 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
                 multiPathItem.addAll(disablePathSet);
                 disabledMultiSet.addAll(disablePathSet);
                 if (!multiPathItem.isEmpty()) {
-                    multiJa.put(path2relations(multiPathItem));
+                    multiJa.put(path2relations(multiPathItem, userId));
                 }
             }
         }
         jo.put("relations", multiJa);
-        jo.put("disabledRelations", path2relations(disabledMultiSet));
-        jo.put("availableRelations", path2relations(availableMultiSet));
-        jo.put("noneRelations", path2relations(noneMultiSet));
+        jo.put("disabledRelations", path2relations(disabledMultiSet, userId));
+        jo.put("availableRelations", path2relations(availableMultiSet, userId));
+        jo.put("noneRelations", path2relations(noneMultiSet, userId));
         jo.put("needGenerateCube", BIConfigureManagerCenter.getCubeConfManager().getMultiPathCubeStatus().getStatus());
         return jo;
     }
@@ -174,7 +175,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
     }
 
 
-    private JSONArray path2relations(Set<BITableRelationPath> multiPathSet) throws Exception {
+    private JSONArray path2relations(Set<BITableRelationPath> multiPathSet, long userId) throws Exception {
         JSONArray multiPathJa = new JSONArray();
         Iterator it = multiPathSet.iterator();
         while (it.hasNext()) {
@@ -183,7 +184,7 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
             List relationList = path.getAllRelations();
             for (int i = 0; i < relationList.size(); i++) {
                 BITableRelation relation = ((BITableRelation) relationList.get(i));
-                multiRelationJa.put(relation.createJSON());
+                multiRelationJa.put(BIWebConfUtils.createRelationJSONWithName(relation, userId));
             }
             multiPathJa.put(multiRelationJa);
         }
