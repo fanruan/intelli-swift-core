@@ -1,7 +1,9 @@
 package com.finebi.cube.impl.conf;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.gen.oper.BIRelationIDUtils;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
@@ -13,6 +15,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.ComparatorUtils;
@@ -130,10 +133,7 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
         return result;
     }
 
-    private Set<BITableSourceRelationPath> removePathAbsentRelation(Set<BITableSourceRelationPath> pathInConstruction,
-                                                                    Set<CubeTableSource> absentTable,
-                                                                    Set<BITableSourceRelation> absentRelation,
-                                                                    Set<BITableSourceRelationPath> absentPath) {
+    private Set<BITableSourceRelationPath> removePathAbsentRelation(Set<BITableSourceRelationPath> pathInConstruction, Set<CubeTableSource> absentTable, Set<BITableSourceRelation> absentRelation, Set<BITableSourceRelationPath> absentPath) {
         Set<BITableSourceRelationPath> result = new HashSet<BITableSourceRelationPath>();
         Set<String> relationIDInConstruction = new HashSet<String>();
         Set<String> relationIDAbsent = new HashSet<String>();
@@ -156,34 +156,20 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
             List<BITableSourceRelationPath> sortPath = sortPath(pathInConstruction);
             for (BITableSourceRelationPath path : sortPath) {
                 if (path.size() >= 2) {
-                    /**
-                     * 当前路径的最后一条关联，在构建的时候存在
-                     */
+                    //当前路径的最后一条关联，在构建的时候存在
                     if (checklastRelation(path.getLastRelation(), absentTableIDs, relationIDInConstruction, relationIDAbsent)) {
-                        /**
-                         * 获得当前路径的前部。也就是移除最后一条关联的剩余部分。
-                         */
+                        //获得当前路径的前部。也就是移除最后一条关联的剩余部分。
                         BITableSourceRelationPath pathFront = getFrontPath(path);
-                        /**
-                         * 路径的前部长度为1的话，那么当做是关联处理。
-                         */
+                        //路径的前部长度为1的话，那么当做是关联处理。
                         if (pathFront.size() == 1) {
-                            if (isRelationExistWhenBuild(pathFront.getFirstRelation(), relationIDInConstruction, relationIDAbsent)
-                                    ) {
-                                /**
-                                 * 路径的前后部分，都是存在，那么当前路径可以构建。
-                                 */
+                            if (isRelationExistWhenBuild(pathFront.getFirstRelation(), relationIDInConstruction, relationIDAbsent)) {
                                 result.add(path);
                                 pathIDsInConstruction.add(BIRelationIDUtils.calculatePathID(path));
                             }
                         } else {
-                            /**
-                             * 路径的前部长度依然为一条长度大于1的路径。
-                             */
+                            //路径的前部长度依然为一条长度大于1的路径。
                             if (isPathExistWhenBuild(pathFront, pathIDsInConstruction, pathIDsAbsent)) {
-                                /**
-                                 * 路径的前后部分，都是存在，那么当前路径可以构建。
-                                 */
+                                //路径的前后部分，都是存在，那么当前路径可以构建。
                                 result.add(path);
                                 pathIDsInConstruction.add(BIRelationIDUtils.calculatePathID(path));
                             }
@@ -296,12 +282,12 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
     private int calcUpdateType(Set<Integer> updateTypeSet) {
         if (updateTypeSet == null || updateTypeSet.isEmpty()) {
             return DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
+        } else if (updateTypeSet.contains(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL)) {
+            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
         } else if (updateTypeSet.contains(DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART)) {
             return DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART;
-        } else if (updateTypeSet.contains(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER)) {
-            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER;
         } else {
-            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
+            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER;
         }
     }
 
@@ -318,5 +304,17 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
     @Override
     public CubeTaskType getTaskType() {
         return CubeTaskType.SINGLE;
+    }
+
+    @Override
+    public boolean replaceOldCubes() {
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
+        try {
+            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return true;
     }
 }

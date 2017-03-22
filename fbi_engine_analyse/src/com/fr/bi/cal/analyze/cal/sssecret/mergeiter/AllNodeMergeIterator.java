@@ -2,13 +2,14 @@ package com.fr.bi.cal.analyze.cal.sssecret.mergeiter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
-import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
+import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -40,7 +41,11 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     //丢近线程池的计算的数量
     private int size;
 
-    public AllNodeMergeIterator(Iterator<MetricMergeResult> mergeIterator, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader) {
+    private BIMultiThreadExecutor executor;
+
+    private List<CalCalculator> formulaCalculator;
+
+    public AllNodeMergeIterator(Iterator<MetricMergeResult> mergeIterator, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader, BIMultiThreadExecutor executor, List<CalCalculator> formulaCalculator) {
         this.mergeIterator = mergeIterator;
         this.filter = filter;
         this.metricsToCalculate = metricsToCalculate;
@@ -48,37 +53,35 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         this.tis = tis;
         this.loader = loader;
         this.targetSort = targetSort;
+        this.executor = executor;
+        this.formulaCalculator = formulaCalculator;
         initIter();
     }
 
     private void initIter() {
-        BIMultiThreadExecutor executor = null;
-        if (MultiThreadManagerImpl.getInstance().isMultiCall()){
-            executor = MultiThreadManagerImpl.getInstance().getExecutorService();
-        }
         root = new Node(null);
         count = new AtomicInteger(0);
         //不是多线程，或者没有指标都表示线程池的计算已经结束
-        completed = getMetricsSize() == 0 || !MultiThreadManagerImpl.getInstance().isMultiCall();
+        completed = getMetricsSize() == 0 || executor == null;
         allAdded = false;
         while (mergeIterator.hasNext()) {
             MetricMergeResult result = mergeIterator.next();
-            checkSum(result, executor);
+            checkSum(result);
             root.addChild(result);
             ++size;
         }
-        if (metricsToCalculate != null){
+        if (metricsToCalculate != null) {
             size *= getMetricsSize();
         }
         allAdded = true;
         //如果多线程计算没有结束，就等结束
         //有可能在设置allAdded = true之前就结束了，导致 checkComplete 没执行，这边还要判断下size
         completed = completed || count.get() == size;
-        if (!completed){
-        //没完成的话要唤醒下executor，以防有加到executor里wait住的。
+        if (!completed) {
+            //没完成的话要唤醒下executor，以防有加到executor里wait住的。
             executor.wakeUp();
-            synchronized (this){
-                if (!completed){
+            synchronized (this) {
+                if (!completed) {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
@@ -86,7 +89,9 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
                 }
             }
         }
+        checkFormulaMetrics();
         List<MetricMergeResult> resultList = new ArrayList<MetricMergeResult>();
+        //需要全部构建好才能处理的过滤，比如前2个或者后5个这种，不能在汇总值算完就过滤
         for (Node node : root.getChilds()) {
             if (filter == null || filter.showNode(node, calculatedMap, loader)) {
                 resultList.add((MetricMergeResult) node);
@@ -96,17 +101,36 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         resultIter = resultList.iterator();
     }
 
-    private void checkComplete(){
+    private void checkFormulaMetrics() {
+        if (formulaCalculator != null && !formulaCalculator.isEmpty()) {
+            List<TargetCalculator> calculatorList = new ArrayList<TargetCalculator>();
+            for (List<TargetAndKey> keys : metricsToCalculate) {
+                if (keys != null) {
+                    for (TargetAndKey key : keys) {
+                        if (key != null) {
+                            calculatorList.add(key.getCalculator());
+                        }
+                    }
+                }
+
+            }
+            List<CalCalculator> formulaCalculator = new ArrayList<CalCalculator>();
+            formulaCalculator.addAll(this.formulaCalculator);
+            CubeIndexLoader.calculateTargets(calculatorList, formulaCalculator, root);
+        }
+    }
+
+    private void checkComplete() {
         //如果已经计算完了加入线程池的计算，并且所有计算都已经加入线程池了，就说明计算完了，唤醒下等待的线程。
-        if (count.incrementAndGet() == size && allAdded){
-            synchronized (this){
+        if (count.incrementAndGet() == size && allAdded) {
+            synchronized (this) {
                 completed = true;
                 this.notify();
             }
         }
     }
 
-    private int getMetricsSize(){
+    private int getMetricsSize() {
         int size = 0;
         if (metricsToCalculate != null) {
             for (int i = 0; i < metricsToCalculate.length; i++) {
@@ -116,14 +140,14 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         return size;
     }
 
-    private void checkSum(MetricMergeResult result, BIMultiThreadExecutor executor) {
+    private void checkSum(MetricMergeResult result) {
         GroupValueIndex[] gvis = result.getGvis();
         if (metricsToCalculate != null) {
             for (int i = 0; i < metricsToCalculate.length; i++) {
                 List<TargetAndKey> targetAndKeys = metricsToCalculate[i];
                 if (targetAndKeys != null) {
                     for (TargetAndKey targetAndKey : targetAndKeys) {
-                        if (executor != null){
+                        if (executor != null) {
                             executor.add(new SummaryCountCal(tis[i], result, targetAndKey, gvis[i], loader));
                         } else {
                             new SummaryCountCal(tis[i], result, targetAndKey, gvis[i], loader).cal();
@@ -134,7 +158,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         }
     }
 
-    private class SummaryCountCal extends SummaryCall{
+    private class SummaryCountCal extends SummaryCall {
 
         public SummaryCountCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader) {
             super(ti, node, targetAndKey, gvi, loader);
@@ -142,9 +166,12 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
 
         @Override
         public void cal() {
-            super.cal();
-            checkComplete();
-     //      ((MetricMergeResult) node).clearGvis();
+            try {
+                super.cal();
+            } finally {
+                checkComplete();
+            }
+            //      ((MetricMergeResult) node).clearGvis();
         }
     }
 

@@ -5,4 +5,8 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
  */
 public class VanBarWidget extends VanColumnWidget{
 
+    public boolean isInverted(){
+        return true;
+    }
+
 }

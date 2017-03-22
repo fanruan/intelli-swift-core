@@ -54,7 +54,12 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.RADAR, VanRadarWidget.class);
         vancharts.put(WidgetType.STACKED_RADAR, VanStackedRadarWidget.class);
 
+        vancharts.put(WidgetType.FUNNEL, VanFunnelWidget.class);
+        vancharts.put(WidgetType.TREE_MAP, VanTreeMapWidget.class);
+        vancharts.put(WidgetType.MULTI_PIE, VanMultiPieWidget.class);
 
+        vancharts.put(WidgetType.MAP, VanMapWidget.class);
+        vancharts.put(WidgetType.GIS_MAP, VanGisWidget.class);
     }
 
 
