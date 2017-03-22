@@ -1,11 +1,11 @@
 /**
  * Created by GUY on 2015/9/6.
- * @class BI.SelectDataLevel0Node
+ * @class BI.SelectDataLevelNode
  * @extends BI.NodeButton
  */
-BI.SelectDataLevel0Node = BI.inherit(BI.NodeButton, {
+BI.SelectDataLevelNode = BI.inherit(BI.NodeButton, {
     _defaultConfig: function () {
-        return BI.extend(BI.SelectDataLevel0Node.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.SelectDataLevelNode.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-select-data-level0-node bi-list-item",
             id: "",
             pId: "",
@@ -19,7 +19,7 @@ BI.SelectDataLevel0Node = BI.inherit(BI.NodeButton, {
         var warningTitle = this.options.warningTitle;
         this.options.title = "";
         this.options.warningTitle = "";
-        BI.SelectDataLevel0Node.superclass._init.apply(this, arguments);
+        BI.SelectDataLevelNode.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.checkbox = BI.createWidget({
             type: "bi.tree_group_node_checkbox"
@@ -82,17 +82,17 @@ BI.SelectDataLevel0Node = BI.inherit(BI.NodeButton, {
     },
 
     doClick: function () {
-        BI.SelectDataLevel0Node.superclass.doClick.apply(this, arguments);
+        BI.SelectDataLevelNode.superclass.doClick.apply(this, arguments);
         this.checkbox.setSelected(this.isOpened());
     },
 
     setOpened: function (v) {
-        BI.SelectDataLevel0Node.superclass.setOpened.apply(this, arguments);
+        BI.SelectDataLevelNode.superclass.setOpened.apply(this, arguments);
         this.checkbox.setSelected(v);
     },
 
     setValue: function (items) {
-        BI.SelectDataLevel0Node.superclass.setValue.apply(this, arguments);
+        BI.SelectDataLevelNode.superclass.setValue.apply(this, arguments);
         if (BI.isEmpty(items)) {
             this.tip.setText("");
         } else {
@@ -102,10 +102,10 @@ BI.SelectDataLevel0Node = BI.inherit(BI.NodeButton, {
     },
 
     setEnable: function (b) {
-        BI.SelectDataLevel0Node.superclass.setEnable.apply(this, arguments);
+        BI.SelectDataLevelNode.superclass.setEnable.apply(this, arguments);
         this.checkbox.setEnable(b);
         this.text.setEnable(b);
     }
 });
 
-$.shortcut("bi.select_data_level_node", BI.SelectDataLevel0Node);
+$.shortcut("bi.select_data_level_node", BI.SelectDataLevelNode);

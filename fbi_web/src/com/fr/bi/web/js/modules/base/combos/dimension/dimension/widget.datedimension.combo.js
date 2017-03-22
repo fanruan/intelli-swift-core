@@ -100,7 +100,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
                     value: BICst.DIMENSION_DATE_COMBO.YW,
                     cls: "dot-ha-font"
                 }, {
-                    text: BI.i18nText("BI-Basic_YMD"),
+                    text: BI.i18nText("BI-YMD_Date"),
                     value: BICst.DIMENSION_DATE_COMBO.DATE,
                     cls: "dot-ha-font"
                 }, {
