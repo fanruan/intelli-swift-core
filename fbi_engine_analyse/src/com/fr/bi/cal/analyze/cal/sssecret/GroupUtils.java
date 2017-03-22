@@ -57,11 +57,6 @@ public class GroupUtils {
         return new NodeAndPageInfo(node, iterator);
     }
 
-
-    private static int getPage(NodeDimensionIterator iterator) {
-        return iterator == null ? 0 : iterator.getPageIndex();
-    }
-
     /**
      * 获取维度对应指标的汇总值
      *
@@ -73,8 +68,11 @@ public class GroupUtils {
             NoneDimensionGroup group = gcv.getCurrentValue();
             if (group != null) {
                 List<TargetAndKey>[] summaryLists = group.getSummaryLists();
-                GroupValueIndex[] gvis = group.getGvis();
                 node.setSummaryValue(group.getSummaryValue());
+                GroupValueIndex[] gvis = group.getGvis();
+                if (gvis == null){
+                    return;
+                }
                 ICubeTableService[] tis = group.getTis();
                 for (int i = 0; i < summaryLists.length; i++) {
                     List<TargetAndKey> targetAndKeys = summaryLists[i];

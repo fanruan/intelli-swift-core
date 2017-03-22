@@ -550,6 +550,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         public GroupValueIndex clone() {
             throw new UnsupportedOperationException();
         }
+
     }
 
 }

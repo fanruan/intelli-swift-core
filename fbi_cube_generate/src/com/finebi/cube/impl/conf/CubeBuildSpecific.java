@@ -14,6 +14,7 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.*;
 import com.finebi.cube.structure.BITableKey;
+import com.finebi.cube.utils.BIDataStructTranUtils;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
@@ -164,7 +165,7 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
 
 
     protected Set<CubeTableSource> calculateSourceLayers(Set<List<Set<CubeTableSource>>> sourceLayers) {
-        return set2Set(sourceLayers);
+        return BIDataStructTranUtils.set2Set(sourceLayers);
     }
 
     protected Set<List<Set<CubeTableSource>>> calculateSourceLayerDepends(Set<CubeTableSource> tableSourcesNeedBuild) {
@@ -268,7 +269,7 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
         Set<CubeTableSource> tables = new HashSet<CubeTableSource>();
 //        tables.addAll(tableInConstruction);
         tables.addAll(calculateTablesNeedNotGenerate());
-        tables = set2Set(calculateTableSource(tables));
+        tables = BIDataStructTranUtils.set2Set(calculateTableSource(tables));
         return filterDuplicateTable(tables);
     }
 

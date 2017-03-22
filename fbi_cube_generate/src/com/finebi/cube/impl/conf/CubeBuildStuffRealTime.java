@@ -6,6 +6,7 @@ import com.finebi.cube.conf.AbstractCubeBuildStuff;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.relation.*;
+import com.finebi.cube.utils.BIDataStructTranUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
@@ -34,12 +35,12 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
         this.cubeConfiguration = cubeConfiguration;
         Set<CubeTableSource> sourceSet = new HashSet<CubeTableSource>();
         sourceSet.add(cubeTableSource);
-        this.allSingleSources = set2Set(calculateTableSource(sourceSet));
+        this.allSingleSources = BIDataStructTranUtils.set2Set(calculateTableSource(sourceSet));
         init();
     }
 
     private void init() {
-        this.dependTableResource = calculateTableSource(set2Set(calculateTableSource(allSingleSources)));
+        this.dependTableResource = calculateTableSource(BIDataStructTranUtils.set2Set(calculateTableSource(allSingleSources)));
 
     }
 
@@ -49,23 +50,9 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         Set<CubeTableSource> sourceSet = new HashSet<CubeTableSource>();
         sourceSet.add(cubeTableSource);
-        this.allSingleSources = set2Set(calculateTableSource(sourceSet));
+        this.allSingleSources = BIDataStructTranUtils.set2Set(calculateTableSource(sourceSet));
         init();
     }
-
-
-    public static Set<CubeTableSource> set2Set(Set<List<Set<CubeTableSource>>> set) {
-        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
-        Iterator<List<Set<CubeTableSource>>> outIterator = set.iterator();
-        while (outIterator.hasNext()) {
-            Iterator<Set<CubeTableSource>> middleIterator = outIterator.next().iterator();
-            while (middleIterator.hasNext()) {
-                result.addAll(middleIterator.next());
-            }
-        }
-        return result;
-    }
-
 
     public Set<BITableSourceRelationPath> getTableSourceRelationPathSet() {
         return new HashSet<BITableSourceRelationPath>();
