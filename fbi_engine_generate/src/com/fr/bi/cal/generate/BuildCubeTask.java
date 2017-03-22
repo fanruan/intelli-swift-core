@@ -69,7 +69,7 @@ import java.util.concurrent.Future;
  */
 public class BuildCubeTask implements CubeTask {
     private static final long serialVersionUID = 1960384670748165510L;
-    private static final Logger logger = BILoggerFactory.getLogger(BuildCubeTask.class);
+    private static final Logger LOGGER = BILoggerFactory.getLogger(BuildCubeTask.class);
     private CubeBuildStuff cubeBuildStuff;
     protected BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
@@ -78,7 +78,6 @@ public class BuildCubeTask implements CubeTask {
     protected BICube integrityCube;
     protected BICubeFinishObserver<Future<String>> finishObserver;
     private int retryNTimes;
-
 
 
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
@@ -192,7 +191,7 @@ public class BuildCubeTask implements CubeTask {
 
     private boolean replaceOldCubes() {
         try {
-            logger.info("Start Replacing Old FineIndex, Stop All Analysis");
+            LOGGER.info("Start Replacing Old FineIndex, Stop All Analysis");
             boolean replaceSuccess = false;
             for (int i = 0; i < retryNTimes; i++) {
                 if (Thread.currentThread().isInterrupted()) {
@@ -216,7 +215,7 @@ public class BuildCubeTask implements CubeTask {
                 }
                 CubeReadingTableIndexLoader.envChanged();
                 if (!replaceSuccess) {
-                    logger.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
+                    LOGGER.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
                     Thread.sleep(5000);
                 } else {
                     break;
@@ -225,11 +224,11 @@ public class BuildCubeTask implements CubeTask {
             return replaceSuccess;
         } catch (Exception e) {
             String message = " FineIndex build failed ! caused by \n" + e.getMessage();
-            logger.error(message, e);
+            LOGGER.error(message, e);
             try {
                 BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
             } catch (Exception e1) {
-                logger.error(e1.getMessage(), e1);
+                LOGGER.error(e1.getMessage(), e1);
             }
             return false;
         } finally {
@@ -257,7 +256,7 @@ public class BuildCubeTask implements CubeTask {
             tablesNeed2GenerateMap.put(tableSource.getSourceID(), tableSource);
         }
         operationManager.setVersionMap(cubeBuildStuff.getVersions());
-        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource(),tablesNeed2GenerateMap);
+        operationManager.generateDataSource(cubeBuildStuff.getDependTableResource(), tablesNeed2GenerateMap);
         logTableDepend(cubeBuildStuff.getDependTableResource());
         operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet(), tablesNeed2GenerateMap);
         logRelationDepend(cubeBuildStuff.getCubeGenerateRelationSet());
@@ -276,16 +275,16 @@ public class BuildCubeTask implements CubeTask {
     private void logCubeTaskType() {
         StringBuffer msg = new StringBuffer();
         msg.append(" FineIndex update start. Update type: " + getTaskType().name());
-        logger.info(BIDateUtils.getCurrentDateTime() + msg);
+        LOGGER.info(BIDateUtils.getCurrentDateTime() + msg);
     }
 
     private void logBusinessTable() {
         Integer businessTableCount = 0;
-        logger.info("***************Business Table*****************");
+        LOGGER.info("***************Business Table*****************");
         try {
             long userID = UserControl.getInstance().getSuperManagerID();
             for (BusinessTable table : BICubeConfigureCenter.getPackageManager().getAllTables(userID)) {
-                logger.info(BIStringUtils.append(
+                LOGGER.info(BIStringUtils.append(
                         "\n" + "       Business Table: " + (businessTableCount++),
                         "\n" + "       Business Table Alias Name:", BICubeConfigureCenter.getAliasManager().getAliasName(table.getID().getIdentityValue(), userID),
                         "\n" + "       Business Table ID:", table.getID().getIdentity(),
@@ -294,9 +293,9 @@ public class BuildCubeTask implements CubeTask {
                 ));
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
-        logger.info("***************Business Table*****************");
+        LOGGER.info("***************Business Table*****************");
 
     }
 
@@ -305,52 +304,52 @@ public class BuildCubeTask implements CubeTask {
         updateTypeMap.put(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL, "All");
         updateTypeMap.put(DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART, "Part");
         updateTypeMap.put(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER, "Never");
-        logger.info("***************Table*****************");
+        LOGGER.info("***************Table*****************");
         Integer tableCount = 0;
         if (tableSourceSet != null) {
             for (CubeTableSource tableSource : tableSourceSet) {
                 int updateType = null == updateSettingSources.get(tableSource) ? DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL : updateSettingSources.get(tableSource).getUpdateType();
-                logger.info(BIStringUtils.append(
+                LOGGER.info(BIStringUtils.append(
                         "\n" + "       table: " + (tableCount++),
                         BuildLogHelper.tableLogContent("", tableSource),
                         "\n" + "       update type:", updateTypeMap.get(updateType)
                 ));
             }
         }
-        logger.info("***************Table end*****************\n");
+        LOGGER.info("***************Table end*****************\n");
 
     }
 
     private void logRelation(Set<BITableSourceRelation> relationSet) {
-        logger.info("***************Relation*****************");
+        LOGGER.info("***************Relation*****************");
         Integer countRelation = 0;
         if (relationSet != null) {
             for (BITableSourceRelation relation : relationSet) {
                 countRelation++;
-                logger.info("\nRelation " + countRelation + ":" + BuildLogHelper.relationLogContent("", relation));
+                LOGGER.info("\nRelation " + countRelation + ":" + BuildLogHelper.relationLogContent("", relation));
             }
         }
-        logger.info("***************Relation end*****************\n");
+        LOGGER.info("***************Relation end*****************\n");
 
     }
 
 
     private void logPath(Set<BITableSourceRelationPath> relationPathSet) {
-        logger.info("***************Path*****************");
+        LOGGER.info("***************Path*****************");
 
         if (relationPathSet != null) {
             Integer countPath = 0;
             for (BITableSourceRelationPath path : relationPathSet) {
                 countPath++;
-                logger.info("\nPath" + countPath + ":\n" + BuildLogHelper.pathLogContent(path));
+                LOGGER.info("\nPath" + countPath + ":\n" + BuildLogHelper.pathLogContent(path));
 
             }
         }
-        logger.info("***************Path end*****************\n");
+        LOGGER.info("***************Path end*****************\n");
     }
 
     private void logPathDepend(Set<BICubeGenerateRelationPath> relationPathSet) {
-        logger.info("***************Path depend*****************");
+        LOGGER.info("***************Path depend*****************");
 
         if (relationPathSet != null) {
             Integer countPath = 0;
@@ -365,14 +364,14 @@ public class BuildCubeTask implements CubeTask {
                     BITableSourceRelationPath dependPath = it.next();
                     sb.append("\n").append("Path ").append(countDepend).append("\n").append(BuildLogHelper.pathLogContent(dependPath));
                 }
-                logger.info(sb.toString() + "\n");
+                LOGGER.info(sb.toString() + "\n");
             }
         }
-        logger.info("***************Path depend end*****************\n");
+        LOGGER.info("***************Path depend end*****************\n");
     }
 
     private void logTableDepend(Set<List<Set<CubeTableSource>>> tableSourceSet) {
-        logger.info("***************Table depend*****************");
+        LOGGER.info("***************Table depend*****************");
 
         int countSource = 0;
         for (List<Set<CubeTableSource>> tableSource : tableSourceSet) {
@@ -391,14 +390,14 @@ public class BuildCubeTask implements CubeTask {
                 }
                 sb.append("-------------Layer " + layerCount).append(" end--------------\n\n");
             }
-            logger.info(sb.toString());
+            LOGGER.info(sb.toString());
         }
-        logger.info("***************Table depend end*****************");
+        LOGGER.info("***************Table depend end*****************");
 
     }
 
     private void logRelationDepend(Set<BICubeGenerateRelation> relationDependSet) {
-        logger.info("***************Relation depend*****************");
+        LOGGER.info("***************Relation depend*****************");
         Integer countRelation = 0;
         if (relationDependSet != null) {
             for (BICubeGenerateRelation relationDepend : relationDependSet) {
@@ -412,10 +411,10 @@ public class BuildCubeTask implements CubeTask {
                     CubeTableSource dependTable = it.next();
                     sb.append("\n").append("table ").append(countDepend).append("\n").append(BuildLogHelper.tableLogContent(dependTable));
                 }
-                logger.info(sb.toString());
+                LOGGER.info(sb.toString());
             }
         }
-        logger.info("***************Relation depend end*****************\n");
+        LOGGER.info("***************Relation depend end*****************\n");
 
     }
 
@@ -442,7 +441,7 @@ public class BuildCubeTask implements CubeTask {
         } else {
             cubeBuildStuff.copyFileFromOldCubes();
         }
-        logger.info("copy files cost time: " + DateUtils.timeCostFrom(t));
+        LOGGER.info("copy files cost time: " + DateUtils.timeCostFrom(t));
     }
 
     public static IMessage generateMessageDataSourceStart() {
