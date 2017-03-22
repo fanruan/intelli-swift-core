@@ -78,7 +78,7 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
         var res = [];
         BI.each(items, function(idx, item){
             var lc_value =  BI.find(lc_values, function(idx, arr){
-                return arr[self.constants.initialValuePos] === item + "";
+                return arr[self.constants.initialValuePos] + "" === item + "";
             });
             if(BI.isNotEmptyString(item) || BI.isNumber(item)){
                 res.push({

@@ -865,6 +865,36 @@ BI.extend(BI.Utils, {
         }, complete);
     },
 
+    getCubeLogGenerateTime: function (callback, complete) {
+        Data.Req.reqCubeLogGenerateTime(function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    getCubeLogErrorInfo: function (callback, complete) {
+        Data.Req.reqCubeLogErrorInfo(function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    getCubeLogTableTransportInfo: function (callback, complete) {
+        Data.Req.reqCubeLogTableTransportInfo(function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    getCubeLogTableFieldIndexInfo: function (callback, complete) {
+        Data.Req.reqCubeLogTableFieldIndexInfo(function (res) {
+            callback(res);
+        }, complete);
+    },
+
+    getCubeLogRelationIndexInfo: function (callback, complete) {
+        Data.Req.reqCubeLogRelationIndexInfo(function (res) {
+            callback(res);
+        }, complete);
+    },
+
     getAllPackages: function (callback, complete) {
         Data.Req.reqAllBusinessPackages(function (res) {
             callback(res);

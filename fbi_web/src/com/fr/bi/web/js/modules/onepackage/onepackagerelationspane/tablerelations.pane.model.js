@@ -119,56 +119,153 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
         return BI.uniq(relationTables);
     },
 
-    createItems: function (regionHandler) {
+    /**
+     * 以当前业务包的tableId为key构造两个map
+     * 一个map存table中对应作为关联主键的field_id
+     * 一个map存table中对应作为关联外键的field_id
+     * @private
+     */
+    _createFieldsMap: function(){
         var self = this;
-        this.cacheItems = [];
-        var connectSet = this.relations.connectionSet;
-
-        var relationTables = [];
-        var relatedTables = [];
-        BI.each(this.tableIds, function (i, tId) {
-            relationTables = relationTables.concat(self.getRelationTablesByTableId(tId));
+        this.foreignFieldsMap = {};
+        this.primaryFieldsMap = {};
+        this.degrees = {};
+        BI.each(this.relations.connectionSet, function(idx, obj){
+            var pId = obj.primaryKey.table_id, fId = obj.foreignKey.table_id;
+            if(BI.contains(self.tableIds, pId)){
+                if(!BI.has(self.primaryFieldsMap, pId)){
+                    self.primaryFieldsMap[pId] = [];
+                }
+                self.primaryFieldsMap[pId].push(obj.primaryKey.field_id);
+            }
+            if(BI.contains(self.tableIds, fId)){
+                if(!BI.has(self.foreignFieldsMap, fId)){
+                    self.foreignFieldsMap[fId] = [];
+                }
+                self.foreignFieldsMap[fId].push(obj.foreignKey.field_id);
+            }
+            //顺便计算一下入度
+            if (!BI.has(self.degrees, fId)) {
+                self.degrees[fId] = 0;
+            }
+            self.degrees[fId]++;
         });
-        relationTables = relationTables.concat(this.tableIds);
-        relationTables = BI.uniq(relationTables);
+        //去重
+        BI.each(self.primaryFieldsMap, function(tId, arr){
+            self.primaryFieldsMap[tId] = BI.uniq(arr);
+        });
+        BI.each(self.foreignFieldsMap, function(tId, arr){
+            self.foreignFieldsMap[tId] = BI.uniq(arr);
+        });
+    },
 
-        BI.each(connectSet, function (i, conn) {
-            var primaryKey = conn.primaryKey, foreignKey = conn.foreignKey;
-            var primaryId = primaryKey.field_id, foreignId = foreignKey.field_id;
-            var primTableId = primaryKey.table_id, foreignTableId = foreignKey.table_id;
-
-            BI.each(relationTables, function (j, tId) {
-                if (tId === primTableId) {
-                    relatedTables.push(tId);
-                    self.cacheItems.push({
-                        primary: {
-                            region: tId,
-                            regionText: self.getKeyTableTranName(primaryKey),
-                            regionTitle: self.getKeyTableTranName(primaryKey),
-                            value: primaryId,
-                            text: self.getKeyFieldTranName(primaryKey),
-                            title: self.getKeyFieldTranName(primaryKey),
-                            belongPackage: self.isCurrentPackageTable(tId),
-                            isPrimary: true
-                        },
-                        foreign: {
-                            region: foreignTableId,
-                            regionText: self.getKeyTableTranName(foreignKey),
-                            regionTitle: self.getKeyTableTranName(foreignKey),
-                            value: foreignId,
-                            text: self.getKeyFieldTranName(foreignKey),
-                            title: self.getKeyFieldTranName(foreignKey),
-                            regionHandler: regionHandler,
-                            belongPackage: self.isCurrentPackageTable(foreignTableId),
-                            isPrimary: false
+    _getAllRelationTablesByTables: function (tableIds, resultTables) {
+        var self = this;
+        var relations = this.getRelations();
+        var primKeyMap = relations.primKeyMap;
+        var foreignKeyMap = relations.foreignKeyMap;
+        BI.each(tableIds, function (idx, tableId) {
+            if (BI.contains(resultTables, tableId)) {
+                return;
+            }
+            resultTables.push(tableId);
+            var primFields = self.primaryFieldsMap[tableId];
+            var foreFields = self.foreignFieldsMap[tableId];
+            BI.each(BI.concat(primFields, foreFields), function (id, fieldId) {
+                var rels = [];
+                if (BI.has(primKeyMap, fieldId)) {
+                    rels = primKeyMap[fieldId];
+                    BI.each(rels, function (i, rel) {
+                        var tId = rel.foreignKey.table_id;
+                        if (!BI.contains(resultTables, tId)) {
+                            self._getAllRelationTablesByTables([tId], resultTables);
                         }
-                    });
+                    })
+                }
+                if (BI.has(foreignKeyMap, fieldId)) {
+                    rels = foreignKeyMap[fieldId];
+                    BI.each(rels, function (i, rel) {
+                        var tId = rel.primaryKey.table_id;
+                        if (!BI.contains(resultTables, tId)) {
+                            self._getAllRelationTablesByTables([tId], resultTables);
+                        }
+                    })
                 }
             });
         });
+    },
 
-        BI.each(relationTables, function (i, tId) {
-            if (!relatedTables.contains(tId)) {
+    getRelationsByPrimaryId: function (tId) {
+        var rel = [];
+        var relations = this.getRelations();
+        var primKeyMap = relations.primKeyMap;
+        var primFields = this.primaryFieldsMap[tId];
+        BI.each(primFields, function (idx, fieldId) {
+            rel = BI.concat(rel, primKeyMap[fieldId]);
+        });
+        return rel;
+    },
+
+    createItems: function (regionHandler) {
+        var self = this;
+        this.cacheItems = [];
+        var tableIds = this.getTableIds();
+        this._createFieldsMap();
+        var relations = this.relations;
+        var connectSet = relations.connectionSet;
+        var calcDegree = {};
+        var distinctTableIds = [];
+        var relationTableSet = [];
+        this._getAllRelationTablesByTables(tableIds, relationTableSet);
+        BI.each(relationTableSet, function (idx, tId) {
+            calcDegree[tId] = 0;
+        });
+        BI.each(relationTableSet, function (idx, tId) {
+            if (BI.contains(distinctTableIds, tId)) {
+                return;
+            }
+            var primFields = self.primaryFieldsMap[tId] || [];
+            var foreFields = self.foreignFieldsMap[tId] || [];
+            //其他业务包的表
+            if (!BI.contains(self.tableIds, tId)) {
+                BI.each(connectSet, function (idx, obj) {
+                    var primaryId = obj.primaryKey.field_id;
+                    var foreignId = obj.foreignKey.field_id;
+                    var primTableId = obj.primaryKey.table_id;
+                    var foreignTableId = obj.foreignKey.table_id;
+                    if (tId === primTableId && BI.contains(tableIds, foreignTableId)) {
+                        var pTTranName = self.getKeyTableTranName(obj.primaryKey);
+                        var pFTranName = self.getKeyFieldTranName(obj.primaryKey);
+                        var fTTranName = self.getKeyTableTranName(obj.foreignKey);
+                        var fFTranName = self.getKeyFieldTranName(obj.foreignKey);
+                        self.cacheItems.push({
+                            primary: {
+                                region: tId,
+                                regionText: pTTranName,
+                                regionTitle: pTTranName,
+                                value: primaryId,
+                                text: pFTranName,
+                                title: pFTranName,
+                                belongPackage: self.isCurrentPackageTable(tId),
+                                isPrimary: true
+                            },
+                            foreign: {
+                                region: foreignTableId,
+                                regionText: fTTranName,
+                                regionTitle: fTTranName,
+                                value: foreignId,
+                                text: fFTranName,
+                                title: fFTranName,
+                                regionHandler: regionHandler,
+                                belongPackage: self.isCurrentPackageTable(foreignTableId),
+                                isPrimary: false
+                            }
+                        });
+                    }
+                });
+                return;
+            }
+            if (BI.isEmptyArray(primFields) && BI.isEmptyArray(foreFields)) {
                 self.cacheItems.push({
                     primary: {
                         region: tId,
@@ -177,9 +274,92 @@ BI.PackageTableRelationsPaneModel = BI.inherit(FR.OB, {
                         regionHandler: regionHandler,
                         belongPackage: self.isCurrentPackageTable(tId)
                     }
-                })
+                });
+            } else {
+                self.cacheItems = BI.concat(self.cacheItems, getViewItemsByTableId(tId, []));
             }
+            distinctTableIds.push(tId);
         });
+        return self.cacheItems;
+
+        function getViewItemsByTableId(tId, visitSet) {
+            var rels = self.getRelationsByPrimaryId(tId);
+            var items = [];
+            BI.each(rels, function (idx, rel) {
+                var primaryId = rel.primaryKey.field_id, foreignId = rel.foreignKey.field_id;
+                var foreignTableId = rel.foreignKey.table_id;
+                var primaryTableId = rel.primaryKey.table_id;
+                //是未访问过的节点且入度未满
+                if (!BI.contains(visitSet, foreignTableId) && !BI.contains(distinctTableIds, tId) && calcDegree[foreignTableId] !== self.degrees[foreignTableId]) {
+                    var pTTranName = self.getKeyTableTranName(rel.primaryKey);
+                    var pFTranName = self.getKeyFieldTranName(rel.primaryKey);
+                    var fTTranName = self.getKeyTableTranName(rel.foreignKey);
+                    var fFTranName = self.getKeyFieldTranName(rel.foreignKey);
+                    //自循环
+                    if (primaryTableId === foreignTableId) {
+                        items.push({
+                            primary: {
+                                region: primaryTableId,
+                                regionText: pTTranName,
+                                regionTitle: pTTranName,
+                                value: primaryId,
+                                text: pFTranName,
+                                title: pFTranName,
+                                regionHandler: regionHandler,
+                                belongPackage: self.isCurrentPackageTable(primaryTableId),
+                                isPrimary: true
+                            },
+                            foreign: {
+                                region: BI.UUID(),
+                                regionText: fTTranName,
+                                regionTitle: fTTranName,
+                                value: foreignId,
+                                text: fFTranName,
+                                title: fFTranName,
+                                isPrimary: false
+                            }
+                        });
+                    } else {
+                        var primaryItem = {
+                            region: primaryTableId,
+                            regionText: pTTranName,
+                            regionTitle: pTTranName,
+                            value: primaryId,
+                            text: pFTranName,
+                            title: pFTranName,
+                            regionHandler: regionHandler,
+                            belongPackage: self.isCurrentPackageTable(primaryTableId),
+                            isPrimary: true
+                        };
+                        var foreignItem = {
+                            region: foreignTableId,
+                            regionText: fTTranName,
+                            regionTitle: fTTranName,
+                            value: foreignId,
+                            text: fFTranName,
+                            title: fFTranName,
+                            regionHandler: regionHandler,
+                            belongPackage: self.isCurrentPackageTable(foreignTableId),
+                            isPrimary: false
+                        };
+                        if (!BI.contains(self.tableIds, foreignTableId)) {
+                            delete foreignItem.regionHandler;
+                        }
+                        items.push({
+                            primary: primaryItem,
+                            foreign: foreignItem
+                        });
+                        var visittable = BI.concat(visitSet, [tId]);
+                        if (!BI.contains(visittable, foreignTableId) && calcDegree[foreignTableId] !== self.degrees[foreignTableId]) {
+                            calcDegree[foreignTableId]++;
+                            items = BI.concat(items, getViewItemsByTableId(foreignTableId, visittable));
+                            distinctTableIds.pushDistinct(foreignTableId);
+                        }
+                    }
+                }
+            });
+            return items;
+        }
     },
 
     getCacheItems: function () {
