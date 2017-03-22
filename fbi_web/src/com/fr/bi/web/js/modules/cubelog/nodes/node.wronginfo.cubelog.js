@@ -10,8 +10,9 @@ BI.CubeLogWrongInfoNode = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CubeLogWrongInfoNode.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-cube-log-wrong-info-node",
+            driver: BI.createWidget(),
             text: BI.i18nText("BI-Error_Infor"),
-            count: 2,
+            count: 0,
             id: "",
             pId: "",
             open: false
@@ -21,6 +22,10 @@ BI.CubeLogWrongInfoNode = BI.inherit(BI.Widget, {
     _init: function () {
         BI.CubeLogWrongInfoNode.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+
+        this.driver = this.options.driver;
+        this._subscribeEvent();
+
         this.node = BI.createWidget({
             type: "bi.triangle_group_node",
             height: 40,
@@ -35,6 +40,20 @@ BI.CubeLogWrongInfoNode = BI.inherit(BI.Widget, {
         this.node.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+    },
+
+    _subscribeEvent: function () {
+        var self = this;
+        this.driver.on(BI.DealWithCubeLogDataDriver.EVENT_CUBE_ERROR_DATA_UPDATED, function () {
+            self._populate(this.getCubeLogErrorDataItems());
+        });
+        this.driver.on(BI.DealWithCubeLogDataDriver.EVENT_CLEAR_ALL_DATA, function () {
+            self._populate(this.getCubeLogErrorDataItems());
+        });
+    },
+
+    _populate: function (items) {
+        this.node.setText(this.options.text + BI.i18nText("BI-Total_Count", items.length))
     },
 
     populate: function () {
