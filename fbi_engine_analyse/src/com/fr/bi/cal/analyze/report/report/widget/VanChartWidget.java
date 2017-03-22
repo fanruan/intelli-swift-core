@@ -33,7 +33,7 @@ public abstract class VanChartWidget extends TableWidget {
     public abstract String getSeriesType();
 
     public JSONObject createPlotOptions() throws JSONException{
-        return JSONObject.create();
+        return JSONObject.create().put("animation", true);
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException{

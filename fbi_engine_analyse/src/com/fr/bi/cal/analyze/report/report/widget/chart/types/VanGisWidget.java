@@ -12,6 +12,9 @@ public class VanGisWidget extends VanChartWidget{
 
     public JSONArray createSeries(JSONObject data) throws JSONException {
 
+
+
+
         return JSONArray.create();
     }
 
