@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -43,7 +42,7 @@ public class CubeRunner {
     protected BIUser biUser;
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
     private CubeBuildStuffComplete object;
-    private static final Logger logger = BILoggerFactory.getLogger(CubeRunner.class);
+    private static final Logger LOGGER = BILoggerFactory.getLogger(CubeRunner.class);
 
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);
@@ -74,12 +73,12 @@ public class CubeRunner {
                     cubeTask.end();
                     setStatue(Status.END);
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                     setStatue(Status.WRONG);
                 } finally {
                     finish(cubeTask);
                     setStatue(Status.NULL);
-                    logger.info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
+                    LOGGER.info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                 }
             }
         });
@@ -149,14 +148,14 @@ public class CubeRunner {
         long t = System.currentTimeMillis();
         try {
             if (!cubeTask.getTaskType().equals(CubeTaskType.INSTANT)) {
-                logger.info("start to persist meta data!");
+                LOGGER.info("start to persist meta data!");
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
                 BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
                 BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
             }
-            logger.info("meta data finished! time cost: " + DateUtils.timeCostFrom(t));
+            LOGGER.info("meta data finished! time cost: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         } finally {
             BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
         }
@@ -170,7 +169,7 @@ public class CubeRunner {
                     //持久化log
                     recordLogs(cubeTask, BIConfigureManagerCenter.getLogManager());
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
         });
@@ -192,8 +191,8 @@ public class CubeRunner {
     }
 
     public void setStatue(Status statue) {
-        logger.info("previous FineIndex status :" + getStatue());
-        logger.info("change FineIndex status to :" + statue.name());
+        LOGGER.info("previous FineIndex status :" + getStatue());
+        LOGGER.info("change FineIndex status to :" + statue.name());
         this.statue = statue;
     }
 
@@ -215,7 +214,7 @@ public class CubeRunner {
     }
 
     private void recordLogs(CubeTask cubeTask, BILogManagerProvider logManager) {
-        logger.info("start persist FineIndex task logs……");
+        LOGGER.info("start persist FineIndex task logs……");
         BICubeTaskRecord record = new BICubeTaskRecord(cubeTask.getTaskType(), logManager.getStart(biUser.getUserId()), logManager.getEndTime(biUser.getUserId()), getStatue());
         record.setErrorTableLogs(logManager.getErrorTables(biUser.getUserId()));
         Set<BITableSourceRelationPath> allRelationPathSet = logManager.getAllRelationPathSet(biUser.getUserId());
