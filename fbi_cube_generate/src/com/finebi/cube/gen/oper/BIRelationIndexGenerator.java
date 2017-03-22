@@ -225,7 +225,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             foreignGroupValueIndex = GVIFactory.createAllEmptyIndexGVI();
         } else {
             foreignColumnValue = getForeignGroupObjectValue(foreignColumn, 0);
-            foreignGroupValueIndex = getForeignBitmapIndex(foreignColumn, 0);
+            foreignGroupValueIndex = getBitmapIndex(foreignColumn, 0);
         }
         int[] reverse = new int[foreignTable.getRowCount()];
         final byte[][] relationIndexBytes = new byte[primaryTable.getRowCount()][];
@@ -242,7 +242,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         tableRelation.addRelationNULLIndex(0, nullIndex);
     }
 
-    protected GroupValueIndex getForeignBitmapIndex(ICubeColumnEntityService foreignColumn, int position) throws BICubeIndexException {
+    protected GroupValueIndex getBitmapIndex(ICubeColumnEntityService foreignColumn, int position) throws BICubeIndexException {
         return foreignColumn.getBitmapIndex(position);
     }
 
@@ -260,7 +260,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         int foreignIndex = 0;
         for (int index = 0; index < primaryGroupSize; index++) {
             primaryColumnValue = primaryColumn.getGroupObjectValue(index);
-            pGroupValueIndex = primaryColumn.getBitmapIndex(index);
+            pGroupValueIndex = getBitmapIndex(primaryColumn,index);
             pGroupValueIndex = pGroupValueIndex.AND(allShowIndex);
             int result = c.compare(primaryColumnValue, foreignColumnValue);
             /**
@@ -323,7 +323,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             return GVIFactory.createAllEmptyIndexGVI();
         } else {
             try {
-                return foreignColumn.getBitmapIndex(foreignIndex);
+                return getBitmapIndex(foreignColumn, foreignIndex);
             } catch (BICubeIndexException e) {
                 throw BINonValueUtils.beyondControl(e);
             }
