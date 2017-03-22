@@ -133,10 +133,7 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
         return result;
     }
 
-    private Set<BITableSourceRelationPath> removePathAbsentRelation(Set<BITableSourceRelationPath> pathInConstruction,
-                                                                    Set<CubeTableSource> absentTable,
-                                                                    Set<BITableSourceRelation> absentRelation,
-                                                                    Set<BITableSourceRelationPath> absentPath) {
+    private Set<BITableSourceRelationPath> removePathAbsentRelation(Set<BITableSourceRelationPath> pathInConstruction, Set<CubeTableSource> absentTable, Set<BITableSourceRelation> absentRelation, Set<BITableSourceRelationPath> absentPath) {
         Set<BITableSourceRelationPath> result = new HashSet<BITableSourceRelationPath>();
         Set<String> relationIDInConstruction = new HashSet<String>();
         Set<String> relationIDAbsent = new HashSet<String>();
@@ -159,34 +156,20 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
             List<BITableSourceRelationPath> sortPath = sortPath(pathInConstruction);
             for (BITableSourceRelationPath path : sortPath) {
                 if (path.size() >= 2) {
-                    /**
-                     * 当前路径的最后一条关联，在构建的时候存在
-                     */
+                    //当前路径的最后一条关联，在构建的时候存在
                     if (checklastRelation(path.getLastRelation(), absentTableIDs, relationIDInConstruction, relationIDAbsent)) {
-                        /**
-                         * 获得当前路径的前部。也就是移除最后一条关联的剩余部分。
-                         */
+                        //获得当前路径的前部。也就是移除最后一条关联的剩余部分。
                         BITableSourceRelationPath pathFront = getFrontPath(path);
-                        /**
-                         * 路径的前部长度为1的话，那么当做是关联处理。
-                         */
+                        //路径的前部长度为1的话，那么当做是关联处理。
                         if (pathFront.size() == 1) {
-                            if (isRelationExistWhenBuild(pathFront.getFirstRelation(), relationIDInConstruction, relationIDAbsent)
-                                    ) {
-                                /**
-                                 * 路径的前后部分，都是存在，那么当前路径可以构建。
-                                 */
+                            if (isRelationExistWhenBuild(pathFront.getFirstRelation(), relationIDInConstruction, relationIDAbsent)) {
                                 result.add(path);
                                 pathIDsInConstruction.add(BIRelationIDUtils.calculatePathID(path));
                             }
                         } else {
-                            /**
-                             * 路径的前部长度依然为一条长度大于1的路径。
-                             */
+                            //路径的前部长度依然为一条长度大于1的路径。
                             if (isPathExistWhenBuild(pathFront, pathIDsInConstruction, pathIDsAbsent)) {
-                                /**
-                                 * 路径的前后部分，都是存在，那么当前路径可以构建。
-                                 */
+                                //路径的前后部分，都是存在，那么当前路径可以构建。
                                 result.add(path);
                                 pathIDsInConstruction.add(BIRelationIDUtils.calculatePathID(path));
                             }

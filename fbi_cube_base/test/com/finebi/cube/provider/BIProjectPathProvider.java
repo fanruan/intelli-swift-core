@@ -1,6 +1,6 @@
 package com.finebi.cube.provider;
 
-import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
 import java.io.File;
@@ -64,8 +64,8 @@ public class BIProjectPathProvider {
     }
 
     public static void main(String[] args) {
-        System.out.println(computeBasePath());
-        System.out.println(computePath());
-        System.out.println(computeBigfilePath());
+        BILoggerFactory.getLogger().info(computeBasePath());
+        BILoggerFactory.getLogger().info(computePath());
+        BILoggerFactory.getLogger().info(computeBigfilePath());
     }
 }
