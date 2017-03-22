@@ -3,9 +3,6 @@ package com.finebi.cube.gen.oper;
 import com.finebi.cube.adapter.BICubeTableAdapter;
 import com.finebi.cube.common.log.BILogExceptionInfo;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
@@ -15,6 +12,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
+import com.finebi.cube.utils.BIRelationHelper;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
@@ -36,7 +34,6 @@ import com.fr.bi.stable.operation.sort.comp.CastLongASCComparator;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
-import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.collections.array.IntArray;
@@ -131,60 +128,11 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
 
     public RelationColumnKey getRelationColumnKeyInfo() {
-        BITableSourceRelation tableRelation = getTableRelation(this.relation);
+        BITableSourceRelation tableRelation = BIRelationHelper.getTableRelation(this.relation);
         ICubeFieldSource field = tableRelation.getPrimaryField();
         List<BITableSourceRelation> relations = new ArrayList<BITableSourceRelation>();
         relations.add(tableRelation);
         return new RelationColumnKey(field, relations);
-    }
-
-    private BITableSourceRelation getTableRelation(BICubeRelation relation) {
-        ICubeFieldSource primaryField = null;
-        ICubeFieldSource foreignField = null;
-        CubeTableSource primaryTable = null;
-        CubeTableSource foreignTable = null;
-        Set<CubeTableSource> allTableSource = getAllTableSource();
-        for (CubeTableSource cubeTableSource : allTableSource) {
-            if (ComparatorUtils.equals(relation.getPrimaryTable().getSourceID(), cubeTableSource.getSourceID())) {
-                primaryTable = cubeTableSource;
-                Set<CubeTableSource> primarySources = new HashSet<CubeTableSource>();
-                primarySources.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : primaryTable.getFacetFields(primarySources)) {
-                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getPrimaryField().getColumnName())) {
-                        primaryField = iCubeFieldSource;
-                    }
-                }
-                break;
-            }
-        }
-        for (CubeTableSource cubeTableSource : allTableSource) {
-            if (ComparatorUtils.equals(relation.getForeignTable().getSourceID(), cubeTableSource.getSourceID())) {
-                foreignTable = cubeTableSource;
-                Set<CubeTableSource> foreignSource = new HashSet<CubeTableSource>();
-                foreignSource.add(cubeTableSource);
-                for (ICubeFieldSource iCubeFieldSource : foreignTable.getFacetFields(foreignSource)) {
-                    if (ComparatorUtils.equals(iCubeFieldSource.getFieldName(), relation.getForeignField().getColumnName())) {
-                        foreignField = iCubeFieldSource;
-                    }
-                }
-                break;
-            }
-        }
-        BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(primaryField, foreignField, primaryTable, foreignTable);
-        return biTableSourceRelation;
-    }
-
-    private Set<CubeTableSource> getAllTableSource() {
-        Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
-        Set<IBusinessPackageGetterService> packs = BICubeConfigureCenter.getPackageManager().getAllPackages(UserControl.getInstance().getSuperManagerID());
-        for (IBusinessPackageGetterService pack : packs) {
-            Iterator<BIBusinessTable> tIt = pack.getBusinessTables().iterator();
-            while (tIt.hasNext()) {
-                BIBusinessTable table = tIt.next();
-                cubeTableSourceSet.add(table.getTableSource());
-            }
-        }
-        return cubeTableSourceSet;
     }
 
     @Override
@@ -276,8 +224,8 @@ public class BIRelationIndexGenerator extends BIProcessor {
             foreignColumnValue = null;
             foreignGroupValueIndex = GVIFactory.createAllEmptyIndexGVI();
         } else {
-            foreignColumnValue = foreignColumn.getGroupObjectValue(0);
-            foreignGroupValueIndex = foreignColumn.getBitmapIndex(0);
+            foreignColumnValue = getForeignGroupObjectValue(foreignColumn, 0);
+            foreignGroupValueIndex = getForeignBitmapIndex(foreignColumn, 0);
         }
         int[] reverse = new int[foreignTable.getRowCount()];
         final byte[][] relationIndexBytes = new byte[primaryTable.getRowCount()][];
@@ -286,8 +234,20 @@ public class BIRelationIndexGenerator extends BIProcessor {
         GroupValueIndex nullIndex = buildIndex(primaryColumn, foreignColumn, c, primaryGroupSize, foreignGroupSize, foreignColumnValue, foreignGroupValueIndex, reverse, relationIndexBytes, allShowIndex);
         buildIndex(tableRelation, relationIndexBytes);
         buildReverseIndex(tableRelation, reverse);
-        tableRelation.addRelationNULLIndex(0, nullIndex);
+        buildNullIndex(tableRelation, nullIndex);
         tableRelation.addVersion(System.currentTimeMillis());
+    }
+
+    protected void buildNullIndex(BICubeRelationEntity tableRelation, GroupValueIndex nullIndex) {
+        tableRelation.addRelationNULLIndex(0, nullIndex);
+    }
+
+    protected GroupValueIndex getForeignBitmapIndex(ICubeColumnEntityService foreignColumn, int position) throws BICubeIndexException {
+        return foreignColumn.getBitmapIndex(position);
+    }
+
+    protected Object getForeignGroupObjectValue(ICubeColumnEntityService foreignColumn, int position) {
+        return foreignColumn.getGroupObjectValue(position);
     }
 
     private GroupValueIndex buildIndex(ICubeColumnEntityService primaryColumn, ICubeColumnEntityService foreignColumn, Comparator c,
@@ -550,7 +510,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
         public GroupValueIndex clone() {
             throw new UnsupportedOperationException();
         }
-
     }
 
 }
