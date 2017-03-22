@@ -8,6 +8,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.utils.BIWebConfUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -26,26 +27,27 @@ import java.util.Set;
 public class BIGetRelationsDetailAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        long userId = UserControl.getInstance().getSuperManagerID();
-        Set<BITableRelation> connectionSet = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
-        Map<BusinessTable, IRelationContainer> primKeyMap = BICubeConfigureCenter.getTableRelationManager().getAllTable2PrimaryRelation(userId);
-        Map<BusinessTable, IRelationContainer> foreignKeyMap = BICubeConfigureCenter.getTableRelationManager().getAllTable2ForeignRelation(userId);
+        long userId = ServiceUtils.getCurrentUserID(req);
+        long admin = UserControl.getInstance().getSuperManagerID();
+        Set<BITableRelation> connectionSet = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(admin);
+        Map<BusinessTable, IRelationContainer> primKeyMap = BICubeConfigureCenter.getTableRelationManager().getAllTable2PrimaryRelation(admin);
+        Map<BusinessTable, IRelationContainer> foreignKeyMap = BICubeConfigureCenter.getTableRelationManager().getAllTable2ForeignRelation(admin);
         Iterator<Map.Entry<BusinessTable, IRelationContainer>> primary = primKeyMap.entrySet().iterator();
         Iterator<Map.Entry<BusinessTable, IRelationContainer>> foreign = foreignKeyMap.entrySet().iterator();
         JSONArray setJO = new JSONArray();
         for (BITableRelation relation : connectionSet) {
             if (BIWebConfUtils.isFieldExist(relation.getPrimaryField()) && BIWebConfUtils.isFieldExist(relation.getForeignField())) {
-                setJO.put(BIWebConfUtils.createRelationJSONWithName(relation));
+                setJO.put(BIWebConfUtils.createRelationJSONWithName(relation, userId));
             }
         }
         JSONObject jo = new JSONObject();
         jo.put(BIJSONConstant.JSON_KEYS.CONNECTION_SET, setJO);
-        jo.put(BIJSONConstant.JSON_KEYS.PRIMARY_KEY_MAP, getPrimKeyMap(primary));
-        jo.put(BIJSONConstant.JSON_KEYS.FOREIGN_KEY_MAP, getForKeyMap(foreign));
+        jo.put(BIJSONConstant.JSON_KEYS.PRIMARY_KEY_MAP, getPrimKeyMap(primary, userId));
+        jo.put(BIJSONConstant.JSON_KEYS.FOREIGN_KEY_MAP, getForKeyMap(foreign, userId));
         WebUtils.printAsJSON(res, jo);
     }
 
-    private JSONObject getPrimKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it) throws Exception {
+    private JSONObject getPrimKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it, long userId) throws Exception {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
             Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
@@ -59,7 +61,7 @@ public class BIGetRelationsDetailAction extends AbstractBIConfigureAction {
                     if (tableRelationMap.containsKey(primaryId)) {
                         ja = tableRelationMap.get(primaryId);
                     }
-                    ja.put(BIWebConfUtils.createRelationJSONWithName(relation));
+                    ja.put(BIWebConfUtils.createRelationJSONWithName(relation, userId));
                     tableRelationMap.put(primaryId, ja);
                 }
 
@@ -74,7 +76,7 @@ public class BIGetRelationsDetailAction extends AbstractBIConfigureAction {
         return jo;
     }
 
-    private JSONObject getForKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it) throws Exception {
+    private JSONObject getForKeyMap(Iterator<Map.Entry<BusinessTable, IRelationContainer>> it, long userId) throws Exception {
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
             Map.Entry<BusinessTable, IRelationContainer> entry = it.next();
@@ -88,7 +90,7 @@ public class BIGetRelationsDetailAction extends AbstractBIConfigureAction {
                     if (tableRelationMap.containsKey(foreignId)) {
                         ja = tableRelationMap.get(foreignId);
                     }
-                    ja.put(BIWebConfUtils.createRelationJSONWithName(relation));
+                    ja.put(BIWebConfUtils.createRelationJSONWithName(relation, userId));
                     tableRelationMap.put(foreignId, ja);
                 }
             }

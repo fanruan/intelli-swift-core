@@ -78,7 +78,7 @@ public class FsResourceHelper {
                 "com/fr/bi/web/js/base/utils/aspect.js",
                 "com/fr/bi/web/js/base/utils/load.js",
                 "com/fr/bi/web/js/base/utils/detectElementResize.js",
-
+                "com/fr/bi/web/js/base/utils/cellSizeAndPositionManager.js",
 
                 "com/fr/bi/web/js/base/parsers/expression.js",
                 "com/fr/bi/web/js/base/parsers/path.js",
@@ -176,6 +176,9 @@ public class FsResourceHelper {
                 "com/fr/bi/web/js/base/module/table/table.header.js",
                 "com/fr/bi/web/js/base/module/table/table.footer.js",
                 "com/fr/bi/web/js/base/module/table/table.js",
+
+                "com/fr/bi/web/js/base/module/grid/grid.js",
+                "com/fr/bi/web/js/base/module/collection/collection.js",
 
                 "com/fr/bi/web/js/base/module/layer/layer.floatbox.js",
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",

@@ -28,6 +28,7 @@ BI.Widget = BI.inherit(FR.Widget, {
 
     _init: function () {
         var o = this.options;
+        FR.Widget.superclass._init.apply(this, arguments);
         this._initOpts();
         BI.isWidget(o.element) && (o.element = o.element.element);
         BI.isString(o.element) && (o.element = $(o.element));

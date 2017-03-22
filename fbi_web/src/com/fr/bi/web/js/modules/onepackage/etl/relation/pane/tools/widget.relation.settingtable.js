@@ -13,11 +13,11 @@ BI.RelationSettingTable = BI.inherit(BI.Widget, {
     _init: function () {
         BI.RelationSettingTable.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        var edit = true;
+        var edit = BI.isNotNull(o.field.available) ? o.field.available : true;
         this.setGroup = BI.createWidget({
             type: "bi.relation_set_group",
             relationType: o.relationType,
-            edit: true
+            edit: edit
         });
         this.setGroup.on(BI.Controller.EVENT_CHANGE, function () {
             arguments[1] = BI.RelationSettingTable.CLICK_GROUP;
