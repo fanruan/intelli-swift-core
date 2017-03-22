@@ -31,6 +31,8 @@ import java.util.HashMap;
  */
 public class XMLWriterTest extends TestCase {
 
+    private static char invalidChar = 0x08;
+
     public void testArrayNull() {
         try {
             ArrayPart partNull = ArrayPart.generateNull();
@@ -351,11 +353,11 @@ public class XMLWriterTest extends TestCase {
         StringBuffer sb = new StringBuffer();
         sb.append("abc").append("pn\u0003ô").append("  ").append("t\b");
 //        sb.append("abc").append("pn").append("  ").append("t\b");
-        char ch = new Character((char) 0x08).charValue();
+        char ch = invalidChar;
         sb.append(ch).append("\r\n");
         String cont = sb.toString();
         cont.replace("\b", "");
-//        System.out.printf(cont);
+        System.out.printf(cont);
         test.value = cont;
 //        checkEquals(test, "testUseInvalidChar");
     }
