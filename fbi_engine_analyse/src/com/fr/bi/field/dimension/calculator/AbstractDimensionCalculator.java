@@ -56,6 +56,10 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
 
     }
 
+    public BIDimension getDimension() {
+        return dimension;
+    }
+
     @Override
     public BusinessField getField() {
         return field;

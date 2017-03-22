@@ -2,15 +2,16 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
-import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
@@ -24,10 +25,7 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2016/12/26.
@@ -36,6 +34,8 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     private TargetFilter filter;
     private DimensionCalculator[] dimensionCalculators;
     private DimensionFilter[] directDimensionFilters;
+    //过滤的地方缓存下NoneDimensionCalculator，要不loadgroup次数太多了，硬盘渣的情况下判断cube exist 太卡。
+    private Map<CachedNoneDimensionCalculatorKey, DimensionCalculator> noneDimensionCalculatorMap = new HashMap<CachedNoneDimensionCalculatorKey, DimensionCalculator>();
 
     protected NoneMetricRootDimensionGroup(){
 
@@ -119,7 +119,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
                 if (firstPath == null) {
                     continue;
                 }
-                GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
+                GroupValueIndex pgvi = stf.createFilterIndex(getCachedNoneDimensionCalculator(i, deep, ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
             } else if (ckp instanceof NumberDimensionCalculator) {
@@ -135,8 +135,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
                 if (firstPath == null) {
                     continue;
                 }
-                ckp.setRelationList(BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
-                GroupValueIndex pgvi = ckp.createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
+                GroupValueIndex pgvi = getCachedNumberDimensionCalculator(i, deep, (NumberDimensionCalculator)ckp, BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())).createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
                 gvi = gvi.AND(pgvi);
             }
             if (filter != null) {
@@ -161,5 +160,57 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     @Override
     protected IRootDimensionGroup createNew() {
         return new NoneMetricRootDimensionGroup();
+    }
+
+    //这个是单线程执行的
+    private DimensionCalculator getCachedNoneDimensionCalculator(int pIndex, int index, BusinessField field, List<BITableSourceRelation> relation){
+        CachedNoneDimensionCalculatorKey key = new CachedNoneDimensionCalculatorKey(pIndex, index);
+        if (!noneDimensionCalculatorMap.containsKey(key)){
+            noneDimensionCalculatorMap.put(key, new CachedNoneDimensionCalculator(field, relation));
+        }
+        return noneDimensionCalculatorMap.get(key);
+    }
+
+    //这个是单线程执行的
+    private DimensionCalculator getCachedNumberDimensionCalculator(int pIndex, int index, NumberDimensionCalculator numberDimensionCalculator, List<BITableSourceRelation> relation){
+        CachedNoneDimensionCalculatorKey key = new CachedNoneDimensionCalculatorKey(pIndex, index);
+        if (!noneDimensionCalculatorMap.containsKey(key)){
+            noneDimensionCalculatorMap.put(key, new CachedNumberDimensionCalculator(numberDimensionCalculator, relation));
+        }
+        return noneDimensionCalculatorMap.get(key);
+    }
+
+    private class CachedNoneDimensionCalculatorKey{
+        private int pIndex;
+        private int index;
+
+        public CachedNoneDimensionCalculatorKey(int pIndex, int index) {
+            this.pIndex = pIndex;
+            this.index = index;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            CachedNoneDimensionCalculatorKey that = (CachedNoneDimensionCalculatorKey) o;
+
+            if (pIndex != that.pIndex) {
+                return false;
+            }
+            return index == that.index;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = pIndex;
+            result = 31 * result + index;
+            return result;
+        }
     }
 }

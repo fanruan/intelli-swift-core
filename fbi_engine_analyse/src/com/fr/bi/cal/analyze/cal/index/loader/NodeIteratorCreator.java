@@ -397,7 +397,7 @@ public class NodeIteratorCreator {
 
 
     private int getLastIndirectFilterDimensionIndex() {
-        int index = 0;
+        int index = -1;
         for (int i = 0; i < rowDimension.length; i++) {
             if (rowDimension[i].getFilter() != null && !rowDimension[i].getFilter().canCreateDirectFilter()) {
                 index = i;
