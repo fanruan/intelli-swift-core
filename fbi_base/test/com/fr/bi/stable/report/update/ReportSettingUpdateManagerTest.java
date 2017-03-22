@@ -26,9 +26,9 @@ public class ReportSettingUpdateManagerTest extends TestCase {
     }
 
     public void testVersionCheck() throws Exception {
-        assertEquals(manager.getVersion(getDesignSetting(1.0)), 1.0);
-        assertEquals(manager.getVersion(getDesignSetting(2.0)), 2.0);
-        assertEquals(manager.getVersion(new BIDesignSetting("{}")), 4.0);
+        assertEquals(manager.getVersion(getDesignSetting(1.0)).getVersionName(), "1.0");
+        assertEquals(manager.getVersion(getDesignSetting(2.0)).getVersionName(), "2.0");
+        assertEquals(manager.getVersion(new BIDesignSetting("{}")).getVersionName(), "4.0");
         //版本号找不到时会抛出异常
         try {
             manager.getVersion(getDesignSetting(3.7));

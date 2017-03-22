@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.session;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
@@ -74,6 +75,8 @@ public class BISession extends BIAbstractSession {
     private List<CustomRole> customRoles = new ArrayList<CustomRole>();
     private List<CompanyRole> companyRoles = new ArrayList<CompanyRole>();
 
+    //缓存的联动组建的过滤索引
+    private Map<String, List<MetricGroupInfo>> mergerInfoListMap = new ConcurrentHashMap<String, List<MetricGroupInfo>>();
 
     public BISession(String remoteAddress, BIWeblet let, long userId) {
         super(remoteAddress, let, userId);
@@ -457,4 +460,11 @@ public class BISession extends BIAbstractSession {
         return node;
     }
 
+    public void setMergerInfoList(String widgetName, List<MetricGroupInfo> mergerInfoList) {
+        this.mergerInfoListMap.put(widgetName, mergerInfoList);
+    }
+
+    public List<MetricGroupInfo> getMetricGroupInfoList(String widgetName) {
+        return mergerInfoListMap.get(widgetName);
+    }
 }

@@ -4,6 +4,7 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
 /**
@@ -21,6 +22,38 @@ public abstract class VanChartWidget extends TableWidget {
 
     public abstract JSONArray createSeries(JSONObject data) throws JSONException;
 
+    public abstract String getSeriesType();
+
+    public JSONObject createPlotOptions() throws JSONException{
+        return JSONObject.create();
+    }
+
+    protected JSONObject populateDefaultSettings() throws JSONException{
+        JSONObject settings = JSONObject.create();
+
+        //图例
+        settings.put("legend", BOTTOM)
+                .put("legendStyle", this.defaultFont());
+
+        return settings;
+    }
+
+    protected JSONObject defaultFont() throws JSONException{
+
+        //todo 这边的字体要全局取一下
+        return JSONObject.create()
+                .put("fontFamily", "Microsoft YaHei")
+                .put("color", "rgb(178, 178, 178)")
+                .put("fontSize", "12px");
+
+    }
+
+    protected JSONObject getDetailChartSetting() throws JSONException{
+        JSONObject settings = this.getChartSetting().getDetailChartSetting();
+
+        return settings.length() == 0 ? this.populateDefaultSettings() : settings;
+    }
+
     public JSONObject createDataJSON(BISessionProvider session) throws Exception {
 
         JSONObject data = super.createDataJSON(session).getJSONObject("data");
@@ -32,7 +65,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     public JSONObject createOptions() throws JSONException{
         JSONObject options = JSONObject.create();
-        JSONObject settings = this.getChartSetting().getDetailChartSetting();
+        JSONObject settings = this.getDetailChartSetting();
 
         if(settings.has("chartColor")){
             options.put("colors", settings.getJSONArray("chartColor"));
@@ -44,17 +77,15 @@ public abstract class VanChartWidget extends TableWidget {
 
         options.put("legend", this.parseLegend(settings));
 
-        return options;
-    }
+        options.put("plotOptions", this.createPlotOptions());
 
-    public String getSeriesType(){
-        return "column";
+        return options;
     }
 
     protected JSONArray createXYSeries(JSONObject originData) throws JSONException{
         JSONArray series = JSONArray.create();
         String type = this.getSeriesType();
-        if (originData.has("t")) {
+        if (originData.has("t")) {//有列表头，多系列
             JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
             JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
             for (int i = 0; i < topC.length(); i++) {
@@ -69,60 +100,19 @@ public abstract class VanChartWidget extends TableWidget {
                 }
                 series.put(JSONObject.create().put("data", data).put("name", name).put("type", type));
             }
+        }else if(originData.has("c")){//单系列
+            JSONArray children = originData.getJSONArray("c");
+            JSONArray data = JSONArray.create();
+            for (int j = 0; j < children.length(); j++) {
+                JSONObject lObj = children.getJSONObject(j);
+                String x = lObj.getString("n");
+                double y = lObj.getJSONArray("s").getDouble(0);
+                data.put(JSONObject.create().put("x", x).put("y", y));
+            }
+            series.put(JSONObject.create().put("data", data).put("name", StringUtils.EMPTY).put("type", type));
         }
+
         return series;
-    }
-
-    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
-
-        JSONObject category = JSONObject.create();
-
-        category
-                .put("type", "category")
-                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("catShowTitle")).put("style", this.checkTextStyle(settings.optJSONObject("catTitleStyle"))).put("text", settings.optString("catTitle")))
-                .put("showLabel", settings.optBoolean("catShowLabel"))
-                .put("labelStyle", this.checkTextStyle(settings.optJSONObject("catLabelStyle")))
-                .put("lineColor", settings.optString("catLineColor"));
-
-        return JSONArray.create().put(category);
-    }
-
-    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
-
-        JSONArray axis = JSONArray.create();
-        JSONObject labelStyle = settings.optJSONObject("leftYLabelStyle");
-
-        JSONObject left = JSONObject.create()
-                .put("type", "value")
-                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("leftYShowTitle")).put("style", this.checkTextStyle(settings.optJSONObject("leftYTitleStyle"))).put("text", settings.optString("leftYTitle")))
-                .put("showLabel", settings.optBoolean("leftYShowLabel"))
-                .put("labelStyle", this.checkTextStyle(labelStyle.optJSONObject("textStyle")))
-                .put("lineColor", settings.optString("leftYLineColor"));
-
-        labelStyle = settings.optJSONObject("rightYLabelStyle");
-        JSONObject right = JSONObject.create()
-                .put("type", "value")
-                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("rightYShowTitle")).put("style", this.checkTextStyle(settings.optJSONObject("rightYTitleStyle"))).put("text", settings.optString("rightYTitle")))
-                .put("showLabel", settings.optBoolean("rightYShowLabel"))
-                .put("labelStyle", this.checkTextStyle(labelStyle.optJSONObject("textStyle")))
-                .put("lineColor", settings.optString("rightYLineColor"));
-
-        axis.put(left);
-        axis.put(right);
-
-        if(settings.has("rightY2LineColor")){
-            labelStyle = settings.optJSONObject("rightY2LabelStyle");
-            JSONObject right2 = JSONObject.create()
-                    .put("type", "value")
-                    .put("title", JSONObject.create().put("enabled", settings.optJSONObject("rightY2ShowTitle")).put("style", this.checkTextStyle(settings.optJSONObject("rightY2TitleStyle"))).put("text", settings.optString("rightY2Title")))
-                    .put("showLabel", settings.optBoolean("rightY2ShowLabel"))
-                    .put("labelStyle", this.checkTextStyle(labelStyle.optJSONObject("textStyle")))
-                    .put("lineColor", settings.optString("rightY2LineColor"));
-
-            axis.put(right2);
-        }
-
-        return axis;
     }
 
     protected JSONObject parseLegend(JSONObject settings) throws JSONException{
@@ -138,15 +128,10 @@ public abstract class VanChartWidget extends TableWidget {
             position = "left";
         }
 
-        return JSONObject.create().put("enabled", legend >= TOP).put("position", position).put("style", this.checkTextStyle(settings.optJSONObject("legendStyle")));
-    }
-
-    //过来的setting里，fontSize没有单位
-    protected JSONObject checkTextStyle(JSONObject textStyle) throws JSONException{
-        if(textStyle != null && textStyle.has("fontSize")){
-            return new JSONObject(textStyle.toString()).put("fontSize", textStyle.optInt("fontSize") + "px");
-        }
-        return textStyle;
+        return JSONObject.create()
+                .put("enabled", legend >= TOP)
+                .put("position", position)
+                .put("style", settings.optJSONObject("legendStyle"));
     }
 
     public JSONObject getPostOptions(String sessionId) throws Exception {

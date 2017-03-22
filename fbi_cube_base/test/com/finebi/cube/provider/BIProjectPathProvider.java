@@ -1,6 +1,6 @@
 package com.finebi.cube.provider;
 
-import com.finebi.cube.data.disk.BIDiskWriterReaderTest;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
 import java.io.File;
@@ -22,16 +22,18 @@ public class BIProjectPathProvider {
     private static String computeBigfilePath() {
         if (basePath.endsWith(File.separator)) {
             return BIStringUtils.append(basePath, "testFolder", File.separator, "bigfiles", File.separator, "cube");
+        } else {
+            return BIStringUtils.append(basePath, File.separator, "testFolder", File.separator, "bigfiles", File.separator, "cube");
         }
-        return basePath;
     }
 
 
     private static String computePath() {
         if (basePath.endsWith(File.separator)) {
             return BIStringUtils.append(basePath, "testFolder", File.separator, "cube");
+        } else {
+            return BIStringUtils.append(basePath, File.separator, "testFolder", File.separator, "bigfiles", File.separator, "cube");
         }
-        return basePath;
     }
 
     private static String computeBasePath() {
@@ -39,9 +41,9 @@ public class BIProjectPathProvider {
         String libFileName = "lib";
         File directory = new File("");
         String classRootPath = "";
-        if(new File(BIProjectPathProvider.class.getResource("/").getPath()).exists()) {
+        if (new File(BIProjectPathProvider.class.getResource("/").getPath()).exists()) {
             classRootPath = BIProjectPathProvider.class.getResource("/").getPath();
-        } else if(new File("H:\\jenkins\\workspace\\test\\build\\classes").exists()) {
+        } else if (new File("H:\\jenkins\\workspace\\test\\build\\classes").exists()) {
             classRootPath = "H:\\jenkins\\workspace\\test\\build\\classes";
         }
         classRootPath = classRootPath.replace("/", File.separator);
@@ -62,8 +64,8 @@ public class BIProjectPathProvider {
     }
 
     public static void main(String[] args) {
-        System.out.println(computeBasePath());
-        System.out.println(computePath());
-        System.out.println(computeBigfilePath());
+        BILoggerFactory.getLogger().info(computeBasePath());
+        BILoggerFactory.getLogger().info(computePath());
+        BILoggerFactory.getLogger().info(computeBigfilePath());
     }
 }
