@@ -357,7 +357,7 @@ public class XMLWriterTest extends TestCase {
         sb.append(ch).append("\r\n");
         String cont = sb.toString();
         cont.replace("\b", "");
-        System.out.printf(cont);
+//        System.out.printf(cont);
         test.value = cont;
 //        checkEquals(test, "testUseInvalidChar");
     }
