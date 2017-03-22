@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by GUY on 2015/3/16.
@@ -76,11 +78,6 @@ public class CubeRunner {
                     setStatue(Status.WRONG);
                 } finally {
                     finish(cubeTask);
-                    try {
-                        recordLogs(cubeTask,BIConfigureManagerCenter.getLogManager());
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
                     setStatue(Status.NULL);
                     logger.info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                 }
@@ -165,6 +162,19 @@ public class CubeRunner {
         }
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
+
+        Executors.newFixedThreadPool(1).submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //持久化log
+                    recordLogs(cubeTask, BIConfigureManagerCenter.getLogManager());
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        });
+
         BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
     }
 
@@ -214,9 +224,9 @@ public class CubeRunner {
         Set<CubeTableSource> allTableSourceSet = logManager.getAllTableSourceSet(biUser.getUserId());
         record.setAllSingleSourceLayers(allTableSourceSet);
         BIConfigureManagerCenter.getCubeTaskRecordManager().saveCubeTaskRecord(biUser.getUserId(), record);
-        new Thread(){
+        new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 BIConfigureManagerCenter.getCubeTaskRecordManager().persistData(biUser.getUserId());
             }
         }.start();
