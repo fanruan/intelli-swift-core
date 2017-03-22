@@ -5056,7 +5056,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
             size = size * getDefaultFontSize();
         }else if (size.indexOf('pt') != -1){
             size = parseFloat(size) * 4 / 3;
-        }else if (size.indexOf('px')){
+        }else{
             size = parseFloat(size);
         }
         return size;
@@ -5095,7 +5095,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
     //ie8以下不支持rem，仍然用px
     function convertToREMUseDefault16PX(style) {
         if(style) {
-            var size = style.fontSize;
+            var size = style.fontSize + '';
 
             if(isSupportSVG()) {
                 size = isNaN(parseFloat(size)) ? '0.75rem' : size;

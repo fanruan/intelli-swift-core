@@ -4,6 +4,7 @@ import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.data.dao.RelationObject;
+import com.fr.fs.FSConfig;
 import com.fr.fs.base.entity.CustomRole;
 import com.fr.fs.base.entity.Department;
 import com.fr.fs.base.entity.Post;
@@ -34,7 +35,12 @@ public class BIGetAllReportsDataAction extends ActionNoSessionCMD {
             List<User> userHasBIReportNode = new LinkedList<User>();
             JSONArray users = new JSONArray();
             JSONArray reports = new JSONArray();
-            List<User> userList = UserControl.getInstance().findAllUser();
+            List<User> userList;
+            if (FSConfig.getProviderInstance().getAuthorizeAttr().isGradeAuthority()) {
+                userList = UserControl.getInstance().findAllAuthUser(userId);
+            } else {
+                userList = UserControl.getInstance().findAllUser();
+            }
             JSONArray allEntry = EntryControl.getInstance().getRootNode().createAllEntryJSONArray(UserControl.getInstance().getSuperManagerID(), true);
             for (int i = 0; i < userList.size(); i++) {//管理员查看所有模板，只选择有模板的用户
                 User u = userList.get(i);

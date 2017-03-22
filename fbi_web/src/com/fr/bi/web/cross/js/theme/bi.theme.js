@@ -78,23 +78,11 @@ FS.THEME.config4navigation.onAfterInit = function () {
 //debugger;
 FS.Plugin.LookAndFeelSettings.push({
     item: function () {
-
-        FR.ajax({
-            url: FR.servletURL + '?op=fr_bi_base&cmd=get_build_no',
-            async: false,
-            data: {
-                '__time': new Date().getTime()
-            },
-            complete: function (res, status) {
-                if (status == 'success') {
-                    BI.$defaultImport({
-                        op: 'emb',
-                        path: 'third.js&__v__=' + res.responseText,
-                        type: 'js'
-                    });
-                }
-            }
-        });
+        FR.$defaultImport("com/fr/bi/web/js/third/es5-sham.js");
+        FR.$defaultImport("com/fr/bi/web/js/third/d3.js");
+        FR.$defaultImport("com/fr/bi/web/js/third/raphael.js");
+        FR.$defaultImport("com/fr/bi/web/js/third/vancharts-all.js");
+        FR.$defaultImport("com/fr/bi/web/js/third/leaflet.js");
 
         return {
             title: BI.i18nText("BI-BI_Style"),

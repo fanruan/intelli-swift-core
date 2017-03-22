@@ -10,6 +10,7 @@ import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.base.dataconfig.source.BIDataConfigAuthority;
@@ -92,8 +93,8 @@ public class BIWebConfUtils {
     }
 
 
-    public static JSONObject createRelationJSONWithName(BITableRelation relation) throws Exception {
-        long userId = UserControl.getInstance().getSuperManagerID();
+    public static JSONObject createRelationJSONWithName(BITableRelation relation, long userId) throws Exception {
+        long admin = UserControl.getInstance().getSuperManagerID();
         JSONObject jo = new JSONObject();
         BusinessField primaryField = relation.getPrimaryField();
         BusinessField foreignField = relation.getForeignField();
@@ -102,18 +103,20 @@ public class BIWebConfUtils {
         BusinessTable pTable = BusinessFieldHelper.getBusinessTable(primaryField);
         String pTId = pTable.getID().getIdentityValue();
         primaryJson.put(BIJSONConstant.JSON_KEYS.FIELD_ID, pId);
-        primaryJson.put(BIJSONConstant.JSON_KEYS.FIELD_TRAN_NAME, BICubeConfigureCenter.getAliasManager().getAliasName(pId, userId));
-        primaryJson.put(BIJSONConstant.JSON_KEYS.TABLE_TRAN_NAME, BICubeConfigureCenter.getAliasManager().getAliasName(pTId, userId));
+        primaryJson.put(BIJSONConstant.JSON_KEYS.FIELD_TRAN_NAME, BICubeConfigureCenter.getAliasManager().getAliasName(pId, admin));
+        primaryJson.put(BIJSONConstant.JSON_KEYS.TABLE_TRAN_NAME, BICubeConfigureCenter.getAliasManager().getAliasName(pTId, admin));
         primaryJson.put(BIJSONConstant.JSON_KEYS.TABLE_NAME, pTable.getTableSource().getTableName());
+        primaryJson.put("available", BIWebConfUtils.hasBusinessTableAuth(pTable, userId));
 
         JSONObject foreignJson = foreignField.createJSON();
         String fId = foreignField.getFieldID().getIdentityValue();
         BusinessTable fTable = BusinessFieldHelper.getBusinessTable(foreignField);
         String fTId = fTable.getID().getIdentityValue();
         foreignJson.put(BIJSONConstant.JSON_KEYS.FIELD_ID, foreignField.getFieldID().getIdentityValue());
-        foreignJson.put(BIJSONConstant.JSON_KEYS.FIELD_TRAN_NAME, BICubeConfigureCenter.getAliasManager().getAliasName(fId, userId));
-        foreignJson.put(BIJSONConstant.JSON_KEYS.TABLE_TRAN_NAME, BICubeConfigureCenter.getAliasManager().getAliasName(fTId, userId));
+        foreignJson.put(BIJSONConstant.JSON_KEYS.FIELD_TRAN_NAME, BICubeConfigureCenter.getAliasManager().getAliasName(fId, admin));
+        foreignJson.put(BIJSONConstant.JSON_KEYS.TABLE_TRAN_NAME, BICubeConfigureCenter.getAliasManager().getAliasName(fTId, admin));
         foreignJson.put(BIJSONConstant.JSON_KEYS.TABLE_NAME, fTable.getTableSource().getTableName());
+        foreignJson.put("available", BIWebConfUtils.hasBusinessTableAuth(fTable, userId));
 
         jo.put("primaryKey", primaryJson);
         jo.put("foreignKey", foreignJson);
@@ -160,6 +163,21 @@ public class BIWebConfUtils {
         }
         jo.put("packages", packagesJO).put("groups", groupsJO);
         return jo;
+    }
+
+    public static boolean hasBusinessTableAuth(BusinessTable table, long userId) throws Exception {
+        if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
+            return true;
+        }
+        boolean hasAuth = false;
+        List<BIPackageID> packageIDS = BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+        String packageName = BusinessTableHelper.getPackageNameByTableId(table.getID().getIdentityValue());
+        for (BIPackageID packageID : packageIDS) {
+            if (ComparatorUtils.equals(BICubeConfigureCenter.getPackageManager().getPackage(userId, packageID).getName().getName(), packageName)) {
+                hasAuth = true;
+            }
+        }
+        return hasAuth;
     }
 
     private static void dealWithGroups(JSONObject groupsJO, JSONObject packagesJO) throws Exception {
