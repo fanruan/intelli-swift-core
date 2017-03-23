@@ -233,8 +233,7 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             height: this._constants.TOOL_ICON_HEIGHT
         });
         excel.on(BI.IconButton.EVENT_CHANGE, function () {
-            window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                + window.encodeURIComponent(self.model.get("name"));
+            BI.Utils.exportExcelById(wId);
         });
 
         this.tools = BI.createWidget({

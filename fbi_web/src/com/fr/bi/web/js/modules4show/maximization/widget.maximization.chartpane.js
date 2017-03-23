@@ -133,8 +133,7 @@ BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
 
         var excel = this._createToolsButton("BI-Export_As_Excel", "widget-tools-export-excel-font");
         excel.on(BI.IconButton.EVENT_CHANGE, function () {
-            window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                + window.encodeURIComponent(BI.Utils.getWidgetNameByID(wId)));
+          BI.Utils.exportExcelById(wId);
         });
         return BI.createWidget({
             type: "bi.left",
