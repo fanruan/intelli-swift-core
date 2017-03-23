@@ -55,6 +55,11 @@ public class Service4BIConfigure implements Service {
             new BICheckCubePathAction(),
 //            new BICheckCubeStatusAction(),
             new BIGetCubeLogAction(),
+            new BIGetCubeLogGenerateTimeInfoAction(),
+            new BIGetCubeLogExceptionInfoAction(),
+            new BIGetCubeLogTableTransportInfoAction(),
+            new BIGetCubeLogTableFieldIndexInfoAction(),
+            new BIGetCubeLogRelationIndexInfoAction(),
 
             new BIGetFieldValueAction(),
 
