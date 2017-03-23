@@ -1,15 +1,18 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by User on 2016/4/25.
@@ -31,6 +34,31 @@ public abstract class VanChartWidget extends TableWidget {
     public abstract JSONArray createSeries(JSONObject data) throws JSONException;
 
     public abstract String getSeriesType();
+
+    public void parseJSON(JSONObject jo, long userId) throws Exception {
+        if (jo.has("view")) {
+            JSONObject vjo = jo.optJSONObject("view");
+            JSONArray ja = JSONArray.create();
+
+            //三个target按照顺序合并
+            String[] targets = new String[]{BIReportConstant.REGION.TARGET1, BIReportConstant.REGION.TARGET2, BIReportConstant.REGION.TARGET3};
+
+            for(int i = 0, len = targets.length; i < len; i++){
+                JSONArray target = vjo.optJSONArray(targets[i]);
+                if(target != null){
+                    for(int j = 0, count = target.length(); j < count; j++){
+                        ja.put(target.optString(j));
+                    }
+                }
+            }
+
+            vjo.put(BIReportConstant.REGION.TARGET1, ja);
+            vjo.remove(BIReportConstant.REGION.TARGET2);
+            vjo.remove(BIReportConstant.REGION.TARGET3);
+        }
+
+        super.parseJSON(jo, userId);
+    }
 
     public JSONObject createPlotOptions() throws JSONException{
         return JSONObject.create().put("animation", true);
@@ -108,7 +136,7 @@ public abstract class VanChartWidget extends TableWidget {
                 }
                 series.put(JSONObject.create().put("data", data).put("name", name).put("type", type));
             }
-        }else if(originData.has("c")){//单系列
+        }else if(originData.has("c")){
             JSONArray children = originData.getJSONArray("c");
             JSONArray data = JSONArray.create();
             for (int j = 0; j < children.length(); j++) {
@@ -170,6 +198,48 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("enabled", legend >= TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
+    }
+
+    public BIDimension getCategoryDimension(){
+        List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION1));
+        if(dimensionIds == null){
+            return null;
+        }
+        for(BIDimension dimension : this.getDimensions()){
+            if(dimensionIds.contains(dimension.getValue()) && dimension.isUsed()){
+                return dimension;
+            }
+        }
+        return null;
+    }
+
+    public BIDimension getSeriesDimension(){
+        List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION2));
+        if(dimensionIds == null){
+            return null;
+        }
+        for(BIDimension dimension : this.getDimensions()){
+            if(dimensionIds.contains(dimension.getValue()) && dimension.isUsed()){
+                return dimension;
+            }
+        }
+        return null;
+    }
+
+    public Set<String> getAllDimensionIds(){
+        Set<String> dimensionIds = new HashSet<String>();
+        for(BIDimension dimension : this.getDimensions()){
+            dimensionIds.add(dimension.getValue());
+        }
+        return dimensionIds;
+    }
+
+    public Set<String> getAllTargetIds(){
+        Set<String> targetIds = new HashSet<String>();
+        for(BISummaryTarget target : this.getTargets()){
+            targetIds.add(target.getValue());
+        }
+        return targetIds;
     }
 
     public JSONObject getPostOptions(String sessionId) throws Exception {

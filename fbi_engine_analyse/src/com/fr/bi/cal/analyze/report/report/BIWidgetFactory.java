@@ -41,7 +41,7 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.RANGE_AREA, VanRangeAreaWidget.class);
 
         vancharts.put(WidgetType.COMBINE_CHART, VanCombinationWidget.class);
-        vancharts.put(WidgetType.MULTI_AXIS_COMBINE_CHART, VanMutiAxisCombinationWidget.class);
+        vancharts.put(WidgetType.MULTI_AXIS_COMBINE_CHART, VanMultiAxisCombinationWidget.class);
 
         vancharts.put(WidgetType.PIE, VanPieWidget.class);
         vancharts.put(WidgetType.DONUT, VanDonutWidget.class);
