@@ -207,8 +207,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
                     self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&widget="
-                        + window.encodeURIComponent(FR.jsonEncode(BI.Utils.getWidgetCalculationByID(wId)));
+                    BI.Utils.exportExcelById(wId);
                     break;
             }
         });

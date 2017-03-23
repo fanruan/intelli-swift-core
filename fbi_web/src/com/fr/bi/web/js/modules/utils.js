@@ -783,7 +783,7 @@
         getWSTitleDetailSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.widgetNameStyle) ? ws.widgetNameStyle :
-                {};
+            {};
         },
 
         getWSWidgetBGByID: function (wid) {
@@ -822,14 +822,14 @@
         getWSCustomTableStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.customTableStyle) ? ws.customTableStyle :
-                {};
+            {};
         },
 
         getWSTableNameStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             if (ws.customTableStyle) {
                 return BI.isNotNull(ws.customTableStyle.tableNameStyle) ? ws.customTableStyle.tableNameStyle :
-                    {};
+                {};
             }
             return {}
         },
@@ -838,7 +838,7 @@
             var ws = this.getWidgetSettingsByID(wid);
             if (ws.customTableStyle) {
                 return BI.isNotNull(ws.customTableStyle.tableValueStyle) ? ws.customTableStyle.tableValueStyle :
-                    {};
+                {};
             }
             return {}
         },
@@ -1396,7 +1396,7 @@
         getWSChartToolTipStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.tooltipStyle) ? ws.tooltipStyle :
-                {}
+            {}
         },
 
         getWSLinkageSelectionByID: function (wid) {
@@ -2917,12 +2917,14 @@
             }
 
             function descartes(arr) {
-                return arr.reduce(function(a,b){
-                    return a.map(function(x){
-                        return b.map(function(y){
+                return arr.reduce(function (a, b) {
+                    return a.map(function (x) {
+                        return b.map(function (y) {
                             return x.concat(y);
                         })
-                    }).reduce(function(a,b){ return a.concat(b) },[])
+                    }).reduce(function (a, b) {
+                        return a.concat(b)
+                    }, [])
                 }, [[]])
             }
 
@@ -3436,21 +3438,21 @@
             });
 
             //gis地图按分组表来算，而非交叉表
-            if(widget.type === BICst.WIDGET.GIS_MAP){
-                var dim1type = BI.findKey(widget.view, function(type, view){
-                    if(type < BICst.REGION.DIMENSION2 && BI.isNotEmptyArray(view)){
-                        return BI.isNotNull(BI.find(view, function(idx, dId){
+            if (widget.type === BICst.WIDGET.GIS_MAP) {
+                var dim1type = BI.findKey(widget.view, function (type, view) {
+                    if (type < BICst.REGION.DIMENSION2 && BI.isNotEmptyArray(view)) {
+                        return BI.isNotNull(BI.find(view, function (idx, dId) {
                             return BI.Utils.isDimensionUsable(dId);
                         }));
-                    }else{
+                    } else {
                         return false;
                     }
                 });
-                if(BI.isNull(dim1type)){
+                if (BI.isNull(dim1type)) {
                     dim1type = BICst.REGION.DIMENSION1;
                 }
-                BI.each(widget.view, function(type, view){
-                    if(type >= BICst.REGION.DIMENSION2 && type < BICst.REGION.TARGET1 && BI.isNotEmptyArray(widget.view[type])){
+                BI.each(widget.view, function (type, view) {
+                    if (type >= BICst.REGION.DIMENSION2 && type < BICst.REGION.TARGET1 && BI.isNotEmptyArray(widget.view[type])) {
                         widget.view[dim1type] = widget.view[dim1type] || [];
                         widget.view[dim1type] = BI.concat(widget.view[dim1type], view);
                         widget.view[type] = [];
@@ -3485,6 +3487,16 @@
                 });
             }
         })(),
+
+        exportExcelById: function (wId) {
+            var self = this;
+            BI.requestAsync("fr_bi_dezi", "save_widget", {widget: this.getWidgetCalculationByID(wId)}, function () {
+                window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                    + window.encodeURIComponent(self.getWidgetNameByID(wId));
+            }, function () {
+
+            })
+        },
 
         /**
          * 组件与表的关系

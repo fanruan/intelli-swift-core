@@ -48,21 +48,15 @@ public class BIExcelExportAction extends AbstractBIDeziAction {
             ErrorHandlerHelper.getErrorHandler().error(req, res, "Reportlet SessionID: \"" + sessionID + "\" time out.");
             return;
         }
-        long userId = sessionIDInfor.getUserIdFromSession(req);
 
-        String widgetString = WebUtils.getHTTPRequestParameter(req, "widget");
-        JSONObject widgetJSON = new JSONObject(widgetString);
-        String widgetName = widgetJSON.optString("name");
-        widgetJSON.put("sessionID", sessionID);
-        BIWidget widget = BIWidgetFactory.parseWidget(widgetJSON, userId);
-        BIReport biReport = sessionIDInfor.getBIReport();
-        int index = biReport.getWidgetIndexByName(widgetName);
-        biReport.setWidget(index, widget);
-
+        String blockid = WebUtils.getHTTPRequestParameter(req, "name");
+        if (StringUtils.isEmpty(blockid)) {
+            return;
+        }
         long t = System.currentTimeMillis();
         NetworkHelper.setCacheSettings(res);
-        ResultWorkBook resultBook = sessionIDInfor.getExportBookByName(widgetName);
-        String fileName = Browser.resolve(req).getEncodedFileName4Download(widgetName.replaceAll(",", "_").replaceAll("\\s", "_"));
+        ResultWorkBook resultBook = sessionIDInfor.getExportBookByName(blockid);
+        String fileName = Browser.resolve(req).getEncodedFileName4Download(blockid.replaceAll(",", "_").replaceAll("\\s", "_"));
         ExportUtils.setExcel2007Content(res, fileName);
         if (resultBook != null) {
             export(req, res, resultBook, t);
