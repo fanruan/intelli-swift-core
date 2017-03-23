@@ -5,6 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.CubeBuildHelper;
+import com.fr.bi.cal.utils.Single2CollectionUtils;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
@@ -82,7 +83,8 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
 
     private void updateExcelTableDate(long userId, CubeTableSource tableSource) {
         try {
-            CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, tableSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+            CubeBuildHelper.getInstance().addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(tableSource.getSourceID()),
+                    Single2CollectionUtils.toList(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL));
         } catch (InterruptedException e) {
             BILoggerFactory.getLogger(this.getClass()).error("update excel single table error: " + e.getMessage(), e);
         }

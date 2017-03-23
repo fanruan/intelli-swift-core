@@ -155,7 +155,9 @@ public class Service4BIConfigure implements Service {
             new BISetTransportThreadPoolSizeAction(),
             new BIGetTransportThreadPoolSizeAction(),
             new BISetMinCubeFreeHDSpaceRateAction(),
-            new BIGetMinCubeFreeHDSpaceRateAction()
+            new BIGetMinCubeFreeHDSpaceRateAction(),
+            new BIAddCustomCubeTaskAction(),
+            new BICustomCubeGenerateAction()
     };
 
     /**
