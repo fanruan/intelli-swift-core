@@ -13,14 +13,18 @@ import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.cal.sssecret.mergeiter.MergeIterator;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
+import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
 import com.fr.bi.stable.operation.group.BIGroupUtils;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -109,10 +113,25 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
                 groupLimit = Math.min(Math.max(BIBaseConstant.PART_DATA_GROUP_LIMIT, groupLimit), BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT);
             }
         }
-        if (!urd || hasSpecialGroup(columns[index])) {
+        //自循环处理同自定义分组
+        if (!urd || hasSpecialGroup(columns[index]) || isCirCle(columns[index])) {
             return columns[index].createValueMapIterator(metricTables[index], loader, urd, groupLimit);
         }
         return getIterByAllCal(index);
+    }
+
+    private boolean isCirCle(DimensionCalculator column) {
+        CubeTableSource source = column.getField().getTableBelongTo().getTableSource();
+        if (!TableSourceUtils.isSelfCirCleSource(source)) {
+            return false;
+        }
+        String columnId = column.getField().getFieldID().getIdentity();
+        for (ICubeFieldSource fieldSource : source.getFacetFields(null)) {
+            if (ComparatorUtils.equals(fieldSource.getFieldName(), TableSourceUtils.isSelfCirCleSource(source)) && TableSourceUtils.isSelfCircleParentField(source, fieldSource)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -163,7 +182,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         if (isNull(metricMergeResult)) {
             return NoneDimensionGroup.NULL;
         }
-        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, tis, metricMergeResult.getGvis(), metricMergeResult.getSummaryValue() ,loader);
+        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, tis, metricMergeResult.getGvis(), metricMergeResult.getSummaryValue(), loader);
     }
 
     private boolean isNull(MetricMergeResult node) {
@@ -182,7 +201,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         return metricMergeResult.getShowValue();
     }
 
-    protected int getChildLength(){
+    protected int getChildLength() {
         return metricMergeResultList.size();
     }
 
@@ -231,7 +250,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     @Override
     public void executorTerminated() {
-        if (mergeIteratorCreator.isSimple()){
+        if (mergeIteratorCreator.isSimple()) {
             MetricMergeResult metricMergeResult = createEmptyResult();
             addMetricMergeResult(metricMergeResult);
         }

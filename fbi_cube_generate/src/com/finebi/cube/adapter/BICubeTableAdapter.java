@@ -287,13 +287,6 @@ public class BICubeTableAdapter implements ICubeTableService {
                         if (path.size() > 0 && !isFieldRelationExist(columnKey, path)) {
                             BIColumnKey key = columnIndex instanceof IndexTypeKey ? BIColumnKey.covertColumnKey(getDBField(columnIndex), getColumnSubType(columnIndex)) : BIColumnKey.covertColumnKey(getDBField(columnIndex));
                             new BIFieldPathIndexBuilder(cube, key, path).mainTask(null);
-//                    boolean containSelfCircleTable = containSelfCircleTable(path);
-//                    if (containSelfCircleTable) {
-//                        new BIFieldPathIndexBuilder(cube, key, path).mainTask(null);
-//                    } else {
-////                                new SelfCirclePathIndexGenerator(cube, key, path);
-//                        new BIFieldPathIndexBuilder(cube, key, path).mainTask(null);
-//                    }
                         }
                     }
                 }
@@ -302,10 +295,6 @@ public class BICubeTableAdapter implements ICubeTableService {
             }
         }
     }
-
-//    private boolean containSelfCircleTable(BICubeTablePath path) {
-//        return BIRelationHelper.isPathContainsSelfCircle(path);
-//    }
 
     private boolean isFieldRelationExist(BIColumnKey columnKey, BICubeTablePath path) {
         return this.cube.exist(this.tableKey, columnKey, path);
