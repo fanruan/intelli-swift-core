@@ -14,7 +14,7 @@ public class VanGaugeWidget extends VanChartWidget{
         return this.createXYSeries(data);
     }
 
-    public String getSeriesType(){
+    public String getSeriesType(String dimensionID){
         return "gauge";
     }
 }

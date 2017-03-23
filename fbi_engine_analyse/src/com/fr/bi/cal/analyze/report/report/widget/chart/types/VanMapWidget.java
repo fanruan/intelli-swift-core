@@ -13,11 +13,11 @@ public class VanMapWidget extends VanChartWidget{
 
     public JSONArray createSeries(JSONObject originData) throws JSONException {
         JSONArray series = JSONArray.create();
-        String type = this.getSeriesType();
+
         return series;
     }
 
-    public String getSeriesType(){
+    public String getSeriesType(String dimensionID){
         return "areaMap";
     }
 

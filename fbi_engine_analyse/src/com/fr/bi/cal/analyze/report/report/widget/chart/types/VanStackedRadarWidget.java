@@ -5,7 +5,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
  */
 public class VanStackedRadarWidget extends VanStackedColumnWidget{
 
-    public String getSeriesType(){
+    public String getSeriesType(String dimensionID){
         return "radar";
     }
 

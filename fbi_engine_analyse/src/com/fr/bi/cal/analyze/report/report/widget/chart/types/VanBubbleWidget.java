@@ -13,7 +13,7 @@ public class VanBubbleWidget extends VanChartWidget{
         return this.createBubbleSeries(data);
     }
 
-    public String getSeriesType(){
+    public String getSeriesType(String dimensionID){
         return "bubble";
     }
 }

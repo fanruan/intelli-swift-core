@@ -2,9 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -13,6 +11,7 @@ import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
 import java.util.*;
+import java.util.Iterator;
 
 /**
  * Created by User on 2016/4/25.
@@ -31,30 +30,72 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int BUBBLE_COUNT = 3;
     private static final int SCATTER_COUNT = 2;
 
+
+    private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
+    private HashMap<String, String> regionIdMap = new HashMap<String, String>();
+
     public abstract JSONArray createSeries(JSONObject data) throws JSONException;
 
-    public abstract String getSeriesType();
+    public abstract String getSeriesType(String dimensionID);
+
+    protected boolean isStacked(String dimensionID){
+        return false;
+    }
+
+    protected String getStackedKey(String dimensionID){
+        return dimensionID;
+    }
+
+    protected int yAxisIndex(String dimensionID){
+        return 0;
+    }
+
+    protected JSONArray getDimensionIDArray(String regionID){
+        return dimensionIdMap.get(regionID);
+    }
+
+    protected String getRegionID(String dimensionID){
+        return regionIdMap.get(dimensionID);
+    }
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         if (jo.has("view")) {
             JSONObject vjo = jo.optJSONObject("view");
+
             JSONArray ja = JSONArray.create();
-
-            //三个target按照顺序合并
-            String[] targets = new String[]{BIReportConstant.REGION.TARGET1, BIReportConstant.REGION.TARGET2, BIReportConstant.REGION.TARGET3};
-
-            for(int i = 0, len = targets.length; i < len; i++){
-                JSONArray target = vjo.optJSONArray(targets[i]);
-                if(target != null){
-                    for(int j = 0, count = target.length(); j < count; j++){
-                        ja.put(target.optString(j));
-                    }
+            Iterator it = vjo.keys();
+            List<String> sorted = new ArrayList<String>();
+            while (it.hasNext()) {
+                sorted.add(it.next().toString());
+            }
+            Collections.sort(sorted, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return Integer.parseInt(o1) - Integer.parseInt(o2);
                 }
+            });
+
+            for(String region : sorted){
+
+                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
+                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+                    continue;
+                }
+
+                JSONArray tmp =  vjo.getJSONArray(region);
+
+                dimensionIdMap.put(region, tmp);//后面用来计算坐标轴和堆积属性
+
+                for(int j = 0; j < tmp.length(); j++){
+                    String key = tmp.getString(j);
+                    ja.put(key);
+                    regionIdMap.put(key, region);
+                }
+
+                vjo.remove(region);
             }
 
             vjo.put(BIReportConstant.REGION.TARGET1, ja);
-            vjo.remove(BIReportConstant.REGION.TARGET2);
-            vjo.remove(BIReportConstant.REGION.TARGET3);
         }
 
         super.parseJSON(jo, userId);
@@ -120,10 +161,11 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected JSONArray createXYSeries(JSONObject originData) throws JSONException{
         JSONArray series = JSONArray.create();
-        String type = this.getSeriesType();
+        String[] targetIDs = this.getUsedTargetID();
         if (originData.has("t")) {//有列表头，多系列
             JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
             JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
+            boolean isStacked = this.isStacked(targetIDs[0]);
             for (int i = 0; i < topC.length(); i++) {
                 JSONObject tObj = topC.getJSONObject(i);
                 String name = tObj.getString("n");
@@ -134,18 +176,30 @@ public abstract class VanChartWidget extends TableWidget {
                     double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0);
                     data.put(JSONObject.create().put("x", x).put("y", y));
                 }
-                series.put(JSONObject.create().put("data", data).put("name", name).put("type", type));
+                JSONObject ser = JSONObject.create().put("data", data).put("name", name).put("type", this.getSeriesType(targetIDs[0]));
+                if(isStacked){
+                    ser.put("stacked", targetIDs[0]);
+                }
+                series.put(ser);
             }
         }else if(originData.has("c")){
             JSONArray children = originData.getJSONArray("c");
-            JSONArray data = JSONArray.create();
-            for (int j = 0; j < children.length(); j++) {
-                JSONObject lObj = children.getJSONObject(j);
-                String x = lObj.getString("n");
-                double y = lObj.getJSONArray("s").getDouble(0);
-                data.put(JSONObject.create().put("x", x).put("y", y));
+            for(int i = 0, len = targetIDs.length; i < len; i++){
+                String id = targetIDs[i], type = this.getSeriesType(id), stackedKey = this.getStackedKey(id);
+                JSONArray data = JSONArray.create();
+                for (int j = 0, count = children.length(); j < count; j++) {
+                    JSONObject lObj = children.getJSONObject(j);
+                    String x = lObj.getString("n");
+                    double y = lObj.getJSONArray("s").getDouble(i);
+                    data.put(JSONObject.create().put("x", x).put("y", y));
+                }
+                JSONObject ser = JSONObject.create().put("data", data).put("name", id)
+                        .put("type", type).put("yAxis", this.yAxisIndex(id));
+                if(this.isStacked(id)){
+                    ser.put("stacked", stackedKey);
+                }
+                series.put(ser);
             }
-            series.put(JSONObject.create().put("data", data).put("name", StringUtils.EMPTY).put("type", type));
         }
 
         return series;
@@ -153,7 +207,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected JSONArray createBubbleSeries(JSONObject originData) throws JSONException{
         JSONArray series = JSONArray.create();
-        String type = this.getSeriesType();
+        String type = this.getSeriesType(StringUtils.EMPTY);
         int targetCount = type == "bubble" ? BUBBLE_COUNT : SCATTER_COUNT;
 
         JSONArray children = originData.optJSONArray("c");
@@ -224,22 +278,6 @@ public abstract class VanChartWidget extends TableWidget {
             }
         }
         return null;
-    }
-
-    public Set<String> getAllDimensionIds(){
-        Set<String> dimensionIds = new HashSet<String>();
-        for(BIDimension dimension : this.getDimensions()){
-            dimensionIds.add(dimension.getValue());
-        }
-        return dimensionIds;
-    }
-
-    public Set<String> getAllTargetIds(){
-        Set<String> targetIds = new HashSet<String>();
-        for(BISummaryTarget target : this.getTargets()){
-            targetIds.add(target.getValue());
-        }
-        return targetIds;
     }
 
     public JSONObject getPostOptions(String sessionId) throws Exception {

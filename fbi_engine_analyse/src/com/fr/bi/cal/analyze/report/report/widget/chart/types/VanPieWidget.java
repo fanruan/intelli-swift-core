@@ -14,7 +14,7 @@ public class VanPieWidget extends VanChartWidget{
         return this.createXYSeries(data);
     }
 
-    public String getSeriesType(){
+    public String getSeriesType(String dimensionID){
         return "pie";
     }
 
