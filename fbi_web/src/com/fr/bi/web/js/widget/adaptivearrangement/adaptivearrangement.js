@@ -110,17 +110,21 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         return this.arrangement._isEqual.apply(this.arrangement, arguments);
     },
 
+    _setSelected: function (item) {
+        if (!item.element.hasClass("selected")) {
+            item.element.css("zIndex", ++this.zIndex);
+            BI.each(this.getAllRegions(), function (i, region) {
+                region.el.element.removeClass("selected");
+            });
+            item.element.addClass("selected");
+        }
+    },
+
     _initResizable: function (item) {
         var self = this, o = this.options;
         item.element.css("zIndex", ++this.zIndex);
         item.element.mousedown(function () {
-            if (!item.element.hasClass("selected")) {
-                item.element.css("zIndex", ++self.zIndex);
-                BI.each(self.getAllRegions(), function (i, region) {
-                    region.el.element.removeClass("selected");
-                });
-                item.element.addClass("selected");
-            }
+            self._setSelected(item);
         });
         o.resizable && item.element.resizable({
             handles: "e, s, se",
@@ -289,6 +293,7 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
 
     addRegion: function (region, position) {
         this._initResizable(region.el);
+        this._setSelected(region.el);
         var self = this, flag;
         var old = this.arrangement.getAllRegions();
         if (BI.isNotNull(this.position)) {
