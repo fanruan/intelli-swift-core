@@ -26,7 +26,7 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
 
     public static final String CMD = "update_excel_table_cube_by_table_id";
 
-    private static final long userId = -999;//貌似只能用管理员的权限进行单表更新，不然用户数据更新不了
+    private static final long USERID = -999;//貌似只能用管理员的权限进行单表更新，不然用户数据更新不了
 
     private static String DATA_PATH = FRContext.getCurrentEnv().getPath() + BIBaseConstant.EXCELDATA.EXCEL_DATA_PATH;
     private static final int SUCCESS = 0;
