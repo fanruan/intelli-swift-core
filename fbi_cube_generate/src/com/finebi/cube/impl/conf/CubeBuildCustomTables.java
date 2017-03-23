@@ -35,18 +35,15 @@ public class CubeBuildCustomTables extends CubeBuildSpecific {
     private Set<String> sourceIds = new HashSet<String>();
     private Set<String> specificBasicTableIDs = new HashSet<String>();
 
-    private Map<String, Set<CubeTableSource>> baseSourceIdTableMap;
     private Map<String, Set<Integer>> baseSourceIdUpdateTypeMap;
 
     public CubeBuildCustomTables(long userId,
                                  Map<CubeTableSource, Set<String>> tableBaseSourceIdMap,
-                                 Map<String, Set<CubeTableSource>> baseSourceIdTableMap,
                                  Map<String, Set<Integer>> baseSourceIdUpdateTypeMap,
                                  Set<CubeTableSource> absentTables,
                                  Set<BITableSourceRelation> absentRelation,
                                  Set<BITableSourceRelationPath> absentPath) {
         super(userId);
-        this.baseSourceIdTableMap = baseSourceIdTableMap;
         this.baseSourceIdUpdateTypeMap = baseSourceIdUpdateTypeMap;
 
         for (Map.Entry<CubeTableSource, Set<String>> entry : tableBaseSourceIdMap.entrySet()) {

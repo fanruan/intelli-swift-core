@@ -5,6 +5,7 @@ import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.cal.generate.CubeBuildHelper;
+import com.fr.bi.cal.utils.Single2CollectionUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
@@ -176,7 +177,8 @@ public class BICubeManager implements BICubeManagerProvider {
             if (StringUtils.isEmpty(baseTableSourceId)) {
                 CubeBuildHelper.getInstance().CubeBuildStaff(userId);
             } else {
-                CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, baseTableSourceId, updateType);
+                CubeBuildHelper.getInstance().addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(baseTableSourceId),
+                        Single2CollectionUtils.toList(updateType));
             }
             BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
             BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
