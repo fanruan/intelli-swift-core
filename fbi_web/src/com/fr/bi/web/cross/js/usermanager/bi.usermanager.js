@@ -92,9 +92,11 @@ BI.FSUserManager = BI.inherit(FR.Widget, {
 
     _createMainPane: function (mode) {
         this.users = {};
+        this.resultUsers = {};
         this.selectedUsers = {};
         this.usersPane = {};
         this.searcherPane = {};
+        this.selectAll = {};
         return BI.createWidget({
             type: "bi.left",
             items: [
@@ -154,6 +156,22 @@ BI.FSUserManager = BI.inherit(FR.Widget, {
                 removed.push(user);
             }
         });
+        if (toRight) {
+            var authUserSize = this.users[this._constants.AUTHORIZED].length + this.selectedUsers[this._constants.NO_AUTHORIZED].length;
+            var size = 0;
+            switch (mode) {
+                case Consts.BIEDIT:
+                    size = this.editUserAuthLimit;
+                    break;
+                case Consts.BIVIEW:
+                    size = this.viewUserAuthLimit;
+                    break;
+            }
+            if (size < authUserSize) {
+                BI.Msg.toast(BI.i18nText("BI-Limit_User_Count_Tip"), "warning");
+                return;
+            }
+        }
         BI.remove(this.users[toRight ? this._constants.NO_AUTHORIZED : this._constants.AUTHORIZED], function (i, user) {
             return users.contains(user.id);
         });
@@ -162,9 +180,11 @@ BI.FSUserManager = BI.inherit(FR.Widget, {
             this.users[toRight ? this._constants.AUTHORIZED : this._constants.NO_AUTHORIZED].concat(removed);
         this.usersPane[this._constants.NO_AUTHORIZED].populate(this._createItems(this.users[this._constants.NO_AUTHORIZED], this._constants.NO_AUTHORIZED));
         this.usersPane[this._constants.AUTHORIZED].populate(this._createItems(this.users[this._constants.AUTHORIZED], this._constants.AUTHORIZED));
-        this._toggleButtons();
         this.searcherPane[this._constants.NO_AUTHORIZED].stopSearch();
         this.searcherPane[this._constants.AUTHORIZED].stopSearch();
+        this._toggleButtons();
+        this._toggleSelectAll(this.users[this._constants.NO_AUTHORIZED], this._constants.NO_AUTHORIZED);
+        this._toggleSelectAll(this.users[this._constants.AUTHORIZED], this._constants.AUTHORIZED);
         BI.requestAsync("fr_bi", "set_auth_user", {
             mode: mode,
             users: removed,
@@ -175,6 +195,22 @@ BI.FSUserManager = BI.inherit(FR.Widget, {
     _toggleButtons: function () {
         this.moveRight.setEnable(this.selectedUsers[this._constants.NO_AUTHORIZED].length > 0);
         this.moveLeft.setEnable(this.selectedUsers[this._constants.AUTHORIZED].length > 0);
+    },
+
+    _toggleSelectAll: function (users, type) {
+        var self = this, selectedUsers = [];
+        BI.each(users, function (i, u) {
+            if (self.selectedUsers[type].contains(u.id)) {
+                selectedUsers.push(u.id);
+            }
+        });
+        if (selectedUsers.length === 0) {
+            this.selectAll[type].setSelected(false);
+        } else if (selectedUsers.length === users.length) {
+            this.selectAll[type].setSelected(true);
+        } else if (selectedUsers.length < users.length) {
+            this.selectAll[type].setHalfSelected(true);
+        }
     },
 
     _createItems: function (users, type, keyword) {
@@ -199,6 +235,7 @@ BI.FSUserManager = BI.inherit(FR.Widget, {
                                 return v === value;
                             })
                         }
+                        self._toggleSelectAll(users, type);
                         self._toggleButtons();
                     }
                 }]
@@ -242,7 +279,10 @@ BI.FSUserManager = BI.inherit(FR.Widget, {
                 var keyword = op.keyword;
                 var res = BI.Func.getSearchResult(self.users[type], keyword, "text");
                 var matched = res.matched, finded = res.finded;
-                callback(self._createItems(matched.concat(finded), type, keyword));
+                var result = matched.concat(finded);
+                self.resultUsers[type] = result;
+                callback(self._createItems(result, type, keyword));
+                self._toggleSelectAll(result, type);
             },
             popup: {
                 type: "bi.grid_view",
@@ -259,6 +299,41 @@ BI.FSUserManager = BI.inherit(FR.Widget, {
         this.searcherPane[type].setAdapter(this.usersPane[type]);
         this.searcherPane[type].on(BI.Searcher.EVENT_STOP, function () {
             self.usersPane[type].populate(self._createItems(self.users[type], type));
+            self._toggleSelectAll(self.users[type], type);
+        });
+
+        this.selectAll[type] = BI.createWidget({
+            type: "bi.multi_select_bar",
+            width: 30,
+            height: 30
+        });
+        this.selectAll[type].on(BI.MultiSelectBar.EVENT_CHANGE, function () {
+            var isSelected = this.isSelected();
+            if (self.searcherPane[type].isSearching()) {
+                BI.each(self.resultUsers[type], function (i, user) {
+                    if (isSelected) {
+                        if (!self.selectedUsers[type].contains(user.id)) {
+                            self.selectedUsers[type].push(user.id);
+                        }
+                    } else {
+                        BI.remove(self.selectedUsers[type], function (j, uid) {
+                            return uid === user.id;
+                        });
+                    }
+                });
+                var keyword = self.searcherPane[type].getKeyword();
+                var result = self._createItems(self.resultUsers[type], type, keyword);
+                self.searcherPane[type].populate(result, [], keyword);
+            } else {
+                self.selectedUsers[type] = [];
+                if (isSelected) {
+                    BI.each(self.users[type], function (i, user) {
+                        self.selectedUsers[type].push(user.id);
+                    });
+                }
+                self.usersPane[type].populate(self._createItems(self.users[type], type));
+            }
+            self._toggleButtons();
         });
 
         return BI.createWidget({
@@ -277,11 +352,25 @@ BI.FSUserManager = BI.inherit(FR.Widget, {
                 el: this.searcherPane[type],
                 height: 30
             }, {
+                el: {
+                    type: "bi.left",
+                    items: [this.selectAll[type], {
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Select_All"),
+                        height: 30,
+                        textAlign: "left"
+                    }],
+                    height: 30,
+                    rgap: 4
+                },
+                height: 30
+            }, {
                 el: this.usersPane[type]
             }],
             width: 280,
             height: 400
         })
     }
-});
+})
+;
 $.shortcut("bi.fs_user_manager", BI.FSUserManager);
