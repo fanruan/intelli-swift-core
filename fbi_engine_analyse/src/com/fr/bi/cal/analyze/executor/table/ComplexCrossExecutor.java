@@ -69,13 +69,20 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
                     int order = 0;
                     Iterator<Map.Entry<Integer, NewCrossRoot[]>> iterator = nodesMap.entrySet().iterator();
                     int rowDataIdx = 0;
-                    rowIdx.value = 1;
                     while (iterator.hasNext()) {
                         Map.Entry<Integer, NewCrossRoot[]> entry = iterator.next();
                         NewCrossRoot[] roots = entry.getValue();
+                        //生成标题
+                        if(rowDataIdx == 0) {
+                            CrossExecutor.generateTitle(roots, widget, columnData.getDimensionArray(0),
+                                    rowData.getDimensionArray(0), usedSumTarget, pagedIterator, rowIdx);
+                            rowIdx.value++;
+                        }
                         CrossExecutor.generateCells(roots, widget, rowData.getDimensionArray(rowDataIdx),
                                 rowData.getMaxArrayLength(), iter, start, rowIdx, order);
-                        order += nodesMap.get(rowDataIdx - 1)[0].getLeft().getChildLength();
+                        if(rowDataIdx > 0) {
+                            order += nodesMap.get(rowDataIdx - 1)[0].getLeft().getChildLength();
+                        }
                         rowDataIdx++;
                     }
                 } catch (Exception e) {

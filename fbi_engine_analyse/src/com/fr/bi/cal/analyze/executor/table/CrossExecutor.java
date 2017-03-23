@@ -67,12 +67,12 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             public void run() {
                 try {
                     FinalInt start = new FinalInt();
+                    FinalInt rowIdx = new FinalInt();
                     StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-                    generateTitle(pagedIterator, 0);
                     NewCrossRoot[] newCrossRoots = new NewCrossRoot[1];
                     newCrossRoots[0] = getCubeNode();
-                    FinalInt rowIdx = new FinalInt();
-                    rowIdx.value = colDimension.length + 1;
+                    generateTitle(newCrossRoots, widget, colDimension, rowDimension, usedSumTarget, pagedIterator, rowIdx);
+                    rowIdx.value++;
                     generateCells(newCrossRoots, widget, rowDimension, rowDimension.length, iter, start, rowIdx, 0);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -84,34 +84,59 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         return iter;
     }
 
-    private void generateTitle(StreamPagedIterator pagedIterator, int rowIdx) throws Exception {
-        CrossHeader top = getCubeNode().getTop();
-        int colDimLen = 0;
+    /**
+     *
+     * @param roots 复杂表复用此方法时需要的参数
+     * @param widget 复杂表复用此方法时需要的参数
+     * @param colDimension 复杂表复用此方法时需要的参数
+     * @param rowDimension 复杂表复用此方法时需要的参数
+     * @param usedSumTarget 复杂表复用此方法时需要的参数
+     * @param pagedIterator
+     * @param rowIdx
+     * @throws Exception
+     */
+    public static void generateTitle(NewCrossRoot[] roots, TableWidget widget, BIDimension[] colDimension, BIDimension[] rowDimension,
+                                     BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, FinalInt rowIdx) throws Exception {
+        int rootsLen = roots.length;
+        CrossHeader[] tops = new CrossHeader[rootsLen];
+        for (int i = 0; i < rootsLen; i++) {
+            tops[i] = roots[i].getTop();
+        }
         Style style = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
         if (widget.isOrder() == 1) {
             CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, colDimension.length + 1, 0, 1, style);
             pagedIterator.addCell(cell);
         }
+
+        int colDimLen = 0;
         while (colDimLen < colDimension.length) {
-            CBCell cell = ExecutorUtils.createCell(colDimension[colDimLen].getText(), rowIdx, 1, widget.isOrder(), rowDimension.length, style);
+            CBCell cell = ExecutorUtils.createCell(colDimension[colDimLen].getText(), rowIdx.value, 1, widget.isOrder(), rowDimension.length, style);
             pagedIterator.addCell(cell);
-            top = (CrossHeader) top.getFirstChild();
-            getColDimensionsTitle(pagedIterator, top, rowIdx, style);
-            rowIdx++;
+            FinalInt columnIdx = new FinalInt();
+            columnIdx.value = rowDimension.length;
+            for(int i = 0; i < rootsLen; i++) {
+                tops[i] = (CrossHeader) tops[i].getFirstChild();
+                //列表头
+                getColDimensionsTitle(widget, colDimension, rowDimension, usedSumTarget, pagedIterator, tops[i], rowIdx.value, columnIdx, style);
+            }
+            rowIdx.value++;
             colDimLen++;
         }
 
         for (int i = 0; i < rowDimension.length; i++) {
-            CBCell cell = ExecutorUtils.createCell(rowDimension[i].getText(), rowIdx, 1, i + widget.isOrder(), 1, style);
+            CBCell cell = ExecutorUtils.createCell(rowDimension[i].getText(), rowIdx.value, 1, i + widget.isOrder(), 1, style);
             pagedIterator.addCell(cell);
         }
         if (widget.getViewTargets().length > 1) {
-            getTargetsTitle(pagedIterator, top, rowIdx, style);
+            for(int i = 0; i < rootsLen; i++) {
+                getTargetsTitle(widget, rowDimension, usedSumTarget, pagedIterator, tops[i], rowIdx.value, style);
+            }
         }
     }
 
-    private void getColDimensionsTitle(StreamPagedIterator pagedIterator, CrossHeader top, int rowIdx, Style style) {
-        int columnIdx = rowDimension.length;
+    private static void getColDimensionsTitle(TableWidget widget, BIDimension[] colDimension, BIDimension[] rowDimension,
+                                              BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator,
+                                              CrossHeader top, int rowIdx, FinalInt columnIdx, Style style) {
         int targetNum = widget.getViewTargets().length;
 
         CrossHeader temp = top;
@@ -120,14 +145,15 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             Object data = temp.getData();
             BIDimension dim = widget.getViewDimensions()[rowIdx];
             Object v = dim.getValueByType(data);
-            CBCell cell = ExecutorUtils.createCell(v, rowIdx, colDimension.length + (usedSumTarget.length == 1 ? 1 : 0), columnIdx + widget.isOrder(), columnSpan, style);
+            CBCell cell = ExecutorUtils.createCell(v, rowIdx, colDimension.length + (usedSumTarget.length == 1 ? 1 : 0), columnIdx.value + widget.isOrder(), columnSpan, style);
             pagedIterator.addCell(cell);
-            columnIdx += columnSpan;
+            columnIdx.value += columnSpan;
             temp = (CrossHeader) temp.getSibling();
         }
     }
 
-    private void getTargetsTitle(StreamPagedIterator pagedIterator, CrossHeader top, int rowIdx, Style style) {
+    private static void getTargetsTitle(TableWidget widget, BIDimension[] rowDimension, BISummaryTarget[] usedSumTarget,
+                                        StreamPagedIterator pagedIterator, CrossHeader top, int rowIdx, Style style) {
         CrossHeader temp = top;
         int columnIdx = rowDimension.length + widget.isOrder();
         while (temp != null) {
@@ -142,14 +168,14 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
     }
 
     /**
-     * @param roots        复杂复用此方法时需要的参数
-     * @param widget       复杂复用此方法时需要的参数
-     * @param rowDimension 复杂复用此方法时需要的参数
-     * @param maxDimLen    复杂复用此方法时需要的参数
+     * @param roots        复杂表复用此方法时需要的参数
+     * @param widget       复杂表复用此方法时需要的参数
+     * @param rowDimension 复杂表复用此方法时需要的参数
+     * @param maxDimLen    复杂表复用此方法时需要的参数
      * @param iter
      * @param start
      * @param rowIdx       复杂表多区域时记录行号类型为FinalInt
-     * @param order        复杂复用此方法时需要的参数
+     * @param order        复杂表复用此方法时需要的参数
      * @throws Exception
      */
     public static void generateCells(NewCrossRoot[] roots, TableWidget widget, BIDimension[] rowDimension, int maxDimLen,
