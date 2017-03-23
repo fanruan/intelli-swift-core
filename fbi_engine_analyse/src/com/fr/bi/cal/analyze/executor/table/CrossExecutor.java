@@ -113,11 +113,11 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             CBCell cell = ExecutorUtils.createCell(colDimension[colDimLen].getText(), rowIdx.value, 1, widget.isOrder(), rowDimension.length, style);
             pagedIterator.addCell(cell);
             FinalInt columnIdx = new FinalInt();
-            columnIdx.value = rowDimension.length;
+            columnIdx.value = rowDimension.length + widget.isOrder();
             for(int i = 0; i < rootsLen; i++) {
                 tops[i] = (CrossHeader) tops[i].getFirstChild();
                 //列表头
-                getColDimensionsTitle(widget, colDimension, rowDimension, usedSumTarget, pagedIterator, tops[i], rowIdx.value, columnIdx, style);
+                getColDimensionsTitle(widget, colDimension, usedSumTarget, pagedIterator, tops[i], rowIdx.value, columnIdx, style);
             }
             rowIdx.value++;
             colDimLen++;
@@ -128,13 +128,15 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             pagedIterator.addCell(cell);
         }
         if (widget.getViewTargets().length > 1) {
+            FinalInt targetsTitleColumnIdx = new FinalInt();
+            targetsTitleColumnIdx.value = rowDimension.length + widget.isOrder();
             for(int i = 0; i < rootsLen; i++) {
-                getTargetsTitle(widget, rowDimension, usedSumTarget, pagedIterator, tops[i], rowIdx.value, style);
+                getTargetsTitle(usedSumTarget, pagedIterator, tops[i], rowIdx.value, targetsTitleColumnIdx, style);
             }
         }
     }
 
-    private static void getColDimensionsTitle(TableWidget widget, BIDimension[] colDimension, BIDimension[] rowDimension,
+    private static void getColDimensionsTitle(TableWidget widget, BIDimension[] colDimension,
                                               BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator,
                                               CrossHeader top, int rowIdx, FinalInt columnIdx, Style style) {
         int targetNum = widget.getViewTargets().length;
@@ -145,21 +147,20 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             Object data = temp.getData();
             BIDimension dim = widget.getViewDimensions()[rowIdx];
             Object v = dim.getValueByType(data);
-            CBCell cell = ExecutorUtils.createCell(v, rowIdx, colDimension.length + (usedSumTarget.length == 1 ? 1 : 0), columnIdx.value + widget.isOrder(), columnSpan, style);
+            CBCell cell = ExecutorUtils.createCell(v, rowIdx, colDimension.length + (usedSumTarget.length == 1 ? 1 : 0), columnIdx.value, columnSpan, style);
             pagedIterator.addCell(cell);
             columnIdx.value += columnSpan;
             temp = (CrossHeader) temp.getSibling();
         }
     }
 
-    private static void getTargetsTitle(TableWidget widget, BIDimension[] rowDimension, BISummaryTarget[] usedSumTarget,
-                                        StreamPagedIterator pagedIterator, CrossHeader top, int rowIdx, Style style) {
+    private static void getTargetsTitle(BISummaryTarget[] usedSumTarget,
+                                        StreamPagedIterator pagedIterator, CrossHeader top, int rowIdx, FinalInt columnIdx, Style style) {
         CrossHeader temp = top;
-        int columnIdx = rowDimension.length + widget.isOrder();
         while (temp != null) {
             for (int i = 0; i < top.getTotalLength(); i++) {
                 for (int j = 0; j < usedSumTarget.length; j++) {
-                    CBCell cell = ExecutorUtils.createCell(usedSumTarget[j].getText(), rowIdx, 1, columnIdx++, 1, style);
+                    CBCell cell = ExecutorUtils.createCell(usedSumTarget[j].getText(), rowIdx, 1, columnIdx.value++, 1, style);
                     pagedIterator.addCell(cell);
                 }
             }

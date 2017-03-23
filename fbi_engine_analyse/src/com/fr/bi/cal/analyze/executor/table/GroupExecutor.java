@@ -35,6 +35,7 @@ import com.fr.stable.ExportConstants;
 
 import java.awt.Rectangle;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -42,20 +43,18 @@ import java.util.*;
 public class GroupExecutor extends AbstractNodeExecutor {
     private Rectangle rectangle;
     private int page = 1;
-    private final static int EXCEL_ROW_MODE_VALUE = ExportConstants.MAX_ROWS_2007 - 1;
 
     public GroupExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
         super(widget, paging, session, expander);
     }
 
     public DetailCellIterator createCellIterator4Excel() throws Exception {
-        widget.setComplexExpander(new ComplexAllExpander());
-        final Node tree = getCubeNode();
+        Node tree = getCubeNode();
         if (tree == null) {
             return new DetailCellIterator(0, 0);
         }
-        final int rowLength = usedDimensions.length;
-        final int summaryLength = usedSumTarget.length;
+        int rowLength = usedDimensions.length;
+        int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
         DetailChartSetting chartSetting = widget.getChartSetting();
         TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
@@ -63,6 +62,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(),
                     usedSumTarget[i].getValue());
         }
+        //显示不显示汇总行
         int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
 //        final boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
         rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
@@ -71,9 +71,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
             public void run() {
                 try {
                     FinalInt start = new FinalInt();
-                    int currentRow = 0;
-                    generateTitle(iter.getIteratorByPage(start.value));
-                    generateCells(tree, iter, start, currentRow);
+                    generateTitle(widget, usedDimensions, usedSumTarget, iter.getIteratorByPage(start.value));
+                    generateCells(tree, widget, widget.getViewDimensions(), iter, start, new FinalInt());
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -85,11 +84,13 @@ public class GroupExecutor extends AbstractNodeExecutor {
     }
 
     /**
-     * 生成表头
-     *
+     * @param widget         复杂表复用此方法时需要的参数
+     * @param usedDimensions 复杂表复用此方法时需要的参数
+     * @param usedSumTarget  复杂表复用此方法时需要的参数
      * @param pagedIterator
+     * @throws Exception
      */
-    private void generateTitle(StreamPagedIterator pagedIterator) throws Exception {
+    public static void generateTitle(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) throws Exception {
         Style style = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
         if (widget.isOrder() != 0) {
             CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, 1, 0, 1, style);
@@ -122,55 +123,69 @@ public class GroupExecutor extends AbstractNodeExecutor {
         }
     }
 
-    private void generateCells(Node n, DetailCellIterator iter, FinalInt start, int rowIdx) {
+    /**
+     * @param n      复杂表复用此方法时需要的参数
+     * @param widget 复杂表复用此方法时需要的参数
+     * @param iter
+     * @param start
+     * @param rowIdx
+     */
+    public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, DetailCellIterator iter, FinalInt start, FinalInt rowIdx) {
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
         }
-        BIDimension[] rowDimensions = widget.getViewDimensions();
         int[] oddEven = new int[rowDimensions.length];
         Object[] dimensionNames = new Object[rowDimensions.length];
         while (n != null) {
             Node temp = n;
-
-            rowIdx++;
-            int newRow = rowIdx & EXCEL_ROW_MODE_VALUE;
+            rowIdx.value++;
+            int newRow = rowIdx.value & ExportConstants.MAX_ROWS_2007 - 1;
             if (newRow == 0) {
                 iter.getIteratorByPage(start.value).finish();
                 start.value++;
             }
             StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-            int targetsKeyIndex = 0;
-            for (TargetGettingKey key : widget.getTargetsKey()) {
-                int columnIdx = targetsKeyIndex + rowDimensions.length + widget.isOrder();
-                Object data = temp.getSummaryValue(key);
-                boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
-                Style style = BITableStyle.getInstance().getNumberCellStyle(data, rowIdx % 2 == 1, isPercent);
-                CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
-                pagedIterator.addCell(cell);
-                targetsKeyIndex++;
-            }
+            generateTargetCells(temp, widget, rowDimensions, pagedIterator, rowIdx.value);
+            generateDimNames(temp, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value);
 
-            //维度第一次出现即addCell
-            int i = rowDimensions.length;
-            while (temp.getParent() != null) {
-                int rowSpan = temp.getTotalLength();
-                Object data = temp.getData();
-                BIDimension dim = rowDimensions[--i];
-                Object v = dim.getValueByType(data);
-                if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
-                    oddEven[i]++;
-                    Style style = BITableStyle.getInstance().getDimensionCellStyle(v instanceof Number, (oddEven[i] + 1) % 2 == 0);
-                    CBCell cell = ExecutorUtils.createCell(v, rowIdx, rowSpan, i + widget.isOrder(), 1, style);
-                    pagedIterator.addCell(cell);
-                    if (i == 0 && widget.isOrder() == 1) {
-                        CBCell orderCell = ExecutorUtils.createCell(oddEven[0], rowIdx, rowSpan, 0, 1, style);
-                        pagedIterator.addCell(orderCell);
-                    }
-                    dimensionNames[i] = v;
-                }
-                temp = temp.getParent();
-            }
             n = n.getSibling();
+        }
+    }
+
+    private static void generateTargetCells(Node temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, int rowIdx) {
+        int targetsKeyIndex = 0;
+        for (TargetGettingKey key : widget.getTargetsKey()) {
+            int columnIdx = targetsKeyIndex + rowDimensions.length + widget.isOrder();
+            Object data = temp.getSummaryValue(key);
+            boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
+            Style style = BITableStyle.getInstance().getNumberCellStyle(data, rowIdx % 2 == 1, isPercent);
+            CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
+            pagedIterator.addCell(cell);
+            targetsKeyIndex++;
+        }
+    }
+
+    private static void generateDimNames(Node temp, TableWidget widget, BIDimension[] rowDimensions, Object[] dimensionNames, int[] oddEven,
+                                         StreamPagedIterator pagedIterator, int rowIdx) {
+        //维度第一次出现即addCell
+        int i = rowDimensions.length;
+        while (temp.getParent() != null) {
+            int rowSpan = temp.getTotalLength();
+            Object data = temp.getData();
+            BIDimension dim = rowDimensions[--i];
+            Object v = dim.getValueByType(data);
+            if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
+                oddEven[i]++;
+                Style style = BITableStyle.getInstance().getDimensionCellStyle(v instanceof Number, (oddEven[i] + 1) % 2 == 0);
+                CBCell cell = ExecutorUtils.createCell(v, rowIdx, rowSpan, i + widget.isOrder(), 1, style);
+                pagedIterator.addCell(cell);
+                if (i == 0 && widget.isOrder() == 1) {
+                    CBCell orderCell = ExecutorUtils.createCell(oddEven[0], rowIdx, rowSpan, 0, 1, style);
+                    pagedIterator.addCell(orderCell);
+                }
+                dimensionNames[i] = v;
+            }
+            temp = temp.getParent();
         }
     }
 

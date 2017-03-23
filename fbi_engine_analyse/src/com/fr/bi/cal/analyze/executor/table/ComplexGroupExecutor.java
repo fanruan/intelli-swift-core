@@ -1,12 +1,14 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
+import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -40,6 +42,52 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
 
         super(widget, page, session, expander);
         rowData = new BIComplexExecutData(rowArray, widget.getDimensions());
+    }
+
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        Map<Integer, Node> nodeMap = getCubeNodes();
+        if(nodeMap == null) {
+            return new DetailCellIterator(0, 0);
+        }
+
+        int collen = rowData.getMaxArrayLength();
+        int columnLen = collen + usedSumTarget.length;
+
+        Iterator<Map.Entry<Integer, Node>> iterator = nodeMap.entrySet().iterator();
+        final Node[] nodes = new Node[nodeMap.size()];
+        Integer[] integers = new Integer[nodeMap.size()];
+        int i = 0;
+        while (iterator.hasNext()) {
+            //导出就全部展开吧
+            Map.Entry<Integer, Node> entry = iterator.next();
+            nodes[i] = entry.getValue();
+            integers[i] = entry.getKey();
+            i++;
+        }
+
+        int rowLen = getNodesTotalLength(nodes);
+        final DetailCellIterator iter = new DetailCellIterator(columnLen, rowLen);
+
+        new Thread () {
+            public void run() {
+                try {
+                    FinalInt start = new FinalInt();
+                    StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+                    GroupExecutor.generateTitle(widget, rowData.getDimensionArray(0), usedSumTarget, pagedIterator);
+                    FinalInt rowIdx =new FinalInt();
+                    for(int i = 0, j = nodes.length; i < j; i++) {
+                        GroupExecutor.generateCells(nodes[i], widget, rowData.getDimensionArray(i), iter, start, rowIdx);
+                    }
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                } finally {
+                    iter.finish();
+                }
+            }
+        }.start();
+
+        return iter;
     }
 
     /**
@@ -141,12 +189,6 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
 
         }
         return list.toArray(new BISummaryTarget[list.size()]);
-    }
-
-
-    @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
-        return null;
     }
 
     /**
