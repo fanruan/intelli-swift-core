@@ -283,8 +283,8 @@ public abstract class AbstractExcel2007Util {
         private String cellValue;
         private int thisColumn = -1;
         private int lastColumnNumber = -1;
-        private static final int PERCENT = 100;
-        private static final int SCINOTATION = 0;
+        private static final int ZERO = 48;
+        private static final int ALPHABET = 26;
 
         public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings, DataFormatter dataFormatter) {
             this.value = new StringBuffer();
@@ -388,59 +388,7 @@ public abstract class AbstractExcel2007Util {
 
         public void endElement(String uri, String localName, String name) throws SAXException {
             if (this.isTextTag(name)) {
-                this.vIsOpen = false;
-                switch (nextDataType) {
-                    case BOOL:
-                        char first = this.value.charAt(0);
-                        cellValue = first == 48 ? "FALSE" : "TRUE";
-                        break;
-                    case ERROR:
-                        cellValue = "ERROR:" + this.value.toString();
-                        break;
-                    case FORMULA:
-                        if (this.formulasNotResults) {
-                            cellValue = this.formula.toString();
-                        } else {
-                            String rtsi1 = this.value.toString();
-                            if (this.formatString != null) {
-                                try {
-                                    double sstIndex1 = Double.parseDouble(rtsi1);
-                                    cellValue = this.formatter.formatRawCellContents(sstIndex1, this.formatIndex, this.formatString);
-                                } catch (NumberFormatException var11) {
-                                    cellValue = rtsi1;
-                                }
-                            } else {
-                                cellValue = rtsi1;
-                            }
-                        }
-                        break;
-                    case INLINESTR:
-                        XSSFRichTextString rtsi = new XSSFRichTextString(this.value.toString());
-                        cellValue = rtsi.toString();
-                        break;
-                    case SSTINDEX:
-                        processSSTIndex();
-                        break;
-                    case NUMBER:
-                        processNumber();
-                        break;
-                    default:
-                        cellValue = StringUtils.EMPTY;
-                }
-                if (lastColumnNumber == -1) {
-                    lastColumnNumber = 0;
-                }
-
-                for (int i = lastColumnNumber; i < thisColumn; ++i) {
-                    if (tempData.size() < thisColumn) {
-                        tempData.add(StringUtils.EMPTY);
-                    }
-                }
-                tempData.add(cellValue);
-
-                if (thisColumn > -1) {
-                    lastColumnNumber = thisColumn;
-                }
+                isTextTagName();
             } else if ("f".equals(name)) {
                 this.fIsOpen = false;
             } else if ("is".equals(name)) {
@@ -449,13 +397,79 @@ public abstract class AbstractExcel2007Util {
                 tempRowDataList.add(tempData.toArray());
                 tempData = new ArrayList<String>();
                 lastColumnNumber = -1;
-            } else if (!"oddHeader".equals(name) && !"evenHeader".equals(name) && !"firstHeader".equals(name)) {
-                if ("oddFooter".equals(name) || "evenFooter".equals(name) || "firstFooter".equals(name)) {
+            } else if (notEqualSomething(name)) {
+                if (equalSomethong(name)) {
                     this.hfIsOpen = false;
                 }
             } else {
                 this.hfIsOpen = false;
             }
+        }
+
+        private void isTextTagName() {
+            this.vIsOpen = false;
+            switchNextDataType();
+            if (lastColumnNumber == -1) {
+                lastColumnNumber = 0;
+            }
+            for (int i = lastColumnNumber; i < thisColumn; ++i) {
+                if (tempData.size() < thisColumn) {
+                    tempData.add(StringUtils.EMPTY);
+                }
+            }
+            tempData.add(cellValue);
+            if (thisColumn > -1) {
+                lastColumnNumber = thisColumn;
+            }
+        }
+
+        private void switchNextDataType() {
+            switch (nextDataType) {
+                case BOOL:
+                    char first = this.value.charAt(0);
+                    cellValue = first == ZERO ? "FALSE" : "TRUE";
+                    break;
+                case ERROR:
+                    cellValue = "ERROR:" + this.value.toString();
+                    break;
+                case FORMULA:
+                    if (this.formulasNotResults) {
+                        cellValue = this.formula.toString();
+                    } else {
+                        String rtsi1 = this.value.toString();
+                        if (this.formatString != null) {
+                            try {
+                                double sstIndex1 = Double.parseDouble(rtsi1);
+                                cellValue = this.formatter.formatRawCellContents(sstIndex1, this.formatIndex, this.formatString);
+                            } catch (NumberFormatException var11) {
+                                cellValue = rtsi1;
+                            }
+                        } else {
+                            cellValue = rtsi1;
+                        }
+                    }
+                    break;
+                case INLINESTR:
+                    XSSFRichTextString rtsi = new XSSFRichTextString(this.value.toString());
+                    cellValue = rtsi.toString();
+                    break;
+                case SSTINDEX:
+                    processSSTIndex();
+                    break;
+                case NUMBER:
+                    processNumber();
+                    break;
+                default:
+                    cellValue = StringUtils.EMPTY;
+            }
+        }
+
+        private boolean notEqualSomething(String name) {
+            return !"oddHeader".equals(name) && !"evenHeader".equals(name) && !"firstHeader".equals(name);
+        }
+
+        private boolean equalSomethong(String name) {
+            return "oddFooter".equals(name) || "evenFooter".equals(name) || "firstFooter".equals(name);
         }
 
         public void processSSTIndex() {
@@ -480,19 +494,13 @@ public abstract class AbstractExcel2007Util {
                 } catch (Exception e) {
                     cellValue = n;
                 }
-            } else if (isSciNotation()) {
-                cellValue = NumberToTextConverter.toText(Double.parseDouble(value.toString()));
             } else {
                 try {
-                    cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
+                    cellValue = NumberToTextConverter.toText(Double.parseDouble(value.toString()));
                 } catch (Exception e) {
                     cellValue = n;
                 }
             }
-        }
-
-        private boolean isSciNotation() {
-            return this.formatIndex == SCINOTATION || this.value.toString().contains("E");
         }
 
         public void characters(char[] ch, int start, int length) throws SAXException {
@@ -513,7 +521,7 @@ public abstract class AbstractExcel2007Util {
             int column = -1;
             for (int i = 0; i < name.length(); ++i) {
                 int c = name.charAt(i);
-                column = (column + 1) * 26 + c - 'A';
+                column = (column + 1) * ALPHABET + c - 'A';
             }
             return column;
         }
