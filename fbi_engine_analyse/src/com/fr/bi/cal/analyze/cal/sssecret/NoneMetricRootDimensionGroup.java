@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -89,33 +90,11 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
                 continue;
             }
             if (ckp instanceof DateDimensionCalculator) {
-                Set<BIDateValue> currentSet = new HashSet<BIDateValue>();
-                /**
-                 * 螺旋分析这里会出现空字符串
-                 */
-                if (value instanceof Number) {
-                    currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
-                } else {
-                    currentSet.add(null);
-                }
-
-                DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
-                GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
-                if (pgvi != null) {
-                    gvi = gvi.AND(pgvi);
-                }
+                gvi = getDateFilterIndex(ck, gvi, ckp, value);
             } else if (ckp instanceof StringDimensionCalculator) {
                 Set currentSet = ((StringDimensionCalculator) ckp).createFilterValueSet((String) value, session.getLoader());
                 StringINFilterValue stf = new StringINFilterValue(currentSet);
-                BITableRelationPath firstPath = null;
-                try {
-                    firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
-                } catch (BITableUnreachableException e) {
-                    continue;
-                }
-                if (ComparatorUtils.equals(ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo())) {
-                    firstPath = new BITableRelationPath();
-                }
+                BITableRelationPath firstPath  = getBiTableRelationPath(ck, ckp);
                 if (firstPath == null) {
                     continue;
                 }
@@ -123,15 +102,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
             } else if (ckp instanceof NumberDimensionCalculator) {
-                BITableRelationPath firstPath = null;
-                try {
-                    firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
-                } catch (BITableUnreachableException e) {
-                    continue;
-                }
-                if (ComparatorUtils.equals(ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo())) {
-                    firstPath = new BITableRelationPath();
-                }
+                BITableRelationPath firstPath  = getBiTableRelationPath(ck, ckp);
                 if (firstPath == null) {
                     continue;
                 }
@@ -144,6 +115,38 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
                     gvi = filterGvi.AND(gvi);
                 }
             }
+        }
+        return gvi;
+    }
+
+    private BITableRelationPath getBiTableRelationPath(DimensionCalculator ck, DimensionCalculator ckp) {
+        BITableRelationPath firstPath = null;
+        try {
+            firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
+            if (ComparatorUtils.equals(ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo())) {
+                firstPath = new BITableRelationPath();
+            }
+        } catch (BITableUnreachableException e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
+        return firstPath;
+    }
+
+    private GroupValueIndex getDateFilterIndex(DimensionCalculator ck, GroupValueIndex gvi, DimensionCalculator ckp, Object value) {
+        Set<BIDateValue> currentSet = new HashSet<BIDateValue>();
+        /**
+         * 螺旋分析这里会出现空字符串
+         */
+        if (value instanceof Number) {
+            currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
+        } else {
+            currentSet.add(null);
+        }
+
+        DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
+        GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
+        if (pgvi != null) {
+            gvi = gvi.AND(pgvi);
         }
         return gvi;
     }

@@ -205,15 +205,24 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         AbstractDimensionCalculator that = (AbstractDimensionCalculator) o;
 
-        if (relations != null ? !relations.equals(that.relations) : that.relations != null) return false;
-        if (directToDimenRelations != null ? !directToDimenRelations.equals(that.directToDimenRelations) : that.directToDimenRelations != null)
+        if (relations != null ? !relations.equals(that.relations) : that.relations != null) {
             return false;
-        if (dimension != null ? !dimension.equals(that.dimension) : that.dimension != null) return false;
+        }
+        if (directToDimenRelations != null ? !directToDimenRelations.equals(that.directToDimenRelations) : that.directToDimenRelations != null){
+            return false;
+        }
+        if (dimension != null ? !dimension.equals(that.dimension) : that.dimension != null) {
+            return false;
+        }
         return field != null ? field.equals(that.field) : that.field == null;
 
     }
