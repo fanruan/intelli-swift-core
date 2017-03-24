@@ -139,7 +139,7 @@ public class NodeIteratorCreator {
         }
         RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(metricGroupInfoList, createNormalMergeIteratorCreator(), session, isRealData);
         GroupValueIndex[] inDirectFilterIndexes = getInDirectFilterIndex(rootDimensionGroup.getRoot(), rootDimensionGroup.getGetters(), rootDimensionGroup.getColumns());
-        if (inDirectFilterIndexes != null) {
+        if (inDirectFilterIndexes.length != 0) {
             GroupValueIndex[] gvis = rootDimensionGroup.getRoot().getGvis();
             for (int i = 0; i < inDirectFilterIndexes.length; i++) {
                 metricGroupInfoList.get(i).setFilterIndex(metricGroupInfoList.get(i).getFilterIndex().AND(inDirectFilterIndexes[i]));
@@ -327,7 +327,7 @@ public class NodeIteratorCreator {
         //如果没有配置类计算的过滤，并且最后一个维度没有过滤，可以先算一下IndirectFilter
         if (canPreFilter) {
             GroupValueIndex[] inDirectFilterIndexes = getInDirectFilterIndex(constructedRootDimensionGroup.getRoot(), constructedRootDimensionGroup.getGetters(), constructedRootDimensionGroup.getColumns());
-            if (inDirectFilterIndexes != null) {
+            if (inDirectFilterIndexes.length != 0) {
                 GroupValueIndex[] gvis = constructedRootDimensionGroup.getRoot().getGvis();
                 for (int i = 0; i < inDirectFilterIndexes.length; i++) {
                     metricGroupInfoList.get(i).setFilterIndex(metricGroupInfoList.get(i).getFilterIndex().AND(inDirectFilterIndexes[i]));
@@ -365,9 +365,9 @@ public class NodeIteratorCreator {
         return calCalculators;
     }
 
-    private boolean hasInSumMetric(){
-        for (BISummaryTarget target : usedTargets){
-            if (hasInSumMetric(target)){
+    private boolean hasInSumMetric() {
+        for (BISummaryTarget target : usedTargets) {
+            if (hasInSumMetric(target)) {
                 return true;
             }
         }
@@ -397,7 +397,7 @@ public class NodeIteratorCreator {
 
 
     private int getLastIndirectFilterDimensionIndex() {
-        int index = 0;
+        int index = -1;
         for (int i = 0; i < rowDimension.length; i++) {
             if (rowDimension[i].getFilter() != null && !rowDimension[i].getFilter().canCreateDirectFilter()) {
                 index = i;
@@ -427,7 +427,7 @@ public class NodeIteratorCreator {
         if (shouldCalIndirectDimensionFilterGVI()) {
             return new NodeIndirectFilterIndexCalculator(root, getters, columns, createIndirectFilterMergeIteratorCreator(), isRealData, getLastIndirectFilterDimensionIndex()).cal();
         }
-        return null;
+        return new GroupValueIndex[0];
     }
 
     //是否需要计算不能直接转化为索引的维度过滤, 如果需要, 就通过构建node的方式转化为索引
