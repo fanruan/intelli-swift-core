@@ -170,24 +170,27 @@ public class TableWidget extends BISummaryWidget {
         ArrayList<ArrayList<String>> column = data.getComplex_y_dimension();
         BIComplexExecutData rowData = new BIComplexExecutData(row, dimensions);
         BIComplexExecutData columnData = new BIComplexExecutData(column, dimensions);
-
+        int columnLen = columnData.getDimensionArrayLength();
+        int rowLen = rowData.getDimensionArrayLength();
         if (rowData.getDimensionArrayLength() <= 1 && columnData.getDimensionArrayLength() <= 1) {
             return this.createNormalExecutor(session, hasTarget, rowData.getDimensionArray(0), columnData.getDimensionArray(0), expander);
         }
         //行表头区域里没有维度
-        boolean b0 = !column.isEmpty() && row.isEmpty() && hasTarget;
-        boolean b1 = !column.isEmpty() && row.isEmpty() && summaryLen == 0;
+        boolean b0 = !column.isEmpty() && rowLen == 0 && hasTarget;
+        boolean b1 = !column.isEmpty() && rowLen == 0 && summaryLen == 0;
         //列表头区域里没有维度
-        boolean b2 = !row.isEmpty() && column.isEmpty() && hasTarget;
-        boolean b3 = !row.isEmpty() && column.isEmpty() && summaryLen == 0;
+        boolean b2 = !row.isEmpty() && columnLen == 0 && hasTarget;
+        boolean b3 = !row.isEmpty() && columnLen == 0 && summaryLen == 0;
         if (b0) {
             executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
         } else if (b1) {
-            executor = new ComplexHorGroupNoneExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
+            //原来是ComplexHorGroupNoneExecutor, 先改成ComplexHorGroupExecutor，有问题再改回来
+            executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
         } else if (b2) {
             executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
         } else if (b3) {
-            executor = new ComplexGroupNoneExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
+            //同b1
+            executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
         } else {
             executor = new ComplexCrossExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, column, session, complexExpander);
         }

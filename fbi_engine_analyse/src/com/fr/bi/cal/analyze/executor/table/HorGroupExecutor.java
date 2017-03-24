@@ -60,10 +60,8 @@ public class HorGroupExecutor extends GroupExecutor {
                 try {
                     FinalInt start = new FinalInt();
                     StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-                    if (node.getFirstChild() != null) {
-                        generateTitle(node, widget, colDimension, pagedIterator);
-                    }
-                    generateCells(node,widget, colDimension, usedSumTarget, pagedIterator);
+                    generateTitle(node, widget, colDimension, pagedIterator);
+                    generateCells(node, widget, colDimension, usedSumTarget, pagedIterator);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -74,13 +72,13 @@ public class HorGroupExecutor extends GroupExecutor {
         return iter;
     }
 
-    public static void generateTitle(Node node, TableWidget widget, BIDimension[] colDimension, StreamPagedIterator pagedIterator) throws Exception {
-        int colDimIdx = 0;
+    private void generateTitle(Node node, TableWidget widget, BIDimension[] colDimension, StreamPagedIterator pagedIterator) {
         Style style = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
         if (widget.isOrder() == 1) {
             CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, colDimension.length, 0, 1, style);
             pagedIterator.addCell(cell);
         }
+        int colDimIdx = 0;
         while (colDimIdx < colDimension.length) {
             CBCell cell = ExecutorUtils.createCell(colDimension[colDimIdx].getText(), colDimIdx, 1, widget.isOrder(), 1, style);
             pagedIterator.addCell(cell);
@@ -100,7 +98,7 @@ public class HorGroupExecutor extends GroupExecutor {
         }
     }
 
-    public static void generateCells(Node node,TableWidget widget, BIDimension[] colDimension, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) {
+    private void generateCells(Node node, TableWidget widget, BIDimension[] colDimension, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) {
         int rowIdx = colDimension.length;
         TargetGettingKey[] keys = widget.getTargetsKey();
         while (node.getFirstChild() != null) {
