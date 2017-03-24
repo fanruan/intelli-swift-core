@@ -6,28 +6,20 @@ import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.cal.result.NodeExpander;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
-import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
-import com.fr.bi.field.BITargetAndDimensionUtils;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,10 +37,10 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
     }
 
     @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
         Map<Integer, Node> nodeMap = getCubeNodes();
         if(nodeMap == null) {
-            return new DetailCellIterator(0, 0);
+            return new TableCellIterator(0, 0);
         }
 
         int collen = rowData.getMaxArrayLength();
@@ -66,7 +58,7 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
         }
 
         int rowLen = getNodesTotalLength(nodes);
-        final DetailCellIterator iter = new DetailCellIterator(columnLen, rowLen);
+        final TableCellIterator iter = new TableCellIterator(columnLen, rowLen);
 
         new Thread () {
             public void run() {
@@ -101,21 +93,6 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
 
         for (int i = 0; i < nodes.length; i++) {
             count += nodes[i].getTotalLengthWithSummary();
-        }
-
-        return count;
-    }
-
-    /**
-     * 获取node的个数
-     */
-    @Override
-    public int getNodesTotalLength(Node[] nodes, ComplexExpander complexExpander, Integer[] integers) {
-
-        int count = 0;
-
-        for (int i = 0; i < nodes.length; i++) {
-            count += nodes[i].getTotalLengthWithSummary(complexExpander.getYExpander(integers[i]));
         }
 
         return count;
@@ -188,17 +165,6 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
 
         }
         return list.toArray(new BISummaryTarget[list.size()]);
-    }
-
-    /**
-     * 构建cells
-     *
-     * @return 构建的cells
-     */
-    @Override
-    public CBCell[][] createCellElement() throws Exception {
-
-        return new CBCell[0][0];
     }
 
     /**

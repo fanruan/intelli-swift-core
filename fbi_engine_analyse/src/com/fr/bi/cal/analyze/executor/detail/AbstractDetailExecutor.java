@@ -6,7 +6,9 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.base.Style;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
@@ -108,13 +110,8 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
 
     //创建一个数字格
     private void createNumberCellElement(StreamPagedIterator iter, int rowIndex, int row) {
-        CBCell cell = new CBCell(rowIndex);
-        cell.setColumn(0);
-        cell.setRow(row);
-        cell.setRowSpan(1);
-        cell.setColumnSpan(1);
-        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-        cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(true, cell.getRow() % 2 == 1));
+        Style style = BITableStyle.getInstance().getDimensionCellStyle(true, rowIndex % 2 == 1);
+        CBCell cell = ExecutorUtils.createCell(rowIndex, row, 1, 0, 1, style);
         List tcellList = new ArrayList();
         tcellList.add(cell);
         CBBoxElement cbox = new CBBoxElement(tcellList);
@@ -144,12 +141,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
                 v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
             }
 
-            CBCell cell = new CBCell(v == null ? NONEVALUE : v.toString());
-            cell.setRow(row);
-            cell.setColumn(i + widget.isOrder());
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+            CBCell cell = ExecutorUtils.createCellWithOutStyle(v == null ? NONEVALUE : v.toString(), row, 1, i + widget.isOrder(), 1);
             List cellList = new ArrayList();
             cellList.add(cell);
             //TODO CBBoxElement需要整合减少内存
@@ -173,41 +165,12 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         }
     }
 
-    protected void createCellTitle(CBCell[][] cbcells, int cellType) {
-        BIDetailTarget[] viewDimension = widget.getViewDimensions();
-
-        for (int i = 0; i < viewDimension.length; i++) {
-            String dimensionName = ((BIAbstractTargetAndDimension) viewDimension[i]).getText();
-            CBCell cell = new CBCell(dimensionName);
-            cell.setColumn(i + widget.isOrder());
-            cell.setRow(0);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, false));
-            List cellList = new ArrayList();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(viewDimension[i].getValue());
-            cbox.setType(cellType);
-            cbox.setSortTargetName(viewDimension[i].getValue());
-            cbox.setSortTargetValue("[]");
-            cell.setBoxElement(cbox);
-            cbcells[cell.getColumn()][cell.getRow()] = cell;
-        }
-    }
-
     protected List<CBCell> createCellTitle(int cellType) {
         List<CBCell> cells = new LinkedList<CBCell>();
         BIDetailTarget[] viewDimension = widget.getViewDimensions();
+        Style dimensionCellStyle = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
         if (widget.isOrder() > 0) {
-            CBCell cell = new CBCell(Inter.getLocText("BI-Number_Index"));
-            cell.setColumn(0);
-            cell.setRow(0);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
+            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, 1, 0, 1, dimensionCellStyle);
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
@@ -234,13 +197,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
                     dimensionName = dimensionName + "(" + levelAndUnit + ")";
                 }
             }
-            CBCell cell = new CBCell(dimensionName);
-            cell.setColumn(i + widget.isOrder());
-            cell.setRow(0);
-            cell.setRowSpan(1);
-            cell.setColumnSpan(1);
-            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
+            CBCell cell = ExecutorUtils.createCell(dimensionName, 0, 1, i + widget.isOrder(), 1, dimensionCellStyle);
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);

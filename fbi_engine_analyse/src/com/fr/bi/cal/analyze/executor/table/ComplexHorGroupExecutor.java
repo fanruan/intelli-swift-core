@@ -2,38 +2,30 @@ package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.Style;
-import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.field.BITargetAndDimensionUtils;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
-import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  * Created by sheldon on 14-9-2.
@@ -50,10 +42,10 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
     }
 
     @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
         Map<Integer, Node> nodeMap = getCubeNodes();
         if (nodeMap == null || nodeMap.isEmpty()) {
-            return new DetailCellIterator(0, 0);
+            return new TableCellIterator(0, 0);
         }
 
         Iterator<Map.Entry<Integer, Node>> iterator = nodeMap.entrySet().iterator();
@@ -66,7 +58,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
         int rowLen = usedSumTarget.length + rowData.getMaxArrayLength();
         int columnLen = getNodesTotalLength(trees);
 
-        DetailCellIterator iter = new DetailCellIterator(rowLen, columnLen);
+        TableCellIterator iter = new TableCellIterator(rowLen, columnLen);
         new Thread() {
             public void run() {
                 try {
@@ -179,21 +171,6 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
         return count;
     }
 
-    /**
-     * 获取node的个数
-     */
-    @Override
-    public int getNodesTotalLength(Node[] nodes, ComplexExpander complexExpander, Integer[] integers) {
-
-        int count = 0;
-
-        for (int i = 0; i < nodes.length; i++) {
-            count += nodes[i].getTotalLengthWithSummary(complexExpander.getXExpander(i));
-        }
-
-        return count;
-    }
-
     @Override
     public Rectangle getSouthEastRectangle() {
         return super.getSouthEastRectangle();
@@ -207,17 +184,6 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
     @Override
     public Node getCubeNode() {
         return null;
-    }
-
-    /**
-     * 构建cells
-     *
-     * @return 构建的cells
-     * @throws NoneAccessablePrivilegeException
-     */
-    @Override
-    public CBCell[][] createCellElement() throws Exception {
-        return new CBCell[0][0];
     }
 
     private BISummaryTarget[] createTarget4Calculate() {

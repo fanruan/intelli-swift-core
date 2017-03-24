@@ -1,37 +1,24 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
-import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
-import com.fr.bi.field.BITargetAndDimensionUtils;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.TargetCalculator;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.ExportConstants;
-import com.fr.stable.StringUtils;
 
 import java.util.*;
 
@@ -53,13 +40,13 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     }
 
     @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
         final Map<Integer, NewCrossRoot[]> nodesMap = getCubeCrossNodes();
         if (nodesMap.isEmpty() || nodesMap == null) {
-            return new DetailCellIterator(0, 0);
+            return new TableCellIterator(0, 0);
         }
         int[] lens = calculateRowAndColumnLen(nodesMap);
-        final DetailCellIterator iter = new DetailCellIterator(lens[0], lens[1]);
+        final TableCellIterator iter = new TableCellIterator(lens[0], lens[1]);
         new Thread() {
             public void run() {
                 try {
@@ -143,19 +130,6 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     }
 
     /**
-     * 获取node的个数
-     *
-     * @param nodes
-     * @param complexExpander
-     * @param ints
-     */
-    @Override
-    public int getNodesTotalLength(Node[] nodes, ComplexExpander complexExpander, Integer[] ints) {
-        return 0;
-    }
-
-
-    /**
      * 获取node
      *
      * @return 获取的node
@@ -178,16 +152,6 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
             jo.put(String.valueOf(entry.getKey()), ja);
         }
         return jo;
-    }
-
-    /**
-     * 注释
-     *
-     * @return 注释
-     */
-    @Override
-    public CBCell[][] createCellElement() throws Exception {
-        return new CBCell[0][0];
     }
 
     private int getTotalNodeRowLength(ArrayList<NewCrossRoot> roots, boolean hasTarget, ArrayList<Integer> integers) {

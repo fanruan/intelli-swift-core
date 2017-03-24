@@ -1,8 +1,6 @@
 package com.fr.bi.cal.analyze.executor;
 
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
@@ -16,7 +14,7 @@ public interface BIEngineExecutor<T> {
      * @return detailCellIterator
      * @throws Exception
      */
-    public DetailCellIterator createCellIterator4Excel() throws Exception;
+    public TableCellIterator createCellIterator4Excel() throws Exception;
 
     public Rectangle getSouthEastRectangle();
 

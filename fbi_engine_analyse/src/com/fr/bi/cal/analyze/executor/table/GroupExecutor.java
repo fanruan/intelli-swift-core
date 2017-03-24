@@ -6,36 +6,27 @@ import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.style.TargetStyle;
-import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
-import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
-import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
 import java.awt.Rectangle;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -48,10 +39,10 @@ public class GroupExecutor extends AbstractNodeExecutor {
         super(widget, paging, session, expander);
     }
 
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
         Node tree = getCubeNode();
         if (tree == null) {
-            return new DetailCellIterator(0, 0);
+            return new TableCellIterator(0, 0);
         }
         int rowLength = usedDimensions.length;
         int summaryLength = usedSumTarget.length;
@@ -66,7 +57,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
 //        final boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
         rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
-        final DetailCellIterator iter = new DetailCellIterator(columnLen + widget.isOrder(), rowLen + 1);
+        final TableCellIterator iter = new TableCellIterator(columnLen + widget.isOrder(), rowLen + 1);
         new Thread() {
             public void run() {
                 try {
@@ -130,7 +121,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
      * @param start
      * @param rowIdx
      */
-    public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, DetailCellIterator iter, FinalInt start, FinalInt rowIdx) {
+    public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx) {
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
         }
@@ -221,17 +212,6 @@ public class GroupExecutor extends AbstractNodeExecutor {
 //        }
 //        return tempRow;
 //    }
-
-    /**
-     * 创建cell
-     *
-     * @return cell数组
-     * @throws NoneAccessablePrivilegeException
-     */
-    @Override
-    public CBCell[][] createCellElement() throws Exception {
-        return new CBCell[0][0];
-    }
 
     private BISummaryTarget[] createTarget4Calculate() {
         ArrayList<BITarget> list = new ArrayList<BITarget>();

@@ -1,20 +1,18 @@
-package com.fr.bi.cal.analyze.executor.detail;
+package com.fr.bi.cal.analyze.executor.iterator;
 
 import com.fr.bi.cal.report.io.BIExportUtils;
-
-import java.util.Iterator;
 
 /**
  * Created by daniel on 2016/7/12.
  */
-public class DetailCellIterator {
+public class TableCellIterator {
 
     private volatile boolean isEnd = false;
     private int column;
     private int row;
     private StreamPagedIterator[] iters = null;
 
-    public DetailCellIterator(int column, int row) {
+    public TableCellIterator(int column, int row) {
         this.column = column;
         this.row = row;
         this.iters = new StreamPagedIterator[BIExportUtils.createExcel2007Page(row)];

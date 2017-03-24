@@ -6,37 +6,22 @@ import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
-import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.style.TargetStyle;
-import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
-import com.fr.bi.field.BIAbstractTargetAndDimension;
-import com.fr.bi.field.BITargetAndDimensionUtils;
-import com.fr.bi.field.target.target.BIAbstractTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
-import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
-import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
 import java.util.*;
 
@@ -50,11 +35,11 @@ public class HorGroupExecutor extends GroupExecutor {
         colDimension = usedDimensions;
     }
 
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
         final Node node = getCubeNode();
         int rowLength = colDimension.length + usedSumTarget.length;
         int columnLength = node.getTotalLength() + widget.isOrder() + 1;
-        final DetailCellIterator iter = new DetailCellIterator(columnLength, rowLength);
+        final TableCellIterator iter = new TableCellIterator(columnLength, rowLength);
         new Thread() {
             public void run() {
                 try {
@@ -148,17 +133,6 @@ public class HorGroupExecutor extends GroupExecutor {
         }
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;
-    }
-
-    /**
-     * 创建cell
-     *
-     * @return cell数组
-     * @throws NoneAccessablePrivilegeException
-     */
-    @Override
-    public CBCell[][] createCellElement() throws Exception {
-        return new CBCell[0][0];
     }
 
     private BISummaryTarget[] createTarget4Calculate() {
