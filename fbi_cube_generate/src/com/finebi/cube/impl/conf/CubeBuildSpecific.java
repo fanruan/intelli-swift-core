@@ -54,6 +54,10 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
             tableID.add(tableSource.getSourceID());
         }
         for (BITableRelation relation : configHelper.getSystemTableRelations()) {
+            BITableSourceRelation relevantSourceRelation = configHelper.convertRelation(relation);
+            if (relevantSourceRelation == null) {
+                continue;
+            }
             if (tableID.contains(relation.getPrimaryTable().getTableSource().getSourceID())
                     || tableID.contains(relation.getForeignTable().getTableSource().getSourceID())) {
                 relationsAboutTable.add(configHelper.convertRelation(relation));
