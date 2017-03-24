@@ -16,15 +16,12 @@ import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
 import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
 import com.fr.bi.stable.operation.group.BIGroupUtils;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -121,13 +118,9 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     }
 
     private boolean isCirCle(DimensionCalculator column) {
-        CubeTableSource source = column.getField().getTableBelongTo().getTableSource();
-        if (!TableSourceUtils.isSelfCirCleSource(source)) {
-            return false;
-        }
-        String columnId = column.getField().getFieldID().getIdentity();
-        for (ICubeFieldSource fieldSource : source.getFacetFields(null)) {
-            if (ComparatorUtils.equals(fieldSource.getFieldName(), TableSourceUtils.isSelfCirCleSource(source)) && TableSourceUtils.isSelfCircleParentField(source, fieldSource)) {
+        List<BITableSourceRelation> relations = column.getRelationList();
+        for (BITableSourceRelation relation : relations) {
+            if (TableSourceUtils.isSelfCirCleSource(relation.getForeignTable())&&TableSourceUtils.isSelfCircleParentField(relation.getForeignTable(),relation.getForeignField())){
                 return true;
             }
         }
