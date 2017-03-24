@@ -13,6 +13,7 @@ import com.fr.bi.base.BIBusinessPackagePersistThread;
 import com.fr.bi.base.BIBusinessPackagePersistThreadHolder;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.CubeBuildHelper;
+import com.fr.bi.cal.utils.Single2CollectionUtils;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
@@ -215,7 +216,8 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         for (CubeTableSource source : excelSources) {
 //            new CubeBuildManager().CubeBuildSingleTable(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
 //            通过RPC接口远程进行cube生成
-            CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+            CubeBuildHelper.getInstance().addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(source.getSourceID()),
+                    Single2CollectionUtils.toList(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL));
         }
     }
 

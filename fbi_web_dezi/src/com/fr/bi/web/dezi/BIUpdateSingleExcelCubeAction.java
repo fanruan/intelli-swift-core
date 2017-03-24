@@ -5,6 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.CubeBuildHelper;
+import com.fr.bi.cal.utils.Single2CollectionUtils;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
@@ -25,7 +26,7 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
 
     public static final String CMD = "update_excel_table_cube_by_table_id";
 
-    private static final long userId = -999;//貌似只能用管理员的权限进行单表更新，不然用户数据更新不了
+    private static final long USERID = -999;//貌似只能用管理员的权限进行单表更新，不然用户数据更新不了
 
     private static String DATA_PATH = FRContext.getCurrentEnv().getPath() + BIBaseConstant.EXCELDATA.EXCEL_DATA_PATH;
     private static final int SUCCESS = 0;
@@ -82,7 +83,8 @@ public class BIUpdateSingleExcelCubeAction extends AbstractBIDeziAction {
 
     private void updateExcelTableDate(long userId, CubeTableSource tableSource) {
         try {
-            CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, tableSource.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+            CubeBuildHelper.getInstance().addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(tableSource.getSourceID()),
+                    Single2CollectionUtils.toList(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL));
         } catch (InterruptedException e) {
             BILoggerFactory.getLogger(this.getClass()).error("update excel single table error: " + e.getMessage(), e);
         }
