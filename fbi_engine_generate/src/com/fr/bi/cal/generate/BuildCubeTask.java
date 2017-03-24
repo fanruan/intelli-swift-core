@@ -111,7 +111,7 @@ public class BuildCubeTask implements CubeTask {
         PerformancePlugManager.getInstance().printSystemParameters();
         logCubeTaskType();
         logBusinessTable();
-        logTable(cubeBuildStuff.getSingleSourceLayers(), cubeBuildStuff.getUpdateSettingSources());
+        logTable(BIDataStructTranUtils.set2Set(cubeBuildStuff.getDependTableResource()), cubeBuildStuff.getUpdateSettingSources());
         logRelation(cubeBuildStuff.getTableSourceRelationSet());
         logPath(filterPath(cubeBuildStuff.getTableSourceRelationPathSet()));
         copyFilesFromOldCubs();

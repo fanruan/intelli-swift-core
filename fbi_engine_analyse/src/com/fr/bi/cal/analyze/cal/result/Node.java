@@ -200,6 +200,10 @@ public class Node implements SummaryContainer, BINode {
         return childs.values();
     }
 
+    public void clearChildren(){
+        childs.clear();
+    }
+
     @Override
     public int getTotalLength() {
         if (childs.isEmpty()) {

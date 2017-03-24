@@ -110,7 +110,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             DimensionFilter filter = filterDimension == null ? null : filterDimension[deep].getFilter();
             if (filter != null || targetSort != null) {
                 List<Node> children = filterAndSort(node.getChilds(), deep, calculatorMap);
-                node.getChilds().clear();
+                node.clearChildren();
                 for (Node n : children) {
                     node.addChild(n);
                 }
@@ -177,7 +177,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
-        if (level >= rowSize - 1) {
+        if (level >= rowSize) {
             return;
         }
         SingleDimensionGroup rootGroup = childDimensionGroup.createSingleDimensionGroup(columns[level], getters[level], null, mergeIteratorCreators[level], useRealData);

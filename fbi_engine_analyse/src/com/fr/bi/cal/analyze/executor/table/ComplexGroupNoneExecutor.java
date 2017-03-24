@@ -39,6 +39,11 @@ public class ComplexGroupNoneExecutor extends AbstractComplexNodeExecutor {
         rowData = new BIComplexExecutData(rowArray, widget.getDimensions());
     }
 
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 获取nodes的个数
      *
@@ -75,11 +80,6 @@ public class ComplexGroupNoneExecutor extends AbstractComplexNodeExecutor {
     @Override
     public Rectangle getSouthEastRectangle() {
         return super.getSouthEastRectangle();
-    }
-
-    @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
-        return null;
     }
 
     /**

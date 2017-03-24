@@ -1,9 +1,12 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.Style;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
+import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -27,6 +30,7 @@ import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
 
 import java.util.*;
@@ -48,6 +52,74 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
         columnData = new BIComplexExecutData(columnArray, widget.getDimensions());
     }
 
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        final Map<Integer, NewCrossRoot[]> nodesMap = getCubeCrossNodes();
+        if (nodesMap.isEmpty() || nodesMap == null) {
+            return new DetailCellIterator(0, 0);
+        }
+        int[] lens = calculateRowAndColumnLen(nodesMap);
+        final DetailCellIterator iter = new DetailCellIterator(lens[0], lens[1]);
+        new Thread() {
+            public void run() {
+                try {
+                    FinalInt rowIdx = new FinalInt();
+                    FinalInt start = new FinalInt();
+                    StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+                    int order = 0;
+                    Iterator<Map.Entry<Integer, NewCrossRoot[]>> iterator = nodesMap.entrySet().iterator();
+                    int rowDataIdx = 0;
+                    while (iterator.hasNext()) {
+                        Map.Entry<Integer, NewCrossRoot[]> entry = iterator.next();
+                        NewCrossRoot[] roots = entry.getValue();
+                        //生成标题
+                        if(rowDataIdx == 0) {
+                            CrossExecutor.generateTitle(roots, widget, columnData.getDimensionArray(0),
+                                    rowData.getDimensionArray(0), usedSumTarget, pagedIterator, rowIdx);
+                            rowIdx.value++;
+                        }
+                        CrossExecutor.generateCells(roots, widget, rowData.getDimensionArray(rowDataIdx),
+                                rowData.getMaxArrayLength(), iter, start, rowIdx, order);
+                        if(rowDataIdx > 0) {
+                            order += nodesMap.get(rowDataIdx - 1)[0].getLeft().getChildLength();
+                        }
+                        rowDataIdx++;
+                    }
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                } finally {
+                    iter.finish();
+                }
+            }
+        }.start();
+
+        return iter;
+    }
+
+    private int[] calculateRowAndColumnLen(Map<Integer, NewCrossRoot[]> nodesMap) {
+        int len = usedSumTarget.length;
+        TargetGettingKey[] keys = new TargetGettingKey[len];
+        for (int i = 0; i < len; i++) {
+            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
+        }
+        boolean hasTarget = keys.length != 0;
+        ArrayList<NewCrossRoot> nodes = new ArrayList<NewCrossRoot>();
+        Iterator<Map.Entry<Integer, NewCrossRoot[]>> iterator = nodesMap.entrySet().iterator();
+        ArrayList<Integer> integers = new ArrayList<Integer>();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, NewCrossRoot[]> entry = iterator.next();
+            NewCrossRoot[] roots = entry.getValue();
+            integers.add(entry.getKey());
+            for (int i = 0; i < roots.length; i++) {
+                nodes.add(roots[i]);
+            }
+        }
+        int[] lens = new int[2];
+
+        lens[0] = getTotalNodeColumnLength(nodes, hasTarget) * (Math.max(1, keys.length)) + rowData.getMaxArrayLength();
+        lens[1] = getTotalNodeRowLength(nodes, hasTarget, integers) + columnData.getMaxArrayLength() + 1;
+        return lens;
+    }
 
     /**
      * 获取nodes 复杂列表获取的是一个nodes
@@ -108,11 +180,6 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
         return jo;
     }
 
-    @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
-        return null;
-    }
-
     /**
      * 注释
      *
@@ -120,43 +187,44 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
      */
     @Override
     public CBCell[][] createCellElement() throws Exception {
-        Map<Integer, NewCrossRoot[]> nodesMap = getCubeCrossNodes();
-        if (nodesMap.isEmpty() || nodesMap == null) {
-            return new CBCell[0][0];
-        }
-        int len = usedSumTarget.length;
-        TargetGettingKey[] keys = new TargetGettingKey[len];
-        for (int i = 0; i < len; i++) {
-            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
-        }
-        boolean hasTarget = keys.length != 0;
-        CBCell[][] cbcells = null;
-        int rowPlus = 0;
-        ArrayList<NewCrossRoot> nodes = new ArrayList<NewCrossRoot>();
-        Iterator<Map.Entry<Integer, NewCrossRoot[]>> iterator = nodesMap.entrySet().iterator();
-        ArrayList<Integer> integers = new ArrayList<Integer>();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, NewCrossRoot[]> entry = iterator.next();
-            integers.add(entry.getKey());
-            NewCrossRoot[] roots = entry.getValue();
-            for (int i = 0; i < roots.length; i++) {
-                nodes.add(roots[i]);
-            }
-        }
-        boolean needAllPage = paging.getOperator() < Node.NONE_PAGE_LEVER;
-        if (needAllPage) {
-            cbcells = new CBCell[getTotalNodeColumnLength(nodes, hasTarget) * (Math.max(1, keys.length)) + rowData.getMaxArrayLength()][
-                    getTotalNodeRowLength(nodes, hasTarget, integers) + columnData.getMaxArrayLength() + 1];
-        } else {
-
-            cbcells = new CBCell[getTotalNodeColumnLength(nodes, hasTarget, complexExpander) * Math.max(1, keys.length) + rowData.getMaxArrayLength()][
-                    getTotalNodeRowLength(nodes, hasTarget, complexExpander, integers) + columnData.getMaxArrayLength() + 1 + rowPlus];
-        }
-
-        generateTitle(cbcells, integers.get(0));
-        dealWithCorssTrees(hasTarget, integers, nodes, cbcells, needAllPage, keys);
-        geneEmptyCells(cbcells);
-        return cbcells;
+//        Map<Integer, NewCrossRoot[]> nodesMap = getCubeCrossNodes();
+//        if (nodesMap.isEmpty() || nodesMap == null) {
+//            return new CBCell[0][0];
+//        }
+//        int len = usedSumTarget.length;
+//        TargetGettingKey[] keys = new TargetGettingKey[len];
+//        for (int i = 0; i < len; i++) {
+//            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
+//        }
+//        boolean hasTarget = keys.length != 0;
+//        CBCell[][] cbcells = null;
+//        int rowPlus = 0;
+//        ArrayList<NewCrossRoot> nodes = new ArrayList<NewCrossRoot>();
+//        Iterator<Map.Entry<Integer, NewCrossRoot[]>> iterator = nodesMap.entrySet().iterator();
+//        ArrayList<Integer> integers = new ArrayList<Integer>();
+//        while (iterator.hasNext()) {
+//            Map.Entry<Integer, NewCrossRoot[]> entry = iterator.next();
+//            integers.add(entry.getKey());
+//            NewCrossRoot[] roots = entry.getValue();
+//            for (int i = 0; i < roots.length; i++) {
+//                nodes.add(roots[i]);
+//            }
+//        }
+//        boolean needAllPage = paging.getOperator() < Node.NONE_PAGE_LEVER;
+//        if (needAllPage) {
+//            cbcells = new CBCell[getTotalNodeColumnLength(nodes, hasTarget) * (Math.max(1, keys.length)) + rowData.getMaxArrayLength()][
+//                    getTotalNodeRowLength(nodes, hasTarget, integers) + columnData.getMaxArrayLength() + 1];
+//        } else {
+//
+//            cbcells = new CBCell[getTotalNodeColumnLength(nodes, hasTarget, complexExpander) * Math.max(1, keys.length) + rowData.getMaxArrayLength()][
+//                    getTotalNodeRowLength(nodes, hasTarget, complexExpander, integers) + columnData.getMaxArrayLength() + 1 + rowPlus];
+//        }
+//
+//        generateTitle(cbcells, integers.get(0));
+//        dealWithCorssTrees(hasTarget, integers, nodes, cbcells, needAllPage, keys);
+//        geneEmptyCells(cbcells);
+//        return cbcells;
+        return new CBCell[0][0];
     }
 
     //生成表头的表头
@@ -513,7 +581,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     /* (non-Javadoc)
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
-    private Map<Integer, NewCrossRoot[]> getCubeCrossNodes() throws Exception{
+    private Map<Integer, NewCrossRoot[]> getCubeCrossNodes() throws Exception {
         long start = System.currentTimeMillis();
         if (getSession() == null) {
             return null;
@@ -531,7 +599,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     }
 
     //通过交叉表的provide，创建nodeMap
-    private Map<Integer, NewCrossRoot[]> getCubeCrossNodesFromProvide(Map<String, TargetCalculator> targetsMap) throws Exception{
+    private Map<Integer, NewCrossRoot[]> getCubeCrossNodesFromProvide(Map<String, TargetCalculator> targetsMap) throws Exception {
         BISummaryTarget[] usedTarget = createTarget4Calculate();
         Map<Integer, NewCrossRoot[]> nodeMap = new HashMap<Integer, NewCrossRoot[]>();
         int columnRegionLen = columnData.getDimensionArrayLength();
