@@ -203,12 +203,9 @@ public class TableWidget extends BISummaryWidget {
         //有列表头和指标 horGroupExecutor 垂直的分组表
         boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
         //有表头没有指标
-        boolean b1 = usedColumn.length >= 0 && usedRows.length == 0 && summaryLen == 0;
         boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
         if (b0) {
             executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
-        } else if (b1) {
-            executor = new HorGroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b2) {
             executor = new GroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else {
