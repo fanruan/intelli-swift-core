@@ -108,6 +108,10 @@ public class BuildCubeTask implements CubeTask {
         BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
         BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_START, System.currentTimeMillis());
         BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.READ_ONLY_BUSINESS_TABLES_OF_TABLE_SOURCE_MAP, BILogHelper.getReadOnlyBusinessTablesOfTableSourceMap());
+
+        BIConfigureManagerCenter.getLogManager().relationPathSet(cubeBuildStuff.getTableSourceRelationPathSet(), biUser.getUserId());
+        BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getSingleSourceLayers(), biUser.getUserId());
+
         PerformancePlugManager.getInstance().printSystemParameters();
         logCubeTaskType();
         logBusinessTable();
@@ -264,8 +268,6 @@ public class BuildCubeTask implements CubeTask {
         logPathDepend(cubeBuildStuff.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
-            BIConfigureManagerCenter.getLogManager().relationPathSet(cubeBuildStuff.getTableSourceRelationPathSet(), biUser.getUserId());
-            BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getSingleSourceLayers(), biUser.getUserId());
             router.deliverMessage(generateMessageDataSourceStart());
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);
