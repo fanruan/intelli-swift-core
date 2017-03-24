@@ -59,7 +59,6 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
         Integer[] integers = new Integer[nodeMap.size()];
         int i = 0;
         while (iterator.hasNext()) {
-            //导出就全部展开吧
             Map.Entry<Integer, Node> entry = iterator.next();
             nodes[i] = entry.getValue();
             integers[i] = entry.getKey();

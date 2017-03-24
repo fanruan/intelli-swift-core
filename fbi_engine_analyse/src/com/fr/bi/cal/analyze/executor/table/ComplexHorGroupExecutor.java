@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
@@ -8,6 +9,7 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
+import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.field.BITargetAndDimensionUtils;
@@ -45,7 +47,41 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
 
     @Override
     public DetailCellIterator createCellIterator4Excel() throws Exception {
-        return null;
+        Map<Integer, Node> nodeMap = getCubeNodes();
+        if(nodeMap == null || nodeMap.isEmpty()) {
+            return new DetailCellIterator(0, 0);
+        }
+
+        Iterator<Map.Entry<Integer, Node>> iterator = nodeMap.entrySet().iterator();
+        Node[] trees = new Node[nodeMap.size()];
+        int count = 0;
+        while(iterator.hasNext()) {
+            Map.Entry<Integer, Node> entry = iterator.next();
+            trees[count++] = entry.getValue();
+        }
+        int rowLen = usedSumTarget.length + rowData.getMaxArrayLength();
+        int columnLen = getNodesTotalLength(trees);
+
+        DetailCellIterator iter = new DetailCellIterator(rowLen, columnLen);
+        new Thread() {
+            public void run() {
+                try {
+                    //垂直分组表行数随指标的行数增加而增加，故用第一页就行了
+                    StreamPagedIterator pagedIterator = iter.getIteratorByPage(0);
+//                    for(int i = 0, j = trees.length; i < j; i++) {
+//                        HorGroupExecutor.generateTitle(trees[i], widget, rowData.getDimensionArray(i), pagedIterator);
+//                    }
+//                    for(int i = 0, j = trees.length; i < j; i++) {
+//                        HorGroupExecutor.generateCells(trees[i], widget, rowData.getDimensionArray(i), usedSumTarget, pagedIterator);
+//                    }
+                } catch(Exception e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                } finally {
+                    iter.finish();
+                }
+            }
+        }.start();
+        return iter;
     }
 
     /**

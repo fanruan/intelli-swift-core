@@ -197,7 +197,7 @@ public class TableWidget extends BISummaryWidget {
     private BIEngineExecutor createNormalExecutor(BISession session, boolean hasTarget, BIDimension[] usedRows, BIDimension[] usedColumn, CrossExpander expander) {
         BIEngineExecutor executor;
         int summaryLen = getViewTargets().length;
-        //有列表头和指标
+        //有列表头和指标 horGroupExecutor 垂直的分组表
         boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
         //有表头没有指标
         boolean b1 = usedColumn.length >= 0 && usedRows.length == 0 && summaryLen == 0;
