@@ -325,67 +325,6 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         return list.toArray(new BISummaryTarget[list.size()]);
     }
 
-    private void dealwithSum(CrossNode node, CBCell[][] cbcells, int row, int column, boolean isYSummary, int yTotal, DetailChartSetting chartSetting) {
-        Object v = null;
-        CBCell cell = new CBCell(NONEVALUE);
-        cell.setColumn(column + widget.isOrder());
-        cell.setRow(row);
-        cell.setRowSpan(1);
-        cell.setColumnSpan(1);
-        cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, false) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, false));
-        List cellList = new ArrayList();
-        cellList.add(cell);
-        CBBoxElement cbox = new CBBoxElement(cellList);
-        cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
-        cbox.setDimensionJSON(createDimensionValue(node));
-        cbox.setName(StringUtils.EMPTY);
-        cell.setBoxElement(cbox);
-        cbcells[cell.getColumn()][cell.getRow()] = cell;
-    }
-
-    //TODO代码质量
-    private String createDimensionValue(CrossNode node) {
-        JSONArray ja = new JSONArray();
-
-        Node header = node.getHead();
-        Node left = node.getLeft();
-        int deep = 0;
-        Node temp = header;
-        while (temp.getParent() != null) {
-            deep++;
-            temp = temp.getParent();
-        }
-        deep--;
-        temp = header;
-        while (deep != -1 && temp != null) {
-            try {
-                ja.put(new JSONObject().put(colDimension[deep].getValue(), colDimension[deep].toFilterObject(temp.getData())));
-            } catch (JSONException e) {
-            }
-            temp = temp.getParent();
-            deep--;
-        }
-        deep = 0;
-        temp = left;
-        while (temp.getParent() != null) {
-            deep++;
-            temp = temp.getParent();
-        }
-        deep--;
-        temp = left;
-        while (deep != -1 && temp != null) {
-            try {
-                ja.put(new JSONObject().put(rowDimension[deep].getValue(), rowDimension[deep].toFilterObject(temp.getData())));
-            } catch (JSONException e) {
-            }
-            temp = temp.getParent();
-            deep--;
-        }
-
-
-        return ja.toString();
-    }
-
     /* (non-Javadoc)
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */

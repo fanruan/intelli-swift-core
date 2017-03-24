@@ -105,46 +105,6 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         return target;
     }
 
-    protected CBCell[][] createCells(GroupValueIndex gvi) {
-        if (gvi == null) {
-            return null;
-        }
-        BIDetailTarget[] viewDimension = widget.getViewDimensions();
-        if (widget.getViewDimensions().length == 0) {
-            return null;
-        }
-        int count = gvi.getRowsCountWithData();
-        paging.setTotalSize(count);
-
-        if (paging.getCurrentPage() > paging.getPages()) {
-            return null;
-        }
-
-//        int maxRow = paging.getCurrentSize();
-        CBCell[][] cbcells = new CBCell[viewDimension.length + widget.isOrder()][count + 1];
-        createCellTitle(cbcells, CellConstant.CBCELL.TARGETTITLE_Y);
-        return cbcells;
-    }
-
-
-    //创建一个数字格
-    protected static void createNumberCellElement(CBCell[][] cbcells, Integer page, Integer index, int row, int rowSpan) {
-        Integer curIndex = index + (page >= 1 ? (page - 1) : 0) * 20;
-        CBCell cell = new CBCell(curIndex);
-        cell.setColumn(0);
-        cell.setRow(row);
-        cell.setRowSpan(rowSpan);
-        cell.setColumnSpan(1);
-        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-        cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(true, cell.getRow() % 2 == 1));
-        List tcellList = new ArrayList();
-        tcellList.add(cell);
-        CBBoxElement cbox = new CBBoxElement(tcellList);
-        cbox.setName(index.toString());
-        cell.setBoxElement(cbox);
-        cbcells[cell.getColumn()][cell.getRow()] = cell;
-    }
-
 
     //创建一个数字格
     private void createNumberCellElement(StreamPagedIterator iter, int rowIndex, int row) {

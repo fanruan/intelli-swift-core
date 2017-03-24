@@ -10,15 +10,13 @@ import java.awt.*;
 public interface BIEngineExecutor<T> {
     static final String NONEVALUE = "--";
 
-    public DetailCellIterator createCellIterator4Excel() throws Exception;
-
     /**
-     * 构建cells
+     * 创建excel单元格迭代器
      *
-     * @return 构建的cells
-     * @throws NoneAccessablePrivilegeException
+     * @return detailCellIterator
+     * @throws Exception
      */
-    public CBCell[][] createCellElement() throws Exception;
+    public DetailCellIterator createCellIterator4Excel() throws Exception;
 
     public Rectangle getSouthEastRectangle();
 

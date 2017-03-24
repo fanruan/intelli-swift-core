@@ -37,44 +37,6 @@ public abstract class BITableExecutor<T> extends BIAbstractExecutor<T> {
 //        this.expander = CrossExpander.ALL_EXPANDER;
     }
 
-
-    //创建序号格
-    protected static CBCell createNumberCellTitle(int row) {
-        CBCell cell = new CBCell(Inter.getLocText("BI-Number_Index"));
-        cell.setColumn(0);
-        cell.setRow(row);
-        cell.setRowSpan(1);
-        cell.setColumnSpan(1);
-        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-        cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, false));
-        java.util.List tcellList = new ArrayList();
-        tcellList.add(cell);
-        CBBoxElement cbox = new CBBoxElement(tcellList);
-        cbox.setName(Inter.getLocText("BI-Number_Index"));
-        cell.setBoxElement(cbox);
-        return cell;
-    }
-
-    //创建汇总格
-    protected static void createSummaryCellElement(CBCell[][] cbcells, int row) {
-        String name = Inter.getLocText("BI-Summary_Summary");
-        CBCell cell = new CBCell(name);
-        cell.setRow(row);
-        cell.setColumn(0);
-        cell.setRowSpan(1);
-        cell.setColumnSpan(1);
-        cell.setStyle(BITableStyle.getInstance().getYSumStringCellStyle(1));
-        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-        List<CBCell> cellList = new ArrayList<CBCell>();
-        cellList.add(cell);
-        //TODO CBBoxElement需要整合减少内存
-        CBBoxElement cbox = new CBBoxElement(cellList);
-        cbox.setName(name);
-        cbox.setType(CellConstant.CBCELL.SUMARYNAME);
-        cell.setBoxElement(cbox);
-        cbcells[cell.getColumn()][cell.getRow()] = cell;
-    }
-
     @Override
     public Rectangle getSouthEastRectangle() {
         return null;
