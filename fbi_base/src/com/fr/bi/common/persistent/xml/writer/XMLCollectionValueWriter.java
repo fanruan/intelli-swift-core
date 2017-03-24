@@ -6,6 +6,7 @@ import com.fr.stable.xml.XMLPrintWriter;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public class XMLCollectionValueWriter extends XMLValueWriter {
 
     @Override
     void writeContent(XMLPrintWriter writer) throws IllegalAccessException, InvocationTargetException, IntrospectionException {
-        Iterable array = (Iterable) beanWrapper.getBean();
+        Iterable array = new ArrayList((Collection) beanWrapper.getBean());
         writeIteration(writer, array, ITERATION_MAP);
 
     }
@@ -42,7 +43,7 @@ public class XMLCollectionValueWriter extends XMLValueWriter {
 //            if (!beanWrapper.getProperty()) {
 //                writer.startTAG(vacancyTag);
 //            }
-            stickInfo( writer);
+            stickInfo(writer);
             /**
              * 解构Array
              */
