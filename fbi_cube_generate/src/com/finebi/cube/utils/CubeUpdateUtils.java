@@ -1,6 +1,7 @@
 package com.finebi.cube.utils;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
@@ -21,6 +22,9 @@ import java.util.Set;
  * Created by kary on 16/7/14.
  */
 public class CubeUpdateUtils {
+
+
+    private static BILogger logger = BILoggerFactory.getLogger(CubeUpdateUtils.class);
     /**
      * 获得配置部分存在，但是在cube中缺少的表
      *
@@ -77,7 +81,7 @@ public class CubeUpdateUtils {
         for (BITableRelation relation : currentRelations) {
             //部分businessTableRelation本身就有问题，在这里过滤掉
             if (!converter.isTableRelationValid(relation)) {
-                BILoggerFactory.getLogger().error("tableRelation invalid:" + relation.toString());
+                logger.error("tableRelation invalid:" + relation.toString());
                 continue;
             }
 
@@ -88,7 +92,7 @@ public class CubeUpdateUtils {
                 BILoggerFactory.getLogger(CubeUpdateUtils.class).error(e.getMessage(), e);
                 continue;
             }
-            if (!BICubeRelationUtils.isRelationExisted(sourceRelation, cubeConfiguration)) {
+            if (sourceRelation != null && !BICubeRelationUtils.isRelationExisted(sourceRelation, cubeConfiguration)){
                 absentRelations.add(sourceRelation);
             }
         }
