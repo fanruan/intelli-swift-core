@@ -35,6 +35,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
+import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
 import java.util.*;
@@ -335,36 +336,53 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
+    public String getDimensionName(String id){
+        BISummaryTarget target = this.targetsIdMap.get(id);
+        return target == null ? StringUtils.EMPTY : target.getText();
+    }
+
+    public String[] getUsedTargetID(){
+        Set<String> dimensionIds = new HashSet<String>();
+        for (BISummaryTarget target : this.getTargets()) {
+            if(target.isUsed()){
+                dimensionIds.add(target.getValue());
+            }
+
+        }
+        return dimensionIds.toArray(new String[0]);
+    }
+
     public DetailChartSetting getChartSetting() {
         return settings;
     }
 
-    public Set<String> getAllDimensionIds() {
+    public String[] getAllDimensionIds() {
         Set<String> dimensionIds = new HashSet<String>();
         for (BIDimension dimension : this.getDimensions()) {
             dimensionIds.add(dimension.getValue());
         }
-        return dimensionIds;
+        return dimensionIds.toArray(new String[0]);
     }
 
-    public Set<String> getAllTargetIds() {
+    public String[] getAllTargetIds() {
         Set<String> targetIds = new HashSet<String>();
         for (BISummaryTarget target : this.getTargets()) {
             targetIds.add(target.getValue());
         }
-        return targetIds;
+        return targetIds.toArray(new String[0]);
     }
 
     public JSONObject getWidgetDrill() throws JSONException {
-        JSONObject drills = new JSONObject();
-        Set<String> dimensionIds = this.getAllDimensionIds();
+        JSONObject drills = JSONObject.create();
+        String[] dimensionIds = this.getAllDimensionIds();
 
-        for (Map.Entry<String, JSONArray> entry : clicked.entrySet()) {
-            String dId = entry.getKey();
-            if (dimensionIds.contains(dId)) {
-                drills.put(dId, entry.getValue());
+        for(int i = dimensionIds.length - 1; i >= 0; i--){
+            String key = dimensionIds[i];
+            if(clicked.containsKey(key)){
+                drills.put(key, clicked.get(key));
             }
         }
+
         return drills;
     }
 

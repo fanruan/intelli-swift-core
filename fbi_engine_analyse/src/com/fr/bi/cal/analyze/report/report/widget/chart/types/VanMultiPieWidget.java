@@ -17,7 +17,7 @@ public class VanMultiPieWidget extends VanChartWidget{
         return JSONArray.create();
     }
 
-    public String getSeriesType(){
+    public String getSeriesType(String dimensionID){
         return "multiPie";
     }
 
