@@ -5,6 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
 import com.fr.bi.cal.generate.CubeBuildHelper;
+import com.fr.bi.cal.utils.Single2CollectionUtils;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.third.org.quartz.Job;
@@ -34,7 +35,8 @@ public class JobTask implements Job {
         } else {
             if (isTableUsed(userId, tableKey)) {
                 try {
-                    CubeBuildHelper.getInstance().addSingleTableTask2Queue(userId, tableKey, updateType);
+                    CubeBuildHelper.getInstance().addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(tableKey),
+                            Single2CollectionUtils.toList(updateType));
                 } catch (InterruptedException e) {
                     BILoggerFactory.getLogger(this.getClass()).error("addSingleTableTask failure " + e.getMessage(), e);
                 }
