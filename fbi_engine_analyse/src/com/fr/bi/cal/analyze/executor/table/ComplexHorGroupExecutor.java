@@ -43,6 +43,11 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
         rowData = new BIComplexExecutData(columnArray, null);
     }
 
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
+
     /**
      * 获取nodes的个数
      *
@@ -87,11 +92,6 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
      */
     @Override
     public Node getCubeNode() {
-        return null;
-    }
-
-    @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
         return null;
     }
 

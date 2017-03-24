@@ -40,6 +40,10 @@ public class ComplexHorGroupNoneExecutor extends AbstractComplexNodeExecutor {
         rowData = new BIComplexExecutData(columnArray, null);
     }
 
+    @Override
+    public DetailCellIterator createCellIterator4Excel() throws Exception {
+        return null;
+    }
 
     /**
      * 获取nodes的个数
@@ -76,11 +80,6 @@ public class ComplexHorGroupNoneExecutor extends AbstractComplexNodeExecutor {
     @Override
     public Rectangle getSouthEastRectangle() {
         return super.getSouthEastRectangle();
-    }
-
-    @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
-        return null;
     }
 
     /**

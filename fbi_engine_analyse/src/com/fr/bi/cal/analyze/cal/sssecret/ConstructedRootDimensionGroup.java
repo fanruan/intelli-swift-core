@@ -110,7 +110,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             DimensionFilter filter = filterDimension == null ? null : filterDimension[deep].getFilter();
             if (filter != null || targetSort != null) {
                 List<Node> children = filterAndSort(node.getChilds(), deep, calculatorMap);
-                node.getChilds().clear();
+                node.clearChildren();
                 for (Node n : children) {
                     node.addChild(n);
                 }

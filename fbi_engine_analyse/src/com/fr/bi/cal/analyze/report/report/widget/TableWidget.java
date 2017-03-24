@@ -174,8 +174,10 @@ public class TableWidget extends BISummaryWidget {
         if (rowData.getDimensionArrayLength() <= 1 && columnData.getDimensionArrayLength() <= 1) {
             return this.createNormalExecutor(session, hasTarget, rowData.getDimensionArray(0), columnData.getDimensionArray(0), expander);
         }
+        //行表头区域里没有维度
         boolean b0 = !column.isEmpty() && row.isEmpty() && hasTarget;
         boolean b1 = !column.isEmpty() && row.isEmpty() && summaryLen == 0;
+        //列表头区域里没有维度
         boolean b2 = !row.isEmpty() && column.isEmpty() && hasTarget;
         boolean b3 = !row.isEmpty() && column.isEmpty() && summaryLen == 0;
         if (b0) {
