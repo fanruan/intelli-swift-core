@@ -15,7 +15,7 @@ BI.NumberETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
 
     _refreshFilterWidget: function (value) {
         var item;
-        switch (this.filter_type) {
+        switch (this.filterType) {
             case BICst.TARGET_FILTER_NUMBER.CONTAINS:
                 item = this._createMultiChooserPane();
                 break;
@@ -29,15 +29,15 @@ BI.NumberETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
                 break;
             case BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE:
             case BICst.TARGET_FILTER_NUMBER.SMALL_OR_EQUAL_CAL_LINE:
-                item = this._createNumberOneSidePane(this.filter_type);
+                item = this._createNumberOneSidePane(this.filterType);
                 break;
             case BICst.TARGET_FILTER_NUMBER.TOP_N:
             case BICst.TARGET_FILTER_NUMBER.BOTTOM_N:
-                item = this._createNumberNInput(this.filter_type);
+                item = this._createNumberNInput(this.filterType);
                 break;
             case BICst.TARGET_FILTER_NUMBER.IS_NULL:
             case BICst.TARGET_FILTER_NUMBER.NOT_NULL:
-                item = this._createEmptyWidget(this.filter_type);
+                item = this._createEmptyWidget(this.filterType);
                 break;
             case BICst.FILTER_TYPE.FORMULA:
                 item = this._createFormular();
@@ -85,8 +85,8 @@ BI.NumberETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
         var self = this, o = this.options;
         var op ={
             type: "bi.filter_number_oneside_etl",
-            filter_type : filterType,
-            field_name : o.field_name,
+            filterType : filterType,
+            fieldName : o.fieldName,
         }
         op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
         this.filterWidget = BI.createWidget(op);
@@ -100,7 +100,7 @@ BI.NumberETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
         var self = this, o = this.options;
         var op ={
             type: 'bi.filter_number_n_etl',
-            field_name : o.field_name,
+            fieldName : o.fieldName,
             filterType : filterType
         }
         op[ETLCst.FIELDS] = o[ETLCst.FIELDS];

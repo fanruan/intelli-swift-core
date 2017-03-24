@@ -21,7 +21,7 @@ BI.AnalysisETLOperatorFilterTable = FR.extend(BI.Widget, {
 
     _checkEmptyData: function(data){
         return BI.isNull(BI.find(data.value, function(idx, item){
-            return !BI.isEmptyArray(BI.ETLFilterViewItemFactory.createViewItems(item, data.field_name, data.fieldItems));
+            return !BI.isEmptyArray(BI.ETLFilterViewItemFactory.createViewItems(item, data.fieldName, data.fieldItems));
         }));
     },
 

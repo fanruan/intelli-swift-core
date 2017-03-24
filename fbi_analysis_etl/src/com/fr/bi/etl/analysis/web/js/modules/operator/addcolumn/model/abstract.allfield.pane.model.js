@@ -5,9 +5,9 @@ BI.AnalysisETLOperatorAddColumnAllFieldsModel = BI.inherit(BI.MVCModel, {
         var fieldItems = [];
         BI.each(this.get(ETLCst.FIELDS) || [], function (idx, item) {
             fieldItems.push({
-                text:item.field_name,
-                value:item.field_name,
-                fieldType:item.field_type,
+                text:item.fieldName,
+                value:item.fieldName,
+                fieldType:item.fieldType,
             })
         })
         this.set(ETLCst.FIELDS, fieldItems)
@@ -22,7 +22,7 @@ BI.AnalysisETLOperatorAddColumnAllFieldsModel = BI.inherit(BI.MVCModel, {
 
     update : function () {
         var v = BI.AnalysisETLOperatorAddColumnAllFieldsModel.superclass.update.apply(this, arguments);
-        delete v["field_type"];
+        delete v["fieldType"];
         delete v[ETLCst.FIELDS];
         return v;
     }

@@ -125,12 +125,12 @@ public class AnalysisBusiTable extends BIBusinessTable {
 
     private JSONObject createCountField(long userId) throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put("field_type", DBConstant.COLUMN.COUNTER);
-        jo.put("field_name", BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
-        jo.put("table_id", getID().getIdentity());
-        jo.put("is_usable", true);
+        jo.put("fieldType", DBConstant.COLUMN.COUNTER);
+        jo.put("fieldName", BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
+        jo.put("tableId", getID().getIdentity());
+        jo.put("isUsable", true);
         //记录数的id先暂时用拼接
-        jo.put("id", jo.optString("table_id") + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
+        jo.put("id", jo.optString("tableId") + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
         return jo;
     }
 

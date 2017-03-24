@@ -6,11 +6,11 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
         var items = operator.items;
         if (BI.isNull(filter.value) || BI.isEmptyArray(filter.value)){
             BI.remove(items, function (idx, item) {
-                return item.field_name === filter.field_name;
+                return item.fieldName === filter.fieldName;
             });
         } else {
             var item = BI.find(items, function (idx, item) {
-                return item.field_name === filter.field_name;
+                return item.fieldName === filter.fieldName;
             })
             if (BI.isNull(item)){
                 items.push(filter)
@@ -24,7 +24,7 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
     getFilterValue : function (field, widget, model) {
         var operator = model.get('operator');
         return BI.find(operator.items, function (idx, item) {
-            return item.field_name === field;
+            return item.fieldName === field;
         })
     },
 
@@ -52,9 +52,9 @@ BI.AnalysisETLOperatorFilterPaneController = BI.inherit(BI.MVCController, {
             var fieldItems = [];
             BI.each(model.get(ETLCst.PARENTS)[0][ETLCst.FIELDS], function (i, item) {
                 fieldItems.push({
-                    text : item.field_name,
-                    value : item.field_name,
-                    fieldType : item.field_type
+                    text : item.fieldName,
+                    value : item.fieldName,
+                    fieldType : item.fieldType
                 })
             })
             widget.content.populate(items, fieldItems);

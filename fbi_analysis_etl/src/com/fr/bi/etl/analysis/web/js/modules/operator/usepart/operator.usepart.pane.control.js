@@ -39,7 +39,7 @@ BI.AnalysisETLOperatorUsePartPaneController = BI.inherit(BI.MVCController, {
             return isAll ? index < 0 :index > -1
         }
         BI.each(model.get(ETLCst.PARENTS)[0][ETLCst.FIELDS], function (i, item) {
-            if (contains(item.field_name)){
+            if (contains(item.fieldName)){
                 newFields.push(item);
             }
         })

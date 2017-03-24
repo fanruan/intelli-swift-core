@@ -17,9 +17,9 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
                 text:"abc",
                 fieldType : BICst.COLUMN.NUMBER
             },
-            field_type:BICst.COLUMN.NUMBER,
+            fieldType:BICst.COLUMN.NUMBER,
             value : {
-                filter_value : null,
+                filterValue : null,
                 value : null
             }
         })
@@ -30,8 +30,8 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var field = o.field;
         this.range = self._createFieldRangeItem(field);
-        this.range.setValue(o.value.filter_value || {})
-        this.editor = this._createEditor(o.field_type, o.value.value || "")
+        this.range.setValue(o.value.filterValue || {})
+        this.editor = this._createEditor(o.fieldType, o.value.value || "")
 
         var deleteIcon = BI.createWidget({
             type: "bi.icon_button",
@@ -79,11 +79,11 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         })
     },
 
-    _createEditor : function (field_type, value) {
+    _createEditor : function (fieldType, value) {
         var self = this;
         var errorText = "";
         var validationChecker;
-        switch(field_type) {
+        switch(fieldType) {
             case BICst.COLUMN.STRING : {
                 validationChecker =  function (v) {
                     pane.validChecked = true;
@@ -114,7 +114,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
 
         var pane =  BI.createWidget({
             type: "bi.text_editor",
-            allowBlank : field_type === BICst.COLUMN.STRING,
+            allowBlank : fieldType === BICst.COLUMN.STRING,
             watermark: BI.i18nText("BI-Please_Enter_Value"),
             errorText: errorText,
             validationChecker : function (v) {
@@ -234,9 +234,9 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
     update : function () {
         return {
             field : this.options.field,
-            filter_value : this.range.getValue(),
+            filterValue : this.range.getValue(),
             value : this.editor.getValue(),
-            field_type : this.options.field_type
+            fieldType : this.options.fieldType
         }
     }
 

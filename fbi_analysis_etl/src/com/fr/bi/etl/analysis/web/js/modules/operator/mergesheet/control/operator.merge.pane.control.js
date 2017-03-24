@@ -5,7 +5,7 @@ BI.AnalysisETLOperatorMergeSheetPaneController = BI.inherit(BI.MVCController, {
         var tables = model.get(ETLCst.PARENTS);
         widget.table.empty();
         widget.table.populate(widget.createTable(tables));
-        widget.mergeFields.populate(widget.createCell(model.getMergeFieldsName(), "cell"), widget.createCell([[tables[0].table_name,tables[1].table_name]], "header"))
+        widget.mergeFields.populate(widget.createCell(model.getMergeFieldsName(), "cell"), widget.createCell([[tables[0].tableName,tables[1].tableName]], "header"))
         widget.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, model, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
         widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.getValue("columns"))
     },
@@ -18,7 +18,7 @@ BI.AnalysisETLOperatorMergeSheetPaneController = BI.inherit(BI.MVCController, {
             currentTable.push(item)
         })
         var sheetName = BI.isFunction(this.options.getSheetName) ? this.options.getSheetName(): null;
-        var sheetName = sheetName || currentSheets.currentTable["table_name"];
+        var sheetName = sheetName || currentSheets.currentTable["tableName"];
         currentTable = BI.concat(currentTable, currentSheets.others)
         var self = this;
         BI.createWidget({

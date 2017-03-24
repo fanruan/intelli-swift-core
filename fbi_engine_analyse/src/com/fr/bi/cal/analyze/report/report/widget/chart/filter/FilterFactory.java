@@ -13,8 +13,8 @@ import com.fr.json.JSONObject;
 public class FilterFactory {
     public static IFilter parseFilter(JSONObject filterValue) throws JSONException {
         IFilter filter = null;
-        if(filterValue.has("filter_type")){
-            switch (filterValue.getInt("filter_type")){
+        if(filterValue.has("filterType")){
+            switch (filterValue.getInt("filterType")){
                 case BIReportConstant.FILTER_TYPE.AND:
                     filter = new GeneralAndFilter(filterValue);
                     break;

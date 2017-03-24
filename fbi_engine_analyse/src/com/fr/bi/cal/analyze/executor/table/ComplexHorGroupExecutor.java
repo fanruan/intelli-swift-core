@@ -40,7 +40,7 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
                                    BISession session, ComplexExpander expander) {
 
         super(widget, page, session, expander);
-        rowData = new BIComplexExecutData(columnArray, null);
+        rowData = new BIComplexExecutData(columnArray, widget.getDimensions());
     }
 
     @Override

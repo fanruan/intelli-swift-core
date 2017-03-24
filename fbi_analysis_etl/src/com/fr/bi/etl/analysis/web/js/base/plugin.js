@@ -31,22 +31,22 @@ BI.Plugin.DATA_STYLE_TAB_ITEM = BI.Plugin.DATA_STYLE_TAB_ITEM || [];
                     BI.each(widget.view[item], function (idx, id) {
                         var dimension = widget.dimensions[id];
                         if (dimension.used === true){
-                            var field_type =  BI.Utils.getFieldTypeByID(dimension._src["field_id"]);
-                            if (field_type === BICst.COLUMN.DATE
+                            var fieldType =  BI.Utils.getFieldTypeByID(dimension._src["fieldId"]);
+                            if (fieldType === BICst.COLUMN.DATE
                                 && dimension.group.type !== BICst.GROUP.YMD
                                 && dimension.group.type !== BICst.GROUP.YMDHMS){
-                                field_type = BICst.COLUMN.NUMBER;
-                            } else if(field_type === BICst.COLUMN.NUMBER
+                                fieldType = BICst.COLUMN.NUMBER;
+                            } else if(fieldType === BICst.COLUMN.NUMBER
                                 && widget.type !== BICst.WIDGET.DETAIL
                                 && (BI.isNull(dimension.group) || dimension.group.type !== BICst.GROUP.ID_GROUP)){
-                                field_type = BICst.COLUMN.STRING;
+                                fieldType = BICst.COLUMN.STRING;
                             }
-                            if(BI.isNull(field_type)){
-                                field_type = BICst.COLUMN.NUMBER;
+                            if(BI.isNull(fieldType)){
+                                fieldType = BICst.COLUMN.NUMBER;
                             }
                             fields.push({
-                                field_name : dimension.name,
-                                field_type : field_type
+                                fieldName : dimension.name,
+                                fieldType : fieldType
                             });
                             hasUsed = true;
                         }
@@ -57,8 +57,8 @@ BI.Plugin.DATA_STYLE_TAB_ITEM = BI.Plugin.DATA_STYLE_TAB_ITEM || [];
                         var dimension = widget.dimensions[id];
                         if (dimension.used === true){
                             fields.push({
-                                field_name : dimension.name,
-                                field_type : BICst.COLUMN.NUMBER
+                                fieldName : dimension.name,
+                                fieldType : BICst.COLUMN.NUMBER
                             });
                             hasUsed = true;
                         }
@@ -68,7 +68,7 @@ BI.Plugin.DATA_STYLE_TAB_ITEM = BI.Plugin.DATA_STYLE_TAB_ITEM || [];
             if (hasUsed === true){
                 var table = {
                     value : BI.UUID(),
-                    table_name : widget.name,
+                    tableName : widget.name,
                     operator : widget,
                     etlType : ETLCst.ETL_TYPE.SELECT_NONE_DATA
                 }

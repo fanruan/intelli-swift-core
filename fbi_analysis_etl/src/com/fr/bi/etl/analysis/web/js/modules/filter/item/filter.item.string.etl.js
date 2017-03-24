@@ -12,7 +12,7 @@ BI.StringETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
 
     _refreshFilterWidget: function (value) {
         var item;
-        switch (this.filter_type) {
+        switch (this.filterType) {
             case BICst.TARGET_FILTER_STRING.BELONG_VALUE:
             case BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE:
                 item = this._createMultiChooserPane();
@@ -27,7 +27,7 @@ BI.StringETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
                 break;
             case BICst.TARGET_FILTER_STRING.IS_NULL:
             case BICst.TARGET_FILTER_STRING.NOT_NULL:
-                item = this._createEmptyWidget(this.filter_type);
+                item = this._createEmptyWidget(this.filterType);
                 break;
             case BICst.FILTER_TYPE.FORMULA:
                 item = this._createFormular();

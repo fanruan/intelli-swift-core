@@ -62,9 +62,9 @@ public class BICubeTablePropertyTest extends TestCase {
         try {
 
 
-            JSONObject jo1 = new JSONObject("{\"class_type\":5,\"is_enable\":true,\"field_size\":200,\"id\":\"客户ID\",\"table_id\":\"af33cab4\",\"is_usable\":true,\"field_type\":16,\"field_name\":\"客户ID\"}");
-            JSONObject jo2 = new JSONObject("{\"class_type\":5,\"is_enable\":true,\"field_size\":200,\"id\":\"销售机会ID\",\"table_id\":\"af33cab4\",\"is_usable\":true,\"field_type\":16,\"field_name\":\"销售机会ID\"}");
-            JSONObject jo3 = new JSONObject("{\"class_type\":5,\"is_enable\":true,\"field_size\":20,\"id\":\"合同类型\",\"table_id\":\"af33cab4\",\"is_usable\":true,\"field_type\":16,\"field_name\":\"合同类型\"}");
+            JSONObject jo1 = new JSONObject("{\"class_type\":5,\"isEnable\":true,\"fieldSize\":200,\"id\":\"客户ID\",\"tableId\":\"af33cab4\",\"isUsable\":true,\"fieldType\":16,\"fieldName\":\"客户ID\"}");
+            JSONObject jo2 = new JSONObject("{\"class_type\":5,\"isEnable\":true,\"fieldSize\":200,\"id\":\"销售机会ID\",\"tableId\":\"af33cab4\",\"isUsable\":true,\"fieldType\":16,\"fieldName\":\"销售机会ID\"}");
+            JSONObject jo3 = new JSONObject("{\"class_type\":5,\"isEnable\":true,\"fieldSize\":20,\"id\":\"合同类型\",\"tableId\":\"af33cab4\",\"isUsable\":true,\"fieldType\":16,\"fieldName\":\"合同类型\"}");
 
             BICubeFieldSource field1 = new BICubeFieldSource(null, null, 0, 0);
             BICubeFieldSource field2 = new BICubeFieldSource(null, null, 0, 0);

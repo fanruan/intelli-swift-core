@@ -45,7 +45,7 @@ public class AnalysisETLSourceFactory {
                 fieldList.add(field);
             }
         }
-        String name = jo.optString("table_name", StringUtils.EMPTY);
+        String name = jo.optString("tableName", StringUtils.EMPTY);
         switch (type) {
             case Constants.ETL_TYPE.SELECT_DATA:
                 return new AnalysisBaseTableSource(createWidget(jo.getJSONObject("operator"), userId), type, fieldList, name, StringUtils.EMPTY);

@@ -15,8 +15,8 @@ BI.ETLFilterPopupView = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var op = {
             type: "bi.filter_popup_pane_etl",
-            field_type : o.field_type,
-            field_name : o.field_name,
+            fieldType : o.fieldType,
+            fieldName : o.fieldName,
             fieldValuesCreator : o.fieldValuesCreator
         }
         op[ETLCst.FIELDS] = o[ETLCst.FIELDS];

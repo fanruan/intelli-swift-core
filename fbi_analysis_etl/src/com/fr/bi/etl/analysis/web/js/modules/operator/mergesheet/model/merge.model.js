@@ -44,7 +44,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
 
     rename : function (idx , name) {
         var columns = this.get("columns");
-        columns[idx].field_name = name;
+        columns[idx].fieldName = name;
         return this.setValue("columns", columns)
     },
 
@@ -60,7 +60,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         })
         return BI.map(fields, function (j, item) {
             return BI.map(item, function (idx, item) {
-                return allFields[idx][item].field_name
+                return allFields[idx][item].fieldName
             })
         })
     },
@@ -71,7 +71,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         return BI.map(this.get("tables"), function (idx, item) {
             return {
                 value: item.value,
-                text: item.table_name
+                text: item.tableName
             }
         })
     },
@@ -118,7 +118,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
             if(item._src.length === 2) {
                 res.push({
                     index:idx,
-                    mergeBy:[item._src[0].field_name, item._src[1].field_name]
+                    mergeBy:[item._src[0].fieldName, item._src[1].fieldName]
                 })
             }
         })
@@ -143,15 +143,15 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         }
         BI.each(this.get("columns"), function (idx, item) {
             if(item._src.length === 2) {
-                res.push([self._getFieldIndex(0, item._src[0].field_name), self._getFieldIndex(1, item._src[1].field_name)])
+                res.push([self._getFieldIndex(0, item._src[0].fieldName), self._getFieldIndex(1, item._src[1].fieldName)])
             }
         })
         return res;
     },
 
-    _getFieldIndex : function (idx, field_name) {
+    _getFieldIndex : function (idx, fieldName) {
         return BI.findIndex(this.get(ETLCst.PARENTS)[idx][ETLCst.FIELDS], function (idx, item) {
-             return item.field_name === field_name;
+             return item.fieldName === fieldName;
         })
     },
 
@@ -165,7 +165,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         var getNameArray = function (columns) {
             var array = [];
             BI.each(columns, function (idx, item) {
-                array.push(item.field_name)
+                array.push(item.fieldName)
             })
             return array;
         }
@@ -198,7 +198,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
                 }
                 var same = true;
                 BI.some(osrc, function (i, itm) {
-                    if (itm.field_type !== nsrc[i].field_type || itm.field_name !== nsrc[i].field_name){
+                    if (itm.fieldType !== nsrc[i].fieldType || itm.fieldName !== nsrc[i].fieldName){
                         same = false;
                         return true;
                     }
@@ -206,7 +206,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
                 return same;
             })
 
-            newFields.field_name = BI.Utils.createDistinctName(getNameArray(columns), BI.isNotNull(oldColumn) ? oldColumn.field_name : newFields.field_name)
+            newFields.fieldName = BI.Utils.createDistinctName(getNameArray(columns), BI.isNotNull(oldColumn) ? oldColumn.fieldName : newFields.fieldName)
             columns.push(newFields)
         })
         this.set("columns", columns);
@@ -220,7 +220,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.MVCModel, {
         json["etlType"] = ETLCst.ETL_TYPE.MERGE_SHEET;
         delete json["tables"];
         delete json[BI.AnalysisETLMergeSheetModel.MERGE_FIELDS];
-        json["table_name"] = json["name"]
+        json["tableName"] = json["name"]
         json["operator"] = BI.deepClone(json)
         return json;
     },

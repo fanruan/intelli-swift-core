@@ -31,7 +31,7 @@ BI.AnalysisETLPreviewTableHeaderNormalCell = BI.inherit(BI.Widget, {
             items:[{
                 el : {
                     type:"bi.icon_button",
-                    cls:BI.Utils.getFieldClass(o.field_type),
+                    cls:BI.Utils.getFieldClass(o.fieldType),
                     forceNotSelected :true,
                     height: o.height,
                     width: o.height

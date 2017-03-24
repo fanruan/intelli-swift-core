@@ -324,8 +324,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 }
             }
         }
-        if (jo.has("filter_value")) {
-            JSONObject targetFilter = jo.getJSONObject("filter_value");
+        if (jo.has("filterValue")) {
+            JSONObject targetFilter = jo.getJSONObject("filterValue");
             Iterator it = targetFilter.keys();
             while (it.hasNext()) {
                 String key = it.next().toString();
@@ -353,7 +353,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                             dimensionsMap.put(dimensionId, dimensionMap);
                         }
                         JSONObject srcJo = targetRelationJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-                        String fieldId = srcJo.getString("field_id");
+                        String fieldId = srcJo.getString("fieldId");
                         dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
                     }
                     if (targetRelationJo.has("target_relation")) {
@@ -392,10 +392,10 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
         JSONObject primaryKeyJo = targetRelationsJa.optJSONObject(0).optJSONObject("primaryKey");
         JSONObject foreignKeyJo = targetRelationsJa.optJSONObject(targetRelationsJa.length() - 1).optJSONObject("foreignKey");
-        String primaryFieldId = primaryKeyJo.optString("field_id");
-        String foreignFieldId = foreignKeyJo.optString("field_id");
-        String primaryTableId = primaryKeyJo.has("table_id") ? primaryKeyJo.getString("table_id") : null;
-        String foreignTableId = foreignKeyJo.has("table_id") ? foreignKeyJo.getString("table_id") : null;
+        String primaryFieldId = primaryKeyJo.optString("fieldId");
+        String foreignFieldId = foreignKeyJo.optString("fieldId");
+        String primaryTableId = primaryKeyJo.has("tableId") ? primaryKeyJo.getString("tableId") : null;
+        String foreignTableId = foreignKeyJo.has("tableId") ? foreignKeyJo.getString("tableId") : null;
 
         JSONObject srcJo = dims.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
         if (primaryTableId != null && foreignTableId != null) {

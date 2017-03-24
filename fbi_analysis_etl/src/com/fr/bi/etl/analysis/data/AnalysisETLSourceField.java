@@ -21,8 +21,8 @@ public class AnalysisETLSourceField implements JSONTransform,Serializable{
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put("field_name", fieldName);
-        jo.put("field_type", fieldType);
+        jo.put("fieldName", fieldName);
+        jo.put("fieldType", fieldType);
         if (group != -1){
             jo.put("group", group);
         }
@@ -37,8 +37,8 @@ public class AnalysisETLSourceField implements JSONTransform,Serializable{
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        this.fieldName = jo.getString("field_name");
-        this.fieldType = jo.getInt("field_type");
+        this.fieldName = jo.getString("fieldName");
+        this.fieldType = jo.getInt("fieldType");
         if (jo.has("group")){
             try{
                 this.group = jo.getInt("group");

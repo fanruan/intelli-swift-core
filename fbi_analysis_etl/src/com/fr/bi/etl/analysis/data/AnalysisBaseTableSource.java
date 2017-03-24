@@ -288,7 +288,7 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
             }
             jo.put(Constants.FIELDS, ja);
         }
-        jo.put("table_name", name);
+        jo.put("tableName", name);
         jo.put("etlType", etlType);
         jo.put("operator", widget);
         return jo;

@@ -103,8 +103,8 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
                 this.sort_target = s.optString("sort_target");
             }
         }
-        if (jo.has("filter_value")) {
-            this.filter = DimensionFilterFactory.parseFilter(jo.getJSONObject("filter_value"), userId);
+        if (jo.has("filterValue")) {
+            this.filter = DimensionFilterFactory.parseFilter(jo.getJSONObject("filterValue"), userId);
         }
         if (jo.has("group")) {
             this.group = BIGroupFactory.parseGroup(jo.optJSONObject("group"));

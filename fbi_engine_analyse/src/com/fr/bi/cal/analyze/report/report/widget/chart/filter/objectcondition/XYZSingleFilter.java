@@ -14,9 +14,9 @@ public class XYZSingleFilter extends AbstractXYZFilter {
     private String key;
     private IFilter filter;
 
-    public XYZSingleFilter(JSONObject filter_value) throws JSONException{
-        filter = FilterValueFactory.parseFilter(filter_value);
-        key = filter_value.getString("key");
+    public XYZSingleFilter(JSONObject filterValue) throws JSONException{
+        filter = FilterValueFactory.parseFilter(filterValue);
+        key = filterValue.getString("key");
     }
 
     @Override
