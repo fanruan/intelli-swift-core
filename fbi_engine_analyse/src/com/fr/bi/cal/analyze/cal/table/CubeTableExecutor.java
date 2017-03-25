@@ -5,12 +5,10 @@ import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.exception.NoneRegisterationException;
 import com.fr.bi.cal.analyze.exception.TooManySummaryException;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.analyze.executor.detail.StreamCellCase;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.StreamCellCase;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.cal.report.engine.CBCellCase;
 import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.general.DateUtils;
 import com.fr.report.block.ResultBlock;
@@ -39,7 +37,7 @@ public class CubeTableExecutor extends SheetExecutor {
     private TemplateElementCase elementCase;
     private TableWidget widget;
     private Calculator cal;
-    private DetailCellIterator iter;
+    private TableCellIterator iter;
     private Report report;
     private BISession session;
     // page from 1 ~ max

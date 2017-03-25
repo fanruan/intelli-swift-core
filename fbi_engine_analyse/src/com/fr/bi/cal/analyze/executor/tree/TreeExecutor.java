@@ -1,13 +1,11 @@
 package com.fr.bi.cal.analyze.executor.tree;
 
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -35,13 +33,8 @@ public class TreeExecutor extends BIAbstractExecutor<JSONObject> {
 
 
     @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
         return null;
-    }
-
-    @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
-        return new CBCell[0][];
     }
 
     @Override
