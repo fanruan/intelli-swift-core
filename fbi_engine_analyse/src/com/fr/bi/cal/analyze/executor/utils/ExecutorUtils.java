@@ -71,15 +71,21 @@ public class ExecutorUtils {
         return levelAndUnit;
     }
 
-    public static CBCell createCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan, Style style) {
+    public static CBCell createCellWithOutStyle (Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan) {
         CBCell cell = new CBCell(v);
         cell.setRow(rowIdx);
         cell.setRowSpan(rowSpan);
         cell.setColumn(columnIdx);
         cell.setColumnSpan(columnSpan);
-        cell.setStyle(style);
         //默认CellGUIAttr
         cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
+        return cell;
+    }
+
+    public static CBCell createCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan, Style style) {
+        CBCell cell = createCellWithOutStyle(v, rowIdx, rowSpan, columnIdx, columnSpan);
+        cell.setStyle(style);
+        //默认CellGUIAttr
         return cell;
     }
 }

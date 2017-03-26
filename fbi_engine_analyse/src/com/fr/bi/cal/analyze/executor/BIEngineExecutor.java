@@ -1,8 +1,6 @@
 package com.fr.bi.cal.analyze.executor;
 
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
@@ -10,15 +8,13 @@ import java.awt.*;
 public interface BIEngineExecutor<T> {
     static final String NONEVALUE = "--";
 
-    public DetailCellIterator createCellIterator4Excel() throws Exception;
-
     /**
-     * 构建cells
+     * 创建excel单元格迭代器
      *
-     * @return 构建的cells
-     * @throws NoneAccessablePrivilegeException
+     * @return detailCellIterator
+     * @throws Exception
      */
-    public CBCell[][] createCellElement() throws Exception;
+    public TableCellIterator createCellIterator4Excel() throws Exception;
 
     public Rectangle getSouthEastRectangle();
 

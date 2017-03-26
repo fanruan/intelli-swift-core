@@ -1,11 +1,11 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
 import com.fr.bi.base.FinalInt;
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailAllGVIRunner;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailPartGVIRunner;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -46,11 +46,11 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     }
 
-    public DetailCellIterator createCellIterator4Excel() {
+    public TableCellIterator createCellIterator4Excel() {
         final GroupValueIndex gvi = createDetailViewGvi();
         int count = gvi.getRowsCountWithData();
         paging.setTotalSize(count);
-        final DetailCellIterator iter = new DetailCellIterator(widget.getViewDimensions().length, count + 1);
+        final TableCellIterator iter = new TableCellIterator(widget.getViewDimensions().length, count + 1);
         new Thread() {
             public void run() {
                 try {
@@ -83,12 +83,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
             }
         }.start();
         return iter;
-    }
-
-
-    @Override
-    public CBCell[][] createCellElement() throws NoneAccessablePrivilegeException {
-        return new CBCell[0][0];
     }
 
     @Override

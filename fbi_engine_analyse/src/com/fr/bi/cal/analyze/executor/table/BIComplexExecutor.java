@@ -50,18 +50,8 @@ public abstract class BIComplexExecutor<T> extends BIAbstractExecutor<T> {
      */
     public abstract int getNodesTotalLength(Node[] nodes);
 
-    /**
-     * 获取node的个数
-     */
-    public abstract int getNodesTotalLength(Node[] nodes, ComplexExpander expander, Integer[] ints);
-
-
     @Override
     public Rectangle getSouthEastRectangle() {
         return null;
-    }
-
-    //给null格子加空的，让冻结的时候砍掉
-    protected void geneEmptyCells(CBCell[][] cbcells) {
     }
 }
