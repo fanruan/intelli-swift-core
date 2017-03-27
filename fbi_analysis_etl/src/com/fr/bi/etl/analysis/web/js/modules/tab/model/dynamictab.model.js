@@ -20,7 +20,7 @@ BI.DynamictabModel = BI.inherit(BI.MVCModel, {
 
     addItem : function (v) {
         var newItem = BI.extend({}, v);
-        newItem.table_name = this.createNewName(newItem.table_name);
+        newItem.tableName = this.createNewName(newItem.tableName);
         return this._createItemModel(newItem)
     },
 
@@ -35,7 +35,7 @@ BI.DynamictabModel = BI.inherit(BI.MVCModel, {
 
     copyItem : function (id) {
         var newItem = this.get(id).update()
-        newItem.table_name = this.createNewName(this.getName(id));
+        newItem.tableName = this.createNewName(this.getName(id));
         return this._createItemModel(newItem);
     },
 
@@ -78,7 +78,7 @@ BI.DynamictabModel = BI.inherit(BI.MVCModel, {
             var parents = self._getChildParents(item);
             if(parents.length === 2) {
                 BI.some(parents, function (idx, item) {
-                    if(item["table_name"] === name){
+                    if(item["tableName"] === name){
                         hasSameName = true;
                         return true;
                     }
@@ -94,12 +94,12 @@ BI.DynamictabModel = BI.inherit(BI.MVCModel, {
     },
 
     reName : function (id, newName) {
-        this.get(id).set("table_name", newName)
+        this.get(id).set("tableName", newName)
     },
 
     getName : function (id) {
         var childModel = this.get(id);
-        return BI.isNotNull(childModel) ? childModel.get("table_name") : void 0
+        return BI.isNotNull(childModel) ? childModel.get("tableName") : void 0
     },
 
     createNewName : function(baseName) {

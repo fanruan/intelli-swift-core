@@ -10,13 +10,13 @@ BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.MVCModel, {
         var invalid = [false];
         BI.each(items, function (i, item) {
             var field = BI.find(parent[ETLCst.FIELDS], function (i, field) {
-                return field.field_name === item.field_name;
+                return field.fieldName === item.fieldName;
             })
             if (BI.isNotNull(field)){
                 newItems.push(item);
                 if (!invalid[0]){
-                    if (field.field_type !== item.field_type){
-                        invalid = [true, BI.i18nText('BI-Basic_Filter') + field.field_name + BI.i18nText('BI-Illegal_Field_Type')];
+                    if (field.fieldType !== item.fieldType){
+                        invalid = [true, BI.i18nText('BI-Basic_Filter') + field.fieldName + BI.i18nText('BI-Illegal_Field_Type')];
                     } else {
                         invalid = self._checkItem(item, parent[ETLCst.FIELDS]);
                     }
@@ -30,11 +30,11 @@ BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.MVCModel, {
     _checkItem : function (item, fields) {
         var msg = "";
         var invalid =  BI.some(item.value, function (i, v) {
-            if (v.filter_type === BICst.FILTER_TYPE.FORMULA ) {
-                var fs = BI.Utils.getFieldsFromFormulaValue(v.filter_value);
+            if (v.filterType === BICst.FILTER_TYPE.FORMULA ) {
+                var fs = BI.Utils.getFieldsFromFormulaValue(v.filterValue);
                 var lostField = BI.find(fs, function (i, field) {
                     return BI.isNull(BI.find(fields, function (idx, f) {
-                        return f.field_name === field;
+                        return f.fieldName === field;
                     }))
                 })
                 if (BI.isNotNull(lostField)){

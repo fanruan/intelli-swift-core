@@ -26,12 +26,12 @@ BI.AnalysisETLOperatorAddColumnValueSingleController = BI.inherit(BI.MVCControll
     populate : function (widget, model) {
         var value = model.get('v') || "";
         model.set('v', value);
-        widget.createEditor(this.options.field_type, value)
+        widget.createEditor(this.options.fieldType, value)
         this._checkCanSave(widget, model)
     },
 
-    changeFieldType : function (field_type, widget, model) {
-        this.options.field_type = field_type;
+    changeFieldType : function (fieldType, widget, model) {
+        this.options.fieldType = fieldType;
         this.populate(widget, model)
     }
 })

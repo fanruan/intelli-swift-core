@@ -31,13 +31,13 @@ public class BICounterTarget extends BISummaryTarget {
         super.parseJSON(jo, userId);
         if (jo.has("_src")) {
             JSONObject obj = jo.optJSONObject("_src");
-            String distinct_field_id = obj.getString("field_id");
+            String distinct_field_id = obj.getString("fieldId");
             /**
              * Connery：
              */
             BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(distinct_field_id));
             if (field == null) {
-                String tableId = obj.getString("table_id");
+                String tableId = obj.getString("tableId");
                 BusinessField column = new BIBusinessField(new BIFieldID(distinct_field_id));
                 BusinessTable tableBelongTo = BIModuleUtils.getBusinessTableById(new BITableID(tableId));
                 column.setTableBelongTo(tableBelongTo);

@@ -426,7 +426,7 @@ public class BIDBUtils {
         ResultSet rs = null;
         try {
             stmt = connection.createStatement();
-            rs = stmt.executeQuery("select DATA_TYPE FROM all_tab_columns where table_name =" + "'" + tableName + "'" + "and COLUMN_NAME =" + "'" + columnName + "'");
+            rs = stmt.executeQuery("select DATA_TYPE FROM all_tab_columns where tableName =" + "'" + tableName + "'" + "and COLUMN_NAME =" + "'" + columnName + "'");
             while (rs.next()) {
                 if (rs.getString("DATA_TYPE").toUpperCase().contains("TIMESTAMP")) {
                     return Types.TIMESTAMP;

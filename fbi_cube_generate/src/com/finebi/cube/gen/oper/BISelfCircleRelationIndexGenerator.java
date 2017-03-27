@@ -44,7 +44,7 @@ public class BISelfCircleRelationIndexGenerator extends BIRelationIndexGenerator
      * @throws Exception
      */
     @Override
-    protected GroupValueIndex getBitmapIndex(ICubeColumnEntityService foreignColumn, int position) throws BICubeIndexException {
+    protected GroupValueIndex getForeignBitmapIndex(ICubeColumnEntityService foreignColumn, int position) throws BICubeIndexException {
         GroupValueIndex selfCircleGVI = foreignColumn.getBitmapIndex(position);
         final CubeTableEntityGetterService foreignTable = cubeChooser.getCubeTable(relation.getForeignTable());
         if (TableSourceUtils.isSelfCirCleSource(BIRelationHelper.getTableRelation(this.relation).getForeignTable())) {

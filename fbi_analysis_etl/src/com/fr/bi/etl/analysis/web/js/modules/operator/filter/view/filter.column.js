@@ -19,7 +19,7 @@ BI.AnalysisETLOperatorFilterSingleColumn = FR.extend(BI.Widget, {
         this.title = BI.createWidget({
             type:"bi.label",
             cls:"title",
-            text: o.data.field_name
+            text: o.data.fieldName
         })
 
         BI.createWidget({
@@ -63,7 +63,7 @@ BI.AnalysisETLOperatorFilterSingleColumn = FR.extend(BI.Widget, {
             })
             items.push({
                 type:ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_single_content",
-                data:BI.ETLFilterViewItemFactory.createViewItems(item, data.field_name, data.fieldItems),
+                data:BI.ETLFilterViewItemFactory.createViewItems(item, data.fieldName, data.fieldItems),
                 height:contentHeight,
                 width:self._constant.contentWidth
             })

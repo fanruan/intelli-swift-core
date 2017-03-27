@@ -90,15 +90,15 @@ public class BIField implements IField {
      */
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if (jo.has("field_name")) {
-            this.setFieldName(jo.getString("field_name"));
+        if (jo.has("fieldName")) {
+            this.setFieldName(jo.getString("fieldName"));
         }
-        if (jo.has("table_id")) {
-            String tableId = jo.getString("table_id");
+        if (jo.has("tableId")) {
+            String tableId = jo.getString("tableId");
             tableBelongTo = new BITable(new BITableID(tableId));
         }
-        if (jo.has("field_id")) {
-            String fieldId = jo.getString("field_id");
+        if (jo.has("fieldId")) {
+            String fieldId = jo.getString("fieldId");
             String tableId = BIIDUtils.getTableIDFromFieldID(fieldId);
             tableBelongTo = new BITable(new BITableID(tableId));
             this.setFieldName(BIIDUtils.getFieldNameFromFieldID(fieldId));
@@ -141,9 +141,9 @@ public class BIField implements IField {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put("field_name", getFieldName());
+        jo.put("fieldName", getFieldName());
         jo.put("id", BIIDUtils.createFieldID(this));
-        jo.put("table_id", getTableBelongTo().getID().getIdentityValue());
+        jo.put("tableId", getTableBelongTo().getID().getIdentityValue());
         return jo;
     }
 

@@ -18,9 +18,9 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
             var parent = this.get(ETLCst.PARENTS)[0];
             var fields = parent[ETLCst.FIELDS];
             BI.each(fields, function (idx, item) {
-                if(item.field_type === BICst.COLUMN.NUMBER) {
+                if(item.fieldType === BICst.COLUMN.NUMBER) {
                     self.addDimensionByField({fieldInfo: item,regionType: BICst.REGION.TARGET1})
-                } else if(item.field_type === BICst.COLUMN.STRING || item.field_type === BICst.COLUMN.DATE) {
+                } else if(item.fieldType === BICst.COLUMN.STRING || item.fieldType === BICst.COLUMN.DATE) {
                     self.addDimensionByField({fieldInfo: item,regionType: BICst.REGION.DIMENSION1})
                 }
             })
@@ -87,7 +87,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         var f = field;
         var field = f["fieldInfo"], regionType = f["regionType"];
         var id = BI.UUID();
-        var type = field["field_type"];
+        var type = field["fieldType"];
         var getDimensionTypeByFieldType = function (fieldType) {
             switch (fieldType) {
                 case BICst.COLUMN.STRING:
@@ -99,10 +99,10 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
             }
         };
         dimensions[id] = {
-            name: BI.Func.createDistinctName(dimensions, field["field_name"]),
+            name: BI.Func.createDistinctName(dimensions, field["fieldName"]),
             _src: {
-                field_type: type,
-                field_name: field["field_name"]
+                fieldType: type,
+                fieldName: field["fieldName"]
             },
             type: getDimensionTypeByFieldType(type),
             used: true
@@ -164,8 +164,8 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                 BI.each(item, function (i, v) {
                     var  dimension = dimensions[v];
                     fields.push({
-                        field_name : dimension["name"],
-                        field_type: self._getFieldType(dimension, idx),
+                        fieldName : dimension["name"],
+                        fieldType: self._getFieldType(dimension, idx),
                     });
                 })
             })
@@ -181,7 +181,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
             return BICst.COLUMN.NUMBER;
         } else {
             //TODO FIX其他类型等分组ok
-            var src = dimension._src.field_type;
+            var src = dimension._src.fieldType;
             switch (src) {
                 case BICst.COLUMN.NUMBER: {
                     if(BI.isNotNull(dimension.group) && dimension.group.type === BICst.GROUP.ID_GROUP){
@@ -284,12 +284,12 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
         var found = BI.some(view[BICst.REGION.DIMENSION1], function (i, v) {
             var  dimension = dimensions[v];
             var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
-                return field.field_name === dimension._src.field_name
+                return field.fieldName === dimension._src.fieldName
             })
             if (BI.isNull(f)){
                 msg = BI.i18nText('BI-Group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
                 return true;
-            } else if ((BI.isNull(dimension.group) || dimension.group.type !== BICst.GROUP.ID_GROUP) &&  f.field_type !== dimension._src.field_type){
+            } else if ((BI.isNull(dimension.group) || dimension.group.type !== BICst.GROUP.ID_GROUP) &&  f.fieldType !== dimension._src.fieldType){
                 msg = BI.i18nText('BI-Group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
                 return true;
             }
@@ -298,12 +298,12 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
             found = BI.some(view[BICst.REGION.TARGET1], function (i, v) {
                 var  dimension = dimensions[v];
                 var f = BI.find(parent[ETLCst.FIELDS], function (idx, field) {
-                    return field.field_name === dimension._src.field_name
+                    return field.fieldName === dimension._src.fieldName
                 })
                 if (BI.isNull(f)){
                     msg = BI.i18nText('BI-Group_summary') + dimension["name"] + BI.i18nText('BI-Not_Fount')
                     return true;
-                } else if(dimension.group.type !== BICst.SUMMARY_TYPE.COUNT &&  f.field_type !== dimension._src.field_type) {
+                } else if(dimension.group.type !== BICst.SUMMARY_TYPE.COUNT &&  f.fieldType !== dimension._src.fieldType) {
                      msg = BI.i18nText('BI-Group_summary') + dimension["name"] + BI.i18nText('BI-Illegal_Field_Type')
                      return true;
                 }

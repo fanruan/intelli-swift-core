@@ -225,9 +225,9 @@ BI.extend(BI.Utils, {
         BI.ETLReq.reqPreviewTable(table, function (data) {
             BI.each(model[ETLCst.FIELDS], function(idx, item){
                 var head = {
-                    text:item.field_name,
-                    field_type:item.field_type,
-                    field_id:item.field_id,
+                    text:item.fieldName,
+                    fieldType:item.fieldType,
+                    fieldId:item.fieldId,
                     filterValueGetter : filterValueGetter
                 }
                 head[ETLCst.FIELDS] = model[ETLCst.FIELDS]

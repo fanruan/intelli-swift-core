@@ -101,7 +101,7 @@ BI.AnalysisETLOperatorMergeSheetPane = FR.extend(BI.MVCWidget, {
     createTable : function (tables) {
         return BI.map(tables, function (i, item) {
             return {
-                text:item.table_name,
+                text:item.tableName,
                 type:"bi.label",
                 height:20,
                 textAlign:"left"

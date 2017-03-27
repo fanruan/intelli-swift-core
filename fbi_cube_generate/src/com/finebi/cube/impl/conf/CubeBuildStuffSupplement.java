@@ -110,4 +110,9 @@ public class CubeBuildStuffSupplement extends CubeBuildSpecific {
             }
         }
     }
+
+    @Override
+    public boolean preConditionsCheck() {
+        return true;
+    }
 }

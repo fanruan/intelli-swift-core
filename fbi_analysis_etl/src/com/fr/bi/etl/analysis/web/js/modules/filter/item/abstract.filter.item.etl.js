@@ -15,8 +15,8 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
         BI.AbstractETLFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var value = o.value || {};
-        self.filter_type = BI.isNotNull(value.filter_type) ? value.filter_type : o.defaultType;
-        self.filter_value = value.filter_value;
+        self.filterType = BI.isNotNull(value.filterType) ? value.filterType : o.defaultType;
+        self.filterValue = value.filterValue;
         this.deleteButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "delete-font",
@@ -57,7 +57,7 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
             type: "bi.vertical",
             scrolly : false
         });
-        this._refreshFilterWidget(self.filter_value);
+        this._refreshFilterWidget(self.filterValue);
         return this.filterValueContainer;
     },
 
@@ -70,11 +70,11 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
             items: o.filterTypes
         });
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
-            self.filter_type = self.filterType.getValue()[0];
+            self.filterType = self.filterType.getValue()[0];
             self._refreshFilterWidget();
             self.fireEvent(BI.AbstractETLFilterItem.EVENT_VALUE_CHANGED);
         });
-        this.filterType.setValue(BI.isNotNull(o.value.filter_type) ? o.value.filter_type : o.defaultType);
+        this.filterType.setValue(BI.isNotNull(o.value.filterType) ? o.value.filterType : o.defaultType);
         return this.filterType;
     },
 
@@ -113,9 +113,9 @@ BI.AbstractETLFilterItem = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            field_name : this.options.field_name,
-            filter_type : this.filter_type,
-            filter_value : this.filterWidget.getValue()
+            fieldName : this.options.fieldName,
+            filterType : this.filterType,
+            filterValue : this.filterWidget.getValue()
         }
     }
 });

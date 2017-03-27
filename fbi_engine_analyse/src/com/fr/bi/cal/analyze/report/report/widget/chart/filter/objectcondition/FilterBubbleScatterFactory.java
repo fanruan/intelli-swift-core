@@ -12,8 +12,8 @@ public class FilterBubbleScatterFactory {
 
     public static AbstractXYZFilter parseFilter(JSONObject filterValue) throws JSONException {
         AbstractXYZFilter filter = null;
-        if(filterValue.has("filter_type")){
-            switch (filterValue.getInt("filter_type")){
+        if(filterValue.has("filterType")){
+            switch (filterValue.getInt("filterType")){
                 case BIReportConstant.FILTER_TYPE.AND:
                     filter = new XYZGeneralAndFilter(filterValue);
                     break;

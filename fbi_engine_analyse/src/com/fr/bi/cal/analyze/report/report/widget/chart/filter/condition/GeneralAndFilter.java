@@ -17,12 +17,12 @@ public class GeneralAndFilter implements IFilter {
     private IFilter[] childs;
 
     public GeneralAndFilter(JSONObject jo) throws JSONException {
-        JSONArray filter_value;
-        if (jo.has("filter_value")) {
-            filter_value = jo.getJSONArray("filter_value");
-            childs = new IFilter[filter_value.length()];
-            for (int i = 0; i < filter_value.length(); i++) {
-                childs[i] = FilterFactory.parseFilter(filter_value.getJSONObject(i));
+        JSONArray filterValue;
+        if (jo.has("filterValue")) {
+            filterValue = jo.getJSONArray("filterValue");
+            childs = new IFilter[filterValue.length()];
+            for (int i = 0; i < filterValue.length(); i++) {
+                childs[i] = FilterFactory.parseFilter(filterValue.getJSONObject(i));
             }
         }
     }
