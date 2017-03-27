@@ -75,9 +75,9 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     /**
-     * @param widget
-     * @param usedDimensions
-     * @param usedSumTarget
+     * @param widget ComplexGroupExecutor复用时需要的参数
+     * @param usedDimensions ComplexGroupExecutor复用时需要的参数
+     * @param usedSumTarget ComplexGroupExecutor复用时需要的参数
      * @param pagedIterator
      * @throws Exception
      */
@@ -115,11 +115,13 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     /**
-     * @param n      复杂表复用此方法时需要的参数
-     * @param widget 复杂表复用此方法时需要的参数
+     *
+     * @param n ComplexGroupExecutor复用时需要的参数
+     * @param widget ComplexGroupExecutor复用时需要的参数
+     * @param rowDimensions ComplexGroupExecutor复用时需要的参数
      * @param iter
-     * @param start
-     * @param rowIdx
+     * @param start ComplexGroupExecutor复用时需要的参数
+     * @param rowIdx ComplexGroupExecutor复用时需要的参数
      */
     public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx) {
         while (n.getFirstChild() != null) {

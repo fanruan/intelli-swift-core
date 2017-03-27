@@ -79,11 +79,11 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
 
     /**
      *
-     * @param roots 复杂表复用此方法时需要的参数
-     * @param widget 复杂表复用此方法时需要的参数
-     * @param colDimension 复杂表复用此方法时需要的参数
-     * @param rowDimension 复杂表复用此方法时需要的参数
-     * @param usedSumTarget 复杂表复用此方法时需要的参数
+     * @param roots         ComplexCrossExecutor复用此方法时需要的参数
+     * @param widget        ComplexCrossExecutor复用此方法时需要的参数
+     * @param colDimension  ComplexCrossExecutor复用此方法时需要的参数
+     * @param rowDimension  ComplexCrossExecutor复用此方法时需要的参数
+     * @param usedSumTarget ComplexCrossExecutor复用此方法时需要的参数
      * @param pagedIterator
      * @param rowIdx
      * @throws Exception
@@ -162,14 +162,14 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
     }
 
     /**
-     * @param roots        复杂表复用此方法时需要的参数
-     * @param widget       复杂表复用此方法时需要的参数
-     * @param rowDimension 复杂表复用此方法时需要的参数
-     * @param maxDimLen    复杂表复用此方法时需要的参数
+     * @param roots        ComplexCrossExecutor复用此方法时需要的参数
+     * @param widget       ComplexCrossExecutor复用此方法时需要的参数
+     * @param rowDimension ComplexCrossExecutor复用此方法时需要的参数
+     * @param maxDimLen    ComplexCrossExecutor复用此方法时需要的参数 列表头中维度最多区域中维度的长度
      * @param iter
      * @param start
-     * @param rowIdx       复杂表多区域时记录行号类型为FinalInt
-     * @param order        复杂表复用此方法时需要的参数
+     * @param rowIdx       ComplexCrossExecutor复用此方法时需要的参数 记录行数
+     * @param order        ComplexCrossExecutor复用此方法时需要的参数 记录序号
      * @throws Exception
      */
     public static void generateCells(NewCrossRoot[] roots, TableWidget widget, BIDimension[] rowDimension, int maxDimLen,
