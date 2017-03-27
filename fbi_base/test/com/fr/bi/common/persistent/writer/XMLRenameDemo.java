@@ -16,9 +16,9 @@ public class XMLRenameDemo extends TestCase{
         Object o = readNewObjectFromXml();
 
         assertTrue(o instanceof Person);
-        assertTrue("ChenHe".equals(((Person)o).getName()));
-        assertTrue(35 == ((Person)o).getAge());
-        assertTrue(false == ((Person)o).getMale());
+        assertTrue(PersonOld1.getChenHe().getNameOld().equals(((Person)o).getName()));
+        assertTrue(PersonOld1.getChenHe().getAge() == ((Person)o).getAge());
+        assertTrue(PersonOld1.getChenHe().getMale() == ((Person)o).getMale());
     }
 
     private void writeObjectToXml() {
