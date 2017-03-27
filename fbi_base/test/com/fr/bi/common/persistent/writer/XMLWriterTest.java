@@ -76,7 +76,7 @@ public class XMLWriterTest extends TestCase {
         checkEquals(part, "ArrayBasicTwo");
     }
 
-    private void generate(Object target, String name) {
+    public static void generate(Object target, String name) {
         try {
             BIBeanXMLWriterWrapper wrapper = new BIBeanXMLWriterWrapper(target);
             wrapper.setTag(name);
@@ -169,7 +169,7 @@ public class XMLWriterTest extends TestCase {
         }
     }
 
-    private Object get(Object object, String name) {
+    public static Object get(Object object, String name) {
         try {
             File var3 = new File("./temp/" + name + ".xml");
             StableUtils.makesureFileExist(var3);
