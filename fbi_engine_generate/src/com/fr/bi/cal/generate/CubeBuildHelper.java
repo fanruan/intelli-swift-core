@@ -41,6 +41,9 @@ public class CubeBuildHelper {
     private int retryTimes = 100;
     private int delayTimes = 5000;
 
+    private CustomTableTask taskInfo;
+    private Object lock = new Object();
+
     private CubeBuildHelper() {
         Thread taskAddThread = new Thread(
                 new Runnable() {
@@ -48,7 +51,7 @@ public class CubeBuildHelper {
                     public void run() {
                         while (true) {
                             try {
-                                CustomTableTask taskInfo = taskQueue.take();
+                                taskInfo = taskQueue.take();
                                 isCubeBuilding = true;
                                 BILoggerFactory.getLogger().info("Update table ID:" + taskInfo.baseTableSourceIdToString());
                                 int TIMES = 0;
@@ -76,6 +79,10 @@ public class CubeBuildHelper {
                             } catch (Exception e) {
                                 isCubeBuilding = false;
                                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+                            }finally {
+                                synchronized (lock){
+                                    taskInfo = null;
+                                }
                             }
                         }
                     }
@@ -460,6 +467,12 @@ public class CubeBuildHelper {
         while (taskIterator.hasNext()) {
             CustomTableTask task = taskIterator.next();
             tableSourceIdSet.addAll(task.getBaseTableSourceIdList());
+        }
+
+        synchronized (lock) {
+            if (taskInfo != null) {
+                tableSourceIdSet.addAll(taskInfo.getBaseTableSourceIdList());
+            }
         }
         return tableSourceIdSet;
     }
