@@ -11,12 +11,9 @@ import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.widget.field.target.BITarget;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
+import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,15 +22,17 @@ import java.util.Map;
 /**
  * Created by sheldon on 14-9-2.
  */
-public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
-
+public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
+    protected BIComplexExecutData rowData;
+    protected ComplexExpander complexExpander;
 
     public ComplexGroupExecutor(TableWidget widget, Paging page,
                                 ArrayList<ArrayList<String>> rowArray,
                                 BISession session, ComplexExpander expander) {
 
-        super(widget, page, session, expander);
+        super(widget, page, session);
         rowData = new BIComplexExecutData(rowArray, widget.getDimensions());
+        this.complexExpander = expander;
     }
 
     @Override
@@ -81,13 +80,17 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
         return iter;
     }
 
+    @Override
+    public Object getCubeNode() throws Exception {
+        return null;
+    }
+
     /**
      * 获取nodes的个数
      *
      * @param nodes
      * @return
      */
-    @Override
     public int getNodesTotalLength(Node[] nodes) {
         int count = 0;
 
@@ -103,7 +106,6 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
      *
      * @return
      */
-    @Override
     public Map<Integer, Node> getCubeNodes() throws Exception{
 
         long start = System.currentTimeMillis();
@@ -125,55 +127,14 @@ public class ComplexGroupExecutor extends AbstractComplexNodeExecutor {
         return nodeMap;
     }
 
-    private BISummaryTarget[] createTarget4Calculate() {
-        ArrayList<BITarget> list = new ArrayList<BITarget>();
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            list.add(usedSumTarget[i]);
-        }
-        if (widget.getTargetSort() != null) {
-            String name = widget.getTargetSort().getName();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), name)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), name)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-        }
-        Iterator<String> it1 = widget.getTargetFilterMap().keySet().iterator();
-        while (it1.hasNext()) {
-            String key = it1.next();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), key)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), key)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-
-        }
-        return list.toArray(new BISummaryTarget[list.size()]);
-    }
-
-    /**
-     * 获取node
-     *
-     * @return 获取的node
-     */
     @Override
-    public Node getCubeNode() {
-        return null;
+    public JSONObject createJSONObject() throws Exception {
+        Iterator<Map.Entry<Integer, Node>> it = getCubeNodes().entrySet().iterator();
+        JSONObject jo = new JSONObject();
+        while (it.hasNext()){
+            Map.Entry<Integer, Node> entry = it.next();
+            jo.put(String.valueOf(entry.getKey()), entry.getValue().toJSONObject(rowData.getDimensionArray(entry.getKey()), widget.getTargetsKey(), -1));
+        }
+        return jo;
     }
 }

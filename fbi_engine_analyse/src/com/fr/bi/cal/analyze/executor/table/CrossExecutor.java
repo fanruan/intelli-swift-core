@@ -14,11 +14,9 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
@@ -26,17 +24,19 @@ import com.fr.stable.ExportConstants;
 
 import java.util.*;
 
-public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
+public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
 
     private BIDimension[] rowDimension;
     private BIDimension[] colDimension;
+    private CrossExpander expander;
 
     public CrossExecutor(TableWidget widget, BIDimension[] usedRows,
                          BIDimension[] usedColumn,
                          Paging paging, BISession session, CrossExpander expander) {
-        super(widget, paging, session, expander);
+        super(widget, paging, session);
         this.rowDimension = usedRows;
         this.colDimension = usedColumn;
+        this.expander = expander;
     }
 
     @Override
@@ -266,51 +266,6 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         }
     }
 
-    private BISummaryTarget[] createTarget4Calculate() {
-        ArrayList<BITarget> list = new ArrayList<BITarget>();
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            list.add(usedSumTarget[i]);
-        }
-        if (widget.getTargetSort() != null) {
-            String name = widget.getTargetSort().getName();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), name)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), name)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-        }
-        Iterator<String> it1 = widget.getTargetFilterMap().keySet().iterator();
-        while (it1.hasNext()) {
-            String key = it1.next();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), key)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), key)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-
-        }
-        return list.toArray(new BISummaryTarget[list.size()]);
-    }
-
-    /* (non-Javadoc)
-     * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
-     */
     @Override
     public NewCrossRoot getCubeNode() throws Exception {
         long start = System.currentTimeMillis();

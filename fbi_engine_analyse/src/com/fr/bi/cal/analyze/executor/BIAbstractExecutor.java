@@ -9,6 +9,7 @@ import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.field.target.target.BISummaryTarget;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,13 +9,10 @@ import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.TargetCalculator;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -25,18 +22,20 @@ import java.util.*;
 /**
  * Created by sheldon on 14-9-2.
  */
-public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
+public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
 
     private BIComplexExecutData rowData;
     private BIComplexExecutData columnData;
+    private ComplexExpander complexExpander;
 
     public ComplexCrossExecutor(TableWidget widget, Paging page,
                                 ArrayList<ArrayList<String>> rowArray, ArrayList<ArrayList<String>> columnArray,
                                 BISession session, ComplexExpander expander) {
 
-        super(widget, page, session, expander);
+        super(widget, page, session);
         rowData = new BIComplexExecutData(rowArray, widget.getDimensions());
         columnData = new BIComplexExecutData(columnArray, widget.getDimensions());
+        this.complexExpander = expander;
     }
 
     @Override
@@ -83,6 +82,11 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
         return iter;
     }
 
+    @Override
+    public NewCrossRoot getCubeNode() throws Exception {
+        return null;
+    }
+
     private int[] calculateRowAndColumnLen(Map<Integer, NewCrossRoot[]> nodesMap) {
         int len = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[len];
@@ -106,37 +110,6 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
         lens[0] = getTotalNodeColumnLength(nodes, hasTarget) * (Math.max(1, keys.length)) + rowData.getMaxArrayLength();
         lens[1] = getTotalNodeRowLength(nodes, hasTarget, integers) + columnData.getMaxArrayLength() + 1;
         return lens;
-    }
-
-    /**
-     * 获取nodes 复杂列表获取的是一个nodes
-     *
-     * @return 获取的nodes
-     */
-    @Override
-    public Map<Integer, NewCrossRoot> getCubeNodes() throws InterruptedException {
-        return null;
-    }
-
-    /**
-     * 获取nodes的个数
-     *
-     * @param nodes
-     * @return
-     */
-    @Override
-    public int getNodesTotalLength(Node[] nodes) {
-        return 0;
-    }
-
-    /**
-     * 获取node
-     *
-     * @return 获取的node
-     */
-    @Override
-    public NewCrossRoot getCubeNode() {
-        return null;
     }
 
     @Override
@@ -191,47 +164,7 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     }
 
 
-    private BISummaryTarget[] createTarget4Calculate() {
-        ArrayList<BITarget> list = new ArrayList<BITarget>();
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            list.add(usedSumTarget[i]);
-        }
-        if (widget.getTargetSort() != null) {
-            String name = widget.getTargetSort().getName();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), name)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), name)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-        }
-        Iterator<String> it1 = widget.getTargetFilterMap().keySet().iterator();
-        while (it1.hasNext()) {
-            String key = it1.next();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), key)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), key)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
 
-        }
-        return list.toArray(new BISummaryTarget[list.size()]);
-    }
 
     /* (non-Javadoc)
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
