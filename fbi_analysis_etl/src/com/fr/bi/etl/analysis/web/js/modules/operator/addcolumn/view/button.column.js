@@ -5,14 +5,14 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
         return BI.extend(BI.ColumnButton.superclass._defaultConfig.apply(this, arguments), {
             baseCls:"bi-analysis-etl-operator-button-column",
             height:25,
-            field_type:BICst.COLUMN.STRING,
-            field_name:"aaa",
+            fieldType:BICst.COLUMN.STRING,
+            fieldName:"aaa",
         })
     },
 
     _initOpts : function () {
         var o = this.options;
-        o.title = o.field_name
+        o.title = o.fieldName
     },
     
     _init : function () {
@@ -24,7 +24,7 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
             element:this.element,
             items:[{
                 type:"bi.icon_button",
-                cls: BI.Utils.getFieldClass(o.field_type),
+                cls: BI.Utils.getFieldClass(o.fieldType),
                 width:o.height,
                 height:o.height,
                 forceNotSelected :true
@@ -35,7 +35,7 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
                     // items:[{
                         type:"bi.label",
                         textAlign:"left",
-                        text:o.field_name
+                        text:o.fieldName
                     // }]
                 }
             }, {
@@ -44,7 +44,7 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
                 width:o.height,
                 height:o.height,
                 handler : function () {
-                    self.fireEvent(BI.ColumnButton.EVENT_EDIT, o.field_name)
+                    self.fireEvent(BI.ColumnButton.EVENT_EDIT, o.fieldName)
                 }
             }, {
                 type:"bi.icon_button",
@@ -52,7 +52,7 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
                 width:o.height,
                 height:o.height,
                 handler : function () {
-                    self.fireEvent(BI.ColumnButton.EVENT_DELETE, o.field_name)
+                    self.fireEvent(BI.ColumnButton.EVENT_DELETE, o.fieldName)
                 }
             }]
         })

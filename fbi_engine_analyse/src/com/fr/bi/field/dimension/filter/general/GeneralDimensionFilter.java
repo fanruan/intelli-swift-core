@@ -23,8 +23,8 @@ public abstract class GeneralDimensionFilter extends AbstractDimensionFilter {
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-        if (jo.has("filter_value")) {
-            JSONArray ja = jo.getJSONArray("filter_value");
+        if (jo.has("filterValue")) {
+            JSONArray ja = jo.getJSONArray("filterValue");
             childs = new DimensionFilter[ja.length()];
             for (int i = 0, len = childs.length; i < len; i++) {
                 childs[i] = DimensionFilterFactory.parseFilter(ja.getJSONObject(i), userId);
@@ -59,7 +59,7 @@ public abstract class GeneralDimensionFilter extends AbstractDimensionFilter {
         for (int i = 0, len = childs.length; i < len; i++) {
             childJa.put(childs[i].createJSON());
         }
-        jo.put("filter_value", childJa);
+        jo.put("filterValue", childJa);
         return jo;
     }
 

@@ -11,16 +11,16 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         //     var self = this;
         //     BI.each(operator["view"][BICst.REGION.DIMENSION1], function (idx, item) {
         //         var dim = dimensions[item];
-        //         var field_type = dim["type"];
+        //         var fieldType = dim["type"];
         //         var group = dim["group"]
-        //         if(field_type !== BICst.TARGET_TYPE.DATE) {
+        //         if(fieldType !== BICst.TARGET_TYPE.DATE) {
         //             group = null;
         //         }
-        //         field_type = self._getTypeFromTargetType(field_type, group)
+        //         fieldType = self._getTypeFromTargetType(fieldType, group)
         //         fields.push({
-        //             "field_name":dim["name"],
-        //             "field_type" : field_type,
-        //             "id": dim["_src"]["field_id"],
+        //             "fieldName":dim["name"],
+        //             "fieldType" : fieldType,
+        //             "id": dim["_src"]["fieldId"],
         //             "uid" : item,
         //             "group" : BI.isNull(group) ? null : group["type"]
         //         })
@@ -39,7 +39,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
     },
 
     addField: function (f) {
-        var fieldId = f.field_id || f;
+        var fieldId = f.fieldId || f;
         var name = BI.Utils.getFieldNameByID(fieldId);
         var fieldType = BI.Utils.getFieldTypeByID(fieldId)
         var group = null;
@@ -51,8 +51,8 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         }
         var fieldName = this.createDistinctName(name);
         var field = {
-            "field_name": fieldName,
-            "field_type": fieldType,
+            "fieldName": fieldName,
+            "fieldType": fieldType,
             "id": fieldId,
             "uid": BI.UUID()
         }
@@ -101,8 +101,8 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         var oldNames = [];
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
         BI.each(tempFields, function (i, item) {
-            if (!BI.isNull(item.field_name)) {
-                oldNames.push(item.field_name);
+            if (!BI.isNull(item.fieldName)) {
+                oldNames.push(item.fieldName);
             }
         });
         return BI.Utils.createDistinctName(oldNames, name);
@@ -131,7 +131,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
 
     rename: function (index, name) {
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
-        tempFields[index].field_name = name;
+        tempFields[index].fieldName = name;
         this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, tempFields)
     },
 
@@ -143,7 +143,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
         var self = this, valid = true;
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
         BI.some(tempFields, function (i, item) {
-            if (i != index && item.field_name == name) {
+            if (i != index && item.fieldName == name) {
                 valid = false;
                 return true;
             }
@@ -153,7 +153,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
 
     _buildDetailTableModel: function (key) {
         var res = {
-            filter_value: {},
+            filterValue: {},
             page: -1,
             type: BICst.WIDGET.DETAIL
         };
@@ -179,13 +179,13 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
             dimensions[item["uid"]] = {
                 _src: {
                     id: item["id"] + (BI.isNull(item["group"]) ? "" : item["group"]),
-                    field_id: item["id"]
+                    fieldId: item["id"]
                 },
                 group: {
                     type: BI.isNull(item["group"]) ? BICst.GROUP.NO_GROUP : item["group"]
                 },
                 dimension_map: dm,
-                name: item["field_name"],
+                name: item["fieldName"],
                 type: self._getDimensionType(item["id"]),
                 used: true
             }

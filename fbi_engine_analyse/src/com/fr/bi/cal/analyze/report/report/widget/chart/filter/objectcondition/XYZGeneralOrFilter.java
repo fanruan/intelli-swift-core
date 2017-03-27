@@ -17,12 +17,12 @@ public class XYZGeneralOrFilter extends AbstractXYZFilter {
     private AbstractXYZFilter[] childs;
 
     public XYZGeneralOrFilter(JSONObject jo) throws JSONException{
-        JSONArray filter_value;
-        if (jo.has("filter_value")) {
-            filter_value = jo.optJSONArray("filter _value");
-            childs = new AbstractXYZFilter[filter_value.length()];
-            for (int i = 0; i < filter_value.length(); i++) {
-                childs[i] = FilterBubbleScatterFactory.parseFilter(filter_value.getJSONObject(i));
+        JSONArray filterValue;
+        if (jo.has("filterValue")) {
+            filterValue = jo.optJSONArray("filter _value");
+            childs = new AbstractXYZFilter[filterValue.length()];
+            for (int i = 0; i < filterValue.length(); i++) {
+                childs[i] = FilterBubbleScatterFactory.parseFilter(filterValue.getJSONObject(i));
             }
         }
     }

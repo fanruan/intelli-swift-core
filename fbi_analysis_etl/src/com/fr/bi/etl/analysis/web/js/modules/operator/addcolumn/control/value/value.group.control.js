@@ -43,7 +43,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
        
         widget.combo.setValue(fields.length > 0  ? fields[0].value : null);
         widget.checkBox.setSelected(model.get('showOther') || false);
-        widget.createEditor(this.options.field_type, model.get('other') || "");
+        widget.createEditor(this.options.fieldType, model.get('other') || "");
         this.clickCheckBox(widget, model)
         var items = model.get(ETLCst.ITEMS);
         var self = this;
@@ -55,7 +55,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
     },
 
     _addCondition : function (field, value, widget, model) {
-        var pane =  widget.pane.addItem(widget.createItem(field, value, this.options.field_type, model.get(ETLCst.PARENTS)));
+        var pane =  widget.pane.addItem(widget.createItem(field, value, this.options.fieldType, model.get(ETLCst.PARENTS)));
         this.childPane[pane.getName()] = pane;
         return pane;
     },
@@ -96,8 +96,8 @@ BI.AnalysisETLOperatorAddColumnValueGroupController = BI.inherit(BI.MVCControlle
         model.set(ETLCst.ITEMS, items);
     },
 
-    changeFieldType : function (field_type, widget, model) {
-        this.options.field_type = field_type;
+    changeFieldType : function (fieldType, widget, model) {
+        this.options.fieldType = fieldType;
         var oldValue = widget.combo.getValue();
         this._construct(widget, model)
         this.populate(widget, model)

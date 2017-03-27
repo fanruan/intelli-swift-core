@@ -89,14 +89,14 @@ public class BIBasicField extends BIField implements JSONTransform, Cloneable, S
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if (jo.has("field_type")) {
-            fieldType = jo.optInt("field_type", 0);
+        if (jo.has("fieldType")) {
+            fieldType = jo.optInt("fieldType", 0);
         }
-        if (jo.has("field_size")) {
-            fieldSize = jo.optInt("field_size", 0);
+        if (jo.has("fieldSize")) {
+            fieldSize = jo.optInt("fieldSize", 0);
         }
-        if (jo.has("is_usable")) {
-            isUsable = jo.optBoolean("is_usable", true);
+        if (jo.has("isUsable")) {
+            isUsable = jo.optBoolean("isUsable", true);
         }
     }
 
@@ -109,10 +109,10 @@ public class BIBasicField extends BIField implements JSONTransform, Cloneable, S
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
-        jo.put("field_type", fieldType)
-                .put("field_size", fieldSize)
-                .put("is_usable", isUsable)
-                .put("is_enable", canSetUseable);
+        jo.put("fieldType", fieldType)
+                .put("fieldSize", fieldSize)
+                .put("isUsable", isUsable)
+                .put("isEnable", canSetUseable);
         return jo;
     }
     public JSONObject createJSON(ICubeDataLoader loader) throws Exception {
@@ -132,10 +132,10 @@ public class BIBasicField extends BIField implements JSONTransform, Cloneable, S
     @Override
     public void writeXML(XMLPrintWriter writer) {
         writer.startTAG(super.XML_TAG);
-        writer.attr("field_name", fieldName);
-        writer.attr("field_type", fieldType)
-                .attr("field_size", fieldSize)
-                .attr("is_usable", isUsable).attr("id", tableBelongTo.getID().getIdentityValue());
+        writer.attr("fieldName", fieldName);
+        writer.attr("fieldType", fieldType)
+                .attr("fieldSize", fieldSize)
+                .attr("isUsable", isUsable).attr("id", tableBelongTo.getID().getIdentityValue());
         writer.end();
     }
 
@@ -143,10 +143,10 @@ public class BIBasicField extends BIField implements JSONTransform, Cloneable, S
     public void readXML(XMLableReader reader) {
         if (reader.isAttr()) {
             this.tableBelongTo = new BITable(new BITableID(reader.getAttrAsString("id", BIValueConstant.EMPTY)));
-            this.fieldName = reader.getAttrAsString("field_name", StringUtils.EMPTY);
-            fieldType = reader.getAttrAsInt("field_type", 0);
-            fieldSize = reader.getAttrAsInt("field_size", 0);
-            isUsable = reader.getAttrAsBoolean("is_usable", true);
+            this.fieldName = reader.getAttrAsString("fieldName", StringUtils.EMPTY);
+            fieldType = reader.getAttrAsInt("fieldType", 0);
+            fieldSize = reader.getAttrAsInt("fieldSize", 0);
+            isUsable = reader.getAttrAsBoolean("isUsable", true);
         }
     }
 

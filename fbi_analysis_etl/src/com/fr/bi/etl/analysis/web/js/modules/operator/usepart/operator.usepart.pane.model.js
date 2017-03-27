@@ -5,7 +5,7 @@ BI.AnalysisETLOperatorUsePartPaneModel = BI.inherit(BI.MVCModel, {
         var operator = this.get('operator') || {};
         var newFields = [];
         BI.each(parent[ETLCst.FIELDS], function (i, item) {
-            if (BI.indexOf(operator.value, item.field_name) === -1){
+            if (BI.indexOf(operator.value, item.fieldName) === -1){
                 newFields.push(item);
             }
         })

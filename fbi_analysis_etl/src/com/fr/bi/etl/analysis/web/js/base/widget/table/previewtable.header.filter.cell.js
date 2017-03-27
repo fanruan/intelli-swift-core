@@ -27,8 +27,8 @@ BI.AnalysisETLPreviewTableHeaderFilterCell = BI.inherit(BI.Widget, {
         })
         var op = {
             type : 'bi.filter_combo_etl',
-            field_type : o.field_type,
-            field_name : o.text,
+            fieldType : o.fieldType,
+            fieldName : o.text,
             fieldValuesCreator : function(callback){
                 return o.fieldValuesCreator(o.text, callback);
             }
@@ -48,7 +48,7 @@ BI.AnalysisETLPreviewTableHeaderFilterCell = BI.inherit(BI.Widget, {
             items:[{
                 el : {
                     type:"bi.icon_button",
-                    cls:BI.Utils.getFieldClass(o.field_type),
+                    cls:BI.Utils.getFieldClass(o.fieldType),
                     forceNotSelected :true,
                     height: o.height,
                     width: o.height

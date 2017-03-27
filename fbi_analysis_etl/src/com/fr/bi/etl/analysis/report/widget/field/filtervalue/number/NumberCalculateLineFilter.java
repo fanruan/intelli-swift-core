@@ -85,11 +85,11 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-        if (jo.has("field_name")) {
-            this.key = new IndexKey(jo.getString("field_name"));
+        if (jo.has("fieldName")) {
+            this.key = new IndexKey(jo.getString("fieldName"));
         }
-        if (jo.has("filter_value")) {
-            JSONObject value = jo.getJSONObject("filter_value");
+        if (jo.has("filterValue")) {
+            JSONObject value = jo.getJSONObject("filterValue");
             if (value.has("close")) {
                 parsClose(value.getInt("close") == CLOSE);
             }

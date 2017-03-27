@@ -57,8 +57,8 @@ public class BIAnalysisETLCheckTableInUseAction extends AbstractAnalysisETLActio
                 JSONObject dim = dimensions.getJSONObject(dIds.next());
                 if (dim.has("_src")) {
                     JSONObject src = dim.getJSONObject("_src");
-                    if (src.has("table_id")) {
-                        String tId = src.getString("table_id");
+                    if (src.has("tableId")) {
+                        String tId = src.getString("tableId");
                         isInUse = ComparatorUtils.equals(tId, tableId);
                         if (isInUse) {
                             break;

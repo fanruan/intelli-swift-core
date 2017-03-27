@@ -34,7 +34,7 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
      */
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-        expression = jo.optString("filter_value", StringUtils.EMPTY);
+        expression = jo.optString("filterValue", StringUtils.EMPTY);
     }
 
     /* (non-Javadoc)

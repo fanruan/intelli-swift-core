@@ -195,7 +195,7 @@ BI.HistoryTabModel = BI.inherit(BI.MVCModel, {
         var res =  BI.extend(BI.extend({
         }, items[items.length - 1]), {
             value:this.getValue("value"),
-            table_name:this.getValue("table_name"),
+            tableName:this.getValue("tableName"),
             invalidIndex : this.getValue('invalidIndex')
         });
         if(!this.isModelValid()){

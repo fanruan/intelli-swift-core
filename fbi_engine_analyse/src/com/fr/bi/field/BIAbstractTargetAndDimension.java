@@ -99,9 +99,9 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         }
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-            if (fieldJo.has("field_id")) {
+            if (fieldJo.has("fieldId")) {
                 //这里用BIBusinessFieldWrapper,能够通过fieldID获得table
-                column = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldJo.getString("field_id")));
+                column = BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldJo.getString("fieldId")));
             }
         }
         chartSetting = new ChartSetting();

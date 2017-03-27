@@ -51,8 +51,8 @@ public abstract class BISummaryTarget extends BIAbstractTarget {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        if (jo.has("filter_value")) {
-            filter = TargetFilterFactory.parseFilter(jo.getJSONObject("filter_value"), userId);
+        if (jo.has("filterValue")) {
+            filter = TargetFilterFactory.parseFilter(jo.getJSONObject("filterValue"), userId);
         }
     }
 

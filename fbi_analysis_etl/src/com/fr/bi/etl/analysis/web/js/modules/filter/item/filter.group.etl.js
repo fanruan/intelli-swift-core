@@ -29,7 +29,7 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
         self.button.on(BI.Button.EVENT_CHANGE,function(){
             var op ={
                 type: "bi.etl_filter_group_popup",
-                field : o.field_name,
+                field : o.fieldName,
                 value : self.storedValue,
                 targetText : self._getTargetText()
             }
@@ -86,7 +86,7 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
             default :
                 text = BI.i18nText('BI-Average_Value');
         }
-        return BI.i18nText('BI-ETL_Group_Target_Name_In', this.options.field_name) + text;
+        return BI.i18nText('BI-ETL_Group_Target_Name_In', this.options.fieldName) + text;
 
     },
 

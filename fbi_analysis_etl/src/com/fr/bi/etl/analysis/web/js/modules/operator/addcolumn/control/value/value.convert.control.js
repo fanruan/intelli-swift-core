@@ -20,7 +20,7 @@ BI.AnalysisETLOperatorAddColumnValueConvertController = BI.inherit(BI.MVCControl
     },
 
     setType : function (type, widget, model) {
-        model.set('field_type', type);
+        model.set('fieldType', type);
         this._checkCanSave(widget, model);
     },
 
@@ -33,9 +33,9 @@ BI.AnalysisETLOperatorAddColumnValueConvertController = BI.inherit(BI.MVCControl
             var f = model.getFieldByValue(field);
             model.set('field', field);
             widget.segment.setEnabledValue(ETLCst.ANALYSIS_ADD_COLUMN_CONVERT_ACCEPT_FIELDS[f.fieldType]);
-            var type = model.get('field_type') || ETLCst.ANALYSIS_ADD_COLUMN_CONVERT_ACCEPT_FIELDS[f.fieldType][0];
+            var type = model.get('fieldType') || ETLCst.ANALYSIS_ADD_COLUMN_CONVERT_ACCEPT_FIELDS[f.fieldType][0];
             widget.segment.setValue(type);
-            model.set('field_type', type);
+            model.set('fieldType', type);
         }
         this._checkCanSave(widget, model);
     }

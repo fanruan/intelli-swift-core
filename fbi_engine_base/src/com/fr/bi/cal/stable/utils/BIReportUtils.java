@@ -48,7 +48,7 @@ public class BIReportUtils {
                 JSONObject target = targets.getJSONObject(j);
                 if (target.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
                     JSONObject fieldJo = target.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-                    BusinessField field = new BIBusinessField(new BIFieldID(fieldJo.getString("field_id")));
+                    BusinessField field = new BIBusinessField(new BIFieldID(fieldJo.getString("fieldId")));
                     fields.add(field);
                 }
             }

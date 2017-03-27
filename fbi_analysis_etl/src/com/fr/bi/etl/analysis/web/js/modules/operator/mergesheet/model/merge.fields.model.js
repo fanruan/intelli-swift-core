@@ -26,7 +26,7 @@ BI.AnalysisETLMergeSheetFieldsModel = BI.inherit(BI.MVCModel, {
         var table2Fields = BI.Utils.getFieldArrayFromTable(table2);
         BI.some(joinFields, function (idx, item) {
             if(item[0] === BI.TableAddUnion.UNION_FIELD_NULL || item[1] === BI.TableAddUnion.UNION_FIELD_NULL
-                    || table1Fields[item[0]].field_type !== table2Fields[item[1]].field_type) {
+                    || table1Fields[item[0]].fieldType !== table2Fields[item[1]].fieldType) {
                 valid = false;
                 return true;
             }
@@ -110,8 +110,8 @@ BI.AnalysisETLMergeSheetFieldsModel = BI.inherit(BI.MVCModel, {
 
     _isEqualNameType : function(field1, field2){
         if(BI.isNotNull(field1) && BI.isNotNull(field2)){
-            return field1.field_type === field2.field_type &&
-                field1.field_name === field2.field_name;
+            return field1.fieldType === field2.fieldType &&
+                field1.fieldName === field2.fieldName;
         }
     }
 })

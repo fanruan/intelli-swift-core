@@ -3,8 +3,8 @@ BI.AnalysisETLOperatorAddColumnPaneTitleModel = BI.inherit(BI.Model, {
 
     _defaultConfig: function () {
         return BI.extend(BI.AnalysisETLOperatorAddColumnPaneTitleModel.superclass._defaultConfig.apply(this, arguments), {
-            field_name : null,
-            field_type : BICst.COLUMN.NUMBER,
+            fieldName : null,
+            fieldType : BICst.COLUMN.NUMBER,
             add_column_type : BICst.ETL_ADD_COLUMN_TYPE.FORMULA
         })
     },
@@ -12,8 +12,8 @@ BI.AnalysisETLOperatorAddColumnPaneTitleModel = BI.inherit(BI.Model, {
     update : function () {
         var o = this.options;
         return {
-            field_name : o.field_name,
-            field_type : o.field_type,
+            fieldName : o.fieldName,
+            fieldType : o.fieldType,
             add_column_type : o.add_column_type
         }
     },
@@ -21,22 +21,22 @@ BI.AnalysisETLOperatorAddColumnPaneTitleModel = BI.inherit(BI.Model, {
 
     setName : function(name) {
         var o = this.options;
-        o.field_name = name;
+        o.fieldName = name;
     },
 
     getName : function() {
         var o = this.options;
-        return o.field_name;
+        return o.fieldName;
     },
 
     setFieldType : function(v) {
         var o = this.options;
-        o.field_type = v;
+        o.fieldType = v;
     },
 
     getFieldType : function () {
         var o = this.options;
-        return o.field_type;
+        return o.fieldType;
     },
 
     setAddColumnType : function (v) {

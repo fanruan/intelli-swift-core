@@ -38,11 +38,11 @@ BI.AnalysisETLOperatorAddColumnValueSinglePane = BI.inherit(BI.MVCWidget, {
         });
     },
 
-    createEditor : function (field_type, value) {
+    createEditor : function (fieldType, value) {
         var self = this;
         var errorText = "";
         var validationChecker;
-        switch(field_type) {
+        switch(fieldType) {
             case BICst.COLUMN.STRING : {
                 validationChecker =  function (v) {
                     self.controller.setEditorValid(true)
@@ -71,7 +71,7 @@ BI.AnalysisETLOperatorAddColumnValueSinglePane = BI.inherit(BI.MVCWidget, {
         }
         self.editor =  BI.createWidget({
             type: "bi.text_editor",
-            allowBlank : field_type === BICst.COLUMN.STRING,
+            allowBlank : fieldType === BICst.COLUMN.STRING,
             watermark: BI.i18nText("BI-Please_Enter_Value"),
             errorText: errorText,
             validationChecker : function (v) {

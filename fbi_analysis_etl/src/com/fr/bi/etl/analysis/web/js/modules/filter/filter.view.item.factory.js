@@ -151,7 +151,7 @@ BI.ETLFilterViewItemFactory = {
     },
 
     createViewItems : function (value, fieldName, fieldItems){
-        var type = value.filter_type, filterValue = value.filter_value;
+        var type = value.filterType, filterValue = value.filterValue;
         switch (type){
             case BICst.FILTER_TYPE.FORMULA :
                 return this._createItems([BI.Utils.getTextFromFormulaValue(filterValue, fieldItems)], BI.i18nText("BI-Basic_Formula"));

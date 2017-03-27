@@ -81,7 +81,7 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
         var value = self.storeValue.value;
         var op = {
             type : self._createOneConditionType(),
-            field_name : o.field_name,
+            fieldName : o.fieldName,
             value : value[index],
             fieldValuesCreator : o.fieldValuesCreator
         }
@@ -117,7 +117,7 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
     
     _createOneConditionType : function (){
         var self = this, opts = self.options;
-        switch (opts.field_type){
+        switch (opts.fieldType){
             case BICst.COLUMN.STRING :
                 return 'bi.string_filter_item_etl';
             case BICst.COLUMN.DATE :
@@ -177,7 +177,7 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
         var values = this.storeValue.value;
         BI.each(values, function (i, item) {
             values[i] = {
-                filter_type : item.filter_type
+                filterType : item.filterType
             }
         })
     },

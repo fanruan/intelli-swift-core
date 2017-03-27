@@ -84,7 +84,7 @@ BI.ETLNumberNFilterPane = BI.inherit(BI.Widget, {
         if (self.combo.getValue() == BICst.ETL_FILTER_NUMBER_N_TYPE.INNER_GROUP){
             var op ={
                 type :'bi.filter_etl_group_setting',
-                field_name : o.field_name,
+                fieldName : o.fieldName,
                 filterType : o.filterType,
                 value : BI.deepClone(self.storedValue.group),
                 nValueGetter : function (){

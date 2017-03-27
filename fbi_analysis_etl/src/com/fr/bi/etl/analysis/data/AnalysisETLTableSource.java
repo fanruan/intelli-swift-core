@@ -120,7 +120,7 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
             }
             jo.put(Constants.FIELDS, ja);
         }
-        jo.put("table_name", name);
+        jo.put("tableName", name);
         if (invalidIndex != -1) {
             jo.put("invalidIndex", invalidIndex);
         }
