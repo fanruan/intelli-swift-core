@@ -19,22 +19,30 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
+import com.fr.json.JSONObject;
 
-public class HorGroupExecutor extends GroupExecutor {
+import java.awt.*;
 
+public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
+    private Rectangle rectangle;
     private BIDimension[] colDimension;
     private BIDimension[] usedDimensions;
+    private CrossExpander expander;
 
     public HorGroupExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
-        super(widget, paging, session, expander);
+        super(widget, paging, session);
         usedDimensions = widget.getViewTopDimensions();
         colDimension = usedDimensions;
+        this.expander = expander;
     }
 
     public TableCellIterator createCellIterator4Excel() throws Exception {
         final Node node = getCubeNode();
         int rowLength = colDimension.length + usedSumTarget.length;
         int columnLength = node.getTotalLength() + widget.isOrder() + 1;
+        //显示不显示汇总行
+        int rowLen = widget.getChartSetting().showRowTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength();
+        rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLength + widget.isOrder() - 1, rowLen);
         final TableCellIterator iter = new TableCellIterator(columnLength, rowLength);
         new Thread() {
             public void run() {
@@ -129,6 +137,16 @@ public class HorGroupExecutor extends GroupExecutor {
         }
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;
+    }
+
+    @Override
+    public JSONObject createJSONObject() throws Exception {
+        return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+    }
+
+    @Override
+    public Rectangle getSouthEastRectangle() {
+        return rectangle;
     }
 
 }

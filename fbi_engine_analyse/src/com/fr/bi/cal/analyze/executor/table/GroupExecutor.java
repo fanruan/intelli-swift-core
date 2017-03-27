@@ -31,7 +31,7 @@ import java.awt.Rectangle;
 public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     private Rectangle rectangle;
     private BIDimension[] usedDimensions;
-    protected CrossExpander expander;
+    private CrossExpander expander;
 
     public GroupExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
         super(widget, paging, session);
