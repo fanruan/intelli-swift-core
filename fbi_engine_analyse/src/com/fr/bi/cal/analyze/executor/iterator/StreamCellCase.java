@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.executor.detail;
+package com.fr.bi.cal.analyze.executor.iterator;
 
 import com.fr.bi.cal.report.io.BIExportUtils;
 import com.fr.report.cell.Cell;
@@ -11,9 +11,9 @@ import java.util.Iterator;
  */
 public class StreamCellCase implements CellCase {
 
-    private DetailCellIterator iterator  = null;
+    private TableCellIterator iterator  = null;
 
-    public StreamCellCase(DetailCellIterator iterator) {
+    public StreamCellCase(TableCellIterator iterator) {
         this.iterator = iterator;
     }
     @Override

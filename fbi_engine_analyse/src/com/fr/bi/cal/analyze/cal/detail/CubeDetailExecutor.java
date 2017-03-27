@@ -1,9 +1,9 @@
 package com.fr.bi.cal.analyze.cal.detail;
 
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
-import com.fr.bi.cal.analyze.executor.detail.StreamCellCase;
+import com.fr.bi.cal.analyze.executor.iterator.StreamCellCase;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
@@ -40,7 +40,7 @@ public class CubeDetailExecutor extends SheetExecutor {
     private TemplateElementCase elementCase;
     private BIDetailWidget widget;
     private Calculator cal;
-    private DetailCellIterator iter;
+    private TableCellIterator iter;
     private Report report;
     private BISession session;
     // page from 1 ~ max

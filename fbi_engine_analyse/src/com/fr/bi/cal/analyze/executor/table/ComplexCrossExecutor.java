@@ -1,37 +1,24 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
-import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
-import com.fr.bi.field.BITargetAndDimensionUtils;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.TargetCalculator;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.ExportConstants;
-import com.fr.stable.StringUtils;
 
 import java.util.*;
 
@@ -53,13 +40,13 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     }
 
     @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
         final Map<Integer, NewCrossRoot[]> nodesMap = getCubeCrossNodes();
         if (nodesMap.isEmpty() || nodesMap == null) {
-            return new DetailCellIterator(0, 0);
+            return new TableCellIterator(0, 0);
         }
         int[] lens = calculateRowAndColumnLen(nodesMap);
-        final DetailCellIterator iter = new DetailCellIterator(lens[0], lens[1]);
+        final TableCellIterator iter = new TableCellIterator(lens[0], lens[1]);
         new Thread() {
             public void run() {
                 try {
@@ -143,19 +130,6 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
     }
 
     /**
-     * 获取node的个数
-     *
-     * @param nodes
-     * @param complexExpander
-     * @param ints
-     */
-    @Override
-    public int getNodesTotalLength(Node[] nodes, ComplexExpander complexExpander, Integer[] ints) {
-        return 0;
-    }
-
-
-    /**
      * 获取node
      *
      * @return 获取的node
@@ -180,155 +154,6 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
         return jo;
     }
 
-    /**
-     * 注释
-     *
-     * @return 注释
-     */
-    @Override
-    public CBCell[][] createCellElement() throws Exception {
-//        Map<Integer, NewCrossRoot[]> nodesMap = getCubeCrossNodes();
-//        if (nodesMap.isEmpty() || nodesMap == null) {
-//            return new CBCell[0][0];
-//        }
-//        int len = usedSumTarget.length;
-//        TargetGettingKey[] keys = new TargetGettingKey[len];
-//        for (int i = 0; i < len; i++) {
-//            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
-//        }
-//        boolean hasTarget = keys.length != 0;
-//        CBCell[][] cbcells = null;
-//        int rowPlus = 0;
-//        ArrayList<NewCrossRoot> nodes = new ArrayList<NewCrossRoot>();
-//        Iterator<Map.Entry<Integer, NewCrossRoot[]>> iterator = nodesMap.entrySet().iterator();
-//        ArrayList<Integer> integers = new ArrayList<Integer>();
-//        while (iterator.hasNext()) {
-//            Map.Entry<Integer, NewCrossRoot[]> entry = iterator.next();
-//            integers.add(entry.getKey());
-//            NewCrossRoot[] roots = entry.getValue();
-//            for (int i = 0; i < roots.length; i++) {
-//                nodes.add(roots[i]);
-//            }
-//        }
-//        boolean needAllPage = paging.getOperator() < Node.NONE_PAGE_LEVER;
-//        if (needAllPage) {
-//            cbcells = new CBCell[getTotalNodeColumnLength(nodes, hasTarget) * (Math.max(1, keys.length)) + rowData.getMaxArrayLength()][
-//                    getTotalNodeRowLength(nodes, hasTarget, integers) + columnData.getMaxArrayLength() + 1];
-//        } else {
-//
-//            cbcells = new CBCell[getTotalNodeColumnLength(nodes, hasTarget, complexExpander) * Math.max(1, keys.length) + rowData.getMaxArrayLength()][
-//                    getTotalNodeRowLength(nodes, hasTarget, complexExpander, integers) + columnData.getMaxArrayLength() + 1 + rowPlus];
-//        }
-//
-//        generateTitle(cbcells, integers.get(0));
-//        dealWithCorssTrees(hasTarget, integers, nodes, cbcells, needAllPage, keys);
-//        geneEmptyCells(cbcells);
-//        return cbcells;
-        return new CBCell[0][0];
-    }
-
-    //生成表头的表头
-    private void generateTitle(CBCell[][] cells, int firstNode) {
-        BIDimension[] colDimension = columnData.getDimensionArray(0);
-        BIDimension[] rowDimension = rowData.getDimensionArray(firstNode);
-        boolean isColTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
-        boolean isRowTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(rowDimension);
-        geneColTitle(cells, colDimension, isColTargetSort);
-        for (int i = 0; i < rowDimension.length; i++) {
-            CBCell cell = new CBCell();
-            cell.setColumn(i);
-            cell.setRow(columnData.getMaxArrayLength());
-            cell.setColumnSpan(rowData.getColumnRowSpan(i, rowDimension.length));
-            cell.setRowSpan(1);
-            cell.setValue(rowDimension[i].getValue());
-            cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, colDimension.length % 2 == 1));
-            List cellList = new ArrayList();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(rowDimension[i].getValue());
-            cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_Y);
-            if (!isRowTargetSort) {
-                cbox.setSortType(rowDimension[i].getSortType());
-            } else {
-                cbox.setSortType(BIReportConstant.SORT.NONE);
-            }
-            cell.setBoxElement(cbox);
-            cells[i][columnData.getMaxArrayLength()] = cell;
-        }
-    }
-
-    private void geneColTitle(CBCell[][] cells, BIDimension[] colDimension, boolean isColTargetSort) {
-        int row = 0;
-        for (int i = 0; i < colDimension.length; i++) {
-            CBCell cell = new CBCell();
-            cell.setColumn(0);
-            cell.setRow(row);
-            cell.setColumnSpan(Math.max(1, rowData.getMaxArrayLength()));
-            int rowSpan = columnData.getColumnRowSpan(i, colDimension.length);
-            cell.setRowSpan(columnData.getColumnRowSpan(i, colDimension.length));
-            cell.setValue(colDimension[i].getValue());
-            cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, i % 2 == 1));
-            List cellList = new ArrayList();
-            cellList.add(cell);
-            CBBoxElement cbox = new CBBoxElement(cellList);
-            cbox.setName(colDimension[i].getValue());
-            cbox.setType(CellConstant.CBCELL.DIMENSIONTITLE_X);
-            if (!isColTargetSort) {
-                cbox.setSortType(colDimension[i].getSortType());
-            } else {
-                cbox.setSortType(BIReportConstant.SORT.NONE);
-            }
-            cell.setBoxElement(cbox);
-            cells[0][row] = cell;
-            row += rowSpan;
-        }
-    }
-
-    private void dealWithCorssTrees(boolean hasTarget, ArrayList<Integer> integers, ArrayList<NewCrossRoot> nodes, CBCell[][] cbcells, boolean needAllPage, TargetGettingKey[] keys) {
-        int maxRowDimensionLen = rowData.getMaxArrayLength();
-        int maxColumnDimensionLen = columnData.getMaxArrayLength();
-        int colRegionLength = columnData.getDimensionArrayLength();
-        int startRow = maxColumnDimensionLen + 1;
-        for (int i = 0; i < integers.size(); i++) {
-            int rowRegionIndex = integers.get(i);
-            BIDimension[] rowDimension = rowData.getDimensionArray(rowRegionIndex);
-            int startColumn = maxRowDimensionLen;
-            for (int n = i * colRegionLength; n < (i + 1) * colRegionLength; n++) {
-                NewCrossRoot node = nodes.get(n);
-                BIDimension[] colDimension = columnData.getDimensionArray(n - i * colRegionLength);
-                boolean isColTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(colDimension);
-                boolean isRowTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(rowDimension);
-                if (needAllPage) {
-                    if (n == i * colRegionLength) {
-                        GroupExecutor.dealWithNode(node.getLeft(), NodeExpander.ALL_EXPANDER, cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxRowDimensionLen - 1, 0, rowData, widget.getChartSetting());
-                    }
-                    if (i == 0) {
-                        HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0, startColumn, colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxColumnDimensionLen - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, columnData, widget.getChartSetting());
-                    }
-                    CrossExpander expander = CrossExpander.ALL_EXPANDER;
-                    dealWithNode(node.getLeft(), expander, expander.getYExpander(), cbcells, rowDimension, colDimension, startRow, startColumn, keys, maxRowDimensionLen - 1, widget.getChartSetting());
-                    startColumn += !hasTarget ? node.getTop().getTotalLength() : node.getTop().getTotalLengthWithSummary();
-                } else {
-                    CrossExpander expander = complexExpander.createCrossNode(rowRegionIndex, n - i * colRegionLength);
-                    if (n == i * colRegionLength) {
-                        GroupExecutor.dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxRowDimensionLen - 1, 0, rowData, widget.getChartSetting());
-                    }
-                    if (i == 0) {
-                        HorGroupExecutor.dealWithNode(node.getTop(), expander.getXExpander(), cbcells, 0, startColumn, colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxColumnDimensionLen - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, columnData, widget.getChartSetting());
-                    }
-                    dealWithNode(node.getLeft(), expander, expander.getYExpander(), cbcells, rowDimension, colDimension, startRow, startColumn, keys, rowDimension.length - 1, widget.getChartSetting());
-                    startColumn += (!hasTarget ? node.getTop().getTotalLength(expander.getXExpander()) : node.getTop().getTotalLengthWithSummary(expander.getXExpander())) * (Math.max(1, keys.length));
-                }
-
-            }
-            if (needAllPage) {
-                startRow += !hasTarget ? nodes.get(i).getLeft().getTotalLength() : nodes.get(i).getTop().getTotalLengthWithSummary();
-            } else {
-                startRow += !hasTarget ? nodes.get(i).getLeft().getTotalLength(complexExpander.getYExpander(rowRegionIndex)) : nodes.get(i).getLeft().getTotalLengthWithSummary(complexExpander.getYExpander(rowRegionIndex));
-            }
-        }
-    }
-
     private int getTotalNodeRowLength(ArrayList<NewCrossRoot> roots, boolean hasTarget, ArrayList<Integer> integers) {
         int count = 0;
         int columnRegionLength = this.columnData.getDimensionArrayLength();
@@ -347,23 +172,6 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
 
     }
 
-    private int getTotalNodeRowLength(ArrayList<NewCrossRoot> roots, boolean hasTarget, ComplexExpander complexExpander, ArrayList<Integer> integers) {
-        int count = 0;
-        int columnRegionLength = this.columnData.getDimensionArrayLength();
-
-        for (int i = 0; i < integers.size(); i++) {
-            NodeExpander nodeExpander = complexExpander.getYExpander(integers.get(i));
-            if (hasTarget) {
-
-                count += roots.get(i * columnRegionLength).getLeft().getTotalLengthWithSummary(nodeExpander);
-            } else {
-
-                count += roots.get(i * columnRegionLength).getLeft().getTotalLength(nodeExpander);
-            }
-        }
-        return count;
-    }
-
     private int getTotalNodeColumnLength(ArrayList<NewCrossRoot> roots, boolean hasTarget) {
         int count = 0;
         int columnRegionLength = this.columnData.getDimensionArrayLength();
@@ -380,23 +188,6 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
 
         return count;
 
-    }
-
-    private int getTotalNodeColumnLength(ArrayList<NewCrossRoot> roots, boolean hasTarget, ComplexExpander complexExpander) {
-        int count = 0;
-        int columnRegionLength = this.columnData.getDimensionArrayLength();
-
-        for (int i = 0; i < columnRegionLength; i++) {
-            NodeExpander nodeExpander = complexExpander.getXExpander(i);
-            if (hasTarget) {
-
-                count += roots.get(i).getTop().getTotalLengthWithSummary(nodeExpander);
-            } else {
-
-                count += roots.get(i).getTop().getTotalLength(nodeExpander);
-            }
-        }
-        return count;
     }
 
 
@@ -440,142 +231,6 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
 
         }
         return list.toArray(new BISummaryTarget[list.size()]);
-    }
-
-    private int dealWithNode(CrossHeader left, CrossExpander expander, NodeExpander yExpander, CBCell[][] cbcells, BIDimension[] rowDimension, BIDimension[] colDimension,
-                             int row, int column, TargetGettingKey[] keys, int total, DetailChartSetting chartSetting) {
-        int pos = 0;
-        boolean discardSummary = false;
-        if (yExpander != null) {
-            for (int i = 0; i < left.getChildLength(); i++) {
-                pos += dealWithNode((CrossHeader) left.getChild(i), expander, yExpander.getChildExpander(left.getChild(i).getShowValue()), cbcells, rowDimension, colDimension, row + pos, column, keys, total - 1, chartSetting);
-            }
-            discardSummary = (!left.needSummary()) || keys.length == 0;
-        }
-        if (discardSummary) {
-            return pos;
-        }
-        //pos如果不为0说明是汇总的格子
-        dealWithCrossNode(left.getValue(), paging.getOperator() < Node.NONE_PAGE_LEVER ? new NodeAllExpander(colDimension.length - 1) : expander.getXExpander(), cbcells,
-                rowDimension, colDimension, row + pos, column, keys, colDimension.length, pos != 0, total, chartSetting);
-        pos++;
-        return pos;
-    }
-
-    private int dealWithCrossNode(CrossNode node, NodeExpander xExpander, CBCell[][] cbcells, BIDimension[] rowDimension,
-                                  BIDimension[] colDimension, int row, int column, TargetGettingKey[] keys, int xTotal, boolean isYSummary, int yTotal, DetailChartSetting chartSetting) {
-        int pos = 0;
-        boolean discardSummary = false;
-        if (xExpander != null) {
-            for (int i = 0; i < node.getTopChildLength(); i++) {
-                pos += dealWithCrossNode(node.getTopChild(i), xExpander.getChildExpander(node.getTopChild(i).getHead().getShowValue()), cbcells, rowDimension, colDimension,
-                        row, column + pos * Math.max(keys.length, 1), keys, xTotal - 1, isYSummary, yTotal, chartSetting);
-            }
-            discardSummary = (!node.getHead().needSummary()) || keys.length == 0;
-        }
-        if (discardSummary) {
-            return pos;
-        }
-        //pos如果不为0说明是汇总的格子
-        if (keys.length == 0) {
-            dealWithSumNode(node, cbcells, rowDimension, colDimension, row, column, xTotal, isYSummary, yTotal, pos);
-        } else {
-            for (int k = 0; k < keys.length; k++) {
-                int numLevel = chartSetting.getNumberLevelByTargetId(keys[k].getTargetName());
-                Object v = node.getSummaryValue(keys[k]);
-                v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
-                CBCell cell = new CBCell(v);
-                cell.setColumn(column + (pos * keys.length) + k);
-                cell.setRow(row);
-                cell.setRowSpan(1);
-                cell.setColumnSpan(1);
-                cell.setStyle(
-                        pos == 0 ? (isYSummary ?
-                                BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT))
-                                :
-                                BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, ComparatorUtils.equals(numLevel, BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT))
-                        ) : BITableStyle.getInstance().getXTotalCellStyle(v, xTotal, false));
-                List cellList = new ArrayList();
-                cellList.add(cell);
-                CBBoxElement cbox = new CBBoxElement(cellList);
-                TargetStyle style = usedSumTarget[k].getStyle();
-                if (style != null) {
-                    style.changeCellStyle(cell);
-                }
-                cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
-                cbox.setDimensionJSON(createDimensionValue(node, rowDimension, colDimension));
-                cbox.setName(usedSumTarget[k].getValue());
-                cell.setBoxElement(cbox);
-                cbcells[cell.getColumn()][cell.getRow()] = cell;
-            }
-        }
-        pos++;
-        return pos;
-    }
-
-    private void dealWithSumNode(CrossNode node, CBCell[][] cbcells, BIDimension[] rowDimension, BIDimension[] colDimension, int row, int column, int xTotal, boolean isYSummary, int yTotal, int pos) {
-        Object v = null;
-        CBCell cell = new CBCell(NONEVALUE);
-        cell.setColumn(column);
-        cell.setRow(row);
-        cell.setRowSpan(1);
-        cell.setColumnSpan(1);
-        cell.setStyle(
-                pos == 0 ? (isYSummary ?
-                        BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, false)
-                        :
-                        BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, false)
-                ) : BITableStyle.getInstance().getXTotalCellStyle(v, xTotal, false));
-        List cellList = new ArrayList();
-        cellList.add(cell);
-        CBBoxElement cbox = new CBBoxElement(cellList);
-        cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
-        cbox.setDimensionJSON(createDimensionValue(node, rowDimension, colDimension));
-        cbox.setName(StringUtils.EMPTY);
-        cell.setBoxElement(cbox);
-        cbcells[cell.getColumn()][cell.getRow()] = cell;
-    }
-
-    //TODO代码质量
-    private String createDimensionValue(CrossNode node, BIDimension[] rowDimension, BIDimension[] colDimension) {
-        JSONArray ja = new JSONArray();
-
-        Node header = node.getHead();
-        Node left = node.getLeft();
-        int deep = 0;
-        Node temp = header;
-        while (temp.getParent() != null) {
-            deep++;
-            temp = temp.getParent();
-        }
-        deep--;
-        temp = header;
-        while (deep != -1 && temp != null) {
-            try {
-                ja.put(new JSONObject().put(colDimension[deep].getValue(), colDimension[deep].toFilterObject(temp.getData())));
-            } catch (JSONException e) {
-            }
-            temp = temp.getParent();
-            deep--;
-        }
-        deep = 0;
-        temp = left;
-        while (temp.getParent() != null) {
-            deep++;
-            temp = temp.getParent();
-        }
-        deep--;
-        temp = left;
-        while (deep != -1 && temp != null) {
-            try {
-                ja.put(new JSONObject().put(rowDimension[deep].getValue(), rowDimension[deep].toFilterObject(temp.getData())));
-            } catch (JSONException e) {
-            }
-            temp = temp.getParent();
-            deep--;
-        }
-
-        return ja.toString();
     }
 
     /* (non-Javadoc)

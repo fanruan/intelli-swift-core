@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.cal.multithread;
 
-import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 
 import java.util.concurrent.Callable;
 

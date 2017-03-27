@@ -5,7 +5,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
  */
 public class VanLineWidget extends VanCartesianWidget{
 
-    public String getSeriesType(){
+    public String getSeriesType(String dimensionID){
         return "line";
     }
 
