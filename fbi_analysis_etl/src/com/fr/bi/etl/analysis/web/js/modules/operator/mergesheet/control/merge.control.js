@@ -53,7 +53,7 @@ BI.AnalysisETLMergeSheetController = BI.inherit(BI.MVCController, {
         var column = model.get("columns")
         var valid = true;
         BI.some(column, function (idx, item) {
-            if(idx !== j && item.field_name === v) {
+            if(idx !== j && item.fieldName === v) {
                 valid = false;
                 return true;
             }

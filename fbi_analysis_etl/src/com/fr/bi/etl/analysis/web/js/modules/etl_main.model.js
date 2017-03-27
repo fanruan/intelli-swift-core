@@ -13,7 +13,7 @@ BI.AnalysisETLMainModel = BI.inherit(BI.MVCModel, {
 
     getTableDefaultName : function () {
         var id = this.get(BI.AnalysisETLMainModel.TAB).get(ETLCst.ITEMS)[0];
-        var name = this.get('name') || this.get(BI.AnalysisETLMainModel.TAB).get(id).get('table_name');
+        var name = this.get('name') || this.get(BI.AnalysisETLMainModel.TAB).get(id).get('tableName');
         return BI.Utils.createDistinctName(BI.Utils.getAllETLTableNames(), name);
     },
     

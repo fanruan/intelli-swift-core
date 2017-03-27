@@ -106,25 +106,25 @@ public class BICubeFieldSource implements ICubeFieldSource {
      */
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if (jo.has("field_name")) {
-            this.setFieldName(jo.getString("field_name"));
+        if (jo.has("fieldName")) {
+            this.setFieldName(jo.getString("fieldName"));
         }
-        if (jo.has("field_id")) {
-            String fieldId = jo.getString("field_id");
+        if (jo.has("fieldId")) {
+            String fieldId = jo.getString("fieldId");
             this.fieldID = new BIFieldID(fieldId);
         }
-        if (jo.has("field_type")) {
-            fieldType = jo.optInt("field_type", 0);
+        if (jo.has("fieldType")) {
+            fieldType = jo.optInt("fieldType", 0);
         }
-        if (jo.has("field_size")) {
-            fieldSize = jo.optInt("field_size", 0);
+        if (jo.has("fieldSize")) {
+            fieldSize = jo.optInt("fieldSize", 0);
         }
-        if (jo.has("is_usable")) {
-            usable = jo.optBoolean("is_usable", true);
+        if (jo.has("isUsable")) {
+            usable = jo.optBoolean("isUsable", true);
         }
 
-        if (jo.has("is_enable")) {
-            canSetUsable = jo.optBoolean("is_enable", true);
+        if (jo.has("isEnable")) {
+            canSetUsable = jo.optBoolean("isEnable", true);
         }
         if (jo.has("class_type")) {
             classType = jo.getInt("class_type");
@@ -140,15 +140,15 @@ public class BICubeFieldSource implements ICubeFieldSource {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put("field_name", getFieldName());
+        jo.put("fieldName", getFieldName());
         jo.put("id", fieldID.getIdentityValue());
         if (getTableBelongTo() != null) {
-            jo.put("table_id", getTableBelongTo().getSourceID());
+            jo.put("tableId", getTableBelongTo().getSourceID());
         }
-        jo.put("field_type", fieldType)
-                .put("field_size", fieldSize)
-                .put("is_usable", isUsable())
-                .put("is_enable", canSetUsable)
+        jo.put("fieldType", fieldType)
+                .put("fieldSize", fieldSize)
+                .put("isUsable", isUsable())
+                .put("isEnable", canSetUsable)
                 .put("class_type", classType);
 
         return jo;

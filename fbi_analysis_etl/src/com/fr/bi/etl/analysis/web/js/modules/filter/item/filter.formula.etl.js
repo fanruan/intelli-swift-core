@@ -28,7 +28,7 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
         self.fieldItems = [[], [], []];
         BI.each(o[ETLCst.FIELDS], function (i, item) {
             var index = 0;
-            switch (item.field_type){
+            switch (item.fieldType){
                 case BICst.COLUMN.STRING:
                     index = 1;
                     break;
@@ -41,9 +41,9 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
                     break;
             }
             self.fieldItems[index].push({
-                text : item.field_name,
-                value : item.field_name,
-                fieldType : item.field_type
+                text : item.fieldName,
+                value : item.fieldName,
+                fieldType : item.fieldType
             })
         })
         self.button.on(BI.Button.EVENT_CHANGE,function(){

@@ -19,10 +19,10 @@ BI.AnalysisETLOperatorAddColumnDateConvertController = BI.inherit(BI.MVCControll
     populate : function (widget, model) {
         var fields = [];
         BI.each(model.get(ETLCst.FIELDS) || [], function (idx, item) {
-            if(item.field_type === BICst.COLUMN.DATE) {
+            if(item.fieldType === BICst.COLUMN.DATE) {
                 fields.push({
-                    text:item.field_name,
-                    value:item.field_name
+                    text:item.fieldName,
+                    value:item.fieldName
                 })
             }
         })

@@ -13,6 +13,7 @@ import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.cal.sssecret.mergeiter.MergeIterator;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
+import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
@@ -109,10 +110,21 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
                 groupLimit = Math.min(Math.max(BIBaseConstant.PART_DATA_GROUP_LIMIT, groupLimit), BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT);
             }
         }
-        if (!urd || hasSpecialGroup(columns[index])) {
+        //自循环处理同自定义分组
+        if (!urd || hasSpecialGroup(columns[index]) || isCirCle(columns[index])) {
             return columns[index].createValueMapIterator(metricTables[index], loader, urd, groupLimit);
         }
         return getIterByAllCal(index);
+    }
+
+    private boolean isCirCle(DimensionCalculator column) {
+        List<BITableSourceRelation> relations = column.getRelationList();
+        for (BITableSourceRelation relation : relations) {
+            if (TableSourceUtils.isSelfCirCleSource(relation.getForeignTable())&&TableSourceUtils.isSelfCircleParentField(relation.getForeignTable(),relation.getForeignField())){
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -163,7 +175,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         if (isNull(metricMergeResult)) {
             return NoneDimensionGroup.NULL;
         }
-        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, tis, metricMergeResult.getGvis(), metricMergeResult.getSummaryValue() ,loader);
+        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, tis, metricMergeResult.getGvis(), metricMergeResult.getSummaryValue(), loader);
     }
 
     private boolean isNull(MetricMergeResult node) {
@@ -182,7 +194,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         return metricMergeResult.getShowValue();
     }
 
-    protected int getChildLength(){
+    protected int getChildLength() {
         return metricMergeResultList.size();
     }
 
@@ -231,7 +243,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     @Override
     public void executorTerminated() {
-        if (mergeIteratorCreator.isSimple()){
+        if (mergeIteratorCreator.isSimple()) {
             MetricMergeResult metricMergeResult = createEmptyResult();
             addMetricMergeResult(metricMergeResult);
         }

@@ -177,8 +177,8 @@ public class BIDetailWidget extends BIAbstractWidget {
                 BILoggerFactory.getLogger().info(e.getMessage(),e);
             }
         }
-        if (jo.has("filter_value")) {
-            JSONObject targetFilter = jo.getJSONObject("filter_value");
+        if (jo.has("filterValue")) {
+            JSONObject targetFilter = jo.getJSONObject("filterValue");
             Iterator it = targetFilter.keys();
             while (it.hasNext()) {
                 String key = it.next().toString();

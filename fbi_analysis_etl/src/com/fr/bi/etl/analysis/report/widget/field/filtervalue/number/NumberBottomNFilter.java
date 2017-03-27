@@ -20,8 +20,8 @@ public class NumberBottomNFilter extends NumberSmallOrEqualsCLFilter {
 	@Override
 	public void parseJSON(JSONObject jo , long userId) throws Exception{
 		super.parseJSON(jo, userId);
-        if(jo.has("filter_value")){
-            JSONObject filterValue = jo.getJSONObject("filter_value");
+        if(jo.has("filterValue")){
+            JSONObject filterValue = jo.getJSONObject("filterValue");
             if (filterValue.has("value")){
                 this.getter = new BottomNLine(filterValue.getInt("value"));
             }

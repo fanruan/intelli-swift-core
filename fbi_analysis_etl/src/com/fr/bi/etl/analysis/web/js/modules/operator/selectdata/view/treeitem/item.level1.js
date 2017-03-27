@@ -89,7 +89,7 @@ BI.AnalysisETLDetailSelectDataLevel1Item = BI.inherit(BI.Single, {
         });
         this.previewBtn.invisible();
         this.element.hover(function(){
-            if(BI.Utils.getFieldTypeByID(o.value.field_id || o.value) === BICst.COLUMN.COUNTER){
+            if(BI.Utils.getFieldTypeByID(o.value.fieldId || o.value) === BICst.COLUMN.COUNTER){
                 return;
             }
             self.previewBtn.visible();

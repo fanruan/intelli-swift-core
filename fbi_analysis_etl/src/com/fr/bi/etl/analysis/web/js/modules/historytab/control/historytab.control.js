@@ -60,7 +60,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
     populateOneTab : function (v, widget, model) {
         var tab = widget.tab.getTab(v)
         var self = this;
-        tab.populate(BI.extend({tableName: model.getValue("table_name")}, this.findItem(v, widget, model)), BI.extend(this.options, {
+        tab.populate(BI.extend({tableName: model.getValue("tableName")}, this.findItem(v, widget, model)), BI.extend(this.options, {
             checkBeforeSave : function (table) {
                 return self.checkBeforeSave(table, widget, model)
             }
@@ -100,7 +100,7 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         var item = model.findItem(id);
         var sheets = [BI.extend(BI.deepClone(item), {
             value: model.getValue("value"),
-            table_name: value
+            tableName: value
         })]
         var res = {};
         var table = {};

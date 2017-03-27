@@ -105,8 +105,8 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         var column = widget.title.update();
         var value = widget.currentEditPane.update();
         column["item"] = value;
-        if(BI.isNotNull(value.field_type)) {
-            column.field_type = value.field_type;
+        if(BI.isNotNull(value.fieldType)) {
+            column.fieldType = value.fieldType;
         }
         var isEdit = BI.isNotNull(this._editColumnName)
         if(isEdit){
@@ -135,8 +135,8 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         var columnNames = [];
         var parent = model.get(ETLCst.PARENTS)[0];
         BI.each(BI.concat(parent[ETLCst.FIELDS], model.getAddColumns()), function (idx, item) {
-            if(item.field_name !== name) {
-                columnNames.push(item.field_name)
+            if(item.fieldName !== name) {
+                columnNames.push(item.fieldName)
             }
         })
         return columnNames;
@@ -159,7 +159,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
         fields[ETLCst.FIELDS] = parent[ETLCst.FIELDS];
         fields[ETLCst.PARENTS] = model.getValue(ETLCst.PARENTS);
         widget.currentEditPane.populate(BI.extend(fields, value), {
-            field_type : column.field_type
+            fieldType : column.fieldType
         })
     },
 
@@ -167,7 +167,7 @@ BI.AnalysisETLOperatorAddColumnPaneController = BI.inherit(BI.MVCController, {
     refreshOneConditionPaneViewIfNeeded : function (widget, model) {
         if(BI.isNotNull(widget.currentEditPane) && BI.isFunction(widget.currentEditPane.controller.changeFieldType)){
             var column = widget.title.update();
-            widget.currentEditPane.controller.changeFieldType(column.field_type);
+            widget.currentEditPane.controller.changeFieldType(column.fieldType);
         }
     }
 

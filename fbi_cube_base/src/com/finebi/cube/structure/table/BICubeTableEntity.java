@@ -155,6 +155,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
         } catch (ClassCastException e) {
             throw BINonValueUtils.beyondControl(BIStringUtils.append(e.getMessage(), "Table:" + tableKey != null ? tableKey.getSourceID() : ""
                     , "Field column index:" + columnIndex
+                    , "Field column is:" + field.getFieldName()
                     , "Field row number:" + rowNumber
                     , "the value:" + value)
                     , e);

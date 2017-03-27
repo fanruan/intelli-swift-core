@@ -137,8 +137,8 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
             sortJo.put("type", BISortUtils.getSortTypeByDimensionType(sortJo.optInt("type", BIReportConstant.SORT.NONE), jo.optInt("type")));
             this.sort = BISortFactory.parseSort(sortJo);
         }
-        if (jo.has("filter_value")) {
-            this.filter = TargetFilterFactory.parseFilter(jo.getJSONObject("filter_value"), userId);
+        if (jo.has("filterValue")) {
+            this.filter = TargetFilterFactory.parseFilter(jo.getJSONObject("filterValue"), userId);
         }
 
         if (jo.has("group")) {
