@@ -156,4 +156,4 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
     }
 });
 
-$.shortcut("bi.analysis_etl_detail_select_data_level0_item", BI.AnalysisETLDetailSelectDataLevel0Item);
+BI.shortcut("bi.analysis_etl_detail_select_data_level0_item", BI.AnalysisETLDetailSelectDataLevel0Item);

@@ -64,4 +64,4 @@ BI.AnalysisETLPreviewTableHeaderFilterCell = BI.inherit(BI.Widget, {
     }
 });
 
-$.shortcut(ETLCst.ANALYSIS_TABLE_OPERATOR_PREVIEW_HEADER + BI.ANALYSIS_ETL_HEADER.FILTER, BI.AnalysisETLPreviewTableHeaderFilterCell);
+BI.shortcut(ETLCst.ANALYSIS_TABLE_OPERATOR_PREVIEW_HEADER + BI.ANALYSIS_ETL_HEADER.FILTER, BI.AnalysisETLPreviewTableHeaderFilterCell);

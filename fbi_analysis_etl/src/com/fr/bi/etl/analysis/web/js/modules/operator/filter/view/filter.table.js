@@ -59,4 +59,4 @@ BI.AnalysisETLOperatorFilterTable = FR.extend(BI.Widget, {
 })
 
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_table", BI.AnalysisETLOperatorFilterTable)
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_table", BI.AnalysisETLOperatorFilterTable)

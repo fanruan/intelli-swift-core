@@ -16,4 +16,4 @@ BI.AnalysisETLOperatorUsePart = FR.extend(BI.AnalysisETLOperatorAbstractPane, {
     }
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.USE_PART_FIELDS, BI.AnalysisETLOperatorUsePart);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.USE_PART_FIELDS, BI.AnalysisETLOperatorUsePart);

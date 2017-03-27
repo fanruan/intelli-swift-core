@@ -44,4 +44,4 @@ BI.AnalysisETLOperatorAddColumnFormulaPane = BI.inherit(BI.MVCWidget, {
     }
 
 });
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.FORMULA, BI.AnalysisETLOperatorAddColumnFormulaPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.FORMULA, BI.AnalysisETLOperatorAddColumnFormulaPane);

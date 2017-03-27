@@ -140,4 +140,4 @@ BI.LeftPointerButton = FR.extend(BI.BasicButton, {
     }
 
 });
-$.shortcut("bi.left_pointer_button", BI.LeftPointerButton);
+BI.shortcut("bi.left_pointer_button", BI.LeftPointerButton);

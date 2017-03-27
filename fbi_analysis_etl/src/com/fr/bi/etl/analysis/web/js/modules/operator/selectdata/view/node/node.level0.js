@@ -77,4 +77,4 @@ BI.AnalysisETLSelectDataLevel0Node = BI.inherit(BI.NodeButton, {
 
 });
 
-$.shortcut("bi.analysis_etl_select_data_level0_node", BI.AnalysisETLSelectDataLevel0Node);
+BI.shortcut("bi.analysis_etl_select_data_level0_node", BI.AnalysisETLSelectDataLevel0Node);

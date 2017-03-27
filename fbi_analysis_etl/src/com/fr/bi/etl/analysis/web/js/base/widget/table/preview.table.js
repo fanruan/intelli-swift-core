@@ -184,4 +184,4 @@ BI.AnalysisETLPreviewTable.EVENT_RENAME = "EVENT_RENAME";
 BI.AnalysisETLPreviewTable.EVENT_FILTER = "EVENT_FILTER";
 BI.AnalysisETLPreviewTable.EVENT_SORT_COLUMN = "EVENT_SORT_COLUMN";
 
-$.shortcut("bi.analysis_etl_preview_table", BI.AnalysisETLPreviewTable);
+BI.shortcut("bi.analysis_etl_preview_table", BI.AnalysisETLPreviewTable);

@@ -46,4 +46,4 @@ BI.ETLTableWarningPopover = BI.inherit(BI.ETLTableNamePopover, {
 
 });
 BI.ETLTableWarningPopover.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.etl_table_name_warning_popover", BI.ETLTableWarningPopover);
+BI.shortcut("bi.etl_table_name_warning_popover", BI.ETLTableWarningPopover);

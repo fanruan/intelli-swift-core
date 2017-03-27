@@ -34,4 +34,4 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodPane  = BI.inherit(BI.AnalysisETLOp
         }])
     }
 });
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP, BI.AnalysisETLOperatorAddColumnExprLastPeriodPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP, BI.AnalysisETLOperatorAddColumnExprLastPeriodPane);

@@ -29,4 +29,4 @@ BI.PreviewTableCell = BI.inherit(BI.Widget, {
         })
     }
 });
-$.shortcut('bi.analysis_etl_preview_table_cell', BI.PreviewTableCell);
+BI.shortcut('bi.analysis_etl_preview_table_cell', BI.PreviewTableCell);

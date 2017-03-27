@@ -266,4 +266,4 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
         this.tip.setTitle(items.toString());
     }
 });
-$.shortcut("bi.select_data_level" + ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE + "_node", BI.SelectDataLevel8Node);
+BI.shortcut("bi.select_data_level" + ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE + "_node", BI.SelectDataLevel8Node);

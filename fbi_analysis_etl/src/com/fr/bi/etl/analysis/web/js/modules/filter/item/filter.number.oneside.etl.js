@@ -194,4 +194,4 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
     }
 });
 BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM = 'ETLNumberFilterOneSidePane.EVENT_CONFIRM';
-$.shortcut('bi.filter_number_oneside_etl', BI.ETLNumberFilterOneSidePane);
+BI.shortcut('bi.filter_number_oneside_etl', BI.ETLNumberFilterOneSidePane);

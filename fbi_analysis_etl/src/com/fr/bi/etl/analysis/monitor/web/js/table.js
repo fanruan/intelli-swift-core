@@ -147,4 +147,4 @@ BI.MonitorTable = BI.inherit(BI.Widget, {
 
 
 })
-$.shortcut("bi.monitor_table", BI.MonitorTable);
+BI.shortcut("bi.monitor_table", BI.MonitorTable);

@@ -119,4 +119,4 @@ BI.ETLNumberNFilterPane = BI.inherit(BI.Widget, {
     }
 });
 BI.ETLNumberNFilterPane.EVENT_CONFIRM = 'ETLNumberNFilterPane.EVENT_CONFIRM';
-$.shortcut('bi.filter_number_n_etl', BI.ETLNumberNFilterPane);
+BI.shortcut('bi.filter_number_n_etl', BI.ETLNumberNFilterPane);
