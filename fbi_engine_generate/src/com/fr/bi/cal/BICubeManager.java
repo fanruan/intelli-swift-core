@@ -18,6 +18,7 @@ import com.fr.stable.StringUtils;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -192,6 +193,16 @@ public class BICubeManager implements BICubeManagerProvider {
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
         }
 
+    }
+
+    @Override
+    public Set<String> getCubeGeneratingTableSourceIds(long userId) {
+        return getCubeManager(userId).getCubeGeneratingTableSourceIds();
+    }
+
+    @Override
+    public Set<String> getCubeWaiting2GenerateTableSourceIds(long userId) {
+        return getCubeManager(userId).getCubeWaiting2GenerateSourceIds();
     }
 
 }

@@ -452,4 +452,15 @@ public class CubeBuildHelper {
         }
         return tableSources;
     }
+
+    public Set<String> getAllCubeWaiting2GenerateTableSouceIds(long userId) {
+        Set<String> tableSourceIdSet = new HashSet<String>();
+        tableSourceIdSet.addAll(cubeManager.getCubeWaiting2GenerateTableSourceIds(userId));
+        Iterator<CustomTableTask> taskIterator = taskQueue.iterator();
+        while (taskIterator.hasNext()) {
+            CustomTableTask task = taskIterator.next();
+            tableSourceIdSet.addAll(task.getBaseTableSourceIdList());
+        }
+        return tableSourceIdSet;
+    }
 }

@@ -318,4 +318,12 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
         return true;
     }
 
+    @Override
+    public Set<String> getTaskTableSourceIds() {
+        if (taskTableSourceIDs == null) {
+            taskTableSourceIDs = getDependTableSourceIdSet(tableSourceLayerDepends);
+        }
+        return taskTableSourceIDs;
+    }
+
 }

@@ -130,4 +130,9 @@ public abstract class AbstractCubeTask implements CubeTask {
         //生成关联
         new RelationGenerator(biUser.getUserId()).generateCube();
     }
+
+    @Override
+    public Set<String> getTaskTableSourceIds() {
+        return cubeBuild.getTaskTableSourceIds();
+    }
 }
