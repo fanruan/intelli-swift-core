@@ -9,13 +9,13 @@ import junit.framework.TestCase;
 /**
  * Created by kary on 2017/1/23.
  */
-public class ReportSettingRenameOperationTest extends TestCase {
-    public ReportSettingRenameOperation operation;
+public class ReportSettingCamelOperationTest extends TestCase {
+    public ReportCamelOperation operation;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        operation = new ReportSettingRenameOperation();
+        operation = new ReportCamelOperation();
     }
 
     public void testConvert() throws Exception {
@@ -42,7 +42,7 @@ public class ReportSettingRenameOperationTest extends TestCase {
 
 
     public void convertToCamel(String oriKey, String expectedResult) {
-        String newKey = operation.lineToCamel(oriKey);
+        String newKey = operation.updateKey(oriKey);
         assertTrue(ComparatorUtils.equals(expectedResult, newKey));
     }
 

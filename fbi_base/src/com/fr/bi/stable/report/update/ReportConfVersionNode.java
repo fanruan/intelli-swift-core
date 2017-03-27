@@ -2,26 +2,28 @@ package com.fr.bi.stable.report.update;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.report.update.operation.ReportSettingsUpdateOperation;
+import com.fr.bi.stable.report.update.operation.ReportUpdateOperation;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by kary on 2017/2/4.
  */
 public class ReportConfVersionNode implements Comparable<ReportConfVersionNode> {
     private ReportVersion version;
-    private ReportSettingsUpdateOperation reportOperation;
+    private List<ReportUpdateOperation> reportOperations;
 
-    public ReportConfVersionNode(ReportVersion version, ReportSettingsUpdateOperation reportOperation) {
+    public ReportConfVersionNode(ReportVersion version, List<ReportUpdateOperation> reportOperation) {
         this.version = version;
-        this.reportOperation = reportOperation;
+        this.reportOperations = reportOperation;
     }
 
     public boolean versionCompare(JSONObject settings) {
         try {
-            return ComparatorUtils.equals(settings.getString("version") ,version.getVersionName());
+            return ComparatorUtils.equals(settings.getString("version"), version.getVersionName());
         } catch (JSONException e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
@@ -32,12 +34,14 @@ public class ReportConfVersionNode implements Comparable<ReportConfVersionNode> 
         return version;
     }
 
-    public boolean isLatestVersion() {
-        return ComparatorUtils.equals(version, BIReportConstant.VERSION);
+    public void update(JSONObject settings) throws JSONException {
+        for (ReportUpdateOperation operation : reportOperations) {
+            operation.update(settings);
+        }
     }
 
-    public ReportSettingsUpdateOperation getReportOperation() {
-        return reportOperation;
+    public boolean isLatestVersion() {
+        return ComparatorUtils.equals(version, BIReportConstant.VERSION);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.fr.bi.stable.report.update.operation;
 
+import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -13,24 +13,18 @@ import java.util.regex.Pattern;
  * Created by kary on 2017/1/23.
  * change underScore to Camel
  */
-public class ReportSettingRenameOperation implements ReportSettingsUpdateOperation {
+public class ReportCamelOperation implements ReportUpdateOperation {
     private static Pattern linePattern = Pattern.compile("_(\\w)");
 
     @Override
     public JSONObject update(JSONObject reportSetting) throws JSONException {
-        if (isKeyValueSet(reportSetting.toString())) {
-//            JSONObject mapObject = recursionMapUpdate(reportSetting.toString());
-            JSONObject mapObject = firstLevelKeyUpdate(reportSetting.toString());
-            return mapObject;
+        if (BIJsonUtils.isKeyValueSet(reportSetting.toString())) {
+//            reportSetting = firstLevelKeyUpdate(reportSetting.toString());
+            reportSetting = recursionMapUpdate(reportSetting.toString());
+            return reportSetting;
         } else {
             return reportSetting;
         }
-    }
-
-    private enum JSON_TYPE {
-        JSON_TYPE_OBJECT,
-        JSON_TYPE_ARRAY,
-        JSON_TYPE_ERROR
     }
 
     //仅修改将最外层的key值
@@ -39,7 +33,7 @@ public class ReportSettingRenameOperation implements ReportSettingsUpdateOperati
         JSONObject res = new JSONObject();
         Set<String> keySet = json.toMap().keySet();
         for (String s : keySet) {
-            res.put(lineToCamel(s), json.get(s));
+            res.put(updateKey(s), json.get(s));
         }
         return res;
     }
@@ -50,11 +44,11 @@ public class ReportSettingRenameOperation implements ReportSettingsUpdateOperati
         JSONObject res = new JSONObject();
         Set<String> keySet = json.toMap().keySet();
         for (String s : keySet) {
-            boolean flag = isKeyValueSet(json.get(s).toString());
+            boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
-                res.put(lineToCamel(s), recursionMapUpdate(json.getString(s)));
+                res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
-                res.put(lineToCamel(s), recursionListUpdate(json.getString(s)));
+                res.put(updateKey(s), recursionListUpdate(json.getString(s)));
             }
         }
         return res;
@@ -63,14 +57,14 @@ public class ReportSettingRenameOperation implements ReportSettingsUpdateOperati
     //list结构的递归
     Object recursionListUpdate(Object object) throws JSONException {
         String str = object.toString();
-        if (isArray(str)) {
+        if (BIJsonUtils.isArray(str)) {
             JSONArray array = new JSONArray(str);
             for (int i = 0; i < array.length(); i++) {
                 array.put(i, recursionListUpdate(array.getString(i)));
             }
             return array;
         } else {
-            if (isKeyValueSet(str)) {
+            if (BIJsonUtils.isKeyValueSet(str)) {
                 return recursionMapUpdate(str);
             } else {
                 return str;
@@ -78,34 +72,11 @@ public class ReportSettingRenameOperation implements ReportSettingsUpdateOperati
         }
     }
 
-    private JSON_TYPE getJSONType(String str) {
-        if (StringUtils.isEmpty(str)) {
-            return JSON_TYPE.JSON_TYPE_ERROR;
-        }
-
-        final char[] strChar = str.substring(0, 1).toCharArray();
-        final char firstChar = strChar[0];
-
-        if (firstChar == '{') {
-            return JSON_TYPE.JSON_TYPE_OBJECT;
-        } else if (firstChar == '[') {
-            return JSON_TYPE.JSON_TYPE_ARRAY;
-        } else {
-            return JSON_TYPE.JSON_TYPE_ERROR;
-        }
+    protected String updateKey(String str) {
+        return lineToCamels(str);
     }
 
-    private boolean isKeyValueSet(String str) {
-        JSON_TYPE type = getJSONType(str);
-        return type == JSON_TYPE.JSON_TYPE_OBJECT;
-    }
-
-    private boolean isArray(String str) {
-        JSON_TYPE type = getJSONType(str);
-        return type == JSON_TYPE.JSON_TYPE_ARRAY;
-    }
-
-    protected String lineToCamel(String str) {
+    private String lineToCamels(String str) {
         str = str.toLowerCase();
         Matcher matcher = linePattern.matcher(str);
         StringBuffer sb = new StringBuffer();
