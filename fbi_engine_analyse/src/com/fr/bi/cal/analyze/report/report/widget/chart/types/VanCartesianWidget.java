@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -68,11 +69,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return createXYSeries(data);
     }
 
-    public JSONObject createPlotOptions() throws JSONException{
+    public JSONObject createPlotOptions(BISessionProvider session) throws Exception{
 
         JSONObject settings = this.getDetailChartSetting();
 
-        JSONObject plotOptions = super.createPlotOptions();
+        JSONObject plotOptions = super.createPlotOptions(session);
 
         plotOptions.put("inverted", this.isInverted());
 
@@ -90,11 +91,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return false;
     }
 
-    public  JSONObject createOptions() throws JSONException{
+    public  JSONObject createOptions(BISessionProvider session) throws Exception{
 
         JSONObject settings = this.getDetailChartSetting();
 
-        JSONObject options = super.createOptions();
+        JSONObject options = super.createOptions(session);
 
         options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable")));
 
