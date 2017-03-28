@@ -129,7 +129,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
         this.loadingBar.setPercent(0);
         BI.createWidget({
             type: "bi.htape",
-            element: this.element,
+            element: this,
             items: [{
                 width: 23,
                 el: this.checkbox
@@ -148,7 +148,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
         })
         BI.createWidget({
             type: "bi.absolute",
-            element: this.element,
+            element: this,
             items: [{
                 el : self.loadingBar,
                 left : 10,
@@ -266,4 +266,4 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
         this.tip.setTitle(items.toString());
     }
 });
-$.shortcut("bi.select_data_level" + ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE + "_node", BI.SelectDataLevel8Node);
+BI.shortcut("bi.select_data_level" + ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE + "_node", BI.SelectDataLevel8Node);

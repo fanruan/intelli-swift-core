@@ -38,7 +38,7 @@ BI.AnalysisETLOperatorMergeSheetPane = FR.extend(BI.MVCWidget, {
         })
         BI.createWidget({
             type:"bi.htape",
-            element:this.element,
+            element: this,
             items:[{
                 el:{
                     type:"bi.vtape",
@@ -135,4 +135,4 @@ BI.AnalysisETLOperatorMergeSheetPane = FR.extend(BI.MVCWidget, {
 BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE="MERGE_SHEET_CHANGE";
 BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE="MERGE_SHEET_DELETE";
 BI.AnalysisETLOperatorMergeSheetPane.STOP_EDITING="STOP_EDITING";
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.MERGE_SHEET + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorMergeSheetPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.MERGE_SHEET + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorMergeSheetPane);

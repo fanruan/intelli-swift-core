@@ -54,7 +54,7 @@ BI.AnalysisETLMergeSheetType = BI.inherit(BI.MVCWidget, {
         })
         BI.createWidget({
             type:"bi.vtape",
-            element:this.element,
+            element: this,
             items:[{
                 el :{
                     type:"bi.left_right_vertical_adapt",
@@ -89,4 +89,4 @@ BI.AnalysisETLMergeSheetType = BI.inherit(BI.MVCWidget, {
 
 BI.AnalysisETLMergeSheetType.EVENT_CHANGE = "merge_change";
 
-$.shortcut("bi.analysis_etl_merge_type",BI.AnalysisETLMergeSheetType)
+BI.shortcut("bi.analysis_etl_merge_type",BI.AnalysisETLMergeSheetType)

@@ -28,7 +28,7 @@ BI.AnalysisETLMergePreviewTable = BI.inherit(BI.Widget, {
             type:"bi.table_view",
             isNeedResize: false,
             isResizeAdapt: false,
-            element:this.element,
+            element: this,
             isNeedFreeze: false,
             freezeCols: [],
 
@@ -132,4 +132,4 @@ BI.AnalysisETLMergePreviewTable = BI.inherit(BI.Widget, {
 
 BI.AnalysisETLMergePreviewTable.EVENT_RENAME = "event_rename";
 
-$.shortcut("bi.analysis_etl_merge_preview_table", BI.AnalysisETLMergePreviewTable);
+BI.shortcut("bi.analysis_etl_merge_preview_table", BI.AnalysisETLMergePreviewTable);

@@ -7,7 +7,7 @@ BI.ETLGroupSortableList = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         self.list = BI.createWidget({
             type: "bi.sort_list",
-            element: this.element,
+            element: this,
             itemsCreator: function (op, callback) {
                 callback(BI.createItems(o.items, {
                     type : 'bi.multi_select_item'
@@ -46,4 +46,4 @@ BI.ETLGroupSortableList = BI.inherit(BI.Widget, {
 
 });
 BI.ETLGroupSortableList.EVENT_CHANGE = "ETL_GROUP_EVENT_CHANGE";
-$.shortcut("bi.etl_group_sortable_list", BI.ETLGroupSortableList);
+BI.shortcut("bi.etl_group_sortable_list", BI.ETLGroupSortableList);

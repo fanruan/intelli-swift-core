@@ -52,7 +52,7 @@ BI.AnalysisETLPreviewTableHeaderDeleteCell = BI.inherit(BI.Widget, {
         })
         BI.createWidget({
             type:"bi.htape",
-            element: this.element,
+            element: this,
             items:[{
                 el : {
                     type:"bi.icon_button",
@@ -73,4 +73,4 @@ BI.AnalysisETLPreviewTableHeaderDeleteCell = BI.inherit(BI.Widget, {
 });
 
 
-$.shortcut(ETLCst.ANALYSIS_TABLE_OPERATOR_PREVIEW_HEADER + BI.ANALYSIS_ETL_HEADER.DELETE, BI.AnalysisETLPreviewTableHeaderDeleteCell);
+BI.shortcut(ETLCst.ANALYSIS_TABLE_OPERATOR_PREVIEW_HEADER + BI.ANALYSIS_ETL_HEADER.DELETE, BI.AnalysisETLPreviewTableHeaderDeleteCell);

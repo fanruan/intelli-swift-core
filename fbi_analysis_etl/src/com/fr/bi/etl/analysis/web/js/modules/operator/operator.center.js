@@ -262,4 +262,4 @@ BI.AnalysisETLOperatorCenter = FR.extend(BI.MVCWidget, {
 })
 BI.AnalysisETLOperatorCenter.DATA_CHANGE="DATA_CHANGE";
 BI.AnalysisETLOperatorCenter.EVENT_RENAME = "event_rename";
-$.shortcut("bi.analysis_etl_operator_center", BI.AnalysisETLOperatorCenter);
+BI.shortcut("bi.analysis_etl_operator_center", BI.AnalysisETLOperatorCenter);

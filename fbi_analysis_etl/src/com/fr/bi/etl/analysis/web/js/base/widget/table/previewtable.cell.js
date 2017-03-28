@@ -20,7 +20,7 @@ BI.PreviewTableCell = BI.inherit(BI.Widget, {
 
         BI.createWidget({
             type: "bi.label",
-            element: this.element,
+            element: this,
             textAlign: "left",
             lgap:10,
             height: this.options.height,
@@ -29,4 +29,4 @@ BI.PreviewTableCell = BI.inherit(BI.Widget, {
         })
     }
 });
-$.shortcut('bi.analysis_etl_preview_table_cell', BI.PreviewTableCell);
+BI.shortcut('bi.analysis_etl_preview_table_cell', BI.PreviewTableCell);

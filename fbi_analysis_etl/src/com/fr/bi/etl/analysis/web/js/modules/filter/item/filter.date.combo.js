@@ -106,7 +106,7 @@ BI.ETLDateFilterCombo = BI.inherit(BI.Single, {
 
         BI.createWidget({
             type: "bi.absolute",
-            element: this.element,
+            element: this,
             items: [{
                 el: this.combo,
                 top: 0,
@@ -159,4 +159,4 @@ BI.ETLDateFilterCombo.EVENT_FOCUS = 'ETLDateFilterCombo.EVENT_FOCUS';
 BI.ETLDateFilterCombo.EVENT_ERROR = 'ETLDateFilterCombo.EVENT_ERROR';
 BI.ETLDateFilterCombo.EVENT_BEFORE_POPUPVIEW = 'ETLDateFilterCombo.EVENT_BEFORE_POPUPVIEW';
 BI.ETLDateFilterCombo.EVENT_CHANGE = 'ETLDateFilterCombo.EVENT_CHANGE';
-$.shortcut('bi.date_filter_combo_etl', BI.ETLDateFilterCombo);
+BI.shortcut('bi.date_filter_combo_etl', BI.ETLDateFilterCombo);

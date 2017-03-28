@@ -21,7 +21,7 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
         var self =  this;
         BI.createWidget({
             type: "bi.inline",
-            element:this.element,
+            element: this,
             height: o.height,
             items : this.combos
         })
@@ -153,4 +153,4 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
 
 })
 BI.AnalysisOperatorButton.EVENT_OPERATOR_CHANGE = "EVENT_OPERATOR_CHANGE";
-$.shortcut("bi.analysis_operator_button", BI.AnalysisOperatorButton)
+BI.shortcut("bi.analysis_operator_button", BI.AnalysisOperatorButton)

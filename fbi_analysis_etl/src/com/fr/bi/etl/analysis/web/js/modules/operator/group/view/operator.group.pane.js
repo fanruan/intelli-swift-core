@@ -46,7 +46,7 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
         
         BI.createWidget({
             type:"bi.center",
-            element:this.element,
+            element: this,
             items:[{
                 type:"bi.htape",
                 rgap : 10,
@@ -212,4 +212,4 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
 
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY + ETLCst.ANALYSIS_TABLE_PANE , BI.AnalysisETLOperatorGroupPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY + ETLCst.ANALYSIS_TABLE_PANE , BI.AnalysisETLOperatorGroupPane);

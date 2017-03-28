@@ -85,7 +85,7 @@ BI.DynamicTabButton = FR.extend(BI.Widget, {
         BI.createWidget({
             type:"bi.left",
             height: o.height,
-            element:this.element,
+            element: this,
             items:[{
                 type:"bi.horizontal",
                 height: o.height,
@@ -133,4 +133,4 @@ BI.DynamicTabButton.ADD_SHEET = "ADD_SHEET";
 BI.DynamicTabButton.MERGE_SHEET = "MERGE_SHEET";
 
 
-$.shortcut("bi.dynamic_tab_button", BI.DynamicTabButton);
+BI.shortcut("bi.dynamic_tab_button", BI.DynamicTabButton);

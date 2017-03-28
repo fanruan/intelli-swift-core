@@ -18,7 +18,7 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
 
         this.service = BI.createWidget({
             type: "bi.package_select_data_service",
-            element: this.element,
+            element: this,
             isDefaultInit: false,
             showRelativeTables: true,
             showExcelView: false,
@@ -88,4 +88,4 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
     }
 });
 BI.AnalysisETLSelectDataPane.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
-$.shortcut("bi.analysis_etl_select_data_pane", BI.AnalysisETLSelectDataPane);
+BI.shortcut("bi.analysis_etl_select_data_pane", BI.AnalysisETLSelectDataPane);

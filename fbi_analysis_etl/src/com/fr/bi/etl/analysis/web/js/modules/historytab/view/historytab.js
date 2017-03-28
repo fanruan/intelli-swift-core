@@ -44,7 +44,7 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
 
         BI.createWidget({
             type:"bi.htape",
-            element: this.element,
+            element: this,
             bgap: 10,
             items: [{
                 el: this.tab
@@ -148,4 +148,4 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
 })
 BI.HistoryTab.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
 BI.HistoryTab.VALID_CHANGE = "valid_change"
-$.shortcut("bi.history_tab",BI.HistoryTab)
+BI.shortcut("bi.history_tab",BI.HistoryTab)

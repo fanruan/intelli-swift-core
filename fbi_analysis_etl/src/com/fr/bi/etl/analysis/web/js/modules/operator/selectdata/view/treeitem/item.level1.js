@@ -70,7 +70,7 @@ BI.AnalysisETLDetailSelectDataLevel1Item = BI.inherit(BI.Single, {
 
         BI.createWidget({
             type: "bi.absolute",
-            element: this.element,
+            element: this,
             items: [{
                 el: this.button,
                 top: 0,
@@ -155,4 +155,4 @@ BI.AnalysisETLDetailSelectDataLevel1Item = BI.inherit(BI.Single, {
     }
 });
 
-$.shortcut("bi.analysis_etl_detail_select_data_level1_item", BI.AnalysisETLDetailSelectDataLevel1Item);
+BI.shortcut("bi.analysis_etl_detail_select_data_level1_item", BI.AnalysisETLDetailSelectDataLevel1Item);

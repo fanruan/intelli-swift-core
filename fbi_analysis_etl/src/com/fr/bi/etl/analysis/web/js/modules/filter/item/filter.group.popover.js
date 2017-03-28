@@ -176,4 +176,4 @@ BI.ETLFilterGroupPopup = BI.inherit(BI.BarPopoverSection, {
 
 });
 BI.ETLFilterGroupPopup.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.etl_filter_group_popup", BI.ETLFilterGroupPopup);
+BI.shortcut("bi.etl_filter_group_popup", BI.ETLFilterGroupPopup);

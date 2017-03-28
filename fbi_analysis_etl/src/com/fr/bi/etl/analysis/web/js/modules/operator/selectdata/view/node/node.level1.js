@@ -47,7 +47,7 @@ BI.AnalysisETLSelectDataLevel1Node = BI.inherit(BI.NodeButton, {
         })
         BI.createWidget({
             type: "bi.htape",
-            element: this.element,
+            element: this,
             items: [{
                 el: {
                     type: "bi.layout"
@@ -97,4 +97,4 @@ BI.AnalysisETLSelectDataLevel1Node = BI.inherit(BI.NodeButton, {
     }
 });
 
-$.shortcut("bi.analysis_etl_select_data_level1_node", BI.AnalysisETLSelectDataLevel1Node);
+BI.shortcut("bi.analysis_etl_select_data_level1_node", BI.AnalysisETLSelectDataLevel1Node);

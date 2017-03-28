@@ -44,7 +44,7 @@ BI.HistoryButton =  FR.extend(BI.BasicButton, {
         this.deleteButton = BI.createWidget(o.deleteButton);
 
         BI.createWidget({
-            element:this.element,
+            element: this,
             type:"bi.htape",
             height:this._constant.height,
             items : [{
@@ -130,4 +130,4 @@ BI.HistoryButton =  FR.extend(BI.BasicButton, {
 })
 BI.HistoryButton.EVENT_DELETE = "HistoryButton.event_delete"
 
-$.shortcut("bi.history_button",BI.HistoryButton)
+BI.shortcut("bi.history_button",BI.HistoryButton)

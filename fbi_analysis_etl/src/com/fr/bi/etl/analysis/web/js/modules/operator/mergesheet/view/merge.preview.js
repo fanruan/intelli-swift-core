@@ -85,7 +85,7 @@ BI.AnalysisETLMergeSheetPreview = BI.inherit(BI.MVCWidget, {
         })
         BI.createWidget({
             type:"bi.vtape",
-            element:this.element,
+            element: this,
             lgap:20,
             rgap:20,
             items:[{
@@ -161,4 +161,4 @@ BI.AnalysisETLMergeSheetPreview = BI.inherit(BI.MVCWidget, {
     }
 });
 
-$.shortcut("bi.analysis_etl_merge_preview",BI.AnalysisETLMergeSheetPreview)
+BI.shortcut("bi.analysis_etl_merge_preview",BI.AnalysisETLMergeSheetPreview)

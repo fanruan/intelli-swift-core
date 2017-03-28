@@ -102,7 +102,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.MVCWidget, {
 
         BI.createWidget({
             type: "bi.htape",
-            element: this.element,
+            element: this,
             items: [{
                 el: {
                     type: "bi.vtape",
@@ -136,4 +136,4 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.MVCWidget, {
 
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA, BI.AnalysisETLOperatorSelectData);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA, BI.AnalysisETLOperatorSelectData);

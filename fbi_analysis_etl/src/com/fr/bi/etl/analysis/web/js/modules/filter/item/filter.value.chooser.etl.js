@@ -4,7 +4,7 @@ BI.ETLFilterValueChooser = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.pane = BI.createWidget({
             type: 'bi.multi_value_chooser_pane_etl',
-            element: this.element,
+            element: this,
             fieldValuesCreator: o.fieldValuesCreator
         });
         this.pane.on(BI.ETLMultiValueChooserPane.EVENT_CONFIRM, function () {
@@ -25,4 +25,4 @@ BI.ETLFilterValueChooser = BI.inherit(BI.Widget, {
     }
 });
 BI.ETLFilterValueChooser.EVENT_CONFIRM = "ETLFilterValueChooser.EVENT_CONFIRM";
-$.shortcut('bi.filter_value_chooser_etl', BI.ETLFilterValueChooser);
+BI.shortcut('bi.filter_value_chooser_etl', BI.ETLFilterValueChooser);

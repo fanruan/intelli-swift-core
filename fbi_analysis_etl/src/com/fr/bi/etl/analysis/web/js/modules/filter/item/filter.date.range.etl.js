@@ -19,7 +19,7 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
         this.up = this._createCombo();
         this.down = this._createCombo();
         BI.createWidget({
-            element: this.element,
+            element: this,
             type: "bi.vertical",
             scrolly : false,
             items: [{
@@ -103,4 +103,4 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
     }
 });
 BI.ETLDateRangePane.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.date_range_pane_etl", BI.ETLDateRangePane);
+BI.shortcut("bi.date_range_pane_etl", BI.ETLDateRangePane);

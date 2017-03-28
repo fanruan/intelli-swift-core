@@ -24,7 +24,7 @@ BI.AnalysisETLOperatorFilterSingleColumn = FR.extend(BI.Widget, {
 
         BI.createWidget({
             type:"bi.vertical",
-            element:this.element,
+            element: this,
             items :[{
                 type:"bi.center_adapt",
                 items :[{
@@ -85,4 +85,4 @@ BI.AnalysisETLOperatorFilterSingleColumn = FR.extend(BI.Widget, {
 })
 
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_single_column", BI.AnalysisETLOperatorFilterSingleColumn)
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_single_column", BI.AnalysisETLOperatorFilterSingleColumn)

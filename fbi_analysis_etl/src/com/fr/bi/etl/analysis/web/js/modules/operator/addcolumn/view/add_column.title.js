@@ -81,7 +81,7 @@ BI.AnalysisETLOperatorAddColumnPaneTitle = FR.extend(BI.MVCWidget, {
         })
         BI.createWidget({
             type:"bi.center_adapt",
-            element:this.element,
+            element: this,
             height:45,
             items:[{
                 type:"bi.vertical_adapt",
@@ -134,4 +134,4 @@ BI.AnalysisETLOperatorAddColumnPaneTitle = FR.extend(BI.MVCWidget, {
 
 BI.AnalysisETLOperatorAddColumnPaneTitle.EVENT_COLUMN_TYPE_CHANGE = "column_type_change";
 BI.AnalysisETLOperatorAddColumnPaneTitle.EVENT_ADD_COLUMN_TYPE_CHANGE = "add_column_type_change";
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + ETLCst.ANALYSIS_TABLE_PANE + ETLCst.ANALYSIS_TABLE_TITLE, BI.AnalysisETLOperatorAddColumnPaneTitle);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + ETLCst.ANALYSIS_TABLE_PANE + ETLCst.ANALYSIS_TABLE_TITLE, BI.AnalysisETLOperatorAddColumnPaneTitle);

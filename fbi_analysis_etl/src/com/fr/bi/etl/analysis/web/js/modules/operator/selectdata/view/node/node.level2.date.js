@@ -43,7 +43,7 @@ BI.AnalysisDetailSelectDataLevel2DateNode = BI.inherit(BI.NodeButton, {
         })
         BI.createWidget({
             type: "bi.htape",
-            element: this.element,
+            element: this,
             items: [{
                 el: {
                     type: "bi.layout"
@@ -84,4 +84,4 @@ BI.AnalysisDetailSelectDataLevel2DateNode = BI.inherit(BI.NodeButton, {
     }
 });
 
-$.shortcut("bi.analysis_detail_select_data_level2_date_node", BI.AnalysisDetailSelectDataLevel2DateNode);
+BI.shortcut("bi.analysis_detail_select_data_level2_date_node", BI.AnalysisDetailSelectDataLevel2DateNode);

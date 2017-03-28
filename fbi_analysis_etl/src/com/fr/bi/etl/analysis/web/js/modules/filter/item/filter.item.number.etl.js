@@ -111,5 +111,5 @@ BI.NumberETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
         return this.filterWidget;
     }
 });
-$.shortcut('bi.number_filter_item_etl', BI.NumberETLFilterItem)
+BI.shortcut('bi.number_filter_item_etl', BI.NumberETLFilterItem)
 

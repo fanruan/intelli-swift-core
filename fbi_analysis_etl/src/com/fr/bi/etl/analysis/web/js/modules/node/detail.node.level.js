@@ -28,7 +28,7 @@ BI.AnalysisDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
         var o = this.options;
         return BI.createWidget({
             type: "bi.select_data_level8_node",
-            element: this.element,
+            element: this,
             id: o.id,
             pId: o.pId,
             open: o.open,
@@ -135,4 +135,4 @@ BI.AnalysisDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
         this.node.setEnable(b);
     }
 });
-$.shortcut("bi.analysis_detail_detail_select_data_level0_node", BI.AnalysisDetailDetailSelectDataNode);
+BI.shortcut("bi.analysis_detail_detail_select_data_level0_node", BI.AnalysisDetailDetailSelectDataNode);

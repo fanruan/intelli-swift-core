@@ -31,7 +31,7 @@ BI.AnalysisProgressBar = BI.inherit(BI.Widget, {
 
         BI.createWidget({
             type:"bi.absolute",
-            element:this.element,
+            element: this,
             items:[this.per]
         })
 
@@ -43,4 +43,4 @@ BI.AnalysisProgressBar = BI.inherit(BI.Widget, {
     }
 
 })
-$.shortcut("bi.analysis_progress", BI.AnalysisProgressBar);
+BI.shortcut("bi.analysis_progress", BI.AnalysisProgressBar);

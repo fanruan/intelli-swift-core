@@ -23,7 +23,7 @@ BI.AnalysisETLOperatorAllColumnsPane = FR.extend(BI.Widget, {
         })
         BI.createWidget({
             type:"bi.border",
-            element:this.element,
+            element: this,
             items:{
                 north: {
                     type:"bi.layout",
@@ -102,4 +102,4 @@ BI.AnalysisETLOperatorAllColumnsPane = FR.extend(BI.Widget, {
 BI.AnalysisETLOperatorAllColumnsPane.EVENT_DELETE="event_delete";
 BI.AnalysisETLOperatorAllColumnsPane.EVENT_EDIT="event_edit";
 BI.AnalysisETLOperatorAllColumnsPane.EVENT_NEW="event_new";
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + ETLCst.ANALYSIS_TABLE_PANE + "_all", BI.AnalysisETLOperatorAllColumnsPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + ETLCst.ANALYSIS_TABLE_PANE + "_all", BI.AnalysisETLOperatorAllColumnsPane);

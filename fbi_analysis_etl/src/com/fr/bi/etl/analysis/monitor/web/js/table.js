@@ -95,7 +95,7 @@ BI.MonitorTable = BI.inherit(BI.Widget, {
         })
         BI.createWidget({
             type: "bi.center_adapt",
-            element: this.element,
+            element: this,
             items: [label]
         })
     },
@@ -147,4 +147,4 @@ BI.MonitorTable = BI.inherit(BI.Widget, {
 
 
 })
-$.shortcut("bi.monitor_table", BI.MonitorTable);
+BI.shortcut("bi.monitor_table", BI.MonitorTable);

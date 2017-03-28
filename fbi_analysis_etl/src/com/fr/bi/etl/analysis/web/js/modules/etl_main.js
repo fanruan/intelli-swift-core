@@ -164,7 +164,7 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
         this.registerChildWidget(BI.AnalysisETLMainModel.TAB, self.tab)
         BI.createWidget({
             type:"bi.vtape",
-            element: this.element,
+            element: this,
             items: [{
                 el: title,
                 height:this._constant.titleHeight
@@ -242,4 +242,4 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
     }
 
 })
-$.shortcut("bi.analysis_etl_main", BI.AnalysisETLMain);
+BI.shortcut("bi.analysis_etl_main", BI.AnalysisETLMain);

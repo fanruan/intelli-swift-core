@@ -11,4 +11,4 @@ BI.AnalysisETLOperatorAddColumnAbstractDateConvertSeasonPane = BI.inherit(BI.Ana
         })
     }
 })
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.DATE_SEASON, BI.AnalysisETLOperatorAddColumnAbstractDateConvertSeasonPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.DATE_SEASON, BI.AnalysisETLOperatorAddColumnAbstractDateConvertSeasonPane);

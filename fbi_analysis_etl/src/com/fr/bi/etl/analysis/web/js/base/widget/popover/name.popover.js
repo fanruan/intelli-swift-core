@@ -118,4 +118,4 @@ BI.ETLTableNamePopover = BI.inherit(BI.ETLTableRenamePopover, {
 
 });
 BI.ETLTableNamePopover.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.etl_table_name_popover", BI.ETLTableNamePopover);
+BI.shortcut("bi.etl_table_name_popover", BI.ETLTableNamePopover);

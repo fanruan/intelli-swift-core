@@ -65,7 +65,7 @@ BI.LeftPointerButton = FR.extend(BI.BasicButton, {
         var o = this.options;
         BI.createWidget({
             type:"bi.absolute",
-            element: this.element,
+            element: this,
             width:o.width,
             height: o.height,
             items:[{
@@ -140,4 +140,4 @@ BI.LeftPointerButton = FR.extend(BI.BasicButton, {
     }
 
 });
-$.shortcut("bi.left_pointer_button", BI.LeftPointerButton);
+BI.shortcut("bi.left_pointer_button", BI.LeftPointerButton);

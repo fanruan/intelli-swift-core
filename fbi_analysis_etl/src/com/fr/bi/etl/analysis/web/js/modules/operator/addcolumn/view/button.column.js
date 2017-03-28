@@ -21,7 +21,7 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
         var self = this;
         BI.createWidget({
             type:"bi.htape",
-            element:this.element,
+            element: this,
             items:[{
                 type:"bi.icon_button",
                 cls: BI.Utils.getFieldClass(o.fieldType),
@@ -61,4 +61,4 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
 })
 BI.ColumnButton.EVENT_DELETE="event_delete";
 BI.ColumnButton.EVENT_EDIT="event_edit";
-$.shortcut("bi.etl_button_column", BI.ColumnButton);
+BI.shortcut("bi.etl_button_column", BI.ColumnButton);

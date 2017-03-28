@@ -91,10 +91,10 @@ BI.AnalysisETLMergePreviewTableHeaderCell = BI.inherit(BI.Widget, {
         }
         BI.createWidget({
             type:"bi.htape",
-            element: this.element,
+            element: this,
             items:items
         })
     }
 });
 
-$.shortcut("bi.analysis_etl_merge_p_t_h_cell", BI.AnalysisETLMergePreviewTableHeaderCell);
+BI.shortcut("bi.analysis_etl_merge_p_t_h_cell", BI.AnalysisETLMergePreviewTableHeaderCell);

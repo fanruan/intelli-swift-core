@@ -12,4 +12,4 @@ BI.AnalysisETLOperatorSelectNoneData = BI.inherit(BI.AnalysisETLOperatorAbstract
     }
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.SELECT_NONE_DATA, BI.AnalysisETLOperatorSelectNoneData);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.SELECT_NONE_DATA, BI.AnalysisETLOperatorSelectNoneData);

@@ -40,4 +40,4 @@ BI.ChooseSheetButton = FR.extend(BI.BasicButton, {
     }
     
 })
-$.shortcut("bi.analysis_etl_choose_sheet_button", BI.ChooseSheetButton)
+BI.shortcut("bi.analysis_etl_choose_sheet_button", BI.ChooseSheetButton)

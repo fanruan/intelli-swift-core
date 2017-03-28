@@ -29,7 +29,7 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
         this.popup = BI.createWidget(op);
         this.combo = BI.createWidget({
             type: "bi.combo",
-            element: this.element,
+            element: this,
             toggle: false,
             el: this.trigger,
             popup: this.popup,
@@ -70,4 +70,4 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
     }
 });
 BI.ETLFilterCombo.EVENT_VALUE_CHANGED = 'EVENT_VALUE_CHANGED';
-$.shortcut("bi.filter_combo_etl", BI.ETLFilterCombo);
+BI.shortcut("bi.filter_combo_etl", BI.ETLFilterCombo);

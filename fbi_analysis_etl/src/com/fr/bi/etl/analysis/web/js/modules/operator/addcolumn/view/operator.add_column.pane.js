@@ -68,7 +68,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.MVCWidget, {
         })
         this.card = BI.createWidget({
             type:'bi.card',
-            element:this.element,
+            element: this,
             items:[{
                 cardName:this._constant.SINGLE_COLUMN_CARD,
                 el: {
@@ -114,4 +114,4 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.MVCWidget, {
     }
 
 })
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorAddColumnPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorAddColumnPane);

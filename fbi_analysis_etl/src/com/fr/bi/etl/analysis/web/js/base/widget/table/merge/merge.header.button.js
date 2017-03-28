@@ -41,7 +41,7 @@ BI.AnalysisETLMergePreviewTableHeaderButton = BI.inherit(BI.BasicButton, {
         }
         BI.createWidget({
             type:"bi.vertical",
-            element:this.element,
+            element: this,
             items:labelItems
         })
 
@@ -53,4 +53,4 @@ BI.AnalysisETLMergePreviewTableHeaderButton = BI.inherit(BI.BasicButton, {
         this.label.setTitle(text);
     },
 });
-$.shortcut("bi.analysis_etl_merge_p_t_h_button", BI.AnalysisETLMergePreviewTableHeaderButton);
+BI.shortcut("bi.analysis_etl_merge_p_t_h_button", BI.AnalysisETLMergePreviewTableHeaderButton);

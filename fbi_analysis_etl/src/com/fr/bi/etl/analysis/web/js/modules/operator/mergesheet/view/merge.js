@@ -70,7 +70,7 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.MVCWidget, {
         })
         BI.createWidget({
             type:"bi.htape",
-            element:this.element,
+            element: this,
             items:[{
                 type:"bi.layout",
                 width:20
@@ -171,4 +171,4 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.MVCWidget, {
     }
 })
 
-$.shortcut("bi.analysis_etl_merge_sheet", BI.AnalysisETLMergeSheet);
+BI.shortcut("bi.analysis_etl_merge_sheet", BI.AnalysisETLMergeSheet);
