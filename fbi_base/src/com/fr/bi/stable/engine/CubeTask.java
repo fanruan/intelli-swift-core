@@ -6,6 +6,7 @@ package com.fr.bi.stable.engine;
 import com.fr.json.JSONCreator;
 
 import java.io.Serializable;
+import java.util.Set;
 
 
 public interface CubeTask extends JSONCreator, Serializable {
@@ -21,5 +22,7 @@ public interface CubeTask extends JSONCreator, Serializable {
     void run();
 
     long getUserId();
+
+    Set<String> getTaskTableSourceIds();
 
 }

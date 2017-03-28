@@ -4,6 +4,9 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.json.JSONObject;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * This class created on 16-12-13.
  *
@@ -47,6 +50,11 @@ public class EmptyCubeTask implements CubeTask {
     @Override
     public long getUserId() {
         return 0;
+    }
+
+    @Override
+    public Set<String> getTaskTableSourceIds() {
+        return new HashSet<>();
     }
 
     @Override
