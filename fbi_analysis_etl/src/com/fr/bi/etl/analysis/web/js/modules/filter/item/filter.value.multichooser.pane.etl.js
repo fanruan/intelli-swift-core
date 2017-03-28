@@ -32,7 +32,7 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
 
         this.searcher = BI.createWidget({
             type: "bi.searcher",
-            element: this.element,
+            element: this,
             isAutoSearch: false,
             isAutoSync: false,
             isDefaultInit: true,

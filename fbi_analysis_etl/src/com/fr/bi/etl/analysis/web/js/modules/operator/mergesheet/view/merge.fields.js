@@ -45,7 +45,7 @@ BI.AnalysisETLMergeSheetFields = BI.inherit(BI.MVCWidget, {
         BI.createWidget({
             type:"bi.vtape",
             cls: "join-merge-field",
-            element:this.element,
+            element: this,
             items:[{
                 el: {
                     type: "bi.left_right_vertical_adapt",

@@ -39,7 +39,7 @@ BI.AnalysisETLSelectDataLevel0Node = BI.inherit(BI.NodeButton, {
         })
         BI.createWidget({
             type: "bi.htape",
-            element: this.element,
+            element: this,
             items: [{
                 width: 23,
                 el: this.checkbox

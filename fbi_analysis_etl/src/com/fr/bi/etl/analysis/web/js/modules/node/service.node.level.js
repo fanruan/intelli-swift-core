@@ -18,7 +18,7 @@ BI.AnalysisDetailSelectDataLevel0Node = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.node = BI.createWidget({
             type: "bi.select_data_level8_node",
-            element: this.element,
+            element: this,
             id: o.id,
             pId: o.pId,
             open: o.open,

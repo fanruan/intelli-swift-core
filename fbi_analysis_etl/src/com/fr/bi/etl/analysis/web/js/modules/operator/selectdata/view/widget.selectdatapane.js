@@ -18,7 +18,7 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
 
         this.service = BI.createWidget({
             type: "bi.package_select_data_service",
-            element: this.element,
+            element: this,
             isDefaultInit: false,
             showRelativeTables: true,
             showExcelView: false,

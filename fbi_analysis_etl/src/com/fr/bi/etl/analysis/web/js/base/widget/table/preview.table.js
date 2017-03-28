@@ -49,7 +49,7 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
         });
         this.card = BI.createWidget({
             type: "bi.tab",
-            element: this.element,
+            element: this,
             defaultShowIndex: this._constant.nullCard,
             cardCreator: function (v) {
                 switch (v) {

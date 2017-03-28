@@ -45,7 +45,7 @@ BI.AnalysisETLOperatorFilterPane = FR.extend(BI.MVCWidget, {
             type:ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_table"
         })
         this.card = BI.createWidget({
-            element:this.element,
+            element: this,
             type:"bi.card",
             items:[{
                 cardName: this._constant.nullCard,

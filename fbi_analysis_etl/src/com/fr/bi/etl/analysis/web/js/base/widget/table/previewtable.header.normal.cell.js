@@ -27,7 +27,7 @@ BI.AnalysisETLPreviewTableHeaderNormalCell = BI.inherit(BI.Widget, {
         })
         BI.createWidget({
             type:"bi.htape",
-            element: this.element,
+            element: this,
             items:[{
                 el : {
                     type:"bi.icon_button",

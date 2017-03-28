@@ -41,7 +41,7 @@ BI.AnalysisETLMergePreviewTableHeaderButton = BI.inherit(BI.BasicButton, {
         }
         BI.createWidget({
             type:"bi.vertical",
-            element:this.element,
+            element: this,
             items:labelItems
         })
 

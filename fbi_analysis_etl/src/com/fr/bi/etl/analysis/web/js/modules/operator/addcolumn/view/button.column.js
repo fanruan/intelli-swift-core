@@ -21,7 +21,7 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
         var self = this;
         BI.createWidget({
             type:"bi.htape",
-            element:this.element,
+            element: this,
             items:[{
                 type:"bi.icon_button",
                 cls: BI.Utils.getFieldClass(o.fieldType),

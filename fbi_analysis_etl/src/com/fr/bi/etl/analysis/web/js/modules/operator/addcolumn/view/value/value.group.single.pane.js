@@ -45,7 +45,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
         });
         var item =  BI.createWidget({
             type : 'bi.horizontal',
-            element:this.element,
+            element: this,
             lgap : self._constants.GAP,
             height : self._constants.DOWN_ITEM_HEIGHT,
             items : [{
