@@ -61,4 +61,4 @@ BI.ColumnButton = FR.extend(BI.BasicButton, {
 })
 BI.ColumnButton.EVENT_DELETE="event_delete";
 BI.ColumnButton.EVENT_EDIT="event_edit";
-$.shortcut("bi.etl_button_column", BI.ColumnButton);
+BI.shortcut("bi.etl_button_column", BI.ColumnButton);

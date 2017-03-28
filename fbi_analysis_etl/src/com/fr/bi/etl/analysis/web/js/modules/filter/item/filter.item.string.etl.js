@@ -55,4 +55,4 @@ BI.StringETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
         return this.filterWidget;
     }
 });
-$.shortcut('bi.string_filter_item_etl', BI.StringETLFilterItem)
+BI.shortcut('bi.string_filter_item_etl', BI.StringETLFilterItem)

@@ -74,4 +74,4 @@ BI.AnalysisETLMergeSheetPopover = FR.extend(BI.BarPopoverSection, {
 
 });
 BI.AnalysisETLMergeSheetPopover.EVENT_CHANGE="event_change";
-$.shortcut("bi.analysis_etl_choose_sheet_popover", BI.AnalysisETLMergeSheetPopover)
+BI.shortcut("bi.analysis_etl_choose_sheet_popover", BI.AnalysisETLMergeSheetPopover)

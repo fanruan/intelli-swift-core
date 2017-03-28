@@ -85,4 +85,4 @@ BI.AnalysisETLOperatorFilterSingleColumn = FR.extend(BI.Widget, {
 })
 
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_single_column", BI.AnalysisETLOperatorFilterSingleColumn)
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_single_column", BI.AnalysisETLOperatorFilterSingleColumn)

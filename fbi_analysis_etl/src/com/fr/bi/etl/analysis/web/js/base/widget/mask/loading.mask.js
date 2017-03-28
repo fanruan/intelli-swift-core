@@ -85,4 +85,4 @@ BI.ETLLoadingMask = BI.inherit(BI.Widget, {
         BI.Layers.remove(this.getName());
     }
 });
-$.shortcut("bi.etl_loading_mask", BI.ETLLoadingMask);
+BI.shortcut("bi.etl_loading_mask", BI.ETLLoadingMask);

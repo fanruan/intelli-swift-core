@@ -133,4 +133,4 @@ BI.DynamicTabButton.ADD_SHEET = "ADD_SHEET";
 BI.DynamicTabButton.MERGE_SHEET = "MERGE_SHEET";
 
 
-$.shortcut("bi.dynamic_tab_button", BI.DynamicTabButton);
+BI.shortcut("bi.dynamic_tab_button", BI.DynamicTabButton);

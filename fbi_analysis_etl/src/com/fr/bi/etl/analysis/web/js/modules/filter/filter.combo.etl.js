@@ -70,4 +70,4 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
     }
 });
 BI.ETLFilterCombo.EVENT_VALUE_CHANGED = 'EVENT_VALUE_CHANGED';
-$.shortcut("bi.filter_combo_etl", BI.ETLFilterCombo);
+BI.shortcut("bi.filter_combo_etl", BI.ETLFilterCombo);

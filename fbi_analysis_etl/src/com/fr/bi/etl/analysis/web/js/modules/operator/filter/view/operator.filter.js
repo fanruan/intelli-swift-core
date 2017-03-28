@@ -12,4 +12,4 @@ BI.AnalysisETLOperatorFilter = FR.extend(BI.AnalysisETLOperatorAbstractPane, {
 
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER, BI.AnalysisETLOperatorFilter);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER, BI.AnalysisETLOperatorFilter);

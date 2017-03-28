@@ -89,4 +89,4 @@ BI.AnalysisETLMergeSheetType = BI.inherit(BI.MVCWidget, {
 
 BI.AnalysisETLMergeSheetType.EVENT_CHANGE = "merge_change";
 
-$.shortcut("bi.analysis_etl_merge_type",BI.AnalysisETLMergeSheetType)
+BI.shortcut("bi.analysis_etl_merge_type",BI.AnalysisETLMergeSheetType)
