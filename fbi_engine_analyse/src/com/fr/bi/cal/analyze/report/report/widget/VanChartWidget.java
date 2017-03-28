@@ -125,10 +125,22 @@ public abstract class VanChartWidget extends TableWidget {
 
     }
 
+    //todo 不知道有没有实现过，先撸一下
+    private JSONObject merge(JSONObject target, JSONObject source) throws JSONException{
+        Iterator it = source.keys();
+        while(it.hasNext()){
+            String key = it.next().toString();
+            if(!target.has(key)){
+                target.put(key, source.get(key));
+            }
+        }
+        return target;
+    }
+
     protected JSONObject getDetailChartSetting() throws JSONException{
         JSONObject settings = this.getChartSetting().getDetailChartSetting();
 
-        return settings.length() == 0 ? this.populateDefaultSettings() : settings;
+        return merge(settings, this.populateDefaultSettings());
     }
 
     public JSONObject createDataJSON(BISessionProvider session) throws Exception {
@@ -143,6 +155,8 @@ public abstract class VanChartWidget extends TableWidget {
     public JSONObject createOptions() throws JSONException{
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getDetailChartSetting();
+
+        options.put("chartType", this.getSeriesType(StringUtils.EMPTY));
 
         if(settings.has("chartColor")){
             options.put("colors", settings.getJSONArray("chartColor"));
@@ -222,7 +236,7 @@ public abstract class VanChartWidget extends TableWidget {
                 continue;
             }
 
-            double x = data.optDouble(0), y = data.optDouble(1), size = data.optDouble(2);
+            double x = data.optDouble(0), y = data.optDouble(1), size = data.optDouble(2, y);
 
             series.put(
                 JSONObject.create()
