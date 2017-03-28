@@ -35,6 +35,4 @@ public interface BusinessTable extends JSONTransform, Cloneable, Serializable {
 
     JSONObject createJSONWithFieldsInfo(long userId) throws Exception;
 
-    void isCircle();
-
 }

@@ -14,11 +14,9 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
@@ -26,17 +24,19 @@ import com.fr.stable.ExportConstants;
 
 import java.util.*;
 
-public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
+public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
 
     private BIDimension[] rowDimension;
     private BIDimension[] colDimension;
+    private CrossExpander expander;
 
     public CrossExecutor(TableWidget widget, BIDimension[] usedRows,
                          BIDimension[] usedColumn,
                          Paging paging, BISession session, CrossExpander expander) {
-        super(widget, paging, session, expander);
+        super(widget, paging, session);
         this.rowDimension = usedRows;
         this.colDimension = usedColumn;
+        this.expander = expander;
     }
 
     @Override
@@ -79,11 +79,11 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
 
     /**
      *
-     * @param roots 复杂表复用此方法时需要的参数
-     * @param widget 复杂表复用此方法时需要的参数
-     * @param colDimension 复杂表复用此方法时需要的参数
-     * @param rowDimension 复杂表复用此方法时需要的参数
-     * @param usedSumTarget 复杂表复用此方法时需要的参数
+     * @param roots         ComplexCrossExecutor复用此方法时需要的参数
+     * @param widget        ComplexCrossExecutor复用此方法时需要的参数
+     * @param colDimension  ComplexCrossExecutor复用此方法时需要的参数
+     * @param rowDimension  ComplexCrossExecutor复用此方法时需要的参数
+     * @param usedSumTarget ComplexCrossExecutor复用此方法时需要的参数
      * @param pagedIterator
      * @param rowIdx
      * @throws Exception
@@ -162,14 +162,14 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
     }
 
     /**
-     * @param roots        复杂表复用此方法时需要的参数
-     * @param widget       复杂表复用此方法时需要的参数
-     * @param rowDimension 复杂表复用此方法时需要的参数
-     * @param maxDimLen    复杂表复用此方法时需要的参数
+     * @param roots        ComplexCrossExecutor复用此方法时需要的参数
+     * @param widget       ComplexCrossExecutor复用此方法时需要的参数
+     * @param rowDimension ComplexCrossExecutor复用此方法时需要的参数
+     * @param maxDimLen    ComplexCrossExecutor复用此方法时需要的参数 列表头中维度最多区域中维度的长度
      * @param iter
      * @param start
-     * @param rowIdx       复杂表多区域时记录行号类型为FinalInt
-     * @param order        复杂表复用此方法时需要的参数
+     * @param rowIdx       ComplexCrossExecutor复用此方法时需要的参数 记录行数
+     * @param order        ComplexCrossExecutor复用此方法时需要的参数 记录序号
      * @throws Exception
      */
     public static void generateCells(NewCrossRoot[] roots, TableWidget widget, BIDimension[] rowDimension, int maxDimLen,
@@ -266,51 +266,6 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         }
     }
 
-    private BISummaryTarget[] createTarget4Calculate() {
-        ArrayList<BITarget> list = new ArrayList<BITarget>();
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            list.add(usedSumTarget[i]);
-        }
-        if (widget.getTargetSort() != null) {
-            String name = widget.getTargetSort().getName();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), name)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), name)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-        }
-        Iterator<String> it1 = widget.getTargetFilterMap().keySet().iterator();
-        while (it1.hasNext()) {
-            String key = it1.next();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), key)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), key)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-
-        }
-        return list.toArray(new BISummaryTarget[list.size()]);
-    }
-
-    /* (non-Javadoc)
-     * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
-     */
     @Override
     public NewCrossRoot getCubeNode() throws Exception {
         long start = System.currentTimeMillis();
