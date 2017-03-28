@@ -153,4 +153,4 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
 
 })
 BI.AnalysisOperatorButton.EVENT_OPERATOR_CHANGE = "EVENT_OPERATOR_CHANGE";
-$.shortcut("bi.analysis_operator_button", BI.AnalysisOperatorButton)
+BI.shortcut("bi.analysis_operator_button", BI.AnalysisOperatorButton)

@@ -5,7 +5,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
-import com.fr.third.org.apache.poi.util.StringUtil;
+
 
 /**
  * Created by eason on 2017/3/2.
@@ -132,7 +132,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("title", JSONObject.create().put("enabled", settings.optJSONObject("leftYShowTitle")).put("style", settings.optJSONObject("leftYTitleStyle")).put("text", settings.optString("leftYTitle")))
                 .put("showLabel", settings.optBoolean("leftYShowLabel"))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
-                .put("lineColor", settings.optString("leftYLineColor"));
+                .put("lineColor", settings.optString("leftYLineColor"))
+                .put("position", "bottom");
 
         labelStyle = settings.optJSONObject("rightYLabelStyle");
         JSONObject right = JSONObject.create()
@@ -140,7 +141,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("title", JSONObject.create().put("enabled", settings.optJSONObject("rightYShowTitle")).put("style", settings.optJSONObject("rightYTitleStyle")).put("text", settings.optString("rightYTitle")))
                 .put("showLabel", settings.optBoolean("rightYShowLabel"))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
-                .put("lineColor", settings.optString("rightYLineColor"));
+                .put("lineColor", settings.optString("rightYLineColor"))
+                .put("position", "left");
 
         axis.put(left);
         axis.put(right);
@@ -152,7 +154,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                     .put("title", JSONObject.create().put("enabled", settings.optJSONObject("rightY2ShowTitle")).put("style", settings.optJSONObject("rightY2TitleStyle")).put("text", settings.optString("rightY2Title")))
                     .put("showLabel", settings.optBoolean("rightY2ShowLabel"))
                     .put("labelStyle", labelStyle.optJSONObject("textStyle"))
-                    .put("lineColor", settings.optString("rightY2LineColor"));
+                    .put("lineColor", settings.optString("rightY2LineColor"))
+                    .put("position", "right");
 
             axis.put(right2);
         }

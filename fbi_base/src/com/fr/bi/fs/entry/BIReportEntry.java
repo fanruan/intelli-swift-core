@@ -11,6 +11,7 @@ import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.PrimaryKeyFCMapper;
 import com.fr.fs.web.platform.entry.BaseEntry;
+import com.fr.fs.web.platform.entry.Entry;
 import com.fr.fs.web.platform.entry.MobileBaseEntry;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * Created by Young's on 2016/6/6.
  */
-public class BIReportEntry extends MobileBaseEntry {
+public class BIReportEntry extends MobileBaseEntry implements Entry {
     private static final int HASH = 31;
     public static final String TYPE_PREFIX = EntryConstants.BIREPORT + "";
     public static final String TABLE_NAME = "FR_BIREPORTENTRY";

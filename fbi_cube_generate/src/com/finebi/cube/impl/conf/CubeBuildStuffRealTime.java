@@ -126,4 +126,9 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
     public CubeTaskType getTaskType() {
         return CubeTaskType.INSTANT;
     }
+
+    @Override
+    public Set<String> getTaskTableSourceIds() {
+        return getDependTableSourceIdSet(dependTableResource);
+    }
 }

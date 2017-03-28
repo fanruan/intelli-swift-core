@@ -14,7 +14,7 @@ public class VanForceBubbleWidget extends VanChartWidget{
         return createXYSeries(data);
     }
 
-    public String getSeriesType(){
+    public String getSeriesType(String dimensionID){
         return "forceBubble";
     }
 }

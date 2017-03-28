@@ -136,4 +136,4 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.MVCWidget, {
 
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA, BI.AnalysisETLOperatorSelectData);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA, BI.AnalysisETLOperatorSelectData);

@@ -83,11 +83,11 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
         })
     },
 
-    createEditor : function (field_type, value) {
+    createEditor : function (fieldType, value) {
         var self = this;
         var errorText = "";
         var validationChecker;
-        switch(field_type) {
+        switch(fieldType) {
             case BICst.COLUMN.STRING : {
                 validationChecker =  function (v) {
                     self.controller.setEditorValid(true)
@@ -116,7 +116,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
         }
         self.editor =  BI.createWidget({
             type: "bi.text_editor",
-            allowBlank : field_type === BICst.COLUMN.STRING,
+            allowBlank : fieldType === BICst.COLUMN.STRING,
             watermark: BI.i18nText("BI-Please_Enter_Value"),
             errorText: errorText,
             validationChecker : function (v) {
@@ -136,12 +136,12 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
         self.editorPane.addItem(self.editor)
     },
 
-    createItem : function (field, value, field_type, table) {
+    createItem : function (field, value, fieldType, table) {
         var pane =  BI.createWidget({
             type:ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.GROUP + "_single",
             field:field,
             value : value,
-            field_type:field_type,
+            fieldType:fieldType,
             table : table
         })
         var self = this;
@@ -169,4 +169,4 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.MVCWidget, {
 
 
 });
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.GROUP, BI.AnalysisETLOperatorAddColumnValueGroupPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.GROUP, BI.AnalysisETLOperatorAddColumnValueGroupPane);

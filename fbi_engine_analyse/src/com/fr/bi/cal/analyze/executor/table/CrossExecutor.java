@@ -5,52 +5,45 @@ import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.executor.detail.DetailCellIterator;
-import com.fr.bi.cal.analyze.executor.detail.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
-import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
-import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
-import com.fr.stable.StringUtils;
 
 import java.util.*;
 
-public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
+public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
 
     private BIDimension[] rowDimension;
     private BIDimension[] colDimension;
+    private CrossExpander expander;
 
     public CrossExecutor(TableWidget widget, BIDimension[] usedRows,
                          BIDimension[] usedColumn,
                          Paging paging, BISession session, CrossExpander expander) {
-        super(widget, paging, session, expander);
+        super(widget, paging, session);
         this.rowDimension = usedRows;
         this.colDimension = usedColumn;
+        this.expander = expander;
     }
 
     @Override
-    public DetailCellIterator createCellIterator4Excel() throws Exception {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
         NewCrossRoot node = getCubeNode();
         if (node == null) {
-            return new DetailCellIterator(0, 0);
+            return new TableCellIterator(0, 0);
         }
 
         int len = usedSumTarget.length;
@@ -62,7 +55,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         int rowLen = (isWholeRow ? node.getLeft().getTotalLength() :
                 node.getLeft().getTotalLengthWithSummary()) + colDimension.length + 1;
 
-        final DetailCellIterator iter = new DetailCellIterator(columnLen, rowLen);
+        final TableCellIterator iter = new TableCellIterator(columnLen, rowLen);
         new Thread() {
             public void run() {
                 try {
@@ -86,11 +79,11 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
 
     /**
      *
-     * @param roots 复杂表复用此方法时需要的参数
-     * @param widget 复杂表复用此方法时需要的参数
-     * @param colDimension 复杂表复用此方法时需要的参数
-     * @param rowDimension 复杂表复用此方法时需要的参数
-     * @param usedSumTarget 复杂表复用此方法时需要的参数
+     * @param roots         ComplexCrossExecutor复用此方法时需要的参数
+     * @param widget        ComplexCrossExecutor复用此方法时需要的参数
+     * @param colDimension  ComplexCrossExecutor复用此方法时需要的参数
+     * @param rowDimension  ComplexCrossExecutor复用此方法时需要的参数
+     * @param usedSumTarget ComplexCrossExecutor复用此方法时需要的参数
      * @param pagedIterator
      * @param rowIdx
      * @throws Exception
@@ -169,18 +162,18 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
     }
 
     /**
-     * @param roots        复杂表复用此方法时需要的参数
-     * @param widget       复杂表复用此方法时需要的参数
-     * @param rowDimension 复杂表复用此方法时需要的参数
-     * @param maxDimLen    复杂表复用此方法时需要的参数
+     * @param roots        ComplexCrossExecutor复用此方法时需要的参数
+     * @param widget       ComplexCrossExecutor复用此方法时需要的参数
+     * @param rowDimension ComplexCrossExecutor复用此方法时需要的参数
+     * @param maxDimLen    ComplexCrossExecutor复用此方法时需要的参数 列表头中维度最多区域中维度的长度
      * @param iter
      * @param start
-     * @param rowIdx       复杂表多区域时记录行号类型为FinalInt
-     * @param order        复杂表复用此方法时需要的参数
+     * @param rowIdx       ComplexCrossExecutor复用此方法时需要的参数 记录行数
+     * @param order        ComplexCrossExecutor复用此方法时需要的参数 记录序号
      * @throws Exception
      */
     public static void generateCells(NewCrossRoot[] roots, TableWidget widget, BIDimension[] rowDimension, int maxDimLen,
-                                     DetailCellIterator iter, FinalInt start, FinalInt rowIdx, int order) throws Exception {
+                                     TableCellIterator iter, FinalInt start, FinalInt rowIdx, int order) throws Exception {
         //判断奇偶行需要用到标题的行数
         int titleRowSpan = rowIdx.value;
         CrossHeader[] crossNodes = new CrossHeader[roots.length];
@@ -273,122 +266,6 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         }
     }
 
-    /**
-     * 注释
-     *
-     * @return 注释
-     */
-    @Override
-    public CBCell[][] createCellElement() throws Exception {
-        return new CBCell[0][0];
-    }
-
-    private BISummaryTarget[] createTarget4Calculate() {
-        ArrayList<BITarget> list = new ArrayList<BITarget>();
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            list.add(usedSumTarget[i]);
-        }
-        if (widget.getTargetSort() != null) {
-            String name = widget.getTargetSort().getName();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), name)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), name)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-        }
-        Iterator<String> it1 = widget.getTargetFilterMap().keySet().iterator();
-        while (it1.hasNext()) {
-            String key = it1.next();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), key)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), key)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-
-        }
-        return list.toArray(new BISummaryTarget[list.size()]);
-    }
-
-    private void dealwithSum(CrossNode node, CBCell[][] cbcells, int row, int column, boolean isYSummary, int yTotal, DetailChartSetting chartSetting) {
-        Object v = null;
-        CBCell cell = new CBCell(NONEVALUE);
-        cell.setColumn(column + widget.isOrder());
-        cell.setRow(row);
-        cell.setRowSpan(1);
-        cell.setColumnSpan(1);
-        cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal, false) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1, false));
-        List cellList = new ArrayList();
-        cellList.add(cell);
-        CBBoxElement cbox = new CBBoxElement(cellList);
-        cbox.setType(CellConstant.CBCELL.SUMARYFIELD);
-        cbox.setDimensionJSON(createDimensionValue(node));
-        cbox.setName(StringUtils.EMPTY);
-        cell.setBoxElement(cbox);
-        cbcells[cell.getColumn()][cell.getRow()] = cell;
-    }
-
-    //TODO代码质量
-    private String createDimensionValue(CrossNode node) {
-        JSONArray ja = new JSONArray();
-
-        Node header = node.getHead();
-        Node left = node.getLeft();
-        int deep = 0;
-        Node temp = header;
-        while (temp.getParent() != null) {
-            deep++;
-            temp = temp.getParent();
-        }
-        deep--;
-        temp = header;
-        while (deep != -1 && temp != null) {
-            try {
-                ja.put(new JSONObject().put(colDimension[deep].getValue(), colDimension[deep].toFilterObject(temp.getData())));
-            } catch (JSONException e) {
-            }
-            temp = temp.getParent();
-            deep--;
-        }
-        deep = 0;
-        temp = left;
-        while (temp.getParent() != null) {
-            deep++;
-            temp = temp.getParent();
-        }
-        deep--;
-        temp = left;
-        while (deep != -1 && temp != null) {
-            try {
-                ja.put(new JSONObject().put(rowDimension[deep].getValue(), rowDimension[deep].toFilterObject(temp.getData())));
-            } catch (JSONException e) {
-            }
-            temp = temp.getParent();
-            deep--;
-        }
-
-
-        return ja.toString();
-    }
-
-    /* (non-Javadoc)
-     * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
-     */
     @Override
     public NewCrossRoot getCubeNode() throws Exception {
         long start = System.currentTimeMillis();

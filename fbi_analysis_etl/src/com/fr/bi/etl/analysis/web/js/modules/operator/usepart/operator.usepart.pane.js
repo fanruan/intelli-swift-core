@@ -54,4 +54,4 @@ BI.AnalysisETLOperatorUsePartPane = FR.extend(BI.MVCWidget, {
 
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.USE_PART_FIELDS  + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorUsePartPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.USE_PART_FIELDS  + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorUsePartPane);

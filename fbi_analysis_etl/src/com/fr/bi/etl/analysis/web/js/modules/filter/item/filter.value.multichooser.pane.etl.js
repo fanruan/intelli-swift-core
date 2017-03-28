@@ -166,4 +166,4 @@ BI.ETLMultiValueChooserPane = BI.inherit(BI.Single, {
 
 
 BI.ETLMultiValueChooserPane.EVENT_CONFIRM = "EVENT_CONFIRM";
-$.shortcut('bi.multi_value_chooser_pane_etl', BI.ETLMultiValueChooserPane);
+BI.shortcut('bi.multi_value_chooser_pane_etl', BI.ETLMultiValueChooserPane);

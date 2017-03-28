@@ -255,8 +255,8 @@ public class TreeWidget extends BIAbstractWidget {
             this.targetSort = new NameObject(targetSort.getString("sort_target"), targetSort.getInt("type"));
         }
 
-        if (jo.has("filter_value")) {
-            JSONObject targetFilter = (JSONObject) jo.get("filter_value");
+        if (jo.has("filterValue")) {
+            JSONObject targetFilter = (JSONObject) jo.get("filterValue");
             Iterator it = targetFilter.keys();
             while (it.hasNext()) {
                 String key = it.next().toString();

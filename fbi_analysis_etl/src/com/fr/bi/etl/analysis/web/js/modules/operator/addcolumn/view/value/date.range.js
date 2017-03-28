@@ -124,4 +124,4 @@ BI.ETLSingleGroupDateRangePane = BI.inherit(BI.Single, {
 });
 BI.ETLSingleGroupDateRangePane.EVENT_CHANGE = "EVENT_CHANGE";
 BI.ETLSingleGroupDateRangePane.EVENT_INVALID = "EVENT_INVALID";
-$.shortcut("bi.date_group_range_pane_etl", BI.ETLSingleGroupDateRangePane);
+BI.shortcut("bi.date_group_range_pane_etl", BI.ETLSingleGroupDateRangePane);

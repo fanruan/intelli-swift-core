@@ -97,4 +97,4 @@ BI.AnalysisETLMergePreviewTableHeaderCell = BI.inherit(BI.Widget, {
     }
 });
 
-$.shortcut("bi.analysis_etl_merge_p_t_h_cell", BI.AnalysisETLMergePreviewTableHeaderCell);
+BI.shortcut("bi.analysis_etl_merge_p_t_h_cell", BI.AnalysisETLMergePreviewTableHeaderCell);

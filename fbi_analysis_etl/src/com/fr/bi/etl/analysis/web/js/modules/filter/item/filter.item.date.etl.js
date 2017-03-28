@@ -11,7 +11,7 @@ BI.DateETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
     },
 
     _refreshFilterWidget: function (value) {
-        switch (this.filter_type) {
+        switch (this.filterType) {
             case BICst.FILTER_DATE.CONTAINS_DAY:
                 this._createMultiChooserPane();
                 break;
@@ -26,7 +26,7 @@ BI.DateETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
                 break;
             case BICst.FILTER_DATE.IS_NULL:
             case BICst.FILTER_DATE.NOT_NULL:
-                this._createEmptyWidget(this.filter_type);
+                this._createEmptyWidget(this.filterType);
                 break;
             case BICst.FILTER_TYPE.FORMULA:
                 this._createFormular();
@@ -62,4 +62,4 @@ BI.DateETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
         return this.filterWidget;
     }
 });
-$.shortcut('bi.date_filter_item_etl', BI.DateETLFilterItem)
+BI.shortcut('bi.date_filter_item_etl', BI.DateETLFilterItem)

@@ -165,7 +165,7 @@ public class PersistentField implements IPersistentField {
      */
     public JSONObject asJson4TableTranslater() throws JSONException {
         JSONObject jo = new JSONObject();
-        jo.put("field_name", this.getFieldName()).put("field_name_text", this.remark);
+        jo.put("fieldName", this.getFieldName()).put("field_name_text", this.remark);
         return jo;
     }
 

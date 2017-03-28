@@ -18,7 +18,7 @@ import java.util.List;
  * @author Connery
  * @since 4.0
  */
-public interface BusinessTable extends JSONTransform, Cloneable,Serializable {
+public interface BusinessTable extends JSONTransform, Cloneable, Serializable {
     BITableID getID();
 
     Object clone() throws CloneNotSupportedException;
@@ -34,5 +34,7 @@ public interface BusinessTable extends JSONTransform, Cloneable,Serializable {
     void setFields(List<BusinessField> fields);
 
     JSONObject createJSONWithFieldsInfo(long userId) throws Exception;
+
+    void isCircle();
 
 }

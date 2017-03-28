@@ -46,7 +46,6 @@ import java.util.*;
 
 /**
  * @author Daniel
- *
  */
 public class UserETLUpdateTask implements CubeTask, AV {
 
@@ -60,11 +59,12 @@ public class UserETLUpdateTask implements CubeTask, AV {
 
     private Date start;
     private Date end;
-//  螺旋分析B基于A创建，A生成完毕后应强制B重新生成
+    //  螺旋分析B基于A创建，A生成完毕后应强制B重新生成
     private boolean isRebuild = false;
     private BIUser biUser;
     @BIIgnoreField
     protected BICube cube;
+
     public boolean isRebuild() {
         return isRebuild;
     }
@@ -72,6 +72,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
     public void setRebuild(boolean rebuild) {
         isRebuild = rebuild;
     }
+
     public UserETLUpdateTask(UserCubeTableSource source) {
         this.source = source;
         this.biUser = new BIUser(source.getUserId());
@@ -109,7 +110,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
                     e.printStackTrace();
-            }
+                }
             }
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
         tableEntityService.addVersion(getTableVersion());
@@ -127,10 +128,9 @@ public class UserETLUpdateTask implements CubeTask, AV {
     }
 
 
-
-    private long getBaseSourceVersion(CubeTableSource source){
-        if(source instanceof AnalysisCubeTableSource){
-            if (!BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) source, biUser)){
+    private long getBaseSourceVersion(CubeTableSource source) {
+        if (source instanceof AnalysisCubeTableSource) {
+            if (!BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) source, biUser)) {
                 return -1L;
             } else {
                 return BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().getTableVersion((AnalysisCubeTableSource) source, biUser);
@@ -140,7 +140,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
         return service == null ? -1l : service.getTableVersion(new IndexKey(StringUtils.EMPTY));
     }
 
-    public String getPath(){
+    public String getPath() {
         return path;
     }
 
@@ -167,10 +167,10 @@ public class UserETLUpdateTask implements CubeTask, AV {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        if(start != null){
+        if (start != null) {
             jo.put("start", start.getTime());
         }
-        if(end != null){
+        if (end != null) {
             jo.put("end", end.getTime());
         }
         return jo;
@@ -203,14 +203,20 @@ public class UserETLUpdateTask implements CubeTask, AV {
         return source.getUserId();
     }
 
+    @Override
+    public Set<String> getTaskTableSourceIds() {
+        return new HashSet<>();
+    }
+
 
     /**
      * @return
      */
     public boolean check(long oldVersion) {
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
-    return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion(oldVersion);
-}
+        return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion(oldVersion);
+    }
+
     /**
      * @return
      */
@@ -218,16 +224,16 @@ public class UserETLUpdateTask implements CubeTask, AV {
         return oldVersion == getTableVersion();
     }
 
-    private long getTableVersion(){
+    private long getTableVersion() {
 
         TreeMap<String, CubeTableSource> tm = new TreeMap<String, CubeTableSource>();
-        for (CubeTableSource s : source.getParentSource()){
+        for (CubeTableSource s : source.getParentSource()) {
             tm.put(s.fetchObjectCore().getIDValue(), s);
         }
         tm.remove(source.getAnalysisCubeTableSource().fetchObjectCore().getIDValue());
         List versionList = new ArrayList();
         Iterator<Map.Entry<String, CubeTableSource>> iter = tm.entrySet().iterator();
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             Map.Entry<String, CubeTableSource> entry = iter.next();
             versionList.add(entry.getKey());
             versionList.add(getBaseSourceVersion(entry.getValue()));
@@ -244,7 +250,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
     }
 
     public void rollback() {
-        if(this.cube != null) {
+        if (this.cube != null) {
             try {
                 this.cube.clear();
             } catch (Throwable e) {

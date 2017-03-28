@@ -21,8 +21,8 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
         });
         var op = {
             type: "bi.filter_popup_etl",
-            field_type : o.field_type,
-            field_name : o.field_name,
+            fieldType : o.fieldType,
+            fieldName : o.fieldName,
             fieldValuesCreator : o.fieldValuesCreator
         }
         op[ETLCst.FIELDS] = o[ETLCst.FIELDS];
@@ -48,14 +48,14 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
             self.popup.populate();
         })
         this.combo.on(BI.Combo.EVENT_BEFORE_HIDEVIEW, function(){
-            self.storedValue = BI.extend(BI.deepClone(self.combo.getValue()), {field_name : self.options.field_name, field_type : self.options.field_type});
+            self.storedValue = BI.extend(BI.deepClone(self.combo.getValue()), {fieldName : self.options.fieldName, fieldType : self.options.fieldType});
             self.fireEvent(BI.ETLFilterCombo.EVENT_VALUE_CHANGED);
         })
     },
 
     setValue: function(v){
         this.storedValue = v;
-        if (BI.isNotNull(this.storedValue) && BI.isNotNull(this.storedValue.field_type) && this.storedValue.field_type !==this.options.field_type){
+        if (BI.isNotNull(this.storedValue) && BI.isNotNull(this.storedValue.fieldType) && this.storedValue.fieldType !==this.options.fieldType){
             v = {};
         }
         this.combo.setValue(BI.deepClone(v));
@@ -70,4 +70,4 @@ BI.ETLFilterCombo = BI.inherit(BI.Single, {
     }
 });
 BI.ETLFilterCombo.EVENT_VALUE_CHANGED = 'EVENT_VALUE_CHANGED';
-$.shortcut("bi.filter_combo_etl", BI.ETLFilterCombo);
+BI.shortcut("bi.filter_combo_etl", BI.ETLFilterCombo);

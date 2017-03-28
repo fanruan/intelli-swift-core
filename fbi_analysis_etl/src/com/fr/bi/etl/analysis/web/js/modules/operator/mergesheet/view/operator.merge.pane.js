@@ -101,7 +101,7 @@ BI.AnalysisETLOperatorMergeSheetPane = FR.extend(BI.MVCWidget, {
     createTable : function (tables) {
         return BI.map(tables, function (i, item) {
             return {
-                text:item.table_name,
+                text:item.tableName,
                 type:"bi.label",
                 height:20,
                 textAlign:"left"
@@ -135,4 +135,4 @@ BI.AnalysisETLOperatorMergeSheetPane = FR.extend(BI.MVCWidget, {
 BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE="MERGE_SHEET_CHANGE";
 BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE="MERGE_SHEET_DELETE";
 BI.AnalysisETLOperatorMergeSheetPane.STOP_EDITING="STOP_EDITING";
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.MERGE_SHEET + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorMergeSheetPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.MERGE_SHEET + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorMergeSheetPane);

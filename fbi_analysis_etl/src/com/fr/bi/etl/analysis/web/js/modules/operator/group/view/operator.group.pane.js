@@ -186,11 +186,11 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
                 },
 
                 getMinMaxValueForNumberCustomGroup : function (dId, callback) {
-                    return self.controller.getMinMaxValueForNumberCustomGroup.apply(self.controller, [dm._src.field_name, callback])
+                    return self.controller.getMinMaxValueForNumberCustomGroup.apply(self.controller, [dm._src.fieldName, callback])
                 },
 
                 getValuesForCustomGroup : function (dId, callback) {
-                    return self.controller.getValuesForCustomGroup.apply(self.controller, [dm._src.field_name, function(res){
+                    return self.controller.getValuesForCustomGroup.apply(self.controller, [dm._src.fieldName, function(res){
                         var items =[];
                         BI.each(res.value, function (i, item) {
                             items.push(item);
@@ -199,7 +199,7 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
                     }])
                 }
             },
-            fieldName: dm._src.field_name
+            fieldName: dm._src.fieldName
           
         });
         dimension.on(BI.AbstractDimension.EVENT_DESTROY, function(){
@@ -212,4 +212,4 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
 
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY + ETLCst.ANALYSIS_TABLE_PANE , BI.AnalysisETLOperatorGroupPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY + ETLCst.ANALYSIS_TABLE_PANE , BI.AnalysisETLOperatorGroupPane);

@@ -24,4 +24,4 @@ BI.AnalysisETLOperatorFilterSingleContent = FR.extend(BI.Widget, {
 })
 
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_single_content", BI.AnalysisETLOperatorFilterSingleContent)
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + "_single_content", BI.AnalysisETLOperatorFilterSingleContent)

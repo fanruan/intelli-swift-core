@@ -45,4 +45,4 @@ BI.DragButton = FR.extend(BI.Widget, {
     }
 });
 
-$.shortcut("bi.drag_svg_button", BI.DragButton);
+BI.shortcut("bi.drag_svg_button", BI.DragButton);

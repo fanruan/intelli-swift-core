@@ -54,6 +54,10 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
             tableID.add(tableSource.getSourceID());
         }
         for (BITableRelation relation : configHelper.getSystemTableRelations()) {
+            BITableSourceRelation relevantSourceRelation = configHelper.convertRelation(relation);
+            if (relevantSourceRelation == null) {
+                continue;
+            }
             if (tableID.contains(relation.getPrimaryTable().getTableSource().getSourceID())
                     || tableID.contains(relation.getForeignTable().getTableSource().getSourceID())) {
                 relationsAboutTable.add(configHelper.convertRelation(relation));
@@ -74,10 +78,12 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
              */
             if (path.size() >= 2) {
                 BITableSourceRelationPath sourceRelationPath = configHelper.convertPath(path);
-                for (BITableSourceRelation relation : sourceRelationPath.getAllRelations()) {
-                    if (relationIDs.contains(BIRelationIDUtils.calculateRelationID(relation))) {
-                        pathsAboutRelation.add(sourceRelationPath);
-                        break;
+                if (sourceRelationPath != null) {
+                    for (BITableSourceRelation relation : sourceRelationPath.getAllRelations()) {
+                        if (relationIDs.contains(BIRelationIDUtils.calculateRelationID(relation))) {
+                            pathsAboutRelation.add(sourceRelationPath);
+                            break;
+                        }
                     }
                 }
             }
@@ -310,6 +316,14 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return true;
+    }
+
+    @Override
+    public Set<String> getTaskTableSourceIds() {
+        if (taskTableSourceIDs == null) {
+            taskTableSourceIDs = getDependTableSourceIdSet(tableSourceLayerDepends);
+        }
+        return taskTableSourceIDs;
     }
 
 }

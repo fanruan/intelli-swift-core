@@ -10,4 +10,4 @@ BI.ETLDataStyleTab = BI.inherit(BI.DataStyleTab, {
         BI.ETLDataStyleTab.superclass._init.apply(this, arguments);
     }
 })
-$.shortcut("bi.data_style_tab_etl", BI.ETLDataStyleTab);
+BI.shortcut("bi.data_style_tab_etl", BI.ETLDataStyleTab);

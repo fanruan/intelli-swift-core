@@ -98,8 +98,8 @@ BI.AnalysisDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
             if (BI.isString(item)) {
                 vals.push(BI.Utils.getFieldNameByID(item));
             } else {
-                if (BI.isNotNull(item.field_id)) {
-                    var name = BI.Utils.getFieldNameByID(item.field_id);
+                if (BI.isNotNull(item.fieldId)) {
+                    var name = BI.Utils.getFieldNameByID(item.fieldId);
 
                     if (BI.isNotNull(item.group)) {
                         switch (item.group.type) {
@@ -135,4 +135,4 @@ BI.AnalysisDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
         this.node.setEnable(b);
     }
 });
-$.shortcut("bi.analysis_detail_detail_select_data_level0_node", BI.AnalysisDetailDetailSelectDataNode);
+BI.shortcut("bi.analysis_detail_detail_select_data_level0_node", BI.AnalysisDetailDetailSelectDataNode);

@@ -113,4 +113,4 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
     }
 })
 
-$.shortcut("bi.sheet_button", BI.SheetButton);
+BI.shortcut("bi.sheet_button", BI.SheetButton);

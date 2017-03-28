@@ -31,7 +31,7 @@ BI.AnalysisETLPreviewTableHeaderNormalCell = BI.inherit(BI.Widget, {
             items:[{
                 el : {
                     type:"bi.icon_button",
-                    cls:BI.Utils.getFieldClass(o.field_type),
+                    cls:BI.Utils.getFieldClass(o.fieldType),
                     forceNotSelected :true,
                     height: o.height,
                     width: o.height
@@ -43,4 +43,4 @@ BI.AnalysisETLPreviewTableHeaderNormalCell = BI.inherit(BI.Widget, {
         })
     }
 });
-$.shortcut(ETLCst.ANALYSIS_TABLE_OPERATOR_PREVIEW_HEADER + BI.ANALYSIS_ETL_HEADER.NORMAL, BI.AnalysisETLPreviewTableHeaderNormalCell);
+BI.shortcut(ETLCst.ANALYSIS_TABLE_OPERATOR_PREVIEW_HEADER + BI.ANALYSIS_ETL_HEADER.NORMAL, BI.AnalysisETLPreviewTableHeaderNormalCell);

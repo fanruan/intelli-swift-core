@@ -19,7 +19,7 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
     editColumn : function (column, oldName) {
         var columns = this.get(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY);
         var oldColumn = BI.find(columns, function (idx, item) {
-            return item.field_name === oldName;
+            return item.fieldName === oldName;
         });
         if(BI.isNotNull(oldColumn)) {
             BI.extend(oldColumn, column)
@@ -33,7 +33,7 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
         var columns = this.get(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY);
         var res = [];
         BI.each(columns, function (idx, item) {
-            if(item.field_name !== name) {
+            if(item.fieldName !== name) {
                 res.push(item)
             }
         })
@@ -45,7 +45,7 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
     getColumnByName : function (name) {
         var columns = this.get(BI.AnalysisETLOperatorAddColumnPaneModel.COLUMNKEY);
         return BI.deepClone(BI.find(columns, function (idx, item) {
-            return item.field_name === name
+            return item.fieldName === name
         }))
     },
 
@@ -54,8 +54,8 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
             var parent = this.get(ETLCst.PARENTS)[0];
             return BI.concat(parent[ETLCst.FIELDS], BI.map(this.getAddColumns(), function (idx, item) {
                 return {
-                    field_name : item.field_name,
-                    field_type : item.field_type
+                    fieldName : item.fieldName,
+                    fieldType : item.fieldType
                 }
             }))
         } else {
@@ -96,12 +96,12 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
                     if(f !== ETLCst.SYSTEM_TIME) {
                         fields.push(f);
                     }
-                    found = self._checkField(fields, parent[ETLCst.FIELDS],column.field_name, BICst.COLUMN.DATE);
+                    found = self._checkField(fields, parent[ETLCst.FIELDS],column.fieldName, BICst.COLUMN.DATE);
                     return found[0];
                 case BICst.ETL_ADD_COLUMN_TYPE.DATE_MONTH :
                 case BICst.ETL_ADD_COLUMN_TYPE.DATE_SEASON :
                 case BICst.ETL_ADD_COLUMN_TYPE.DATE_YEAR :
-                    found = self._checkField([column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.DATE)
+                    found = self._checkField([column.item['field']], parent[ETLCst.FIELDS],column.fieldName,BICst.COLUMN.DATE)
                     return found[0];
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP:
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT:
@@ -109,23 +109,23 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
                     fields.push(column.item['field'])
                     fields.push(column.item['monthSeason'])
                     fields.push(column.item['period'])
-                    found =  self._checkField(fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER);
+                    found =  self._checkField(fields, parent[ETLCst.FIELDS],column.fieldName,BICst.COLUMN.NUMBER);
                     return found[0];
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP:
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT:
                     var fields = [];
                     fields.push(column.item['field'])
                     fields.push(column.item['period'])
-                    found = self._checkField(fields, parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER)
+                    found = self._checkField(fields, parent[ETLCst.FIELDS],column.fieldName,BICst.COLUMN.NUMBER)
                     return found[0];
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_ACC:
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_RANK:
                 case BICst.ETL_ADD_COLUMN_TYPE.EXPR_SUM:
-                    found =  self._checkField([column.item['field']], parent[ETLCst.FIELDS],column.field_name,BICst.COLUMN.NUMBER);
+                    found =  self._checkField([column.item['field']], parent[ETLCst.FIELDS],column.fieldName,BICst.COLUMN.NUMBER);
                     return found[0];
                 case BICst.ETL_ADD_COLUMN_TYPE.GROUP:
                     return BI.some(column.item['items'], function (i, item) {
-                        found =  self._checkField([item['field']["value"]], parent[ETLCst.FIELDS],column.field_name, item['field']['fieldType'])
+                        found =  self._checkField([item['field']["value"]], parent[ETLCst.FIELDS],column.fieldName, item['field']['fieldType'])
                         if(found[0] === true) {
                             return true;
                         }
@@ -142,13 +142,13 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
         var found = false;
         var lostField = BI.find(fs, function (i, field) {
             if(BI.isNull(BI.find(fields, function (idx, f) {
-                    return f.field_name === field;
+                    return f.fieldName === field;
                 }))){
                 return field
             }
         })
         if (BI.isNotNull(lostField)){
-            msg = BI.i18nText('BI-New_Column_Name') + column.field_name + BI.i18nText('BI-Formula_Valid') + lostField + BI.i18nText('BI-Not_Fount');
+            msg = BI.i18nText('BI-New_Column_Name') + column.fieldName + BI.i18nText('BI-Formula_Valid') + lostField + BI.i18nText('BI-Not_Fount');
             found =  true;
         }
         return [found, msg];
@@ -158,12 +158,12 @@ BI.AnalysisETLOperatorAddColumnPaneModel = BI.inherit(BI.MVCModel, {
         var msg = "";
         var found =  BI.some(dates, function (i, date) {
             var f = BI.find(fields, function (i, field) {
-                return date === field.field_name;
+                return date === field.fieldName;
             });
             if (BI.isNull(f)){
                 msg = BI.i18nText('BI-New_Column_Name') + columnName + '' + date + BI.i18nText('BI-Not_Fount');
                 return true;
-            } else  if (f.field_type !== type){
+            } else  if (f.fieldType !== type){
                 msg = BI.i18nText('BI-New_Column_Name') + columnName + '' + date + BI.i18nText('BI-Illegal_Field_Type')
                 return true;
             }

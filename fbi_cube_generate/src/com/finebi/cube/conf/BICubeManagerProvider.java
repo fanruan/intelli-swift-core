@@ -6,6 +6,7 @@ import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * This class created on 2016/5/23.
@@ -67,4 +68,8 @@ public interface BICubeManagerProvider {
     void setStatus(long userId, Status status);
 
     boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType);
+
+    Set<String> getCubeGeneratingTableSourceIds(long userId);
+
+    Set<String> getCubeWaiting2GenerateTableSourceIds(long userId);
 }

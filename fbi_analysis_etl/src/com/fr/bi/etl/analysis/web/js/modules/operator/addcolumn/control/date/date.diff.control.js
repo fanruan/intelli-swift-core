@@ -41,10 +41,10 @@ BI.AnalysisETLOperatorAddColumnDateDiffController = BI.inherit(BI.MVCController,
             value:ETLCst.SYSTEM_TIME
         })
         BI.each(model.get(ETLCst.FIELDS) || [], function (idx, item) {
-            if(item.field_type === BICst.COLUMN.DATE) {
+            if(item.fieldType === BICst.COLUMN.DATE) {
                 fields.push({
-                    text:item.field_name,
-                    value:item.field_name
+                    text:item.fieldName,
+                    value:item.fieldName
                 })
             }
         })

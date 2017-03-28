@@ -10,8 +10,8 @@ public class FilterValueFactory {
 
     public static IFilter parseFilter(JSONObject filter) throws JSONException {
         IFilter filterValue = null;
-        if (filter.has("filter_type")) {
-            int type = filter.getInt("filter_type");
+        if (filter.has("filterType")) {
+            int type = filter.getInt("filterType");
             switch (type) {
 
             }

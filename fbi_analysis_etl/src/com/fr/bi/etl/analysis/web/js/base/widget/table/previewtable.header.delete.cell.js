@@ -56,7 +56,7 @@ BI.AnalysisETLPreviewTableHeaderDeleteCell = BI.inherit(BI.Widget, {
             items:[{
                 el : {
                     type:"bi.icon_button",
-                    cls:BI.Utils.getFieldClass(o.field_type),
+                    cls:BI.Utils.getFieldClass(o.fieldType),
                     forceNotSelected :true,
                     height: o.height,
                     width: o.height
@@ -73,4 +73,4 @@ BI.AnalysisETLPreviewTableHeaderDeleteCell = BI.inherit(BI.Widget, {
 });
 
 
-$.shortcut(ETLCst.ANALYSIS_TABLE_OPERATOR_PREVIEW_HEADER + BI.ANALYSIS_ETL_HEADER.DELETE, BI.AnalysisETLPreviewTableHeaderDeleteCell);
+BI.shortcut(ETLCst.ANALYSIS_TABLE_OPERATOR_PREVIEW_HEADER + BI.ANALYSIS_ETL_HEADER.DELETE, BI.AnalysisETLPreviewTableHeaderDeleteCell);

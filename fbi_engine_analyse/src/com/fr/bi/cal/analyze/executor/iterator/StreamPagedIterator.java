@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.executor.detail;
+package com.fr.bi.cal.analyze.executor.iterator;
 
 import java.util.Iterator;
 import java.util.LinkedList;

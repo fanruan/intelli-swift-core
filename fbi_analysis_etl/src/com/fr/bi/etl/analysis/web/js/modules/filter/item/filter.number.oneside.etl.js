@@ -37,7 +37,7 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
             cls: "numerical-interval-small-combo",
             height: self._constants.HEIGHT - self._constants.BORDER * 2,
             type: "bi.icon_combo",
-            items: o.filter_type === BICst.TARGET_FILTER_NUMBER.SMALL_OR_EQUAL_CAL_LINE ? [{
+            items: o.filterType === BICst.TARGET_FILTER_NUMBER.SMALL_OR_EQUAL_CAL_LINE ? [{
                 text: "(" + BI.i18nText("BI-Less_Than") + ")",
                 iconClass: "less-font",
                 value: 0
@@ -170,7 +170,7 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
         if (self.editor.getValue() == BICst.ETL_FILTER_NUMBER_AVG_TYPE.INNER_GROUP){
             var op ={
                 type :'bi.filter_etl_group_setting',
-                field_name : o.field_name,
+                fieldName : o.fieldName,
                 filterType : o.filterType,
                 value : self.storedValue.group
             }
@@ -194,4 +194,4 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
     }
 });
 BI.ETLNumberFilterOneSidePane.EVENT_CONFIRM = 'ETLNumberFilterOneSidePane.EVENT_CONFIRM';
-$.shortcut('bi.filter_number_oneside_etl', BI.ETLNumberFilterOneSidePane);
+BI.shortcut('bi.filter_number_oneside_etl', BI.ETLNumberFilterOneSidePane);
