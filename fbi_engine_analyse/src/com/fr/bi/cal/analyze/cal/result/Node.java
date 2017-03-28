@@ -8,7 +8,6 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.SummaryContainer;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
 import com.fr.general.ComparatorUtils;
@@ -24,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author zhou
  */
-public class Node implements SummaryContainer, BINode {
+public class Node implements BINode {
 
     /**
      * 小于1表示不分页

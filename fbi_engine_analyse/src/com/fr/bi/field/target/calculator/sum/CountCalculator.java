@@ -42,7 +42,7 @@ public class CountCalculator extends AbstractSummaryCalculator {
      * @return double值
      */
     @Override
-    public <T extends SummaryContainer & BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
+    public <T extends BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
         return calculateNodes(key, c);
     }
 

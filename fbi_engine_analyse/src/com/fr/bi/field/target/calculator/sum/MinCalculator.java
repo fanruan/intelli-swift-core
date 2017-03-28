@@ -1,14 +1,13 @@
 package com.fr.bi.field.target.calculator.sum;
 
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.field.target.key.sum.MinKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.SummaryContainer;
+import com.fr.bi.stable.report.result.BITargetKey;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -44,7 +43,7 @@ public class MinCalculator extends AbstractSummaryCalculator {
      * @return double值
      */
     @Override
-    public <T extends SummaryContainer & BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
+    public <T extends BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c) {
         return calculateNodes(key, c);
     }
 

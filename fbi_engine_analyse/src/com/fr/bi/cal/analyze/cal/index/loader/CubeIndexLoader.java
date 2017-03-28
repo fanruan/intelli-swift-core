@@ -756,6 +756,7 @@ public class CubeIndexLoader {
         } else {
             pg.setRowIterator(info.getIterator());
         }
+        session.setMergerInfoList(widget.getWidgetName(), info.getIterator().getRoot().getMetricGroupInfoList());
         return info;
     }
 

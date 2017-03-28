@@ -44,7 +44,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         super(metricGroupInfoList, mergeIteratorCreators, session, useRealData);
         this.calCalculators = calCalculators;
         this.filterDimension = filterDimension;
-        this.setIndex = setIndex;
+        this.setIndex = setIndex || hasInSumMetric;
         this.targetSort = targetSort;
         this.hasInSumMetric = hasInSumMetric;
         initSort();
@@ -96,6 +96,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             sumCalculateMetrics();
         }
         root.setChildren(rootNode.getChilds());
+        root.setSummaryValue(rootNode.getSummaryValue());
         if (setIndex){
             root.setGvis(rootNode.getGvis());
             for (int i = 0; i < metricGroupInfoList.size(); i++){

@@ -118,6 +118,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         return column.createKey();
     }
 
+    public List<MetricGroupInfo> getMetricGroupInfoList() {
+        return metricGroupInfoList;
+    }
+
     @Override
     public NoneDimensionGroup getRoot() {
         return root;

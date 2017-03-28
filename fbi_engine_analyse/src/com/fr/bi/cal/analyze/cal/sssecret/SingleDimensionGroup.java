@@ -116,6 +116,10 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
             final Iterator it = columns[index].createValueMapIterator(metricTables[index], loader, urd, groupLimit);
             return new DimensionIterator() {
                 @Override
+                public void remove() {
+
+                }
+                @Override
                 public int getCurrentGroup() {
                     return 0;
                 }

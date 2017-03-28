@@ -117,4 +117,8 @@ public class NoneDimensionGroup implements Release {
     public void setGvis(GroupValueIndex[] gvis) {
         this.gvis = gvis;
     }
+
+    public void setSummaryValue(Map summaryValue) {
+        this.summaryValue = summaryValue;
+    }
 }

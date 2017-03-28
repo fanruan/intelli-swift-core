@@ -37,7 +37,7 @@ public interface TargetCalculator extends Serializable {
      * @param c   集合
      * @return 结果
      */
-    <T extends SummaryContainer & BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c);
+    <T extends BINode> Double calculateChildNodes(TargetGettingKey key, Collection<T> c);
 
 
     /**

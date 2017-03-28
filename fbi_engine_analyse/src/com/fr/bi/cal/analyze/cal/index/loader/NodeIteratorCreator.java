@@ -316,7 +316,7 @@ public class NodeIteratorCreator {
     private ConstructedRootDimensionGroup createAllNodeIteratorRoot() {
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
         for (int i = 0; i < directFilterIndexes.length; i++) {
-            if (directFilterIndexes[i] != null) {
+            if (directFilterIndexes[i] != null && directFilterIndexes[i] != ALL_SHOW) {
                 metricGroupInfoList.get(i).setFilterIndex(metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]));
             }
         }
