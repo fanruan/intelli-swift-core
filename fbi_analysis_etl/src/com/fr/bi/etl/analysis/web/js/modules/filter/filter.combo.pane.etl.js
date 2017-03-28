@@ -213,4 +213,4 @@ BI.ETLFilterPopupPane = BI.inherit(BI.Widget, {
 
     }
 });
-$.shortcut("bi.filter_popup_pane_etl", BI.ETLFilterPopupPane);
+BI.shortcut("bi.filter_popup_pane_etl", BI.ETLFilterPopupPane);

@@ -123,4 +123,4 @@ BI.ETLGroupSettingPane = BI.inherit(BI.Widget, {
     }
 });
 BI.ETLGroupSettingPane.EVENT_VALUE_CHANGED = 'ETLGroupSettingPane.EVENT_VALUE_CHANGED';
-$.shortcut('bi.filter_etl_group_setting', BI.ETLGroupSettingPane);
+BI.shortcut('bi.filter_etl_group_setting', BI.ETLGroupSettingPane);

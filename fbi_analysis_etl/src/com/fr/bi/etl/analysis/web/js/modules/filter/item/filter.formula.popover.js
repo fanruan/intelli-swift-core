@@ -59,4 +59,4 @@ BI.ETLFilterFormulaPopup = BI.inherit(BI.BarPopoverSection, {
 
 });
 BI.ETLFilterFormulaPopup.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.etl_filter_formula_popup", BI.ETLFilterFormulaPopup);
+BI.shortcut("bi.etl_filter_formula_popup", BI.ETLFilterFormulaPopup);

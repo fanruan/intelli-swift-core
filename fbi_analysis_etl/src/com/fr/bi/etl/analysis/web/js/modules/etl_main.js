@@ -242,4 +242,4 @@ BI.AnalysisETLMain = FR.extend(BI.MVCWidget, {
     }
 
 })
-$.shortcut("bi.analysis_etl_main", BI.AnalysisETLMain);
+BI.shortcut("bi.analysis_etl_main", BI.AnalysisETLMain);

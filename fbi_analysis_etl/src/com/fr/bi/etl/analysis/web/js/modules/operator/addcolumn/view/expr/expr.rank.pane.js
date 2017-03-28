@@ -7,4 +7,4 @@ BI.AnalysisETLOperatorAddColumnRankPane  = BI.inherit(BI.AnalysisETLOperatorAddC
         return BI.AnalysisETLOperatorAddColumnExprRankController;
     }
 });
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.EXPR_RANK, BI.AnalysisETLOperatorAddColumnRankPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + BICst.ETL_ADD_COLUMN_TYPE.EXPR_RANK, BI.AnalysisETLOperatorAddColumnRankPane);

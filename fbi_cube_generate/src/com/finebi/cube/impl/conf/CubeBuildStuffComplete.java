@@ -162,6 +162,14 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
         return CubeTaskType.ALL;
     }
 
+    @Override
+    public Set<String> getTaskTableSourceIds() {
+        if (taskTableSourceIDs == null) {
+            taskTableSourceIDs = getDependTableSourceIdSet(dependTableResource);
+        }
+        return taskTableSourceIDs;
+    }
+
     public void setAllSingleSources(Set<CubeTableSource> allSingleSources) {
         this.allSingleSources = allSingleSources;
     }

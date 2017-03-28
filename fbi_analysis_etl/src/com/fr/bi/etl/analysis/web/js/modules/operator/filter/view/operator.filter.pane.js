@@ -110,4 +110,4 @@ BI.AnalysisETLOperatorFilterPane = FR.extend(BI.MVCWidget, {
     }
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorFilterPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.FILTER + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorFilterPane);

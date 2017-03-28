@@ -103,4 +103,4 @@ BI.ETLFormulaSettingPane = BI.inherit(BI.Widget, {
     }
 });
 BI.ETLFormulaSettingPane.EVENT_CONFIRM = 'ETLFormulaSettingPane.EVENT_CONFIRM';
-$.shortcut('bi.filter_etl_formula_setting', BI.ETLFormulaSettingPane);
+BI.shortcut('bi.filter_etl_formula_setting', BI.ETLFormulaSettingPane);

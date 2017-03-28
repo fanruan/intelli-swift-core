@@ -46,4 +46,4 @@ BI.AllHistoryButton = FR.extend(BI.BasicButton, {
 
     }
 })
-$.shortcut("bi.all_history_button",BI.AllHistoryButton)
+BI.shortcut("bi.all_history_button",BI.AllHistoryButton)

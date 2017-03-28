@@ -24,6 +24,7 @@ import com.fr.general.DateUtils;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -42,6 +43,7 @@ public class CubeRunner {
     protected BIUser biUser;
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
     private CubeBuildStuffComplete object;
+    private static Set<String> cubeGeneratingTableSourceIDs;
     private static final Logger LOGGER = BILoggerFactory.getLogger(CubeRunner.class);
 
     public CubeRunner(long userId) {
@@ -65,12 +67,14 @@ public class CubeRunner {
                 start();
                 try {
                     setStatue(Status.START);
+                    cubeGeneratingTableSourceIDs = cubeTask.getTaskTableSourceIds();
                     cubeTask.start();
                     setStatue(Status.LOADING);
                     cubeTask.run();
                     setStatue(Status.LOADED);
                     setStatue(Status.REPLACING);
                     cubeTask.end();
+                    cubeGeneratingTableSourceIDs.clear();
                     setStatue(Status.END);
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
@@ -230,5 +234,27 @@ public class CubeRunner {
             }
         }.start();
 
+    }
+
+    public Set<String> getCubeGeneratingTableSourceIds() {
+        if (cubeGeneratingTableSourceIDs != null) {
+            return cubeGeneratingTableSourceIDs;
+        } else {
+            return new HashSet<String>();
+        }
+    }
+
+    public Set<String> getCubeWaiting2GenerateTableSourceIds() {
+        Set<String> tableSourceIdsSet = new HashSet<String>();
+        Iterator<CubeTask> taskIterator = cubeThread.iterator();
+        int i = 0;
+        while (taskIterator.hasNext()) {
+            CubeTask task = taskIterator.next();
+            if (i != 0) {
+                tableSourceIdsSet.addAll(task.getTaskTableSourceIds());
+            }
+            i++;
+        }
+        return tableSourceIdsSet;
     }
 }

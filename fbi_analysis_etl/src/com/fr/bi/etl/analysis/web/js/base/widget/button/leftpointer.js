@@ -30,4 +30,4 @@ BI.LeftPointer = FR.extend(BI.Single, {
     }
 });
 
-$.shortcut("bi.left_pointer", BI.LeftPointer);
+BI.shortcut("bi.left_pointer", BI.LeftPointer);

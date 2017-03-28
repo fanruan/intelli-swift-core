@@ -128,4 +128,4 @@ BI.ETLNamePane = BI.inherit(BI.Widget, {
 BI.ETLNamePane.EVENT_CHANGE = "EVENT_CHANGE";
 BI.ETLNamePane.EVENT_ERROR = "EVENT_ERROR";
 BI.ETLNamePane.EVENT_VALID = "EVENT_VALID";
-$.shortcut("bi.etl_rename_pane", BI.ETLNamePane);
+BI.shortcut("bi.etl_rename_pane", BI.ETLNamePane);

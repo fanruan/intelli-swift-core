@@ -22,4 +22,4 @@ BI.AnalysisETLOperatorMergeSheet = FR.extend(BI.AnalysisETLOperatorAbstractPane,
 
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.MERGE_SHEET, BI.AnalysisETLOperatorMergeSheet);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.MERGE_SHEET, BI.AnalysisETLOperatorMergeSheet);

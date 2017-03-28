@@ -95,4 +95,4 @@ BI.DynamicTab = FR.extend(BI.MVCWidget, {
 
 
 })
-$.shortcut("bi.dynamic_tab", BI.DynamicTab);
+BI.shortcut("bi.dynamic_tab", BI.DynamicTab);

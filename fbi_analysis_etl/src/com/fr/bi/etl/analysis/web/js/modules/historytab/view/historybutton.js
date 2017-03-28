@@ -130,4 +130,4 @@ BI.HistoryButton =  FR.extend(BI.BasicButton, {
 })
 BI.HistoryButton.EVENT_DELETE = "HistoryButton.event_delete"
 
-$.shortcut("bi.history_button",BI.HistoryButton)
+BI.shortcut("bi.history_button",BI.HistoryButton)

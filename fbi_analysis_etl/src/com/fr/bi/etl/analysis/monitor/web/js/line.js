@@ -58,4 +58,4 @@ BI.MonitorLine = BI.inherit(BI.Widget, {
     }
 
 })
-$.shortcut("bi.monitor_line", BI.MonitorLine);
+BI.shortcut("bi.monitor_line", BI.MonitorLine);

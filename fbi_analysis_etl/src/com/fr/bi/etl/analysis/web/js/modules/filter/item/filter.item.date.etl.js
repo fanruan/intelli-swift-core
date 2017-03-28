@@ -62,4 +62,4 @@ BI.DateETLFilterItem = BI.inherit(BI.AbstractETLFilterItem, {
         return this.filterWidget;
     }
 });
-$.shortcut('bi.date_filter_item_etl', BI.DateETLFilterItem)
+BI.shortcut('bi.date_filter_item_etl', BI.DateETLFilterItem)

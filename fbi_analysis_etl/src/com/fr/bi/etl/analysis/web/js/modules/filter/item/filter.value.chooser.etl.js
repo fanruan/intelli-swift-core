@@ -25,4 +25,4 @@ BI.ETLFilterValueChooser = BI.inherit(BI.Widget, {
     }
 });
 BI.ETLFilterValueChooser.EVENT_CONFIRM = "ETLFilterValueChooser.EVENT_CONFIRM";
-$.shortcut('bi.filter_value_chooser_etl', BI.ETLFilterValueChooser);
+BI.shortcut('bi.filter_value_chooser_etl', BI.ETLFilterValueChooser);

@@ -154,4 +154,4 @@ BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE = "EVENT_OPERATOR_CHANGE";
 BI.AnalysisOperatorTitle.EVENT_STATE_CHANGE = "EVENT_STATE_CHANGE";
 BI.AnalysisOperatorTitle.EVENT_SAVE = "ANALYSIS_EVENT_SAVE";
 BI.AnalysisOperatorTitle.CLICK_SAVE = "CLICK_SAVE";
-$.shortcut("bi.analysis_operator_title", BI.AnalysisOperatorTitle)
+BI.shortcut("bi.analysis_operator_title", BI.AnalysisOperatorTitle)

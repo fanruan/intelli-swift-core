@@ -106,4 +106,4 @@ BI.HistoryButtonGroup = BI.inherit(BI.ButtonGroup, {
 
 });
 
-$.shortcut("bi.history_button_group", BI.HistoryButtonGroup);
+BI.shortcut("bi.history_button_group", BI.HistoryButtonGroup);
