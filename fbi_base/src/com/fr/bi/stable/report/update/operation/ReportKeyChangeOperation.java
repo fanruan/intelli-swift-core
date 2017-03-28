@@ -6,6 +6,7 @@ import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -63,13 +64,20 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
         return originalKey;
     }
 
-    private JSONObject readKeyJson() throws JSONException, ClassNotFoundException {
-        String path = FRContext.getCurrentEnv().getPath();
-        List<String> files = BIFileUtils.getListFiles(path, "json", true);
-        for (String filePath : files) {
-            if (filePath.endsWith("keys.json")) {
-                String s = BIFileUtils.readFile(filePath);
-                return new JSONObject(s);
+    private JSONObject readKeyJson() throws JSONException, ClassNotFoundException, FileNotFoundException {
+        String path = null;
+        try {
+            path = FRContext.getCurrentEnv().getPath();
+        } catch (Exception e) {
+            throw new FileNotFoundException();
+        }
+        if (null!=path) {
+            List<String> files = BIFileUtils.getListFiles(path, "json", true);
+            for (String filePath : files) {
+                if (filePath.endsWith("keys.json")) {
+                    String s = BIFileUtils.readFile(filePath);
+                    return new JSONObject(s);
+                }
             }
         }
         throw new ClassNotFoundException();
