@@ -22,14 +22,18 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
     }
 
     public ReportKeyChangeOperation() {
-    }
-
-    protected String updateKey(String str) {
         try {
             if (null == keys) {
                 keys = readKeyJson();
                 formatValues();
             }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+    }
+
+    protected String updateKey(String str) {
+        try {
             return keys.has(str) ? keys.getString(str) : str;
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
