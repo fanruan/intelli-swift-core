@@ -24,6 +24,11 @@ public abstract class VanChartWidget extends TableWidget {
 
     private static final int STYLE_GRADUAL = 2;
 
+    private static final double RED_DET = 0.299;
+    private static final double GREEN_DET = 0.587;
+    private static final double BLUE_DET = 0.114;
+    private static final double GRAY = 192;
+
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
     private static final int RIGHT = 3;
@@ -130,7 +135,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         Color color =  new Color(Integer.parseInt(colorStr, 16));
 
-        return color.getRed() * 0.299 + color.getGreen() * 0.587 + color.getBlue() * 0.114 < 192;
+        return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException{
