@@ -72,4 +72,4 @@ BI.TopPointerPane = BI.inherit(BI.Widget, {
     }
 
 })
-$.shortcut("bi.top_pointer_pane", BI.TopPointerPane);
+BI.shortcut("bi.top_pointer_pane", BI.TopPointerPane);

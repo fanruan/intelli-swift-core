@@ -102,4 +102,4 @@ BI.AnalysisDetailSelectDataLevel0Node = BI.inherit(BI.Widget, {
     }
 });
 
-$.shortcut("bi.analysis_detail_select_data_level0_node", BI.AnalysisDetailSelectDataLevel0Node);
+BI.shortcut("bi.analysis_detail_select_data_level0_node", BI.AnalysisDetailSelectDataLevel0Node);

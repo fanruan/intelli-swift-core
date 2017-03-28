@@ -7,7 +7,6 @@ import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
@@ -43,7 +42,7 @@ public class TreeExecutor extends BIAbstractExecutor<JSONObject> {
     }
 
     @Override
-    public JSONObject getCubeNode() throws JSONException {
+    public JSONObject getCubeNode() throws Exception {
         return null;
     }
 

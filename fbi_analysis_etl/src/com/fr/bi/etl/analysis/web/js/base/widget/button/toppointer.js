@@ -29,4 +29,4 @@ BI.TopPointer = FR.extend(BI.Widget, {
     }
 });
 
-$.shortcut("bi.top_pointer", BI.TopPointer);
+BI.shortcut("bi.top_pointer", BI.TopPointer);

@@ -114,4 +114,4 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.MVCWidget, {
     }
 
 })
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorAddColumnPane);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + ETLCst.ANALYSIS_TABLE_PANE, BI.AnalysisETLOperatorAddColumnPane);

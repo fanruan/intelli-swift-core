@@ -12,4 +12,4 @@ BI.AnalysisETLOperatorGroup = FR.extend(BI.AnalysisETLOperatorAbstractPane, {
     }
 })
 
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY, BI.AnalysisETLOperatorGroup);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY, BI.AnalysisETLOperatorGroup);

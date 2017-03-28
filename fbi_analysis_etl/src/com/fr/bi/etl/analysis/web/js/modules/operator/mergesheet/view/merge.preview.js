@@ -161,4 +161,4 @@ BI.AnalysisETLMergeSheetPreview = BI.inherit(BI.MVCWidget, {
     }
 });
 
-$.shortcut("bi.analysis_etl_merge_preview",BI.AnalysisETLMergeSheetPreview)
+BI.shortcut("bi.analysis_etl_merge_preview",BI.AnalysisETLMergeSheetPreview)

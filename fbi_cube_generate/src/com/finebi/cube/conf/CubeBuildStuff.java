@@ -46,4 +46,6 @@ public interface CubeBuildStuff {
     String getCubeTaskId();
 
     CubeTaskType getTaskType();
+
+    Set<String> getTaskTableSourceIds();
 }

@@ -101,4 +101,9 @@ public class CubeBuildStuffEmptyTable extends AbstractCubeBuildStuff {
     public CubeTaskType getTaskType() {
         return CubeTaskType.EMPTY;
     }
+
+    @Override
+    public Set<String> getTaskTableSourceIds() {
+        return new HashSet<>();
+    }
 }

@@ -46,4 +46,4 @@ BI.ETLBranchRelation = BI.inherit(BI.BranchRelation, {
         BI.ETLBranchRelation.superclass.populate.apply(this, [items]);
     }
 });
-$.shortcut("bi.etl_branch_relation", BI.ETLBranchRelation)
+BI.shortcut("bi.etl_branch_relation", BI.ETLBranchRelation)

@@ -103,4 +103,4 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
     }
 });
 BI.ETLDateRangePane.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.date_range_pane_etl", BI.ETLDateRangePane);
+BI.shortcut("bi.date_range_pane_etl", BI.ETLDateRangePane);

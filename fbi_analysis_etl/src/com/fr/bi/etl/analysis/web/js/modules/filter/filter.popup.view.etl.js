@@ -67,4 +67,4 @@ BI.ETLFilterPopupView = BI.inherit(BI.Widget, {
 });
 BI.ETLFilterPopupView.EVENT_CLICK_CONFIRM = "EVENT_CLICK_CONFIRM";
 BI.ETLFilterPopupView.EVENT_CLICK_CANCEL = "EVENT_CLICK_CANCEL";
-$.shortcut("bi.filter_popup_etl", BI.ETLFilterPopupView);
+BI.shortcut("bi.filter_popup_etl", BI.ETLFilterPopupView);

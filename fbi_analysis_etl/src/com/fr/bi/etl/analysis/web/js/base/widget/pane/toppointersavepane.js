@@ -216,4 +216,4 @@ BI.TopPointerSavePane.EVENT_EDIT="event_edit";
 BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS="event_check_save_status";
 BI.TopPointerSavePane.EVENT_INVALID="TopPointerSavePane.EVENT_INVALID";
 BI.TopPointerSavePane.EVENT_FIELD_VALID="TopPointerSavePane.EVENT_FIELD_VALID";
-$.shortcut("bi.top_pointer_save_pane", BI.TopPointerSavePane);
+BI.shortcut("bi.top_pointer_save_pane", BI.TopPointerSavePane);

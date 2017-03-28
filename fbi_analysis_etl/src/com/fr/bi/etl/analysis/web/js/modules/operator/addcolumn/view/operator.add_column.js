@@ -12,4 +12,4 @@ BI.AnalysisETLOperatorAddColumn = FR.extend(BI.AnalysisETLOperatorAbstractPane, 
     }
 
 })
-$.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN, BI.AnalysisETLOperatorAddColumn);
+BI.shortcut(ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN, BI.AnalysisETLOperatorAddColumn);

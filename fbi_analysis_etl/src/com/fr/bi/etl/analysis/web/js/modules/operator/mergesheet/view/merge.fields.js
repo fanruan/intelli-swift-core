@@ -78,4 +78,4 @@ BI.AnalysisETLMergeSheetFields = BI.inherit(BI.MVCWidget, {
 })
 
 BI.AnalysisETLMergeSheetFields.MERGE_CHANGE = "MERGE_CHANGE";
-$.shortcut("bi.analysis_etl_merge_fields",BI.AnalysisETLMergeSheetFields)
+BI.shortcut("bi.analysis_etl_merge_fields",BI.AnalysisETLMergeSheetFields)

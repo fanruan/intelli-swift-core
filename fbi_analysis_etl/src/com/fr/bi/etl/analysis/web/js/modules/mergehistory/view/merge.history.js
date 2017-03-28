@@ -163,4 +163,4 @@ BI.MergeHistory = BI.inherit(BI.MVCWidget,  {
     }
 })
 BI.MergeHistory.CANCEL="cancel_view";
-$.shortcut("bi.analysis_etl_merge_history", BI.MergeHistory);
+BI.shortcut("bi.analysis_etl_merge_history", BI.MergeHistory);
