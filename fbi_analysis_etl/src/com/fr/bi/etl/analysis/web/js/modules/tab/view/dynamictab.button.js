@@ -85,7 +85,7 @@ BI.DynamicTabButton = FR.extend(BI.Widget, {
         BI.createWidget({
             type:"bi.left",
             height: o.height,
-            element:this.element,
+            element: this,
             items:[{
                 type:"bi.horizontal",
                 height: o.height,

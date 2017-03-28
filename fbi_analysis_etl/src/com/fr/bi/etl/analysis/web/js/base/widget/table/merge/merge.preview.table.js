@@ -28,7 +28,7 @@ BI.AnalysisETLMergePreviewTable = BI.inherit(BI.Widget, {
             type:"bi.table_view",
             isNeedResize: false,
             isResizeAdapt: false,
-            element:this.element,
+            element: this,
             isNeedFreeze: false,
             freezeCols: [],
 

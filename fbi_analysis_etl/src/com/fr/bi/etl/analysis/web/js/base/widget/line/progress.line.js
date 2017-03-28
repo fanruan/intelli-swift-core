@@ -31,7 +31,7 @@ BI.AnalysisProgressBar = BI.inherit(BI.Widget, {
 
         BI.createWidget({
             type:"bi.absolute",
-            element:this.element,
+            element: this,
             items:[this.per]
         })
 

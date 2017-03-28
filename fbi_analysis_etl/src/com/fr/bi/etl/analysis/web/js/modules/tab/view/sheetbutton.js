@@ -65,7 +65,7 @@ BI.SheetButton = FR.extend(BI.BasicButton, {
         //    e.stopPropagation();
         //})
         BI.createWidget({
-            element:this.element,
+            element: this,
             type:"bi.inline",
             scrollable : false,
             items: [this.text, {

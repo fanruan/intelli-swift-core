@@ -26,7 +26,7 @@ BI.ETLFilterPopupView = BI.inherit(BI.Widget, {
             width : self._constants.WIDTH,
             maxWidth : self._constants.MAXWIDTH,
             height : self._constants.HEIGHT,
-            element: this.element,
+            element: this,
             buttons: [BI.i18nText('BI-Basic_Cancel'), BI.i18nText('BI-Basic_Sure')],
             el: this.loader
         });

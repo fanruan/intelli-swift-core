@@ -70,7 +70,7 @@ BI.AnalysisETLDetailSelectDataLevel1Item = BI.inherit(BI.Single, {
 
         BI.createWidget({
             type: "bi.absolute",
-            element: this.element,
+            element: this,
             items: [{
                 el: this.button,
                 top: 0,

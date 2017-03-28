@@ -21,7 +21,7 @@ BI.AnalysisOperatorButton = FR.extend(BI.Widget, {
         var self =  this;
         BI.createWidget({
             type: "bi.inline",
-            element:this.element,
+            element: this,
             height: o.height,
             items : this.combos
         })

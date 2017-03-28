@@ -10,7 +10,7 @@ BI.AnalysisETLOperatorFilterTable = FR.extend(BI.Widget, {
         BI.AnalysisETLOperatorFilterTable.superclass._init.apply(this, arguments)
         this.content = BI.createWidget({
             type:"bi.button_group",
-            element:this.element,
+            element: this,
             items:this._createItems(),
             layouts: [{
                 type: "bi.horizontal"

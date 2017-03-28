@@ -42,7 +42,7 @@ BI.AnalysisETLSelectDataLevel1DateNode = BI.inherit(BI.NodeButton, {
         })
         BI.createWidget({
             type: "bi.htape",
-            element: this.element,
+            element: this,
             items: [{
                 el: {
                     type: "bi.layout"

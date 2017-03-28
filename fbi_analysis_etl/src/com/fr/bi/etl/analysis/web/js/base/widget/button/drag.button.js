@@ -19,7 +19,7 @@ BI.DragButton = FR.extend(BI.Widget, {
         var o = this.options;
         var svg = BI.createWidget({
             type:"bi.svg",
-            element:this.element,
+            element: this,
             height: o.height,
             width: o.width
         })

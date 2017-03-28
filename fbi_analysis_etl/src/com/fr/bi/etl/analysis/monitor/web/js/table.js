@@ -95,7 +95,7 @@ BI.MonitorTable = BI.inherit(BI.Widget, {
         })
         BI.createWidget({
             type: "bi.center_adapt",
-            element: this.element,
+            element: this,
             items: [label]
         })
     },

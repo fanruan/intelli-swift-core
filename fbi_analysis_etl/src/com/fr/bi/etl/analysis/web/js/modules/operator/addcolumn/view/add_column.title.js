@@ -81,7 +81,7 @@ BI.AnalysisETLOperatorAddColumnPaneTitle = FR.extend(BI.MVCWidget, {
         })
         BI.createWidget({
             type:"bi.center_adapt",
-            element:this.element,
+            element: this,
             height:45,
             items:[{
                 type:"bi.vertical_adapt",

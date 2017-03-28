@@ -12,7 +12,7 @@ BI.AnalysisETLOperatorFilterSingleContent = FR.extend(BI.Widget, {
         BI.AnalysisETLOperatorFilterSingleContent.superclass._init.apply(this, arguments)
         BI.createWidget({
             type:"bi.vertical",
-            element:this.element,
+            element: this,
             tgap : 10,
             lgap : 10,
             rgap : 10,

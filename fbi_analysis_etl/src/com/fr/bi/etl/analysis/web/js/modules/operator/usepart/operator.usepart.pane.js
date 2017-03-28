@@ -25,7 +25,7 @@ BI.AnalysisETLOperatorUsePartPane = FR.extend(BI.MVCWidget, {
         })
         BI.createWidget({
             type:"bi.vtape",
-            element:this.element,
+            element: this,
             items:[{
                 height:40,
                 el : {
