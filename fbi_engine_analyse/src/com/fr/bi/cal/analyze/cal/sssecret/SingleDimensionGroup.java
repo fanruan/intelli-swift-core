@@ -16,6 +16,7 @@ import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
 import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -77,9 +78,9 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
 
     protected Iterator getIterator() {
-        Iterator[] iterators = new Iterator[metricTables.length];
+        DimensionIterator[] iterators = new DimensionIterator[metricTables.length];
         for (int i = 0; i < iterators.length; i++) {
-            Iterator it = getIterator(i);
+            DimensionIterator it = getIterator(i);
             if (!columns[i].getDirectToDimensionRelationList().isEmpty()) {
                 it = new DirectToDimensionRelationIterator(it, columns[i], loader);
             }
@@ -94,7 +95,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         this.lazyExecutor.initial(this, iterator);
     }
 
-    protected Iterator getIterator(int index) {
+    protected DimensionIterator getIterator(int index) {
         if (gvis[index] == null || GVIUtils.isAllEmptyRoaringGroupValueIndex(gvis[index])) {
             return MergeIterator.EMPTY;
         }
@@ -112,7 +113,33 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         }
         //自循环处理同自定义分组
         if (!urd || hasSpecialGroup(columns[index]) || isCirCle(columns[index])) {
-            return columns[index].createValueMapIterator(metricTables[index], loader, urd, groupLimit);
+            final Iterator it = columns[index].createValueMapIterator(metricTables[index], loader, urd, groupLimit);
+            return new DimensionIterator() {
+                @Override
+                public int getCurrentGroup() {
+                    return 0;
+                }
+
+                @Override
+                public boolean canReGainGroupValueIndex(){
+                    return false;
+                }
+
+                @Override
+                public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                    return null;
+                }
+
+                @Override
+                public boolean hasNext() {
+                    return it.hasNext();
+                }
+
+                @Override
+                public Map.Entry<Object, GroupValueIndex> next() {
+                    return (Map.Entry<Object, GroupValueIndex>) it.next();
+                }
+            };
         }
         return getIterByAllCal(index);
     }
@@ -139,7 +166,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     }
 
 
-    private Iterator<Map.Entry<Object, GroupValueIndex>> getIterByAllCal(int index) {
+    private DimensionIterator getIterByAllCal(int index) {
         boolean asc = !(columns[index].getSortType() == BIReportConstant.SORT.DESC || columns[index].getSortType() == BIReportConstant.SORT.NUMBER_DESC);
         return DimensionIteratorCreator.createValueMapIterator(getters[index], gvis[index], asc);
     }

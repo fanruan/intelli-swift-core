@@ -1,5 +1,6 @@
 package com.fr.bi.cal;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.CubeRunner;
@@ -7,12 +8,12 @@ import com.fr.bi.cal.generate.TimerRunner;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 
 import java.util.Iterator;
+import java.util.Set;
 
 
 public class SingleUserCubeManager {
@@ -144,6 +145,14 @@ public class SingleUserCubeManager {
     public void envChanged() {
         runner.envChanged();
         timerRunner.envChanged();
+    }
+
+    public Set<String> getCubeGeneratingTableSourceIds() {
+        return runner.getCubeGeneratingTableSourceIds();
+    }
+
+    public Set<String> getCubeWaiting2GenerateSourceIds() {
+        return runner.getCubeWaiting2GenerateTableSourceIds();
     }
 
 }

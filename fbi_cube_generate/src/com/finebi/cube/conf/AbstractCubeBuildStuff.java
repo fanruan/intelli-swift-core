@@ -7,6 +7,7 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.utils.BIDataStructTranUtils;
 import com.finebi.cube.utils.BITableRelationUtils;
 import com.finebi.cube.utils.CubePreConditionsCheck;
 import com.finebi.cube.utils.CubePreConditionsCheckManager;
@@ -17,7 +18,6 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.structure.queue.FixedExecutor;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.data.impl.Connection;
 import com.fr.general.ComparatorUtils;
@@ -25,7 +25,12 @@ import com.fr.stable.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,6 +43,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     protected Set<CubeTableSource> allTableSources = new HashSet<CubeTableSource>();
     protected CalculateDependTool calculateDependTool;
     protected BISystemConfigHelper configHelper;
+    protected Set<String> taskTableSourceIDs;
 
     public AbstractCubeBuildStuff(long userId) {
         this.userId = userId;
@@ -290,6 +296,16 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
         ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
         return check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
+    }
+
+    protected Set<String> getDependTableSourceIdSet(Set<List<Set<CubeTableSource>>> dependTableSource) {
+        Set<String> tableSourceIDSet = new HashSet<String>();
+        for (CubeTableSource tableSource : BIDataStructTranUtils.set2Set(dependTableSource)) {
+            if (tableSource != null) {
+                tableSourceIDSet.add(tableSource.getSourceID());
+            }
+        }
+        return tableSourceIDSet;
     }
 
 

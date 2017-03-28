@@ -460,6 +460,11 @@ public class BuildCubeTask implements CubeTask {
     }
 
     @Override
+    public Set<String> getTaskTableSourceIds() {
+        return cubeBuildStuff.getTaskTableSourceIds();
+    }
+
+    @Override
     public JSONObject createJSON() throws Exception {
         return null;
     }

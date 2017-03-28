@@ -1,48 +1,36 @@
 package com.fr.bi.stable.report.update;
 
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.report.update.operation.ReportSettingsUpdateOperation;
-import com.fr.general.ComparatorUtils;
+import com.fr.bi.stable.report.update.operation.ReportUpdateOperation;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by kary on 2017/2/4.
  */
 public class ReportConfVersionNode implements Comparable<ReportConfVersionNode> {
-    private ReportVersion version;
-    private ReportSettingsUpdateOperation reportOperation;
+    private ReportVersionEnum version;
+    private List<ReportUpdateOperation> reportOperations;
 
-    public ReportConfVersionNode(ReportVersion version, ReportSettingsUpdateOperation reportOperation) {
+    public ReportConfVersionNode(ReportVersionEnum version, List<ReportUpdateOperation> reportOperation) {
         this.version = version;
-        this.reportOperation = reportOperation;
+        this.reportOperations = reportOperation;
     }
 
-    public boolean versionCompare(JSONObject settings) {
-        try {
-            return ComparatorUtils.equals(settings.getString("version") ,version.getVersionName());
-        } catch (JSONException e) {
-            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
-        }
-        return false;
-    }
-
-    public ReportVersion getVersion() {
+    public ReportVersionEnum getVersion() {
         return version;
     }
 
-    public boolean isLatestVersion() {
-        return ComparatorUtils.equals(version, BIReportConstant.VERSION);
-    }
-
-    public ReportSettingsUpdateOperation getReportOperation() {
-        return reportOperation;
+    public void update(JSONObject settings) throws JSONException {
+        for (ReportUpdateOperation operation : reportOperations) {
+            operation.update(settings);
+        }
     }
 
     @Override
     public int compareTo(ReportConfVersionNode o) {
-        if (this.getVersion().getVersionSort() < o.getVersion().getVersionSort()) {
+        if (this.getVersion().getVersion() < o.getVersion().getVersion()) {
             return -1;
         }
         return 1;
