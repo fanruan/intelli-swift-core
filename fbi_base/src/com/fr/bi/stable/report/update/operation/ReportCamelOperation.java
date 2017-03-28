@@ -77,7 +77,7 @@ public class ReportCamelOperation implements ReportUpdateOperation {
     }
 
     private String lineToCamels(String str) {
-        str = str.toLowerCase();
+//        str = str.toLowerCase();
         Matcher matcher = linePattern.matcher(str);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {

@@ -113,9 +113,9 @@ public class NodeIteratorCreator {
         return CalLevel.PART_NODE;
     }
 
-    //如果参数要求全部计算，或者有配置类计算，或者最后一个维度上有过滤（此时要计算IndirectFilter已经把整个node都过滤了，就没必要转化为索引过滤，再去分页计算了），只有一个维度，一个指标并且排序了的情况也不用再分页了，直接全部计算
+    //如果参数要求全部计算，或者有配置类计算，或者最后一个维度上有过滤（此时要计算IndirectFilter已经把整个node都过滤了，就没必要转化为索引过滤，再去分页计算了）
     private boolean isaAllNode() {
-        return calAllPage || hasConfigureMetrics(targetIdMap.keySet()) || getLastIndirectFilterDimensionIndex() == rowDimension.length - 1 || (hasTargetSort() && rowDimension.length == 1 && usedTargets.length == 1);
+        return calAllPage || hasConfigureMetrics(targetIdMap.keySet()) || getLastIndirectFilterDimensionIndex() == rowDimension.length - 1;
     }
 
     public IRootDimensionGroup createRoot() {
