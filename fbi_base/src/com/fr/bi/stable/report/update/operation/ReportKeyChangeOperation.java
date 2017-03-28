@@ -46,8 +46,10 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
         Iterator iterator = keys.keys();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
-            String originalKey = keys.getString(key);
-            finalJson.put(patterValues(originalKey), key);
+            String[] originalKeys = patterValues(keys.getString(key)).split("/");
+            for (String oriKey : originalKeys) {
+                finalJson.put(oriKey, key);
+            }
         }
         keys = finalJson;
     }
