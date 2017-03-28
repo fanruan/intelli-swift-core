@@ -92,9 +92,38 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
     }
 
     protected void moveNext() {
-        Object minValue = null;
         IntArray array = new IntArray();
         GroupValueIndex[] gvis = new GroupValueIndex[iterators.length];
+        Object minValue = getMinValuePositions(array, gvis);
+        //设置mergenode
+        if (minValue == null){
+            next = null;
+        } else {
+            int[] groupIndex = null;
+            if (returnResultWithGroupIndex){
+                groupIndex  = new int[gvis.length];
+            }
+            for (int i = 0; i < gvis.length ; i++){
+                if (this.gvis[i] == null || gvis[i] == null){
+                    gvis[i] = null;
+                    if (returnResultWithGroupIndex){
+                        groupIndex[i] = NIOConstant.INTEGER.NULL_VALUE;
+                    }
+                } else {
+                    gvis[i] = gvis[i].and(this.gvis[i]);
+                    if (returnResultWithGroupIndex){
+                        groupIndex[i] = iterators[i].getCurrentGroup();
+                    }
+                }
+            }
+            next = returnResultWithGroupIndex ? new MetricMergeResultWithGroupIndex(c, minValue, gvis, groupIndex) : new MetricMergeResult(c, minValue, gvis);
+        }
+        moveEntries(array);
+    }
+
+    //获取最小值，对应的索引，以及迭代器的序号
+    private Object getMinValuePositions(IntArray array, GroupValueIndex[] gvis) {
+        Object minValue = null;
         for (int i = 0; i < entries.length; i++) {
             Map.Entry<Object, GroupValueIndex> entry = entries[i];
             if (entry != null) {
@@ -119,29 +148,7 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
                 }
             }
         }
-        if (minValue == null){
-            next = null;
-        } else {
-            int[] groupIndex = null;
-            if (returnResultWithGroupIndex){
-                groupIndex  = new int[gvis.length];
-            }
-            for (int i = 0; i < gvis.length ; i++){
-                if (this.gvis[i] == null || gvis[i] == null){
-                    gvis[i] = null;
-                    if (returnResultWithGroupIndex){
-                        groupIndex[i] = NIOConstant.INTEGER.NULL_VALUE;
-                    }
-                } else {
-                    gvis[i] = gvis[i].and(this.gvis[i]);
-                    if (returnResultWithGroupIndex){
-                        groupIndex[i] = iterators[i].getCurrentGroup();
-                    }
-                }
-            }
-            next = returnResultWithGroupIndex ? new MetricMergeResultWithGroupIndex(c, minValue, gvis, groupIndex) : new MetricMergeResult(c, minValue, gvis);
-        }
-        moveEntries(array);
+        return minValue;
     }
 
     public static DimensionIterator EMPTY = new DimensionIterator() {
