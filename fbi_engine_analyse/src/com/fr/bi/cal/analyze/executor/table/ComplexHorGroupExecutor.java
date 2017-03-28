@@ -6,7 +6,6 @@ import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -17,12 +16,11 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
+import com.fr.json.JSONObject;
 
 import java.awt.*;
 import java.util.*;
@@ -30,15 +28,18 @@ import java.util.*;
 /**
  * Created by sheldon on 14-9-2.
  */
-public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
+public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
+    protected BIComplexExecutData rowData;
+    protected ComplexExpander complexExpander;
 
     public ComplexHorGroupExecutor(TableWidget widget, Paging page,
                                    ArrayList<ArrayList<String>> columnArray,
                                    BISession session, ComplexExpander expander) {
 
-        super(widget, page, session, expander);
+        super(widget, page, session);
         //这里的rowData实际上是列表头
         rowData = new BIComplexExecutData(columnArray, widget.getDimensions());
+        this.complexExpander = expander;
     }
 
     @Override
@@ -160,7 +161,6 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
      * @param nodes
      * @return
      */
-    @Override
     public int getNodesTotalLength(Node[] nodes) {
         int count = 0;
 
@@ -176,63 +176,14 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
         return super.getSouthEastRectangle();
     }
 
-    /**
-     * 获取node
-     *
-     * @return 获取的node
-     */
     @Override
-    public Node getCubeNode() {
+    public Object getCubeNode() throws Exception {
         return null;
     }
-
-    private BISummaryTarget[] createTarget4Calculate() {
-        ArrayList<BITarget> list = new ArrayList<BITarget>();
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            list.add(usedSumTarget[i]);
-        }
-        if (widget.getTargetSort() != null) {
-            String name = widget.getTargetSort().getName();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), name)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), name)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-        }
-        Iterator<String> it1 = widget.getTargetFilterMap().keySet().iterator();
-        while (it1.hasNext()) {
-            String key = it1.next();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), key)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), key)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-
-        }
-        return list.toArray(new BISummaryTarget[list.size()]);
-    }
-
 
     /* (non-Javadoc)
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
-    @Override
     public Map<Integer, Node> getCubeNodes() throws Exception {
         if (getSession() == null) {
             return null;
@@ -253,5 +204,16 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
 
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return nodeMap;
+    }
+
+    @Override
+    public JSONObject createJSONObject() throws Exception {
+        Iterator<Map.Entry<Integer, Node>> it = getCubeNodes().entrySet().iterator();
+        JSONObject jo = new JSONObject();
+        while (it.hasNext()){
+            Map.Entry<Integer, Node> entry = it.next();
+            jo.put(String.valueOf(entry.getKey()), entry.getValue().toJSONObject(rowData.getDimensionArray(entry.getKey()), widget.getTargetsKey(), -1));
+        }
+        return jo;
     }
 }

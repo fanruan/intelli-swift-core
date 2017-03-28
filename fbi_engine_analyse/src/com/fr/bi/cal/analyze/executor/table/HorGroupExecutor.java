@@ -5,7 +5,6 @@ import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -15,30 +14,35 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
+import com.fr.json.JSONObject;
 
-import java.util.*;
+import java.awt.*;
 
-public class HorGroupExecutor extends GroupExecutor {
-
+public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
+    private Rectangle rectangle;
     private BIDimension[] colDimension;
+    private BIDimension[] usedDimensions;
+    private CrossExpander expander;
 
     public HorGroupExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
-        super(widget, paging, session, expander);
+        super(widget, paging, session);
         usedDimensions = widget.getViewTopDimensions();
         colDimension = usedDimensions;
+        this.expander = expander;
     }
 
     public TableCellIterator createCellIterator4Excel() throws Exception {
         final Node node = getCubeNode();
         int rowLength = colDimension.length + usedSumTarget.length;
         int columnLength = node.getTotalLength() + widget.isOrder() + 1;
+        //显示不显示汇总行
+        int rowLen = widget.getChartSetting().showRowTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength();
+        rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLength + widget.isOrder() - 1, rowLen);
         final TableCellIterator iter = new TableCellIterator(columnLength, rowLength);
         new Thread() {
             public void run() {
@@ -135,46 +139,14 @@ public class HorGroupExecutor extends GroupExecutor {
         return tree;
     }
 
-    private BISummaryTarget[] createTarget4Calculate() {
-        ArrayList<BITarget> list = new ArrayList<BITarget>();
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            list.add(usedSumTarget[i]);
-        }
-        if (widget.getTargetSort() != null) {
-            String name = widget.getTargetSort().getName();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), name)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), name)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-        }
-        Iterator<String> it1 = widget.getTargetFilterMap().keySet().iterator();
-        while (it1.hasNext()) {
-            String key = it1.next();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), key)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), key)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
+    @Override
+    public JSONObject createJSONObject() throws Exception {
+        return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+    }
 
-        }
-        return list.toArray(new BISummaryTarget[list.size()]);
+    @Override
+    public Rectangle getSouthEastRectangle() {
+        return rectangle;
     }
 
 }

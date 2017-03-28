@@ -5,7 +5,6 @@ import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -16,27 +15,28 @@ import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
+import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
 import java.awt.Rectangle;
-import java.util.*;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
  */
-public class GroupExecutor extends AbstractNodeExecutor {
+public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     private Rectangle rectangle;
-    private int page = 1;
+    private BIDimension[] usedDimensions;
+    private CrossExpander expander;
 
     public GroupExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
-        super(widget, paging, session, expander);
+        super(widget, paging, session);
+        usedDimensions = widget.getViewDimensions();
+        this.expander = expander;
     }
 
     public TableCellIterator createCellIterator4Excel() throws Exception {
@@ -75,9 +75,9 @@ public class GroupExecutor extends AbstractNodeExecutor {
     }
 
     /**
-     * @param widget         复杂表复用此方法时需要的参数
-     * @param usedDimensions 复杂表复用此方法时需要的参数
-     * @param usedSumTarget  复杂表复用此方法时需要的参数
+     * @param widget ComplexGroupExecutor复用时需要的参数
+     * @param usedDimensions ComplexGroupExecutor复用时需要的参数
+     * @param usedSumTarget ComplexGroupExecutor复用时需要的参数
      * @param pagedIterator
      * @throws Exception
      */
@@ -115,11 +115,13 @@ public class GroupExecutor extends AbstractNodeExecutor {
     }
 
     /**
-     * @param n      复杂表复用此方法时需要的参数
-     * @param widget 复杂表复用此方法时需要的参数
+     *
+     * @param n ComplexGroupExecutor复用时需要的参数
+     * @param widget ComplexGroupExecutor复用时需要的参数
+     * @param rowDimensions ComplexGroupExecutor复用时需要的参数
      * @param iter
-     * @param start
-     * @param rowIdx
+     * @param start ComplexGroupExecutor复用时需要的参数
+     * @param rowIdx ComplexGroupExecutor复用时需要的参数
      */
     public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx) {
         while (n.getFirstChild() != null) {
@@ -180,7 +182,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         }
     }
 
-//    static boolean judgeNode(Node node, BITarget[] sumColumn) {
+    //    static boolean judgeNode(Node node, BITarget[] sumColumn) {
 //        return (node.needSummary()) && sumColumn.length > 0;
 //    }
 //
@@ -212,54 +214,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
 //        }
 //        return tempRow;
 //    }
-
-    private BISummaryTarget[] createTarget4Calculate() {
-        ArrayList<BITarget> list = new ArrayList<BITarget>();
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            list.add(usedSumTarget[i]);
-        }
-        if (widget.getTargetSort() != null) {
-            String name = widget.getTargetSort().getName();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), name)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), name)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-        }
-        Iterator<String> it1 = widget.getTargetFilterMap().keySet().iterator();
-        while (it1.hasNext()) {
-            String key = it1.next();
-            boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), key)) {
-                    inUsedSumTarget = true;
-                }
-            }
-            if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), key)) {
-                        list.add(allSumTarget[i]);
-                    }
-                }
-            }
-
-        }
-        return list.toArray(new BISummaryTarget[list.size()]);
-    }
-
-    /* (non-Javadoc)
-     * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
-     */
     @Override
-
     public Node getCubeNode() throws Exception {
         if (session == null) {
             return null;
@@ -280,6 +235,11 @@ public class GroupExecutor extends AbstractNodeExecutor {
         }
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;
+    }
+
+    @Override
+    public JSONObject createJSONObject() throws Exception {
+        return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
     }
 
     @Override
