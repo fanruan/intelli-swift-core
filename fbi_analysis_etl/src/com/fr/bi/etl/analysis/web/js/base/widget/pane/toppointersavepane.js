@@ -143,7 +143,7 @@ BI.TopPointerSavePane = BI.inherit(BI.MVCWidget, {
         })
 
         this.pointerPane = BI.createWidget({
-            element:this.element,
+            element: this,
             type:"bi.top_pointer_pane",
             pointerCls: o.pointerCls,
             height: o.height,

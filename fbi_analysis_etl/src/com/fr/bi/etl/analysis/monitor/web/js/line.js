@@ -24,7 +24,7 @@ BI.MonitorLine = BI.inherit(BI.Widget, {
         o.width = Math.max(5, o.width);
         this.svg = BI.createWidget({
             type:"bi.svg",
-            element:this.element,
+            element: this,
             height: o.height,
             width: o.width
         })

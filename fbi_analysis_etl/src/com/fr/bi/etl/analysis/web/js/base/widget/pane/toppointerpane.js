@@ -32,7 +32,7 @@ BI.TopPointerPane = BI.inherit(BI.Widget, {
 
         BI.createWidget({
             type:"bi.vertical",
-            element:this.element,
+            element: this,
             scrollable:false,
             scrollx:false,
             scrolly:false,

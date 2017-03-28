@@ -99,7 +99,7 @@ BI.AnalysisOperatorTitle = FR.extend(BI.Widget, {
         })
         BI.createWidget({
             type:"bi.left_right_vertical_adapt",
-            element: this.element,
+            element: this,
             height: o.height,
             items: {
                 left: [{

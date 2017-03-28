@@ -46,7 +46,7 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
         
         BI.createWidget({
             type:"bi.center",
-            element:this.element,
+            element: this,
             items:[{
                 type:"bi.htape",
                 rgap : 10,

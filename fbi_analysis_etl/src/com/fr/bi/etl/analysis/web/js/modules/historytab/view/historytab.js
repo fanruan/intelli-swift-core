@@ -44,7 +44,7 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
 
         BI.createWidget({
             type:"bi.htape",
-            element: this.element,
+            element: this,
             bgap: 10,
             items: [{
                 el: this.tab

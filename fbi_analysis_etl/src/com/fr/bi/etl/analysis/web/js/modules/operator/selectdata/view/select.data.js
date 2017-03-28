@@ -102,7 +102,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.MVCWidget, {
 
         BI.createWidget({
             type: "bi.htape",
-            element: this.element,
+            element: this,
             items: [{
                 el: {
                     type: "bi.vtape",

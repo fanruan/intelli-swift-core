@@ -19,7 +19,7 @@ BI.ETLDateRangePane = BI.inherit(BI.Single, {
         this.up = this._createCombo();
         this.down = this._createCombo();
         BI.createWidget({
-            element: this.element,
+            element: this,
             type: "bi.vertical",
             scrolly : false,
             items: [{

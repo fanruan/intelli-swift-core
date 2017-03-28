@@ -51,7 +51,7 @@ BI.MergeHistory = BI.inherit(BI.MVCWidget,  {
         })
         var self = this;
         BI.createWidget({
-            element:this.element,
+            element: this,
             type:"bi.htape",
             items:[{
                 type:"bi.layout",
