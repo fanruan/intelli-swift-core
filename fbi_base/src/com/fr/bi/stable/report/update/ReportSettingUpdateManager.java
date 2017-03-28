@@ -33,11 +33,10 @@ public class ReportSettingUpdateManager {
         Iterator<ReportConfVersionNode> iterator = versionNodes.iterator();
         while (iterator.hasNext()) {
             ReportConfVersionNode node = iterator.next();
-//            boolean flag = fileVersion < node.getVersion() && node.getVersion() <= Double.valueOf(BIReportConstant.VERSION);
-            boolean flag = getVersion(setting).getVersionSort() < node.getVersion().getVersionSort();
+            boolean flag = getVersion(setting).getVersionSort() <= node.getVersion().getVersionSort();
             if (flag) {
-                BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("profile files is updating ", getVersion(setting).getVersionName() + "------>" + node.getVersion()));
-                reportSettings = node.getReportOperation().update(reportSettings);
+                BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("profile files is updating ", getVersion(setting).getVersionName() + "------>" + node.getVersion().getVersionSort()));
+                node.update(reportSettings);
             }
         }
         return new BIDesignSetting(reportSettings.toString());
