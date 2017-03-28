@@ -1,7 +1,10 @@
 package com.fr.bi.cal.analyze.cal.sssecret.mergeiter;
 
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
+import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResultWithGroupIndex;
+import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.stable.collections.array.IntArray;
 
 import java.util.Arrays;
@@ -13,19 +16,19 @@ import java.util.Map;
  * Created by 小灰灰 on 2016/12/30.
  */
 public class MergeIterator implements Iterator<MetricMergeResult>{
-    private Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators;
-    private GroupValueIndex[] gvis;
+    protected MetricMergeResult next;
+    private DimensionIterator[] iterators;
+    protected GroupValueIndex[] gvis;
     private Comparator c;
     private Map.Entry<Object, GroupValueIndex>[] entries;
-    protected MetricMergeResult next;
+    private boolean returnResultWithGroupIndex = false;
 
-    public MergeIterator(Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators, GroupValueIndex[] gvis, Comparator c) {
+    public MergeIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c) {
         this.iterators = iterators;
         this.gvis = gvis;
         this.c = c;
         initEntries();
     }
-
 
 
     @Override
@@ -42,6 +45,30 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
     @Override
     public void remove() {
 
+    }
+
+    protected void reSetGroupValueIndex(MetricMergeResult result){
+        int[] group =  ((MetricMergeResultWithGroupIndex)result).getGroupIndex();
+        GroupValueIndex[] groupValueIndices = new GroupValueIndex[group.length];
+        for (int i = 0; i < group.length; i ++){
+            if (group[i] != NIOConstant.INTEGER.NULL_VALUE){
+                groupValueIndices[i] = iterators[i].getGroupValueIndexByGroupIndex(group[i]).and(this.gvis[i]);
+            }
+        }
+        result.setGvis(groupValueIndices);
+    }
+
+    protected void setReturnResultWithGroupIndex(boolean returnResultWithGroupIndex){
+        this.returnResultWithGroupIndex = returnResultWithGroupIndex;
+    }
+
+    protected boolean canRelease(){
+        for (DimensionIterator iterator : iterators){
+            if (!iterator.canReGainGroupValueIndex()){
+                return false;
+            }
+        }
+        return true;
     }
 
     private void initEntries() {
@@ -65,9 +92,38 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
     }
 
     protected void moveNext() {
-        Object minValue = null;
         IntArray array = new IntArray();
         GroupValueIndex[] gvis = new GroupValueIndex[iterators.length];
+        Object minValue = getMinValuePositions(array, gvis);
+        //设置mergenode
+        if (minValue == null){
+            next = null;
+        } else {
+            int[] groupIndex = null;
+            if (returnResultWithGroupIndex){
+                groupIndex  = new int[gvis.length];
+            }
+            for (int i = 0; i < gvis.length ; i++){
+                if (this.gvis[i] == null || gvis[i] == null){
+                    gvis[i] = null;
+                    if (returnResultWithGroupIndex){
+                        groupIndex[i] = NIOConstant.INTEGER.NULL_VALUE;
+                    }
+                } else {
+                    gvis[i] = gvis[i].and(this.gvis[i]);
+                    if (returnResultWithGroupIndex){
+                        groupIndex[i] = iterators[i].getCurrentGroup();
+                    }
+                }
+            }
+            next = returnResultWithGroupIndex ? new MetricMergeResultWithGroupIndex(c, minValue, gvis, groupIndex) : new MetricMergeResult(c, minValue, gvis);
+        }
+        moveEntries(array);
+    }
+
+    //获取最小值，对应的索引，以及迭代器的序号
+    private Object getMinValuePositions(IntArray array, GroupValueIndex[] gvis) {
+        Object minValue = null;
         for (int i = 0; i < entries.length; i++) {
             Map.Entry<Object, GroupValueIndex> entry = entries[i];
             if (entry != null) {
@@ -92,22 +148,25 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
                 }
             }
         }
-        if (minValue == null){
-            next = null;
-        } else {
-            for (int i = 0; i < gvis.length ; i++){
-                if (this.gvis[i] == null || gvis[i] == null){
-                    gvis[i] = null;
-                } else {
-                    gvis[i] = gvis[i].AND(this.gvis[i]);
-                }
-            }
-            next = new MetricMergeResult(c, minValue, gvis);
-        }
-        moveEntries(array);
+        return minValue;
     }
 
-    public static Iterator EMPTY = new Iterator() {
+    public static DimensionIterator EMPTY = new DimensionIterator() {
+        @Override
+        public int getCurrentGroup() {
+            return 0;
+        }
+
+        @Override
+        public boolean canReGainGroupValueIndex(){
+            return false;
+        }
+
+        @Override
+        public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+            return null;
+        }
+
         @Override
         public void remove() {
 
@@ -119,8 +178,9 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
         }
 
         @Override
-        public Object next() {
+        public Map.Entry<Object, GroupValueIndex> next() {
             return null;
         }
+
     };
 }

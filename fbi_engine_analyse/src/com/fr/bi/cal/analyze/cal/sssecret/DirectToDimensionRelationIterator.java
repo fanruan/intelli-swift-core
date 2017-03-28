@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
@@ -17,7 +18,7 @@ import java.util.Set;
 /**
  * Created by 小灰灰 on 2016/12/30.
  */
-public class DirectToDimensionRelationIterator implements Iterator<Map.Entry<Object, GroupValueIndex>> {
+public class DirectToDimensionRelationIterator implements DimensionIterator {
     private Iterator<Map.Entry<Object, GroupValueIndex>> iterator;
     private DimensionCalculator calculator;
     private ICubeDataLoader loader;
@@ -87,5 +88,20 @@ public class DirectToDimensionRelationIterator implements Iterator<Map.Entry<Obj
     @Override
     public void remove() {
         iterator.remove();
+    }
+
+    @Override
+    public int getCurrentGroup() {
+        return 0;
+    }
+
+    @Override
+    public boolean canReGainGroupValueIndex(){
+        return false;
+    }
+
+    @Override
+    public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+        return null;
     }
 }

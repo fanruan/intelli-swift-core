@@ -6,8 +6,10 @@ import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
 import com.fr.bi.cal.analyze.cal.sssecret.mergeiter.AllNodeMergeIterator;
+import com.fr.bi.cal.analyze.cal.sssecret.mergeiter.MergeIterator;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
+import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.NameObject;
@@ -39,13 +41,9 @@ public class AllNodeMergeIteratorCreator implements MergeIteratorCreator {
         this.formulaCalculator = formulaCalculator;
     }
 
-    public Map<String, TargetCalculator> getCalculatedMap() {
-        return calculatedMap;
-    }
-
     @Override
-    public Iterator<MetricMergeResult> createIterator(Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
-        Iterator<MetricMergeResult> iterator = creator.createIterator(iterators, gvis, c, tis, loader);
+    public Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
+        MergeIterator iterator = (MergeIterator) creator.createIterator(iterators, gvis, c, tis, loader);
         return new AllNodeMergeIterator(iterator, filter, targetSort, metricsToCalculate, calculatedMap, tis, loader, executor, formulaCalculator);
     }
 
