@@ -23,11 +23,11 @@ public class DimensionIteratorCreator {
      * @param asc 升序为true
      * @return 迭代器
      */
-    public static Iterator<Map.Entry<Object, GroupValueIndex>> createValueMapIterator(ICubeValueEntryGetter getter, GroupValueIndex filterGVI, boolean asc){
+    public static DimensionIterator createValueMapIterator(ICubeValueEntryGetter getter, GroupValueIndex filterGVI, boolean asc){
         return createValueMapIterator(getter, filterGVI, 0, asc);
     }
 
-    public static Iterator<Map.Entry<Object, GroupValueIndex>> createValueMapIterator(ICubeValueEntryGetter getter, GroupValueIndex filterGVI, Object start, boolean asc){
+    public static DimensionIterator createValueMapIterator(ICubeValueEntryGetter getter, GroupValueIndex filterGVI, Object start, boolean asc){
         int index = asc ? getter.getPositionOfGroupByValue(start) : getter.getGroupSize() - getter.getPositionOfGroupByValue(start) - 1;
         return createValueMapIterator(getter, filterGVI, index, asc);
     }
@@ -39,7 +39,7 @@ public class DimensionIteratorCreator {
      * @param startIndex 偏移量
      * @return 迭代器
      */
-    public static Iterator<Map.Entry<Object, GroupValueIndex>> createValueMapIterator(ICubeValueEntryGetter getter, GroupValueIndex filterGVI, int startIndex, boolean asc){
+    public static DimensionIterator createValueMapIterator(ICubeValueEntryGetter getter, GroupValueIndex filterGVI, int startIndex, boolean asc){
         if (GVIUtils.isAllShowRoaringGroupValueIndex(filterGVI)){
             return getAllShowIterator(getter, startIndex,  asc);
         }
@@ -61,12 +61,13 @@ public class DimensionIteratorCreator {
     }
 
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getAllShowIterator(final ICubeValueEntryGetter getter, int startIndex, boolean asc) {
+    private static DimensionIterator getAllShowIterator(final ICubeValueEntryGetter getter, int startIndex, boolean asc) {
         return asc ? getAllShowASCIterator(getter, startIndex) : getAllShowDESCIterator(getter, startIndex);
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getAllShowASCIterator(final ICubeValueEntryGetter getter, final int startIndex) {
-        return new Iterator<Map.Entry<Object, GroupValueIndex>>() {
+    private static DimensionIterator getAllShowASCIterator(final ICubeValueEntryGetter getter, final int startIndex) {
+        return new DimensionIterator() {
+
             private int index = startIndex;
             private int groupSize = getter.getGroupSize();
             @Override
@@ -109,11 +110,26 @@ public class DimensionIteratorCreator {
                 index++;
                 return entry;
             }
+
+            @Override
+            public int getCurrentGroup() {
+                return index - 1;
+            }
+
+            @Override
+            public boolean canReGainGroupValueIndex(){
+                return true;
+            }
+
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return getter.getIndexByGroupRow(groupIndex);
+            }
         };
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getAllShowDESCIterator(final ICubeValueEntryGetter getter, final int startIndex) {
-        return new Iterator<Map.Entry<Object, GroupValueIndex>>() {
+    private static DimensionIterator getAllShowDESCIterator(final ICubeValueEntryGetter getter, final int startIndex) {
+        return new DimensionIterator() {
             private int index = getter.getGroupSize() - 1 - startIndex;
             @Override
             public void remove() {
@@ -157,11 +173,25 @@ public class DimensionIteratorCreator {
                 index--;
                 return entry;
             }
+            @Override
+            public int getCurrentGroup() {
+                return index + 1;
+            }
+
+            @Override
+            public boolean canReGainGroupValueIndex(){
+                return true;
+            }
+
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return getter.getIndexByGroupRow(groupIndex);
+            }
         };
     }
 
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getArraySortIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI, int startIndex, boolean asc) {
+    private static DimensionIterator getArraySortIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI, int startIndex, boolean asc) {
         final int[] groupIndex = new int[getter.getGroupSize()];
         Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
         filterGVI.Traversal(new SingleRowTraversalAction() {
@@ -176,8 +206,8 @@ public class DimensionIteratorCreator {
         return asc ? getArraySortASCIterator(getter, groupIndex, startIndex) : getArraySortDESCIterator(getter, groupIndex, startIndex);
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getArraySortDESCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex, final int startIndex) {
-        return new Iterator<Map.Entry<Object, GroupValueIndex>>() {
+    private static DimensionIterator getArraySortDESCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex, final int startIndex) {
+        return new DimensionIterator() {
 
             private int index = groupIndex.length - 1 - startIndex;
 
@@ -226,11 +256,25 @@ public class DimensionIteratorCreator {
                 index--;
                 return entry;
             }
+            @Override
+            public int getCurrentGroup() {
+                return index + 1;
+            }
+
+            @Override
+            public boolean canReGainGroupValueIndex(){
+                return true;
+            }
+
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return getter.getIndexByGroupRow(groupIndex);
+            }
         };
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getArraySortASCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex, final int startIndex) {
-        return new Iterator<Map.Entry<Object, GroupValueIndex>>() {
+    private static DimensionIterator getArraySortASCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex, final int startIndex) {
+        return new DimensionIterator() {
 
             private int index = startIndex;
 
@@ -279,10 +323,24 @@ public class DimensionIteratorCreator {
                 index++;
                 return entry;
             }
+            @Override
+            public int getCurrentGroup() {
+                return index - 1;
+            }
+
+            @Override
+            public boolean canReGainGroupValueIndex(){
+                return true;
+            }
+
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return getter.getIndexByGroupRow(groupIndex);
+            }
         };
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getOneKeyIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI) {
+    private static DimensionIterator getOneKeyIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI) {
         final FinalInt i = new FinalInt();
         i.value = NIOConstant.INTEGER.NULL_VALUE;
         filterGVI.Traversal(new SingleRowTraversalAction() {
@@ -294,8 +352,8 @@ public class DimensionIteratorCreator {
         return getOneKeyIterator(getter, i.value);
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getOneKeyIterator(final ICubeValueEntryGetter getter, final Integer row) {
-        return new Iterator<Map.Entry<Object, GroupValueIndex>>() {
+    private static DimensionIterator getOneKeyIterator(final ICubeValueEntryGetter getter, final Integer row) {
+        return new DimensionIterator() {
             int groupRow = getter.getPositionOfGroupByRow(row);
             @Override
             public void remove() {
@@ -339,10 +397,25 @@ public class DimensionIteratorCreator {
                 groupRow = NIOConstant.INTEGER.NULL_VALUE;
                 return entry;
             }
+            @Override
+            public int getCurrentGroup() {
+                return groupRow;
+            }
+
+            //这个能regain，但是这种情况一般几乎不占内存，就不要释放了，返回false吧
+            @Override
+            public boolean canReGainGroupValueIndex(){
+                return false;
+            }
+
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return GVIFactory.createGroupValueIndexBySimpleIndex(row);
+            }
         };
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getTreeMapSortIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI, final int startIndex, final boolean asc) {
+    private static DimensionIterator getTreeMapSortIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI, final int startIndex, final boolean asc) {
         final TreeSet<Integer> set = asc ? new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC) : new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.DESC);
         filterGVI.Traversal(new SingleRowTraversalAction() {
             @Override
@@ -357,8 +430,9 @@ public class DimensionIteratorCreator {
         return getTreeMapSortIterator(getter, it);
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getTreeMapSortIterator(final ICubeValueEntryGetter getter, final Iterator<Integer> it) {
-        return new Iterator<Map.Entry<Object, GroupValueIndex>>() {
+    private static DimensionIterator getTreeMapSortIterator(final ICubeValueEntryGetter getter, final Iterator<Integer> it) {
+        return new DimensionIterator() {
+            private int lastGroup;
             @Override
             public void remove() {
                 it.remove();
@@ -372,6 +446,7 @@ public class DimensionIteratorCreator {
             @Override
             public Map.Entry<Object, GroupValueIndex> next() {
                 final int groupRow = it.next();
+                lastGroup = groupRow;
                 return new Map.Entry<Object, GroupValueIndex>() {
                     @Override
                     public Object getKey() {
@@ -399,10 +474,23 @@ public class DimensionIteratorCreator {
                     }
                 };
             }
+            @Override
+            public int getCurrentGroup() {
+                return lastGroup;
+            }
+
+            @Override
+            public boolean canReGainGroupValueIndex(){
+                return true;
+            }
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return getter.getIndexByGroupRow(groupIndex);
+            }
         };
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getTreeMapReSortIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI, final int startIndex, final boolean asc) {
+    private static DimensionIterator getTreeMapReSortIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI, final int startIndex, final boolean asc) {
         final TreeMap<Integer, IntArray> map = asc ? new TreeMap<Integer, IntArray>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC) : new TreeMap<Integer, IntArray>(BIBaseConstant.COMPARATOR.COMPARABLE.DESC);
         filterGVI.Traversal(new SingleRowTraversalAction() {
             @Override
@@ -418,8 +506,7 @@ public class DimensionIteratorCreator {
                 }
             }
         });
-        final Iterator<Map.Entry<Integer, IntArray>> it = map.entrySet().iterator();
-        return getTreeMapReSortIterator(getter, it);
+        return getTreeMapReSortIterator(getter, map);
     }
 
     private static boolean match(int startIndex, boolean asc, int groupRow) {
@@ -432,8 +519,10 @@ public class DimensionIteratorCreator {
         return asc ? groupRow >= startIndex : groupRow <= startIndex;
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getTreeMapReSortIterator(final ICubeValueEntryGetter getter, final Iterator<Map.Entry<Integer, IntArray>> it) {
-        return new Iterator<Map.Entry<Object, GroupValueIndex>>() {
+    private static DimensionIterator getTreeMapReSortIterator(final ICubeValueEntryGetter getter, Map<Integer, IntArray> map) {
+        final Iterator<Map.Entry<Integer, IntArray>> it = map.entrySet().iterator();
+        return new DimensionIterator() {
+            private int lastGroup;
             @Override
             public void remove() {
                 it.remove();
@@ -447,6 +536,7 @@ public class DimensionIteratorCreator {
             @Override
             public Map.Entry<Object, GroupValueIndex> next() {
                 final Map.Entry<Integer, IntArray> fEntry = it.next();
+                lastGroup = fEntry.getKey();
                 return new Map.Entry<Object, GroupValueIndex>() {
                     @Override
                     public Object getKey() {
@@ -474,10 +564,25 @@ public class DimensionIteratorCreator {
                     }
                 };
             }
+            @Override
+            public int getCurrentGroup() {
+                return lastGroup;
+            }
+
+            //这个能regain，但是这种情况一般几乎不占内存，就不要释放了，返回false吧
+            @Override
+            public boolean canReGainGroupValueIndex(){
+                return false;
+            }
+
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return GVIFactory.createGroupValueIndexBySimpleIndex(map.get(groupIndex));
+            }
         };
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getArrayReSortIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI, int startIndex, boolean asc) {
+    private static DimensionIterator getArrayReSortIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI, int startIndex, boolean asc) {
         final IntArray[] groupArray = new IntArray[getter.getGroupSize()];
         filterGVI.Traversal(new SingleRowTraversalAction() {
             @Override
@@ -494,8 +599,8 @@ public class DimensionIteratorCreator {
         return asc ? getArrayReSortASCIterator(getter, groupArray, startIndex) : getArrayReSortDESCIterator(getter, groupArray, startIndex);
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getArrayReSortDESCIterator(final ICubeValueEntryGetter getter, final IntArray[] groupArray, final int startIndex) {
-        return new Iterator<Map.Entry<Object, GroupValueIndex>>() {
+    private static DimensionIterator getArrayReSortDESCIterator(final ICubeValueEntryGetter getter, final IntArray[] groupArray, final int startIndex) {
+        return new DimensionIterator() {
             private int index = groupArray.length - 1 -startIndex;
 
             @Override
@@ -543,11 +648,26 @@ public class DimensionIteratorCreator {
                 index--;
                 return entry;
             }
+            @Override
+            public int getCurrentGroup() {
+                return index + 1;
+            }
+
+            //这个能regain，但是这种情况一般几乎不占内存，就不要释放了，返回false吧
+            @Override
+            public boolean canReGainGroupValueIndex(){
+                return false;
+            }
+
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return GVIFactory.createGroupValueIndexBySimpleIndex(groupArray[groupIndex]);
+            }
         };
     }
 
-    private static Iterator<Map.Entry<Object, GroupValueIndex>> getArrayReSortASCIterator(final ICubeValueEntryGetter getter, final IntArray[] groupArray, final int startIndex) {
-        return new Iterator<Map.Entry<Object, GroupValueIndex>>() {
+    private static DimensionIterator getArrayReSortASCIterator(final ICubeValueEntryGetter getter, final IntArray[] groupArray, final int startIndex) {
+        return new DimensionIterator() {
 
             private int index = startIndex;
 
@@ -595,6 +715,22 @@ public class DimensionIteratorCreator {
                 };
                 index++;
                 return entry;
+            }
+
+            @Override
+            public int getCurrentGroup() {
+                return index - 1;
+            }
+
+            //这个能regain，但是这种情况一般几乎不占内存，就不要释放了，返回false吧
+            @Override
+            public boolean canReGainGroupValueIndex(){
+                return false;
+            }
+
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return GVIFactory.createGroupValueIndexBySimpleIndex(groupArray[groupIndex]);
             }
         };
     }

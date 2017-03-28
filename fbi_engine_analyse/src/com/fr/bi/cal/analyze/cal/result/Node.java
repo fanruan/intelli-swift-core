@@ -201,7 +201,7 @@ public class Node implements SummaryContainer, BINode {
     }
 
     public void clearChildren(){
-        childs.clear();
+        childs = new ChildsMap<Node>();
     }
 
     @Override
