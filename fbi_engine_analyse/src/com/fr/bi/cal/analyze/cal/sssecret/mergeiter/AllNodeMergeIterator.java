@@ -5,7 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
-import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -30,8 +30,9 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private ICubeTableService[] tis;
     private ICubeDataLoader loader;
     private Node root;
-    private Iterator<MetricMergeResult> mergeIterator;
+    private MergeIterator mergeIterator;
     private Iterator<MetricMergeResult> resultIter;
+    private boolean releaseGVI;
     //线程池是否已经计算完成
     private volatile boolean completed;
     //是否已经全部加到线程池
@@ -45,7 +46,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
 
     private List<CalCalculator> formulaCalculator;
 
-    public AllNodeMergeIterator(Iterator<MetricMergeResult> mergeIterator, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader, BIMultiThreadExecutor executor, List<CalCalculator> formulaCalculator) {
+    public AllNodeMergeIterator(MergeIterator mergeIterator, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader, BIMultiThreadExecutor executor, List<CalCalculator> formulaCalculator) {
         this.mergeIterator = mergeIterator;
         this.filter = filter;
         this.metricsToCalculate = metricsToCalculate;
@@ -55,6 +56,8 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         this.targetSort = targetSort;
         this.executor = executor;
         this.formulaCalculator = formulaCalculator;
+        this.releaseGVI = mergeIterator.canRelease();
+        mergeIterator.setReturnResultWithGroupIndex(this.releaseGVI);
         initIter();
     }
 
@@ -70,13 +73,10 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
             root.addChild(result);
             ++size;
         }
-        if (metricsToCalculate != null) {
-            size *= getMetricsSize();
-        }
         allAdded = true;
         //如果多线程计算没有结束，就等结束
         //有可能在设置allAdded = true之前就结束了，导致 checkComplete 没执行，这边还要判断下size
-        completed = completed || count.get() == size;
+        completed = completed || count.get() == size || metricsToCalculate == null;
         if (!completed) {
             //没完成的话要唤醒下executor，以防有加到executor里wait住的。
             executor.wakeUp();
@@ -141,37 +141,44 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     }
 
     private void checkSum(MetricMergeResult result) {
-        GroupValueIndex[] gvis = result.getGvis();
-        if (metricsToCalculate != null) {
-            for (int i = 0; i < metricsToCalculate.length; i++) {
-                List<TargetAndKey> targetAndKeys = metricsToCalculate[i];
-                if (targetAndKeys != null) {
-                    for (TargetAndKey targetAndKey : targetAndKeys) {
-                        if (executor != null) {
-                            executor.add(new SummaryCountCal(tis[i], result, targetAndKey, gvis[i], loader));
-                        } else {
-                            new SummaryCountCal(tis[i], result, targetAndKey, gvis[i], loader).cal();
-                        }
-                    }
-                }
-            }
+        if (executor != null && metricsToCalculate != null) {
+            executor.add(new SummaryCountCal(result));
+        } else {
+            calculate(result);
         }
     }
 
-    private class SummaryCountCal extends SummaryCall {
+    private void calculate(MetricMergeResult result){
+        GroupValueIndex[] gvis = result.getGvis();
+        for (int i = 0; i < metricsToCalculate.length; i++) {
+            List<TargetAndKey> targetAndKeys = metricsToCalculate[i];
+            if (targetAndKeys != null) {
+                for (TargetAndKey targetAndKey : targetAndKeys) {
+                    targetAndKey.getCalculator().calculateFilterIndex(loader);
+                    targetAndKey.getCalculator().doCalculator(tis[i], result, gvis[i], targetAndKey.getTargetGettingKey());
+                }
+            }
+        }
+        if (releaseGVI){
+            result.clearGvis();
+        }
+    }
 
-        public SummaryCountCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader) {
-            super(ti, node, targetAndKey, gvi, loader);
+    private class SummaryCountCal implements BISingleThreadCal {
+        private MetricMergeResult result;
+
+        public SummaryCountCal(MetricMergeResult result) {
+            this.result = result;
         }
 
         @Override
         public void cal() {
             try {
-                super.cal();
+                calculate(result);
             } finally {
                 checkComplete();
             }
-            //      ((MetricMergeResult) node).clearGvis();
+
         }
     }
 
@@ -211,7 +218,11 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
 
     @Override
     public MetricMergeResult next() {
-        return resultIter.next();
+        MetricMergeResult result =  resultIter.next();
+        if (releaseGVI){
+            mergeIterator.reSetGroupValueIndex(result);
+        }
+        return result;
     }
 
     @Override
