@@ -608,9 +608,4 @@ public class BIReportConstant {
         public static final int EDIT = 1;
         public static final int VIEW = 2;
     }
-
-    public static final class HISTORY_VERSION {
-        public final static String VERSION_4_0 = "4.0";
-        public final static String VERSION_4_2 = "4.0.2";
-    }
 }
