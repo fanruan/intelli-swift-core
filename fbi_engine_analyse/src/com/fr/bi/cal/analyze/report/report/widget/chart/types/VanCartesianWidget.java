@@ -18,6 +18,9 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final int STEP = 2;
     private static final int CURVE = 3;
 
+    private static final String FALL_COLUMN = "fallColumn";
+    private static final String TRANS = "rgba(0,0,0,0)";
+
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
 
@@ -66,7 +69,34 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     public JSONArray createSeries(JSONObject data) throws JSONException {
-        return createXYSeries(data);
+        return this.createXYSeries(data);
+    }
+
+    protected JSONArray createStackedEmptySeries(JSONObject originData) throws JSONException{
+        JSONArray series = this.createSeries(originData);
+
+        if(series.length() > 0){
+            JSONObject ser1 = series.getJSONObject(0);
+
+            ser1.put("stack", FALL_COLUMN);
+
+            JSONObject ser0 = new JSONObject(ser1.toString());
+            ser0.put("name", FALL_COLUMN).put("color", TRANS).put("borderColor", TRANS).put("borderWidth", 0)
+                    .put("clickColor", TRANS).put("mouseOverColor", TRANS).put("tooltip", JSONObject.create().put("enabled", false))
+                    .put("fillColor", TRANS).put("marker", JSONObject.create().put("enabled", false));
+
+            double stackValue = 0;
+            JSONArray data = ser0.optJSONArray("data");
+            for(int i = 0, len = data.length(); i < len; i++){
+                JSONObject dataPoint = data.getJSONObject(i);
+                double y = dataPoint.optDouble("y");
+                dataPoint.put("y", stackValue);
+                stackValue += y;
+            }
+            series = JSONArray.create().put(ser0).put(ser1);
+        }
+
+        return series;
     }
 
     public JSONObject createPlotOptions(BISessionProvider session) throws Exception{

@@ -39,6 +39,9 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int BUBBLE_COUNT = 3;
     private static final int SCATTER_COUNT = 2;
 
+    private static final int TARGET = 30000;
+    private static final int TARGET_BASE = 10000;
+
 
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
     private HashMap<String, String> regionIdMap = new HashMap<String, String>();
@@ -56,7 +59,9 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected int yAxisIndex(String dimensionID){
-        return 0;
+        int regionID = Integer.parseInt(this.getRegionID(dimensionID));
+
+        return (regionID - TARGET) / TARGET_BASE;
     }
 
     protected JSONArray getDimensionIDArray(String regionID){
