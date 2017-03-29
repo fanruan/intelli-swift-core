@@ -51,7 +51,8 @@ BI.HistoryButtonGroup = BI.inherit(BI.ButtonGroup, {
         var items = this._packageItems([item], this._packageBtns(btns));
         var button = BI.createWidget(BI.extend(this._packageLayout(items))).element.children();
         button[fn](el);
-        this._refreshIndexFromPos(index)
+        this._refreshIndexFromPos(index);
+        this.layouts.addItems(this._packageLayout(items).items);
     },
 
     _refreshIndexFromPos: function(pos) {
