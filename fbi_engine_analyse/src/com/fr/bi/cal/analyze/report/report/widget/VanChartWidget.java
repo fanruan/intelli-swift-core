@@ -1,13 +1,17 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
+import com.fr.json.JSONFunction;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
@@ -42,6 +46,8 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int TARGET = 30000;
     private static final int TARGET_BASE = 10000;
 
+    private static final String PERCENT_SYMBOL = "%";
+
 
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
     private HashMap<String, String> regionIdMap = new HashMap<String, String>();
@@ -62,6 +68,61 @@ public abstract class VanChartWidget extends TableWidget {
         int regionID = Integer.parseInt(this.getRegionID(dimensionID));
 
         return (regionID - TARGET) / TARGET_BASE;
+    }
+
+    protected double numberScale(String dimensionID){
+
+        int level = this.numberLevel(dimensionID);
+        double scale = 1.0;
+
+        if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND){
+            scale = Math.pow(10, 4);
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION){
+            scale = Math.pow(10, 6);
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI){
+            scale = Math.pow(10, 8);
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT){
+            scale = 0.01;
+        }
+
+        return scale;
+    }
+
+
+    protected String scaleUnit(int level){
+        String unit = StringUtils.EMPTY;
+
+        if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND){
+
+            unit = Inter.getLocText("BI-Basic_Wan");
+
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION){
+
+            unit = Inter.getLocText("BI-Basic_Million");
+
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI){
+
+            unit = Inter.getLocText("BI-Basci_Yi");
+
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT){
+
+            unit = PERCENT_SYMBOL;
+
+        }
+
+        return unit;
+    }
+
+    protected int numberLevel(String dimensionID){
+        try {
+            BINumberTarget  target = ((BINumberTarget) this.getBITargetAndDimension(dimensionID));
+
+            return target.getChartSetting().getSettings().optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
+        }catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
+        }
+
+        return BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
     }
 
     protected JSONArray getDimensionIDArray(String regionID){
@@ -131,6 +192,8 @@ public abstract class VanChartWidget extends TableWidget {
                         .put("color", this.isDarkColor(widgetBg) ? "#FFFFFF" : "#1A1A1A")
                         .put("fontSize", "14px").put("fontFamily", "Verdana"));
 
+        plotOptions.put("tooltip", tooltip);
+
         return plotOptions;
     }
 
@@ -185,12 +248,10 @@ public abstract class VanChartWidget extends TableWidget {
 
         JSONObject data = super.createDataJSON(session).getJSONObject("data");
 
-        JSONArray series = this.createSeries(data);
-
-        return this.createOptions(session).put("series", series);
+        return this.createOptions(session, data);
     }
 
-    public JSONObject createOptions(BISessionProvider session) throws Exception{
+    public JSONObject createOptions(BISessionProvider session, JSONObject data) throws Exception{
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getDetailChartSetting();
 
@@ -208,7 +269,76 @@ public abstract class VanChartWidget extends TableWidget {
 
         options.put("plotOptions", this.createPlotOptions(session));
 
+        options.put("series",  this.createSeries(data));
+
+        //处理格式的问题
+        this.formatSeriesTooltipFormat(options);
+
         return options;
+    }
+
+    protected String tooltipValueFormat(BINumberTarget dimension){
+        return this.valueFormat(dimension, true);
+    }
+
+    protected String dataLabelValueFormat(BINumberTarget dimension){
+        return this.valueFormat(dimension, true);
+    }
+
+    protected String decimalFormat(BINumberTarget dimension, boolean hasSeparator){
+        JSONObject settings = dimension.getChartSetting().getSettings();
+        int type = settings.optInt("format", 0);
+        String format;
+        switch (type) {
+            case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
+                format = hasSeparator ? "#,###.##" : "#.##";
+                break;
+            case BIReportConstant.TARGET_STYLE.FORMAT.ZERO2POINT:
+                format = hasSeparator ? "#,###" : "#0";
+                break;
+            default:
+                format = hasSeparator ? "#,###." : "#0.";
+                for(int i = 0; i < type; i++){
+                    format += "0";
+                }
+        }
+
+        return format;
+    }
+
+    //值标签和小数位数，千分富符，数量级和单位构成的后缀
+    protected String valueFormat(BINumberTarget dimension, boolean isTooltip) {
+
+        JSONObject settings = dimension.getChartSetting().getSettings();
+
+        boolean hasSeparator = settings.optBoolean("numSeparators", true);
+
+        String format = this.decimalFormat(dimension, hasSeparator);
+
+        String scaleUnit = this.scaleUnit(this.numberLevel(dimension.getId()));
+
+        String unit = settings.optString("unit", StringUtils.EMPTY);
+
+        if(isTooltip){
+            format += (scaleUnit + unit);
+        }
+
+        return String.format("function(){FR.contentFormat(arguments[0], %s)}", format);
+    }
+
+    private void formatSeriesTooltipFormat(JSONObject options) throws Exception{
+
+        JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
+
+        JSONArray series = options.optJSONArray("series");
+
+        for(int i = 0, len = series.length(); i < len; i++){
+            JSONObject ser = series.getJSONObject(i);
+            String dimensionID = ser.optString("dimensionID");
+
+            ser.put("tooltip", new JSONObject(tooltip.toString())
+                    .put("valueFormat", this.tooltipValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID))));
+        }
     }
 
     protected JSONArray createXYSeries(JSONObject originData) throws JSONException{
@@ -219,6 +349,7 @@ public abstract class VanChartWidget extends TableWidget {
             JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
             boolean isStacked = this.isStacked(targetIDs[0]);
             for (int i = 0; i < topC.length(); i++) {
+                double numberScale = this.numberScale(targetIDs[i]);
                 JSONObject tObj = topC.getJSONObject(i);
                 String name = tObj.getString("n");
                 JSONArray data = JSONArray.create();
@@ -226,9 +357,10 @@ public abstract class VanChartWidget extends TableWidget {
                     JSONObject lObj = leftC.getJSONObject(j);
                     String x = lObj.getString("n");
                     double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0);
-                    data.put(JSONObject.create().put("x", x).put("y", y));
+                    data.put(JSONObject.create().put("x", x).put("y", y / numberScale));
                 }
-                JSONObject ser = JSONObject.create().put("data", data).put("name", name).put("type", this.getSeriesType(targetIDs[0]));
+                JSONObject ser = JSONObject.create().put("data", data).put("name", name)
+                        .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[i]);
                 if(isStacked){
                     ser.put("stacked", targetIDs[0]);
                 }
@@ -238,15 +370,17 @@ public abstract class VanChartWidget extends TableWidget {
             JSONArray children = originData.getJSONArray("c");
             for(int i = 0, len = targetIDs.length; i < len; i++){
                 String id = targetIDs[i], type = this.getSeriesType(id), stackedKey = this.getStackedKey(id);
+                int yAxis = this.yAxisIndex(id);
+                double numberScale = this.numberScale(id);
                 JSONArray data = JSONArray.create();
                 for (int j = 0, count = children.length(); j < count; j++) {
                     JSONObject lObj = children.getJSONObject(j);
                     String x = lObj.getString("n");
-                    double y = lObj.getJSONArray("s").getDouble(i);
+                    double y = lObj.getJSONArray("s").getDouble(i) / numberScale;
                     data.put(JSONObject.create().put("x", x).put("y", y));
                 }
                 JSONObject ser = JSONObject.create().put("data", data).put("name", id)
-                        .put("type", type).put("yAxis", this.yAxisIndex(id));
+                        .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
                 if(this.isStacked(id)){
                     ser.put("stacked", stackedKey);
                 }

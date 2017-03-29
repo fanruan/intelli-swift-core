@@ -491,7 +491,7 @@ public class TableWidget extends BISummaryWidget {
         return getBITargetAndDimension(dID).createColumnKey().getFieldType();
     }
 
-    private BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
+    protected BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
         for (BIDimension dimension : getDimensions()) {
             if (ComparatorUtils.equals(dimension.getId(), dID)) {
                 return dimension;
