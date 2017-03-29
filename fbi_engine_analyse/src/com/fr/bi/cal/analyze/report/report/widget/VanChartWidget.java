@@ -1,8 +1,10 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -10,8 +12,10 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
+import java.awt.*;
 import java.util.*;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by User on 2016/4/25.
@@ -19,6 +23,11 @@ import java.util.Iterator;
 public abstract class VanChartWidget extends TableWidget {
 
     private static final int STYLE_GRADUAL = 2;
+
+    private static final double RED_DET = 0.299;
+    private static final double GREEN_DET = 0.587;
+    private static final double BLUE_DET = 0.114;
+    private static final double GRAY = 192;
 
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
@@ -101,8 +110,32 @@ public abstract class VanChartWidget extends TableWidget {
         super.parseJSON(jo, userId);
     }
 
-    public JSONObject createPlotOptions() throws JSONException{
-        return JSONObject.create().put("animation", true);
+    public JSONObject createPlotOptions(BISessionProvider session) throws Exception{
+
+        JSONObject plotOptions = JSONObject.create();
+
+        plotOptions.put("animation", true);
+
+        //tooltip的默认配置
+        JSONObject tooltip = JSONObject.create();
+        JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
+        String widgetBg = reportSetting.optJSONObject("globalStyle").optJSONObject("widgetBackground").optString("value");
+
+        tooltip.put("padding", 10).put("backgroundColor", widgetBg).put("borderRadius", 2).put("shadow", true)
+                .put("style", JSONObject.create()
+                        .put("color", this.isDarkColor(widgetBg) ? "#FFFFFF" : "#1A1A1A")
+                        .put("fontSize", "14px").put("fontFamily", "Verdana"));
+
+        return plotOptions;
+    }
+
+    private boolean isDarkColor(String colorStr){
+
+        colorStr = colorStr.substring(1);
+
+        Color color =  new Color(Integer.parseInt(colorStr, 16));
+
+        return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException{
@@ -149,10 +182,10 @@ public abstract class VanChartWidget extends TableWidget {
 
         JSONArray series = this.createSeries(data);
 
-        return this.createOptions().put("series", series);
+        return this.createOptions(session).put("series", series);
     }
 
-    public JSONObject createOptions() throws JSONException{
+    public JSONObject createOptions(BISessionProvider session) throws Exception{
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getDetailChartSetting();
 
@@ -168,7 +201,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         options.put("legend", this.parseLegend(settings));
 
-        options.put("plotOptions", this.createPlotOptions());
+        options.put("plotOptions", this.createPlotOptions(session));
 
         return options;
     }

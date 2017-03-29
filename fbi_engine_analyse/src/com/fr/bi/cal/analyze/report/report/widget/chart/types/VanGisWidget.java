@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -13,8 +14,8 @@ public class VanGisWidget extends VanChartWidget{
     private static final String TILE_LAYER = "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}";
     private static final String ATTRIBUTION = "<a><img src=\\\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\\\">&copy; 2016 AutoNavi</a>";
 
-    public JSONObject createOptions() throws JSONException{
-        JSONObject options = super.createOptions();
+    public JSONObject createOptions(BISessionProvider session) throws Exception{
+        JSONObject options = super.createOptions(session);
 
         options.put("geo", JSONObject.create().put("tileLayer", TILE_LAYER).put("attribution", ATTRIBUTION));
 
