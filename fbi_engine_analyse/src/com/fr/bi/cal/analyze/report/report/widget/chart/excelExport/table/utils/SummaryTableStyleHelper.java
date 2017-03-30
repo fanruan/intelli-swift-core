@@ -12,6 +12,9 @@ public class SummaryTableStyleHelper {
     public static BITableItemStyle getBodyStyles(String themeColor, String styleType) {
         return new BITableItemStyle(null, null, null);
     }
+    public static BITableItemStyle getBodyStyles(String themeColor, String styleType,int index) {
+        return new BITableItemStyle(null, null, null);
+    }
     public static BITableItemStyle getLastSummaryStyles(String themeColor, String styleType) {
         return new BITableItemStyle(null, null, null);
     }

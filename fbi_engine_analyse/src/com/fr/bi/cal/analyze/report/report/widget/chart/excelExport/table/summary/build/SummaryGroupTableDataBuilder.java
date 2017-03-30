@@ -10,10 +10,10 @@ import java.util.Map;
 /**
  * Created by Kary on 2017/2/16.
  */
-public class SummaryNormalTableDataBuilder extends SumaryCrossTableDataBuilder {
+public class SummaryGroupTableDataBuilder extends SummaryCrossTableDataBuilder {
 
 
-    public SummaryNormalTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
+    public SummaryGroupTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
         super(dimAndTar, dataJSON);
     }
 
@@ -35,7 +35,7 @@ public class SummaryNormalTableDataBuilder extends SumaryCrossTableDataBuilder {
 
     @Override
     public BIExcelTableData createTableData() throws JSONException {
-        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items, crossHeaders, crossItems);
+        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items);
         return tableDataForExport;
 
     }
