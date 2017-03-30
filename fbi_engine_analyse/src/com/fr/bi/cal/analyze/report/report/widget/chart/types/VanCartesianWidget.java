@@ -1,9 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.base.BaseUtils;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
-import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -11,8 +9,6 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
-
 
 /**
  * Created by eason on 2017/3/2.
