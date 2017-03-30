@@ -138,10 +138,6 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return StringUtils.isBlank(scaleUnit) ? StringUtils.EMPTY : "(" + this.scaleUnit(level) + unit + ")";
     }
 
-    public JSONArray createSeries(JSONObject data) throws JSONException {
-        return this.createXYSeries(data);
-    }
-
     protected String dataLabelValueFormat(BINumberTarget dimension){
         return this.valueFormat(dimension, false);
     }
@@ -167,7 +163,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return level;
     }
 
-    protected JSONArray createStackedEmptySeries(JSONObject originData) throws JSONException{
+    protected JSONArray createStackedEmptySeries(JSONObject originData) throws Exception{
         JSONArray series = this.createSeries(originData);
 
         if(series.length() > 0){

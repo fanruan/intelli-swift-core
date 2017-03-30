@@ -22,7 +22,7 @@ public class VanGisWidget extends VanChartWidget{
         return options;
     }
 
-    public JSONArray createSeries(JSONObject originData) throws JSONException {
+    public JSONArray createSeries(JSONObject originData) throws Exception {
 
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
@@ -37,7 +37,7 @@ public class VanGisWidget extends VanChartWidget{
                 double value = lObj.getJSONArray("s").getDouble(i);
                 data.put(JSONObject.create().put("lnglat", lnglat).put("value", value));
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", id);
+            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id)).put("dimensionID", id);
             series.put(ser);
         }
 

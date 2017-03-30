@@ -10,7 +10,7 @@ import com.fr.json.JSONObject;
  */
 public class VanMultiPieWidget extends VanChartWidget{
 
-    public JSONArray createSeries(JSONObject data) throws JSONException{
+    public JSONArray createSeries(JSONObject data) throws Exception{
 
 
         return JSONArray.create();

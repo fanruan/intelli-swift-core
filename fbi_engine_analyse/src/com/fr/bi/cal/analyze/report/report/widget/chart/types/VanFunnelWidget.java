@@ -10,10 +10,6 @@ import com.fr.json.JSONObject;
  */
 public class VanFunnelWidget extends VanChartWidget{
 
-    public JSONArray createSeries(JSONObject data) throws JSONException {
-        return this.createXYSeries(data);
-    }
-
     protected String categoryKey(){
         return "name";
     }

@@ -59,9 +59,11 @@ public abstract class VanChartWidget extends TableWidget {
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
     private HashMap<String, String> regionIdMap = new HashMap<String, String>();
 
-    public abstract JSONArray createSeries(JSONObject data) throws JSONException;
-
     public abstract String getSeriesType(String dimensionID);
+
+    public JSONArray createSeries(JSONObject data) throws Exception{
+        return this.createXYSeries(data);
+    }
 
     protected boolean isStacked(String dimensionID){
         return false;
@@ -465,7 +467,7 @@ public abstract class VanChartWidget extends TableWidget {
         return "y";
     }
 
-    protected JSONArray createXYSeries(JSONObject originData) throws JSONException{
+    protected JSONArray createXYSeries(JSONObject originData) throws Exception{
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
