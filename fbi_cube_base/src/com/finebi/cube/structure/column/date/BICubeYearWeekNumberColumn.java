@@ -9,7 +9,7 @@ import com.fr.bi.stable.constant.DateConstant;
 
 /**
  * Created by wang on 2017/3/28.
- * 年周数
+ * 年-周数
  */
 public class BICubeYearWeekNumberColumn extends BICubeDateSubColumn<String> {
     public BICubeYearWeekNumberColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {

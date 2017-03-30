@@ -9,7 +9,7 @@ import com.fr.bi.stable.constant.DateConstant;
 
 /**
  * This class created on 2017/03/28
- * 小时
+ * 小时0-23
  * @author wang
  */
 public class BICubeHourColumn extends BICubeDateSubColumn<Integer> {

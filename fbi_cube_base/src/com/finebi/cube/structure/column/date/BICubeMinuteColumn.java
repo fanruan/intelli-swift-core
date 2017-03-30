@@ -9,7 +9,7 @@ import com.fr.bi.stable.constant.DateConstant;
 
 /**
  * This class created on 2017/03/28
- * 分
+ * 分0-59
  * @author wang
  */
 public class BICubeMinuteColumn extends BICubeDateSubColumn<Integer> {

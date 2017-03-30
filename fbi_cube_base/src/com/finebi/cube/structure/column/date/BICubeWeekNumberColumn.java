@@ -8,7 +8,7 @@ import com.fr.bi.stable.constant.DateConstant;
 
 /**
  * This class created on 2017/03/28
- * 周数
+ * 周数（一年中的第几周）
  * @author wang
  */
 public class BICubeWeekNumberColumn extends BICubeDateSubColumn<Integer> {

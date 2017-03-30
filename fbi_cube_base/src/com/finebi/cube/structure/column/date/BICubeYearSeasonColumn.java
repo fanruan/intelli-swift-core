@@ -9,7 +9,7 @@ import com.fr.bi.stable.constant.DateConstant;
 
 /**
  * Created by wang on 2017/3/28.
- * 年季度
+ * 年-季度
  */
 public class BICubeYearSeasonColumn extends BICubeDateSubColumn<String> {
     public BICubeYearSeasonColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {

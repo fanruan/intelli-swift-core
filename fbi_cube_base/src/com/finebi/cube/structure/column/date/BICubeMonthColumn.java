@@ -8,7 +8,7 @@ import com.fr.bi.stable.constant.DateConstant;
 
 /**
  * This class created on 2016/3/30.
- *  月份
+ *  月份1-12
  * @author Connery
  * @since 4.0
  */
