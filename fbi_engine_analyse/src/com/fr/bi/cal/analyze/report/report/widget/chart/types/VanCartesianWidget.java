@@ -129,7 +129,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             format += (scaleUnit + unit);
         }
 
-        return String.format("function(){FR.contentFormat(arguments[0], %s)}", format);
+        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
     }
 
     //todo 坐标轴标题和数量级，单位构成的后缀

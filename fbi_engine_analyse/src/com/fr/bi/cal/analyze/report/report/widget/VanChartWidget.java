@@ -198,7 +198,8 @@ public abstract class VanChartWidget extends TableWidget {
             widgetBg = StringUtils.isBlank(widgetBg) ? WHITE : widgetBg;
         }
 
-        tooltip.put("padding", 10).put("backgroundColor", widgetBg).put("borderRadius", 2).put("shadow", true)
+        tooltip.put("enabled", true).put("animation", true).put("padding", 10).put("backgroundColor", widgetBg)
+                .put("borderRadius", 2).put("borderWidth", 0).put("shadow", true)
                 .put("style", JSONObject.create()
                         .put("color", this.isDarkColor(widgetBg) ? "#FFFFFF" : "#1A1A1A")
                         .put("fontSize", "14px").put("fontFamily", "Verdana"));
@@ -415,7 +416,7 @@ public abstract class VanChartWidget extends TableWidget {
             format += (scaleUnit + unit);
         }
 
-        return String.format("function(){FR.contentFormat(arguments[0], %s)}", format);
+        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
     }
 
     private void formatSeriesTooltipFormat(JSONObject options) throws Exception{
@@ -428,9 +429,16 @@ public abstract class VanChartWidget extends TableWidget {
             JSONObject ser = series.getJSONObject(i);
             String dimensionID = ser.optString("dimensionID");
 
-            ser.put("tooltip", new JSONObject(tooltip.toString())
-                    .put("valueFormat", this.tooltipValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID))));
+            JSONObject formatter = JSONObject.create();
+
+            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID)));
+
+            ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
+    }
+
+    protected String getTooltipIdentifier(){
+        return "${CATEGORY}${SERIES}${VALUE}";
     }
 
     private void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
