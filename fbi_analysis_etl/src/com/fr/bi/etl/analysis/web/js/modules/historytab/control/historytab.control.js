@@ -39,6 +39,13 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         return model.getIndexByValue(v);
     },
 
+    /**
+     * historyTab中实际保存的items(不包括新增的正在编辑的那个)
+     */
+    getSavedItems: function(widget, model){
+        return model.get(ETLCst.ITEMS);
+    },
+
     checkBeforeSave : function (table, widget, model) {
         var v = this._getTabButtonGroup(widget).getValue()[0];
         var position = model.getIndexByValue(v);
