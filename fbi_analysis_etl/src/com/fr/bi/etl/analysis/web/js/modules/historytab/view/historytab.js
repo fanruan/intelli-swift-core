@@ -93,7 +93,7 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
     isCurrentTheLastOperator: function(){
         var v = this.tabButton.getValue()[0];
         var position = this.controller.getIndexByValue(v);
-        return position === this.tabButton.getAllButtons().length - 1;
+        return position === this.controller.getSavedItems().length - 1;
     },
 
     _createTabs : function(v) {
