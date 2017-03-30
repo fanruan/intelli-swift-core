@@ -221,9 +221,9 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         JSONObject options = super.createOptions(globalStyle, data);
 
         options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable"))
-                .put("style", this.defaultFont())).put("borderColor", "#dddddd").put("borderWidth", 1);
+                .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
 
-        if(options.optBoolean("showZoom")){
+        if(settings.optBoolean("showZoom")){
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)));
         }
 
