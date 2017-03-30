@@ -78,7 +78,7 @@ public class DateConstant {
     public static final class CALENDAR {
 
         public static class WEEK {
-
+            public final static int SUNDAY_7 = 7;
             public final static int SUNDAY = Calendar.SUNDAY;
 
             public final static int MONDAY = Calendar.MONDAY;

@@ -64,7 +64,7 @@ public class ValueConverterFactory {
         @Override
         public Integer result2Value(Long t) {
             int week = BITimeUtils.getFieldFromTime(t, Calendar.DAY_OF_WEEK) - 1;
-            return week == 0 ? 7 : week;
+            return week == 0 ? DateConstant.CALENDAR.WEEK.SUNDAY_7: week;
         }
     };
     private static final ValueConverter<Long, Long> YMD = new ValueConverter<Long, Long>() {

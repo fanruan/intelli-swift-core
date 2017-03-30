@@ -127,13 +127,21 @@ public final class BIColumnKey implements BIKey {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BIColumnKey)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BIColumnKey)) {
+            return false;
+        }
 
         BIColumnKey that = (BIColumnKey) o;
 
-        if (columnName != null ? !columnName.equals(that.columnName) : that.columnName != null) return false;
-        if (columnType != null ? !columnType.equals(that.columnType) : that.columnType != null) return false;
+        if (columnName != null ? !columnName.equals(that.columnName) : that.columnName != null) {
+            return false;
+        }
+        if (columnType != null ? !columnType.equals(that.columnType) : that.columnType != null) {
+            return false;
+        }
         return !(columnSubType != null ? !columnSubType.equals(that.columnSubType) : that.columnSubType != null);
 
     }
