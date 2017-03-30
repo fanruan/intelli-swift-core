@@ -55,6 +55,7 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int STYLE_NORMAL = 1; //普通风格
     private static final int STYLE_GRADUAL = 2; //渐变风格
 
+    private String requestURL = StringUtils.EMPTY;
 
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
     private HashMap<String, String> regionIdMap = new HashMap<String, String>();
@@ -181,6 +182,8 @@ public abstract class VanChartWidget extends TableWidget {
 
             vjo.put(BIReportConstant.REGION.TARGET1, ja);
         }
+
+        this.requestURL = jo.optString("requestURL");
 
         super.parseJSON(jo, userId);
     }
@@ -599,6 +602,10 @@ public abstract class VanChartWidget extends TableWidget {
         plotOptions.put("animation", false);
         chartOptions.put("plotOptions", plotOptions);
         return chartOptions;
+    }
+
+    protected String getRequestURL(){
+        return this.requestURL;
     }
 
 }
