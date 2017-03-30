@@ -410,9 +410,18 @@ public abstract class VanChartWidget extends TableWidget {
         }
     }
 
+    protected String categoryKey(){
+        return "x";
+    }
+
+    protected String valueKey(){
+        return "y";
+    }
+
     protected JSONArray createXYSeries(JSONObject originData) throws JSONException{
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         if (originData.has("t")) {//有列表头，多系列
             JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
             JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
@@ -426,7 +435,7 @@ public abstract class VanChartWidget extends TableWidget {
                     JSONObject lObj = leftC.getJSONObject(j);
                     String x = lObj.getString("n");
                     double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0);
-                    data.put(JSONObject.create().put("x", x).put("y", y / numberScale));
+                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y / numberScale));
                 }
                 JSONObject ser = JSONObject.create().put("data", data).put("name", name)
                         .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[i]);
@@ -446,7 +455,7 @@ public abstract class VanChartWidget extends TableWidget {
                     JSONObject lObj = children.getJSONObject(j);
                     String x = lObj.getString("n");
                     double y = lObj.getJSONArray("s").getDouble(i) / numberScale;
-                    data.put(JSONObject.create().put("x", x).put("y", y));
+                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
                 }
                 JSONObject ser = JSONObject.create().put("data", data).put("name", id)
                         .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
