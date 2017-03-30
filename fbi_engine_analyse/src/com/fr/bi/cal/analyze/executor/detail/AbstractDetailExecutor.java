@@ -137,7 +137,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             }
             if (chartSetting != null) {
                 JSONObject settings = chartSetting.getSettings();
-                numLevel = settings.optInt("num_level", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
+                numLevel = settings.optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
                 v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
             }
 
@@ -190,7 +190,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             }
             if (chartSetting != null) {
                 JSONObject settings = chartSetting.getSettings();
-                int numLevel = settings.optInt("num_level", 0);
+                int numLevel = settings.optInt("numLevel", 0);
                 String unit = settings.optString("unit", StringUtils.EMPTY);
                 String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
                 if (!ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY)) {
