@@ -7,6 +7,7 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
+import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
@@ -24,8 +25,6 @@ import java.util.List;
  * Created by User on 2016/4/25.
  */
 public abstract class VanChartWidget extends TableWidget {
-
-    private static final int STYLE_GRADUAL = 2;
 
     private static final double RED_DET = 0.299;
     private static final double GREEN_DET = 0.587;
@@ -51,6 +50,10 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int TARGET_BASE = 10000;
 
     private static final String PERCENT_SYMBOL = "%";
+    private static final String WHITE = "#ffffff";
+
+    private static final int STYLE_NORMAL = 1; //普通风格
+    private static final int STYLE_GRADUAL = 2; //渐变风格
 
 
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
@@ -180,7 +183,7 @@ public abstract class VanChartWidget extends TableWidget {
         super.parseJSON(jo, userId);
     }
 
-    public JSONObject createPlotOptions(BISessionProvider session, JSONObject settings) throws Exception{
+    public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception{
 
         JSONObject plotOptions = JSONObject.create();
 
@@ -188,8 +191,12 @@ public abstract class VanChartWidget extends TableWidget {
 
         //tooltip的默认配置
         JSONObject tooltip = JSONObject.create();
-        JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
-        String widgetBg = reportSetting.optJSONObject("globalStyle").optJSONObject("widgetBackground").optString("value");
+
+        String widgetBg = "#ffffff";
+        if(globalStyle.has("widgetBackground")){
+            widgetBg = globalStyle.optJSONObject("widgetBackground").optString("value");
+            widgetBg = StringUtils.isBlank(widgetBg) ? WHITE : widgetBg;
+        }
 
         tooltip.put("padding", 10).put("backgroundColor", widgetBg).put("borderRadius", 2).put("shadow", true)
                 .put("style", JSONObject.create()
@@ -299,26 +306,26 @@ public abstract class VanChartWidget extends TableWidget {
 
         JSONObject data = super.createDataJSON(session).getJSONObject("data");
 
-        return this.createOptions(session, data);
+        JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
+        JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
+
+        return this.createOptions(globalStyle, data);
     }
 
-    public JSONObject createOptions(BISessionProvider session, JSONObject data) throws Exception{
+    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getDetailChartSetting();
+        JSONObject plateConfig = BIConfUtils.getPlateConfig();
 
         options.put("chartType", this.getSeriesType(StringUtils.EMPTY));
 
-        if(settings.has("chartColor")){
-            options.put("colors", settings.getJSONArray("chartColor"));
-        }
+        options.put("colors", this.parseColors(settings, globalStyle, plateConfig));
 
-        if(settings.optInt("chartStyle") == STYLE_GRADUAL){
-            options.put("style", "gradual");
-        }
+        options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
 
         options.put("legend", this.parseLegend(settings));
 
-        options.put("plotOptions", this.createPlotOptions(session, settings));
+        options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
 
         options.put("series",  this.createSeries(data));
 
@@ -328,6 +335,38 @@ public abstract class VanChartWidget extends TableWidget {
         this.formatSeriesDataLabelFormat(options);
 
         return options;
+    }
+
+    private JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception{
+
+        if(settings.has("chartColor")){
+            return settings.getJSONArray("chartColor");
+        } else if (globalStyle.has("chartColor")) {
+            return settings.getJSONArray("chartColor");
+        }else if(plateConfig.has("defaultColor")){
+            String key = plateConfig.optString("defaultColor");
+            JSONArray styleList = plateConfig.optJSONArray("styleList");
+            for(int i = 0, len = styleList.length(); i < len; i++){
+                JSONObject predefinedStyle = styleList.getJSONObject(i);
+                if(key == predefinedStyle.optString("value")){
+                    return predefinedStyle.optJSONArray("colors");
+                }
+            }
+        }
+
+        return JSONArray.create().put("#5caae4").put("#70cc7f").put( "#ebbb67").put("#e97e7b").put("#6ed3c9");
+    }
+
+    private String parseStyle(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws JSONException{
+        int style = STYLE_NORMAL;
+        if(settings.has("chartStyle")){
+            style = settings.optInt("chartStyle");
+        }else if(globalStyle.has("chartStyle")){
+            style = globalStyle.optInt("chartStyle");
+        }else if(plateConfig.has("chartStyle")){
+            style = plateConfig.optInt("chartStyle");
+        }
+        return style == STYLE_GRADUAL ? "gradual" : "normal";
     }
 
     protected String tooltipValueFormat(BINumberTarget dimension){
@@ -426,8 +465,8 @@ public abstract class VanChartWidget extends TableWidget {
             JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
             JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
             boolean isStacked = this.isStacked(targetIDs[0]);
+            double numberScale = this.numberScale(targetIDs[0]);
             for (int i = 0; i < topC.length(); i++) {
-                double numberScale = this.numberScale(targetIDs[i]);
                 JSONObject tObj = topC.getJSONObject(i);
                 String name = tObj.getString("n");
                 JSONArray data = JSONArray.create();
@@ -438,7 +477,7 @@ public abstract class VanChartWidget extends TableWidget {
                     data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y / numberScale));
                 }
                 JSONObject ser = JSONObject.create().put("data", data).put("name", name)
-                        .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[i]);
+                        .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
                 if(isStacked){
                     ser.put("stacked", targetIDs[0]);
                 }

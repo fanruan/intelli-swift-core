@@ -14,8 +14,8 @@ public class VanGisWidget extends VanChartWidget{
     private static final String TILE_LAYER = "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}";
     private static final String ATTRIBUTION = "<a><img src=\\\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\\\">&copy; 2016 AutoNavi</a>";
 
-    public JSONObject createOptions(BISessionProvider session, JSONObject data) throws Exception{
-        JSONObject options = super.createOptions(session, data);
+    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
+        JSONObject options = super.createOptions(globalStyle, data);
 
         options.put("geo", JSONObject.create().put("tileLayer", TILE_LAYER).put("attribution", ATTRIBUTION));
 
