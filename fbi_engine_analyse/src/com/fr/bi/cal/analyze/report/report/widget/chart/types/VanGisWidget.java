@@ -41,7 +41,7 @@ public class VanGisWidget extends VanChartWidget{
             series.put(ser);
         }
 
-        return JSONArray.create();
+        return series;
     }
 
     public String getSeriesType(String dimensionID){
