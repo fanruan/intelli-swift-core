@@ -38,7 +38,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();
-    private String sort_target;
+    private String sortTarget;
     private BITableRelationPath selfToSelfRelationPath;
 
     @Override
@@ -73,7 +73,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public String getSortTarget() {
-        return sort_target;
+        return sortTarget;
     }
 
     @Override
@@ -99,8 +99,8 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
             sortJo.put("type", BISortUtils.getSortTypeByDimensionType(sortJo.optInt("type", BIReportConstant.SORT.NONE), jo.optInt("type")));
             this.sort = BISortFactory.parseSort(sortJo);
             JSONObject s = jo.getJSONObject("sort");
-            if (s.has("sort_target")) {
-                this.sort_target = s.optString("sort_target");
+            if (s.has("sortTarget")) {
+                this.sortTarget = s.optString("sortTarget");
             }
         }
         if (jo.has("filterValue")) {
@@ -145,7 +145,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         if (filter != null ? !ComparatorUtils.equals(filter, that.filter) : that.filter != null) {
             return false;
         }
-        if (sort_target != null ? !ComparatorUtils.equals(sort_target, that.sort_target) : that.sort_target != null) {
+        if (sortTarget != null ? !ComparatorUtils.equals(sortTarget, that.sortTarget) : that.sortTarget != null) {
             return false;
         }
         if (group != null ? !ComparatorUtils.equals(group, that.group) : that.group != null) {
@@ -160,7 +160,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (sort_target != null ? sort_target.hashCode() : 0);
+        result = 31 * result + (sortTarget != null ? sortTarget.hashCode() : 0);
         result = 31 * result + (column != null ? column.hashCode() : 0);
         result = 31 * result + (filter != null ? filter.hashCode() : 0);
         result = 31 * result + (group != null ? group.hashCode() : 0);
@@ -175,8 +175,8 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
             res.addAll(this.filter.getUsedTargets());
         }
         res = res == null ? new ArrayList<String>() : res;
-        if (sort_target != null) {
-            res.add(sort_target);
+        if (sortTarget != null) {
+            res.add(sortTarget);
         }
         res.remove(id);
         return res;
@@ -185,7 +185,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
     @Override
     public boolean useTargetSort() {
         return (getSortType() == BIReportConstant.SORT.ASC || getSortType() == BIReportConstant.SORT.DESC
-                || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) && sort_target != null && !ComparatorUtils.equals(sort_target, id);
+                || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) && sortTarget != null && !ComparatorUtils.equals(sortTarget, id);
     }
 
 
