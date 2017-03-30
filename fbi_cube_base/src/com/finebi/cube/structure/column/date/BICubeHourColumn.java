@@ -6,28 +6,25 @@ import com.finebi.cube.structure.column.BICubeIntegerColumn;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 
-/**
- * This class created on 2016/3/30.
- *  月份
- * @author Connery
- * @since 4.0
- */
-public class BICubeMonthColumn extends BICubeDateSubColumn<Integer> {
 
-    public BICubeMonthColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
+/**
+ * This class created on 2017/03/28
+ * 小时
+ * @author wang
+ */
+public class BICubeHourColumn extends BICubeDateSubColumn<Integer> {
+    public BICubeHourColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
         super(discovery, currentLocation, hostDataColumn);
     }
 
     @Override
     protected Integer convertDate(Long date) {
-        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.MONTH).result2Value(date) : null;
-
+        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.HOUR).result2Value(date) : null;
     }
 
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
         selfColumnEntity = new BICubeIntegerColumn(discovery, currentLocation);
-
     }
 
     public int getGroupValue(int position) {

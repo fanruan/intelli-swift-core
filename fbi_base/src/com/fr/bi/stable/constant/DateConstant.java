@@ -21,16 +21,21 @@ public class DateConstant {
         public static final String FIELDNAME = "__current_time_is_now__";
 
         public static final int YEAR = 0;
-
         public static final int SEASON = 1;
-
         public static final int MONTH = 2;
-
         public static final int WEEK = 3;
-
         public static final int DAY = 4;
-
         public static final int YMD = 5;
+        public static final int HOUR = 6;
+        public static final int MINUTE = 7;
+        public static final int SECOND = 8;
+        public static final int WEEKNUMBER = 9;
+        public static final int YEAR_MONTH = 10;
+        public static final int YEAR_SEASON = 11;
+        public static final int YEAR_WEEKNUMBER = 12;
+        public static final int YEAR_MONTH_DAY_HOUR = 13;
+        public static final int YEAR_MONTH_DAY_HOUR_MINUTE = 14;
+        public static final int YEAR_MONTH_DAY_HOUR_MINUTE_SECOND = 15;
     }
 
     public static final class DATEDELTRA {

@@ -23,21 +23,35 @@ public final class BIColumnKey implements BIKey {
     private static Set<String> columnSubTypeSet = new HashSet<String>();
     private static Map<Integer, String> fieldType2ColumnType = new HashMap<Integer, String>();
 
-    public static String STRING_COLUMN_TYPE = "_fineBI_string_column_";
-    public static String LONG_COLUMN_TYPE = "_fineBI_long_column_";
-    public static String DOUBLE_COLUMN_TYPE = "_fineBI_double_column_";
-    public static String DATA_COLUMN_TYPE = "_fineBI_data_column_";
-    public static String ROW_COLUMN_TYPE = "_fineBI_row_column_";
+    public static final String STRING_COLUMN_TYPE = "_fineBI_string_column_";
+    public static final String LONG_COLUMN_TYPE = "_fineBI_long_column_";
+    public static final String DOUBLE_COLUMN_TYPE = "_fineBI_double_column_";
+    public static final String DATA_COLUMN_TYPE = "_fineBI_data_column_";
+    public static final String ROW_COLUMN_TYPE = "_fineBI_row_column_";
 
-    public static Integer ROW_COLUMN = -1;
+    public static final Integer ROW_COLUMN = -1;
 
-    public static String EMPTY_SUB_TYPE = "_fineBI_sub_empty";
-    public static String DATA_SUB_TYPE_YEAR = "_fineBI_sub_year_column_";
-    public static String DATA_SUB_TYPE_DAY = "_fineBI_sub_day_column_";
-    public static String DATA_SUB_TYPE_MONTH = "_fineBI_sub_month_column_";
-    public static String DATA_SUB_TYPE_SEASON = "_fineBI_sub_season_column_";
-    public static String DATA_SUB_TYPE_WEEK = "_fineBI_sub_week_column_";
-    public static String DATA_SUB_TYPE_YEAR_MONTH_DAY = "_fineBI_sub_year_month_day_column_";
+    public static final String EMPTY_SUB_TYPE = "_fineBI_sub_empty";
+    public static final String DATA_SUB_TYPE_YEAR = "_fineBI_sub_year_column_";
+    //每月的日期数1-31
+    public static final String DATA_SUB_TYPE_DAY = "_fineBI_sub_day_column_";
+    public static final String DATA_SUB_TYPE_MONTH = "_fineBI_sub_month_column_";
+    public static final String DATA_SUB_TYPE_SEASON = "_fineBI_sub_season_column_";
+    //星期几（1-7）
+    public static final String DATA_SUB_TYPE_WEEK = "_fineBI_sub_week_column_";
+    public static final String DATA_SUB_TYPE_YEAR_MONTH_DAY = "_fineBI_sub_year_month_day_column_";
+    public static final String DATA_SUB_TYPE_YEAR_MONTH = "_fineBI_sub_year_month_column_";
+    public static final String DATA_SUB_TYPE_YEAR_SEASON = "_fineBI_sub_year_season_column_";
+    public static final String DATA_SUB_TYPE_YEAR_WEEK_NUMBER = "_fineBI_sub_year_week_number_column_";
+
+    public static final String DATA_SUB_TYPE_HOUR = "_fineBI_sub_hour_column_";
+    public static final String DATA_SUB_TYPE_SECOND = "_fineBI_sub_second_column_";
+    public static final String DATA_SUB_TYPE_MINUTE = "_fineBI_sub_minute_column_";
+    //年周数
+    public static final String DATA_SUB_TYPE_WEEKNUMBER = "_fineBI_sub_week_number_column_";
+    public static final String DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE = "_fineBI_sub_year_month_day_hour_minute_column_";
+    public static final String DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR = "_fineBI_sub_year_month_day_hour_column_";
+    public static final String DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND = "_fineBI_sub_year_month_day_hour_minute_second_column_";
 
     static {
         columnTypeSet.add(STRING_COLUMN_TYPE);
@@ -65,6 +79,16 @@ public final class BIColumnKey implements BIKey {
         columnSubTypeSet.add(DATA_SUB_TYPE_SEASON);
         columnSubTypeSet.add(DATA_SUB_TYPE_WEEK);
         columnSubTypeSet.add(DATA_SUB_TYPE_YEAR_MONTH_DAY);
+        columnSubTypeSet.add(DATA_SUB_TYPE_YEAR_MONTH);
+        columnSubTypeSet.add(DATA_SUB_TYPE_YEAR_SEASON);
+        columnSubTypeSet.add(DATA_SUB_TYPE_YEAR_WEEK_NUMBER);
+        columnSubTypeSet.add(DATA_SUB_TYPE_HOUR);
+        columnSubTypeSet.add(DATA_SUB_TYPE_SECOND);
+        columnSubTypeSet.add(DATA_SUB_TYPE_MINUTE);
+        columnSubTypeSet.add(DATA_SUB_TYPE_WEEKNUMBER);
+        columnSubTypeSet.add(DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE);
+        columnSubTypeSet.add(DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR);
+        columnSubTypeSet.add(DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND);
 
 
     }
@@ -159,6 +183,17 @@ public final class BIColumnKey implements BIKey {
         result.add(BIDateColumnTool.generateWeek(field));
         result.add(BIDateColumnTool.generateYear(field));
         result.add(BIDateColumnTool.generateYearMonthDay(field));
+        result.add(BIDateColumnTool.generateYearMonth(field));
+        result.add(BIDateColumnTool.generateYearSeason(field));
+        result.add(BIDateColumnTool.generateYearWeekNumber(field));
+        result.add(BIDateColumnTool.generateHour(field));
+        result.add(BIDateColumnTool.generateSecond(field));
+        result.add(BIDateColumnTool.generateMinute(field));
+        result.add(BIDateColumnTool.generateWeekNumber(field));
+        result.add(BIDateColumnTool.generateYearWeekNumber(field));
+        result.add(BIDateColumnTool.generateYearMonthDayHourMinute(field));
+        result.add(BIDateColumnTool.generateYearMonthDayHour(field));
+        result.add(BIDateColumnTool.generateYearMonthDayHourMinuteSecond(field));
         return result;
 
     }

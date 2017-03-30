@@ -22,6 +22,9 @@ public class BIColumnKeyAdapter {
             case BIReportConstant.GROUP.MD:
                 columnKey = BIDateColumnTool.generateDay(field);
                 break;
+            case BIReportConstant.GROUP.D:
+                columnKey = BIDateColumnTool.generateDay(field);
+                break;
             case BIReportConstant.GROUP.S:
                 columnKey = BIDateColumnTool.generateSeason(field);
                 break;
@@ -33,6 +36,33 @@ public class BIColumnKeyAdapter {
                 break;
             case BIReportConstant.GROUP.YMDHMS:
                 columnKey = BIColumnKey.covertColumnKey(field);
+                break;
+            case BIReportConstant.GROUP.YM:
+                columnKey = BIDateColumnTool.generateYearMonth(field);
+                break;
+            case BIReportConstant.GROUP.YS:
+                columnKey = BIDateColumnTool.generateYearSeason(field);
+                break;
+            case BIReportConstant.GROUP.YW:
+                columnKey = BIDateColumnTool.generateYearWeekNumber(field);
+                break;
+            case BIReportConstant.GROUP.HOUR:
+                columnKey = BIDateColumnTool.generateHour(field);
+                break;
+            case BIReportConstant.GROUP.SECOND:
+                columnKey = BIDateColumnTool.generateSecond(field);
+                break;
+            case BIReportConstant.GROUP.MINUTE:
+                columnKey = BIDateColumnTool.generateMinute(field);
+                break;
+            case BIReportConstant.GROUP.YMDH:
+                columnKey = BIDateColumnTool.generateYearMonthDayHour(field);
+                break;
+            case BIReportConstant.GROUP.YMDHM:
+                columnKey = BIDateColumnTool.generateYearMonthDayHourMinute(field);
+                break;
+            case BIReportConstant.GROUP.WEEK_COUNT:
+                columnKey = BIDateColumnTool.generateWeekNumber(field);
                 break;
             default:
                 throw BINonValueUtils.beyondControl();
