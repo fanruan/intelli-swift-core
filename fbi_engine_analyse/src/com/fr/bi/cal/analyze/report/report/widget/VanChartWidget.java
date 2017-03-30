@@ -11,7 +11,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
-import com.fr.json.JSONFunction;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
@@ -38,6 +37,11 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int RIGHT = 3;
     private static final int BOTTOM = 4;
     private static final int LEFT = 5;
+
+    //标签位置
+    private static final int POSITION_INNER = 1;
+    private static final int POSITION_OUTER = 2;
+    private static final int POSITION_CENTER = 3;
 
     //气泡图和散点图的指标个数
     private static final int BUBBLE_COUNT = 3;
@@ -176,7 +180,7 @@ public abstract class VanChartWidget extends TableWidget {
         super.parseJSON(jo, userId);
     }
 
-    public JSONObject createPlotOptions(BISessionProvider session) throws Exception{
+    public JSONObject createPlotOptions(BISessionProvider session, JSONObject settings) throws Exception{
 
         JSONObject plotOptions = JSONObject.create();
 
@@ -194,7 +198,54 @@ public abstract class VanChartWidget extends TableWidget {
 
         plotOptions.put("tooltip", tooltip);
 
+
+        plotOptions.put("dataLabels", this.createDataLabels(settings));
+
         return plotOptions;
+    }
+
+    //默认是分类，系列，值的配置
+    protected JSONObject createDataLabels(JSONObject settings) throws JSONException{
+
+        boolean showDataLabel = settings.optBoolean("showDataLabel", false);
+
+        JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel);
+
+        if(showDataLabel){
+
+            JSONObject dataLabelSetting = settings.has("dataLabelSetting") ? settings.optJSONObject("dataLabelSetting") : this.defaultDataLabelSetting();
+
+            JSONObject formatter = JSONObject.create();
+            String identifier = "";
+
+            if(dataLabelSetting.optBoolean("showCategoryName")){
+                identifier += "${CATEGORY}";
+            }
+
+            if(dataLabelSetting.optBoolean("showSeriesName")){
+                identifier += "${SERIES}";
+            }
+
+            if(dataLabelSetting.optBoolean("showValue")){
+                identifier += "${VALUE}";
+            }
+
+            if(dataLabels.optBoolean("showPercentage")){
+                identifier += "${PERCENT}";
+            }
+
+            formatter.put("identifier", identifier).put("style", dataLabelSetting.optJSONObject("textStyle"));
+        }
+
+        return dataLabels;
+    }
+
+    private JSONObject defaultDataLabelSetting() throws JSONException{
+
+        return JSONObject.create().put("showCategoryName", true)
+                .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
+                .put("position", POSITION_OUTER).put("textStyle", defaultFont());
+
     }
 
     private boolean isDarkColor(String colorStr){
@@ -267,12 +318,14 @@ public abstract class VanChartWidget extends TableWidget {
 
         options.put("legend", this.parseLegend(settings));
 
-        options.put("plotOptions", this.createPlotOptions(session));
+        options.put("plotOptions", this.createPlotOptions(session, settings));
 
         options.put("series",  this.createSeries(data));
 
         //处理格式的问题
         this.formatSeriesTooltipFormat(options);
+
+        this.formatSeriesDataLabelFormat(options);
 
         return options;
     }
@@ -338,6 +391,22 @@ public abstract class VanChartWidget extends TableWidget {
 
             ser.put("tooltip", new JSONObject(tooltip.toString())
                     .put("valueFormat", this.tooltipValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID))));
+        }
+    }
+
+    private void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
+        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
+
+        if(dataLabels.optBoolean("enabled")){
+            JSONArray series = options.optJSONArray("series");
+
+            for(int i = 0, len = series.length(); i < len; i++){
+                JSONObject ser = series.getJSONObject(i);
+                String dimensionID = ser.optString("dimensionID");
+
+                ser.put("dataLabels", new JSONObject(dataLabels.toString())
+                        .put("valueFormat", this.dataLabelValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID))));
+            }
         }
     }
 

@@ -174,11 +174,9 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return series;
     }
 
-    public JSONObject createPlotOptions(BISessionProvider session) throws Exception{
+    public JSONObject createPlotOptions(BISessionProvider session, JSONObject settings) throws Exception{
 
-        JSONObject settings = this.getDetailChartSetting();
-
-        JSONObject plotOptions = super.createPlotOptions(session);
+        JSONObject plotOptions = super.createPlotOptions(session, settings);
 
         plotOptions.put("inverted", this.isInverted());
 
