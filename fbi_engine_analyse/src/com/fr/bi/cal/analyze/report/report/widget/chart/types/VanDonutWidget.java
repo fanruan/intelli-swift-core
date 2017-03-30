@@ -9,8 +9,8 @@ import com.fr.json.JSONObject;
  */
 public class VanDonutWidget extends VanPieWidget{
 
-    public JSONObject createPlotOptions(BISessionProvider session) throws Exception {
-        JSONObject plotOptions = super.createPlotOptions(session);
+    public JSONObject createPlotOptions(BISessionProvider session, JSONObject settings) throws Exception {
+        JSONObject plotOptions = super.createPlotOptions(session, settings);
 
         plotOptions.put("innerRadius", "50%");
 

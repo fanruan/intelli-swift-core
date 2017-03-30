@@ -14,6 +14,14 @@ public class VanFunnelWidget extends VanChartWidget{
         return this.createXYSeries(data);
     }
 
+    protected String categoryKey(){
+        return "name";
+    }
+
+    protected String valueKey(){
+        return "value";
+    }
+
     public String getSeriesType(String dimensionID){
         return "funnel";
     }
