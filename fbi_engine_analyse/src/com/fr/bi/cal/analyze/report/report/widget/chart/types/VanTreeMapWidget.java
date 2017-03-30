@@ -14,8 +14,9 @@ public class VanTreeMapWidget extends VanChartWidget{
     public JSONArray createSeries(JSONObject originData) throws JSONException {
 
         JSONArray series = JSONArray.create();
+        String[] targetIDs = this.getUsedTargetID();
 
-        if(!originData.has("t")){
+        if(!originData.has("t") || targetIDs.length == 0){
             return series;
         }
 
@@ -41,7 +42,7 @@ public class VanTreeMapWidget extends VanChartWidget{
             data.put(JSONObject.create().put("name", tObj.getString("n")).put("value", sum).put("children", children));
         }
 
-        return series.put(JSONObject.create().put("data", data).put("name", StringUtils.EMPTY));
+        return series.put(JSONObject.create().put("data", data).put("name", StringUtils.EMPTY).put("dimensionID", targetIDs[0]));
     }
 
     public String getSeriesType(String dimensionID){
