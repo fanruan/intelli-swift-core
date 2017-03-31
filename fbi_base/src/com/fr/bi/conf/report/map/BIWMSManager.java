@@ -83,4 +83,8 @@ public class BIWMSManager extends XMLFileManager {
     public Map<String, JSONObject> getWMSInfo(){
         return gisMap;
     }
+
+    public JSONObject getWMSInfo(String key){
+        return gisMap.get(key);
+    }
 }

@@ -66,6 +66,10 @@ public abstract class VanChartWidget extends TableWidget {
         return this.createXYSeries(data);
     }
 
+    protected String getLegendType(){
+        return "legend";
+    }
+
     protected boolean isStacked(String dimensionID){
         return false;
     }
@@ -329,7 +333,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
 
-        options.put("legend", this.parseLegend(settings));
+        options.put(this.getLegendType(), this.parseLegend(settings));
 
         options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
 
@@ -343,7 +347,7 @@ public abstract class VanChartWidget extends TableWidget {
         return options;
     }
 
-    private JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception{
+    protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception{
 
         if(settings.has("chartColor")){
             return settings.getJSONArray("chartColor");
