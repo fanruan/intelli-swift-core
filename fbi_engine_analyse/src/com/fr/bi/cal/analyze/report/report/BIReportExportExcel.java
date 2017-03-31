@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.report.BIReportor;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
@@ -97,9 +98,7 @@ public class BIReportExportExcel {
             for (BIWidget widget : widgets) {
                 if (widgetHasData(widget)) {
                     if (widget instanceof TableWidget) {
-                        polyECBlock.addFloatElement(renderChartPic(widget));
-                    } else {
-                        polyECBlock.addFloatElement(renderChartPic(widget));
+                        polyECBlock.addFloatElement(renderPicture(widget));
                     }
                 } else {
                     polyECBlock.addFloatElement(renderDefaultChartPic(widget));
@@ -130,6 +129,35 @@ public class BIReportExportExcel {
         createOtherSheets(wb);
 
         return wb.execute4BI(session.getParameterMap4Execute());
+    }
+
+    private FloatElement renderPicture(BIWidget widget) throws Exception {
+        JSONObject jo = JSONObject.create();
+        try {
+            jo = widget.createDataJSON(session);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            jo.put("error", BIPrintUtils.outputException(e));
+        }
+        JSONObject options;
+        String key;
+        if (widget instanceof VanChartWidget) {
+            options = jo;
+            key = "vanChartOptions";
+        } else {
+            options = ((TableWidget) widget).getPostOptions(sessionID);
+            key = "tableOptions";
+        }
+        Rectangle rect = widget.getRect();
+        String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + rect.getWidth() +
+                ", height:" + rect.getHeight() + "}").toString();
+        String base64 = null;
+        try {
+            base64 = postMessage(postOptions);
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return createFloatElement(base64Decoder(base64), rect);
     }
 
     private FloatElement renderContentWidget(JSONObject wjo) throws JSONException {
@@ -190,27 +218,6 @@ public class BIReportExportExcel {
         }
 
         return createFloatElement(base64Decoder(base64), getWidgetRect(bounds));
-    }
-
-    private FloatElement renderChartPic(BIWidget widget) throws Exception {
-        JSONObject jo = JSONObject.create();
-        try {
-            jo = widget.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionID));
-        } catch (Exception exception) {
-            BILoggerFactory.getLogger().error(exception.getMessage(), exception);
-            jo.put("error", BIPrintUtils.outputException(exception));
-        }
-        JSONObject options = ((TableWidget) widget).getPostOptions(sessionID);
-        Rectangle rect = widget.getRect();
-        String postOptions = new JSONObject("{options:" + options + ", width:" + rect.getWidth() +
-                ", height:" + rect.getHeight() + "}").toString();
-        String base64 = null;
-        try {
-            base64 = postMessage(postOptions);
-        } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-        return createFloatElement(base64Decoder(base64), rect);
     }
 
     private FloatElement renderDefaultChartPic(BIWidget widget) throws IOException, JSONException {
@@ -347,8 +354,7 @@ public class BIReportExportExcel {
         map.put(WidgetType.MULTI_AXIS_COMBINE_CHART, "/combine_m.png");
         map.put(WidgetType.FORCE_BUBBLE, "/bubble_force.png");
         map.put(WidgetType.GAUGE, "/gauge.png");
-        map.put(WidgetType.BUBBLE, "/bubble.png");
-        map.put(WidgetType.SCATTER, "/scatter.png");
+        map.put(WidgetType.DOT, "/bubble.png");
         map.put(WidgetType.MAP, "/map.png");
         map.put(WidgetType.GIS_MAP, "/map_gis.png");
         map.put(WidgetType.TABLE, "/table_group.png");

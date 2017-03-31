@@ -156,7 +156,7 @@ public class TreeLabelWidget extends BIAbstractWidget{
     private void parseSortFilter(JSONObject jo, long userId) throws Exception {
         if (jo.has("sort")) {
             JSONObject targetSort = (JSONObject) jo.get("sort");
-            this.targetSort = new NameObject(targetSort.getString("sort_target"), targetSort.getInt("type"));
+            this.targetSort = new NameObject(targetSort.getString("sortTarget"), targetSort.getInt("type"));
         }
 
         if (jo.has("filterValue")) {

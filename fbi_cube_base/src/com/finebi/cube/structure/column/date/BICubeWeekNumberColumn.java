@@ -6,26 +6,26 @@ import com.finebi.cube.structure.column.BICubeIntegerColumn;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 
-
 /**
- * This class created on 2016/3/30.
- * 日（1-31）
- * @author Connery
- * @since 4.0
+ * This class created on 2017/03/28
+ * 周数（一年中的第几周）
+ * @author wang
  */
-public class BICubeDayColumn extends BICubeDateSubColumn<Integer> {
-    public BICubeDayColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
+public class BICubeWeekNumberColumn extends BICubeDateSubColumn<Integer> {
+    public BICubeWeekNumberColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
         super(discovery, currentLocation, hostDataColumn);
     }
 
     @Override
     protected Integer convertDate(Long date) {
-        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.DAY).result2Value(date) : null;
+        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEKNUMBER).result2Value(date) : null;
+
     }
 
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
         selfColumnEntity = new BICubeIntegerColumn(discovery, currentLocation);
+
     }
 
     public int getGroupValue(int position) {

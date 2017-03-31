@@ -8,7 +8,7 @@ BI.AnalysisETLOperatorGroupPaneController = BI.inherit(BI.MVCController, {
         var view = model.get(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY)
         var dimensions = model.get(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY)
         BI.each(widget.regions, function (idx, region) {
-            region.getRegion().empty();
+            region.getRegion().populate();
             region.getRegion().element.droppable(widget.dropField(region));
             region.getRegion().element.sortable(widget.sortField(region));
         })
