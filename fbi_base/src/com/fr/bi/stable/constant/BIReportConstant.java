@@ -409,9 +409,7 @@ public class BIReportConstant {
         public static final int RECT_TREE = 0x27;       //矩形树图
         public static final int MULTI_PIE = 0x28;       //多层饼图
 
-        public static final int HEAT_MAP = 0x41;             //热力地图
-        public static final int PARETO = 0x42;           //帕累托图
-        public static final int DOT = 0x43;
+        public static final int DOT = 0x43;             //点图
 
 
         public static final int STRING = 0x20;            //文本控件
