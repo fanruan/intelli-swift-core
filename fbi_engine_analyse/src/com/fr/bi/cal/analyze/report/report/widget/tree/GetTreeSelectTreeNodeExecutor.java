@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -152,7 +153,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 try {
                     selectedValues = selectedValues.getJSONObject(thisStr);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }else{
                 break;
@@ -163,13 +164,13 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         try {
             childsLength = getChildCount(p);
         } catch (JSONException e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         if(selectedValues.length() == childsLength){
             try {
                 preSelectedValue.put(preStr,new JSONObject());
             } catch (JSONException e) {
-                e.printStackTrace();
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             return true;
         }else{
