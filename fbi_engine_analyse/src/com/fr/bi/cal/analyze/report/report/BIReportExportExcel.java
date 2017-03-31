@@ -354,8 +354,7 @@ public class BIReportExportExcel {
         map.put(WidgetType.MULTI_AXIS_COMBINE_CHART, "/combine_m.png");
         map.put(WidgetType.FORCE_BUBBLE, "/bubble_force.png");
         map.put(WidgetType.GAUGE, "/gauge.png");
-        map.put(WidgetType.BUBBLE, "/bubble.png");
-        map.put(WidgetType.SCATTER, "/scatter.png");
+        map.put(WidgetType.DOT, "/bubble.png");
         map.put(WidgetType.MAP, "/map.png");
         map.put(WidgetType.GIS_MAP, "/map_gis.png");
         map.put(WidgetType.TABLE, "/table_group.png");

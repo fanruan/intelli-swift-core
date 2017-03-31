@@ -398,10 +398,8 @@ public class BIReportConstant {
 
         public static final int DASHBOARD = 0x19;          //仪表盘
 
-        public static final int BUBBLE = 0x1a;            //气泡图
         public static final int FORCE_BUBBLE = 0x1b;      //力学气泡图
 
-        public static final int SCATTER = 0x1c;           //散点图
 
         public static final int RADAR = 0x1d;             //雷达图
         public static final int ACCUMULATE_RADAR = 0x1e;  //堆积雷达图
@@ -413,6 +411,7 @@ public class BIReportConstant {
 
         public static final int HEAT_MAP = 0x41;             //热力地图
         public static final int PARETO = 0x42;           //帕累托图
+        public static final int DOT = 0x43;
 
 
         public static final int STRING = 0x20;            //文本控件

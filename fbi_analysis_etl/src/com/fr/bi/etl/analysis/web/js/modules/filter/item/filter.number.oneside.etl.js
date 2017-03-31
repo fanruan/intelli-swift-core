@@ -89,7 +89,7 @@ BI.ETLNumberFilterOneSidePane = BI.inherit(BI.Widget, {
                                         {
                                             type : 'bi.label',
                                             width : self._constants.WIDTH,
-                                            text : BI.i18nText('BI-Value'),
+                                            text : BI.i18nText('BI-Basic_Value'),
                                             textAlign : 'left'
                                         },
                                         {
