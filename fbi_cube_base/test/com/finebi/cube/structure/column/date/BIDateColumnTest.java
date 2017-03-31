@@ -93,7 +93,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             BIColumnKey weekNumber = new BIColumnKey(DBFieldTestTool.generateDATE().getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_WEEKNUMBER);
             BICubeWeekNumberColumn weekNumberColumn = (BICubeWeekNumberColumn) managerService.getColumn(weekNumber);
             date.forceReleaseWriter();
-            System.out.println(ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEKNUMBER).result2Value(time));
             assertEquals(Integer.valueOf(16), weekNumberColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
             e.printStackTrace();
