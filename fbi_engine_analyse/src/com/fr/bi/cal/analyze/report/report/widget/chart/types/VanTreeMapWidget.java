@@ -11,7 +11,7 @@ import com.fr.stable.StringUtils;
  */
 public class VanTreeMapWidget extends VanChartWidget{
 
-    public JSONArray createSeries(JSONObject originData) throws JSONException {
+    public JSONArray createSeries(JSONObject originData) throws Exception {
 
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();

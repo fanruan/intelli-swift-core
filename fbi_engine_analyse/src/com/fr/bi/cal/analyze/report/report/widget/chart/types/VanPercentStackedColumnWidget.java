@@ -9,7 +9,7 @@ import com.fr.json.JSONObject;
  */
 public class VanPercentStackedColumnWidget extends VanStackedColumnWidget{
 
-    public JSONArray createSeries(JSONObject data) throws JSONException {
+    public JSONArray createSeries(JSONObject data) throws Exception {
         JSONArray series =  createXYSeries(data);
 
         for(int i = 0, len = series.length(); i < len; i++){
