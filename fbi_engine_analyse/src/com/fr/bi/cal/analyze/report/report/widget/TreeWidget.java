@@ -48,7 +48,7 @@ public class TreeWidget extends BIAbstractWidget {
     private String keyword;
     private String last_search_value;
     private String not_selected_value;
-    private String to_selected_value;
+    private String current_select_value;
     private String[] viewData;
     private BIDimension[] dimensions;
     private BusinessTable target;
@@ -180,8 +180,8 @@ public class TreeWidget extends BIAbstractWidget {
                 not_selected_value = treeJo.getString("not_selected_value");
             }
 
-            if (treeJo.has("to_selected_value")) {
-                to_selected_value = treeJo.getString("to_selected_value");
+            if (treeJo.has("current_select_value")) {
+                current_select_value = treeJo.getString("current_select_value");
             }
         }
 
@@ -251,7 +251,7 @@ public class TreeWidget extends BIAbstractWidget {
         GetTreeSelectTreeNodeExecutor executor = new GetTreeSelectTreeNodeExecutor(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
-        jo.put("to_selected_value", to_selected_value);
+        jo.put("current_select_value", current_select_value);
         jo.put("keyword", keyword);
         jo.put("selected_values", selected_values);
         jo.put("parent_values", parent_values);

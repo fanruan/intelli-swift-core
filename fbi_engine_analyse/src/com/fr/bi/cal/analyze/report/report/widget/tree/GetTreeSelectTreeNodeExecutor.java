@@ -34,8 +34,8 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
             notSelectedValueString = jo.getString("not_selected_value");
         }
 
-        if (jo.has("to_selected_value")) {
-            toSelectedValueString = jo.getString("to_selected_value");
+        if (jo.has("current_select_value")) {
+            toSelectedValueString = jo.getString("current_select_value");
         }
 
         if (jo.has("keyword")) {
@@ -124,7 +124,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         p[parent.length] = toSelectedValueString;
 
         List<String[]> result = new ArrayList<String[]>();
-        boolean finded = searchWhithSelectNode(parent.length + 1, floors, parent, toSelectedValueString, keyword, result);
+        boolean finded = searchWithSelectNode(parent.length + 1, floors, parent, toSelectedValueString, keyword, result);
         if(result.size()>0){
             int i;
             for(i=0;i<result.size();i++){
@@ -236,7 +236,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         return can;
     }
 
-    private boolean searchWhithSelectNode(int deep, int floor, String[] parents, String value, String keyword, List<String[]> result) throws JSONException {
+    private boolean searchWithSelectNode(int deep, int floor, String[] parents, String value, String keyword, List<String[]> result) throws JSONException {
 
         String[] newParents = new String[parents.length + 1];
         System.arraycopy(parents, 0, newParents, 0, parents.length);
@@ -262,7 +262,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         boolean can = false;
 
         for (int i = 0, len = vl.size(); i < len; i++) {
-            if (searchWhithSelectNode(deep + 1, floor, newParents, vl.get(i), keyword, result)) {
+            if (searchWithSelectNode(deep + 1, floor, newParents, vl.get(i), keyword, result)) {
                 can = true;
                 notSearch.add(vl.get(i));
             }
