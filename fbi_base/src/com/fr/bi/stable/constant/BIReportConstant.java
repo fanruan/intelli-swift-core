@@ -527,6 +527,8 @@ public class BIReportConstant {
             public static final int ADJUST_DATA = 0x2;
 
             public static final int DISPLAY_DATA = 0x4;
+
+            public static final int UNSELECTED_DATA = 0x5;
         }
 
         public static final int TREE_ITEM_COUNT_PER_PAGE = 0x64;

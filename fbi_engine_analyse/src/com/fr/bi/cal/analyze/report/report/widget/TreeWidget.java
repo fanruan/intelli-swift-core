@@ -48,6 +48,7 @@ public class TreeWidget extends BIAbstractWidget {
     private String keyword;
     private String last_search_value;
     private String not_selected_value;
+    private String current_select_value;
     private String[] viewData;
     private BIDimension[] dimensions;
     private BusinessTable target;
@@ -122,6 +123,9 @@ public class TreeWidget extends BIAbstractWidget {
             case BIReportConstant.TREE.TREE_REQ_TYPE.SELECTED_DATA:
                 resultJo = getSelectedDataJSON((BISession) session);
                 break;
+            case BIReportConstant.TREE.TREE_REQ_TYPE.UNSELECTED_DATA:
+                resultJo = getUnselectedDataJSON((BISession) session);
+                break;
             case BIReportConstant.TREE.TREE_REQ_TYPE.ADJUST_DATA:
                 resultJo = getAdjustDataJSON((BISession) session);
                 break;
@@ -174,6 +178,10 @@ public class TreeWidget extends BIAbstractWidget {
 
             if (treeJo.has("not_selected_value")) {
                 not_selected_value = treeJo.getString("not_selected_value");
+            }
+
+            if (treeJo.has("current_select_value")) {
+                current_select_value = treeJo.getString("current_select_value");
             }
         }
 
@@ -229,6 +237,21 @@ public class TreeWidget extends BIAbstractWidget {
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
         jo.put("not_selected_value", not_selected_value);
+        jo.put("keyword", keyword);
+        jo.put("selected_values", selected_values);
+        jo.put("parent_values", parent_values);
+        executor.parseJSON(jo);
+        return executor.getResultJSON();
+
+    }
+
+    private JSONObject getUnselectedDataJSON(BISession session) throws JSONException {
+        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
+        paging.setCurrentPage(page);
+        GetTreeSelectTreeNodeExecutor executor = new GetTreeSelectTreeNodeExecutor(this, paging, session);
+        JSONObject jo = new JSONObject();
+        jo.put("floors", floors);
+        jo.put("current_select_value", current_select_value);
         jo.put("keyword", keyword);
         jo.put("selected_values", selected_values);
         jo.put("parent_values", parent_values);
