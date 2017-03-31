@@ -361,8 +361,6 @@ public class BIReportExportExcel {
         map.put(WidgetType.CROSS_TABLE, "/table_cross.png");
         map.put(WidgetType.COMPLEX_TABLE, "/table_complex.png");
         map.put(WidgetType.FUNNEL, "/funnel.png");
-        map.put(WidgetType.PARETO, "");
-        map.put(WidgetType.HEAT_MAP, "/funnel.png");
         map.put(WidgetType.MULTI_PIE, "/multi_pie.png");
         map.put(WidgetType.TREE_MAP, "/tree_map.png");
         return coderBase64(IOUtils.readImage(imageFolder + map.get(type)));
