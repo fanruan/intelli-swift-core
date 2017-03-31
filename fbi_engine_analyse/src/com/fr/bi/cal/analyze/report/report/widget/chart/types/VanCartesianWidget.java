@@ -289,10 +289,16 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         axis.put(left);
         axis.put(right);
 
+        this.parseThirdValueAxis(settings, axis);
+
+        return axis;
+    }
+
+    private void parseThirdValueAxis(JSONObject settings, JSONArray axis) throws JSONException{
         if(settings.has("rightY2LineColor")){
-            axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
-            enabled = settings.optBoolean("rightY2ShowTitle");
-            labelStyle = settings.optJSONObject("rightY2LabelStyle");
+            String axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
+            boolean enabled = settings.optBoolean("rightY2ShowTitle");
+            JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
             JSONObject right2 = JSONObject.create()
                     .put("type", "value")
                     .put("title", JSONObject.create()
@@ -309,8 +315,6 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
             axis.put(right2);
         }
-
-        return axis;
     }
 
 }
