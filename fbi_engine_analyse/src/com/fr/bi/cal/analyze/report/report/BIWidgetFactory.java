@@ -47,8 +47,7 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.DONUT, VanDonutWidget.class);
         vancharts.put(WidgetType.GAUGE, VanGaugeWidget.class);
 
-        vancharts.put(WidgetType.BUBBLE, VanBubbleWidget.class);
-        vancharts.put(WidgetType.SCATTER, VanScatterWidget.class);
+        vancharts.put(WidgetType.DOT, VanScatterWidget.class);
         vancharts.put(WidgetType.FORCE_BUBBLE, VanForceBubbleWidget.class);
 
         vancharts.put(WidgetType.RADAR, VanRadarWidget.class);

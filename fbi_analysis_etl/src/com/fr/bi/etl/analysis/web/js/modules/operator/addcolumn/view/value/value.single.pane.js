@@ -27,7 +27,7 @@ BI.AnalysisETLOperatorAddColumnValueSinglePane = BI.inherit(BI.MVCWidget, {
                 {
                     type : 'bi.label',
                     cls : 'label-name',
-                    text : BI.i18nText('BI-Value') + ' =',
+                    text : BI.i18nText('BI-Basic_Value') + ' =',
                     width : self._constants.LABEL_WIDTH,
                     textAlign : 'left'
                 },
