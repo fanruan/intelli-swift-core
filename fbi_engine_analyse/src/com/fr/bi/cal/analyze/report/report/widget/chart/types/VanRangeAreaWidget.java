@@ -9,7 +9,7 @@ import com.fr.json.JSONObject;
  */
 public class VanRangeAreaWidget extends VanAreaWidget{
 
-    public JSONArray createSeries(JSONObject originData) throws JSONException {
+    public JSONArray createSeries(JSONObject originData) throws Exception {
 
         return this.createStackedEmptySeries(originData);
 

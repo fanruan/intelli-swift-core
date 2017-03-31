@@ -10,10 +10,6 @@ import com.fr.json.JSONObject;
  */
 public class VanGaugeWidget extends VanChartWidget{
 
-    public JSONArray createSeries(JSONObject data) throws JSONException {
-        return this.createXYSeries(data);
-    }
-
     public String getSeriesType(String dimensionID){
         return "gauge";
     }
