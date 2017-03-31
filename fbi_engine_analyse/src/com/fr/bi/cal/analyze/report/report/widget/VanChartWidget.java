@@ -42,10 +42,6 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int POSITION_OUTER = 2;
     private static final int POSITION_CENTER = 3;
 
-    //气泡图和散点图的指标个数
-    private static final int BUBBLE_COUNT = 3;
-    private static final int SCATTER_COUNT = 2;
-
     private static final int TARGET = 30000;
     private static final int TARGET_BASE = 10000;
 
@@ -520,36 +516,6 @@ public abstract class VanChartWidget extends TableWidget {
                 }
                 series.put(ser);
             }
-        }
-
-        return series;
-    }
-
-    protected JSONArray createBubbleSeries(JSONObject originData) throws JSONException{
-        JSONArray series = JSONArray.create();
-        String type = this.getSeriesType(StringUtils.EMPTY);
-        int targetCount = type == "bubble" ? BUBBLE_COUNT : SCATTER_COUNT;
-
-        JSONArray children = originData.optJSONArray("c");
-
-        for(int i = 0, len = children.length(); i < len; i++){
-
-            JSONObject obj = children.optJSONObject(i);
-            JSONArray data = obj.optJSONArray("s");
-            int dataLen = data.length();
-
-            if(dataLen < targetCount){
-                continue;
-            }
-
-            double x = data.optDouble(0), y = data.optDouble(1), size = data.optDouble(2, y);
-
-            series.put(
-                JSONObject.create()
-                        .put("type", type)
-                        .put("name",  obj.optString("n"))
-                        .put("data", JSONArray.create().put(JSONObject.create().put("x", x).put("y", y).put("size", size)))
-            );
         }
 
         return series;
