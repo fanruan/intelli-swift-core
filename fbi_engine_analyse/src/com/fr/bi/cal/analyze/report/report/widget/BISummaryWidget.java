@@ -316,9 +316,9 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     private void parseSortFilter(JSONObject jo, long userId) throws Exception {
         if (jo.has("sort")) {
             JSONObject targetSort = (JSONObject) jo.get("sort");
-            if (targetSort.has("type") && targetSort.has("sort_target")) {
+            if (targetSort.has("type") && targetSort.has("sortTarget")) {
                 int sortType = targetSort.getInt("type");
-                this.targetSort = new TargetSort(targetSort.getString("sort_target"), sortType);
+                this.targetSort = new TargetSort(targetSort.getString("sortTarget"), sortType);
                 if (sortType == BIReportConstant.SORT.NONE) {
                     this.targetSort = null;
                 }
