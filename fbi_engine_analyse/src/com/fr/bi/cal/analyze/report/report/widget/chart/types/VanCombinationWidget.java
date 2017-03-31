@@ -11,9 +11,6 @@ import com.fr.stable.StringUtils;
  */
 public class VanCombinationWidget extends VanCartesianWidget{
 
-    private static final int TARGET = 30000;
-    private static final int TARGET_BASE = 10000;
-
     public String getSeriesType(String dimensionID){
 
         JSONObject scopes = this.getChartSetting().getScopes();
@@ -45,12 +42,4 @@ public class VanCombinationWidget extends VanCartesianWidget{
 
         return dIDs != null && dIDs.length() > 1 ? dIDs.optString(0) : StringUtils.EMPTY;
     }
-
-    public int yAxisIndex(String dimensionID){
-
-        int regionID = Integer.parseInt(this.getRegionID(dimensionID));
-
-        return (regionID - TARGET) / TARGET_BASE;
-    }
-
 }

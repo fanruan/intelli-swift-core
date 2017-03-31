@@ -315,9 +315,9 @@ public class CrossHeader extends Node implements Serializable {
         newnode.value = this.value.cloneWithTopChildNode(top);
         ChildsMap childs = this.childs;
         CrossHeader tempNode = null;
-        String sort_target = targetSort.getName();
+        String sortTarget = targetSort.getName();
         List<CrossHeader> childNodes = childs.getNodeList();
-        final TargetGettingKey target_key = sort_target != null ? targetsMap.get(sort_target) : null;
+        final TargetGettingKey target_key = sortTarget != null ? targetsMap.get(sortTarget) : null;
         final int sortType = (Integer) targetSort.getObject();
         if (target_key != null) {
             Collections.sort(childNodes, new Comparator<CrossHeader>() {
