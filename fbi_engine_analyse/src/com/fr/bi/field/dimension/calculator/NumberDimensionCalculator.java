@@ -175,11 +175,6 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
         }
     }
 
-    @Override
-    public Object createEmptyValue() {
-        return Double.NaN;
-    }
-
     public boolean isCustomSort() {
         return getSortType() == BIReportConstant.SORT.CUSTOM;
     }

@@ -92,25 +92,13 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 JSONArray s = rowTable.getJSONArray("s");
                 if (dimIds.size() > 0) {
                     for (int j = 0; j < s.length(); j++) {
-                        BIBasicTableItem itemNode = new BIBasicTableItem();
-                        itemNode.setType("bi.target_body_normal_cell");
-                        itemNode.setdId(targetIds.get(j));
-                        itemNode.setText(s.getString(j));
-                        itemNode.setClicked(new JSONArray().put(new JSONObject()));
-                        itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", "").toString());
-                        outerValues.put(itemNode);
+                        createItem(outerValues, s, j);
                     }
                     item.put("values", outerValues);
                 } else {
                     //使用第一个值作为一个维度
                     for (int k = 0; k < s.length(); k++) {
-                        BIBasicTableItem itemNode = new BIBasicTableItem();
-                        itemNode.setType("bi.target_body_normal_cell");
-                        itemNode.setdId(targetIds.get(k));
-                        itemNode.setText(s.getString(k));
-                        itemNode.setClicked(new JSONArray().put(new JSONObject()));
-                        itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", "").toString());
-                        outerValues.put(itemNode);
+                        createItem(outerValues, s, k);
                     }
 
                     BIBasicTableItem itemNode = new BIBasicTableItem();
@@ -129,6 +117,16 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             tempItems.put(item);
         }
         parseColTableItems(tempItems);
+    }
+
+    private void createItem(JSONArray outerValues, JSONArray s, int j) throws JSONException {
+        BIBasicTableItem itemNode = new BIBasicTableItem();
+        itemNode.setType("bi.target_body_normal_cell");
+        itemNode.setdId(targetIds.get(j));
+        itemNode.setText(s.getString(j));
+        itemNode.setClicked(new JSONArray().put(new JSONObject()));
+        itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", "").toString());
+        outerValues.put(itemNode);
     }
 
 
