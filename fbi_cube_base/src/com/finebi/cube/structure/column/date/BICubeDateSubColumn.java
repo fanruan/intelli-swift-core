@@ -156,12 +156,12 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
      * @param rowNumber 数据库中的行号
      * @return 原始值
      */
-    public Number getOriginalValueByRow(int rowNumber) {
+    public Object getOriginalValueByRow(int rowNumber) {
         long value = hostDataColumn.getOriginalValueByRow(rowNumber);
         return convertDate(value == NIOConstant.LONG.NULL_VALUE ? null : value);
     }
 
-    protected abstract Number convertDate(Long date);
+    protected abstract Object convertDate(Long date);
 
     @Override
     public GroupValueIndex getIndexByGroupValue(T groupValues) throws BIResourceInvalidException, BICubeIndexException {

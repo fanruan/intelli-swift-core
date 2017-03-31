@@ -8,19 +8,18 @@ import com.fr.bi.stable.constant.DateConstant;
 
 
 /**
- * This class created on 2016/3/30.
- * 日（1-31）
- * @author Connery
- * @since 4.0
+ * This class created on 2017/03/28
+ * 小时0-23
+ * @author wang
  */
-public class BICubeDayColumn extends BICubeDateSubColumn<Integer> {
-    public BICubeDayColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
+public class BICubeHourColumn extends BICubeDateSubColumn<Integer> {
+    public BICubeHourColumn(ICubeResourceDiscovery discovery, ICubeResourceLocation currentLocation, BICubeDateColumn hostDataColumn) {
         super(discovery, currentLocation, hostDataColumn);
     }
 
     @Override
     protected Integer convertDate(Long date) {
-        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.DAY).result2Value(date) : null;
+        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.HOUR).result2Value(date) : null;
     }
 
     @Override

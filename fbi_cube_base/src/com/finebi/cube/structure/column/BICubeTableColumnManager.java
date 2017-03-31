@@ -118,11 +118,24 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 this.registerColumn(insertFieldRelationManager(dateColumn, columnKey),
                         columnKey);
                 initialYearColumn(field, tableKey, dateColumn);
-                initialMonthColumn(field, tableKey, dateColumn);
-                initialDayColumn(field, tableKey, dateColumn);
                 initialSeasonColumn(field, tableKey, dateColumn);
+                initialMonthColumn(field, tableKey, dateColumn);
+                initialWeekNumberColumn(field, tableKey, dateColumn);
                 initialWeekColumn(field, tableKey, dateColumn);
+                initialDayColumn(field, tableKey, dateColumn);
+
+                initialHourColumn(field, tableKey, dateColumn);
+                initialMinuteColumn(field, tableKey, dateColumn);
+                initialSecondColumn(field, tableKey, dateColumn);
+
+                initialYearSeasonColumn(field, tableKey, dateColumn);
+                initialYearMonthColumn(field, tableKey, dateColumn);
+                initialYearWeekNumberColumn(field, tableKey, dateColumn);
                 initialYearMonthDayColumn(field, tableKey, dateColumn);
+                initialYearMonthDayHourColumn(field, tableKey, dateColumn);
+                initialYearMonthDayHourMinuteColumn(field, tableKey, dateColumn);
+                initialYearMonthDayHourMinuteSecondColumn(field, tableKey, dateColumn);
+
             } catch (Exception e) {
                 BINonValueUtils.beyondControl(e.getMessage(), e);
             }
@@ -183,14 +196,55 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 BIColumnKey columnKey = BIDateColumnTool.generateYear(field);
                 BICubeYearColumn yearColumn = new BICubeYearColumn(discovery, yearLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(yearColumn);
-                this.registerColumn(insertFieldRelationManager(yearColumn, columnKey),
-                        columnKey);
+                this.registerColumn(insertFieldRelationManager(yearColumn, columnKey),columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
+    private void initialHourColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation hourLocation = BIDateLocationTool.createHour(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateHour(field);
+                BICubeHourColumn hourColumn = new BICubeHourColumn(discovery, hourLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(hourColumn);
+                this.registerColumn(insertFieldRelationManager(hourColumn, columnKey),columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
             }
         }
     }
 
+    private void initialMinuteColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation minuteLocation = BIDateLocationTool.createMinute(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateMinute(field);
+                BICubeMinuteColumn minuteColumn = new BICubeMinuteColumn(discovery, minuteLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(minuteColumn);
+                this.registerColumn(insertFieldRelationManager(minuteColumn, columnKey),columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
+    private void initialSecondColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation secondLocation = BIDateLocationTool.createSecond(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateSecond(field);
+                BICubeSecondColumn secondColumn = new BICubeSecondColumn(discovery, secondLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(secondColumn);
+                this.registerColumn(insertFieldRelationManager(secondColumn, columnKey),columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
     private void initialMonthColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -238,7 +292,20 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             }
         }
     }
-
+    private void initialWeekNumberColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation weekNumberLocation = BIDateLocationTool.createWeekNumber(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateWeekNumber(field);
+                BICubeWeekNumberColumn weekNumberColumn = new BICubeWeekNumberColumn(discovery, weekNumberLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(weekNumberColumn);
+                this.registerColumn(insertFieldRelationManager(weekNumberColumn, columnKey),columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
     private void initialDayColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -254,7 +321,20 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             }
         }
     }
-
+    private void initialYearMonthDayHourColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation yearMonthDayHourLocation = BIDateLocationTool.createYearMonthDayHour(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateYearMonthDayHour(field);
+                BICubeYearMonthDayHourColumn yearMonthDayHourColumn = new BICubeYearMonthDayHourColumn(discovery, yearMonthDayHourLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(yearMonthDayHourColumn);
+                this.registerColumn(insertFieldRelationManager(yearMonthDayHourColumn, columnKey), columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
     private void initialYearMonthDayColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -265,6 +345,77 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 hostDataColumn.addSubColumns(yearMonthDayColumn);
                 this.registerColumn(insertFieldRelationManager(yearMonthDayColumn, columnKey)
                         , columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
+    private void initialYearMonthColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation yearMonthLocation = BIDateLocationTool.createYearMonth(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateYearMonth(field);
+                BICubeYearMonthColumn yearMonthColumn = new BICubeYearMonthColumn(discovery, yearMonthLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(yearMonthColumn);
+                this.registerColumn(insertFieldRelationManager(yearMonthColumn, columnKey), columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
+    private void initialYearMonthDayHourMinuteColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation yearMonthDayHourMinuteLocation = BIDateLocationTool.createYearMonthDayHourMinute(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateYearMonthDayHourMinute(field);
+                BICubeYearMonthDayHourMinuteColumn yearMonthDayHourMinuteColumn = new BICubeYearMonthDayHourMinuteColumn(discovery, yearMonthDayHourMinuteLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(yearMonthDayHourMinuteColumn);
+                this.registerColumn(insertFieldRelationManager(yearMonthDayHourMinuteColumn, columnKey), columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
+    private void initialYearMonthDayHourMinuteSecondColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation yearMonthDayHourMinuteSecondLocation = BIDateLocationTool.createYearMonthDayHourMinuteSecond(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateYearMonthDayHourMinuteSecond(field);
+                BICubeYearMonthDayHourMinuteSecondColumn yearMonthDayHourMinuteSecondColumn = new BICubeYearMonthDayHourMinuteSecondColumn(discovery, yearMonthDayHourMinuteSecondLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(yearMonthDayHourMinuteSecondColumn);
+                this.registerColumn(insertFieldRelationManager(yearMonthDayHourMinuteSecondColumn, columnKey), columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
+    private void initialYearSeasonColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation yearMonthLocation = BIDateLocationTool.createYearSeacon(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateYearSeason(field);
+                BICubeYearSeasonColumn yearSeasonColumn = new BICubeYearSeasonColumn(discovery, yearMonthLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(yearSeasonColumn);
+                this.registerColumn(insertFieldRelationManager(yearSeasonColumn, columnKey), columnKey);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl();
+            }
+        }
+    }
+
+    private void initialYearWeekNumberColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            try {
+                ICubeResourceLocation baseDataLocation = resourceRetrievalService.retrieveResource(tableKey, BIColumnKey.covertColumnKey(field));
+                ICubeResourceLocation yearMonthLocation = BIDateLocationTool.createYearWeekNumber(baseDataLocation);
+                BIColumnKey columnKey = BIDateColumnTool.generateYearWeekNumber(field);
+                BICubeYearWeekNumberColumn yearWeekNumberColumn = new BICubeYearWeekNumberColumn(discovery, yearMonthLocation, hostDataColumn);
+                hostDataColumn.addSubColumns(yearWeekNumberColumn);
+                this.registerColumn(insertFieldRelationManager(yearWeekNumberColumn, columnKey), columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
             }
