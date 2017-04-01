@@ -29,9 +29,10 @@ BI.AnalysisDetailSelectDataLevel0Node = BI.inherit(BI.Widget, {
         this.node.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function () {
+        this._broadcasts = [];
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function () {
             self.setValue([]);
-        });
+        }));
     },
 
     doRedMark: function () {
@@ -99,6 +100,13 @@ BI.AnalysisDetailSelectDataLevel0Node = BI.inherit(BI.Widget, {
         }
         !b && this.node.isOpened() && this.node.triggerCollapse();
         this.node.setEnable(b)
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (i, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });
 
