@@ -162,8 +162,7 @@ public abstract class VanChartWidget extends TableWidget {
 
             for(String region : sorted){
 
-                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+                if(Integer.parseInt(region) < TARGET){
                     continue;
                 }
 

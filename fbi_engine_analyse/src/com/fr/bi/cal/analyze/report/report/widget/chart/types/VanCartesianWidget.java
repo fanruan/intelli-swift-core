@@ -248,8 +248,19 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
 
         JSONArray axis = JSONArray.create();
-        JSONObject labelStyle = settings.optJSONObject("leftYLabelStyle");
 
+        axis.put(this.parseLeftValueAxis(settings));
+
+        axis.put(this.parseRightValueAxis(settings));
+
+        axis.put(this.parseThirdValueAxis(settings));
+
+        return axis;
+    }
+
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
+
+        JSONObject labelStyle = settings.optJSONObject("leftYLabelStyle");
         String axisTitle = this.axisTitleUnit(settings.optInt("leftYNumberLevel"), settings.optString("leftYUnit"));
         boolean enabled = settings.optBoolean("leftYShowTitle");
 
@@ -269,9 +280,14 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("hGridLineColor"));
 
-        axisTitle = this.axisTitleUnit(settings.optInt("rightYNumberLevel"), settings.optString("rightYUnit"));
-        enabled = settings.optBoolean("rightYShowTitle");
-        labelStyle = settings.optJSONObject("rightYLabelStyle");
+        return left;
+    }
+
+    protected JSONObject parseRightValueAxis(JSONObject settings) throws JSONException{
+
+        String axisTitle = this.axisTitleUnit(settings.optInt("rightYNumberLevel"), settings.optString("rightYUnit"));
+        boolean enabled = settings.optBoolean("rightYShowTitle");
+        JSONObject labelStyle = settings.optJSONObject("rightYLabelStyle");
         JSONObject right = JSONObject.create()
                 .put("type", "value")
                 .put("title", JSONObject.create()
@@ -286,35 +302,28 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("lineColor", settings.optString("rightYLineColor")).put("lineWidth", 1)
                 .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false));
 
-        axis.put(left);
-        axis.put(right);
-
-        this.parseThirdValueAxis(settings, axis);
-
-        return axis;
+        return right;
     }
 
-    private void parseThirdValueAxis(JSONObject settings, JSONArray axis) throws JSONException{
-        if(settings.has("rightY2LineColor")){
-            String axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
-            boolean enabled = settings.optBoolean("rightY2ShowTitle");
-            JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
-            JSONObject right2 = JSONObject.create()
-                    .put("type", "value")
-                    .put("title", JSONObject.create()
-                            .put("style", settings.optJSONObject("rightY2TitleStyle"))
-                            .put("text", enabled ? settings.optString("rightY2Title") + axisTitle : axisTitle)
-                            .put("rotation", VERTICAL)
-                    )
-                    .put("showLabel", settings.optBoolean("rightY2ShowLabel"))
-                    .put("formatter", this.tickFormatter(2))
-                    .put("labelStyle", labelStyle.optJSONObject("textStyle"))
-                    .put("labelRotation", labelStyle.optInt("textDirection"))
-                    .put("lineColor", settings.optString("rightY2LineColor")).put("lineWidth", 1)
-                    .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false));
+    private JSONObject parseThirdValueAxis(JSONObject settings) throws JSONException{
+        String axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
+        boolean enabled = settings.optBoolean("rightY2ShowTitle");
+        JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
+        JSONObject right2 = JSONObject.create()
+                .put("type", "value")
+                .put("title", JSONObject.create()
+                        .put("style", settings.optJSONObject("rightY2TitleStyle"))
+                        .put("text", enabled ? settings.optString("rightY2Title") + axisTitle : axisTitle)
+                        .put("rotation", VERTICAL)
+                )
+                .put("showLabel", settings.optBoolean("rightY2ShowLabel"))
+                .put("formatter", this.tickFormatter(2))
+                .put("labelStyle", labelStyle.optJSONObject("textStyle"))
+                .put("labelRotation", labelStyle.optInt("textDirection"))
+                .put("lineColor", settings.optString("rightY2LineColor")).put("lineWidth", 1)
+                .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false));
 
-            axis.put(right2);
-        }
+        return right2;
     }
 
 }
