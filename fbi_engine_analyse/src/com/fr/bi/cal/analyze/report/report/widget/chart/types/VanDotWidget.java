@@ -82,8 +82,6 @@ public class VanDotWidget extends VanCartesianWidget{
             return series;
         }
 
-        double xNumberScale = this.numberScale(ids[0]);
-        double yNumberScale = this.numberScale(ids[1]);
         String seriesType = this.getSeriesType(StringUtils.EMPTY);
 
         HashMap<String, ArrayList<JSONArray>> seriesMap = new HashMap<String, ArrayList<JSONArray>>();
@@ -102,13 +100,10 @@ public class VanDotWidget extends VanCartesianWidget{
 
         iterator = seriesMap.keySet().iterator();
         while (iterator.hasNext()){
-
             String seriesName = iterator.next().toString();
             ArrayList<JSONArray> seriesArray = seriesMap.get(seriesName);
-
             JSONObject ser = JSONObject.create();
             JSONArray data = JSONArray.create();
-
             for(int i = 0, size = seriesArray.size(); i < size; i++){
                 JSONArray dataArray = seriesArray.get(i);
                 for(int j = 0, count = dataArray.length(); j < count; j++){
@@ -126,7 +121,6 @@ public class VanDotWidget extends VanCartesianWidget{
             ser.put("data", data).put("name", seriesName).put("dimensionID", ids[ids.length - 1]);
             series.put(ser);
         }
-
         return series;
     }
 
