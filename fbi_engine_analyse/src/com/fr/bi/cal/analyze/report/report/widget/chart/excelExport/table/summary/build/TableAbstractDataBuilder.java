@@ -73,13 +73,11 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected void createTableItems() throws Exception {
         int currentLayer = 0;
         BIBasicTableItem item = new BIBasicTableItem();
-//        JSONObject item = new JSONObject();
         List<ITableItem> children = new ArrayList<ITableItem>();
         if (dataJSON.has("c")) {
             children = createCommonTableItems(dataJSON.getString("c"), currentLayer, null, dimIds, new JSONArray());
         }
         item.setChildren(children);
-//        item.put("children", children);
         //汇总
         if (!showColTotal && !dataJSON.has("s")) {
             return;
@@ -98,7 +96,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 outerValues.put(temp.createJSON());
             }
             item.setValue(outerValues);
-//            item.put("values", outerValues);
         } else {
             //使用第一个值作为一个维度
             for (int i = 0; i < s.length(); i++) {
@@ -119,8 +116,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             temp.setValue(outerValues);
             item.getChildren().add(temp);
             item.setValue(new JSONArray().put(item.createJSON()));
-//            item.getJSONArray("children").put(temp);
-//            item.put("values", item);
         }
         items.add(item);
     }
@@ -359,9 +354,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     createItems(items, child, indexOB, crossPV);
                 } else if (child.has("s")) {
                     for (int j = 0; j < child.getJSONArray("s").length(); j++) {
-//                        if (items.getJSONObject(j).getJSONArray("children").getJSONObject(0).has("values")) {
-//                            items.getJSONObject(j).getJSONArray("children").put(0, new JSONArray());
-//                        }
                         if (items.get(j).getChildren().get(0).hasValues()) {
                             List<ITableItem> tempChild = new ArrayList<ITableItem>();
                             tempChild.add(new BIBasicTableItem());
@@ -376,13 +368,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         List<ITableItem> tempChild = items.get(j).getChildren();
                         tempChild.add(ob);
                         items.get(j).setChildren(tempChild);
-//                        JSONObject ob = new JSONObject();
-//                        ob.put("type", "bi.target_body_normal_cell");
-//                        ob.put("text", child.getJSONArray("s").getString(j));
-//                        ob.put("styles", "BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, j)");
-//                        ob.put("dId", targetIds.get(j));
-//                        ob.put("clicked", crossPV.getString(indexOB.getInt("cIndex")));
-//                        items.getJSONObject(j).getJSONArray("children").put(ob);
                     }
                     indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
                 }
@@ -395,9 +380,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     if (items.get(j).getChildren().get(0).hasValues()) {
                         items.get(j).getChildren().get(0).setValue(new JSONArray());
                     }
-//                    if (items.getJSONObject(j).getJSONArray("children").getJSONObject(0).has("values")) {
-//                        items.getJSONObject(j).getJSONArray("children").getJSONObject(0).put("values", new JSONArray());
-//                    }
                     BIBasicTableItem ob = new BIBasicTableItem();
                     ob.setType("bi.target_body_normal_cell");
                     ob.setText(s.getString(j));
@@ -405,13 +387,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     ob.setDId(targetIds.get(j));
                     ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
                     items.get(j).getChildren().get(0).getValue().put(ob.createJSON());
-//                    JSONObject ob = new JSONObject();
-//                    ob.put("type", "bi.target_body_normal_cell");
-//                    ob.put("text", s.getString(j));
-//                    ob.put("styles", "BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, j)");
-//                    ob.put("dId", targetIds.get(j));
-//                    ob.put("clicked", crossPV.getString(indexOB.getInt("cIndex")));
-//                    items.getJSONObject(j).getJSONArray("children").getJSONObject(0).getJSONArray("values").put(ob);
                 }
             }
             indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
