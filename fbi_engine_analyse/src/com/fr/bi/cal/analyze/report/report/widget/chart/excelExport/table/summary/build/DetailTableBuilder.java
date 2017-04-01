@@ -44,7 +44,8 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
         for (int i = 0; i < array.length(); i++) {
             ITableItem rowItem = createRowItem(array.getJSONArray(i));
 //            tableItems.add(rowItem);
-            items.put(rowItem.createJSON());
+//            items.put(rowItem.createJSON());
+            items.add(rowItem);
         }
     }
 
@@ -54,8 +55,8 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
             if (isDimensionUsable(dimIds.get(j))) {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setType("bi.detail_table_cell");
-                item.setdId(dimIds.get(j));
-                item.setText(itemArray.length() > j ? itemArray.getString(j) : "");
+                item.setDId(dimIds.get(j));
+                item.setText(itemArray.isNull(j) ?"": itemArray.getString(j));
                 item.setStyle(SummaryTableStyleHelper.getBodyStyles("", "").toString());
                 rowItems.add(item);
             }

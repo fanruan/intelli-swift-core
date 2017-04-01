@@ -17,7 +17,7 @@ public class BIBasicTableItem implements ITableItem {
     private boolean isCross;
     private boolean needExpand;
     private boolean isExpanded;
-    private List<ITableItem> children;
+    protected List<ITableItem> children;
     private JSONArray clicked;
     private boolean isSum;
     private String style;
@@ -27,7 +27,7 @@ public class BIBasicTableItem implements ITableItem {
     public BIBasicTableItem() {
     }
 
-    public void setdId(String dId) {
+    public void setDId(String dId) {
         this.dId = dId;
     }
 
@@ -35,6 +35,7 @@ public class BIBasicTableItem implements ITableItem {
         this.text = text;
     }
 
+    @Override
     public void setValue(JSONArray value) {
         this.value = value;
     }
@@ -53,6 +54,11 @@ public class BIBasicTableItem implements ITableItem {
 
     public void setChildren(List<ITableItem> children) {
         this.children = children;
+    }
+
+    @Override
+    public boolean hasValues() {
+        return null != value && value.length() > 0;
     }
 
     public void setClicked(JSONArray clicked) {
@@ -75,7 +81,7 @@ public class BIBasicTableItem implements ITableItem {
         this.tag = tag;
     }
 
-    public String getdId() {
+    public String getDId() {
         return dId;
     }
 
@@ -83,6 +89,7 @@ public class BIBasicTableItem implements ITableItem {
         return text;
     }
 
+    @Override
     public JSONArray getValue() {
         return value;
     }
@@ -125,10 +132,10 @@ public class BIBasicTableItem implements ITableItem {
 
     @Override
     public JSONObject createJSON() throws Exception {
-        JSONArray childs=new JSONArray();
-        if (null!=children) {
+        JSONArray childs = new JSONArray();
+        if (null != children) {
             for (ITableItem item : children) {
-                    childs.put(item.createJSON());
+                childs.put(item.createJSON());
             }
         }
         JSONObject jo = new JSONObject();
@@ -138,8 +145,8 @@ public class BIBasicTableItem implements ITableItem {
         jo.put("type", type);
         jo.put("values", value);
         jo.put("children", childs);
-        jo.put("isSum",isSum);
-        jo.put("isCross",isCross);
+        jo.put("isSum", isSum);
+        jo.put("isCross", isCross);
         return jo;
     }
 

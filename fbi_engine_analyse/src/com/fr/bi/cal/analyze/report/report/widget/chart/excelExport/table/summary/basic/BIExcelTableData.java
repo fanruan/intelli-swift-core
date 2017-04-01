@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableHeader;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableItem;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
@@ -13,18 +14,18 @@ import java.util.List;
  */
 public class BIExcelTableData implements JSONCreator {
     private List<ITableHeader> headers;
-    private JSONArray items;
+    private List<ITableItem> items;
     private List<ITableHeader> crossHeaders;
     private JSONArray crossItems;
 
-    public BIExcelTableData(List<ITableHeader> headers, JSONArray items, List<ITableHeader> crossHeaders, JSONArray crossItems) {
+    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, JSONArray crossItems) {
         this.headers = headers;
         this.items = items;
         this.crossHeaders = crossHeaders;
         this.crossItems = crossItems;
     }
 
-    public BIExcelTableData(List<ITableHeader> headers, JSONArray items) {
+    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items) {
         this.headers = headers;
         this.items = items;
     }
@@ -32,18 +33,28 @@ public class BIExcelTableData implements JSONCreator {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        JSONArray headerArray=new JSONArray();
+        JSONArray headerArray = new JSONArray();
         for (ITableHeader header : headers) {
-           headerArray.put(header.createJSON());
+            headerArray.put(header.createJSON());
         }
         jo.put("header", headerArray);
-        jo.put("items", items);
-        JSONArray croosHeaderArray=new JSONArray();
-        for (ITableHeader header : crossHeaders) {
-            croosHeaderArray.put(header.createJSON());
+        if (null != crossHeaders) {
+            JSONArray crossHeaderArray = new JSONArray();
+            for (ITableHeader header : crossHeaders) {
+                crossHeaderArray.put(header.createJSON());
+            }
+            jo.put("crossHeader", crossHeaderArray);
         }
-        jo.put("crossHeader", croosHeaderArray);
-        jo.put("crossItems", crossItems);
+        if (null != items) {
+            JSONArray itemArray = new JSONArray();
+            for (ITableItem item : items) {
+                itemArray.put(item.createJSON());
+            }
+            jo.put("items", itemArray);
+        }
+        if (null != crossItems) {
+            jo.put("crossItems", crossItems);
+        }
         return jo;
     }
 
@@ -52,7 +63,7 @@ public class BIExcelTableData implements JSONCreator {
         return headers;
     }
 
-    public JSONArray getItems() {
+    public List<ITableItem> getItems() {
         return items;
     }
 

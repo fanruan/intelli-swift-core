@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableHeader;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIBasicTableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
 import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils.BITableExportDataHelper;
@@ -76,7 +77,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             createTableItems();
             return;
         }
-        JSONArray tempItems = new JSONArray();
+        List<ITableItem> tempItems=new ArrayList<ITableItem>();
+//        JSONArray tempItems = new JSONArray();
         for (int i = 0; i < dataJSON.length(); i++) {
             JSONObject rowTable = dataJSON.getJSONObject(String.valueOf(i));
             Map<Integer, List<JSONObject>> dimOb = getDimsByDataPos(i, 0);
@@ -85,7 +87,9 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             for (JSONObject jsonObject : list) {
                 dimIds.add(jsonObject.getString("dId"));
             }
-            JSONObject item = new JSONObject().put("children", createCommonTableItems(rowTable.getString("c"), 0, null, dimIds, null));
+            BIBasicTableItem item=new BIBasicTableItem();
+            item.setChildren(createCommonTableItems(rowTable.getString("c"), 0, null, dimIds, null));
+//            JSONObject item = new JSONObject().put("children", createCommonTableItems(rowTable.getString("c"), 0, null, dimIds, null));
             //汇总
             if (showRowTotal && rowTable.has("s")) {
                 JSONArray outerValues = new JSONArray();
@@ -94,7 +98,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     for (int j = 0; j < s.length(); j++) {
                         createItem(outerValues, s, j);
                     }
-                    item.put("values", outerValues);
+//                    item.put("values", outerValues);
+                    item.setValue(outerValues);
                 } else {
                     //使用第一个值作为一个维度
                     for (int k = 0; k < s.length(); k++) {
@@ -103,18 +108,21 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
                     BIBasicTableItem itemNode = new BIBasicTableItem();
                     itemNode.setType("bi.target_body_normal_cell");
-                    itemNode.setdId(targetIds.get(0));
+                    itemNode.setDId(targetIds.get(0));
                     itemNode.setText(s.getString(0));
                     itemNode.setClicked(new JSONArray().put(new JSONObject()));
                     itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", "").toString());
                     itemNode.setSum(true);
                     itemNode.setTag(UUID.randomUUID().toString());
                     itemNode.setValue(outerValues);
-                    item.getJSONArray("children").put(itemNode);
-                    item.put("values", item);
+//                    item.getJSONArray("children").put(itemNode);
+//                    item.put("values", item);
+                    item.getChildren().add(itemNode);
+                    item.setValue(new JSONArray().put(item));
                 }
             }
-            tempItems.put(item);
+//            tempItems.put(item);
+            tempItems.add(item);
         }
         parseColTableItems(tempItems);
     }
@@ -122,7 +130,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private void createItem(JSONArray outerValues, JSONArray s, int j) throws JSONException {
         BIBasicTableItem itemNode = new BIBasicTableItem();
         itemNode.setType("bi.target_body_normal_cell");
-        itemNode.setdId(targetIds.get(j));
+        itemNode.setDId(targetIds.get(j));
         itemNode.setText(s.getString(j));
         itemNode.setClicked(new JSONArray().put(new JSONObject()));
         itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", "").toString());
@@ -187,7 +195,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
      * 表示横向（类似与交叉表）会有三个表，纵向会有两个表
      */
     private void createComplexTableItems() throws Exception {
-        JSONArray tempItems = new JSONArray();
+//        JSONArray tempItems = new JSONArray();
+        List<ITableItem> tempItems=new ArrayList<ITableItem>();
         JSONArray tempCrossItems = new JSONArray();
         // 如果行表头和列表头都只有一个region构造一个二维的数组
 
@@ -222,22 +231,31 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
     // 处理列 针对于children
     // 要将所有的最外层的values处理成children
-    private void parseColTableItems(JSONArray tempItems) throws JSONException {
-        JSONArray children = new JSONArray();
-        for (int i = 0; i < tempItems.length(); i++) {
-            JSONObject tItem = tempItems.getJSONObject(i);
-            children.put(tItem.getJSONArray("children"));
+    private void parseColTableItems(List<ITableItem> tempItems) throws JSONException {
+//        JSONArray children = new JSONArray();
+        List<ITableItem> children=new ArrayList<ITableItem>();
+//        for (int i = 0; i < tempItems.length(); i++) {
+            for (int i = 0; i < tempItems.size(); i++) {
+//            JSONObject tItem = tempItems.getJSONObject(i);
+//            children.put(tItem.getJSONArray("children"));
+            children.add(tempItems.get(i));
             boolean isSummary = showRowTotal && isColRegionExist() && isRowRegionExist() && isOnlyCrossAndTarget();
             if (isSummary) {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setType("bi.page_table_cell");
                 item.setText("BI.i18nText(\"BI-Summary_Values\")");
                 item.setTag(UUID.randomUUID().toString());
-                item.setValue(tempItems);
+//                item.setValue(tempItems);
+                item.setValue(new JSONArray(tempItems));
                 item.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", "").toString());
-                children.put(item);
+//                children.put(item);
+                children.add(item);
             }
-            items = new JSONArray().put(new JSONObject().put("children", children));
+            items=new ArrayList<ITableItem>();
+            BIBasicTableItem tempItem=new BIBasicTableItem();
+            tempItem.setChildren(children);
+            items.add(tempItem);
+//            items = new JSONArray().put(new JSONObject().put("children", children));
         }
     }
 
