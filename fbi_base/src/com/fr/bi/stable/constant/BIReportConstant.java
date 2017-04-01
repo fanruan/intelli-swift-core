@@ -414,6 +414,7 @@ public class BIReportConstant {
         public static final int PARETO = 0x42;           //帕累托图
         public static final int DOT = 0x43; //点图
 
+
         public static final int STRING = 0x20;            //文本控件
         public static final int NUMBER = 0x21;            //数值控件
         public static final int TREE = 0x22;             //树控件
@@ -529,6 +530,8 @@ public class BIReportConstant {
             public static final int ADJUST_DATA = 0x2;
 
             public static final int DISPLAY_DATA = 0x4;
+
+            public static final int UNSELECTED_DATA = 0x5;
         }
 
         public static final int TREE_ITEM_COUNT_PER_PAGE = 0x64;

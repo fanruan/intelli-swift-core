@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -18,6 +19,7 @@ import java.util.List;
  */
 public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
     private String notSelectedValueString;
+    private String toSelectedValueString;
     private String keyword;
     private String parent_values;
 
@@ -30,6 +32,10 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         super.parseJSON(jo);
         if (jo.has("not_selected_value")) {
             notSelectedValueString = jo.getString("not_selected_value");
+        }
+
+        if (jo.has("current_select_value")) {
+            toSelectedValueString = jo.getString("current_select_value");
         }
 
         if (jo.has("keyword")) {
@@ -53,12 +59,17 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         if (selectedValuesString != null) {
             selected_values = new JSONObject(selectedValuesString);
         }
-        if (selected_values.length() == 0) {
+        if (selected_values.length() == 0 && notSelectedValueString != null) {
             return jo;
         }
 
         jo = selected_values;
-        dealWithSelectValues(jo, notSelectedValueString, parent, floors, keyword);
+        if(notSelectedValueString != null){
+            dealWithSelectValues(jo, notSelectedValueString, parent, floors, keyword);
+        }
+        if(toSelectedValueString != null){
+            dealWithUnselectValues(jo, toSelectedValueString, parent, floors, keyword);
+        }
         return jo;
     }
 
@@ -107,6 +118,71 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         }
     }
 
+    private void dealWithUnselectValues(JSONObject selected_values, String toSelectedValueString, String[] parent, int floors, String keyword) throws JSONException {
+        String[] p = new String[parent.length + 1];
+        System.arraycopy(parent, 0, p, 0, parent.length);
+        p[parent.length] = toSelectedValueString;
+
+        List<String[]> result = new ArrayList<String[]>();
+        boolean finded = searchWithSelectNode(parent.length + 1, floors, parent, toSelectedValueString, keyword, result);
+        if(result.size()>0){
+            int i;
+            for(i=0;i<result.size();i++){
+                String[] strs = result.get(i);
+                buildTree(selected_values, strs);
+                boolean isSelectedAll = true;
+                int j = strs.length -1;
+                while (isSelectedAll && j >0){
+                    String str = strs[j];
+                    String preStr = strs[j-1];
+                    isSelectedAll = dealWithIsSelectedAll(selected_values, strs,str,preStr);
+                }
+            }
+        }
+
+    }
+
+    private boolean dealWithIsSelectedAll(JSONObject selected_values,String[] strs,String str,String preStr){
+        JSONObject selectedValues = selected_values;
+        JSONObject preSelectedValue = new JSONObject();
+        for (String thisStr:strs){
+            if(thisStr == preStr){
+                preSelectedValue = selectedValues;
+            }
+            if(thisStr != str){
+                try {
+                    selectedValues = selectedValues.getJSONObject(thisStr);
+                } catch (JSONException e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                }
+            }else{
+                break;
+            }
+        }
+        String[] p = {preStr};
+        int childsLength = 0;
+        try {
+            childsLength = getChildCount(p);
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        if(selectedValues.length() == childsLength){
+            try {
+                preSelectedValue.put(preStr,new JSONObject());
+            } catch (JSONException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private int getChildCount(String[] values) throws JSONException {
+        return createData(values, -1).size();
+
+    }
+
     private boolean isChild(JSONObject jo, String[] parent) {
         JSONObject t = jo;
         for (String v : parent) {
@@ -126,9 +202,13 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         String[] newParents = new String[parents.length + 1];
         System.arraycopy(parents, 0, newParents, 0, parents.length);
         newParents[parents.length] = value;
-        if (isMatch(value, keyword)) {
-            return true;
+        if(keyword != null){
+            if (isMatch(value, keyword)) {
+                return true;
+            }
         }
+
+
         if (deep >= floor) {
             return false;
         }
@@ -142,6 +222,48 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
             if (search(deep + 1, floor, newParents, vl.get(i), keyword, result)) {
                 can = true;
             } else {
+                notSearch.add(vl.get(i));
+            }
+        }
+        if (can) {
+            for (String v : notSearch) {
+                String[] next = new String[newParents.length + 1];
+                System.arraycopy(newParents, 0, next, 0, newParents.length);
+                next[newParents.length] = v;
+                result.add(next);
+            }
+        }
+        return can;
+    }
+
+    private boolean searchWithSelectNode(int deep, int floor, String[] parents, String value, String keyword, List<String[]> result) throws JSONException {
+
+        String[] newParents = new String[parents.length + 1];
+        System.arraycopy(parents, 0, newParents, 0, parents.length);
+        newParents[parents.length] = value;
+        if(keyword != null){
+            if (isMatch(value, keyword)) {
+                result.add(newParents);
+                return true;
+            }
+        }else{
+            result.add(newParents);
+            return true;
+        }
+
+
+        if (deep >= floor) {
+            return false;
+        }
+
+        List<String> vl = createData(newParents, -1);
+
+        List<String> notSearch = new ArrayList<String>();
+        boolean can = false;
+
+        for (int i = 0, len = vl.size(); i < len; i++) {
+            if (searchWithSelectNode(deep + 1, floor, newParents, vl.get(i), keyword, result)) {
+                can = true;
                 notSearch.add(vl.get(i));
             }
         }

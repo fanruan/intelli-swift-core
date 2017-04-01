@@ -79,9 +79,6 @@ public class AnalysisETLModule extends AbstractModule {
 
         StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
 
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ETLResourcesHelper.getDefaultJs());
-
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ETLResourcesHelper.getDefaultCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ETLResourcesHelper.getAnimateCss());
