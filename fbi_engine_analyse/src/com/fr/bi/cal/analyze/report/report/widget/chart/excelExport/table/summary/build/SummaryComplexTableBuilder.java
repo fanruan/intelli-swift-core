@@ -78,7 +78,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             return;
         }
         List<ITableItem> tempItems=new ArrayList<ITableItem>();
-//        JSONArray tempItems = new JSONArray();
         for (int i = 0; i < dataJSON.length(); i++) {
             JSONObject rowTable = dataJSON.getJSONObject(String.valueOf(i));
             Map<Integer, List<JSONObject>> dimOb = getDimsByDataPos(i, 0);
@@ -89,7 +88,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             }
             BIBasicTableItem item=new BIBasicTableItem();
             item.setChildren(createCommonTableItems(rowTable.getString("c"), 0, null, dimIds, null));
-//            JSONObject item = new JSONObject().put("children", createCommonTableItems(rowTable.getString("c"), 0, null, dimIds, null));
             //汇总
             if (showRowTotal && rowTable.has("s")) {
                 JSONArray outerValues = new JSONArray();
@@ -98,14 +96,12 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     for (int j = 0; j < s.length(); j++) {
                         createItem(outerValues, s, j);
                     }
-//                    item.put("values", outerValues);
                     item.setValue(outerValues);
                 } else {
                     //使用第一个值作为一个维度
                     for (int k = 0; k < s.length(); k++) {
                         createItem(outerValues, s, k);
                     }
-
                     BIBasicTableItem itemNode = new BIBasicTableItem();
                     itemNode.setType("bi.target_body_normal_cell");
                     itemNode.setDId(targetIds.get(0));
@@ -115,13 +111,10 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     itemNode.setSum(true);
                     itemNode.setTag(UUID.randomUUID().toString());
                     itemNode.setValue(outerValues);
-//                    item.getJSONArray("children").put(itemNode);
-//                    item.put("values", item);
                     item.getChildren().add(itemNode);
                     item.setValue(new JSONArray().put(item));
                 }
             }
-//            tempItems.put(item);
             tempItems.add(item);
         }
         parseColTableItems(tempItems);
