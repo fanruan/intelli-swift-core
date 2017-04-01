@@ -23,8 +23,6 @@ public class VanMapWidget extends VanChartWidget{
     private static final int AUTO = 1;
     private static final  int CUSTOM = 2;
 
-    private static final int RANGE_COUNT = 5;
-    private static final int BASE = 100;
     private static final String THEME = "#04b1c2";
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
@@ -93,26 +91,10 @@ public class VanMapWidget extends VanChartWidget{
 
         settings.put("chartColor", THEME);
 
-        settings.put("mapStyle", this.makeAutoMapStyle(THEME));
+        //todo 自动的时候应该可以删掉
+        settings.put("mapStyle", JSONArray.create());
 
         return settings;
-    }
-
-    JSONArray makeAutoMapStyle(String colorStr) throws JSONException{
-        colorStr = colorStr.substring(1);
-        Color color =  new Color(Integer.parseInt(colorStr, 16));
-
-        int r = color.getRed(), g = color.getGreen(), b = color.getBlue();
-
-        JSONArray mapStyle = JSONArray.create();
-
-        for(int i = 0; i < RANGE_COUNT; i++){
-            JSONObject range = JSONObject.create();
-            range.put("color", String.format("rgba(%d, %d, %d, %f)", r, g, b, 0.2 * (i + 1))).put("range", JSONObject.create().put("min", i * BASE).put("max", (i + 1) * BASE));
-            mapStyle.put(range);
-        }
-
-        return mapStyle;
     }
 
     JSONArray mapStyleToRange(JSONArray mapStyle) throws JSONException{
