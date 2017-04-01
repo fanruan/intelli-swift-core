@@ -9,7 +9,7 @@ import com.fr.json.JSONObject;
  */
 public class VanFallColumnWidget extends VanColumnWidget{
 
-    public JSONArray createSeries(JSONObject originData) throws JSONException {
+    public JSONArray createSeries(JSONObject originData) throws Exception {
         return this.createStackedEmptySeries(originData);
     }
 

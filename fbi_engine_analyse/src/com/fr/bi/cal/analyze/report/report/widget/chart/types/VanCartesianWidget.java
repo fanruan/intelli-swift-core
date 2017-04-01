@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
-import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
@@ -23,6 +22,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final String FALL_COLUMN = "fallColumn";
     private static final String TRANS = "rgba(0,0,0,0)";
 
+    private static final int VERTICAL = 90;
+
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
 
@@ -30,7 +31,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         settings.put("catShowTitle", false)
                 .put("catTitle", StringUtils.EMPTY)
                 .put("catTitleStyle", this.defaultFont())
-                .put("catShowLabel", true)
+                .put("catShowLabel", true).put("vShowGridLine", true).put("vGridLineColor", "#dddddd")
                 .put("catLabelStyle", JSONObject.create().put("textStyle", this.defaultFont()))
                 .put("catLineColor", "#dddddd");
 
@@ -41,7 +42,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("leftYTitle", StringUtils.EMPTY)
                 .put("leftYTitleStyle", this.defaultFont())
                 .put("leftYReverse", false)
-                .put("leftYShowLabel", true)
+                .put("leftYShowLabel", true).put("hShowGridLine", true).put("hGridLineColor", "#dddddd")
                 .put("leftYLabelStyle", JSONObject.create().put("textStyle", this.defaultFont()))
                 .put("leftYLineColor", "#dddddd")
                 .put("leftYSeparator", true);
@@ -71,6 +72,28 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightYLineColor", true);
 
         return settings;
+    }
+
+    //坐标轴标签的格式由千分符号，和数量级构成
+    private String tickFormatter(int yAxis){
+
+        boolean hasSeparator = true;
+        try {
+            JSONObject settings = this.getDetailChartSetting();
+
+            if(yAxis == 0){
+                hasSeparator = settings.optBoolean("leftYSeparator");
+            }else if(yAxis == 1){
+                hasSeparator = settings.optBoolean("rightYSeparator");
+            }else if(yAxis == 2){
+                hasSeparator = settings.optBoolean("rightY2Separator");
+            }
+
+        }catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
+        }
+
+        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", hasSeparator ? "#,###.##" : "#.##");
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
@@ -106,16 +129,13 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             format += (scaleUnit + unit);
         }
 
-        return String.format("function(){FR.contentFormat(arguments[0], %s)}", format);
+        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
     }
 
     //todo 坐标轴标题和数量级，单位构成的后缀
     protected String axisTitleUnit(int level, String unit){
-        return "(" + this.scaleUnit(level) + unit + ")";
-    }
-
-    public JSONArray createSeries(JSONObject data) throws JSONException {
-        return this.createXYSeries(data);
+        String scaleUnit = this.scaleUnit(level);
+        return StringUtils.isBlank(scaleUnit) ? StringUtils.EMPTY : "(" + this.scaleUnit(level) + unit + ")";
     }
 
     protected String dataLabelValueFormat(BINumberTarget dimension){
@@ -143,7 +163,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return level;
     }
 
-    protected JSONArray createStackedEmptySeries(JSONObject originData) throws JSONException{
+    protected JSONArray createStackedEmptySeries(JSONObject originData) throws Exception{
         JSONArray series = this.createSeries(originData);
 
         if(series.length() > 0){
@@ -170,9 +190,9 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return series;
     }
 
-    public JSONObject createPlotOptions(BISessionProvider session, JSONObject settings) throws Exception{
+    public JSONObject createPlotOptions(JSONObject globalSetting, JSONObject settings) throws Exception{
 
-        JSONObject plotOptions = super.createPlotOptions(session, settings);
+        JSONObject plotOptions = super.createPlotOptions(globalSetting, settings);
 
         plotOptions.put("inverted", this.isInverted());
 
@@ -190,15 +210,16 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return false;
     }
 
-    public  JSONObject createOptions(BISessionProvider session, JSONObject data) throws Exception{
+    public  JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
 
         JSONObject settings = this.getDetailChartSetting();
 
-        JSONObject options = super.createOptions(session, data);
+        JSONObject options = super.createOptions(globalStyle, data);
 
-        options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable")));
+        options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable"))
+                .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
 
-        if(options.optBoolean("showZoom")){
+        if(settings.optBoolean("showZoom")){
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)));
         }
 
@@ -213,11 +234,13 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         JSONObject category = JSONObject.create();
 
         category
-                .put("type", "category")
+                .put("type", "category").put("position", "bottom")
                 .put("title", JSONObject.create().put("enabled", settings.optJSONObject("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
-                .put("showLabel", settings.optBoolean("catShowLabel"))
+                .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
                 .put("labelStyle", settings.optJSONObject("catLabelStyle"))
-                .put("lineColor", settings.optString("catLineColor"));
+                .put("lineColor", settings.optString("catLineColor"))
+                .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
+                .put("gridLineColor", settings.optString("vGridLineColor"));
 
         return JSONArray.create().put(category);
     }
@@ -228,43 +251,70 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         JSONObject labelStyle = settings.optJSONObject("leftYLabelStyle");
 
         String axisTitle = this.axisTitleUnit(settings.optInt("leftYNumberLevel"), settings.optString("leftYUnit"));
+        boolean enabled = settings.optBoolean("leftYShowTitle");
 
         JSONObject left = JSONObject.create()
                 .put("type", "value")
-                .put("title", JSONObject.create().put("enabled", settings.optBoolean("leftYShowTitle") || StringUtils.isNotBlank(axisTitle)).put("style", settings.optJSONObject("leftYTitleStyle")).put("text", settings.optString("leftYTitle") + axisTitle))
+                .put("title", JSONObject.create()
+                        .put("style", settings.optJSONObject("leftYTitleStyle"))
+                        .put("text", enabled ? settings.optString("leftYTitle") + axisTitle : axisTitle)
+                        .put("rotation", VERTICAL)
+                )
                 .put("showLabel", settings.optBoolean("leftYShowLabel"))
+                .put("formatter", this.tickFormatter(0))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
-                .put("lineColor", settings.optString("leftYLineColor"))
-                .put("position", "bottom");
+                .put("labelRotation", labelStyle.optInt("textDirection"))
+                .put("lineColor", settings.optString("leftYLineColor")).put("lineWidth", 1)
+                .put("position", "left").put("reversed", settings.optBoolean("leftYReverse", false))
+                .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
+                .put("gridLineColor", settings.optString("hGridLineColor"));
 
         axisTitle = this.axisTitleUnit(settings.optInt("rightYNumberLevel"), settings.optString("rightYUnit"));
+        enabled = settings.optBoolean("rightYShowTitle");
         labelStyle = settings.optJSONObject("rightYLabelStyle");
         JSONObject right = JSONObject.create()
                 .put("type", "value")
-                .put("title", JSONObject.create().put("enabled", settings.optBoolean("rightYShowTitle") || StringUtils.isNotBlank(axisTitle)).put("style", settings.optJSONObject("rightYTitleStyle")).put("text", settings.optString("rightYTitle") + axisTitle))
+                .put("title", JSONObject.create()
+                        .put("style", settings.optJSONObject("rightYTitleStyle"))
+                        .put("text", enabled ? settings.optString("rightYTitle") + axisTitle : axisTitle)
+                        .put("rotation", VERTICAL)
+                )
                 .put("showLabel", settings.optBoolean("rightYShowLabel"))
+                .put("formatter", this.tickFormatter(1))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
-                .put("lineColor", settings.optString("rightYLineColor"))
-                .put("position", "left");
+                .put("labelRotation", labelStyle.optInt("textDirection"))
+                .put("lineColor", settings.optString("rightYLineColor")).put("lineWidth", 1)
+                .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false));
 
         axis.put(left);
         axis.put(right);
 
+        this.parseThirdValueAxis(settings, axis);
+
+        return axis;
+    }
+
+    private void parseThirdValueAxis(JSONObject settings, JSONArray axis) throws JSONException{
         if(settings.has("rightY2LineColor")){
-            axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
-            labelStyle = settings.optJSONObject("rightY2LabelStyle");
+            String axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
+            boolean enabled = settings.optBoolean("rightY2ShowTitle");
+            JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
             JSONObject right2 = JSONObject.create()
                     .put("type", "value")
-                    .put("title", JSONObject.create().put("enabled", settings.optBoolean("rightY2ShowTitle") || StringUtils.isNotBlank(axisTitle)).put("style", settings.optJSONObject("rightY2TitleStyle")).put("text", settings.optString("rightY2Title") + axisTitle))
+                    .put("title", JSONObject.create()
+                            .put("style", settings.optJSONObject("rightY2TitleStyle"))
+                            .put("text", enabled ? settings.optString("rightY2Title") + axisTitle : axisTitle)
+                            .put("rotation", VERTICAL)
+                    )
                     .put("showLabel", settings.optBoolean("rightY2ShowLabel"))
+                    .put("formatter", this.tickFormatter(2))
                     .put("labelStyle", labelStyle.optJSONObject("textStyle"))
-                    .put("lineColor", settings.optString("rightY2LineColor"))
-                    .put("position", "right");
+                    .put("labelRotation", labelStyle.optInt("textDirection"))
+                    .put("lineColor", settings.optString("rightY2LineColor")).put("lineWidth", 1)
+                    .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false));
 
             axis.put(right2);
         }
-
-        return axis;
     }
 
 }

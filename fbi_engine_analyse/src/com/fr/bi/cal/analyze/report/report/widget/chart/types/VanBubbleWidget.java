@@ -9,7 +9,7 @@ import com.fr.json.JSONObject;
  * Created by eason on 2017/2/27.
  */
 public class VanBubbleWidget extends VanChartWidget{
-    public JSONArray createSeries(JSONObject data) throws JSONException{
+    public JSONArray createSeries(JSONObject data) throws Exception{
         return this.createBubbleSeries(data);
     }
 

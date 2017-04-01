@@ -354,16 +354,13 @@ public class BIReportExportExcel {
         map.put(WidgetType.MULTI_AXIS_COMBINE_CHART, "/combine_m.png");
         map.put(WidgetType.FORCE_BUBBLE, "/bubble_force.png");
         map.put(WidgetType.GAUGE, "/gauge.png");
-        map.put(WidgetType.BUBBLE, "/bubble.png");
-        map.put(WidgetType.SCATTER, "/scatter.png");
+        map.put(WidgetType.DOT, "/bubble.png");
         map.put(WidgetType.MAP, "/map.png");
         map.put(WidgetType.GIS_MAP, "/map_gis.png");
         map.put(WidgetType.TABLE, "/table_group.png");
         map.put(WidgetType.CROSS_TABLE, "/table_cross.png");
         map.put(WidgetType.COMPLEX_TABLE, "/table_complex.png");
         map.put(WidgetType.FUNNEL, "/funnel.png");
-        map.put(WidgetType.PARETO, "");
-        map.put(WidgetType.HEAT_MAP, "/funnel.png");
         map.put(WidgetType.MULTI_PIE, "/multi_pie.png");
         map.put(WidgetType.TREE_MAP, "/tree_map.png");
         return coderBase64(IOUtils.readImage(imageFolder + map.get(type)));

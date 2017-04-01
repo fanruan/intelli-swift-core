@@ -1,7 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
@@ -9,8 +7,8 @@ import com.fr.json.JSONObject;
  */
 public class VanDonutWidget extends VanPieWidget{
 
-    public JSONObject createPlotOptions(BISessionProvider session, JSONObject settings) throws Exception {
-        JSONObject plotOptions = super.createPlotOptions(session, settings);
+    public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception {
+        JSONObject plotOptions = super.createPlotOptions(globalStyle, settings);
 
         plotOptions.put("innerRadius", "50%");
 

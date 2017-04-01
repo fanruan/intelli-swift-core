@@ -56,7 +56,14 @@ public class BIDateColumnTool {
         }
 
     }
+    public static final BIColumnKey generateYearMonth(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
 
+    }
     public static final BIColumnKey generateYearMonthDay(ICubeFieldSource field) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY);
@@ -64,5 +71,77 @@ public class BIDateColumnTool {
             throw BINonValueUtils.beyondControl();
         }
 
+    }
+
+    public static BIColumnKey generateYearSeason(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_SEASON);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static BIColumnKey generateYearWeekNumber(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_WEEK_NUMBER);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static BIColumnKey generateHour(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_HOUR);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static BIColumnKey generateSecond(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_SECOND);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static BIColumnKey generateMinute(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_MINUTE);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static BIColumnKey generateYearMonthDayHour(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static BIColumnKey generateYearMonthDayHourMinute(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static BIColumnKey generateWeekNumber(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_WEEKNUMBER);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static BIColumnKey generateYearMonthDayHourMinuteSecond(ICubeFieldSource field) {
+        if (field.getFieldType() == DBConstant.COLUMN.DATE) {
+            return new BIColumnKey(field.getFieldName(), BIColumnKey.DATA_COLUMN_TYPE, BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND);
+        } else {
+            throw BINonValueUtils.beyondControl();
+        }
     }
 }

@@ -678,9 +678,9 @@ public class Node implements SummaryContainer, BINode {
         Node newnode = copyNode();
         ChildsMap childs = this.childs;
         Node tempNode = null;
-        String sort_target = rowDimension[index].getSortTarget();
+        String sortTarget = rowDimension[index].getSortTarget();
         List<Node> childNodes = childs.getNodeList();
-        final TargetGettingKey target_key = sort_target != null ? targetsMap.get(sort_target) : null;
+        final TargetGettingKey target_key = sortTarget != null ? targetsMap.get(sortTarget) : null;
         final int sortType = rowDimension[index].getSortType();
         if (target_key != null) {
             Collections.sort(childNodes, new Comparator<Node>() {
@@ -740,9 +740,9 @@ public class Node implements SummaryContainer, BINode {
         Node newnode = copyNode();
         ChildsMap childs = this.childs;
         Node tempNode = null;
-        String sort_target = targetSort.getName();
+        String sortTarget = targetSort.getName();
         List<Node> childNodes = childs.getNodeList();
-        final TargetGettingKey target_key = sort_target != null ? targetsMap.get(sort_target) : null;
+        final TargetGettingKey target_key = sortTarget != null ? targetsMap.get(sortTarget) : null;
         final int sortType = (Integer) (targetSort.getObject());
         if (target_key != null) {
             Collections.sort(childNodes, new Comparator<Node>() {
