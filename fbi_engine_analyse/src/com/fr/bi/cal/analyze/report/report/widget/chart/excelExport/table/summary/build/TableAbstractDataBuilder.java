@@ -91,8 +91,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 temp.setText(s.getString(i));
                 temp.setDId(targetIds.get(i));
                 temp.setStyle("");
-//[{}]
-                temp.setClicked(new JSONArray().put(new JSONObject()));
+                temp.setClicked(new JSONArray().put(new JSONObject()));//[{}];
                 outerValues.put(temp.createJSON());
             }
             item.setValue(outerValues);
@@ -103,8 +102,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 temp.setType("bi.target_body_normal_cell");
                 temp.setText(s.getString(i));
                 temp.setDId(targetIds.get(i));
-//[{}]
-                temp.setClicked(new JSONArray().put(new JSONObject()));
+                temp.setClicked(new JSONArray().put(new JSONObject()));//[{}]
             }
             BIBasicTableItem temp = new BIBasicTableItem();
             temp.setType("bi.target_body_normal_cell");
