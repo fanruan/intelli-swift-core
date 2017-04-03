@@ -97,25 +97,6 @@ public class VanMapWidget extends VanChartWidget{
         return settings;
     }
 
-    JSONArray mapStyleToRange(JSONArray mapStyle) throws JSONException{
-        JSONArray ranges = JSONArray.create();
-
-        for(int i = 0, len = mapStyle.length(); i < len; i++){
-            JSONObject config = mapStyle.getJSONObject(i), range = config.optJSONObject("range");
-
-            ranges.put(
-                    JSONObject.create()
-                    .put("from", range.optDouble("min"))
-                    .put("to", range.optDouble("max"))
-                    .put("color", config.optString("color"))
-            );
-
-
-        }
-
-        return ranges;
-    }
-
     protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception{
         return JSONArray.create().put(settings.optString("chartColor", THEME));
     }
