@@ -80,6 +80,6 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
                 }
             }
         }
-        throw new ClassNotFoundException();
+        throw new FileNotFoundException();
     }
 }

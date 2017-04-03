@@ -22,17 +22,34 @@ public class ReportConfVersionNode implements Comparable<ReportConfVersionNode> 
         return version;
     }
 
-    public void update(JSONObject settings) throws JSONException {
+    public JSONObject update(JSONObject settings) throws JSONException {
         for (ReportUpdateOperation operation : reportOperations) {
-            operation.update(settings);
+            settings = operation.update(settings);
         }
+        return settings;
     }
 
     @Override
     public int compareTo(ReportConfVersionNode o) {
-        if (this.getVersion().getVersion() < o.getVersion().getVersion()) {
+
+        if (parseValue(this.getVersion().getVersion()) < parseValue(o.getVersion().getVersion())) {
             return -1;
         }
         return 1;
     }
+
+    private double parseValue(String version) {
+        String rs = "";
+        String[] split = version.split("\\.");
+        if (split.length >= 2) {
+            rs += split[0] + ".";
+            for (int i = 1; i < split.length; i++) {
+                rs += split[i];
+            }
+        } else {
+            rs = version;
+        }
+        return Double.valueOf(rs);
+    }
+
 }

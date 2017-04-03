@@ -3,7 +3,6 @@ package com.fr.bi.field.target.target;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.stable.data.BIFieldID;
@@ -37,7 +36,7 @@ public class BICounterTarget extends BISummaryTarget {
              */
             BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(distinct_field_id));
             if (field == null) {
-                String tableId = obj.getString("tableId");
+                String tableId = obj.getString("table_id");
                 BusinessField column = new BIBusinessField(new BIFieldID(distinct_field_id));
                 BusinessTable tableBelongTo = BIModuleUtils.getBusinessTableById(new BITableID(tableId));
                 column.setTableBelongTo(tableBelongTo);
