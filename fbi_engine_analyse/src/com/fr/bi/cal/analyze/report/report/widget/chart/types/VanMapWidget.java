@@ -19,10 +19,6 @@ public class VanMapWidget extends VanChartWidget{
 
     private String subType = StringUtils.EMPTY;
 
-    //配色方案
-    private static final int AUTO = 1;
-    private static final  int CUSTOM = 2;
-
     private static final String THEME = "#04b1c2";
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {

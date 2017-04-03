@@ -50,6 +50,9 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int STYLE_NORMAL = 1; //普通风格
     private static final int STYLE_GRADUAL = 2; //渐变风格
 
+    public static final int AUTO = 1;
+    public static final  int CUSTOM = 2;
+
     private String requestURL = StringUtils.EMPTY;
 
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
@@ -422,7 +425,7 @@ public abstract class VanChartWidget extends TableWidget {
         return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
     }
 
-    private void formatSeriesTooltipFormat(JSONObject options) throws Exception{
+    protected void formatSeriesTooltipFormat(JSONObject options) throws Exception{
 
         JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
 
@@ -444,7 +447,7 @@ public abstract class VanChartWidget extends TableWidget {
         return "${CATEGORY}${SERIES}${VALUE}";
     }
 
-    private void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
+    protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
 
         if(dataLabels.optBoolean("enabled")){
