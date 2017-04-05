@@ -4,7 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.field.target.target.BINumberTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
@@ -137,7 +137,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected int numberLevel(String dimensionID){
         try {
-            BINumberTarget  target = ((BINumberTarget) this.getBITargetAndDimension(dimensionID));
+            BISummaryTarget  target = this.getBITargetByID(dimensionID);
 
             return target.getChartSetting().getSettings().optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
         }catch (Exception e){
@@ -386,15 +386,15 @@ public abstract class VanChartWidget extends TableWidget {
         return style == STYLE_GRADUAL ? "gradual" : "normal";
     }
 
-    protected String tooltipValueFormat(BINumberTarget dimension){
+    protected String tooltipValueFormat(BISummaryTarget dimension){
         return this.valueFormat(dimension, true);
     }
 
-    protected String dataLabelValueFormat(BINumberTarget dimension){
+    protected String dataLabelValueFormat(BISummaryTarget dimension){
         return this.valueFormat(dimension, true);
     }
 
-    protected String decimalFormat(BINumberTarget dimension, boolean hasSeparator){
+    protected String decimalFormat(BISummaryTarget dimension, boolean hasSeparator){
         JSONObject settings = dimension.getChartSetting().getSettings();
         int type = settings.optInt("format", 0);
         String format;
@@ -416,7 +416,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
-    protected String valueFormat(BINumberTarget dimension, boolean isTooltip) {
+    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip) {
 
         JSONObject settings = dimension.getChartSetting().getSettings();
 
@@ -447,7 +447,7 @@ public abstract class VanChartWidget extends TableWidget {
 
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID)));
+            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getBITargetByID(dimensionID)));
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
@@ -468,7 +468,7 @@ public abstract class VanChartWidget extends TableWidget {
                 String dimensionID = ser.optString("dimensionID");
 
                 ser.put("dataLabels", new JSONObject(dataLabels.toString())
-                        .put("valueFormat", this.dataLabelValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID))));
+                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID))));
             }
         }
     }
