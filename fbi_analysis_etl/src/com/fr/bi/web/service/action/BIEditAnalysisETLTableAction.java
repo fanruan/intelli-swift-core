@@ -5,7 +5,10 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.fs.BIDAOUtils;
+import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -14,10 +17,13 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/5/13.
+ * 当前螺旋分析表是否被其他螺旋分析表使用或者被其它分析使用
  */
 public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
     @Override
@@ -55,7 +61,61 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
             }
         }
         jo.put("usedTables", allUsedTables);
+
+        jo.put("usedTemplate", getUsedTempLateList(tableId, ServiceUtils.getCurrentUserID(req)));
+
         WebUtils.printAsJSON(res, jo);
+    }
+
+    private JSONObject getUsedTempLateList(String tableId, long userId) throws Exception{
+        JSONObject detailUsedList = new JSONObject();
+
+        //暂时先检查管理员的模板了
+        List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(userId);
+        boolean isInUse = false;
+        for (BIReportNode reportNode : nodeList) {
+            JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(reportNode);
+            if (reportSetting.has("widgets")) {
+                JSONObject widgets = reportSetting.getJSONObject("widgets");
+                Iterator<String> widgetIds = widgets.keys();
+                while (widgetIds.hasNext()) {
+                    JSONObject widget = widgets.getJSONObject(widgetIds.next());
+                    if(isWidgetUseTable(tableId, widget)){
+                        String templateName = reportNode.getDisplayName();
+                        JSONArray arr = detailUsedList.optJSONArray(templateName);
+                        if(arr == null){
+                            arr = new JSONArray();
+                            detailUsedList.put(templateName, arr);
+                        }
+                        arr.put(widget.optString("name"));
+                    }
+                }
+            }
+        }
+
+        return  detailUsedList;
+    }
+
+    private boolean isWidgetUseTable(String tableId, JSONObject widget) throws Exception {
+        boolean isInUse = false;
+        if (widget.has("dimensions")) {
+            JSONObject dimensions = widget.getJSONObject("dimensions");
+            Iterator<String> dIds = dimensions.keys();
+            while (dIds.hasNext()) {
+                JSONObject dim = dimensions.getJSONObject(dIds.next());
+                if (dim.has("_src")) {
+                    JSONObject src = dim.getJSONObject("_src");
+                    if (src.has("tableId")) {
+                        String tId = src.getString("tableId");
+                        isInUse = ComparatorUtils.equals(tId, tableId);
+                        if (isInUse) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return isInUse;
     }
 
     @Override
