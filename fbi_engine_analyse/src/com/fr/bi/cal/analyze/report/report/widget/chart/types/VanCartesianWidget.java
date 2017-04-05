@@ -224,10 +224,18 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)));
         }
 
-        options.put("xAxis", this.parseCategoryAxis(settings));
-        options.put("yAxis", this.parseValueAxis(settings));
+        options.put(this.getCoordXKey(), this.parseCategoryAxis(settings));
+        options.put(this.getCoordYKey(), this.parseValueAxis(settings));
 
         return options;
+    }
+
+    protected String getCoordXKey(){
+        return "xAxis";
+    }
+
+    protected String getCoordYKey(){
+        return "yAxis";
     }
 
     protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{

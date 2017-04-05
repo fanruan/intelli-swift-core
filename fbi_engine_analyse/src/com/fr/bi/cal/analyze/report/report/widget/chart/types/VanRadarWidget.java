@@ -1,14 +1,12 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
  * Created by eason on 2017/2/27.
  */
-public class VanRadarWidget extends VanChartWidget{
+public class VanRadarWidget extends VanCartesianWidget{
 
     private static final int CIRCLE = 6;         //圆形雷达
     private static final int POLYGON = 7;         //多边形雷达
@@ -18,6 +16,8 @@ public class VanRadarWidget extends VanChartWidget{
         JSONObject settings = super.populateDefaultSettings();
 
         settings.put("radarChartType", POLYGON);
+
+        settings.put("nullContinuity", true);
 
         return settings;
     }
@@ -29,7 +29,17 @@ public class VanRadarWidget extends VanChartWidget{
 
         plotOptions.put("columnType", false);
 
+        plotOptions.put("connectNulls", settings.optBoolean("nullContinuity"));
+
         return plotOptions;
+    }
+
+    protected String getCoordXKey(){
+        return "angleAxis";
+    }
+
+    protected String getCoordYKey(){
+        return "radiusAxis";
     }
 
     public String getSeriesType(String dimensionID){
