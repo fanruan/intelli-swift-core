@@ -21,4 +21,8 @@ public class VanFunnelWidget extends VanChartWidget{
     public String getSeriesType(String dimensionID){
         return "funnel";
     }
+
+    protected String getTooltipIdentifier(){
+        return NAME + SERIES + VALUE;
+    }
 }

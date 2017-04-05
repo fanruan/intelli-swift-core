@@ -141,4 +141,8 @@ public class VanMapWidget extends VanChartWidget{
         return "rangeLegend";
     }
 
+    protected String getTooltipIdentifier(){
+        return NAME + SERIES + VALUE;
+    }
+
 }

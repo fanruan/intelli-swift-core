@@ -30,6 +30,16 @@ public abstract class VanChartWidget extends TableWidget {
     private static final double BLUE_DET = 0.114;
     private static final double GRAY = 192;
 
+    //标签和数据点提示的内容
+    public static final String CATEGORY = "${CATEGORY}";
+    public static final String SERIES = "${SERIES}";
+    public static final String VALUE = "${VALUE}";
+    public static final String PERCENT = "${PERCENT}";
+    public static final String X = "${X}";
+    public static final String Y = "${Y}";
+    public static final String SIZE = "${SIZE}";
+    public static final String NAME = "${NAME}";
+
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
     private static final int RIGHT = 3;
@@ -444,7 +454,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String getTooltipIdentifier(){
-        return "${CATEGORY}${SERIES}${VALUE}";
+        return CATEGORY + SERIES + VALUE;
     }
 
     protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
