@@ -293,12 +293,12 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                         self.preViewTable.populate(tableItems, tableHeader);
                         self.popupTab.getSelectedTab().resize();
                     } else if(res['used']){
-                        self.popupTab.setSelect(c.USED_BY_TABLE);
                         var items = res["usedTables"] || [];
                         self.res = res;
                         if(BI.isEmptyArray(items) || items.length === 1){
                         }else{
                             self.confirmCombo.showView();
+                            self.popupTab.setSelect(c.USED_BY_TABLE);
                             var showItems = [];
                             BI.each(items, function(idx, tId){
                                 if(tId !== option.id){
@@ -321,7 +321,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                             cls: "delete-label",
                             textAlign: "center",
                             width: 360
-                        }], items));
+                        }], showItems));
                     } else {
                         self.confirmCombo.showView();
                         self.popupTab.setSelect(c.DELETE_WARNING);
