@@ -10,6 +10,28 @@ import com.fr.json.JSONObject;
  */
 public class VanRadarWidget extends VanChartWidget{
 
+    private static final int CIRCLE = 6;         //圆形雷达
+    private static final int POLYGON = 7;         //多边形雷达
+
+    protected JSONObject populateDefaultSettings() throws JSONException {
+
+        JSONObject settings = super.populateDefaultSettings();
+
+        settings.put("radarChartType", POLYGON);
+
+        return settings;
+    }
+
+    public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception{
+        JSONObject plotOptions = super.createPlotOptions(globalStyle, settings);
+
+        plotOptions.put("shape", settings.optInt("radarChartType") == CIRCLE ? "circle" : "polygon");
+
+        plotOptions.put("columnType", false);
+
+        return plotOptions;
+    }
+
     public String getSeriesType(String dimensionID){
         return "radar";
     }
