@@ -19,10 +19,6 @@ public class VanMapWidget extends VanChartWidget{
 
     private String subType = StringUtils.EMPTY;
 
-    //配色方案
-    private static final int AUTO = 1;
-    private static final  int CUSTOM = 2;
-
     private static final String THEME = "#04b1c2";
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
@@ -95,25 +91,6 @@ public class VanMapWidget extends VanChartWidget{
         settings.put("mapStyle", JSONArray.create());
 
         return settings;
-    }
-
-    JSONArray mapStyleToRange(JSONArray mapStyle) throws JSONException{
-        JSONArray ranges = JSONArray.create();
-
-        for(int i = 0, len = mapStyle.length(); i < len; i++){
-            JSONObject config = mapStyle.getJSONObject(i), range = config.optJSONObject("range");
-
-            ranges.put(
-                    JSONObject.create()
-                    .put("from", range.optDouble("min"))
-                    .put("to", range.optDouble("max"))
-                    .put("color", config.optString("color"))
-            );
-
-
-        }
-
-        return ranges;
     }
 
     protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception{

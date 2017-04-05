@@ -8,7 +8,6 @@ import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -50,6 +49,9 @@ public abstract class VanChartWidget extends TableWidget {
 
     private static final int STYLE_NORMAL = 1; //普通风格
     private static final int STYLE_GRADUAL = 2; //渐变风格
+
+    public static final int AUTO = 1;
+    public static final  int CUSTOM = 2;
 
     private String requestURL = StringUtils.EMPTY;
 
@@ -423,7 +425,7 @@ public abstract class VanChartWidget extends TableWidget {
         return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
     }
 
-    private void formatSeriesTooltipFormat(JSONObject options) throws Exception{
+    protected void formatSeriesTooltipFormat(JSONObject options) throws Exception{
 
         JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
 
@@ -445,7 +447,7 @@ public abstract class VanChartWidget extends TableWidget {
         return "${CATEGORY}${SERIES}${VALUE}";
     }
 
-    private void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
+    protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
 
         if(dataLabels.optBoolean("enabled")){
@@ -537,6 +539,25 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("enabled", legend >= TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
+    }
+
+    protected JSONArray mapStyleToRange(JSONArray mapStyle) throws JSONException{
+        JSONArray ranges = JSONArray.create();
+
+        for(int i = 0, len = mapStyle.length(); i < len; i++){
+            JSONObject config = mapStyle.getJSONObject(i), range = config.optJSONObject("range");
+
+            ranges.put(
+                    JSONObject.create()
+                            .put("from", range.optDouble("min"))
+                            .put("to", range.optDouble("max"))
+                            .put("color", config.optString("color"))
+            );
+
+
+        }
+
+        return ranges;
     }
 
     public BIDimension getCategoryDimension(){
