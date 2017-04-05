@@ -1,11 +1,7 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
-import com.fr.bi.field.target.key.cal.configuration.summary.BIMinOfAllKey;
-import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
-import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.bi.stable.report.result.BINode;
 
 import java.util.concurrent.Callable;
@@ -26,11 +22,6 @@ public class MinOfAllCalculator extends SummaryOfAllCalculator {
     }
 
     @Override
-    public BITargetKey createTargetKey() {
-        return new BIMinOfAllKey(targetName, target_id, targetMap, start_group);
-    }
-
-    @Override
     public Callable createNodeDealWith(BICrossNode node) {
         return new RankDealWithCrossNode(node);
     }
@@ -46,19 +37,12 @@ public class MinOfAllCalculator extends SummaryOfAllCalculator {
         @Override
         public Object call() throws Exception {
             Object key = getCalKey();
-            String targetName = ((TargetGettingKey) key).getTargetName();
-            BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
             int deep = getCalDeep(rank_node);
             BINode temp_node = getDeepCalNode(rank_node);
             BINode cursor_node = temp_node;
             Number min = null;
             while (isNotEnd(cursor_node, deep)) {
-                Number value;
-                if (targetKey instanceof AvgKey) {
-                    value = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
-                } else {
-                    value = cursor_node.getSummaryValue(key);
-                }
+                Number value = cursor_node.getSummaryValue(key);
                 if (min == null) {
                     min = value;
                 } else if (value != null) {

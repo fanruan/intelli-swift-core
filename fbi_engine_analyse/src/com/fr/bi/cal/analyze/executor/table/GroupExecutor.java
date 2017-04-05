@@ -50,8 +50,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         DetailChartSetting chartSetting = widget.getChartSetting();
         TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
         for (int i = 0; i < summaryLength; i++) {
-            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(),
-                    usedSumTarget[i].getValue());
+            keys[i] = usedSumTarget[i].createTargetGettingKey();
         }
         //显示不显示汇总行
         int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();

@@ -1,23 +1,21 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
-import com.fr.bi.field.target.key.cal.configuration.BIPeriodCalTargetKey;
-import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.general.ComparatorUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 小灰灰 on 2015/7/2.
  */
-public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
+public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
     private static final long serialVersionUID = 550160604753618347L;
     private int type = BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.VALUE;
 
@@ -65,11 +63,6 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
             }
         }
 
-    }
-
-    @Override
-    public BITargetKey createTargetKey() {
-        return new BIPeriodCalTargetKey(targetName, target_id, targetMap, start_group);
     }
 
     /**
@@ -136,14 +129,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 if (value != null) {
                     if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
                         Object key = getCalKey();
-                        String targetName = ((TargetGettingKey) key).getTargetName();
-                        BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
-                        double currentValue;
-                        if (targetKey instanceof AvgKey) {
-                            currentValue = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
-                        } else {
-                            currentValue = cursor_node.getSummaryValue(key).doubleValue();
-                        }
+                        double currentValue = cursor_node.getSummaryValue(key).doubleValue();
                         cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
                     } else {
                         cursor_node.setSummaryValue(createTargetGettingKey(), value);
@@ -171,15 +157,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 return null;
             } else {
                 Object key = getCalKey();
-                String targetName = ((TargetGettingKey) key).getTargetName();
-                BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
-                Number value;
-                if (targetKey instanceof AvgKey) {
-                    value = getAvgValue(targetName, (AvgKey) targetKey, n);
-                } else {
-                    value = n.getSummaryValue(key);
-                }
-                return value;
+                return n.getSummaryValue(key);
             }
         }
 
@@ -227,14 +205,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalulator {
                 if (value != null) {
                     if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
                         Object key = getCalKey();
-                        String targetName = ((TargetGettingKey) key).getTargetName();
-                        BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
-                        double currentValue;
-                        if (targetKey instanceof AvgKey) {
-                            currentValue = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
-                        } else {
-                            currentValue = cursor_node.getSummaryValue(key).doubleValue();
-                        }
+                        double currentValue = cursor_node.getSummaryValue(key).doubleValue();
                         cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
                     } else {
                         cursor_node.setSummaryValue(createTargetGettingKey(), value);

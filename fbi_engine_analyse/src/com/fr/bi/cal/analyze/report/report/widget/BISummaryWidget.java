@@ -277,10 +277,17 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 target.setTargetMap(targetMap);
             }
         }
-        this.targets = tars.toArray(new BISummaryTarget[tars.size()]);
+        initTargets(tars);
         this.parseSortFilter(jo, userId);
         parseSettingMap(jo);
         parseDimensionMap(dimAndTar, userId);
+    }
+
+    private void initTargets(List<BISummaryTarget> tars) {
+        this.targets = tars.toArray(new BISummaryTarget[tars.size()]);
+        for (int i = 0; i < targets.length; i++){
+            targets[i].setSummaryIndex(i);
+        }
     }
 
     @Override
@@ -430,7 +437,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         BISummaryTarget[] targets = getViewTargets();
         TargetGettingKey[] keys = new TargetGettingKey[targets.length];
         for (int i = 0; i < targets.length; i++) {
-            keys[i] = targets[i].createSummaryCalculator().createTargetGettingKey();
+            keys[i] = targets[i].createTargetGettingKey();
         }
         return keys;
     }

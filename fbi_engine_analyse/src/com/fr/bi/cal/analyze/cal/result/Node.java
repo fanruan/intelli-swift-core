@@ -319,34 +319,6 @@ public class Node implements BINode {
         return (Number) getSummaryValue().get(key);
     }
 
-    /**
-     * 创建新node
-     *
-     * @param key 需要保存的key
-     * @return 新node
-     */
-    public Node createNewTargetValueNode(TargetGettingKey key) {
-        Node n = createNewNode();
-        if (key != null) {
-            Object value = getSummaryValue(key.getTargetKey());
-            if (value != null) {
-                n.setSummaryValue(key, value);
-            }
-        }
-        int clen = childs.size();
-        Node tempNode = null;
-        for (int i = 0; i < clen; i++) {
-            Node temp_node = childs.get(i);
-            Node child = temp_node.createNewTargetValueNode(key);
-            if (tempNode != null) {
-                CubeReadingUtils.setSibling(tempNode, child);
-            }
-            n.addChild(child);
-            tempNode = child;
-        }
-        return n;
-    }
-
     protected Node createNewNode() {
         Node newNode = new Node(comparator, this.getData());
         newNode.showValue = this.getShowValue();

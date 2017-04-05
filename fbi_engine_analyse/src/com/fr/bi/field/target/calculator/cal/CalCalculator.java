@@ -73,7 +73,7 @@ public abstract class CalCalculator implements TargetCalculator {
     @Override
     public TargetGettingKey createTargetGettingKey() {
         if (targetGettingKey == null) {
-            targetGettingKey = new TargetGettingKey(this.createTargetKey(), targetName);
+            targetGettingKey = new TargetGettingKey(target.getSummaryIndex(), targetName);
         }
         return targetGettingKey;
     }

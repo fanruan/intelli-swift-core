@@ -1,8 +1,6 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
-import com.fr.bi.field.target.key.cal.configuration.BIRankCalTargetKey;
-import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.RankConfASCComparator;
@@ -10,7 +8,6 @@ import com.fr.bi.stable.operation.sort.comp.RankConfDSCComparator;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
 import java.util.*;
@@ -18,7 +15,7 @@ import java.util.*;
 /**
  * Created by 小灰灰 on 2015/7/2.
  */
-public class RankConfigureCalculator extends AbstractConfigureCalulator {
+public class RankConfigureCalculator extends AbstractConfigureCalculator {
     private static final long serialVersionUID = 7481595795461223558L;
     private int type = BIReportConstant.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC;
 
@@ -83,12 +80,6 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
         }
     }
 
-    @Override
-    public BITargetKey createTargetKey() {
-        return new BIRankCalTargetKey(targetName, target_id, targetMap, start_group, type);
-    }
-
-
     private class RankDealWith implements java.util.concurrent.Callable {
         private BINode rank_node;
 
@@ -100,8 +91,6 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
         @Override
         public Object call() throws Exception {
             Object key = getCalKey();
-            String targetName = ((TargetGettingKey) key).getTargetName();
-            BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
             int deep = 0;
             BINode temp_node = rank_node;
             while (temp_node.getFirstChild() != null) {
@@ -113,12 +102,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             TreeMap sortMap = new TreeMap(c);
             BINode cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Comparable value;
-                if (targetKey instanceof AvgKey) {
-                    value = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
-                } else {
-                    value = (Comparable) cursor_node.getSummaryValue(key);
-                }
+                Comparable value = (Comparable) cursor_node.getSummaryValue(key);
                 Integer time = (Integer) sortMap.get(value);
                 if (time == null) {
                     time = new Integer(1);
@@ -138,12 +122,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalulator {
             }
             cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Object value;
-                if (targetKey instanceof AvgKey) {
-                    value = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
-                } else {
-                    value = cursor_node.getSummaryValue(key);
-                }
+                Object value = cursor_node.getSummaryValue(key);
                 cursor_node.setSummaryValue(createTargetGettingKey(), result.get(value));
                 cursor_node = cursor_node.getSibling();
             }

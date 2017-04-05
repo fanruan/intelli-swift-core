@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by 小灰灰 on 2015/7/2.
  */
-public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator {
+public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator {
     private static final long serialVersionUID = 4448457069572400146L;
 
     public SummaryOfAllCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {

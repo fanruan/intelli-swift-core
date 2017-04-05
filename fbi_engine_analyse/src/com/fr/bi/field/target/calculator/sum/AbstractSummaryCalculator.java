@@ -49,7 +49,7 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
 
     @Override
     public TargetGettingKey createTargetGettingKey() {
-        return new TargetGettingKey(createTargetKey(), getName());
+        return new TargetGettingKey(target.getSummaryIndex(), getName());
     }
 
     /**

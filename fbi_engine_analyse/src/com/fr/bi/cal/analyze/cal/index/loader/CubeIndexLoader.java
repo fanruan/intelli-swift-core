@@ -16,8 +16,8 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
-import com.fr.bi.field.target.key.cal.BICalculatorTargetKey;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -526,10 +526,10 @@ public class CubeIndexLoader {
                 continue;
             }
             TargetCalculator key = target.createSummaryCalculator();
-            if (key instanceof BICalculatorTargetKey) {
-                calculateTargets.add(new TargetGettingKey(key.createTargetKey(), target.getValue()));
+            if (target.getType() != TargetType.NORMAL) {
+                calculateTargets.add(key.createTargetGettingKey());
             } else {
-                noneCalculateTargets.add(new TargetGettingKey(key.createTargetKey(), target.getValue()));
+                noneCalculateTargets.add(key.createTargetGettingKey());
             }
             BusinessTable[] summarys = getTableDefines(key);
             if (summarys == null || summarys.length == 0) {

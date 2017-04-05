@@ -394,48 +394,6 @@ public class CrossNode implements BICrossNode {
         }
     }
 
-
-    /**
-     * 创建只有key的下方子的值
-     *
-     * @param key 值key
-     * @return 只有key的下方子的值
-     */
-    public CrossNode createTopChildNewTargetValueNode(TargetGettingKey key) {
-        CrossNode n = new CrossNode(this.head, this.left);
-        if (key != null) {
-            Object value = getSummaryValue(key.getTargetKey());
-            if (value != null) {
-                n.setSummaryValue(key, value);
-            }
-        }
-        int clen = topChilds.size();
-        CrossNode tempNode = null;
-        for (int i = 0; i < clen; i++) {
-            CrossNode temp_node = topChilds.get(i);
-            CrossNode child = temp_node.createTopChildNewTargetValueNode(key);
-            if (tempNode != null) {
-                CubeReadingUtils.setSibling(tempNode, child);
-            }
-            n.addTopChild(child);
-            tempNode = child;
-        }
-        return n;
-    }
-
-
-    public void clearNullSummary(TargetGettingKey[] keys) {
-        for (int j = 0; j < topChilds.size(); j++) {
-            topChilds.get(j).clearNullSummary(keys);
-        }
-        for (TargetGettingKey key : keys) {
-            if (this.getSummaryValue(key) == null) {
-                this.setSummaryValue(key, 0);
-            }
-        }
-
-    }
-
     /**
      * 注释
      *

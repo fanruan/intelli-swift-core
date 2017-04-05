@@ -1,10 +1,8 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
-import com.fr.bi.field.target.key.cal.configuration.summary.BICountOfAllKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.BITargetKey;
 
 import java.util.concurrent.Callable;
 
@@ -21,11 +19,6 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
     @Override
     public Callable createNodeDealWith(BINode node) {
         return new RankDealWith(node);
-    }
-
-    @Override
-    public BITargetKey createTargetKey() {
-        return new BICountOfAllKey(targetName, target_id, targetMap, start_group);
     }
 
     @Override
@@ -54,7 +47,7 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
             cursor_node = temp_node;
             Object value = new Integer(count);
             while (isNotEnd(cursor_node, deep)) {
-                cursor_node.setSummaryValue(createTargetKey(), value);
+                cursor_node.setSummaryValue(createTargetGettingKey(), value);
                 cursor_node = cursor_node.getSibling();
             }
             return null;

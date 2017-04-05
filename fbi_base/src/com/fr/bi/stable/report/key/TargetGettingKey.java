@@ -1,58 +1,40 @@
 package com.fr.bi.stable.report.key;
 
-import com.fr.bi.stable.report.result.BITargetKey;
-
 public class TargetGettingKey {
 
-    private BITargetKey targetKey;
     private String targetName;
+    //pony index决定了是哪个target，node汇总直接用数组保存，
+    private int targetIndex;
 
-
-    public TargetGettingKey(BITargetKey targetKey, String targetName) {
-        this.targetKey = targetKey;
+    public TargetGettingKey(int targetIndex, String targetName) {
+        this.targetIndex = targetIndex;
         this.targetName = targetName;
-    }
-
-    public BITargetKey getTargetKey() {
-        return targetKey;
     }
 
     public String getTargetName() {
         return targetName;
     }
 
+    public int getTargetIndex(){
+        return targetIndex;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        TargetGettingKey that = (TargetGettingKey) o;
+
+        return targetIndex == that.targetIndex;
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((targetKey == null) ? 0 : targetKey.hashCode());
-        result = prime * result
-                + ((targetName == null) ? 0 : targetName.hashCode());
-        return result;
+        return targetIndex;
     }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        TargetGettingKey other = (TargetGettingKey) obj;
-        if (targetKey == null) {
-            if (other.targetKey != null)
-                return false;
-        } else if (!targetKey.equals(other.targetKey))
-            return false;
-        if (targetName == null) {
-            if (other.targetName != null)
-                return false;
-        } else if (!targetName.equals(other.targetName))
-            return false;
-        return true;
-    }
-
 }

@@ -357,30 +357,6 @@ public class CrossHeader extends Node implements Serializable {
     }
 
     /**
-     * 创建只有key值的新左节点
-     *
-     * @param key 值的key
-     * @return 注释
-     */
-    @Override
-    public CrossHeader createNewTargetValueNode(TargetGettingKey key) {
-        CrossHeader n = createNewNode();
-        n.value = value.createTopChildNewTargetValueNode(key);
-        int clen = childs.size();
-        CrossHeader tempNode = null;
-        for (int i = 0; i < clen; i++) {
-            CrossHeader temp_node = (CrossHeader) childs.get(i);
-            CrossHeader child = temp_node.createNewTargetValueNode(key);
-            if (tempNode != null) {
-                CubeReadingUtils.setSibling(tempNode, child);
-            }
-            n.addChild(child);
-            tempNode = child;
-        }
-        return n;
-    }
-
-    /**
      * 克隆新的值
      *
      * @return 注释

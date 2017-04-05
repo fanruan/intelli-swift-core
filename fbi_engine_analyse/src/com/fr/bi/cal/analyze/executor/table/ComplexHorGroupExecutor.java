@@ -196,7 +196,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
         int summaryLength = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
         for (int s = 0; s < summaryLength; s++) {
-            keys[s] = new TargetGettingKey(usedSumTarget[s].createSummaryCalculator().createTargetKey(), usedSumTarget[s].getValue());
+            keys[s] = usedSumTarget[s].createTargetGettingKey();
         }
         Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(true, widget, createTarget4Calculate(), rowData, allDimensions,
                 allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, false);

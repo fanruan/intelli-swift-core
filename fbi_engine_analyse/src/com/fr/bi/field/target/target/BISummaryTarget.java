@@ -1,12 +1,10 @@
 package com.fr.bi.field.target.target;
 
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.DBConstant;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
@@ -98,7 +96,4 @@ public abstract class BISummaryTarget extends BIAbstractTarget {
         return false;
     }
 
-    public BITargetKey createSummaryKey(ICubeDataLoader loader) {
-        return createSummaryCalculator().createTargetKey();
-    }
 }

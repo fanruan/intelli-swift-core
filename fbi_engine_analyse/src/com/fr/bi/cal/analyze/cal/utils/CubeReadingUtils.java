@@ -89,7 +89,7 @@ public class CubeReadingUtils {
         int slen = summary.length;
         TargetGettingKey[] key = new TargetGettingKey[slen];
         for (int i = 0; i < slen; i++) {
-            key[i] = new TargetGettingKey(summary[i].createSummaryCalculator().createTargetKey(), summary[i].getValue());
+            key[i] = summary[i].createTargetGettingKey();
         }
         while (n != null) {
             List rowList = new ArrayList();
