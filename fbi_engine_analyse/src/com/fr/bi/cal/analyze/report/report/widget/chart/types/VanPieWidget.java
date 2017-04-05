@@ -44,4 +44,7 @@ public class VanPieWidget extends VanChartWidget{
         return "pie";
     }
 
+    protected String getTooltipIdentifier(){
+        return SERIES + VALUE;
+    }
 }

@@ -48,4 +48,8 @@ public class VanTreeMapWidget extends VanChartWidget{
     public String getSeriesType(String dimensionID){
         return "treeMap";
     }
+
+    protected String getTooltipIdentifier(){
+        return NAME + SERIES + VALUE;
+    }
 }

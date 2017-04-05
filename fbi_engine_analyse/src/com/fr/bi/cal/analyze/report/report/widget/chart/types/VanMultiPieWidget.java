@@ -70,20 +70,12 @@ public class VanMultiPieWidget extends VanPieWidget{
         return children;
     }
 
-    protected int numberLevel(String dimensionID){
-        return BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
-    }
-
-    protected void formatSeriesTooltipFormat(JSONObject options) throws Exception{
-
-    }
-
-    protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
-
-    }
-
     public String getSeriesType(String dimensionID){
         return "multiPie";
+    }
+
+    protected String getTooltipIdentifier(){
+        return NAME + SERIES + PERCENT;
     }
 
 }

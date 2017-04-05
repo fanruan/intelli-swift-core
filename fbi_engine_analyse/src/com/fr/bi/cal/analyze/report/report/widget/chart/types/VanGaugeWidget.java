@@ -1,9 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
-import com.fr.bi.field.target.target.BINumberTarget;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -12,7 +8,7 @@ import com.fr.stable.StringUtils;
 /**
  * Created by eason on 2017/3/20.
  */
-public class VanGaugeWidget extends VanChartWidget{
+public class VanGaugeWidget extends VanCartesianWidget{
 
     private static final int NORMAL = 1;     //360的仪表盘
     private static final int HALF_DASHBOARD = 9;//180'的仪表盘
@@ -38,9 +34,11 @@ public class VanGaugeWidget extends VanChartWidget{
         settings.put("minScale", StringUtils.EMPTY);
         settings.put("maxScale", StringUtils.EMPTY);
 
-        settings.put("showPercentage", false);
-
         return settings;
+    }
+
+    protected String getCoordYKey(){
+        return "gaugeAxis";
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception{
@@ -79,18 +77,6 @@ public class VanGaugeWidget extends VanChartWidget{
         }
 
         return series;
-    }
-
-    protected int numberLevel(String dimensionID){
-        return BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
-    }
-
-    protected void formatSeriesTooltipFormat(JSONObject options) throws Exception{
-
-    }
-
-    protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
-
     }
 
     public String getSeriesType(String dimensionID){
