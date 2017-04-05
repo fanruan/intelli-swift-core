@@ -383,13 +383,13 @@ public abstract class AbstractTableSource implements CubeTableSource {
         }
         ja.put(stringList).put(numberList).put(dateList);
         jo.put("fields", ja);
-        jo.put("temp_name", tempName);
+        jo.put("tempName", tempName);
         return jo;
     }
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-        if (jo.has("temp_name")) {
-            this.tempName = jo.getString("temp_name");
+        if (jo.has("tempName")) {
+            this.tempName = jo.getString("tempName");
         }
 
     }

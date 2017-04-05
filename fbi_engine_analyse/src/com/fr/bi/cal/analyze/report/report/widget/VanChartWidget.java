@@ -1,24 +1,34 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.general.ComparatorUtils;
+import com.fr.bi.tool.BIReadReportUtils;
+import com.fr.bi.util.BIConfUtils;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
+import java.awt.*;
 import java.util.*;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by User on 2016/4/25.
  */
 public abstract class VanChartWidget extends TableWidget {
 
-    private static final int STYLE_GRADUAL = 2;
+    private static final double RED_DET = 0.299;
+    private static final double GREEN_DET = 0.587;
+    private static final double BLUE_DET = 0.114;
+    private static final double GRAY = 192;
 
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
@@ -26,17 +36,37 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int BOTTOM = 4;
     private static final int LEFT = 5;
 
-    //气泡图和散点图的指标个数
-    private static final int BUBBLE_COUNT = 3;
-    private static final int SCATTER_COUNT = 2;
+    //标签位置
+    private static final int POSITION_INNER = 1;
+    private static final int POSITION_OUTER = 2;
+    private static final int POSITION_CENTER = 3;
 
+    private static final int TARGET = 30000;
+    private static final int TARGET_BASE = 10000;
+
+    private static final String PERCENT_SYMBOL = "%";
+    private static final String WHITE = "#ffffff";
+
+    private static final int STYLE_NORMAL = 1; //普通风格
+    private static final int STYLE_GRADUAL = 2; //渐变风格
+
+    public static final int AUTO = 1;
+    public static final  int CUSTOM = 2;
+
+    private String requestURL = StringUtils.EMPTY;
 
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
     private HashMap<String, String> regionIdMap = new HashMap<String, String>();
 
-    public abstract JSONArray createSeries(JSONObject data) throws JSONException;
-
     public abstract String getSeriesType(String dimensionID);
+
+    public JSONArray createSeries(JSONObject data) throws Exception{
+        return this.createXYSeries(data);
+    }
+
+    protected String getLegendType(){
+        return "legend";
+    }
 
     protected boolean isStacked(String dimensionID){
         return false;
@@ -47,7 +77,64 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected int yAxisIndex(String dimensionID){
-        return 0;
+        int regionID = Integer.parseInt(this.getRegionID(dimensionID));
+
+        return (regionID - TARGET) / TARGET_BASE;
+    }
+
+    protected double numberScale(String dimensionID){
+
+        int level = this.numberLevel(dimensionID);
+        double scale = 1.0;
+
+        if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND){
+            scale = Math.pow(10, 4);
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION){
+            scale = Math.pow(10, 6);
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI){
+            scale = Math.pow(10, 8);
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT){
+            scale = 0.01;
+        }
+
+        return scale;
+    }
+
+
+    protected String scaleUnit(int level){
+        String unit = StringUtils.EMPTY;
+
+        if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND){
+
+            unit = Inter.getLocText("BI-Basic_Wan");
+
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION){
+
+            unit = Inter.getLocText("BI-Basic_Million");
+
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI){
+
+            unit = Inter.getLocText("BI-Basci_Yi");
+
+        }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT){
+
+            unit = PERCENT_SYMBOL;
+
+        }
+
+        return unit;
+    }
+
+    protected int numberLevel(String dimensionID){
+        try {
+            BINumberTarget  target = ((BINumberTarget) this.getBITargetAndDimension(dimensionID));
+
+            return target.getChartSetting().getSettings().optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
+        }catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
+        }
+
+        return BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
     }
 
     protected JSONArray getDimensionIDArray(String regionID){
@@ -77,8 +164,7 @@ public abstract class VanChartWidget extends TableWidget {
 
             for(String region : sorted){
 
-                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+                if(Integer.parseInt(region) < TARGET){
                     continue;
                 }
 
@@ -98,11 +184,91 @@ public abstract class VanChartWidget extends TableWidget {
             vjo.put(BIReportConstant.REGION.TARGET1, ja);
         }
 
+        this.requestURL = jo.optString("requestURL");
+
         super.parseJSON(jo, userId);
     }
 
-    public JSONObject createPlotOptions() throws JSONException{
-        return JSONObject.create().put("animation", true);
+    public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception{
+
+        JSONObject plotOptions = JSONObject.create();
+
+        plotOptions.put("animation", true);
+
+        //tooltip的默认配置
+        JSONObject tooltip = JSONObject.create();
+
+        String widgetBg = "#ffffff";
+        if(globalStyle.has("widgetBackground")){
+            widgetBg = globalStyle.optJSONObject("widgetBackground").optString("value");
+            widgetBg = StringUtils.isBlank(widgetBg) ? WHITE : widgetBg;
+        }
+
+        tooltip.put("enabled", true).put("animation", true).put("padding", 10).put("backgroundColor", widgetBg)
+                .put("borderRadius", 2).put("borderWidth", 0).put("shadow", true)
+                .put("style", JSONObject.create()
+                        .put("color", this.isDarkColor(widgetBg) ? "#FFFFFF" : "#1A1A1A")
+                        .put("fontSize", "14px").put("fontFamily", "Verdana"));
+
+        plotOptions.put("tooltip", tooltip);
+
+
+        plotOptions.put("dataLabels", this.createDataLabels(settings));
+
+        return plotOptions;
+    }
+
+    //默认是分类，系列，值的配置
+    protected JSONObject createDataLabels(JSONObject settings) throws JSONException{
+
+        boolean showDataLabel = settings.optBoolean("showDataLabel", false);
+
+        JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel);
+
+        if(showDataLabel){
+
+            JSONObject dataLabelSetting = settings.has("dataLabelSetting") ? settings.optJSONObject("dataLabelSetting") : this.defaultDataLabelSetting();
+
+            JSONObject formatter = JSONObject.create();
+            String identifier = "";
+
+            if(dataLabelSetting.optBoolean("showCategoryName")){
+                identifier += "${CATEGORY}";
+            }
+
+            if(dataLabelSetting.optBoolean("showSeriesName")){
+                identifier += "${SERIES}";
+            }
+
+            if(dataLabelSetting.optBoolean("showValue")){
+                identifier += "${VALUE}";
+            }
+
+            if(dataLabels.optBoolean("showPercentage")){
+                identifier += "${PERCENT}";
+            }
+
+            formatter.put("identifier", identifier).put("style", dataLabelSetting.optJSONObject("textStyle"));
+        }
+
+        return dataLabels;
+    }
+
+    private JSONObject defaultDataLabelSetting() throws JSONException{
+
+        return JSONObject.create().put("showCategoryName", true)
+                .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
+                .put("position", POSITION_OUTER).put("textStyle", defaultFont());
+
+    }
+
+    private boolean isDarkColor(String colorStr){
+
+        colorStr = colorStr.substring(1);
+
+        Color color =  new Color(Integer.parseInt(colorStr, 16));
+
+        return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException{
@@ -147,39 +313,173 @@ public abstract class VanChartWidget extends TableWidget {
 
         JSONObject data = super.createDataJSON(session).getJSONObject("data");
 
-        JSONArray series = this.createSeries(data);
+        JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
+        JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
 
-        return this.createOptions().put("series", series);
+        return this.createOptions(globalStyle, data);
     }
 
-    public JSONObject createOptions() throws JSONException{
+    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getDetailChartSetting();
+        JSONObject plateConfig = BIConfUtils.getPlateConfig();
 
         options.put("chartType", this.getSeriesType(StringUtils.EMPTY));
 
-        if(settings.has("chartColor")){
-            options.put("colors", settings.getJSONArray("chartColor"));
-        }
+        options.put("colors", this.parseColors(settings, globalStyle, plateConfig));
 
-        if(settings.optInt("chartStyle") == STYLE_GRADUAL){
-            options.put("style", "gradual");
-        }
+        options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
 
-        options.put("legend", this.parseLegend(settings));
+        options.put(this.getLegendType(), this.parseLegend(settings));
 
-        options.put("plotOptions", this.createPlotOptions());
+        options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
+
+        options.put("series",  this.createSeries(data));
+
+        //处理格式的问题
+        this.formatSeriesTooltipFormat(options);
+
+        this.formatSeriesDataLabelFormat(options);
 
         return options;
     }
 
-    protected JSONArray createXYSeries(JSONObject originData) throws JSONException{
+    protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception{
+
+        if(settings.has("chartColor")){
+            return settings.getJSONArray("chartColor");
+        } else if (globalStyle.has("chartColor")) {
+            return settings.getJSONArray("chartColor");
+        }else if(plateConfig.has("defaultColor")){
+            String key = plateConfig.optString("defaultColor");
+            JSONArray styleList = plateConfig.optJSONArray("styleList");
+            for(int i = 0, len = styleList.length(); i < len; i++){
+                JSONObject predefinedStyle = styleList.getJSONObject(i);
+                if(key == predefinedStyle.optString("value")){
+                    return predefinedStyle.optJSONArray("colors");
+                }
+            }
+        }
+
+        return JSONArray.create().put("#5caae4").put("#70cc7f").put( "#ebbb67").put("#e97e7b").put("#6ed3c9");
+    }
+
+    private String parseStyle(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws JSONException{
+        int style = STYLE_NORMAL;
+        if(settings.has("chartStyle")){
+            style = settings.optInt("chartStyle");
+        }else if(globalStyle.has("chartStyle")){
+            style = globalStyle.optInt("chartStyle");
+        }else if(plateConfig.has("chartStyle")){
+            style = plateConfig.optInt("chartStyle");
+        }
+        return style == STYLE_GRADUAL ? "gradual" : "normal";
+    }
+
+    protected String tooltipValueFormat(BINumberTarget dimension){
+        return this.valueFormat(dimension, true);
+    }
+
+    protected String dataLabelValueFormat(BINumberTarget dimension){
+        return this.valueFormat(dimension, true);
+    }
+
+    protected String decimalFormat(BINumberTarget dimension, boolean hasSeparator){
+        JSONObject settings = dimension.getChartSetting().getSettings();
+        int type = settings.optInt("format", 0);
+        String format;
+        switch (type) {
+            case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
+                format = hasSeparator ? "#,###.##" : "#.##";
+                break;
+            case BIReportConstant.TARGET_STYLE.FORMAT.ZERO2POINT:
+                format = hasSeparator ? "#,###" : "#0";
+                break;
+            default:
+                format = hasSeparator ? "#,###." : "#0.";
+                for(int i = 0; i < type; i++){
+                    format += "0";
+                }
+        }
+
+        return format;
+    }
+
+    //值标签和小数位数，千分富符，数量级和单位构成的后缀
+    protected String valueFormat(BINumberTarget dimension, boolean isTooltip) {
+
+        JSONObject settings = dimension.getChartSetting().getSettings();
+
+        boolean hasSeparator = settings.optBoolean("numSeparators", true);
+
+        String format = this.decimalFormat(dimension, hasSeparator);
+
+        String scaleUnit = this.scaleUnit(this.numberLevel(dimension.getId()));
+
+        String unit = settings.optString("unit", StringUtils.EMPTY);
+
+        if(isTooltip){
+            format += (scaleUnit + unit);
+        }
+
+        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
+    }
+
+    protected void formatSeriesTooltipFormat(JSONObject options) throws Exception{
+
+        JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
+
+        JSONArray series = options.optJSONArray("series");
+
+        for(int i = 0, len = series.length(); i < len; i++){
+            JSONObject ser = series.getJSONObject(i);
+            String dimensionID = ser.optString("dimensionID");
+
+            JSONObject formatter = JSONObject.create();
+
+            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID)));
+
+            ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
+        }
+    }
+
+    protected String getTooltipIdentifier(){
+        return "${CATEGORY}${SERIES}${VALUE}";
+    }
+
+    protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
+        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
+
+        if(dataLabels.optBoolean("enabled")){
+            JSONArray series = options.optJSONArray("series");
+
+            for(int i = 0, len = series.length(); i < len; i++){
+                JSONObject ser = series.getJSONObject(i);
+                String dimensionID = ser.optString("dimensionID");
+
+                ser.put("dataLabels", new JSONObject(dataLabels.toString())
+                        .put("valueFormat", this.dataLabelValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID))));
+            }
+        }
+    }
+
+    protected String categoryKey(){
+        return "x";
+    }
+
+    protected String valueKey(){
+        return "y";
+    }
+
+    protected JSONArray createXYSeries(JSONObject originData) throws Exception{
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         if (originData.has("t")) {//有列表头，多系列
             JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
             JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
             boolean isStacked = this.isStacked(targetIDs[0]);
+            double numberScale = this.numberScale(targetIDs[0]);
             for (int i = 0; i < topC.length(); i++) {
                 JSONObject tObj = topC.getJSONObject(i);
                 String name = tObj.getString("n");
@@ -188,9 +488,10 @@ public abstract class VanChartWidget extends TableWidget {
                     JSONObject lObj = leftC.getJSONObject(j);
                     String x = lObj.getString("n");
                     double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0);
-                    data.put(JSONObject.create().put("x", x).put("y", y));
+                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y / numberScale));
                 }
-                JSONObject ser = JSONObject.create().put("data", data).put("name", name).put("type", this.getSeriesType(targetIDs[0]));
+                JSONObject ser = JSONObject.create().put("data", data).put("name", name)
+                        .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
                 if(isStacked){
                     ser.put("stacked", targetIDs[0]);
                 }
@@ -200,50 +501,22 @@ public abstract class VanChartWidget extends TableWidget {
             JSONArray children = originData.getJSONArray("c");
             for(int i = 0, len = targetIDs.length; i < len; i++){
                 String id = targetIDs[i], type = this.getSeriesType(id), stackedKey = this.getStackedKey(id);
+                int yAxis = this.yAxisIndex(id);
+                double numberScale = this.numberScale(id);
                 JSONArray data = JSONArray.create();
                 for (int j = 0, count = children.length(); j < count; j++) {
                     JSONObject lObj = children.getJSONObject(j);
                     String x = lObj.getString("n");
-                    double y = lObj.getJSONArray("s").getDouble(i);
-                    data.put(JSONObject.create().put("x", x).put("y", y));
+                    double y = lObj.getJSONArray("s").getDouble(i) / numberScale;
+                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
                 }
                 JSONObject ser = JSONObject.create().put("data", data).put("name", id)
-                        .put("type", type).put("yAxis", this.yAxisIndex(id));
+                        .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
                 if(this.isStacked(id)){
                     ser.put("stacked", stackedKey);
                 }
                 series.put(ser);
             }
-        }
-
-        return series;
-    }
-
-    protected JSONArray createBubbleSeries(JSONObject originData) throws JSONException{
-        JSONArray series = JSONArray.create();
-        String type = this.getSeriesType(StringUtils.EMPTY);
-        int targetCount = type == "bubble" ? BUBBLE_COUNT : SCATTER_COUNT;
-
-        JSONArray children = originData.optJSONArray("c");
-
-        for(int i = 0, len = children.length(); i < len; i++){
-
-            JSONObject obj = children.optJSONObject(i);
-            JSONArray data = obj.optJSONArray("s");
-            int dataLen = data.length();
-
-            if(dataLen < targetCount){
-                continue;
-            }
-
-            double x = data.optDouble(0), y = data.optDouble(1), size = data.optDouble(2, y);
-
-            series.put(
-                JSONObject.create()
-                        .put("type", type)
-                        .put("name",  obj.optString("n"))
-                        .put("data", JSONArray.create().put(JSONObject.create().put("x", x).put("y", y).put("size", size)))
-            );
         }
 
         return series;
@@ -266,6 +539,25 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("enabled", legend >= TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
+    }
+
+    protected JSONArray mapStyleToRange(JSONArray mapStyle) throws JSONException{
+        JSONArray ranges = JSONArray.create();
+
+        for(int i = 0, len = mapStyle.length(); i < len; i++){
+            JSONObject config = mapStyle.getJSONObject(i), range = config.optJSONObject("range");
+
+            ranges.put(
+                    JSONObject.create()
+                            .put("from", range.optDouble("min"))
+                            .put("to", range.optDouble("max"))
+                            .put("color", config.optString("color"))
+            );
+
+
+        }
+
+        return ranges;
     }
 
     public BIDimension getCategoryDimension(){
@@ -300,6 +592,10 @@ public abstract class VanChartWidget extends TableWidget {
         plotOptions.put("animation", false);
         chartOptions.put("plotOptions", plotOptions);
         return chartOptions;
+    }
+
+    protected String getRequestURL(){
+        return this.requestURL;
     }
 
 }

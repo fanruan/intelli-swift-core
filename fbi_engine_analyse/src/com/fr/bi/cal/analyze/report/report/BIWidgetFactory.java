@@ -37,7 +37,7 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.AREA, VanAreaWidget.class);
         vancharts.put(WidgetType.STACKED_AREA, VanStackedAreaWidget.class);
         vancharts.put(WidgetType.PERCENT_STACKED_AREA, VanPercentStackedAreaWidget.class);
-        vancharts.put(WidgetType.COMPARE_AREA, VanCompareAreaWdiget.class);
+        vancharts.put(WidgetType.COMPARE_AREA, VanCompareAreaWidget.class);
         vancharts.put(WidgetType.RANGE_AREA, VanRangeAreaWidget.class);
 
         vancharts.put(WidgetType.COMBINE_CHART, VanCombinationWidget.class);
@@ -47,8 +47,9 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.DONUT, VanDonutWidget.class);
         vancharts.put(WidgetType.GAUGE, VanGaugeWidget.class);
 
-        vancharts.put(WidgetType.BUBBLE, VanBubbleWidget.class);
-        vancharts.put(WidgetType.SCATTER, VanScatterWidget.class);
+        vancharts.put(WidgetType.DOT, VanDotWidget.class);
+        vancharts.put(WidgetType.SCATTER, VanDotWidget.class);
+        vancharts.put(WidgetType.BUBBLE, VanDotWidget.class);
         vancharts.put(WidgetType.FORCE_BUBBLE, VanForceBubbleWidget.class);
 
         vancharts.put(WidgetType.RADAR, VanRadarWidget.class);

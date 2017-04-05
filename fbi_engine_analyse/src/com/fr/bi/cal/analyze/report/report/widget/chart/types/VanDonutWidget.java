@@ -1,15 +1,19 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.json.JSONException;
+import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.json.JSONObject;
 
 /**
  * Created by eason on 2017/2/27.
  */
-public class VanDonutWidget extends VanPieWidget{
+public class VanDonutWidget extends VanChartWidget {
 
-    public JSONObject createPlotOptions() throws JSONException {
-        JSONObject plotOptions = super.createPlotOptions();
+    public String getSeriesType(String dimensionID){
+        return "pie";
+    }
+
+    public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception {
+        JSONObject plotOptions = super.createPlotOptions(globalStyle, settings);
 
         plotOptions.put("innerRadius", "50%");
 

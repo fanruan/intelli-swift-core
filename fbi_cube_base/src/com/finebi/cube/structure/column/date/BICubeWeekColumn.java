@@ -8,7 +8,7 @@ import com.fr.bi.stable.constant.DateConstant;
 
 /**
  * This class created on 2016/3/30.
- *
+ * 星期几1-7
  * @author Connery
  * @since 4.0
  */

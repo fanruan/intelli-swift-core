@@ -10,10 +10,6 @@ import com.fr.json.JSONObject;
  */
 public class VanRadarWidget extends VanChartWidget{
 
-    public JSONArray createSeries(JSONObject data) throws JSONException {
-        return createXYSeries(data);
-    }
-
     public String getSeriesType(String dimensionID){
         return "radar";
     }

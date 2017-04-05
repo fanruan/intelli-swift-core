@@ -5,7 +5,7 @@
 BI.AnalysisETLDetailSelectDataLevel2Item = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         return BI.extend(BI.AnalysisETLDetailSelectDataLevel2Item.superclass._defaultConfig.apply(this, arguments), {
-            extraCls: "bi-select-data-level1-item",
+            extraCls: "bi-select-data-level0-item",
             height: 25,
             layer: 3,
             fieldType: BICst.COLUMN.STRING,
@@ -43,7 +43,7 @@ BI.AnalysisETLDetailSelectDataLevel2Item = BI.inherit(BI.Single, {
         this.button = BI.createWidget({
             type: "bi.blank_icon_text_item",
             // trigger: "mousedown",
-            cls: "select-date-level1-item-button " + this._getFieldClass(this._createNewType(o.fieldType, o.value["group"])),
+            cls: "select-data-level0-item-button " + this._getFieldClass(this._createNewType(o.fieldType, o.value["group"])),
             forceNotSelected:true,
             text: o.text,
             value: o.value,

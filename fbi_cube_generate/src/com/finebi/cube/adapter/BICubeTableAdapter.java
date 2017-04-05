@@ -325,6 +325,12 @@ public class BICubeTableAdapter implements ICubeTableService {
             case BIReportConstant.GROUP.YMDHMS:
                 columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY;
                 break;
+            case BIReportConstant.GROUP.YMDHM:
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH;
+                break;
+            case BIReportConstant.GROUP.WEEK_COUNT:
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEKNUMBER;
+                break;
             default:
                 throw BINonValueUtils.beyondControl();
         }

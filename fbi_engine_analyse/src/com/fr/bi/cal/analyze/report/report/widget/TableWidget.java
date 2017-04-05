@@ -12,7 +12,10 @@ import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.ExcelExportDataBuildFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.TableDirector;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SummaryCrossTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SummaryGroupTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -151,7 +154,7 @@ public class TableWidget extends BISummaryWidget {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
         boolean hasTarget = calculateTarget || getViewTargets().length > 0;
-        if (this.table_type == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
+        if (this.table_type == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE || this.table_type == BIReportConstant.WIDGET.DOT) {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
@@ -336,15 +339,15 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public String getDimensionName(String id){
+    public String getDimensionName(String id) {
         BISummaryTarget target = this.targetsIdMap.get(id);
         return target == null ? StringUtils.EMPTY : target.getText();
     }
 
-    public String[] getUsedTargetID(){
+    public String[] getUsedTargetID() {
         Set<String> dimensionIds = new HashSet<String>();
         for (BISummaryTarget target : this.getTargets()) {
-            if(target.isUsed()){
+            if (target.isUsed()) {
                 dimensionIds.add(target.getValue());
             }
 
@@ -376,9 +379,9 @@ public class TableWidget extends BISummaryWidget {
         JSONObject drills = JSONObject.create();
         String[] dimensionIds = this.getAllDimensionIds();
 
-        for(int i = dimensionIds.length - 1; i >= 0; i--){
+        for (int i = dimensionIds.length - 1; i >= 0; i--) {
             String key = dimensionIds[i];
-            if(clicked.containsKey(key)){
+            if (clicked.containsKey(key)) {
                 drills.put(key, clicked.get(key));
             }
         }
@@ -475,8 +478,26 @@ public class TableWidget extends BISummaryWidget {
 
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
-        Map<Integer, List<JSONObject>> viewMap = ExcelExportDataBuildFactory.createViewMap(this);
-        return ExcelExportDataBuildFactory.createExportData(viewMap, dataJSON).createJSON();
+        Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
+        IExcelDataBuilder builder = null;
+
+//        if (dataJSON.has("t")) {
+//            builder = new SumaryCrossTableAbstractDataBuilder(viewMap, dataJSON);
+//        } else {
+//            builder = new SummaryNormalTableAbstractDataBuilder(viewMap, dataJSON);
+//        }
+        if (this.table_type == BIReportConstant.TABLE_WIDGET.CROSS_TYPE) {
+            builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON);
+        }
+        if (this.table_type == BIReportConstant.TABLE_WIDGET.GROUP_TYPE) {
+            builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON);
+        }
+        if (null == builder) {
+            return new JSONObject();
+        }
+        TableDirector director = new TableDirector(builder);
+        director.construct();
+        return director.buildTableData().createJSON();
     }
 
     public Map<Integer, List<String>> getWidgetView() {
@@ -491,7 +512,7 @@ public class TableWidget extends BISummaryWidget {
         return getBITargetAndDimension(dID).createColumnKey().getFieldType();
     }
 
-    private BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
+    protected BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
         for (BIDimension dimension : getDimensions()) {
             if (ComparatorUtils.equals(dimension.getId(), dID)) {
                 return dimension;
@@ -503,5 +524,23 @@ public class TableWidget extends BISummaryWidget {
             }
         }
         throw new Exception();
+    }
+
+    private Map<Integer, List<JSONObject>> createViewMap() throws Exception {
+        Map<Integer, List<String>> view = getWidgetView();
+        Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
+        Iterator<Integer> iterator = view.keySet().iterator();
+        while (iterator.hasNext()) {
+            Integer next = iterator.next();
+            List<JSONObject> list = new ArrayList<JSONObject>();
+            List<String> ids = view.get(next);
+            for (String dId : ids) {
+                int type = getFieldTypeByDimensionID(dId);
+                String text = getDimensionNameByID(dId);
+                list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type));
+            }
+            dimAndTar.put(next, list);
+        }
+        return dimAndTar;
     }
 }

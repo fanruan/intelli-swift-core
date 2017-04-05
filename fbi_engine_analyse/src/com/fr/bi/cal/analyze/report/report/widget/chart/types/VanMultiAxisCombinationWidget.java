@@ -5,9 +5,4 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
  */
 public class VanMultiAxisCombinationWidget extends VanCombinationWidget{
 
-
-
-
-
-
 }

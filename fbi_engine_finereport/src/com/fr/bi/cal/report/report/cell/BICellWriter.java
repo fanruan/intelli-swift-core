@@ -75,7 +75,7 @@ public BICellWriter(Repository repo, int reportIndex, ReportSettingsProvider rep
             if (cb.getType() == CellConstant.CBCELL.TARGETTITLE_Y) {
                 resTag.cls("fr_bi_cell_sort_title_y");
                 if (ce.getSortTargetName() != null) {
-                    resTag.attr("sort_target", ce.getSortTargetName());
+                    resTag.attr("sortTarget", ce.getSortTargetName());
                 }
                 if (ce.getSortTargetValue() != null) {
                     resTag.attr("sort_value", ce.getSortTargetValue());
@@ -83,7 +83,7 @@ public BICellWriter(Repository repo, int reportIndex, ReportSettingsProvider rep
             } else if (cb.getType() == CellConstant.CBCELL.TARGETTITLE_X) {
                 resTag.cls("fr_bi_cell_sort_title_x");
                 if (ce.getSortTargetName() != null) {
-                    resTag.attr("sort_target", ce.getSortTargetName());
+                    resTag.attr("sortTarget", ce.getSortTargetName());
                 }
                 if (ce.getSortTargetValue() != null) {
                     resTag.attr("sort_value", ce.getSortTargetValue());
