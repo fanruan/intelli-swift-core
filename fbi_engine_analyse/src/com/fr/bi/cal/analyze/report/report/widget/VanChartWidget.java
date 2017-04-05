@@ -258,10 +258,23 @@ public abstract class VanChartWidget extends TableWidget {
                 identifier += "${PERCENT}";
             }
 
-            formatter.put("identifier", identifier).put("style", dataLabelSetting.optJSONObject("textStyle"));
+            formatter.put("identifier", identifier);
+
+            dataLabels.put("formatter", formatter);
+            dataLabels.put("style", dataLabelSetting.optJSONObject("textStyle"));
+            dataLabels.put("align", this.dataLabelAlign(dataLabelSetting.optInt("position")));
         }
 
         return dataLabels;
+    }
+
+    protected String dataLabelAlign(int position){
+        if(position == POSITION_OUTER){
+            return "outside";
+        }else if(position == POSITION_INNER){
+            return "inside";
+        }
+        return "center";
     }
 
     private JSONObject defaultDataLabelSetting() throws JSONException{
