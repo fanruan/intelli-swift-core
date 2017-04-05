@@ -254,7 +254,7 @@ public abstract class VanChartWidget extends TableWidget {
                 identifier += "${VALUE}";
             }
 
-            if(dataLabels.optBoolean("showPercentage")){
+            if(dataLabelSetting.optBoolean("showPercentage")){
                 identifier += "${PERCENT}";
             }
 
@@ -263,6 +263,8 @@ public abstract class VanChartWidget extends TableWidget {
             dataLabels.put("formatter", formatter);
             dataLabels.put("style", dataLabelSetting.optJSONObject("textStyle"));
             dataLabels.put("align", this.dataLabelAlign(dataLabelSetting.optInt("position")));
+
+            dataLabels.put("connectorWidth", dataLabelSetting.optBoolean("showTractionLine") == true ? 1 : 0);
         }
 
         return dataLabels;
@@ -281,7 +283,8 @@ public abstract class VanChartWidget extends TableWidget {
 
         return JSONObject.create().put("showCategoryName", true)
                 .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
-                .put("position", POSITION_OUTER).put("textStyle", defaultFont());
+                .put("position", POSITION_OUTER).put("showTractionLine", false)
+                .put("textStyle", defaultFont());
 
     }
 
