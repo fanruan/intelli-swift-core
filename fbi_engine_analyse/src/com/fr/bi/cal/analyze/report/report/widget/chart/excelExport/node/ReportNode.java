@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.node;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIBasicTableItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Kary on 2017/2/14.
  */
 public class ReportNode {
-    private List<BITableItem> children;
+    private List<BIBasicTableItem> children;
     private String dId;
     private String id;
     private String left;
@@ -22,7 +22,7 @@ public class ReportNode {
     }
 
     private void initAttrs() {
-        children = new ArrayList<BITableItem>();
+        children = new ArrayList<BIBasicTableItem>();
         dId = "";
         id = "";
         left = "";
@@ -35,11 +35,11 @@ public class ReportNode {
         this.id = id;
     }
 
-    public List<BITableItem> getChildren() {
+    public List<BIBasicTableItem> getChildren() {
         return children;
     }
 
-    public void setChildren(List<BITableItem> children) {
+    public void setChildren(List<BIBasicTableItem> children) {
         this.children = children;
     }
 

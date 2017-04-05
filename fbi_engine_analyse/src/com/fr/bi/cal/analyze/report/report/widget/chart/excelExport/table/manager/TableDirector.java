@@ -7,10 +7,10 @@ import com.fr.json.JSONException;
 /**
  * Created by Kary on 2017/2/26.
  */
-public class SummaryTableDirector {
+public class TableDirector {
     IExcelDataBuilder builder;
 
-    public SummaryTableDirector(IExcelDataBuilder builder) {
+    public TableDirector(IExcelDataBuilder builder) {
         this.builder = builder;
     }
     public void construct() throws Exception {
