@@ -62,10 +62,16 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
         }
         jo.put("usedTables", allUsedTables);
 
+        jo.put("usedTemplate", getUsedTempLateList(tableId, ServiceUtils.getCurrentUserID(req)));
+
+        WebUtils.printAsJSON(res, jo);
+    }
+
+    private JSONObject getUsedTempLateList(String tableId, long userId) throws Exception{
         JSONObject detailUsedList = new JSONObject();
 
         //暂时先检查管理员的模板了
-        List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(ServiceUtils.getCurrentUserID(req));
+        List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(userId);
         boolean isInUse = false;
         for (BIReportNode reportNode : nodeList) {
             JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(reportNode);
@@ -87,9 +93,7 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
             }
         }
 
-        jo.put("usedTemplate", detailUsedList);
-
-        WebUtils.printAsJSON(res, jo);
+        return  detailUsedList;
     }
 
     private boolean isWidgetUseTable(String tableId, JSONObject widget) throws Exception {
