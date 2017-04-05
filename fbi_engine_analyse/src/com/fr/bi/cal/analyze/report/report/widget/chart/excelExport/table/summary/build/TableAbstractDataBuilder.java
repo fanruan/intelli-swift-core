@@ -64,12 +64,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         this.dataJSON.put("s", cloneData);
     }
 
-
-    protected void tableWithoutDims() throws Exception {
-        createTableHeader();
-        createTableItems();
-    }
-
     protected void createTableItems() throws Exception {
         int currentLayer = 0;
         BIBasicTableItem item = new BIBasicTableItem();
@@ -196,8 +190,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     }
 
     protected void getNormalCrossTable() throws Exception {
-        createCrossTableItems();
         createCrossTableHeader();
+        createCrossTableItems();
     }
 
     /**
@@ -222,10 +216,10 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             items = createItems4OnlyCrossAndTarget(this.dataJSON, crossPV);
             return;
         }
-        createCrossItems(left, crossPV);
+        createItems4Cross(left, crossPV);
     }
 
-    private void createCrossItems(JSONObject left, JSONArray crossPV) throws Exception {
+    private void createItems4Cross(JSONObject left, JSONArray crossPV) throws Exception {
         BIBasicTableItem item = new BIBasicTableItem();
         item.setChildren(createCommonTableItems(left.getString("c"), 0, null, dimIds, crossPV));
 //        JSONObject item = new JSONObject();
@@ -262,7 +256,10 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 sum.put("cls", "summary-cell last");
                 sums.put(i, sum);
             }
-            sums.put(outerValues);
+            for (int i = 0; i < outerValues.length(); i++) {
+
+                sums.put(outerValues.getJSONObject(i));
+            }
 //            item.put("values", sums);
             item.setValue(sums);
         }

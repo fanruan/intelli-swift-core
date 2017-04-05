@@ -47,5 +47,8 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
         return tableDataForExport;
 
     }
-
+    private void tableWithoutDims() throws Exception {
+        createTableHeader();
+        createTableItems();
+    }
 }

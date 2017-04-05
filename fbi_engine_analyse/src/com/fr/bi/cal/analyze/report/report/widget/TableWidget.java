@@ -283,7 +283,7 @@ public class TableWidget extends BISummaryWidget {
         createDimensionAndTargetMap();
     }
 
-    protected void createDimensionAndTargetMap() {
+    private void createDimensionAndTargetMap() {
         for (BIDimension dimension : this.getDimensions()) {
             for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
                 Integer key = entry.getKey();
