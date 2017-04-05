@@ -1,5 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic;
 
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableHeader;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableItem;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
@@ -11,33 +13,61 @@ import java.util.List;
  * todo 少用json
  */
 public class BIExcelTableData implements JSONCreator {
-    private List<BITableHeader> headers;
-    private JSONArray items;
-    private JSONArray crossHeaders;
+    private List<ITableHeader> headers;
+    private List<ITableItem> items;
+    private List<ITableHeader> crossHeaders;
     private JSONArray crossItems;
 
-    public BIExcelTableData(List<BITableHeader> headers, JSONArray items, JSONArray crossHeaders, JSONArray crossItems) {
+    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, JSONArray crossItems) {
         this.headers = headers;
         this.items = items;
         this.crossHeaders = crossHeaders;
         this.crossItems = crossItems;
     }
 
+    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items) {
+        this.headers = headers;
+        this.items = items;
+    }
 
     @Override
     public JSONObject createJSON() throws Exception {
-        return new JSONObject();
+        JSONObject jo = new JSONObject();
+        JSONArray headerArray = new JSONArray();
+        for (ITableHeader header : headers) {
+            headerArray.put(header.createJSON());
+        }
+        jo.put("header", headerArray);
+        if (null != crossHeaders) {
+            JSONArray crossHeaderArray = new JSONArray();
+            for (ITableHeader header : crossHeaders) {
+                crossHeaderArray.put(header.createJSON());
+            }
+            jo.put("crossHeader", crossHeaderArray);
+        }
+        if (null != items) {
+            JSONArray itemArray = new JSONArray();
+            for (ITableItem item : items) {
+                itemArray.put(item.createJSON());
+            }
+            jo.put("items", itemArray);
+        }
+        if (null != crossItems) {
+            jo.put("crossItems", crossItems);
+        }
+        return jo;
     }
 
-    public List<BITableHeader> getHeaders() {
+
+    public List<ITableHeader> getHeaders() {
         return headers;
     }
 
-    public JSONArray getItems() {
+    public List<ITableItem> getItems() {
         return items;
     }
 
-    public JSONArray getCrossHeaders() {
+    public List<ITableHeader> getCrossHeaders() {
         return crossHeaders;
     }
 

@@ -23,7 +23,7 @@ public class ReportSettingUpdateManager {
         return ourInstance;
     }
 
-    private List<ReportConfVersionNode> versionNodes = new ArrayList<>();
+    private List<ReportConfVersionNode> versionNodes = new ArrayList<ReportConfVersionNode>();
 
     //
     protected ReportSettingUpdateManager() {
@@ -35,10 +35,10 @@ public class ReportSettingUpdateManager {
         Iterator<ReportConfVersionNode> iterator = versionNodes.iterator();
         while (iterator.hasNext()) {
             ReportConfVersionNode node = iterator.next();
-            boolean flag = getVersion(setting).getVersion() < node.getVersion().getVersion();
+            boolean flag = parseValue(getVersion(setting).getVersion()) < parseValue(node.getVersion().getVersion());
             if (flag) {
-                BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("profile files is updating ", getVersion(setting).getVersion() + "------>" + node.getVersion().getVersion()));
-                node.update(reportSettings);
+                BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("profile files is updating ", this.getVersion(setting).getVersion() + "------>" + node.getVersion().getVersion()));
+                reportSettings = node.update(reportSettings);
             }
         }
         return new BIDesignSetting(reportSettings.toString());
@@ -80,5 +80,19 @@ public class ReportSettingUpdateManager {
     protected void reSetNodeList(List nodeList) throws Exception {
         this.versionNodes = nodeList;
         Collections.sort(versionNodes);
+    }
+
+    private double parseValue(String version) {
+        String rs = "";
+        String[] split = version.split("\\.");
+        if (split.length >= 2) {
+            rs += split[0] + ".";
+            for (int i = 1; i < split.length; i++) {
+                rs += split[i];
+            }
+        } else {
+            rs = version;
+        }
+        return Double.valueOf(rs);
     }
 }
