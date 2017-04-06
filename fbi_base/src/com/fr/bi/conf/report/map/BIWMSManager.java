@@ -1,17 +1,13 @@
 package com.fr.bi.conf.report.map;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.file.XMLFileManager;
 import com.fr.general.ComparatorUtils;
-import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLReadable;
 import com.fr.stable.xml.XMLableReader;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +43,7 @@ public class BIWMSManager extends XMLFileManager {
 
                 String name = reader.getAttrAsString("name", StringUtils.EMPTY);
 
-                MapInfo info = new MapInfo();
+               final MapInfo info = new MapInfo();
 
                 nameMap.put(name, info);
 
