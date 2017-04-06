@@ -297,7 +297,7 @@ public class BIDetailWidget extends BIAbstractWidget {
 
     private Map<Integer, List<JSONObject>> createViewMap() throws Exception {
         Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
-        List<JSONObject> dims = new ArrayList<>();
+        List<JSONObject> dims = new ArrayList<JSONObject>();
         for (BIDetailTarget detailTarget : this.getViewDimensions()) {
             String dId = detailTarget.getId();
             int type = detailTarget.createColumnKey().getFieldType();

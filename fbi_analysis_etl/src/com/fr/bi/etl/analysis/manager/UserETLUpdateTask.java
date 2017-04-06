@@ -205,7 +205,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
 
     @Override
     public Set<String> getTaskTableSourceIds() {
-        return new HashSet<>();
+        return new HashSet<String>();
     }
 
 

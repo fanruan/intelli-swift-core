@@ -97,7 +97,7 @@ public class StopCubeTask implements CubeTask {
 
     @Override
     public Set<String> getTaskTableSourceIds() {
-        return new HashSet<>();
+        return new HashSet<String>();
     }
 
 
