@@ -20,6 +20,8 @@ public class VanGaugeWidget extends VanCartesianWidget{
     private static final int SINGLE_POINTER = 1;
     private static final int MULTI_POINTERS = 2;
 
+    private static final String BG_COLOR = "rgb(245,245,247)";
+
 
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
@@ -39,6 +41,27 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
     protected String getCoordYKey(){
         return "gaugeAxis";
+    }
+
+    //仪表盘的标签样式固定
+    public JSONObject createPlotOptions(JSONObject globalSetting, JSONObject settings) throws Exception{
+        JSONObject plotOptions = super.createPlotOptions(globalSetting, settings);
+
+        int gaugeStyle = settings.optInt("dashboardChartType");
+        boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
+
+        String valueLabelKey = (isPointer ? SERIES : CATEGORY) + VALUE;
+        JSONObject formatter = JSONObject.create().put("identifier", valueLabelKey);
+
+        JSONObject valueLabel = JSONObject.create().put("enabled", true).put("backgroundColor", BG_COLOR).put("align", "left").put("formatter", formatter);
+
+        JSONObject seriesLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", CATEGORY)).put("align", "bottom");
+
+        JSONObject percentageLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", PERCENT)).put("align", "left");
+
+        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
+
+        return plotOptions;
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception{
@@ -77,6 +100,10 @@ public class VanGaugeWidget extends VanCartesianWidget{
         }
 
         return series;
+    }
+
+    protected JSONObject createDataLabels(JSONObject settings) throws JSONException{
+        return JSONObject.EMPTY;
     }
 
     public String getSeriesType(String dimensionID){
