@@ -3,6 +3,14 @@
  * @extends BI.NodeButton
  */
 BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
+
+    _constant: {
+        DELETE_WARNING: 1,
+        USED_BY_TEMPLATE: 2,
+        USED_BY_TABLE: 3,
+        EDIT_WARNING: 4
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.SelectDataLevel8Node.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-select-data-level8-node bi-list-item",
@@ -23,7 +31,7 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
     _init: function () {
         this.options.title = BI.Utils.getDescribe(this.options.id) || this.options.title;
         BI.SelectDataLevel8Node.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
+        var self = this, o = this.options, c = this._constant;
         self._initControl();
         this.checkbox = BI.createWidget({
             type: "bi.tree_group_node_checkbox",
@@ -76,11 +84,15 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                     value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
                     handler: function () {
                         self.confirmCombo.hideView();
-                        BI.createWidget({
-                            type: "bi.analysis_etl_main",
-                            element: BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body"),
-                            model: self.res
-                        })
+                        if(self.popupTab.getSelect() === c.EDIT_WARNING){
+                            BI.createWidget({
+                                type: "bi.analysis_etl_main",
+                                element: BI.Layers.create(ETLCst.ANALYSIS_LAYER, "body"),
+                                model: self.res
+                            })
+                        }else{
+                            BI.ETLReq.reqDeleteTable({id: o.id}, BI.emptyFn)
+                        }
                     }
                 }, {
                     value: BI.i18nText("BI-Basic_Cancel"),
@@ -90,23 +102,18 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                     }
                 }],
                 el: {
-                    type: "bi.vertical_adapt",
-                    items: [{
-                        type: "bi.label",
-                        whiteSpace: "normal",
-                        text: BI.i18nText("BI-Current_Table_Is_Used_By_Other_Confirm_To_Continue"),
-                        cls: "delete-label",
-                        textAlign: "left",
-                        width: 300
-                    }],
-                    width: 300,
-                    height: 100,
-                    hgap: 20
+                    direction: "custom",
+                    type: "bi.tab",
+                    ref: function(_ref){
+                        self.popupTab = _ref;
+                    },
+                    cardCreator: BI.bind(this._createTabs, this)
                 },
-                maxHeight: 140,
+                minHeight: 140,
+                maxHeight: 340,
                 minWidth: 340
             }
-        })
+        });
 
         this.tip = BI.createWidget({
             type: "bi.label",
@@ -178,15 +185,86 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
         }]];
     },
 
+    _createTabs: function(v){
+        var self = this, o = this.options;
+        var c = this._constant;
+        switch (v) {
+            case c.EDIT_WARNING:
+                return BI.createWidget({
+                    type: "bi.vertical_adapt",
+                    items:[{
+                        type: "bi.label",
+                        whiteSpace: "normal",
+                        text: BI.i18nText("BI-Current_Table_Is_Used_By_Other_Confirm_To_Continue"),
+                        cls: "delete-label",
+                        textAlign: "left",
+                        width: 300,
+                        height: 100
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                });
+            case c.DELETE_WARNING:
+                return BI.createWidget({
+                    type: "bi.vertical_adapt",
+                    items:[{
+                        type: "bi.label",
+                        whiteSpace: "normal",
+                        text: BI.i18nText("BI-Is_Sure_Delete_ETL_Table", o.text),
+                        cls: "delete-label",
+                        textAlign: "left",
+                        width: 300,
+                        height: 100
+                    }],
+                    width: 300,
+                    height: 100,
+                    hgap: 20
+                });
+            case c.USED_BY_TABLE:
+                return BI.createWidget({
+                    type: "bi.button_group",
+                    items: [],
+                    layouts: [{
+                        type: "bi.vertical"
+                    }]
+                });
+            case c.USED_BY_TEMPLATE:
+                return BI.createWidget({
+                    type: "bi.vtape",
+                    items: [{
+                        el: {
+                            type: "bi.label",
+                            whiteSpace: "normal",
+                            text: BI.i18nText("BI-ETL_Analysis_Is_Used"),
+                            cls: "delete-label",
+                            textAlign: "left",
+                            width: 300
+                        },
+                        height: 50
+                    }, {
+                        type: "bi.preview_table",
+                        width: 300,
+                        ref: function(_ref){
+                            self.preViewTable = _ref;
+                        }
+                    }],
+                    hgap: 20,
+                    height: 100
+                })
+        }
+    },
+
     afterClickList: function (v, option) {
-        var self = this;
+        var self = this, c = this._constant;
         this.res = null;
         switch (v) {
             case ETLCst.ANALYSIS_TABLE_SET.EDIT :
                 BI.ETLReq.reqEditTable({id: option.id}, function (res) {
-                    if (res['used']) {
+                    if (res['used'] || BI.keys(res["usedTemplate"]).length > 0) {
                         self.res = res;
                         self.confirmCombo.showView();
+                        self.popupTab.setSelect(c.EDIT_WARNING);
                     } else {
                         BI.createWidget({
                             type: "bi.analysis_etl_main",
@@ -200,7 +278,55 @@ BI.SelectDataLevel8Node = FR.extend(BI.NodeButton, {
                 self.controller._showRenamePop(option.id, option.text);
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.DELETE :
-                BI.ETLReq.reqDeleteTable({id: option.id}, BI.emptyFn)
+                BI.ETLReq.reqEditTable({id: option.id}, function (res) {
+                    if (BI.keys(res["usedTemplate"]).length > 0) {
+                        self.res = res;
+                        self.confirmCombo.showView();
+                        self.popupTab.setSelect(c.USED_BY_TEMPLATE);
+                        var tableItems = [];
+                        BI.each(res["usedTemplate"], function(tName, widgets){
+                            BI.each(widgets, function(idx, name){
+                                tableItems.push([{text: tName, textAlign: "center"}, {text: name, textAlign: "center"}]);
+                            });
+                        });
+                        var tableHeader = [[{text: BI.i18nText("BI-ETL_Template_Name")}, {text: BI.i18nText("BI-ETL_Widget_Name")}]]
+                        self.preViewTable.populate(tableItems, tableHeader);
+                        self.popupTab.getSelectedTab().resize();
+                    } else if(res['used']){
+                        var items = res["usedTables"] || [];
+                        self.res = res;
+                        if(BI.isEmptyArray(items) || items.length === 1){
+                        }else{
+                            self.confirmCombo.showView();
+                            self.popupTab.setSelect(c.USED_BY_TABLE);
+                            var showItems = [];
+                            BI.each(items, function(idx, tId){
+                                if(tId !== option.id){
+                                    var tableName = BI.Utils.getTableNameByID(tId);
+                                    showItems.push({
+                                        type: "bi.label",
+                                        text: tableName,
+                                        title: tableName,
+                                        cls: "delete-label",
+                                        textAlign: "center",
+                                        width: 360
+                                    });
+                                }
+                            });
+                        }
+                        self.popupTab.getSelectedTab().populate(BI.concat([{
+                            type: "bi.label",
+                            whiteSpace: "normal",
+                            text: BI.i18nText("BI-ETL_Sure_Delete_Used_Table"),
+                            cls: "delete-label",
+                            textAlign: "center",
+                            width: 360
+                        }], showItems));
+                    } else {
+                        self.confirmCombo.showView();
+                        self.popupTab.setSelect(c.DELETE_WARNING);
+                    }
+                });
                 return;
             case ETLCst.ANALYSIS_TABLE_SET.COPY :
                 BI.ETLReq.reqSaveTable({

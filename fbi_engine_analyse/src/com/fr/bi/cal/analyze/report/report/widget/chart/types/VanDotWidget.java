@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -73,6 +74,53 @@ public class VanDotWidget extends VanCartesianWidget{
         return settings;
     }
 
+    public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception{
+        JSONObject plotOptions = super.createPlotOptions(globalStyle, settings);
+
+        plotOptions.put("sizeBy", "width");
+        plotOptions.put("minSize", settings.optInt("bubbleSizeFrom"));
+        plotOptions.put("maxSize", settings.optInt("bubbleSizeTo"));
+
+        plotOptions.put("shadow", settings.optInt("bubbleStyle") == SHADOW);
+
+        return plotOptions;
+    }
+
+    protected JSONObject parseLegend(JSONObject settings) throws JSONException{
+
+        JSONObject legend = super.parseLegend(settings);
+
+        int rule = settings.optInt("displayRules");
+        if(rule == INTERVAL_RULE){
+            legend.put("continuous", false);
+            legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
+        }else{
+            legend.put("continuous", true);
+        }
+
+        return legend;
+    }
+
+    protected String getLegendType(){
+
+        String legend = "legend";
+
+        try {
+            JSONObject settings = this.getDetailChartSetting();
+            int rule = settings.optInt("displayRules");
+
+            if(rule != SERIES_RULE){
+                legend = "rangeLegend";
+            }
+
+        }catch (JSONException e){
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+
+
+        return legend;
+    }
+
     public JSONArray createSeries(JSONObject originData) throws Exception{
 
         JSONArray series = JSONArray.create();
@@ -81,9 +129,7 @@ public class VanDotWidget extends VanCartesianWidget{
         if(ids.length < SCATTER_COUNT){
             return series;
         }
-
         String seriesType = this.getSeriesType(StringUtils.EMPTY);
-
         HashMap<String, ArrayList<JSONArray>> seriesMap = new HashMap<String, ArrayList<JSONArray>>();
         Iterator iterator = originData.keys();
         while (iterator.hasNext()) {
@@ -152,5 +198,9 @@ public class VanDotWidget extends VanCartesianWidget{
         int idCount = this.getUsedTargetID().length;
 
         return (idCount == BUBBLE_DIMENSION && type == BUBBLE ) ? "bubble" : "scatter";
+    }
+
+    protected String getTooltipIdentifier(){
+        return X + Y + SIZE;
     }
 }

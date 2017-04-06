@@ -523,8 +523,13 @@ public class TableWidget extends BISummaryWidget {
                 return dimension;
             }
         }
+
+        return this.getBITargetByID(dID);
+    }
+
+    protected BISummaryTarget getBITargetByID(String id) throws Exception{
         for (BISummaryTarget target : getTargets()) {
-            if (ComparatorUtils.equals(target.getId(), dID)) {
+            if (ComparatorUtils.equals(target.getId(), id)) {
                 return target;
             }
         }
