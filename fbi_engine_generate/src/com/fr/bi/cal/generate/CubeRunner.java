@@ -148,7 +148,7 @@ public class CubeRunner {
         BackUpUtils.backup();
     }
 
-    private void finish(CubeTask cubeTask) {
+    private void finish(final CubeTask cubeTask) {
         long t = System.currentTimeMillis();
         try {
             if (!cubeTask.getTaskType().equals(CubeTaskType.INSTANT)) {

@@ -281,7 +281,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
         public boolean isMatch(String name) {
             String py = BIPhoneticismUtils.getPingYin(name);
-            if (name.toUpperCase().contains(keyword.toUpperCase())
+            if (keyword == null || name.toUpperCase().contains(keyword.toUpperCase())
                     || py.toUpperCase().contains(keyword.toUpperCase())) {
                 return true;
             }

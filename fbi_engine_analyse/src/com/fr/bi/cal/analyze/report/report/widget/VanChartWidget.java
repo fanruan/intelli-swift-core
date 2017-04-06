@@ -4,7 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.field.target.target.BINumberTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
@@ -29,6 +29,16 @@ public abstract class VanChartWidget extends TableWidget {
     private static final double GREEN_DET = 0.587;
     private static final double BLUE_DET = 0.114;
     private static final double GRAY = 192;
+
+    //标签和数据点提示的内容
+    public static final String CATEGORY = "${CATEGORY}";
+    public static final String SERIES = "${SERIES}";
+    public static final String VALUE = "${VALUE}";
+    public static final String PERCENT = "${PERCENT}";
+    public static final String X = "${X}";
+    public static final String Y = "${Y}";
+    public static final String SIZE = "${SIZE}";
+    public static final String NAME = "${NAME}";
 
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
@@ -127,7 +137,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected int numberLevel(String dimensionID){
         try {
-            BINumberTarget  target = ((BINumberTarget) this.getBITargetAndDimension(dimensionID));
+            BISummaryTarget  target = this.getBITargetByID(dimensionID);
 
             return target.getChartSetting().getSettings().optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
         }catch (Exception e){
@@ -244,21 +254,37 @@ public abstract class VanChartWidget extends TableWidget {
                 identifier += "${VALUE}";
             }
 
-            if(dataLabels.optBoolean("showPercentage")){
+            if(dataLabelSetting.optBoolean("showPercentage")){
                 identifier += "${PERCENT}";
             }
 
-            formatter.put("identifier", identifier).put("style", dataLabelSetting.optJSONObject("textStyle"));
+            formatter.put("identifier", identifier);
+
+            dataLabels.put("formatter", formatter);
+            dataLabels.put("style", dataLabelSetting.optJSONObject("textStyle"));
+            dataLabels.put("align", this.dataLabelAlign(dataLabelSetting.optInt("position")));
+
+            dataLabels.put("connectorWidth", dataLabelSetting.optBoolean("showTractionLine") == true ? 1 : 0);
         }
 
         return dataLabels;
+    }
+
+    protected String dataLabelAlign(int position){
+        if(position == POSITION_OUTER){
+            return "outside";
+        }else if(position == POSITION_INNER){
+            return "inside";
+        }
+        return "center";
     }
 
     private JSONObject defaultDataLabelSetting() throws JSONException{
 
         return JSONObject.create().put("showCategoryName", true)
                 .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
-                .put("position", POSITION_OUTER).put("textStyle", defaultFont());
+                .put("position", POSITION_OUTER).put("showTractionLine", false)
+                .put("textStyle", defaultFont());
 
     }
 
@@ -376,15 +402,15 @@ public abstract class VanChartWidget extends TableWidget {
         return style == STYLE_GRADUAL ? "gradual" : "normal";
     }
 
-    protected String tooltipValueFormat(BINumberTarget dimension){
+    protected String tooltipValueFormat(BISummaryTarget dimension){
         return this.valueFormat(dimension, true);
     }
 
-    protected String dataLabelValueFormat(BINumberTarget dimension){
+    protected String dataLabelValueFormat(BISummaryTarget dimension){
         return this.valueFormat(dimension, true);
     }
 
-    protected String decimalFormat(BINumberTarget dimension, boolean hasSeparator){
+    protected String decimalFormat(BISummaryTarget dimension, boolean hasSeparator){
         JSONObject settings = dimension.getChartSetting().getSettings();
         int type = settings.optInt("format", 0);
         String format;
@@ -406,7 +432,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
-    protected String valueFormat(BINumberTarget dimension, boolean isTooltip) {
+    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip) {
 
         JSONObject settings = dimension.getChartSetting().getSettings();
 
@@ -437,14 +463,14 @@ public abstract class VanChartWidget extends TableWidget {
 
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID)));
+            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getBITargetByID(dimensionID)));
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
     }
 
     protected String getTooltipIdentifier(){
-        return "${CATEGORY}${SERIES}${VALUE}";
+        return CATEGORY + SERIES + VALUE;
     }
 
     protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
@@ -458,7 +484,7 @@ public abstract class VanChartWidget extends TableWidget {
                 String dimensionID = ser.optString("dimensionID");
 
                 ser.put("dataLabels", new JSONObject(dataLabels.toString())
-                        .put("valueFormat", this.dataLabelValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID))));
+                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID))));
             }
         }
     }

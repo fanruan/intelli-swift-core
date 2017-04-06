@@ -50,7 +50,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
         }
 
         Iterator<Map.Entry<Integer, Node>> iterator = nodeMap.entrySet().iterator();
-        Node[] trees = new Node[nodeMap.size()];
+        final Node[] trees = new Node[nodeMap.size()];
         int count = 0;
         while (iterator.hasNext()) {
             Map.Entry<Integer, Node> entry = iterator.next();
@@ -59,7 +59,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
         int rowLen = usedSumTarget.length + rowData.getMaxArrayLength();
         int columnLen = getNodesTotalLength(trees);
 
-        TableCellIterator iter = new TableCellIterator(rowLen, columnLen);
+        final TableCellIterator iter = new TableCellIterator(rowLen, columnLen);
         new Thread() {
             public void run() {
                 try {
@@ -125,7 +125,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     private void generateCells(Node[] nodes, TableWidget widget, BIComplexExecutData rowData, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) {
         int rowIdx = rowData.getMaxArrayLength();
         TargetGettingKey[] keys = widget.getTargetsKey();
-        for(int i = 0, j = nodes.length; i < j; i++) {
+        for (int i = 0, j = nodes.length; i < j; i++) {
             while (nodes[i].getFirstChild() != null) {
                 nodes[i] = nodes[i].getFirstChild();
             }
@@ -141,7 +141,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             Object targetName = usedSumTarget[i].getText();
             CBCell targetNameCell = ExecutorUtils.createCell(targetName, rowIdx + i, 1, widget.isOrder(), 1, headStyle);
             pagedIterator.addCell(targetNameCell);
-            for(int k = 0, j = nodes.length; k < j; k++) {
+            for (int k = 0, j = nodes.length; k < j; k++) {
                 Node temp = nodes[k];
                 while (temp != null) {
                     Object data = temp.getSummaryValue(keys[i]);
@@ -210,7 +210,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     public JSONObject createJSONObject() throws Exception {
         Iterator<Map.Entry<Integer, Node>> it = getCubeNodes().entrySet().iterator();
         JSONObject jo = new JSONObject();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             Map.Entry<Integer, Node> entry = it.next();
             jo.put(String.valueOf(entry.getKey()), entry.getValue().toJSONObject(rowData.getDimensionArray(entry.getKey()), widget.getTargetsKey(), -1));
         }

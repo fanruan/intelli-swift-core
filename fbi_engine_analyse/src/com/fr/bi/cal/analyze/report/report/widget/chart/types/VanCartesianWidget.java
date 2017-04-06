@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.field.target.target.BINumberTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -97,7 +98,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
-    protected String valueFormat(BINumberTarget dimension, boolean isTooltip) {
+    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip) {
 
         int yAxis = this.yAxisIndex(dimension.getId());
 
@@ -138,7 +139,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return StringUtils.isBlank(scaleUnit) ? StringUtils.EMPTY : "(" + this.scaleUnit(level) + unit + ")";
     }
 
-    protected String dataLabelValueFormat(BINumberTarget dimension){
+    protected String dataLabelValueFormat(BISummaryTarget dimension){
         return this.valueFormat(dimension, false);
     }
 
@@ -223,10 +224,18 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)));
         }
 
-        options.put("xAxis", this.parseCategoryAxis(settings));
-        options.put("yAxis", this.parseValueAxis(settings));
+        options.put(this.getCoordXKey(), this.parseCategoryAxis(settings));
+        options.put(this.getCoordYKey(), this.parseValueAxis(settings));
 
         return options;
+    }
+
+    protected String getCoordXKey(){
+        return "xAxis";
+    }
+
+    protected String getCoordYKey(){
+        return "yAxis";
     }
 
     protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
