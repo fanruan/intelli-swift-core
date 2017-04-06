@@ -239,7 +239,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
 
     @Override
     public Set<String> getTaskTableSourceIds() {
-        return new HashSet<>();
+        return new HashSet<String>();
     }
 
     @Override

@@ -40,7 +40,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     public TableCellIterator createCellIterator4Excel() throws Exception {
-        Node tree = getCubeNode();
+       final Node tree = getCubeNode();
         if (tree == null) {
             return new TableCellIterator(0, 0);
         }
