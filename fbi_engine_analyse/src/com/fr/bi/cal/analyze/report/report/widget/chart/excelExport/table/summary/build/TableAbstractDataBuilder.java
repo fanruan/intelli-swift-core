@@ -406,7 +406,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 }
                 parseCrossItem2Array(crossItem.getJSONArray("children"), pValues, tempPV);
                 //汇总
-                if (crossItem.has("values")&&BIJsonUtils.isArray(crossItem.getString("values")) && crossItem.getJSONArray("values").length() > 0) {
+                if (BIJsonUtils.isArray(crossItem.getString("values")) && crossItem.getJSONArray("values").length() > 0) {
                     for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
                         JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
                         pValues.put(object);
