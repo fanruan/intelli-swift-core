@@ -28,11 +28,13 @@ public class SummaryGroupTableDataBuilder extends SummaryCrossTableDataBuilder {
     }
 
     @Override
-    public void createHeadersAndItems() throws Exception {
-        createTableHeader();
+    public void createItems() throws Exception {
         createTableItems();
     }
-
+    @Override
+    public void createHeaders() throws Exception {
+        createTableHeader();
+    }
     @Override
     public BIExcelTableData createTableData() throws JSONException {
         BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items);

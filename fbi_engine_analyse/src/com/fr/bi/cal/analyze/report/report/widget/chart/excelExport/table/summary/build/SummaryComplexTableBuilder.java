@@ -33,7 +33,12 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public void createHeadersAndItems() throws Exception {
+    public void createHeaders() throws Exception {
+
+    }
+
+    @Override
+    public void createItems() throws Exception {
         //正常复杂表
         if (this.isColRegionExist() && this.isRowRegionExist()) {
             createComplexTableItems();
@@ -107,7 +112,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     itemNode.setDId(targetIds.get(0));
                     itemNode.setText(s.getString(0));
                     itemNode.setClicked(new JSONArray().put(new JSONObject()));
-                    itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", "").toString());
+                    itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
                     itemNode.setSum(true);
                     itemNode.setTag(UUID.randomUUID().toString());
                     itemNode.setValue(outerValues);
@@ -126,7 +131,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         itemNode.setDId(targetIds.get(j));
         itemNode.setText(s.getString(j));
         itemNode.setClicked(new JSONArray().put(new JSONObject()));
-        itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", "").toString());
+        itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
         outerValues.put(itemNode);
     }
 
@@ -240,7 +245,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 item.setTag(UUID.randomUUID().toString());
 //                item.setValue(tempItems);
                 item.setValue(new JSONArray(tempItems));
-                item.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", "").toString());
+                item.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
 //                children.put(item);
                 children.add(item);
             }
@@ -319,7 +324,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private JSONObject createSingleCrossTableItems(JSONObject tableData, Map<Integer, List<JSONObject>> dimsByDataPos) throws Exception {
         SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(null, tableData);
         builder.initAttrs();
-        builder.createHeadersAndItems();
+        builder.createItems();
         BIExcelTableData data = builder.createTableData();
         JSONObject result = new JSONObject();
         result.put("crossItems", new JSONArray().put(data.getCrossItems()));

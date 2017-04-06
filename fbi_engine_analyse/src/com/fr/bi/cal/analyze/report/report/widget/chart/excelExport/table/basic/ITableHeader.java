@@ -7,6 +7,8 @@ import com.fr.json.JSONObject;
 /**
  * Created by Kary on 2017/2/26.
  */
-public interface ITableHeader extends JSONCreator{
+public interface ITableHeader extends JSONCreator {
+    boolean isUsed();
+
     void parseJson(JSONObject json) throws JSONException;
 }

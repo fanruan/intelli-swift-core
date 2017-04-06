@@ -26,10 +26,11 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public void createHeadersAndItems() throws Exception {
+    public void createHeaders() throws Exception {
         //正常交叉表
         if (null != dataJSON && dataJSON.has("t")) {
-            getNormalCrossTable();
+            createCrossTableItems();
+            createCrossTableHeader();
             return;
         }
         //仅有列表头的时候（无指标）
@@ -38,7 +39,30 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
             return;
         }
         //无列表头(普通汇总表)
-        tableWithoutDims();
+        createTableHeader();
+
+    }
+
+    @Override
+    public void createItems() throws Exception {
+        //正常交叉表
+        if (null != dataJSON && dataJSON.has("t")) {
+//            createCrossTableItems();
+            return;
+        }
+        //仅有列表头的时候（无指标）
+        if (this.dimIds.size() == 0 && this.crossDimIds.size() > 0 && this.targetIds.size() == 0) {
+//            getNoneTarCrossTable();
+            return;
+        }
+        //无列表头(普通汇总表)
+        createTableItems();
+    }
+
+    private void getNoneTarCrossTable() throws Exception {
+        createCrossHeader4OnlyCross();
+        createCrossItems4OnlyCross();
+//        setOtherAttrs4OnlyCross();
     }
 
     @Override
@@ -47,8 +71,5 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
         return tableDataForExport;
 
     }
-    private void tableWithoutDims() throws Exception {
-        createTableHeader();
-        createTableItems();
-    }
+
 }

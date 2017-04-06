@@ -9,7 +9,9 @@ import com.fr.json.JSONException;
 public interface IExcelDataBuilder {
     void initAttrs() throws JSONException;
 
-    void createHeadersAndItems() throws Exception;
+    void createHeaders() throws Exception;
+
+    void createItems() throws Exception;
 
     BIExcelTableData createTableData() throws JSONException;
 }

@@ -299,10 +299,10 @@ public class BIDetailWidget extends BIAbstractWidget {
         Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
         List<JSONObject> dims = new ArrayList<JSONObject>();
         for (BIDetailTarget detailTarget : this.getViewDimensions()) {
-            String dId = detailTarget.getId();
-            int type = detailTarget.createColumnKey().getFieldType();
-            String text = detailTarget.getText();
-            dims.add(new JSONObject().put("dId", dId).put("text", text).put("type", type));
+                String dId = detailTarget.getId();
+                int type = detailTarget.createColumnKey().getFieldType();
+                String text = detailTarget.getText();
+                dims.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used",detailTarget.isUsed()));
         }
         dimAndTar.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dims);
         return dimAndTar;
