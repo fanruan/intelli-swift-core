@@ -5,6 +5,7 @@ package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
@@ -48,6 +49,7 @@ import java.util.*;
  * @author Daniel
  */
 public class UserETLUpdateTask implements CubeTask, AV {
+    private static BILogger logger = BILoggerFactory.getLogger(BICube.class);
 
     /**
      *
@@ -109,7 +111,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
                 try {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
-                    e.printStackTrace();
+                    logger.warn(e.getMessage(),e);
                 }
             }
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
