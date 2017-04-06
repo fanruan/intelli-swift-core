@@ -5,6 +5,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.script.Calculator;
 import com.fr.stable.Primitive;
@@ -108,18 +109,9 @@ public class BIFormularUtils {
     private static String toParameterFormat(String name) {
         return "$" + name;
     }
-
     public static Object getCalculatorValue(Calculator c, String formula, Map values) {
         Iterator<Map.Entry<String, String>> iter = createColumnIndexMap(formula).entrySet().iterator();
-        String formulaStr = formula;
-        Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
-        Matcher matcher = pat.matcher(formulaStr);
-        int parameterCount = 0;
-        while (matcher.find()) {
-            String matchStr = matcher.group(0);
-            formulaStr = formulaStr.replace(matchStr, "$" + String.valueOf(parameterCount));
-            parameterCount++;
-        }
+        String formulaStr = getIncrementParaFormula(formula);
         while (iter.hasNext()) {
             Map.Entry<String, String> entry = iter.next();
             String columnName = entry.getKey();
@@ -132,6 +124,38 @@ public class BIFormularUtils {
         }
         try {
             Object ob = c.eval(formulaStr);
+            return ob == Primitive.NULL ? null : ob;
+        } catch (UtilEvalError e) {
+            return null;
+        }
+    }
+
+    public static String getIncrementParaFormula(String expression){
+        String formula = new String(expression);
+        Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
+        Matcher matcher = pat.matcher(expression);
+        int parameterCount = 0;
+        while (matcher.find()) {
+            String matchStr = matcher.group(0);
+            formula = formula.replace(matchStr, "$" + String.valueOf(parameterCount));
+            parameterCount++;
+        }
+        return formula;
+    }
+
+    public static Object getCalculatorValue(Calculator c, String formula, Map<String, TargetGettingKey> paraTargetMap, Number[] values) {
+        Iterator<Map.Entry<String, TargetGettingKey>> iter = paraTargetMap.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, TargetGettingKey> entry = iter.next();
+            String columnName = entry.getKey();
+            if (values == null || values.length - 1 < entry.getValue().getTargetIndex()){
+                c.remove(columnName);
+            } else {
+                c.set(columnName, values[entry.getValue().getTargetIndex()]);
+            }
+        }
+        try {
+            Object ob = c.eval(formula);
             return ob == Primitive.NULL ? null : ob;
         } catch (UtilEvalError e) {
             return null;

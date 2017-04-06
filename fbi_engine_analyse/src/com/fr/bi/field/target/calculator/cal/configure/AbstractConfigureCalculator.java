@@ -14,35 +14,27 @@ import java.util.Set;
  */
 public abstract class AbstractConfigureCalculator extends CalCalculator {
     private static final long serialVersionUID = -7031889439937906167L;
-    protected String target_id;
 
     /**
      * 哪个分组的排名， 默认是全部值
      */
     protected int start_group = BIReportConstant.TARGET_TYPE.CAL_POSITION.ALL;
 
-    protected transient Object key;
+    protected TargetGettingKey calTargetKey;
 
-    public AbstractConfigureCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
+    public AbstractConfigureCalculator(BIConfiguredCalculateTarget target, TargetGettingKey calTargetKey, int start_group) {
         super(target);
-        this.target_id = target_id;
         this.start_group = start_group;
+        this.calTargetKey = calTargetKey;
     }
 
-    protected Object getCalKey() {
-        if (key == null) {
-            key = targetMap.get(target_id);
-        }
-        return key;
-    }
 
     @Override
     public boolean isAllFieldsReady(Set<TargetGettingKey> targetSet) {
-        Object key = getCalKey();
-        if (key == null) {
+        if (calTargetKey == null) {
             return false;
         }
-        return targetSet.contains(getCalKey());
+        return targetSet.contains(calTargetKey);
     }
 
     protected int getCalDeep(BINode rank_node) {

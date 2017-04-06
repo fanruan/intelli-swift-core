@@ -17,14 +17,13 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
 
     private static final long serialVersionUID = -3095522390932830159L;
 
-    public SumOfAboveCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
-        super(target, target_id, start_group);
+    public SumOfAboveCalculator(BIConfiguredCalculateTarget target, TargetGettingKey calTargetKey, int start_group) {
+        super(target, calTargetKey, start_group);
     }
 
     @Override
     public void calCalculateTarget(BINode node) {
-        Object key = getCalKey();
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
         BINode tempNode = node;
@@ -50,8 +49,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
 
     @Override
     public void calCalculateTarget(BICrossNode node, TargetGettingKey key1) {
-        Object key = getCalKey();
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
         BICrossNode tempNode = node;
@@ -85,7 +83,6 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
 
         @Override
         public Object call() throws Exception {
-            Object key = getCalKey();
             int deep = 0;
             BINode temp_node = rank_node;
             while (temp_node.getFirstChild() != null) {
@@ -95,7 +92,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
             BINode cursor_node = temp_node;
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(key);
+                Number value = cursor_node.getSummaryValue(calTargetKey);
                 sum += value == null ? 0 : value.doubleValue();
                 cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
                 cursor_node = cursor_node.getSibling();
@@ -126,7 +123,6 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
 
         @Override
         public Object call() throws Exception {
-            Object key = getCalKey();
             int deep = 0;
             BICrossNode temp_node = rank_node;
             while (temp_node.getLeftFirstChild() != null) {
@@ -136,7 +132,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
             BICrossNode cursor_node = temp_node;
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(key);
+                Number value = cursor_node.getSummaryValue(calTargetKey);
                 sum += value.doubleValue();
                 cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
                 cursor_node = cursor_node.getBottomSibling();

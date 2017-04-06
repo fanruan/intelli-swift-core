@@ -23,13 +23,6 @@ public interface TargetCalculator extends Serializable {
     void doCalculator(ICubeTableService cr, SummaryContainer node, GroupValueIndex gvi, TargetGettingKey key);
 
     /**
-     * 构建计算指标-
-     *
-     * @return 计算指标
-     */
-    TargetCalculator[] createTargetCalculators();
-
-    /**
      * 先计算好过滤的index
      */
     void calculateFilterIndex(ICubeDataLoader loader);

@@ -28,19 +28,19 @@ public class BISummaryOFAllConfiguredCalculateTarget extends
     public TargetCalculator createSummaryCalculator() {
         switch (summary_type) {
             case BIReportConstant.TARGET_TYPE.CAL_VALUE.SUMMARY_TYPE.SUM: {
-                return new SumOfAllCalculator(this, getCalTargetName(), getStart_group());
+                return new SumOfAllCalculator(this, targetMap.get(getCalTargetName()), getStart_group());
             }
             case BIReportConstant.TARGET_TYPE.CAL_VALUE.SUMMARY_TYPE.MAX: {
-                return new MaxOfAllCalculator(this, getCalTargetName(), getStart_group());
+                return new MaxOfAllCalculator(this, targetMap.get(getCalTargetName()), getStart_group());
             }
             case BIReportConstant.TARGET_TYPE.CAL_VALUE.SUMMARY_TYPE.MIN: {
-                return new MinOfAllCalculator(this, getCalTargetName(), getStart_group());
+                return new MinOfAllCalculator(this, targetMap.get(getCalTargetName()), getStart_group());
             }
             case BIReportConstant.TARGET_TYPE.CAL_VALUE.SUMMARY_TYPE.AVG: {
-                return new AvgOfAllCalculator(this, getCalTargetName(), getStart_group());
+                return new AvgOfAllCalculator(this, targetMap.get(getCalTargetName()), getStart_group());
             }
             default: {
-                return new SumOfAllCalculator(this, getCalTargetName(), getStart_group());
+                return new SumOfAllCalculator(this, targetMap.get(getCalTargetName()), getStart_group());
             }
         }
     }

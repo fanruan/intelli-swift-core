@@ -31,6 +31,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected List<MetricGroupInfo> metricGroupInfoList;
     protected MergeIteratorCreator[] mergeIteratorCreators;
+    protected int sumLength;
     protected BISession session;
     protected boolean useRealData;
 
@@ -47,9 +48,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     }
 
-    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, BISession session, boolean useRealData) {
+    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData) {
         this.metricGroupInfoList = metricGroupInfoList;
         this.mergeIteratorCreators = mergeIteratorCreators;
+        this.sumLength = sumLength;
         this.session = session;
         this.useRealData = useRealData;
         init();
@@ -97,7 +99,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             summaryLists[i] = metricGroupInfoList.get(i).getSummaryList();
             gvis[i] = metricGroupInfoList.get(i).getFilterIndex();
         }
-        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, gvis, session.getLoader());
+        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, session.getLoader());
     }
 
     private CubeTableSource getSource(DimensionCalculator column) {
@@ -274,6 +276,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         RootDimensionGroup rootDimensionGroup = (RootDimensionGroup) createNew();
         rootDimensionGroup.metricGroupInfoList = metricGroupInfoList;
         rootDimensionGroup.mergeIteratorCreators = mergeIteratorCreators;
+        rootDimensionGroup.sumLength = sumLength;
         rootDimensionGroup.session = session;
         rootDimensionGroup.useRealData = useRealData;
         rootDimensionGroup.getters = getters;

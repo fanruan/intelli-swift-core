@@ -19,15 +19,14 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
     private static final long serialVersionUID = 7481595795461223558L;
     private int type = BIReportConstant.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC;
 
-    public RankConfigureCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group, int rank_type) {
-        super(target, target_id, start_group);
+    public RankConfigureCalculator(BIConfiguredCalculateTarget target, TargetGettingKey calTargetKey, int start_group, int rank_type) {
+        super(target, calTargetKey, start_group);
         this.type = rank_type;
     }
 
     @Override
     public void calCalculateTarget(BINode node) {
-        Object key = getCalKey();
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
         BINode tempNode = node;
@@ -55,12 +54,11 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
 
     @Override
     public void calCalculateTarget(BICrossNode node, TargetGettingKey key1) {
-        Object key = getCalKey();
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
         BICrossNode tempNode = node;
-        int deep = getActualStart_Group(start_group,tempNode);
+        int deep = getActualStart_Group(start_group, tempNode);
         for (int i = 0; i < deep; i++) {
             if (tempNode.getLeftFirstChild() == null) {
                 break;
@@ -90,7 +88,6 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
 
         @Override
         public Object call() throws Exception {
-            Object key = getCalKey();
             int deep = 0;
             BINode temp_node = rank_node;
             while (temp_node.getFirstChild() != null) {
@@ -102,7 +99,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
             TreeMap sortMap = new TreeMap(c);
             BINode cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Comparable value = (Comparable) cursor_node.getSummaryValue(key);
+                Comparable value = (Comparable) cursor_node.getSummaryValue(calTargetKey);
                 Integer time = (Integer) sortMap.get(value);
                 if (time == null) {
                     time = new Integer(1);
@@ -112,7 +109,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
                 sortMap.put(value, time);
                 cursor_node = cursor_node.getSibling();
             }
-            Map result = new HashMap();
+            Map<Object, Number> result = new HashMap();
             int rank = 1;
             Iterator iter = sortMap.entrySet().iterator();
             while (iter.hasNext()) {
@@ -122,7 +119,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
             }
             cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Object value = cursor_node.getSummaryValue(key);
+                Object value = cursor_node.getSummaryValue(calTargetKey);
                 cursor_node.setSummaryValue(createTargetGettingKey(), result.get(value));
                 cursor_node = cursor_node.getSibling();
             }
@@ -152,7 +149,6 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
 
         @Override
         public Object call() throws Exception {
-            Object key = getCalKey();
             int deep = 0;
             BICrossNode temp_node = rank_node;
             while (temp_node.getLeftFirstChild() != null) {
@@ -164,7 +160,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
             TreeMap sortMap = new TreeMap(c);
             BICrossNode cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Comparable value = (Comparable) cursor_node.getSummaryValue(key);
+                Comparable value = (Comparable) cursor_node.getSummaryValue(calTargetKey);
                 Integer time = (Integer) sortMap.get(value);
                 if (time == null) {
                     time = new Integer(1);
@@ -174,7 +170,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
                 sortMap.put(value, time);
                 cursor_node = cursor_node.getBottomSibling();
             }
-            Map result = new HashMap();
+            Map<Object, Number> result = new HashMap();
             int rank = 1;
             Iterator iter = sortMap.entrySet().iterator();
             while (iter.hasNext()) {
@@ -184,7 +180,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
             }
             cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Object value = cursor_node.getSummaryValue(key);
+                Object value = cursor_node.getSummaryValue(calTargetKey);
                 cursor_node.setSummaryValue(createTargetGettingKey(), result.get(value));
                 cursor_node = cursor_node.getBottomSibling();
             }

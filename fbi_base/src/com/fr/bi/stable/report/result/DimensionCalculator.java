@@ -44,10 +44,7 @@ public interface DimensionCalculator extends FCloneable,Serializable {
 
     Object createEmptyValue();
 
-    String getSortTarget();
-
     int getSortType();
-
 
     Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader);
 

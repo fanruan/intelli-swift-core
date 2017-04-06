@@ -17,7 +17,6 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -52,8 +51,7 @@ public class Node implements BINode {
      * 兄弟节点
      */
     private Node sibling;
-    //ConcurrentHashMap需要支持高并发访问，不一定是该map高并发,当node过多时也需要高并发
-    protected volatile Map summaryValue;
+    protected Number[] summaryValue;
     //ConcurrentHashMap需要支持高并发访问，不一定是该map高并发,当node过多时也需要高并发
     private volatile Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap;
     private String showValue;
@@ -61,18 +59,19 @@ public class Node implements BINode {
     //TODO 低效的算法， 放在result无所谓
     private transient Map<TopNKey, Double> topNLineMap;
 
-    public Node() {
+    public Node(int sumLength) {
         childs = new ChildsMap<Node>();
+        summaryValue = new Number[sumLength];
     }
 
-    public Node(Object data) {
-        this();
+    public Node(Object data, int sumLength) {
+        this(sumLength);
         this.setData(data);
     }
 
 
-    public Node(Comparator comparator, Object data) {
-        this(data);
+    public Node(Comparator comparator, Object data, int sumLength) {
+        this(data, sumLength);
         this.comparator = comparator;
     }
 
@@ -278,10 +277,8 @@ public class Node implements BINode {
             return false;
         }
         Node child = getChild(0);
-        Iterator it = getNotNullSummaryValue().entrySet().iterator();
-        while (it.hasNext()) {
-            Entry entry = (Entry) it.next();
-            if (!equalsSummaryValue(child.getSummaryValue(entry.getKey()), entry.getValue())) {
+        for (int i = 0; i < summaryValue.length; i++){
+            if (!ComparatorUtils.equals(summaryValue[i], child.summaryValue[i])) {
                 return true;
             }
         }
@@ -289,38 +286,25 @@ public class Node implements BINode {
 
     }
 
-    private boolean equalsSummaryValue(Object o1, Object o2) {
-        if (o1 == null) {
-            return o2 == o1;
-        }
-        if (ComparatorUtils.equals(o1, o2)) {
-            return true;
-        }
-        return ComparatorUtils.equals(o1, o2);
-    }
-
     @Override
-    public void setSummaryValue(Object key, Object value) {
+    public void setSummaryValue(TargetGettingKey key, Number value) {
         if (value != null) {
-            if (Double.isNaN(((Number) value).doubleValue())) {
+            if (Double.isNaN(value.doubleValue())) {
                 value = null;
-            } else {
-                value = ((Number) value).doubleValue();
             }
         }
-        getNotNullSummaryValue().put(key, value);
+        if (summaryValue.length - 1 < key.getTargetIndex()){
+            summaryValue[key.getTargetIndex()] = value;
+        }
     }
 
     @Override
-    public Number getSummaryValue(Object key) {
-        if (getSummaryValue() == null || getSummaryValue().isEmpty()) {
-            return null;
-        }
-        return (Number) getSummaryValue().get(key);
+    public Number getSummaryValue(TargetGettingKey key) {
+        return summaryValue[key.getTargetIndex()];
     }
 
     protected Node createNewNode() {
-        Node newNode = new Node(comparator, this.getData());
+        Node newNode = new Node(comparator, this.getData(), summaryValue.length);
         newNode.showValue = this.getShowValue();
         return newNode;
     }
@@ -449,7 +433,7 @@ public class Node implements BINode {
      * @return 交叉表head的节点
      */
     public CrossHeader createCrossHeader() {
-        CrossHeader newnode = new CrossHeader(comparator, data);
+        CrossHeader newnode = new CrossHeader(comparator, data, summaryValue.length);
         newnode.setShowValue(getShowValue());
         newnode.getTargetIndexValueMap().putAll(this.getTargetIndexValueMap());
         newnode.summaryValue = this.summaryValue;
@@ -758,25 +742,12 @@ public class Node implements BINode {
         return newnode;
     }
 
-    public Map getSummaryValue() {
+    public Number[] getSummaryValue() {
         return summaryValue;
     }
 
-    protected Map getNotNullSummaryValue() {
-        if (summaryValue == null) {
-            synchronized (this) {
-                if (summaryValue == null) {
-                    summaryValue = new ConcurrentHashMap(1);
-                }
-            }
-        }
-        return summaryValue;
-    }
-
-    public void setSummaryValue(Map summaryValueMap) {
-        if (summaryValueMap != null) {
-            getNotNullSummaryValue().putAll(summaryValueMap);
-        }
+    public void setSummaryValue(Number[] summaryValue) {
+        this.summaryValue = summaryValue;
     }
 
     /**

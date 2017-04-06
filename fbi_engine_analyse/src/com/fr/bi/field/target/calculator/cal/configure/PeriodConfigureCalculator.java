@@ -19,11 +19,10 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
     private static final long serialVersionUID = 550160604753618347L;
     private int type = BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.VALUE;
 
-    public PeriodConfigureCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group, int period_type) {
-        super(target, target_id, start_group);
+    public PeriodConfigureCalculator(BIConfiguredCalculateTarget target, TargetGettingKey calTargetKey, int start_group, int period_type) {
+        super(target, calTargetKey, start_group);
         this.type = period_type;
     }
-    //TODO 待测试
 
     /**
      * 计算target值
@@ -32,11 +31,10 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
      */
     @Override
     public void calCalculateTarget(BINode node) {
-        Object key = getCalKey();
-        int deep = getCalDeep(node);
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
+        int deep = getCalDeep(node);
         BINode tempNode = node;
         //从第几个纬度开始计算
         int calDeep = start_group == 0 ? deep - 1 : deep;
@@ -73,8 +71,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
      */
     @Override
     public void calCalculateTarget(BICrossNode node, TargetGettingKey key1) {
-        Object key = getCalKey();
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
         BICrossNode tempNode = node;
@@ -125,11 +122,10 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
                     way[i - 1] = n.getData();
                     n = n.getParent();
                 }
-                Object value = getValueFromLast(way);
+                Number value = getValueFromLast(way);
                 if (value != null) {
                     if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                        Object key = getCalKey();
-                        double currentValue = cursor_node.getSummaryValue(key).doubleValue();
+                        double currentValue = cursor_node.getSummaryValue(calTargetKey).doubleValue();
                         cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
                     } else {
                         cursor_node.setSummaryValue(createTargetGettingKey(), value);
@@ -141,7 +137,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
             return null;
         }
 
-        private Object getValueFromLast(Object[] way) {
+        private Number getValueFromLast(Object[] way) {
             if (last_node == null) {
                 return null;
             }
@@ -156,8 +152,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
             if (n == null) {
                 return null;
             } else {
-                Object key = getCalKey();
-                return n.getSummaryValue(key);
+                return n.getSummaryValue(calTargetKey);
             }
         }
 
@@ -201,11 +196,10 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
                     way[i - 1] = n.getLeft().getData();
                     n = n.getLeftParent();
                 }
-                Object value = getValueFromLast(way);
+                Number value = getValueFromLast(way);
                 if (value != null) {
                     if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                        Object key = getCalKey();
-                        double currentValue = cursor_node.getSummaryValue(key).doubleValue();
+                        double currentValue = cursor_node.getSummaryValue(calTargetKey).doubleValue();
                         cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
                     } else {
                         cursor_node.setSummaryValue(createTargetGettingKey(), value);
@@ -216,7 +210,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
             return null;
         }
 
-        private Object getValueFromLast(Object[] way) {
+        private Number getValueFromLast(Object[] way) {
             if (last_node == null) {
                 return null;
             }
@@ -231,8 +225,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
             if (n == null) {
                 return null;
             } else {
-                Object key = getCalKey();
-                return n.getSummaryValue(key);
+                return n.getSummaryValue(calTargetKey);
             }
         }
 

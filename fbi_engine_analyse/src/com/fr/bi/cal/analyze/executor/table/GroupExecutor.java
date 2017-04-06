@@ -230,7 +230,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
                 allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
-            tree = new Node();
+            tree = new Node(allSumTarget.length);
         }
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;

@@ -4,12 +4,13 @@ import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.BIFormularUtils;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,13 +20,31 @@ public class FormulaCalculator extends CalCalculator {
     private static final long serialVersionUID = 3296274167185012491L;
     private Calculator c = Calculator.createCalculator();
     private String expression = StringUtils.EMPTY;
-
+    private String incrementParaFormula;
+    //用到的指标
+    private Map<String, TargetGettingKey> paraTargetMap;
     public FormulaCalculator() {
     }
 
     public FormulaCalculator(BICalculateTarget target, String expression) {
         super(target);
         this.expression = expression;
+        //构造的时候就转化成自增长id的公式，省得每次计算结果都算一下
+        incrementParaFormula = "=" + BIFormularUtils.getIncrementParaFormula(expression);
+        initParaTargetMap();
+    }
+
+    //构建的时候把全部指标都塞过来了，造成没必要的遍历，取下用到的指标，转化成公式的$1->TargetGettingKey的map
+    private void initParaTargetMap() {
+        Map<String, String> map = BIFormularUtils.createColumnIndexMap(expression);
+        paraTargetMap = new HashMap<String, TargetGettingKey>();
+        if (targetMap != null){
+            for (Map.Entry<String, String> entry :  BIFormularUtils.createColumnIndexMap(expression).entrySet()){
+                if (targetMap.containsKey(entry.getValue())){
+                    paraTargetMap.put(entry.getKey(), targetMap.get(entry.getValue()));
+                }
+            }
+        }
     }
 
     /**
@@ -58,9 +77,8 @@ public class FormulaCalculator extends CalCalculator {
      */
     @Override
     public void calCalculateTarget(BINode node) {
-        String formula = "=" + expression;
         try {
-            Object value = BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValue()));
+            Object value = BIFormularUtils.getCalculatorValue(c, incrementParaFormula, paraTargetMap, node.getSummaryValue());
             //抛错就是没有值啦
             //pony 这边都存double吧，汇总在汇总要写cube，类型要统一
             node.setSummaryValue(createTargetGettingKey(), ((Number) value).doubleValue());
@@ -79,11 +97,10 @@ public class FormulaCalculator extends CalCalculator {
      */
     @Override
     public void calCalculateTarget(BICrossNode node, TargetGettingKey key) {
-        String formula = "=" + expression;
         try {
-            Object value = BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetMap, node.getSummaryValue()));
+            Object value = BIFormularUtils.getCalculatorValue(c, incrementParaFormula, paraTargetMap, node.getSummaryValue());
             //抛错就是没有值啦
-            node.setSummaryValue(createTargetGettingKey(), value);
+            node.setSummaryValue(createTargetGettingKey(),((Number) value).doubleValue());
         } catch (Throwable e) {
         }
         for (int i = 0, len = node.getLeftChildLength(); i < len; i++) {

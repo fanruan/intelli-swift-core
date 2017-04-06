@@ -42,25 +42,27 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     private static int demoGroupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
 
+    protected ICubeTableService[] tis;
+    protected MergeIteratorCreator mergeIteratorCreator;
+    protected ICubeDataLoader loader;
     private BusinessTable[] metricTables;
     private List<TargetAndKey>[] summaryLists;
-    protected ICubeTableService[] tis;
     private DimensionCalculator[] columns;
     private ICubeValueEntryGetter[] getters;
     private GroupValueIndex[] gvis;
     private Object[] data;
-    protected MergeIteratorCreator mergeIteratorCreator;
     private boolean useRealData = true;
-    protected ICubeDataLoader loader;
     private List<MetricMergeResult> metricMergeResultList = new ArrayList<MetricMergeResult>();
+    private int sumLength;
 
 
     /**
      * Group计算的构造函数
      */
-    protected SingleDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, boolean useRealData) {
+    protected SingleDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, boolean useRealData) {
         this.metricTables = metricTables;
         this.summaryLists = summaryLists;
+        this.sumLength = sumLength;
         this.tis = tis;
         this.columns = columns;
         this.getters = getters;
@@ -72,8 +74,8 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         turnOnExecutor();
     }
 
-    public static SingleDimensionGroup createDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, final Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, boolean useRealData) {
-        return new SingleDimensionGroup(metricTables, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
+    public static SingleDimensionGroup createDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, final Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, boolean useRealData) {
+        return new SingleDimensionGroup(metricTables, summaryLists, sumLength, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
     }
 
 
@@ -86,7 +88,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
             }
             iterators[i] = it;
         }
-        return mergeIteratorCreator.createIterator(iterators, gvis, columns[0].getComparator(), tis, loader);
+        return mergeIteratorCreator.createIterator(iterators, sumLength, gvis, columns[0].getComparator(), tis, loader);
     }
 
     public void turnOnExecutor() {
@@ -119,13 +121,14 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
                 public void remove() {
 
                 }
+
                 @Override
                 public int getCurrentGroup() {
                     return 0;
                 }
 
                 @Override
-                public boolean canReGainGroupValueIndex(){
+                public boolean canReGainGroupValueIndex() {
                     return false;
                 }
 
@@ -151,7 +154,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     private boolean isCirCle(DimensionCalculator column) {
         List<BITableSourceRelation> relations = column.getRelationList();
         for (BITableSourceRelation relation : relations) {
-            if (TableSourceUtils.isSelfCirCleSource(relation.getForeignTable())&&TableSourceUtils.isSelfCircleParentField(relation.getForeignTable(),relation.getForeignField())){
+            if (TableSourceUtils.isSelfCirCleSource(relation.getForeignTable()) && TableSourceUtils.isSelfCircleParentField(relation.getForeignTable(), relation.getForeignField())) {
                 return true;
             }
         }
@@ -177,7 +180,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     @Override
     public int getChildIndexByValue(Object value) {
-        return ArrayLookupHelper.lookup(new MetricMergeResult[]{new MetricMergeResult(value, null)}, new ArrayLookupHelper.Lookup<MetricMergeResult>() {
+        return ArrayLookupHelper.lookup(new MetricMergeResult[]{new MetricMergeResult(value, sumLength, null)}, new ArrayLookupHelper.Lookup<MetricMergeResult>() {
             @Override
             public int minIndex() {
                 return 0;
@@ -206,7 +209,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         if (isNull(metricMergeResult)) {
             return NoneDimensionGroup.NULL;
         }
-        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, tis, metricMergeResult.getGvis(), metricMergeResult.getSummaryValue(), loader);
+        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, sumLength, tis, metricMergeResult.getGvis(), metricMergeResult.getSummaryValue(), loader);
     }
 
     private boolean isNull(MetricMergeResult node) {
@@ -281,7 +284,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     }
 
     private MetricMergeResult createEmptyResult() {
-        MetricMergeResult metricMergeResult = new MetricMergeResult(columns[0].createEmptyValue(), gvis);
+        MetricMergeResult metricMergeResult = new MetricMergeResult(columns[0].createEmptyValue(), sumLength, gvis);
         return metricMergeResult;
     }
 

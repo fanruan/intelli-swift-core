@@ -130,11 +130,6 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
-    public String getSortTarget() {
-        return dimension.getSortTarget();
-    }
-
-    @Override
     public int getSortType() {
         return dimension.getSortType();
     }
