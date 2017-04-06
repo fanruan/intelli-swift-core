@@ -59,9 +59,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     }
 
     public void amendment() throws JSONException {
-        JSONObject cloneData = new JSONObject(this.dataJSON);
-        this.dataJSON.put("t", new JSONObject().put("c", getTopOfCrossByGroupData(this.dataJSON.getJSONArray("c"))));
-        this.dataJSON.put("s", cloneData);
+        JSONObject cloneData = new JSONObject(this.dataJSON.toString());
+        this.dataJSON.put("t", new JSONObject().put("c", getTopOfCrossByGroupData(cloneData.getJSONArray("c"))));
+        this.dataJSON.put("l", new JSONObject().put("s", cloneData));
     }
 
     protected void createTableItems() throws Exception {
@@ -183,7 +183,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 for (int j = 0; j < targetIds.size(); j++) {
                     tempArray.put(new JSONObject().put("n", targetIds.get(j)));
                 }
-                newC.put(new JSONObject().put("c", tempArray).put("n", child.getJSONObject("n")));
+                newC.put(new JSONObject().put("c", tempArray).put("n", child.getString("n")));
             }
         }
         return newC;
@@ -205,7 +205,11 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         if (left.has("s")) {
             crossItemSums.set(0, new JSONArray().put(true));
         }
-        initCrossItemsSum(0, left.getJSONArray("c"), crossItemSums);
+        JSONArray sumArray = new JSONArray();
+        if (left.has("c") && BIJsonUtils.isArray("c")) {
+            sumArray = left.getJSONArray("c");
+        }
+        initCrossItemsSum(0, sumArray, crossItemSums);
         //交叉表items
         createCrossItems(top);
         //用cross parent value来对应到联动的时候的列表头值
@@ -328,12 +332,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             childItems.add(ob);
             child.setChildren(childItems);
             items.add(child);
-//            JSONObject ob = new JSONObject();
-//            ob.put("type", "bi.page_table_cell");
-//
-//            ob.put("text", BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(i)));
-//            ob.put("title", "BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i)");
-//            items.add(new JSONObject().put("children", ob));
         }
 
         createItems(items, l.getJSONObject("s"), new JSONObject().put("cIndex", 0), crossPV);
@@ -372,7 +370,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             if (BIJsonUtils.isArray(data.getString("s")) && data.getJSONArray("s").length() > 0) {
                 JSONArray s = data.getJSONArray("s");
                 for (int j = 0; j < s.length(); j++) {
-                    if (items.get(j).getChildren().get(0).hasValues()) {
+                    if (!items.get(j).getChildren().get(0).hasValues()) {
                         items.get(j).getChildren().get(0).setValue(new JSONArray());
                     }
                     BIBasicTableItem ob = new BIBasicTableItem();
@@ -397,34 +395,34 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     if (BIJsonUtils.isArray(crossItem.getString("values")) && crossItem.getJSONArray("values").length() > 0) {
                         for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
                             JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
-                            tempPV = pv.put(new JSONArray().put(object));
+                            tempPV = pv.put(object);
                         }
                     }
                     //显示列汇总的时候需要构造汇总
                     else {
                         JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
-                        tempPV = pv.put(new JSONArray().put(object));
+                        tempPV = pv.put(object);
                     }
-                    parseCrossItem2Array(crossItem.getJSONArray("children"), pValues, tempPV);
-                    //汇总
+                }
+                parseCrossItem2Array(crossItem.getJSONArray("children"), pValues, tempPV);
+                //汇总
+                if (crossItem.has("values")&&BIJsonUtils.isArray(crossItem.getString("values")) && crossItem.getJSONArray("values").length() > 0) {
+                    for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
+                        JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
+                        pValues.put(object);
+                    }
+                } else if (crossItem.has("dId")) {
                     if (BIJsonUtils.isArray(crossItem.getString("values")) && crossItem.getJSONArray("values").length() > 0) {
                         for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
                             JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
                             pValues.put(object);
                         }
-                    } else if (crossItem.has("dId")) {
-                        if (BIJsonUtils.isArray(crossItem.getString("values")) && crossItem.getJSONArray("values").length() > 0) {
-                            for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
-                                JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
-                                pValues.put(object);
-                            }
-
-                        } else {
-                            pValues.put(new JSONArray());
-                        }
-                    } else if (crossItem.has("isSum")) {
-                        pValues.put(pv);
+                    } else {
+                        //最外层
+                        pValues.put(new JSONArray());
                     }
+                } else if (crossItem.has("isSum")) {
+                    pValues.put(pv);
                 }
             }
         }
@@ -583,14 +581,14 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             item.setNeedExpand(true);
             item.setExpanded(false);
         }
-        if (child.has("c")) {
+        if (child.has("c") && child.getJSONArray("c").length() > 0) {
             List children = createCrossPartItems(child.getJSONArray("c"), currentLayer, node);
             if (children.size() > 0) {
                 item.setChildren(createCrossPartItems(child.getJSONArray("c"), currentLayer, node));
                 item.setExpanded(true);
             }
         }
-        boolean hasSum = crossItemSums.get(currentLayer).length() > i && crossItemSums.get(currentLayer).getBoolean(i);
+        boolean hasSum = crossItemSums.size() > currentLayer && crossItemSums.get(currentLayer).length() > i && crossItemSums.get(currentLayer).getBoolean(i);
         boolean showColAndSums = showColTotal && hasSum;
         boolean childExist = null != item.getChildren() && item.getChildren().size() > 0;
         if (showColAndSums && childExist) {
@@ -805,7 +803,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 }
                 summary.put(sum);
             }
-        } else if (BIJsonUtils.isKeyValueSet(sums)){
+        } else if (BIJsonUtils.isKeyValueSet(sums)) {
             JSONObject jsonObject = new JSONObject(sums);
             String c = jsonObject.getString("c");
             String s = jsonObject.getString("s");

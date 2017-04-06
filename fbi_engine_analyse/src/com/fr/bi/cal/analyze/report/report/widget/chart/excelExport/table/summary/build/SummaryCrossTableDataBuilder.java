@@ -33,7 +33,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
             return;
         }
         //仅有列表头的时候（无指标）
-        if (this.dimIds.size() == 0 && this.crossDimIds.size() > 0 && this.targetIds.size() > 0) {
+        if (this.dimIds.size() == 0 && this.crossDimIds.size() > 0 && this.targetIds.size() == 0) {
             getNoneTarCrossTable();
             return;
         }
