@@ -18,9 +18,11 @@ import java.io.File;
  */
 public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasManager> implements BIAliasManagerProvider {
     private static final long serialVersionUID = 7737620413603253982L;
+    private final long usedUserId = UserControl.getInstance().getSuperManagerID();
 
     @Override
     public UserAliasManager constructUserManagerValue(Long userId) {
+        userId = usedUserId;
         return new UserAliasManager(userId);
     }
 
@@ -38,6 +40,7 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
     @Override
     public UserAliasManager getTransManager(long userId) {
         try {
+            userId = usedUserId;
             return getValue(userId);
         } catch (BIKeyAbsentException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -48,6 +51,7 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
     @Override
     public void setTransManager(long userId, UserAliasManager value) {
         try {
+            userId = usedUserId;
             if (containsKey(userId)){
                 remove(userId);
             }
@@ -62,23 +66,27 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
 
     @Override
     public void setAliasName(String id, String name, long userId) {
+        userId = usedUserId;
         getTransManager(userId).setTransName(id, name);
     }
 
     @Override
     public String getAliasName(String id, long userId) {
+        userId = usedUserId;
         return getTransManager(userId).getTransName(id);
     }
 
     @Override
     public void removeAliasName(String id, long userId) {
+        userId = usedUserId;
         getTransManager(userId).removeTransName(id);
     }
 
-    public JSONObject getAliasJSON(long userID) {
+    public JSONObject getAliasJSON(long userId) {
         try {
-            JSONObject jo = getTransManager(userID).createJSON();
-            if (userID != UserControl.getInstance().getSuperManagerID()){
+            userId = usedUserId;
+            JSONObject jo = getTransManager(userId).createJSON();
+            if (userId != UserControl.getInstance().getSuperManagerID()){
                 jo.join(getTransManager(UserControl.getInstance().getSuperManagerID()).createJSON());
             }
             return jo;
@@ -90,6 +98,7 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
 
     @Override
     public void persistData(long userId) {
+        userId = usedUserId;
         persistUserData(userId);
     }
 

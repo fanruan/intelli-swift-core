@@ -25,10 +25,10 @@ import java.util.Set;
  */
 public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCompoundService> implements BIAnalysisDataSourceManagerProvider {
     private static final long serialVersionUID = -6247770461074364282L;
-
+    private final long usedUserId = UserControl.getInstance().getSuperManagerID();
     public DataSourceCompoundService getInstance() {
         try {
-            return getValue(UserControl.getInstance().getSuperManagerID());
+            return getValue(usedUserId);
         } catch (BIKeyAbsentException e) {
             throw new NullPointerException("AnalysisDataSourceManager init failed");
         }
@@ -99,7 +99,8 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
 
     @Override
     public void persistData(long userId) {
-        persistUserData(UserControl.getInstance().getSuperManagerID());
+        userId = usedUserId;
+        persistUserData(userId);
     }
 
     @Override
