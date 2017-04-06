@@ -272,8 +272,10 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             var pos = model.getIndexByValue(v);
             if(pos === 0 && widget.options.allHistory === false) {
                 BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'),  BI.i18nText('BI-Cannot-Delete-Last'))
-            }else{
+            }else if(model.get(ETLCst.ITEMS).length - 1 !== pos){
                 confirmCombo.showView();
+            }else{
+                self._removeSheet(v, widget, model)
             }
         });
         var invalidIndex = model.get('invalidIndex');
