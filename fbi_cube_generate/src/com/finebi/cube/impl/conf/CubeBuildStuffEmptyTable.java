@@ -104,6 +104,6 @@ public class CubeBuildStuffEmptyTable extends AbstractCubeBuildStuff {
 
     @Override
     public Set<String> getTaskTableSourceIds() {
-        return new HashSet<>();
+        return new HashSet<String>();
     }
 }
