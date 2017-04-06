@@ -289,6 +289,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("hGridLineColor"));
 
+        if(settings.optBoolean("leftYShowCustomScale")){
+            this.putMinMaxInterval(left, settings.optJSONObject("leftYCustomScale"));
+        }
+
         return left;
     }
 
@@ -311,6 +315,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("lineColor", settings.optString("rightYLineColor")).put("lineWidth", 1)
                 .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false));
 
+        if(settings.optBoolean("rightYShowCustomScale")){
+            this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"));
+        }
+
         return right;
     }
 
@@ -332,7 +340,18 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("lineColor", settings.optString("rightY2LineColor")).put("lineWidth", 1)
                 .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false));
 
+        if(settings.optBoolean("rightY2ShowCustomScale")){
+            this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"));
+        }
+
         return right2;
+    }
+
+    private void putMinMaxInterval(JSONObject axis, JSONObject scale){
+
+        //
+
+
     }
 
 }
