@@ -46,6 +46,10 @@ public class BICubeManager implements BICubeManagerProvider {
 
     private Object object = new Object();
 
+    private int retryTimes = 100;
+
+    private int delayTimes = 5000;
+
     public BICubeManager() {
         Thread taskAddThread = new Thread(
                 new Runnable() {
@@ -57,7 +61,7 @@ public class BICubeManager implements BICubeManagerProvider {
                                 isCubeBuilding = true;
                                 BILoggerFactory.getLogger().info("Update table ID:" + taskInfo.baseTableSourceIdToString());
                                 int times = 0;
-                                for (int i = 0; i < 100; i++) {
+                                for (int i = 0; i < retryTimes; i++) {
                                     if (!hasTask()) {
                                         List<CubeBuildStuff> cubeBuildStuffList = customTaskBuilder.CubeBuildCustomTables(taskInfo.getUserId(), taskInfo.getBaseTableSourceIdList(), taskInfo.getUpdateTypeList());
                                         for (CubeBuildStuff cubeBuildStuff : cubeBuildStuffList) {
@@ -66,7 +70,7 @@ public class BICubeManager implements BICubeManagerProvider {
                                         isCubeBuilding = false;
                                         break;
                                     }
-                                    long timeDelay = i * 5000;
+                                    long timeDelay = i * delayTimes;
                                     BILoggerFactory.getLogger(this.getClass()).info("Cube is generating, wait to add SingleTable Cube Task until finished, retry times : " + i);
                                     BILoggerFactory.getLogger(this.getClass()).info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
                                     try {
@@ -76,7 +80,7 @@ public class BICubeManager implements BICubeManagerProvider {
                                     }
                                     times++;
                                 }
-                                if (times == 100) {
+                                if (times == retryTimes) {
                                     BILoggerFactory.getLogger(this.getClass()).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
                                     BILoggerFactory.getLogger(this.getClass()).info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
                                     isCubeBuilding = false;

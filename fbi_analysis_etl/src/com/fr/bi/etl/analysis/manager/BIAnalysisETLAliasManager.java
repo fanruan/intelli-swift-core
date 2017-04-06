@@ -3,7 +3,6 @@ package com.fr.bi.etl.analysis.manager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BISystemDataManager;
-import com.finebi.cube.conf.trans.BIAliasManager;
 import com.finebi.cube.conf.trans.UserAliasManager;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
@@ -52,15 +51,15 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
     public void setTransManager(long userId, UserAliasManager value) {
         try {
             userId = usedUserId;
-            if (containsKey(userId)){
+            if (containsKey(userId)) {
                 remove(userId);
             }
-            putKeyValue(userId,value);
+            putKeyValue(userId, value);
         } catch (BIKeyAbsentException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e);
         } catch (BIKeyDuplicateException e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -86,7 +85,7 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
         try {
             userId = usedUserId;
             JSONObject jo = getTransManager(userId).createJSON();
-            if (userId != UserControl.getInstance().getSuperManagerID()){
+            if (userId != UserControl.getInstance().getSuperManagerID()) {
                 jo.join(getTransManager(UserControl.getInstance().getSuperManagerID()).createJSON());
             }
             return jo;

@@ -357,30 +357,15 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     @Override
     public JSONObject saveAnalysisETLTable(long userId, String tableId, String newId, String tableName, String describe, String tableJSON) throws Exception {
         userId = userdUserID;
-        AnalysisBusiTable table;
-        CubeTableSource source;
+        AnalysisBusiTable table = null;
+        CubeTableSource source = null;
         CubeTableSource oriSource = null;
         if (StringUtils.isEmpty(newId)) {
             //编辑||新建
-            table = new AnalysisBusiTable(tableId, userId);
-            table.setDescribe(describe);
-            JSONObject jo = new JSONObject(tableJSON);
-            JSONArray items = jo.getJSONArray(Constants.ITEMS);
-            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
-            source = AnalysisETLSourceFactory.createTableSource(items, userId);
-            table.setSource(source);
-            if (BIAnalysisETLManagerCenter.getDataSourceManager().containBusinessTable(table.getID())) {
-                oriSource = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(table);
-            }
+            editOrCreate(userId, tableId, tableName, describe, tableJSON, table, source, oriSource);
         } else {
             //复制
-            table = new AnalysisBusiTable(newId, userId);
-            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(newId, tableName, userId);
-            AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
-            source = oldTable.getTableSource();
-            oriSource = oldTable.getTableSource();
-            table.setSource(source);
-            table.setDescribe(oldTable.getDescribe());
+            copy(userId, tableId, newId, tableName, table, source, oriSource);
         }
         try {
             BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, table.getTableSource());
@@ -408,7 +393,36 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
                 BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userdUserID);
             }
         });
+        JSONObject result = generateResultJson(userId, table, tableName);
+        return result;
+    }
 
+    private void editOrCreate(long userId, String tableId, String tableName, String describe, String tableJSON,
+                              AnalysisBusiTable table, CubeTableSource source, CubeTableSource oriSource) throws Exception {
+        table = new AnalysisBusiTable(tableId, userId);
+        table.setDescribe(describe);
+        JSONObject jo = new JSONObject(tableJSON);
+        JSONArray items = jo.getJSONArray(Constants.ITEMS);
+        BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
+        source = AnalysisETLSourceFactory.createTableSource(items, userId);
+        table.setSource(source);
+        if (BIAnalysisETLManagerCenter.getDataSourceManager().containBusinessTable(table.getID())) {
+            oriSource = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(table);
+        }
+    }
+
+    private void copy(long userId, String tableId, String newId, String tableName,
+                      AnalysisBusiTable table, CubeTableSource source, CubeTableSource oriSource) throws Exception {
+        table = new AnalysisBusiTable(newId, userId);
+        BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(newId, tableName, userId);
+        AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+        source = oldTable.getTableSource();
+        oriSource = oldTable.getTableSource();
+        table.setSource(source);
+        table.setDescribe(oldTable.getDescribe());
+    }
+
+    private JSONObject generateResultJson(long userId, AnalysisBusiTable table, String tableName) throws Exception {
         JSONObject result = new JSONObject();
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
         JSONObject translations = new JSONObject();
