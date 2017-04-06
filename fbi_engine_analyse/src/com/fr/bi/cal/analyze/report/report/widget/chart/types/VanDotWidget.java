@@ -5,6 +5,7 @@ import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
@@ -170,16 +171,16 @@ public class VanDotWidget extends VanCartesianWidget{
         return series;
     }
 
-    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
+    protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
 
-        JSONObject baseAxis = this.parseRightValueAxis(settings).put("position", "bottom").put("type", "value");
+        JSONObject baseAxis = this.parseRightValueAxis(settings, calculator).put("position", "bottom").put("type", "value");
 
         return JSONArray.create().put(baseAxis);
     }
 
-    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
+    protected JSONArray parseValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
 
-        return JSONArray.create().put(this.parseLeftValueAxis(settings));
+        return JSONArray.create().put(this.parseLeftValueAxis(settings, calculator));
     }
 
     public String getSeriesType(String dimensionID){
