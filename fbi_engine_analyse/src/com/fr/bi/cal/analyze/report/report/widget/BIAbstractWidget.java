@@ -174,8 +174,8 @@ public abstract class BIAbstractWidget implements BIWidget {
         if (jo.has("init_time")) {
             initTime = jo.getLong("init_time");
         }
-        if (jo.has("real_data")) {
-            realData = jo.optBoolean("real_data", true);
+        if (jo.has("realData")) {
+            realData = jo.optBoolean("realData", true);
         }
         if (jo.has("sessionID")) {
             sessionId = jo.getString("sessionID");
