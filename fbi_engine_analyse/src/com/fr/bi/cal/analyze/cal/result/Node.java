@@ -199,6 +199,9 @@ public class Node implements BINode {
     }
 
     public void clearChildren(){
+        for (Node n : getChilds()){
+            n.sibling = null;
+        }
         childs = new ChildsMap<Node>();
     }
 
@@ -293,13 +296,16 @@ public class Node implements BINode {
                 value = null;
             }
         }
-        if (summaryValue.length - 1 < key.getTargetIndex()){
+        if (key.getTargetIndex() < summaryValue.length){
             summaryValue[key.getTargetIndex()] = value;
         }
     }
 
     @Override
     public Number getSummaryValue(TargetGettingKey key) {
+        if (summaryValue == null || summaryValue.length - 1 < key.getTargetIndex()){
+            return null;
+        }
         return summaryValue[key.getTargetIndex()];
     }
 

@@ -2,6 +2,7 @@ package com.fr.bi.field.dimension.calculator;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -10,10 +11,12 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.operation.group.BIGroupUtils;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.operation.sort.comp.CustomComparator;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
@@ -177,5 +180,29 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
 
     public boolean isCustomSort() {
         return getSortType() == BIReportConstant.SORT.CUSTOM;
+    }
+
+    @Override
+    public Object convertToOriginValue(String stringValue) {
+        try{
+            if (BIGroupUtils.isCustomGroup(getGroup())){
+                return super.convertToOriginValue(stringValue);
+            }
+            return convertNumber(stringValue);
+        } catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
+        return null;
+    }
+
+    protected Object convertNumber(String value){
+        switch (field.getClassType()){
+            case DBConstant.CLASS.LONG:
+                return Long.parseLong(value);
+            case DBConstant.CLASS.DOUBLE:
+                return Double.parseDouble(value);
+            default:
+                return Integer.parseInt(value);
+        }
     }
 }

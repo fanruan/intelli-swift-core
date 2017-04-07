@@ -69,7 +69,7 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
             if (target.getTargetFilter() != null) {
                 gvi = gvi.AND(filterIndex);
             }
-            if (gvi != null || !gvi.isAllEmpty()) {
+            if (gvi != null && !gvi.isAllEmpty()) {
                 node.setSummaryValue(key, createSumValue(gvi, ti));
             }
         }

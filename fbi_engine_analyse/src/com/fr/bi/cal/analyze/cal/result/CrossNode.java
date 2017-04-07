@@ -53,7 +53,7 @@ public class CrossNode implements BICrossNode {
      */
     @Override
     public void setSummaryValue(TargetGettingKey key, Number value) {
-        if (summaryValue.length - 1 < key.getTargetIndex()) {
+        if (key.getTargetIndex() < summaryValue.length ) {
             summaryValue[key.getTargetIndex()] = value;
         }
     }

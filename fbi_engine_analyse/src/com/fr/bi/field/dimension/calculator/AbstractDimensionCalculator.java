@@ -248,4 +248,9 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     public void setRelationList(List<BITableSourceRelation> list) {
         relations = list;
     }
+
+    @Override
+    public Object convertToOriginValue(String stringValue) {
+        return stringValue;
+    }
 }

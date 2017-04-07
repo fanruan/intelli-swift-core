@@ -34,7 +34,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     private boolean setIndex;
     private boolean hasInSumMetric;
     private int[] sortType;
-    private TargetAndKey[] sortTarget;
+    private TargetGettingKey[] sortTargetKey;
 
     public ConstructedRootDimensionGroup() {
     }
@@ -53,7 +53,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private void initSort() {
         sortType = new int[dimensionTargetSort.length];
-        sortTarget = new TargetAndKey[dimensionTargetSort.length];
+        sortTargetKey = new TargetGettingKey[dimensionTargetSort.length];
         for (int i = 0; i < dimensionTargetSort.length; i++){
             NameObject targetSort = dimensionTargetSort[i];
             if (targetSort != null) {
@@ -64,13 +64,21 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                     List<TargetAndKey> list = info.getSummaryList();
                     for (TargetAndKey targetAndKey : list) {
                         if (ComparatorUtils.equals(targetAndKey.getTargetId(), targetSort.getName())) {
-                            sortTarget[i] = targetAndKey;
+                            sortTargetKey[i] = targetAndKey.getTargetGettingKey();
                             find = true;
                             break;
                         }
                     }
                     if (find){
                         break;
+                    }
+                }
+                //再到计算指标里面找下
+                if (sortTargetKey[i] == null){
+                    for (CalCalculator calCalculator :calCalculators){
+                        if (ComparatorUtils.equals(calCalculator.createTargetGettingKey().getTargetName(), targetSort.getName())){
+                            sortTargetKey[i] = calCalculator.createTargetGettingKey();
+                        }
                     }
                 }
             }
@@ -130,10 +138,10 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             DimensionFilter filter = filterDimension == null ? null : filterDimension[deep].getFilter();
             if (filter != null || dimensionTargetSort[deep] != null) {
                 List<Node> children = filterAndSort(node.getChilds(), deep, calculatorMap);
+                node.clearChildren();
                 if (children == null || children.isEmpty()){
                     clearEmptyNode(node);
                 } else {
-                    node.clearChildren();
                     for (Node n : children) {
                         node.addChild(n);
                     }
@@ -158,6 +166,8 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             if (parent.getChildLength() == 0){
                 clearEmptyNode(parent);
             }
+        } else {
+
         }
 
     }
@@ -178,8 +188,8 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             Collections.sort(results, new Comparator<Node>() {
                 @Override
                 public int compare(Node o1, Node o2) {
-                    Number v1 = o1.getSummaryValue(sortTarget[deep].getTargetGettingKey());
-                    Number v2 = o2.getSummaryValue(sortTarget[deep].getTargetGettingKey());
+                    Number v1 = o1.getSummaryValue(sortTargetKey[deep]);
+                    Number v2 = o2.getSummaryValue(sortTargetKey[deep]);
                     if (v1 == v2) {
                         return 0;
                     }

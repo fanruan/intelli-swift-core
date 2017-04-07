@@ -52,4 +52,6 @@ public interface DimensionCalculator extends FCloneable,Serializable {
 
     IGroup getGroup();
 
+    Object convertToOriginValue(String stringValue);
+
 }

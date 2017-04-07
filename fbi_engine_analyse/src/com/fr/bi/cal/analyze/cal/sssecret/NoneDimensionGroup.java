@@ -50,6 +50,7 @@ public class NoneDimensionGroup implements Release {
         this.metrics = metrics;
         this.summaryLists = summaryLists;
         this.sumLength = sumLength;
+        this.summaryValue = new Number[sumLength];
         this.tis = tis;
         this.gvis = gvis;
         this.loader = loader;
