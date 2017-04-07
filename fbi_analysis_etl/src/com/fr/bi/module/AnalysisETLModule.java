@@ -6,21 +6,26 @@ import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisBaseTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLTableSource;
-import com.fr.bi.etl.analysis.manager.*;
+import com.fr.bi.etl.analysis.manager.AnalysisBusiPackManager;
+import com.fr.bi.etl.analysis.manager.AnalysisDataSourceManager;
+import com.fr.bi.etl.analysis.manager.BIAnalysisBusiPackManagerProvider;
+import com.fr.bi.etl.analysis.manager.BIAnalysisDataSourceManagerProvider;
+import com.fr.bi.etl.analysis.manager.BIAnalysisETLAliasManager;
+import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.etl.analysis.manager.UserETLCubeManager;
+import com.fr.bi.etl.analysis.manager.UserETLCubeManagerProvider;
 import com.fr.bi.etl.analysis.monitor.web.Service4AnalysisETLMonitor;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBottomNFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmallOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberTopNFilter;
-import com.fr.stable.bridge.event.StableFactoryMessageTransponder;
-import com.fr.stable.bridge.event.StableFactoryProducer;
-import com.fr.stable.bridge.event.StableFactoryResourceType;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
 import com.fr.bi.resource.ResourceConstants;
@@ -31,10 +36,18 @@ import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.bi.web.service.action.PartCubeDataLoader;
 import com.fr.cluster.rpc.RPC;
 import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.bridge.event.StableFactoryMessageTransponder;
+import com.fr.stable.bridge.event.StableFactoryProducer;
+import com.fr.stable.bridge.event.StableFactoryResourceType;
 import com.fr.stable.fun.Service;
 import com.fr.web.ResourceHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -123,6 +136,15 @@ public class AnalysisETLModule extends AbstractModule {
         BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
         BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
         PartCubeDataLoader.clearAll();
+    }
+
+    @Override
+    public Collection<BIPackageID> getAuthAvailablePackID(long userId) {
+        List<BIPackageID> list = new ArrayList<BIPackageID>();
+        for (IBusinessPackageGetterService pack : getBusiPackManagerProvider().getAllPackages(userId)) {
+            list.add(pack.getID());
+        }
+        return list;
     }
 
     private void clearAnalysisSourceCaches() {

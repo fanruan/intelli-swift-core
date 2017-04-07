@@ -97,7 +97,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             tableEntityService.forceReleaseWriter();
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
-            System.out.println("table usage:" + tableCostTime);
+            logger.info("transport cost time: " + tableCostTime + BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID()));
             BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());

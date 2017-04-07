@@ -1,8 +1,13 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
-import com.finebi.cube.conf.pack.data.*;
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.pack.data.BIGroupTagName;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.pack.data.BIPackageName;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.pack.group.BIBusinessGroup;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -27,6 +32,8 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.web.service.action.BISaveAnalysisETLTableAction;
+import com.fr.fs.base.entity.User;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -34,7 +41,13 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 先注释掉普通用户看管理员的部分
@@ -44,6 +57,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     private static final String TAG = "AnalysisBusiPackManager";
     private static final long serialVersionUID = -5566625380376195712L;
+    private static final BILogger logger = BILoggerFactory.getLogger(AnalysisBusiPackManager.class);
 
     public SingleUserAnalysisBusiPackManager getUserAnalysisBusiPackManager(long userId) {
         try {
@@ -72,7 +86,18 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     @Override
     public Set<IBusinessPackageGetterService> getAllPackages(long userId) {
         Set<IBusinessPackageGetterService> result = new HashSet<IBusinessPackageGetterService>();
-        for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(userId).getAllPacks()) {
+        List<User> allUserList = new ArrayList<User>();
+        try {
+            allUserList = UserControl.getInstance().findAllUser();
+        } catch (Exception e) {
+            logger.error("Get all users failure " + e.getMessage(), e);
+        }
+        for (User user : allUserList) {
+            for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(user.getId()).getAllPacks()) {
+                result.add(biBusinessPackage);
+            }
+        }
+        for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getAllPacks()) {
             result.add(biBusinessPackage);
         }
 //        if (userId != UserControl.getInstance().getSuperManagerID()){
