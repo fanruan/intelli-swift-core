@@ -28,6 +28,7 @@ import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BILogConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SqlSettedStatement;
@@ -49,7 +50,13 @@ import com.fr.stable.collections.array.IntArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -182,7 +189,11 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 Object[] objects = addList.get(i);
                 if (objects != null) {
                     for (int column = 0; column < objects.length; column++) {
+                        List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
                         BIDataValue biDataValue = new BIDataValue(row, column, objects[column]);
+                        if (objects[column] == null && fieldList.get(column).getFieldType() == DBConstant.COLUMN.STRING) {
+                            biDataValue = new BIDataValue(row, column, "");
+                        }
                         tableEntityService.increaseAddDataValue(biDataValue);
                     }
                     row++;
@@ -350,7 +361,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
    /*
         * 预处理逻辑：对于同一条Key的记录
-        * 1. 新增中出现n次，修改中出现n-1次，则处理后新增留一次，删除中没有该记录
+        * 1. 新增中出现n次，删除中出现n-1次，则处理后新增留一次，删除中没有该记录
         * 2. 修改中出现n次，处理后则留一次
         *
         * 经过1处理后，某个key的记录最多在新增中出现一次或在删除中出现一次

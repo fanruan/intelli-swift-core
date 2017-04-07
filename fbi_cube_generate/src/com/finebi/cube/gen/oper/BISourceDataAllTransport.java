@@ -18,7 +18,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
-import com.fr.general.DateUtils;
 import com.fr.stable.bridge.StableFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +62,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             tableEntityService.addVersion(version);
             tableEntityService.forceReleaseWriter();
             long tableCostTime = System.currentTimeMillis() - t;
-            System.out.println("tableName: " + tableSource.getTableName() + " tableSourceId: " + tableSource.getSourceID() + " table usage:" + DateUtils.timeCostFrom(t));
+            logger.info("transport cost time: " + tableCostTime + "ms" + BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID()));
             BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
