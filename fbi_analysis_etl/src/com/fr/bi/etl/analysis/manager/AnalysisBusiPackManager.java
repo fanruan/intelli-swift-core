@@ -345,8 +345,8 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject saveAnalysisETLTable(final long userId, String tableId, String newId, String tableName, String describe, String tableJSON) throws Exception {
-        AnalysisBusiTable table;
-        CubeTableSource source;
+        AnalysisBusiTable table = null;
+        CubeTableSource source = null;
         CubeTableSource oriSource = null;
         if (StringUtils.isEmpty(newId)) {
             //编辑||新建
@@ -370,6 +370,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
             table.setSource(source);
             table.setDescribe(oldTable.getDescribe());
         }
+        solveTable(table, source, oriSource, userId);
+        JSONObject result = generateResultJson(userId, table, tableName);
+        return result;
+    }
+
+    private void solveTable(AnalysisBusiTable table, CubeTableSource source, CubeTableSource oriSource, final long userId) {
         try {
             BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, table.getTableSource());
             BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
@@ -387,8 +393,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(BIStringUtils.append("analysisSource update failed", source.getSourceID(), e.getMessage()), e);
         }
-
-        BIUserETLBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action(){
+        BIUserETLBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {
             @Override
             public void work() {
                 BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
@@ -396,7 +401,9 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
                 BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
             }
         });
+    }
 
+    private JSONObject generateResultJson(long userId, AnalysisBusiTable table, String tableName) throws Exception {
         JSONObject result = new JSONObject();
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
         JSONObject translations = new JSONObject();
