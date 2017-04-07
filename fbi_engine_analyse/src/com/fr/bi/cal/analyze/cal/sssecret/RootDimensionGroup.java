@@ -14,7 +14,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
 
@@ -65,7 +64,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     private void initIterator() {
         if (metricGroupInfoList == null || metricGroupInfoList.isEmpty()) {
-            BINonValueUtils.beyondControl("invalid parameters");
+            return;
         }
         rowSize = metricGroupInfoList.get(0).getRows().length;
         for (MetricGroupInfo info : metricGroupInfoList) {
