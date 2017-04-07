@@ -385,9 +385,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             JSONObject crossItem = crossItems.getJSONObject(i);
             if (crossItem.has("children")) {
                 JSONArray tempPV = new JSONArray();
-                boolean isValuesAvailable = crossItem.has("values");
                 if (crossItem.has("dId")) {
-                    if (isValuesAvailable && BIJsonUtils.isArray(crossItem.getString("values"))) {
+                    if (crossItem.has("values") && BIJsonUtils.isArray(crossItem.getString("values"))) {
                         for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
                             JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
                             tempPV = pv.put(object);
@@ -401,13 +400,14 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 }
                 parseCrossItem2Array(crossItem.getJSONArray("children"), pValues, tempPV);
                 //汇总
-                if (crossItem.has("values") && BIJsonUtils.isArray(crossItem.getString("values")) && crossItem.getJSONArray("values").length() > 0) {
+                boolean isValuesArrayAvailable = crossItem.has("values") && BIJsonUtils.isArray(crossItem.getString("values"));
+                if (isValuesArrayAvailable && crossItem.getJSONArray("values").length() > 0) {
                     for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
                         JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
                         pValues.put(object);
                     }
                 } else if (crossItem.has("dId")) {
-                    if (isValuesAvailable) {
+                    if (crossItem.has("values") && BIJsonUtils.isArray(crossItem.getString("values"))) {
                         for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
                             JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
                             pValues.put(object);
