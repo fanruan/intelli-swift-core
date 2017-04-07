@@ -565,9 +565,13 @@ public class BICoreModule extends AbstractModule {
 
 
     private void registerDAO() {
-        if ((!ClusterEnv.isCluster()) || (ClusterAdapter.getManager().getHostManager().isSelf() && isFirstTimeInit)) {
+        if ((!ClusterEnv.isCluster())) {
             dropBIReportNodeLockDAOTable();
         }
+        if (ClusterAdapter.getManager().getHostManager().isSelf() && isFirstTimeInit) {
+            dropBIReportNodeLockDAOTable();
+        }
+
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(TableDataDAOControl.class.getName(), TableDataBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.getInstance());
