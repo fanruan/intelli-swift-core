@@ -20,4 +20,8 @@ public interface BIDetailSetting extends JSONParser,BICoreService,Serializable {
     boolean isFreeze();
 
     int isOrder();
+
+    int getWSTableStyle();
+
+    String getWSThemeColor();
 }

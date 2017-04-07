@@ -1,11 +1,11 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableHeader;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIBasicTableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils.BITableExportDataHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils.SummaryTableStyleHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIBasicTableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableHeader;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -37,10 +37,10 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
 
     private void removeUnusedHeader() {
         Iterator<ITableHeader> iterator = headers.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             ITableHeader header = iterator.next();
-            if (!header.isUsed()){
-               iterator.remove();
+            if (!header.isUsed()) {
+                iterator.remove();
             }
         }
     }
