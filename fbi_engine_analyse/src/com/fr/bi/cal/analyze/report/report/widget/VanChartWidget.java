@@ -133,7 +133,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI){
 
-            unit = Inter.getLocText("BI-Basci_Yi");
+            unit = Inter.getLocText("BI-Basic_Yi");
 
         }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT){
 
@@ -471,7 +471,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String intervalLegendFormatter(String format){
-        return String.format("function(){return FR.contentFormat(arguments[0].from, \"%s\")}-FR.contentFormat(arguments[0].to, \"%s\")}", format, format);
+        return String.format("function(){return FR.contentFormat(arguments[0].from, \"%s\") + \"-\" + FR.contentFormat(arguments[0].to, \"%s\")}", format, format);
     }
 
     protected String gradualLegendFormatter(String format){
