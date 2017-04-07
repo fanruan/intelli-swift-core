@@ -98,6 +98,12 @@ public abstract class VanChartWidget extends TableWidget {
     protected double numberScale(String dimensionID){
 
         int level = this.numberLevel(dimensionID);
+
+        return this.numberScaleByLevel(level);
+    }
+
+    protected double numberScaleByLevel(int level){
+
         double scale = 1.0;
 
         if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND){
@@ -139,6 +145,10 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected int numberLevel(String dimensionID){
+        return this.numberLevelFromSettings(dimensionID);
+    }
+
+    protected int numberLevelFromSettings(String dimensionID){
         try {
             BISummaryTarget  target = this.getBITargetByID(dimensionID);
 

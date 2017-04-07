@@ -40,14 +40,15 @@ public class VanMultiPieWidget extends VanPieWidget{
             return series;
         }
 
-        JSONArray data = this.createChildren(originData);
+        double scale = this.numberScale(targetIDs[0]);
+        JSONArray data = this.createChildren(originData, scale);
 
         series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0])).put("dimensionID", targetIDs[0]));
 
         return series;
     }
 
-    private JSONArray createChildren(JSONObject originData) throws JSONException {
+    private JSONArray createChildren(JSONObject originData, double scale) throws JSONException {
         JSONArray children = JSONArray.create();
 
         if(!originData.has("c")){
@@ -58,11 +59,12 @@ public class VanMultiPieWidget extends VanPieWidget{
 
         for(int i = 0, dataCount = rawChildren.length(); i < dataCount; i++){
             JSONObject item = rawChildren.getJSONObject(i);
-            double value = item.getJSONArray("s").getDouble(0);
+            JSONArray s = item.getJSONArray("s");
+            double value = s.isNull(0) ? 0 : s.getDouble(0);
             String name =  item.optString("n");
-            JSONObject datum = JSONObject.create().put("name", name).put("value", value);
+            JSONObject datum = JSONObject.create().put("name", name).put("value", value/scale);
             if(item.has("c")){
-                datum.put("children", this.createChildren(item));
+                datum.put("children", this.createChildren(item, scale));
             }
             children.put(datum);
         }

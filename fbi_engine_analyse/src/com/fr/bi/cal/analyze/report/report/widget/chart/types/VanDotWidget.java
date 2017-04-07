@@ -130,7 +130,10 @@ public class VanDotWidget extends VanCartesianWidget{
         if(ids.length < SCATTER_COUNT){
             return series;
         }
-        String seriesType = this.getSeriesType(StringUtils.EMPTY);
+
+        double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
+        double sizeScale = ids.length > 2 ? this.numberScaleByLevel(this.numberLevelFromSettings(ids[2])) : 1;
+
         HashMap<String, ArrayList<JSONArray>> seriesMap = new HashMap<String, ArrayList<JSONArray>>();
         Iterator iterator = originData.keys();
         while (iterator.hasNext()) {
@@ -157,11 +160,11 @@ public class VanDotWidget extends VanCartesianWidget{
                     JSONObject obj = dataArray.optJSONObject(j);
                     JSONArray dimensions = obj.optJSONArray("s");
 
-                    double x = dimensions.optDouble(0);
-                    double y = dimensions.optDouble(1);
-                    double value = dimensions.length() > 2 ? dimensions.optDouble(2) : 0;
+                    double y = dimensions.isNull(0) ? 0 : dimensions.optDouble(0);
+                    double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
+                    double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
 
-                    data.put(JSONObject.create().put("x", x).put("y", y).put("size", value));
+                    data.put(JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale));
                 }
             }
 

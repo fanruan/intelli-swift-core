@@ -109,12 +109,14 @@ public class VanMapWidget extends VanChartWidget{
         for(int i = 0, seriesCount = targetIDs.length; i < seriesCount; i++){
             JSONArray data = JSONArray.create(), rawData = originData.getJSONArray("c");
             String id = targetIDs[i];
+            double scale = this.numberScale(id);
             for(int j = 0, dataCount = rawData.length(); j < dataCount; j++){
                 JSONObject item = rawData.getJSONObject(j);
-                double value = item.getJSONArray("s").getDouble(i);
+                JSONArray s = item.getJSONArray("s");
+                double value = s.isNull(i) ? 0 : s.getDouble(i);
                 String areaName =  item.optString("n");
 
-                JSONObject datum = JSONObject.create().put("name", areaName).put("value", value);
+                JSONObject datum = JSONObject.create().put("name", areaName).put("value", value / scale);
 
                 if(item.has("c")){
                     JSONObject drillDown = JSONObject.create();
