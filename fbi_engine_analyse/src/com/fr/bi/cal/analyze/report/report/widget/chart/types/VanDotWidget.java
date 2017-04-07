@@ -204,6 +204,14 @@ public class VanDotWidget extends VanCartesianWidget{
         return (idCount == BUBBLE_DIMENSION && type == BUBBLE ) ? "bubble" : "scatter";
     }
 
+    protected void formatSeriesTooltipFormat(JSONObject options) throws Exception{
+
+    }
+
+    protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
+
+    }
+
     protected String getTooltipIdentifier(){
         return X + Y + SIZE;
     }

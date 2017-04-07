@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -72,6 +73,11 @@ public class VanMapWidget extends VanChartWidget{
         }
 
         legend.put("continuous", false);
+
+        BISummaryTarget[] targets = this.getTargets();
+        if(targets.length > 0){
+            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0], true)));
+        }
 
         return legend;
     }
